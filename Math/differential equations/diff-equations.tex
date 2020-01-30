@@ -1,0 +1,1655 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newenvironment{bigcase}{\left\{ \quad \begin{aligned}}{\end{aligned}\right.}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\res}{\mathrm{res}\;}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\taylor}[1]{\sum_{#1 = 0}^\infty}
+\newcommand*{\taylorfrom}[2]{\sum_{#1=#2}^\infty}
+\newcommand*{\laurent}[1]{\sum_{#1=-\infty}^\infty}
+\DeclareMathOperator{\gammafunc}{\Gamma}
+\DeclareMathOperator{\betafunc}{B}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\besselj}{J}
+\DeclareMathOperator{\norimann}{N}
+\DeclareMathOperator{\hankelfirst}{H^{(1)}}
+\DeclareMathOperator{\hankelsecond}{H^{(2)}}
+\DeclareMathOperator{\diag}{diag}
+\renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+\renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+
+\title{数理方程}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\section{二阶方程的一般理论}
+
+一个$n$阶的线性微分方程形如$Lu=f$，其中$L$是一个导数算符以（性质足够好的）一元函数为系数的$n$阶多项式。也就是说它形如
+\begin{equation}
+    L y \equiv \left(\dv[n]{x} + p_1(x) \dv[n-1]{x} + \cdots + p_n(x) \right) y = f(x)
+    \label{eq:ode}
+\end{equation}
+显然$L$是线性的。在$f=0$时方程是\textbf{齐次}的，否则是\textbf{非齐次}的。
+
+虽然通常\eqref{eq:ode}是在实数域上的，由于其线性性，我们总是可以将$x$理解为一个复数，而将最终的解取实部来获得实数解。
+这样就可以将复变函数用上。
+若在$x_0$处$L$的各个系数都是解析的，则称这个点是\textbf{常点}，否则称为\textbf{奇点}。
+如果$x_0$是一个奇点，但是$L$关于求导算符的$k$阶项系数乘上$(x-x_0)^{n-k}$之后是解析的，那么这就是\textbf{正则奇点}。
+
+齐次方程形如
+\begin{equation}
+    L y \equiv \left(\dv[n]{x} + p_1(x) \dv[n-1]{x} + \cdots + p_n(x) \right) y = 0
+    \label{eq:ode-homogeneous}
+\end{equation}
+
+齐次方程的几个结论：
+\begin{itemize}
+    \item 解具有叠加原理，也就是，所有的解形成了一个线性空间
+    \item 两个解线性无关当且仅当它们的Wronsky行列式不为零（只对二阶方程成立？高阶？）所谓的Wronsky行列式指的是
+    \[
+        \mqty | y_1 & y_2 \\ y_1' & y_2' |
+    \]
+\end{itemize}
+
+物理中出现的基本的方程阶数不超过二，因此接下来主要讨论二阶方程。二阶齐次方程
+\begin{equation}
+    y''(x) + p(x) y'(x) + q(x) = 0
+    \label{eq:ode-homogeneous-2nd}
+\end{equation}
+的解空间是二维的：总可以找到\eqref{eq:ode-homogeneous-2nd}的两个线性无关的解，
+并且使用这两个解的线性叠加可以构造出它的所有解。
+
+\paragraph{定理} 设$y_1$是\eqref{eq:ode-homogeneous-2nd}的一个解，则
+\begin{equation}
+    y_2(x) = y_1(x) \int \frac{1}{y_1(x)^2} \exp \left(- \int p(x) \dd x\right) \dd x
+    \label{eq:another-solution}
+\end{equation}
+也是一个解，且$y_1, y_2$线性无关。
+
+二阶非齐次方程形如
+\begin{equation}
+    y''(x) + p(x) y'(x) + q(x) = f(x)
+    \label{eq:ode-inhomogeneous-2nd}
+\end{equation}
+
+设$y_1,y_2$是方程\eqref{eq:ode-homogeneous-2nd}的两个线性无关解，则\eqref{eq:ode-inhomogeneous-2nd}的一个特解为
+\begin{equation}
+    y_2(x) \int \frac{f(x)y_1(x)}{\Delta (x)} \dd x - y_1(x) \int \frac{f(x) y_2(x)}{\Delta(x)}
+    \label{eq:homogeneous-to-inhomogeneous}
+\end{equation}
+其中$\Delta(x)$为$y_1, y_2$的Wronsky行列式，也就是
+\[
+    \Delta = \mqty | y_1 & y_2 \\ y_1' & y_2' |
+\]
+
+由线性方程的解的结构，求出某个二阶线性微分方程\eqref{eq:ode-inhomogeneous-2nd}的一个特解和它对应的二阶齐次方程\eqref{eq:ode-homogeneous-2nd}的两个线性无关的特解
+就得到了\eqref{eq:ode-inhomogeneous-2nd}的通解。
+另一方面，使用\eqref{eq:homogeneous-to-inhomogeneous}，
+\eqref{eq:ode-inhomogeneous-2nd}可以直接使用\eqref{eq:ode-homogeneous-2nd}的解得出，
+于是解一般的非齐次方程\eqref{eq:ode-inhomogeneous-2nd}的问题就转化为了解\eqref{eq:ode-homogeneous-2nd}的问题。
+
+\subsection{解的存在唯一和幂级数解法}
+关于齐次方程\eqref{eq:ode-homogeneous-2nd}有一个重要结论：
+\paragraph{存在和唯一性} 如果系数函数$p, q$在圆域$|x - x_0| < R$内是解析的（从而$x_0$是常点），
+那么在这个圆域内%
+\footnote{
+    通常会把$R$取到最大，从而$|x-x_0|=R$上有$p$或$q$的奇点。
+    但需要注意的是，就算$|x-x_0|=R$上$p$或$q$有奇点，也不一定每一个特解都在$|x-x_0|=R$上有奇点，
+    虽然此时总会有解在$|x-x_0|=R$上有奇点。%
+}
+，方程\eqref{eq:ode-homogeneous-2nd}存在唯一的、满足定解条件$y(x_0)=c_0,y'(x_0)=c_1$的解析解$y$。
+
+那么，既然解是存在、唯一、解析的，我们就可以把它在常点$x_0$附近做泰勒展开，
+\[
+    y(x) = \sum_{n=0}^\infty c_n (x - x_0)^n
+\]
+其中系数$c_0, c_1$已知，其余待求。逐项求导得到
+\[
+    y'(x) = \sum_{n=1}^\infty n c_n (x - x_0)^{n-1}, \quad y''(x) = \sum_{n=2}^\infty n(n-1) c_n (x - x_0)^{n-2}
+\]
+代入展开式就得到了一个递推公式
+\begin{equation}
+    \sum_{n=0}^\infty \left( (n+2)(n+1)c_{n+2} + p(x) (n+1) c_{n+1} + q(x) c_n \right) (x - x_0)^n = 0
+    \label{eq:power-series}
+\end{equation}
+将$p(x), q(x)$中的$x$设法归并入$(x-x_0)^n$中，写出“\textbf{不显含$x$}的、由$c_n$，$c_{n+1}$，$c_{n+2}$，$n$组成的系数乘以$(x-x_0)^n$之后无穷相加”的式子，
+由诸项的线性无关性，系数一定是零，从而可以解出诸$c_n$。
+这样就确定了$|x - x_0| < R$区域内的解。这就是所谓的\textbf{幂级数解法}。
+
+由于指定$c_0, c_1$就能够获得一个解，方程\eqref{eq:ode-homogeneous-2nd}的解空间实际上线性同构于$\reals^2$。
+通常分别指定$c_0 = 1, c_1 = 0$以及$c_0 = 0, c_1 = 1$来获得两个线性无关的解。
+
+需要注意的是通过幂级数解法获得的解完全有可能在$|x-x_0|\geq R$上发散，
+如果我们已知解的行为良好，那么$p(x), q(x)$就需要满足某些特殊的条件使级数收敛。
+
+\subsection{奇点附近的解}
+
+在奇点附近\eqref{eq:power-series}不再有效。但是，我们有
+\paragraph{福克斯定理} $x=x_0$是方程\eqref{eq:ode-homogeneous-2nd}的正则奇点，当且仅当，
+可以找到\eqref{eq:ode-homogeneous-2nd}的两个线性独立解
+\begin{equation}
+    \begin{aligned}
+        y_1(x) &= (x-x_0)^{s_1} \sum_{n=0}^\infty c_n^{(1)}(x-x_0)^n, \\
+        y_2(x) &= (x-x_0)^{s_2} \sum_{n=0}^\infty c_n^{(2)}(x-x_0)^n + \beta y_1(x) \ln (x-x_0).
+        \end{aligned}
+        \label{eq:generalized-power-series}
+\end{equation}
+其中$s_1, s_2, c_n^{(1)}, c_n^{(2)}$都是常数。
+而如果$x_0$是非正则奇点，则可以找到\eqref{eq:ode-homogeneous-2nd}的两个线性独立解
+\begin{equation}
+    \begin{aligned}
+        y_1(x) &= (x-x_0)^{s_1} \sum_{n=-\infty}^\infty c_n^{(1)}(x-x_0)^n, \\
+        y_2(x) &= (x-x_0)^{s_2} \sum_{n=-\infty}^\infty c_n^{(2)}(x-x_0)^n + \beta y_1(x) \ln (x-x_0).
+    \end{aligned}
+\end{equation}
+使用上面的公式得到的解可能有支点。
+
+因此，在$x=x_0$是正则奇点的时候，
+\eqref{eq:generalized-power-series}保证了方程\eqref{eq:ode-homogeneous-2nd}具有一个正常的解，
+而另一个解也可以通过正常的解得到。
+
+为了看出怎么使用这个定理。考虑下面的论证。不失一般性设$x_0=0$。
+做泰勒展开
+\[
+    xp(x) = \taylor{n} a_n x^n, \quad x^2 q(x) = \taylor{n} b_n x^n
+\]
+设方程解形如
+\[
+    y(x) = \taylor{n} c_n x^{n+s}
+\]
+则使用
+\[
+    x^2 y''(x) + x^2 p(x) y'(x) + x^2 q(x) y(x) = 0
+\]
+得到
+\begin{equation}
+    \taylor{n} (n+s)(n+s-1)c_n x^{n+s} + \taylor{k} a_k x^k \taylor{n} (n+s) c_n x^{n+s} + 
+    \taylor{k} b_k x^k \taylor{n} c_n x^{n+s} = 0
+\end{equation}
+从这个方程的最低次幂$x^s$得到
+\begin{equation}
+    s(s-1) + a_0 s + b_0 = 0
+    \label{eq:indicial}
+\end{equation}
+设$s_1, s_2$是它的两个根，且$\Re s_1 \geq \Re s_2$。然后能够得到递推公式
+\begin{equation}
+    ((s+m)(s+m-1) + a_0(s+m) + b_0) c_m + \sum_{k=1}^m (a_k (s + m - k) + b_k) c_{m-k} = 0.
+    \label{eq:fuchs-series}
+\end{equation}
+只要确定了$c_0$的值（可以随便取一个）就能够使用上式求出整个方程的解，只要
+$((s+m)(s+m-1) + a_0(s+m) + b_0) \neq 0$。这个条件在$s=s_1$时一定成立（否则\eqref{eq:indicial}就要有三个解了），
+于是$s_1$对应的解就求出来了。这就得到了\eqref{eq:generalized-power-series}中的$y_1$和$c^{(1)}_n$。
+
+现在的问题是，$s_2$对应的解是什么样子的？确实有$s_1 - s_2$不是零或者正整数的情况，
+此时使用\eqref{eq:fuchs-series}能够获得另一个线性独立的解，对应于\eqref{eq:generalized-power-series}中取$\beta=0$的情况。
+但如果$s_1 - s_2$为零，那么这样求出的解和$y_1$不线性独立；
+如果$s_1 - s_2$是正整数，那么\eqref{eq:fuchs-series}在$m$为$s_1 - s_2$时$c_m$前的系数变成零，不能继续迭代求解$c_n$。
+
+假设$s_1 - s_2 = N \in \natnums_+$。此时$c^{(2)}_{1}, \ldots, c^{(2)}_{N-1}$可以使用$c_0$表示。
+考虑递推关系式\eqref{eq:fuchs-series}的线性性，我们能够得到这样的表达式：
+\[
+    ((s_2 + N)(s_2 + N - 1) + a_0 (s_2 + N) + b_0) c_N + (\cdots) a_0 = 0
+\]
+如果$a_0$前面的系数也是零，那么$a_N$的值没有受到任何限制。因此，任意选取$a_0, a_N$就能够得到一组解。这时，仅仅使用$s_2$就可以得到\eqref{eq:ode-homogeneous-2nd}的全部解。反之，如果$a_0$前面的系数不是零，那么\eqref{eq:generalized-power-series}中的$y_2$就一定不能够写成和$y_1$一样的形式，也就是$\beta \neq 0$。这时必须使用\eqref{eq:another-solution}获得另一个解$y_2$，并且可以证明其形式确实是\eqref{eq:generalized-power-series}中展示的那样。
+
+总结：求解\eqref{eq:ode-homogeneous-2nd}的方法为：
+\begin{enumerate}
+    \item 写出级数展开
+    \[
+        xp(x) = \taylor{n} a_n x^n, \quad x^2 q(x) = \taylor{n} b_n x^n
+    \]
+    \item 求解指标方程
+    \[
+        s(s-1) + a_0 s + b_0 = 0
+    \]
+    设其实部大的根为$s_1$，实部小的根为$s_2$
+    \item 对$s_1$求解递推公式
+    \[
+        ((s+m)(s+m-1) + a_0(s+m) + b_0) c_m + \sum_{k=1}^m (a_k (s + m - k) + b_k) c_{m-k} = 0.
+    \]
+    得到$c^{(1)}_n$，从而$y_1(x)$
+    \item 根据\eqref{eq:another-solution}或者别的什么方式求解出$y_2(x)$
+\end{enumerate}
+
+\subsection{Sturm-Liouville方程}\label{sec:s-l-eq}
+
+考虑线性算符
+\[
+    L u(x) = p_0 (x) \dv[2]{x} u(x) + p_1(x) \dv{x} u(x) + p_2(x) u(x)
+\]
+可以证明，
+\[
+    L^\dagger u = \dv[2]{x}(p_0 u) - \dv{x} (p_1 u) + p_2 u
+\]
+% 使用怎样的内积来定义自伴算符？在怎样的空间上？
+则$L$是自伴算符，当且仅当
+\[
+    p_0'(x) = p_1(x)
+\]
+此时就有
+\[
+    L u = p_0 \dv[2]{x} u + p_0' \dv{x} u + p_2 u(x) = \dv{x} (p_0 u) + p_2 u
+\]
+% 是否能够完全消去权函数？
+
+形如
+\begin{equation}
+    \dv{x} (k(x) y'(x)) - q(x) y(x) + \lambda \rho(x) y(x) = 0
+    \label{eq:sl-eq}
+\end{equation}
+的方程称为\textbf{Sturm-Liouville}方程。其中$\rho(x)$称为\textbf{权函数}。通常要求$k(x), q(x), \rho(x)$都是实函数。
+
+\ref{sec:separation-of-variables}节中使用的方法常常导致下面提到的这种方程。分离变量得到
+\[
+    y''(x) + p_1(x) y'(x) - q_1(x) y(x) + \lambda \rho_1(x) y(x) = 0
+\]
+形式的方程。取$k(x)=\exp \left( \int p_1 (x) \dd x \right)$，就可以将上式化为\eqref{eq:sl-eq}的形式。
+
+在实际的物理问题中基本上都假定$k, q, \rho$非负。
+这是因为我们总是可以在这三个函数都不变号的区段上求解\eqref{eq:sl-eq}，然后把得到的结果使用衔接条件拼起来。
+此外，$\rho$的正负无关紧要，因为如果$\rho$恒非正，
+那么在\eqref{eq:sl-eq}中使用$-\lambda$代替$\lambda$，使用$-\rho$代替$\rho$就得到了$\rho$恒非负的方程。
+于是不失一般性假设$\rho(x) \geq 0$。
+则在给定的区间$D$上，$k, q, \rho$的正负号有下面几种情况：（$+$代表非负，$-$代表非正）$--+$，$-++$，$+++$，$+-+$。
+第一种情况，可以在方程两边乘上$(-1)$而化为$++-$。然后由于$\rho$可以在正负之间切换，又可以约化为$+++$。
+第四种情况同样可以化为$-+-$。同样由于$\rho$可以在正负之间切换，又可以约化为$-++$。
+因此所有的正负情况都可以约化为$+++$和$-++$。TODO：为什么一定是$+++$
+
+因此今后假定在我们讨论的区间内，均有$k(x), q(x), \rho(x) \geq 0$。
+
+显然\eqref{eq:sl-eq}等价于
+\[
+    -\frac{1}{\rho(x)} \dv{x} \left(k(x) y'(x)\right) + \frac{q(x)}{\rho(x)} y(x) = \lambda y(x)
+\]
+因此这是一个\textbf{本征值问题}。让\eqref{eq:sl-eq}有非零解的$\lambda$就是\textbf{本征值}，它对应的解就是\textbf{本征向量}。
+当然单单有\eqref{eq:sl-eq}不能定解，还需要附加一个线性边界条件（从而允许解的叠加）。
+设\eqref{eq:sl-eq}在$a \leq x \leq b$上成立，接下来讨论端点处的线性边界条件。
+
+\subsubsection{边界条件} 
+我们想要的是这样的边界条件：能够使将\eqref{eq:sl-eq}在$a \leq x \leq b$上的解的范围缩小到可数个，最好就是唯一一个。
+既然\eqref{eq:sl-eq}是齐次二阶线性微分方程，其解的结构为$y=c_1 y_1 + c_2 y_2$，$y_1$和$y_2$是两个线性无关解。
+因此找到两个关于$y$的彼此无关的方程就可以做到这一点。
+给定了这样的边界条件以后求解\eqref{eq:sl-eq}实际上就是在定义在$[a, b]$上且满足边界条件的光滑函数组成的函数空间上求解本征值问题。也就是说，我们要分析\eqref{eq:sl-eq}中的算子在这个函数空间上的谱。%
+\footnote{
+    当然，也可以认为这是在定义在$[a, b]$上的光滑函数空间上求解
+    \[
+        (-\frac{1}{\rho(x)} \dv{x} \left(k(x) y'(x)\right) + \frac{q(x)}{p(x)}, B) y = \lambda (y, 0)
+    \]
+    （其中$By=0$代表边界条件。）
+    但是这种算符矩阵不方便处理。%
+}
+
+将\eqref{eq:sl-eq}改写为
+\[
+    k(x) y''(x) + k'(x) y'(x) - q(x) y(x) + \lambda \rho(x) y(x) = 0
+\]
+如果在端点$x=a$处（$x=b$也一样，下同）$k(x) \neq 0$，那么我们可以使用两个\textbf{齐次边界条件}，形如
+\begin{equation}
+    \eval{(\alpha y'(x) + \beta y(x))}_{x=a} = 0
+    \label{eq:3-type-bound}
+\end{equation}
+就可以确定边界处的$y(x), y'(x)$。此时还有另一个自然满足的条件
+\[
+    \eval{(k'(x) y'(x) - q(x) y(x) + \lambda \rho(x) y(x))}_{x=a} = -\eval{k(x) y''(x)}_{x=a}
+\]
+既然$k(a) \neq 0$，这个方程显含$y''(x)$，因此和\eqref{eq:3-type-bound}无关。则只需要在两个边界点$x=a, b$处指定形如\eqref{eq:3-type-bound}的边界条件即可定解。
+
+如果在端点$x=a$处（$x=b$也一样，下同）$k(x) = 0$，那么齐次边界条件在一般情况下就不适用了，因为此时有
+\begin{equation}
+    \eval{(k'(x) y'(x) - q(x) y(x) + \lambda \rho(x) y(x))}_{x=a} = 0
+    \label{eq:sl-eq-bound}
+\end{equation}
+这个方程和\eqref{eq:3-type-bound}如果线性相关，那么就不能定解；如果线性无关，那么它们就要求$y(x)=0$——一个平凡解。
+注意到在这种情况下，将\eqref{eq:sl-eq}写成\eqref{eq:ode-homogeneous-2nd}的形式后，$x=a$是一个奇点。
+因此，如果$y_1$是\eqref{eq:sl-eq}的一个解且$y_1(a)\neq \infty$，则与它线性独立的所有解在$x=a$处都发散。
+因此尝试引入物理上合理的\textbf{自然边界条件}：
+\begin{equation}
+    \eval{y(x)}_{x=a} \neq \infty
+    \label{eq:finite-bound}
+\end{equation}
+只靠这个条件就能够定解：\eqref{eq:finite-bound}将$y$的取值限制在$c_1 y_1$的形式内，
+而在边界处使用\eqref{eq:sl-eq-bound}则能够确定$c_1$。
+
+还有一种边界条件。考虑\textbf{周期性边界条件}
+\begin{equation}
+    y(a)=y(b), y'(a) = y'(b)
+    \label{eq:period-bound}
+\end{equation}
+这也是两个彼此无关的方程。它能够直接推导出$k(a)=k(b)$。因此为了避免矛盾，只应该在事先能够验证$k(a)=k(b)$时使用周期性边界条件。
+
+\subsubsection{本征值问题的一般性质} 
+
+在周期性边界条件\eqref{eq:period-bound}、自然边界条件\eqref{eq:finite-bound}，
+以及通过\ref{sec:separation-of-variables}节中的齐次边界条件分离变量得到的齐次边界条件（“物理的齐次边界条件”）下，
+% 好像还有一个$\beta>0$的条件，我也不知道怎么回事
+可以表明\eqref{eq:sl-eq}涉及的算符是自伴的，此时本征值问题有下面的一般性质：
+\begin{itemize}
+    \item 所有本征值都是非负实数
+    \item 有无限个分立的本征值$\lambda_1 \leq \lambda_2 \leq \ldots$，且本征值没有上界%
+    \footnote{
+        这里讨论的所有情况都假定了$a, b$有限。
+        有时，区间$(a, b)$的一端是开放的。这时可能会出现连续的本征值分布，
+        也就是同时出现连续谱和分立谱。
+        连续谱中的本征值对应的本征函数在无穷远处不趋于零，
+        分立谱中的本征值对应的本征函数在无穷远处趋于零。
+
+        讨论连续谱是很麻烦的，一个比较好的方法是，在充分远处加上齐次或者周期性条件以获得间隔很小的分立谱，然后让间隔趋于零。
+    }%
+    ，并且，除了周期边界条件以外，随着本征值的增大，本征函数的节点数会一个一个地增多；
+    \item 可以在定义在$[a, b]$上且满足边界条件的光滑函数组成的函数空间上定义内积，从而得到一个范数：
+    \[
+        \langle f, g \rangle = \int_a^b f^*(x) g(x) \rho(x) \dd x, \quad \norm{f} = \sqrt{\langle f, f, \rangle}
+    \]
+    对应不同本征值的本征函数$y_m(x), y_n(x)$在$a \leq x \leq b$上以$\rho(x)$带权正交，即
+    \begin{equation}
+        \int_a^b y_m^*(x) y_n(x) \rho(x) \dd x = 0, \quad \lambda_m \neq \lambda_n
+    \end{equation}
+    \item 本征函数族$\{y_n(x)\}$是定义在$[a, b]$上且满足边界条件的光滑函数组成的函数空间的一组完备基，
+    也就是说，满足和$\{y_n(x)\}$相同的边界条件而性质足够良好的函数都可以写成
+    \begin{equation}
+        \begin{bigcase}
+            f(x) &= \sum_{n=1}^\infty c_n y_n (x) \\
+            c_n &= \int_a^b f(x) y_n^*(x) \rho(x) \dd x \Big/ \int_a^b \abs{y_n(x)}^2 \rho(x) \dd x
+        \end{bigcase}
+    \end{equation}
+    对诸$\{y_n\}$做归一化得到$\{\tilde{y}_n(x)\}$，即要求
+    \[
+        \tilde{y}_n(x) = y_n(x) / \norm{y_n(x)} = y_n(x) \Big/ \sqrt{\int_a^b \abs{y_n(x)}^2 \rho(x) \dd x}
+    \]
+    此时
+    \[
+        \int_a^b \tilde{y}^*_m(x) \tilde{y}_n(x) \rho(x) \dd x = \delta_{mn}
+    \]
+    则满足和$\{y_n(x)\}$相同的边界条件而性质足够良好的函数都可以写成
+    \begin{equation}
+        \begin{bigcase}
+            f(x) &= \sum_{n=1}^\infty \tilde{c}_n \tilde{y}_n(x), \\
+            \tilde{c}_n &= \int_a^b f(x) \tilde{y}^*_n(x) \rho(x) \dd x
+        \end{bigcase}
+    \end{equation}
+    \item 有\textbf{能量恒等式}或者说\textbf{Parseval恒等式}
+    \begin{equation}
+        \norm{f}^2 = \sum_{i=1}^\infty \abs{\tilde{c}_n}^2
+    \end{equation}
+\end{itemize}
+
+\subsection{渐进性质}
+
+TODO
+举例：$x \to \infty$时方程中的一些项不重要了，解出化简之后的方程，然后设出形如$f(x) = f_0(x)g(x)$即可。
+
+\section{几个常见的二阶常微分方程与特殊函数}
+
+使用上一节的理论，下面我们分析几个常见的二阶常微分方程。说它们是“常见的”是因为它们实际上是含有拉普拉斯算符的偏微分方程分离变量之后的结果。
+
+\subsection{Legendre方程}
+方程
+\begin{equation}
+    (1-x^2)y'' - 2 x y' + l(l+1) y = 0
+    \label{eq:legendre-eq}
+\end{equation}
+称为\textbf{$l$阶Legendre方程}。
+在物理上这是球对称拉普拉斯方程在$\theta$方向上分离变量后引进参数$l$之后的结果。
+由二次方程的性质，$l(l+1)=A$总可以找到两个根。
+为了避免重复讨论，我们要求$l \geq -1$且$\Re l \geq 0$。可以验证这样的$l$取值范围能够覆盖所有可能的\eqref{eq:legendre-eq}。
+
+\subsubsection{Legendre方程的解}
+在$x=0$附近做展开
+\[
+    y(x) = \taylor{n} c_n x^n
+\]
+可以获得递推公式
+\begin{equation}
+    c_{n+2} = \frac{(n-l)(l+n+1)}{(n+2)(n+1)} c_n
+\end{equation}
+代入不同的$c_0, c_1$就能够获得不同的解。特别的，取$c_0=1, c_1=0$可以得到偶函数
+\begin{equation}
+    y_0(x) = 1 + \taylorfrom{k}{1} \frac{(2k-2-l)(2k-4-l)\cdots(-l)(l+1)(l+3)\cdots(l+2k-1)}{(2k)!} x^{2k}
+    \label{eq:legendre-even}
+\end{equation}
+取$c_0=0, c_1=1$可以得到奇函数
+\begin{equation}
+    y_1(x) = x + \taylorfrom{k}{1} \frac{(2k-1-l)(2k-3-l)\cdots(1-l)(l+2)(l+4)\cdots(l+2k)}{(2k+1)!} x^{2k+1}
+    \label{eq:legendre-odd}
+\end{equation}
+
+由方程\eqref{eq:legendre-eq}的形式，\eqref{eq:legendre-even}和\eqref{eq:legendre-odd}在$\abs{x}<1$内收敛。
+这样就完全解决了$l$取任意复数值的\eqref{eq:legendre-eq}的问题。
+
+\subsubsection{Legendre多项式}
+物理上通常还要求级数解在$\abs{x}=1$上有界，也就是不发散。可以验证如果\eqref{eq:legendre-even}的每一项都不是零，则它在$\abs{x}=1$上发散。
+要让\eqref{eq:legendre-even}从某一项开始就为零——也就是级数截断——就需要存在某个自然数%
+\footnote{
+    如果$l$的取值没有收到任何限制，那么$l$也可以是负整数。但既然规定了$\Re l \geq -1$，我们总是可以只讨论自然数$l$而不失一般性。
+}
+$k$使$l=2k$。
+记$l=2n$，此时$y_0$退化为一个$2n$次多项式，为
+\[
+    y_0(x) = \frac{(n!)^2}{(2n)!} \sum_{k=0}^n \frac{(-1)^k (2n+2k)!}{(2k)!(n+k)!(n-k)!} x^{2k}
+\]
+现在我们要求$y(x)=c_0y_0(x)$（在推导上式时取了$c_0=1$而$c_1=0$。
+现在还是保持$c_1=0$，但是$c_0$可调），且$y(1)=1$，并且称此时的$y(x)$为\textbf{$l=2n$对应的Legendre多项式$\legpoly_{2n}(x)$}。经过计算可以得到
+\[
+    \legpoly_{2n}(x) = \sum_{k=0}^{n} (-1)^k
+    \frac{(4n-2k)!}{2^{2n}k! (2n-k)! (2n-2k)!} x^{2n-2k}
+\]
+类似的可以证明\eqref{eq:legendre-odd}在每一项都不是零的时候必然在$\abs{x}=1$发散。
+同样，要求\eqref{eq:legendre-odd}从某一项开始截断就要求存在某个自然数$k$使$l=2k+1$。
+设$l=2n+1$，然后$y_1$退化成了一个$2n+1$阶多项式。
+要求$y(x)=c_1 y_1(x)$且$y(1)=1$，并且称此时的$y(x)$为\textbf{$l=2n+1$对应的Legendre多项式$\legpoly_{2n+1}(x)$}，则可以得到
+\[
+    \legpoly_{2n+1} = \sum_{k=0}^n 
+    (-1)^k \frac{(4n+2-2k)!}{2^{2n+1} k! (2n+1-l)! (2n+1-2k)!} x^{2n+1-2k}
+\]
+
+综上，Legendre方程\eqref{eq:legendre-eq}的解在$\abs{x}\leq 1$上存在且有界，当且仅当$l=0, 1, 2, \ldots$。此时，这个有限的解就是Legendre多项式$\legpoly_l(x)$%
+\footnote{
+    当然，就算$l$是整数，\eqref{eq:legendre-eq}还是有两个独立解。
+    但正如我们刚才导出的那样，同一个$l$不能同时让\eqref{eq:legendre-even}和\eqref{eq:legendre-odd}在$\abs{x}=1$处收敛。
+    因此，解在$\abs{x}\leq 1$上存在的条件自动排除了一个解。%
+}
+，其定义为
+\begin{equation}
+    \legpoly_l(x) = 
+        \begin{bigcase}
+        \sum_{k=0}^{l/2} (-1)^k \frac{(2l-2k)!}{2^l k! (l-k)! (l-2k)!} x^{l-2k}, \quad &\text{$l$为偶数} \\
+        \sum_{k=0}^{(l-1)/2} (-1)^k \frac{(2l-2k)!}{2^l k! (l-k)! (l-2k)!} x^{l-2k}, \quad &\text{$l$为奇数}
+    \end{bigcase}
+\end{equation}
+
+\subsubsection{Legendre多项式的性质}
+Legendre多项式的取值满足下面的性质：
+\begin{equation}
+    \legpoly_l(-x) = (-1)^l \legpoly(x), \quad \legpoly_l(1)=1, \quad \legpoly_l(-1)=(-1)^l, \quad \legpoly_{2n}(0) = (-1)^n \frac{(2n-1)!!}{(2n)!!}
+\end{equation}
+
+可使用公式
+\begin{equation}
+    \legpoly_l (x) = \frac{1}{2^l l!} \dv[l]{x} (x^2 - 1)^l
+\end{equation}
+计算各阶勒让德多项式。
+还可以使用递推公式
+\begin{equation}
+    \begin{split}
+        (2l+1)\legpoly_l(x) = \legpoly'_{l+1}(x) - \legpoly'_{l-1}(x), \\ 
+        x \legpoly_l(x) = \frac{1}{2l+1} (l \legpoly_{l-1}(x) + (l+1)\legpoly_{l+1}(x))
+    \end{split}
+\end{equation}
+
+还可以找到勒让德多项式的初等生成函数：
+\begin{equation}
+    \frac{1}{\sqrt{1 - 2rx + r^2}} = \sum_{l=0}^\infty \legpoly_l(x) \frac{1}{r^{l+1}}, \quad r > 1
+\end{equation}
+
+此外，\eqref{eq:legendre-eq}是一个Strum-Liouville方程，取$k(x)=1-x^2$，$q(x)=0$，$\rho(x)=1$即可。
+则诸Legendre多项式形成$[-1, 1]$上有界光滑的函数的一组正交基。
+
+\subsection{连带Legendre方程}
+
+\begin{equation}
+    \dv{x} \left( (1-x^2) \dv{y}{x} \right) + \left( l(l+1) - \frac{m^2}{1-x^2} \right) y = 0
+\end{equation}
+
+\begin{equation}
+    \legpoly_l^m(x) = (1-x^2)^{m/2} \legpoly_l^{(m)}(x), \quad m = 0, 1, 2, \ldots, l
+\end{equation}
+
+\begin{equation}
+    \legpoly_l^m(x) = \frac{1}{2^l l!} (1-x^2)^{\frac{m}{2}} \dv[m+1]{x} (x^2 - 1)^l
+\end{equation}
+
+\subsection{柱Bessel方程}
+
+\begin{equation}
+    x^2 y'' + xy' + (x^2 - m^2) y = 0
+    \label{eq:z-bessel-eq}
+\end{equation}
+
+可以任意地从Bessel函数、Norimann函数、第一类Hankel函数和第二类Hankel函数中任取两类组成\eqref{eq:z-bessel-eq}的通解。
+
+渐进行为：
+在$x \to 0$时，
+\begin{equation}
+    \besselj_0 (x) \sim 1 - \left(\frac{x}{2}\right)^2, \quad
+    \besselj_\nu (x) \sim \frac{1}{\Gamma(\nu+1)} \left(\frac{x}{2}\right)^\nu, \; \nu \neq 0
+\end{equation}
+$x=0$不是$\besselj_0$的零点，但确实是$\besselj_\nu$（$\nu \neq 0$）的$\nu$阶零点。
+
+\begin{equation}
+    \norimann_0(x) \sim \frac{2}{\pi} \ln \frac{x}{2}, \quad
+    \norimann_\nu (x) \sim - 
+\end{equation}
+
+在$x \to \infty$时，
+\begin{equation}
+    \besselj_\nu(x) \sim \sqrt{\frac{2}{\pi x}} \cos \left( x - \frac{\nu \pi}{2} - \frac{\pi}{4} \right), \quad 
+\end{equation}
+
+贝塞尔函数可以使用生成函数描述：
+
+$\besselj_\nu (x)$的零点有无限多个，非零的零点记为$x_n^{(\nu)}$，均为一级零点。$x=0$是$\besselj_\nu(x)$的$\nu$阶零点。
+
+由于$\besselj_\nu (x)$具有奇/偶对称性，其零点分布也是对称的。
+$\besselj_\nu (x)$的最小正零点一定小于$\besselj_{\nu+1} (x)$的最小正零点。
+
+通常记$\besselj_m'(x)$的一阶零点为$\tilde{x}_n^{m}$。
+
+有$\besselj_0'(x) = \besselj_1(x)$
+
+\section{偏微分方程}
+
+\subsection{线性偏微分方程分类}
+
+一个一般的二阶偏微分方程形如
+\begin{equation}
+    \sum_{i,j=1}^n a_{ij} \pdv[2]{u}{x_i}{x_j} + \sum_{i=1}^n b_i \pdv{u}{x_i} + cu + f = 0.
+    \label{eq:2nd-pde} 
+\end{equation}
+不失一般性地要求$a_{ij}=a_{ji}$。所有的$a,b,c,f$都可以显含$x$。
+
+在可逆坐标变换$x \longrightarrow \xi$之下，
+\[
+    \pdv{x_i} = \sum_{j=1}^n \pdv{x_i}{\xi_j} \pdv{\xi_j}
+\]
+也即，坐标变换同时也是求导算符的一个线性变换。
+通过合适的$\xi$的选取，可以让$a_{ij}$转化为一个正规型，也即，$a_{ij}$是对角矩阵，且对角线上的元素只能是$0, \pm 1$。
+依照惯性定理，$a_{ij}$转化成的正规型$A_{ij}=\diag(A_1, \ldots, A_n)$的对角线上的元素中，$+1$、$-1$、$0$的个数是确定的。
+这样，就可以把任何一个形如\eqref{eq:2nd-pde}的方程化归为下面四种方程中的一种：
+\begin{itemize}
+    \item 椭圆型方程，所有的$A_i$都同号。此时方程可以转化为
+    \[
+        \sum_{i,j=1}^n \pdv[2]{u}{x_i} + \sum_{i=1}^n B_i \pdv{u}{x_i} + Cu + F = 0
+    \]
+    \item 抛物型方程，$A_i$中有一些是零。此时方程可以转化为
+    \[
+        \sum_{i=1}^{n-m} \pdv[2]{u}{x_i} + \sum_{i=1}^n B_i \pdv{u}{x_i} + Cu + F = 0
+    \]
+    \item 双曲型方程，$A_i$中$n-1$个同号，还有一个异号，此时方程可以转化为
+    \[
+        \pdv[2]{u}{x_1} - \sum_{i=2}^{n-m} \pdv[2]{u}{x_i} + \sum_{i=1}^n B_i \pdv{u}{x_i} + Cu + F = 0
+    \]
+    \item 超双曲型方程，$A_i$中正负都有，此时方程可以转化为
+    \[
+        \sum_{i=1}^{m} \pdv[2]{u}{x_i} - \sum_{i=m+1}^{n} \pdv[2]{u}{x_i} + \sum_{i=1}^n B_i \pdv{u}{x_i} + Cu + F = 0
+    \]
+\end{itemize}
+
+在自变量数目多于2个时，方程有可能在有些区域上属于一个类型，而在另一些区域上属于另一个类型。
+
+% 实际上通过二次型来分类只适用于$x,t$型方程，也就是1+1维
+% 空间维更多时怎么办？
+从而一个一般的二阶偏微分方程可以转化为下面三类方程之一：
+\begin{itemize}
+    \item 抛物型方程
+    \begin{equation}
+        \pdv{u}{t} - a \laplacian u = 0
+        \label{eq:parabolic-eq}
+    \end{equation}
+    \item 椭圆型方程
+    \begin{equation}
+        \pdv[2]{u}{t} + a^2 \laplacian u = 0
+    \end{equation}
+    \item 双曲型方程
+    \begin{equation}
+        \pdv[2]{u}{t} - a^2 \laplacian u = 0
+    \end{equation}
+\end{itemize}
+
+\subsection{定解条件与定解问题}\label{sec:definite-problem}
+
+通常可以如此分解一个定解问题：一个一般的偏微分方程的通解包含几个可以任取的函数。因此要获得唯一的解必须对因变量的性质做一定的限制。
+常见的限制包括\textbf{初始条件}，也就是$t=0$时关于因变量的一些信息（例如，$t=0$时因变量$u$的值，或者$\partial u / \partial t$的值），
+以及\textbf{边界条件}，也就是在我们感兴趣的空间区域$\Omega$的边界上$u$需要满足的一些条件；
+还有就是\textbf{衔接条件}，也就是我们感兴趣的空间区域可能是多个空间区域$\Omega_1, \Omega_2, \ldots$紧贴在一起的结果，在两个子区域的交界处$u$要满足一些条件。另外还有\textbf{自然条件}和\textbf{周期条件}。
+
+边界条件通常是线性的，它可以分成三类：
+\begin{enumerate}
+    \item 第一类，形如$u = \text{something}$
+    \item 第二类，形如$\partial u / \partial \vb*{n} = \text{something}$
+    \item 第三类，形如$\alpha u + \beta \partial u / \partial \vb*{n} = \text{something}$
+\end{enumerate}
+第三类边界条件就是前两类的线性组合。如果以上三类边界条件的方程右边为零，也就是说，它们关于$u$是齐次的，那么这就是\textbf{齐次}边界条件。
+
+给定了线性泛定方程$L[u]=f$，以及合适的初始条件、衔接条件、边界条件，就得到了\textbf{定解问题}。
+由于可以分别求解$\Omega_1, \Omega_2,\ldots$中的问题（将衔接条件看成边界条件，将涉及本区域外的所有信息当成未知常数），然后按照衔接条件将它们拼接起来（未知常数代入衔接条件之后解出），而自然条件和定解条件可以在求出一般的解之后再施加上去从而筛选解，不失一般性地，以下所谓的定解问题限于形如
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= f \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= g \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= \varphi, \\
+        \eval{\pdv{u}{t}}_{t=0} &= \psi
+    \end{bigcase}
+    \label{eq:definite-problem}
+\end{equation}
+其中我们使用了两个初始条件，这实际上暗示了$L[u]$关于变量$t$的阶数不能超过2，否则只凭借\eqref{eq:definite-problem}不能定解。
+这一点在\ref{sec:separation-of-variables}节里清楚地展现了出来。
+
+而\eqref{eq:definite-problem}又等价于下面三个问题的和：泛定方程和边界条件均齐次而初始条件非齐次的
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= \varphi, \\
+        \eval{\pdv{u}{t}}_{t=0} &= \psi
+    \end{bigcase}
+    \label{eq:problem-i}
+\end{equation}
+边界条件非齐次，其余齐次的
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= g \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= 0, \\
+        \eval{\pdv{u}{t}}_{t=0} &= 0
+    \end{bigcase}
+    \label{eq:problem-ii}
+\end{equation}
+以及泛定方程非齐次而其余齐次的
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= f \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= 0, \\
+        \eval{\pdv{u}{t}}_{t=0} &= 0
+    \end{bigcase}
+    \label{eq:problem-iii}
+\end{equation}
+
+如果求出了问题\eqref{eq:problem-i}、\eqref{eq:problem-ii}和\eqref{eq:problem-iii}的通解，那么一般的问题\eqref{eq:definite-problem}的通解就是这三者的通解之和。因此不失一般性地，接下来不再讨论一般问题\eqref{eq:definite-problem}的解，而转而讨论\eqref{eq:problem-i}、\eqref{eq:problem-ii}、\eqref{eq:problem-iii}的解。
+
+需要注意的是这三类问题是可以相互转化的。
+
+求解\eqref{eq:problem-i}是基础，问题\eqref{eq:problem-ii}可以转化为\eqref{eq:problem-i}或者\eqref{eq:problem-iii}，而\eqref{eq:problem-iii}有多种解法。
+实际上\eqref{eq:problem-i}和\eqref{eq:problem-iii}是比较容易解决的，而\eqref{eq:problem-ii}却难以有一般的解法。
+
+% TODO:三类方程的解法的表格
+
+定解问题的提法五花八门：泛定方程成立的空间可以是无限大的，也可以是有限大的；边界条件可以取各种不同的形式。
+
+\subsection{特征线法}
+
+特征线法通常用于无穷大空间中的问题。考虑
+
+认为解$u(\vb*{x})$定义在$x_1, x_2, \ldots, x_n$张成的空间内，现在考虑此空间内的一条曲线$\vb*{x} = \vb*{x}(s)$，
+在这条曲线上
+\[
+    \dv{u}{s} = \sum_i \pdv{x_i}{s} \pdv{u}{x_i}
+\]
+$\dv[2]{u}{s},\dv[3]{u}{s}$等也可以按照同样的方式写出。
+如果能够合理安排$\pdv{x_i}{s}$使得常微分算符
+\begin{equation}
+    A_n (x,u) \dv[n]{u}{s} + \ldots + A_1 (x, u) \dv{u}{s} + A_0(x, u) = \eval{L[u]}_{x_i=x_i(s)}
+\end{equation}
+那么就能够求解下面的问题
+\begin{equation}
+    A_n (x,u) \dv[n]{u}{s} + \ldots + A_1 (x, u) \dv{u}{s} + A_0(x, u) = f(x(s))
+\end{equation}
+其中$\pdv{x_i}{s}$是确定的，可以直接通过偏积分得到；可以使用通用的求解常微分方程的方法解出上式，于是得到
+\begin{equation}
+    x = x(s;C), u = u(s;C)
+    \label{eq:characteristic-line-solution}
+\end{equation}
+使用给定的条件确定$C$，然后变动$s$使曲线$x=x(s;C)$扫过我们要求解的整个区域，我们就得到了这个区域上每一点的$u$值，
+从而解出了方程。变动$s$扫过区域在代数上就意味着从\eqref{eq:characteristic-line-solution}中消去$s$。
+
+特征线法在求解一阶偏微分方程时特别好用。设泛定方程为
+\begin{equation}
+    L[u] = \vb*{a}(u, \vb*{x})^\top \pdv{u}{\vb*{x}} = f(\vb*{x}),
+\end{equation}
+那么就只需要求解
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \pdv{\vb*{x}}{s} &= \vb*{a}(u, \vb*{x}), \\
+            \dv{u(\vb*{x}(s))}{s} &= f(\vb*{x}(s))
+        \end{aligned}
+    \right.
+\end{equation}
+
+当要求解的问题为二阶及以上时，特征线法不再实用，主要原因是因为$\dd^n / \dd s^n$的形式变得复杂，因而难以凑出合适的$A_1, A_2, \ldots, A_n$。
+
+行波法就是特征线法的一个特例。在二阶偏微分方程中只有双曲型方程能够比较容易地使用特征线法求解。
+特征线法最重要的作用还是求解一阶的偏微分方程，在那里它可以处理非线性的问题。
+主要原因在于
+
+\subsection{分离变量法}\label{sec:separation-of-variables}
+
+\subsubsection{分离变量法的步骤}\label{sec:separation-of-variables-steps}
+
+对很大一类\eqref{eq:problem-i}形式的问题，有以下的通用解法：
+\begin{enumerate}
+    \item 检查是不是能够写出形如
+    \[
+        L[T(t)R(\vb*{r})] = R(\vb*{r}) L_t [T] - T(t) L_{\vb*{r}} [R(\vb*{r})]
+    \]
+    其中$L_{\vb*{r}}$和$L_t$是两个Sturm-Liouville算子。
+    \item 如果可以，那么求解本征值问题
+    \[
+        \begin{bigcase}
+            L_{\vb*{r}} R = \lambda R, \\
+            \left( \alpha R + \beta \pdv{R}{\vb*{n}} \right) = 0
+        \end{bigcase}
+    \]
+    得到一系列本征值和对应的本征函数
+    \[
+        (\lambda_1, R_1), \ldots, (\lambda_n, R_n), \ldots
+    \]
+    通常有无数个这样的本征值。这些本征值可能有重复，也就是有简并。
+    $R_1, R_2, \ldots$中任意两个只要对应不同的本征值，那么它们一定正交。
+    将$R_1, R_2, \ldots$归一化之后就得到了满足\eqref{eq:problem-i}中边界条件的所有函数的一组规范正交基。
+    \item 对每个$\lambda_n$，求解
+    \[
+        L_t T = \lambda_n T
+    \]
+    得到一系列彼此线性无关的解$T_n^{(1)}, \ldots, T_n^{(k)}$。%
+    \footnote{在这里，我们首先求解了空间上的本征值问题$L_{\vb*{r}} R = \lambda R$，得到了$\lambda_n$之后求解$L_t T = \lambda_n T$。
+    为什么不能够首先求解$L_t T = \lambda T$？
+    实际上也可以，不过如果使用通常的求本征值问题的方法求解$L_t T = \lambda T$基本上只能得到零解。
+    其原因在于，$T$在$t=0$处需要服从两个条件没有另一端的条件，$L_t$在满足这样的条件的函数空间上的谱必定有连续谱，
+    连续谱的“特征向量”甚至不在所讨论的函数空间内（虽然它们可以叠加出我们想要的函数空间中的函数），
+    也没有离散的形如$\lambda_1, \lambda_2, \ldots$这样的特征值。
+    相反，空间上的问题被约束在了一个有限的区域内，在其上$L_{\vb*{r}}$的谱总是离散的。
+    所以通常只处理空间上的本征值问题。
+    }%
+    \item 写出形式解
+    \begin{equation}
+        u(\vb*{r}, t) = \sum_{i,j} c_{ij} R_i(\vb*{r}) T_i^{(j)}(t)
+    \end{equation}
+    这个形式解描述了问题
+    \begin{equation}
+        \begin{bigcase}
+            L[u] &= 0 \quad \text{in $\Omega$}, \\
+            \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}
+        \end{bigcase}
+        \label{eq:homogeneous-without-initial-condition}
+    \end{equation}
+    的通解，且$R_i(\vb*{r}) T_i^{(j)}$构成了满足\eqref{eq:problem-i}中边界条件的函数空间的一组基。
+    \item 最后处理初始条件。将\eqref{eq:problem-i}中的初始条件使用$R_i(\vb*{r}) T_i^{(j)}$展开之后即可得到$c_{ij}$，于是\eqref{eq:problem-i}完全解决。
+\end{enumerate}
+
+在实际使用时有时还会遇到这样的问题，就是空间区域内部的某个表面上解需要满足某些条件，如在电磁学中有衔接条件
+\[
+    \vb*{n} \cdot (\epsilon_1 \vb*{E}_1) = \vb*{n} \cdot (\epsilon_2 \vb*{E}_2)
+\]
+但假如能够找到齐次边界条件或者内部的衔接条件（例如上式就是一个很好的齐次内部衔接条件）使得泛定方程在这样的边界条件下分离变量之后能够得到Strum-Liouville型问题，那么分离变量法就一定可以使用。
+总之，分离变量法的使用条件是：将一部分齐次定解条件连同泛定方程做分离变量
+\[
+    u = X(x) T(t)
+\]
+后能够得到关于$X$或者$T$的Strum-Liouville型本征值问题。
+如果可以，那么求解出这个本征值问题之后代入非齐次的定解条件就能够得到整个定解问题的解。
+
+以上步骤中肯定有很多东西需要说明。最关键的地方在于，为什么简单地分离变量就能够写出\textbf{任何}一个分离变量后得到Strum-Liouville算子的\eqref{eq:problem-i}的解——难道不会出现反例吗？因此下面有必要分析分离变量法的有效性。
+
+\subsubsection{有效性的证明}
+考虑边界条件和泛定方程问题\eqref{eq:problem-i}。我们设
+\[
+    u(x, t) = X(x) T(t)
+\]
+如果能够写出
+\[
+    L[u] = T(t) L_x [X] - X(x) L_t [T]
+\]
+其中$L_x$和$L_t$都是Sturm-Liouville算子（见\ref{sec:s-l-eq}节），那么原泛定方程就化为
+\[
+    \frac{L_t T}{T} = \frac{L_x X}{X}
+\]
+那么，由于此方程左边和右边关于不同的变量，它们只能够等于同一个常数，于是
+\[
+    L_t [T] = \lambda T, \quad L_x [X] = \lambda X
+\]
+现在给$X$和$T$施加适当的边界条件。考虑到$T(t)$的值一般的会发生变化，可以写出
+\[
+    \alpha X + \beta \pdv{X}{\vb*{n}} = 0
+\]
+这样关于$X$的本征值问题就求出来了，得到一系列
+\[
+    L_x X_n = \lambda_n X_n, \quad n = 1, 2, \ldots
+\]
+本征值通常有无穷多个。将$\lambda = \lambda_n$代入$L_t [T] = \lambda T$，可以求出一个基础解系$T_n^{(1)}, \ldots, T_n^{k}$，其中$k$是$L_t$的阶数，通常只考虑$k\leq 2$的情况（否则\eqref{eq:problem-i}给出的初始条件数目不够，见下），此时\eqref{eq:problem-i}中列出的初始条件足够在时间上定解。
+
+现在写出试探解
+\[
+    u(x, t) = \sum_i \sum_j a_i X_i (b_{ij} T_i^{(j)})
+\]
+考虑到在这个式子当中将$a_i$乘上某个数而将$b_{ij}$除以相同的数不会改变最终结果，设
+\[
+    u(x, t) = \sum_i \sum_j c_{ij} X_i T_i^{(j)}
+\]
+实际上，这个试探解是\eqref{eq:homogeneous-without-initial-condition}的通解。证明是很容易的：设$u(x,t)$是\eqref{eq:homogeneous-without-initial-condition}的任意一个解，
+由$X_n$和$T_n^{(j)}$的完备性，有
+\[
+    u(x, t) = \sum_i f_i(t) X_i(x) 
+\]
+也就是说，我们在每一个$t$上都将此时的$u(x, t)$关于$x$使用基$X_n$做分解，$f_i(t)$就是系数。同理，
+\[
+    u(x, t) = \sum_{jl} g_{jl}(x) T_j^{(l)}(t) 
+\]
+那么就有
+% TODO
+
+在$t=0$时使用此试探解可以得到
+\[
+    \begin{split}
+        \eval{u}_{t=0} = \sum_i \sum_j a_i X_i (b_{ij} T_i^{(j)}(0)), \\
+        \eval{\pdv{u}{t}}_{t=0} = \sum_i \sum_j a_i X_i (b_{ij} \dv{t} T_i^{(j)}(0)) 
+    \end{split}
+\]
+由于诸$X_n$构成关于$x$的、且满足\eqref{eq:problem-i}中的边界条件的函数的一组正交归一化基，
+以上两个方程唯一确定了诸$b_{ij} T_i^{(j)}(0)$和$b_{ij} (\dd T_i^{(j)} / \dd t)|_{t=0}$的值
+（显然，如果只用两个方程就能够唯一确定这些值，那么$k$不能超过2），从而能够确定$b_{ij}$的值，这样
+\[
+    T_n = b_{n1} T_n^{(1)} + b_{n2} T_n^{(2)} + \ldots + b_{nk} T_n^{(k)}
+\]
+就成为了满足\eqref{eq:problem-i}的初始条件的函数空间上本征值问题$L_t T = \lambda T$的解。
+
+% TODO：总结
+
+\subsubsection{非其次问题的转化}\label{sec:from-inhomogeneous-to-sv}
+
+分离变量法只适用于\eqref{eq:problem-i}形式的方程。不过，形如
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= g \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= \varphi, \\
+        \eval{\pdv{u}{t}}_{t=0} &= \psi
+    \end{bigcase}
+\end{equation}
+的方程通过边界条件齐次化的方式也能够求解。我们尝试构造满足
+\[
+    \begin{bigcase}
+        L[v] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha v + \beta \pdv{v}{\vb*{n}} \right) &= g \quad \text{on $\partial \Omega$}
+    \end{bigcase}
+\]
+的某一个$v$，然后使用分离变量法求解
+\[
+    \begin{bigcase}
+        L[w] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha w + \beta \pdv{w}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}, \\
+        \eval{w}_{t=0} &= \varphi - \eval{v}_{t=0}, \\
+        \eval{\pdv{w}{t}}_{t=0} &= \psi - \eval{\pdv{v}{t}}_{t=0}
+    \end{bigcase}
+\]
+那么就有$u=v+w$。
+
+构造$v$的难点在于保证$L[v]=0$。初始条件无关紧要，因为分离变量法可以机械地解决任何一种初始条件；人为构造边界条件也并不困难。如果不能保证$L[v]=0$，就要导致\eqref{eq:problem-iii}形式的问题。
+
+\eqref{eq:problem-iii}也可以通过这样的方法解决。尝试构造满足
+\[
+    \begin{bigcase}
+        L[v] &= f \quad \text{in $\Omega$}, \\
+        \left(\alpha v + \beta \pdv{v}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}
+    \end{bigcase}
+\]
+然后使用分离变量法求解
+\[
+    \begin{bigcase}
+        L[w] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha w + \beta \pdv{w}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}, \\
+        \eval{w}_{t=0} &= \varphi - \eval{v}_{t=0}, \\
+        \eval{\pdv{w}{t}}_{t=0} &= \psi - \eval{\pdv{v}{t}}_{t=0}
+    \end{bigcase}
+\]
+则$u=v+w$就是\eqref{eq:problem-iii}的解。
+
+这一类方法统称为\textbf{试探法}，因为需要使用一个通常是通过反复试探得到的$w$来求解。
+
+\subsection{本征函数展开法}\label{sec:eigenfunction-expanding}
+
+虽然可以使用试探法求解\eqref{eq:problem-iii}，但这样过于依赖非常人为、非常需要灵感的构造了。
+使用\textbf{本征函数法}可以使用一种一般的方法求解\eqref{eq:problem-iii}，甚至不仅仅限于\eqref{eq:problem-iii}。实际上，这是分离变量法的一种推广。
+
+考虑问题
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= f \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}, \\
+        \eval{u}_{t=0} &= \varphi, \\
+        \eval{\pdv{u}{t}}_{t=0} &= \psi
+    \end{bigcase}
+    \label{eq:spacial-and-time-inhomogeneous}
+\end{equation}
+如果我们取$f=0$，并且验证了$L[u]$可以使用\ref{sec:separation-of-variables-steps}中的方法分离成两个Strum-Liouville算子，就可以使用\ref{sec:separation-of-variables-steps}中给出的办法写出
+\[
+    \begin{bigcase}
+        L[u] &= 0 \quad \text{in $\Omega$}, \\
+        \left(\alpha u + \beta \pdv{u}{\vb*{n}} \right) &= 0 \quad \text{on $\partial \Omega$}
+    \end{bigcase}
+\]
+对应的本征函数族
+\[
+    (\lambda_1, R_1(\vb*{r})), (\lambda_2, R_2(\vb*{r})), \ldots
+\]
+我们将\eqref{eq:spacial-and-time-inhomogeneous}中的$u, f, \varphi, \psi$在空间上做展开，得到
+\[
+    \begin{split}
+        u(\vb*{r}, t) = \sum_n T_n(t) R_n(\vb*{r}), \\
+        f(\vb*{r}, t) = \sum_n f_n(t) R_n(\vb*{r}), \\
+        \varphi(\vb*{r}) = \sum_n \varphi_n R_n(\vb*{r}), \quad \psi(\vb*{r}) = \sum_n \psi_n R_n(\vb*{r})
+    \end{split}
+\]
+需要注意这个展开似乎要求$f$也满足
+\[
+    \left(\alpha f + \beta \pdv{f}{\vb*{n}} \right) = 0 \quad \text{on $\partial \Omega$}
+\]
+但是正如傅里叶级数展示的那样，通过
+\[
+    T_n(t) = \int R_n(\vb*{r})^* f(\vb*{r}, t) \dd^D \vb*{r}
+\]
+是可以计算出$T_n(t)$的，而方程
+\[
+    u(\vb*{r}, t) = \sum_n T_n(t) R_n(\vb*{r})
+\]
+在$\Omega$的内部处处成立，而在$\partial \Omega$上可能失效，在那里$\sum_n T_n(t) R_n(\vb*{r})$的值发生一个突跃，让
+\[
+    \left(\alpha \sum_n T_n(t) R_n(\vb*{r}) + \beta \pdv{\vb*{n}} \sum_n T_n(t) R_n(\vb*{r}) \right) = 0 \quad \text{on $\partial \Omega$}
+\]
+成立。
+因此$f$不必满足$u$满足的边界条件也没有问题。
+使用\ref{sec:separation-of-variables-steps}节中的定义，可以将泛定方程$L[u]=f$改写为
+\[
+    \begin{aligned}
+        \sum_n f_n(t) R_n(\vb*{r}) &= \sum_n (R_n(t) L_t[T(t)] - T_n(t) L_{\vb*{r}}[R_n]) \\
+        &= \sum_n (L_t T_n(t) - \lambda_n T_n(t)) R_n(\vb*{r})
+    \end{aligned}
+\]
+也就是
+\[
+    L_t T_n(t) - \lambda_n T_n(t) = f_n(t)
+\]
+而初始条件就成为
+\[
+    T_n(0) = \varphi_n, \quad T_n'(0) = \psi_n
+\]
+以上方程中的每一项都是已知的，把它们求出就解出了\eqref{eq:spacial-and-time-inhomogeneous}。
+
+本征函数展开法具有很强的物理意义。
+
+% 未来可以写的东西：响应谱
+
+TODO：下面的方法：
+待解问题为
+\[
+    L u = f
+\]
+为此，首先求解本征值问题
+\[
+    L u = \lambda u
+\]
+得到$(lambda_n , u_n) , \quad n = 1, 2, \ldots$
+然后将$f$表示为
+\[
+    f = \sum_n f_n u_n
+\]
+设
+\[
+    u = \sum_n c_n u_n
+\]
+则有
+\[
+    f_n = c_n \lambda_n
+\]
+于是
+\[
+    u = \sum_n \frac{f_n}{\lambda_n} u_n
+\]
+\subsection{响应谱}
+
+考虑关于变量$\vb*{r}, t$的泛定方程
+\[
+    L[u] = f
+\]
+与之搭配一个线性齐次的边界条件
+\[
+    B u = 0 \quad \text{on the edge}
+\]
+设
+\[
+    L[u] = P\left( \pdv{t}, \grad \right) u
+\]
+其中$P$是一个多项式。（如果$P$是无穷级数，那么有可能导致一个非局域的算符）
+对泛定方程做一个傅里叶变换，得到形如（系数什么的不考虑）
+\[
+    P \left( -\ii \omega, \grad \right) \tilde{u} = \tilde{f}
+\]
+记之为
+\[
+    \tilde{L}_\omega \tilde{u} = \tilde{f}
+\]
+当然，在$f$在时间上是一个单色信号的时候，我们就有
+\[
+    \tilde{L}_\omega u = \tilde{f} \ee^{- \ii \omega t}
+\]
+其解为
+\[
+    u = \tilde{u} \ee^{- \ii \omega t}
+\]
+% 不失一般性地，总是可以假定$\tilde{f}$为实数。问题：球面波等
+注意
+\[
+    \begin{bigcase}
+        \tilde{L}_\omega \tilde{u} = 0, \\
+        B u = 0
+    \end{bigcase}
+\]
+是一个本征值问题或者类似于一个本征值问题（例如$L = O + \pdv[2]{t}$则$\tilde{L}_\omega = O - \omega^2$），设其解对应的$\omega$为$\omega_1, \omega_2, \ldots$，由解的唯一性，我们发现，当$\omega$取其中一个而$f \neq 0$时问题
+\[
+    \begin{bigcase}
+        \tilde{L}_\omega \tilde{u} = \tilde{f}, \\
+        B u = 0
+    \end{bigcase}
+\]
+不可能有解。在$\omega$不是$\omega_1, \omega_2, \ldots$中任何一个的时候，由于
+\[
+    \begin{bigcase}
+        \tilde{L}_\omega \tilde{u} = 0, \\
+        B u = 0
+    \end{bigcase}
+\]
+没有解，
+\[
+    \begin{bigcase}
+        \tilde{L}_\omega \tilde{u} = \tilde{f}, \\
+        B u = 0
+    \end{bigcase}
+\]
+可以有解。
+这就意味着当$\omega$扫过$\omega_1, \omega_2, \ldots$中的每一个的时候，$\tilde{L}_\omega \tilde{u} = \tilde{f}$的解出现奇异性。在物理上这没有什么问题，因为$\omega_1, \omega_2, \ldots$正是算符$L$的固有频率，当驱动力频率与它们一样时，会出现发散。
+数学上，这意味着此时不再能够使用傅里叶变换求解此问题，解$u$不会周期性震荡，而会不断增大。通常可以使用拉普拉斯变换解决此问题。
+
+我们称改变$\omega$而保持$\tilde{f}$不变得到的$\tilde{u}_\omega$为\textbf{响应谱}。当$\omega=\omega_k$时，对应的响应谱位置出现发散。
+
+
+实际体系通常有耗散，这意味着$P$中会出现$\partial / \partial t$的奇数次项，此时$P(-\ii \omega ,\grad)$中会出现虚数（反之，在$\partial / \partial t$只以偶数次出现时，$P(-\ii \omega ,\grad)$中不会出现虚数，此时$u \exp(-\ii \omega t)$在时间上的相位和$\tilde{f} \ee^{- \ii \omega t}$完全相同），大部分$\omega_n$都含有虚部，因此如果我们限制$\omega$是实数，那么响应谱中就不会出现发散。但是当奇数次项的系数不大时，总是可以写出
+\[
+    P'(\omega, \grad) u + \ii Q(\omega, \grad) u = \tilde{f}
+\]
+此时响应谱上对应于
+\[
+    P'(\omega, \grad) u = 0
+\]
+的那些$\omega$（它们全是实数）附近都会出现高峰，但是没有发散。
+
+\subsection{积分变换法}
+
+注：有时候某个定解问题的边界条件不能够构成空间部分的一个本征值问题，但是还是可以先把时间部分分离出来，其原理就是对时间做拉普拉斯变换。
+
+在\ref{sec:eigenfunction-expanding}节中我们使用分立的本征函数来求解\eqref{eq:spacial-and-time-inhomogeneous}。
+这让我们想到，能不能使用连续的本征函数来做这件事。
+这就是\textbf{积分变换解法}。
+积分变换解法通常用在\eqref{eq:spacial-and-time-inhomogeneous}中的$\Omega$实际上是全空间时的情况；
+此时边界条件无非是“$u$在无穷远处不发散”。
+在这种情况下没有必要将$u$延拓到无穷远处，因此可以很自然地做积分变换。
+
+可以证明，不显含$\vb*{r}$的算子在全空间的本征函数全都可以写成$\exp(\ii \vb*{k} \cdot \vb*{r})$的形式。
+因此傅里叶变换就成为了无限大空间上的本征函数展开。
+需要注意的是此时的本征函数严格来说\textbf{不能}称为一组基，因为正交归一化条件不再成立，取而代之的是
+\[
+    \int_{-\infty}^\infty u_{k'}^* (x) u_k (x) \dd x = \delta(k' - k)
+\]
+
+在$L[u]$不显含坐标的时候可以使用积分变换计算格林函数。以3+1维场论为例：考虑方程
+\[
+    L[A(\vb*{k}, \omega) \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}] = \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}
+\]
+则
+\[
+    L\left[\int A(\vb*{k}, \omega) \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)} \dd^3 \vb*{k} \dd \omega \right] = \int \dd^3 \vb*{k} \dd \omega \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)} = (2\pi)^4 \delta(\vb*{r}) \delta(t)
+\]
+从而
+\[
+    L\left[\int \frac{\dd^3 \vb*{k} \dd \omega }{(2\pi)^4} A(\vb*{k}, \omega) \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)} \right] = \delta(\vb*{r}) \delta(t)
+\]
+很容易可以写出
+\[
+    L[A(\vb*{k}, \omega) \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}] = A(\vb*{k}, \omega) f(\vb*{k}, \omega) \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}
+\]
+于是
+\[
+    L\left[\int \frac{\dd^3 \vb*{k} \dd \omega }{(2\pi)^4} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{f(\vb*{k}, \omega)} \right] = \delta(\vb*{r}) \delta(t)
+\]
+\[
+    G(\vb*{r}, t; \vb*{r}', t') = \int \frac{\dd^3 \vb*{k} \dd \omega}{(2\pi)^4} \frac{\ee^{\ii (\vb*{k} \cdot (\vb*{r} - \vb*{r}') - \omega (t - t'))}}{f(\vb*{k}, \omega)} 
+\]
+但是上式实际上是不准确的，因为格林函数可能涉及到广义函数，所以应该写成
+\[
+    G(\vb*{r}, t; \vb*{r}', t') = \int \frac{\dd^3 \vb*{k} \dd \omega}{(2\pi)^4} \ee^{\ii (\vb*{k} \cdot (\vb*{r} - \vb*{r}') - \omega (t - t'))}  \left(\text{v.p. } \frac{1}{f(\vb*{k}, \omega)} + C \delta (f(\vb*{k}, \omega))\right)
+\]
+其中$C$是任意常数。每一个格林函数对应着不同的无穷远处的边界条件（“某个区域不应该有非零解”、“因果律必须得到满足”，等等），这又对应着$C$的选取。
+可以证明，自洽的$C$的选取对应着积分过程中积分路径绕过奇点的方式，后者又对应着在$f$的表达式中引入一些无穷小虚部。将$f(\omega)$写成
+\[
+    f(\omega) = A (\omega - \omega_1) \cdots (\omega - \omega_n)
+\]
+从下方绕过$\omega_i$就是将$\omega - \omega_i$写成$\omega - \omega_i - \ii \epsilon$，从上方绕过$\omega_i$就是写成$\omega - \omega_i + \ii \epsilon$，其中$\epsilon \to 0+$。
+可以将加上或者减去了$\epsilon$之后的表达式展开，然后保留到一阶，效果不变。
+则自由空间中的问题
+\[
+    L u (\vb*{r}, t) = \rho(\vb*{r}, t)
+\]
+的解为
+\[
+    u(\vb*{r}, t) = \int \dd^3 \vb*{r'} \dd t' G(\vb*{r}, t; \vb*{r}', t') \rho(\vb*{r}', t')
+\]
+
+需要注意的是某些情况，如方程的解在时间趋于正负无穷时发散时，不能对时间变量做傅里叶变换。但实际的物理问题中很少出现这样的情况。
+或者解在某个激励出现之前根本为零，而在在时间趋于无穷时衰减到零——此时傅里叶变换给出一个通常的函数；
+或者解做周期性变化，此时傅里叶变换给出一个$\delta$函数。
+
+\subsection{格林函数}
+
+设算符$L$是厄米的，则它对应的格林函数满足
+\[
+    G(\vb*{r};\vb*{r}') = G^*(\vb*{r}';\vb*{r})
+\]
+
+这些文字都需要重写：
+\begin{enumerate}
+    \item 自由场拉氏量
+    \item 相互作用，从而有非齐次项
+    \item 自由场的解
+    \item 自由场的元激发
+    \item 从自由空间到边值问题：凑边界条件、延拓
+    \item 边值问题转化为元激发
+    \item 边值问题的格林函数，格林函数和基本解相互转化
+\end{enumerate}
+
+边值问题可以看成自由空间、零初始条件的场收到了一个激发，从而产生了初始的场，再演化出我们要的结果。
+
+几种定解条件：
+泛定方程中的非齐次项——直接使用格林函数；
+边界条件——边界上的非齐次项；
+边界条件——给定区域中一些地方的值，求解另一些地方的值
+初始条件——给定一个初始时间处的值然后向某一个方向演化
+
+\[
+    L[G(\vb*{r}, t; \vb*{r}', t')] = \delta(\vb*{r}-\vb*{r}')\delta(t-t')
+\]
+
+\[
+    L\left[\pdv{t} G(\vb*{r}, t; \vb*{r}', t')\right] = \delta(\vb*{r}-\vb*{r}')\delta'(t-t')
+\]
+
+因此初始条件就算同时包含$u$和$u_t$也没有问题：
+
+问题1：泛定方程中的非齐次项
+
+回到最一般的问题\eqref{eq:definite-problem}上，我们注意到求解这个问题实际上就是在构造一个线性系统：
+向系统中输入$f, g, \psi, \varphi$，观察输出$u$。
+因此，实际上可以找到一个从$f, g, \varphi, \psi$到$u$的线性变换。
+也就是说，$u$在每一点的值都是关于$f, g, \varphi, \psi$的一个线性泛函。
+这样一来，$u$应该能够写成$[f, g, \varphi, \psi]^\top$与另一个形式相同的量的内积，
+从而，对每一个$\vb*{x}$，都应该能够找到四个函数$A,B,C,D$使
+\[
+    u(\vb*{x}) = \int A(\vb*{x}') f(\vb*{x}') \dd \vb*{x} + \int B(\vb*{x}') g(\vb*{x}') \dd \vb*{x}
+    + \int C(\vb*{x}') \psi(\vb*{x}') \dd \vb*{x} + \int D(\vb*{x}') \varphi(\vb*{x}') \dd \vb*{x}
+\]
+现在的问题是，怎样能够求出这四个函数？它们之间又有着怎样的关系？
+
+薛定谔方程的那个格林函数，虽然时间和空间不等价，但是右边还是
+$\delta(t-t_0)\delta(\vb*{r}-\vb*{r}_0)$，这是因为delta函数实际上起到了两个作用：第一个表示正交性，第二个表示激励
+
+\subsubsection{单位源}
+
+在本节中我们讨论无穷大空间（这里所谓的空间指的是所有自变量张成的空间，例如，对一个3+1维场论，本节所谓的空间实际上是四维时空。更好的说法是“底流形”）中单位点源导致的响应。
+此时的定解问题为
+\begin{equation}
+    L[G(\vb*{x};\vb*{x}')] = \delta(\vb*{x} - \vb*{x}'), \quad
+    G|_\infty = 0
+\end{equation}
+其中算符$L$只作用在$\vb*{x}$上。$G$在无穷远处发散意味着可以使用积分变换法来求解这个问题。
+于是，做积分变换
+
+\subsubsection{冲击响应}
+
+在介绍格林函数之前，我们首先讨论\textbf{冲激响应}的问题。
+
+将边界条件编码为非齐次项：时间导数需要编码为$\delta'(t-t_0)$，那么$\pdv{u}{\vb*{n}}$应该写成什么？
+
+考虑\eqref{eq:problem-iii}，非齐次项取为
+\[
+    f = \delta(t-t') \delta(\vb*{r} - \vb*{r}')
+\]
+线性算符$L$应当可以写成
+\[
+    L = A_x \pdv[2]{t} + B_x \pdv{t} + C_x
+\]
+
+\[
+    \begin{bigcase}
+        \pdv{u}{t} + L_x[u] &= 0, \\
+        \eval{u}_{t=0_+} &= \phi
+    \end{bigcase}
+\]
+等价于
+\[
+    \begin{bigcase}
+        \pdv{u}{t} + L_x[u] &= \phi \delta(t), \\
+        \eval{u}_{t=0_-} &= 0
+    \end{bigcase}
+\]
+后者化归为
+\[
+    \begin{bigcase}
+        \pdv{u}{t} + L_x[u] &= \delta(\vb*{r}) \delta(t), \\
+        \eval{u}_{t=0} = 0
+    \end{bigcase}
+\]
+问题：含有二阶导数的方程
+
+\subsubsection{基本解：无界空间中的格林函数}
+
+首先考虑无限大空间的情况。此时问题为
+\begin{equation}
+    \begin{bigcase}
+        L[u] &= f, \\
+        \eval{u}_{t=0} &= \varphi, \\
+        \eval{\pdv{u}{t}} &= \psi.
+    \end{bigcase}
+    \label{eq:whole-space-definite-problem}
+\end{equation}
+当然，可以将其分解为\eqref{eq:problem-i}和\eqref{eq:problem-iii}。
+不过这里使用一种特殊的做法。
+
+无穷大空间的格林函数称为\textbf{基本解}。
+
+\subsubsection{边界条件视作特殊的载荷}
+
+\subsection{微扰}
+
+考虑满足某个齐次边界条件的足够光滑的函数组成的函数空间$\mathcal{F}$，我们在其上求解本征值问题
+\begin{equation}
+    D g(x) = \lambda g(x)
+    \label{eq:full-eigenvalue-problem}
+\end{equation}
+现在假定
+\begin{equation}
+    D = D^{(0)} + \epsilon D^{(1)},
+    \label{eq:pertubation-operator}
+\end{equation}
+且其中$D,D^{(0)},D^{(1)}$在$\mathcal{F}$上都是自伴的。其中$\epsilon$是一个很小的量。
+我们说，$D^{(0)}$被做了一个\textbf{微扰}。
+
+假定$D^{(0)}$在$\mathcal{F}$上的本征值问题可以求解，其结果为本征值和对应本征函数组成的对，即$(\lambda_i^{(0)}, f^{(0)}_i), i = 1, 2, \ldots$，并且有正交归一化条件
+\[
+    \langle f^{(0)}_i, f^{(0)}_j \rangle = \int f^{(0)}_i(x)^* f^{(0)}_j(x) \dd x = \delta_{ij}.
+\]
+完整的问题\eqref{eq:full-eigenvalue-problem}的解可以写成$\epsilon$的一个幂级数：
+\[
+    \begin{split}
+        g_i = f_i^{(0)} + \epsilon f_i^{(1)} + \epsilon^2 f_i^{(2)} + \ldots, \\
+        \lambda_i = \lambda_i^{(0)} + \epsilon \lambda_i^{(1)} + \epsilon^2 \lambda_i^{(2)} + \ldots
+    \end{split}
+\]
+其中$f_i$和$\lambda_i$分别指的是和$f^{(0)}_i$和$\lambda^{(0)}_i$相差不大的精确解，且每一个$f_i^{(k)}$都在$\mathcal{F}$中。回代到\eqref{eq:full-eigenvalue-problem}中，得到
+\[
+    \sum_{n=0}^\infty \epsilon^n D^{(0)} f_i^{(n)} + \sum_{n=1}^\infty \epsilon^n D^{(1)} f_i^{(n-1)} = 
+    \sum_{m=0}^\infty \epsilon^m \lambda_i^{(m)} \sum_{l=0}^\infty \epsilon^l f_i^{(l)},
+\]
+也就是
+\[
+    D^{(0)} f_i^{(0)} + \sum_{n=1}^\infty \epsilon^n \left( D^{(0)} f_i^{(n)} + D^{(1)} f_i^{(n-1)} \right) =
+    \lambda_i^{(0)} f_i^{(0)} + \sum_{n=1}^\infty \sum_{m=0}^n \epsilon^n \lambda_i^{(m)} f_i^{(n-m)}
+\]
+于是就有
+\[
+    D^{(0)} f_i^{(n)} + D^{(1)} f_i^{(n-1)} = \sum_{m=0}^n \lambda_i^{(n-m)} f_i^{(m)}, \quad i \geq 1
+\]
+这个方程是
+
+\section{几个常见的偏微分方程}
+
+\subsection{拉普拉斯方程}
+
+\begin{equation}
+    \laplacian u = 0.
+    \label{eq:laplacian-eq}
+\end{equation}
+
+\subsubsection{圆盘内的分离变量}
+
+假定方程\eqref{eq:laplacian-eq}在圆盘$\abs{\vb*{r}} < a$上成立，且有分离变量解。
+使用极坐标系。设$u(\rho, \varphi) = R(\rho) \Phi(\varphi)$，那么
+
+\begin{equation}
+    u(\rho, \varphi) = A_0 (1 + D_0 \ln \rho) 
+    + \sum_{m=1}^\infty (A_m \cos m \varphi + B_m \sin m \varphi) (\rho^m+D_m \rho^{-m})
+\end{equation}
+
+\[
+    1 + 2 \sum_{m=1}^\infty R^m \cos m \alpha = \frac{1 - R^2}{1 + R^2 - 2 R \cos \alpha}, \quad \abs{R} < 1
+\]
+
+\subsubsection{柱坐标系下的分离变量}
+
+\begin{equation}
+    \laplacian u = \frac{1}{\rho} \pdv{\rho} \left( \rho \pdv{u}{\rho} \right) + \frac{1}{\rho^2} \pdv[2]{u}{\varphi} + \pdv[2]{u}{z}
+\end{equation}
+
+\[
+    \rho^2 R''(\rho) + \rho R'(\rho) + (\mu \rho^2 - m^2) R(\rho) = 0
+\]
+是Sturm-Liouville方程。因此如果边界条件合适就能够一般地做分离变量。
+
+\[
+    \sqrt{\mu} \rho = x, \quad R(\rho) = y(x)
+\]
+
+\[
+    x^2 y'' + xy' + (x^2 - m^2) y = 0
+\]
+
+其通解为
+\[
+    y = C_1 \besselj_m(x) + C_2 \besselj_m(x)
+\]
+
+\[
+    \mu = \mu_n^{(m)} = \left( \frac{x^{(m)}_n}{b} \right)^2
+\]
+
+\[
+    \mu_n^{(0)} > 0, \; n = 1, 2, \ldots
+\]
+
+附加下面的边界条件之一：
+
+\subsubsection{球坐标系下的分离变量与球谐函数}
+
+\begin{equation}
+    \laplacian u = \frac{1}{r^2} \pdv{r} \left( r^2 \pdv{u}{r} \right) + \frac{2}{r^2 \sin \theta} \pdv{\theta} \left( \sin \theta \pdv{u}{\theta} \right) + \frac{1}{r^2 \sin^2 \theta} \pdv[2]{u}{\varphi}
+\end{equation}
+
+首先做分离变量
+\[
+    u(r, \theta, \varphi) = R(r) Y(\theta, \varphi)
+\]
+其中$Y(\theta, \varphi)$就是所谓的球谐函数。
+获得两个方程
+\[
+    r^2 R'' + 2 r R' - l(l+1) = 0, 
+    \frac{1}{\sin \theta} 
+\]
+
+\begin{equation}
+    u = 
+\end{equation}
+
+球谐函数
+这个式子需要确认，还有要算一遍连带勒让德函数。
+\begin{equation}
+    \begin{split}
+        u(r, \theta, \phi) = \sum_{l=0}^\infty \sum_{m=-l}^l (A_m r^l + B_m \frac{1}{r^{l+1}}) Y_{lm}(\theta, \phi), \\
+        Y_{lm}(\theta, \phi) = (-1)^m \sqrt{\frac{(2l+1)(l-m)!}{4\pi (l+m)!}} \legpoly_l^m (\cos \theta) \ee^{\ii m \varphi}
+    \end{split}
+\end{equation}
+
+\subsection{亥姆霍兹方程}
+
+大部分含有拉普拉斯算符的方程到最后都会化归到亥姆霍兹方程
+\begin{equation}
+    \laplacian u + a^2 u = \rho(\vb*{r})
+    \label{eq:helmholtz-eq}
+\end{equation}
+的求解上。拉普拉斯方程可以看成它的一个特例。
+
+\subsubsection{基本解}
+
+首先来计算方程\eqref{eq:helmholtz-eq}的基本解，也就是无限空间中的格林函数，也就是求解成立于全空间中的下式：
+\begin{equation}
+    \laplacian G(\vb*{r};\vb*{r}_0) + a^2 G(\vb*{r};\vb*{r}_0) = \delta(\vb*{r} - \vb*{r}_0)
+\end{equation}
+由于是全空间，可以使用傅里叶变换：
+\[
+    G(\vb*{r};\vb*{r}') = \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}_0)}}{(\ii \vb*{k})^2 + a^2}
+\]
+使用三维球坐标系可以得到（详细过程略去）
+\[
+    G(\vb*{r}; \vb*{r}_0) = \frac{1}{(2\pi)^2 \ii \abs{\vb*{r} - \vb*{r}_0}} \int_{-\infty}^\infty \frac{k}{-k^2 + a^2} \ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}} \dd k
+\]
+被积函数有两个奇点：$-a$和$a$。选择不同的绕过奇点的方式得到三种解：驻波解
+\begin{equation}
+    G(\vb*{r};\vb*{r}_0) = - \frac{\cos (a \abs{\vb*{r} - \vb*{r}_0})}{4\pi \abs{\vb*{r} - \vb*{r}_0}}
+\end{equation}
+\begin{equation}
+    G(\vb*{r}; \vb*{r}_0) = - \frac{\ee^{\ii a \abs{\vb*{r} - \vb*{r}_0}}}{4\pi \abs{\vb*{r} - \vb*{r}_0}}
+\end{equation}
+\begin{equation}
+    G(\vb*{r}; \vb*{r}_0) = - \frac{\ee^{ - \ii a \abs{\vb*{r} - \vb*{r}_0}}}{4\pi \abs{\vb*{r} - \vb*{r}_0}}
+\end{equation}
+
+\subsubsection{格林函数的一般性质}
+
+由于算符$\laplacian + a^2$是厄米的，我们确定格林函数具有对称性，即
+\[
+    G(\vb*{r}; \vb*{r}') = G(\vb*{r}';\vb*{r})
+\]
+
+设$G(\vb*{r};\vb*{r}')$是区域$\Omega$内的格林函数，它可能是基本解，也可能只是一个小区域内的格林函数。设$u$在同一个区域内满足\eqref{eq:helmholtz-eq}，那么
+\begin{equation}
+    u(\vb*{r}) = \int_\Omega G(\vb*{r};\vb*{r}_0) \rho(\vb*{r}_0) \dd[3]\vb*{r}_0 
+    + \int_{\partial \Omega} \pdv{G(\vb*{r};\vb*{r}_0)}{n_0} u(\vb*{r}_0) \dd S_0 
+    - \int_{\partial \Omega} G(\vb*{r}; \vb*{r}_0) \pdv{u(\vb*{r}_0)}{n_0} \dd S_0
+\end{equation}
+一个自然的推论就是
+\begin{equation}
+    u(\vb*{r}) = - \frac{1}{4\pi} \int_\Omega \frac{\ee^{\ii a \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} \rho(\vb*{r}_0) \dd[3]\vb*{r}_0 
+    - \frac{1}{4\pi} \int_{\partial \Omega} \pdv{n_0} \frac{\ee^{\ii a \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} u(\vb*{r}_0) \dd S_0 
+    + \frac{1}{4\pi} \int_{\partial \Omega} \frac{\ee^{\ii a \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} \pdv{u(\vb*{r}_0)}{n_0} \dd S_0
+    \label{eq:basic-solution-infinite-space}
+\end{equation}
+
+\subsubsection{柱坐标下分离变量}
+
+$u=R(\rho)\Phi(\varphi)Z(z)$
+
+
+
+\subsection{波动方程}
+
+\begin{equation}
+    \pdv[2]{u}{t} - a^2 \laplacian u = 0
+    \label{eq:wave-eq-no-source}
+\end{equation}
+
+\subsubsection{分离变量解}
+
+尝试做分离变量$u = R(\vb*{r}) T(t)$，那么
+\[
+    \begin{split}
+        R \dv[2]{T}{t} = a^2 T \laplacian R, \\
+        \frac{1}{R} \laplacian R = \frac{1}{a^2} \frac{T''}{T} = \lambda
+    \end{split}
+\]
+由于时间部分不能发散，$\lambda < 0$，于是设$\lambda = -k^2$，则
+\begin{equation}
+    \begin{bigcase}
+        u = \sum_n A_n R_n(\vb*{r}) \cos (a k_n t + \phi_n), \\
+        \laplacian R + k^2 R = 0.
+    \end{bigcase}
+\end{equation}
+
+\subsubsection{行波解}
+
+在一个无限大的空间中使用行波法求解波动方程。
+
+平面波使用柱面波展开
+设平面波波矢指向$z$方向，设球坐标系径向与$z$方向夹角为$\theta$，那么
+\begin{equation}
+    \ee^{\ii k z} = \besselj_0 (k \rho) + 2 \sum_{m=1}^\infty \ii^m \besselj_m(k \rho) \cos(m \theta)
+\end{equation}
+
+渐进性质：无穷远处的解可以近似看成平面波。
+
+\subsubsection{波动方程的格林函数}
+
+\begin{equation}
+    \besselj_n(x+y) = \sum_{k=-\infty}^\infty \besselj_k(x) \besselj_{n-k}(y)
+\end{equation}
+
+波动方程的格林函数：
+\begin{equation}
+    \frac{1}{4\pi a} \frac{\delta(\abs{\vb*{r} - \vb*{r}'} - a(t - t'))}{\abs{\vb*{r} - \vb*{r}'}}
+\end{equation}
+初始条件$u(\vb*{r}', t')$可以用
+\[
+    \pdv{t} G
+\]
+激发出来，初始条件$\partial u / \partial t$可以用$G$激发出来。
+
+所以有
+\begin{equation}
+    u(\vb*{r}, t) = \int \frac{1}{4\pi a} \pdv{t} \frac{\delta(\abs{\vb*{r} - \vb*{r}'} - a(t - t'))}{\abs{\vb*{r} - \vb*{r}'}} u(\vb*{r}', t') \dd^3 \vb*{r} 
+    + \int \frac{1}{4\pi a} \frac{\delta(\abs{\vb*{r} - \vb*{r}'} - a(t - t'))}{\abs{\vb*{r} - \vb*{r}'}} \pdv{u}{t'} (\vb*{r}', t') \dd^3 \vb*{r}
+\end{equation}
+
+\subsubsection{波动传播}
+
+需要注意的是实际上平面波是非物理的，因为它不可能使用任何一种源来激发——任何一种平面波代入波动方程之后都绝对不会出现非齐次项。因此不可能激发出一个平面波；同样也不可能消去一个平面波，因为这相当于产生一个相反振幅的平面波。然而，平面波仍然是重要的解，因为：
+\begin{enumerate}
+    \item 首先它是一组正交完备基；
+    \item 其次对它做一个微小的形变就能够得到物理解。
+\end{enumerate}
+本节主要讨论后一种情况。
+
+考虑某空间区域$\Omega$内有波源，在它之外没有波源，那么在$\Omega$之外就有\eqref{eq:wave-eq-no-source}成立。
+现在我们把$u$对$t$做一个傅里叶变换，则得到
+\begin{equation}
+    \laplacian \tilde{u} + k^2 \tilde{u} = 0
+    \label{eq:one-freq-wave}
+\end{equation}
+\[
+    u(\vb*{r}) = \int \dd{\omega} \tilde{u}(\omega, \vb*{r}) \ee^{- \ii \omega t}
+\]
+其中$k$定义为$\omega / a$。
+从而问题转化为求解齐次亥姆霍兹方程。
+
+单色波的传播：沿着某一条路径$\vb*{r} = \vb*{r}(t)$走，有
+\[
+    u(\vb*{r}) \ee^{- \omega t} = \const
+\]
+\[
+    \dd{\vb*{r}} \cdot \grad{u} \ee^{-\ii \omega t} + u \pdv{t} \ee^{-\ii \omega t} \dd{t} = 0,
+\]
+\[
+    \dd{\vb*{r}} \cdot \grad{u} = \ii \omega u \dd t 
+\]
+如果我们要求$\dd{\vb*{r}}$尽可能短，那么应该取$\dd{\vb*{r}}$与$\grad{u}$同向，于是
+\begin{equation}
+    \dv{\vb*{r}}{t} = v_\text{p} \vb*{n}, \quad \grad{u} = \frac{\vb*{n}}{v_\text{p}} \ii \omega u
+    \label{eq:phrase-surface}
+\end{equation}
+于是得到了一个单位矢量场$\vb*{n}$，处处与$\vb*{n}$垂直的曲面正是等相位面，因为相位为
+\[
+    \omega t = \frac{1}{\ii} \int \dd{\vb*{r}} \cdot \frac{\grad{u}}{u},
+\]
+从一个等相位面做位移
+\[
+    \dd{\vb*{r}} = \frac{v_\text{p}}{\omega} \vb*{n} \dd{\phi}
+\]
+能够到达相位改变了$\dd \phi$的等相位面。
+
+以上讨论假定了相位存在，而实际上能够在空间中每一点单值地定义相位的充要条件为$\grad{u} / u$可以写成另一个函数的梯度。
+其等值面的法向量平行于$\grad{u}$，从而平行于$\vb*{n}$。
+顺带提一句：请注意这里给出的相位的定义实际上适用范围不仅限于波动方程——原则上，任何一个含时的偏微分方程在对时间做了傅里叶变换之后，取一个单一频率的解都能够使用以上定义。当然实际计算出来的“相位”有可能有很大的虚部，和直觉上认为相位应该是实数矛盾，此时引入“相位”的概念就没有意义。
+这实际上就是WKB近似。
+
+将\eqref{eq:one-freq-wave}的第二式代入\eqref{eq:phrase-surface}，得到
+\begin{equation}
+    k^2 - \frac{\omega^2}{v_\text{p}^2} + \ii \omega \div{\frac{\vb*{n}}{v_\text{p}}} = 0
+    \label{eq:transport-of-phrase}
+\end{equation}
+对平面波而言，$\vb*{n}$处处相同（指向$\vb*{k}$的方向），于是\eqref{eq:transport-of-phrase}中的第三项为零；而当我们讨论的尺度相对$k$很大时，第三项相对很小，于是
+\begin{equation}
+    v_k = \frac{\omega}{k} = a
+\end{equation}
+在场点非常远离$\Omega$时，局部看起来波动就好像平面波（无穷远处的渐进性质），于是此式同样成立。
+
+使用\eqref{eq:basic-solution-infinite-space}，将区域选定为$\Omega$以外的所有区域，得到
+\[
+    u(\vb*{r}) = 
+    - \frac{1}{4\pi} \int_{ - \partial \Omega, \; \infty} u(\vb*{r}_0) \grad_0{\frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}}} \cdot \dd \vb*{S}_0 
+    + \frac{1}{4\pi} \int_{- \partial \Omega, \; \infty} \frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} \pdv{u(\vb*{r}_0)}{n_0} \dd S_0
+\]
+$-\partial \Omega$表示法向量方向指向$\Omega$内部（也就是$\bar{\Omega}$外部）。由于无穷远处场快速衰减，我们有
+\[
+    u(\vb*{r}) = 
+    \frac{1}{4\pi} \int_{- \partial \Omega} u(\vb*{r}_0) \grad_0{\frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}}} \cdot \dd \vb*{S}_0 
+    - \frac{1}{4\pi} \int_{- \partial \Omega} \frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} \grad_0{u(\vb*{r}_0)} \cdot \dd{\vb*{S}_0}
+\]
+由于我们并没有具体规定$\Omega$到底有多大，设有一个能够完全包裹住所有源的闭合曲面$\Sigma$，则对其外部一点$\vb*{r}$有
+\begin{equation}
+    u(\vb*{r}) = 
+    \frac{1}{4\pi} \int_{\Sigma} u(\vb*{r}_0) \grad_0{\frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}}} \cdot \dd \vb*{S}_0 
+    - \frac{1}{4\pi} \int_{\Sigma} \frac{\ee^{\ii k \abs{\vb*{r} - \vb*{r}_0}}}{\abs{\vb*{r} - \vb*{r}_0}} \grad_0{u(\vb*{r}_0)} \cdot \dd{\vb*{S}_0}
+    \label{eq:kirchhoff-eq}
+\end{equation}
+这就是所谓的基尔霍夫衍射公式。
+
+实际计算时很少直接使用此公式，而是使用几个特殊情况下的简化版本。通常假定$\Sigma$是一个等相位面，此时它的法向量就是\eqref{eq:phrase-surface}中定义的$\vb*{n}$。于是可以计算得到
+\begin{equation}
+    u(\vb*{r}) = - \frac{\ii k}{4\pi} \int_\Sigma u(\vb*{r}_0) \frac{\ee^{\ii k R}}{R} \left( \hat{\vb*{R}} \cdot \vb*{n}_0 + \frac{\omega}{k v_\text{p}} + \frac{\ii \hat{\vb*{R}} \cdot \vb*{n}_0}{k R} \right) \dd{S_0}
+\end{equation}
+这里已经设$\vb*{R} = \vb*{r} - \vb*{r}_0$以及$\vb*{n}_0 = \vb*{n}(\vb*{r}_0)$。在远离$\Omega$的区域，$v_\text{p}$接近$\omega / k$，而$1/R \to 0$，于是得到
+\begin{equation}
+    u(\vb*{r}) = - \frac{\ii k}{4\pi} \int_\Sigma u(\vb*{r}_0) \frac{\ee^{\ii k R}}{R} \left( \hat{\vb*{R}} \cdot \vb*{n}_0 + 1 \right) \dd{S_0}
+    \label{eq:large-k-limit}
+\end{equation}
+这相当于$\Sigma$上每一点都形成了一个新的波源，发射球面波，其传播速度是$\omega / k = v_\text{p}$。结合\eqref{eq:phrase-surface}式，我们发现可以通过在$\Sigma$上作出一系列半径就是相应点的球面波传播距离的球形曲面而，它们的公共切面就是新的等相位面。
+
+另外要注意本节的内容实际上和空间维数有关。我们是在3+1维的情况下求解的波动方程，而将其转化为了3+0维的亥姆霍兹方程，然后写出它的基本解，然后通过格林函数的一般性质得到了\eqref{eq:kirchhoff-eq}以及其推论。但是在其它维度，比如说，2维，格林函数不见得能够写成$\ee^{\ii k R} / R$的形式，此时\eqref{eq:large-k-limit}中$\Sigma$上各点发出的子波就未必是“球面波”了，可能更加弥散，而不能很好地定义一个波阵面。
+
+\subsection{扩散方程}
+
+\begin{equation}
+    a^2 \laplacian u = \pdv{u}{t}
+    \label{eq:diff-eq}
+\end{equation}
+
+尝试做分离变量$u=R(\vb*{r}) T(t)$
+\[
+    \begin{split}
+        T a^2 \laplacian R = R \dv{T}{t}, \\
+        \frac{a^2}{R} \laplacian R = \frac{1}{T} \dv{T}{t} = -\lambda a^2
+    \end{split}
+\]
+物理解应该是衰减的，不然$T$会趋于无穷大，因此$\lambda > 0$，于是可设$\lambda = k^2$。则如果边界条件能够构成只关于$R(\vb*{r})$的本征值问题，那么方程\eqref{eq:diff-eq}的解就是如下的分离变量解
+\begin{equation}
+    \begin{bigcase}
+        u = \sum_n A_n R_n(\vb*{r}) \ee^{-a^2 k_n^2 t}, \\
+        \laplacian R_n + k_n^2 R_n = 0.
+    \end{bigcase}
+\end{equation}
+
+从而问题转化为了求解亥姆霍兹方程\eqref{eq:helmholtz-eq}。
+
+\subsection{薛定谔方程}
+
+\end{document}

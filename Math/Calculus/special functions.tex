@@ -1,0 +1,117 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{abstract}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+\newcommand*{\res}{\mathrm{res}\;}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\integers}{\mathbb{Z}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\newcommand*{\taylor}[1]{\sum_{#1 = 0}^\infty}
+\newcommand*{\taylorfrom}[2]{\sum{#1=#2}^\infty}
+\newcommand*{\laurent}[1]{\sum_{#1=-\infty}^\infty}
+\DeclareMathOperator{\gammafunc}{\Gamma}
+\DeclareMathOperator{\betafunc}{B}
+\DeclareMathOperator{\legpoly}{P}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+
+\title{特殊函数、特殊积分以及一些具体计算}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    关于特殊函数、特别的积分，以及一些具体计算结果的记录。没有条理的东西可以放在这里。
+\end{abstract}
+
+以下如无特殊说明，$n, k \in \integers$，$x, y \in \reals$，$z \in \complexes$。
+
+\section{延拓得到的函数}
+
+\subsection{Gamma函数与阶乘}
+
+在实空间上定义\textbf{Gamma函数}
+\begin{equation}
+    \gammafunc(x) = \int_0^\infty \ee^{-t} t^{x-1} \dd t.
+\end{equation}
+这个定义可以自然地延拓到复平面上：
+\begin{equation}
+    \gammafunc(z) = \int_0^\infty \ee^{-t} t^{z-1} \dd t.
+    \label{eq:gamma-first-def}
+\end{equation}
+被积函数在一般的情况下是多值的，而我们简单地要求在正实轴上被积函数取其实数值，也就是要求在正实轴上$\arg t = 0$。
+可以证明，$\Re z > 0$上\eqref{eq:gamma-first-def}是解析的。采用下面的递归定义
+\[
+\begin{split}
+    \gammafunc(z) = \frac{\gammafunc(z+1)}{z}=\frac{\gammafunc(z+n+1)}{z(z+1)\cdots(z+n)}, \\
+    \quad -(n+1) < \Re z \leq -n, z \neq 0, -1, \ldots, -n
+\end{split}
+\]
+可以将函数延拓到除了可数个点以外的整个复平面上。
+
+容易验证，此时$\gammafunc$除了单极点$0, -1, -2, \ldots$以外处处解析。因此它是复平面上的亚纯函数。
+此外还有下面的性质：
+\begin{itemize}
+    \item Gamma函数是阶乘的推广：
+    \begin{equation}
+        \gammafunc(n+1) = n!, \quad n \in \natnums
+    \end{equation}
+    进一步，
+    \begin{equation}
+        (z+m) (z+m+1) \cdots (z+n) = \frac{\gammafunc(z+n+1)}{\gammafunc(z+m)}
+    \end{equation}
+    从而
+    \begin{equation}
+        \begin{aligned}
+            (z+2m)(z+2m+2) \cdots (z+2n) &= 2^{n-m+1} \frac{\gammafunc(z/2+n+1)}{\gammafunc(z/2+m)} \\
+            (z+2m-1)(z+2m+1) \cdots (z+2n-1) &= \frac{\gammafunc(z+2n) \gammafunc(z/2 + m)}{2^{n-m} \gammafunc(z+2m-1) \gammafunc(z/2+n)}
+        \end{aligned}
+    \end{equation}
+    \item 设$z$不是整数则
+    \begin{equation}
+        \gammafunc(z) \gammafunc(1-z) = \frac{\pi}{\sin \pi z}
+    \end{equation}
+    特别的$\gammafunc(1/2)=\sqrt{\pi}$
+    \item 设$z \neq 0, -\frac{1}{2}, -1, \ldots$，则
+    \begin{equation}
+        \gammafunc(2z) = \frac{2^{2z-1}}{\sqrt{\pi}} \gammafunc(z) \gammafunc(z + \frac{1}{2})
+    \end{equation}
+\end{itemize}
+
+\subsection{B函数}
+
+在$x>0, y>0$上可以定义
+\begin{equation}
+    \betafunc(x, y) = \int_0^1 t^{(x-1)} (1-t)^{(y-1)} \dd t
+\end{equation}
+同样可以容易地在$\Re p>0, \Re q>0$做延拓
+\begin{equation}
+    \betafunc(p, q) = \int_0^1 t^{(p-1)} (1-t)^{(q-1)} \dd t
+\end{equation}
+被积函数具有多值性。还是要求被积函数在正实轴上取值和实函数形式一致，也就是$\arg t = \arg (1-t) = 0$。
+可以证明，在$\Re p>0, \Re q>0$上
+\begin{equation}
+    \betafunc(p, q) = \frac{\gammafunc(p) \gammafunc(q)}{\gammafunc(p+q)}
+    \label{eq:relation-beta-gamma}
+\end{equation}
+由于$\gammafunc$已经几乎被延拓到了整个复平面，可以使用\eqref{eq:relation-beta-gamma}将$\betafunc$做延拓，最后得到的函数在$p$平面上的奇点为$0, -1, -2, \ldots$，在$q$平面上的奇点$0, -1, -2, \ldots$。
+
+\end{document}

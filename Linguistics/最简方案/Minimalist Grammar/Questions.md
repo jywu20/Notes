@@ -1,0 +1,3 @@
+If a licensee feature is not deleted in a tree, can we call this tree completed?
+
+This question arises as a result of the consideration that if every constituent that *can* move *must be moved*, then the speaker should have knowledge about what will appear in a sentence in advance before he constructs the sentence. If that is true, movement and even the whole generative model is no longer required, as language production is just a reflection of cognition.

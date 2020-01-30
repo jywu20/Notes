@@ -1,0 +1,426 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\argmax}{\arg \max}
+\newcommand*{\argmin}{\arg \min}
+\newcommand*{\reals}{\mathbb{R}}
+
+\algnewcommand\Not{\textbf{not}\ }
+\algblockdefx[IF]{If}{EndIf}%
+[1]{\textbf{if}\ (#1) \{}%
+{\}}
+\algblockdefx[WHILE]{While}{EndWhile}%
+[1]{\textbf{while}\ (#1) \{}%
+{\}}
+\algblockdefx[FOR]{For}{EndFor}%
+[1]{\textbf{for}\ (#1) \{}%
+{\}}
+\algblockdefx[FORALL]{ForAll}{EndFor}%
+[1]{\textbf{for}\ (all\ #1) \{}%
+{\}}
+\algrenewcommand\algorithmicelse{\}\ \textbf{else}\ \{}
+\algblockdefx[DOWHILE]{Do}{DoWhile}%
+{\text{do}\ \{}%
+[1]{\}\ \textbf{while}\ (#1)}
+\algblockdefx[REPEATUNTIL]{Repeat}{Until}%
+{\textbf{do}\ \{}%
+[1]{\}\ \textbf{while}\ (\Not #1)}
+\algblockdefx[FUNCTION]{Function}{EndFunction}%
+[2]{\textbf{function}\ #1(#2)\ \{}%
+{\}}
+
+\title{神经网络}
+
+\begin{document}
+    
+\maketitle
+
+\begin{abstract}
+    关于神经网络算法的基础，包括什么是机器学习、怎样衡量一个模型的质量、神经网络算法是什么以及常用的神经网络类型。
+\end{abstract}
+
+\hypertarget{sec:basic-concepts}{%
+\section{基本概念}\label{sec:basic-concepts}}
+
+\subsection{机器学习是什么}
+
+要解决一个问题，我们需要一些条件，然后给出一些结论。
+或者说，我们拿到了一个案例的\textbf{特征}，然后需要计算其\textbf{标签}。
+通常假设特征和标签都可以写成一系列实数。这并不难理解——如果它们是离散的，既可以给它们编上号；如果它们是连续的，那么在通常的情况下它们可以使用一些实数（至少近似地）表示。
+
+使用$\vb*{x}$表示一个例子的所有的特征，使用$y$表示其标签。我们认为这两者之间是有通常意义上的统计规律的，
+也就是说，能够写出概率分布
+\begin{equation}
+    p(y|\vb*{x}) = f_y(\vb*{x})
+    \label{eq:probablistic-distribution}
+\end{equation}
+而当这个规律是完全决定性的时候，就可以写出
+\begin{equation}
+    y = f(x)
+    \label{eq:determined-distribution}
+\end{equation}
+所谓机器学习就是要找到一个近似函数去逼近这个分布。
+当然我们不可能自己去手写这个近似形式，所以这个近似形式由一个预测装置加上一定的参数给出。
+
+一个预测装置是这样一个函数$\hat{f}(\vb*{x};\theta)$，在给定了\textbf{参数}$\theta$之后，
+预测装置读入$\vb*{x}$并且预测它应该对应的标签$y$。
+容易看出$f$的形式要足够复杂以至于能够很好地概括特征和标签的关系。
+预测有两种方式，一种是直接预测标签的值，也就是
+\[
+\hat{y} = f(\vb*{x};\theta)
+\] 
+还有一种方法是计算不同标签的概率分布，也就是%
+\footnote{在一个符号上面加上$\hat{\;}$代表这是预测值不是实际值，下同。}
+\[
+\hat{p}(y|\vb*{x}) = f_y (\vb*{x};\theta)
+\]
+这里把可能的标签$y$看成是$f$的另一个参数，只是这个参数不能手工调节。显然，第一种方法可以看成第二种方法的特例（某个标签获得的概率为1，其它都是0），而且可以简单地使用第二种方法实现（例如取概率最大的标签输出）。
+
+通过适当的算法来调节参数$\theta$，我们就能够使用$f(\vb*{x};\theta)$去逼近真实的概率分布。
+
+函数$f$的形式在实际问题中不能预先知道，需要手动设计。我们把所有可能的$f$组成的几何称为\textbf{假设空间}，而把具体使用的那个$f$称为\textbf{假设}。
+
+通常使用的$f$或是线性的或是非线性的。线性的可以写成
+\begin{equation}
+    f(\vb*{x};\theta) = \vb*{w}^\top \vb*{x} + b, \quad \theta = (\vb*{w}, b)
+\end{equation}
+而非线性假设可以写成
+\begin{equation}
+    f(\vb*{x};\theta) = \vb*{w}^\top \phi (\vb*{x}) + b, \quad \theta = (\vb*{w}, b), \quad \phi(\vb*{x}) = [\phi_1(\vb*{x}), \ldots, \phi_K(\vb*{x})]^\top
+\end{equation}
+也就是说，我们选定了一组总计$K$个基函数，然后把它们按照一定的权重线性叠加起来，就得到了一个非线性假设。
+
+在实际工作中还是很难直接猜出正确的$\phi$的形式。那么为什么不使用另一个学习算法自动计算出$\phi$应该采取的形式呢？我们可以把每一个$\phi$写成下面的形式：
+\begin{equation}
+    \phi_k (\vb*{x}) = h (\vb*{w}_k^\top \phi'(\vb*{x})+b_k)
+    \label{eq:recursive-nonlinear}
+\end{equation}
+其中$\phi'$代表另一些基函数形式，
+而$h(\cdot)$则是某个固定不变的非线性函数，用于把输出值压缩到某个合理的区间（避免随着基函数的嵌套，输出值一层层放大）。
+这实际上就是神经网络算法了——通过多层基函数（神经元）做预测。
+
+\subsection{机器学习任务}
+
+我们既可以要求算法直接输出我们想要的标签，又可以要求算法输出不同标签的概率分布。因此我们就有了四种常见的问题：
+\begin{itemize}
+    \item 直接预测某些特征对应的连续标签
+    \item 估算某些特征对应的连续标签的概率分布
+    \item 直接预测某些特征对应的离散标签 
+    \item 估算某些特征对应的离散标签的概率分布
+\end{itemize}
+
+第二类问题看起来是过于复杂了，
+因为要解决这一类问题必须在计算机内表示一个定义在实数集上的函数，而对一般的计算机架构而言这是做不到的；
+第三类问题则没有太多存在的必要——它可以很容易地划归到第四类问题当中。
+
+那么，我们就得到了两类比较有意义而又比较常见的问题： 
+\begin{itemize}
+    \item \textbf{回归问题} 直接预测某些特征对应的连续标签 
+    \item \textbf{分类问题} 估算某些特征属于各个类别的可能性（当我们说某个样本属于某个类别的时候，我们就给它贴上了离散的标签）
+\end{itemize}
+
+前者的模型输出一个具体的$y$，
+后者的模型输出一个概率分布$p^*(y|\vb*{x})$，其中$\vb*{x}$可以取第$1, 2, \ldots, C$个类别中的一个。
+
+虽然在一般的分析中我们将分类问题的模型看成是带参数$y$的$f_y(\vb*{x};\theta)$，
+由于分类问题中$y$只能取$C$种类别中的一个，
+完全可以把$f_y(\vb*{x};\theta)$看成一系列互不相关的函数$f_1, f_2, \ldots, f_C$，它们中的每一个都输出了一个概率。
+最后输出的$y$其实是一个向量。
+
+分类问题有一种简化情况，那就是\textbf{二分类}。
+这种情况下只有两个类别，所以我们完全可以把标签看成是$\{+, -\}$的二元对立（在某个类别中-不在某个类别中）。
+这时没有必要使用$f_1, f_2, \ldots, f_C$形式的模型，只需要单个$f$就够了——我们可以让它输出一个实数值，实数值为正代表它可能是一个类别，为负代表它可能是另一个类别。
+
+总之，我们有三种问题：\textbf{回归问题、二分类问题、$C$分类问题（$C>2$）}。
+
+\subsection{神经网络}
+
+一个\textbf{神经网络}指的是一个通过下面的方式构造的预测装置：
+\begin{itemize}
+    \item 它接受一系列的输入，记作一个向量$\vb*{x}$
+    \item 有一系列共计$n$个的计算单元称为\textbf{神经元}，
+    它接受一系列输入$\vb*{a} \in \reals^m$，其分量或者是其它神经元的输出或者是$\vb*{x}$的一个分量，然后输出
+    \begin{equation}
+        z = f(\vb*{w}^\top \vb*{a} + b)
+        \label{eq:neuron}
+    \end{equation}
+    其中$\vb*{w}\in \reals^m$称为\textbf{权重}，而$b \in \reals$称为\textbf{偏置}，都是这个神经元的参数；
+    $f$是一个至少单边有界的函数，称为\textbf{激活函数}；
+    \item 最后将若干个神经元的输出作为最终的输出；
+\end{itemize}
+
+将每个神经元的权重和偏置放在一起就得到了参数$\theta$。
+很容易看出\eqref{eq:recursive-nonlinear}和上面的表述的相似性。因此神经网络的想法是非常自然的。
+
+虽然原则上我们可以任意地安排神经元之间的连接方式，但实用的神经网络通常都可以分成几个小的模块。
+每一个模块好像一个独立运作的设备，接受一些输入，给出一些输出。
+这些模块可以是层、胶囊或是别的什么结构。
+
+因此，现代的神经网络往往预先编写优化过的这些模块。
+这就产生了一种新的工作方式：\textbf{可微分编程}，将许多有参数可以连续调节的模块放在一起，通过调节其参数得到一个能工作的系统。
+
+那么神经网络是不是一个很好的假设呢？有数学定理保证了，在\textbf{任何}情况下，神经网络都是好的假设。
+通用近似定理保证了，一个激活函数有界的\textbf{单层}神经网络在神经元数目趋于无穷大时都能够模拟性质足够好的函数。
+另一方面，一个激活函数单边有界、每一层中的神经元数目有界的\textbf{深层}神经网络在层数趋于无穷大时也都能够模拟性质足够好的函数。
+因此原则上，构造又大又深的神经网络能够给任何现象建模。
+
+\subsection{训练/学习}
+
+模型的表现力足够强是一回事，是不是能够找到合适的$\theta$则是另外一回事。
+很显然，为了让预测装置——或者说\textbf{模型}——的预测能力足够强，$\theta$很可能是一个很大的向量，要手工调节参数来预测标签非常困难。
+因此需要使用一个\textbf{学习算法}来自动地计算出参数取值$\theta^*$，
+让$f(\vb*{x}|\theta^*)$近似和$f(\vb*{x}|\theta)$的输出相同。
+
+我们使用一个风险函数$\mathcal{R}(\hat{y})$来衡量模型输出结果$\hat{y}$相对实际情况的偏差。
+一旦这个函数的形式确定了，我们可以写出学习算法的一个通用形式：
+\begin{algorithm}
+    \caption{The Bellman-Kalaba algorithm}
+    \begin{algorithmic}[1]
+    \Function {BellmanKalaba}{$G$, $u$, $l$, $p$}
+    \ForAll {$v \in V(G)$}
+    \State $l(v) \leftarrow \infty$
+    \EndFor
+    \State $l(u) \leftarrow 0$
+    \Repeat
+    \For {$i \leftarrow 1, n$}
+    \State $min \leftarrow l(v_i)$
+    \For {$j \leftarrow 1, n$}
+    \If {$min > e(v_i, v_j) + l(v_j)$}
+    \State $min \leftarrow e(v_i, v_j) + l(v_j)$
+    \State $p(i) \leftarrow v_j$
+    \EndIf
+    \EndFor
+    \State $l’(i) \leftarrow min$
+    \EndFor
+    \State $changed \leftarrow l \not= l’$
+    \State $l \leftarrow l’$
+    \Until{$\neg changed$}
+    \EndFunction
+    \Statex
+    \Function {FindPathBK}{$v$, $u$, $p$}
+    \If {$v = u$}
+    \State \textbf{Write} $v$
+    \Else
+    \State $w \leftarrow v$
+    \While {$w \not= u$}
+    \State \textbf{Write} $w$
+    \State $w \leftarrow p(w)$
+    \EndWhile
+    \EndIf
+    \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+这里要提到一点：计算模型预言的偏差对每个参数的导数，就需要而且只需要计算模型输出结果对每个参数的导数：
+\[
+    \nabla_\theta \mathcal{R} = \pdv{\hat{y}}{\theta} \pdv{\mathcal{R}}{\hat{y}}
+\]
+使用\eqref{eq:neuron}中的记号，就是要计算直接连接输出的神经元的
+\[
+    \pdv{z}{b}, \pdv{z}{\vb*{w}}, \pdv{z}{\vb*{a}}
+\]
+前面两个偏导数可以直接使用激活函数的形式算出来，
+但是要计算最后一个偏导数，就要计算输出$\vb*{a}$的那些神经元相对它们自己的各个参数的导数。
+可以看到，计算偏导的运算从最后一层神经元不断向前面的神经元传播，一直传递到直接连接输入的神经元。
+这就是梯度计算的\textbf{反向传播算法}。
+反向传播算法可以很自然地使用计算图来描述。
+可以看到，反向传播在神经网络算法中非常重要。
+
+\hypertarget{sec:supervised-learning}{%
+\subsection{监督学习}\label{sec:supervised-learning}}
+
+设我们有下面所示的数据集
+\[
+D = \{(\vb*{x}^{(i)}, y^{(i)})\}
+\]
+这个数据集中的每一项都代表一个例子，我们称它们为\textbf{样本}。每个样本分别由两个部分组成：
+\begin{itemize}
+    \item 向量$\vb*{x}^{(i)}$，是一系列\textbf{特征}的取值，
+    这些特征描写了第$i$个例子值得注意的全部性质。
+    例如，对一个名词而言，值得注意的特征包括格、性、数，也许还包括使用频率，
+    于是我们可以把$\vb*{x}$设置为
+    \[
+        [\text{nominative}, \text{neutral}, \text{plural}, 0.01]^\top
+    \]
+    \item $y^{(i)}$，称为\textbf{标签}，通常是可以从特征当中判断出来的一些性质，比如说，在$\vb*{x}^{(i)}$代表了一段文字的情况下，$y^{(i)}$就可以是这段文字的语言。
+\end{itemize}
+
+标签和特征的取值可以是连续的也可以是离散的。
+
+我们希望数据集$D$是按照某个\textbf{确定不变的真实概率分布}$p_r(\vb*{x}, y)$以\textbf{独立同分布}的方式产生的。
+因此，在$D$非常大的时候，它就是$p_r$的一个不完美的摹本。
+
+\textbf{监督学习}指的是训练数据集明确给出特征-标签对的学习。
+
+\subsubsection{损失函数}
+
+一个好的模型应该在所有输入上都和真实情况一致，也就是，我们需要把误差控制在一个有限的量以下。
+
+TODO：使用交叉熵之类的东西来严格定义
+
+为了避免将复杂的不等式带入到讨论中，我们需要定义能够表征两个分布偏离情况的量。
+首先我们引入\textbf{损失函数}$\mathcal{L}(y, f(\vb*{x};\theta))$来度量\textbf{单个样本}下模型的误差。
+我们要求损失函数非负，且在模型和实际情况没有偏差的时候取零。
+这样，就可以将损失函数的值加总，从而计算整个模型的误差。定义\textbf{期望风险}来衡量\textbf{整个模型}的误差：
+\begin{equation}
+    \mathcal{R}(\theta) = \mathbb{E}_{(\vb*{x}, y) \sim p_r (\vb*{x}, y)}[\mathcal{L}(y, f(\vb*{x};\theta))].
+\end{equation}
+当然，我们实际上并不知道真实的概率分布，因此实际上我们只能够计算\textbf{经验风险}
+\begin{equation}
+    \mathcal{R}_D^\text{emp}(\theta) = \frac{1}{N} \sum_i \mathcal{L}(y_i, f(\vb*{x}_i;\theta))
+\end{equation}
+如果我们想让模型尽可能准确，我们就要降低这个值。这正是算法\ref{alg:learning}中的那个$\mathcal{R}$。
+
+不同的问题可以使用不同的损失函数。由于训练模型的时候需要让经验风险下降，我们就要写出损失函数的具体形式。
+我们一般使用常规的优化理论来做优化，那么损失函数的形式最好是足够光滑的。
+
+标签属于不同的类型，损失函数也就取不同的形式。
+
+在\textbf{回归问题}中，通常使用\textbf{平方损失函数}，即 
+\begin{equation}
+    \mathcal{L}(y, f(\vb*{x};\theta)) = \frac{1}{2} (y-f(\vb*{x};\theta))^2.
+\end{equation}
+这样可以满足非负性要求，同时又让函数足够光滑。
+
+在$C$\textbf{分类问题}中，可以把损失函数设置为实际概率分布和预测出的概率分布的\textbf{交叉熵}。
+设特征$\vb*{x}$在训练数据集中对应的类别为$y\in \{1, 2, \ldots, C\}$，
+则训练数据集中给出的概率分布就是$\vb*{y}=\mathbb{I}_y$，于是我们可以取
+\[
+\mathcal{L}(\vb*{y}, f(\vb*{x};\theta)) = - \sum_{c=1}^C y_c \log f_c(\vb*{x};\theta)
+\]
+考虑到$\vb*{y}$的定义，我们有
+\[
+\mathcal{L}(\vb*{y}, f(\vb*{x};\theta)) = - y \log f_y (\vb*{x};\theta)
+\]
+
+在\textbf{二分类问题}中，我们可以使用\textbf{Hinge损失函数}，也就是
+\[
+\mathcal{L}(y, f(\vb*{x};\theta)) = [1-yf(\vb*{x};\theta)]_+
+\]
+由于$y=\pm 1$，很容易看出这个表达式的合理性。
+
+\subsubsection{模型训练}
+
+现在我们已经有了损失函数，那么就要最小化损失函数了。最显然的看法是 
+\[
+\theta^* = \argmax_\theta \mathcal{R}_D^\text{emp}(\theta)
+\]
+当然，在$D$大小足够大的时候结果会很好，因为经验风险和真实的期望风险非常接近。
+而如果我们将$D$的大小缩减到很小，那么统计学告诉我们，没有任何有用的信息能够从$D$当中提取出来。
+有趣的情况出现在$D$不非常大（以至于简单地最小化损失函数就能够找到合适的$\theta$）也不非常小（以至于没有足够的信息能够让我们找到合适的$\theta$）的情况。
+这时，$p_r(\vb*{x}, y)$的主要特征仍然保留在了$D$当中，但是数据的波动也非常明显。
+此时简单地最小化损失函数不能够把$p_r$包含的信息提取出来。
+这个现象的原因在于，$D$中正常的波动可能被当成有用的特征，因此模型发生了\textbf{过拟合}。
+
+通常（TODO：什么时候？），波动需要$f$取更复杂的形式去拟合，因此表现能力强的假设反而会导致过拟合，因为$\theta$可以取非常巧妙的配置来很好地拟合波动，而将真正重要的特征忽略。
+
+实际工作中$D$可能并不大，而且混有噪声。那么，我们就不能够指望按照上面的方法产生的$\theta^*$代表了应该取的$\theta$。这时，损失函数可能有多个\textbf{极小值}，其中的最小值可能是过拟合的情况，而更大一些的极小值则可能是正确的结果。为了获得正确的结果而不是过拟合，我们需要在优化目标函数中加入一些项，让优化结果更接近正确结果。
+
+通常我们假定\textbf{参数$\|\theta\|$越大，$f(\cdot;\theta)$越复杂。}
+那么，我们可以在损失函数后面加上一个$\|\theta\|^2$项，使$\theta$不会太大而发生过拟合。于是，我们将最优化问题改写为
+\[
+\theta^* = \argmax_\theta \mathcal{R}_D^\text{emp}(\theta) + \frac{1}{2} \lambda \|\theta\|^2
+\] 称 \[
+\mathcal{R}_D^\text{struct}(\theta) = \argmax_\theta \mathcal{R}_D^\text{emp}(\theta) + \frac{1}{2} \lambda \|\theta\|^2
+\] 为结构风险，计算$\theta^*$的方法为结构风险最小化准则。
+
+\subsubsection{模型质量的评估}
+
+如何判断参数近似值$\theta^*$的好坏？我们使用一个\textbf{测试数据集}来做这件事。例如可以定义\textbf{准确率}
+\[
+\mathrm{Acc}(f(\vb*{x};\theta^*)) = \frac{1}{|D'|} \sum_{(\vb*{x}, y) \in D'} I(f(\vb*{x};\theta^*)=y)
+\]
+模型越准确，准确率越接近1，而且它必定小于1。也可以使用其它函数来判断近似值的好坏（称为metrics）
+
+Accuracy, precision, recall
+
+Precision = true positive / (true positive + false positive)
+
+Recall = true positive / (true positive + false negative)
+
+A model with high precision rarely gives false positive predicts, and a model with high recall rarely gives false negative predicts. We may want a fingerprint recognition system to have high precision, while an HIV test should have high recall.
+
+\hypertarget{sec:bias-and-variance}{%
+\subsubsection{对过拟合和欠拟合的定量分析——偏差-方差分解}\label{sec:bias-and-variance}}
+
+为了以一种更加正式的方法分析过拟合和欠拟合，我们分析一个平方损失函数的回归问题。
+
+\[
+\mathcal{R}(f) = \mathbb{E}_{(\vb*{x}, y)\sim p_r(\vb*{x}, y)}[(y-f(\vb*{x}))^2]
+\]
+先前我们使用一个形式确定的$f(x, \theta)$并且调节它的参数，所以风险函数可以写成$\theta$的函数，而现在我们使用更加一般的情况——任何一种模型都要考虑。
+
+\section{几种常见的组件}
+
+\subsection{特征提取层}
+
+在现代的神经网络上，直接连接输入的通常不是神经元，而是特征提取的装置。例如，将输入数据平方、做正弦、算异或等之后再传入神经元。
+原则上，完全可以使用神经网络表示这些装置，但这样太耗时了。
+而且如果使用权重、偏置可调的神经网络代替这些装置，不能预期权重会被调到预期的值。
+因此理论上，可以将这些特征提取层当成预先训练好的网络部分。
+特征提取层有一个作用：使神经网络获得不变性。显然，如果特征提取层具有某种不变性，那么整个模型就具有不变性。
+例如，如果特征提取层是$x^2$，那么整个模型就不区分输入值的正负。
+
+\subsection{分类器}
+
+同样，神经网络的输出也往往被接入分类器之后再真正输出。分类器也可以看成预先训练好的神经网络。
+
+\subsection{数据汇总}
+数据汇总的组件将来自多个组件的数据——通常是多个向量——汇总成一个单一的向量。
+
+\subsection{全连接层}
+
+\subsection{卷积神经网络}
+
+\subsection{循环神经网络}
+
+\section{训练}
+
+\subsection{基于梯度的方法}
+
+\subsection{防止过拟合的手段}
+神经网络通常有大量的参数，因此，欠拟合基本上不可能，主要的问题在于过拟合。
+
+训练过程中出现的数据集通常有这么几部分：
+\begin{itemize}
+    \item 训练集（Train set）
+    \item 测试集（Test set）
+    \item Development set
+\end{itemize}
+
+\section{监督学习}
+
+机器学习系统的工作方式
+\begin{enumerate}
+    \item 预处理，去除噪声等 
+    \item 特征提取
+    \item 特征转换，也即数据降维等
+    \item 预测
+\end{enumerate}
+预测是通常意义上的“机器学习”，但是真正影响系统性能的主要是前三步。因此机器学习问题往往归约为\textbf{特征工程}。
+\end{document}
+
+\textbf{嵌入(Embedding)}
+指的是将高维的数据降维而保留大部分原信息。例如，使用RGB表示不同的颜色就可以视为将``颜色名称''降维为了一个三元数组。
+
+\section{常见任务}

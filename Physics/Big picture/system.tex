@@ -1,0 +1,183 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newenvironment{bigcase}{\left\{ \quad \begin{aligned}}{\end{aligned}\right.}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\newcommand*{\taylor}[1]{\sum_{#1 = 0}^\infty}
+\newcommand*{\taylorfrom}[2]{\sum_{#1=#2}^\infty}
+\newcommand*{\laurent}[1]{\sum_{#1=-\infty}^\infty}
+\DeclareMathOperator{\gammafunc}{\Gamma}
+\DeclareMathOperator{\betafunc}{B}
+\DeclareMathOperator{\legpoly}{P}
+\renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+\renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+
+\title{信号与系统}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+    关于信号与系统的一些东西。特别注重物理上的意义。
+\end{abstract}
+
+所谓信号，指的是一个依赖于一个或者多个自变量的物理量，它本身可以是另外一些自变量的函数。
+例如，一个随着时间变化的矩阵是一个关于时间的信号，不过在每一个时刻，它都还有“内部结构”。
+信号可以是完全确定性的，也可以带有随机性。
+我们通常使用小写字母$x, y$等表示一个确定性的信号，而使用大写字母$X, Y$等表示一个随机信号；
+自变量可以是连续的也可以是离散的。使用$x(t)$表示$t$是连续的，使用$x[t]$表示$t$是离散的。
+
+\section{线性系统}
+
+\subsection{导致线性系统的问题}
+
+许多物理问题都可以归结为一个线性系统。下面列出了一些例子。
+
+\paragraph{非齐次方程} 设$\mathcal{O}$是线性算符，$G(\vb*{x};\vb*{x}')$是它的格林函数，
+也就是说$\mathcal{O}_x G(\vb*{x};\vb*{x}') = \delta(\vb*{x} - \vb*{x}')$，
+其中$\mathcal{O}$的下标$x$代表所有求导运算都是对$\vb*{x}$做的。那么方程
+\[
+    \mathcal{O} u(\vb*{x}) = f(\vb*{x})
+\]
+的解为
+\[
+    u(\vb*{x}) = \int G(\vb*{x};\vb*{x}') u(\vb*{x}') \dd \vb*{x}^n
+\]
+于是就产生了一个线性系统，其输入为非齐次项$f$，输出为$u$。
+
+\paragraph{外加场} 
+
+\paragraph{传播子} 设$\mathcal{O}$是线性算符，$G(\vb*{x};\vb*{x}')$是它的格林函数，
+也就是说$\mathcal{O}_x G(\vb*{x};\vb*{x}') = \delta(\vb*{x} - \vb*{x}')$，
+其中$\mathcal{O}$的下标$x$代表所有求导运算都是对$\vb*{x}$做的。那么我们有
+这样产生的线性系统的输入是某时某地的$u$，输出是另外时刻另外地点的$u$。
+
+\section{时序线性系统}
+
+设我们有线性算符$L$，两个变量$x(t), y(t)$。这两个变量可以是向量也可以是函数，当然也可以就是一个实数或者复数。
+这两个变量被下面的关系联系起来：
+\begin{equation}
+    y(t) = Lx(t)
+    \label{eq:linear-system-time}
+\end{equation}
+此时我们说，\eqref{eq:linear-system-time}构成了一个\textbf{一维线性系统}。$x$称为\textbf{输入}，$y$称为\textbf{输出}。
+
+设$h(t)$是$L$给出的\textbf{单位响应}，也就是说，
+\begin{equation}
+    h(t;\tau) = L_{t} \delta(t - \tau)
+    \label{eq:unit-response}
+\end{equation}
+其中$L_t$表示$L$只对$t$作用，而$\tau$暂时视作参数。
+那么就有
+\begin{equation}
+    y(t) = \int_{-\infty}^\infty h(t;\tau) x(\tau) \dd \tau
+\end{equation}
+当然这实际上就是格林函数法。
+
+一个时序系统是因果性的，当且仅当输出$y(t_0)$不依赖于$t > t_0$处的$x(t)$；一个时序系统是输入有界则输出有界的（BIBO的），当且仅当若其输入$x(t)$有界则$y(t)$也有界。
+
+\subsection{线性时间无关系统}
+
+在系统\textbf{时间无关}的情况下，容易看出
+\begin{equation}
+    h(t;\tau) = h(t - \tau; 0)
+    \label{eq:lti-condition}
+\end{equation}
+事实上这就是系统时间无关的充要条件。
+因此记
+\begin{equation}
+    h(t - \tau) = h(t - \tau; 0)
+\end{equation}
+那么就有
+\begin{equation}
+    y(t) = \int_{-\infty}^\infty h(t - \tau) x(\tau) \dd \tau = \int_{-\infty}^\infty h(\tau) x(t - \tau) \dd \tau
+    \label{eq:lti-response}
+\end{equation}
+因此线性时间无关系统的输出是输入做一个卷积之后的结果。
+
+通过\eqref{eq:lti-response}可以发现，系统是因果性的的充要条件是$t<0$时$h(t)=0$，系统是BIBO的当且仅当
+\[
+    \int_{-\infty}^\infty \abs{h(t)} \dd t < \infty
+\]
+
+线性时间无关系统的本征函数就是指数函数。容易证明，在
+\[
+    x(t) = \ee^{s_0 t}
+\]
+时（$s_0$可以是复数），
+\begin{equation}
+    y(t) = H(s_0) x(t), \quad H(s_0) = \int_{-\infty}^\infty h(\tau) \ee^{-s_0 \tau} \dd \tau
+    \label{eq:lti-eigen}
+\end{equation}
+\eqref{eq:lti-eigen}中的$H(s_0)$正是特征值；注意给出它的积分是一个双边拉普拉斯变换。这个积分的收敛域就是$H(s_0)$的定义域。
+
+特别的，取
+\[
+    x(t) = \ee^{\ii \omega t}, \quad \omega \in \reals
+\]
+则
+\begin{equation}
+    y(t) = H(\ii \omega) x(t), \quad H(\ii \omega) = \int_{-\infty}^\infty h(\tau) \ee^{- \ii \omega \tau} \dd \tau
+    \label{eq:freq-res}
+\end{equation}
+\eqref{eq:freq-res}给出了系统的\textbf{频率响应}。
+
+由傅里叶变换的特性，频率响应函数$H(\ii \omega)$完全确定了系统。因为我们经常需要分析周期性变化的信号，专门引入一个记号
+\begin{equation}
+    X(\omega) = H(\ii \omega)
+    \label{eq:x-def}
+\end{equation}
+这样在$x(t)$形如$A \exp(\ii \omega t)$时就有
+\begin{equation}
+    y(t) = X(\omega) x(t)
+    \label{eq:res-to-sin}
+\end{equation}
+通常单位响应\eqref{eq:unit-response}不方便准确算出来，因此直接给系统输入一个$\exp(\ii \omega t)$型信号，观察输出就得到了$X(\omega)$。于是系统对任意信号的响应在形式上都可以确定了。
+
+虽然一直假定$\omega$是实数，从而只能确定$H(s_0)$在虚轴上的值，但这样已经提供了足够的信息将$H(s_0)$延拓到\eqref{eq:lti-eigen}的收敛域上。
+同样的，可以将$X(\omega)$延拓得尽可能大，
+这样使用\eqref{eq:x-def}就能够通过“观察正弦波输入引起的响应”先求出$\omega$为实数时的$X(\omega)$，然后确定$H(s_0)$。
+这样一来，就算$\omega$取复数，在将$X(\omega)$做\textbf{解析延拓之后}\eqref{eq:res-to-sin}仍然成立。
+
+$X(\omega)$未必处处解析——它会有奇点。在$X(\omega)$的某个奇点$\omega=\omega_0$处（不一定是实数！），无穷小的输入会导致很大的输出，或者说，
+系统可以自发产生这个“频率”的振荡。%
+\footnote{事实上当系统的输入是一个非齐次线性微分方程问题的非齐次项而输出是这个方程问题的解的时候，$\exp(\ii \omega_0 t)$是对应的齐次问题的一个解。因此$\omega_0$是某种共振点。}
+具体的输出形如
+\[
+    y(t) \propto \ee^{\ii \Re \omega t} \ee^{- \Im \omega t}
+\]
+显然，自发产生的震荡衰减的充要条件是$\omega$在上半平面。物理系统通常都应该满足这个条件，因为一个系统会产生发散的振幅似乎是不可思议的。
+
+通过傅里叶变换，可以发现上面的结果和系统的因果性有关。根据\eqref{eq:freq-res}第二式做傅里叶反变换得到
+\[
+    h(t) = \frac{1}{2\pi} \int_{-\infty}^\infty X(\omega) \ee^{\ii \omega t} \dd \omega
+    = \ii \begin{bigcase}
+        \sum_{\text{$\omega$ on upper plain}} \Res X(\omega) \ee^{\ii \omega t} &, \quad t > 0 \\
+        \sum_{\text{$\omega$ on lower plain}} \Res X(\omega) \ee^{\ii \omega t} &, \quad t < 0
+    \end{bigcase}
+\]
+如果所有的奇点都在上半平面，那么$t<0$时就有$h(t)=0$，因此系统是因果系统。
+
+\end{document}

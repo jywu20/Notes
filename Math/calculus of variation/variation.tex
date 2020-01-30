@@ -1,0 +1,219 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+
+\title{变分法与泛函极值}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    摘要写于此处。
+\end{abstract}
+
+\section{变分}
+
+定义在全空间的变分问题：
+\begin{equation}
+    \min \int \dd x^D L(x, u, \nabla u, \nabla \nabla u, \ldots) \quad \st u = 0 \; \text{at infinity}
+\end{equation}
+当然，它等价于欧拉-拉格朗日方程配上边界条件$u = 0 \; \text{at infinity}$。
+
+有时我们只关心一块有限区域$\Omega$上的解，此时问题为
+\begin{equation}
+    \min \int_\Omega \dd x^D L(x, u, \nabla u, \nabla \nabla u, \ldots) \quad \st B u = g \; \text{on $\partial \Omega$}
+\end{equation}
+
+需要注意的是在不仅仅含有$\int \dd x^D$项，而且也含有更低维区域上的积分的泛函极值问题中，$L$中都不应该有类似于$\delta$函数这样的项；如果有，需要单独拿出来，写成较低维区域上的积分，并确保所有被积函数都是常义函数。
+
+计算其变分，总是可以得到这样的一组表达式：
+\begin{equation}
+    \delta \int_\Omega \dd x^D L(x, u, \nabla u, \nabla \nabla u, \ldots) = \int_\Omega A_n \var{u} \dd x^D + \int_{\partial \Omega} A_{n-1}^{(0)} \var{u} \dd^{D-1}x + \int_{\partial \Omega} A_{n-1}^{(2)} \delta \pdv{u}{\vb*{n}} \dd x^{D-1} + \ldots
+\end{equation}
+其中$\vb*{n}$指的是$\partial \Omega$的法向量。此表达式中所有的变分或者是$\var{u}$，或者是$\var{(\partial u / \partial \vb*{n})}$，或者是更加高阶的导数，但是不能出现类似于$\var{\partial u / \partial \gamma}$这样的项，其中$\gamma$指的是$\partial \Omega$或者更低维度的流形上的坐标，因为这样的变分总是可以使用分部积分转换为$\delta u$和$\var{(\partial u / \partial \vb*{n})}$这样的变分。
+随后，由极值性，我们就得到
+\[
+    A_n = 0, \quad A_{n-1}^{(0)} = 0, \quad A_{n-1}^{(1)} = 0, \ldots
+\]
+
+通常我们总是要求在边界处$\var{u}=0$，在$L$中含有的导数比较高阶时通常还要求$\delta \partial u / \partial \vb*{n}=0$等。做了这些假设之后再计算变分，就会得到
+\[
+    \delta \int_\Omega \dd x^D L(x, u, \nabla u, \nabla \nabla u, \ldots) = \int_\Omega A_n \var{u} \dd x^D
+\]
+但是在允许边界处的$u$发生变化之后，我们还能够得到方程$A_n = 0$对应的自然边界条件。
+
+方程中的“载荷项”通常是通过这样的方式引进的：
+\begin{equation}
+    \int \dd x^D (L[u] + \rho u)
+\end{equation}
+然后求变分就可以在方程右边引入一个载荷项。
+“边界上分布的载荷”可以这样引入：
+\begin{equation}
+    \int \dd x^D (L[u] + \rho u) + \int \dd S (\sigma u)
+\end{equation}
+$\sigma$代表了载荷的面密度。当然，对表面的积分可以很容易地转化为一个形如
+\[
+    \int \dd x^D \delta(f(\vb*{x})) \sigma u
+\]
+这样的积分，其中含有$\delta$函数且$\delta$函数的宗量正是曲面方程的积分。
+
+需要注意的是，边界上分布的载荷项也可以通过边界条件引入。因此\textbf{不要}同时在泛函中和在边界条件中引入边界上分布的载荷项。如果没有通过泛函引入边界上的载荷项，那么\textbf{不要}允许$\var{u},\var{\partial u / \partial \vb*{n}}$等在边界上非零，否则会导出错误的边界条件，因为这么做相当于将自然边界条件中的载荷设为了零。举例：我们知道
+\[
+    \var{\int \dd x^3 \left( - \frac{1}{2} (\grad{u})^2 + \rho u \right)} = 0
+\]
+给出了方程
+\[
+    \laplacian u = \rho
+\]
+写出变分，得到
+\[
+    0 = - \int \dd S \cdot \var{u} \vb*{n} \cdot \grad{u} + \int \dd \dd x^3 \var{u} (\laplacian u - \rho)
+\]
+如果在$\rho$中纳入体电荷密度$\rho_0$和面电荷密度$\sigma \delta(f(\vb*{x}))$（其中$f(x)=0$代表了曲面方程）那么就有
+\[
+    0 = - \int \dd S \cdot \var{u} (\vb*{n} \cdot \grad{u} + \sigma) + \int \dd \dd x^3 \var{u} (\laplacian u - \rho_0)
+\]
+于是就得到了正确的定解问题
+\[
+    \left\{
+        \begin{aligned}
+            \laplacian u &= \rho_0, \\
+            \vb*{n} \cdot \grad{u} + \sigma &= 0
+        \end{aligned}
+    \right.
+\]
+但是如果没有将$\sigma$项引入$\rho$中，那么就会得到错误的边界条件$\vb*{n} \cdot \grad{u} = 0$。
+
+出现这种情况的原因非常自然：当允许边界处$\var{u},\var{\grad{u}}$等量不为零时，实际上是将变分极值问题延拓到了全空间中，也就是转而要求无穷远处$\delta u = 0$，那么$\rho$就必须纳入边界处面分布的载荷而不仅仅包含边界内部的体分布的载荷。
+
+关于自然边界条件值得说一句：如果泛定方程是线性的，也就是说能够找到一个线性算符$\mathcal{L}$使得泛定方程为
+\[
+    \mathcal{L} u = f
+\]
+那么就可以定义格林函数
+\[
+    \mathcal{L} G(\vb*{x}, \vb*{x}') = \delta(\vb*{x} - \vb*{x}')
+\]
+如果这是\textbf{全空间中的格林函数}（这样的格林函数称为基本解），那么就有
+\[
+    u(\vb*{x}) = \int \dd x'^n G(\vb*{x}, \vb*{x}') \rho(\vb*{x}') + \int \dd x'^{n-1} G(\vb*{x}, \vb*{x}') \sigma(\vb*{x}') + \cdots
+\]
+其中$\sigma(\vb*{x}')$指的是分布在曲面上的载荷项，等等，它们对应着$f$中的各个部分：
+\[
+    f(\vb*{x}) = \rho(\vb*{x}) + \sigma \delta (f(\vb*{x})) + \eta \delta(u(\vb*{x})) \delta(v(\vb*{x})) + \cdots
+\]
+但是这样可能并不方便计算，例如很多时候边界载荷的大小是隐藏在边界条件里面的，难以直接求出。因此更加常用的方法是，计算某一区域内的格林函数：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \mathcal{L} G(\vb*{x}, \vb*{x}'
+            ) &= \delta(\vb*{x} - \vb*{x}') \quad \text{in $\Omega$}, \\
+            \mathcal{B} u &= 0 \quad \text{on $\partial \Omega$}
+        \end{aligned}
+    \right.
+\end{equation}
+此时不能简单地以$G$为核函数对所有载荷积分来获得解。
+通常的做法是通过计算
+\[
+    \int \dd x^D u \mathcal{L} G - \int \dd x^D G \mathcal{L} u
+\]
+第一项就是$u(\vb*{x}')$，然后通过分部积分法将第二项写成一些边界上的积分的形式，最后得到
+\[
+    u(\vb*{x}') - \int \dd x^D G f = \text{boundary terms}
+\]
+于是就得到了$u$。
+
+要获得一个给定的边值问题的变分形式可以这么做：
+\begin{enumerate}
+    \item 首先观察边界条件并尽可能将其齐次化。如果有非齐次第一类边界条件$u=g \quad \text{on the edge}$，那么转而求解关于$v=u-g$的定解问题；否则尝试将非齐次边界条件弄成“边界上的载荷”的形式。（似乎第一类边界条件的处理和别的边界条件不一样？）
+    \item 在泛定方程两边乘上$\delta u$之后对求解区域做积分，然后假定$\delta u$在边界上为零，通过分部积分法写出$\delta \int L \dd^D x = 0$这样的形式；
+    \item 然后再对$\int L \dd^n x$计算变分，此时允许$\delta u$或者$\var{\partial u / \partial \vb*{n}}$在边界上非零，从而得到自然边界条件；
+    \item 根据给定的本质边界条件对自然边界条件做一些变形
+\end{enumerate}
+前两步可以简化为：在泛定方程两边乘上$\var{u}$之后对求解区域做积分，整理成
+\begin{equation}
+    0 = \var{\int_\Omega \dd^D x L[u]} + \var{\int_{\partial \Omega} \text{something}}
+\end{equation}
+这样的形式，则第二项就是自然边界条件；可以将本质边界条件代入其中以简化其形式。
+
+注：如果一个定解问题中有本质边界条件，也就是第一类边界条件，那么解有可能不满足（没有边界载荷时的）自然边界条件，因为施加本质边界条件时实际上隐式地增加了一个边界载荷——实际上，很多时候就是求解完成后使用自然边界条件计算“达到这样的本质边界条件需要多少边界载荷”的。
+
+更加复杂的问题可能包含多个泛定方程。微分方程的一般理论告诉我们，有多少个泛定方程就有多少个物理场需要求解。
+可以对每个泛定方程乘上一个权函数，通过分部积分法得到弱形式，那么这些权函数实际上对应着各个物理场的变分。
+
+举例：在区域$\Omega$内求解
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \laplacian u &= - \rho, \\
+            \eval{u + h\pdv{u}{\vb*{n}}} &= g
+        \end{aligned}
+    \right. 
+\end{equation}
+其中$\rho$是常义函数，不包含$\delta(\vb*{r}_0)$这样的项。
+
+首先需要写出与泛定方程等价的泛函极值问题。为此我们有
+\[
+    \begin{aligned}
+        \int \dd x^3 (\laplacian u + \rho) \var{u} &= 
+            \int \dd \vb*{S} \cdot \var{u} \grad{u} -  \int \dd x^3 \grad{u} \cdot \var{\grad{u}} +  \int \dd x^3 \rho \var{u} \\
+        &= \int \dd \vb*{S} \cdot \var{u} \grad{u} + \var{\int \dd x^3 \left(
+            - \frac{1}{2} (\grad{u})^2 + \rho u
+        \right)}
+    \end{aligned}
+\]
+注意到有一个面积分项。如果$\rho$中含有形如$\sigma \delta(f(\vb*{x}))$这样的项，那么可以将它分离出来写进这一面积分项中。于是我们得到
+
+\section{泛函极值}
+
+$\delta S[q]=0$是不是等价于$\delta S[q(q')] = 0$?
+
+\section{泛函的条件极值}
+
+\subsection{拉格朗日乘子法}
+设$f$是一个定义在$\reals$上的向量函数。
+正如分析多元函数的条件极值时我们可以使用拉格朗日乘子法一样，在泛函求导当中我们也可以有拉格朗日乘子法。
+这里列出两个常用的拉格朗日乘子法的推广。
+
+\paragraph{isoperimetric 怎么翻译？？ 约束} 下面的问题
+\begin{equation}
+    \mathrm{extreme} \int_D L(f(x), f'(x), x) \dd x \st \int_D g(f(x), f'(x), x)=0
+\end{equation}
+等价于
+\begin{equation}
+    \delta \int_D \left(L(f(x), f'(x), x) + \lambda^\top g(f(x), f'(x), x)\right) \dd x = 0, 
+    \int_D g(f(x), f'(x), x)=0
+\end{equation}
+其中$\lambda$是一个\textbf{常向量}。
+
+\paragraph{完整约束}
+\begin{equation}
+    \mathrm{extreme} \int_D L(f(x), f'(x), x) \dd x \st g(f(x), f'(x), x) = 0 \text{ on } D
+\end{equation}
+等价于
+\begin{equation}
+    \delta \int_D L(f(x), f'(x), x) + \lambda(f(x), x)^\top g(f(x), x) \dd x = 0,
+    g(f(x), x) = 0 \text{ on } D
+\end{equation}
+注意$\lambda$不再是常量了。
+
+这一说法更可以推广为（好像不是很对头，需要进一步说明）
+\paragraph{非完整约束} \begin{equation}
+    \mathrm{extreme} \int_D L(f(x), f'(x), x) \dd x \st g(f(x), f'(x), x) = 0 \text{ on } D
+\end{equation}
+等价于
+\begin{equation}
+    \delta \int_D L(f(x), f'(x), x) + \lambda(f(x), f'(x), x)^\top g(f(x), f'(x), x) \dd x = 0,
+    g(f(x), f'(x), x) = 0 \text{ on } D
+\end{equation}
+
+\end{document}

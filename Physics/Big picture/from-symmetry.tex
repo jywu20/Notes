@@ -1,0 +1,1706 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{centernot}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand{\fsl}[1]{{\centernot{#1}}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{从对称性出发看物理}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    本文从直觉性的时空对称性出发，分析了非相对论单粒子量子力学和相对论性量子场论，
+    并且讨论了从量子场论到量子力学的过渡以及多体系统等话题。
+    % TODO：
+\end{abstract}
+\vspace{2em}
+
+% TODO：概念上要理清楚的东西：自旋、旋量的具体计算、洛伦兹群导致的自旋角动量守恒
+% 还有二次量子化
+% 具体计算包括散射振幅、测量等
+% 最后还有统计，不过这个似乎可以另外写一篇笔记
+
+连续对称性就是在某个李群作用下不变的性质。
+注意一个李群既可以作用在算符$\hat{x}$上又可以作用在有关的本征态上，而且两者给出的结果等价。
+例如，$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
+\[
+    \hat{x} + a = \int \dd{x} x \dyad{x} + a \int \dd{x} \dyad{x} 
+    = \int \dd{x} (x + a) \dyad{x} = \int \dd{x'} x' \dyad{x'-a},
+\]
+因此作用在$\hat{x}$上的大小为$a$的平移就等价于作用在态空间基矢量上的大小为$-a$的平移。
+更一般的，将某一个李群$Q(a)$作用在某一算符上就相当于将这一李群的群参数倒转过来得到新的李群$Q'$，
+也就是定义$Q'(a) = Q(a)^{-1}$（由于是群，$Q'$和$Q$同构），然后将$Q'(a)$作用在态空间的基矢量上。
+由于$Q'$和$Q$同构，两者的区别仅仅是重新规定了群参数，因此它们对应着同样的对称性。
+
+如果一个哈密顿算符可以写成几部分之和，这几个部分涉及的算符相互对易，那么分开处理这几部分，列写每一部分的运动方程。
+将每一部分涉及的算符完全描述的态空间直积起来，就得到了原哈密顿算符中的所有算符完全描述的态空间。
+
+“二次量子化”这个术语就很迷……它有时候被用来表示“将经典场论转化为量子场论”，有时候用来表示“从量子场论中发现粒子态”，
+
+\section{场论，经典的和量子的}
+% TODO：多分量场、带有复数值的场
+% 似乎拉格朗日动力学中含有虚部的场要看成两个场，而哈密顿动力学中含有虚部的场只需要看成一个场。
+在进一步展开下面的叙述之前，我们先回顾现代物理的数学框架。总的来说，有两套可用的框架，
+其一是拉格朗日动力学，路径积分方法是它的量子版本；其二是哈密顿动力学，正则量子化是它的量子版本。
+尽管这两个框架在数学上是独立的，我们仍然可以找到它们之间非常深厚的联系。
+
+本节首先从经典拉氏量出发，然后得到经典哈密顿量，然后再过渡到量子形式。
+常见的物理问题涉及$3+1$维闵可夫斯基时空中或$0+1$维时空，而后者可以看成前者的一个退化情况，
+于是我们将局限在$3+1$维闵可夫斯基时空中，
+虽然无论是拉格朗日动力学还是哈密顿力学都适用于比这广得多的体系。
+所谓闵可夫斯基时空指的是度规可以化为
+\begin{equation}
+    \eta_{\mu\nu} = \diag (1, -1, -1, -1)
+\end{equation}
+的四维几何。通常使用$t, x, y, z$或者$x^0, x^1, x^2, x^3$来依次标记这4个坐标。
+容易看出$x, y, z$或者说$x^1, x^2, x^3$就构成一个三维欧氏几何，它们是\textbf{空间维}。
+$x^0$则是\textbf{时间维}。
+
+我们还将假设，所有场量在无穷远处的值都是零。
+我们将要分析的对象是时空中的场，它是从闵可夫斯基时空到某一线性空间的光滑映射。
+
+\subsection{拉格朗日动力学}
+
+所谓\textbf{拉氏量密度}$\mathcal{L}$——在场论中简称为\textbf{拉氏量}——是这样一个量，它是场的局域泛函，
+这就是说，它可以写成$\phi, \partial_\mu \phi, \ldots$以及时空坐标的函数。
+本文假定所有的拉氏量仅含有一阶导数，这是为了避免含有高阶导数的拉氏量产生“可以无穷下降的能量”等反直觉现象，并且简化计算。
+幸运的是，已有的实验数据并不要求我们考虑更高阶的拉氏量。
+我们还假定物理规律在时空上是均匀的，因此我们不认为拉氏量中显含时空坐标。%
+\footnote{
+    需要注意的是在系统中有相互作用且其中一部分的运动状态已知的情况下，另一部分的等效拉氏量中是有可能出现时空坐标的，
+    例如粒子在势场中的运动就是一个典型例子，在那里由于产生势场的物理机制远远比粒子本身要强，因此势场可以看成是给定的，
+    于是粒子具有的等效拉氏量就显含了空间坐标。}%
+从而我们有
+\begin{equation}
+    \mathcal{L} = \mathcal{L}(\phi, \partial_\mu \phi).
+    \label{eq:lagrangian}
+\end{equation}
+需要注意的是\eqref{eq:lagrangian}中的$\phi$可以代表任何一个“从时空坐标到数量”的映射，
+它可能是一个标量场也可能是一个矢量场的分量，或者是别的什么东西。
+\textbf{作用量}是拉氏量在整个闵可夫斯基时空上的积分。
+
+现在我们将一个任意的无穷小变换作用在泛函$S$上，观察其无穷小变动。
+需要注意的是无穷小变换同时作用在$\phi$的场值和坐标上，从而$\phi$完整的变化%
+\footnote{在实际计算时往往更加容易求出$\var{\phi}$，因为一旦把$\phi'(x')$完全写出，只需要计算$\phi'(x')-\phi(x)$ 即可。}%
+同时包含两部分：
+\begin{equation}
+    \var{\phi} = \bar{\var} \phi + \partial_\mu \phi \var{x}^\mu,
+    \label{eq:variance-of-phi}
+\end{equation}
+其中第一项指的是场值本身的变化%
+\footnote{这个变化又有可能来自两个方面。
+其一是“场的平移”，也就是我们手动把场$\phi$加减特定值；
+其二是“场的旋转”，当$\phi$实际上是某个更大的对象（如矢量）的某个分量时，基矢量的旋转会导致不同的分量混在一起。
+通常我们使用一样的基矢量来书写场的分量和坐标的分量，因此除了坐标平移外，坐标变换也伴随着非零的$\bar{\var}{\phi}$。}%
+，第二项指的是坐标变换的“拖曳”作用。
+坐标的变化还会导致导数算符和积分测度发生变化。这两个几何效应的具体表达式为
+\begin{equation}
+    \begin{bigcase}
+        \partial_{\mu'} = \partial_\mu - \partial_\mu \var{x^\nu} \partial_\nu, \\
+        \dd[4]{x'} = (1 + \partial_\mu \var{x^\mu}) \dd[4]{x}.
+    \end{bigcase}
+\end{equation}
+由于$\partial_\mu$算符随着坐标变换会发生变化，我们发现$\partial_\mu \phi$的变化量的形式和$\phi$不完全一致：
+\begin{equation}
+    \var{\partial_\mu \phi} = \partial_\mu \bar{\var}{\phi} + \partial_\mu \partial_\nu \phi \var{x^\nu}.
+\end{equation}
+这样一来我们可以计算出
+\begin{equation}
+    \var{S} = \int \dd[4]{x} \left(
+        \left( \pdv{\mathcal{L}}{\phi} - \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi} \right) \bar{\var}{\phi} + 
+        \partial_\mu \left( \mathcal{L} \var{x^\mu} + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}{\phi} \right)
+    \right).
+    \label{eq:variance-of-s}
+\end{equation}
+在推导\eqref{eq:variance-of-s}时我们没有使用任何关于$\var{\phi}$和$\var{x}$的假设，因此它给出的是最一般的$\var{S}$形式。
+
+实际的场的动力学由保持时空坐标$x$不变且$\phi$在无穷远处固定为零（从而无穷远处$\bar{\var}{\phi}$为零）的情况下的泛函极值问题
+\begin{equation}
+    \var{S} = \var{\int \dd[4]x \mathcal{L}(\phi, \partial_\mu \phi)}
+    \label{eq:min-action}
+\end{equation}
+给出。
+显然这个泛函极值问题的解就是
+\begin{equation}
+    \pdv{\mathcal{L}}{\phi} - \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi} = 0.
+    \label{eq:el-eq}
+\end{equation}
+这就是欧拉-拉格朗日方程。
+
+需要注意如果两个拉氏量的形式不同，这并不意味着它们描述了不同的物理过程。
+实际上容易看出，两个拉氏量描述了相同的物理过程，
+当且仅当，它们给出的作用量$S$只相差一个相对于$\dd[4]{x}$的零测集上的积分（这样的积分不影响泛函极值问题的求解，因为它“太小”），
+这又等价于这两个拉氏量相差一个散度项，即存在一个$\Lambda^\mu$使得
+\begin{equation}
+\mathcal{L}' = \mathcal{L} + \partial_\mu \Lambda^\mu.
+\end{equation}
+
+当场量$\phi$是物理解的时候，将$\phi$代入到$S$中，然后再做一个无穷小变换，此时\eqref{eq:variance-of-s}中的第一项为零，
+于是我们有
+\[
+    \var{S} = \int \dd[4]{x} \partial_\mu \left( \mathcal{L} \var{x}^\mu + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi \right).
+\]
+如果这个无穷小变换实际上不改变系统的动力学，也就是说系统在这个无穷小变化下是对称的，
+那么$\var{S}$就应该能够写成一个表面积分，于是我们得到
+\begin{equation}
+    \partial_\mu \left(\pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi + \mathcal{L} \var{x^\mu} + \Lambda^\mu\right) = 0.
+    \label{eq:noether}
+\end{equation}
+当然，如果无穷小变换更进一步不改变拉氏量，那么$\Lambda=0$。
+
+如果无穷小变换是一个李群的李代数表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的，%
+\footnote{例如可以使用小量近似将$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都写成一个很小的群参数$\epsilon$乘上一个固定的值，
+于是我们在\eqref{eq:noether}中除去一个$\epsilon$，就得到了一个守恒流}%
+于是\eqref{eq:noether}的括号中的内容能够完全写成坐标的函数。
+这就是\textbf{诺特定理}：系统的无穷小对称性诱导出一个守恒流。
+由于是四维闵可夫斯基时空，四维的一个守恒流
+\begin{equation}
+    \partial_\mu j^\mu = 0
+\end{equation}
+就意味着三维的一个输运方程
+\begin{equation}
+    \partial_t j^0 + \partial_a j^a = 0.
+\end{equation}
+从而，
+\begin{equation}
+    Q = \int \dd[3]x j^0
+\end{equation}
+就是一个\textbf{守恒荷}。如果其积分范围是一个有限的区域，那么它就是一个局域守恒量，也就是
+\[
+    \dv{t} Q = - \int \dd{\vb*{S}} \cdot \vb*{j},
+\]
+而如果其积分范围是全空间，那么它就是守恒的。
+% TODO:多场的诺特定理，比如说有矢量，怎么办？？
+% 此外多参数的诺特定理也需要叙述，这个倒不需要太多口舌
+
+我们来检查一下常见的对称性导致的守恒量（这些对称性的数学结构参见\autoref{sec:symmetry}）。%
+\footnote{表面上看，下面的讨论在体系并不非常对称的情况下并无意义，而不非常对称的体系占了多数。
+不对称性带来的后果是，我们不再有完美的守恒流方程，取而代之的是一个有源的输运方程
+\[
+    \partial_\mu j^\mu = \text{something},
+\]
+由于对称性分析无助于找到源的具体形式，使用对称性诱导出特定的物理量似乎并没有什么意义。
+然而，我们相信，最基本的物理定律总应该是对称的，因此大部分体系的不对称性可以归结为我们人为地将它从环境中隔离出来进行研究，从而导致类似下面的方程：
+\[
+    \partial_\mu (j^\mu_\text{sys} + j^\mu_\text{env}), \quad \partial j^\mu_\text{sys} = - j^\mu_\text{env}
+\]
+第二个方程给出了我们想要的含源的输运方程。因此在分析基本的物理框架时我们可以不讨论“不对称”的情况，
+而是导出了基本的方程之后再通过“隔离出一部分系统”来引入不对称性。
+}%
+假定拉氏量在变换下不变。
+首先是最简单的平移。
+平移变换作用于场上得到的结果是：
+\[
+    \begin{split}
+        x^\mu \longrightarrow x^{\mu'} = x^\mu + a^\mu, \\
+        \var{\phi} = \phi'(x') - \phi(x) = 0.
+    \end{split}
+\]
+% TODO:群作用怎么取
+按照\eqref{eq:variance-of-phi}，可以计算出
+\[
+    \bar{\var}{\phi} = - \partial_\mu \phi \var{a^\mu},
+\]
+% TODO：什么时候需要允许拉氏量发生变动？
+于是对应的守恒流为
+\[
+    0 = \partial_\mu \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi \var{a^\nu} + \mathcal{L} \var{a^\mu} \right) 
+    = \partial_\mu \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi + \mathcal{L} \delta^\mu_\nu \right) \var{a^\nu},
+\]
+考虑到$\var{a^\mu}$的任意性，我们有
+\begin{equation}
+    T_\mu^\nu = \pdv{\mathcal{L}}{\partial_\nu \phi} \partial_\mu \phi - \mathcal{L} \delta^\nu_\mu, \quad \partial_\nu T_\mu^\nu = 0.
+\end{equation}
+我们称$T^\nu_\mu$为\textbf{能动张量}。它给出了4个守恒荷，其中一个是来自时间平移不变性的\textbf{能量}
+\begin{equation}
+    E = \int \dd[3]{x} T^0_0 = \int \dd[3]{x} \left( \pdv{\mathcal{L}}{\partial_0 \phi} \partial_0 \phi - \mathcal{L} \right) ,
+\end{equation}
+另外三个是来自空间平移不变性的\textbf{动量}
+\begin{equation}
+    P_i = \int \dd[3]{x} T^0_i = \int \dd[3]{x} \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi .
+\end{equation}
+能动张量的纯空间部分是能量和动量的输运流，因此就是\textbf{应力张量}。%
+\footnote{在非相对论连续介质力学中这些结果也是成立的，因为时间和空间平移同时出现在伽利略群和庞加莱群中。}
+
+接下来是旋转对称性带来的守恒量。
+
+然后我们分析场的内禀对称性带来的守恒量。容易看出场的平移，也就是
+\[
+    \bar{\var}{\phi} = a, \; \var{x} = 0
+\]
+对应着守恒流
+\[
+    \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi a} = 0,
+\]
+其守恒荷为
+\begin{equation}
+    \Pi = \int \dd[3]x \pdv{\mathcal{L}}{\partial_0 \phi}.
+\end{equation}
+这称为$\phi$的\textbf{共轭动量}，相应的其密度
+\begin{equation}
+    \pi = \pdv{\mathcal{L}}{\partial_0 \phi}
+\end{equation}
+就是\textbf{共轭动量密度}。
+需注意此“动量”的名称只是类比而得，它未必和$P_i$有特别紧密的联系。
+
+\subsection{哈密顿动力学}
+
+\subsubsection{经典哈密顿动力学}
+原本可以直接从拉氏量通过一个勒让德变换得到哈密顿动力学，但当底流形有多个坐标时我们需要选择合适的一个或几个坐标来充当“时间”，也就是哈密顿系统的参数。
+共轭动量使我们有了一个很好的选择。本文取$t=x^0$为哈密顿系统的单参数。接下来我们要观察共轭动量的变化情况，从而凑出一个哈密顿系统。
+
+容易看出$\Pi$的运动方程为%
+\footnote{本节的结果也不仅仅适用于相对论性场论。任何能够良定义场的平移并且保证场平移不改变拉氏量的拉格朗日动力学场论都可以使用本节的方法构造对应的哈密顿表述，因为本节只用到了场的内禀平移不变性诱导出的结构。}
+\[
+    \dv{\Pi}{t} = \int \dd[3]x \partial_0 \pdv{\mathcal{L}}{\partial_0 \phi} = \int \dd[3]x \left( \pdv{\mathcal{L}}{\phi} - \partial_i \pdv{\mathcal{L}}{\partial_i \phi} \right).
+\]
+被积函数是$\int \dd[3]x \mathcal{L}$在将$x^0$当成常数后对$\phi$泛函求导的结果。于是定义
+\begin{equation}
+    H = \int \dd[3]x \mathcal{H} 
+    = \int \dd[3]x \eval{\left( \pdv{\mathcal{L}}{\partial_0 \phi} \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi} 
+    = \int \dd[3]x \eval{\left( \pi \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi}.
+\end{equation}
+我们通过将$\partial_0 \phi$用$\pi$表示使得任何对$H$的泛函求导都不会将$\partial_0 \phi$当成变量。
+看出，$H$对$\phi$泛函求导就是$-\int \dd[3]x \mathcal{L}$对$\phi$泛函求导，于是我们有
+\[
+    \dv{\Pi}{t} = - \int \dd[3]x \fdv{H}{\phi}.
+\]
+另一方面由于$H$不显含任何$\pi$的导数，我们有
+\[
+    \begin{aligned}
+        \fdv{H}{\pi} &= \pdv{\pi} \eval{\left( \pi \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi} 
+        = \partial_0 \phi + \pi \pdv{\partial_0 \phi}{\pi} - \pdv{\pi} \eval{\mathcal{L}}_{\partial_0 \to \pi} \\
+        &= \partial_0 \phi + \pi \pdv{\partial_0 \phi}{\pi} - \pdv{\mathcal{L}}{\partial_0} \pdv{\partial_0}{\pi} = \partial_0 \phi.
+    \end{aligned}
+\]
+于是就得到了3+1维场论的哈密顿表述：
+\begin{equation}
+    \dv{\pi}{t} = - \fdv{H}{\phi}, \quad \dv{\phi}{t} = \fdv{H}{\pi}.
+    \label{eq:hamitonian-eq}
+\end{equation}
+其中$H$仅仅是$\phi, \partial_i \phi$和$\pi$的函数。
+方程中的全导数也可以写成偏导数，我们把它写成全导数是因为我们通常只在一个固定的空间点观察场的变化，也就是说在\eqref{eq:hamitonian-eq}中我们只把时间看成变量而将空间坐标看成“标签”（见\autoref{note:spacial-label}）。
+在同一个场有多个分量的情况下，我们记各场为$\phi^i$，如果还是希望维持形式上的指标升降关系，$\pi$就可以写成$\pi_i$。
+
+总之，使用拉氏量描述的3+1维经典场也能够使用一个哈密顿动力学描述，这个哈密顿动力学的演化参数为$x^0$也就是时间维，而使用空间维作为连续的“正则坐标”的标记。%
+\footnote{也就是说，空间坐标$x^1, x^2, x^3$对应离散情况下的场量标签，
+如$\phi^1(x, y, z)$指的是以$1, x, y, z$为标签的一个正则坐标，正如离散时的$q^{1}$代表以$1$为标签的一个正则坐标。
+注意到这种哈密顿表述并没有以统一的方式对待时间和空间。\label{note:spacial-label}}%
+任何物理量都是$\phi$和$\partial_\mu \phi$的函数，因此它们能够写成$\phi, \partial_i \phi$和$\pi$的函数，从而它们的演化都可以使用\eqref{eq:hamitonian-eq}确定，因为
+\begin{equation}
+    \dv{A}{t} = \pdv{A}{\phi} \dv{\phi}{t} + \pdv{A}{\partial_i \phi} \partial_i \dv{\phi}{t} + \pdv{A}{\pi} \dv{\pi}{t}.
+    \label{eq:evolution-of-any-quantity}
+\end{equation}
+
+\subsubsection{正则量子化}\label{sec:canonical-quantization}
+
+下面我们转而讨论量子情况下的哈密顿动力学。这种使用哈密顿动力学建立量子理论的方法称为\textbf{正则量子化}。
+完整地描述一个量子系统的状态和演化情况需要一个三元组：
+首先是一个希尔伯特空间，称为\textbf{态空间}，其中的矢量称为\textbf{态矢量}，它们表示了系统的状态，
+并且我们认为只差了一个倍数的态矢量等价，从而我们可以仅使用单位长度的态矢量描述任何的系统；
+其次是一组\textbf{可观察量}，它们是希尔伯特空间上的厄米算符，这意味着它们可以被幺正对角化，并且本征值都是实数%
+\footnote{后面会提到，如果一个理论在正则量子化时必须选择反对易子的量子化方案，那么实际上它描写的场算符的本征值是格拉斯曼数。
+但是我们从来不关心这种理论对应的场算符的本征值到底是多少，因此没有必要特意讨论它们。}%
+；
+最后是一个\textbf{哈密顿量}或者说\textbf{哈密顿算符}，它自身也是一个可观察量（在经典极限下就是经典哈密顿量），且它指示了系统的演化方式。
+经典哈密顿理论中同样有对应的三元组，
+只不过态空间并不是一个可以做线性叠加的向量空间，从而可观察量也只是从态到实数的映射而不是希尔伯特空间上的算符。
+由于所谓的场量$\phi$需要使用算符$\hat{\phi}$代替，因此不再能够良好地定义$\mathcal{H}$对各场量的偏导数，
+从而我们也不能良好地定义$\var{H}/\var{\phi}$，等等。
+现在动力学方程由
+\begin{equation}
+    \dv{\hat{A}}{t} = \frac{1}{\ii \hbar} [\hat{A}, \hat{H}]
+    \label{eq:quantum-evolution}
+\end{equation}
+确定。%
+\footnote{我们不讨论其定义显含时间的算符，因为它们不会出现在基本的物理规律中。}%
+此时有意义的物理量虽然是算符，但在正则量子化之下仍然能够写成场算符$\phi, \partial_i \phi$和$\pi$的函数，
+因此一旦$\phi$和$\pi$的演化确定了，\eqref{eq:evolution-of-any-quantity}就以一种和经典情况完全一致的方式确定了所有物理量的演化。
+换而言之，\eqref{eq:hamitonian-eq-quantum}完全等价于
+\begin{equation}
+    \dv{\hat{\phi}}{t} = \frac{1}{\ii \hbar} [\hat{\phi}, \hat{H}], 
+    \quad \dv{\hat{\pi}}{t} = \frac{1}{\ii \hbar} [\hat{\pi}, \hat{H}].
+    \label{eq:hamitonian-eq-quantum}
+\end{equation}
+
+要确定系统的动力学，只需要讨论$[\hat{\phi}, \hat{H}]$和$[\hat{\pi}, \hat{H}]$就可以，
+而要讨论这两者又只需要讨论所有有关的场之间的对易关系即可，因为我们总是可以把$H$写成这些场的多项式。
+（下文中讨论量子化方案时有对这一点的形象说明）
+因此，取对易子为李括号，一个理论中涉及的所有算符就构成了一个李代数，而基本的场之间的对易关系又完全确定了这个李代数的结构。
+
+仅仅有一个抽象的李代数并不能获得完整的理论。
+例如，单粒子体系中$\hat{\vb*{x}}$和$\hat{\vb*{p}}$之间的李代数和多粒子体系中每一个粒子的$\hat{\vb*{x}}$和$\hat{\vb*{p}}$之间的李代数具有完全一样的结构，但是显然单粒子体系不是多粒子体系。
+例如单粒子体系中$\vb*{x}$的谱没有简并而多粒子体系中$\vb*{x}$的谱有简并。
+要获得完整的理论，我们还需要讨论态空间的结构。
+我们将不讨论完整的数学，而只是对物理上常用的一些操作做一些说明。
+
+当我们选定一个希尔伯特空间并且将（抽象的李代数中的）算符作用于其上时，实际上是对这个算符做了一个幺正表示。
+进一步，当我们说一个系统的希尔伯特空间$H$能够被一组相互对易的算符$S$完全描述时，
+我们实际上是说，算符集合$S$在$H$上的（幺正）表示组成了$H$上的一个完备相容算符集合，也即，$S$中各个算符在$H$上的表示共享的本征矢量构成$H$的一组基。
+可以证明，如果$S_1,S_2$是$S$的一个划分，且$S_1$完全描述了$H_1$而$S_2$完全描述了$H_2$，那么就有$H$和$H_1 \otimes H_2$同构。
+因此我们把$H$完全分解成了若干空间的直积，这些空间中的每一个都由完整描述系统需要的算符中的其中一个完全刻画。
+
+一旦同时知道了各算符的对易关系（从而建立起它们的李代数），以及完整描述系统需要的完备相容算符集合，
+我们就可以完整地推导出这个系统每一时刻的状态以及其演化方式了。
+实际上，我们真正关心的是完备相容算符集合中各算符的谱结构。
+% TODO:其实这一段话我是感觉有问题的。谱结构真的能够这样推导出来吗？？
+% 这里至少有两个问题：其一是有限空间导致的离散谱，比如什么无限高势垒，其二是由于李代数而产生的离散谱
+% 也许后者和前者是一致的，毕竟李代数导致的离散谱通常来自“有限维表示”
+% 这两者有没有什么关系？
+
+根据上下文，我们可以容易地分辨作为抽象的李代数成员的算符，以及它们在各个希尔伯特空间上的表示，
+因此为方便陈述，以下不再对这些略有不同的对象做详细的区分。
+对算符而言这样做是合理的，因为从某个表示中得到的代数关系只要不涉及具体的表示的细节，就在抽象的李代数中也成立。
+例如如果我们在某个表示中推导出$[\hat{x}, \hat{p}] = \ii \hbar \hat{I}$，那么在抽象的李代数中必定也有这个式子成立，
+因为其中只牵扯到算符而没有牵扯到态矢量。
+同样，可以比较容易地分辨各个希尔伯特空间中的态矢量，因此在不引起混淆的情况下我们也不刻意区分它们。
+
+现在我们要做的是，分析$\phi$和$\pi$之间要具有什么样的代数关系%
+\footnote{实际上只需要分析同一个时间$t$下$\phi(\vb*{x}, t)$和$\pi(\vb*{y}, t)$之间的关系就可以了，
+因为\eqref{eq:hamitonian-eq-quantum}中从来不会出现不同时间的量之间的对易子。
+这是量子版本的哈密顿动力学不适宜用于分析洛伦兹协变性的一个例子。
+另外请注意这套理论并不能原封不动地适用于广义相对论时空，因为那里会需要讨论“不同时间处的量之间的关系”。}，
+才能够让\eqref{eq:hamitonian-eq-quantum}在$\hbar \to 0$时退化到经典情况\eqref{eq:hamitonian-eq}。
+选定这样一个代数关系就称为选取一种\textbf{量子化方案}，因为一旦给定了这样的代数关系，我们就把\eqref{eq:hamitonian-eq}推广到了量子理论中。
+我们将不试图穷举所有可以的量子化方案，而只是举两个行之有效的例子——也就是说，实验数据要求使用这样的量子化方案。%
+\footnote{我们说“穷举所有情况”意味着，面对同一个经典哈密顿量密度$\mathcal{H}$，
+有不止一种指定$\hat{\phi}$和$\hat{\pi}$的方式，
+使得我们能够得到一个量子动力学\eqref{eq:hamitonian-eq-quantum}，
+并且在$\hbar \to 0$的极限情况下回退到经典动力学\eqref{eq:hamitonian-eq}。
+这是可以预期的，因为“取$\hbar\to 0$的极限”这个操作显然不是一一对应的，或者说量子化方案可以不止一种。
+}
+
+第一个方案是指定对易子为
+\begin{equation}
+    [\hat{\phi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)] = \ii \hbar \delta^3(\vb*{x} - \vb*{y}), 
+    \quad [\hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)] = [\hat{\pi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)] = 0.
+    \label{eq:symmetry-commutator}
+\end{equation}
+从中可以容易地看出
+\begin{equation}
+    [\partial_i \hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)] = 0, 
+    \quad [\grad{\hat{\phi}(\vb*{x}, t)}, \hat{\pi}(\vb*{y}, t)] = \ii \hbar \grad{\delta^3(\vb*{x} - \vb*{y})}.
+    \label{eq:symmetry-partial-mu-commutator}
+\end{equation}
+只需要将导数看成非常接近的两个量之差，然后利用对易子的线性性即可导出上式。
+
+现在我们来推导$\hbar\to 0$时\eqref{eq:hamitonian-eq-quantum}的极限。
+使用\eqref{eq:symmetry-commutator}，已知$\hat{\phi} \hat{\pi}$就能够写出$\hat{\pi} \hat{\phi}$。
+将$\hat{\mathcal{H}}$写成关于$\hat{\phi}, \partial_i \hat{\phi}$和$\pi$的多项式，
+我们可以使用\eqref{eq:symmetry-commutator}和\eqref{eq:symmetry-partial-mu-commutator}
+将形如$\hat{\pi}\hat{\phi}$、$\hat{\pi}\partial_i \hat{\phi}$这样的式子改写为形如$\hat{\phi}\hat{\pi}$、$\hat{\partial_i \hat{\phi}}\hat{\pi}$这样的式子。
+因此不失一般性地，我们认为$\hat{\mathcal{H}}$的多项式表达式中的每一项都形如$\hat{\phi}^l (\partial_i \hat{\phi})^m \pi^n$。
+我们有（因为时间$t$都一样，以下略去$t$变量）%
+\footnote{注意下面的$\delta(\vb*{x} - \vb*{x}')$是系数，因此可以自由地移动；写在它们左边的算符不会作用在它们上面！}
+\[
+    \begin{aligned}
+        \comm{\hat{\phi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} &= \int \dd[3]{x} \comm{\hat{\phi}(\vb*{x}')}{\hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n (\vb*{x})} \\
+        &= \int \dd[3]{x} \left( \hat{\phi}^l (\vb*{x}) \comm{\hat{\phi}(\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x}) \pi^n (\vb*{x})} + [\hat{\phi}(\vb*{x}'), \hat{\phi}^l (\vb*{x})] \partial_i \hat{\phi}^m (\vb*{x}) \pi^n(\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) \left( (\partial_i \hat{\phi})^m (\vb*{x}) \comm{\hat{\phi} (\vb*{x}')}{\hat{\pi}^n (\vb*{x})} + \comm{\hat{\phi} (\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x})} \pi^n (\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \comm{\hat{\phi} (\vb*{x}')}{\hat{\pi}^n (\vb*{x})} \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \ii \hbar \delta^3(\vb*{x'} - \vb*{x}) n \hat{\pi}^{n-1}(\vb*{x}) \\
+        &= \ii \hbar n \hat{\phi}^l (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^{n-1}(\vb*{x}'), 
+    \end{aligned}
+\]
+这正是求导公式。当$\hbar$接近零的时候$\phi$和$\pi$可以交换，于是$\mathcal{H}$可以写成普通的、字母顺序无关紧要的函数，此时
+我们有
+\[
+    \begin{aligned}
+        \dv{\hat{\phi}}{t} = \frac{1}{\ii \hbar} [\hat{\phi}(\vb*{x}), \hat{H}] &= \frac{1}{\ii \hbar} \sum_\text{terms} \comm{\hat{\phi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\
+        &= \frac{1}{\ii \hbar} \sum_\text{terms} \ii \hbar n \hat{\phi}^l (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^{n-1}(\vb*{x}') \\
+        &= \pdv{\hat{\mathcal{H}}}{\hat{\pi}} = \fdv{\hat{H}}{\hat{\pi}},
+    \end{aligned}
+\]
+这就意味着$\hbar\to 0$时关于$\hat{\phi}$的方程能够回退到经典版本。
+同样也有
+\[
+    \begin{aligned}
+        &\quad \comm{\hat{\pi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\ 
+        &= \int \dd[3]{x} \comm{\hat{\pi}(\vb*{x}')}{\hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\
+        &= \int \dd[3]{x} \left( \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi} )^m (\vb*{x}) \comm{\hat{\pi}(\vb*{x}')}{\hat{\pi}^n(\vb*{x})} + \hat{\phi}^l (\vb*{x}) \comm{\hat{\pi}(\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x})} \hat{\pi}^n (\vb*{x}) + \comm{\hat{\pi}(\vb*{x}')}{\hat{\phi}^l (\vb*{x})} (\partial_i \hat{\phi})^m (\vb*{x}) \hat{\pi}^n (\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \left( - \hat{\phi}^l (\vb*{x}) \ii \hbar \grad{\delta^3 (\vb*{x} - \vb*{x}')} m (\partial_i \hat{\phi})^{m-1} (\vb*{x}) \hat{\pi}^n (\vb*{x}) - \ii \hbar \delta^3(\vb*{x} - \vb*{x}') l \hat{\phi}^{l-1} (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \hat{\pi}^n (\vb*{x}) \right) \\
+        &= \ii \hbar \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) - \ii \hbar l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}').
+    \end{aligned}
+\]
+当$\hbar \to 0$时
+\[
+    \begin{aligned}
+        \dv{\hat{\pi}}{t} &= \frac{1}{\ii \hbar} [\hat{\pi}(\vb*{x}), H] \\
+        &= \frac{1}{\ii \hbar} \sum_\text{terms} \left(\ii \hbar \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) - \ii \hbar l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) \\
+        &= - \sum_\text{terms} \left(l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}') - \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) \right) \\
+        &= - \left( \pdv{\hat{\mathcal{H}}}{\hat{\phi}} - \partial_i \pdv{\hat{\mathcal{H}}}{\partial_i \hat{\phi}} \right) = - \fdv{\hat{H}}{\hat{\phi}},
+    \end{aligned}
+\]
+因此关于$\pi$的方程也回退到经典情况。
+这表明\eqref{eq:symmetry-commutator}是一个可行的量子化方案。
+
+第二个方案是指定反对易子为
+\begin{equation}
+    \{\hat{\phi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = \ii \hbar \delta^3(\vb*{x} - \vb*{y}), \quad \{\hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)\} = \{\hat{\pi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = 0.
+    \label{eq:antisymmetry-commutator}
+\end{equation}
+同样，我们可以将哈密顿量写成若干个$\hat{\phi}^l (\partial_i \hat{\phi})^m \pi^n$形式的项的和。
+需要注意的是\eqref{eq:antisymmetry-commutator}直接导出
+\[
+    \hat{\phi}(\vb*{x})^2 = 0, \quad \hat{\pi}(\vb*{x})^2 = 0, \quad (\partial_i \hat{\phi})^2(\vb*{x}) = 0,
+\]
+因此哈密顿量中$l, m, n \leq 1$。
+这意味着这个量子化方案并不适用于所有的场，而是只适用于能够保证在任何情况下哈密顿量中的每一项都满足$l, m, n \leq 1$的场。
+对于正常的实数/复数值场，这是一个不可能的事情。
+事实上，设$\hat{\phi}$在$\vb*{x}$处的值为$\int \dd \phi(\vb*{x}) \dyad{\phi}$，
+在$\vb*{y}$处的值为$\int \dd \phi(\vb*{y}) \dyad{\phi}$，则通过反对易关系能够得到
+\[
+    \phi(\vb*{x}) \phi(\vb*{y}) = - \phi(\vb*{y}) \phi(\vb*{x}).
+\]
+因此，反对易子意味着对应的场的经典极限实际上并不是复数而是格拉斯曼数，
+在路径积分量子化中，格拉斯曼数非常重要，因为路径积分量子化会分析经典场值的演化路径。
+在正则量子化中只需要把这些格拉斯曼数看成算符就可以了——我们并不会用到它的微积分，因此也无需将它们看成数。
+% TODO:运动方程一致性；不过我懒得去看格拉斯曼数的微积分了
+
+需要注意的是，从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
+这就产生了一个问题：路径积分量子化告诉我们，最小作用量原理只是路径积分的最速下降近似而已，
+为什么在正则量子化中精确的运动方程却可以从最小作用量原理求出？
+其原因在于，算符在演化过程中不同的本征态会混在一起（一个经典情况下不可能出现的现象），正是这一点构成了量子和经典的区别，
+正则量子化中的本征态混合正好对应于路径积分量子化中非经典的路径。
+
+\subsubsection{时间演化和绘景}
+% TODO: 表征了相同的物理状态的态矢量之间只差了一个复数常数。
+% 从这些态含有的本征态的占比可知
+在\autoref{sec:canonical-quantization}中我们仅仅将态矢量当成一个可以让场算符作用上去的对象。
+但实际上如果我们想要的话，也可以让态矢量动起来而对算符做对应的修改，使得算符的谱结构始终不变（本征矢量重数一一对应、彼此对应的本征矢的内积相同），并且本征值不变。
+只要算符的谱结构不变、对应的各个本征值不变，算符就正确地描述了系统。
+两个算符的谱结构一致、对应的本征值相同的充要条件是它们酉相似（相似矩阵可以随时间变化）。
+需要注意的是两个描述了同一个系统的算符会给出不同的基矢量，所以切换绘景的时候还需要改变态矢量。
+综上，绘景变换公式为
+\begin{equation}
+    \hat{A}' = \hat{Q} \hat{A} \hat{Q}^\dagger, \quad \ket{\psi'} = \hat{Q} \ket{\psi},
+    \label{eq:picture-trans}
+\end{equation}
+其中$\hat{Q}$为一个幺正算符，它可以显含时间。
+
+在\autoref{sec:canonical-quantization}中我们已经讨论了态矢量固定不动时怎么确定系统的动力学。
+这种让态矢量固定、算符变动的方案称为\textbf{海森堡绘景}。以下我们使用上标$H$代表海森堡绘景下的量。
+我们要证明的第一件事是，不同时间点上的同一个可观察量的值彼此酉相似。
+要看清楚这是为什么，我们将酉相似的方程
+\begin{equation}
+    \hat{A}^H (t) = \hat{U}^H(t, t_0) \hat{A}^H (t_0) (\hat{U}^H)^\dagger(t, t_0)
+    \label{eq:quantum-evolution-hes-u-operator}
+\end{equation}
+做一个等价变换，看看它等价于什么。%
+\eqref{eq:quantum-evolution-hes-u-operator}中的$U$在$t=t_0$时必定为恒等变换，因为此时$\hat{A}^H (t) = \hat{A}^H (t_0)$；同时容易看出$\hat{U}^H(\tau)$实际上构成一个李群。这样我们就能够写出其生成元，记之为$\hat{G}(t)$：
+\[
+    \hat{U}^H(t+\dd{t}, t) = \hat{I} + \frac{\ii}{\hbar} \hat{G}(t) \dd{t}.
+\]
+$\hat{U}^H$是幺正的等价于$\hat{G}$是厄米的。
+于是就能够写出\eqref{eq:quantum-evolution-hes-u-operator}的无穷小等价形式：
+\[
+    \hat{A}^H (t_0) + \dd{\hat{A}^H}(t_0) = \left( \hat{I} + \frac{\ii}{\hbar} \hat{G}(t) \dd{t} \right) \hat{A}^H (t_0) \left( \hat{I} - \frac{\ii}{\hbar} \hat{G}(t) \right) = \hat{A}^H (t_0) + \frac{\dd{t}}{\ii \hbar} \comm{\hat{A}^H}{\hat{G}(t)}.
+\]
+我们发现这就是\eqref{eq:quantum-evolution}，只需要把$\hat{G}(t)$换成$\hat{H}(t)$；并且正则量子化的时候已经要求$\hat{H}$是厄米的了，因此$\hat{G}$的确是厄米的，从而$\hat{U}^H$是幺正的。
+于是我们得出结论：海森堡绘景中的算符实际上是在做幺正变换，或者等价地说，海森堡绘景中各算符的本征态在做幺正变换。算符的变换式为\eqref{eq:quantum-evolution-hes-u-operator}，相应的，本征态的变换式为
+\begin{equation}
+    \ket{a(t)} = \hat{U}^H(t, t_0) \ket{a(t_0)}.
+\end{equation}
+于是我们称$\hat{U}^H$为海森堡绘景下的时间演化算符。
+$\hat{U}^H$可以写出显式表达式
+\begin{equation}
+    \hat{U}^H(t, t_0) = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H (t) \right).
+\end{equation}
+注意\eqref{eq:quantum-evolution-hes-u-operator}保证了，一个可观察量在经过时间演化之后仍然是可观察量。
+
+现在我们尝试使用\eqref{eq:picture-trans}来把时间演化完全转移到态矢量上面。
+因此，我们希望在新的绘景中，$\hat{A}$始终不变。我们称这新的绘景为\textbf{薛定谔绘景}。
+按照\eqref{eq:quantum-evolution-hes-u-operator}，有
+\[
+    \hat{A}^H(t) = \hat{U}^H(t, t_0) \hat{A}^H (t_0) (\hat{U}^H)^\dagger(t, t_0) = \hat{U}^H(t, t_0) \hat{A}^S( \hat{U}^H)^\dagger(t, t_0),
+\]
+不失一般性地我们取$t=0$时的$\hat{A}^H$为$\hat{A}^S$，那么我们有
+\[
+    \hat{A}^H (t) = \hat{U}^H(t, 0) \hat{A}^S( \hat{U}^H)^\dagger(t, 0).
+\]
+将这个方程和\eqref{eq:picture-trans}对比可以看出
+\[
+    \hat{Q} = (\hat{U}^H)^\dagger(t, 0),
+\]
+于是得到薛定谔绘景下的态矢量演化公式
+\[
+    \ket{\psi^S(t)} = \hat{Q} \ket{\psi^H} = (\hat{U}^H)^\dagger (t, 0) \ket{\text{a constant}},
+\]
+考虑到$t=0$时$\hat{U}^H (t, 0)$就是恒等算符，上式又等价于
+\[
+    \ket{\psi^S(t)} = (\hat{U}^H)^\dagger (t, 0) \ket{\psi^S (0)},
+\]
+也即，薛定谔绘景下的时间演化算符和海森堡绘景下的时间演化算符互为逆。
+这个方程还告诉我们，
+\[
+    \ket{\psi^H} = \ket{\psi^S(t_0)}.
+\]
+现在推导时间演化方程的微分形式。我们有
+\[
+    \begin{aligned}
+        \ket{\psi^S (t + \dd{t})} &= \left( \hat{U}^H (t + \dd{t}, t) \hat{U}^H (t, 0)  \right)^\dagger \ket{\psi^S(0)} \\
+        &= \left( (\hat{I} + \frac{\ii}{\hbar} \hat{H}(t) \dd{t})   \hat{U}^H (t, 0) \right)^\dagger \ket{\psi^S (0)} \\
+        &= (\hat{U}^H)^\dagger (t, 0) \ket{\psi^S (0)} + \frac{\dd{t}}{\ii \hbar} (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \ket{\psi^S (0)} \\
+        &= \ket{\psi^S (t)} + \frac{\dd{t}}{\ii \hbar} (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0) \ket{\psi^S (t)},
+    \end{aligned}
+\]
+从而
+\[
+    \ii \hbar \dv{t} \ket{\psi^S (t)} = (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0) \ket{\psi^S (t)}.
+\]
+为了方便区分，我们将海森堡绘景中的$\hat{H}$记作$\hat{H}^H$，则它对应的薛定谔绘景中的算符为
+\[
+    \hat{H}^S = \hat{Q} \hat{H}^H \hat{Q}^\dagger = (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0), 
+\]
+因此就获得了薛定谔绘景中的运动方程：
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi^S(t)} = \hat{H}^S (t) \ket{\psi^S(t)}.
+\end{equation}
+设$\hat{U}^S(t, t_0)$是薛定谔绘景下的时间演化算符，则容易证明$\hat{H}^S$是它的生成元，既然$\hat{H}^H$是厄米的，$\hat{H}^S$也是厄米的，从而$\hat{U}^S$是幺正的。%
+\footnote{注意$\hat{H}^H$是$\hat{U}^H$的生成元而$\hat{H}^S$是$(\hat{U}^H)^\dagger$的生成元；由于$\hat{H}^H$可能含时，一般情况下
+\[
+    T \exp(\int \hat{H}^H (t) \dd{t})^\dagger \neq T \exp(- \int \hat{H}^H (t) \dd{t}),
+\]
+也就是说$\hat{H}^H$和$\hat{H}^S$之间没有简单的关系，而必须使用绘景变换公式联系两者。
+}
+因此薛定谔绘景中时间演化始终保持态矢量的幺正性。
+时间演化算符的显式表达式为
+\begin{equation}
+    \hat{U}^S(t, t_0) = T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^S(t) \right),
+\end{equation}
+其中$T$为编时算符。
+
+现在我们已经讨论了“让算符变动”和让基矢量变动“两种方案的不同了。我们还可以把哈密顿算符分解成一个比较简单的不含时部分和一个含时的部分，并要求这两者均为厄米算符，然后分别用两者让算符和态矢量都动起来。这样的方案称为\textbf{相互作用绘景}。
+设
+\begin{equation}
+    \hat{H}^H = \hat{H}^H_0 + \hat{H}^H_i,
+\end{equation}
+令$\hat{A}^I$的演化方程为
+\begin{equation}
+    \dv{\hat{A}^I}{t} = \frac{1}{\ii \hbar} \comm*{\hat{A}^I}{\hat{H}^H_0},
+\end{equation}
+与$\hat{A}^H$相对比，我们有
+\[
+    \hat{A}^H (t) = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right) \hat{A}^I (t) T \exp \left(\frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right)^\dagger,
+\]
+与\eqref{eq:picture-trans}相比较有
+\[
+    \hat{Q} = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right),
+\]
+这样
+\[
+    \ket{\psi^H} = \hat{Q} \ket{\psi^I (t)} = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right) \ket{\psi^I (t)}.
+\]
+于是我们发现
+\[
+    \ket{\psi^I (0)} = \ket{\psi^H},
+\]
+且与推导薛定谔绘景类似地可以推导出
+\[
+    \ii \hbar \dv{t} \ket{\psi^I (t)} = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right)^\dagger \hat{H}_i^H (t) T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right) \ket{\psi^I(t)},
+\]
+做一个绘景变换就得到
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi^I (t)} = \hat{H}^I_i (t) \ket{\psi^I (T)}.
+\end{equation}
+相互作用绘景中算符随时间的演化使用的$\hat{H}_0$由于不含时，无论在海森堡绘景下还是在相互作用绘景下都是一样的，无需特殊的变换。
+
+相互作用绘景在微扰量子场论计算中起到了非常重要的作用，因为正如\autoref{sec:qft-free-dynamics}中展示的那样，通过对称性分析可以直接得到自由场的哈密顿量密度和演化方程，因此我们可以将相互作用项——也就是不同场之间的耦合——独立考虑，从而大大简化计算。
+更加重要的是，此时相互作用绘景可以为我们提供有关量子场的态空间的结构的信息，实际上我们将在\autoref{sec:from-qft-to-many-body}中看到，如果假定态空间中有一个唯一的真空态——也就是所有场都是零的态——那么量子场的态空间就是多粒子态福克空间，在此基础上我们可以很自然地处理粒子创生和湮灭的过程。这就为我们展示了量子理论的另一面：波动看起来就像粒子一样。%
+\footnote{需要注意的是，在处理相对论性量子场论的时候其实并不能完全放心地使用相互作用绘景。如果我们取$\hat{H}_i=0$，那么相互作用绘景就退化为了自由场的海森堡绘景；这样我们就看到了$\hat{H}_i$项的作用：它把带相互作用的场的态（也就是$\ket{\psi^I(t)}$）和自由场的态（$\ket{\psi^I(0)}$，因为如果$\hat{H}_i=0$那么态就不会变化）使用一个幺正算符联系了起来，而且这个幺正算符是唯一的。然而Haag定理说，含相互作用的场有无数个不等价的幺正表示，因此我们并不能唯一地将带相互作用的场的态和自由场的态使用一个唯一的幺正算符联系起来。特别的，由于我们要求自由场和相互作用场的态空间都满足一定的物理条件（如有稳定的真空态，等等），自由场的态空间和相互作用场的满足这些条件的态空间一般来说并不幺正等价。这意味着类似于$\int \dd{t} \hat{H}^H_i$之类的表达式实际上并不收敛，于是相互作用绘景就失效了。但是有很多手段可以绕过这个定理的限制——例如因为我们从来只讨论一定能标下的物理现象而不把相对论性量子场论当成终极理论，实际上我们可以把空间格点化，这样量子场论就变成了有限自由度的量子力学，于是就可以使用相互作用绘景了。}
+
+% TODO:总结
+
+\subsubsection{态}
+% TODO：分析三种绘景下的态
+% 两个态表示了同样的物理状态，当且仅当，
+% $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
+% TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
+% \hat{A} \ket{a_1 a_2 \cdots} = \bmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
+% 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
+% 因此下文中将常常这么写。
+
+\subsubsection{散射与测量}
+
+% TODO：什么是测量，当然估计也轮不到我来写这个
+% TODO：为什么内积相当于概率振幅、测量、统计诠释
+% 一个可能的方案：系综。首先证明：具有某种初态的仪器和系统发生相互作用之后，系统和仪器的波函数都大大定域化了；然后表明：如果仪器的初态在系综中均匀分布，那么仪器的波函数定域的位置在系综中的分布正是按照系统的波函数的平方分布的
+
+\subsection{单粒子情况}
+
+以上讨论均基于3+1维时空。单粒子的理论则是0+1维时空，因为此时空间坐标被看成是以时间轴为底流形的场。
+我们可以很自然地回退到单粒子的理论，因为只需要把带空间坐标的导数都看成零就可以了。
+% TODO 详细说明，还有
+
+\section{对称性、李群与重要的物理量}\label{sec:symmetry}
+
+对称性可以大致分为两类：一类来自时空坐标变换，可能是平移，也可能是旋转或者推动，
+此时$\var{x}$不为零，且常常$\bar{\var}{\phi}$也不为零（注意即使平移时$\bar{\var}{\phi}$也不为零，这是为了保持$\var{\phi}$始终为零）；
+另一类为\textbf{内禀对称性}，它指的是$\var{x}$为零而$\bar{\var}{\phi}$不为零的变换。
+
+% TODO:李群作用在坐标上、场上、态矢量上
+% 作用在场算符上和作用在态矢量上是等价的
+
+\subsection{无穷小生成元和李代数}
+
+% TODO：生成元依赖于群参数的情况；$T \exp(\int H \dd{t})^\dagger \neq T \exp(- \int H \dd{t})$，即使$H$是厄米的。这个等式成立要求$H$不含时。
+
+\subsection{时空对称性}
+
+\subsubsection{平移}
+
+\subsubsection{旋转}
+
+我们讨论
+
+\subsubsection{洛伦兹群}
+
+首先讨论洛伦兹群在四维闵可夫斯基空间中的表示，也就是保持闵可夫斯基度规
+\begin{equation}
+    \eta \equiv [\eta_{\mu \nu}]_{\mu \nu} = \diag (1, -1, -1, -1)
+\end{equation}
+不变的全体坐标变换矩阵。记这些矩阵为$\Lambda$，容易看出保持度规不变等价于
+\begin{equation}
+    \Lambda_\sigma^\mu \Lambda_\rho^\nu \eta_{\mu \nu} = \eta_{\sigma \rho},
+\end{equation}
+或者如果将$\Lambda$的矩阵形式看成是$[\Lambda^\mu_\nu]_{\mu \nu}$，那么就是
+\begin{equation}
+    \Lambda^\top \eta \Lambda = \eta.
+    \label{eq:lorentz-matrix}
+\end{equation}
+从\eqref{eq:lorentz-matrix}可以看出
+\begin{equation}
+    \det \Lambda = \pm 1. 
+    \label{eq:det-lorentz}
+\end{equation}
+
+\subsubsection{庞加莱群}
+
+\section{非相对论单粒子量子力学}\label{sec:single-particle}
+
+我们将遵循这样的顺序获得单粒子量子力学：
+\begin{enumerate}
+    \item 构建一维单粒子情况下的动量算符；
+    \item 构建三维情况下的动量算符；
+    \item 写出哈密顿算符；
+    \item 考虑自旋的影响。
+\end{enumerate}
+
+虽然本节讨论“单粒子态”，但正如我们将要看到的那样，所谓的单粒子并没有一个良好定义——我们真正能够观察的只是位置算符，而原则上我们完全可以争辩说，一个“粒子”需要两个位置算符，或者一个三维的位置算符对应三个粒子，等等。
+具体什么是“单个粒子”完全是人为规定的——真正重要的只有算符。
+
+\subsection{非相对论情况下的时空对称性}\label{sec:non-relativity-symmetry}
+
+在非相对论单粒子的经典情况下，粒子轨迹$x=x(t)$是粒子仅有的自由度。量子场论告诉我们在量子情况下，自旋是另一个值得关注的独立自由度。
+本节我们讨论与粒子的各种属性有关的对称性。由于非相对论情况下的自旋完全是手动放进去的，我们没有能力讨论关于它的对称性。
+对自旋的讨论要留到洛伦兹对称性中考虑。
+因此本节能够讨论的对称性全部是关于时空的。
+下面考虑和单粒子非相对论性量子力学有关的一些李群。
+首先是空间平移群和时间平移群，它们实际上具有同样的结构，但是并不能完全等同地看待，
+因为我们只讨论单粒子情况，因此底流形就是时间轴，从而时间平移对称是关于底流形的而空间平移是关于场量（具体来说就是粒子位置）的。
+其次是空间旋转群。
+最后是惯性参考系之间的变换。在非相对论情况下中这和空间旋转是分开的，但在洛伦兹对称性中这和空间旋转实际上具有非常类似的结构。
+
+以上四种对称性彼此之间没有关系——随便找一个表示就能够证明它们的无穷小生成元是相互对易的。因此可以把它们简单地做直积得到\textbf{伽利略群}，它描述了非相对论情况下我们关心的所有对称性。
+
+因此接下来可以细致地分析这四个群中的每一个。
+
+\subsubsection{旋转群}
+
+首先讨论三维旋转群在三维欧氏空间下的表示，也就是三维旋转矩阵群。显然旋转保持矢量长度不变，因此旋转矩阵都是正交矩阵。
+
+% TODO
+因此$SO(3)$并不是旋转群最基本的表示，$SU(2)$才是。
+
+下面讨论$SU(2)$的生成元以及有关的李代数。由于$SU(2)$中的所有成员都是幺正的，它的由下式给出的生成元
+\[
+    U(\dd{a}) = 1 + \ii \sigma \dd{a}
+\]
+一定是厄米的。
+
+\textbf{泡利矩阵}
+\begin{equation}
+    \sigma_1 = \bmqty{0 & 1 \\ 1 & 0}, \quad \sigma_2 = \bmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_3 = \bmqty{1 & 0 \\ 0 & -1}.
+\end{equation}
+容易验证其李代数为
+\begin{equation}
+    [\sigma_i, \sigma_j] = 2 \ii \epsilon_{ijk} \sigma_k.
+\end{equation}
+重新定义群参数，以$\sigma_1/2, \sigma_2/2, \sigma_3/2$为生成元，得到的李代数和$SO(3)$完全一致，这正是我们预期的。
+
+\subsection{重要的物理量}\label{sec:single-particle-quantity}
+
+\subsubsection{一维位置算符与动量算符}\label{sec:1d-p-operator}
+
+先考虑一维的位置算符$\hat{x}$。由于我们认为$\hat{x}$对应\textbf{位置}，其谱为连续谱，本征值没有上下界，而是跑遍整个实数轴%
+\footnote{注意这是\textbf{定义}：我们单纯构造了一个李代数，仅此而已。这一步实际上并没有用到任何物理概念。}%
+。
+于是，我们考虑一个可以完全由$\hat{x}$描述的希尔伯特空间$\mathcal{H}_{1\text{d}}$，在其上我们可以写出
+\begin{equation}
+    \hat{x} = \int \dd{x} x \dyad{x},
+\end{equation}
+有
+\begin{equation}
+    \hat{x} \ket{x'} = x' \ket{x'},
+\end{equation}
+其中$\ket{x'}$代表位置在$x'$的本征态。
+
+很自然地，我们考虑空间平移群导致的物理量。空间平移群是李群，它在$\mathcal{H}_{1\text{d}}$上的幺正表示$\hat{Q}(a)$满足以下特征：
+\begin{itemize}
+    \item $\hat{Q}(a) \ket{x} = \ket{x+a}$；
+    \item $\hat{Q}(a+b) = \hat{Q}(a) \hat{Q}(b)$；
+\end{itemize}
+$\hat{Q}(a)$是幺正的意味着$\ii \dd{\hat{Q}} / \dd{a}$是厄米的，因此对应一个可观察量。
+$\hat{Q}(a+b)=\hat{Q}(a) \hat{Q}(b)$则意味着$\dd{\hat{Q}} / \dd{a}$与群参数$a$无关，即变换是均匀的。
+于是设
+\begin{equation}
+    \hat{Q}(\dd{x}) = \hat{I} + \frac{1}{\ii \hbar} \dd{x} \hat{p},
+\end{equation}
+其中$\hat{p}$是一个不显含任何参量的厄米算符。$\hbar$是一个具有能量量纲的量，目的是使$\hat{p}$具有动量量纲。
+为什么要让它具有动量量纲很快就可以看到。
+注意到
+\[
+    \begin{split}
+        \hat{x} \hat{Q}(\dd{x'}) \ket{x'} = \hat{x} \ket{x' + \dd{x'}} = (x' + \dd{x'}) \ket{x' + \dd{x'}}, \\
+        \hat{Q}(\dd{x'}) \hat{x} \ket{x'} = \hat{Q}(\dd{x'}) x' \ket{x'} = x' \hat{Q}(\dd{x'}) \ket{x'} = x' \ket{x' + \dd{x'}},
+    \end{split}
+\]
+就有
+\[
+    [\hat{x}, \hat{Q}(\dd{x'})] \ket{x'} = \dd{x'} \ket{x' + \dd{x'}} \approx \dd{x'} \ket{x'}.
+\]
+考虑到$\ket{x'}$的任意性，我们得到
+\[
+    [\hat{x}, \hat{Q}(\dd{x'})] = \left[\hat{x}, \hat{I} + \frac{1}{\ii \hbar} \dd{x} \hat{p}\right] = \hat{I},
+\]
+从而
+\begin{equation}
+    [\hat{x}, \hat{p}] = \ii \hbar \hat{I} = \ii \hbar. 
+    \label{eq:x-p-commutator-1d}   
+\end{equation}
+对易关系\eqref{eq:x-p-commutator-1d}完全确定了$\hat{x}$和$\hat{p}$的李代数结构。
+
+下面推导$\hat{x}, \hat{p}$和任意物理量的对易关系。
+设能够将物理量$\hat{F}$展开为$\hat{x}, \hat{p}$的多项式$\hat{F} = F(\hat{x}, \hat{p})$。
+对其中的每一项，都可以使用对易关系\eqref{eq:x-p-commutator-1d}把$\hat{x}$挪到最前面而把$\hat{p}$挪到后面，
+因此展开式最后就可以写成若干个$a \hat{x}^m \hat{p}^n$形式的项之和。
+现在分析其中的一项：
+\[
+    [\hat{x}, \hat{x}^m \hat{p}^n] = \hat{x}^m [\hat{x}, \hat{p}^n] + [\hat{x}, \hat{x}^m] \hat{p}^n = \hat{x}^m [\hat{x}, \hat{p}^n],
+\]
+而
+\[
+    [\hat{x}, \hat{p}^n] = [\hat{x}, \hat{p} \hat{p}^{n-1}] = 
+    \hat{p} [\hat{x}, \hat{p}^{n-1}] + [\hat{x}, \hat{p}] \hat{p}^{n-1} = \hat{p} [\hat{x}, \hat{p}^{n-1}] + \ii \hbar \hat{p}^{n-1}
+\]
+于是递推得到
+\[
+    [\hat{x}, \hat{p}^n] = \ii \hbar n \hat{p}^{n-1},
+\]
+因此
+\[
+    [\hat{x}, \hat{x}^m \hat{p}^n] = \ii \hbar n \hat{x}^m \hat{p}^{n-1}.
+\]
+这样就可以写出
+\begin{equation}
+    [\hat{x}, \hat{F}(\hat{x}, \hat{p})] = \ii \hbar \pdv{p} \hat{F}(\hat{x}, \hat{p}),
+\end{equation}
+在作用偏微分符号之前需要先把$F$中的每一项都变形成$\hat{x}$在前$\hat{p}$在后的形式。
+使用同样的方法还可以导出
+\begin{equation}
+    [\hat{p}, \hat{F}(\hat{x}, \hat{p})] = - \ii \hbar \pdv{x} \hat{F}(\hat{x}, \hat{p}),
+\end{equation}
+同样，作用偏微分符号之前需要先把$F$中的每一项都变形成$\hat{x}$在前$\hat{p}$在后的形式。
+
+在海森堡绘景下
+\[
+    \dv{\hat{A}}{t} = \frac{1}{\ii \hbar} [\hat{A}, H] + \pdv{\hat{A}}{t},
+\]
+于是
+\[
+    \dv{\hat{x}}{t} = \frac{1}{\ii \hbar} [\hat{x}, H] = \pdv{p} \hat{H}(\hat{x}, \hat{p}), \quad
+    \dv{\hat{p}}{t} = \frac{1}{\ii \hbar} [\hat{p}, H] = -\pdv{x} \hat{H}(\hat{x}, \hat{p})
+\]
+当$\hbar \to 0$时，上式仍然成立，而此时$\hat{x}$和$\hat{p}$已经是对易的了，因此它们退化为了可以直接使用实数表示的情况，我们也就过渡到了经典力学。
+这就是要求$\hat{p}$具有动量量纲的原因——它的确是经典动量的推广。
+
+\subsubsection{三维动量算符}
+
+下面转而讨论三维的情况。三维位置算符$\hat{\vb*{x}}$指的是
+\begin{equation}
+    \hat{\vb*{x}} = \hat{x}_1 \vb*{e}_1 + \hat{x}_2 \vb*{e}_2 + \hat{x}_3 \vb*{e}_3,
+\end{equation}
+其中为方便起见选取$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$为一组规范正交基。
+$\hat{x}_1, \hat{x}_2, \hat{x}_3$的本征值均跑遍整条实数轴，因此$\hat{\vb*{x}}$的本征值是三维欧几里得空间中全体矢量。
+我们还需要加入另一个假设：$\hat{x}_1, \hat{x}_2, \hat{x}_3$彼此对易。这个假设要求这三个算符满足某种“独立性”。
+在一个完全能够由$\hat{\vb*{x}}$描述的希尔伯特空间$\mathcal{H}_{3\text{d}}$中我们写出其形式
+\begin{equation}
+    \hat{\vb*{x}} = \int \dd[3]{\vb*{x}} \vb*{x} \dyad{\vb*{x}} 
+    = \int \dd[3]{\vb*{x}} (\hat{x}_1 \vb*{e}_1 + \hat{x}_2 \vb*{e}_2 + \hat{x}_3 \vb*{e}_3) \dyad{x_1, x_2, x_3}.
+\end{equation}
+
+三维空间平移群在态空间上的幺正表示为$\hat{Q}(\vb*{a})$，同样还是满足与一维情况类似的几个条件：
+\begin{itemize}
+    \item 平移将位置算符的一个本征态变换为另一个：
+    \begin{equation}
+        \hat{Q}(\vb*{a}) \ket{\vb*{x}} = \ket{\vb*{x} + \vb*{a}}.
+    \end{equation}
+    \item 一次完成平移和多次完成是一样的：
+    \begin{equation}
+        \hat{Q}(\vb*{a}) \hat{Q}(\vb*{b}) = \hat{Q}(\vb*{a} + \vb*{b}).
+        \label{eq:movement-plusable}
+    \end{equation}
+\end{itemize}
+同样，\eqref{eq:movement-plusable}意味着生成元不显含群参数。
+三维空间平移群本身是三维的，也就是说有三个生成元。不妨设这三个生成元是满足
+\begin{equation}
+    \begin{split}
+        \hat{Q}(\vb*{e}_1 \dd{x_1}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_1, \\
+        \hat{Q}(\vb*{e}_2 \dd{x_2}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_2, \\
+        \hat{Q}(\vb*{e}_3 \dd{x_3}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_3
+    \end{split} 
+\end{equation}
+的不显含群参量的算符。显然它们是厄米的。
+我们可以重复\autoref{sec:1d-p-operator}中的操作步骤来获得三维空间平移群的生成元及其对易关系。
+
+不过，实际上有一种更为简单的办法。
+注意到\eqref{eq:movement-plusable}实际上蕴涵了这样一个事实：沿着$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$的平移操作是对易的，这就意味着
+\begin{equation}
+    [\hat{p}_1, \hat{p}_2] = [\hat{p}_2, \hat{p}_3] = [\hat{p}_3, \hat{p}_1] = 0.
+\end{equation}
+所有生成元彼此对易。这样三维空间平移群的李代数就被拆分成了三个一维空间平移群的李代数的直和，三维空间平移群就被拆分成了三个一维空间平移群的直积。
+这三个一维空间平移群分别是$x_1$方向上的平移群$\hat{Q}_1(a)$，$x_2$方向上的平移群$\hat{Q}_2(a)$，以及$x_3$方向上的平移群$\hat{Q}_3(a)$。
+另一方面，注意到三维位置算符对应的本征态张成的空间$\{ \ket{x_1, x_2, x_3} \}$实际上是三个一维位置算符对应的本征态张成的空间的直积，
+这是因为$\hat{x}_1, \hat{x}_2, \hat{x}_3$彼此对易。于是我们做拆分
+\[
+    \mathcal{H}_\text{3d} = \mathcal{H}_\text{1d1} \otimes \mathcal{H}_\text{1d2} \otimes \mathcal{H}_\text{1d3},
+\]
+并且用$\hat{x}_1$完全描述$\mathcal{H}_\text{1d1}$，用$\hat{x}_2$完全描述$\mathcal{H}_\text{1d2}$，用$\hat{x}_3$完全描述$\mathcal{H}_\text{1d3}$。
+由于$\hat{Q}_1(a)$不改变$x_2, x_3$，它在$\mathcal{H}_\text{1d2},\mathcal{H}_\text{1d3}$上没有作用。同样也可以对$\hat{Q}_2(a),\hat{Q}_3(a)$做同样的论证。从而，下标不一样的$\hat{x}_i$和$\hat{p}_i$彼此对易。
+这样关于诸$\hat{x}$和诸$\hat{p}$的李代数就可以拆分成$\{\hat{x}_1, \hat{p}_1\}$、$\{\hat{x}_2, \hat{p}_2\}$和$\{\hat{x}_3, \hat{p}_3\}$三对量的李代数的直和。
+最后注意到在每个空间$\mathcal{H}_\text{1d$i$}$中，
+\[
+    \hat{Q}_i(a) \ket{x_i} = \ket{x_i + a},
+\]
+于是我们可以原封不动地套用\autoref{sec:1d-p-operator}中的论证，得到
+\[
+    [\hat{x}_i, \hat{p}_i] = \ii \hbar.
+\]
+于是，在没有做任何计算，而只是观念性地拆分了态空间之后，我们得到三维情况下的动量-位置对易关系：
+\begin{equation}
+    [\hat{x}_i, \hat{x}_j] = 0, \quad [\hat{p}_i, \hat{p}_j] = 0, \quad [\hat{x}_i, \hat{p}_j] = \ii \hbar.
+\end{equation}
+
+\subsubsection{角动量}
+
+\subsubsection{自旋}
+
+\subsection{动力学}
+
+实际上我们并不知道量子情况下$\hat{H}$应该取什么样的形式。
+仅有的线索是：$\hbar \to 0$时$\hat{H}$退化为经典哈密顿量，$\hat{p}$退化为经典动量，算符退化为经典的实数。
+从经典哈密顿量写出$\hat{H}$算符的过程称为\textbf{量子化}。由于量子化方案不唯一，还是需要实证数据才能得到真正的$\hat{H}$。
+一个经验证行之有效的方案是：首先写出经典拉氏量，然后得到经典运动方程。合理选择$\hat{H}$使通过
+\begin{equation}
+    \dv{\hat{A}}{t} = \frac{1}{\ii \hbar} [\hat{A}, \hat{H}] + \pdv{\hat{A}}{t}
+\end{equation}
+以及之前通过对称性导出对易关系得到的微分方程在$\hbar \to 0$时能够退化为经典运动方程，这样就完成了量子化。
+% TODO:使用路径积分量子化做这件事要更加清晰一些。需要表明路径积分和正则量子化的对应关系。
+
+我们首先尝试构造自由粒子的拉氏量。所谓自由指的是：动力学规律满足最高的时空对称性，并且运动方程是线性的%
+\footnote{
+    需要注意的是这一点并不是先验成立的。实际上正确的思路是，我们在实验上注意到，直觉上是自由的、不受相互作用粒子都可以使用高度对称的线性方程描述，
+    于是理论中把“自由”规定为“对称且线性”，看从这个假设能够导出什么结果。这个假设当然有可能是错的。
+}%
+。
+本节仅仅讨论非相对论情况下的拉氏量，也就是说取时空对称性为伽利略对称性。这是因为相对论性单粒子量子力学会导致一些疑难问题，因此并没有必要去分析它，而只需要从一开始就分析相对论性3+1维场论就可以了。
+
+拉氏量是一个数，因此是伽利略群的平凡表示，则自由粒子的拉氏量在伽利略群下的变化量必须要能够写成某个量的时间全导数，因此伽利略变换前后的拉氏量描述同样的物理过程。
+首先考虑什么样的场量是被允许的。
+按照\autoref{sec:non-relativity-symmetry}中的分析，旋转对称性意味着有意义的场量只能是标量、矢量、旋量以及它们的直积。
+因此$\vb*{x}$确实是可以出现在拉氏量中的场量。于是我们有
+\[
+    L = L(\vb*{x}, \dot{\vb*{x}}, t).
+\]
+时间和空间平移对称性要求$L$不显含$\vb*{x}$和$t$%
+\footnote{需要注意的是要配合使用这两个不变性。如果只有时间平移不变性，那么完全可以巧妙地构造$L$使得
+\[
+    \pdv{L}{\vb*{x}} \cdot \dot{\vb*{x}} + \pdv{L}{\dot{\vb*{x}}} \cdot \ddot{\vb*{x}} + \pdv{L}{t} = 0
+\]
+来让$L$随时间平移不变；同样如果只有空间平移不变性也可以做同样的构造。
+这两种情况都不能从$L$的表达式中排除掉$\vb*{x}, t$。
+然而，如果同时有时间平移不变性和空间平移不变性，
+我们就可以同时让$t$做一个平移而与此同时让$\vb*{x}$做另一个平移来抵消掉$t$的平移对$\vb*{x}$带来的影响，让$\vb*{x}'(t')=\vb*{x}(t)$，
+此时就有
+\[
+    \dv{L}{t} = \pdv{L}{t} = 0.
+\]
+空间同理。
+% TODO：为什么这里全部把时间全导数看成0了？
+}%
+，因此我们有
+\[
+    L = L(\dot{\vb*{x}}).
+\]
+$L$是标量，而$\dot{\vb*{x}}$是矢量，因此$\dot{\vb*{x}}$必须做缩并。它或者和自己缩并，或者和别的什么矢量或者张量缩并。
+然而$L$不能含有别的矢量，不然会违反空间旋转对称性。%
+\footnote{
+    这里有一个比较迷惑性的细节。如果使用含有$\vb*{a} \cdot \hat{\vb*{x}}$项的拉氏量，算出来的矢量形式欧拉-拉格朗日方程在坐标轴旋转下确实是不变的。
+    然而，其中的三个分量方程的形式会发生变化，因为$\vb*{a}$在三个方向的分量会发生变化。
+    我们要求的“物理规律不变”指的是每一个分量满足的方程都不能改变。
+    实际上，如果只要求矢量方程不变，那么旋转对称性提供不了任何信息，因为矢量方程在空间旋转下肯定不变。
+    \label{note:rotation}
+}%
+因此$L$必定是$\dot{\vb*{x}}^2$的函数，也就是
+\[
+    L = L(\dot{\vb*{x}}^2) = a_1 \dot{\vb*{x}}^2 + a_2 \dot{\vb*{x}}^4 + \cdots
+\]
+以上我们已经使用了空间平移对称性、时间平移对称性以及空间旋转对称性。现在我们要使用惯性变换来完全确定$L$的形式。做变换
+\[
+    \dot{\vb*{x}} \longrightarrow \dot{\vb*{x}} + \vb*{\epsilon},
+\]
+则有
+\[
+    \var{L} = 2 \dot{\vb*{x}} \cdot \vb*{\epsilon} \pdv{L}{\dot{\vb*{x}}^2}
+\]
+由于$L$在惯性变换之下的变化量必须是某个函数的时间全导数，而$\dot{\vb*{x}} \cdot \vb*{\epsilon}$已经是一个时间全导数了，
+因此$\partial L / \partial \dot{\vb*{x}}^2$不显含$\dot{\vb*{x}}^2$，也就是说
+\[
+    L = a \dot{\vb*{x}}^2,
+\]
+我们不妨重新定义有关常数，使得
+\begin{equation}
+    L = \frac{1}{2} m \dot{\vb*{x}}^2 = \frac{1}{2} m (\dot{x}_1^2 + \dot{x}_2^2 + \dot{x}_3^2).
+    \label{eq:free-particle-lagrangian}
+\end{equation}
+这就是自由粒子的拉氏量。从\eqref{eq:free-particle-lagrangian}得出哈密顿量为
+\[
+    H = \frac{p^2}{2m},
+\]
+而前面已经证明通过平移群得到的$\hat{p}$正是经典动量的推广，因此哈密顿算符就是
+\begin{equation}
+    \hat{H} = \frac{\hat{p}^2}{2m}.
+\end{equation}
+于是我们就得到了量子情况下的自由粒子动力学。
+
+现在讨论有相互作用的情况。
+此时$\hat{\vb*{x}}$与其它的一些物理量耦合，在仅考虑$\vb*{x}$的动力学时，耦合体现为拉氏量多出来一个耦合项。%
+\footnote{这是一个很好地能够体现出“重要的是算符而不是态”的例子。
+不妨设与$\hat{\vb*{x}}$耦合的系统能够使用一个算符$\hat{y}$描述，那么整个系统的态矢量就应该写成以$\ket{\vb*{x}, y}$为基的形式。
+但是我们只关心$\vb*{x}$，因此将$\hat{y}$有关的机制全部看成是给定的外力项，那么系统的态矢量就可以写成$\ket{\vb*{x}}$张成的。
+代数上的定理保证前后两个态空间有同态关系，因此我们这么做完全没有问题。
+}
+此时拉氏量为
+\begin{equation}
+    L = \frac{1}{2} m (\dot{x}_1^2 + \dot{x}_2^2 + \dot{x}_3^2) - V(\vb*{x}, \dot{\vb*{x}}).
+\end{equation}
+相应的写出哈密顿量为
+\[
+    H = \frac{1}{2m} \left(\vb*{p} + \pdv{L}{\dot{\vb*{x}}}\right)^2 + V - \pdv{V}{\dot{\vb*{x}}} \cdot \dot{\vb*{x}},
+\]
+同样将上式中所有的$\vb*{x}$都使用$\vb*{p}$表示，然后使用$\hat{\vb*{p}}$代替$\vb*{p}$就得到了哈密顿算符。
+
+\section{相对论性量子场论}
+
+以下希腊字母的指标跑遍所有时空维度，而拉丁字母的指标仅仅跑遍空间维度，也就是$\mu, \nu, \ldots = 0, 1, 2, 3$而$i, j, \ldots = 1, 2, 3$。
+在本节中由于太多东西是算符，我们将不再使用$\hat{}$标记算符。
+
+\subsection{庞加莱群的表示和场的类型}
+
+说是庞加莱群的表示，实际上是洛伦兹群的表示，因为平移对称性作用在
+
+\begin{equation}
+    [\phi(x), \pi(y)] = \ii \hbar \delta(x - y).
+\end{equation}
+
+\subsubsection{标量}
+
+\subsubsection{旋量}
+
+\subsubsection{矢量}
+
+\subsection{自由场动力学}\label{sec:qft-free-dynamics}
+
+在相对论性量子场论中我们仍然要求自由粒子的拉氏量具有最高的对称性，也就是说，在庞加莱群作用下的变化量是某个量的4-散度，
+且拉氏量只含有二阶项（从而给出线性的运动方程）。%
+\footnote{虽然本文主要分析正则量子化，但写出运动方程还是用的是拉氏量。这是更加方便的做法，因为正则表述在理论框架上将时间和空间分开对待了，因此不容易观察哈密顿量在洛伦兹变化之下是不是给出恒定不变的动力学。}
+% TODO:直接从哈密顿量出发看协变性
+
+\subsubsection{标量场的克莱因-高登方程}
+
+自由标量场$\phi$的不超过二阶项的拉氏量可以写成
+\[
+    \mathcal{L} = A + B \phi + C \phi^2 + D^\mu \partial_\mu \phi + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi + F^\mu \phi \partial_\mu \phi.
+\]
+空间平移不变性意味着$A,B,C,D,E,F$全部是常数。
+拉氏量中的常数项不提供任何物理，可略去，于是略去$A$项。
+由于空间各向同性（参见\autoref{note:rotation}），所有的奇数次$\partial_\mu \phi$都不应该出现。
+于是拉氏量为
+\[
+    \mathcal{L} = B \phi + C \phi^2 + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi.
+\]
+还是由于空间旋转不变性，$E^{\mu \nu}$必须是度规张量，否则运动方程中将出现一个旋转时分量会改变的张量，
+% TODO:运动方程本身不会发生改变但是空间中还是会出现一个特殊方向
+因此拉氏量为
+\[
+    \mathcal{L} = B \phi + C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
+\]
+拉氏量中的$\phi$项实际上无关紧要，因为完全可以通过重新定义一个$\phi' = \phi + \const$来把一次项弄掉，所以不失一般性地
+\[
+    \mathcal{L} = C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
+\]
+由于拉氏量可以任意地乘上非零常数，我们通过重新定义常数可以得到
+\begin{equation}
+    \mathcal{L} = \frac{1}{2} (\partial_\mu \phi \partial^\mu \phi - m^2 \phi^2).
+\end{equation}
+这个拉氏量导致下面的运动方程：
+\begin{equation}
+    (\partial_\mu \partial^\mu + m^2) \phi = 0.
+    \label{eq:klein-gordon-eq}
+\end{equation}
+这就是\textbf{克莱因-高登方程}，标量场或者说自旋0场的基本运动方程。
+
+\subsubsection{旋量场的狄拉克方程}
+
+旋量场实际上几乎从来不会在经典情况下遇到。正如
+\begin{equation}
+    \mathcal{L} = \fsl{\psi} (\ii \gamma^\mu \partial_\mu - m) \psi
+\end{equation}
+
+\begin{equation}
+    \pi = \ii \psi^\dagger
+\end{equation}
+
+\begin{equation}
+    \mathcal{H} = - \ii \fsl{\psi} \gamma^i \partial_i \psi  + m \fsl{\psi} \psi = - \pi \gamma_0 \gamma^i \partial_i \psi - \ii m \pi \gamma_0 \psi
+\end{equation}
+
+\begin{equation}
+    (\ii \gamma^\mu \partial_\mu - m) \psi = 0
+\end{equation}
+
+\subsection{相互作用}
+% TODO 相互作用绘景
+
+\section{二次量子化}\label{sec:second-quantization}
+
+在单粒子量子力学中我们发现要完整描述系统需要分析$\hat{\vb*{x}}$的各个本征态，
+从而经典情况下描述$\vb*{x}$的轨迹方程在量子情况下不再适用，
+而要改用关于波函数$\braket{\vb*{x}}{\phi} = \phi(\vb*{x})$的偏微分方程。
+因此，量子理论中对粒子的描述涉及一个场。
+本节将讨论相反的问题：量子理论中的场实际上能够自然地诱导出“粒子”的概念。
+我们还将发现，单粒子量子力学中的波函数实际上真的相当于像电磁场这样的一个场。
+
+% TODO：本节以及别的很多地方我们都认为使用一个算符就能够完全描述体系；但是实际上这个说法是不确切的，例如一个单粒子的状态就同时需要使用$\vb*{x}$和自旋来描述；但是能够将这两者直积起来，得到的算符的本征值是$\bmqty{ x^1 & x^2 & x^3 & S }$，于是它一个算符就成为了整个体系的CSCO。
+% TODO：二次量子化场满足的方程和单粒子量子力学的波动方程之间的关系
+% TODO：粒子数算符-单粒子的物理量（位置等）-单粒子态
+\subsection{多粒子态空间}\label{sec:many-body-state}
+
+本节我们将从两个方向分析多粒子态。
+首先我们将从一系列完全相同的单粒子希尔伯特空间构造多粒子福克空间，
+然后我们将说明，通常使用的这种多粒子福克空间实际上可以使用一对产生湮灭算符和一个唯一的真空态干脆利落地构造出来。
+% TODO：从产生湮灭算符出发构造多粒子态；真的将不同粒子数的希尔伯特空间直和起来来构造多粒子态
+% TODO：这里有地方写坏掉了，实际上完全没有必要使用哈密顿量来写这个东西——如果多粒子是通过某个量子场比如说电磁场产生的，那么哈密顿量中根本就不会有数目固定的单粒子或者多粒子算符！
+% 例如，同样是自由哈密顿量，玻色子可以取同样的量子态而费米子不行，为什么哈密顿量相同而竟然有不同的物理现象？关键在于当我们的问题涉及“两个费米子相撞”时根本就不能使用“自由哈密顿量”描写这个物理过程！
+% 因此这里的关键在于需要在完全没有
+
+\subsubsection{$n$粒子态空间}\label{sec:n-particle-space}
+
+考虑一个有$n$个粒子构成的体系。我们使用$\hat{M}_i$表示完全描述了第$i$号粒子的单粒子算符，也就是说它无简并。
+既然不同的$i$对应的$\hat{M}_i$作用于不同的希尔伯特空间，它们当然就是对易的，
+从而$M_1, M_2, \ldots, M_n$组成了一个完备对易算符集，整个体系的哈密顿量$\hat{H}$是这个算符集的函数。
+设每个粒子的希尔伯特空间为$H_i$，那么整个体系的希尔伯特空间就是
+\[
+    H = H_1 \otimes H_2 \otimes \cdots \otimes H_n,
+\]
+且每个$H_i$都彼此同构。空间$H$的本征态可以写成
+\[
+    \ket{\text{eigenstate}} = \prod_i \ket{\text{one of $\hat{M}_i$'s eigenstates}}.
+\]
+
+我们说这些粒子是全同粒子，当且仅当
+\begin{enumerate}
+    \item 诸$M_i$具有相同的谱结构；从而，诸态空间$H_i, \; i=1, 2, \ldots$幺正等价，于是我们可以不失一般性地认为诸粒子的态空间都是相同的，且$M_1, M_2, \ldots$实际上可以看成某个抽象的李代数的元素$\hat{M}$在一系列幺正等价的态空间$H_1, H_2, \ldots$上的表示；
+    \item 交换任意两个粒子之后系统的动力学不变，或者说交换两个粒子之后系统的哈密顿量不变。%
+    \footnote{如果系统中粒子数恒等，这就是说系统的哈密顿量中不同粒子具有同等的地位；不过我们在这里并不处理这样的$n$粒子哈密顿量，因为在很多情况下粒子数会发生变化，从而哈密顿量中不可能直接含有各个粒子的算符。我们在\autoref{sec:from-qft-to-many-body}中会看到，此时哈密顿量中应该显含某种场算符，而单粒子算符是可以使用场算符弄出来的。}
+\end{enumerate}
+这两个要求缺一不可；前者要求诸粒子是同样的对象，后者要求交换粒子不改变系统的动力学。
+
+如\autoref{sec:single-particle-quantity}所述，如果系统中的粒子在$\hbar \to 0$时对应到经典粒子，那么通常可以取$\hat{M}$为位置$\hat{\vb*{x}}$或者动量$\hat{\vb*{p}}$描述它们；不过这里我们首先处理更加一般性的问题而暂时不代入真实的物理。
+
+下面我们来讨论交换两个粒子意味着什么。设算符$\hat{P}$交换了第$i$个粒子和第$j$个粒子，那么我们有
+\[
+    \hat{P} \left( \ket{\psi_1} \ket{\psi_2} \cdots \ket{\psi_i} \cdots \ket{\psi_j} \cdots \ket{\psi_n} \right) = \ket{\psi_1} \ket{\psi_2} \cdots \ket{\psi_j} \cdots \ket{\psi_i} \cdots \ket{\psi_n},
+\]
+既然$H$是各粒子态空间的直积而各个粒子的态空间实际上是完全一样的，算符$\hat{P}$实际上是从$H$到$H$的算符。
+此外注意到$\hat{P}$并不改变态矢量的模，因此它还是一个幺正算符。
+对一个全同粒子体系，交换两个粒子的信息不会改变系统的动力学，也就是说$\hat{H}$在$\hat{P}$的作用下不变，
+因此$\hat{P}$和$\hat{H}$是对易的，这又意味着$\hat{P}$不会有时间演化。
+于是可以迭代说明，任何一种粒子交换算符都没有时间演化。
+
+考虑到交换任意两个$M_i$和$M_j$不改变系统，任何有意义的%
+% TODO:“改变系统”和“改变系统的动力学”
+% 还有，上面的说法是需要数学上的严格说明的
+关于此$n$体系统的可观察量（它们是诸$M$的函数）在交换$M_i$和$M_j$之后形式保持不变。这就带来了一个结果：设$\hat{P}$是一个粒子交换算符（交换了哪些粒子随意），且$\hat{\phi}$是一个关于整个$n$体系统的可观察量%
+\footnote{正如这个符号暗示的那样，$\hat{\phi}$通常可以被理解为某种量子化的场。我们将在\autoref{sec:from-qft-to-many-body}中看到这样的例子。}，
+那么$\hat{P}$和$\hat{\phi}$对易，于是
+\[
+    \hat{\phi} \left(\hat{P} \ket{\phi}\right) = \hat{P} \hat{\phi} \ket{\phi} = \hat{P} \phi \ket{\phi} = \phi \hat{P} \ket{\phi},
+\]
+这意味着任何一个本征态的置换都是另一个本征态，且本征值相同。这意味着$H$上任何有意义的可观察量以及它们的组合都不能够成为一组CSCO：任何有意义的可观察量都一定有简并！这样的简并称为\textbf{交换简并}。
+这样，如果我们只关心系统的$\phi$属性的值，那么使用$\ket{\text{system}}$做计算和使用归一化的态$\sum_i \hat{P}_i \ket{\text{system}}$做计算得到的结果完全一样。
+% TODO:对这一句话的严格解释：做什么样的计算？
+因此$H$实际上是过大的——我们应该讨论某种比它的维度更低的空间，但其上的算符的结构不应该有变化。
+也就是说，描写实际的全同粒子体系只需要$H$的一个子代数%
+\footnote{当然，不构造子代数原则上也是可以的，但是有意义的算符都不构成CSCO这件事会大大加大处理问题的难度。}，
+任何一个$H$中的态都可以对应到这个子代数中的一个态，并且$\hat{\phi}$构成这个子代数的一个CSCO
+——这又意味着，将交换算符作用在这个子代数的某一基矢量之后得到的态应该只差一个复数因子。
+而由于粒子交换算符是幺正的，这个复数因子的模长一定是1。
+% TODO：为什么？什么时候可以认为“表示同一个系统的态只相差一个复数因子”？
+% 似乎在我们关心的算符是CSCO的时候可以这么认为
+% 如果有简并就不行
+% TODO：在我们只关心某些算符提供的信息时对希尔伯特空间的简化
+% 一个可能的思路：记$f$将$H$中的态$\ket{\psi}$映射到了$H$的一个子代数上，且$f$是一个满射，且等价的态被$f$作用之后仍然是等价的；由于子代数中我们关心的算符构成CSCO，$H$中等价的态被$f$作用之后的结果只差了一个系数。
+% TODO：定义什么叫做态“等价”
+
+具体这个复数因子是多少，不同的基矢量对应的复数因子是不是都相同，都值得讨论；
+但是实际上实验数据暗示着，自然界中仅取这因子为$\pm 1$。这是有原因的——实际上这个因子的值和对应的粒子的自旋有关。
+详细情况见\autoref{sec:from-qft-to-many-body}。
+总之，现在我们需要构造$H$的对称化和反对称化子代数。
+最简单的方法是，使用$H$的诸基矢量构造一组对称化与反对称化基矢量，这样无需对$H$上的算符做任何修改。
+
+\subsubsection{对称与反对称基态}
+
+这一节我们需要分析具体的粒子交换，因此引入一些记号。
+$n$元组有$n!$种排列方式；我们将这$n!$种排列方式从$1$到$n!$编上号，并设$\hat{P}_s$为第$s$种排列方式对应的排序算符，$p_s$是第$s$种排列方式对应的交换数。
+
+设$M^{(1)}, M^{(2)}, \ldots$是$\hat{M}$的本征值。这里我们把$\hat{M}$看成离散谱的，但是可以取其极限得到连续谱的情况。
+这样$H$的基矢量就全部可以写成
+\[
+    \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n = \ket{M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}
+\]
+的形式。其中下标$1, 2, \ldots$指的是这个基矢量在空间$H_1, H_2, \ldots$中。
+设$k_1, k_2, k_3, \ldots$中有$n_1$个$1$，$n_2$个$2$，等等，称这些$n_1, n_2, \ldots$为\textbf{占据数}；不重复的$k_i$——从而不重复的$M^{(k_i)}$——总共有$m$个，并且
+\begin{equation}
+    \sum_{i=1}^m n_i = n.
+\end{equation}
+
+现在尝试构造对称化子代数和反对称化子代数的基矢量。设$\ket{\psi}$是$H_S$或$H_A$中的一个态。当然，它也是$H$中的态，从而
+\[
+    \ket{\psi} = \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+且
+\[
+    \hat{P}_s \ket{\psi} = (\pm 1)^{p_s} \ket{\psi},
+\]
+若$\ket{\psi}$是对称化的，则取$+1$，若$\ket{\psi}$是反对称化的，取$-1$。
+然后就有
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{\psi} = \sum_s (\pm 1)^{p_s} \hat{P}_s \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+此方程的左边是
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{\psi} = \sum_s (\pm 1)^{p_s} (\pm 1)^{p_s} \ket{\psi} = \sum_s \ket{\psi} = n! \ket{\psi},
+\]
+右边是
+\[
+    \begin{aligned}
+        &\quad \sum_s (\pm 1)^{p_s} \hat{P}_s \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+    \end{aligned}
+\]
+因此$\ket{\psi}$可以完全被形如
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n
+\]
+的矢量线性表示。
+如果我们能够归一化这些矢量，并且证明它们的正交性，那么它们归一化之后就是$H_S$和$H_A$的基矢量。
+
+首先我们讨论对称化子代数$H_S$。我们取$H$的形如下式的对称化基矢量：
+\[
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_S \propto \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+我们要计算其归一化系数。首先
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_{s, s'} \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_{s'}^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n, 
+    \end{aligned}
+\]
+注意到由于$\hat{P}$的幺正性和可逆性，$\hat{P}_{s'}^\dagger \hat{P}_s$也是一个排序算符，
+并且固定$s$不动，不同的$s'$会让$\hat{P}_{s'}^\dagger \hat{P}_s$取不同的值；
+从而，对每个$s$，$\hat{P}_{s'}^\dagger \hat{P}_s$都有$n!$个值，
+也即固定$s$不动而让$s'$从$1$取到$n!$，$\hat{P}_{s'}^\dagger \hat{P}_s$的值不重复地取遍所有共计$n!$个排序算符；
+从而当$s$和$s'$都从$1$计数到$n!$时，$\hat{P}_{s'}^\dagger \hat{P}_s$的值取遍所有排序算符，且每个重复$n!$次，从而
+\[
+    \begin{aligned}
+        &\quad \sum_{s, s'} \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_{s'}^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! \sum_s \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \end{aligned}
+\]
+我们知道$\hat{M}$的各个本征态是正交的，因此上式中的内积只有在$\hat{P}$作用在$\ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n$得到的结果和作用前一样时才能取$1$，否则均取零。这样的排列方式总共有$n_1!n_2!\cdots n_m!$个，也就是说上式右边的求和号中值为$1$的项共有$n_1!n_2!\cdots n_m!$个，其余均为零，所以我们得到
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! \sum_s \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! n_1 ! n_2! \cdots ,
+    \end{aligned}
+\]
+% TODO:这里要不要引入m这个量，毕竟无限个本征值
+于是得到归一化对称基矢量
+\begin{equation}
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_S = \frac{1}{\sqrt{n! n_1 ! n_2! \cdots}} \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \label{eq:sym-basis}
+\end{equation}
+% TODO：统一术语：排序算符、交换算符，等等
+
+同样的，我们考虑形如
+\[
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A \propto \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+\]
+的反对称化基矢量。
+使用和对称化基矢量同样的方法可以归一化这个基矢量。
+在动手之前，注意到如果$\ket{M^{(k_1)}}_1$,$\ket{M^{(k_2)}}_2$,..., $\ket{M^{(k_n)}}_n$中有重复的态，
+那么必定会导致相应的$\ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A$为零。
+这是因为设$\hat{P}$交换了两个重复的态，那么就有
+\[
+    \hat{P} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A = \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A,
+\]
+而由于这是反对称化基矢量，我们又有
+\[
+    \hat{P} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A = - \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A,
+\]
+于是相应的反对称化基矢量就是零。因此我们只需要讨论其中所有单粒子态都不重复的反对称化基矢量。
+如果单粒子态不重复，那么求和号中的态彼此正交，于是
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_s (-1)^{2p_s} \left(\hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_s 1 = n!,
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A 
+    = \frac{1}{\sqrt{n!}} \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \label{eq:asym-basis}
+\end{equation}
+当然，由于此时$n_1 = n_2 = \cdots = 1$，\eqref{eq:asym-basis}也可以写成\eqref{eq:sym-basis}的形式。
+
+然后我们来讨论\eqref{eq:sym-basis}和\eqref{eq:asym-basis}的正交归一性。
+归一化性已经通过计算归一化系数完成了，我们接下来讨论正交性。
+无论作用怎么样的$\hat{P}_s$，都不会改变一个态中的占据数$n_1, n_2, \ldots$，
+因此两个\eqref{eq:sym-basis}中占据数不同的态的求和号中出现的所有态都不相同%
+\footnote{需要注意的是占据数相同的态也有可能不同。在$H_S$中占据数相同的态完全相同，因为它们之间差了有限次粒子交换；
+$H_A$中占据数相同的态如果差了奇数次粒子交换，那么它们就差了一个负号，差了偶数次粒子交换则相同。}，
+因此两个\eqref{eq:sym-basis}中占据数不同的态的内积是零；
+同样的思路也说明\eqref{eq:asym-basis}中占据数不同的态的内积是零。
+在已经做了归一化之后，我们确认，\eqref{eq:sym-basis}和\eqref{eq:asym-basis}都满足正交归一化条件。
+
+至此我们发现，实际的全同粒子系统只需要使用$H$的对称化子代数$H_S$或者反对称化子代数$H_A$描述，
+\eqref{eq:sym-basis}是$H_S$的基底，\eqref{eq:asym-basis}是$H_A$的基底。
+我们还知道，$H_A$中的基矢量中不会有两个粒子处于同样的态上，
+从这个结论容易推导出，$H_A$中任何一个态中都不会有两个粒子的单粒子态完全相同。
+
+\subsubsection{福克空间与产生湮灭算符}
+% TODO:将“粒子数算符”的名称改为“占据数算符”
+现在对任何一个正整数$n$，我们都已经建立起了$n$粒子全同粒子系统的态空间——那就是说，对称化和反对称化希尔伯特空间。
+而我们也可以指定$n=0$时的“全同粒子系统”的态空间是平凡的向量空间$\{0\}$，并记其中唯一一个矢量为$\ket{0}$。
+于是我们记$n$粒子对称化或反对称化希尔伯特空间为$H_S^{(n)}$和$H_A^{(n)}$，且$H_S^{(0)}$和$H_A^{(0)}$就是$\{\ket{0}\}$。
+本节我们转而考虑这样的问题：在这一系列空间之间有什么联系？
+
+在维数不同、互不等价的线性空间之间操作是非常麻烦的，因此我们尝试把诸$H_S^{(n)}$和$H_A^{(n)}$放在一个更大的空间中讨论，
+这个更大的空间包含且仅包含诸$H_S^{(n)}$和$H_A^{(n)}$中的矢量。
+构造这种“更大的空间”的方法有很多。
+我们需要的操作绝对不是直积，因为两个空间的直积中含有原来的两个空间没有的向量。
+因此尝试使用直和操作。
+的确，并没有特殊的证据要求我们一定要使用直和，
+但是如果我们讨论的系统中不涉及粒子数变动，那么具体使用的是直和还是别的什么操作无关紧要，
+因为此时诸$H_S^{(n)}$和$H_A^{(n)}$直和出来的空间并没有物理意义
+——我们只会把其中的粒子数和我们讨论的系统的粒子数相同的部分拿来做动力学计算。
+而在\autoref{sec:from-qft-to-many-body}中会看到，使用直和是正确的。
+总之，定义\textbf{对称的福克空间}
+\[
+    F_S = H_S^{(0)} \oplus H_S^{(1)} \oplus H_S^{(2)} \oplus \cdots,
+\]
+以及\textbf{反对称的福克空间}
+\[
+    F_A = H_A^{(0)} \oplus H_A^{(1)} \oplus H_A^{(2)} \oplus \cdots.
+\]
+每个空间的基矢量为
+\[
+    \ket{0}, \; \ket{1;M^{(k_1)}}, \; \ket{2;M^{(k_1)} M^{(k_2)}}, \; \ldots,
+\]
+其中$k_1, k_2, \ldots$跑遍所有可能的本征值。
+
+现在我们定义\textbf{产生湮灭算符}。%
+\footnote{产生湮灭算符未必有动力学上的意义。例如，在粒子数固定的动力学中它们就只是一种新的观点。但是在粒子数会变的情况下它们很重要。}%
+以下我们略去了下角标$A$和$S$，因为这些定义与对称还是反对称无关。
+首先取\textbf{产生算符}$a^\dagger$，使之满足
+\begin{equation}
+    \hat{a}^\dagger (M^{(i)}) \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i + 1} \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}.
+    \label{eq:creation-operator}
+\end{equation}
+其中${n_i}$指的是$\ket{n; M^{(k_1)} M^{(k_2)}}$中$M^{(i)}$态的个数。
+给定了相应的系数，上式就完全地确定了一个福克空间（无论对称还是反对称）上的算符。%
+\footnote{至于为什么要取这个$\sqrt{n_i + 1}$的系数，我们将在定义粒子数算符的时候看到。}
+产生算符将$n$粒子态转化为$n+1$粒子态。
+现在要问：有没有一个算符能够将$n+1$粒子态转化为$n$粒子态？
+实际上由共轭转置的定义（注意到\eqref{eq:creation-operator}只涉及基矢量），
+$\hat{a}^\dagger$的共轭转置，也就是$\hat{a}$就是满足这个条件的算符，
+因为由共轭转置的定义可以导出
+\[
+    \hat{a} (M^{(i)}) \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i + 1} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}},
+\]
+其中$n_i$指的是$\ket{n;M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M^{(i)}$态的个数，
+于是我们称$\hat{a}$为\textbf{湮灭算符}。
+这里还有一个微妙的细节。注意到$\hat{a}^\dagger(M^{(i)})$作用在任何一个态上面都不可能产生一个不含有$M^{(i)}$态的态，因此不能仅仅依靠\eqref{eq:creation-operator}得到$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上的结果。
+于是我们额外规定：$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上得到长度为零的向量%
+\footnote{不是得到$\ket{0}$——$\ket{0}$是真实的物理态，而长度为零的向量不是。}，
+从而$\hat{a}$和$\hat{a}^\dagger$在整个福克空间上都定义好了。%
+\footnote{刚才提到的这种情况实际上来自数学上的一个结论：在希尔伯特空间中，$(\hat{a}^\dagger)^\dagger$未必就是$\hat{a}$。当然，我们在这里的处理方法并没有什么逻辑漏洞——当我们要求\eqref{eq:creation-operator}成立时我们只是要求存在某个算符$\hat{a}$（而不是产生算符）使得此方程成立，而接下来要求$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上得到长度为零的向量就唯一确定了$\hat{a}$。}
+这样如果重新定义$n_i$为$\ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M_i$态的数量，那么就可以使用一个式子完全刻画$\hat{a}(M^{(i)})$的行为：
+\begin{equation}
+    \hat{a} (M^{(i)}) \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}.
+    \label{eq:annihitation-operator}
+\end{equation}
+于是\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}就给出了产生湮灭算符的定义。
+请注意这两个式子中的$n_i$是不同的；它们分别是两个式子中被算符作用前的态中$M^{(i)}$态的个数。
+
+指出一个事实：任何一个\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中的态都可以通过产生算符和真空态$\ket{0}$推导出来。原因很简单：重复使用\eqref{eq:creation-operator}，我们有
+\begin{equation}
+    \ket*{n; \underbrace{M^{(1)} M^{(1)} \cdots}_{n_1} \underbrace{M^{(2)} M^{(2)} \cdots}_{n_2} \cdots} = \frac{1}{\sqrt{n_1! n_2! \cdots}} \left(\hat{a}^\dagger (M^{(1)})\right)^{n_1} \left(\hat{a}^\dagger (M^{(2)})\right)^{n_2} \cdots \ket{0},
+    \label{eq:creation-basis}
+\end{equation}
+而通过排列算符，\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中的每一个基矢量都可以写成上式左边的形式（可能差一个负号），
+因此所有的基矢量都可以通过产生算符构造出来。
+
+定义产生湮灭算符之后可以定义
+\begin{equation}
+    \hat{N}(M^{(i)}) = \hat{a}^\dagger (M^{(i)}) \hat{a} (M^{(i)})
+    \label{eq:number-operator}
+\end{equation}
+为\textbf{粒子数算符}。它叫做粒子数算符是因为，按照\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}可以验证，我们有
+\begin{equation}
+    \hat{N}(M^{(i)}) \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = n_i \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}},
+    \label{eq:number-eigenstate}
+\end{equation}
+其中$n_i$指$\ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M^{(i)}$态的个数。
+\eqref{eq:number-eigenstate}意味着\eqref{eq:sym-basis}和\eqref{eq:asym-basis}都是$\hat{N}(M^{(i)})$的本征态，本征值就是$M^{(i)}$态的数目。
+这就是粒子数算符一词的来源。
+相应的
+\begin{equation}
+    \hat{N}_\text{total} = \sum_i \hat{N}(M^{(i)})
+    \label{eq:total-number-operator}
+\end{equation}
+就是\textbf{总粒子数算符}，它的本征态也是\eqref{eq:sym-basis}和\eqref{eq:asym-basis}，本征值为对应的态的总粒子数。
+
+\subsubsection{产生湮灭算符的代数结构}
+
+% TODO：然后问题就来了：诸粒子数算符能不能完整描述被场算符完整描述的态空间？
+在前面几节中，我们通过$M$表象下的单粒子空间构造出了全同粒子体系的希尔伯特空间，
+通过全同性得到了有物理意义的对称化和反对称化希尔伯特空间，然后将它们直和起来得到福克空间，最后在其上定义了产生湮灭算符。
+本节我们将推导产生湮灭算符的几个代数性质，然后接着我们会发现，通过这几个性质可以反过来，
+从产生湮灭算符和一个真空态$\ket{0}$能够得到对称和反对称福克空间，然后退化到单粒子态。
+
+首先我们推导产生湮灭算符的对易关系。我们有
+\[
+    \begin{split}
+        \ket{n+2;M^{(i)}M^{(j)}M^{(k_1)}M^{(k_2)} \cdots} = \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots}, \\ 
+        \quad \ket{n+2;M^{(i)}M^{(j)}M^{(k_1)}M^{(k_2)} \cdots} = \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots},
+    \end{split}
+\]
+从而对$F_S$和$F_A$分别有
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots} = \pm \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots}
+\]
+$F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性，得到
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger = \pm \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}).
+\]
+于是对$F_S$有
+\[
+    [\hat{a}^\dagger (M^{(i)}), \hat{a}^\dagger (M^{(j)})] = 0,
+\]
+对$F_A$有
+\[
+    \acomm{\hat{a}^\dagger (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = 0.
+\]
+特别的，
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(i)}) = 0.
+\]
+对以上公式取共轭转置，可以推出，对$F_S$有
+\[
+    \comm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = 0,
+\]
+对$F_A$有
+\[
+    \acomm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = 0.
+\]
+然后再考虑一个产生算符和一个湮灭算符的对易关系。
+使用和上面类似的方式，可以推导出
+\[
+    \hat{a}(M^{(i)}) \hat{a}^\dagger (M^{(j)}) \pm \hat{a}^\dagger (M^{(j)}) \hat{a} (M^{(i)}) = \delta_{ij} \hat{I}.
+\]
+综上，在$F_S$中有
+\begin{equation}
+    \comm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = \comm{\hat{a}^\dagger(M^{(i)})}{\hat{a}^\dagger(M^{(j)})} = 0, \quad \comm{\hat{a} (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = \delta_{ij} \hat{I},
+    \label{eq:commutator-of-ca-op}
+\end{equation}
+在$F_A$中有
+\begin{equation}
+    \acomm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = \acomm{\hat{a}^\dagger(M^{(i)})}{\hat{a}^\dagger(M^{(j)})} = 0, \quad \acomm{\hat{a} (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = \delta_{ij} \hat{I}.
+    \label{eq:anticommutator-of-ca-op}
+\end{equation}
+从\eqref{eq:anticommutator-of-ca-op}可以看出，在$n_i > 1$时
+\[
+    \left( \hat{a}^\dagger (M^{(i)}) \right)^{n_i} = 0,
+\]
+结合\eqref{eq:creation-basis}，我们再次发现反对称情况下不可能有重复出现的单粒子态。
+
+得到了\eqref{eq:commutator-of-ca-op}和\eqref{eq:anticommutator-of-ca-op}之后，我们再来分析粒子数算符的性质。
+首先可以计算出对易关系
+\begin{equation}
+    \begin{aligned}
+        \comm{\hat{N}(M^{(i)})}{\hat{a}(M^{(i)})} = - \hat{a}(M^{(i)}), \quad \comm{\hat{N}(M^{(i)})}{\hat{a}^\dagger(M^{(i)})} = \hat{a}^\dagger(M^{(i)}), \\
+        \comm{\hat{N}(M^{(i)})}{\hat{a}(M^{(j)})} = \comm{\hat{N}(M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = 0
+        \label{eq:commutator-n-a}
+    \end{aligned}
+\end{equation}
+无论对$F_S$还是$F_A$均成立，这表明产生算符是与它关于同一个态的粒子数算符的升算符，湮灭算符是与它关于同一个态的粒子数算符的降算符。
+将此对易关系线性叠加，得到
+\begin{equation}
+    \comm{\hat{N}_\text{total}}{\hat{a}^\dagger (M^{(i)})} =  \hat{a}^\dagger (M^{(i)}), \quad \comm{\hat{N}_\text{total}}{\hat{a} (M^{(i)})} =  -\hat{a} (M^{(i)}),
+    \label{eq:commutator-ntotal-a}
+\end{equation}
+因此任何$M^{(i)}$标记的产生湮灭算符都是总粒子数算符的升降算符。
+此外还有
+\begin{equation}
+    \comm{\hat{N}(M^{(i)})}{\hat{N}(M^{(j)})} = 0,
+    \label{eq:commutator-n-and-n}
+\end{equation}
+无论$i$和$j$是不是相等、是$F_S$还是$F_A$。
+另一方面，从基矢量\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中任取一个，记它当中$M^{(1)}$态有$n_1$个，$M^{(2)}$态有$n_2$个，等等，则它和
+\[
+    \ket*{n; \underbrace{M^{(1)} M^{(1)} \cdots}_{n_1} \underbrace{M^{(2)} M^{(2)} \cdots}_{n_2} \cdots} 
+\]
+最多差一个负号，由于$n_1, n_2, \ldots$可以自由地变动而彼此无影响，诸粒子数算符$\hat{N}(M^{(1)}), \hat{N}(M^{(2)}), \ldots$足够完全描述诸态矢量了，从而也足够描述诸态空间了。
+因此全体粒子数算符组成的集合是福克空间的一个CSCO。
+既然我们使用的本征矢\eqref{eq:sym-basis}和\eqref{eq:asym-basis}是诸粒子数算符的共同本征矢（见\eqref{eq:number-eigenstate}），我们可以将使用诸粒子数算符为CSCO、使用\eqref{eq:sym-basis}或\eqref{eq:asym-basis}为基矢量的福克空间的表象称为\textbf{粒子数表象}或者\textbf{占据数表象}（因为我们讨论占据数$n_1$，$n_2$，等等）。
+相应地，可以记基矢量为$\ket{n(M^{(1)}), n(M^{(2)}), \ldots}$。
+% TODO:使用小n而不是大N来表示占据数
+
+现在我们选取一条反过来的思路。首先设我们找到了一族算符$\hat{a}(M^{(i)})$，$i=1, 2, \ldots$，并且这些算符满足\eqref{eq:commutator-of-ca-op}或\eqref{eq:anticommutator-of-ca-op}中的其中一个，以及一个唯一的真空态$\ket{0}$。
+一旦确认了这一点，按照\eqref{eq:number-operator}和\eqref{eq:total-number-operator}定义粒子数算符，立刻可以推导出\eqref{eq:commutator-n-a}，从而\eqref{eq:commutator-ntotal-a}和\eqref{eq:commutator-n-and-n}。
+使用\eqref{eq:creation-basis}计算出一系列矢量，这些矢量满足\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}，且容易证明这些矢量张成一个对称（如果使用\eqref{eq:commutator-of-ca-op}）或者反对称（如果使用\eqref{eq:anticommutator-of-ca-op}）福克空间，且粒子数算符组成的集合构成这个空间上的一个CSCO。
+最后，该福克空间上的单粒子态为
+\begin{equation}
+    \ket{1;M^{(i)}} = \hat{a}^\dagger (M^{(i)}) \ket{0}
+\end{equation}
+张成的希尔伯特空间，其上可以定义单粒子算符
+\begin{equation}
+    \hat{M} = \sum_i M^{(i)} \dyad{M^{(i)}}.
+\end{equation}
+这表明，一个唯一的真空态，和一组满足\eqref{eq:commutator-of-ca-op}或\eqref{eq:anticommutator-of-ca-op}中的其中一个的算符，就能够完全刻画一个福克空间。
+% TODO：我好像还漏掉了一些东西，就是正交归一化性质在产生湮灭算符上的推论：$\mel{0}{\hat{a}^\dagger\hat{a}^\dagger}{0}=0$这种
+
+最后我们讨论表象变换。以上所有的讨论使用的都是$M$表象。现在如果我们使用$G$表象的单粒子态构造出了另外一套福克空间，这两个空间之间有什么样的联系？
+综合使用\eqref{eq:sym-basis}和\eqref{eq:asym-basis}以及\eqref{eq:creation-basis}，还有我们熟悉的单粒子态的表象变换公式
+\[
+    \ket{M^{(i)}} = \sum_j \ket{G^{(j)}} \braket{G^{(j)}}{M^{(i)}},
+\]
+可以发现，设$\hat{a}(M^{(i)})$是用$M$表象建立起来的福克空间的湮灭算符，$\hat{a}(G^{(i)})$是用$G$表象建立起来的福克空间的湮灭算符，且两个空间同时使对称空间或者同时是反对称空间，那么
+\begin{equation}
+    \begin{bigcase}
+        \hat{a}^\dagger (M^{(i)}) = \sum_j \braket{G^{(j)}}{M^{(i)}} \hat{a}^\dagger (G^{(j)}), \\
+        \hat{a} (M^{(i)}) = \sum_j \braket{M^{(i)}}{G^{(j)}} \hat{a} (G^{(j)}).
+    \end{bigcase}
+    \label{eq:creation-and-annihitation-trans}
+\end{equation}
+反之，在已有一套$\hat{a}(M^{(i)})$满足\eqref{eq:creation-and-annihitation-trans}且有真空态，从而能够使用这套算符构造一个$M$表象的对称福克空间时，使用\eqref{eq:creation-and-annihitation-trans}可以得到另一套$\hat{a}(G^{(i)})$，使用它们可以构造出一个$G$表象的对称福克空间；反对称同理。
+
+\subsubsection{二次量子化形式的算符}
+
+在\autoref{sec:n-particle-space}中已经说明，多粒子系统中有意义的可观察量在粒子交换下不变。
+本节讨论所有这样的有意义的可观察量的形式。
+福克空间是真空态、单粒子空间、二粒子空间……的直和，因此其上的任何一个算符都可以写成单粒子算符、二粒子算符……的和。设$\hat{A}$是福克空间上的一个算符，则
+\[
+    \hat{A} = \sum_i \sum_{j_1, j_2, \ldots, j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i},
+\]
+上标$(i)$表示这是$i$粒子算符，下标$j_1, j_2, \ldots$表示这是作用在第$j_1, j_2, \ldots$号粒子上的算符。
+如果序列$j_1, j_2, \ldots$中有重复的序号，那么相应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$实际上完全可以使用只涉及$i-1$粒子空间甚至涉及更少的粒子的空间上的算符来表示，因此不失一般性地，我们要求
+% TODO：为什么？两个处于同一量子态的粒子之间不能有相互作用吗？
+\[
+    \hat{A} = \sum_i \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i}.
+\]
+考虑到$\hat{A}$是有意义的可观察量，它和任何一个粒子交换算符都是对易的。
+这又意味着，所有的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$都是厄米算符，且它们和粒子交换算符都是对易的。
+因此如果两个序列$j_1, j_2, \ldots, j_i$和$j'_1, j'_2, \ldots, j'_i$中出现的数完全相同，它们对应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$就是完全相同的算符。
+因此通过调整每一项所含的算符前面的系数我们可以写出
+\begin{equation}
+    \hat{A} = \sum_i \sum_{j_1 < j_2 < \ldots < j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i},
+    \label{eq:fock-observable-original}
+\end{equation}
+求和号中包含的所有项都是厄米的，且它们各不相同。如果处理严格递增的指标比较麻烦，可以等价地写出
+\begin{equation}
+    \hat{A} = \sum_i \frac{1}{i!} \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i}.
+    \label{eq:fock-observable}
+\end{equation}
+\eqref{eq:fock-observable}和\eqref{eq:fock-observable-original}中的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$完全相同；\eqref{eq:fock-observable}中的阶乘系数是为了消除下标重复计数，因为含有$i$个各不相同的数的序列有$i!$种排列方式，每种排列方式对应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$都完全一样，且都对应着\eqref{eq:fock-observable-original}中要求$j_1 < j_2 < \ldots$的那个$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$。
+再次，由于$\hat{A}$是有意义的可观察量，\eqref{eq:fock-observable}中的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$只相差了一个粒子交换变换，即使它们涉及编号不同的粒子。
+反之，如果任何两个$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$只相差一个粒子交换，% TODO:两个算符之间相差一个“变换”，两个态之间相差一个算符
+且对彼此互为重排的两个序列$j_1, j_2, \ldots, j_i$和$j'_1, j'_2, \ldots, j'_i$，它们对应的$\hat{A}^{(i)}$完全相同，
+那么通过\eqref{eq:fock-observable}或等价的\eqref{eq:fock-observable-original}给出的$\hat{A}$一定是福克空间上的可观察量。由于\eqref{eq:fock-observable}中第二个求和号涉及的任何一个$j_1, j_2, \ldots$这样的序列都不含有重复的元素，诸$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$实际上可以通过将一个作用在$i$粒子对称化或反对称化希尔伯特空间上的算符作用在$j_1, j_2, \ldots$号粒子上得到，也就是说，\eqref{eq:fock-observable}中对$i$的求和号中的每一项都是使用同一个$i$粒子算符作用在不同的粒子上得出的。
+因此我们有最后的结论：算符$\hat{A}$是福克空间上的可观察量，当且仅当，可以找到一系列$i$粒子可观察量$\hat{A}^{(i)}$，使得\eqref{eq:fock-observable}或等价的\eqref{eq:fock-observable-original}成立，其中$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$指的是$\hat{A}^{(i)}$在$j_1, j_2, \ldots, j_i$号粒子上的作用。
+
+现在再尝试使用产生湮灭算符写出\eqref{eq:fock-observable}中的每一项。
+对粒子的编号完全是任意的（当然也可以是任意的，既然交换粒子之后什么都没有变），因此我们将随时采用最方便的安排方式。
+设$\hat{A}^{(i)}$是一个$i$粒子算符，且它与粒子交换算符对易。
+% 下面的说法仍然有很大的直觉考量因素。能否从数学上严格处理？
+% 在$n < i$时，
+% \[
+%     \hat{A}^{(i)}_{j_1 j_2 \ldots j_i} \ket{n;M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = 0,
+% \]
+% 而在$n \geq i$时，
+% \[
+%     \begin{aligned}
+%         &\quad \hat{A}^{(i)}_{j_1 j_2 \ldots j_i} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} \\
+%         &= \begin{bigcase}
+%             \sum_{l_1, l_2, \ldots, l_i} \ket{n; M^{(k'_1) M^{(k'_2)}} \cdots M^{(k'_n)}} \mel{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}}{\hat{A}^{(i)}}{M^{(k_{j_1})} M^{(k_{j_2})} \cdots M^{(k_{j_i})}}, \\ \text{with no repetition in $M^{(k_1)}, M^{(k_2)}, \ldots$}, \\
+%             0, \quad \text{with repetition.}
+%         \end{bigcase},
+%     \end{aligned}
+% \]
+% 其中
+% \[
+%     k'_a = \begin{cases}
+%         k_a, \quad a \neq j_1, j_2, \ldots, j_i, \\
+%         l_b, \quad a = j_b, \; b = 1, 2, \ldots, i.
+%     \end{cases}
+% \]
+% TODO：实际上以上两个式子就是“\hat{A}^{(i)}作用在n粒子态上”的定义，为什么可以这么定义？
+那么，$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$就是
+\[
+    \begin{aligned}
+        &\hat{A}^{(i)}_{j_1 j_2 \ldots j_i} 
+        = \sum_{k_1, k_2, \ldots, k_i} \sum_{l_1, l_2, \ldots, l_i} \\
+        &\ket{M^{(k_1)}}_{j_1} \ket{M^{(k_2)}}_{j_2} \cdots \ket{M^{(k_i)}}_{j_i} 
+        \bra{M^{(l_1)}}_{j_1} \bra{M^{(l_2)}}_{j_2} \cdots \bra{M^{(l_i)}}_{j_i} 
+        \mel{M^{(k_1)} M^{(k_2)} \cdots M^{(k_i)}}{\hat{A}^{(i)}}{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}}.
+    \end{aligned}
+\]
+我们把$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$作用在一个任意粒子数的基矢量上，其结果是将上式中的右矢和多粒子态基矢量做张量缩并的产物。
+%\[
+%    \begin{aligned}
+%        &\quad \hat{A}^{(i)}_{j_1 j_2 \ldots j_i} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} \\
+%        &= 
+%    \end{aligned}
+%\]
+% TODO:这个严格的数学证明，不过我懒得写
+可以看出，
+\[
+    \begin{aligned}
+        &\quad \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \ket{M^{(k_1)}}_{j_1} \ket{M^{(k_2)}}_{j_2} \cdots \ket{M^{(k_i)}}_{j_i} 
+        \bra{M^{(l_1)}}_{j_1} \bra{M^{(l_2)}}_{j_2} \cdots \bra{M^{(l_i)}}_{j_i} \\
+        &= \hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)})  
+    \end{aligned}
+\]
+结合以上各式，我们得出：
+\begin{equation}
+    \begin{aligned}
+        \hat{A} = \sum_i \frac{1}{i!} &\sum_{k_1, k_2, \ldots, k_i} \sum_{l_1, l_2, \ldots, l_i} \\
+        &\mel{M^{(k_1)} M^{(k_2)} \cdots M^{(k_i)}}{\hat{A}^{(i)}}{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}} \\
+        &\hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)}).
+        \label{eq:general-form-of-fock-observable}
+    \end{aligned}
+\end{equation}
+\eqref{eq:general-form-of-fock-observable}给出了福克空间上的可观察量的一般形式。
+
+同样上面的论述可以双向地使用：给定一系列$\hat{A}^{(1)}, \hat{A}^{(2)}, \ldots$，总是可以使用\eqref{eq:general-form-of-fock-observable}构造出福克空间上的可观察量；反之，假定我们从一套产生湮灭算符和一个真空态构造出了一个福克空间，并且确认$\hat{A}$是这个福克空间上的可观察量，那么它一定可以展开成\eqref{eq:general-form-of-fock-observable}的形式。
+
+\subsection{多体系统的动力学}
+
+\autoref{sec:many-body-state}节描述了描述全同粒子系统态的基本框架，现在我们来让这些态动起来。
+
+
+% TODO：为什么多粒子态交换两个粒子之后得到的多粒子态会乘上一个固定的常数？？？这个常数实际上会影响粒子的行为，
+% 例如，费米子不能占据相同的量子态（这似乎意味着，即使是无相互作用的情况，费米子之间也会有某种“相互作用”）
+% 因此它一定能够从哈密顿量或对易关系中看出来——那么，费米子和玻色子的区分是否能够从单粒子的哈密顿量或对易关系中看出来呢？？
+% 可能的思路：玻色子的产生湮灭算符彼此对易，意味着自由状态下不同的玻色子完全独立（更为严格的证明？）
+% 而费米子即使在自由状态下也会相互影响（？没有荷也会？？？）
+
+\subsection{从量子场论到多粒子体系}\label{sec:from-qft-to-many-body}
+
+% TODO:二次量子化之后可以得到粒子数算符和多粒子态，那么怎么写出能够完整描述多粒子态的算符？
+由于\autoref{sec:qft-free-dynamics}中给出的所有运动方程（它们都是算符的方程）都是线性的，我们可以使用傅里叶变换的方法处理它们。
+记某一场量为$\phi$（它也许是标量场，也许是矢量场的分量，又也许是旋量场的分量，无所谓），对它做算符的傅里叶变换：
+\[
+    \phi(x) = \int \frac{\dd[4]p}{(2\pi)^4} (A_p \ee^{\ii p_\mu x^\mu}),
+\]
+其中的$p$是4-矢量。由于
+% TODO
+
+总之，自由场的哈密顿量能够写成
+\[
+    H = \int \frac{\dd[3]{p}}{(2\pi)^3} \omega_{\vb*{p}} a_{\vb*{p}}^\dagger a_{\vb*{p}}
+\]
+的形式，并且$\vb*{p}_1,\vb*{p}_2$不相等时
+% 这一行公式是有问题的……有可能出现对易关系不为零的情况。
+\[
+    [a_{\vb*{p}_1}, a_{\vb*{p}_2}] = [a_{\vb*{p}_1}^\dagger, a_{\vb*{p}_2}] = [a_{\vb*{p}_1}, a_{\vb*{p}_2}^\dagger]  = [a_{\vb*{p}_1}^\dagger, a_{\vb*{p}_2}^\dagger] = 0,
+\]
+因此我们可以将对应于每一个给定$\vb*{p}$值的哈密顿算符
+\begin{equation}
+    H = \omega_{\vb*{p}} a_{\vb*{p}}^\dagger a_{\vb*{p}}
+\end{equation}
+单独拆分出来，讨论由它描述的态空间，然后将所有$\vb*{p}$对应的态空间直积起来，就得到了自由场的态空间。
+事实上，此时我们已经发现了一个重要的事实：场的量子化代表场的态空间可以拆分成一系列简谐振子的态空间。
+% TODO：定义每一个模式的动量算符
+% 算符的傅里叶变换必定导致产生湮灭算符？
+
+粒子交换是不是会导致总体的态矢量差一个负号实际上是由产生湮灭算符的对易关系决定的。
+
+先前无论是在非相对论性的单粒子理论中还是在相对论性的场论中我们都是有了算符之后再分析态空间的结构的。
+但当我们试图从场的观点切换到粒子的观点时，我们实际上是先知道了态空间的结构（有一个基态、可以使用产生湮灭算符在不同的本征态之间切换，等等），然后发现这个态空间实际上就代表了粒子数可变的多粒子态，然后我们再分析能够充分描述每个粒子的单粒子算符。
+
+\section{微扰理论}
+
+% TODO： 微扰展开、相互作用绘景
+
+\end{document}

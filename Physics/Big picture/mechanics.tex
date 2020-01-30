@@ -1,0 +1,1866 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{离散坐标和独立时间变量下的力学}
+\author{wujinq}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    从底层建立拉格朗日力学、哈密顿力学、哈密顿雅可比力学，并且讨论了它们自然的推广形式。
+\end{abstract}
+
+\section{拉格朗日力学}
+
+\subsection{拉格朗日力学的基本设定} \label{sec:langrangian-basic}
+设系统中有$n$个广义坐标${q_i}$，并认为系统能够使用拉格朗日力学描述。
+将诸$q_i$看成定义在时间轴上的场，则可以写出\textbf{最小作用量原理}：
+在等式变分下（也就是$\var t=0$）
+\begin{equation}
+    \var S = \var \int_{t_1}^{t_2} L(q, \dot{q}, t) \mathrm{d} t = 0
+    \label{eq:min-action}
+\end{equation}
+
+极值条件\eqref{eq:min-action}对应了一组微分方程，就是欧拉-拉格朗日方程（E-L方程）
+\begin{equation}
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} = 0,
+    \label{eq:el}
+\end{equation}
+
+如果系统使用一组坐标描写时可以使用拉格朗日力学描述，
+那么它使用任意一组坐标描写的时候都可以使用拉格朗日力学描述。
+事实上，从\eqref{eq:min-action}可以得出
+\[
+    \var \int_{t_1}^{t_2} L(q, \dot{q}, t) \big |_{q=q(q', t)} \mathrm{d} t = 0
+\]
+从这个方程立刻可以得到
+\[
+    \frac{\diff}{\diff t} \frac{\partial L'}{\partial \dot{q'_i}} - \frac{\partial L'}{\partial q'_i} = 0
+\]
+其中$L'$是将$L$中出现的所有$q$都使用$q'$替换之后得到的结果。
+这个方程的形式完全和\eqref{eq:el}一致，因此我们说，E-L方程在形如
+\begin{equation}
+    q'_i = q'_i(q_1, \ldots, q_n, t)
+    \label{eq:coordinates-transformation}
+\end{equation}
+的坐标变换之下是协变的。
+
+实际问题中几乎从来不出现涉及$\dot{q}$甚至更高阶导数的坐标变换，
+因此，\textbf{如无特殊说明，所有的坐标变换都取\eqref{eq:coordinates-transformation}的形式}。
+
+如果分析发现几个$q$的某个函数是一个运动积分（也就是不随时间变化而变化的量），也就是
+\[
+    F(q) = \const
+\]
+那么可以将此关系代入$L$以消去其中一个坐标，
+或者说使用一个从来不会变化的坐标代替了一个可能发生变化的坐标，也就是选择某个$q_k$使
+\[
+    q_k = q_k(q;C)
+\]
+如上所述，坐标变换不改变$L$的值，因此剩下的坐标组成的系统可以使用$L|_{q_k\to q_k(q;C)}$描述。
+需要注意的是如果有几个$q$和$\dot{q}$彼此之间的依赖关系，
+那么\textbf{不能}将这个依赖关系直接代入$L$中来消去坐标，
+因为\eqref{eq:coordinates-transformation}并不包括显含时间导数的坐标变换。
+
+另外由于\eqref{eq:min-action}是一个泛函极值问题，
+如果从\eqref{eq:el}中求解出了显式的某个$q_i=q_i(t)$，那么若将$q_i(t)$代入$L$得到$\tilde{L}$，
+则关于$\tilde{L}$的\eqref{eq:min-action}，从而\eqref{eq:el}，描述了剩下所有的$q$，也就是说，
+如果已知$q_k(t)$，那么$q_1, q_2, \ldots, q_{k-1}, q_{k+1}, \ldots, q_n$组成的系统服从以下方程：
+\[
+    \begin{split}
+        \var \int \tilde{L} \dd t = \var \int \eval{L}_{q_k \to q_k(t)} \dd t = 0, \\
+        \dv{t} \pdv{L_{q_k \to q_k(t)}}{\dot{q}_j} - \pdv{L_{q_k \to q_k(t)}}{\dot{q}_j} = 0.
+    \end{split}
+\]
+从而关于$n$个坐标的拉氏量约化为了关于$n-1$个坐标的拉氏量。
+
+\paragraph{关于下标的注记}
+表示方程序号的下标和表示坐标序号的下标通常是不同的，因为后者确定无疑的有张量代数中的指标变换关系而前者未必有。
+
+\subsection{对称性和守恒}\label{sec:symmetry-and-conservation}
+
+拉格朗日力学适用著名的诺特定理。它在只有一个自变量——也就是时间——的情况下可以写成
+\paragraph{诺特定理} 设系统在某个以$\epsilon$为单一变化参数的无穷小变换
+\[
+    \begin{aligned}
+        q_i &\longrightarrow q_i + \var q_i(\epsilon), \\
+        t &\longrightarrow t + \var t(\epsilon)
+    \end{aligned}
+\]
+之下保持不变，则存在$\Lambda=\Lambda(t)$使
+\[
+    \var L + L \frac{\diff \var t}{\diff t}
+    = \dv{\var{\Lambda}}{t} 
+\]
+且
+\begin{equation}
+    \frac{\diff }{\diff t} \left(
+        \sum_{i=1}^n \frac{\partial L}{\partial \dot{q}_i} \frac{\var q_i - \dot{q}_i \var t}{\diff \epsilon}
+        + L(q(t), \dot{q}(t), t) \frac{\var t}{\diff \epsilon} - \frac{\var \Lambda}{\diff \epsilon} 
+    \right) = 0
+    \label{eq:noether}
+\end{equation}
+
+在计算$\Lambda$的时候可能会用到不等时变分，也就是$q$和$t$同时发生变化。不等时变分下有
+\begin{equation}
+    \var (\dot{q}) = \frac{\diff}{\diff t} \var q - \dot{q} \frac{\partial \var t}{\partial t}.
+    \label{eq:non-contemporaneous-variation}
+\end{equation}
+因此等时变分时$\dd$和$\var$可以交换，而非等时变分时不行。
+
+\subsection{坐标变换}
+
+坐标变换实际上可以使用“附带约束条件”的最优化来解释，有时间再写。
+
+但是，常见的坐标变换几乎都可以写成下面的形式：
+\begin{equation}
+    \dd{q'} = f_1(q) \dd{q_1} + \ldots + f_n(q) \dd{q_n},
+    \label{eq:coordinates-transform-general}
+\end{equation}
+由此可以导出$\dot{q} \longrightarrow \dot{q}'$的公式：
+\begin{equation}
+    \dot{q}' = f_1(q) \dot{q}_1 + \ldots + f_n(q) \dot{q}_n,
+    \label{eq:coordinates-speed-transform-general}
+\end{equation}
+注意不需要将\eqref{eq:coordinates-speed-transform-general}中的$q$再写成$q'$的函数。（为什么？？）
+
+将\eqref{eq:coordinates-transform-general}和\eqref{eq:coordinates-speed-transform-general}代入拉氏量，就得到了坐标变换之后的新拉氏量。
+
+% 实际上以上结论是下面结论的特例：若$f(q) = 0$等价于
+% \[
+%     \dd{q_i} = \sum_j f_j(q, q') \dd{q_j'}
+% \]
+% 则优化问题
+% \[
+%     \min \int L(q, \dot{q}, t) \dd{t} \st f(q) = 0
+% \]
+% 等价于
+% \[
+%     \min \int L(q(q'), \dot{q}(\dot{q}', q'), t) \dd {t}
+% \]
+% 其中$\dot{q}(\dot{q}')$由
+% \[
+%     \dot{q}_i = \sum_j f_j(q(q'), q') \dot{q}'_j
+% \]
+% 确定。
+% 注意到$q'$的个数可以比$q$少——实际上这就是处理约束体系常用的方式。
+
+\subsection{广义动量、广义能量、广义力}
+
+\paragraph{广义动量} 如果$L$不显含广义坐标$q_i$，或者说，$q_i$是可遗坐标，那么由\eqref{eq:el}可以直接得到
+\[
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} = 0.
+\]
+从而定义\textbf{广义动量}
+\begin{equation}
+    p_i = \frac{\partial L}{\partial \dot{q_i}}
+    \label{eq:generalized-momentum}
+\end{equation}
+它在$q_i$是可遗坐标的时候守恒。在$q_i$不是可遗坐标的时候，它的演化方程就是\eqref{eq:el}，重写如下
+\begin{equation}
+    \frac{\diff p_i}{\diff t} = \frac{\partial L}{\partial q_i}
+    \label{eq:generalized-momentum-evolution}
+\end{equation}
+称为\textbf{广义动量定理}。
+
+我们尝试从诺特定理得到这个结论。假定拉格朗日量在坐标$q_i$的平移下不变（其它一切保持不变，时间也不变）。
+这样$\var t = 0$，$\var q_k = \var_{ik}\epsilon$。
+可以很容易地算出$\Lambda = 0$，于是
+\[
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q}_i} = 0
+\]
+我们直接得到了广义动量的守恒。
+有一个问题就是，拉氏量的平移不变是不是等价于拉氏量不显含对应坐标。回答是“是的”。拉氏量平移不变等价于
+\[
+    0 = \frac{\partial L}{\partial q_i} \var q_i + \frac{\partial L}{\partial \dot{q}_i} \var \dot{q}_i
+\]
+代入\eqref{eq:non-contemporaneous-variation}之后，得到
+\[
+    \frac{\partial L}{\partial q_i} \var q_i + 
+    \frac{\partial L}{\partial \dot{q}_i} \left(\frac{\diff}{\diff t} \var q - \dot{q} \frac{\partial \var t}{\partial t}\right)
+    = 0
+\]
+由于$\var t = 0, \var q_i = \epsilon$，最后得到
+\[
+    \frac{\partial L}{\partial q_i} \epsilon = 0.
+\]
+也就是说拉氏量不显含$q_i$。
+
+\paragraph{广义能量} 设
+\begin{equation}
+    H(q, \dot{q}, t) = \sum_i \frac{\partial L}{\partial \dot{q}_i} \dot{q}_i - L(q, \dot{q}, t)
+    \label{eq:generalized-energy}
+\end{equation}
+则有
+\begin{equation}
+    \frac{\diff H}{\diff t} = - \frac{\partial L}{\partial t}
+    \label{eq:generalized-energy-evolution}
+\end{equation}
+于是$H$在拉格朗日量不显含时间的时候守恒。
+需要注意的是$H$在不同的坐标系当中可能有不同的形式。
+
+也可以尝试从诺特定理直接推出这个守恒量。取变换为时间平移，即$\var t = \epsilon, \var q = 0$。
+假定拉氏量在这个变换之下不变，那么可以求出$\Lambda = 0$，
+TODO:实际上即使拉氏量在变换下会发生变化，下式照样成立
+从而
+\[
+    \frac{\diff}{\diff t} \left( \sum_{i=1}^n - \frac{\partial L}{\partial \dot{q}_i} \dot{q}_i + L(q(t), \dot{q}(t), t) \right) = 0
+\]
+于是得到了$H$的守恒。同样可以证明，拉氏量在时间平移下不变等价于拉氏量不显含时间。
+
+\subsection{非保守体系}
+\label{sec:non-conservative-system}
+
+考虑一个含有$n$个坐标的力学系统，这个系统依赖于某一些参数。设其拉氏量可以写成
+\[
+    \begin{aligned}
+        L(q, \dot{q}, t) &= L_1 (q_1, \ldots, q_m, \dot{q_1}, \ldots, \dot{q_m}, t) \\
+        &+ L_2 (q_1, \ldots, q_m, q_{m+1}, \ldots, q_n, \dot{q_1}, \ldots, \dot{q}_m, \dot{q}_{m+1}, \ldots, q_n, t)
+    \end{aligned}
+\]
+
+现在我们适当调节这个系统的参数，比如说让第$m$到$n$个坐标对应的某种“质量”变得很大或者很小，或者将$m$调节得很大，等等%
+\footnote{这样的例子是很多的，比如说从微观上看，粘滞阻力无非就是动能转移到了大量小粒子上面，许多非保守力同理；刚性约束无非就是用于约束的夹具——墙、斜面什么的——质量足够大且足够硬，等等，因此原则上所有体系都应该适用拉格朗日力学，但如果我们只是考虑我们关心的部分，那就需要一些额外处理。}%
+，使在这些参数的某种恰当的安排之下，\textbf{我们能够让前$m$个坐标对应的E-L方程近似不含有第$m$到$n$个坐标}，则此时有
+\[
+    \frac{\diff}{\diff t} \frac{\partial L_1}{\partial \dot{q_i}} - \frac{\partial L_1}{\partial q_i} = Q_i(q, \dot{q}, t),
+    \quad i = 1, 2, \ldots, m
+\]
+其中
+\[
+    Q_i(q, \dot{q}, t) = \frac{\diff}{\diff t} \frac{\partial L_2}{\partial \dot{q_i}} - \frac{\partial L_2}{\partial q_i},
+    \quad i = 1, 2, \ldots, m
+\]
+
+一个可能的问题是，什么样的$Q_i$是可能的？据说撞球计算机是图灵完备的，那么原则上，任何一种物理上我们感兴趣的$Q$都有可能出现。
+
+现在假定我们只关心前$m$个坐标，因此我们把$L_1$当成系统的拉氏量。当然，直接将这个拉氏量代入\eqref{eq:el}不会得出正确的结果，
+所以我们需要把$L_2$以及后$n-m$个坐标带来的影响一起放进方程右边里面。我们先前的假设意味着这个项能够写成前$m$个坐标、它们的变化率和时间的函数，
+从而我们写出推广了的E-L方程：
+\begin{equation}
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} = Q_i(q, \dot{q}, t)
+    \label{eq:generalized-el}
+\end{equation}
+方程右边的非齐次项来自那些我们不感兴趣其机制，因此没有写进拉氏量，但还是对系统有宏观作用的部分，比如说约束力、粘滞阻力。$q$只包括我们关心的坐标。
+一个具体的力学系统如果能够写成这样的形式，那么它还是可以使用拉格朗日力学研究。
+具体怎样把\eqref{eq:generalized-el}化归到理想的拉氏体系上，我们接下来探讨。
+为了表明我们只关心1到$m$号粒子，在本节剩下的讨论中将$m$用$D$来表示，代表我们只关心系统的$D$个自由度。
+
+方程\eqref{eq:generalized-el}右边的$Q$项又可以分成两部分。其中一部分$Q^{\text{nc}}$的形式是已经知道的%
+\footnote{这一部分通常不能写成某个场的梯度，不然可以直接把它写进拉氏量。}，
+还有一部分$Q^\text{cons}$的形式不知道，但是我们知道它的存在会对坐标的变化产生一定的影响，因此称它为\textbf{约束力}。
+前者的例子包括非保守力，后者的例子包括支持力、不可伸长的绳子的张力等。这样我们可以把\eqref{eq:generalized-el}写成%
+\footnote{需要注意的是，并没有一种唯一的方法可以将\eqref{eq:generalized-el}的右边部分\textbf{唯一地}写成两部分的方式。例如，想象一个粗糙的平面，如果将垂直于平面的支持力和平行于平面的摩擦力看成两个力，那么我们就得到了一个同时有耗散力和约束力的体系；而如果把它们看成同一个力，也就是全反力，那么我们就得到了一个只有约束力的体系。}
+\[
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} = Q_i^{\text{cons}}(q, \dot{q}, t) + Q_i^{\text{nc}}(q, \dot{q}, t)
+\]
+由于约束力的形式不确定，我们还需要增补约束力导致的坐标受到的影响，也就是所谓的\textbf{约束方程}，写成关于$q, \dot{q}, t$的函数：
+\[
+    f_i(q, \dot{q}, t) = 0, i = 1, 2, \ldots, C
+\]
+
+这样我们的问题就成为：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} &= Q_i^{\text{cons}}(q, \dot{q}, t) + Q_i^{\text{nc}}(q, \dot{q}, t), 
+            \quad i = 1, 2, \ldots, D, \\
+            f_i(q, \dot{q}, t) &= 0, \quad i = 1, 2, \ldots, C.
+        \end{aligned}
+    \right.
+    \label{eq:generalized-problem}
+\end{equation}
+也就是有$D$个坐标，$C$个约束方程。
+从今往后我们还要求所有的约束方程都是\textbf{独立}的，也就是它们不能相互推出。
+
+方程组\eqref{eq:generalized-problem}求解的困难主要在于约束力影响体系的动力学，但它们本身的形式未知。
+实际上，\eqref{eq:generalized-problem}本身甚至不一定能够定解
+——虽然原则上我们总是可以使用实际造成的约束来确定约束力的形式，但是实际上往往找不到足够的约束方程来达到这一点。
+一个典型的例子是，带摩擦的斜面和不带摩擦的斜面都能够将物体束缚在一个平面上，但是它们导致不同的运动。
+这表明，直接使用几何关系写出“物体在平面上”对应的方程不足以描述约束力。
+因此，除了\eqref{eq:generalized-problem}中的方程以外，我们有时还需要知道约束力的一些性质才能够定解。
+（例如，约束力不做功，约束力垂直于某些面，等等）
+
+由于非保守体系不再能够使用标准的E-L方程\eqref{eq:el}描述，也即，不再能够直接使用最小作用量原理描述，
+一切依赖于最小作用量原理导出的方程都需要做修改。
+例如，广义动量的演化方程\eqref{eq:generalized-momentum-evolution}和广义能量的演化方程\eqref{eq:generalized-energy-evolution}都需要做出改动，
+从而这两个量的守恒条件都需要修改。
+当然，修正之后的方程可以从\eqref{eq:generalized-problem}导出，
+不过如果对系统每次做粗粒化之后都需要重新找守恒量那就太麻烦了，因此下面列出广义动量和广义能量在\eqref{eq:generalized-problem}下的时间演化。
+
+从\eqref{eq:generalized-problem}我们直接得到了新的动量演化方程
+\begin{equation}
+    \frac{\diff p_i}{\diff t} = \frac{\partial L}{\partial q_i} + Q_i
+\end{equation}
+对广义能量也可以做类似的处理。由\eqref{eq:generalized-energy-evolution}和\eqref{eq:generalized-energy}，
+并且将系统的拉氏量写成两部分$L_1$和$L_2$，前者是我们感兴趣的后者不是，则
+\[
+    \frac{\diff}{\diff t} \left(
+        \sum_i \frac{\partial L_1}{\partial \dot{q}_i} \dot{q}_i - L_1(q, \dot{q}, t)
+        + \sum_i \frac{\partial L_2}{\partial \dot{q}_i} \dot{q}_i - L_2(q, \dot{q}, t)
+    \right)
+    = - \frac{\partial L_1}{\partial t} - \frac{\partial L_2}{\partial t}
+\]
+上式可以化简为
+\[
+    \frac{\diff}{\diff t} \left(
+        \sum_i \frac{\partial L_1}{\partial \dot{q}_i} \dot{q}_i - L_1(q, \dot{q}, t)
+    \right) = 
+    - \frac{\partial L_1}{\partial t} 
+    + \sum_i \left( 
+        \frac{\partial L_2}{\partial q_i} - \frac{\diff}{\diff t} \frac{\partial L_2}{\partial \dot{q}_i} 
+    \right)
+\]
+然后使用之前的套路，也就是将$L_1$当成系统的拉氏量，用它按照\eqref{eq:generalized-energy}定义广义能量，
+并且将所有涉及$L_2$的东西全部用一个外加的广义力表示，从而
+\begin{equation}
+    \frac{\diff}{\diff t} H = - \frac{\partial L}{\partial t} + \sum_i Q_i \dot{q}_i
+    \label{eq:nc-generalized-energy-evolution}
+\end{equation}
+
+\section{哈密顿力学}
+\label{sec:hamiltonian-formalization}
+
+\subsection{从对易关系建立哈密顿力学}\label{sec:hamilton-from-commutation}
+
+\subsubsection{基本假设}
+
+%TODO: 这里都假定所有算符可以写成p和q若干次乘法后相加，但是如果是除法呢？
+
+我们可以从拉格朗日力学推出哈密顿力学。
+但是，哈密顿力学其实也可以通过一个类似于“最小作用量原理”的方式直接从数学概念建立起来。
+我们引入下面的基本设定：
+\begin{itemize}
+    \item 系统的状态完全由一些\textbf{广义坐标}$q_1, \ldots, q_n$和\textbf{广义动量}确定。%
+    \footnote{它们不一定是实函数——例如，它们可以是算符}%
+    它们合称为\textbf{正则变量}，张成了一个$2n$维的\textbf{相空间}。
+    \item 可以找到一个\textbf{哈密顿量}$H(q, p, t)$以及一个\textbf{对易子}$[\cdot, \cdot]$（这两者都可能依赖于$q,p$）
+    使得任何一个关于系统的物理量$A(q, p, t)$的演化方程为
+    \begin{equation}
+        \dv{A}{t} = \pdv{A}{t} + [A, H]
+        \label{eq:time-evolution-standard}
+    \end{equation}
+    当然，从这个方程可以直接得到我们熟悉的（见\ref{sec:hamiltionian-and-canonical}节，\eqref{eq:canonical-equations}）
+    \[
+        \dot{p_i} = [p_i, H], \quad \dot{q_i} = [q_i, H]
+    \]
+    \item 进一步，要求对易子具有这些性质：反对称性、在某个变元为常数时取零、双线性性，以及下面的结合律
+    \begin{equation}
+        [A, BC] = B[A, C] + [A, B]C
+    \end{equation}
+    \item 任意两个正则变量的对易子是确定的关于所有正则变量和时间的函数，
+    也就是说，$[p_i, p_j]$，$[q_i, q_j]$，$[p_i, q_j]$已知
+\end{itemize}
+
+如果以上条件都得到满足，我们就唯一地确定了整个系统的演化情况，从而完整地描述了整个系统——不需要更多条件了。
+要看出这是为什么，考虑到我们总是可以将$H,A$展开成$p, q$的级数，
+考虑到对易子的线性性，只需要计算出$H, A$的级数中各项的对易子就计算出了$[H, A]$。
+而$H, A$的级数中各项的对易子形如
+\[
+    [p^{i_1}q^{j_1} p^{i_2} q^{j_2} \cdots p^{i_n} q^{j_n},\; p^{k_1}q^{l_1} p^{k_2} q^{l_2} \cdots p^{k_n} q^{l_n}]
+\]
+然后可以不断使用结合律将左右两个变元的开头和结尾的$p$或$q$移动到方括号外面，
+最后得到的式子中每一项都是一串正则变量的乘积再乘上$[p, q],[p, p], [q, q]$形式的对易子，
+而这三种形式的对易子又是已知的。
+因此，无论$A, H$取什么样的形式，我们都可以计算出$[H, A]$，
+从而可以通过求解\eqref{eq:time-evolution-standard}得到体系的演化。
+因此如果能够合理地选取基本物理量的对易子，那么系统的演化就完全确定了。
+问题：基本物理量的对易子的选择是完全自由的吗？会不会有互相冲突、同一个$[A, B]$不同方式可以算出不同结果的情况？
+
+需要注意的是哈密顿量和对易子单独拿出来并没有什么意义——物理量的演化可以使用不同的哈密顿量-对易子组合来描述。
+此外不要被“对易子”这个名字误解，它不一定定义为$AB-BA$。在量子力学中确实是用了这个定义，但是还有别的定义可用。
+
+总之，选取了适当的$q,p$
+（注意它们未必是物理上所说的坐标或者动量——比如，在量子力学中就有所谓的自旋，它不对应于任何经典概念，但的确是一个自由度），
+并且给定了这些变量的对易关系，我们就确定了一个力学的基本理论框架；如果再具体的给定一个哈密顿量$H$，那么就刻画了一个系统。
+在\ref{sec:basic-hamilton-concepts-from-lagrange}节中我们使用了拉格朗日力学导出了一个哈密顿力学。
+使用这里的观点，我们无非是假定了
+\begin{itemize}
+    \item 坐标和动量均为实数
+    \item 哈密顿量$H(q, p, t) = \sum_i p_i \eval{\dot{q}_i}_{\dot{q} \to p} - L(q, \dot{q}(p, q, t), t)$
+    \item 对易子就是\textbf{泊松括号}
+    \begin{equation}
+        [p_i, p_j] = 0, \quad [q_i, q_j] = 0, \quad [q_i, p_j] = \delta_{ij}
+        \label{eq:classical-poision-brackets}
+    \end{equation}
+    这三个方程就完全确定了泊松括号的定义。实际上，通过上一节中介绍的反复使用结合律的方法并考虑到坐标和动量都是实数，可以导出我们熟悉的泊松括号表达式
+    \begin{equation}
+        [A, B] = \left(\sum_i \pdv{A}{q_i} \pdv{B}{ p_i} - \pdv{A}{p_i} \pdv{B}{q_i}\right)
+        \label{eq:classical-poison-brackets-def}
+    \end{equation}
+    而上式反过来可以直接导出\eqref{eq:classical-poision-brackets}，
+    因此物理量的乘积可交换时，经典力学中的泊松括号定义等价于要求\eqref{eq:classical-poision-brackets}恒成立。
+\end{itemize}
+在量子力学中可以取不同的对易关系。由于此时的“动量”和“坐标”都是算符，不再能够使用对坐标和动量的偏导来定义对易子，但是\eqref{eq:classical-poision-brackets}仍然成立（虽然因为符号选取的原因会相差$\mathrm{i} \hbar$）。
+
+\subsubsection{坐标变换}
+
+这一节的内容实际上也是有问题的。可以做任意的坐标变换，只需要改变对易子取值就可以了
+坐标变换显含时间的情况需要特别的注意。
+\[
+    A = f(\gamma, t)
+\]
+如果能够做坐标变换$\gamma=\gamma(\Gamma)$，那么有
+\[
+    [f(\gamma), t] = [f(\gamma(\Gamma, t)), t]
+\]
+我们有
+\[
+    \dv{A}{t} = [A, H] + \left( \pdv{A}{t} \right)_\gamma
+\]
+这个式子在使用$\Gamma, t$来表示$A$时仍然是成立的，但是它显含$\gamma$，因此我们希望能够使用$(\partial A / \partial t)_\Gamma$写出演化方程。
+如果保持对易子的定义不变，那么唯一可能的方案就是修改$H$。这也就是含时的坐标变换会导致哈密顿量改变的原因。
+话说一般情况下这样的哈密顿量是不是存在恐怕都很成问题。当然经典力学中肯定是存在的，而且可以用生成函数算出来。
+
+在后面使用拉格朗日力学构造哈密顿力学的时候会频繁地提到“正则变换”。
+那是因为我们需要保证泊松括号的定义\eqref{eq:classical-poison-brackets-def}中的$p,q$无论是使用变换前的量还是使用变换后的量都给出一样的结果。
+既然变换前\eqref{eq:classical-poision-brackets}成立，我们要保证\eqref{eq:classical-poision-brackets}也适用于变换之后得到的$Q,P$，也就是
+\[
+    [Q_i, Q_j] = 0, \quad [P_i, P_j] = 0, \quad [Q_i, P_j] = \delta_{ij}
+\]
+必须成立。这就限制了可能的坐标变换。
+TODO：坐标变换显含时间的情况，为什么哈密顿量要修改
+
+之所以要引入“正则变换”是因为从拉格朗日力学过渡到哈密顿力学的时候强行规定了\eqref{eq:classical-poison-brackets-def}，也就是强行规定了\eqref{eq:classical-poision-brackets}。
+
+然后我们转而讨论坐标变换的问题。考虑正则变量的可逆变换
+\[
+    q, p \longrightarrow Q, P
+\]
+它将我们从一个相空间切换到了另一个相空间。
+我们说这个变换是\textbf{正则变换}，
+如果能够找到$H'=H'(Q, P, t)$，使根据$H'$得到的$Q, P$的演化在经过$Q, P$到$q, p$的变换之后得到的正是$q, p$根据$H$的演化，
+换句话说，在$Q,P$空间中描写一条$q,p$中的轨迹总是可能的。
+当然不是所有的坐标变换都是正则的。
+实际上，一个坐标变换是正则变换，当且仅当，任意两个物理量使用变换前坐标和变换后坐标计算的对易子都相等。
+% 怎么证明我也不知道，反正这个说法在量子力学和经典力学中都是成立的。
+% 下面的说法是错误的，需要修改。
+这个说法又等价于，$P$和$Q$之间的对易子保持不变，也就是说，设$\Gamma$代表诸$Q,P$，而$\gamma$代表诸$q,p$，则
+\begin{equation}
+    [\Gamma_i, \Gamma_j]_\Gamma = [\Gamma_i, \Gamma_j]_\gamma = [\gamma_i, \gamma_j]_\gamma. 
+\end{equation}
+% 具体形式是什么来着。。。
+
+如果一个坐标变换不显含时间，那么变换前后的哈密顿量的值保持不变，因此只需要将变换前的变量用变换之后的变量表示，代入原哈密顿量，就得到了新的哈密顿量。
+因此如果分析发现某几个正则坐标的一个函数不随时间变化，就可以用它代替某一个正则坐标，从而简化哈密顿量。
+
+以上所谓的坐标变换是正则坐标的变换。
+因此，\ref{sec:langrangian-basic}节中讲到的显含$\dot{q}$和$q$的运动常数虽然不能够用于消去拉氏量中的坐标，
+却可以通过将$\dot{q}$转化为$p$，然后代入$H$来消去$H$中的坐标。
+
+\subsection{从拉格朗日力学建立哈密顿力学}
+\label{sec:basic-hamilton-concepts-from-lagrange}
+
+\subsubsection{哈密顿量和正则方程}\label{sec:hamiltionian-and-canonical}
+
+由$n$个广义坐标$q$和$n$个广义动量$p$构成的$2n$维空间称为\textbf{相空间}，这是一个辛空间（见\ref{sec:sympletic-space}节）。
+我们称它们为\textbf{正则变量}，使用
+$\gamma_1, \ldots, \gamma_{2n}$表示。
+在拉格朗日力学中已经表明，广义坐标和广义动量的乘积的量纲和坐标的选取方式无关，因此任意两个相空间只要维数一样，体积元量纲也一样。
+
+可以很自然地从拉格朗日力学通过勒让德变换得到一个哈密顿力学。本节讨论的情况中所有的广义坐标（“场”）都只是时间的函数，则哈密顿量和哈密顿量密度是一致的，于是以诸$q,p$定义\textbf{哈密顿量}为
+\footnote{这里有一个细节：使用$p$和$q$完全将$\dot{q}$可逆地表示出来并不是完全没有条件的。
+事实上，这么做能够成功的充要条件是
+$\left[ \frac{\partial^2 L}{ \partial \dot{q}_i \partial \dot{q}_j} \right]_{ij}$的行列式不为零。}
+\begin{equation}
+    H(p, q, t) = \sum_{i=1}^n p_i \dot{q}_i(p, q) - L(q, \dot{q}(p, q), t)
+\end{equation}
+我们有
+\[
+    \begin{aligned}
+        \diff H &= \dd (p \dot{q}) - \dd L \\
+        &= (\dot{q} \dd p + p \dd \dot{q}) 
+        - \left( \pdv{L}{q} \dd q + \pdv{L}{\dot{q}} \dd \dot{q} + \pdv{L}{t} \dd t \right) \\
+        &= \dot{q} \dd p + \left( p - \pdv{L}{\dot{q}} \right) \dd \dot{q} - \dv{t} \pdv{L}{\dot{q}} \dd q - \pdv{L}{t} \dd t \\
+        &= \sum_{i=1}^n (\dot{q}_i \diff p_i - \dot{p}_i \diff q_i) + \frac{\partial H}{\partial t} \diff t.
+    \end{aligned}
+\]
+从而可以得到\textbf{正则方程}
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \dot{q}_i &= \frac{\partial H}{\partial p_i}, \\
+            \dot{p}_i &= - \frac{\partial H}{\partial q_i}.
+        \end{aligned}
+    \right.
+    \label{eq:canonical-equations}
+\end{equation}
+只需要解方程\eqref{eq:canonical-equations}就可以确定所有量的变化。
+
+\paragraph{注记} 需要注意的是\eqref{eq:canonical-equations}的导出使用了\textbf{没有非保守力}的拉格朗日方程\eqref{eq:el}，
+也就是说，\eqref{eq:canonical-equations}假定了\textbf{所有动力学都完全由拉氏量确定了}，而没有非保守力、约束力等等。
+对非保守力、约束力的体系需要类似于\ref{sec:constraints}节中提到的那样的特殊处理。
+
+然后可以引入\textbf{泊松括号}
+\begin{equation}
+    [A, B] = \sum_{i=1}^n \left(\frac{\partial A}{\partial q_i} \frac{\partial B}{\partial p_i} 
+    - \frac{\partial A}{\partial p_i}\frac{\partial B}{\partial q_o}\right)
+\end{equation}
+来计算任何一个关于$p, q, t$的物理量的变化情况：
+\begin{equation}
+    \dot{A} = [A, H] + \frac{\partial A}{\partial t}
+    \label{eq:time-evolution}
+\end{equation}
+特别的
+\begin{equation}
+    \frac{\diff A}{\diff t} = \frac{\partial A}{\partial t}
+\end{equation}
+需要注意的是\eqref{eq:time-evolution}本身不是独立于\eqref{eq:canonical-equations}的——
+正如\ref{sec:hamilton-from-commutation}节中提到的那样，只需要确定$q,p$的演化就可以导出所有物理量的演化，因此\eqref{eq:time-evolution}完全可以通过\eqref{eq:canonical-equations}推导出来。
+另一方面，\eqref{eq:canonical-equations}就是\eqref{eq:time-evolution}的一个特例。
+
+\subsubsection{等价的哈密顿量}
+
+我们说两个哈密顿量\textbf{等价}，如果它们描述了相同的系统演化过程。
+由于\eqref{eq:time-evolution}和\eqref{eq:canonical-equations}的等价，当且仅当下式
+\begin{equation}
+    \pdv{H_1}{q_i} = \pdv{H_2}{q_i}, \quad \pdv{H_1}{p_i} = \pdv{H_2}{p_i}
+\end{equation}
+成立时，$H_1$和$H_2$等价。
+也就是说，两个等价的哈密顿量相差一个不显含$p, q$的项。
+
+\subsubsection{泊松括号的性质}
+
+由定义可得泊松括号具有反对称性、双线性，
+满足下面的结合律%
+\footnote{在经典力学中，会出现在这种括号中的所有量都是实函数，因此乘法顺序无关紧要；但即使出现在括号中的是算符，乘法有顺序的时候，\eqref{eq:assosiative}仍然成立。}
+\begin{equation}
+    [\phi, \psi_1 \psi_2] = \psi_1 [\phi, \psi_2] + [\phi, \psi_1] \psi_2
+    \label{eq:assosiative}
+\end{equation}
+泊松括号相对于$A,B$都是导子，并且满足雅可比恒等式
+\begin{equation}
+    [A, [B, C]] + [B, [C, A]] + [C, [A, B]] = 0.
+\end{equation}
+
+此外，可以证明：
+\begin{equation}
+    \begin{aligned}
+        0 &= [A, \const] = [A, A], \\
+        [q_i, A] &= \pdv{A}{p_i}, \quad
+        [p_i, A] = - \pdv{A}{q_i} 
+    \end{aligned}
+\end{equation}
+
+以及
+\begin{equation}
+    [q_i, q_j] = 0, \quad [p_i, p_j] = 0, \quad [q_i, p_j] = \delta_{ij}
+    \label{eq:commutaion-pq}
+\end{equation}
+
+实际上，使用\ref{sec:hamilton-from-commutation}节中提到的方法，\textbf{不需要}显式地写出哈密顿量的形式，只是通过\eqref{eq:commutaion-pq}就能够计算任意两个物理量的泊松括号。
+
+\subsubsection{正则变换}
+
+将广义动量看成是独立于广义坐标的坐标意味着，相空间中的坐标变换允许的变化范围要大于位形空间中的范围。
+在位形空间中做一个广义坐标的变换会直接影响广义动量的形式，因为在那里广义动量的定义是依赖于广义坐标的；
+而在相空间中刚好相反，广义坐标的变换并不会直接改变广义动量。%
+\footnote{在接下来推导正则方程的时候，我们\textbf{确实}引用了关系式
+\[
+    \pdv{L}{\dot{q}_i} = p_i
+\]
+那么看起来$p$确实依赖于$q$。但是要注意正则方程\textbf{只对实际发生的运动}（相空间中的一条曲线）成立，
+在整个相空间上不一般成立。让广义坐标和广义动量张成相空间给我们提供了$D$个额外的自由度，使得在相空间中——从而在定义在相空间上的哈密顿量中——广义动量和广义坐标相互独立。
+}
+
+这就产生了一个问题：在拉格朗日力学中广义坐标的变换会影响广义动量是因为要保持运动方程\eqref{eq:el}的形式。
+而相空间允许的坐标变换并不能保证运动方程形式不变。因此，我们感兴趣的相空间中的坐标变换实际上只是可能的坐标变换的一部分。
+这样的变换称为\textbf{正则变换}%
+\footnote{我们在拉格朗日力学中看到过，可以同时让广义坐标和时间发生变换而获得方程的协变性。
+因此，原则上，我们未必要要求相空间中的变换一定是正则的——完全可以同时让时间和正则变量发生变化。
+事实上，这样的考虑正是相对论力学的哈密顿形式需要的。
+因此可以称不涉及时间变换的这种相空间的变换为\textbf{传统的}相空间变换。
+}。
+
+\comment 关于正则变换需要澄清一些概念：正则变换
+\[
+    q, p \longrightarrow Q, P
+\]
+从一个相空间切换到了另一个相空间，这两个相空间中的正则坐标的演化都服从\eqref{eq:canonical-equations}。
+但是，我们\textbf{不能确定}两者使用了相同的哈密顿量。
+因此实际上针对$q, p, H$，在已经选取了新坐标$Q, P$之后还需要指定一个新的哈密顿量。
+因此，我们也称下面的变换
+\[
+    q, p, H \longrightarrow Q, P, H'
+\]
+为正则变换，
+只要$H'$建立起的$Q, P$的演化通过$Q, P \longrightarrow q, p$变换到$q, p$之后得到的$q, p$的演化和直接使用$H$得到的$q, p$的演化一致。
+
+这就产生了一个问题。只有从$q, p$到$Q, P$的变换——也就是只有坐标变换没有哈密顿量的变换——足以确定$Q, P$相空间的动力学吗？
+实际上只有从$q, p$到$Q, P$的变换不足以\textbf{确定}$H'$的形式，但是有了这个变换确实可以构造出\textbf{一个}$H'$，
+并且所有被构造出来的$H'$对应相同的正则方程（给出相同的动力学）。具体方法在\ref{sec:canonical-transformation-construction}节中给出。
+
+先前提到过，不是所有的相空间变换都能够运动方程形式不变。既然\eqref{eq:canonical-equations}完全描述了系统的运动，
+正则变化就需要让\eqref{eq:canonical-equations}不变。
+可以证明，一个变换是正则变换的另一个充要条件是在它之下泊松括号始终不变，也就是
+\begin{equation}
+    [A(p,q,t), B(p,q,t)]_{p, q} = [A(p(P,Q,t), q(P,Q,t), t)]_{P, Q}
+    \label{eq:invariance-poison-brackets}
+\end{equation}
+
+现在要判断什么是正则变换只能靠手工检验\eqref{eq:invariance-poison-brackets}。
+这是比较麻烦的。不过注意到，只需要$[p_i, p_j]$，$[p_i, q_j]$，$[q_i, q_j]$
+就可以计算出任意两个关于$q, p$的物理量的泊松括号（见\ref{sec:hamilton-from-commutation}），从而确定系统的动力学。
+因此，只需要保证这三种泊松括号在坐标变换下不变就足以判定这个坐标变换是正则变换。
+实际上，一个坐标变换$p, q \longrightarrow P, Q$是正则变换的充要条件就是变换之后的正则坐标还是满足\eqref{eq:commutaion-pq}，也就是
+\begin{equation}
+    [Q_i, Q_j]_{p, q} = 0, \quad [P_i, P_j]_{p, q} = 0, \quad [Q_i, P_j]_{p, q} = \delta_{ij}
+\end{equation}
+
+\subsection{辛空间和正则变换的判断}\label{sec:sympletic-space}
+
+相空间的坐标——所谓的辛坐标——就是把$q,p$放在一起的结果。
+记$\gamma_i$为这些辛坐标，即
+\[
+    \gamma_i = q_i, i=1, 2, \ldots, \quad \gamma_i=p_{i-n}, i=n+1, \ldots, 2n
+\]
+对这些坐标做一个变换$\gamma \longrightarrow \Gamma$，则新旧坐标的雅可比矩阵为%
+\footnote{本文中规定
+\[
+    \pdv{\vb*{y}}{\vb*{x}} = \left[ \pdv{y_i}{x_j} \right]_{ij}
+\]
+}
+\begin{equation}
+    J = \pdv{\Gamma}{\gamma} = \mqty[ \pdv{Q}{q} & \pdv{Q}{p} \\ \pdv{P}{q} & \pdv{P}{p} ]
+    \label{eq:jacobian}
+\end{equation}
+
+通常指定辛空间的度规为
+\begin{equation}
+    g = \mqty[ 0 & I \\ -I & 0 ]
+\end{equation}
+
+这样的好处是，运动方程可以简单地写成
+\begin{equation}
+    \dv{\gamma}{t} = \grad H
+\end{equation}
+或者
+\begin{equation}
+    \dv{\gamma_i}{t} = g_{ij} \pdv{H}{\gamma_j}
+\end{equation}
+
+而泊松括号成为
+\begin{equation}
+    [f, g]_{qp} = \pdv{f}{\gamma_i} g_{ij} \pdv{g}{\gamma_j}
+\end{equation}
+也就是说，泊松括号实际上是类似于内积的东西。
+
+这样一来，一个坐标变换是正则变换，当且仅当，它能够保证泊松括号的不变性，也就是不改变度规。因此一个坐标变换是正则变换，当且仅当，其雅可比矩阵\eqref{eq:jacobian}满足
+\begin{equation}
+    J g J^\top = g
+\end{equation}
+可以看出所有的正则变换都是可逆的。
+事实上，一个坐标变换是正则变换，当且仅当，它可逆且
+\begin{equation}
+    J^{-1} = -g J g
+\end{equation}
+
+\subsection{正则变换的构造}\label{sec:canonical-transformation-construction}
+
+\subsubsection{母函数}
+
+我们希望能够找到某些方法，能够构造一个符合某些条件的函数，然后对它做某种运算就得到一个正则变换，
+而且使用这样的方法能够得到\textbf{所有的}正则变换。（这就好像指定了势就能够获得一个无旋场，并且每一个无旋场都可以写成一个势的梯度一样）
+
+运动方程的形式不变等价于拉氏量相差一个时间的全微分。
+则关于$p, q$的哈密顿量$H$和关于$P, Q$的哈密顿量$K$描述了相同的运动，当且仅当，它们对应的拉氏量经过一个标度变换之后相差一个时间的全微分，即
+\[
+    \sigma \left(\sum_{i=1}^s p_i \dot{q}_i(p, q) - H \right) - \sum_{i=1}^s P_i \dot{Q}_i(P, Q) + K = \frac{\diff F}{\diff t}
+\]
+其中常数$\sigma$是一个标度因子。这个常数会造成一些麻烦，不过它可以通过对$Q, P$的一个标度变换消去。
+可以验证，标度变换
+\begin{equation}
+    P_i' = \alpha P_i, \quad Q_i' = \beta Q_i, \quad K' = \alpha \beta K
+    \label{eq:scaling}
+\end{equation}
+不改变系统的动力学，而如果我们取$\alpha \beta = \sigma$，就有
+\[
+    \left(\sum_{i=1}^s p_i \dot{q}_i(p, q) - H \right) - \sum_{i=1}^s P_i \dot{Q}_i(P, Q) + K = \dv{t} \frac{F}{\sigma}
+\]
+因此不失一般性地，在\ref{sec:canonical-transformation-construction}节接下来的部分中，假设所有的正则变换都满足下面的式子：
+\begin{equation}
+    \sum_{i=1}^s p_i \diff q_i - \sum_{i=1}^s P_i \diff Q_i + (K - H) \diff t = \diff F
+    \label{eq:proto-generating-function}
+\end{equation}
+而将不满足这个方程的变换称为\textbf{扩展的正则变换}。一个扩展的正则变换$q,p \longrightarrow Q, P$总可以通过\eqref{eq:scaling}得到满足\eqref{eq:proto-generating-function}的$Q', P'$，从而化归为一个正则变换。
+从\eqref{eq:proto-generating-function}很明显可以看出$F$显含$p, q, P, Q, t$，但是因为$P, Q$和$p, q$可以相互表示，
+所以实际上$F$除了时间以外的独立变元是从$p, q, P, Q$中一半的变量，且它们必须相互独立。
+只是通过\eqref{eq:proto-generating-function}不能够直接得到$F$对这些独立变元求导的结果，因此我们需要做勒让德变换。
+使用indep表示独立变元。
+\[
+    \sum_{\text{indep } q_i} p_i \dd q_i - \sum_{\text{indep } p_i} q_i \dd p_i - \sum_{\text{indep }Q_i} P_i \dd Q_i + \sum_{\text{indep }P_i} Q_i \dd P_i + (K - H) \dd t = \dd \left( F - \sum_{\text{indep } p_i} p_i q_i + \sum_{\text{indep }P_i} P_i Q_i \right)
+\]
+由于$F$只是一个未确定的函数，完全可以将上式右边括号内的东西重新命名为$F$。同时上式也提示我们，不可能同时将一个指标$i$对应的$q_i$和$p_i$，或是$Q_i$和$P_i$同时选取为自由变元。于是从上式我们得出结论：对每个正则变换，一定可以找到一个$F$（称为\textbf{母函数}），它取$q, p, Q, P$中一半的变量为变元，且使
+\begin{equation}
+    \begin{bigcase}
+        p_i &= \pdv{F}{q_i}, \quad \text{if $q_i$ is an independent variable} \\
+        q_i &= -\pdv{F}{p_i}, \quad \text{if $p_i$ is an independent variable} \\
+        P_i &= - \pdv{F}{Q_i}, \quad \text{if $Q_i$ is an independent variable} \\
+        Q_i &= \pdv{F}{P_i}, \quad \text{if $P_i$ is an independent variable} \\
+        K - H &= \pdv{F}{t}
+    \end{bigcase}
+    \label{eq:generating-function}
+\end{equation}
+
+在以上的推导中，我们假定从$q, p$到$Q, P$已经有了一个可逆的变换，
+然后说明了所有这样的变换——如果有的话——都可以使用\eqref{eq:generating-function}表示。
+现在讨论一个反过来的问题：假设我们已经有了一个取$q, p, Q, P$中一半的变量为变元的$F$，
+并且使用\eqref{eq:generating-function}得到了一个变换，那么这个变换什么时候是正则的？
+容易看出，充要条件就是由\eqref{eq:generating-function}确定的变换要是可逆的，这又等价于
+\[
+    \pdv{(Q, P)}{(q, p)} \neq 0
+\]
+现在要做的就是化简这个式子。这个式子假定了$q, p$和$Q, P$可以相互表示。
+记$\Gamma_{i}$为被$F$用作独立变量的$Q, P$，$\Gamma_{d}$为没有被$F$用作独立变量的$Q, P$，
+$\gamma_{i}$为被$F$用作独立变量的$q, p$，$\gamma_{d}$为没有被$F$用作独立变量的$q, p$。
+在$q, p$和$Q, P$可以相互表示的假定下，有
+\[
+    \begin{aligned}
+        0 \neq \abs{\pdv{(Q, P)}{(q, p)}} &= \abs{\pdv{(\Gamma_i, \Gamma_d)}{(\gamma_i, \gamma_d)}} \\
+        &= \abs{\pdv{(\Gamma_i, \Gamma_d)}{(\Gamma_i, \gamma_i)}} \Big/ \abs{\pdv{(\gamma_i, \gamma_d)}{(\Gamma_i, \gamma_i)}} \\
+        &= \abs{\eval{\pdv{\Gamma_d}{\gamma_i}}_{\Gamma_i=\const}} \Big/ \abs{\eval{\pdv{\gamma_d}{\Gamma_i}}_{\gamma_i=\const}}
+    \end{aligned}
+\]
+这等价于
+\[
+    \eval{\pdv{\Gamma_d}{\gamma_i}}_{\Gamma_i=\const} \neq 0,
+\]
+也就是
+\begin{equation}
+    \pdv{F}{\Gamma_i}{\gamma_i} \neq 0
+    \label{eq:legal-trans}
+\end{equation}
+可以检验，\eqref{eq:legal-trans}满足时，$q, p$和$Q,P$确实可以相互表示。因此，满足\eqref{eq:legal-trans}的$F$通过\eqref{eq:generating-function}给出的变换是一个正则变换。
+
+因此，随意选择一个正则变换（如果必要的话，用\eqref{eq:scaling}做一个拉伸），则一定能够找到一个满足\eqref{eq:legal-trans}
+的$F$，使得用$F$和\eqref{eq:generating-function}能够写出这个变换；反之，随意取一个满足\eqref{eq:legal-trans}的函数$F$，通过\eqref{eq:generating-function}总可以写出一个正则变换。
+这就达到了我们希望的写出正则变换通式的效果。
+我们还得到了一个附带的结果：从\eqref{eq:generating-function}可以发现，正则变换不显含时间，当且仅当它对应的生成函数不显含时间，当且仅当变换之后的哈密顿量和变换前相等（这里指的是换用统一的坐标之后相等；$H(q, p)$和$K(Q,P)$当然具有不同的形式。）
+
+需要注意的是一个正则变换并不对应唯一的母函数——给一个母函数加上一个常数不改变它对应的正则变换。
+
+\comment 关于\eqref{eq:generating-function}，可以发现一点：对$p_i$和$q_i$中的其中一个求导必然可以得到另一个的表达式；$P_i$和$Q_i$同理。
+这当然是量纲的结果——在导出\eqref{eq:generating-function}时使用的各个假设都服从量纲原理，那么\eqref{eq:generating-function}当然也满足量纲原理。
+
+通过取不同的独立变量，我们可以获得四类母函数：%
+\footnote{需要注意的是这四类母函数的具体排列顺序在不同的文献中往往不同。}
+\begin{enumerate}
+    \item 第一类母函数，假定$q, Q$相互独立
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                &U_1 = U_1(q, Q) \\
+                &p_i = \pdv{U_1}{q_i}, \; P_i = -\pdv{U_1}{Q_i}, \\
+                &K - H = \pdv{U_1}{t}
+            \end{aligned}
+        \right.
+    \end{equation}
+    \item 第二类母函数，假定$p, Q$相互独立
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                &U_2 = U_2(p, Q) \\
+                &q_i = - \pdv{U_2}{p_i}, \; P_i = - \pdv{U_2}{Q_i}, \\
+                &K - H = \pdv{U_2}{t}
+            \end{aligned}
+        \right.
+    \end{equation}
+    \item 第三类母函数，假定$q, P$相互独立
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                &U_3 = U_3(q, P) \\
+                &p_i = \pdv{U_3}{q_i}, \; Q_i = \pdv{U_3}{P_i}, \\
+                &K - H = \pdv{U_3}{t}
+            \end{aligned}
+        \right.
+        \label{eq:3-class-generating}
+    \end{equation}
+    \item 第四类母函数，假定$p, P$相互独立
+    \begin{equation}
+        \left\{
+            \begin{aligned}
+                &U_4 = U_4(p, P) \\
+                &q_i = - \pdv{U_4}{p_i}, \; Q_i = \pdv{U_4}{P_i}, \\
+                &K - H = \pdv{U_4}{t}
+            \end{aligned}
+        \right.
+    \end{equation}
+\end{enumerate}
+
+这四类母函数之间的关系为
+\begin{equation}
+    \begin{aligned}
+        U_2(p, Q, t) &= U_1(q, Q, t) - \sum_i p_i q_i, \\
+        U_3(q, P, t) &= U_1(q, Q, t) + \sum_i P_i Q_i, \\
+        U_4(p, P, t) &= U_1(q, Q, t) - \sum_i p_i q_i + \sum_i P_i Q_i
+    \end{aligned}
+\end{equation}
+
+需要注意的是以上的每一类母函数都不能导出所有的正则变换；例如，如果一个正则变换只是改变了广义坐标，那么$Q$可以只是用$q$写出，因此$q, Q$不独立，那就不能使用第一类母函数表示只改变广义坐标的正则变换。
+实际上，这四类母函数放在一起也不能够导出所有的正则变换。
+总有一些变换能够写成\eqref{eq:generating-function}的形式，却不能够使用这四类母函数表示。
+
+可以使用图\ref{fig:generating-functions}来表示这四个母函数。每个象限中的母函数都以它所在的象限中的轴上的变量为自变量
+（例如，$U_1$以$q$和$Q$为自变量），负半轴表示对这个变量求导后要加一个负号才能得到对应的另一个变量
+（例如，$p$在正半轴则$\partial U_1 / \partial q = p$，而$Q$在负半轴则$\partial U_1 / \partial Q = - P$）。
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \draw[<->] (-1.5,0) -- (1.5,0);
+        \draw[<->] (0, -1.5) -- (0, 1.5);
+        \node at (-0.75, 0.75) {$U_1$};
+        \node at (0.75, 0.75) {$U_3$};
+        \node at (-0.75,-0.75) {$U_2$};
+        \node at (0.75,-0.75) {$U_4$};
+        \node at (-2,0) {$Q$};
+        \node at (2,0) {$P$};
+        \node at (0,2) {$q$};
+        \node at (0,-2) {$p$};
+    \end{tikzpicture}
+    \caption{四类母函数}
+    \label{fig:generating-functions}
+\end{figure}
+
+\subsubsection{无穷小变换与守恒量}
+
+取第三类母函数
+\[
+    U_3 = \sum_i q_i P_i
+\]
+可以证明这个母函数对应的正则变换是恒等变换。则
+\begin{equation}
+    U_3 = \sum_i q_i P_i + \epsilon G
+\end{equation}
+给出了单参数无穷小正则变换的母函数。
+由于单参数无穷小变换和这样的$G$对应，有时也将$G$称为无穷小变换的母函数。
+
+代入\eqref{eq:3-class-generating}，并且注意到在$\epsilon \to 0$的时候$p, q$和$P, Q$相差很小，得到
+\begin{equation}
+    \dd q_i = \epsilon \pdv{G}{p_i}, \quad
+    \dd p_i = - \epsilon \pdv{G}{q_i}
+    \label{eq:canonical-transformation-on-pq}
+\end{equation}
+从而，设$A=A(p, q, t)$，则对$A$做无穷小变换——这个变换是一个正则变换和一个时间变换的复合——有
+\begin{equation}
+    \dd A = \epsilon [A, G] + \pdv{A}{t} \dd t
+    \label{eq:infinite-canonical-transformation-on-anything}
+\end{equation}
+在$A$不显含时间的时候就有%
+\footnote{表面上看，下面的表达式和\eqref{eq:canonical-transformation-on-pq}矛盾，因为显然$p, q$显含时间，
+可是\eqref{eq:canonical-transformation-on-pq}却好像是假定$p, q$不显含时间后代入下式得到的。
+但是这样想是不正确的，因为\eqref{eq:infinite-canonical-transformation-on-anything}要求首先将$A$\textbf{写成$p, q, t$的函数}，
+而当然$p, q$可以写成它们自己的函数，因此在以$p, q, t$为变元的时候,$p, q$确实不显含时间。但如果只以$t$为变元，那么它们也确实显含时间。
+}%
+\[
+    \dd A = \epsilon [A, G]
+\]
+用\eqref{eq:infinite-canonical-transformation-on-anything}就得到了
+\[
+    \dv{A}{t} = [A, H] + \pdv{A}{t}
+\]
+这正是\eqref{eq:time-evolution}。因此我们发现：\textbf{哈密顿量$H$是对应于时间演进的母函数}。
+
+以上的发现可以用来找守恒量。很容易可以推出，设$H$在以$G$为母函数的无穷小正则变换之下发生了变化$\dd H$，则
+\[
+    \dd H = \epsilon \left( \pdv{G}{t} - \dv{G}{t} \right)
+\]
+因此就得到
+
+\paragraph{哈密顿力学中的守恒量} $G$是守恒量，当且仅当，设$H$在以$G$为母函数，参数为$\epsilon$的无穷小正则变换之下发生的变化$\dd H$形如
+\begin{equation}
+    \dd H = \epsilon \pdv{G}{t}
+\end{equation}
+当$G$不显含时间时，$G$守恒就等价于$H$在以$G$为母函数的无穷小正则变换之下不变。
+
+\subsection{非保守体系}
+在\ref{sec:non-conservative-system}节中已经讨论了在拉格朗日力学中如何处理非保守体系。
+在哈密顿力学中也可以执行相同的操作，
+
+\section{哈密顿-雅可比理论}
+
+\subsection{哈密顿-雅可比方程}
+
+使用正则变换能够将正则变量转化为一些守恒量，这样可以大大简化运算。
+一个有趣的问题是，是不是能够把所有的正则变量都变换为守恒量。
+此时$H$恒为零或者等价于一个恒为零的哈密顿量，系统就变得非常简单。
+
+设有关于$q_1, \ldots, q_n, p_1, \ldots, p
+_n$的哈密顿量$H$。
+设$U_3$是一个第三类母函数（见\eqref{eq:3-class-generating}），并且它能够将$H$变换成一个恒为零的哈密顿量，
+从而，它能够将诸正则变量全部变换成守恒量。将$H'=0$代入\eqref{eq:3-class-generating}，得到
+\[
+    H + \pdv{U_3}{t} = 0, \quad p_i = \pdv{U_3}{q_i}
+\]
+这就等价于
+\begin{equation}
+    H(q_1, \ldots, q_n, \pdv{U_3}{q_1}, \ldots, \pdv{U_3}{q_n}, t) + \pdv{U_3}{t} = 0
+    \label{eq:hj-problem}
+\end{equation}
+这是一个一阶偏微分方程。只要能够从上面的方程解出$U_3$，就找到了将所有正则变量转化为守恒量的方法。
+
+这个方程的解是否存在？实际上，这个方程的解就是某种形式的作用量$S$！
+为了看出这是为什么，考虑
+\[
+    S = \int_{t_1}^{t_2} L \dd t
+\]
+其等时变分由下式给出：
+\[
+    \delta S = \eval{\pdv{L}{\dot{q}} \delta q}_{t_1}^{t_2} + \int_{t_1}^{t_2} \left( \pdv{L}{q} - \dv{t} \pdv{L}{\dot{q}} \right) \delta q \dd t 
+\]
+如果$q$和$\dot{q}$是在壳的，也就是说它们服从\eqref{eq:el}，那么就有
+\[
+    \delta S = \eval{\pdv{L}{\dot{q}} \delta q}_{t_1}^{t_2} = \eval{p \delta q}_{t_1}^{t_2}
+\]
+到现在为止我们都还是在把$S$当成泛函来看待。在哈密顿力学中我们并不需要考虑所有可能的轨迹，
+因此可以适当地缩小$S$的输入的自由度来获得一个通常的函数而不是泛函。
+一个很好的想法是，定义
+\[
+    S(q, t) = \int_{t_0}^t L(q, \dot{q}(q,t), t) \dd t
+\]
+这里我们使用$q, t$来表示$\dot{q}$，它们之间的关系由\eqref{eq:el}确定，
+也就是说，我们假定$q(t)$是一个\textbf{在壳的}（或者说实际可以发生的）轨道；
+另一方面，我们把积分下界固定在了一个“计时零点”上，这样$S$就可以写成积分上界$t$——而不是上下界$t_1,t_2$——的某个函数。
+但是加入这个限制之后的$S(q, t)$还是一个泛函（需要$t_0$到$t$上每一点的$q$值）这时保持$t$不变
+（如果使用\ref{sec:langrangian-basic}节中的定义，则需要保持$t_1$和$t_2$不变——但是我们已经固定了积分下界了）
+还是能够写出
+\[
+    \delta S = \eval{p \delta q}_{t_0}^t
+\]
+令人惊讶的的是，在保持$t$不动时，$S(q, t)$的变化仅仅和$t_0$和$t$处的$q$变化有关。
+那么，可以固定$q(t_0)$不动，而将关于$q$的泛函$S(q,t)$写成关于$q(t)$的泛函$S(q(t),t)$。为了方便起见，也将此时的$S$写成$S(q,t)$。
+此时由泛函版本的$S$的等时变分表达式就得到
+\[
+    \pdv{S}{q} = p
+\]
+而$S(q,t)$关于时间的全导数则可以直接由定义写出：
+\[
+    \dv{S}{t} = L
+\]
+另一方面，有
+\[
+    \dv{S}{t} = \pdv{S}{t} + \pdv{S}{q} \dot{q}
+\]
+于是有
+\[
+    \pdv{S}{t} = \dv{S}{t} - \pdv{S}{q} \dot{q} = L - p \dot{q} = -H
+\]
+可见$S$就是\eqref{eq:hj-problem}的解。
+因此我们得到\textbf{哈密顿-雅可比方程}
+\begin{equation}
+    H(q_1, \ldots, q_n, \pdv{S}{q_1}, \ldots, \pdv{S}{q_n}, t) + \pdv{S}{t} = 0
+    \label{eq:hj-eq}
+\end{equation}
+
+需要注意的是$S$是作用量代入$\dot{q}$关于$t$的表达式之后的结果这件事不能够帮助求解\eqref{eq:hj-eq}。
+因为如果已经知道了$\dot{q}$关于$t$的表达式，那么实际上系统的变化情况已经清楚了。
+
+哈密顿-雅可比方程\eqref{eq:hj-eq}的解能够告诉我们什么？
+\eqref{eq:hj-eq}的通解或者说\textbf{通积分}（不考虑边界条件和初始条件）依赖于任意函数（例如，波动方程的通解就是任意两个独立的行波解的线性叠加），
+因此难以解析求出。不过，总是可以对解的性质做一定的约束，然后求出具有个数和自变量相同的相互独立的积分常数的\textbf{全积分}。
+全积分不能覆盖一个偏微分方程的全部解。
+但是事实上我们也不需要\eqref{eq:hj-eq}的全部解——只需要求出一个$S$就足够描写整个系统的运动情况了。因此，接下来我们探讨\eqref{eq:hj-eq}的全积分。
+（至于为什么不只是算出一个特解，马上会看到原因）
+注意到\eqref{eq:hj-eq}是一个具有$n+1$个独立变量的方程，那么全积分应该具有$n+1$个相互独立的积分常数，也就是
+\[
+    S = S(q_1, \ldots, q_n, t, C_1, \ldots, C_{n+1})
+\]
+由于$S$在\eqref{eq:hj-eq}中只以导数形式出现，这$n+1$个积分常数中肯定有一个以$S = \text{somthing} + \const$的形式出现，
+则其它$n$个积分常数都不以相加的形式出现，也就是说我们有
+\[
+    \begin{split}
+        S = S_0 (q_1, \ldots, q_n, t, C_1, C_2, \ldots, C_n) + C_{n+1}, \\
+        \pdv{S_0}{C_i} \neq 1, 1 \leq i \leq n
+    \end{split}
+\]
+回忆引入$S$的动机：它实际上是一个第三类母函数，因此
+\[
+    S  = U_3(q_1, \ldots, q_n, P_1, \ldots, P_n) + \const
+\]
+最后的常数项是由于母函数加上一个常数之后给出相同的正则变换。
+由于我们要求按照$U_3$做正则变换之后得到的各正则变量守恒，$P_1, \ldots, P_n$实际上是未定的常数。
+比较以上两式，我们发现
+\[
+    S_0(q_1, \ldots, q_n, t, C_1, C_2, \ldots, C_n) + \const = U_3(q_1, \ldots, q_n, P_1, \ldots, P_n) + \const
+\]
+求解\eqref{eq:hj-eq}时得到的$n$个积分常数和按照$U_3$做正则变换之后$n$个广义动量的值之间有一个双射关系。
+最简单的，可以直接将$C_1, \ldots, C_n$共计$n$个未定常数当作广义动量。
+至于$C_{n+1}$，它不会改变$S$对应的正则变换，因此没有提供任何有用的信息。则不失一般性地要求$C_{n+1}=0$。
+因此按照下面的步骤可以确定动力学系统的行为：
+\begin{enumerate}
+    \item 求解\eqref{eq:hj-eq}，获得\eqref{eq:hj-eq}的一个特解$S(q, C)$，其中的$C$共由$n$个相互独立的未定常数组成，
+    且它们全都不以“某表达式加一个常数”的形式出现
+    \item 将$S(q, C)$当成一个第三类母函数，$C$就是$P$，按照\eqref{eq:3-class-generating}写出正则变换
+    \item 按照上一步写出的正则变换，从$Q, P$切换至$q, p$，从而写出$q=q(C, t)$，$p=p(C, t)$。具体的公式为：
+    \begin{equation}
+        p = \pdv{S}{q}, \quad Q = \pdv{S}{C}
+        \label{eq:from-sc-to-pq}
+    \end{equation}
+    \item 代入初始条件求解$C$和初始条件的关系
+\end{enumerate}
+在以上步骤中相互独立且不以相加的方式出现的未定积分常数$C_1, \ldots, C_n$起到了很大作用——
+这就是我们不满足于求出\eqref{eq:hj-eq}的一个特解，而要计算一个全积分的原因，
+因为全积分的积分常数是具有物理意义的。
+
+\subsection{分离变量求解哈密顿-雅可比方程}
+
+实际上，哈密顿-雅可比方程\eqref{eq:hj-eq}是一个非线性偏微分方程，是很难求解的，它的理论意义要大于实际意义。
+在确实需要使用哈密顿-雅可比方程求解问题的时候，其实并不需要求出一般解，而只需要一个特解。因此常用的方式是，对$S$做一定的假设，简化问题之后尝试求解。
+如果有解，那么问题解决，如果无解，那么只需要稍微放松假设。
+
+常用的假设通常是设$S=S_1+S_2$，且$S_1$和$S_2$关于不同的变量。这个方法称为\textbf{分离变量法}。
+它和PDE中常见的分离变量法不同，后者通常是假定$S=S_1 S_2$。
+实际上，这样做加法的分离变量一般来说不能够求出\eqref{eq:hj-eq}的所有解。但是我们也没有尝试求出所有解。
+因此只要确保加上这个假设之后仍然能够保证最后算出来的$S$带有$n$个相互独立的积分常数就可以。
+
+\subsubsection{可分离体系}\label{sec:separation-of-variables}
+
+设变量$q$可以被分成两组$q^{(1)}$和$q^{(2)}$（其中每一组都可能含有多于一个的变量），且$q^{(1)}$在哈密顿量中作为一个整体出现，
+也就是
+\begin{equation}
+    H \left( q, \pdv{S}{q}, t \right) = H\left( q^{(2)}, \pdv{S}{q^{(2)}}, t, \varphi \left(
+        q^{(1)}, \pdv{S}{q^{(1)}}
+    \right) \right)    
+\end{equation}
+如果设
+\[
+    S = S^{(1)}(q^{(1)}) + S^{(2)}(q^{(2)}, t)
+\]
+（我们省略了常数部分，因为现在还不知道积分常数会怎么分布在两项中）
+上式可以等价地写成形如
+\[
+    \Phi \left( q^{(2)}, \pdv{S}{q^{(2)}}, t \right) = \varphi \left(
+        q^{(1)}, \pdv{S}{q^{(1)}}
+    \right)
+\]
+其中$\Phi$指的是将$\varphi$部分反解出来以后得到的某个函数。
+注意到这是一个恒等式，则唯一可能的情况是两边各等于一个常数，于是\eqref{eq:hj-eq}转化为
+\begin{equation}
+    \begin{bigcase}
+        S = S^{(1)}(q^{(1)}) + S^{(2)}(q^{(2)}, t), \\
+        \varphi \left(q^{(1)}, \pdv{S^{(1)}}{q^{(1)}} \right) &= C, \\
+        \pdv{S^{(2)}}{t} + H\left( q^{(2)}, \pdv{S}{q^{(2)}}, t, C \right) &= 0.
+    \end{bigcase}
+    \label{eq:separated-system}
+\end{equation}
+\eqref{eq:separated-system}展示了为什么这样的体系称为可分离体系：$S^{(2)}$和它代表的运动完全独立于诸$q^{(1)}$，好像彼此无关一样。
+
+特别的，设已知变量$q_n$是循环坐标（变量顺序不重要，所以不失一般性地设$q_n$是循环坐标），即$H$不显含$q_n$。尝试设
+\begin{equation}
+    S = \alpha_n q_n + \tilde{S}(q_1, \ldots, q_{n-1}, t)
+\end{equation}
+代入\eqref{eq:hj-eq}，得到
+\begin{equation}
+    H(q_1, \ldots, q_{n-1}, \pdv{\tilde{S}}{q_1}, \ldots, \pdv{\tilde{S}}{q_{n-1}}, \alpha_n, t) + \pdv{\tilde{S}}{t} = 0
+\end{equation}
+因此总是可以把循环坐标分离出来。
+
+\subsubsection{不含时系统}
+
+在哈密顿量不显含时间时，我们取试探解
+\begin{equation}
+    S(q, C, t) = W(q, C) + f(t)
+\end{equation}
+代入\eqref{eq:hj-eq}得到
+\[
+    H\left(q, \pdv{W}{q}\right) + f'(t) = 0
+\]
+第一项和时间无关，第二项和时间有关，因此就有
+\[
+    f'(t) = -E, \quad H\left(q, \pdv{W}{q}\right) = E, \quad E = \const
+\]
+这样就有
+\begin{equation}
+    \begin{bigcase}
+        f(t) &= -Et + f_0, \\
+        H \left(q, \pdv{W}{q}\right) &= E, \\
+        E &= \const
+    \end{bigcase}
+\end{equation}
+其中$W$称为\textbf{哈密顿特征函数}。
+
+$W$的一般解有$n+1$个积分常数，其中$n$个是非相加的积分常数；而$E$也是一个非相加的积分常数。因此$E$和那$n-1$个积分常数不相互独立。
+则不失一般性地，设$n$个非相加的积分常数为$E, C_2, \ldots, C_n$。
+于是可以写
+\[
+    W = W(q;E, C_2, \ldots, C_n)
+\]
+实际上可以直接使用$W$为母函数，而不使用$S$（注意两者给出的正则变换是不同的——前者不含时而后者含时）。在使用$W$为母函数时可以以$E, C_2, \ldots, C_n$为变换之后的动量，也可以使用它们的某个函数为变换之后的动量。
+需要注意的是，在使用$W$为母函数时变换之后的哈密顿量为
+\[
+    K = H + \pdv{W}{t} = H = E \neq 0
+\]
+因此不像使用$S$时的情况，在使用$W$为母函数时总会有随时间变化的广义坐标。但是由于$H=E$形式简单，不难求解出它们关于时间的表达式。
+
+对不含时系统应用变量分离（见\ref{sec:separation-of-variables}节）时无需分离$S$，而可以直接对$W$做变量分离。具体来说，如果哈密顿量满足
+\begin{equation}
+    H = H \left( q^{(2)}, \pdv{S}{q^{(2)}}, \varphi \left(
+        q^{(1)}, \pdv{S}{q^{(1)}}
+    \right) \right)
+\end{equation}
+那么只需要求解
+\begin{equation}
+    \left\{ \;
+        \begin{aligned}
+            W = W^{(1)}(q^{(1)}) + W^{(2)}(q^{(2)}), \\
+            \varphi \left( q^{(1)}, \pdv{W^{(1)}}{q^{(1)}} \right) = C, \\
+            H \left( q^{(2)}, \pdv{W^{(2)}}{q^{(2)}}, C \right) = E
+        \end{aligned}
+    \right.
+    \label{eq:separated-ti-system}
+\end{equation}
+就可以。
+\ref{sec:separation-of-variables}节中提到的把循环坐标分离出来的方法也适用。
+
+一个\textbf{完全可分离系统}指的是每一个变量都可以通过\eqref{eq:separated-ti-system}分离的系统，其哈密顿特征函数具有下面的形式
+\begin{equation}
+    W(q) = \sum_{i=1}^n W_i (q_i; E, C_2, \ldots, C_n)
+    \label{eq:completely-separation}
+\end{equation}
+此时\eqref{eq:from-sc-to-pq}化为
+\begin{equation}
+    p_i = \pdv{W_i(q_i;E, C_2, \ldots, C_n)}{q_i}, \quad i = 1, 2, \ldots, n
+    \label{eq:phrase-plane}
+\end{equation}
+也就是$p_i$完全由$q_i$和$n$个积分常数确定，于是我们可以作出\textbf{相平面}，其上是\eqref{eq:phrase-plane}确定的一族$q_i$ - $p_i$曲线，这些曲线称为\textbf{相轨}。
+
+\subsubsection{完全可分离周期系统}
+
+周期系统的每一对坐标和动量$q_i, p_i$可以分成两类：
+\begin{enumerate}
+    \item $p$和$q$都是时间的周期函数，且周期相同，这称为\textbf{天平动}。天平动对应的相轨是一个封闭曲线。
+    \item $p$是时间的周期函数而$q$不是，然而$p$是$q$的周期函数，最小正周期为$q_0$，这称为\textbf{转动}。
+    转动对应的相轨是一个无界的周期曲线。
+\end{enumerate}
+前者的例子有单摆小幅运动，后者的例子有单摆能量足够大而绕着悬挂点转动。
+需要考虑转动通常来自从系统状态和$q$的关系的多值性——不同的$q$可能描述着同样的系统状态，
+但如果取$q$的一个单值分支，那就会有某些$q(t)$轨迹必须穿过割线而不能被描述。
+例如原则上总是可以使用$\theta \in [0, 2\pi)$来描述平面上一个点的角位置，
+但是如果这个点不停转圈而我们还是希望使用$\theta \in [0, 2\pi)$，
+那么当这个点转过一圈的时候$\theta$就发生了突变（从接近$2\pi$突变到了$0$），这样就破坏了预期中的$\theta$关于$t$的连续性。
+
+需要注意的是，即使每一个广义坐标$q_i$或是转动或是天平动，如果它们的周期不可公度，那么整个系统的状态也不是周期性的。
+此时系统可以无限趋近一个过去的状态而永远不重复这个状态。
+
+我们讨论完全可分离的不含时周期系统。此时有\eqref{eq:completely-separation}成立。
+定义下面的\textbf{作用量}为$q_i$一个周期内的积分
+（在系统做转动的时候$q_i$并不是关于$t$的周期函数，但是因为不同的$q_i$可以描述相同的状态，因此还是可以定义“$q_i$的一个周期”）
+\begin{equation}
+    J_i = \frac{1}{2\pi} \oint p_i \dd q_i = \frac{1}{2\pi} \oint \pdv{W_i(q_i;E, C_2, \ldots, C_n)}{q_i} \dd q_i
+    \label{eq:action-variables}
+\end{equation}
+由于讨论的是不含时系统，积分\eqref{eq:action-variables}实际上就是对相平面\eqref{eq:phrase-plane}上的曲线计算面积。
+由于我们认为不同周期中的$q_i$实际上可以表示相同的状态，不同周期对应的$W_i(q_i)$应该是一样的，因此积分\eqref{eq:action-variables}是单值的。
+各$J_i$彼此独立，一共有$n$个，它们是$E, C_2, \ldots, C_n$的函数；既然诸$J$和$E$到$C_n$都是$n$个相互独立的量，那么$E, C_2, \ldots, C_n$也是诸$J$的函数。
+于是将$W(q)$表示为
+\begin{equation}
+    W(q) = \sum_{i=1}^n W_i (q_i;J)
+    \label{eq:w-q-j}
+\end{equation}
+使用这种形式的$W(q;J)$做母函数，将$J$当成变换之后的动量，就得到了一个正则变换。
+按照\eqref{eq:w-q-j}可以计算出变换之后的广义坐标为\textbf{角变量}
+\begin{equation}
+    w_i = \pdv{W}{J_i}, \quad i = 1, 2, \ldots, n
+    \label{eq:ang-var}
+\end{equation}
+$J_i$的量纲都是能量乘以时间，而$w_i$全部无量纲。由于\eqref{eq:w-q-j}不显含时间，按照它做变换后的哈密顿量为
+\[
+    K = H + \pdv{W}{t} = H = E
+\]
+因此得到角变量的运动方程
+\[
+    \dot{w}_i = \pdv{E}{J_i}
+\]
+由于$E$不显含时间和角变量，上式的解为
+\begin{equation}
+    w_i = \left(\pdv{E}{J_i}\right) t + w_{i0}
+    \label{eq:ang-var-evolution-linear}
+\end{equation}
+
+注意到\eqref{eq:ang-var-evolution-linear}中的$\partial E / \partial J_i$具有频率量纲。实际上它真的就是频率。
+要看出为什么，首先注意按照\eqref{eq:ang-var}，$w_i$在使用$q,p$表示时
+（而不是使用直接代入时间的\eqref{eq:ang-var-evolution-linear}）只显含$q$。这样就有
+\[
+    \dd w_i = \sum_j \pdv{w_i}{q_j} \dd q_j
+\]
+而
+\[
+    \pdv{w_i}{q_j} = \pdv{W}{q_j}{J_i}
+\]
+因此
+\[
+    \dd w_i = \sum_j \pdv{w_i}{q_j} \dd q_j = \sum_j \pdv{W}{q_j}{J_i} \dd q_j = \pdv{J_i} \sum_j \pdv{W}{q_j} \dd q_j = \pdv{J_i} \sum_j \pdv{W_j}{q_j} \dd q_j = \pdv{J_i} \sum_j p_j \dd q_j
+\]
+需要注意上式中使用了$J$作为$W$中的的积分常数，因此最后一个等号后的$p_j$也是使用$J$和$q_j$表示的。
+现在我们追踪一段时间内$w_i$的变化情况，也就是计算
+\[
+    \Delta w_i = \int \pdv{J_i} \sum_j p_j \dd q_j
+\]
+我们选择一段足够长的时间区间，使得其中每一个广义坐标都近似走过了整数个周期
+（在各个广义坐标的周期不可共度时，可以任意地延长这段区间的长度使得该区间首尾的状态足够相近），
+设在这段时间内坐标$q_i$走过了$m_i$个周期。
+在天平动的情况下由于$q_i$-$p_i$曲线是一个封闭的轨道，有
+\[
+    \oint \pdv{J_i} = \pdv{J_i} \oint
+\]
+（否则还需要讨论积分路径端点的变动）。
+而在转动的情况下虽然积分头尾$q_i$的具体值不同，但由于系统状态完全一样，可以验证由于积分路径端点变动而引入的项全部抵消，因此同样可以交换积分和求导。
+因此我们有
+\[
+    \Delta w_i = \int \pdv{J_i} \sum_j p_j \dd q_j = \pdv{J_i} \sum_j \int p_j \dd q_j = \pdv{J_i} \sum_j 2\pi m_j J_j = 2 \pi m_i
+\]
+和\eqref{eq:ang-var-evolution-linear}相对比，就发现$w_i$在$q_i$的一个周期内增加$2\pi$——这就是称它为角变量的原因。设$T_i$为$q_i$的周期，那么
+\begin{equation}
+    w_i = \left(\pdv{E}{J_i}\right) t + w_{i0} = \frac{2\pi}{T_i} t + w_{i0}.
+    \label{eq:ang-var-evolution}
+\end{equation}
+
+\subsection{正则微扰论}
+
+设哈密顿量形如
+\begin{equation}
+    H = H_0 + \epsilon H'
+    \label{eq:pertubation}
+\end{equation}
+其中$H'$称为微扰项，它被一个系数$\epsilon$控制。设$S$是$\epsilon=0$时\eqref{eq:hj-eq}的解，也就是，从
+\begin{equation}
+    \pdv{S}{t} + H_0 \left(q_1, q_2, \ldots, q_n ; \pdv{S}{q_1}, \ldots, \pdv{S}{q_n}; t\right) = 0
+    \label{eq:pertubation-s-eq}
+\end{equation}
+解出
+\begin{equation}
+    S = S(q_1, \ldots, q_n; \alpha_1, \ldots, \alpha_n; t)
+    \label{eq:pertubation-s}
+\end{equation}
+当使用完整的\eqref{eq:pertubation}求解\eqref{eq:hj-eq}时仍然可以尝试使用\eqref{eq:pertubation-s}做母函数，
+将$\alpha$当成变换后动量，也就是引入
+\[
+    \beta_i = \pdv{S}{\alpha_i}, \quad p_i = \pdv{S}{q_i}
+\]
+并写出$\alpha, \beta$的演化服从的哈密顿量
+\[
+    K = H_0 + \epsilon H' + \pdv{S}{t} = \epsilon H'
+\]
+于是从\eqref{eq:canonical-equations}得到了$\alpha, \beta$的演化：
+\begin{equation}
+    \dot{\alpha}_i = - \epsilon \pdv{H'}{\beta_i}, \quad \dot{\beta}_i = \epsilon \pdv{H'}{\alpha_i}
+    \label{eq:alpha-beta-evolution}
+\end{equation}
+因此，微扰之后的$\alpha$和$\beta$不再是常数。但是在$\epsilon$很小的时候它们变化得并不快，
+并且可以使用\eqref{eq:alpha-beta-evolution}估计不同量的变化速率。
+
+\subsection{与几何光学的类比}
+
+
+
+\section{约束体系}
+\label{sec:constraints}
+
+对系统施加的约束包含两部分信息：约束方程（也就是特定的坐标和速度有着怎样的关系）以及约束力。
+正如前面提到的，只有约束方程有可能不能唯一地确定下来系统的运动方式。
+当我们说一个约束是完整的、不完整的、含时的、不含时的的时候，我们是在形容\textbf{约束方程}；
+反之，当我们说一个约束是理想的、非理想的的时候，我们是在形容\textbf{约束力}。
+对约束力和约束方程的描述可以有很大的独立性。例如，有摩擦的墙面和没有摩擦的墙面都可以产生一个“物体在平面上运动”的约束方程。
+
+广义力、广义功，等等，切换广义坐标不改变广义功。
+
+虚位移的定义
+
+通常认为约束力不做虚功。
+
+完整约束可以减少坐标的个数，而非完整约束不能。但是非完整约束确实可以减少系统的自由度。
+
+\subsection{完整约束}
+
+所谓的\textbf{完整约束}指的是约束方程只显含广义坐标和时间，
+而不显含广义速度的约束，或者虽然显含广义速度，但是可以通过几次积分消去所有广义速度项的约束。
+也就是能够写成
+\begin{equation}
+    f(q, t) = 0
+\end{equation}
+的约束。由于这样的约束只限制位形空间中可能的轨道，我们也可以称其为\textbf{几何约束}。
+容易看出，如果一个约束在某个坐标系下是完整的，那么它在任何坐标系下都是完整的。
+
+我们首先只讨论只含有完整约束的体系，而暂时假定非完整约束和$Q^\text{nc}$不存在——实际上，就算它们存在也问题不大，
+因为完全可以把那些被我们忽视的坐标（比如说约束夹具上各点的位置，等等）再拿回来放进拉氏量当中，
+从而让非完整约束和$Q^\text{nc}$消失。
+等到我们消去了所有的完整约束之后，再略去那些我们不感兴趣的坐标，
+然后处理只含有非完整约束和$Q^\text{nc}$的问题，其中已经没有完整约束了。
+
+现在的问题是
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} &= Q_i^{\text{cons}}(q, \dot{q}, t), 
+            \quad i = 1, 2, \ldots, D, \\
+            G_i(q, t) &= 0, \quad i = 1, 2, \ldots, C.
+        \end{aligned}
+    \right.
+    \label{eq:holonomic-problem}
+\end{equation}
+约束彼此独立，也就是
+\begin{equation}
+    \rank \left[\frac{\partial G_\alpha}{\partial q_\beta}\right]_{\alpha\beta} = C
+    \label{eq:independent-constraints-holonomic}
+\end{equation}
+
+\subsubsection{理想约束}
+
+物理中大部分我们能碰到的约束，比如说光滑墙面等，都不会对物体做功。这就促使我们将这个概念推广为更为一般的形式。
+
+\paragraph{虚位移和虚功} 我们\textbf{固定时间不变}，而对所有的广义坐标做一个变分，并且要求这个变分满足\eqref{eq:holonomic-problem}中的所有约束。
+要求这个变分满足所有约束就意味着
+\begin{equation}
+    \sum_i \frac{\partial G_j}{\partial q_i} \var q_i = 0
+    \label{eq:contemporaneous-variation}
+\end{equation}
+这样的坐标变分称为\textbf{虚位移}。一个广义力按照虚位移做的无穷小功就称为\textbf{虚功}。
+
+回顾理想约束的定义。
+一个约束是\textbf{理想}的，当且仅当，对每一个虚位移，约束力做的虚功都是零，也就是
+\begin{equation}
+    \var W^\text{cons} = \sum_{i=1}^D Q^\text{cons}_i \var q_i = 0
+    \label{eq:no-virtual-work}
+\end{equation}
+注意到虚功的形式是协变的。因此，虚功是（坐标系变换意义下的）标量，
+并且，如果一个约束在某个坐标系下是理想的，那么它在任何坐标系下都是理想的。
+
+每一个约束力都可以分解成两部分，一部分对每个虚位移，都有\eqref{eq:no-virtual-work}成立，而另一部分则不一定满足这个条件。
+通常，后一部分都是摩擦力之类的东西，是可以显式地写出来的，从而可以被归入$Q^{\text{nc}}$当中。
+因此实际问题中的完整约束都可以转化为理想约束。
+
+理想约束有一个非常重要的性质。
+
+\paragraph{理想约束约束力和约束方程的关系} \label{par:ideal-constraint-relation}
+系统受到的约束是理想约束，当且仅当，可以找到一套因子$\lambda$（它们是$t$的函数）使
+\begin{equation}
+    Q^{\text{cons}}_i = \sum_{j=1}^C \lambda_j \frac{\partial G_j}{\partial q_i} 
+    \label{eq:ideal-constraint-relation}
+\end{equation}
+需要注意的是，这里的$\lambda$\textbf{可以不是常数}。它可能是时间的某个函数。
+因此理想约束并不要求约束力能够写成梯度的形式（当然，能够写成梯度也是很好的）。
+我们可以将\eqref{eq:ideal-constraint-relation}规定的力看成一种广义的保守力。
+
+这个结论的推导是这样的。必要性通过直接计算可得，因为不管$\lambda$取什么值，都有
+\[
+    \begin{aligned}
+        \sum_{i=1}^D Q^{\text{cons}}_i \var q_i &= 
+        \sum_{i=1}^D \sum_{j=1}^C \lambda_j \frac{\partial G_j}{\partial q_i} \var q_i \\
+        &= \sum_{j=1}^C \lambda_j \cdot 0.
+    \end{aligned}
+\]
+充分性则可以从下式看出。注意到
+\[
+    \begin{aligned}
+        0 = \var W^{\text{cons}} &= \sum_{i=1}^D Q^\text{cons}_i \var q_i 
+        = \sum_{i=1}^D \sum_{j=1}^{D-C} Q^\text{cons}_i \frac{\partial q_i}{\partial q_j} \var q_j \\
+        &= \sum_{i=1}^{D-C} Q^\text{cons}_i \var q_i + 
+        \sum_{i=1}^{D-C} \sum_{j=D-C+1}^D Q^\text{cons}_j \frac{\partial q_j}{\partial q_i} \var q_i \\
+        &= \sum_{i=1}^{D-C} \left( Q^\text{cons}_i + \sum_{j=D-C+1}^D Q^\text{cons}_j \frac{\partial q_j}{\partial q_i} \right) \var q_i
+    \end{aligned}    
+\]
+恒成立，考虑到各个虚位移的独立性（只考虑了相互独立的$D-C$个坐标），我们有
+\[
+    Q^\text{cons}_i + \sum_{j=D-C+1}^D Q^\text{cons}_j \frac{\partial q_j}{\partial q_i} = 0, \quad i = 1, 2, \ldots, D-C
+\]
+方程右边的${\partial q_j}/{\partial q_i}$可以被写成诸$G$相对$q_i$的偏导数的一个线性组合，这样就可以构造出满足条件的$\lambda$。
+
+这样理想约束的问题就可以消去所有的约束力，直接得到
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q_i}} - \frac{\partial L}{\partial q_i} &= \sum_{j=1}^D \lambda_j \frac{\partial G_j}{\partial q_i}, 
+            \quad i = 1, 2, \ldots, D, \\
+            G_i(q, t) &= 0, \quad i = 1, 2, \ldots, C.
+        \end{aligned}
+    \right.
+    \label{eq:ideal-problem}
+\end{equation}
+这个方程组有$D+C$个方程，分别解出所有的广义坐标和因子$\lambda$。
+这样虽然可以解了，还是很不方便。但是我们注意到这个方程实际上就是下面的泛函极值问题的拉格朗日乘子法解（注意所有$G$都不显含广义坐标的变化率）：
+\[
+    \min \int_{t_1}^{t_2} L(q, \dot{q}, t) \diff t, \st G_1(q, t) = 0, \ldots, G_C(q, t) = 0
+\]
+而考虑到所有约束都是相互独立的，我们可以使用$q_1, \ldots, q_{D-C}, t$表示出其它所有的坐标，则上面的泛函极值问题等价于
+\[
+    \min \int_{t_1}^{t_2} \bar{L} \diff t
+\]
+其中$\bar{L}$称为\textbf{约化拉氏量}，是将$L$中所有的$q_{D-C+1}, \ldots, q_{D}$都用$q_1, \ldots, q_{D-C}, t$表示之后得到的结果。（一定要先代入后求导！）
+而这个泛函极值问题的E-L方程就是
+\begin{equation}
+    \frac{\diff}{\diff t} \frac{\partial \bar{L}}{\partial \dot{q_i}} - \frac{\partial \bar{L}}{\partial q_i} = 0, \quad 
+    i = 1, \ldots, D-C.
+    \label{eq:ideal-el}
+\end{equation}
+
+这样只需要解\eqref{eq:ideal-el}就可以完全解决整个理想约束问题。
+当然，\eqref{eq:ideal-problem}能够化成方程数目更少的\eqref{eq:ideal-el}是因为\eqref{eq:ideal-problem}中的各个广义坐标不是独立的。
+
+我们已经知道，切换广义坐标时无需改变拉格朗日量的值，现在我们又知道，加入理想约束之后约化拉氏量和原来的拉氏量值没有变化。
+
+最后，我们指出：虽然我们从原坐标中选择了$D-C$个作为独立坐标，实际上可以任意选取$D-C$个相互独立且可以表示出所有$q$的新坐标$q'=q'(q)$。这是因为诸$q'$和$D-C$个相互独立的$q$之间一定能够建立起一一对应的函数关系，则在\eqref{eq:ideal-el}中使用$q'_i(i=1, 2, \ldots, D-C)$替换$q_i(i=1, 2, \ldots, D-C)$之后得到的方程仍然成立。
+
+\subsubsection{反解约束力}
+
+有时候需要反求约束力，比如说判断工件是不是承受得了约束力。
+在已经计算出了各个坐标的变化的时候可以直接使用\eqref{eq:holonomic-problem}方程来计算广义约束力，然后切换到我们想要的坐标系（比如直角坐标系）中。
+
+另一种计算约束力的方式是使用拉格朗日乘子。回顾\eqref{eq:ideal-constraint-relation}，我们得到
+\begin{equation}
+    \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q}_i} - \frac{\partial L}{\partial q_i} = \sum_{j=1}^C \lambda_j \frac{\partial G_j}{\partial q_i}
+    \label{eq:lambda-equations}
+\end{equation}
+从中可以求解出$\lambda_i$。%
+\footnote{能够写出这个方程就意味着它有解。而由于总共有$C$个未知数，而\eqref{eq:independent-constraints-holonomic}意味着系数矩阵的秩正好就是$C$，因此它有唯一解。}%
+虽然我们之前只是假设$\lambda$是时间的函数，
+但是我们不需要知道广义坐标关于时间的具体形式就能够直接使用\eqref{eq:lambda-equations}形式上解出$\lambda$
+并且把它表示成完全确定的关于$q, \dot{q}, t$的函数。
+之后，设我们想要知道$q'$坐标系之下的约束力。考虑到\eqref{eq:ideal-constraint-relation}的协变性，我们有
+\begin{equation}
+    R^{\text{cons}}_i = \sum_{j=1}^C \lambda_j \frac{\partial G_j}{\partial q'_i} 
+\end{equation}
+$R_i$就是我们要计算的约束力。
+
+\subsubsection{广义动量和广义能量}
+
+\subsubsection{过渡到哈密顿力学}
+
+上面的推导全是关于拉格朗日力学的
+
+\subsection{可溯约束}
+
+下面讨论完整约束的一个自然推广。
+所谓\textbf{可溯约束}指的是能够写成坐标和时间全微分的一个线性组合的约束，也就是说，它能够写成
+\begin{equation}
+    \sum_{i=1}^D g_{ji} \diff q_i + g_{j0} \diff t = 0
+    \label{eq:linear-velocity-constraint}
+\end{equation}
+其中的系数可以显含坐标和时间。
+等价地说，关于坐标变化率是一次式的约束就为可溯约束。
+可以看出，在一个坐标系内是可溯约束的约束在任何坐标系下都是可溯的。
+
+当然，完整约束可以写成可溯约束，但并不是所有的完整约束都是理想约束，因为不是所有的微分形式都是恰当的。
+
+我们还是可以定义（广义）虚位移，同样，在时间不变的情况下，一个对坐标的变分是虚位移，当且仅当，
+\begin{equation}
+    \sum_{j=1}^D g_{ij} \var q_j = 0.
+\end{equation}
+虚功指的是一个力在虚位移下做的功。
+
+和先前处理理想约束的时候类似的，我们通常要求约束力不做虚功，也就是要求约束为理想约束。
+
+使用和\ref{par:ideal-constraint-relation}节中类似的方法，我们有：
+\paragraph{理想约束和约束力的关系} 可溯约束\eqref{eq:linear-velocity-constraint}是理想约束，当且仅当，
+它对应的约束力满足
+\begin{equation}
+    Q^{\text{cons}}_i = \sum_{j=1}^C \lambda_j g_{ji}
+\end{equation}
+其中$\lambda_j$通常显含时间。这样一来问题就成为
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \frac{\diff}{\diff t} \frac{\partial L}{\partial \dot{q}_i} - \frac{\partial L}{\partial q_i} &= \sum_{j=1}^C \lambda_j g_{ji}, \\
+            \sum_{j=1}^D g_{ij} \diff q_i + g_{i0} \diff t &= 0 \quad, i = 1, \ldots, D-C.
+        \end{aligned}
+    \right.
+    \label{eq:traceable-constraint-motion}
+\end{equation}
+事实上这也是作用量在满足约束\eqref{eq:linear-velocity-constraint}的条件下的条件极值方程。
+
+由于约束不再是完整的，此时\eqref{eq:traceable-constraint-motion}未必能够写成关于一系列相互独立的变量的优化问题，也就是说，我们不能写出像完整约束中那样的约化拉氏量和对应的E-L方程。
+不过，我们仍然可以将\eqref{eq:traceable-constraint-motion}简化。注意到它等价于
+\[
+    \min \int L \dd{t} \st \sum_{i=1}^D g_{ji} \diff q_i + g_{j0} \diff t = 0,
+\]
+而这个优化问题又等价于
+\begin{equation}
+    \sum_{i=1}^D \left( \pdv{L}{q_i} - \dv{t} \pdv{L}{\dot{q}_i} \right) \delta q_i = 0 \st \sum_{i=1}^D g_{ji} \var{q_i} = 0
+    \label{eq:dlem-eq}
+\end{equation}
+\eqref{eq:dlem-eq}称为达朗贝尔原理。
+
+现在从诸$q$中挑选出$D-C$个相互独立的坐标，不失一般性地设它们是第$1$到$D-C$个，那么
+\[
+    \pdv{q_i}{q_j} \quad i = D-C+1, D-C+2, \ldots, D, \; j = 1, 2, \ldots, D-C
+\]
+就已经确定了。
+这样\eqref{eq:dlem-eq}就等价于
+\[
+    \sum_{j=1}^{D-C} \sum_{i=1}^D \left( \pdv{L}{q_i} - \dv{t} \pdv{L}{\dot{q}_i} \right) \pdv{q_i}{q_j} \var{q_j} = 0
+\]
+由$q_j$的独立性，我们得到
+\begin{equation}
+    \sum_{i=1}^D \left( \pdv{L}{q_i} - \dv{t} \pdv{L}{\dot{q}_i} \right) \pdv{q_i}{q_j} = \pdv{L}{q_j} - \sum_{i=1}^D \pdv{q_i}{q_j} \dv{t} \pdv{L}{\dot{q}_i} = 0, \quad j = 1, 2, \ldots, D-C
+    \label{eq:diff-dlem-eq}
+\end{equation}
+因此在可溯约束下一般不能写出等效E-L方程，而要使用达朗贝尔原理或者等价的\eqref{eq:diff-dlem-eq}来替代。
+
+和完整约束时的情况类似，同样可以取$D-C$个独立坐标$q'$使
+\[
+    q = q(q')
+\]
+（注意这个方程不能是可溯约束），则\eqref{eq:diff-dlem-eq}仍然适用，只需要将$q_j(j = 1, 2, \ldots, D-C)$换成$q'_j$即可。
+
+\subsection{与泛函优化的联系}
+理想约束实际上对应着
+
+\subsection{虚功}
+
+\subsubsection{平衡与虚功原理}
+现在讨论在体系平衡的条件。这里所谓的\textbf{平衡}指的是所有的广义动量也就是$\partial L / \partial \dot{q}$都不变的情况。
+当然，在已知\eqref{eq:generalized-el}中的系统拉氏量$L$以及外加力$Q$的情况下，只需要简单地求解方程就可以得到体系平衡的条件。
+但在很多情况下，这两样东西并不能都预先知道。例如在很多实际问题中，外加力$Q$就是\textbf{预先不知道的}，
+而所谓的平衡条件恰恰就是系统\eqref{eq:generalized-el}达到平衡的时候，$Q$应该取什么样的值。
+这个时候直接求解\eqref{eq:generalized-el}非常困难，因此我们需要把它转化为一个更加容易的问题。
+
+由平衡的定义，系统平衡当且仅当
+\[
+    \frac{\partial L}{\partial q_i} + Q_i(q, \dot{q}, t) = 0.
+\]
+其中$Q$指的是不在拉氏量$L$描述范围中的外加力。我们将$Q$进一步区分为$Q^{\text{cons}}$和$Q^{nc}$，这样平衡方程就成为
+\begin{equation}
+    \frac{\partial L}{\partial q_i} + Q^{\text{nc}}_i + Q^{\text{cons}}_i = 0, \quad i = 1, \ldots, D.
+    \label{eq:original-equilibrium}
+\end{equation}
+但是这个约束方程含有约束力，而约束力的形式通常是不知道的。所以我们要尝试把它化成一个可以消掉约束力的形式。
+现在我们考虑虚位移$\var q$。很容易看出平衡方程\eqref{eq:original-equilibrium}可以等价写成
+\[
+    \sum_{i=1}^D \left(\frac{\partial L}{\partial q_i} + Q^{\text{nc}}_i + Q^{\text{cons}}_i\right) \var q_i = 0 
+\]
+既然虚位移的具体大小完全是任意的，只需要它们满足约束方程就可以。由于我们预设了系统处于平衡状态，现在所有的约束都是不含时完整约束，形如
+\begin{equation}
+    G(q)_i = 0, \quad i = 1, \ldots, C.
+    \label{eq:equilibrium-constraints}
+\end{equation}
+通常认为这个约束是理想约束，从而，这个约束确定的虚位移下，所有约束力做的虚功就是零。因此平衡方程又等价于
+\[
+    \sum_{i=1}^D \left(\frac{\partial L}{\partial q_i} + Q^{\text{nc}}_i\right) \var q_i = 0 
+\]
+现在的方程当中所有的项的形式都是已知的了！为了更为清晰，我们定义
+\begin{equation}
+    Q^{\text{act}}_i = \frac{\partial L}{\partial q_i} + Q^{\text{nc}}_i
+    \label{eq:active-force}
+\end{equation}
+并称其为\textbf{主动力}\footnote{用以和约束力区分，因为约束力通常取决于每次运动的具体轨迹。}，
+那么就获得了下面形式的平衡方程
+\begin{equation}
+    \sum_{i=1}^D Q^{\text{act}}_i \var q_i = 0
+\end{equation}
+
+原则上整个平衡问题已经就此解决了，不过我们还可以将问题进一步简化。
+注意到以上方程中出现的坐标实际上不是独立的。为此，使用\eqref{eq:equilibrium-constraints}可以将$q_{c+1}, \ldots, q_{D}$使用前$C$个坐标表示出。
+那么
+\begin{equation}
+    \sum_{i=1}^C Q^{\text{act}}_i \var q_i 
+    + \sum_{i=C+1}^{D} \sum_{j=1}^C Q^{\text{act}}_i \frac{\partial q_i}{\partial q_j} \var q_j = 0
+\end{equation}
+这个方程可以写成更加简约的形式
+\[
+    \sum_{j=1}^C \sum_{i=1}^{D} Q^{\text{act}}_i \frac{\partial q_i}{\partial q_j} \var q_j = 0
+\]
+注意到这个方程是协变的！我们完全可以切换到一个含有$D-C$个坐标的坐标系$q'$下面，此时所有的坐标都是自由的，上式就成为等价的
+\begin{equation}
+    \sum_{i=1}^{D-C} Q'^{\text{act}}_i \var q'_i = 0.
+\end{equation}
+
+于是我们就得到了所谓的虚功原理：
+\paragraph{虚功原理} 一个体系保持平衡，当且仅当，在它满足的约束下，所有主动力做的虚功为零。
+
+需要注意的是虚功原理找出所有的平衡，不代表它找出来的平衡都是稳定的。
+
+\subsubsection{达朗贝尔原理}
+刚才的虚功原理只能分析平衡状态，而有时需要使用虚功原理分析运动状态。
+
+\section{时间作为坐标的拉格朗日力学}
+还是设系统中有$s$个广义坐标$q_i, i=1, 2, \ldots, n$。
+虽然之前定义的拉格朗日力学和哈密顿力学中都引入了“时间”$t$这个量，
+但是实际上我们并没有用到任何“$t$是时间”这个条件——例如，我们从来没有假设过系统关于$t$满足因果律。
+我们实际上只是给系统引入了一个演化参量$t$而并没有任何证据能够先验地认定它为时间。
+那么，原则上，可以将真正的时间当成一个广义坐标放入系统中，
+而将之前引入的$t$——为了混淆，现在我们记它为$\tau$，而记真正的时间为$t$——还是当成参数。%
+\footnote{实际上这就是经典力学和相对论力学的区别——经典力学中$\tau$就是$t$，相对论力学中$\tau$被认定为固有时。}
+这时的最小作用量原理形式上还是
+\[
+    \delta \int L \dd t = 0
+\]
+不过$t$也是一个坐标。
+
+可能产生这样的问题：为什么需要引入一个参数$\tau$？为什么不能直接对泛函
+\[
+    \int L \dd t
+\]
+求极值，而不管$t$是不是一个坐标？其实当然可以，但是这时$t$其实是一个定义在系统演化轨迹上的\textbf{场}了，
+因此不再能够通过计算等时变分来求泛函极值了，因为此时的等时变分不能保证底流形不变，因此不能套用E-L方程。%
+\footnote{这里所谓的等时变分指的是$t$不变的变分，而前面几节所谓的等时变分实际上指的是底流形坐标不变的变分。
+在前几节，虽然我们使用$t$来指称底流形坐标，但并没有用到$t$是时间的假设。}%
+这就是引入一个参数$\tau$的意义——$\tau$实际上是底流形的坐标，因此通过等$\tau$变分我们可以写出$E-L$方程。
+
+进一步，假定$\tau$关于时间$t$是单调的，这样一切关于$t$的变化都可以写成关于$\tau$的变化。并且，一个量在$t$变动时守恒的充要条件就是它在$\tau$变动时守恒。
+
+\subsection{从经典拉格朗日量到扩展拉格朗日量}
+下面需要改写拉氏量$L(q, \dd q / \dd t, t)$的形式。因为需要求等$\tau$变分，需要将所有$t$都替换成$\tau$。
+为方便起见以下用$\dot{q}$表示$\dd q / \dd \tau$，用$q'$表示$\dd q / \dd t$，则$L=L(q, q', t)$，且
+%并且设$\tilde{L}(q, \dot{q}, \tau)$为$L(q, \dd q / \dd t, t)$。
+\begin{equation}
+    q' = \frac{\dot{q}}{\dot{t}}
+\end{equation}
+此时是要求解
+\begin{equation}
+    0 = \var S = \var \int L \dd t = \var \int L\left(q, \frac{\dot{q}}{\dot{t}}, t\right) \dot{t} \dd \tau
+\end{equation}
+在这个变分原理中，广义坐标是诸$q$和$t$，而积分变量、底流形上的坐标是$\tau$，%
+\footnote{在这里要避免术语混淆。“坐标”可能代表$q$这种描写物体位置的量，也可能指描写底流形上各点位置的量。前者是可以用后者表示的场。}%
+于是引入
+\begin{equation}
+    \mathcal{L}(q, t, \dot{q}, \dot{t}) = L\left(q, \frac{\dot{q}}{\dot{t}}, t\right) \dot{t}
+    \label{eq:traditional-lagrangian-with-time-coordinate}
+\end{equation}
+注意由于$t$现在也是广义坐标（而不再是一个积分变量或者说底流形上的坐标），$\mathcal{L}$实际上不显含$\tau$。
+这样\eqref{eq:traditional-lagrangian-with-time-coordinate}就等价于以$\mathcal{L}$为拉氏量、以$\tau$为底流形坐标的拉格朗日力学。
+
+于是称$\mathcal{L}$为\textbf{扩展的拉格朗日量}，称$t, q_1, \ldots, q_s$为\textbf{扩展的广义坐标}。通常定义$q_0$为$t$。
+再次改变记号：使用$q$代表$q_0, q_1, \ldots, q_s$，而不是从$q_1$开始。作为对比，使用$q_{[0]}$表示$\{q_i\}_{i\geq 1}$。
+则容易证明，$\mathcal{L}$是$\dot{q}$的齐一次函数。
+
+扩展拉格朗日量$\mathcal{L}$和用于生成它的普通拉格朗日量$L$之间的关系如下：
+\begin{equation}
+    \begin{bigcase}
+        \pdv{\mathcal{L}}{t} &= \dot{t} \pdv{L}{t}, \\
+        \pdv{\mathcal{L}}{q_i} &= \dot{t} \pdv{L}{q_i}, \quad i \geq 1, \\
+        \pdv{\mathcal{L}}{\dot{t}} &= L - \sum_{i=1}^n \pdv{L}{q_i'} q_i', \\
+        \pdv{\mathcal{L}}{\dot{q}_i} &= \pdv{L}{q_i'}, \quad i \geq 1
+    \end{bigcase}
+    \label{eq:transform-time-as-coordinate}
+\end{equation}
+
+将$\mathcal{L}$和$\tau$代入\eqref{eq:el}可以得到
+\begin{equation}
+    \dv{\tau} \pdv{\mathcal{L}}{\dot{q}_i} - \pdv{\mathcal{L}}{q_i} = 0, \quad i = 0, 1, ,\ldots, n
+\end{equation}
+这样就得到了\textbf{扩展的运动方程}。这一组方程实际上就等价于
+\[
+    \begin{split}
+        \dv{t} \left( L - \sum_{i=1}^n \pdv{L}{q_i'} q_i' \right) = \pdv{L}{t}, \\
+        \dv{t} \pdv{L}{q_i'} - \pdv{L}{q_i} = 0, \quad i \geq 1
+    \end{split}
+\]
+这就是\eqref{eq:el}和\eqref{eq:generalized-energy-evolution}合并的结果。
+
+\subsection{诺特定理与守恒量}
+
+使用$\mathcal{L}$，诺特定理\eqref{eq:noether}可以得到很大的简化。
+这是因为，原本做坐标变换时，改变时间改变了底流形的坐标，而现在改变时间只是在改变广义坐标。
+此时物理上“改变粒子运动轨迹”的变分只会改变$t$而不会改变$\tau$。%
+\footnote{注意，此时\ref{sec:symmetry-and-conservation}中所谓的等时变分实际上是等$\tau$变分。}
+因此对系统的所有的有物理意义的无穷小变换都是“等时”（实际上是等$\tau$）的。
+
+则我们得到
+\paragraph{时间作为坐标的诺特定理} 设系统在某个以$\epsilon$为单一变化参数的无穷小变换
+\[
+    \begin{aligned}
+        q_i &\longrightarrow q_i + \var q_i(\epsilon), i = 0, 1, \ldots, n
+    \end{aligned}
+\]
+之下保持不变，则存在$\Lambda=\Lambda(t)$使
+\[
+    \var L = \frac{\partial \var \Lambda}{\partial \tau} 
+\]
+且
+\begin{equation}
+    \dv{\tau} \left(\sum_{i=0}^n \pdv{\mathcal{L}}{\dot{q}_i} \frac{\var q_i}{\dd \epsilon} - \frac{\var \Lambda}{\dd \epsilon} \right) = 0
+    \label{eq:extended-noether}
+\end{equation}
+从而等价的有
+\[
+    \dv{t} \left(\left(L - \sum_{i=1}^n \pdv{L}{q_i'}\right) \frac{\var t}{\dd \epsilon} + \sum_{i=1}^n \pdv{L}{q_i'} \frac{\var q_i}{\dd \epsilon}\right) = 0
+\]
+
+可以看出\eqref{eq:extended-noether}实际上同时将坐标平移不变导致的广义动量守恒和时间平移不变导致的广义能量守恒结合起来了。
+
+具体来说，如果$\mathcal{L}$在坐标$q_i$的平移下不变，那么$q_i$对应的\textbf{扩展广义动量}
+\begin{equation}
+    \mathcal{P}_i = \begin{bigcase}
+        \pdv{L}{q_i} = p_i, \quad &i \geq 1, \\
+        L - \sum_{i=1}^n \pdv{L}{q_i'} = -H, \quad &i = 0
+    \end{bigcase}
+\end{equation}
+在$\tau$演变时守恒，从而在$t$演变时守恒。
+也就是说，扩展广义动量的第零个元素是传统拉格朗日量对应的广义能量的相反数，其余元素是传统拉格朗日量对应的广义动量。
+
+\subsection{非保守体系}
+
+在\ref{sec:non-conservative-system}节中我们已经讨论过了传统形式的拉格朗日力学中的非保守体系。
+那里的结果可以直接移植到时间作为坐标的拉格朗日力学。
+此时\eqref{eq:generalized-problem}中的约束需要写成
+\[
+    f\left(q, \frac{\dot{q}}{\dot{t}}, t\right)=0
+\]
+的形式。
+我们本来可以重复\ref{sec:non-conservative-system}节中“扔掉不感兴趣的坐标”的方案，但为了体现传统形式的拉格朗日力学和时间作为坐标的拉格朗日力学之间的联系，我们将尝试使用\ref{eq:transform-time-as-coordinate}，将\eqref{eq:generalized-problem}直接写成关于$\mathcal{L}$和$\mathcal{\tau}$的形式。
+
+首先，设$L(q, \dot{q}, t)$是\eqref{eq:generalized-problem}描述的非保守体系的拉氏量。指定
+\[
+    \mathcal{L}(q, t, \dot{q}, \dot{t}, \tau) = L\left(q, \frac{\dot{q}}{\dot{t}}, t\right) \dot{t}
+\]
+表面上看这只是将\eqref{eq:traditional-lagrangian-with-time-coordinate}重复了一遍，但实际上，由于非保守体系的拉氏量本身就没有非常良好的定义（哪些部分可以忽略、哪些部分要放进“表观”拉氏量是我们人为选择的），我们并不能使用\eqref{eq:traditional-lagrangian-with-time-coordinate}\textbf{推导}非保守体系的$\mathcal{L}$，而需要人为定义一个。
+
+\eqref{eq:transform-time-as-coordinate}的导出只使用了\eqref{eq:traditional-lagrangian-with-time-coordinate}，因此在非保守体系的情况下还是成立。
+$i \geq 1$时，方程\eqref{eq:generalized-el}，使用本节的记号，为
+\[
+    \dv{t} \pdv{L}{q_i'} - \pdv{L}{q_i} = Q_i
+\]
+代入\eqref{eq:transform-time-as-coordinate}得到
+\[
+    \frac{1}{\dot{t}} \dv{\tau} \pdv{\mathcal{L}}{\dot{q}_i} - \frac{1}{\dot{t}} \pdv{\mathcal{L}}{q_i} = Q_i
+\]
+即
+\[
+    \dv{\tau} \pdv{\mathcal{L}}{\dot{q}_i} - \pdv{\mathcal{L}}{q_i} = \dot{t} Q_i
+\]
+再讨论$i=0$的情况。由\eqref{eq:transform-time-as-coordinate}和\eqref{eq:nc-generalized-energy-evolution}
+\[
+    \begin{aligned}
+        \dv{\tau} \pdv{\mathcal{L}}{\dot{t}} - \pdv{\mathcal{L}}{t} &= \dv{\tau} \left( L - \sum_{i=1}^n \pdv{L}{q_i'} q_i' \right) - \dot{t} \pdv{L}{t} \\
+        &= \dot{t} \dv{t} \left( L - \sum_{i=1}^n \pdv{L}{q_i'} q_i' \right) - \dot{t} \pdv{L}{t} \\
+        &= \dot{t} \left( - \dv{H}{t} - \pdv{L}{t} \right) \\
+        &= - \dot{t} \sum_{i=1}^n Q_i \dot{q}_i
+    \end{aligned}
+\]
+于是可以定义
+\begin{equation}
+    \begin{bigcase}
+        \mathcal{Q}_i &= - \dot{t} \sum_{i=1}^n Q_i \dot{q}_i, \quad i = 0, \\
+        \mathcal{Q}_i &= \dot{t} Q_i, \quad i \geq 1,
+    \end{bigcase}
+    \label{eq:nc-force-time-coordinate}
+\end{equation}
+就得到
+\begin{equation}
+    \begin{bigcase}
+        \dv{\tau} \pdv{\mathcal{L}}{\dot{q}_i} - \pdv{\mathcal{L}}{q_i} &= \mathcal{Q}_i, \quad i = 0, 1, 2, \ldots, D \\
+        f_i \left(q, t, \frac{\dot{q}}{\dot{t}}\right) &=0, \quad i = 1, 2, \ldots, C.
+    \end{bigcase}
+\end{equation}
+于是就得到了以时间为广义坐标的非保守体系的方程，其中$Q$和$\mathcal{Q}$之间的关系由\eqref{eq:nc-force-time-coordinate}给出。
+
+\section{自由粒子、相互作用系统和多体系统}
+
+\subsection{从拉格朗日力学出发}
+
+之前所有的讨论都没有对拉氏量的具体形式做出任何假定。在这一节，我们将以更加物理的眼光处理问题。
+我们称系统中的一个\textbf{粒子}为由数目固定为$D$个广义坐标可以完全描写的一个子系统。
+系统中除了若干个（数目通常确定的）粒子以外可能还会有一些别的东西。
+
+首先考虑一个只有一个\textbf{自由粒子}的体系，这个自由粒子可以使用$D$个广义坐标描写。
+所谓的自由粒子实际上并没有良好定义：例如，一个受到一个线性回复力的粒子算不算自由的？
+实际上，什么是自由粒子取决于我们认为体系遵从怎样的对称性。
+例如如果我们认为对自由粒子而言空间是均匀各向同性的，那么受到线性回复力的粒子就不是自由粒子，但如果没有这个要求，那么受到线性回复力的粒子可以被认为是自由的。
+设一个自由粒子的拉氏量为
+\begin{equation}
+    L = m L_0(q_1, \ldots, q_D, \dot{q}_1, \ldots, \dot{q}_D, t)
+    \label{eq:single-particle}
+\end{equation}
+然后就能够使用\eqref{eq:el}导出自由粒子的运动方程。其中$m$是一个常数。
+当然在系统中只有一个粒子的时候$m$可以取任何非零的值。具体$m$为什么要存在，接下来会看到。
+
+如果体系中有多个自由粒子，它们之间没有相互作用（也就是说，改变其中一个粒子的坐标不会对其它粒子的坐标产生任何影响），
+那么整个系统的拉氏量就可以写成
+\[
+    L = \sum_i m_i L_0(q^{(i)}, \dot{q}^{(i)}, t)
+\]
+其中$q^{(i)}$表示第$i$个粒子的所有坐标。由于拉氏量中各项相互独立，$m_i$的取值同样无关紧要。
+
+在\textbf{有相互作用}时，体系的拉氏量为
+\[
+    L = \sum_i m_i L_0(q^{(i)}, \dot{q}^{(i)}, t) - U(q^{\text{par}}, \dot{q}^{\text{par}}, t) + L^{\text{res}}
+\]
+其中$q^\text{par}$代表所有关于粒子的坐标，$L^\text{res}$代表不能表示成粒子相互作用的一些机制。
+记
+\begin{equation}
+    L^{(i)}_0 = L_0(q^{(i)}, \dot{q}^{(i)}, t)
+\end{equation}
+则
+\begin{equation}
+    L = \sum_i m_i L_0^{(i)} - U(q^{\text{par}}, \dot{q}^{\text{par}}, t) + L^{\text{res}}
+    \label{eq:interaction}
+\end{equation}
+如果$U=0$且$L^\text{res}=0$，\eqref{eq:interaction}就退化回了没有相互作用的情况。
+现在$m_i$的取值不再无关紧要了！我们看到，加上$m$只是为了保证\eqref{eq:single-particle}在有相互作用时具有\textbf{可加性}。
+
+实际上，只要系统中存在可以编组的广义坐标，就总是能够将拉氏量写成\eqref{eq:interaction}的形式。
+
+通常我们对$L^\text{res}$项的具体形式不感兴趣，只是想知道它对粒子运动的影响，于是通过\ref{sec:non-conservative-system}节中的方法把它变成一个“外力项”。
+使用\eqref{eq:generalized-el}，得到运动方程
+\begin{equation}
+    m_i \dv{t} \pdv{L_0^{(i)}}{\dot{q}^{(i)}} - m_i \pdv{L^{(i)}_0}{q^{(i)}} = - \pdv{U}{q^{(i)}} + \dv{t} \pdv{U}{\dot{q}^{(i)}} + Q^{(i)}
+    \label{eq:few-body}
+\end{equation}
+其中$Q^{(i)}$来自$L^\text{res}$，具体方法见\ref{sec:non-conservative-system}节。
+这样，对由一些粒子组成的系统，\eqref{eq:few-body}完全确定了它的演化。
+
+当系统中的粒子很多时，TODO
+
+\subsection{从哈密顿力学出发分析多体系统}
+
+刚才的讨论基于拉格朗日力学，下面在相空间中讨论问题。
+
+相空间中分布着一群粒子。在粒子数非常多时，可以定义其\textbf{分布函数}$\rho(q, p, t)$为时刻$t$时状态刚好为$q, p$的粒子数目，
+并且近似认为分布函数是一个光滑的函数。同样，粒子数也可以认为是一个性质足够良好的广延量。
+由于粒子在相空间中走在光滑连续的轨道上，我们发现分布函数实际上是一个局域守恒量的密度，这个局域守恒量正是\textbf{粒子数}
+\begin{equation}
+    N = \int \rho(q,p,t) \dd \Omega
+\end{equation}
+局域守恒性意味着
+\begin{equation}
+    \pdv{\rho}{t} + \sum_i \left( \pdv{\rho}{p_i} \dot{p}_i + \pdv{\rho}{q_i} \dot{q}_i \right) = \dv{\rho}{t} = 0
+\end{equation}
+这就是\textbf{刘维尔定理}。这个定理还有一种等价的描述方式。追踪一群粒子的粒子数$N$，显然
+\[
+    0 = \dv{t} N = \dv{t} \int \rho(q,p,t) \dd \Omega = \int \dv{\rho}{t} \dd \Omega
+\]
+考虑到$\dd \rho / \dd t$为零，就有
+\[
+    0 = \dv{t} \int \dd \Omega
+\]
+因此这群粒子占据的空间不变。这就是刘维尔定理的另一种叙述。
+需要注意的是刘维尔定理只能保证体积不变，却不能保证这块体积的形状不会发生剧烈的改变。
+
+总之，我们使用
+
+TODO: 
+
+关于转换坐标……有时转换公式为
+\[
+    \dot{q}_\alpha = f_1 
+\]
+
+\end{document}

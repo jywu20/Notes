@@ -1,0 +1,558 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{abstract}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{physics}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\argmax}{\mathrm{argmax}}
+\newcommand*{\argmin}{\mathrm{argmin}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\otherwise}{\text{otherwise}}
+\newcommand*{\range}{\mathrm{range}\;}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\integers}{\mathbb{Z}}
+\renewcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\DeclareMathOperator{\diag}{diag}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{\textbf{定理}}[section]
+\newtheorem{definition}{\textbf{定义}}[section]
+\newtheorem{lemma}[theorem]{\textbf{引理}}
+\newtheorem{proposition}[theorem]{\textbf{命题}}
+\newtheorem{corollary}[theorem]{\textbf{推论}}
+\newtheorem{example}[theorem]{\textbf{例}}
+
+\renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+\renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+
+\title{矩阵}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    关于线性代数中矩阵的一些笔记。
+\end{abstract}
+
+约定：说一个元素$\in$一个序列，就是说这个元素属于这个序列。
+
+\section{矩阵的定义与特殊形式}
+
+\subsection{矩阵的定义和坐标变换}
+
+设$R \in \mathcal{L}(U, V)$，
+$\vb*{e}_1, \ldots, \vb*{e}_m$是$U$的一组基，$\vb*{f}_1, \ldots, \vb*{f}_n$是$V$的一组基。
+则$R$在$\vb*{e}_1, \ldots, \vb*{e}_m$和$\vb*{f}_1, \ldots, \vb*{f}_n$上的坐标矩阵$\vb*{D}$满足%
+\footnote{注意两组基是有顺序的：同一个线性变换从$\vb*{e}$到$\vb*{f}$和从$\vb*{f}$到$\vb*{e}$的矩阵是不同的。}
+\[
+    R \vb*{e}_i = \sum_{j=1}^n \vb*{g}_j D_{ji}
+\]
+也就是说，$\vb*{D}$的第$i$列就是$R \vb*{e}_i$在$\vb*{f}_1, \ldots, \vb*{f}_n$下的坐标向量。
+
+\subsection{矩阵分块}
+
+现在设$a$是$1..m$的子列，$b$是$1..n$的子列，
+$U'$是$\{\vb*{e}_i\}_{i \in a}$张成的空间，而$V'$是$\{\vb*{g}_i\}_{i \in b}$张成的空间。
+容易看出，算子$P_{V'} R P_{U'}$在$\vb*{e}_1, \ldots, \vb*{e}_m$和$\vb*{f}_1, \ldots, \vb*{f}_n$上的坐标矩阵为
+\[
+    D'_{ji} = 
+    \begin{cases}
+        D_{ji}, & i \in a, j \in b \\
+        0, & \otherwise
+    \end{cases}
+\]
+因此矩阵$\vb*{D}$中诸$a$列诸$b$行组成的分块对应于$P_{V'} R P_{U'}$。
+特别的，如果$\range R P_{U'} \cap V' = \emptyset$，那么$\vb*{D}$中诸$a$列诸$b$行组成的分块为零。
+
+\section{线性性质和解方程}
+
+\subsection{向量组}
+以下讨论的向量都在$\mathbb{R}^n$中。
+
+首先我们有
+\[
+    x_1 \vb*{a}_1 + \ldots + x_n \vb*{a}_n = [\vb*{a}_1 \; \ldots \; \vb*{a}_n] 
+    \left[
+        \begin{matrix}
+            x_1 \\
+            \vdots \\
+            x_n
+        \end{matrix}
+    \right]
+\]
+
+\subsubsection{线性无关性}
+$r$个$n$维向量线性无关，当且仅当，以这些向量为列的矩阵至少有一个非零的$r$阶子式。
+
+设$\vb*{A} \in \mathbb{R}^{m \times n}$有一个非零的$r$阶子式，则
+\begin{itemize}
+    \item 这个子式所在的行线性无关，它所在的列也线性无关
+    \item $r+1$阶子式全部为零，那么其它的行都可以使用这$r$行线性表示；列同理。
+\end{itemize}
+
+\subsection{矩阵的秩}
+
+定义矩阵的\textbf{行秩}为矩阵的各行组成的向量组的秩，矩阵的\textbf{列秩}为矩阵的各列组成的向量组的秩。
+
+矩阵的列秩为$r$当且仅当它有一个$r$阶子式不为零，而大于$r$阶的子式全部都是零。
+
+矩阵的行秩等于列秩。则定义矩阵的\textbf{秩}为$\mathrm{rank} \vb*{A}$为它的行秩，即列秩。秩等于行数的矩阵为\textbf{行满秩矩阵}，秩等于列数的矩阵为\textbf{列满秩矩阵}。秩等于阶数的方阵为\textbf{满秩矩阵}。
+
+有以下结论： 
+\begin{itemize}
+    \item 矩阵的秩必定同时小于等于行数和列数（从而，行比列多的矩阵不可能行满秩，列比行多的矩阵不可能列满秩）
+    \item 转置不改变矩阵的秩
+    \item \[
+        \mathrm{rank} (\vb*{A} + \vb*{B}) \leq \mathrm{rank} \vb*{A} + \mathrm{rank} \vb*{B}
+    \]
+    \item \[
+        \mathrm{rank} (\vb*{A} \vb*{B}) \leq \min (\mathrm{rank} \vb*{A}, \mathrm{rank} \vb*{B})
+    \]
+    \item 左乘或者右乘一个可逆矩阵不改变矩阵的秩。从而，对矩阵做初等变换不改变矩阵的秩。
+\end{itemize}
+
+如果一个矩阵没有一行全部是零，并且每一行第一个非零元素所在的列数随着行数递增，那么这个矩阵一定是行满秩的。因此，我们可以将一个矩阵初等变换成行阶梯矩阵（\textbf{行阶梯矩阵}指的是不全为零的行全部在全部为零的行上方，并且每一行第一个非零元素所在的列数随着行数递增的矩阵），然后非零的行的个数就是矩阵的秩。（问题：这样一定是可行的吗？是不是有不能够转化成行阶梯矩阵的情况？）
+
+最后，$\vb*{A}\in \mathbb{R}^{m\times n}$的秩为$r$，当且仅当存在$m$阶可逆矩阵$\vb*{P}$和$n$阶可逆矩阵$\vb*{Q}$使
+\[
+\vb*{P} \vb*{A} \vb*{Q} = \left[
+    \begin{matrix}
+        \vb*{I}_r & \vb*{O} \\
+        \vb*{O} & \vb*{O}
+    \end{matrix}
+\right]
+\]
+
+$\vb*{A} \in \mathbb{R}^{m\times n}, \vb*{B} \in \mathbb{R}^{n \times p}$，则
+\[
+\mathrm{rank} (\vb*{A} \vb*{B}) \geq \mathrm{rank}\vb*{A} + \mathrm{rank}\vb*{B} - n
+\]
+
+\hypertarget{sec:linear-equations-structure}{%
+\subsection{线性方程组解的结构}\label{sec:linear-equations-structure}}
+
+设$\vb*{A} \in \mathbb{R}^{m \times n}$。
+
+\subsubsection{线性方程组}
+
+任何一个n元线性方程组都可以写成矩阵形式： 
+\[
+    \vb*{A}\vb*{x} = \vb*{b},
+\]
+其中$\vb*{A} \in \reals^{m\times n}$是已知的矩阵，$\vb*{b} \in \reals^m$是已知的向量，而$\vb*{x} \in \reals^n$是需要计算的一个向量。容易看出$\vb*{A}$实际上是$\mathcal{L}(\mathbb{R}^n, \mathbb{R}^m)$中某个映射的一个矩阵表示。
+
+显然，这个方程或是没有解，或是有唯一解，或是有无穷多个解。这是因为，只要方程有两个不同的解，就可以通过线性组合构造出更多的解。
+
+调节不同的$\vb*{x}$，就可以得到不同的$\vb*{A} \vb*{x}$。最后得到的全体$\vb*{A} \vb*{x}$实际上形成了一个向量空间。注意到
+\[
+\vb*{A} \vb*{x} = \sum_i x_i \vb*{A} \text{的第$i$列}
+\]
+因此，我们可以把$\vb*{A}$的列向量看成从原点出发的不同方向，将$x_i$看成沿着第$i$个列向量走出了多远。因此，全体$\vb*{A} \vb*{x}$就是$\vb*{A}$的\textbf{列空间}，实际上也就是$\vb*{A}$对应的线性映射的值域。$\vb*{A}\vb*{x} = \vb*{b}$
+有解意味着$\vb*{b}$在$\vb*{A}$的各个列向量张成的\textbf{生成子空间}当中，也就是说，$\vb*{b}$在$\vb*{A}$的\textbf{列空间}当中。
+
+从线性相关有关的结论可以看出：给定$\vb*{b}$， 
+\begin{itemize}
+    \item $\vb*{A} \vb*{x} = \vb*{0}$只有零解，当且仅当$\vb*{A}$的列向量线性无关，当且仅当$\vb*{A} \vb*{x} = \vb*{b}$只有唯一解
+    \item $\vb*{A} \vb*{x} = \vb*{b}$有解，当且仅当，$\vb*{b}$可以使用$\vb*{A}$的列向量线性表示
+\end{itemize}
+
+
+推论：$\vb*{B}$的列向量都可以被$\vb*{A}$的列向量线性表示（即：前者的列向量张成的空间是后者的列向量张成的空间的子空间），当且仅当，存在$\vb*{D}$使$\vb*{B} = \vb*{A} \vb*{D}$。
+
+一个矩阵的列向量线性无关当且仅当这个矩阵有非零子式。
+
+\hypertarget{ux65b9ux9635}{%
+\subsubsection{方阵问题}\label{ux65b9ux9635}}
+
+设$\vb*{A}$为方阵，$\vb*{b}$与$\vb*{A}$同阶，则下面的说法等价：
+\begin{itemize}
+    \item $\vb*{A}$可逆
+    \item $\vb*{A} \vb*{x} = \vb*{b}$有唯一解
+    \item $\vb*{A} \vb*{x} = \vb*{0}$只有零解
+    \item $\vb*{A}$的列向量线性无关 
+    \item $\det \vb*{A} \neq 0$
+\end{itemize}
+
+没有这样的情况：对有些$\vb*{b}$，$\vb*{A} \vb*{x} = \vb*{b}$有唯一解，对另外一些，没有解或者有无穷多个解。
+
+反之，如果$\vb*{A}$不可逆，那么一定有一些$\vb*{b}$使$\vb*{A} \vb*{x} = \vb*{b}$无解，另有一些$\vb*{b}$使$\vb*{A} \vb*{x} = \vb*{b}$有无穷多个解。
+
+\hypertarget{ux9f50ux6b21ux65b9ux7a0bux89e3ux7684ux7ed3ux6784}{%
+\subsubsection{齐次方程解的结构}\label{ux9f50ux6b21ux65b9ux7a0bux89e3ux7684ux7ed3ux6784}}
+
+以下讨论$\vb*{A}$不一定为方阵的情况。
+先前已经分析过，方程$\vb*{A} \vb*{x} = \vb*{0}$仅有零解，当且仅当，$\vb*{A}$的列向量线性无关。我们还可以加入一个充要条件：$\vb*{A}$是列满秩的。
+
+因此，在$\vb*{A}$的行数少于列数的时候，$\vb*{A} \vb*{x} = \vb*{0}$必定有非零解。
+
+下面我们考虑有非零解的情况。这些解连同零向量构成了$\vb*{A}$的零空间。我们称一组向量是$\vb*{A}$的\textbf{基础解系}，当且仅当，任何一个$\vb*{A} \vb*{x} = \vb*{0}$的解都可以使用它们线性表示。使用线性映射零空间和值域维数的关系可以得到：基础解系中共有$n-\mathrm{rank}\vb*{A}$个向量。
+
+\hypertarget{ux6c42ux89e3ux9f50ux6b21ux65b9ux7a0b}{%
+\subsubsection{求解齐次方程}\label{ux6c42ux89e3ux9f50ux6b21ux65b9ux7a0b}}
+
+下面的问题是怎样把这些向量（注意它们不是唯一的）计算出来。$\vb*{A}$的行空间的维数是$\mathrm{rank}\vb*{A}$，于是我们取$\vb*{A}$的行空间的一组基（比如说一个极大无关组，但也可以是极大无关组做了某个线性变换的结果），以它们为行得到一个新矩阵$\vb*{A}_1$，则方程$\vb*{A} \vb*{x} = \vb*{0}$等价于$\vb*{A}_1 \vb*{x} = \vb*{0}$。
+
+同样，$\mathrm{rank}\vb*{A}_1=\mathrm{rank}\vb*{A}$。
+这就意味着，$\vb*{A}_1$有一个$\mathrm{rank}\vb*{A}$阶子式非零。
+不失一般性地我们设它的前$\mathrm{rank}\vb*{A}$列组成的矩阵的行列式非零（否则，只需要交换有限行就可以达到这个结果）。
+设$\vb*{A}_{11}$是$\vb*{A}_1$前$\mathrm{rank}\vb*{A}$列组成的矩阵（一个方阵），
+$\vb*{A}_{12}$是剩下来的部分，则方程$\vb*{A}_1 \vb*{x} = \vb*{0}$等价于
+\[
+\vb*{A}_{11} \vb*{x}_1 + \vb*{A}_{12} \vb*{x}_2 = \vb*{0}, \vb*{x} = \vb*{x}_1 \oplus \vb*{x}_2.
+\]
+
+也就是 \[
+\vb*{x} = \left[
+    \begin{matrix}
+        - \vb*{A}_{11}^{-1} \vb*{A}_{12} \\
+        \vb*{I}_{n-\mathrm{rank}\vb*{A}}
+    \end{matrix}    
+\right] \vb*{x}_2
+\]
+注意到$\vb*{x}_2$的选取完全没有受到限制。于是我们可以随便取$n-\mathrm{rank}\vb*{A}$维向量代入上式。比较好的选择是取某个分量为1其它分量全是0的向量，一共得到$n-\mathrm{rank}\vb*{A}$独立解，正好组成一个基础解系。
+
+也可以使用初等行变换的方法做到这一点。容易看出，对于任意一个列不满秩的矩阵$\vb*{A}$，我们都可以交换它的有限列之后，将得到的矩阵初等变换为下面的形式
+\[
+\left[
+    \begin{matrix}
+        \vb*{I}_{\mathrm{rank}\vb*{A}} & \vb*{B} \\
+        \vb*{O} & \vb*{O}
+    \end{matrix}    
+\right]
+\]
+并且，$-\vb*{B}$的第$i$列和总长为$n-\mathrm{rank}\vb*{A}$，第$i$个分量为1其它分量为零的向量拼接后再按照先前交换列的方式反过来交换分量后得到的向量是方程$\vb*{A} \vb*{x} = \vb*{0}$的解。使用这个方式可以求出一整组基础解系。
+
+\hypertarget{ux975eux9f50ux6b21ux65b9ux7a0bux7684ux89e3ux7684ux7ed3ux6784}{%
+\subsubsection{非齐次方程的解的结构}\label{ux975eux9f50ux6b21ux65b9ux7a0bux7684ux89e3ux7684ux7ed3ux6784}}
+
+称$(\vb*{A} \; \vb*{b})$为非齐次方程$\vb*{A} \vb*{x} = \vb*{b}$的\textbf{增广矩阵}。
+
+非齐次方程$\vb*{A} \vb*{x} = \vb*{b}$有解，当且仅当，$\mathrm{rank}\vb*{A} = \mathrm{rank}(\vb*{A} \; \vb*{b})$。
+
+如果$\mathrm{rank}\vb*{A} = n$，那么非齐次方程就有唯一解；否则非齐次方程有无穷多个解，彼此之间相差$\vb*{A} \vb*{x} = \vb*{0}$的一个解。
+
+\hypertarget{ux6c42ux89e3ux975eux9f50ux6b21ux65b9ux7a0b}{%
+\subsubsection{求解非齐次方程}\label{ux6c42ux89e3ux975eux9f50ux6b21ux65b9ux7a0b}}
+
+因此只要求解出了非齐次方程的一个特解就求出了所有通解。
+容易看出，按照之前的定义，设$\vb*{b}_r$代表$\vb*{b}$的前$\mathrm{rank}\vb*{A}$个元素组成的向量，
+则$\vb*{A}_{11}^{-1} \vb*{b}_r$再拼接上一个零向量就构成了一个特解。
+
+同样也可以使用初等变换求解。增广矩阵在交换有效次列之后（不要动最后一列，也就是$\vb*{b}$），经过初等行变换得到
+\[
+\left[
+    \begin{matrix}
+        \vb*{I}_{\mathrm{rank}\vb*{A}} & \vb*{B} & \vb*{b}' \\
+        \vb*{O} & \vb*{O} & *
+    \end{matrix}    
+\right]
+\]
+
+如果$*$处不全零，方程无解。否则，$-\vb*{B}$的第$i$列和总长为$n-\mathrm{rank}\vb*{A}$，第$i$个分量为1其它分量为零的向量拼接后再按照先前交换列的方式反过来交换分量后得到的向量是$\vb*{A} \vb*{x} = \vb*{0}$的基础解，而最右边一列则是方程$\vb*{A} \vb*{x} = \vb*{b}$的一个特解。
+
+\subsection{矩阵求逆}
+
+设有两个同阶方阵$\vb*{A}, \vb*{B}$，
+对$[\vb*{A} \; \vb*{B}]$做若干次初等行变换（也即：左乘某个可逆矩阵）以后必定可以得到形如$[\vb*{D} \; \vb*{I}]$的矩阵，
+且$\vb*{D} = \vb*{B}^{-1} \vb*{A}$；
+对$[\vb*{A} \; \vb*{B}]$做若干次初等列变换（也即：右乘某个矩阵）之后必定可以得到形如$[\vb*{D} \; \vb*{I}]$的矩阵，
+且$\vb*{D}=\vb*{A} \vb*{B}^{-1}$。
+这就是使用初等变换计算逆矩阵的方式。
+
+\section{不变量以及它们衍生出来的东西}
+
+\subsection{行列式相关}
+
+行列式实际上确定了一个体积。
+
+一个矩阵的某阶子式全为零，那么阶数更高的子式也一定是零。
+
+\subsection{二次型}
+
+$n$个变量$x_1, \ldots, x_n$的一个\textbf{二次型}是一个形如
+\[
+f(x_1, \ldots, x_n) = \sum_{i=1}^n \sum_{j=1}^n a_{ij}x_i x_j 
+\]
+的函数。我们要求它是二次的，因此$a_{ij}$不全为零。
+
+使用矩阵形式有
+\[
+f(\vb*{x}) = \vb*{x}^\top \vb*{A} \vb*{x}
+\]
+实际上，同一个二次型可以对应不同的$a$的选择，
+例如$2xy+1yx$和$1xy+2yx$就是完全相同的二次型，但是它们的$\vb*{A}$就不同。
+我们通常要求$\vb*{A}$是对角矩阵，每个二次型的$\vb*{A}$就是完全确定的。
+
+现在我们希望能够通过一系列可逆的坐标变换化简$f$的形式。简单地说，有这样几种方法：
+
+\paragraph{正交相似法} 注意到$\vb*{A}$是对角的，因此可以做谱分解（见\ref{sec:spectral}节），
+得到
+\[
+    \vb*{A} = \vb*{S} \vb*{\Lambda} \vb*{S}^\top
+\]
+其中$\vb*{S}$是一个正交矩阵，$\vb*{\Lambda}$是对角矩阵。
+于是做变换
+\[
+    \vb*{x} = \vb*{S} \vb*{x}'
+\]
+有
+\[
+    \begin{aligned}
+        f &= \vb*{x}^\top \vb*{S} \vb*{\Lambda} \vb*{S}^\top \vb*{x} + \vb*{b}^\top \vb*{x} + c \\
+        &= (\vb*{S}^{-1} \vb*{x})^\top \vb*{\Lambda} (\vb*{S}^{-1} \vb*{x}) + (\vb*{S}^\top \vb*{b})^\top (\vb*{S}^{-1} \vb*{x}) + c \\
+        &= {\vb*{x}'}^\top \vb*{\Lambda} \vb*{x}' + \vb*{\beta}^\top \vb*{x}' + c,
+    \end{aligned}
+\]
+其中
+\[
+    \vb*{\beta} = \vb*{S}^\top \vb*{b}
+\]
+然后我们要通过平移变换把一次项消掉。为此设
+\[
+    \vb*{x}' = \tilde{\vb*{x}} + \vb*{d}
+\]
+于是
+\[
+    f = \tilde{\vb*{x}} \vb*{\Lambda} \tilde{\vb*{x}} + (2 \vb*{d}^\top \vb*{\Lambda} + \vb*{\beta}^\top) \tilde{\vb*{x}} + \vb*{d}^\top \vb*{\Lambda} \vb*{d} + \vb*{\beta}^\top \vb*{d} + c
+\]
+推导时要注意$\vb*{\Lambda}$是对角矩阵。要让一次项为零，只需要令
+\[
+    2 \vb*{\Lambda} \vb*{d} + \vb*{\beta} = 0
+\]
+如果$\vb*{\Lambda}$可逆，那么这就是
+\[
+    \vb*{d} = - \frac{1}{2} \vb*{\Lambda}^{-1} \vb*{\beta}
+\]
+这很容易计算出来，于是设
+\[
+    \tilde{c} = -\frac{1}{4} \vb*{\beta}^\top \vb*{\Lambda}^{-1} \vb*{\beta} + c
+\]
+就得到了
+\[
+    f = \tilde{\vb*{x}}^\top \vb*{\Lambda} \vb*{x} + \tilde{c}
+\]
+而当$\vb*{\Lambda}$不可逆时，对$\vb*{\beta} \notin \range\left(2\Lambda\right)$，方程
+\[
+    2 \vb*{\Lambda} \vb*{d} + \vb*{\beta} = 0
+\]
+无解（在这个方程有解的时候，只需要随便取一个解为$\vb*{d}$即可），此时一次项系数不全为零并且不可能通过坐标变换化为全零。
+
+注意在整个计算过程中，我们只对坐标应用了正交矩阵变换和平移变换，而这两者都保持度量关系不变，因此使用以上的方法化简二次型能够保证曲面$f=0$的形状不变，无论使用$\vb*{x}$为坐标还是使用$\tilde{\vb*{x}}$为坐标。
+
+特别的，在$n=2$时，任何一个二次型都可以写成
+\[
+    f(x, y) = Ax^2 + Bxy + Cy^2 + Dx + Ey + F
+\]
+于是有
+\[
+    \vb*{A} = \mqty[A & B/2 \\ B/2 & C], \quad \vb*{b} = \mqty[D \\ E], \quad c = F
+\]
+使用上面的方法
+
+\subsection{二次函数}
+
+$n$个变量$x_1, \ldots, x_n$的一个\textbf{二次函数}是一个形如
+\[
+f(x_1, \ldots, x_n) = \sum_{i=1}^n \sum_{j=1}^n a_{ij}x_i x_j + \sum_{i=1}^n b_i x_i + c
+\]
+的函数。我们要求它是二次的，因此$a_{ij}$不全为零。显然它是二次型的直接推广——二次型就是$\b_i=0$且$c=0$的情况。
+
+使用矩阵形式有
+\[
+f(\vb*{x}) = \vb*{x}^\top \vb*{A} \vb*{x} + \vb*{b}^\top \vb*{x} + c
+\]
+
+将二次函数化为比较简单的形式，最简单的方法就是正交变换。
+注意到$\vb*{A}$是对角的，因此可以做谱分解（见\ref{sec:spectral}节），
+得到
+\[
+    \vb*{A} = \vb*{S} \vb*{\Lambda} \vb*{S}^\top
+\]
+其中$\vb*{S}$是一个正交矩阵，$\vb*{\Lambda}$是对角矩阵。
+于是做变换
+\[
+    \vb*{x} = \vb*{S} \vb*{x}'
+\]
+有
+\[
+    \begin{aligned}
+        f &= \vb*{x}^\top \vb*{S} \vb*{\Lambda} \vb*{S}^\top \vb*{x} + \vb*{b}^\top \vb*{x} + c \\
+        &= (\vb*{S}^{-1} \vb*{x})^\top \vb*{\Lambda} (\vb*{S}^{-1} \vb*{x}) + (\vb*{S}^\top \vb*{b})^\top (\vb*{S}^{-1} \vb*{x}) + c \\
+        &= {\vb*{x}'}^\top \vb*{\Lambda} \vb*{x}' + \vb*{\beta}^\top \vb*{x}' + c,
+    \end{aligned}
+\]
+其中
+\[
+    \vb*{\beta} = \vb*{S}^\top \vb*{b}
+\]
+然后我们要通过平移变换把一次项消掉。为此设
+\[
+    \vb*{x}' = \tilde{\vb*{x}} + \vb*{d}
+\]
+于是
+\[
+    f = \tilde{\vb*{x}} \vb*{\Lambda} \tilde{\vb*{x}} + (2 \vb*{d}^\top \vb*{\Lambda} + \vb*{\beta}^\top) \tilde{\vb*{x}} + \vb*{d}^\top \vb*{\Lambda} \vb*{d} + \vb*{\beta}^\top \vb*{d} + c
+\]
+推导时要注意$\vb*{\Lambda}$是对角矩阵。要让一次项为零，只需要令
+\[
+    2 \vb*{\Lambda} \vb*{d} + \vb*{\beta} = 0
+\]
+如果$\vb*{\Lambda}$可逆，那么这就是
+\[
+    \vb*{d} = - \frac{1}{2} \vb*{\Lambda}^{-1} \vb*{\beta}
+\]
+这很容易计算出来，于是设
+\[
+    \tilde{c} = -\frac{1}{4} \vb*{\beta}^\top \vb*{\Lambda}^{-1} \vb*{\beta} + c
+\]
+就得到了
+\[
+    f = \tilde{\vb*{x}}^\top \vb*{\Lambda} \vb*{x} + \tilde{c}
+\]
+而当$\vb*{\Lambda}$不可逆时，对$\vb*{\beta} \notin \range\left(2\Lambda\right)$，方程
+\[
+    2 \vb*{\Lambda} \vb*{d} + \vb*{\beta} = 0
+\]
+无解（在这个方程有解的时候，只需要随便取一个解为$\vb*{d}$即可），此时一次项系数不全为零并且不可能通过坐标变换化为全零。
+
+注意在整个计算过程中，我们只对坐标应用了正交矩阵变换和平移变换，而这两者都保持度量关系不变，因此使用以上的方法化简二次函数能够保证曲面$f=0$的形状不变，无论使用$\vb*{x}$为坐标还是使用$\tilde{\vb*{x}}$为坐标。
+
+特别的，在$n=2$时，任何一个二次函数都可以写成
+\[
+    f(x, y) = Ax^2 + Bxy + Cy^2 + Dx + Ey + F
+\]
+于是有
+\[
+    \vb*{A} = \mqty[A & B/2 \\ B/2 & C], \quad \vb*{b} = \mqty[D \\ E], \quad c = F
+\]
+使用上面的方法
+
+\paragraph{配方法}
+
+\paragraph{初等变换法}
+
+\section{几种特殊的矩阵}
+
+\subsection{酉矩阵和正交矩阵}
+
+一个方阵$U \in \complexes^{n\times n}$是\textbf{酉矩阵}，当且仅当$U U^\dagger = U^\dagger U = I$。除此之外$U$是酉矩阵还有下面的等价命题：
+\begin{itemize}
+    \item $U^{-1} = U^\dagger$
+    \item $U^\dagger$是酉矩阵
+    \item $U$的各列是$\complexes^n$的一组标准正交基
+    \item $U^\dagger$的各列是$\complexes$的一组标准正交基
+    \item $U$是复空间上的等距同构
+\end{itemize}
+
+酉矩阵的行列式为正负$1$，特征值的模都是$1$。
+
+所有元素都是实数的酉矩阵就是\textbf{正交矩阵}。
+
+如果两个矩阵$A, B$相似且让它们相似的变换矩阵是酉矩阵，则$A, B$\textbf{酉相似}；
+如果让$A, B$相似的变换矩阵是正交矩阵，则$A, B$\textbf{正交相似}。
+
+\subsection{对角矩阵和对角化}\label{sec:diag}
+
+对角矩阵顾名思义就是非零元素只分布在对角线上的方阵，可以记作
+\[
+    \vb*{A} = \diag (a_1, a_2, \ldots, a_n) \in \complexes^{n\times n}
+\]
+对角矩阵的乘积、和都是对角矩阵。$\vb*{A}$可逆，当且仅当$\{a_i\}_{i=1}^n$都不是零。此时
+\[
+    \vb*{A}^{-1} = \diag (a_1^{-1}, a_2^{-1}, \ldots, a_n^{-1})
+\]
+
+如果矩阵$\vb*{B}\in \reals^{n \times n}$相似于一个对角矩阵，那它就是\textbf{可对角化}的。
+$\vb*{B}$可对角化的充要条件是$\vb*{B}$具有$n$个线性无关的特征向量。
+这又等价于$\vb*{B}$的每个特征值的重数等于它对应的特征空间的维数，
+以及$\vb*{B}$的极小多项式没有重根。
+特别的，有$n$个不同的特征值的矩阵一定可以对角化。但是可对角化的矩阵却不一定要有$n$个不同的特征值。
+
+通过谱定理，我们有下面的结论：
+设$\vb*{B} \in \complexes^{n \times n}$，则下面几个说法是等价的：
+\begin{itemize}
+    \item $\vb*{B}$酉相似于一个对角矩阵
+    （这个对角矩阵的对角元就是$\vb*{B}$的特征值，每个特征值出现的次数就是这个特征值的重数）
+    \item $\vb*{B}$有一组标准正交基
+    \item $\vb*{B}$是正规矩阵
+\end{itemize}
+当且仅当$\vb*{B}$是一个自伴矩阵，它酉相似于一个实对角矩阵。
+而如果$\vb*{B} \in \reals^{n \times n}$，则下面几个说法等价：
+\begin{itemize}
+    \item $\vb*{B}$正交相似于一个对角矩阵
+    （这个对角矩阵的对角元就是$\vb*{B}$的特征值，每个特征值出现的次数就是这个特征值的重数）
+    \item $\vb*{B}$有一组实空间中的标准正交基
+    \item $\vb*{B}$是一个对称矩阵
+\end{itemize}
+
+\subsection{上三角矩阵}
+
+\subsection{正规矩阵}
+
+正规矩阵指的是与自己的共轭转置对易的矩阵，即满足
+\[
+    \vb*{A} \vb*{A}^\dagger = \vb*{A}^\dagger \vb*{A}
+\]
+
+\section{矩阵分解}
+
+\subsection{谱分解}\label{sec:spectral}
+
+称$\lambda$为方阵$\vb*{A}$的特征值，$\vb*{v}$为矩阵$\vb*{A}$对应于$\lambda$的特征向量，当且仅当
+\[
+    \vb*{A} \vb*{v} = \lambda \vb*{v}
+\]
+$\lambda$是方阵$\vb*{A}$的特征值，当且仅当
+\[
+    \det (\vb*{A} - \lambda \vb*{I}) = 0
+\]
+
+$\det (\vb*{A} - \lambda \vb*{I})$称为$\vb*{A}$的特征多项式。 
+
+$\lambda$相对矩阵$\vb*{A}$的重数就是它在$\vb*{A}$的特征多项式的根中的重数。
+
+\paragraph{特征多项式的基本性质}
+设$\vb*{A}$为方阵，则
+\begin{itemize}
+    \item $\det (\vb*{A} - \lambda \vb*{I}) = (-1)^n (\lambda^n - \tr A \lambda^{n-1} + \cdots + (-1)^n \det \vb*{A})$
+    \item $\tr A = \lambda_1 + \cdots + \lambda_n$
+    \item $\det A = \lambda_1 \cdots \lambda_n$
+\end{itemize}
+
+对复空间上的规范矩阵，有谱定理成立（参见\ref{sec:diag}节）这里我们使用另一种方式重述它：以下条件等价：
+\begin{itemize}
+    \item $\vb*{A}$是规范矩阵
+    \item $\vb*{A}$的所有特征向量张成$\vb*{A}$所在的空间
+    \item 设$\lambda_1, \ldots, \lambda_n$是$\vb*{A}$的不相同的特征值，
+    $\vb*{v}^{(i, 1)}, \ldots, \vb*{v}^{(i, k_i)}$是$\lambda_i$对应的所有特征向量且它们相互正交，则
+    \[
+        \vb*{A} = \sum_{i=1}^n \lambda_i P_i,
+    \]
+    其中
+    \[
+        P_i = \sum_{j=1}^{k_i} \vb*{v}^{(i, j)} \sum_{j=1}^{k_i} {\vb*{v}^{(i, j)}}^\dagger
+    \]
+\end{itemize}
+这个定理实际上是一般的线性空间上的谱定理的特例。
+
+\subsection{奇异值}
+
+\end{document}

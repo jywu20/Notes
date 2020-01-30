@@ -1,0 +1,351 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\integers}{\mathbb{Z}}
+\newcommand*{\reals}{\mathbb{R}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+
+% \renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+% \renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{统计初步}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    基础的统计学知识。
+\end{abstract}
+
+\section{事件和概率}
+
+\subsection{事件}
+
+所谓\textbf{试验}指的是观察一个随机发生的现象并且记录其结果。
+通常我们要求我们做的试验是\textbf{随机试验}，也就是说，
+\begin{itemize}
+    \item 相同的条件下试验可以重复进行
+    \item 试验有不止一个结果，但是所有的结果都是已知的
+    \item 试验的结果能在试验前确定
+\end{itemize}
+试验的可能结果称为\textbf{基本事件}，所有基本事件形成一个\textbf{样本空间}$\Omega$。
+样本空间中的元素都是基本事件，也可以称它们为\textbf{样本点}。
+既然$\Omega$中的各个基本事件——或者说试验结果——是同一个试验可能得到的不同结果，那么显然它们是相互独立的：
+不可能在一次试验中同时得到$\Omega$中的两个不同的样本点。
+
+在实际情况中，我们很多时候更加关心的是，带有某些特征的基本事件是不是发生。
+例如，拿一批灯泡做实验，我们关心的是一个灯泡是不是能够停过10000小时的寿命测试，
+至于这一个灯泡的寿命具体是多少其实无关紧要。
+因此我们定义\textbf{随机事件}或者简称\textbf{事件}为基本事件的集合，也就是样本空间的一个子集。
+设$A$是一个事件，如果在某一次试验中，得到的样本点$\omega \in A$，就说这一次试验中$A$\textbf{发生了}；
+否则就说$A$在这一次试验中\textbf{没有发生}。
+
+当然，给定两个事件，我们总是可以求它们的集合运算来获得其它的事件，并分析它们之间的关系。
+设$A,B$是两个事件。
+常用的事件之间的关系包括：
+\begin{itemize}
+    \item \textbf{相等}——$A=B$，也就是说它们包含相同的样本点；
+    \item \textbf{包含}——$A \subset B$，也就是说，如果事件$A$在一次试验中发生了，那么$B$也会在这个试验中发生。
+    或者说，$A$中所有的样本点都在$B$中。
+    \item \textbf{互斥}——$A \cap B = \emptyset$，就是说，一次试验中$A, B$不同时发生。也可以说它们相互矛盾。
+\end{itemize}
+
+常见的事件的运算就是常见的集合运算，也就是和事件（并）、积事件（交）、对立事件
+（本文中约定，在样本空间确定的时候，$A$的对立事件或者说逆事件为$\bar{A}$）
+还有取差事件（$A$发生且$B$不发生，记作$A-B$，它等价于$A \cap \bar{B}$）
+特别的，如果$A_1, A_2, \ldots, A_n$互不相容，记它们的并事件为
+\[
+    A_1 + A_2 + \cdots + A_n = \sum_{i=1}^n A_i
+\]
+称为\textbf{和事件}。
+交换律、结合律、分配律、德摩根律在这里都适用。
+
+有两个非常常见的事件：一个是\textbf{必然事件}，也就是$\Omega$本身（“不管发生了什么总会有事情发生”）；
+一个是\textbf{不可能事件}，也就是$\emptyset$。
+
+\subsection{事件域和概率}
+
+\subsubsection{事件域的引入}
+
+给定了$\Omega$中的所有基本事件，就可以自动地得到一系列事件：将样本点$\omega$用大括号包起来，
+就得到了一个事件$\{\omega\}$。这一系列事件当然是我们会关注的。
+今后在不产生混淆的情况下，也将这些事件称为基本事件，而将$\omega$称为样本点。
+显然，所有的基本事件互斥。
+
+我们还可能关注这些事件的并集，但也许不是所有并集。
+例如，我们会关注“灯泡的寿命在某某值以上”这个事件，
+但未必会关注“灯泡的寿命在某某值和某某值之间，又不在某某值和某某值之间”这种事件。
+我们可以把“应当关注的事件的全体”形式化为\textbf{事件域}，其定义如下。
+所谓\textbf{事件域}$\mathcal{F}$指的是$\Omega$的一些子集构成的集合，它满足
+\begin{itemize}
+    \item $\Omega \in \mathcal{F}$
+    \item 若$A \in \mathcal{F}$则$\bar{A} \in \mathcal{F}$
+    \item 若$A_{i} \in \mathcal{F}, k=1, 2, \ldots$，则$\bigcap_{i=1}^\infty A_i \in \mathcal{F}$
+\end{itemize}
+
+容易看出$\{\emptyset, \Omega\}$是最小的事件域；
+$\Omega$的全体子集构成的集合是最大的事件域。
+此外还有：若$A, B \in \mathcal{F}$，则$A \cap B, A \cup B, A - B \in \Omega$；
+若$A_{i} \in \mathcal{F}, k=1, 2, \ldots$，则$\bigcup_{i=1}^\infty A_i \in \mathcal{F}$。
+
+\subsubsection{概率测度}
+
+要求事件域中各个事件的对立事件和它们的和事件都在事件域中的好处在于，这样可以在事件域上定义一个测度来衡量每个事件的大小，
+也就是每个事件的可能性，或者说，概率。所谓\textbf{概率测度}就是事件域上的一个归一化的测度。
+也就是说，设$P(\cdot)$是定义在$\mathcal{F}$上的概率，则$P(\cdot) \in \reals$，且
+\begin{itemize}
+    \item \textbf{非负性}——$P(A) \geq 0$
+    \item \textbf{规范性}——$P(\Omega)=1$
+    \item \textbf{可列可加性}——设$A_1, A_2, \ldots$是一系列不相容的事件，则
+    \[
+        P\left(\sum_{i=1}^\infty A_i \right) = \sum_{i=1}^\infty P(A_i)
+    \]
+\end{itemize}
+并且有下面的结论：
+\begin{itemize}
+    \item 不可能事件$\emptyset$的概率是零
+    \item 有限个不相容事件$A_1, A_2, \ldots, A_n$的和的概率是它们的概率的和，即
+    \[
+        P(A_1+A_2+\cdots+A_n) = P(A_1) + P(A_2) + \cdots + P(A_n)
+    \]
+    \item $P(\bar{A}) = 1 - P(A)$
+    \item 若$A \subset B$则$P(A) \leq P(B)$且$P(B-A)=P(B)-P(A)$
+    \item 我们有
+    \[
+    P(A \cup B) = P(A) + P(B) - P(AB) \leq P(A) + P(B)
+    \]
+    更一般的，
+    \[
+        \begin{aligned}
+            P\left( \bigcup_{i=1}^n A_i \right) &= \sum_{1 \leq i \leq n} P(A_i)
+            - \sum_{1 \leq i < j \leq n} P(A_i A_j) + \cdots + (-1)^{n-1} P(A_1 A_2 \cdots A_n) \\
+            & \leq \sum_{i=1}^n P(A_i)
+        \end{aligned}
+    \]
+    \item 概率具有连续性，也就是说，设有可数个事件$A_1, A_2, \ldots$，
+    若$A_1 \supset A_2 \supset \cdots \supset A_n \supset \cdots$
+    或者$A_1 \subset A_2 \subset \cdots \subset A_n \subset \cdots$，则
+    \[
+        \lim_{n \to \infty} P(A_n) = P(\lim_{n \to \infty} A_n)
+    \]
+\end{itemize}
+
+\subsubsection{基本事件的概率与概率测度}
+
+% 这一节的理论需要经过大改。具体的问题在于，可能不是所有的基本事件都能够定义概率
+上面给出的公理化定义不能帮助我们计算概率。
+实际上，只需要确定所有基本事件的概率，也就是说，给每一个基本事件$\{\omega_i\}$指定一个实数$P_i$使
+$P_i \geq 0$且$\sum_i P_i = 1$，就唯一地确定了一个概率测度（反之，概率测度确定之后也就能够确定所有基本事件的概率）
+这是因为，任何一个事件$A$都由若干个样本点$\omega_{i_1}, \omega_{i_2}, \ldots$构成，因此
+\[
+    P(A) = \sum_{k} P(\{\omega_{i_k}\}) = \sum_{k} P_{i_k} 
+\]
+容易证明这个概率测度不引起矛盾，也就是说，它满足概率测度需要满足的所有公理。
+
+概率测度的选择当然不是唯一的。例如，扔一颗骰子，得到1-6的结果的概率分别是多大呢？
+这当然取决于这颗骰子有没有灌过铅。
+一个常用的规则是，在没有更多信息的时候，认为所有基本事件的概率都是一样的。
+但这个规则会产生矛盾。例如，如果取“骰子的点数为1到6中的某一个”为基本事件，那么骰子取某个点数的概率为$1/6$；
+如果取“骰子点数为6或者不为6”为基本事件，那么骰子点数取6的概率就是$1/2$。
+相同的规则带来了不同的概率测度。
+
+虽然如此，通常还是以适当的方式选取基本事件和概率测度，使得每个基本事件的概率都是一样的。
+
+刚才提到“以适当的方式选取基本事件”。的确，我们直觉上会感到，样本空间怎么选择其实没有什么影响，重要的是概率的计算。
+但在本文中，我们却使用样本空间为出发点建立整个概率论。因此要讨论“样本空间怎么选择都不产生影响”
+意味着需要讨论“不同的样本空间选择如何对应”。
+
+% 这一段其实可能有问题……TODO
+% 同样，要点在于提出一种确实有效的方法来建立两个样本空间的对应。
+我们有下面显然的结论：
+设$\Omega_1$是一个样本空间，$\mathcal{F}_1$是其上的一个事件域，在$\mathcal{F}_1$上定义有概率测度$P_1(\cdot)$。
+再设$\Omega_2$是另一个样本空间，$\mathcal{F}_2$是其上的一个事件域，在$\mathcal{F}_2$上定义有一个概率测度$P_2(\cdot)$。
+则如果对$\Omega$中的每一个样本点$\omega_i$都可以找到一个$f_i \in \mathcal{F}_2$，使得
+\[
+    \omega_i \in \Omega, \quad f_i \in \mathcal{F}_i, \quad P_1(\omega_i) = P_2(f_i)
+\]
+且$i \neq j$时$f_i$与$f_j$互斥，
+那么有
+\[
+    P_1\left(\bigcup_{k} \{\omega_{i_k}\} \right) = \frac{1}{P_2\left( \bigcup_i f_i \right)}P_2\left( \bigcup_{k} f_{i_k} \right)
+\]
+
+这个结论可以从两个方向使用：
+如果我们已经有了确定的样本空间$\Omega_2$和事件域$\mathcal{F}_2$，并且发现$\mathcal{F}_2$实际上是一系列事件
+$f_1, f_2, \ldots$以及它们的并集组合而成的，那么就可以使用另一个样本空间$\Omega_1$，并且给它一个满足上式的概率测度$P_1(\cdot)$，这样就可以在$\Omega_1$而不是$\Omega_2$中计算概率测度。
+
+另一方面，当$\Omega_1$的结构比较复杂时，可以考虑使用一个更加简单的$\Omega_2$构造出一系列事件$f_1, f_2, \ldots$，
+然后给它们一个和$P_1$对应的概率测度$P_2$，直观地说就是将$\Omega_1$“分裂”成更简单的组分。
+
+\subsection{条件概率与事件独立性}
+
+设$A, B$是两个事件，且$P(A) > 0$。称
+\[
+    P(B|A) = \frac{P(AB)}{P(A)}
+\]
+为$A$发生的条件下$B$发生的概率。这个定义是很合理的，因为直觉上，$A$发生的条件下的样本空间就是
+\[
+    \Omega' = \{\omega \in \Omega | \omega \in A\} = A
+\]
+而$A$发生时$B$中不属于$A$的样本点全部要被剔除，也就是
+\[
+    B' = \{ \omega \in B | \omega \in A \} = AB
+\]
+显然$B'$是$\Omega'$上的事件，且
+\[
+    P_{\Omega'}(B') = \frac{P(AB)}{P(A)} 
+\]
+
+则有下面的性质：
+\paragraph{乘法公式} 设有一系列事件$A_1, A_2, \ldots, A_n$，则
+\[
+    P(A_1 A_2 \cdots A_n) = P(A_1) P(A_2|A_1) \cdots P(A_n | A_1 A_2 \cdots A_{n-1})
+\]
+
+\paragraph{全概率公式} 设$A_1, A_2, \ldots, A_n$互斥，且它们的概率都大于零。事件$B \in \bigcup_{i=1}^n A_i$，则
+则
+\[
+    P(B) = \sum_{i=1}^n P(A_i) P(B | A_i)
+\]
+
+\paragraph{贝叶斯公式} 设$A_1, A_2, \ldots, A_n$互斥，且它们的概率都大于零。事件$B \in \bigcup_{i=1}^n A_i$，则
+则
+\[
+    P(A_i | B) = \frac{P(A_i) P(B|A_i)}{\sum_{j=1}^n P(A_j) P(B|A_j)}
+\]
+
+\subsubsection{独立事件}
+
+两个事件$A, B$\textbf{相互独立}，当且仅当，已知$A$发生之后$B$的概率和$A$是否发生不知道时$B$的概率一致。
+这又等价于，已知$B$发生之后$A$的概率和$B$是否发生不知道时$A$的概率一致。
+这还等价于$P(AB)=P(A)P(B)$。
+
+还可以把这个概念推广到多个事件：$A_1, A_2, \ldots, A_n$\textbf{}{相互独立}，当且仅当
+\[
+    P(A_1 A_2 \cdots A_n) = P(A_1) \cdots P(A_n)
+\]
+
+\subsection{具体计算}
+
+常见的实际应用中样本空间通常不是离散而有限的，就是连续的$\reals^n$的子集，且通常要求每个样本点形如
+\[
+    (\omega_1, \omega_2, \ldots, \omega_n)
+\]
+$n$个分量分别代表能够确定一个样本点的$n$个数据。
+例如，如果基本事件是“从一个袋子中摸出$n$个球，这些球依次为球1、球2……球$n$”，那么$\omega_i$就是摸出的第$i$个球。
+
+同时，要求所有基本事件的概率都是一样的，也就是说，在样本空间为离散而有限时，
+\[
+    P(A) = \frac{|A|}{|\Omega|}
+\]
+其中$|\cdot|$指的是集合大小。这种方案称为\textbf{古典概型}。在样本空间为
+
+\subsection{佯谬及其解释}
+
+\newcommand*{\example}{\paragraph{例}} 一对夫妻有两个宝宝，一男一女的概率是多少？样本空间为
+\[
+    \Omega = \{ (B, B), (B, G), (G, B), (G, G) \}
+\]
+显然，
+\[
+    P(\{ (B, G), (G, B) \}) = \frac{1}{2}.
+\]
+但是现在如果附加一个信息：“知道有一个女孩”，那么此时的样本空间
+
+\section{随机过程}
+
+\begin{equation}
+    \dv{P(\xi(t) = N)}{t} = \lambda (P(\xi(t)=N-1) - P(\xi(t) = N))
+\end{equation}
+
+\section{数理统计}
+
+方差满足
+\[
+    D f(x) = \sum_i \left( \pdv{f}{x_i} \right) Dx_i
+\]
+只要各个$x_i$彼此无关即可。
+
+一个向量值随机变量$X$称为\textbf{总体}，多次独立获取其值，构成了一组\textbf{样本}$X^{(1)}, X^{(2)}, \ldots, X^{(n)}$。
+
+关于样本的函数称为\textbf{统计量}。
+
+总体的分布确定之后，所有的统计量的分布也就确定了。
+
+\paragraph{假设检验} 对$X$的分布做出假定$H_0$，称其对立假设为$H_1$，设$\xi$是一个统计量，$D_\alpha$是关于参数$\alpha$的一个区间，并计算可得
+\[
+    P(\xi \in D_\alpha | H_0 ) = 1 - \alpha
+\]
+通常取$\alpha$为一个小量；如果获得了一组实际结果$X_i$之后计算$\xi$的值，发现它没有落在$D_\alpha$内，就拒绝原假设$H_0$，否则接受。
+原因也很简单：
+\[
+    P ( H_0 | \xi \notin D_\alpha ) = \frac{P(H_0) P(\xi \notin D_\alpha | H_0)}{P(\xi \notin D_\alpha)} 
+    = \frac{P(H_0) \alpha}{P(\xi \notin D_\alpha)} \propto \alpha
+\]
+但是这里就有了一个问题：“某个随机变量取某个概率分布的概率”是一个没有良好定义的东西。不管怎么样，原假设下小概率事件的出现很有可能意味着原假设是错误的。
+
+\paragraph{参数估计} 假设$X$是一个$n$维向量，满足分布
+\[
+    P(X_1 = x_1, X_2 = x_2 , \ldots, X_n = x_n) = f(x;\theta)
+\]
+其中$\theta$为参数。则可以通过此概率分布计算出一些统计量与$\theta$之间的关系，然后将统计量的实测值代入其中，从而计算出近似的参数值$\hat{\theta}$，也即
+\[
+    \hat{\theta} = \hat{\theta}(X^{(1)}, X^{(2)}, \ldots)
+\]
+
+\paragraph{拟合} 各随机变量服从以下分布
+\[
+    \begin{split}
+        Y = Y(X_{10}, X_{20}, \ldots, X_{n0}; \theta) + \epsilon_Y(\epsilon), \\
+        X_i = X_{i0} + \epsilon_{X_i}(\epsilon)
+    \end{split}
+\]
+其中$\theta, \epsilon$是参数。假定$\epsilon_{X_i}$很小，那么
+\[
+    Y = Y(X_{1}, X_{2}, \ldots, X_{n}; \theta) - \sum_i \pdv{Y}{X_i} \epsilon_{X_i} (\epsilon) + \epsilon_Y(\epsilon)
+\]
+或者写成
+\[
+    Y = Y(X_{1}, X_{2}, \ldots, X_{n}; \theta) + \text{error term}(\epsilon)
+\]
+而将所有的误差项放进一个单独的项里面。
+通常误差是正态分布或者均匀分布又或者三角形分布的，总之是关于单参数$\epsilon$的分布，那么就可以写出其方差关于$\epsilon$的表达式，从而能够写出
+\[
+    P(\abs{Y - EY} < b(\alpha)) = 1 - \alpha
+\]
+这样的表达式，且$b(\alpha)$通常正比于$\sqrt{DY}$，称为\textbf{不确定度}。
+然后做参数估计
+\[
+    \hat{\theta} = \hat{\theta} (X^{(1)}, X^{(2)}, \ldots)
+\]
+之后首先检查模型的显著性：检查在$\theta = \hat{\theta}$的情况下，出现实际观察到的残差的可能性，并与假定$Y=\text{constant}$作比较，看模型是不是表现得足够好。
+
+\paragraph{显著性分析} 就是判断一个变量$X$的变化多大程度上会导致另一个变量$Y$的变化。通常的手段是假定两者无关，然后计算不同$X$下$Y$出现实际观察到的差异的可能性。
+在$X$是离散量的时候这就是“分组对比”。
+
+\end{document}

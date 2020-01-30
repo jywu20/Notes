@@ -1,0 +1,481 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{变分法、场的拉格朗日力学和哈密顿力学}
+\author{wujinq}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    首先分析物理中常用的那一部分（非线性）泛函分析的知识，然后构造场的拉格朗日力学，在有时间坐标的情况下借助拉格朗日力学构造哈密顿力学。
+\end{abstract}
+
+补充内容：拉氏力学的观点下，场是定义在四维时空上的一个函数，时空坐标地位相同（当然因为度规的差异，不可能完全相同）；在哈密顿力学的观点下，场是一个动力系统，有一个被分离出来的时间坐标，其余坐标起到的是“下标”的作用——在0+1维场论，也就是力学中，不同的场（也就是不同的广义坐标）使用$q_1, q_2, \ldots$这样的方式区分，在3+1维场论中，不同的场使用$\phi_1(\vb*{x}), \phi_2(\vb*{y})$这样的方式区分。
+
+因此很难在拉格朗日力学中讨论“态的演化是不是满足什么条件”之类的问题，因为在拉格朗日力学中根本没有所谓的“演化”；同样也很难在哈密顿力学中讨论“时空对称”、是不是洛伦兹不变之类的问题，因为在那里时间被单独分出来了。
+
+求解时间演化问题的时候通常可以将问题的空间部分（问题的空间部分甚至可能是离散的：例如一个向量随着时间的演化，方程为$\dot{x} = Ax$）分离出来做本征值展开，而时间部分通常可以使用傅里叶变换或者拉普拉斯变换解决。
+
+当场量涉及复共轭时需要特殊的处理。
+
+另外还需要写场的约束问题。有些场不方便直接使用一个拉氏量或者哈密顿写出，而需要额外的约束方程（例：薛定谔场、传热场），
+
+产生湮灭算符就是算符形式的傅里叶变换。
+
+\section{变分法和拉格朗日力学}
+
+设底流形上定义了$n$个我们关心的场$\phi_i$，将它们合计为$\phi$。
+考虑下面形式的关于$\phi$的泛函：
+\begin{equation}
+    S = \int \mathcal{L}(\phi, \nabla \phi, x) \mathrm{d}^n x 
+    \label{eq:action-def}
+\end{equation}
+其中$\phi$可以是任何一种场，标量、矢量、张量，都可以。整个积分写在一个\textbf{底流形}上面。我们称$\mathcal{L}$为$S$的密度。
+
+由于$\phi$可以改变而$\nabla \phi$仍保持不变，它们是代数上彼此独立的变量。
+通常我们要求$\mathcal{L}$是$\phi, \nabla \phi, x$的\textbf{函数}，这时它有三个自变量：$\phi, \nabla \phi, x$。
+我们也可以把$\mathcal{L}$看成$\phi$的泛函，这时它只有两个自变量$\phi,x$，其中$x$起到的是某种“参数”的作用。
+
+满足特定条件的这种泛函称为作用量，$\mathcal{L}$称为拉氏量。物理上，我们要求拉氏量（从而，拉氏量）具有可加性，也就是说，TODO：可加性的严格定义
+
+还有一个问题就是，$\nabla \phi$和$\partial_\mu \phi$有什么关系，因为Christoffel符号有可能不为零。
+
+\subsection{无穷小变换、变分与泛函求导}
+TODO:
+- 保持流形不变而做坐标变换可以被化归为流形上的点的变换
+- 在拉氏量不显含位置的情况下上面的变换等价于场本身的变换
+
+\subsubsection{变分的一般形式}
+容易验证：做下面的无穷小变换\footnote{这里我们把$\phi$当成一个整体的场，而不是场的分量。如果将$\phi$看成场的分量，那么$\phi$的变分当中还需要加上坐标变换之后由于基矢量移动造成的变化}
+\begin{equation}
+    \begin{aligned}
+        x &\longrightarrow x' = x + \delta x, \\
+        \phi(x) &\longrightarrow \phi'(x') = \phi(x) + \delta x \cdot \nabla \phi + \delta \phi = \phi(x) + \bar{\delta} \phi, \\
+        %\mathcal{L} &\longrightarrow \mathcal{L}' = \mathcal{L} + \delta \mathcal{L} + \pdv{\mathcal{L}}{\phi} \bar{\delta} \phi + \pdv{\mathcal{L}}{\nabla \phi} \bar{\var} \nabla \phi
+    \end{aligned}
+\end{equation}
+则
+\begin{equation}
+    \delta \partial_\mu \phi = \partial_\mu \bar{\delta} \phi - \partial_\mu \delta x^\nu \partial_\mu \phi
+\end{equation}
+从而可以推导得出
+\begin{equation}
+    \delta S = \int \mathrm{d}^n x \left( \delta \phi \cdot \left(\frac{\partial \mathcal{L}}{\partial \phi} - \nabla \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} \right) + \nabla \cdot \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(\phi(x), \nabla \phi (x), x) \delta x \right) \right)
+\end{equation}
+其中$\cdot$指的是完全的内积，也就是把所有的脚标都缩并了，而不是只做一次缩并。
+这里要特别注意一点：我们先将$\phi(x)$代入了$\mathcal{L}$的表达式然后再做的导数，因此有
+\begin{equation}
+    \nabla \cdot (\mathcal{L}(\phi(x), \nabla \phi (x), x) \delta x) = (\nabla \mathcal{L}) \cdot \delta x + \frac{\partial \mathcal{L}}{\partial \phi} \cdot (\nabla \phi \cdot \delta x) + \frac{\partial \mathcal{L}}{\partial \nabla \phi} \cdot (\nabla \nabla \phi \cdot \delta x) + \mathcal{L} \nabla \cdot \delta x
+\end{equation}
+如果先求导再代入$\phi$，那么第二、第三项是没有的。为了表示区分，使用$\mathcal{L}(x)$表示$\mathcal{L}(\phi(x), \nabla \phi (x), x)$，于是
+\begin{equation}
+    \delta S = \int \mathrm{d}^n x \left( \delta \phi \cdot \left(\frac{\partial \mathcal{L}}{\partial \phi} - \nabla \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} \right) + \nabla \cdot \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(x) \delta x \right) \right)
+    \label{eq:variation-of-action}
+\end{equation}
+
+分量版本如下：
+\begin{equation}
+    \begin{aligned}
+        \delta S &= \int \mathrm{d}^n x \left( \delta \phi \cdot \left ( \frac{\partial \mathcal{L}}{\partial \phi} - \nabla_\mu \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi} \right) + \nabla_\mu \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi} + \mathcal{L}(x) \delta x^\mu\right) \right) \\
+        &= \int \mathrm{d}^n x  \delta \phi \cdot \left ( \frac{\partial \mathcal{L}}{\partial \phi} - \nabla_\mu \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi} \right)
+        + \int \mathrm{d}s_\mu \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi} + \mathcal{L}(x) \delta x^\mu\right)
+    \end{aligned}
+\end{equation}
+
+\subsubsection{泛函求导}
+我们定义泛函的导数为
+\begin{equation}
+    \frac{\delta F}{\delta f(x)} = \lim_{\epsilon \to 0} \frac{F[f(x')+\epsilon \delta (x - x')] - F[f(x')]}{\epsilon}
+    \label{eq:derivative-of-functional-def}
+\end{equation}
+TODO：这东西是什么意思啊？？
+
+我们要求$\delta \phi$在流形边缘\textbf{保持为零}，从而
+\[
+\delta \mathcal{L} = \left( \frac{\partial \mathcal{L}}{\partial \phi} - \partial_\mu \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi} \right) \delta \phi + \partial_\mu \left( \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi} \delta \phi \right)
+\]
+
+\begin{equation}
+    \frac{\delta S}{\delta \phi} = \int \mathrm{d}^nx \left(\frac{\partial \mathcal{L}}{\partial \phi} - \nabla_\mu \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi}\right)
+    \label{eq:derivative-of-functional}
+\end{equation}
+
+考虑到$\mathcal{L}$是$S$的密度，为了让下面的表达式
+\begin{equation}
+    \frac{\delta S}{\delta \phi} = \int \mathrm{d}^n x \frac{\delta \mathcal{L}}{\delta \phi}
+\end{equation}
+成立，我们规定
+\begin{equation}
+    \frac{\delta \mathcal{L}}{\delta \phi} = \frac{\partial \mathcal{L}}{\partial \phi} - \nabla_\mu \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi}
+    \label{eq:derivative-of-functional-density}
+\end{equation}
+
+\subsubsection{李群}
+考虑一个连续群$G$，它有$n$个群参数。其组合函数$f_A$定义为满足下面条件的函数
+\[
+    R(r)S(s) = T(f_A(r,s))
+\]
+其中$r,s$各为一串群参数。我们通常希望组合函数是解析函数，这时的连续群就是李群。通常为了方便起见，恒元的参数全部取零。
+
+根据这$n$个参数可以定义$n$个生成元：
+\begin{equation}
+    \alpha_n = \lim_{\epsilon \to 0} \frac{R(0, \ldots, \epsilon, \ldots, 0) - I}{\epsilon}, \text{where all parameters except the $n$th one take zero values}.
+\end{equation}
+
+这样，先前提到的变分就可以写成
+
+\subsection{泛函极值、欧拉-拉格朗日方程}
+我们希望泛函$S$在流形$\Omega$上取极值。取极值的充要条件是，只改变$\phi$且在$\Omega$的边界上该变量为零的微小变动不应该在$\delta S$中引入一阶变动，即$\delta S=0$。另一方面，如果在$\partial \Omega$上$\delta \phi = 0$（通常是因为$\partial \Omega$上$\phi$的值因为边界条件已经确定了），那么
+\[
+    \delta S = \int \mathrm{d}^n x  \delta \phi \cdot \left ( \frac{\partial \mathcal{L}}{\partial \phi} - \nabla_\mu \frac{\partial \mathcal{L}}{\partial \nabla_\mu \phi} \right)
+\]
+由变分的任意性可以得到
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial \phi} - \nabla \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} = 0.
+    \label{eq:el-equation}
+\end{equation}
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial \phi} - \partial_\mu \left( \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi} \right) = 0.
+    \label{eq:el-equation-components}
+\end{equation}
+这就是所谓的欧拉-拉格朗日方程。满足这个方程的$\phi$称为\textbf{在壳的}。
+
+容易看出两个不同的作用量可以具有相同的极值条件。事实上，两个作用量具有相同的极值条件，当且仅当，它们对应的拉氏量分别乘上一个常数之后相差一个散度项。
+（这直观上很好理解，因为散度项可以写成面积分的形式，因此不会影响区域内部的极值条件）
+然而，在一个拉氏量上面乘以一个常数而保持另一个拉氏量不变会破坏拉氏量的可加性。因此我们得出结论：两个作用量具有相同的极值条件，当且仅当，它们彼此相差一个散度项。
+
+有时，两个作用量的形式不相同，极值条件也不相同，但却能够描述同样的现象。设一系列场$\phi$是另一系列场$\psi$的函数，$\mathcal{L}(\phi, \partial_\mu \phi, x^\mu)$是描述$\phi$的拉氏量，那么$\mathcal{L}(\phi(\psi), \partial_\mu \phi(\psi), x^\mu)$是描述$\psi$的拉氏量，也就是说，$\mathcal{L}(\phi(\psi), \partial_\mu \phi(\psi), x^\mu)$关于$\psi$的E-L方程的解正是$\mathcal{L}(\phi, \partial_\mu \phi, x^\mu)$关于$\phi$的E-L的方程的解做$\phi \rightarrow \psi$的变换结果。
+
+\subsection{泛函不变性与诺特定理}
+
+现在我们对$S$做一个无穷小变换，变换的一般形式刚才已经给出了。我们要求变换前后的作用量的极值条件是等价的，也就是说，对应的拉氏量差一个散度项。于是有
+\begin{equation}
+    \delta S = \int \nabla \cdot (\delta \Lambda) \mathrm{d}^n x
+    \label{eq:equivalent-action}
+\end{equation}
+从而
+\[
+    0 = \int \mathrm{d}^n x \left( \delta \phi \cdot \left(\frac{\partial \mathcal{L}}{\partial \phi} - \nabla \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} \right) 
++ \nabla \cdot \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(\phi(x), \nabla \phi (x), x) \delta x - \delta \Lambda \right) \right)
+\]
+假设$\phi$是在壳的，则上式等价于
+\begin{equation}
+    \int \nabla \cdot  \left( \delta \phi \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(\phi(x), \nabla \phi (x), x) \delta x - \delta \Lambda \right) = 0
+\end{equation}
+考虑到$\delta \phi, \delta x, \delta \Lambda$是任意的小量，我们可以把所有可能的变分写成一个李代数（鬼知道是李群还是李代数），我们可以写出其群参数（或者叫别的什么，无所谓）$\epsilon_1, \ldots, \epsilon_m$，然后
+\begin{equation}
+    \nabla \cdot j = 0, \text{ where } j = \left(\frac{\delta \phi}{\mathrm{d}\epsilon_k} \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(\phi(x), \nabla \phi (x), x) \frac{\delta x}{\mathrm{d} \epsilon_k} - \frac{\delta \Lambda}{\mathrm{d}\epsilon_k}\right) \bigg |_{\epsilon_k=0}
+\end{equation}
+于是我们得到了所谓的\textbf{诺特定理}，也就是一个连续对称性一定意味着上式所示的守恒流。需要注意的是不是所有的守恒流都可以写成这样的形式，因此并非所有的守恒流都来自对称性。
+
+通常使用$\mathcal{L}(x)$表示$\mathcal{L}(\phi, \nabla \phi, x)$，这样可以有简写
+\begin{equation}
+    \nabla \cdot j = 0, \text{ where } j = \left(\frac{\delta \phi}{\mathrm{d}\epsilon_k} \cdot \frac{\partial \mathcal{L}}{\partial \nabla \phi} + \mathcal{L}(x) \frac{\delta x}{\mathrm{d} \epsilon_k} - \frac{\delta \Lambda}{\mathrm{d}\epsilon_k}\right) \bigg |_{\epsilon_k=0}
+    \label{eq:nother-current}
+\end{equation}
+
+现在的问题是，怎样能够确认系统在无穷小变换下不变，也就是说，\eqref{eq:equivalent-action}是成立的？
+容易验证，在\eqref{eq:equivalent-action}成立时，有
+\begin{equation}
+    \partial_\mu \delta \Lambda^\mu = \delta \mathcal{L} + \mathcal{L} \partial_\mu \delta x^\mu.
+\end{equation}
+因此系统在无穷小变换之下不变，当且仅当$\delta \mathcal{L} + \mathcal{L} \partial_\mu \delta x^\mu$能够写成一个量的散度。
+并且，这个量正是\eqref{eq:equivalent-action}，从而诺特定理，中的$\Lambda$。
+
+需要注意的是不是所有的对称性都能够直接导致守恒量，也不是所有的守恒量都对应一个对称性。例如，给机械系统加一个电磁外场，此时仍然有规范不变性，但是这不能导出机械系统内部有什么守恒量。
+
+另一个与之有关的结论是Rund-Trautman恒等式。它是说，
+TODO
+
+\subsubsection{空间变换产生的变分}
+
+\paragraph{主动的空间变换产生的变分}
+\[
+    Rx = x + \delta x, \; R^{-1}x = x - \delta x
+\]
+通过简单的变量代换（将$\phi'$使用$\phi$替换）得到
+\[
+    \begin{aligned}
+        \delta S &= \int_{R\Omega} \mathcal{L}(\phi(R^{-1}x), \nabla \phi (R^{-1}x), x) \mathrm{d}^n x - \int_\Omega \mathcal{L}(\phi(x), \nabla \phi (x), x) \mathrm{d}^n x \\
+        &= \int_{R\Omega} \mathcal{L}(\phi(x - \delta x), \nabla \phi (x - \delta x), x ) \mathrm{d}^n x - \int_\Omega \mathcal{L}(\phi(x), \nabla \phi (x), x) \mathrm{d}^n x \\
+        &= \int_\Omega \mathcal{L}(\phi(x), \nabla \phi (x), x + \delta x) \mathrm{d}^n (x + \delta x) - \int_\Omega \mathcal{L}(\phi(x), \nabla \phi (x), x) \mathrm{d}^n x
+    \end{aligned}    
+\]
+然后就可以按部就班地写出变分了。不过在这个例子当中我们可以看出，无非是执行了下面的操作：
+$$
+\begin{aligned}
+    x &\rightarrow x' = x + \delta x \\
+    \phi(x) &\rightarrow \phi'(x') = \phi (x)
+\end{aligned}
+$$
+也即，
+$$
+\phi'(x) = \phi (x - \delta x) = \phi - \delta x \cdot \nabla \phi
+$$
+
+\paragraph{被动的空间变换产生的变分}
+
+\section{哈密顿力学}\label{sec:hamiltionian-dynamics}
+
+接下来讨论哈密顿力学。给定哈密顿量密度$\mathcal{H}$以及等时对易子$[\cdot, \cdot]$，哈密顿量为
+\begin{equation}
+    H = \int \dd x^n \mathcal{H}
+\end{equation}
+演化方程：
+\begin{equation}
+    \dv{f}{t} = \pdv{f}{t} + [f, H]
+\end{equation}
+等时对易子具有反对称、线性性等性质。
+
+\section{平直时空}
+
+\subsection{平直时空下的哈密顿力学}
+在很多时候我们可以将时间作为一个单独的变量分离出来，此时很多东西可以大大简化。
+
+\subsubsection{符号上的规定}
+从此以后，我们不再将$t$计入$x^\mu$当中，而是将$t$称为时间坐标，将$x^\mu$称为空间坐标。因此我们从此使用这样的记号$\mathcal{L}(\phi, \partial_\mu \phi, \dot{\phi}, x, t)$。当然这个记号实际上还有缩略，因为涉及的场不止一个。当我们将所有的$\phi$以及导数代入拉氏量表达式后，称得到的结果为$\mathcal{L}(x, t)$。
+
+同样的，欧拉-拉格朗日方程写作
+\begin{equation}
+    \frac{\partial \mathcal{L}}{\partial \phi} = \frac{\mathrm{d}}{\mathrm{d}t} \frac{\partial \mathcal{L}}{\partial \dot{\phi}} + \partial_\mu \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi}. 
+\end{equation}
+
+而诺特定理为
+\begin{equation}
+    \frac{\partial}{\partial t} \left( \frac{\partial \mathcal{L}}{\partial \dot{\phi}} \frac{\delta \phi}{\mathrm{d} \epsilon} + \mathcal{L}(x, t) \frac{\delta t}{\mathrm{d} \epsilon} \right) + \partial_\mu \left( \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi} \frac{\delta \phi}{\mathrm{d} \epsilon} + \mathcal{L}(x, t) \frac{\delta x^\mu}{\mathrm{d} \epsilon} \right) = 0
+\end{equation}
+于是我们获得了一个连续性方程，有守恒量密度和流量。
+
+\subsubsection{广义动量和正则方程}
+在正则方程中我们只考虑$t$这个坐标
+（实际上这里的合法性是需要证明的，也就是冻结其它坐标，将所有场看成只和时间有关，然后把最小作用量原理写成拉氏量（现在是拉氏量密度了）对空间积分之后再对时间积分，且变分只变动时间的形式，然后引入哈密顿力学）
+我们引入下面的定义：
+\begin{equation}
+    \pi = \frac{\partial \mathcal{L}}{\partial \dot{\phi}}
+    \label{eq:generalized-momentum-def}
+\end{equation}
+并且定义
+\begin{equation}
+    \mathcal{H}(\phi, \pi, x, t) = \sum \dot{\phi} \pi - \mathcal{L}(\phi, \partial_\mu \phi, \dot{\phi}, x, t), \\
+    H = \int \mathrm{d}^n x \mathcal{H}.
+    \label{eq:hamiltionian-def}
+\end{equation}
+需要注意的是$\mathcal{H}$是一个关于$\phi, \pi, x, t$的\textbf{泛函}，
+同时是关于$\phi, \pi, \dot{\phi}, \partial_\mu \phi, x, t$的\textbf{函数}。
+由于$\dot{\phi}$可以使用$\phi, \pi$表示，因此$\mathcal{H}$是关于$\phi, \pi,  \partial_\mu \phi, x, t$的\textbf{函数}。
+
+这里有一个技术细节：在\eqref{eq:hamiltionian-def}当中我们实际上要求使用$\phi, \pi$来可逆地表示$\dot{\phi}$。这是不是可行的？
+$\phi, \pi$两者的总数和$\phi, \dot{\phi}$两者的总数相同，因此，
+能够使用$\phi, \pi$来可逆地表示$\dot{\phi}$能够用$\phi, \pi$来可逆地表示$\phi, \dot{\phi}$，这又等价于
+$\dot{\phi}$和$\pi$这两组量相互独立。而$\phi$按照假设是相互独立的，因此$\dot{\phi}$内部是相互独立的。
+因此最后我们得到能够使用$\phi, \pi$来可逆地表示$\dot{\phi}$的充要条件
+\begin{equation}
+    \det \left[ \frac{\partial \pi_i}{\partial \dot{\phi}_j} \right]_{ij}
+    = \det \left[ \frac{\partial L}{\partial \dot{\phi}_i \partial \dot{\phi}_j} \right]_{ij} \neq 0.
+\end{equation}
+
+虽然我们使用了拉氏量定义哈密顿，但是也可以先定义哈密顿再定义拉氏量。哈密顿力学和拉格朗日力学是相互独立而等价的。
+
+我们可以写出变分表达式（要注意这里的$\delta \phi$是场的全变分，同时包括坐标变换引起的变化和场本身的变化，相当于前面所说的$\bar{\delta} \phi$）
+\[
+    \delta \mathcal{H} = \left(\sum_\phi \dot{\phi} \delta \pi  - (\dot{\pi} + \partial_\mu \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi}) \delta \phi - \frac{\partial \mathcal{L}}{\partial \partial_\mu \phi} \delta \partial_\mu \phi - \frac{\partial \mathcal{L}}{\partial x} \delta x - \frac{\partial \mathcal{L}}{\partial t} \delta t \right)
+\]
+
+泛函对函数的导数是另一个函数，它在$x$点的值定义为
+\[
+    \fdv{F}{f(x)} = \lim_{\epsilon \to 0} \frac{F_{x'}[f(x')+\epsilon \delta(x'-x)]}{\epsilon}
+\]
+$F_{x'}$代表$F$作用在$x'$上。
+则
+\[
+    \fdv{f(\vb*{y})}{f(\vb*{x})} = \delta (\vb*{x} - \vb*{y})
+\]
+\[
+    \begin{aligned}
+        \fdv{H}{\phi(x)} &= \lim_{\epsilon\to 0} \frac{1}{\epsilon} \int \dd x'^n (
+            \mathcal{H}(\phi(x') + \epsilon \delta (x - x'), \partial_{\mu'} \phi (x') + \epsilon \delta'(x - x')) - \mathcal{H}(\phi(x'), \partial_{\mu'}\phi(x'))) \\
+        &= \lim_{\epsilon\to 0} \frac{1}{\epsilon} \int \dd x'^n \left(
+            \pdv{\mathcal{H}}{\phi(x')} \epsilon \delta (x - x') + \pdv{\mathcal{H}}{\partial_{\mu'} \phi(x')} \epsilon \delta'(x - x') 
+            \right)
+        \\
+        &= \int \dd x'^n
+        \pdv{\mathcal{H}}{\phi(x')} \delta (x - x') + \int \dd x'^n \pdv{\mathcal{H}}{\partial_{\mu'} \phi(x')} \delta'(x - x') \\
+        &= \int \dd x'^n
+        \pdv{\mathcal{H}}{\phi(x')} \delta (x - x') - \int \dd x'^n \partial_{\mu'}\pdv{\mathcal{H}}{\partial_{\mu'} \phi(x')} \delta(x - x') \\
+        &= \pdv{\mathcal{H}}{\phi(x')} - \partial_\mu \pdv{\mathcal{H}}{\partial_\mu \phi}
+    \end{aligned}
+\]
+
+\[
+    \fdv{H}{f} = \pdv{\mathcal{H}}{f} - \partial_\mu \pdv{\partial_\mu f} \mathcal{H}, \quad \fdv{H}{f} \delta(x - x') = \fdv{\mathcal{H}}{f}
+\]
+$\mu$可以跑遍所有空间坐标，实际上也可以取时间坐标，既然哈密顿量中不会显式出现时间导数。
+
+于是有正则方程
+\begin{equation}
+    \dot{\phi} = \frac{\delta \mathcal{H}}{\delta \pi}, \quad \dot{\pi} = - \frac{\delta \mathcal{H}}{\delta \phi}
+    \label{eq:canonical-equation}
+\end{equation}
+因此我们就获得了场随时间演化的方程。
+这个方程和E-L方程都能够完全确定场的演化，因此哈密顿力学和拉格朗日力学有完全等效的表现力。
+
+\subsubsection{泊松括号的定义}
+
+下面的说法是错误的：泊松括号完全可以定义在不是关于全空间的量上面。
+
+事实上，通过引入泊松括号，我们还可以写出任意一个物理量随着时间的演化。
+
+设$A, B$是定义在全空间（注意：不包括时间）的物理量，且它们是各个场、各个场的动量，以及各个场、它们的动量的一阶导数的函数（从而，是各个场以及各个场对应的动量的泛函），而$\mathcal{A}, \mathcal{B}$是它们的密度，即
+\begin{equation}
+    A(\phi, \pi, x, t) = \int \mathrm{d}^n x \mathcal{A}(\phi, \pi, \nabla \phi, \nabla \pi, x, t), \\
+    B(\phi, \pi, x, t) = \int \mathrm{d}^n x \mathcal{B}(\phi, \pi, \nabla \phi, \nabla \pi, x, t)
+\end{equation}
+
+\paragraph{泊松括号} 定义两个量的\textbf{泊松括号}为
+\begin{equation}
+    [A, B]_{\phi, \pi} = [\mathcal{A}, \mathcal{B}]_{\phi, \pi} = \int \mathrm{d}^n x \sum_i \left(
+    \frac{\delta \mathcal{A}}{\delta \phi} \frac{\delta \mathcal{B}}{\delta \pi} - \frac{\delta \mathcal{B}}{\delta \phi} \frac{\delta \mathcal{A}}{\delta \pi}
+    \right) 
+    \label{eq:poison-bracket-def}
+\end{equation}
+则有基本性质
+\begin{itemize}
+    \item $[A, A]=0$
+    \item 反交换性，线性性，相对于其两个变元都是导子
+    \item  设$D$为微分算符，则
+        \begin{equation}
+            D[A, B] = [DA, B] + [A, DB]
+            \label{eq:derivative-of-poison-brackets}
+        \end{equation}
+        因此，两个守恒量的泊松括号也是守恒的
+    \item 有下面的等式
+    \begin{equation}
+        [\phi, A] = \int \mathrm{d}^n x \frac{\delta \mathcal{A}}{\delta \pi} = \fdv{A}{\pi}, \quad [\pi, A] = - \int \mathrm{d}^n x \frac{\delta \mathcal{A}}{\delta \phi} = -\fdv{A}{\phi}
+    \end{equation}
+    说起来，广义坐标和广义动量的泊松括号是delta函数是怎么证的来着TODO
+    \begin{equation}
+        [\phi^{(i)}, \phi^{(j)}] = [\pi^{(i)}, \pi^{(j)}] = 0, \quad, [\phi^{(i)}(\vb*{x}), ] 
+    \end{equation}
+    \item 雅可比恒等式
+    \begin{equation}
+        [A, [B, C]] + [B, [C, A]] + [C, [A, B]] = 0
+        \label{eq:jacobi-identity}
+    \end{equation}
+    \item 我们有
+    \begin{equation}
+        [A, H] = \int \mathrm{d}^n x \sum_i \left(
+        \frac{\delta \mathcal{A}}{\delta \phi} \dot{\phi} + \frac{\delta \mathcal{A}}{\delta \pi} \dot{\pi}     
+        \right)
+    \end{equation}
+    \item 经过正则变换之后泊松括号不变，即$[A, B]_{\phi, \pi} = [A, B]_{\phi', \pi'} \equiv [A, B]$ TODO真的吗
+    需要注意第二个括号中的$A,B$应该改用$\phi', \pi'$表示，方法是将$\phi, \pi$使用$\phi', \pi'$表示之后代入
+    $A, B$关于$\phi, \pi$的表达式中。
+\end{itemize}
+
+计算对易子时，$\phi(\vb*{x})$这样的表达式并不是实际的函数值而是泛函，指的是“将$\phi$在$\vb*{x}$处的值返回”的泛函。
+\[
+    [\phi_i(\vb*{x}, t), \phi_j(\vb*{y}, t)] = [\pi_i(\vb*{x}, t), \pi_j(\vb*{y}, t)] = 0, 
+    [\phi_i(\vb*{x}, t), \pi_j(\vb*{y}, t)] = \delta_{ij} \delta(\vb*{x} - \vb*{y})
+\]
+
+\subsubsection{演化}
+假定$\phi$在流形的边界上取零值（从而，$\pi$在边界上取零值），那么可以证明
+\begin{equation}
+    \frac{\mathrm{d}A}{\mathrm{d}t} = [A, H] + \frac{\partial A}{\partial t}
+    \label{eq:time-evolution}
+\end{equation}
+特别的，
+\begin{equation}
+    \dot{\phi} = [\phi, H], \; \dot{\pi} = [\pi, H]
+\end{equation}
+这里要注意我们是把$\phi$看成了泛函密度$\mathcal{A}(\phi, \pi, \nabla \phi, \nabla \pi, x, t) = \phi$，所以$\partial_t A$项为零。
+
+\subsubsection{正则变换和母函数}
+设有变换
+\begin{equation}
+    \phi, \pi, \mathcal{H} \longrightarrow \phi', \pi', \mathcal{H}'
+    \label{eq:canonical-transformation}
+\end{equation}
+
+这个变换是\textbf{正则变换}，当且仅当，它们描述了同一场运动。两个正则变换的复合仍然是正则变换。我们知道$\phi, \pi, \mathcal{H}$对应一个拉氏量
+\[
+    \mathcal{L} = \sum_\phi \dot{\phi} \pi - \mathcal{H}
+\]
+当然，$\phi', \pi', \mathcal{H}'$也对应一个同样形式的拉氏量。这个拉氏量描述的是$\phi'$的变动，但由于$\phi'$可以使用$\phi$表示，我们可以把$\mathcal{L}' = \sum_{\phi'} \dot{\phi}' \pi' - \mathcal{H}'$写成关于$\phi$的拉氏量，因此它也是描写$\phi$的变动的拉氏量。那么，这个变换是正则变换，当且仅当，存在一个函数$U$使
+\[
+    \sum_\phi \dot{\phi} \pi - \sum_{\phi'} \dot{\phi}' \pi' + \mathcal{H}' - \mathcal{H} = \frac{\mathrm{d}U}{\mathrm{d}t}
+\]
+在这个公式成立的时候，由于其左半边是两个哈密顿量密度的差，$U$应该能够写成$\phi, \pi,  \partial_\mu \phi, x, t$的\textbf{函数}（可以确定$U$就是$\pi, \phi$的\textbf{泛函}）。但是观察这个函数可以发现$U$实际上不显含$\partial_\mu \phi, x$（这也太巧了吧？？TODO）。
+
+这样一来，这个关于$U$的全微分表达式又等价于
+\begin{equation}
+    \frac{\partial U}{\partial \phi} = \pi, \; \frac{\partial U}{\partial \phi'} = -\pi', \; \mathcal{H}' - \mathcal{H} = \frac{\partial U}{\partial t}, \; U=U(\phi, \phi', t)
+    \label{eq:1-class-generating-function-feature}
+\end{equation}
+容易看出，每一个正则变换都对应一组（彼此相差一个常数的）满足\eqref{eq:1-class-generating-function-feature}的$U$，而每一个满足\eqref{eq:1-class-generating-function-feature}的$U$都对应一组正则变换。于是我们称这样的$U$为正则变换的\textbf{母函数}。
+
+通过对\eqref{eq:1-class-generating-function-feature}勒让德变换，可以得到4类母函数：
+\begin{enumerate}
+    \item 关于$\phi, \phi'$的
+    \item 关于$\pi, \phi'$的
+    \item 关于$\phi, \pi'$的
+    \item 关于$\pi, \pi'$的
+\end{enumerate}
+
+\subsubsection{无穷小变换与守恒量}
+容易验证，第三类母函数$\sum \phi \pi'$对应着一个恒等变换，它也是一个正则变换。因此一个无穷小的正则变换的母函数可以写作
+\[
+    U_3 = \sum \phi \pi' + \epsilon G
+\]
+其中$\epsilon$是一个无穷小参数。这个母函数对应的正则变换为
+\begin{equation}
+    \phi' = \phi + \epsilon \frac{\partial G}{\partial \pi}, \; \pi' = \pi - \epsilon \frac{\partial G}{\partial \phi}
+\end{equation}
+于是每个无穷小正则变换都和一个$G$联系在了一起，每个$G$都给出一个无穷小正则变换。$G$称为生成元。
+
+这样一来，如果我们同时做一个无穷小正则变换和一个时间变换，变换群有单个参数$\epsilon$，那么
+\begin{equation}
+    \frac{\delta A}{\mathrm{d} \epsilon} = [A, G] + \frac{\partial A}{\partial t} \frac{\delta t}{\mathrm{d} \epsilon}
+    \label{eq:variation-under-infinite-canonical-transformation}
+\end{equation}
+
+若取$\epsilon = t$，我们发现$G=H$。因此时间演化是一个正则变换，其生成元就是哈密顿量。
+
+代入$A=H$并且考虑之前得到的演化方程，我们发现，
+\begin{equation}
+    \frac{\mathrm{d}G}{\mathrm{d}t} = - \frac{\delta H}{\mathrm{d} \epsilon} + \frac{\partial G}{\partial t} + \frac{\partial H}{\partial t} \frac{\delta t}{\mathrm{d} \epsilon}
+\end{equation}
+因此，在$H,G$均不显含时间的时候，一个物理量守恒，当且仅当，哈密顿量在以它为生成元的正则变换下不变。
+
+先前已经提到过，正则变化下泊松括号不变。实际上，如果一个变换始终让任何两个量的泊松括号不变，那么它就是正则变换。
+
+\section{少体问题、多体问题、场化}
+
+\end{document}

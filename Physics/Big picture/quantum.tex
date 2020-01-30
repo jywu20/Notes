@@ -1,0 +1,399 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\scheq}{Schr\"odinger's Equation}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{量子物理基本概念}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    首先使用正则量子化建立算符化的力学。
+\end{abstract}
+
+\section{描述系统}
+
+\subsection{态和算符}
+
+回顾经典物理，我们会发现对任何一种系统我们都尝试使用一系列固定的物理量描述它，例如一个粒子有位置、动量，一个场有各点的场量，等等。
+有时也可以使用另一些物理量描述它，例如我们可以在速度和动量之间切换，可以使用不同的坐标系，等等。
+因此，虽然实际计算中常常使用由一系列物理量的值组成的列表描述物理系统（举例：“粒子质量多少多少、位于$x$坐标多少多少、$y$坐标多少多少的位置”），
+但观念上我们使用了两种对象：其一是系统的状态，它是某种流形上的一个点（例如在经典哈密顿力学中它是辛流形上的点），
+其二是物理量，它是从这个流形到实数、复数、矢量、张量等“量”的映射。
+
+在经典体系中“态”能够做的运算无非是从一个态转移到另一个态；态和态之间是完全孤立的。
+然而，无论是理论上的推广（如将经典力学看成某个波动方程的程函方程）还是实验上的发现（如双缝干涉实验）都表明，这并不是完美描述自然界的正确方式。
+实际上，态是可以像矢量一样叠加的（例如，干涉条纹意味着电子在空间中的分布可以看成某种场，
+这种场满足叠加原理，那么电子在空间中的分布就是$\delta$函数为基底张成的向量空间中的元素）。
+因此，一个\textbf{量子系统}指的是其状态可以使用某个希尔伯特空间$\mathcal{H}$中的向量$\ket{\psi(t)}$来描述、并且可以做叠加、数乘等运算的系统。
+
+我们还需要一个额外的假设：一个态矢量数乘上一个复数得到的态矢量和原态矢量代表了同一个态。因此，我们将使用归一化的态矢量$\ket{\psi}$，并简称它们为“态”。
+长度为零的态矢量不能归一化，我们认为它是非物理的，仅仅用于保证正确的代数结构，而不起多大作用。
+同时我们也假定态矢量如果随时间发生演化，那么它一直是归一化的；进一步，任何作用于态之上的可逆变换都应该保持态的归一化。
+或者说，任何作用于态上的可逆变换都应该是\textbf{幺正}的。
+
+下一个问题是，我们怎样“诊断”或者说“读取”这系统的状态，也就是说怎样构造量子体系中的物理量。
+实验上的观察（如双缝干涉实验中如果输入电子束密度足够低，是能够捕捉到单个电子的，但是其位置不固定）表明，
+一个态$\ket{\psi}$并不对应着一个固定的物理量取值（刚才的例子表明一个态通常并不对应一个固定的位置）。
+但是注意到一旦物理量的定义给定了（比如，假定我们接下来要测定位置），的确有\textbf{一些}态能够毫无疑义地确定物理量的取值
+（例如，$\delta(x-x_0)$当然就对应一个位于$x_0$处的尖峰）。
+因此量子物理中的物理量应该是这种“能够确定物理量取值”的态连同对应的物理量打包而成的结构。
+至于那些不能明确确定物理量取值的态，可以把它写成能够明确确定物理量取值的态的线性组合来判断它对应哪些可能的物理量取值，这些物理量取值占比多少。
+什么样的结构可以用来做这件事？一个自然的想法是\textbf{算符}：设诸$A_i$为可能的物理量$A$的取值，$\ket{A_i}$为这些取值对应的一组非零态，定义
+\begin{equation}
+    \hat{A} = \sum_i A_i \dyad{A_i}
+\end{equation}
+为该物理量对应的算符%
+\footnote{一个细节：如果同一个$A_i$对应多个可能的$\ket{A_i}$，则容易看出这个$A_i$对应的所有态矢量对应一个向量空间。
+此时需要写出这个向量空间的一组基矢量$\ket*{A_i^{(1)}}, \ket*{A_i^{(2)}}, \ldots$，然后用
+\[
+    A_i \left(\ket{A_i^{(1)}} + \ket{A_i^{(2)}} + \cdots\right)
+\]
+代替$A_i \ket{A_i}$。}
+。这样一来，“物理量的取值能够确定”的态就是算符$\hat{A}$的本征态，于是我们就可以使用线性代数来处理有关的问题。
+物理量随着时间演化就意味着我们有
+\begin{equation}
+    \hat{A}(t) = \sum_i A_i(t) \dyad{A_i(t)},
+\end{equation}
+也就是说每一个时间点都对应一个算符。
+由于量子物理中大部分有意义的物理量都对应算符，接下来我们将经常混用物理量和算符这两个词%
+\footnote{当然的确有一些物理量和算符关系不大，比如质量等，但因为它们总是被当成常数处理因此无大碍。}
+。
+
+需要注意的是如果一个态和另一个态的内积$\braket{\psi}{\phi}$不为零，那
+%TODO：正交性的意义
+因此我们之后均认定对应不同$A_i$的$\ket{A_i}$彼此正交，从而可以毫无顾虑地使用bra-ket记号。
+另一方面有意义的物理量值都是实数（有时引入复数单纯是为了方便计算，如表示相位，等等），这就意味着物理量对应的算符都是\textbf{厄米算符}。
+
+\subsection{对系统的等价描述}
+
+设两个希尔伯特空间$\mathcal{H}$和$\mathcal{H}'$，它们使用一个可逆算符$\hat{A}$相关联，当然$\hat{A}$是幺正的。也就是说
+\[
+    \ket{\psi'} = \hat{A} \ket{\psi}, \quad \ket{\psi} \in \mathcal{H},  \ket{\psi}' \in \mathcal{H}'
+\]
+$\hat{A}$是一个同构。容易看出，若$\hat{O}$是$\mathcal{H}$中的一个算符，
+那么
+\begin{equation}
+    \hat{O}' = \hat{A} \hat{O} \hat{A}^{-1} = \hat{A} \hat{O} \hat{A}^\dagger
+\end{equation}
+就是对应的$\mathcal{H}'$中保持代数结构不变的算符，这是下面几个式子的结果：
+\[
+    \begin{split}
+        \ket{\psi'} = \hat{A} \ket{\psi}, \quad \ket{\phi'} = \hat{A} \ket{\phi}, \\
+        \ket{\phi} = \hat{O} \ket{\psi}, \quad \ket{\phi'} = \hat{O}' \ket{\psi'}
+    \end{split}
+\]
+一种常见的情况是，$\mathcal{H}$与$\mathcal{H}'$实际上是同一个空间，
+则$\hat{O}$在变换$\hat{A}$下不变的充要条件是$\hat{O}'=\hat{O}$，也就是说$\hat{O}$与$\hat{A}$对易。
+进一步，如果算符$\hat{O}$在一个李群作用下不变，那么它和每个群元都对易，这又等价于它和这个李群的所有生成元都对易。
+
+上面我们讨论了对希尔伯特空间做一个变换会导致其上的算符做对应的变换。
+现在我们讨论反过来的问题：如果两个算符的代数结构彼此对应，那么它们作用的希尔伯特空间之间会有什么样的关系。
+
+% TODO:写串词
+设有态矢量$\ket{\psi}$、算符$\hat{O}$，以及$\ket{\psi'}$和$\hat{O}'$，
+若$\hat{O}$和$\hat{O}'$的谱结构相同（不变子空间同构，对应的本征值相同），且两个态矢量中含有的可观察量的各本征态的占比一致
+则认为两系统等价，因为它们的代数结构不可区分。这时可以证明
+\begin{equation}
+    \mel{\psi}{A}{\psi} = \mel{\psi'}{A'}{\psi'}
+\end{equation}
+实际上，像这样的等价系统能够且只能够使用下面的方式产生：
+\begin{equation}
+    A' = U A U^\dagger, \quad \ket{\psi'} = U \ket{\psi}
+\end{equation}
+其中$U$为酉算符。要求$U$是酉算符是为了确保变换之后的$A'$的本征态的正交性，从而确保它确实是可观察量。
+（由此也可以看出，要求使用复希尔伯特空间来描述系统而又一定要求可观察量的取值为实数实际上是很强的条件）
+
+\section{量子动力学（正则表述）}
+
+\subsection{系统演化方程与哈密顿算符}
+
+现在讨论怎样让系统动起来。在经典理论中有哈密顿力学，其动力学部分为
+\begin{equation}
+    \dv{A}{t} = [H, A] + \pdv{A}{t}.
+\end{equation}
+其中$[H, A]$是泊松括号。在量子理论中我们也采取一个类似的动力学方程：
+\begin{equation}
+    \pdv{\hat{A}}{t} = \frac{1}{\ii \hbar} [\hat{H}, \hat{A}] + \pdv{\hat{A}}{t}.
+\end{equation}
+方程中的$\ii \hbar$无关紧要——这只是重新定义$[\cdot, \cdot]$导致的常数而已。为什么会需要这个常数在后面会看到。
+在量子理论中$[\cdot, \cdot]$的定义为
+\begin{equation}
+    [A, B] = AB - BA
+\end{equation}
+容易看出这导致诸算符构成了一个李代数。
+
+算符$\hat{H}$称为\textbf{哈密顿算符}，与经典理论中的哈密顿量一致。
+
+\subsection{绘景}
+
+由于态矢量和算符可以整体做一个酉变换而不改变所描述的系统，我们可以假定算符的变化完全来自它自身的定义而将$[A, H]$部分造成的时间演化都归结到$\ket{\psi}$的变化上，从而得到\textbf{薛定谔绘景}（反之，以\eqref{eq:canonical-time-evolution}为算符演化、假定态矢量不变的绘景称为海森堡绘景）
+
+算符$A$做酉演化，则设
+\begin{equation}
+    U(t, t_0) A^H(t) U^\dagger(t, t_0) = A^H(t_0)
+\end{equation}
+设
+\begin{equation}
+    A^S = A^H(t_0), \quad \ket{\psi^S(t)} = U(t, t_0) \ket{\psi^H}
+\end{equation}
+就得到TODO：从海森堡过渡到薛定谔。重点在于将$A^S$的变化全部归结到$A^H$的含时部分上面。
+两种表象之间的转换方程：
+\begin{equation}
+    \quad U = U(t, t_0), \quad H^H = U^\dagger H^S U, \quad A^H = U^\dagger A^S U, \quad \pdv{U(t, t_0)}{t} = \frac{1}{\ii \hbar} H^S(t)
+\end{equation}
+
+相互作用表象
+\[
+    H^S = H^S_0 + H^S+i
+\]
+定义
+\[
+    \pdv{U_0(t,t_0)}{t} = \frac{1}{\ii \hbar} H^S_0(t)
+\]
+变换关系：
+\begin{equation}
+    \left\{ \quad
+        \begin{aligned}
+            U_0 = U_0(t,t_0), \quad \pdv{U_0(t,t_0)}{t} = \frac{1}{\ii \hbar} H^S_0(t), \\
+            A^I = U_0^\dagger A^S U_0, \quad H_i^I = U_0^\dagger H_i^S U_0, \quad \quad H_0^I = U_0^\dagger H_0^S U_0
+        \end{aligned}
+    \right.
+\end{equation}
+运动方程：
+\begin{equation}
+    \dv{t} \ket{\psi^I(t)} = \frac{1}{\ii \hbar} H_i^I(t) \ket{\psi^I(t)}, \quad 
+    \dv{t} A^I = \frac{1}{\ii \hbar} [A^I, H_0^I] + \pdv{A^I}{t}
+\end{equation}
+
+正则对易关系
+\[
+    [q_i, p_j] = \delta_{ij}
+\]
+实际上是非常自然的，因为使用这个关系推导出来的方程和使用对应的拉氏量和E-L方程推导出来的运动方程是一样的。
+任何两个物理量的对易子$[A,B]$最后都可以写成一系列形如$\gamma_1 \gamma_2 \cdots [\gamma, \gamma] \cdots$这样的项的
+叠加，其中每一个$\gamma$都是一个基本算符（坐标、动量、自旋等等），如果我们已知$[p, q] = \ii \hbar \cdot \text{something}$
+而运动方程为
+\[
+    \dv{A}{t} = \frac{1}{\ii \hbar} [A, H]
+\]
+那么在最后得到的运动方程中$\ii \hbar$就被消去了。
+现在让$\hbar \to 0$，我们会发现运动方程的形式没有发生变化（因为它根本就和$\hbar$无关），但是此时所有的物理量都是对易的了。
+重新定义
+\[
+    \{A, B\} = \frac{1}{\ii \hbar}[A, B],
+\]
+它$\hbar \to 0$时仍然收敛于有限值。然后使用对易关系可以推导出它就是所谓的泊松括号。
+
+使用不随时间变化的态矢量$\ket{\psi}$表述系统。
+可观察量算符$A$随着时间的演化为
+\begin{equation}
+    \dv{A}{t} = \frac{1}{\ii \hbar} [A, H] + \pdv{A}{t}
+    \label{eq:canonical-time-evolution}
+\end{equation}
+
+形式上这个式子和经典力学中的式子差了一个系数$\ii \hbar$。表面上看这正是量子力学和经典力学不同的地方（引入了常数$\hbar$），但实际上并非如此，因为在量子力学中有
+\begin{equation}
+    [x_i, p_j] = \ii \hbar \delta_{ij}
+\end{equation}
+一来一去，系数$\ii \hbar$就约掉了，实际上，完全可以定义
+\[
+    [x_i, p_j] = \delta_{ij}
+\]
+而此时的演化方程就变成
+\[
+    \dv{A}{t} = [A, H] + \pdv{A}{t}
+\]
+形式上和经典情况完全一致。那么量子力学和经典力学到底相差在哪里？
+最关键的差别实际上是，量子力学中的$x, p$等量都是算符，因此有可能
+\[
+    AB - BA \neq 0
+\]
+而经典情况下上式恒为零。并且，这个不对易性直接和$[\cdot, \cdot]$的定义有关：
+\[
+    [A, B] = AB - BA
+\]
+在经典力学中$AB-BA$也是一个反对称的运算，但是它恒为零，因此和系统的演化无关——经典力学中和系统演化有关的那种$[\cdot, \cdot]$完全由
+\[
+    [A, B] = \sum_i \left( \pdv{A}{q_i} \pdv{B}{p_i} - \pdv{A}{p_i} \pdv{B}{q_i} \right)
+\]
+定义，上式又等价于两个假设：乘法交换律，以及
+\[
+    [q_i, q_j] = 0, [p_i, p_j] = 0, [q_i, p_j] = \delta_{ij}
+\]；
+而在量子力学中，我们假定$xp-px=\ii \hbar$，并且认为
+\[
+    [A, B] = AB - BA
+\]
+
+总之，在括号$[\cdot, \cdot]$的性质、坐标和动量之间的括号的取值上，经典力学和量子力学之间完全没有差异。两者的差异在于，经典力学假定所有物理量都是可交换的实数，此时我们可以推导出泊松括号的表达式；量子力学假定$[\cdot, \cdot]$就代表两个物理量（现在是算符了！）的交换子。
+
+因此在经典力学中使用“对易”一词可能引起误解：它可能指“两个量的乘积是不是可以交换”，此时的回答一概是“是”；它也可能指“两个量的泊松括号是不是零”。这两种理解之间完全没有联系。而在量子力学中这两种理解实际上是等价的。
+
+可观察量经过时间演化之后还应该是可观察量。但是这个怎么证明呢？
+
+\[
+    \left(\dv{A}{t}\right)^\dagger = - \frac{1}{\ii \hbar} [A, H]^\dagger + \left(\pdv{A}{t}\right)^\dagger = \frac{1}{\ii \hbar} [A^\dagger, H^\dagger] + \left(\pdv{A}{t}\right)^\dagger
+\]
+如果在某一时刻$A$是观察算符，则下一刻它仍然是观察算符的充要条件就是
+\[
+    \frac{1}{\ii \hbar} [A, H^\dagger] + \left(\pdv{A}{t}\right)^\dagger = \frac{1}{\ii \hbar} [A, H] + \pdv{A}{t}
+\]
+所以什么情况下确凿无疑的有$H$是厄米算符呢？
+
+\subsection{从拉氏量到哈密顿量}
+
+拉氏量的作用：分析时空对称性
+
+直和：一个参数本来只能取这些值，现在可以取另一些值了（加入了基矢量），则两个空间要做直和。
+
+直积：本来只需要考虑这个参数，现在需要考虑别的参数了。
+
+问题：$\mel{\psi}{A}{\psi}$；绘景等价；量子力学给出什么样的宏观量、它们和一般的场论有何关系，或者说，怎样的绘景相互等价。
+
+\section{算符、对称群、李代数}
+
+李群$U(t,t_0)$对应的无穷小生成元$H(t)$定义为
+\begin{equation}
+    H(t) = \lim_{\Delta t \to 0} \frac{U(t+\Delta t, t)}{\Delta t}
+\end{equation}
+使用编时算符$\timeorder$可以写出形式解
+\begin{eqnarray}
+    U()
+\end{eqnarray}
+
+如果$U(a+b)=U(a)U(b)$则生成元是常量。
+
+有必要分析一下升降算符的东西：作用在一个本征态上得到另一个本征态？？
+可以看成一种平移：
+\[
+    U(\epsilon) \ket{x} = \ket{x + \epsilon}
+\]
+
+李群和李代数
+
+Lie 代数的所有重要信息都蕴含在生成元的基的Lie 括号中。
+
+李代数中的$XY$和$YX$都未必是李代数的元素，但是$[X,Y]$一定是。
+
+需要注意的是即使一个群的生成元是
+\[
+    \det \ee^{A} = \ee^{\trace A}
+\]
+只要知道了李括号就完全确定了整个李代数的结构。
+
+生成元会变的情况？？编时算符。
+
+特别的，如果一个变换不改变哈密顿量，或者说“不改变物理规律”，且这个变换的生成元不显含时间，那么其生成元就是守恒量。（也就是说哈密顿量是这个群的卡西米尔算符？？）
+
+不可约表示中的卡西米尔算符的表示一定是恒等矩阵的倍数。例如，$\laplacian$是空间平移群的卡西米尔算符，而空间平移群在形如$A\exp (\ii \vb*{k} \cdot \vb*{r})$这样的平面波组成的线性空间上的表示是不可约表示（它自己就是一个不变空间，没有更小的不变子空间），那么$\laplacian u = - k^2 u$，可见确实是恒等变换的倍数。
+
+幺正的李群按照$\exp(\theta J)$的形式得到的生成元是反厄米的，按照$\exp(\ii \theta J)$的形式得到的生成元是厄米的。
+
+交换左右手坐标系的坐标变换行列式是负的，否则是正的。
+
+\subsection{常用公式罗列}
+
+使用算符代数的时候需要特别小心，因为不对易性很容易让我们习以为常的公式失效。
+
+
+我们有
+\[
+    \dv{t} \ee^{t A} = A \ee^{t A} = \ee^{t A} A
+\]
+然而，
+\[
+    \dv{t} \ee^{A(t)} = \dv{A}{t} \ee^{A(t)} = \ee^{A(t)} \dv{A}{t}
+\]
+并不一般成立。
+
+\section{哈密顿形式的系统演化}
+
+
+
+\section{测量与随机性}
+
+\section{场论}
+
+TODO：正则对易关系与运动方程。好像如果不使用正则对易关系，那么算符演化方程就和通过对应的拉氏量写出的运动方程不一致。
+
+可以使用傅里叶变换把哈密顿量中的$\nabla \phi$之类的项弄掉。
+然后得到的哈密顿量做对角化（大部分情况下已经对角化好了），就得到了一系列谐振子哈密顿量的叠加：
+\[
+    H = \int \dd x^3 a a^\dagger + \text{something}
+\]
+
+拉氏量的耦合对应着态空间的耦合？混合态、直积还有一系列神奇的东西。直和其实是增加了基矢量。
+也就是说一个算符的各个不变子空间的直和构成全空间。
+\[
+    \delta(\vb*{r} - \vb*{r}_0) = \delta(x - x_0) \delta(y - y_0) \delta(z - z_0)
+\]
+所以三维态矢量其实是一维态矢量的直积。
+
+把问题规范一下：现在我们已知系统的演化可以完全由一组算符$\hat{O}_1, \hat{O}_2, \ldots, \hat{O}_n$描述，也就是说能够写出哈密顿算符$\hat{H}$来描述它们的演化。此外，这些算符的对易关系全部给定，从而$[\hat{O}_i, \hat{H}]$也确定了。
+现在的问题是，态矢量应该怎么取？或者说，对应的希尔伯特空间应该是怎样的结构？
+实际上在量子场论中这似乎并不是一个问题，因为很少用到态矢量。这是因为只有算符是重要的，态矢量实际上只是算符对应的李代数的幺正表示而已。
+
+设算符$\hat{O}_1, \hat{O}_2$分别是希尔伯特空间$H_1$、$H_2$的CSCO，且它们组成的集合是$H$的CSCO，那么$H = H_1 \otimes H_2$，并且$\ket{x_1, x_2} = \ket{x_1} \otimes \ket{x_2}$，其中$\ket{x_1} \in H_1, \ket{x_2} \in H_2$，$\ket{x_1, x_2} \in H$。
+顺便抨击一下常见的量子力学教材：一上来就讲态矢量在概念上真的很不清楚！
+
+我好像有点反应过来了。CSCO就是用来做这个的！
+设$\hat{O}_1, \hat{O}_2, \ldots, \hat{O}_n$组成了一个空间$H$上的CSCO，且与$\hat{O}_1$对应的
+
+作用在一个算符上的元算符如果不改变它所作用的那个算符的定义域，那么将这个元算符作用在另一个算符上就相当于将第三个算符和第二个算符复合。
+
+一些问题：是不是任何一个幺正算符都对应着某个物理过程？（从初态到末态的映射）
+
+粒子数表象。
+
+任何一个幺正过程都对应一个散射过程。
+
+关于升降算符：设算符$\hat{x}$组成希尔伯特空间$\mathcal{H}$上的CSCO，其本征态为$\ket{x_1}, \ket{x_2}, \ldots$。
+由于需要且只需要给定基矢量的像就能够确定一个算符，必定存在这样一个算符$\hat{a}$，它能够将$\ket{x_1}$映射为$\ket{x_2}$的某个非零倍数，将$\ket{x_2}$映射为$\ket{x_3}$的某个非零倍数，等等。这个算符称为升算符；升算符的逆就是降算符。显然，只需要一个本征态和升降算符就能够完全把态空间确定下来。另：如果本征值有上界，那么升算符作用在最大的本征值对应的本征态后得到$0$；同理，如果本征值有下界，那么降算符作用在最小的本征值对应的本征态之后得到$0$。
+将$\ket{x}$提升到$\ket{x+c}$（可能差一个常数）的算符$\hat{a}$满足
+\[
+    [\hat{x}, \hat{a}] = c \hat{a}.
+\]
+特别的，若$\hat{x}$是厄米算符，且$\hat{a}$让本征态提升了$c$，那么$\hat{a}^\dagger$就会让本征态下降$c$，也就是说升降算符互为共轭转置。
+
+现在的问题是怎样构造出升降算符。当然，任何情况下升降算符都应该满足对易关系$[\hat{x}, \hat{a}] = c \hat{a}$，但是这是不是足够了？
+实际上还是能够构造出反例的，但是这些反例都是基于具体的分析构造，而物理上应该仅仅关心有关的代数结构。
+
+\section{量子统计}
+
+考虑$N$个遵循一模一样的动力学而可能有着不同的初始态、从而也会有不同的演化轨迹的量子系统，它们彼此没有相互作用，而$N$很大。
+（原则上可以使用二次量子化分析它们？）
+
+
+\end{document}

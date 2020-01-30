@@ -1,0 +1,572 @@
+% 有时间了也许要把这篇文章的布局改一下，顺便统一符号
+\documentclass[UTF8]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newenvironment{bigcase}{\left\{ \quad \begin{aligned}}{\end{aligned}\right.}
+\newcommand*{\res}{\mathrm{res}\;}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\newcommand*{\taylor}[1]{\sum_{#1 = 0}^\infty}
+\newcommand*{\taylorfrom}[2]{\sum_{#1=#2}^\infty}
+\newcommand*{\laurent}[1]{\sum_{#1=-\infty}^\infty}
+\DeclareMathOperator{\gammafunc}{\Gamma}
+\DeclareMathOperator{\betafunc}{B}
+\DeclareMathOperator{\legpoly}{P}
+\renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+\renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+
+\title{积分变换}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    各种积分变换以及它们的关系。
+\end{abstract}
+
+\hypertarget{sec:fourier}{%
+\section{从傅里叶级数到傅里叶变换}\label{sec:fourier}}
+
+\hypertarget{sec:fourier-series}{%
+\subsection{傅里叶级数}\label{sec:fourier-series}}
+
+\hypertarget{sec:fourier-series-real}{%
+\subsubsection{实数形式的傅里叶级数定义}\label{sec:fourier-series-real}}
+
+设$f$是定义在$\mathbb{R}$上的一个以$2\pi$为周期的函数。我们有
+\begin{equation}
+    \begin{aligned}
+        f(x) &= \frac{a_0}{2} + \sum_{n=0}^{\infty} a_n \cos (nx) + b_n \sin(nx), \\
+        a_n &= \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \cos (nx) \mathrm{d}x, \\
+        b_n &=  \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \sin (nx) \mathrm{d}x.
+        \label{eq:fourier-series-2pi}
+    \end{aligned}
+\end{equation}
+从而将信号$f$分解成了一个直流成分和一系列倍频的交流成分。可以看出所有这些成分组成了一组正交完备基。
+展开之后的$a, b$就称为\textbf{频谱}。
+
+\subsubsection{复数形式的傅里叶级数}
+
+将实数形式的傅里叶级数中的正弦项和余弦项替换成指数函数的形式，即利用
+\[
+\cos \theta = \frac{1}{2} (\ee^{\mathrm{i} \theta} + \ee^{ - \mathrm{i} \theta}),
+\sin \theta = \frac{1}{2 \mathrm{i}} (\ee^{\mathrm{i} \theta} - \ee^{ - \mathrm{i} \theta}),
+\]
+可以从实数形式的傅里叶级数得到
+\[
+f(x) = \frac{1}{2} \sum_{n = -\infty}^{n = \infty} c_n \ee^{\mathrm{i}n x}, \\
+c_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(t) \ee^{-\mathrm{i}nt} \mathrm{d}t, \quad c_n = \overline{c}_{-n}.
+\]
+
+
+\subsubsection{傅里叶级数的一些性质}\label{sec:fourier-series-attributes}
+
+首先当然有线性性质。其次，对于一些函数变换，我们有
+
+设$g(x) = f(-x)$，$a_n, b_n$为$f$的傅里叶系数，$a_n', b_n'$为$g$的傅里叶系数，则
+\[
+a_n' = a_n, b_n' = -b_n.
+\]
+设$h(x) = f(x+C)$，C为常数，$a_n, b_n$为$f$的傅里叶系数，$a_n', b_n'$为$h$的傅里叶系数，则
+\[
+a_n' = a_n \cos (nC) + b_n \sin (nC), b_n' = -a_n \sin (nC) + b_n \cos (nC).
+\]
+
+设
+\[
+F(x) = \frac{1}{\pi} \int_{-\pi}^{\pi} f(t) f(x-t) \mathrm{d}t,
+\]
+$a_n, b_n$为$f$的傅里叶系数，$a_n', b_n'$为$F$的傅里叶系数，则
+\[
+a_0' = a_0, a_n' = a_n^2 - b_n^2 (n = 1, 2, 3, \ldots); \qquad b_n' = 2a_n b_n.
+\]
+
+
+\paragraph{最佳平方逼近}
+设$f$在$[-\pi, \pi]$上黎曼可积，则$f$在$n$阶三角多项式中的最佳平方逼近元素就是$f$的傅里叶级数的部分和。
+
+\subsubsection{周期任意的傅里叶级数}
+
+在$f$的周期为任意值$2T$的时候还是可以把$f$写成级数形式，只是这个时候需要做一个变量代换。设
+\[
+F(t) = f(x), \quad t = \frac{\pi}{T} x.
+\] 
+我们有 
+\[
+\begin{aligned}
+    f(x) &= F(t) = \frac{a_0}{2} + \sum_{n=0}^{\infty} a_n \cos (nt) + b_n \sin(nt) \\
+    &= \frac{a_0}{2} + \sum_{n=0}^{\infty} a_n \cos \left(\frac{\pi n x}{T}\right) + b_n \sin \left(\frac{\pi n x}{T}\right),
+\end{aligned}
+\]
+级数系数为
+\[
+\begin{aligned}
+    a_n &= \frac{1}{\pi} \int_{-\pi}^\pi F(t) \cos(nt) \mathrm{d}t = \frac{1}{\pi} \int_{-\pi}^\pi f(x) \cos \left(\frac{\pi n x}{T} \right) \frac{\pi}{T} \mathrm{d}x \\
+    &= \frac{1}{T} \int_{-T}^T f(x) \cos \left(\frac{\pi n x}{T} \right) \mathrm{d}x,
+\end{aligned}
+\]
+同理
+\[
+b_n = \frac{1}{T} \int_{-T}^T f(x) \sin \left(\frac{\pi n x}{T} \right) \mathrm{d}x.
+\]
+因此就得到任意周期的函数的傅里叶级数：
+\begin{equation}
+    \begin{aligned}
+        f(x) &= \frac{a_0}{2} + \sum_{n=0}^{\infty} a_n \cos \left(\frac{\pi n x}{T}\right) + b_n \sin \left(\frac{\pi n x}{T}\right), \\
+        a_n &= \frac{1}{T} \int_{-T}^T f(x) \cos \left(\frac{\pi n x}{T} \right) \mathrm{d}x, \\
+        b_n &= \frac{1}{T} \int_{-T}^T f(x) \sin \left(\frac{\pi n x}{T} \right) \mathrm{d}x.
+    \end{aligned}
+    \label{eq:fourier-series-real}
+\end{equation}
+类似的可以得到复数形式的傅里叶级数：
+\begin{equation}
+    \begin{aligned}
+        f(x) &= \frac{1}{2} \sum_{n = -\infty}^{n = \infty} c_n \ee^{\frac{\mathrm{i}\pi n x}{T}}, \\
+        c_n &= \frac{1}{T}\int_{-T}^{T} f(t) \ee^{-\frac{\mathrm{i}\pi n t}{T}} \mathrm{d}t, \quad c_n = \overline{c}_{-n}.
+    \end{aligned}
+    \label{eq:fourier-series-complex}
+\end{equation}
+
+\subsubsection{傅里叶级数的性质}
+
+能量恒等式
+\[
+    \int_{-T}^T f(x)^2 \dd x = \frac{a_0^2}{2} T + \sum_{n=1}^\infty \left( a_n^2 T + b_n^2 T \right)
+\]
+
+\subsubsection{周期延拓}
+如果$f$只是定义在$[-T, T]$上而没有延伸到无穷远处，我们可以对它以$[-T,T]$为一个周期做\textbf{周期延拓}，
+然后对延拓到整个实数轴上的$f$做傅里叶级数展开，则\textbf{在$[-T, T]$上}成立\eqref{eq:fourier-series-real}和\eqref{eq:fourier-series-complex}。需要注意这只在$[-T, T]$上成立！在这个区间之外函数的性质被改变了。
+
+\subsubsection{正弦级数与余弦级数}
+
+在信号$f$只是定义在一段区间$[0, L]$上的时候，我们不能够做通常的傅里叶级数展开\eqref{eq:fourier-series-real}，
+但是可以退而求其次地先对$f$做奇延拓或者偶延拓，把它延拓到$[-L, L]$上面，然后再使用周期延拓得到一个级数。
+同样这个级数\textbf{只在$[0, L]$上成立}。
+
+具体来说，我们有\textbf{正弦级数}
+\begin{equation}
+    \begin{aligned}
+        f(x) &= \sum_{n=1}^\infty C_n \sin \left(n\pi x / L\right), \\
+        C_n &= \frac{2}{L} \int_0^L f(x) \sin \left(n\pi x / L\right) \dd x
+    \end{aligned}
+\end{equation}
+还有\textbf{余弦级数}
+\begin{equation}
+    \begin{aligned}
+        f(x) &= D_0 + \sum_{n=1}^\infty D_n \cos \left(n\pi x / L\right), \\
+        D_0 &= \frac{1}{L} \int_0^L f(x) \dd x, \\
+        D_n &= \frac{2}{L} \int_0^L f(x) \cos \left(n\pi x / L\right) \dd x, \quad, n = 1, 2, \ldots.
+    \end{aligned}
+\end{equation}
+
+在整条实数轴上，正弦级数是奇函数而余弦级数是偶函数。我们可以计算正弦函数（奇函数）的余弦级数（偶函数）或是余弦函数的正弦级数，
+不过这并没有带来什么矛盾，因为在$[0, \pi/2]$上前者才等于后者而在$[- \pi/2, 0]$上两者不恒等。
+
+\subsubsection{关于收敛性的注记}
+傅里叶级数收敛是有条件的。他需要满足\textbf{Dirichlet条件}：
+\begin{itemize}
+    \item 函数在每个周期内只有有限个第一类间断点（也就是左极限和右极限都存在的间断点）
+    \item 在每个周期中只有有限个极值，也就是函数振荡不是很厉害
+\end{itemize}
+但是这两个条件并不很强。
+
+\subsection{实数形式的傅里叶积分与复数形式的傅里叶积分}
+
+\subsubsection{实数形式的傅里叶积分}
+
+对于周期为$2T$的周期函数我们有
+\[
+f(x) = \frac{1}{2T} \int_{-T}^{T} f(t) \mathrm{d}t + 
+\sum_{n \in \natnums} \frac{1}{T} \cos \left( \frac{\pi n x}{T} \right) \int_{-T}^{T} f(t) \cos \left( \frac{\pi n t}{T} \right) \mathrm{d}t +
+\frac{1}{T} \sin \left( \frac{\pi n x}{T} \right) \int_{-T}^{T} f(t) \sin \left( \frac{\pi n t}{T} \right) \mathrm{d}t.
+\]
+如果我们设
+\[
+\omega = \frac{\pi n}{T}, \quad \Delta \omega = \frac{\pi}{T},
+\]
+上式就可以写成
+\[
+f(x) = \frac{1}{2T} \int_{-T}^{T} f(t) \mathrm{d}t +
+\frac{1}{\pi} \sum_{n \in \natnums} \left[ \cos(\omega x) \int_{-T}^{T} f(t) \cos(\omega t) \mathrm{d}t + \sin(\omega x) \int_{-T}^{T} f(t) \sin(\omega t) \mathrm{d}t \right] \Delta \omega
+\]
+现在想象$T$变得很大，以至于上式中的第一项趋于0（这其实是需要进一步说明的，因为完全有可能积分发散使得第一项发散或者第一项趋于某个有限的非零值），而第二项则看起来像个积分，那么我们就得到了实数形式的傅里叶积分。
+
+令$T$趋向于无限大，我们得到
+\[
+f(x) = \frac{1}{\pi}\int_0^{+\infty} \left(
+    \cos(\omega x) \int_{-\infty}^{+\infty} f(t) \cos(\omega t) \mathrm{d}t
+    +  \sin(\omega x) \int_{-\infty}^{+\infty} f(t) \sin(\omega t) \mathrm{d}t
+\right) \mathrm{d}\omega,
+\]
+
+\subsubsection{复数形式的傅里叶积分}
+
+\[
+f(x) = \frac{1}{2\pi} \int_{-\infty}^{+\infty} \left(\int_{-\infty}^{+\infty} f(t) \ee^{-\mathrm{i} \omega t} \mathrm{d}t \right) \ee^{\mathrm{i} \omega x} \mathrm{d} \omega,
+\]
+
+\subsection{傅里叶变换}
+
+现在定义定义
+\[
+\begin{aligned}
+    \mathrm{FT}[f](\omega) &= \int_{-\infty}^\infty f(t) \ee^{-\mathrm{i}\omega t} \mathrm{d}t, \\
+    \mathrm{FT}^{-1}[\hat{f}] &= \frac{1}{2\pi} \int_{-\infty}^\infty \hat{f}(\omega) \ee^{\mathrm{i}\omega t} \mathrm{d}\omega.
+\end{aligned}
+\]
+称$\mathrm{FT}[f](\omega)$为$f$的傅里叶变换，通常使用$\hat{f}$表示它；称$\mathrm{FT}^{-1}[\hat{f}](t)$为$\hat{f}$的傅里叶逆变换。
+
+需要注意的是在不同的文献上，$\ii \omega t$前的正负号、积分前的系数都有可能有所不同。
+
+\subsubsection{常用性质}
+
+以下设
+\[
+    \begin{split}
+        \tilde{f}(k) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty f(x) \ee^{-\ii k x} \dd x, \\
+        f(x) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty \tilde{f}(k) \ee^{\ii k x} \dd k
+    \end{split}
+\]
+并记作
+\[
+    f(x) \longleftrightarrow \tilde{f}(k)
+\]
+
+傅里叶变换有下面的基本性质：
+\paragraph{线性性} 设$c_1, c_2$为常数，则
+\[
+    c_1 f_1(x) + c_2 f_2(x) \longleftrightarrow c_1 \tilde{f}_1(k) + c_2 \tilde{f}_2(k)
+\]
+
+\paragraph{尺度变换} 设$a\neq 0$，则
+\[
+    f(ax) \longleftrightarrow \frac{1}{\abs{a}} \tilde{f} \left( \frac{k}{a} \right)
+\]
+
+\paragraph{求导和积分} 设$\eval{f^{(m)}(x)}_{x\to \pm \infty} = 0$，其中$m=1, 2, \ldots, n-1$，则
+\[
+    f^{(n)}(x) \longleftrightarrow (\ii k)^n \tilde{f}(k)
+\]
+设
+\[
+    \int_{-\infty}^\infty f(\xi) \dd \xi = 0
+\]
+则
+\[
+    \int_{-\infty}^x f(\xi) \dd \xi \longleftrightarrow \frac{1}{\ii k} \tilde{f}(k)
+\]
+从上面两个式子以及正变换和反变换的对称性又能够得到另外两个结果。如果$\eval{\tilde{f}^{(m)}(k)}_{k \to \pm \infty} = 0$，那么
+\[
+    (-\ii x)^n f(x) \longleftrightarrow \tilde{f}^{(n)}(k)
+\]
+如果
+\[
+    \int_{-\infty}^\infty \tilde{f}(\eta) \dd \eta = 0
+\]
+那么
+\[
+    - \frac{1}{\ii x} f(x) \longleftrightarrow \int_{-\infty}^k \tilde{f}(\eta) \dd \eta
+\]
+
+\paragraph{Parseval等式} 由于傅里叶变换可以看成函数以$\ee^{\ii k x}$为正交基的展开，我们有：
+\[
+    \int_{-\infty}^\infty f(x) g^*(x) \dd x =  \int_{-\infty}^\infty \tilde{f}(k) \tilde{g}^*(k) \dd k
+\]
+
+\paragraph{位移定理} 平移和与指数函数的乘积是对应的，具体来说，
+\[
+    \begin{split}
+        f(x - \xi) \longleftrightarrow \ee^{-\ii k \xi} \tilde{f}(k), \\
+        f(x) \ee^{-\ii \lambda x} \longleftrightarrow \tilde{f}(k + \lambda)
+    \end{split}
+\]
+
+\paragraph{卷积定理} 或许最重要的傅里叶变换的性质是所谓的\textbf{卷积定理}，它说：
+\[
+    f_1(x) f_2(x) \longleftrightarrow \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty \tilde{f}_1(k') \tilde{f}_2(k - k') \dd k'
+\]
+
+\paragraph{正变换和反变换的对称性} 若
+\[
+    f(x) \longleftrightarrow \tilde{f}(k)
+\]
+则
+\[
+    \tilde{f}(x) \longleftrightarrow f(-k)
+\] 
+也就是说，对一个函数连续做两次傅里叶变换，得到的就是它沿$y$轴翻转后的结果。
+
+\paragraph{常用变换} 常用函数的傅里叶变换如下表
+
+
+\subsubsection{广义函数}
+
+在$f$在整条数轴上的积分不收敛等情况下（例如，如果$f$是正弦函数，那么积分就不收敛），仍然可以有傅里叶变换，但此时会得到一些广义函数。
+
+一个典型的例子是狄拉克Delta函数。我们知道
+\[
+\int_{-\infty}^\infty f(x) \delta(x-x_0) \mathrm{d}x = f(x_0), \quad \delta(-x) = \delta(x).
+\]
+可以证明上面的公式\textbf{唯一确定了}Delta函数。所以现在就需要凑出一个广义函数，它经常出现在傅里叶变换式当中，但确实就是Delta函数：
+\[
+\begin{aligned}
+    f(x) &= \frac{1}{2\pi} \int_{-\infty}^{+\infty} \left(\int_{-\infty}^{+\infty} f(t) \ee^{-\mathrm{i} \omega t} \mathrm{d}t \right) \ee^{\mathrm{i} \omega x} \mathrm{d} \omega \\
+    &= \frac{1}{2\pi} \int_{-\infty}^{+\infty} \left(\int_{-\infty}^{+\infty} f(t) \ee^{\mathrm{i} \omega x -\mathrm{i} \omega t} \mathrm{d}t \right) \mathrm{d} \omega \\
+    &= \int_{-\infty}^\infty f(t) \left( \int_{-\infty}^\infty \frac{1}{2\pi} \ee^{\mathrm{i} \omega (x-t)} \mathrm{d}\omega \right) \mathrm{d}t.
+\end{aligned}
+\]
+所以我们发现
+\[
+\delta(t-x) = \frac{1}{2\pi} \int_{-\infty}^\infty \ee^{\mathrm{i} \omega (x-t)} \mathrm{d}\omega, 
+\]
+或者说
+\[
+\delta(t'-t) = \frac{1}{2\pi} \int_{-\infty}^\infty \ee^{\mathrm{i} \omega (t'-t)} \mathrm{d}\omega.
+\]
+
+\paragraph{正弦、余弦}
+例如，正弦函数和余弦函数的傅里叶变换就可以使用Delta函数表示。设
+\[
+f(t) = \ee^{\mathrm{i}\omega_0t},
+\]
+则
+\[
+\mathrm{FT}[f](\omega) = 2\pi \delta(\omega - \omega_0).
+\]
+
+\subsubsection{周期函数的傅里叶变换}
+
+设$f$是周期为$2T$的周期函数。我们知道在这种情况下$f$可以被展开为傅里叶级数：
+\[
+f(x) = \frac{1}{2} \sum_{n = -\infty}^{n = \infty} c_n \ee^{\frac{\mathrm{i}\pi n x}{T}}, 
+\]
+根据上式我们计算$f$的傅里叶变换：
+\[
+\mathrm{FT}[f] = \pi \sum_{n=-\infty}^\infty c_n \delta(\omega - \frac{\pi n}{T}).
+\]
+因此周期函数的频谱是针状的。
+
+\hypertarget{ux79bbux6563ux5085ux91ccux53f6ux53d8ux6362}{%
+\subsection{离散傅里叶变换}\label{ux79bbux6563ux5085ux91ccux53f6ux53d8ux6362}}
+
+在离散的情况下有一个类似于傅里叶积分的公式：
+\[
+f(x) = \frac{1}{N} \sum_{u=0}^{N-1} \ee^{\mathrm{i} \frac{2\pi}{N} xu} \sum_{t=0}^{N-1} f(t) \ee^{-\mathrm{i} \frac{2\pi}{N}tu}.
+\]
+
+按照连续傅里叶变换类似的套路，可以定义
+\[
+\begin{aligned}
+    \mathrm{DFT}[f](u) &= \sum_{t=0}^{N-1} f(t) \ee^{-\mathrm{i} \frac{2\pi}{N}tu}, \\
+    \mathrm{DFT}^{-1}[\hat{f}](t) &= \frac{1}{N} \sum_{u=0}^{N-1} \hat{f}(u) \ee^{\mathrm{i} \frac{2\pi}{N} tu}.
+\end{aligned}
+\]
+称$\mathrm{DFT}$为离散傅里叶变换，而$\mathrm{DFT}^{-1}$为离散傅里叶逆变换。
+
+\hypertarget{ux79bbux6563ux7684deltaux51fdux6570-ux514bux7f57ux5185ux514bdeltaux51fdux6570}{%
+\subsubsection{离散的Delta函数：
+克罗内克Delta函数}\label{ux79bbux6563ux7684deltaux51fdux6570-ux514bux7f57ux5185ux514bdeltaux51fdux6570}}
+
+用于定义离散傅里叶变换的式子本身立刻可以导出一个结果：
+\[
+f(x) = \sum_{t=0}^{N-1} \left( \frac{1}{N} \sum_{u=0}^{N-1}\ee^{\mathrm{i} \frac{2\pi}{N} (x-t) u} \right) f(t),
+\]
+因此
+\[
+\delta_{t,t'} = \frac{1}{N} \sum_{u=0}^{N-1}\ee^{\mathrm{i} \frac{2\pi}{N} (t'-t) u} = \frac{1}{N} \sum_{u=0}^{N-1}\ee^{\mathrm{i} \frac{2\pi}{N} (t-t') u}, \quad t,t' = 0,1, \ldots, N-1.
+\]
+$t,t'$超过$N$之后方程的右半边会发生周期性循环。在方程右边的指数当中变换正负号不会影响结果是因为方程左边是实数，所以右边取复共轭之后结果不变。
+
+\hypertarget{ux91c7ux6837}{%
+\subsubsection{采样}\label{ux91c7ux6837}}
+
+为什么称它们为\textbf{离散}傅里叶变换呢？它们和连续的傅里叶变换有什么关系呢？
+
+设$f$是一个连续的周期函数，且它有周期$2T$。$f_s$是对$f$在$[0, 2T)$上做$N$点采样之后的结果。我们可以分别计算前者的傅里叶变换和后者的离散傅里叶变换。
+
+设样本点总数为$N$，则
+\[
+f_s (n) = f \left( \frac{2T}{N}n \right),
+\]
+此时，
+\[
+\begin{aligned}
+    \mathrm{DFT}[f_s](u) &= \sum_{n=0}^{N-1} f\left( \frac{2T}{N}n \right) \ee^{-\mathrm{i} \frac{2\pi n}{N}u} \\
+    &= \sum_{n=0}^{N-1} \frac{1}{2} \sum_{m = -\infty}^{\infty} c_m \ee^{\frac{\mathrm{i}\pi m}{T} \frac{2T}{N}n } \ee^{-\mathrm{i} \frac{2\pi n}{N}u} \\
+    &= \frac{1}{2} \sum_{m=-\infty}^\infty \sum_{n=0}^{N-1} c_m \ee^{\mathrm{i}\frac{2\pi}{N} (m-u)n} \\
+    &= \frac{1}{2} \sum_{m=-\infty}^\infty c_m N \delta_{m,u} = \frac{1}{2} N c_u.
+\end{aligned}
+\]
+而另一方面，我们有$f$的频谱
+\[
+\mathrm{FT}[f](\omega) = \pi \sum_{n=-\infty}^\infty c_n \delta(\omega - \frac{\pi n}{T}).
+\]
+我们发现$f_s$做离散傅里叶变换和$f$做连续傅里叶变换之后得到的结果是相对应的：（注：在取不同的$T$的时候，计算出来的$c_n$会有所不同，但是，无论取什么样的$T$，最后得到的傅里叶级数的形式都是一样的，从而傅里叶变换的形式也是一样的。这里使用$\mathrm{FT}$来代替$c_n$就是为了消除这个影响）
+\[
+\mathrm{FT}[f](\omega) = \frac{2\pi}{N} \sum_{n=-\infty}^\infty \mathrm{DFT}[f_s](n) \delta(\omega - \frac{\pi n}{T}), \\
+\mathrm{DFT}[f_s](n) = \frac{N}{2\pi \delta(0)} \mathrm{FT}[f](\frac{\pi n}{T}).
+\]
+在$\omega$可以写成$\pi/T$的整数倍的时候，有
+\[
+\mathrm{FT}[f](\omega) = \frac{2\pi \delta(0)}{N} \mathrm{DFT}[f_s](\frac{\omega T}{\pi}).
+\]
+
+这就意味着，\textbf{在采样长度为$2T$，总采样数为$N$的情况下，样本信号的频谱中每一格对应$\pi/T$的圆频率间隔}。
+
+我们还可以注意到$\mathrm{DFT}$运算得出的结果以$N$为周期做循环。因此，通常限定$u=0, 1, \ldots, N-1,$也即，离散傅里叶变换输入一个长度为$N$的序列，也输出一个长度为$N$的序列。
+
+假如采样长度并不精确为$f$的某个倍数，那么$\mathrm{DFT}[f_s]$和$\mathrm{FT}[f]$不会有严格的线性关系。可以证明，此时$\mathrm{DFT}[f_s]$中的峰会发生展宽，即所谓的能量溢出。然而，在采样长度$L$足够大的情况下，虽然$L$并非$f$的周期，由于采样结果中大部分的区段都是周期性的，最后画出来的$\mathrm{DFT}[f_s]$不会有太大的畸变，因此，\textbf{在采样长度为$L$，总采样数为$N$的情况下，样本信号的频谱中每一格对应$2\pi/L$的频率间隔}。相应的，输出的$\mathrm{DFT}[f_s]$的长度还是$N$。这就意味着，如果使用$\mathrm{DFT}[f_s]$作为$\mathrm{FT}[f]$的近似值，那么$\mathrm{DFT}[f_s]$只能覆盖零到$2\pi N/L$的圆频率范围。
+
+另一方面，$f_s$的离散傅里叶变换频谱上峰的高度正比于$N$。如果需要比较不同采样点数的样本的频谱，应该记得这一点。
+
+\section{拉普拉斯变换及其它}
+
+\subsection{从傅里叶变换到拉普拉斯变换}
+
+考虑一个有傅里叶变换的函数$f$，适当选择正负号和系数使
+\[
+    \begin{split}
+        f(t) = \frac{1}{2\pi} \int_{-\infty}^\infty \hat{f}(\omega) \ee^{-\ii \omega t} \dd \omega, \\
+        \hat{f}(\omega) = \int_{-\infty}^\infty f(t) \ee^{\ii \omega t} \dd t
+    \end{split}
+\]
+现在$\hat{f}(\omega)$使用的宗量是实数$\omega$，我们尝试让它的宗量变成复平面上的一个点。设
+\[
+    \bar{f}(\ii \omega) = \hat{f}(\omega)
+\]
+那么就有
+\[
+    \bar{f}(s) = \int_{-\infty}^\infty f(t) \ee^{-st} \dd t
+\]
+以及
+\[
+    f(t) = \frac{1}{2\pi \ii} \int_{-\ii \infty}^{\ii \infty} \bar{f}(s) \ee^{s t} \dd s
+\]
+观察上面的两个公式，可以发现我们实际上已经定义了一个新的积分变换了。于是我们定义$f(t)$的\textbf{双边拉普拉斯变换}为
+\[
+    \bar{f}(s) = \int_{-\infty}^\infty f(t) \ee^{-s t} \dd t
+\]
+其中$s$是一个复变量。
+
+以上均假设了$f$可以做傅里叶变换，此时双边拉普拉斯变换只是傅里叶变换的另一种说法。
+但实际上可以看出，$f$并不一定需要有傅里叶变换也可以有拉普拉斯变换。
+实际上可以证明，设$s$实部为$\sigma$，虚部为$\omega$，则$\bar{f}(s)$的收敛域形如
+\[
+    s_1 \leq \sigma \leq s_2,
+\]
+也就是说收敛域是复平面上的一个纵向条带。$\bar{f}(s)$在收敛域内部绝对收敛，在收敛域的边界上是不是收敛需要特别验证。
+容易看出，$f(t)$可以做傅里叶变换，当且仅当整条虚轴都在$\bar{f}(s)$的收敛域内。对于一个一般的有双边拉普拉斯变换的函数，
+\[
+    \frac{1}{2\pi \ii} \int_{-\ii \infty}^{\ii \infty} \bar{f}(s) \ee^{s t} \dd s
+\]
+有可能不收敛，因此不能使用这种方法从$\bar{f}(s)$反演出$f(t)$。不过可以证明，只要$s_0$在$s_1$和$s_2$之间，就有
+\[
+    f(t) = \frac{1}{2\pi \ii} \int_{s_0 -\ii \infty}^{s_0 + \ii \infty} \bar{f}(s) \ee^{s t} \dd s
+\]
+当然，在$f(t)$能够做傅里叶变换的时候，取$s_0=0$就得到了傅里叶逆变换的表达式。
+
+关于$\bar{f}(s)$有一点需要指出：从$\bar{f}(s)$中恢复出原来的$f(t)$并不需要整个$s_1 \leq \Re(s) \leq s_2$区域上的$f(s)$——只需要固定某一个$s_0$，取$\bar{f}(s_0 + \ii \omega t)$就够了。
+这并不奇怪，因为函数$f(t)$只是定义在一条实数轴上，而$\bar{f}(p)$定义在复平面上。
+我们知道复平面能够承载比实数轴多得多的信息。
+
+因此，尽管傅里叶变换得出的频谱$\hat{f}(\omega)$实际上是函数$f(t)$使用基$\ee^{\ii \omega t}$展开之后的系数，
+拉普拉斯变换得到的复频谱$\bar{f}(s)$并不是$f(t)$使用$\ee^{-st}$展开之后的系数——
+以\textbf{复}参数$s$为参数的函数族$\ee^{-st}$并不是一组基！它包含的函数太多了，彼此之间实际上是线性相关的。
+固定$s_1 < s_0 < s_2$得到的函数族$\ee^{-s_0 t + \ii \omega t}$却是一组基。
+
+有一些函数$\varphi(t)$不能写出傅里叶变换（因为积分不收敛的问题），但是我们仍然希望使用频谱分析的方式处理它。
+
+假设$\varphi(t)$在$(-\infty, \infty)$上除了第一类间断点以外都是连续的，并且可以找到两个常数$M>0, s_0 \geq 0$使
+\[
+    \abs{\varphi(t)} \leq M \ee^{s_0 t}
+\]
+那么就可以把一个收敛因子$\ee^{-st}, s > s_0$乘到$\varphi(t)$上，令
+\[
+    f(t) = \ee^{-st} \varphi(t),
+\]
+则有
+\[
+    \begin{aligned}
+        f(t) &= \frac{1}{2\pi \ii} \int_{-\ii \infty}^{\ii \infty} \ee^{pt} \int_{-\infty}^\infty f(t') \ee^{-pt'} \dd t' \dd p \\
+        &= \frac{1}{2\pi \ii} \int_{-\ii \infty}^{\ii \infty} \ee^{pt} \int_{-\infty}^\infty \varphi(t') \ee^{-(p+s)t'} \dd t' \dd p \\
+        &= \frac{1}{2\pi \ii} \int_{s-\ii \infty}^{s+\ii \infty} \ee^{(p-s)t} \int_{-\infty}^\infty \varphi(t') \ee^{-pt'} \dd t' \dd p, \\
+        \varphi(t) \ee^{-st} &= \frac{1}{2\pi \ii} \int_{s-\ii \infty}^{s+\ii \infty} \ee^{(p-s)t} \int_{-\infty}^\infty \varphi(t') \ee^{-pt'} \dd t' \dd p, \\
+        \varphi(t) &= \frac{1}{2\pi \ii} \int_{s-\ii \infty}^{s+\ii \infty} \ee^{pt} \int_{-\infty}^\infty \varphi(t') \ee^{-pt'} \dd t' \dd p
+    \end{aligned}
+\]
+
+于是，设函数$\varphi(t)$和它的导数在$[0, \infty)$上只有有限个间断点，其余位置连续，且存在$M>0, s_0 \geq 0$使
+\[
+    |\varphi(t)| \leq M \ee^{s_0 t}
+\]
+
+定义
+\begin{equation}
+    \bar{\varphi}(p) = \int_{-\infty}^\infty \varphi(t) \ee^{-pt} \dd t, \quad p \in \complexes
+\end{equation}
+为$\varphi(t)$的\textbf{拉普拉斯变换}。则对任意$s>s_0$，有\textbf{Merlin反演公式}
+\begin{equation}
+    \varphi(t) = \frac{1}{2\pi \ii} \int_{s-\ii \infty}^{s+\ii \infty} \bar{\varphi}(p) \ee^{pt} \dd p
+\end{equation}
+
+容易看出，$\bar{\varphi}(p)$在右半平面$\Re p >s_0$内存在、解析、且在$\Re p \to \infty$时趋于零。
+
+有时还会遇到性质更加糟糕的函数，如$\ee^{-\alpha t}$，它在$t \to -\infty$时是发散的。
+不能够乘上一个收敛因子$\ee^{-s_0 t}$来改善这一点，因为收敛因子自己也会在$t \to -\infty$
+
+% 这里逻辑有一些问题，需要改动。有空再说。
+
+\subsection{微分算子法}
+
+\[
+    \frac{1}{F(D)} \ee^{kx} = \frac{1}{F(k)} \ee^{kx}
+\]
+\[
+    \frac{1}{F(D)} \ee^{kx} = \frac{x^m}{F^{(m)}(k)} \ee^{kx}
+\]
+
+\[
+    \frac{1}{F(D)} \ee^{kx} v(x) = \ee^{kx} \frac{1}{F(D+k)} v(x)
+\]
+
+\subsection{Z变换}
+
+\section{多重积分变换}
+
+在多维空间中，狄拉克函数取下面的形式：
+\begin{equation}
+    \delta(\vb*{r} - \vb*{r}_0) = \frac{1}{\sqrt{g}} \dd x^1 \cdots \dd x^n,
+\end{equation}
+其中$g$代表度规的行列式。
+
+\subsection{多重傅里叶级数}
+
+\subsection{多重傅里叶变换}
+
+在
+
+\end{document}
