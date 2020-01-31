@@ -6,6 +6,7 @@ Some of them are course notes.
 # There is something wrong ...
 
 As expected - I'm not expert in any of these fields. 
+Feel free to open issues.
 
 # The license?
 
