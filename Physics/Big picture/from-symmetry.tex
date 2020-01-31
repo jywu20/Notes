@@ -29,6 +29,8 @@
 \newcommand*{\const}{\mathrm{const}}
 \newcommand*{\comment}{\paragraph{注记}}
 \newcommand{\fsl}[1]{{\centernot{#1}}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -490,7 +492,8 @@ $x^0$则是\textbf{时间维}。
 因此，反对易子意味着对应的场的经典极限实际上并不是复数而是格拉斯曼数，
 在路径积分量子化中，格拉斯曼数非常重要，因为路径积分量子化会分析经典场值的演化路径。
 在正则量子化中只需要把这些格拉斯曼数看成算符就可以了——我们并不会用到它的微积分，因此也无需将它们看成数。
-% TODO:运动方程一致性；不过我懒得去看格拉斯曼数的微积分了
+% TODO:运动方程一致性，也就是反对易关系在$\hbar \to 0$时是不是产生正确的运动方程；不过我懒得去看格拉斯曼数的微积分了
+% TODO：格拉斯曼数和旋量的关系
 
 需要注意的是，从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
 这就产生了一个问题：路径积分量子化告诉我们，最小作用量原理只是路径积分的最速下降近似而已，
@@ -512,6 +515,7 @@ $x^0$则是\textbf{时间维}。
     \label{eq:picture-trans}
 \end{equation}
 其中$\hat{Q}$为一个幺正算符，它可以显含时间。
+% TODO：谱结构不变和“李群和李代数”一节中李群在算符集合上的表示的关系——公式形式一样。
 
 在\autoref{sec:canonical-quantization}中我们已经讨论了态矢量固定不动时怎么确定系统的动力学。
 这种让态矢量固定、算符变动的方案称为\textbf{海森堡绘景}。以下我们使用上标$H$代表海森堡绘景下的量。
@@ -651,9 +655,10 @@ $\hat{U}^H$可以写出显式表达式
 % 两个态表示了同样的物理状态，当且仅当，
 % $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
 % TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
-% \hat{A} \ket{a_1 a_2 \cdots} = \bmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
+% \hat{A} \ket{a_1 a_2 \cdots} = \pmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
 % 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
 % 因此下文中将常常这么写。
+% 谱结构和对易关系之间有什么联系？
 
 \subsubsection{散射与测量}
 
@@ -733,11 +738,82 @@ $\hat{U}^H$可以写出显式表达式
 李代数是李群在单位元附近的切空间，也就是说，是$g$在$\theta=0$附近沿着任意方向对$\theta$求导之后得到的结果组成的代数。
 接下来我们将讨论\eqref{eq:lie-group-element}的李群，因为“不同点处求导结果不同”基本上只会在处理时间演化时用到，
 而此时只有一个生成元（就是哈密顿量），没有必要讨论李代数。
+由于李代数的封闭性，设$g_1, g_2, \ldots$是一组相互独立的生成元，它们中任意两个的李括号$\comm*{g_1}{g_2}$一定也是一个生成元，
+这意味着它可以使用$g_1, g_2, \ldots$线性表示。
+从而我们有
+\begin{equation}
+    \comm*{g_i}{g_j} = f_{ij}^k g_k.
+    \label{eq:structure-of-lie-algebra}
+\end{equation}
+如果我们只讨论抽象的李代数的性质而不考虑它作用在某些对象上产生的结果，那么\eqref{eq:structure-of-lie-algebra}就完全刻画了一个李代数的结构。
+因此，称$f_{ij}^k$为\textbf{结构常数}。
 
-现在我们讨论李群和李代数在向量空间上的作用，
+接下来需要讨论李群和李代数的表示。
+通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
 也就是说，我们在李群、李代数和向量空间上的算符组成的群（以算符的复合为乘法）之间建立一个同态，
-一旦建立起这个同态，我们实际上就得到了李群或李代数在这个向量空间上的表示，这个表示本身也构成一个向量空间。
-比较方便的做法是，先讨论李代数在特定向量空间上的作用，然后
+一旦建立起这个同态，我们实际上就得到了李群或李代数的一个表示。
+比较方便的做法是，先讨论李代数在特定向量空间上的表示，然后使用指数映射获得对应的李群的表示。
+第二种表示是，李群和李代数在向量空间上的算符构成的向量空间上的作用。
+这种表示和第一种表示是紧密相关的。
+设李群$G$在向量空间$V$上的表示为$G_V$，则$G_V \subset GL(V)$。这就自然地诱导出了李群在$GL(V)$上的表示。
+算符$\hat{B} \in GL(V)$建立起了这样的关系：
+\[
+    \phi = \hat{B} \psi,
+\]
+现在我们把$\hat{A} \in G_V$作用在$\phi$和$\psi$上面，就得到
+\[
+    \phi' = \hat{A} \phi, \quad \psi' = \hat{A} \psi,
+\]
+如果我们还是希望在$\phi'$和$\psi'$之间建立关系
+\[
+    \phi' = \hat{B}' \psi',
+\]
+应该怎么选取$\hat{B}$？
+考虑到$\phi$和$\psi$的任意性，容易看出，
+\[
+    \hat{B}' = \hat{A} \hat{B} \hat{A}^{-1}.
+\]
+我们没有规定$\hat{B}$是什么——它是完全任意选取的。这样一来，$G_V$中的每一个元素$\hat{A}$都对应到下面的映射：
+\begin{equation}
+    \hat{B} \longrightarrow \hat{A} \hat{B} \hat{A}^{-1},
+    \label{eq:group-action-on-operators}
+\end{equation}
+\eqref{eq:group-action-on-operators}是一个从$GL(V)$到$GL(V)$的映射，也就是满足封闭性。
+请注意该映射是$GL(GL(V))$的成员，而不是$GL(V)$的成员——它作用在$V$上的算符上而不是$V$中的向量上。
+因此，我们通常只讨论简单的向量空间上的群表示，因为这些向量空间上的算符组成的向量空间上的群表示可以使用前者按照\eqref{eq:group-action-on-operators}写出。
+另外注意，不同的$\hat{A}$可能对应着同一个\eqref{eq:group-action-on-operators}型的映射。
+这一点在\autoref{sec:rotation}中体现得很明显。
+
+李群和李代数通常被作用在几类对象上。
+首先是有有限个分量的向量空间。需注意它们未必是“指标升降关系和坐标变换关系”意义上的向量，例如我们很快就会看到，旋量也是多分量的对象，但是它们和矢量的行为有很大不同。
+这样的向量空间是李群的有限维表示，李群在其上的作用形如
+\[
+    v \longrightarrow v', \quad (v')^\mu = R_{\nu}^\mu (\Lambda) v^\nu.
+\]
+其中$\Lambda$指抽象的李群。
+特别的，李群和李代数可以被作用在坐标上。
+作用在坐标上的有限维表示又诱导出了作用在函数上的无限维表示。设$f=f(x)$，$x$是诸坐标的简记，若李群在坐标上的表示为
+\[
+    x \longrightarrow x', \quad (x')^\mu = R_\nu^\mu (\Lambda) x^\nu,
+\]
+则它在关于坐标的函数——也就是“场”——组成的无限维向量空间上的表示就是
+\[
+    ( x \mapsto f(x)) \longrightarrow (x' \mapsto f(x')).
+\]
+换而言之，它是坐标变动“牵引”导致的。
+考虑到$f$可能是某个多分量对象（比如矢量、矢量的张量积，或者接下来要看到的旋量）的分量，
+李群在多分量场上的表示为：
+\[
+    \begin{split}
+        (x \mapsto \phi(x)) \longrightarrow (x' \mapsto (\phi')(x)), \\
+        (x')^\mu = R_\nu^\mu (\Lambda) x^\nu, \quad (\phi')^\mu = 
+    \end{split}
+\]
+或者更加简洁地写成
+% TODO
+
+最后我们讨论态矢量。
+
 % TODO:李群作用在坐标上、场上、态矢量上
 % 作用在场算符上和作用在态矢量上是等价的
 
@@ -749,10 +825,15 @@ $\hat{U}^H$可以写出显式表达式
 
 \subsubsection{平移}
 
-\subsubsection{旋转}
+平移可能是我们能想到的最简单的变换，但实际上它相当特殊——在实际的物理问题中平移群通常不使用矩阵群表示，因为它无疑不是线性的。%
+\footnote{可以在仿射空间中使用矩阵表示平移，但是这对本文没有太大意义。}
 
-本节讨论三维欧几里得空间中的旋转。所谓旋转，指的是一个可微的（从而可以通过一个物理上的微分方程实现的）等距同构变换。
-显然，三维欧氏空间中的等距同构变换的全体就是$O(3)$，其中任何一个矩阵的行列式都是$\pm 1$。
+平移群
+
+\subsubsection{旋转}\label{sec:rotation}
+
+本节讨论$\reals^3$中的旋转。所谓旋转，指的是一个可微的（从而可以通过一个物理上的微分方程实现的）等距同构变换。
+显然，$\reals^3$中的等距同构变换的全体就是$O(3)$，其中任何一个矩阵的行列式都是$\pm 1$。
 另一方面，变换可微意味着，可以找到形如下式的无穷小变换：
 \[
     \vb*{r} \longrightarrow \vb*{r}' = \vb*{r} + \dd{\vb*{r}}, \quad \dd{\vb*{r}} = \dd{t} \vb*{A} \cdot \vb*{r},
@@ -764,17 +845,152 @@ $\hat{U}^H$可以写出显式表达式
 \[
     \det \left( \dv{\vb*{r}'}{\vb*{r}} \right) = 1 + \dd{t} \trace \vb*{A} \approx 1.
 \]
-因此三维欧氏空间中的旋转变换的全体就是$SO(3)$，也就是行列式为1的全体矩阵。
+因此$\reals^3$中的旋转变换的全体就是$SO(3)$，也就是行列式为1的全体$3\times 3$矩阵。
 
-我们来分析$SO(3)$的结构。矩阵$A$在$SO(3)$中，当且仅当，$A A^\top = I$且$\det A = 1$。
+我们来分析$SO(3)$的结构。矩阵$A$在$SO(3)$中，当且仅当
+\begin{equation}
+    A A^\top = I, \quad \det A = 1.
+    \label{eq:def-so3}
+\end{equation}
 矩阵$A$含有9个分量；$A A^\top = I$是对称的，因此它等价于6个独立的纯数量方程；
-$\det A = 1$可以直接从$A A^\top=I$推出，因此它对维数没有影响。
-这样，$SO(3)$就是$9-6=3$维的，因此它有三个生成元。
+$\det A = \pm 1$可以直接从$A A^\top=I$推出，则$\det A = 1$的要求仅仅是去掉了其中的一支，因此对维数没有影响。
+这样，$SO(3)$就是$9-6=3$维的，因此它有三个彼此独立的生成元。
+注意到绕$x$轴旋转、绕$y$轴旋转、绕$z$轴旋转都是$SO(3)$的子群，这三者的表达式分别为
+\begin{equation}
+    R_x = \pmqty{1 & 0 & 0 \\ 0 & \cos \theta & -\sin \theta \\ 0 & \sin \theta & \cos \theta}, 
+    R_y = \pmqty{\cos \theta & 0 & \sin \theta \\ 0 & 1 & 0 \\ - \sin \theta & 0 & \cos \theta}, 
+    R_z = \pmqty{\cos \theta & - \sin \theta & 0 \\ \sin \theta & \cos \theta & 0 \\ 0 & 0 & 1}.
+    \label{eq:rotation-with-axis}
+\end{equation}
+\eqref{eq:rotation-with-axis}自然导出三个生成元：
+\begin{equation}
+    J_1 = \ii \pmqty{0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & -1 & 0}, 
+    J_2 = \ii \pmqty{0 & 0 & -1 \\ 0 & 0 & 0 \\ 1 & 0 & 0}, \\
+    J_3 = \ii \pmqty{0 & 1 & 0 \\ -1 & 0 & 0 \\ 0 & 0 & 0}.
+    \label{eq:generators-of-so3}
+\end{equation}
+其中$\ii$是为了让各个生成元厄米而加上的。
+\eqref{eq:generators-of-so3}也可以直接通过分析$SO(3)$的抽象性质得到。
+对无穷小变换$A = I + \theta J$（$\theta$是小量），\eqref{eq:def-so3}中的两个方程分别代表
+\[
+    (I+\theta J) (I + \theta J^\top) = I, \quad \det (1 + \theta J) = 1 + \theta \trace J = 1,
+\]
+也就是
+\[
+    J + J^\top = 0, \quad \trace J = 0.
+\]
+上式描述了一个三阶方阵构成的向量空间，容易看出\eqref{eq:generators-of-so3}正是它的一组基。
+通过显式表达式\eqref{eq:generators-of-so3}可以导出
+\begin{equation}
+    [J_i, J_j] = \ii \epsilon_{ijk} J_k.
+    \label{eq:lie-algebra-so3}
+\end{equation}
+% TODO：这里好像正负号有问题？
+这正是\eqref{eq:structure-of-lie-algebra}形式的公式，从而我们已经刻画了$SO(3)$的李代数$\mathfrak{so}(3)$的结构。
 
+然而，能够实施空间旋转的并不只有$SO(3)$。实际上，$SU(2)$也能做到这件事。
+下面我们引入$SU(2)$群。$SU(2)$是由二阶复方阵组成的矩阵群，由
+\begin{equation}
+    A^\dagger A = I, \quad \det A = 1
+    \label{eq:def-su2}
+\end{equation}
+定义。
+二阶复数方阵一共有$4 \times 2 = 8$个自由度。矩阵方程$A^\dagger A = I$含有4个复数方程，
+但是因为它是厄米的，因此它只含有2个独立的复数方程，从而它含有4个独立的实数方程，也即它将总自由度降到了4。
+从$A^\dagger A = I$只能够推出$\abs{\det A} = 1$，$\det A$仍然可以连续变化；
+$\det A = 1$则将$\det A$确定到一个点上面，因此它将总自由度降到了3。
+因此$SU(2)$的维度为3。
+可以证明，$SU(2)$中的每一个元素均形如
+\begin{equation}
+    A = a \mathbf{1} + b \mathbf{i} + c \mathbf{j} + d \mathbf{k}, \quad a^2 + b^2 + c^2 + d^2 = 1,
+    \label{eq:su2-expression}
+\end{equation}
+其中
+\begin{equation}
+    \mathbf{1} = \pmqty{1 & 0 \\ 0 & 1}, \; \mathbf{i} = \pmqty{0 & -1 \\ 1 & 0}, \; 
+    \mathbf{j} = \pmqty{0 & \ii \\ \ii & 0}, \; \mathbf{k} = \pmqty{\ii & 0 \\ 0 & -\ii},
+    \label{eq:quad-basis}
+\end{equation}
+它们实际上就是四元数。
+可以直接使用以上两式计算出$SU(2)$的生成元，但是这样比较繁琐。
+使用$SU(2)$的一般定义\eqref{eq:def-su2}，套用到无穷小变换
+\[
+    A = I + \ii \epsilon \sigma
+\]
+上，可以发现$\sigma$是幺正、无迹的矩阵；幺正、无迹的矩阵的一组基（通常称为\textbf{泡利矩阵}）为
+\begin{equation}
+    \sigma_1 = \pmqty{0 & 1 \\ 1 & 0}, \; \sigma_2 = \pmqty{0 & -\ii \\ \ii & 0}, \; \sigma_3 = \pmqty{1 & 0 \\ 0 & -1}.
+    \label{eq:sigma-matrix}
+\end{equation}
+这正好是三个线性独立的矩阵，从而它们就是$SU(2)$的一组彼此独立的生成元。
+我们有
+\begin{equation}
+    \comm*{\sigma_i / 2}{\sigma_j / 2} = \ii \epsilon_{ijk} \sigma_k / 2,
+\end{equation}
+这表明$SU(2)$和$SO(3)$的李代数是一致的。
+
+然而，$SU(2)$和$SO(3)$是两个不同的群。%
+\footnote{当我们说两个群相同时我们是指它们在群论中同构，也就是说，我们所谓的“群”指的是抽象的群结构而不是具体的矩阵集合。
+如果$SU(2)$和$SO(3)$中的元素可以一一对应，且在这个对应下相应的乘法关系不变，
+那么这两个群——虽然使用了不同阶数的矩阵来表述——还是相同的。
+然而正如我们马上要看到的那样，$SO(3)$中的一个元素可以和$SU(2)$中的两个元素相对应，且这种对应保持相应的乘法关系不变。
+因此这两个群不同。}%
+要看出这是为什么，考虑$SU(2)$在由\eqref{eq:quad-basis}的所有线性组合形成的空间上的表示。
+记
+\[
+    q = a \mathbf{1} + b \mathbf{i} + c \mathbf{j} + d \mathbf{k}, \quad a^2 + b^2 + c^2 + d^2 = 1,
+\]
+显然它是$SU(2)$在二维复数空间上的矩阵表示。
+可以验证
+\[
+    q^{-1} = a \mathbf{1} - b \mathbf{i} - c \mathbf{j} - d \mathbf{k},
+\]
+则$SU(2)$在\eqref{eq:quad-basis}的所有线性组合形成的空间上的作用可写成
+\begin{equation}
+    x \longrightarrow q x q^{-1}.
+    \label{eq:su2-rotation}
+\end{equation}
+注意我们把$x$当成了算符来看待。
+$\reals^3$中的向量$\vb*{v}$与
+\begin{equation}
+    x = v_1 \mathbf{i} + v_2 \mathbf{j} + v_3 \mathbf{k}
+    \label{eq:trans-vec-quad}
+\end{equation}
+一一对应，且容易证明
+\[
+    \det x = \abs{\vb*{v}}.
+\]
+我们注意到
+\[
+    \det (q x q^{-1}) = (\det q) (\det x) (\det q^{-1}) = \det x,
+\]
+因此\eqref{eq:su2-rotation}是等距同构。由于$SU(2)$是李群，其表示\eqref{eq:su2-rotation}也必然是可微的。
+这表明变换（这是将\eqref{eq:su2-rotation}和\eqref{eq:trans-vec-quad}写在一起的结果）
+\[
+    \vb*{v} \longrightarrow x \longrightarrow x' = q x q^{-1} \longrightarrow \vb*{v}'
+\]
+给出了$SO(3)$中全部的成员，而且也仅仅给出这么多成员。
+然而，同一个变换\eqref{eq:su2-rotation}实际上对应着两个$q$。
+% TODO:证明，不过多半鸽了
+这表明$SU(2)$实际上是$SO(3)$的双覆盖。
+\eqref{eq:su2-expression}意味着$SU(2)$实际上就是四维球面$S^4$，因此它是单连通群，
+因此它是李代数$\mathfrak{so}(3)$——也就是$\mathfrak{su}(2)$——的覆盖群。
+所有以$\mathfrak{so}(3)$为李代数的李群中$SU(2)$是最大的。
+
+顺带提一句：以上的推导也表明，一个群在一个特定空间上的表示有时并不能完整地展现这个群的结构。
+$\mathfrak{su}(2)$在$\reals^3$上的表示，也就是$\mathfrak{so}(3)$在$\reals^3$上的表示，就是\eqref{eq:generators-of-so3}，
+把它放进指数映射\eqref{eq:lie-group-element}中得到的就是$SO(3)$的三阶方阵形式。
+因此$SU(2)$和$SO(3)$在$\reals^3$上的表示完全一样。
+换而言之，$SU(2)$在$\reals^3$上的表示不是忠实的。
+我们需要\eqref{eq:quad-basis}这样更大的空间才能完全展示$SU(2)$的结构。%
+\footnote{严格来说本节中我们使用了两种$SU(2)$的表示。
+其一是$q$，也就是$\complexes^2$上的表示，其二是\eqref{eq:su2-rotation}，也就是$GL(\complexes^2)$上的表示。
+后者和$SO(3)$在$GL(\complexes^2)$上的表示完全一样，但后者中的每一个都对应两个$q$，
+两者间的对应就是\eqref{eq:group-action-on-operators}，它并非一一对应。}
 
 \subsubsection{洛伦兹群}
 
-首先讨论洛伦兹群在四维闵可夫斯基空间中的表示，也就是保持闵可夫斯基度规
+首先讨论洛伦兹群在四维闵可夫斯基空间$\reals^{3, 1}$上的表示，也就是保持闵可夫斯基度规
 \begin{equation}
     \eta \equiv [\eta_{\mu \nu}]_{\mu \nu} = \diag (1, -1, -1, -1)
 \end{equation}
@@ -828,7 +1044,7 @@ $\det A = 1$可以直接从$A A^\top=I$推出，因此它对维数没有影响�
 
 \subsubsection{旋转群}
 
-首先讨论三维旋转群在三维欧氏空间下的表示，也就是三维旋转矩阵群。显然旋转保持矢量长度不变，因此旋转矩阵都是正交矩阵。
+首先讨论三维旋转群在$\reals^3$下的表示，也就是三维旋转矩阵群。显然旋转保持矢量长度不变，因此旋转矩阵都是正交矩阵。
 
 % TODO
 因此$SO(3)$并不是旋转群最基本的表示，$SU(2)$才是。
@@ -841,7 +1057,7 @@ $\det A = 1$可以直接从$A A^\top=I$推出，因此它对维数没有影响�
 
 \textbf{泡利矩阵}
 \begin{equation}
-    \sigma_1 = \bmqty{0 & 1 \\ 1 & 0}, \quad \sigma_2 = \bmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_3 = \bmqty{1 & 0 \\ 0 & -1}.
+    \sigma_1 = \pmqty{0 & 1 \\ 1 & 0}, \quad \sigma_2 = \pmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_3 = \pmqty{1 & 0 \\ 0 & -1}.
 \end{equation}
 容易验证其李代数为
 \begin{equation}
@@ -952,7 +1168,7 @@ $\hat{Q}(a+b)=\hat{Q}(a) \hat{Q}(b)$则意味着$\dd{\hat{Q}} / \dd{a}$与群参
     \hat{\vb*{x}} = \hat{x}_1 \vb*{e}_1 + \hat{x}_2 \vb*{e}_2 + \hat{x}_3 \vb*{e}_3,
 \end{equation}
 其中为方便起见选取$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$为一组规范正交基。
-$\hat{x}_1, \hat{x}_2, \hat{x}_3$的本征值均跑遍整条实数轴，因此$\hat{\vb*{x}}$的本征值是三维欧几里得空间中全体矢量。
+$\hat{x}_1, \hat{x}_2, \hat{x}_3$的本征值均跑遍整条实数轴，因此$\hat{\vb*{x}}$的本征值是$\reals^3$中全体矢量。
 我们还需要加入另一个假设：$\hat{x}_1, \hat{x}_2, \hat{x}_3$彼此对易。这个假设要求这三个算符满足某种“独立性”。
 在一个完全能够由$\hat{\vb*{x}}$描述的希尔伯特空间$\mathcal{H}_{3\text{d}}$中我们写出其形式
 \begin{equation}
@@ -1005,7 +1221,7 @@ $\hat{x}_1, \hat{x}_2, \hat{x}_3$的本征值均跑遍整条实数轴，因此$\
 \]
 于是我们可以原封不动地套用\autoref{sec:1d-p-operator}中的论证，得到
 \[
-    [\hat{x}_i, \hat{p}_i] = \ii \hbar.
+    [\hat{x}_i, \hat{p}_i] = \ii \hbar \delta_{ij}.
 \]
 于是，在没有做任何计算，而只是观念性地拆分了态空间之后，我们得到三维情况下的动量-位置对易关系：
 \begin{equation}
@@ -1212,7 +1428,7 @@ $L$是标量，而$\dot{\vb*{x}}$是矢量，因此$\dot{\vb*{x}}$必须做缩�
 本节将讨论相反的问题：量子理论中的场实际上能够自然地诱导出“粒子”的概念。
 我们还将发现，单粒子量子力学中的波函数实际上真的相当于像电磁场这样的一个场。
 
-% TODO：本节以及别的很多地方我们都认为使用一个算符就能够完全描述体系；但是实际上这个说法是不确切的，例如一个单粒子的状态就同时需要使用$\vb*{x}$和自旋来描述；但是能够将这两者直积起来，得到的算符的本征值是$\bmqty{ x^1 & x^2 & x^3 & S }$，于是它一个算符就成为了整个体系的CSCO。
+% TODO：本节以及别的很多地方我们都认为使用一个算符就能够完全描述体系；但是实际上这个说法是不确切的，例如一个单粒子的状态就同时需要使用$\vb*{x}$和自旋来描述；但是能够将这两者直积起来，得到的算符的本征值是$\pmqty{ x^1 & x^2 & x^3 & S }$，于是它一个算符就成为了整个体系的CSCO。
 % TODO：二次量子化场满足的方程和单粒子量子力学的波动方程之间的关系
 % TODO：粒子数算符-单粒子的物理量（位置等）-单粒子态
 \subsection{多粒子态空间}\label{sec:many-body-state}
