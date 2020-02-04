@@ -502,20 +502,6 @@ $x^0$则是\textbf{时间维}。
 其原因在于，算符在演化过程中不同的本征态会混在一起（一个经典情况下不可能出现的现象），正是这一点构成了量子和经典的区别，
 正则量子化中的本征态混合正好对应于路径积分量子化中非经典的路径。
 
-\subsubsection{算符的谱}
-
-% TODO：升降算符，
-% TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
-
-设$\hat{q}$具有连续谱，且
-\begin{equation}
-    \comm*{\hat{q}}{\hat{p}} = \ii,
-\end{equation}
-则
-\begin{equation}
-    \exp \left( \ii \lambda \hat{p} \right) \ket{q} = \ket{q + \lambda}.
-\end{equation}
-
 \subsubsection{时间演化和绘景}\label{sec:time-evolution}
 % TODO: 表征了相同的物理状态的态矢量之间只差了一个复数常数。
 % 从这些态含有的本征态的占比可知
@@ -669,6 +655,7 @@ $\hat{U}^H$可以写出显式表达式
 % TODO：分析三种绘景下的态
 % 两个态表示了同样的物理状态，当且仅当，
 % $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
+% TODO: 设算符$\hat{A}$是CSCO，且它在幺正变换$\hat{P}$下不变，那么对任何一个本征值$A_i$，有一个单位复数，使得$\hat{P} \ket{A_i} = c \ket{A_i}$.
 % TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
 % \hat{A} \ket{a_1 a_2 \cdots} = \pmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
 % 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
@@ -759,6 +746,8 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 
 \subsection{李群和李代数，以及它们的表示}
 
+\subsubsection{从李群到李代数}
+
 本文中我们将不对李群的流形结构进行正式的分析，而仅仅满足于使用一定的群参数把一个李群完整地表示出来。
 一个李群中的成员可以一般地写成
 \begin{equation}
@@ -831,6 +820,20 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 如果我们只讨论抽象的李代数的性质而不考虑它作用在某些对象上产生的结果，那么\eqref{eq:structure-of-lie-algebra}就完全刻画了一个李代数的结构。
 因此，称$f_{ij}^k$为\textbf{结构常数}。
 
+\subsubsection{李代数的具体计算}
+
+% TODO：把前面用到这一节的内容的部分写得更加简洁一些
+若
+\[
+    \comm*{\hat{q}}{\hat{p}} = c,
+\]
+则
+\[
+    \comm*{\hat{q}}{\hat{p}^n} = n c \hat{p}^{n-1}.
+\]
+
+\subsubsection{表示论}
+
 接下来需要讨论李群和李代数的表示。
 通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
 也就是说，我们在李群、李代数和向量空间上的算符组成的群（以算符的复合为乘法）之间建立一个同态，
@@ -867,13 +870,77 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 另外注意，不同的$\hat{A}$可能对应着同一个\eqref{eq:group-action-on-operators}型的映射。
 这一点在\autoref{sec:rotation}中体现得很明显。
 
-李群和李代数通常被作用在几类对象上。
-首先是有有限个分量的向量空间。需注意它们未必是“指标升降关系和坐标变换关系”意义上的向量，例如我们很快就会看到，旋量也是多分量的对象，但是它们和矢量的行为有很大不同。
-这样的向量空间是李群的有限维表示，李群在其上的作用形如
+李群和李代数通常被作用在几类向量空间上。
+首先是有有限个分量的向量空间。李群在其上的作用形如
 \[
     v \longrightarrow v', \quad (v')^\mu = R_{\nu}^\mu (\Lambda) v^\nu.
 \]
 其中$\Lambda$指抽象的李群。
+在有限维向量空间$V$上的表示可能有不变子空间，也就是说，存在$V$的一个子空间$V'$，使得李群中的任何一个成员作用在$v \in V'$上之后得到的结果都还是在$V'$中。当然，$V$以及$\{0\}$一定是不变子空间。
+如果一个表示有不是这两个空间的不变子空间，那么这就是一个\textbf{可约表示}，反之则为\textbf{不可约表示}。
+可以证明，任何一个可约表示都可以写成一系列不可约表示的直和。因此对有限维表示而言，只需要讨论不可约表示就可以了，因为可约表示可以使用不可约表示组装出来。
+现在讨论不可约有限维表示。
+首先可以证明，任何李群的生成元至少有一个（当然也可以有很多个）可以相似变换为对角矩阵。
+% TODO：是不是每一个生成元都可以？
+这些被对角化的生成元的集合称为Cartan子代数，它是对应的李群的李代数的表示的子代数。
+Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量，对应的各生成元的本征值——也就是对角矩阵的对角元——可以用来标记这个不可约表示。
+要找到一组Cartan子代数并不难：只需要从李群中找到一个交换子代数，然后尝试对角化这个交换子代数中的某一个成员就可以了。
+% TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
+可以证明，非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
+因此如下我们不失一般性地只讨论幺正表示。通过指数映射可以看出，李群的幺正表示中，李代数的成员可以全部都是厄米的。
+
+容易验证，设$\hat{X}$是厄米算符，且
+\begin{equation}
+    \comm*{\hat{a}^\dagger}{\hat{X}} = c \hat{a}^\dagger,
+    \label{eq:raising-operator}
+\end{equation}
+那么
+\[
+    \hat{a}^\dagger \ket{X} \propto \ket{X+c},
+\]
+相应的，
+\[
+    \hat{a} \ket{X} \propto \ket{X-c}.
+\]
+因此称$\hat{a}^\dagger$为$\hat{X}$的\textbf{升算符}，$\hat{a}$为$\hat{X}$的\textbf{降算符}。
+数学上可以证明，在李代数的有限维表示上可以定义内积
+\begin{equation}
+    \langle \hat{A}, \hat{B} \rangle = \trace \hat{A} \hat{B},
+\end{equation}
+通过合适的线性组合，能够写出一组正交归一化的生成元。
+此时非Cartan子代数的生成元中的每一个都是Cartan子代数中的每一个成员的升降算符，
+并且任意两个非Cartan子代数的生成元的对易子都可以使用Cartan子代数的成员线性表示。
+% Symmetry and the Standard Model, p108
+因此对一个一般的、没有正交归一化的李代数的有限维表示，我们总是可以从李代数的成员构造出一个升算符。设$\hat{X}$为$g_i$，且
+\[
+    \hat{a}^\dagger = \lambda^j g_j,
+\]
+则\eqref{eq:raising-operator}等价于
+\[
+    \comm*{\lambda^j g_j}{g_i} = c \lambda^j g_j,
+\]
+代入\eqref{eq:structure-of-lie-algebra}，上式又等价于
+\begin{equation}
+    \left( f^k_{ij} - c \delta_j^k \right) \lambda^j = 0,
+    \label{eq:determine-ladder-operators}
+\end{equation}
+于是通过求解
+\begin{equation}
+    \det \left( f^k_{ij} - c \delta_j^k \right) = 0
+\end{equation}
+就可以得到所有可能的$c$，然后将它们代入\eqref{eq:determine-ladder-operators}就能够得到所有能够被非Cartan子代数表示出来的升降算符。
+
+% TODO：连续谱的情况
+设$\hat{q}$具有连续谱，且
+\begin{equation}
+    \comm*{\hat{q}}{\hat{p}} = \ii,
+\end{equation}
+则
+\begin{equation}
+    \exp \left( \ii \lambda \hat{p} \right) \ket{q} = \ket{q + \lambda}.
+\end{equation}
+也就是说$\exp (\ii \lambda \hat{p})$是让$\hat{q}$的本征矢对应的本征值上升$\lambda$的升算符。
+
 特别的，李群和李代数可以被作用在坐标上。
 作用在坐标上的有限维表示又诱导出了作用在函数上的无限维表示。设$f=f(x)$，$x$是诸坐标的简记，若李群在坐标上的表示为
 \[
@@ -1072,6 +1139,10 @@ $\mathfrak{su}(2)$在$\reals^3$上的表示，也就是$\mathfrak{so}(3)$在$\re
 其一是$q$，也就是$\complexes^2$上的表示，其二是\eqref{eq:su2-rotation}，也就是$GL(\complexes^2)$上的表示。
 后者和$SO(3)$在$GL(\complexes^2)$上的表示完全一样，但后者中的每一个都对应两个$q$，
 两者间的对应就是\eqref{eq:group-action-on-operators}，它并非一一对应。}
+
+首先分析$SU(2)$的有限维不可约表示。注意到，$J_1, J_2, J_3$互不对易。因此$J_3$的本征矢足以成为一组基。
+使用本征值标记这些本征矢为$\ket{J_3^{(1)}}$, $\ket{J_3^{(2)}}$, \dots，现在我们
+
 
 \subsubsection{洛伦兹群}
 
