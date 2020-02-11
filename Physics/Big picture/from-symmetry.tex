@@ -38,6 +38,8 @@
 
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
+\allowdisplaybreaks[4]
+
 \title{从对称性出发看物理}
 \author{wujinq}
 
@@ -148,6 +150,21 @@ $x^0$则是\textbf{时间维}。
     \label{eq:el-eq}
 \end{equation}
 这就是欧拉-拉格朗日方程。
+由于推导欧拉-拉格朗日方程时用到了$\var{\phi}$的任意性，这意味着$\phi$被假定是一个实的场。
+如果某些场有虚部，那么在使用\eqref{eq:el-eq}以及相关结论的时候需要把它的实部和虚部分开，当成两个场来处理。
+并且，容易证明，设复场$\phi$的实部和虚部分别是$\phi_1$和$\phi_2$，且
+\[
+    \pmqty{\psi_1 \\ \psi_2} = \pmqty{a & b \\ c & d} \pmqty{\phi_1 \\ \phi_2},
+\]
+其中$a,b,c,d$为复常数，则$\psi_1$和$\psi_2$的运动方程也可以从\eqref{eq:el-eq}得出。
+常见的选择包括取
+\[
+    \psi_1 = \phi, \psi_2 = \phi^\dagger,
+\]
+或者如果$\phi$是多分量场，设有一系列复矩阵（不必都是复矩阵，有一个是复的就可以）$\gamma^\mu$，取
+\[
+    \psi_1 = \phi, \psi_2 = \gamma^\mu \phi_\mu.
+\]
 
 需要注意如果两个拉氏量的形式不同，这并不意味着它们描述了不同的物理过程。
 实际上容易看出，两个拉氏量描述了相同的物理过程，
@@ -314,6 +331,8 @@ $x^0$则是\textbf{时间维}。
     \label{eq:evolution-of-any-quantity}
 \end{equation}
 
+与拉格朗日动力学不同，哈密顿动力学（无论是经典哈密顿动力学还是下一节讨论的正则量子化）中如果场是复的，并无必要分别使用其实部和虚部列运动方程。
+
 \subsubsection{正则量子化}\label{sec:canonical-quantization}
 
 下面我们转而讨论量子情况下的哈密顿动力学。这种使用哈密顿动力学建立量子理论的方法称为\textbf{正则量子化}。
@@ -395,19 +414,20 @@ $x^0$则是\textbf{时间维}。
 
 第一个方案是指定对易子为
 \begin{equation}
-    [\hat{\phi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)] = \ii \hbar \delta^3(\vb*{x} - \vb*{y}), 
-    \quad [\hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)] = [\hat{\pi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)] = 0.
+    [\hat{\phi}^i(\vb*{x}, t), \hat{\pi}_j(\vb*{y}, t)] = \ii \hbar \delta^i_j \delta^3(\vb*{x} - \vb*{y}), 
+    \quad [\hat{\phi}^i(\vb*{x}, t), \hat{\phi}^j(\vb*{y}, t)] = [\hat{\pi}_i(\vb*{x}, t), \hat{\pi}_j(\vb*{y}, t)] = 0.
     \label{eq:symmetry-commutator}
 \end{equation}
 从中可以容易地看出
 \begin{equation}
-    [\partial_i \hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)] = 0, 
-    \quad [\grad{\hat{\phi}(\vb*{x}, t)}, \hat{\pi}(\vb*{y}, t)] = \ii \hbar \grad{\delta^3(\vb*{x} - \vb*{y})}.
+    [\partial_\mu \hat{\phi}^i(\vb*{x}, t), \hat{\phi}^j(\vb*{y}, t)] = 0, 
+    \quad [\grad{\hat{\phi}^i(\vb*{x}, t)}, \hat{\pi}_j(\vb*{y}, t)] = \ii \hbar \delta^i_j \grad{\delta^3(\vb*{x} - \vb*{y})}.
     \label{eq:symmetry-partial-mu-commutator}
 \end{equation}
 只需要将导数看成非常接近的两个量之差，然后利用对易子的线性性即可导出上式。
 
 现在我们来推导$\hbar\to 0$时\eqref{eq:hamitonian-eq-quantum}的极限。
+为方便起见，推导过程中假定$\hat{\phi}$是标量场。这并不会有损一般性，因为推导过程中没有用到任何关于坐标变换导致场变化的知识，从而我们可以把同一个多分量场的不同分量看成不同的标量场。
 使用\eqref{eq:symmetry-commutator}，已知$\hat{\phi} \hat{\pi}$就能够写出$\hat{\pi} \hat{\phi}$。
 将$\hat{\mathcal{H}}$写成关于$\hat{\phi}, \partial_i \hat{\phi}$和$\pi$的多项式，
 我们可以使用\eqref{eq:symmetry-commutator}和\eqref{eq:symmetry-partial-mu-commutator}
@@ -458,7 +478,11 @@ $x^0$则是\textbf{时间维}。
 因此关于$\pi$的方程也回退到经典情况。
 这表明\eqref{eq:symmetry-commutator}是一个可行的量子化方案。
 
-第二个方案是指定反对易子——而不是对易子——为
+第二个方案是指定反对易子——而不是对易子——为%
+\footnote{彼此无关的场，无论它们自己服从\eqref{eq:symmetry-commutator}还是\eqref{eq:antisymmetry-commutator}，相互之间总是对易的。在\eqref{eq:symmetry-commutator}中这是显然的，因为可以将无关的场看成某个多分量场的分量，然后因为它们是不同的分量，它们自然对易。但在\eqref{eq:antisymmetry-commutator}方案下需要额外增加一个规定：
+\[
+    \comm*{\hat{\phi}(\vb*{x}, t)}{\hat{\psi}(\vb*{y}, t)} = 0.
+\]}
 \begin{equation}
     \{\hat{\phi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = \ii \hbar \delta^3(\vb*{x} - \vb*{y}), \quad \{\hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)\} = \{\hat{\pi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = 0.
     \label{eq:antisymmetry-commutator}
@@ -496,9 +520,11 @@ $x^0$则是\textbf{时间维}。
 \]
 于是我们得到了一个矛盾。
 
+此外，$\mathcal{H}$中各项阶数的限制还意味着由此导出的运动方程在时间上只能是一阶的。
+
 % TODO:运动方程一致性，也就是反对易关系在$\hbar \to 0$时是不是产生正确的运动方程；不过我懒得去看格拉斯曼数的微积分了
 
-需要注意的是，从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
+从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
 这就产生了一个问题：路径积分量子化告诉我们，最小作用量原理只是路径积分的最速下降近似而已，
 为什么在正则量子化中精确的运动方程却可以从最小作用量原理求出？
 其原因在于，算符在演化过程中不同的本征态会混在一起（一个经典情况下不可能出现的现象），正是这一点构成了量子和经典的区别，
@@ -506,7 +532,6 @@ $x^0$则是\textbf{时间维}。
 
 \subsubsection{时间演化和绘景}\label{sec:time-evolution}
 % TODO: 表征了相同的物理状态的态矢量之间只差了一个复数常数。
-% 从这些态含有的本征态的占比可知
 在\autoref{sec:canonical-quantization}中我们仅仅将态矢量当成一个可以让场算符作用上去的对象。
 但实际上如果我们想要的话，也可以让态矢量动起来而对算符做对应的修改，使得算符的谱结构始终不变（本征矢量重数一一对应、彼此对应的本征矢的内积相同），并且本征值不变。
 只要算符的谱结构不变、对应的各个本征值不变，算符就正确地描述了系统。
@@ -664,7 +689,7 @@ $\hat{U}^H$可以写出显式表达式
 % 因此下文中将常常这么写。
 % 谱结构和对易关系之间有什么联系？
 
-% TODO：要写的东西：场算符的态空间
+% TODO：要写的东西：场算符的态空间、内禀自由度
 
 \subsubsection{散射与测量}
 
@@ -843,7 +868,7 @@ $\ii$是一个无关紧要的系数，加上它和不加上它唯一的区别就
     \comm*{\hat{q}}{\hat{p}^n} = n c \hat{p}^{n-1}.
 \]
 
-\subsubsection{表示论}
+\subsubsection{表示论}\label{sec:rep-th}
 
 接下来需要讨论李群和李代数的表示。
 通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
@@ -1038,6 +1063,11 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 与通常物理中的记号不同，此处的梯度算符作用在所有坐标上，而不仅仅是空间坐标。
 
 在以上讨论的基础上我们讨论态矢量。我们总是使用李群在希尔伯特空间上的幺正表示。
+% TODO：由于场算符是作用在希尔伯特空间上的而希尔伯特空间上的
+\begin{equation}
+    \hat{U}(\Lambda) \hat{\phi}(\vb*{x}) \hat{U}^{-1}(\Lambda) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
+\end{equation}
+% TODO：能认为 M^a_b (\Lambda) \psi^b (\Lambda^{-1} x)也是幺正的吗？
 希尔伯特空间上的
 % 空间平移变换在希尔伯特空间上的作用分为两种。一种是单粒子希尔伯特空间，此时空间平移变换就是
 注意一个李群既可以作用在算符$\hat{x}$上又可以作用在有关的本征态上，而且两者给出的结果等价。
@@ -1098,8 +1128,11 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 \]
 不失一般性地我们取幺正表示，并适当选取群参数，那么就有
 \begin{equation}
-    P_\mu = - \ii \partial_\mu.
+    P_0 = \ii \partial_0, \quad P_i = - \ii \partial_i.
+    \label{eq:transition-inf-rep}
 \end{equation}
+我们特意让时间平移变换的方向和空间平移的方向反过来了。
+这是为了和物理中通常的时间演化方程\eqref{eq:quantum-evolution}的形式匹配。
 
 \subsection{旋转}\label{sec:rotation}
 
@@ -1362,6 +1395,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \begin{equation}
     J_1 = \ii (x^3 \partial_2 - x^2 \partial_3), \quad J_2 = \ii (x^1 \partial_3 - x^3 \partial_1), \quad
     J_3 = \ii (x^2 \partial_1 - x^1 \partial_2).
+    \label{eq:rotation-inf-rep}
 \end{equation}
 很容易验证，以上三个算符确实满足李代数\eqref{eq:lie-algebra-so3}。
 
@@ -1456,6 +1490,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
     K_1 = \ii \pmqty{0 & 1 & 0 & 0 \\ 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0}, \quad 
     K_2 = \ii \pmqty{0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 0 \\ 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0}, \quad
     K_3 = \ii \pmqty{0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 1 & 0 & 0 & 0}.
+    \label{eq:boost-generators}
 \end{equation}
 这些生成元对应的李群元素称为\textbf{推动}，物理上它们涉及到时间，因此实际上是参考系变换。
 每个矩阵前面都加上了$\ii$是因为使用了\eqref{eq:lie-group-element}的习惯，而我们现在讨论的洛伦兹群中的矩阵都是实数矩阵，因此$\ii \theta \sigma$必须是实数，而由于参数$\theta$是实数，生成元前面就应该多一个纯虚数。
@@ -1744,7 +1779,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 可以预期，四维矢量不见得能够描述所有的物理系统，因为它们不够基本。
 % TODO：反厄米子代数呢？
 
-\subsubsection{宇称变换和时间反演变换}
+\subsubsection{狄拉克旋量}
 
 在\autoref{sec:weyl-spinor-representation}和\autoref{sec:4-vector-representation}中我们只讨论了正规洛伦兹变换的表示。
 当然，完整的洛伦兹群的表示肯定还是旋量，只不过我们还需要指定时间反演变换和宇称变换的表示。
@@ -1754,14 +1789,66 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
     N_i^+ \stackrel{\Lambda_P}{\longrightarrow} N_i^-, \quad N_i^- \stackrel{\Lambda_P}{\longrightarrow} N_i^+.
 \end{equation}
 这意味着经过宇称变换，原本是$(\frac{1}{2}, 0)$表示的变换矩阵现在变成了$(0, \frac{1}{2})$表示的变换矩阵，原本是$(0, \frac{1}{2})$表示的变换矩阵则变成了$(\frac{1}{2}, 0)$表示的变换矩阵。
-也就是说宇称变换下左手旋量按照右手旋量的方式变换，右手旋量按照左手旋量的方式变换。
+也就是说宇称变换下左手旋量按照右手旋量的方式变换，右手旋量按照左手旋量的方式变换。%
+\footnote{我们并没有给出宇称变换的变换矩阵到底是什么。实际上因为宇称变换不在正规洛伦兹群中，只靠旋量的定义是不可能完全确定下宇称变换的矩阵表示是什么的。}
 这就是“左手”、“右手”名称的来历：它们之间的变换和左右手坐标系之间的变换是完全一样的。
+需要注意的是，$\chi_L$经过宇称变换之后未必变成$\chi_R$，同理$\chi_R$经过宇称变换之后也未必变成$\chi_L$。
 
 时间反演变换造成的结果和宇称变换完全一样，除了具体的变换矩阵差一个负号。
 
 % TODO:矢量在宇称变换之下的变换
 
-如果一个体系在宇称变换之下不变，那么
+如果一个体系在宇称变换之下不变，那么不可能仅仅使用一个左手旋量或者一个右手旋量描述它，因为宇称变换会改变旋量的手征。
+因此，完整描述一个体系的物理量一定能够写成一对一对相互匹配的左手旋量和右手旋量。
+我们称像这样由一个左手旋量和一个右手旋量组合而成的场
+\begin{equation}
+    \psi = \pmqty{\chi_L \\ \xi_R}
+\end{equation}
+为\textbf{狄拉克旋量}。它是洛伦兹群的一个可约表示，因为其变换矩阵
+\begin{equation}
+    \Lambda_\text{Dirac} = \pmqty{\dmat{\Lambda_{(\frac{1}{2}, 0)}, \Lambda_{(0, \frac{1}{2})}}}
+\end{equation}
+是左手旋量和右手旋量的变换矩阵直和起来得到的结果。
+现在我们做一个宇称变换，那么变换矩阵就成为
+\[
+    \Lambda'_\text{Dirac} = \pmqty{\dmat{\Lambda_{(0, \frac{1}{2})}, \Lambda_{(\frac{1}{2}, 0)}}}.
+\]
+因此，考虑宇称变换在狄拉克旋量上的表示$(\Lambda_P)_\text{Dirac}$，我们有
+\[
+    (\Lambda_P)_\text{Dirac} \Lambda_\text{Dirac} (\Lambda_P)_\text{Dirac}^{-1} = \Lambda'_\text{Dirac},
+\]
+于是
+\[
+    (\Lambda_P)_\text{Dirac} = a \pmqty{0 & I_{2\times 2} \\ I_{2 \times 2} & 0}.
+\]
+由于我们考虑的是幺正表示（见\autoref{sec:rep-th}），$a$的模长为1。
+请注意宇称变换、时间反演变换和恒等变换自成一个群，因此从有关正规洛伦兹群的表示的任何知识——它们是通过考虑正规洛伦兹群的李代数得到的，和宇称变换没有任何关系——都不可能把$a$的值确定下来。
+不失一般性地%TODO：怎么就不失一般性了？？
+通常取$a=1$，于是就有
+\begin{equation}
+    (\Lambda_P)_\text{Dirac} = \pmqty{0 & I_{2\times 2} \\ I_{2 \times 2} & 0}.
+\end{equation}
+那么狄拉克旋量在宇称变换下的变化就是
+\begin{equation}
+    \psi \stackrel{\Lambda_P}{\longrightarrow} \psi^P = \pmqty{0 & I_{2\times 2} \\ I_{2 \times 2} & 0} \pmqty{\chi_L \\ \xi_R} = \pmqty{\xi_R \\ \chi_L}.
+\end{equation}
+也就是说宇称变换把狄拉克旋量变成了另一个同样具有$\chi_L$和$\xi_R$的对象，但是上下位置发生了变化。
+
+\subsubsection{无限维表示}
+
+洛伦兹群的无限维表示完全由旋转生成元的无限维表示和推动生成元的无限维表示确定。
+前者已经由\eqref{eq:rotation-inf-rep}给出了。虽然\eqref{eq:rotation-inf-rep}是在三维空间中推导出来的，但是因为推导它时各个坐标的标号和本节一致，都是$x^1, x^2, x^3$，它也适用于四维闵可夫斯基时空。
+使用基本上一样的方法，从\eqref{eq:fin-and-inf-rep}和\eqref{eq:boost-generators}可以导出
+\begin{equation}
+    K_1 = - \ii (x^1 \partial_0 + x^0 \partial_1), \quad K_2 = - \ii (x^2 \partial_0 + x^0 \partial_2), \quad K_3 = - \ii (x^3 \partial_0 + x^0 \partial_3).
+    \label{eq:boost-inf-rep}
+\end{equation}
+
+狄拉克旋量上可以定义一种重要的变换。它不是洛伦兹变换的一种，其形式为
+\begin{equation}
+    \psi = \pmqty{\chi_L \\ \xi_R} \longrightarrow \psi^C = \pmqty{\xi_L \\ \chi_R}.
+\end{equation}
+容易看出变换之后得到的结果还是狄拉克旋量。
 
 \subsection{庞加莱群}
 
@@ -1773,6 +1860,15 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \begin{equation}
     \comm*{J_i}{P_0} = 0.
 \end{equation}
+使用\eqref{eq:transition-inf-rep}、\eqref{eq:rotation-inf-rep}和\eqref{eq:boost-inf-rep}三式，可以推导出以下关系：
+\begin{equation}
+    \comm*{J_i}{P_j} = \ii \epsilon_{ijk} P_k, \quad \comm*{K_i}{P_j} = \ii \delta_{ij} P_0, \quad \comm{K_i}{P_0} = - \ii P_i.
+    \label{eq:comm-k-j-p}
+\end{equation}
+虽然使用的是特殊的表示，但由于推导出来的都是对易关系，因此它们普遍成立。
+\eqref{eq:comm-k-j-p}和\eqref{eq:lie-algebra-lorentz}给出了庞加莱群的李代数。
+
+% TODO:建立群元的升降指标关系
 
 \section{非相对论单粒子量子力学}\label{sec:single-particle}
 
@@ -2074,6 +2170,14 @@ $L$是标量，而$\dot{\vb*{x}}$是矢量，因此$\dot{\vb*{x}}$必须做缩�
     H = \frac{1}{2m} \left(\vb*{p} + \pdv{L}{\dot{\vb*{x}}}\right)^2 + V - \pdv{V}{\dot{\vb*{x}}} \cdot \dot{\vb*{x}},
 \]
 同样将上式中所有的$\vb*{x}$都使用$\vb*{p}$表示，然后使用$\hat{\vb*{p}}$代替$\vb*{p}$就得到了哈密顿算符。
+它导致的运动方程就是著名的\textbf{薛定谔方程}，即
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi} = \left( \frac{1}{2m} \left(\vb*{p} + \pdv{L}{\dot{\vb*{x}}}\right)^2 + V - \pdv{V}{\dot{\vb*{x}}} \cdot \dot{\vb*{x}} \right) \ket{\psi}.
+\end{equation}
+在外加势和速度无关时它就是
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi} = \frac{\hat{\vb*{p}}^2}{2m} \ket{\psi} + \hat{V} \ket{\psi}.
+\end{equation}
 
 \section{相对论性量子场论}
 
@@ -2735,11 +2839,13 @@ $F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性�
 \subsection{从量子场论到多粒子体系}\label{sec:from-qft-to-many-body}
 
 % TODO:内禀自由度，自旋；多重态；如何从场算符构造出自旋
+% TODO：从狄拉克方程到薛定谔方程
 
 以上我们讨论了怎样从单粒子态得到全同多粒子态，以及全同多粒子态可以使用一个真空态和一组产生湮灭算符产生。
 现在讨论一个反向的问题：我们需要的这种产生湮灭算符从何处来？
 马上可以看到，我们需要的这种产生湮灭算符实际上就是算符场的一个线性组合。
 我们并不在意场算符$\hat{\phi}$是矢量、旋量还是就是标量，因为不管怎么样，$\hat{\phi}^\dagger \hat{\phi}$肯定是标量，因此粒子数算符也是标量，从而不会产生任何矛盾。
+% TODO 但是下面的讨论明显把场算符当成了标量
 
 \autoref{sec:canonical-quantization}中提到了两种量子化方案：其一是对易方案\eqref{eq:symmetry-commutator}，其二是反对易方案\eqref{eq:antisymmetry-commutator}。
 对前者我们设
@@ -2764,7 +2870,7 @@ $F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性�
 因此量子化方案\eqref{eq:symmetry-commutator}给出的场算符导致一个对称的福克空间$F_S$。我们称这样的福克空间描述的粒子为\textbf{玻色子}。
 对于量子化方案\eqref{eq:antisymmetry-commutator}，我们不能够
 
-需要注意的是费米子和玻色子的概念的导出完全没有用到任何关于洛伦兹对称性的知识——它们只是两种量子化方案\eqref{eq:symmetry-commutator}和\eqref{eq:antisymmetry-commutator}的必然推论罢了。
+费米子和玻色子的概念的导出完全没有用到任何关于洛伦兹对称性的知识——它们只是两种量子化方案\eqref{eq:symmetry-commutator}和\eqref{eq:antisymmetry-commutator}的必然推论罢了。
 因此，即使是在非相对论的语境下（例如我们把晶体中的位移看成某种场），只要能够有\eqref{eq:symmetry-commutator}或\eqref{eq:antisymmetry-commutator}这样的关系，就总是能够得到对应的产生湮灭算符，从而得到多粒子态。
 
 % TODO:二次量子化之后可以得到粒子数算符和多粒子态，那么怎么写出能够完整描述多粒子态的算符？
