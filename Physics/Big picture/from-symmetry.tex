@@ -60,6 +60,7 @@
 
 如无特殊说明，本文所谓的本征态指的都是归一化的本征矢量。
 以下希腊字母的指标跑遍所有时空维度，而拉丁字母的指标仅仅跑遍空间维度，也就是$\mu, \nu, \ldots = 0, 1, 2, 3$而$i, j, \ldots = 1, 2, 3$。
+指标$a,b,\ldots$也有可能指多分量对象的指标，未必正好取$1, 2, 3$。
 
 \section{经典的和量子的物理理论}
 % TODO：多分量场、带有复数值的场
@@ -187,9 +188,8 @@ $x^0$则是\textbf{时间维}。
 \end{equation}
 当然，如果无穷小变换更进一步不改变拉氏量，那么$\Lambda=0$。
 
-如果无穷小变换是一个李群的李代数的表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的，%
-\footnote{例如可以使用小量近似将$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都写成一个很小的群参数$\epsilon$乘上一个固定的值，
-于是我们在\eqref{eq:noether}中除去一个$\epsilon$，就得到了一个守恒流}%
+如果无穷小变换是一个李群的李代数的表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的。可以使用小量近似将$\bar{\var}{\phi}$写成小量$ \ii \epsilon$乘以李代数的场表示\eqref{eq:fin-and-inf-rep}，$\var{x^\mu}$写成小量$\ii \epsilon$乘以李代数的四维矢量表示，
+于是我们在\eqref{eq:noether}中除去一个$\epsilon$，就得到了一个守恒流。
 于是\eqref{eq:noether}的括号中的内容能够完全写成坐标的函数。
 这就是\textbf{诺特定理}：系统的无穷小对称性诱导出一个守恒流。
 由于是四维闵可夫斯基时空，四维的一个守恒流
@@ -260,8 +260,50 @@ $x^0$则是\textbf{时间维}。
 \end{equation}
 能动张量的纯空间部分是能量和动量的输运流，因此就是\textbf{应力张量}。%
 \footnote{在非相对论连续介质力学中这些结果也是成立的，因为时间和空间平移同时出现在伽利略群和庞加莱群中。}
+相应的，
+\begin{equation}
+    \mathcal{P} = \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi - g_i^0 \mathcal{L}
+\end{equation}
+为四维动量$(E, \vb*{p})$的密度。
 
-接下来是旋转和推动对称性带来的守恒量。
+接下来是旋转对称性。%
+\footnote{同样，这个对称性无论是在相对论性场论还是非相对论性场论中都是成立的。}%
+旋转对称性不涉及时间维，于是我们有
+\[
+    \var{x^i} = \epsilon^i_{\ jk}  x^j \theta^k,
+\]
+相应的
+\[
+    \bar{\var}{\phi^a} = \ii (J_i)^a_b \theta^i \phi^b - \epsilon^i_{\ jk}  x^j \theta^k \partial_i \phi^a.
+\]
+其中指标$a,b$跑遍$\phi$的所有分量，$J$指的是旋转生成元在$\phi$所属的向量空间上的表示，具体表达式见\autoref{sec:rotation}。
+我们使用了$\epsilon^i_{jk}  x^j \theta^k$这样的记号是因为要与\eqref{eq:generators-of-so3}保持一致，因为若取$J$为\eqref{eq:generators-of-so3}，正好就有
+\[
+    \epsilon^i_{\ jk}  x^j \theta^k = (\ii \theta^k J_k x)^i.
+\]
+则诺特定理导致的守恒流为
+\[
+    \begin{aligned}
+        0 &= \partial_0 \left( \pdv{\mathcal{L}}{\partial_0 \phi^a} \left( \ii (J_k)^a_b \theta^k \phi^b - \epsilon^i_{\ jk}  x^j \theta^k \partial_i \phi^a \right) \right) + \partial_i (\text{something}) \\
+        &= \theta^k \partial_0 \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} - \epsilon^i_{\ jk} x^j \mathcal{P}_i \right) \\
+        &= \theta^k \partial_0 \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} + \epsilon^i_{\ jk} x^i \mathcal{P}_j \right),
+    \end{aligned}
+\]
+于是我们就得到了一个守恒量
+\begin{equation}
+    L_k = \int \dd[3]{\vb*{x}} \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} + \epsilon^i_{\ jk} x^i \mathcal{P}_j \right).
+\end{equation}
+其中的
+\begin{equation}
+    \mathcal{M}_k = \epsilon^i_{\ jk} x^i \mathcal{P}_j 
+\end{equation}
+部分和质点的角动量形式一致，称为\textbf{轨道角动量}，另一部分
+\begin{equation}
+    \mathcal{S}_k = \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a}
+\end{equation}
+则不会出现在没有内部结构的质点的角动量内部。由于其形式和有自转的粒子除去轨道角动量以外的角动量一致，称其为\textbf{自旋角动量}。
+正如其名称暗示的那样，自旋角动量源自场的内禀旋转自由度，也就是说，旋转群在场上的表示不仅仅含有无穷维的表示，还含有一个有限维的表示的时候就会出现自旋角动量。
+如果场是标量场，那么旋转群在其上的有限维表示就是平凡的，此时$J_i$全部为零，就没有自旋角动量。
 
 然后我们分析场的内禀对称性带来的守恒量。容易看出场的平移，也就是
 \[
@@ -537,7 +579,8 @@ $x^0$则是\textbf{时间维}。
 这也表明了取$\phi$为复场的重要性——否则将不能够区分$\phi$和$\pi$，从而难以建立哈密顿动力学。
 % TODO:这段还是有问题
 
-% TODO:运动方程一致性，也就是反对易关系在$\hbar \to 0$时是不是产生正确的运动方程；不过我懒得去看格拉斯曼数的微积分了
+需要注意的是，无论是\eqref{eq:symmetry-commutator}还是\eqref{eq:antisymmetry-commutator}，实际上都假定了$\phi^i$和$\pi_i$在时空变换下是协变的。
+在场具有某些附加结构——例如，有某些外加约束以消除非物理的自由度——的时候，如果我们直接把独立的自由度拿出来写成$\phi^i$，就不能保证它们的协变性（虽然把原来的场恢复出来之后它仍是协变的），此时不能直接套用\eqref{eq:symmetry-commutator}或\eqref{eq:antisymmetry-commutator}。
 
 从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
 这就产生了一个问题：路径积分量子化告诉我们，最小作用量原理只是路径积分的最速下降近似而已，
@@ -937,8 +980,8 @@ $\ii$是一个无关紧要的系数，加上它和不加上它唯一的区别就
 Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量，对应的各生成元的本征值——也就是对角矩阵的对角元——可以用来标记这个不可约表示。
 要找到一组Cartan子代数并不难：只需要从李群中找到一个交换子代数，然后尝试对角化这个交换子代数中的某一个成员就可以了。
 % TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
-可以证明，非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
-因此如下我们不失一般性地只讨论幺正表示。通过指数映射可以看出，李群的幺正表示中，李代数的成员可以全部都是厄米的。
+非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
+这也就是我们频繁地讨论幺正表示的原因。但有许多重要的群——例如洛伦兹群——都不是紧致的（或者说群对应的流形无界），因此它们实际上并没有有限维的幺正表示。就洛伦兹群而言，我们将会看到，其推动生成元的有限维表示不是厄米的，因此整个群也没有幺正的有限维表示。
 
 容易验证，设$\hat{X}$是厄米算符，且
 \begin{equation}
@@ -1083,12 +1126,8 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 \begin{equation}
     \hat{U}(\Lambda) \hat{\phi}(\vb*{x}) \hat{U}^{-1}(\Lambda) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
 \end{equation}
-只要李群的场表示是幺正的——那就是说，其有限维部分和无限维部分都是幺正的，而既然无限维表示是从有限维表示导出的，这又等价于有限维表示的幺正性——按照上式诱导出的李群在希尔伯特空间上的表示也是幺正的。
-这就是我们接下来关注的李群的有限维表示基本上都是幺正的（从而，相应的李代数的表示是厄米的）的原因。
-% TODO:上面的说法是真的吗？
-实际上，以上现象在单粒子量子力学中就可以看到。
-例如，李群既可以作用在算符$\hat{x}$上又可以作用在有关的本征态上，而且两者给出的结果等价。
-例如，$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
+由于对$\hat{\phi}$的变换等价于对其本征值做变换，这又等价于保持本征值不变而重新安排本征态，按照上式诱导出的李群在希尔伯特空间上的表示也是幺正的。
+考虑一个简单的单粒子量子力学的例子：$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
 \[
     \hat{x} + a = \int \dd{x} x \dyad{x} + a \int \dd{x} \dyad{x} 
     = \int \dd{x} (x + a) \dyad{x} = \int \dd{x'} x' \dyad{x'-a},
@@ -1100,10 +1139,8 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 % TODO：以上说法的推广
 总之，我们既可以直接从某种李群的场表示出发，推导它允许的算符场有哪些，然后使用二次量子化的有关知识导出其对应的单粒子态，
 也可以从李群在希尔伯特空间上的表示出发，直接得到单粒子态然后构造算符场。
-两种方法是完全一致的。舒尔引理告诉我们，卡西米尔算符（和所有生成元都对易）在不可约表示中一定是恒等算符的常数倍。这个常数可以用来标记相应的不可约表示；事实上这一类常数往往会出现在相应的表示描写的场/粒子的运动方程中。
-% TOOD:为什么？
+两种方法是完全一致的。舒尔引理告诉我们，卡西米尔算符（和所有生成元都对易）在不可约表示中一定是恒等算符的常数倍。这个常数可以用来标记相应的不可约表示；事实上这一类常数往往会出现在相应的表示描写的场/粒子的运动方程中，因为运动方程中会出现卡西米尔算符的场表示。
 相对而言，在推导运动方程的时候，使用场的观点更加方便，因为相对论情况下粒子数通常是不确定的，因此使用单粒子态难以写出哈密顿量。
-% TODO:分析单粒子态空间的时候怎么考虑推动这种涉及时间的变换？
 
 概括以下我们至今得到的结果：李群和李代数的表示有下面几种，它们彼此之间有非常密切的关系。
 首先，李群和李代数在有限维向量空间上的表示是矩阵，它们或者是可约表示，或者不可约，前者可以通过直和运算由后者组装出来。
@@ -2183,6 +2220,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \end{equation}
 这些生成元对应的李群元素称为\textbf{推动}，物理上它们涉及到时间，因此实际上是参考系变换。
 每个矩阵前面都加上了$\ii$是因为使用了\eqref{eq:lie-group-element}的习惯，而我们现在讨论的洛伦兹群中的矩阵都是实数矩阵，因此$\ii \theta \sigma$必须是实数，而由于参数$\theta$是实数，生成元前面就应该多一个纯虚数。
+请注意它们不是厄米的。这可以预期，因为洛伦兹群涉及推动的部分是无界的——这是闵可夫斯基时空的性质决定的。
 容易验证，有下面的对易关系：
 \begin{equation}
     \comm*{J_i}{J_j} = \ii \epsilon_{ijk} J_k, \quad \comm*{J_i}{K_j} = \ii \epsilon_{ijk} K_k, \quad \comm*{K_i}{K_j} = - \ii \epsilon_{ijk} J_k.
@@ -2458,6 +2496,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 于是就可以把$(\frac{1}{2}, \frac{1}{2})$表示的厄米子代数的成员统一地写成
 \begin{equation}
     v_{a\dot{b}} = v_\nu \sigma^\nu_{a\dot{b}}, \quad v_a^{\dot{b}} = \epsilon^{\dot{b} \dot{c}} v_\nu \sigma^\nu_{a \dot{c}}.
+    \label{eq:vector-is-spin-tensor}
 \end{equation}
 
 % TODO: 严格证明$v$的变换正是洛伦兹变换
@@ -2467,6 +2506,8 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 因此，正如矢量可以看成二阶张量的平方根那样，魏尔旋量也可以看成矢量的平方根。
 可以预期，四维矢量不见得能够描述所有的物理系统，因为它们不够基本。
 % TODO：反厄米子代数呢？
+
+同样我们考虑四维矢量能够构造出来的二阶的不变量。通过坐标变换关系容易看出，这样的不变量一定具有形式$A^\mu B_\mu$。
 
 \subsubsection{狄拉克旋量}
 
@@ -2582,17 +2623,20 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \]
 实际上，即使$\omega$不是反对称的，上式照样给出庞加莱群，因为$\omega$的对称部分和$M$相乘得到的一定是零。反对称的要求仅仅是让每个变换对应唯一一个群参数。
 
+庞加莱群的卡西米尔元有两个，它们分别是
 \begin{equation}
     P_\mu P^\mu = m^2,
 \end{equation}
-
+和
 \begin{equation}
-    W^\mu = \frac{1}{2} \epsilon^{\mu \nu \rho \sigma} P_\nu M_{\rho \sigma},
+    W_\mu W^\mu = j_1 + j_2 = j,
+\end{equation}
+其中
+\begin{equation}
+    W^\mu = \frac{1}{2} \epsilon^{\mu \nu \rho \sigma} P_\nu M_{\rho \sigma}.
 \end{equation}
 
-\begin{equation}
-    W_\mu W^\mu = j_1 + j_2 = j
-\end{equation}
+我们使用$P_\mu P^\mu$给出的$m^2$实际上正是该表示下场的质量的平方。详情见\autoref{sec:k-g-eq}。
 
 \section{相对论性量子场论}
 
@@ -2608,34 +2652,41 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 
 \subsection{自由场动力学}\label{sec:qft-free-dynamics}
 
-在相对论性量子场论中我们仍然要求自由粒子的拉氏量具有最高的对称性，也就是说，在庞加莱群作用下的变化量是某个量的4-散度，
-且拉氏量只含有二阶项（从而给出线性的运动方程）。%
+在相对论性量子场论中我们仍然要求自由粒子的拉氏量具有最高的对称性，也就是说，在庞加莱群作用下没有变化，
+且拉氏量只含有二次项（从而给出线性的运动方程）。%
 \footnote{虽然本文主要分析正则量子化，但写出运动方程还是用的是拉氏量。这是更加方便的做法，因为正则表述在理论框架上将时间和空间分开对待了，因此不容易观察哈密顿量在洛伦兹变化之下是不是给出恒定不变的动力学。}
-% TODO:直接从哈密顿量出发看协变性
+空间平移不变性意味着拉氏量不能显含坐标；空间各向同性意味着拉氏量中的参数必须是标量，不能出现多分量的参数。
 
-\subsubsection{标量场的克莱因-高登方程}
+\subsubsection{标量场的克莱因-高登方程}\label{sec:k-g-eq}
 
-自由标量场$\phi$的不超过二阶项的拉氏量可以写成
+% 自由标量场$\phi$的不超过二阶项的拉氏量可以写成
+% \[
+%     \mathcal{L} = A + B \phi + C \phi^2 + D^\mu \partial_\mu \phi + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi + F^\mu \phi \partial_\mu \phi.
+%\]
+%空间平移不变性意味着$A,B,C,D,E,F$全部是常数。
+%拉氏量中的常数项不提供任何物理，可略去，于是略去$A$项。
+%由于空间各向同性（参见\autoref{note:rotation}），所有的奇数次$\partial_\mu \phi$都不应该出现。
+%于是拉氏量为
+%\[
+%    \mathcal{L} = B \phi + C \phi^2 + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi.
+%\]
+%还是由于空间旋转不变性，$E^{\mu \nu}$必须是度规张量，否则运动方程中将出现一个旋转时分量会改变的张量，
+%% TODO:运动方程本身不会发生改变但是空间中还是会出现一个特殊方向
+%因此拉氏量为
+%\[
+%    \mathcal{L} = B \phi + C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
+%\]
+%拉氏量中的$\phi$项实际上无关紧要，因为完全可以通过重新定义一个$\phi' = \phi + \const$来把一次项弄掉，所以不失一般性地
+%\[
+%    \mathcal{L} = C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
+%\]
+标量场的拉氏量中只能够出现$\phi$和$\partial_\mu \phi$构成的一次或二次不变量。
+$\phi$构造出的一次不变量有$\phi$，二次不变量有$\phi^2$，$\partial_\mu \phi$是矢量，$\partial_\mu \phi$不可能和$\phi$缩并，而由于拉氏量中的参数都是标量它也不可能和参数缩并，因此它只能和自己缩并，得到$\partial_\mu \phi \partial^\mu \phi$。
+这样我们得到
 \[
-    \mathcal{L} = A + B \phi + C \phi^2 + D^\mu \partial_\mu \phi + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi + F^\mu \phi \partial_\mu \phi.
+    \mathcal{L} = A \phi + B \phi^2 + C \partial_\mu \phi \partial^\mu \phi.
 \]
-空间平移不变性意味着$A,B,C,D,E,F$全部是常数。
-拉氏量中的常数项不提供任何物理，可略去，于是略去$A$项。
-由于空间各向同性（参见\autoref{note:rotation}），所有的奇数次$\partial_\mu \phi$都不应该出现。
-于是拉氏量为
-\[
-    \mathcal{L} = B \phi + C \phi^2 + E^{\mu \nu} \partial_\mu \phi \partial_\nu \phi.
-\]
-还是由于空间旋转不变性，$E^{\mu \nu}$必须是度规张量，否则运动方程中将出现一个旋转时分量会改变的张量，
-% TODO:运动方程本身不会发生改变但是空间中还是会出现一个特殊方向
-因此拉氏量为
-\[
-    \mathcal{L} = B \phi + C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
-\]
-拉氏量中的$\phi$项实际上无关紧要，因为完全可以通过重新定义一个$\phi' = \phi + \const$来把一次项弄掉，所以不失一般性地
-\[
-    \mathcal{L} = C \phi^2 + E \partial_\mu \phi \partial^\mu \phi.
-\]
+拉氏量中的$\phi$项实际上无关紧要，因为完全可以通过重新定义一个$\phi' = \phi + \const$来把一次项消除掉，于是我们略去这一项。
 由于拉氏量可以任意地乘上非零常数，我们通过重新定义常数可以得到
 \begin{equation}
     \mathcal{L} = \frac{1}{2} (\partial_\mu \phi \partial^\mu \phi - m^2 \phi^2).
@@ -2647,9 +2698,40 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \end{equation}
 这就是\textbf{克莱因-高登方程}，标量场或者说自旋0场的基本运动方程。
 
+实际上，所有场的运动方程均满足克莱因-高登方程。我们将在推导其它场的运动方程之后证明这一点。
+这就导致了一个重要的结果。平移生成元在场表示中为\eqref{eq:transition-inf-rep}，从而
+\[
+    P_\mu P^\mu = - \partial_\mu \partial^\mu,
+\]
+于是代入\eqref{eq:klein-gordon-eq}，得到
+\[
+    P_\mu P^\mu \phi = - \partial_\mu \partial^\mu = m^2 \phi,
+\]
+其中$m$为克莱因-高等方程中出现的那个$m$。也即，通过$P_\mu P^\mu$的表示的本征值（实际上就是它和恒等变换之间差的倍数，因为$P_\mu P^\mu$是卡西米尔元）得到的$m$和场的运动方程得到的$m$是一样的。
+
 \subsubsection{旋量场的狄拉克方程}
 
-旋量场实际上几乎从来不会在经典情况下遇到，因为它们的场值是复数，因此不具有直接的物理意义。正如
+旋量场实际上几乎从来不会在经典情况下遇到，因为它们的场值是复数，因此不具有直接的物理意义。
+
+% TODO:为什么从来不构造魏尔旋量的运动方程？
+本节讨论狄拉克旋量的运动方程。
+于是接下来我们尝试构造狄拉克旋量的不变量，而这又划归到了构造魏尔旋量的不变量。
+魏尔旋量$\chi_a$或者$\chi^{\dot{a}}$自身能够构造出来的不变量无非是$\chi_a \chi^a$和$\chi_{\dot{a}} \chi^{\dot{a}}$。因此接下来讨论它们的导数——我们并没有考虑过魏尔旋量的梯度应该怎么取。
+
+梯度算符是矢量，按照\eqref{eq:vector-is-spin-tensor}，我们可以写出作用在魏尔旋量上的导数算符
+\begin{equation}
+    \partial_{a \dot{b}} = \partial_\nu \sigma^\nu_{a \dot{b}}.
+\end{equation}
+从而魏尔旋量的梯度就是
+\[
+    \partial_{a \dot{b}} \chi^{\dot{b}} = \partial_\nu \sigma^\nu_{a \dot{b}} \chi^{\dot{b}}
+\]
+和
+\[
+    \partial^{\dot{a} b} \chi_b = \partial_\mu (\sigma^\mu)^{\dot{a} b} \chi_b.
+\]
+两个表达式中，$\sigma$的指标都一个带点一个不带点，这是为了保证梯度算符的协变性，因为矢量是一个左手旋量和一个右手旋量直积的结果。两者都是带一个指标的对象，因此它们应该与
+
 \begin{equation}
     \mathcal{L} = \fsl{\psi} (\ii \gamma^\mu \partial_\mu - m) \psi
 \end{equation}
@@ -2666,8 +2748,57 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
     (\ii \gamma^\mu \partial_\mu - m) \psi = 0
 \end{equation}
 
+\subsubsection{矢量场的布洛卡方程}
+
+由于自由场导数阶数的限制，出现在拉氏量中的只能是$A^\mu$和$\partial^\nu A^\mu$构成的一次或二次不变量。当然，实际上也可以出现$\partial_\mu A^\nu$或者$\partial_\mu A_\mu$这种，但因为它们都可以使用$\partial^\nu A^\mu$表示出来，故没有必要考虑它们。
+只含有$A^\mu$二次不变量为$A^\mu A_\mu$，没有一次不变量；只含有$\partial^\mu A^\nu$的一次不变量是它自我缩并得到的$\partial^\mu A_\mu$，二次的不变量是两个$\partial^\mu A^\nu$缩并得到的$\partial^\mu A^\nu \partial_\mu A_\nu$和$\partial^\mu A^\nu \partial_\nu A_\mu$。
+由于参数都是标量，$\partial^\mu A^\nu$不能和参数缩并，也不能和$A^\mu$缩并（$C^\nu A^\mu \partial_\nu A_\mu$要求参数是矢量，$A^\mu A^\nu \partial_\mu A_\nu$是三次项），因此我们得到了所有可能的不变量。
+从而拉氏量形如
+\[
+    \mathcal{L} = C_1 A^\mu A_\mu + C_2 \partial^\mu A_\mu + C_3 \partial^\mu A^\nu \partial_\mu A_\nu + C_4 \partial^\mu A^\nu \partial_\nu A_\mu.
+\]
+代入\eqref{eq:el-eq}可以看出，$C_2$项在运动方程中不会引入任何项，故略去。
+于是
+\[
+    \mathcal{L} = C_1 A^\mu A_\mu + C_3 \partial^\mu A^\nu \partial_\mu A_\nu + C_4 \partial^\mu A^\nu \partial_\nu A_\mu.
+\]
+代入\eqref{eq:el-eq}，得到
+\begin{equation}
+    \partial_\mu (C_3 \partial^\mu A^\nu +  C_4 \partial^\nu A^\mu) = C_1 A^\nu.
+    \label{eq:vector-motion-eq}
+\end{equation}
+我们首先考虑$C_3 = - C_4$时的特殊情况。重新定义各系数，使得
+\begin{equation}
+    \mathcal{L} = \frac{1}{2} \partial^\mu A^\nu \partial_\mu A_\nu - \frac{1}{2} \partial^\mu A^\nu \partial_\nu A_\mu - \frac{m^2}{2} A_\mu A^\mu,
+\end{equation}
+对应的，
+\begin{equation}
+    \partial_\mu (\partial^\mu A^\nu - \partial^\nu A^\mu) + m^2 A^\nu = 0.
+    \label{eq:proca-eq}
+\end{equation}
+
+\eqref{eq:proca-eq}在$m \neq 0$时可以推导出克莱因-高登方程。注意到
+\[
+    m^2 \partial_\nu A^\nu = \partial_\nu \partial_\mu \partial^\nu A^\mu - \partial_\mu \partial^\mu \partial_\nu A^\nu = 0,
+\]
+于是
+\begin{equation}
+    \partial_\mu A^\mu = 0.
+    \label{eq:lorentz-gauge}
+\end{equation}
+回代入\eqref{eq:proca-eq}，发现其左边第二项为零，于是
+\[
+    \partial_\mu \partial^\mu A^\nu + m^2 A^\nu = 0.
+\]
+于是\eqref{eq:proca-eq}就约化成了\eqref{eq:lorentz-gauge}和四个克莱因-高登方程。
+
+现在回到一般情况。我们指出这样一个结论：无论$C_3,C_4$取什么值，对应的场$A^\mu$都可以和$C_3 = - C_4$时的某个场${A'}^\mu$建立一一对应。
+% TODO:证明
+因此布洛卡方程\eqref{eq:proca-eq}就不失一般性地描写了所有的矢量场的运动方程。
+
+\subsection{自由场的量子化}
+
 \subsection{相互作用}
-% TODO 相互作用绘景
 
 \subsection{退化到非相对论情况}
 
@@ -2980,6 +3111,6 @@ $L$是标量，而$\dot{\vb*{x}}$是矢量，因此$\dot{\vb*{x}}$必须做缩�
 
 \section{微扰理论}
 
-% TODO： 微扰展开、相互作用绘景
+% TODO： 微扰展开、相互作用绘景、费曼图
 
 \end{document}
