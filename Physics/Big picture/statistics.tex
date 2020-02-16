@@ -160,6 +160,7 @@
 
 一般来说，对实际的、通常规模很大的系统，我们不可能知道它的所有信息。或者我们不知道它的某些参数，或者我们不知道它是不是和环境纠缠在一起。无论哪种情况，描述系统都需要使用混合态。
 因此接下来在不至于引起混淆时我们不严格区分“系统”和“系综”，因为我们根本就不知道“实际上的系统”是什么样子的，而只能讨论系综。
+相应的，凡是不能够从密度算符中读取得到的信息，我们一概不讨论，因为这些信息不能从系综中读出来。
 
 \subsubsection{时间演化}
 
@@ -314,7 +315,31 @@
 
 % TODO:以上我们从两个系统的复合的密度矩阵导出了其中一个系统的密度矩阵（后者称为“约化密度矩阵”）。现在假设我们已有两个系统，则它们的复合的密度矩阵就是这两个系统的密度矩阵的直积。
 
-\subsection{平衡态大系统}
+\subsubsection{未归一化的密度算符}
+
+以上讨论的密度算符在定义时保证了其系数真的就是对应的态出现的概率。有时我们能够比较容易地计算出某个态出现的概率正比于某个值，即只知道
+\begin{equation}
+    P(\ket{\psi_i}) \propto f(\psi_i),
+\end{equation}
+而不容易将它归一化。此时可以定义未归一化的密度算符为
+\begin{equation}
+    \hat{\rho} = \sum_i f(\psi_i) \dyad{\psi_i},
+\end{equation}
+定义\textbf{配分函数}
+\begin{equation}
+    Z = \sum_i f(\psi_i) = \trace \hat{\rho},
+\end{equation}
+则$\hat{\rho} / Z$就是归一化的密度算符。使用这个关系，我们得到期望值公式为
+\begin{equation}
+    \expval*{A} = \frac{1}{Z} \trace \left(\hat{\rho} \hat{A}\right) = \frac{\trace \left(\hat{\rho} \hat{A}\right)}{\trace \hat{\rho}},
+\end{equation}
+纯度公式为
+\begin{equation}
+    \varsigma = \frac{\trace \hat{\rho}^2}{\trace \hat{\rho}},
+\end{equation}
+越接近1说明态越纯。
+
+\subsection{平衡态多粒子系统}
 
 接下来我们来讨论，当一个系统达到平衡态时它会具有什么性质。在系统很大（从而它不是可积的），并且和外界有小但确实有的相互作用（从而它的演化轨迹会时不时从一条偏移到另外一条上，但每条轨迹又不会有很大偏离）时，我们有\textbf{各态遍历性}：在一段时间内，系统会经过所有可能的态。%
 \footnote{这些条件都是必要的：如果系统很简单，比如说，就是理想的二体问题，那么就算系统和环境有纠缠或者持续的小的相互作用也不会各态遍历——可积系统不会热化。}
@@ -324,8 +349,78 @@
 \footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}
 相应的，系统取各个态的概率是相同的。
 % TODO:为什么是相同的？
+从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。
 
+我们从能量的角度出发讨论问题。当然，也可以使用别的物理量，但能量由于和哈密顿量的联系以及其可加性，尤为方便。
+设系统和环境中的一部分之间有能量和物质传递，且这一部分远大于系统，称其为\textbf{热库}。%
+\footnote{由于环境远大于系统，如果热库不远大于系统，总是可以将环境中的另外一些部分加入热库使之远大于系统。}%
+较小的系统和热库组成了一个大系统，这个大系统宏观上是封闭的，微观上则可以受到环境中其它部分的微小作用，因此它满足各态遍历假设。我们关心的小系统却未必能够满足这个假设。
+总能量为
+\begin{equation}
+    E_T = E_s + E_r,
+    \label{eq:total-energy}
+\end{equation}
+其中$E_s$指系统能量，$E_r$指热库能量。记态密度为
+\begin{equation}
+    d = \dv{N}{E}.
+\end{equation}
+由于\eqref{eq:total-energy}，我们有
+\[
+    \dd{E_s} \dd{E_r} = \dd{E_s} (\dd{E} - \dd{E_s}) = \dd{E_s} \dd{E},
+\]
+于是
+\[
+    \begin{aligned}
+        d_T (E_T) &= \int_{E_s + E_r = E_T} \dd{E_s} \dd{E_r} d_r (E_r) d_s (E_s) \\
+        &= \int \dd{E_s} \dd{E} d_r (E_T - E_s) d_s (E_s),
+    \end{aligned}
+\]
+从而
+\[
+    d_T (E_T) = \int \dd{E_s} d_r (E_T - E_s) d_s (E_s).
+\]
+由于热库远大于系统，$d_s$只有在$E_s$远小于$E_T$时才有比较大的值，因此
+\begin{equation}
+    d_T (E_T) = d_r (E_T).
+\end{equation}
+% 这个公式有什么用吗？
 
+我们来分析系统取特定能量的概率。由于系统和热库总能量恒定，我们有
+\[
+    P(E_s) \propto d_s(E_s) d_r(E_T - E_s) \propto d_r (E_T - E_s),
+\]
+从而
+\[
+    \frac{P(E_s)}{P(E_{s'})} = \frac{d_r (E_T - E_s)}{d_r (E_T - E_{s'})}.
+\]
+等式右边是一个关于$E_T, E_s, E_{s'}$的表达式。因此我们成功地确定了一个事实：$E_s$的变动导致的概率的变动仅仅依赖于$E_s, E_{s'}$和$E_T$。
+但实际上，$E_T$并不会改变概率比值。只要满足热库远大于系统，将环境中的什么部分算作热库是完全任意的，因此完全可以将环境中和原热库和系统没有相互作用的一部分算作热库，这增大了$E_T$，却对系统的行为没有任何影响。这表明我们有
+\[
+    \frac{P(E_s)}{P(E_{s'})} \propto f(E_s, E_{s'}).
+\]
+最后，注意到系统的能量可以整体地加上一个常数而不影响其行为，因此上式右边只应该关于$E_s$和$E_{s'}$的差值，从而
+\[
+    \frac{P(E_s)}{P(E_{s'})} \propto f(E_s - E_{s'}).
+\]
+满足这个关系的唯一可能就是
+\begin{equation}
+    P(E_s) \propto \ee^{- \beta E_s}.
+    \label{eq:gibbs-distribution}
+\end{equation}
+这就是所谓的\textbf{玻尔兹曼分布}或者\textbf{吉布斯分布}。与环境交换物质能量的系统在平衡时一定会落在这个分布上。
+
+对\eqref{eq:gibbs-distribution}做归一化，就有
+\begin{equation}
+    P(E_s) = \frac{1}{Z} \ee^{ - \beta E_s},
+    \label{eq:distribution-of-energy}
+\end{equation}
+其中
+\begin{equation}
+    Z = \sum_{E_s} \ee^{ - \beta E_s}
+    \label{eq:partition-function}
+\end{equation}
+就是在引入未归一化的密度算符时提到的配分函数。
+\eqref{eq:distribution-of-energy}给出了
 
 \subsection{从量子统计退化到经典统计}
 
