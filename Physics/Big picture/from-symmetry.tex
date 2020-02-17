@@ -58,7 +58,377 @@
 以下希腊字母的指标跑遍所有时空维度，而拉丁字母的指标仅仅跑遍空间维度，也就是$\mu, \nu, \ldots = 0, 1, 2, 3$而$i, j, \ldots = 1, 2, 3$。
 指标$a,b,\ldots$也有可能指多分量对象的指标，未必正好取$1, 2, 3$。
 
-\section{理论框架}
+\section{抽象代数}
+
+\subsection{指标升降}
+
+符号约定：$\vb*{A}^2$代表$\vb*{A}$的模长平方，$A^2$则表示分量。
+
+\subsection{算符和态}
+
+% TODO：分析三种绘景下的态
+% 两个态表示了同样的物理状态，当且仅当，
+% $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
+% TODO: 设算符$\hat{A}$是CSCO，且它在幺正变换$\hat{P}$下不变，那么对任何一个本征值$A_i$，有一个单位复数，使得$\hat{P} \ket{A_i} = c \ket{A_i}$.
+% TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
+% \hat{A} \ket{a_1 a_2 \cdots} = \pmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
+% 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
+% 因此下文中将常常这么写。
+% 谱结构和对易关系之间有什么联系？
+
+\textbf{表象}指的是态空间的一组正交完备基。由于通常这样一组基是某个CSCO$\hat{M}$的本征态，我们通常使用对应的$CSCO$来标记表象。例如，我们有坐标表象、动量表象，等等。
+表象变换公式
+\begin{equation}
+    \braket{A_i}{\psi} = \sum_j \braket{A_i}{B_j} \braket{B_j}{\psi}
+\end{equation}
+是基的完备性的推论。
+
+变换
+\[
+    \braket{A_i}{\psi} \longrightarrow \mel{A_i}{\hat{B}}{\psi}
+\]
+称为算符$\hat{B}$在$A$表象下的表示。显然，$\hat{A}$在$A$表象下的表示就是
+\[
+    \braket{A_i}{\psi} \longrightarrow A_i \braket{A_i}{\psi}.
+\]
+
+\subsection{李群和李代数，以及它们的表示}
+% TODO:形如$\exp(\phi_1 G_1 + \phi_2 G_2 + \ldots)$的映射是不是一定可以写成$\exp (\phi_1' G_1) \exp (\phi_2' G_2) \ldots$?
+在讨论对称性和守恒量的联系的时候
+
+\subsubsection{从李群到李代数}
+
+本文中我们将不对李群的流形结构进行正式的分析，而仅仅满足于使用一定的群参数把一个李群完整地表示出来。
+一个李群中的成员可以一般地写成
+\begin{equation}
+    g = \exp(\ii \theta_i \sigma_i) \equiv \exp (\ii \theta^i \sigma_i) = \exp (\ii \vb*{\theta} \vb*{\sigma}),
+    \label{eq:lie-group-element}
+\end{equation}
+其中$\theta_i$指的是群参数，而$\sigma_i$指的是生成元。
+通常要求群参数为实数。
+$\ii$是一个无关紧要的系数，加上它和不加上它唯一的区别就是$\sigma$需不需要乘上一个$\ii$。
+为了方便，常常将诸$\theta$排成行向量，$\sigma$排成列向量。由于没有度规，无需区分上下指标。
+对应的，设$\theta$是一个群参数，对应的生成元为
+\begin{equation}
+    \sigma = \frac{1}{\ii} \dv{g}{\theta}.
+\end{equation}
+需注意\eqref{eq:lie-group-element}假定了
+\[
+    g(\theta_1) g(\theta_2) = g(\theta_1 + \theta_2),
+\]
+这又等价于，无论$\theta$取什么值，$g$对$\theta$求导都会得到完全相同的结果。
+在大多数情况下可以不失一般性地要求这个性质成立，因为群参数到底是什么并不重要
+——我们总是可以巧妙地定义$\theta$使得$g$对$\theta$求导的结果与$\theta$无关%
+\footnote{这是来自常微分方程的基本结论：设$X$是一个生成元，那么必定可以找到李群的一个单参数子群$c(t)$，使得
+\[
+    \dv{t} c(t) = c(t) \cdot X,
+\]
+从而可以定义指数映射。这是解析映射，因此可以使用诸如求导等运算。}，
+% 但是真的如此吗？时间演化一定构成李群吗？
+% 一种可能的质疑是：在球面上随意画一条闭合轨迹，它显然描述了起点位于球心，终点位于球上面的矢量的一个连续变换，
+% 然而它却不能使用$\exp (\alpha G)$的形式表示出来。
+% 但这个质疑本身不成立，因为通常的李群总是可以作用在线性空间上的，然而上述变换显然没有线性性。
+% 感觉还是很奇怪。
+但是有一个重要的例外：时间演化。
+我们关心的是“正常人眼中的时间”，而不能随意定义时间流逝的速率，
+因此并没有什么能够保证不同$t$处时间演化算符对$t$求导的结果都是$t=0$（也就是恒等映射附近）时间演化算符对$t$求导的结果。
+记$U(t, t_0)$为从$t_0$演化到$t$的算符，也即
+\[
+    U(t, t_0) U(t_0) = U(t),
+\]
+由于$t$不再能够任意选取，我们不能够写出\eqref{eq:lie-group-element}这样的指数映射，但是可以证明，一定存在一个$H(t)$使得
+\begin{equation}
+    U(t, t_0) = T \exp \left( \int_{t_0}^t \dd{t} H(t) \right).
+    \label{eq:time-dependent-lie-group}
+\end{equation}
+这里我们略去了\autoref{sec:time-evolution}中的公式中的因子$- \ii /\hbar$，不过这无关紧要。$T$为编时算符。
+在不同时刻的$H(t)$彼此对易的情况下可以把$T$去掉，因为此时重排各算符顺序不会产生任何影响。
+
+\eqref{eq:lie-group-element}和\eqref{eq:time-dependent-lie-group}的区别体现在很多地方。
+\eqref{eq:lie-group-element}意味着
+\[
+    g^{-1}(\theta) = g(-\theta),
+\]
+或者说
+\[
+    \left( \exp(\theta \sigma) \right)^{-1} = \exp(- \theta \sigma),
+\]
+但是在不同时刻的$H(t)$彼此不对易时，
+\[
+    T \exp(\int \dd{t} H(t))^{-1} \neq T \exp(- \int \dd{t} H(t)).
+\]
+相应的，
+\[
+    \dv{t} \left(T \exp(\int \dd{t} H(t))^{-1}\right) \neq -H.
+\]
+这就是\autoref{sec:time-evolution}中做绘景变换时不同绘景下的哈密顿算符不相等的根本原因。
+
+李代数是李群在单位元附近的切空间，也就是说，是$g$在$\theta=0$附近沿着任意方向对$\theta$求导之后得到的结果组成的代数。
+接下来我们将讨论\eqref{eq:lie-group-element}的李群，因为“不同点处求导结果不同”基本上只会在处理时间演化时用到，
+而此时只有一个生成元（就是哈密顿量），没有必要讨论李代数。
+由于李代数的封闭性，设$g_1, g_2, \ldots$是一组相互独立的生成元，它们中任意两个的李括号$\comm*{g_1}{g_2}$一定也是一个生成元，
+这意味着它可以使用$g_1, g_2, \ldots$线性表示。
+从而我们有
+\begin{equation}
+    \comm*{g_i}{g_j} = f_{ij}^k g_k.
+    \label{eq:structure-of-lie-algebra}
+\end{equation}
+如果我们只讨论抽象的李代数的性质而不考虑它作用在某些对象上产生的结果，那么\eqref{eq:structure-of-lie-algebra}就完全刻画了一个李代数的结构。
+因此，称$f_{ij}^k$为\textbf{结构常数}。
+
+\subsubsection{李代数的具体计算}
+
+% TODO：把前面用到这一节的内容的部分写得更加简洁一些
+若
+\[
+    \comm*{\hat{q}}{\hat{p}} = c,
+\]
+则
+\[
+    \comm*{\hat{q}}{\hat{p}^n} = n c \hat{p}^{n-1}.
+\]
+
+\subsubsection{表示论}\label{sec:rep-th}
+
+接下来需要讨论李群和李代数的表示。
+通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
+也就是说，我们在李群、李代数和向量空间上的算符组成的群（以算符的复合为乘法）之间建立一个同态，
+一旦建立起这个同态，我们实际上就得到了李群或李代数的一个表示。
+比较方便的做法是，先讨论李代数在特定向量空间上的表示，然后使用指数映射获得对应的李群的表示。
+第二种表示是，李群和李代数在向量空间上的算符构成的向量空间上的作用。
+这种表示和第一种表示是紧密相关的。
+设李群$G$在向量空间$V$上的表示为$G_V$，则$G_V \subset GL(V)$。这就自然地诱导出了李群在$GL(V)$上的表示。
+算符$\hat{B} \in GL(V)$建立起了这样的关系：
+\[
+    \phi = \hat{B} \psi,
+\]
+现在我们把$\hat{A} \in G_V$作用在$\phi$和$\psi$上面，就得到
+\[
+    \phi' = \hat{A} \phi, \quad \psi' = \hat{A} \psi,
+\]
+如果我们还是希望在$\phi'$和$\psi'$之间建立关系
+\[
+    \phi' = \hat{B}' \psi',
+\]
+应该怎么选取$\hat{B}$？
+考虑到$\phi$和$\psi$的任意性，容易看出，
+\[
+    \hat{B}' = \hat{A} \hat{B} \hat{A}^{-1}.
+\]
+我们没有规定$\hat{B}$是什么——它是完全任意选取的。这样一来，$G_V$中的每一个元素$\hat{A}$都对应到下面的映射：
+\begin{equation}
+    \hat{B} \longrightarrow \hat{A} \hat{B} \hat{A}^{-1},
+    \label{eq:group-action-on-operators}
+\end{equation}
+\eqref{eq:group-action-on-operators}是一个从$GL(V)$到$GL(V)$的映射，也就是满足封闭性。
+请注意该映射是$GL(GL(V))$的成员，而不是$GL(V)$的成员——它作用在$V$上的算符上而不是$V$中的向量上。
+因此，我们通常只讨论简单的向量空间上的群表示，因为这些向量空间上的算符组成的向量空间上的群表示可以使用前者按照\eqref{eq:group-action-on-operators}写出。
+另外注意，不同的$\hat{A}$可能对应着同一个\eqref{eq:group-action-on-operators}型的从算符到算符的映射。
+这一点在\autoref{sec:rotation}中体现得很明显。
+
+李群和李代数通常被作用在几类向量空间上。
+首先是有有限个分量的向量空间。李群在其上的作用形如
+\[
+    v \longrightarrow v', \quad (v')^\mu = R_{\nu}^\mu (\Lambda) v^\nu.
+\]
+其中$\Lambda$指抽象的李群。
+在有限维向量空间$V$上的表示可能有不变子空间，也就是说，存在$V$的一个子空间$V'$，使得李群中的任何一个成员作用在$v \in V'$上之后得到的结果都还是在$V'$中。当然，$V$以及$\{0\}$一定是不变子空间。
+如果一个表示有不是这两个空间的不变子空间，那么这就是一个\textbf{可约表示}，反之则为\textbf{不可约表示}。
+可以证明，任何一个可约表示都可以写成一系列不可约表示的直和。因此对有限维表示而言，只需要讨论不可约表示就可以了，因为可约表示可以使用不可约表示组装出来。
+现在讨论不可约有限维表示。
+首先可以证明，任何李群的生成元至少有一个（当然也可以有很多个）可以相似变换为对角矩阵。
+% TODO：是不是每一个生成元都可以？
+这些被对角化的生成元的集合称为Cartan子代数，它是对应的李群的李代数的表示的子代数。
+Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量，对应的各生成元的本征值——也就是对角矩阵的对角元——可以用来标记这个不可约表示。
+要找到一组Cartan子代数并不难：只需要从李群中找到一个交换子代数，然后尝试对角化这个交换子代数中的某一个成员就可以了。
+% TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
+非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
+这也就是我们频繁地讨论幺正表示的原因。但有许多重要的群——例如洛伦兹群——都不是紧致的（或者说群对应的流形无界），因此它们实际上并没有有限维的幺正表示。就洛伦兹群而言，我们将会看到，其推动生成元的有限维表示不是厄米的，因此整个群也没有幺正的有限维表示。
+
+容易验证，设$\hat{X}$是厄米算符，且
+\begin{equation}
+    \comm*{\hat{a}^\dagger}{\hat{X}} = c \hat{a}^\dagger,
+    \label{eq:raising-operator}
+\end{equation}
+那么
+\[
+    \hat{a}^\dagger \ket{X} \propto \ket{X+c},
+\]
+相应的，
+\[
+    \hat{a} \ket{X} \propto \ket{X-c}.
+\]
+因此称$\hat{a}^\dagger$为$\hat{X}$的\textbf{升算符}，$\hat{a}$为$\hat{X}$的\textbf{降算符}。
+数学上可以证明，在李代数的有限维表示上可以定义内积
+\begin{equation}
+    \langle \hat{A}, \hat{B} \rangle = \trace \hat{A} \hat{B},
+\end{equation}
+通过合适的线性组合，能够写出一组正交归一化的生成元。
+此时非Cartan子代数的生成元中的每一个都是Cartan子代数中的每一个成员的升降算符，
+并且任意两个非Cartan子代数的生成元的对易子都可以使用Cartan子代数的成员线性表示。
+% TODO:看起来Cartan子代数似乎构成它的不可约表示空间的一个CSCO
+% Symmetry and the Standard Model, p108
+因此对一个一般的、没有正交归一化的李代数的有限维表示，我们总是可以从李代数的成员构造出一个升算符。设$\hat{X}$为$g_i$，且
+\[
+    \hat{a}^\dagger = \lambda^j g_j,
+\]
+则\eqref{eq:raising-operator}等价于
+\[
+    \comm*{\lambda^j g_j}{g_i} = c \lambda^j g_j,
+\]
+代入\eqref{eq:structure-of-lie-algebra}，上式又等价于
+\begin{equation}
+    \left( f^k_{ji} - c \delta_j^k \right) \lambda^j = 0,
+    \label{eq:determine-ladder-operators}
+\end{equation}
+于是通过求解
+\begin{equation}
+    \det \left( f^k_{ji} - c \delta_j^k \right) = 0
+    \label{eq:possible-c}
+\end{equation}
+就可以得到所有可能的$c$，然后将它们代入\eqref{eq:determine-ladder-operators}就能够得到所有能够被非Cartan子代数表示出来的升降算符。
+最后，由于是有限维表示，通过以上手法得到的升降算符实际上就是全部可能的升降算符，因此从一个本征态出发，通过它们可以构造出所有的本征态。
+有限维表示还意味着，设$\hat{a}^\dagger$是某个升算符，那么对充分大的$N$，$(\hat{a}^\dagger)^N = 0$，$\hat{a}^N=0$，因为本征态的个数有限。
+这些条件可用于确定什么样的不可约表示是被允许的。
+% TODO：数学证明，不过多半鸽了
+这些操作的一个典型的例子见\autoref{sec:rotation}。
+
+现在我们分析一种比较特殊的情况。以上我们都是在“李代数可以分解成一个Cartan子代数和非Cartan元素，后者构成前者的升降算符”的框架下分析问题，那么如果李代数中所有元素都对易，那此时它会有怎样的表示？
+由于没有非Cartan元素，这样的一个李代数——从而它的李群——不会有有限维的不可约表示。
+通常这样的李群对应着某种平移操作，详情见\autoref{sec:translation}。
+
+% TODO：连续谱的情况
+以上讨论的不可约表示都是有限维的。无限维表示——这里指的是函数空间的表示——则需要一套不同的框架。设$\hat{q}$具有连续谱，且
+\begin{equation}
+    \comm*{\hat{q}}{\hat{p}} = \ii,
+\end{equation}
+则
+\begin{equation}
+    \exp \left( \ii \lambda \hat{p} \right) \ket{q} = \ket{q + \lambda}.
+\end{equation}
+也就是说$\exp (\ii \lambda \hat{p})$是让$\hat{q}$的本征矢对应的本征值上升$\lambda$的升算符。
+
+由于空间坐标无非是一种向量，李群和李代数也可以被作用在坐标上。
+作用在坐标上的有限维表示又诱导出了作用在函数上的无限维表示%
+\footnote{在有限维表示中，上下标$\mu$标记向量的诸分量；在函数空间中，坐标$x^\mu$标记“向量”——也就是函数——的诸“分量”——也就是函数在这一点的值。
+李群在有限维向量空间上的表示通常是某个矩阵群，它将不同分量混合在一起，即
+\[
+    \psi^\mu \longrightarrow R^\mu_\nu \psi^\nu.    
+\]
+李群在无限维向量空间上的表示通常是“改变坐标$x^\mu$”。
+}%
+。设$f=f(x)$，若李群在坐标上的表示为
+\[
+    x \longrightarrow x', \quad (x')^\mu = R_\nu^\mu (\Lambda) x^\nu,
+\]
+则它在关于坐标的函数——也就是“场”——组成的无限维向量空间上的表示就是
+\[
+    f \longrightarrow f', \quad f(x) = f'(x') = f'(R(\Lambda) x),
+\]
+或者等价的，
+\begin{equation}
+    (x \mapsto f(x)) \longrightarrow (x \mapsto f'(x) = f(R(\Lambda)^{-1} x)).
+    \label{eq:infinite-dim-rep}
+\end{equation}
+换而言之，坐标变动“牵引”了从坐标到场值的映射。
+考虑到$f$可能是某个多分量对象（比如矢量、矢量的张量积，或者接下来要看到的旋量）的分量，
+李群在此多分量场上的作用还包括通常的有限维表示，也就是
+\[
+    \psi^a \longrightarrow M(\Lambda)^a_b \psi^b.
+\]
+需注意此处我们使用了另外一个表示$M^a_b$而不是$R^\mu_\nu$，因为不能够保证$\Lambda$在多分量场$\psi$上的作用和它在坐标向量上的作用来自同一个有限维表示。
+由于大部分情况下我们都是从一个群在通常意义上的矢量的作用出发讨论其结构的，可以将$R(\Lambda) x$简记为$\Lambda x$，也就是群元$\Lambda$在$x$上的作用。
+这样上式就可以简洁地写成
+\begin{equation}
+    \psi^a(x) \longrightarrow {\psi'}^a (x) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
+    \label{eq:wigner-transform}
+\end{equation}
+这种同时考虑了多分量场在李群作用下各分量重新混合（这是一个有限维表示）和李群作用下坐标拖曳而改变场（这对坐标而言是另一个有限维表示，对场而言是一个无限维表示）的李群的表示就是\textbf{场表示}。
+需要注意的是，不同的$\Lambda$作用到坐标上可能会得出同样的结果，而它们对应的$M$作用到场上却有不同的结果，正如$SU(2)$和$SO(3)$的关系告诉我们的那样。
+
+\eqref{eq:wigner-transform}给出的是李群的场表示的一般形式，但此时我们还只有形式上的变换而没有显式的表达式。
+我们来分析其李代数。取%
+\footnote{虽然可以任意地调整群参数，从而让生成元前面的系数随意变动，但是通常对有限维表示和无限维表示我们总是采用同样的群参数。这就意味着，在有限维表示确定之后不能随意调节无限维表示的生成元前面的系数，不能随意加一个$\ii$或者改变正负号。这也就是我们在场表示中一并处理有限维表示和无限维表示的原因，因为此时两者的群参数自动地就是相同的。
+
+下式中的$g$的定义可以是\[
+    g = \frac{1}{\ii} \pdv{G}{g},
+\]
+但也可以是像我们定义旋转生成元时的那样，取
+\[
+    g = \ii \pdv{G}{g},
+\]
+只需要将$\epsilon$取为负值就可以了。无论$g$是怎么定义的，下式都是成立的。}%
+\[
+    \Lambda = I + \ii \epsilon g,
+\]
+其中$g$是一个生成元，我们就有
+\[
+    \begin{aligned}
+        \psi^a \longrightarrow {\psi'}^a &= M^a_b (\Lambda) \psi^b (\Lambda^{-1} x) \\
+        &= (I + \ii \epsilon M^a_b(g)) \psi^b (x - \ii \epsilon g x) \\
+        &= (I + \ii \epsilon M^a_b(g)) (\psi^b - \ii \epsilon g x \cdot \grad{\psi^b}) \\
+        &= \psi^b + \ii \epsilon M^a_b(g) \psi^b - \ii \epsilon g x \cdot \grad{\psi^b},
+    \end{aligned}
+\]
+于是
+\[
+    {\psi'}^a = (I + \ii \epsilon  (M^a_b(g) - g x \cdot \grad)) \psi^a,
+\]
+于是场表示的生成元可以写成
+\begin{equation}
+    M_\text{field} = M_\text{fin} + M_\text{inf}, \quad M_\text{fin} = M^a_b(g), \quad M_\text{inf} = - (g x) \cdot \grad.
+    \label{eq:fin-and-inf-rep}
+\end{equation}
+其中$M_\text{fin}$就是我们所熟悉的李群在有限维向量空间上的矩阵表示，而$M_\text{inf}$则是李群作用在坐标上，拖曳坐标而对场产生的影响。
+显然，它们和$g$之间能够建立同态关系。$gx$和$\Lambda x$一样，都是“$g$在坐标空间上的有限维矩阵表示作用于$x$”的简写。
+与通常物理中的记号不同，此处的梯度算符作用在所有坐标上，不仅仅是空间坐标，还包括时间坐标。
+
+在以上讨论的基础上我们讨论态矢量。我们总是使用李群在希尔伯特空间上的幺正表示，因为需要保证变换前后的态矢量都是物理的，也就是说，都是正交归一化的。
+我们刚才讨论了李群的场表示，这个场表示当然可以被作用在算符场上。但是注意到算符场是态空间上的算符，因此按照\eqref{eq:group-action-on-operators}，李群的场表示自然地如下导出了李群在希尔伯特空间上的表示：
+\begin{equation}
+    \hat{U}(\Lambda) \hat{\psi}^b(\vb*{x}) \hat{U}^{-1}(\Lambda) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
+    \label{eq:field-rep-and-state-rep-lie-group}
+\end{equation}
+由于对$\hat{\phi}$的变换等价于对其本征值做变换，这又等价于保持本征值不变而重新安排本征态，按照上式诱导出的在希尔伯特空间上的李群表示$\hat{U}$也是幺正的。
+
+相应的，\eqref{eq:field-rep-and-state-rep-lie-group}也导致了对应的李代数在希尔伯特空间上的表示。对\eqref{eq:field-rep-and-state-rep-lie-group}取微元，得到
+\[
+    (1 + \ii \epsilon M_\text{state}) \hat{\psi}^b (1 - \ii \epsilon M_\text{state}) = \ii \epsilon M_\text{field} \hat{\psi},
+\]
+从而
+\begin{equation}
+    \comm*{M_\text{state}}{\psi} = M_\text{field} \psi.
+    \label{eq:field-rep-and-state-rep-gen}
+\end{equation}
+实际上，时间演化方程\eqref{eq:quantum-evolution}就是一个例子：时间平移群在希尔伯特空间上的表示是哈密顿算符$\hat{H}$，在场——这里是任何一种物理量——上的表示是$\frac{1}{\ii} \dv{t}$，那么
+\[
+    \comm*{\hat{H}}{\hat{A}} = \frac{1}{\ii} \dv{t},
+\]
+这就是时间演化方程。
+
+考虑一个简单的单粒子量子力学的例子：$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
+\[
+    \hat{x} + a = \int \dd{x} x \dyad{x} + a \int \dd{x} \dyad{x} 
+    = \int \dd{x} (x + a) \dyad{x} = \int \dd{x'} x' \dyad{x'-a},
+\]
+因此作用在$\hat{x}$上的大小为$a$的平移就等价于作用在态空间基矢量上的大小为$-a$的平移。
+更一般的，将某一个李群$Q(a)$作用在某一算符上就相当于将这一李群的群参数倒转过来得到新的李群$Q'$，
+也就是定义$Q'(a) = Q(a)^{-1}$（由于是群，$Q'$和$Q$同构），然后将$Q'(a)$作用在态空间的基矢量上。
+由于$Q'$和$Q$同构，两者的区别仅仅是重新规定了群参数，因此它们对应着同样的对称性。
+% TODO：以上说法的推广
+总之，我们既可以直接从某种李群的场表示出发，推导它允许的算符场有哪些，然后使用二次量子化的有关知识导出其对应的单粒子态，
+也可以从李群在希尔伯特空间上的表示出发，直接得到单粒子态然后构造算符场。
+两种方法是完全一致的。舒尔引理告诉我们，卡西米尔算符（和所有生成元都对易）在不可约表示中一定是恒等算符的常数倍。这个常数可以用来标记相应的不可约表示；事实上这一类常数往往会出现在相应的表示描写的场/粒子的运动方程中，因为运动方程中会出现卡西米尔算符的场表示。
+相对而言，在推导运动方程的时候，使用场的观点更加方便，因为相对论情况下粒子数通常是不确定的，因此使用单粒子态难以写出哈密顿量。
+
+概括以下我们至今得到的结果：李群和李代数的表示有下面几种，它们彼此之间有非常密切的关系。
+首先，李群和李代数在有限维向量空间上的表示是矩阵，它们或者是可约表示，或者不可约，前者可以通过直和运算由后者组装出来。
+不可约有限维表示的结构可以通过使用李代数中的非Cartan元素构造Cartan子代数的升降算符来确定。
+通过将有限维表示作用在坐标上，我们得到了作用在关于坐标的函数组成的向量空间上的无限维表示。
+将作用在多分量对象上的有限维表示和作用在坐标函数上的无限维表示结合起来，就得到了场表示。
+李群在向量空间上的表示很自然地就诱导出了李群在作用在向量空间上的算符上的表示。
+
+\section{动力学}
 
 % 似乎拉格朗日动力学中含有虚部的场要看成两个场，而哈密顿动力学中含有虚部的场只需要看成一个场。
 在进一步展开下面的叙述之前，我们先回顾现代物理的数学框架。总的来说，有两套可用的框架，
@@ -754,18 +1124,6 @@ $\hat{U}^H$可以写出显式表达式
 
 % TODO:总结
 
-\subsubsection{态}
-% TODO：分析三种绘景下的态
-% 两个态表示了同样的物理状态，当且仅当，
-% $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
-% TODO: 设算符$\hat{A}$是CSCO，且它在幺正变换$\hat{P}$下不变，那么对任何一个本征值$A_i$，有一个单位复数，使得$\hat{P} \ket{A_i} = c \ket{A_i}$.
-% TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
-% \hat{A} \ket{a_1 a_2 \cdots} = \pmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
-% 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
-% 因此下文中将常常这么写。
-% 谱结构和对易关系之间有什么联系？
-
-
 \subsubsection{散射与测量}
 
 % 一个可能的方案：系综。首先证明：具有某种初态的仪器和系统发生相互作用之后，系统和仪器的波函数都大大定域化了；然后表明：如果仪器的初态在系综中均匀分布，那么仪器的波函数定域的位置在系综中的分布正是按照系统的波函数的平方分布的
@@ -881,342 +1239,6 @@ $\hbar$在计算对易子的时候出现。做变换
     \end{aligned}
 \]
 与此同时保持各个公式的形式不变。
-
-\subsection{李群和李代数，以及它们的表示}
-% TODO:形如$\exp(\phi_1 G_1 + \phi_2 G_2 + \ldots)$的映射是不是一定可以写成$\exp (\phi_1' G_1) \exp (\phi_2' G_2) \ldots$?
-在讨论对称性和守恒量的联系的时候
-
-\subsubsection{从李群到李代数}
-
-本文中我们将不对李群的流形结构进行正式的分析，而仅仅满足于使用一定的群参数把一个李群完整地表示出来。
-一个李群中的成员可以一般地写成
-\begin{equation}
-    g = \exp(\ii \theta_i \sigma_i) \equiv \exp (\ii \theta^i \sigma_i) = \exp (\ii \vb*{\theta} \vb*{\sigma}),
-    \label{eq:lie-group-element}
-\end{equation}
-其中$\theta_i$指的是群参数，而$\sigma_i$指的是生成元。
-通常要求群参数为实数。
-$\ii$是一个无关紧要的系数，加上它和不加上它唯一的区别就是$\sigma$需不需要乘上一个$\ii$。
-为了方便，常常将诸$\theta$排成行向量，$\sigma$排成列向量。由于没有度规，无需区分上下指标。
-对应的，设$\theta$是一个群参数，对应的生成元为
-\begin{equation}
-    \sigma = \frac{1}{\ii} \dv{g}{\theta}.
-\end{equation}
-需注意\eqref{eq:lie-group-element}假定了
-\[
-    g(\theta_1) g(\theta_2) = g(\theta_1 + \theta_2),
-\]
-这又等价于，无论$\theta$取什么值，$g$对$\theta$求导都会得到完全相同的结果。
-在大多数情况下可以不失一般性地要求这个性质成立，因为群参数到底是什么并不重要
-——我们总是可以巧妙地定义$\theta$使得$g$对$\theta$求导的结果与$\theta$无关%
-\footnote{这是来自常微分方程的基本结论：设$X$是一个生成元，那么必定可以找到李群的一个单参数子群$c(t)$，使得
-\[
-    \dv{t} c(t) = c(t) \cdot X,
-\]
-从而可以定义指数映射。这是解析映射，因此可以使用诸如求导等运算。}，
-% 但是真的如此吗？时间演化一定构成李群吗？
-% 一种可能的质疑是：在球面上随意画一条闭合轨迹，它显然描述了起点位于球心，终点位于球上面的矢量的一个连续变换，
-% 然而它却不能使用$\exp (\alpha G)$的形式表示出来。
-% 但这个质疑本身不成立，因为通常的李群总是可以作用在线性空间上的，然而上述变换显然没有线性性。
-% 感觉还是很奇怪。
-但是有一个重要的例外：时间演化。
-我们关心的是“正常人眼中的时间”，而不能随意定义时间流逝的速率，
-因此并没有什么能够保证不同$t$处时间演化算符对$t$求导的结果都是$t=0$（也就是恒等映射附近）时间演化算符对$t$求导的结果。
-记$U(t, t_0)$为从$t_0$演化到$t$的算符，也即
-\[
-    U(t, t_0) U(t_0) = U(t),
-\]
-由于$t$不再能够任意选取，我们不能够写出\eqref{eq:lie-group-element}这样的指数映射，但是可以证明，一定存在一个$H(t)$使得
-\begin{equation}
-    U(t, t_0) = T \exp \left( \int_{t_0}^t \dd{t} H(t) \right).
-    \label{eq:time-dependent-lie-group}
-\end{equation}
-这里我们略去了\autoref{sec:time-evolution}中的公式中的因子$- \ii /\hbar$，不过这无关紧要。$T$为编时算符。
-在不同时刻的$H(t)$彼此对易的情况下可以把$T$去掉，因为此时重排各算符顺序不会产生任何影响。
-
-\eqref{eq:lie-group-element}和\eqref{eq:time-dependent-lie-group}的区别体现在很多地方。
-\eqref{eq:lie-group-element}意味着
-\[
-    g^{-1}(\theta) = g(-\theta),
-\]
-或者说
-\[
-    \left( \exp(\theta \sigma) \right)^{-1} = \exp(- \theta \sigma),
-\]
-但是在不同时刻的$H(t)$彼此不对易时，
-\[
-    T \exp(\int \dd{t} H(t))^{-1} \neq T \exp(- \int \dd{t} H(t)).
-\]
-相应的，
-\[
-    \dv{t} \left(T \exp(\int \dd{t} H(t))^{-1}\right) \neq -H.
-\]
-这就是\autoref{sec:time-evolution}中做绘景变换时不同绘景下的哈密顿算符不相等的根本原因。
-
-李代数是李群在单位元附近的切空间，也就是说，是$g$在$\theta=0$附近沿着任意方向对$\theta$求导之后得到的结果组成的代数。
-接下来我们将讨论\eqref{eq:lie-group-element}的李群，因为“不同点处求导结果不同”基本上只会在处理时间演化时用到，
-而此时只有一个生成元（就是哈密顿量），没有必要讨论李代数。
-由于李代数的封闭性，设$g_1, g_2, \ldots$是一组相互独立的生成元，它们中任意两个的李括号$\comm*{g_1}{g_2}$一定也是一个生成元，
-这意味着它可以使用$g_1, g_2, \ldots$线性表示。
-从而我们有
-\begin{equation}
-    \comm*{g_i}{g_j} = f_{ij}^k g_k.
-    \label{eq:structure-of-lie-algebra}
-\end{equation}
-如果我们只讨论抽象的李代数的性质而不考虑它作用在某些对象上产生的结果，那么\eqref{eq:structure-of-lie-algebra}就完全刻画了一个李代数的结构。
-因此，称$f_{ij}^k$为\textbf{结构常数}。
-
-\subsubsection{李代数的具体计算}
-
-% TODO：把前面用到这一节的内容的部分写得更加简洁一些
-若
-\[
-    \comm*{\hat{q}}{\hat{p}} = c,
-\]
-则
-\[
-    \comm*{\hat{q}}{\hat{p}^n} = n c \hat{p}^{n-1}.
-\]
-
-\subsubsection{表示论}\label{sec:rep-th}
-
-接下来需要讨论李群和李代数的表示。
-通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
-也就是说，我们在李群、李代数和向量空间上的算符组成的群（以算符的复合为乘法）之间建立一个同态，
-一旦建立起这个同态，我们实际上就得到了李群或李代数的一个表示。
-比较方便的做法是，先讨论李代数在特定向量空间上的表示，然后使用指数映射获得对应的李群的表示。
-第二种表示是，李群和李代数在向量空间上的算符构成的向量空间上的作用。
-这种表示和第一种表示是紧密相关的。
-设李群$G$在向量空间$V$上的表示为$G_V$，则$G_V \subset GL(V)$。这就自然地诱导出了李群在$GL(V)$上的表示。
-算符$\hat{B} \in GL(V)$建立起了这样的关系：
-\[
-    \phi = \hat{B} \psi,
-\]
-现在我们把$\hat{A} \in G_V$作用在$\phi$和$\psi$上面，就得到
-\[
-    \phi' = \hat{A} \phi, \quad \psi' = \hat{A} \psi,
-\]
-如果我们还是希望在$\phi'$和$\psi'$之间建立关系
-\[
-    \phi' = \hat{B}' \psi',
-\]
-应该怎么选取$\hat{B}$？
-考虑到$\phi$和$\psi$的任意性，容易看出，
-\[
-    \hat{B}' = \hat{A} \hat{B} \hat{A}^{-1}.
-\]
-我们没有规定$\hat{B}$是什么——它是完全任意选取的。这样一来，$G_V$中的每一个元素$\hat{A}$都对应到下面的映射：
-\begin{equation}
-    \hat{B} \longrightarrow \hat{A} \hat{B} \hat{A}^{-1},
-    \label{eq:group-action-on-operators}
-\end{equation}
-\eqref{eq:group-action-on-operators}是一个从$GL(V)$到$GL(V)$的映射，也就是满足封闭性。
-请注意该映射是$GL(GL(V))$的成员，而不是$GL(V)$的成员——它作用在$V$上的算符上而不是$V$中的向量上。
-因此，我们通常只讨论简单的向量空间上的群表示，因为这些向量空间上的算符组成的向量空间上的群表示可以使用前者按照\eqref{eq:group-action-on-operators}写出。
-另外注意，不同的$\hat{A}$可能对应着同一个\eqref{eq:group-action-on-operators}型的从算符到算符的映射。
-这一点在\autoref{sec:rotation}中体现得很明显。
-
-李群和李代数通常被作用在几类向量空间上。
-首先是有有限个分量的向量空间。李群在其上的作用形如
-\[
-    v \longrightarrow v', \quad (v')^\mu = R_{\nu}^\mu (\Lambda) v^\nu.
-\]
-其中$\Lambda$指抽象的李群。
-在有限维向量空间$V$上的表示可能有不变子空间，也就是说，存在$V$的一个子空间$V'$，使得李群中的任何一个成员作用在$v \in V'$上之后得到的结果都还是在$V'$中。当然，$V$以及$\{0\}$一定是不变子空间。
-如果一个表示有不是这两个空间的不变子空间，那么这就是一个\textbf{可约表示}，反之则为\textbf{不可约表示}。
-可以证明，任何一个可约表示都可以写成一系列不可约表示的直和。因此对有限维表示而言，只需要讨论不可约表示就可以了，因为可约表示可以使用不可约表示组装出来。
-现在讨论不可约有限维表示。
-首先可以证明，任何李群的生成元至少有一个（当然也可以有很多个）可以相似变换为对角矩阵。
-% TODO：是不是每一个生成元都可以？
-这些被对角化的生成元的集合称为Cartan子代数，它是对应的李群的李代数的表示的子代数。
-Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量，对应的各生成元的本征值——也就是对角矩阵的对角元——可以用来标记这个不可约表示。
-要找到一组Cartan子代数并不难：只需要从李群中找到一个交换子代数，然后尝试对角化这个交换子代数中的某一个成员就可以了。
-% TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
-非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
-这也就是我们频繁地讨论幺正表示的原因。但有许多重要的群——例如洛伦兹群——都不是紧致的（或者说群对应的流形无界），因此它们实际上并没有有限维的幺正表示。就洛伦兹群而言，我们将会看到，其推动生成元的有限维表示不是厄米的，因此整个群也没有幺正的有限维表示。
-
-容易验证，设$\hat{X}$是厄米算符，且
-\begin{equation}
-    \comm*{\hat{a}^\dagger}{\hat{X}} = c \hat{a}^\dagger,
-    \label{eq:raising-operator}
-\end{equation}
-那么
-\[
-    \hat{a}^\dagger \ket{X} \propto \ket{X+c},
-\]
-相应的，
-\[
-    \hat{a} \ket{X} \propto \ket{X-c}.
-\]
-因此称$\hat{a}^\dagger$为$\hat{X}$的\textbf{升算符}，$\hat{a}$为$\hat{X}$的\textbf{降算符}。
-数学上可以证明，在李代数的有限维表示上可以定义内积
-\begin{equation}
-    \langle \hat{A}, \hat{B} \rangle = \trace \hat{A} \hat{B},
-\end{equation}
-通过合适的线性组合，能够写出一组正交归一化的生成元。
-此时非Cartan子代数的生成元中的每一个都是Cartan子代数中的每一个成员的升降算符，
-并且任意两个非Cartan子代数的生成元的对易子都可以使用Cartan子代数的成员线性表示。
-% TODO:看起来Cartan子代数似乎构成它的不可约表示空间的一个CSCO
-% Symmetry and the Standard Model, p108
-因此对一个一般的、没有正交归一化的李代数的有限维表示，我们总是可以从李代数的成员构造出一个升算符。设$\hat{X}$为$g_i$，且
-\[
-    \hat{a}^\dagger = \lambda^j g_j,
-\]
-则\eqref{eq:raising-operator}等价于
-\[
-    \comm*{\lambda^j g_j}{g_i} = c \lambda^j g_j,
-\]
-代入\eqref{eq:structure-of-lie-algebra}，上式又等价于
-\begin{equation}
-    \left( f^k_{ji} - c \delta_j^k \right) \lambda^j = 0,
-    \label{eq:determine-ladder-operators}
-\end{equation}
-于是通过求解
-\begin{equation}
-    \det \left( f^k_{ji} - c \delta_j^k \right) = 0
-    \label{eq:possible-c}
-\end{equation}
-就可以得到所有可能的$c$，然后将它们代入\eqref{eq:determine-ladder-operators}就能够得到所有能够被非Cartan子代数表示出来的升降算符。
-最后，由于是有限维表示，通过以上手法得到的升降算符实际上就是全部可能的升降算符，因此从一个本征态出发，通过它们可以构造出所有的本征态。
-有限维表示还意味着，设$\hat{a}^\dagger$是某个升算符，那么对充分大的$N$，$(\hat{a}^\dagger)^N = 0$，$\hat{a}^N=0$，因为本征态的个数有限。
-这些条件可用于确定什么样的不可约表示是被允许的。
-% TODO：数学证明，不过多半鸽了
-这些操作的一个典型的例子见\autoref{sec:rotation}。
-
-现在我们分析一种比较特殊的情况。以上我们都是在“李代数可以分解成一个Cartan子代数和非Cartan元素，后者构成前者的升降算符”的框架下分析问题，那么如果李代数中所有元素都对易，那此时它会有怎样的表示？
-由于没有非Cartan元素，这样的一个李代数——从而它的李群——不会有有限维的不可约表示。
-通常这样的李群对应着某种平移操作，详情见\autoref{sec:translation}。
-
-% TODO：连续谱的情况
-以上讨论的不可约表示都是有限维的。无限维表示——这里指的是函数空间的表示——则需要一套不同的框架。设$\hat{q}$具有连续谱，且
-\begin{equation}
-    \comm*{\hat{q}}{\hat{p}} = \ii,
-\end{equation}
-则
-\begin{equation}
-    \exp \left( \ii \lambda \hat{p} \right) \ket{q} = \ket{q + \lambda}.
-\end{equation}
-也就是说$\exp (\ii \lambda \hat{p})$是让$\hat{q}$的本征矢对应的本征值上升$\lambda$的升算符。
-
-由于空间坐标无非是一种向量，李群和李代数也可以被作用在坐标上。
-作用在坐标上的有限维表示又诱导出了作用在函数上的无限维表示%
-\footnote{在有限维表示中，上下标$\mu$标记向量的诸分量；在函数空间中，坐标$x^\mu$标记“向量”——也就是函数——的诸“分量”——也就是函数在这一点的值。
-李群在有限维向量空间上的表示通常是某个矩阵群，它将不同分量混合在一起，即
-\[
-    \psi^\mu \longrightarrow R^\mu_\nu \psi^\nu.    
-\]
-李群在无限维向量空间上的表示通常是“改变坐标$x^\mu$”。
-}%
-。设$f=f(x)$，若李群在坐标上的表示为
-\[
-    x \longrightarrow x', \quad (x')^\mu = R_\nu^\mu (\Lambda) x^\nu,
-\]
-则它在关于坐标的函数——也就是“场”——组成的无限维向量空间上的表示就是
-\[
-    f \longrightarrow f', \quad f(x) = f'(x') = f'(R(\Lambda) x),
-\]
-或者等价的，
-\begin{equation}
-    (x \mapsto f(x)) \longrightarrow (x \mapsto f'(x) = f(R(\Lambda)^{-1} x)).
-    \label{eq:infinite-dim-rep}
-\end{equation}
-换而言之，坐标变动“牵引”了从坐标到场值的映射。
-考虑到$f$可能是某个多分量对象（比如矢量、矢量的张量积，或者接下来要看到的旋量）的分量，
-李群在此多分量场上的作用还包括通常的有限维表示，也就是
-\[
-    \psi^a \longrightarrow M(\Lambda)^a_b \psi^b.
-\]
-需注意此处我们使用了另外一个表示$M^a_b$而不是$R^\mu_\nu$，因为不能够保证$\Lambda$在多分量场$\psi$上的作用和它在坐标向量上的作用来自同一个有限维表示。
-由于大部分情况下我们都是从一个群在通常意义上的矢量的作用出发讨论其结构的，可以将$R(\Lambda) x$简记为$\Lambda x$，也就是群元$\Lambda$在$x$上的作用。
-这样上式就可以简洁地写成
-\begin{equation}
-    \psi^a(x) \longrightarrow {\psi'}^a (x) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
-    \label{eq:wigner-transform}
-\end{equation}
-这种同时考虑了多分量场在李群作用下各分量重新混合（这是一个有限维表示）和李群作用下坐标拖曳而改变场（这对坐标而言是另一个有限维表示，对场而言是一个无限维表示）的李群的表示就是\textbf{场表示}。
-需要注意的是，不同的$\Lambda$作用到坐标上可能会得出同样的结果，而它们对应的$M$作用到场上却有不同的结果，正如$SU(2)$和$SO(3)$的关系告诉我们的那样。
-
-\eqref{eq:wigner-transform}给出的是李群的场表示的一般形式，但此时我们还只有形式上的变换而没有显式的表达式。
-我们来分析其李代数。取%
-\footnote{虽然可以任意地调整群参数，从而让生成元前面的系数随意变动，但是通常对有限维表示和无限维表示我们总是采用同样的群参数。这就意味着，在有限维表示确定之后不能随意调节无限维表示的生成元前面的系数，不能随意加一个$\ii$或者改变正负号。这也就是我们在场表示中一并处理有限维表示和无限维表示的原因，因为此时两者的群参数自动地就是相同的。
-
-下式中的$g$的定义可以是\[
-    g = \frac{1}{\ii} \pdv{G}{g},
-\]
-但也可以是像我们定义旋转生成元时的那样，取
-\[
-    g = \ii \pdv{G}{g},
-\]
-只需要将$\epsilon$取为负值就可以了。无论$g$是怎么定义的，下式都是成立的。}%
-\[
-    \Lambda = I + \ii \epsilon g,
-\]
-其中$g$是一个生成元，我们就有
-\[
-    \begin{aligned}
-        \psi^a \longrightarrow {\psi'}^a &= M^a_b (\Lambda) \psi^b (\Lambda^{-1} x) \\
-        &= (I + \ii \epsilon M^a_b(g)) \psi^b (x - \ii \epsilon g x) \\
-        &= (I + \ii \epsilon M^a_b(g)) (\psi^b - \ii \epsilon g x \cdot \grad{\psi^b}) \\
-        &= \psi^b + \ii \epsilon M^a_b(g) \psi^b - \ii \epsilon g x \cdot \grad{\psi^b},
-    \end{aligned}
-\]
-于是
-\[
-    {\psi'}^a = (I + \ii \epsilon  (M^a_b(g) - g x \cdot \grad)) \psi^a,
-\]
-于是场表示的生成元可以写成
-\begin{equation}
-    M_\text{field} = M_\text{fin} + M_\text{inf}, \quad M_\text{fin} = M^a_b(g), \quad M_\text{inf} = - (g x) \cdot \grad.
-    \label{eq:fin-and-inf-rep}
-\end{equation}
-其中$M_\text{fin}$就是我们所熟悉的李群在有限维向量空间上的矩阵表示，而$M_\text{inf}$则是李群作用在坐标上，拖曳坐标而对场产生的影响。
-显然，它们和$g$之间能够建立同态关系。$gx$和$\Lambda x$一样，都是“$g$在坐标空间上的有限维矩阵表示作用于$x$”的简写。
-与通常物理中的记号不同，此处的梯度算符作用在所有坐标上，不仅仅是空间坐标，还包括时间坐标。
-
-在以上讨论的基础上我们讨论态矢量。我们总是使用李群在希尔伯特空间上的幺正表示，因为需要保证变换前后的态矢量都是物理的，也就是说，都是正交归一化的。
-我们刚才讨论了李群的场表示，这个场表示当然可以被作用在算符场上。但是注意到算符场是态空间上的算符，因此按照\eqref{eq:group-action-on-operators}，李群的场表示自然地如下导出了李群在希尔伯特空间上的表示：
-\begin{equation}
-    \hat{U}(\Lambda) \hat{\psi}^b(\vb*{x}) \hat{U}^{-1}(\Lambda) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
-    \label{eq:field-rep-and-state-rep-lie-group}
-\end{equation}
-由于对$\hat{\phi}$的变换等价于对其本征值做变换，这又等价于保持本征值不变而重新安排本征态，按照上式诱导出的在希尔伯特空间上的李群表示$\hat{U}$也是幺正的。
-
-相应的，\eqref{eq:field-rep-and-state-rep-lie-group}也导致了对应的李代数在希尔伯特空间上的表示。对\eqref{eq:field-rep-and-state-rep-lie-group}取微元，得到
-\[
-    (1 + \ii \epsilon M_\text{state}) \hat{\psi}^b (1 - \ii \epsilon M_\text{state}) = \ii \epsilon M_\text{field} \hat{\psi},
-\]
-从而
-\begin{equation}
-    \comm*{M_\text{state}}{\psi} = M_\text{field} \psi.
-    \label{eq:field-rep-and-state-rep-gen}
-\end{equation}
-实际上，时间演化方程\eqref{eq:quantum-evolution}就是一个例子：时间平移群在希尔伯特空间上的表示是哈密顿算符$\hat{H}$，在场——这里是任何一种物理量——上的表示是$\frac{1}{\ii} \dv{t}$，那么
-\[
-    \comm*{\hat{H}}{\hat{A}} = \frac{1}{\ii} \dv{t},
-\]
-这就是时间演化方程。
-
-考虑一个简单的单粒子量子力学的例子：$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
-\[
-    \hat{x} + a = \int \dd{x} x \dyad{x} + a \int \dd{x} \dyad{x} 
-    = \int \dd{x} (x + a) \dyad{x} = \int \dd{x'} x' \dyad{x'-a},
-\]
-因此作用在$\hat{x}$上的大小为$a$的平移就等价于作用在态空间基矢量上的大小为$-a$的平移。
-更一般的，将某一个李群$Q(a)$作用在某一算符上就相当于将这一李群的群参数倒转过来得到新的李群$Q'$，
-也就是定义$Q'(a) = Q(a)^{-1}$（由于是群，$Q'$和$Q$同构），然后将$Q'(a)$作用在态空间的基矢量上。
-由于$Q'$和$Q$同构，两者的区别仅仅是重新规定了群参数，因此它们对应着同样的对称性。
-% TODO：以上说法的推广
-总之，我们既可以直接从某种李群的场表示出发，推导它允许的算符场有哪些，然后使用二次量子化的有关知识导出其对应的单粒子态，
-也可以从李群在希尔伯特空间上的表示出发，直接得到单粒子态然后构造算符场。
-两种方法是完全一致的。舒尔引理告诉我们，卡西米尔算符（和所有生成元都对易）在不可约表示中一定是恒等算符的常数倍。这个常数可以用来标记相应的不可约表示；事实上这一类常数往往会出现在相应的表示描写的场/粒子的运动方程中，因为运动方程中会出现卡西米尔算符的场表示。
-相对而言，在推导运动方程的时候，使用场的观点更加方便，因为相对论情况下粒子数通常是不确定的，因此使用单粒子态难以写出哈密顿量。
-
-概括以下我们至今得到的结果：李群和李代数的表示有下面几种，它们彼此之间有非常密切的关系。
-首先，李群和李代数在有限维向量空间上的表示是矩阵，它们或者是可约表示，或者不可约，前者可以通过直和运算由后者组装出来。
-不可约有限维表示的结构可以通过使用李代数中的非Cartan元素构造Cartan子代数的升降算符来确定。
-通过将有限维表示作用在坐标上，我们得到了作用在关于坐标的函数组成的向量空间上的无限维表示。
-将作用在多分量对象上的有限维表示和作用在坐标函数上的无限维表示结合起来，就得到了场表示。
-李群在向量空间上的表示很自然地就诱导出了李群在作用在向量空间上的算符上的表示。
 
 \subsection{单粒子情况}
 
@@ -2780,6 +2802,7 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \section{单粒子量子力学}\label{sec:single-particle}
 
 本节讨论单粒子量子力学。实际上，本节提供的大部分物理基本上已经在\autoref{sec:field-as-particles}中讨论了。本节的目的在于给出在完全不知道相对论性量子场论时怎么使用对称性工具重新得到这些物理。
+所谓单粒子态指的是这样一种态：其上的一个CSCO是位置算符$\vb*{x}$连同一些别的量，从而其态空间可以写成一个坐标空间（或者说轨道空间）和一个内禀自由度空间的直积。
 
 \subsection{重要的物理量}\label{sec:single-particle-quantity}
 
@@ -2800,9 +2823,25 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 \end{equation}
 其中$\ket{x'}$代表位置在$x'$的本征态。
 
-很自然地，我们考虑空间平移群导致的物理量。空间平移群是李群，它在$\mathcal{H}_{1\text{d}}$上有幺正表示，则其生成元是厄米的，从而是一个可观察量。
-$\hat{Q}(a+b)=\hat{Q}(a) \hat{Q}(b)$则意味着$\dd{\hat{Q}} / \dd{a}$与群参数$a$无关，即变换是均匀的。
-于是设
+很自然地，我们考虑空间平移群导致的物理量。空间平移群是李群，它在$\mathcal{H}_{1\text{d}}$上有幺正表示，则其生成元是厄米的，从而是一个可观察量。设%
+\footnote{容易看出这代表
+\[
+    \hat{p} = \ii \pdv{\hat{Q}}{x},
+\]
+刚好和一般的定义差了一个负号。这是因为平移群对“场算符”位置$\hat{x}$的作用是
+\[
+    \hat{x} \stackrel{Q_\text{operator}}{\longrightarrow} \hat{x} + a,
+\]
+使用同一个群参数$a$，上式按照\eqref{eq:field-rep-and-state-rep-gen}诱导出的在态矢量上的作用就是
+\[
+    \ket{x} \stackrel{Q_\text{operator}}{\longrightarrow} \ket{x - a}.
+\]
+然而，我们通常希望空间平移群在态矢量上的作用是
+\[
+    \ket{x} \stackrel{Q_\text{state}}{\longrightarrow} \ket{x + a},
+\]
+因此为了让$Q_\text{operator}$按\eqref{eq:field-rep-and-state-rep-gen}诱导出的在态矢量上的作用的生成元和$Q_\text{state}$的生成元一致，在定义$Q_\text{state}$的生成元时我们特意加了一个负号。正文中的$\hat{Q}$指的都是$Q_\text{state}$。
+\label{note:state-and-operator-minus-symbol}}
 \begin{equation}
     \hat{Q}(\dd{x}) = \hat{I} + \frac{1}{\ii} \dd{x} \hat{p},
 \end{equation}
@@ -2828,9 +2867,9 @@ $\hat{Q}(a+b)=\hat{Q}(a) \hat{Q}(b)$则意味着$\dd{\hat{Q}} / \dd{a}$与群参
     \label{eq:x-p-commutator-1d}   
 \end{equation}
 对易关系\eqref{eq:x-p-commutator-1d}完全确定了$\hat{x}$和$\hat{p}$的李代数结构。
-实际上，完全可以使用更加简单的方法获得\eqref{eq:x-p-commutator-1d}。设一维空间平移群在$\mathcal{H}_\text{1d}$上的表示为$\hat{p}$。一维空间平移群在算符$\hat{x}$上的表示为
+实际上，完全可以使用更加简单的方法获得\eqref{eq:x-p-commutator-1d}。设一维空间平移群在$\mathcal{H}_\text{1d}$上的表示为$\hat{p}$。一维空间平移群对算符$\hat{x}$的作用的微分为
 \[
-    \frac{1}{\ii} \dv{a} {(x + a) - x} = - \ii,
+    \frac{1}{\ii} \dv{a} {((x + a) - x)} = - \ii,
 \]
 从而由\eqref{eq:field-rep-and-state-rep-gen}，我们有
 \[
@@ -2838,75 +2877,128 @@ $\hat{Q}(a+b)=\hat{Q}(a) \hat{Q}(b)$则意味着$\dd{\hat{Q}} / \dd{a}$与群参
 \]
 就得到了\eqref{eq:x-p-commutator-1d}。
 
+我们来分析动量算符在坐标表象下的表示。
+我们有
+\[
+    \begin{aligned}
+        (1 - \ii \hat{p} \dd{x}) \ket{\psi} &= \hat{Q}(\dd{x'}) \ket{\psi} \\
+        &= \int \dd{x'} \hat{Q}(\dd{x}) \ket{x'} \braket{x'}{\psi} \\
+        &= \int \dd{x'} \ket{x' + \dd{x}} \braket{x'}{\psi} \\
+        &= \int \dd{x'} \ket{x'} \braket{x' - \dd{x}}{\psi} \\
+        &= \int \dd{x'} \ket{x'} \left(\braket{x'}{\psi} - \dd{x} \pdv{x'} \braket{x'}{\psi} \right) \\
+        &= \ket{\psi} - \dd{x} \int \dd{x'} \ket{x'} \pdv{x'} \braket{x'}{\psi}, 
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    \hat{p} \ket{\psi} = - \ii \int \dd{x'} \ket{x'} \pdv{x'} \braket{x'}{\psi},
+\end{equation}
+或者等价的，
+\begin{equation}
+    \mel{x}{\hat{p}}{\psi} = - \ii \pdv{x} \braket{x}{\psi}.
+    \label{eq:p-in-x-representation-1d}
+\end{equation}
+当然，完全可以使用空间平移群在无限维空间上的表示得到这个结果；由\autoref{note:state-and-operator-minus-symbol}，虽然使用同一个群参数的空间平移群在算符$\hat{x}$和态$\ket{x}$上的作用正好是相反的，但由于定义$\hat{p}$时已经考虑了这一点，从\eqref{eq:transition-inf-rep}就能够得到\eqref{eq:p-in-x-representation-1d}。
+
+从\eqref{eq:p-in-x-representation-1d}可以导出位置的本征态和动量本征态之间的切换关系。取$\ket{\psi}$为$\ket{p}$，我们有
+\[
+    \mel{x}{\hat{p}}{p} = - \ii \pdv{x} \braket{x}{p} = \mel{x}{p}{p} = p \braket{x}{p},
+\]
+即微分方程
+\[
+    \pdv{x} \braket{x}{p} = \ii p \braket{x}{p},
+\]
+从而
+\[
+    \braket{x}{p} = C \ee^{\ii p x}.
+\]
+由于总是可以在所有$\ket{p}$上一起乘上一个模长为1的常数而不产生任何影响，不失一般性地我们取$C$为实数。
+归一化条件为
+\[
+    \delta(p - p') = \braket{p}{p'} = \int \dd{x} \braket{p}{x} \braket{x}{p'},
+\]
+从而计算得到
+\begin{equation}
+    \braket{x}{p} = \frac{1}{\sqrt{2\pi}} \ee^{\ii p x}.
+\end{equation}
+这表明坐标表象和动量表象之间的变换是傅里叶变换。
+
 下面转而讨论三维的情况。三维位置算符$\hat{\vb*{x}}$指的是
 \begin{equation}
-    \hat{\vb*{x}} = \hat{x}_1 \vb*{e}_1 + \hat{x}_2 \vb*{e}_2 + \hat{x}_3 \vb*{e}_3,
+    \hat{\vb*{x}} = \hat{x}^1 \vb*{e}_1 + \hat{x}^2 \vb*{e}_2 + \hat{x}^3 \vb*{e}_3,
 \end{equation}
 其中为方便起见选取$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$为一组规范正交基。
-$\hat{x}_1, \hat{x}_2, \hat{x}_3$的本征值均跑遍整条实数轴，因此$\hat{\vb*{x}}$的本征值是$\reals^3$中全体矢量。
-我们还需要加入另一个假设：$\hat{x}_1, \hat{x}_2, \hat{x}_3$彼此对易。这个假设要求这三个算符满足某种“独立性”。
+$\hat{x}^1, \hat{x}^2, \hat{x}^3$的本征值均跑遍整条实数轴，因此$\hat{\vb*{x}}$的本征值是$\reals^3$中全体矢量。
+我们还需要加入另一个假设：$\hat{x}^1, \hat{x}^2, \hat{x}^3$彼此对易。这个假设要求这三个算符满足某种“独立性”。
 在一个完全能够由$\hat{\vb*{x}}$描述的希尔伯特空间$\mathcal{H}_{3\text{d}}$中我们写出其形式
 \begin{equation}
     \hat{\vb*{x}} = \int \dd[3]{\vb*{x}} \vb*{x} \dyad{\vb*{x}} 
-    = \int \dd[3]{\vb*{x}} (\hat{x}_1 \vb*{e}_1 + \hat{x}_2 \vb*{e}_2 + \hat{x}_3 \vb*{e}_3) \dyad{x_1, x_2, x_3}.
+    = \int \dd[3]{\vb*{x}} (\hat{x}^1 \vb*{e}_1 + \hat{x}^2 \vb*{e}_2 + \hat{x}^3 \vb*{e}_3) \dyad{x^1, x^2, x^3}.
 \end{equation}
 
-三维空间平移群在态空间上的幺正表示为$\hat{Q}(\vb*{a})$，同样还是满足与一维情况类似的几个条件：
-\begin{itemize}
-    \item 平移将位置算符的一个本征态变换为另一个：
-    \begin{equation}
-        \hat{Q}(\vb*{a}) \ket{\vb*{x}} = \ket{\vb*{x} + \vb*{a}}.
-    \end{equation}
-    \item 一次完成平移和多次完成是一样的：
-    \begin{equation}
-        \hat{Q}(\vb*{a}) \hat{Q}(\vb*{b}) = \hat{Q}(\vb*{a} + \vb*{b}).
-        \label{eq:movement-plusable}
-    \end{equation}
-\end{itemize}
-同样，\eqref{eq:movement-plusable}意味着生成元不显含群参数。
-三维空间平移群本身是三维的，也就是说有三个生成元。不妨设这三个生成元是满足
-\begin{equation}
-    \begin{split}
-        \hat{Q}(\vb*{e}_1 \dd{x_1}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_1, \\
-        \hat{Q}(\vb*{e}_2 \dd{x_2}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_2, \\
-        \hat{Q}(\vb*{e}_3 \dd{x_3}) = \hat{I} + \frac{1}{\ii \hbar} \hat{p}_3
-    \end{split} 
-\end{equation}
-的不显含群参量的算符。显然它们是厄米的。
-我们可以重复一维的操作步骤来获得三维空间平移群的生成元及其对易关系。
-
-不过，实际上有一种更为简单的办法。
-注意到\eqref{eq:movement-plusable}实际上蕴涵了这样一个事实：沿着$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$的平移操作是对易的，这就意味着
+沿着$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$的平移操作是对易的，这就意味着
 \begin{equation}
     [\hat{p}_1, \hat{p}_2] = [\hat{p}_2, \hat{p}_3] = [\hat{p}_3, \hat{p}_1] = 0.
 \end{equation}
 所有生成元彼此对易。这样三维空间平移群的李代数就被拆分成了三个一维空间平移群的李代数的直和，三维空间平移群就被拆分成了三个一维空间平移群的直积。
-这三个一维空间平移群分别是$x_1$方向上的平移群$\hat{Q}_1(a)$，$x_2$方向上的平移群$\hat{Q}_2(a)$，以及$x_3$方向上的平移群$\hat{Q}_3(a)$。
-另一方面，注意到三维位置算符对应的本征态张成的空间$\{ \ket{x_1, x_2, x_3} \}$实际上是三个一维位置算符对应的本征态张成的空间的直积，
-这是因为$\hat{x}_1, \hat{x}_2, \hat{x}_3$彼此对易。于是我们做拆分
+这三个一维空间平移群分别是$x^1$方向上的平移群$\hat{Q}_1(a)$，$x^2$方向上的平移群$\hat{Q}_2(a)$，以及$x^3$方向上的平移群$\hat{Q}_3(a)$。
+另一方面，注意到三维位置算符对应的本征态张成的空间$\{ \ket{x^1, x^2, x^3} \}$实际上是三个一维位置算符对应的本征态张成的空间的直积，
+这是因为$\hat{x}^1, \hat{x}^2, \hat{x}^3$彼此对易。于是我们做拆分
 \[
     \mathcal{H}_\text{3d} = \mathcal{H}_\text{1d1} \otimes \mathcal{H}_\text{1d2} \otimes \mathcal{H}_\text{1d3},
 \]
-并且用$\hat{x}_1$完全描述$\mathcal{H}_\text{1d1}$，用$\hat{x}_2$完全描述$\mathcal{H}_\text{1d2}$，用$\hat{x}_3$完全描述$\mathcal{H}_\text{1d3}$。
-由于$\hat{Q}_1(a)$不改变$x_2, x_3$，它在$\mathcal{H}_\text{1d2},\mathcal{H}_\text{1d3}$上没有作用。同样也可以对$\hat{Q}_2(a),\hat{Q}_3(a)$做同样的论证。从而，下标不一样的$\hat{x}_i$和$\hat{p}_i$彼此对易。
-这样关于诸$\hat{x}$和诸$\hat{p}$的李代数就可以拆分成$\{\hat{x}_1, \hat{p}_1\}$、$\{\hat{x}_2, \hat{p}_2\}$和$\{\hat{x}_3, \hat{p}_3\}$三对量的李代数的直和。
+并且用$\hat{x}^1$完全描述$\mathcal{H}_\text{1d1}$，用$\hat{x}_2$完全描述$\mathcal{H}_\text{1d2}$，用$\hat{x}_3$完全描述$\mathcal{H}_\text{1d3}$。
+由于$\hat{Q}_1(a)$不改变$x^2, x^3$，它在$\mathcal{H}_\text{1d2},\mathcal{H}_\text{1d3}$上没有作用。同样也可以对$\hat{Q}_2(a),\hat{Q}_3(a)$做同样的论证。从而，下标不一样的$\hat{x}^i$和$\hat{p}_i$彼此对易。
+这样关于诸$\hat{x}$和诸$\hat{p}$的李代数就可以拆分成$\{\hat{x}^1, \hat{p}_1\}$、$\{\hat{x}^2, \hat{p}_2\}$和$\{\hat{x}^3, \hat{p}_3\}$三对量的李代数的直和。
 最后注意到在每个空间$\mathcal{H}_\text{1d$i$}$中，
 \[
-    \hat{Q}_i(a) \ket{x_i} = \ket{x_i + a},
+    \hat{Q}_i(a) \ket{x^i} = \ket{x^i + a},
 \]
 于是我们可以原封不动地套用对一维动量和位置的论证，得到
 \[
-    [\hat{x}_i, \hat{p}_i] = \ii \delta_{ij}.
+    [\hat{x}^i, \hat{p}_i] = \ii \delta_{j}^i.
 \]
 于是，在没有做任何计算，而只是观念性地拆分了态空间之后，我们得到三维情况下的动量-位置对易关系：
 \begin{equation}
-    [\hat{x}_i, \hat{x}_j] = 0, \quad [\hat{p}_i, \hat{p}_j] = 0, \quad [\hat{x}_i, \hat{p}_j] = \ii .
+    [\hat{x}^i, \hat{x}^j] = 0, \quad [\hat{p}_i, \hat{p}_j] = 0, \quad [\hat{x}^i, \hat{p}_j] = \ii .
 \end{equation}
 同样，也可以通过\eqref{eq:field-rep-and-state-rep-gen}得到上式。
+同样，套用一维动量和位置的论证，我们得到动量算符在坐标表象下的形式
+\begin{equation}
+    \mel{\vb*{x}}{\hat{\vb*{p}}}{\psi} = - \ii \grad{\braket{\vb*{x}}{\psi}},
+    \label{eq:p-in-x-representation}
+\end{equation}
+以及相应的表象变换矩阵
+\begin{equation}
+    \braket{\vb*{x}}{\vb*{p}} = \frac{1}{(2\pi)^{3/2}} \ee^{\ii \vb*{p} \cdot \vb*{x}}.
+\end{equation}
 
 \subsubsection{角动量}
 
-角动量算符就是旋转生成元在态矢量上的表示。
+角动量算符就是旋转生成元在态矢量上的表示。与\autoref{note:state-and-operator-minus-symbol}中提到的类似，如果旋转群$\hat{R}(\vb*{\phi})$是直接作用在态上的，那么定义
+\begin{equation}
+    \hat{R}(\vb*{\phi}) = \hat{I} + \frac{1}{\ii} (\phi_1 \hat{J}^1 + \phi_2 \hat{J}^2 + \phi_3 \hat{J}^3), 
+\end{equation}
+而如果它是作用在算符上，而只是通过\eqref{eq:field-rep-and-state-rep-lie-group}诱导出了一个在态上的表示，那么定义
+\[
+    \hat{R}(\vb*{\phi}) = \hat{I} + \ii (\phi_1 \hat{J}^1 + \phi_2 \hat{J}^2 + \phi_3 \hat{J}^3).
+\]
+两种定义给出的$\hat{J}^i$是一样的。
+
+$J^i$可以分解成两部分：一部分改变$\vb*{x}$的取值，一部分不改变。改变$\vb*{x}$取值的那一部分记作$L^i$，称为\textbf{轨道角动量}，它与粒子的位置自由度有关，因此有这个名称；不改变$\vb*{x}$取值的那一部分记作$S^i$，称为\textbf{自旋角动量}，因为它和粒子的内禀自由度有关。
+$J^i$服从\eqref{eq:lie-algebra-so3}，因此我们也称\eqref{eq:lie-algebra-so3}为角动量代数。
+
+需要注意的是，以上定义不能够一般地将轨道角动量和自旋角动量完全分开，因为可以任意地将自旋角动量划归一部分给轨道角动量。因此我们人为要求轨道角动量仅仅作用在坐标空间上，而自旋角动量仅仅作用在内禀自由度上。
+
+按照\eqref{eq:rotation-inf-rep}和\eqref{eq:p-in-x-representation}，我们有
+\[
+    \begin{aligned}
+        \mel{\vb*{x}}{\hat{L}^1}{\psi} &= x^2 (- \ii \partial_3) \braket{\vb*{x}}{\psi} - x^3 (- \ii \partial_2) \braket{\vb*{x}}{\psi} \\
+        &= \mel{\vb*{x}}{(\hat{x}^2 \hat{p}_3 - \hat{x}^3 \hat{p}_2)}{\psi}, \\
+        \hat{L}^1 = 
+    \end{aligned}
+\]
+于是得到
 
 \subsection{动力学}
 
