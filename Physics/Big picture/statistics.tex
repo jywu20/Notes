@@ -83,7 +83,7 @@
 通过系综计算出来的概率和真的动手做变量控制得足够好的实验时的概率是一致的：动手做实验时实验结果依赖于某些环境参数$\theta$，
 只要环境是足够杂乱，以至于$\theta$的分布完全随机（环境通常足够大，因此总是这样），
 那么重复做实验就是采集了大量$\theta$样本，每个$\theta$确定了一个系统，从而建立了一个系综。%
-\footnote{当然，系综中系统-环境对的数目总是很大的，而真实的实验做不了那么多次。这里只是原理性地说明系综这一概念的合理性。}
+\footnote{当然，系综中系统-环境对的数目总是很大的，而真实的实验做不了那么多次。这里只是原理性地说明系综这一概念的合理性。}%
 % TODO：以上说法和退相干等的关系
 % 还有这其实有点循环论证的意味：多次实验做出来的概率和系综算出来的概率一致是因为环境提供了很好的随机数，
 % 环境为什么能够提供经典意义上的随机数要严格论证还是要用到系综的概念。
@@ -143,8 +143,22 @@
     \hat{\rho} = \sum_{i} P(\ket{\psi_i}) \dyad{\psi_i},
     \label{eq:density-operator}
 \end{equation}
-其中$P(\ket{\psi_i})$指的是从系综中随机取出一个态，经过测量发现它处于$\ket{\psi_i}$的概率。
+其中$P(\ket{\psi_i})$指的是从系综中随机取出一个态，经过测量发现它处于$\ket{\psi_i}$的概率。%
+\footnote{更准确地说，这是“经过测量之后发现它在各个$\ket{\psi}$态之中处于$\ket{\psi_i}$”的概率。
+测量永远是针对一个算符的而不是针对一个单独的态的，对系统做一次测量，观察它会落到诸$\ket{\psi}$中的哪一个的方法是，构造算符
+\[
+    \hat{A} = \sum_i A_i \dyad{\psi_i},
+\]
+其中不同的$i$对应不同的$A_i$，然后使用这个算符对系统做测量，若测量结果是某个$A_i$，那么系统就落在了态$\ket{\psi_i}$上。}%
 需要注意的是，即使诸$\ket{\psi_i}$相互并不正交，\eqref{eq:density-operator}也是成立的。
+\eqref{eq:density-operator}中的每一项的系数都是正的，因此$\hat{\rho}$是正定的。
+而又由于\eqref{eq:density-operator}中每一项的系数都小于等于$1$，数学上可以证明，$\hat{\rho}$的本征值全部在$0$和$1$之间，可以取到$1$。
+当然，如果\eqref{eq:density-operator}中的某一个$P(\ket{\psi_i})$真的取到了$1$，那么按照概率的性质，此时其余的$P(\ket{\psi_j})$都是零，从而
+\[
+    \hat{\rho} = \dyad{\psi_i},
+\]
+因此系统处于纯态。类似地也可以说明，$\hat{\rho}$的本征值取到$1$，当且仅当系统处于纯态；此时$\hat{\rho}$的本征态就是系统的态矢量。
+
 如果可能的$\psi_i$只有一个，那么称此时的系综是\textbf{纯}的，或者说系统处于纯态，因为此时根本不需要引入系综的概念：直接对这个仅有的$\ket{\psi}$解运动方程就可以得到想要的一切信息。
 否则，称此时的系综为\textbf{混合}的，或者说系统处于混合态。
 需要注意的是即使是纯态也会引入随机性，因为测量所用的算符的本征态未必和$\ket{\psi_i}$一致。
@@ -159,7 +173,7 @@
 实际上，\eqref{eq:density-operator}本身就体现了这一点：我们并不关心混合态是因为系统和环境的纠缠还是因为别的什么引起的，因此使用统一的\eqref{eq:density-operator}处理两种情况。
 
 一般来说，对实际的、通常规模很大的系统，我们不可能知道它的所有信息。或者我们不知道它的某些参数，或者我们不知道它是不是和环境纠缠在一起。无论哪种情况，描述系统都需要使用混合态。
-因此接下来在不至于引起混淆时我们不严格区分“系统”和“系综”，因为我们根本就不知道“实际上的系统”是什么样子的，而只能讨论系综。
+因此接下来在不至于引起混淆时我们不严格区分“系统”和“系综”，因为我们根本就不知道“实际上的系统”是什么样子的，而只能讨论系综。于是称纯的系综处于\textbf{纯态}，混合系综处于\textbf{混合态}。
 相应的，凡是不能够从密度算符中读取得到的信息，我们一概不讨论，因为这些信息不能从系综中读出来。
 
 \subsubsection{时间演化}
@@ -239,6 +253,7 @@
         = 1, \quad & \text{for pure states}, \\
         < 1, \quad & \text{for mixed states}.
     \end{cases}
+    \label{eq:inequality-of-mixed-state}
 \end{equation}
 也就是说密度算符能够提供“纯态还是混合态”的信息。于是可以定义一个密度算符的\textbf{纯度}为
 \begin{equation}
@@ -247,7 +262,20 @@
 它越接近$1$说明系统越接近纯态。
 
 此外很容易看出密度算符是厄米的。如果各个参与态相互正交，那么密度算符的本征值就是对应的本征态出现的概率。
-当然，各个参与态完全可以不正交。
+当然，各个参与态完全可以不正交，但因为我们从密度算符中并不能判断出哪些是参与态，因此总是可以将密度算符使用它自身的本征态展开，不失一般性地假定各个参与态就是密度算符的本征态。
+在各个参与态正交时，可以具体地写出任何一个物理量的期望的公式。我们有
+\[
+    \begin{aligned}
+        \hat{\rho} &= \sum_n P(\ket{n}) \dyad{n}, \\
+        \expval*{\hat{A}} &= \trace \hat{\rho} \hat{A} \\
+        &= \sum_m \mel{m}{\left(\sum_n P(\ket{n}) \dyad{n} \hat{A} \right)}{m} \\
+        &= \sum_{m, n} P(\ket{n}) \braket{m}{n} \mel{n}{\hat{A}}{m}, 
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    \expval*{\hat{A}} = \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
+\end{equation}
 
 \subsubsection{复合系统}
 
@@ -313,7 +341,35 @@
 很容易就可以看出，以上推导和\autoref{sec:introduction-of-density-operator}中从纠缠态导出密度算符的方式完全一样。
 这是当然的，因为系统1可以和系统2有纠缠，因此人为把系统1孤立出来必然导致\autoref{sec:introduction-of-density-operator}节中的操作。
 
-% TODO:以上我们从两个系统的复合的密度矩阵导出了其中一个系统的密度矩阵（后者称为“约化密度矩阵”）。现在假设我们已有两个系统，则它们的复合的密度矩阵就是这两个系统的密度矩阵的直积。
+另一方面，设我们有两个相互独立的系统，称为系统1和系统2。
+所谓相互独立指的是对其中一个系统做某些操作（或者说，让其中一个系统和另一些东西产生相互作用）不影响另一个系统的状态。例如，对其中一个系统做测量不会影响另一个系统的状态。
+设两个系统的密度算符分别为
+\[
+    \hat{\rho}_1 = \sum_i P(\ket*{\psi_i^{(1)}}) \dyad*{\psi_i^{(1)}}, \quad \hat{\rho}_2 = \sum_i P(\ket*{\psi_i^{(2)}}) \dyad*{\psi_i^{(2)}}.
+\]
+现在把系统1和系统2看成同一个系统。实际上，我们是把描述系统1的系综和描述系统2的系综拼成了一个大系综。这个大系综中的态可以写成$\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}$的形式。
+现在使用这一组态对大系统做一次测量，由于系统1和系统2无关，有
+\[
+    P(\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}) = P(\ket*{\psi_i^{(1)}}) P(\ket*{\psi_j^{(2)}}),
+\]
+从而，大系统的密度矩阵就是
+\begin{equation}
+    \hat{\rho} = \hat{\rho}_1 \otimes \hat{\rho}_2.
+    \label{eq:independent-systems-combinition}
+\end{equation}
+反之也容易验证，如果\eqref{eq:independent-systems-combinition}成立，那么设$\hat{H}_1$仅仅作用在系统1上，则
+\[
+    \begin{aligned}
+        \dv{t} \hat{\rho}_1 \otimes \hat{\rho}_2 &= \frac{1}{\ii \hbar} \comm*{\hat{H}_1}{\hat{\rho}_1 \otimes \hat{\rho}_2} \\
+        &= \frac{1}{\ii \hbar} \comm*{\hat{H}_1}{\hat{\rho}_1} \otimes \hat{\rho}_2,
+    \end{aligned}
+\]
+因此对系统1做的操作不影响系统2，反之亦然。
+因此，两个系统独立，当且仅当\eqref{eq:independent-systems-combinition}成立。
+这又等价于，
+\begin{equation}
+    (\trace_2 \hat{\rho}) \otimes (\trace_1 \hat{\rho}) = \hat{\rho}.
+\end{equation}
 
 \subsubsection{未归一化的密度算符}
 
@@ -331,7 +387,11 @@
 \end{equation}
 则$\hat{\rho} / Z$就是归一化的密度算符。使用这个关系，我们得到期望值公式为
 \begin{equation}
-    \expval*{A} = \frac{1}{Z} \trace \left(\hat{\rho} \hat{A}\right) = \frac{\trace \left(\hat{\rho} \hat{A}\right)}{\trace \hat{\rho}},
+    \expval*{\hat{A}} = \frac{1}{Z} \trace \left(\hat{\rho} \hat{A}\right) = \frac{\trace \left(\hat{\rho} \hat{A}\right)}{\trace \hat{\rho}},
+\end{equation}
+在参与态为正交归一化基时这就是
+\begin{equation}
+    \expval*{\hat{A}} = \frac{1}{Z} \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
 \end{equation}
 纯度公式为
 \begin{equation}
@@ -339,14 +399,44 @@
 \end{equation}
 越接近1说明态越纯。
 
-\subsection{平衡态多粒子系统}
+\subsection{热力学量}
+
+现在我们引入几个量的严格定义。仅仅从这些量的性质出发对系统的能量状况做的分析叫做\textbf{热力学}。
+
+设$\hat{\rho}$是归一化的密度算符。首先定义
+\begin{equation}
+    S = - \trace (\hat{\rho} \ln \hat{\rho})
+    \label{eq:neumann-entropy}
+\end{equation}
+为\textbf{熵}，或称为\textbf{冯诺依曼熵}来和信息熵和经典熵区分。设密度算符被对角化为
+\[
+    \hat{\rho} = \sum_n \rho_n \dyad{n},
+\]
+我们只取其中非零的项。那么就有
+\begin{equation}
+    S = - \sum_n \rho_n \ln \rho_n.
+\end{equation}
+如前所述，$0 < \rho_n \leq 1$，从而$S \geq 0$。
+
+如果系统处于纯态，那么总是有一个态$\ket{\psi}$使密度算符可以写成
+\[
+    \hat{\rho} = \dyad{\psi},
+\]
+此时$\rho_n$只有一个，且它的值为$1$，从而$S=0$。反之，如果$S=0$，那么所有的$\rho_n$都是1，因此只有一个$\rho_n$且它是1，因此系统处于纯态。
+这意味着熵为$0$是系统处于纯态的充要条件。
+
+我们已经发现了熵取最小值意味着什么。顺带而来的问题：熵取极大值又意味着什么？我们会看到，这意味着系统达到了平衡态。
+
+\subsection{平衡态系统}
+
+\subsubsection{密度算符与配分函数}
 
 接下来我们来讨论，当一个系统达到平衡态时它会具有什么性质。在系统很大（从而它不是可积的），并且和外界有小但确实有的相互作用（从而它的演化轨迹会时不时从一条偏移到另外一条上，但每条轨迹又不会有很大偏离）时，我们有\textbf{各态遍历性}：在一段时间内，系统会经过所有可能的态。%
-\footnote{这些条件都是必要的：如果系统很简单，比如说，就是理想的二体问题，那么就算系统和环境有纠缠或者持续的小的相互作用也不会各态遍历——可积系统不会热化。}
-所谓可能指的是和系统已知的各个参数一致，例如如果系统和外界无能量交换，那么所有可能的态就是指能量和初始能量一致的态。
+\footnote{这些条件都是必要的：如果系统很简单，比如说，就是理想的二体问题，那么就算系统和环境有纠缠或者持续的小的相互作用也不会各态遍历——可积系统不会热化。}%
+所谓可能指的是和系统已知的各个参数一致，例如如果系统和外界无能量交换，那么所有可能的态就是指能量和初始能量相等的态。
 系统遍历所有可能的态的时间，也就是\textbf{遍历时间}，通常远远小于我们观察的时间尺度。
 显然，这就意味着在我们观察的时间尺度上均匀取样地对系统做观察，得到的结果是随机的。%
-\footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}
+\footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}%
 相应的，系统取各个态的概率是相同的。
 % TODO:为什么是相同的？
 从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。
@@ -387,7 +477,7 @@
 
 我们来分析系统取特定能量的概率。我们称系统处于某个能量上的所有态的总和为\textbf{能级}。
 首先假定系统的能级没有简并，或者各个能级的简并情况是相同的（也就是说，每个能级上的简并数相同）。%
-\footnote{等价地说就是，系统的态空间可以写成能量空间直积上别的某些自由度。另一种等价的说法是，系统的哈密顿算符$\hat{H}$和别的某几个算符可以构成系统的一组CSCO。}
+\footnote{等价地说就是，系统的态空间可以写成能量空间直积上别的某些自由度。另一种等价的说法是，系统的哈密顿算符$\hat{H}$和别的某几个算符可以构成系统的一组CSCO。}%
 由于系统和热库总能量恒定，我们有
 \[
     P(E_s) \propto d_s(E_s) d_r(E_T - E_s) \propto d_r (E_T - E_s),
@@ -403,7 +493,7 @@
 \]
 最后，注意到系统的能量可以整体地加上一个常数而不影响其行为%
 \footnote{我们就是在这里用到了系统无简并或者各个能级的简并情况相同这一假设。如果系统不同能级上的简并数不同，那当我们整体地将能量加上一个常数时还需要调整对应能级的简并数才能够让系统行为保持不变。
-例如，设能级$E_0$上的简并数为$n_1$，$E_0 + \Delta E$上的简并数为$n_2$，现在如果将能量整体地加上常数$\Delta E$，那需要重新规定能级$E_0 + \Delta E$上的简并数为$n_1$。}
+例如，设能级$E_0$上的简并数为$n_1$，$E_0 + \Delta E$上的简并数为$n_2$，现在如果将能量整体地加上常数$\Delta E$，那需要重新规定能级$E_0 + \Delta E$上的简并数为$n_1$。}%
 ，因此上式右边只应该关于$E_s$和$E_{s'}$的差值，从而
 \[
     \frac{P(E_s)}{P(E_{s'})} \propto f(E_s - E_{s'}).
@@ -464,11 +554,11 @@
 
 下面计算各物理量的期望值。能量的期望可以直接从配分函数中读出来。注意到
 \[
-    \expval*{E} = \sum_i E_i P(E_i) = \frac{1}{Z} \sum_i E_i g_i \ee^{- \beta E_i},
+    \expval*{\hat{E}} = \sum_i E_i P(E_i) = \frac{1}{Z} \sum_i E_i g_i \ee^{- \beta E_i},
 \]
 可以得到
 \begin{equation}
-    \expval*{E} = - \frac{1}{Z} \pdv{Z}{\beta} = - \pdv{\ln Z}{\beta}.
+    \expval*{\hat{E}} = - \frac{1}{Z} \pdv{Z}{\beta} = - \pdv{\ln Z}{\beta}.
 \end{equation}
 其余物理量的计算略微麻烦一些。为方便起见，先考虑一个受到外部扰动的哈密顿量
 \begin{equation}
@@ -477,14 +567,85 @@
 记它的配分函数为
 \begin{equation}
     Z(\beta, \lambda) = \trace \ee^{-\beta (\hat{H} + \lambda \hat{A})}
+    \label{eq:partition-function-with-disturbance}
 \end{equation}
-显然，取$\lambda = 0$我们就回退到了没有扰动的系统的配分函数。现在我们计算
+显然，取$\lambda = 0$我们就回退到了没有扰动的系统的配分函数。
+我们尝试写出\eqref{eq:partition-function-with-disturbance}在$\lambda$很小时的表达式。
+在$\lambda$很小时，$\hat{H} + \lambda \hat{A}$的各个本征态仍然满足正交归一化条件（实际上不管$\lambda$多大都是如此），且相对诸$\ket{n}$只有微小的偏移，由微扰论我们知道，略微偏离态$\ket{n}$的$\hat{H} + \lambda \hat{A}$的本征值约为
 \[
-    \pdv{Z(\beta, \lambda)}{\lambda} = \trace \pdv{\lambda} \ee^{- \beta (\hat{H} + \lambda \hat{A})}.
+    E'_n = E_n + \lambda \mel{n}{\hat{A}}{n},
 \]
+从而我们有
+\[
+    \begin{aligned}
+        Z(\beta, \lambda) &= \sum_{\text{eigenstate $\ket{n'}$}} \ee^{- \beta E'_n} \\
+        &= \sum_{\text{eigenstate $\ket{n}$}} \ee^{- \beta (E_n + \lambda \mel{n}{\hat{A}}{n})}.
+    \end{aligned}
+\]
+第二个等号要求$\lambda$充分小。
+因此在$\lambda$很小时，
+\[
+    \begin{aligned}
+        \pdv{Z(\beta, \lambda)}{\lambda} &= \sum_{\text{eigenstate $\ket{n}$}} (-\beta \mel{n}{\hat{A}}{n}) \ee^{-\beta (E_n + \lambda \mel{n}{\hat{A}}{n})} \\
+        &= - \beta \sum_{\text{eigenstate $\ket{n}$}} \mel{n}{\hat{A}}{n} \ee^{- \beta E_n} \quad \text{as $\lambda \to 0$},
+    \end{aligned}
+\]
+而
+\[
+    \expval*{\hat{A}} = \frac{1}{Z} \sum_\text{eigenstate $\ket{n}$} \mel{n}{\hat{A}}{n} \ee^{- \beta E_n},
+\]
+因此
+\begin{equation}
+    \expval*{\hat{A}} = - \frac{1}{\beta Z} \eval{\pdv{Z(\beta, \lambda)}{\lambda}}_{\lambda = 0} = - \frac{1}{\beta} \eval{\pdv{\ln Z(\beta, \lambda)}{\lambda}}_{\lambda=0}.
+\end{equation}
+于是我们从配分函数得到了所有物理量的期望。
+
+\subsubsection{热力学性质}
+
+首先指出一个事实：玻尔兹曼分布\eqref{eq:gibbs-density-operator}是让熵取极大值的分布。可以使用拉格朗日乘子法导出这一点。记$\hat{\rho}$为归一化的密度算符，则%
+\footnote{这只是一个条件，但我们只需要说明“所有可能的熵极大值都对应吉布斯平衡态”即可，如果只使用这个条件就能够推出这个结论，那就没有问题。}
+\[
+    \trace \hat{\rho} = 1.
+\]
+我们要求能量给定，这又等价于
+\[
+    \trace (\hat{\rho} \hat{H}) = E = \const.
+\]
+从而，只需要最大化
+\[
+    S = - \trace (\hat{\rho} \ln \hat{\rho}) \quad \text{s.t.} \; \begin{bigcase}
+        \trace \hat{\rho} &= 1, \\
+        \trace (\hat{\rho} \hat{H}) &= E
+    \end{bigcase}
+\]
+即可。取目标函数为
+\[
+    u = - \trace (\hat{\rho} \ln \hat{\rho}) + \gamma (E - \trace (\hat{\rho} \hat{H})) + \gamma' (1 - \trace \hat{\rho}),
+\]
+对$\hat{\rho}$优化得到
+\[
+    \ln \hat{\rho} + 1 + \gamma \hat{H} + \gamma' = 0,
+\]
+从而得到
+\[
+    \hat{\rho} = \exp (-(1+\gamma')) \exp ( - \gamma \hat{H}).
+\]
+重新定义常数，得到
+\[
+    \hat{\rho} = \frac{1}{Z} \ee^{-\beta \hat{H}}.
+\]
+由于$\hat{\rho}$的迹为1，自然的就有
+\[
+    Z = \sum_\text{eigenstate $\ket{n}$} \ee^{-\beta E_n}.
+\]
+这正是玻尔兹曼分布。这表明，任何系统到达平衡态时熵都取极大值。
 
 \subsection{三种系综}
 
 \subsection{从量子统计退化到经典统计}
+
+\subsection{对单位制的说明}
+
+% 玻尔兹曼常数，等等
 
 \end{document}
