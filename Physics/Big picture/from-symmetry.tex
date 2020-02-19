@@ -66,6 +66,11 @@
 
 \subsection{算符和态}
 
+\[
+    \comm{\hat{A}}{\hat{B}}^\dagger = \comm{\hat{B}}{\hat{A}},
+\]
+因此两个算符对易当且仅当它们的共轭转置对易。
+
 % TODO：分析三种绘景下的态
 % 两个态表示了同样的物理状态，当且仅当，
 % $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
@@ -699,6 +704,7 @@ $x^0$则是\textbf{时间维}。
 这称为$\phi$的\textbf{共轭动量}，相应的其密度
 \begin{equation}
     \pi = \pdv{\mathcal{L}}{\partial_0 \phi}
+    \label{eq:def-pi}
 \end{equation}
 就是\textbf{共轭动量密度}。
 需注意此“动量”的名称只是类比而得，它未必和$P_i$有特别紧密的联系。
@@ -1885,6 +1891,18 @@ $F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性�
 
 同样本节的论述可以双向地使用：给定一系列$\hat{A}^{(1)}, \hat{A}^{(2)}, \ldots$，总是可以使用\eqref{eq:general-form-of-fock-observable}构造出福克空间上的可观察量；反之，假定我们从一套产生湮灭算符和一个真空态构造出了一个福克空间，并且确认$\hat{A}$是这个福克空间上的可观察量，那么它一定可以展开成\eqref{eq:general-form-of-fock-observable}的形式。
 
+\subsubsection{关于连续谱的注记}
+
+以上讨论都建立在单粒子态可以使用离散谱描述的基础上。连续谱的情况基本上是一样的，只不过要将“对所有基的求和”改成积分，并且将$\delta_{ij}$改成$\delta(x - x')$。
+需要注意的是可能会使用不同的积分测度，一般的，若有
+\[
+    \sum_i \longrightarrow \int \dd[n]{x} f(x),
+\]
+则有
+\[
+    \delta_{ij} \longrightarrow \frac{1}{f(x)} \delta^n(x - x').
+\]
+
 \subsection{多体系统的动力学}\label{sec:many-body-dynamics}
 
 \autoref{sec:many-body-state}节描述了描述全同粒子系统态的基本框架，现在我们来让这些态动起来。
@@ -3060,14 +3078,16 @@ $\hat{x}^1, \hat{x}^2, \hat{x}^3$的本征值均跑遍整条实数轴，因此$\
 我们不失一般性地将在壳的$\ket{p}$放在坐标空间中，且由于$\ket{p}$与以它的空间部分$\vb*{p}$为标记的态$\ket{\vb*{p}}$一一对应，不失一般性地要求$\ket{p}$和$\ket{\vb*{p}}$差一个实数，那么就有
 \begin{equation}
     \ket{p} = \sqrt{2 E_{\text{p}}} \ket{\vb*{p}}.
+    \label{eq:relativity-p}
 \end{equation}
 在三维动量空间中，$\ket{p}$是没有被归一化的；但在质壳中，$\ket{\vb*{p}}$反而是没有被归一化的那个。
-为了保证相对论协变性，在讨论相对论性量子场论时多用$\ket{p}$而不是$\ket{\vb*{p}}$，虽然它们表示的物理状态完全是一样的。
+为了保证洛伦兹协变性，在讨论相对论性量子场论时多用$\ket{p}$而不是$\ket{\vb*{p}}$，虽然它们表示的物理状态完全是一样的。
 在坐标表象和$p$表象之间切换只需要使用
 \begin{equation}
     \braket{\vb*{x}}{p} = \sqrt{\frac{2 E_{\vb*{p}}}{(2\pi)^3}} \ee^{\ii \vb*{p} \cdot \vb*{x}}.
     \label{eq:relativity-x-p-trans}
 \end{equation}
+但实际上这个公式很少真的被使用，因为一来相对论情况下很少需要讨论粒子位置，二来从相对论动量表象也就是$p$表象切换回$\vb*{x}$表象时需要使用积分测度$\int \dd[3]{\vb*{x}}$，而这不是洛伦兹协变的。由于我们在实际计算时有时需要将时间单独拿出来当成一个“演化参数”来看待而不是把它当成坐标，通常不讨论$\int \dd[3]{\vb*{x}}$的洛伦兹协变版本，从而从$p$表象切换回$\vb*{x}$表象会有困难，我们也不去理会它。
 
 % TODO:通过这种方式导出的动量和能量和使用诺特定理导出的动量和能量有什么关系吗
 
@@ -3300,6 +3320,7 @@ $\phi$构造出的一次不变量有$\phi$，二次不变量有$\phi^2$，$\part
 现在导出标量场的哈密顿表述。计算得到
 \begin{equation}
     \pi = \partial_0 \phi = \dot{\phi},
+    \label{eq:klein-gordon-pi}
 \end{equation}
 相应的
 \begin{equation}
@@ -3319,7 +3340,7 @@ $\phi$构造出的一次不变量有$\phi$，二次不变量有$\phi^2$，$\part
 \[
     E^2 = m^2 + \vb*{p}^2.
 \]
-这正是经典狭义相对论中联系能量和动量的公式。这就提示我们，还有另一种量子化方案：做替换
+这正是质壳关系\eqref{eq:mass-shell}。这就提示我们，还有另一种量子化方案：做替换
 \[
     E \longrightarrow \hat{E} = \ii \partial_0, \quad \vb*{p} \longrightarrow \hat{\vb*{p}} = - \ii \grad,
 \]
@@ -3558,11 +3579,84 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 不过，由于各种场的哈密顿量中都含有空间导数，直接这么做得到的哈密顿量中将会出现产生湮灭算符的空间导数，不方便使用。
 注意到坐标表象和动量表象之间的切换公式\eqref{eq:x-p-trans}实际上就是傅里叶变换，可以考虑使用关于动量的产生湮灭算符。
 
-由于我们是在讨论相对论性场论，一般使用洛伦兹协变的$\ket{p}$而不是$\ket{\vb*{p}}$。
-不过，由于在壳的$\ket{p}$可以使用$\vb*{p}$标记，我们还是使用$\vb*{p}$标记对应的产生湮灭算符，而与此同时使用\eqref{eq:relativity-x-p-trans}作为表象变换矩阵，并使用$\int \frac{\dd[3]{\vb*{x}}}{2 E_{\vb*{p}}}$作为积分测度。
+在壳的$\ket{p}$可以使用$\vb*{p}$标记，因此还是使用$\vb*{p}$而不是$p^\mu$标记对应的产生湮灭算符，并使用$\int \dd[3]{\vb*{p}} / (2 E_{\vb*{p}})$作为积分测度。
+场算符在某处的值$\hat{\phi}(\vb*{x}, t)$本身可以看成关于位置单粒子态$\ket{\vb*{x}, \sigma}$（其中$\sigma$表示内禀自由度）的产生湮灭算符的线性叠加。
+设算符$\hat{\alpha}_{\vb*{p}}$和$\hat{\alpha}^\dagger_{\vb*{p}}$是单粒子态$\ket{p, \sigma}$相关的湮灭算符和产生算符，则场算符可以展开为
+\begin{equation}
+    \hat{\phi} (x) \propto \sum_a \int \frac{\dd[3]{\vb*{p}}}{2 E_{\vb*{p}} (2\pi)^{3/2} } \left( (\hat{\alpha}^a)^\dagger_{\vb*{p}} \ee^{\ii p_\mu x^\mu} + \hat{\alpha}^a_{\vb*{p}} \ee^{- \ii p_\mu x^\mu} \right) e_a,
+    \label{eq:expanding-field-operator-relativity}
+\end{equation}
+其中$\exp(\ii p_\mu x^\mu)$来自在四维坐标和四维动量之间切换的变换矩阵，$e_a$指的是基。
+% TODO:严格证明，不过多半鸽了
+
+由于$\hat{\alpha}$和$\hat{\alpha}^\dagger$彼此不能通过任何算符相互转换（取共轭转置是一个元算符），实际上也可以使用$\hat{\alpha}$和$\hat{\alpha}^\dagger$表示出$\hat{\pi}$。
+按照\eqref{eq:def-pi}，并且考虑到$\mathcal{L}$关于$\phi$及其导数只有二次项，$\pi$是$\phi$及其导数的线性叠加，从而$\hat{\pi}$也可以使用$\hat{\alpha}$和$\hat{\alpha}^\dagger$线性表示，且形如
+\[
+    \hat{\pi} \sim \int \dd[3]{\vb*{p}} f(\vb*{p}) (c_1 (\hat{\alpha}^a)^\dagger_{\vb*{p}} \ee^{\ii p_\mu x^\mu} + c_2 \hat{\alpha}^a_{\vb*{p}} \ee^{- \ii p_\mu x^\mu})
+\]
+因此，如果选用了方案\eqref{eq:symmetry-commutator}，那么我们就得到了满足\eqref{eq:commutator-of-ca-op}的产生湮灭算符。
+我们称使用这样的场算符得到的粒子为\textbf{玻色子}；反之如果使用了\eqref{eq:antisymmetry-commutator}，那么就得到了满足\eqref{eq:anticommutator-of-ca-op}的产生湮灭算符，我们称这样得到的粒子为\textbf{费米子}。
+
+考虑到\eqref{eq:relativity-p}，我们有
+\[
+    \ket{p, \sigma} = \sqrt{2 E_{\vb*{p}}} \ket{\vb*{p}, \sigma},
+\]
+于是设$\hat{a}_{\vb*{p}}$和$\hat{a}^\dagger_{\vb*{p}}$为单粒子态$\ket{\vb*{p}}$对应的产生湮灭算符，则有
+\[
+    (\hat{\alpha}^a_{\vb*{p}})^\dagger = \sqrt{2E_{\vb*{p}}} (\hat{a}^a_{\vb*{p}})^\dagger,
+\]
+这样场算符的展开式就是
+\[
+    \hat{\phi}(x) \propto \sum_a \int \frac{\dd[3]{\vb*{p}}}{\sqrt{(2\pi)^3 2 E_{\vb*{p}}}} \left( (\hat{a}^a)^\dagger_{\vb*{p}} \ee^{\ii p_\mu x^\mu} + \hat{a}^a_{\vb*{p}} \ee^{- \ii p_\mu x^\mu} \right) e_a,
+\]
+或者既然我们已经不再要求洛伦兹协变性了，可以使用三维矢量更加清晰地写出
+\begin{equation}
+    \hat{\phi}(x) = \hat{\phi}(\vb*{x}, t) \propto \sum_a \int \frac{\dd[3]{\vb*{p}}}{\sqrt{(2\pi)^3 2 E_{\vb*{p}}}} \left( (\hat{a}^a)^\dagger_{\vb*{p}} \ee^{- \ii \vb*{p} \cdot \vb*{x} + \ii E_{\vb*{p}} t} + \hat{a}^a_{\vb*{p}} \ee^{\ii \vb*{p} \cdot \vb*{x} - \ii E_{\vb*{p}} t} \right) e_a. 
+    \label{eq:expanding-field-operator}
+\end{equation}
+由于三种场都服从克莱因-高登方程，将\eqref{eq:expanding-field-operator}代入\eqref{eq:klein-gordon-eq}会发现$E_{\vb*{p}}$和$\vb*{p}$正好服从质壳关系\eqref{eq:mass-shell}。
+
+展开式\eqref{eq:expanding-field-operator-relativity}和\eqref{eq:expanding-field-operator}有各自的好处。
+\eqref{eq:expanding-field-operator-relativity}给出的产生湮灭算符以及它们产生的单粒子态是洛伦兹协变的，但是在处理对易关系的时候会略有复杂，因为此时产生湮灭算符的对易关系必定也是协变的，因此必须指定
+\[
+    \comm*{\hat{\alpha}_{\vb*{p}}}{\hat{\alpha}^\dagger_{\vb*{p}'}} \sim E_{\vb*{p}} \delta^3 (\vb*{p} - \vb*{p}')
+\]
+这样的对易关系，或者类似的反对易关系；当然，这并没有违背条件\eqref{eq:commutator-of-ca-op}，因为此时使用的积分测度是$\int \dd[3]{\vb*{p}} / (2 E_{\vb*{p}})$。
+\eqref{eq:expanding-field-operator}给出的产生湮灭算符以及它们产生的单粒子态不是洛伦兹协变的，但是可以简化对易关系以及归一化时使用的积分测度。
+例如通常我们选取积分测度为$\int \dd[3]{\vb*{p}}$，那么就需要指定
+\[
+    \comm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}'}} = \delta^3 (\vb*{p} - \vb*{p}'),
+\]
+或者类似的反对易关系。而如果指定
+\[
+    \comm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}'}} = (2\pi)^3 \delta^3 (\vb*{p} - \vb*{p}'),
+\]
+此时只需要始终使用积分测度
+\[
+    \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3}
+\]
+即可。
+两种展开式都是傅里叶变换，因此都能够消除哈密顿量中的导数。
+
+本文为了追求等式简洁，通常使用方案\eqref{eq:expanding-field-operator}，又为了避免反复使用根号，通常使用含有$(2\pi)^3$的写法。
 
 \subsubsection{标量场}
 
+取
+\begin{equation}
+    \hat{\phi}(\vb*{x}, t) = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{\sqrt{2 E_{\vb*{p}}}} \left( \hat{a}^\dagger_{\vb*{p}} \ee^{ - \ii \vb*{p} \cdot \vb*{x} + \ii E_{\vb*{p}} t} + \hat{a}_{\vb*{p}} \ee^{ \ii \vb*{p} \cdot \vb*{x} - \ii E_{\vb*{p}} t} \right),
+\end{equation}
+显然它是\eqref{eq:klein-gordon-eq}的一个解。相应的使用\eqref{eq:klein-gordon-pi}，有
+\begin{equation}
+    \hat{\pi}(\vb*{x}, t) = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \  \ii \sqrt{\frac{E_{\vb*{p}}}{2}} \left( \hat{a}^\dagger_{\vb*{p}} \ee^{ - \ii \vb*{p} \cdot \vb*{x} + \ii E_{\vb*{p}} t} - \hat{a}_{\vb*{p}} \ee^{ \ii \vb*{p} \cdot \vb*{x} - \ii E_{\vb*{p}} t} \right)
+\end{equation}
+共轭动量不是洛伦兹协变的。这并不让人意外，因为其定义和时间维的选取有关。
+
+我们首先尝试将正则对易关系\eqref{eq:symmetry-commutator}施加到标量场$\hat{\phi}$上。
+通过计算可以得知，这等价于
+\begin{equation}
+    \comm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}'}} = (2\pi)^3 \delta^3 (\vb*{p} - \vb*{p}'), \quad \comm*{\hat{a}_{\vb*{p}}}{\hat{a}_{\vb*{p}'}} = 0.
+\end{equation}
 
 \subsubsection{旋量场}
 
