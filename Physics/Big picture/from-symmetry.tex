@@ -7,6 +7,7 @@
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
+\usepackage{simplewick}
 \usepackage{cite}
 \usepackage{graphicx}
 \usepackage{subfigure}
@@ -56,7 +57,11 @@
 
 如无特殊说明，本文所谓的本征态指的都是归一化的本征矢量。
 以下希腊字母的指标跑遍所有时空维度，而拉丁字母的指标仅仅跑遍空间维度，也就是$\mu, \nu, \ldots = 0, 1, 2, 3$而$i, j, \ldots = 1, 2, 3$。
+常规斜体字母$x, y, p$等若经说明为多分量对象，默认为四维矢量，相应的，$\vb*{x}, \vb*{y}, \vb*{p}$等为它们的空间部分。
 指标$a,b,\ldots$也有可能指多分量对象的指标，未必正好取$1, 2, 3$。
+$T$表示编时算符，它是一个元算符，将一系列和时间有关的算符排列成左边时间大、右边时间小的形式。对玻色子而言重新排序后无需改变系数，对费米子而言重排之后的结果还要乘上$-1$的重排次数次方。
+$N$表示正规序算符，它也是一个元算符，用于将一系列产生湮灭算符排列成产生算符在左、湮灭算符在右的形式。对玻色子而言重新排序后无需改变系数，对费米子而言重排之后的结果还要乘上$-1$的重排次数次方。
+元算符的括号使用方括号。
 
 \section{抽象代数}
 
@@ -1092,7 +1097,7 @@ $\hat{U}^H$可以写出显式表达式
 \]
 为了方便区分，我们将海森堡绘景中的$\hat{H}$记作$\hat{H}^H$，则它对应的薛定谔绘景中的算符为
 \[
-    \hat{H}^S = \hat{Q} \hat{H}^H \hat{Q}^\dagger = (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0), 
+    \hat{H}^S = \hat{Q} \hat{H}^H \hat{Q}^\dagger = (\hat{U}^H)^\dagger (t, 0) \hat{H}^H(t) \hat{U}^H (t, 0), 
 \]
 因此就获得了薛定谔绘景中的运动方程：
 \begin{equation}
@@ -1112,6 +1117,8 @@ $\hat{U}^H$可以写出显式表达式
 \end{equation}
 其中$T$为编时算符。
 
+在$\hat{H}^H$不显含时间时，$\hat{U}^H$无非是$\hat{H}^H$的级数，因此它们对易，从而$\hat{H}^S$和$\hat{H}^H$相等。
+
 现在我们已经讨论了“让算符变动”和让基矢量变动“两种方案的不同了。我们还可以把哈密顿算符分解成一个比较简单的不含时部分和一个含时的部分，并要求这两者均为厄米算符，然后分别用两者让算符和态矢量都动起来。这样的方案称为\textbf{相互作用绘景}。
 设
 \begin{equation}
@@ -1120,6 +1127,10 @@ $\hat{U}^H$可以写出显式表达式
 令$\hat{A}^I$的演化方程为
 \begin{equation}
     \dv{\hat{A}^I}{t} = \frac{1}{\ii \hbar} \comm*{\hat{A}^I}{\hat{H}^H_0},
+\end{equation}
+从而我们有
+\begin{equation}
+    \hat{A}^I (t) = \exp \left( \frac{\ii}{\hbar} \hat{H}_0^H \right) \hat{A}^I (0) \exp \left( - \frac{\ii}{\hbar} \hat{H}_0^H \right).
 \end{equation}
 与$\hat{A}^H$相对比，我们有
 \[
@@ -1144,8 +1155,19 @@ $\hat{U}^H$可以写出显式表达式
 做一个绘景变换就得到
 \begin{equation}
     \ii \hbar \dv{t} \ket{\psi^I (t)} = \hat{H}^I_i (t) \ket{\psi^I (T)}.
+    \label{eq:time-evolution-in-interation-picture}
 \end{equation}
 相互作用绘景中算符随时间的演化使用的$\hat{H}_0$由于不含时，无论在海森堡绘景下还是在相互作用绘景下都是一样的，无需特殊的变换。
+在$\hat{H}_i^H$不显含时间时
+\[
+    T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H_i (t) \right) = \exp \left( \frac{\ii}{\hbar} (t - t_0) \hat{H}^H_i (t) \right)
+\]
+无非是$\hat{H}_i^H$的级数，从而$\hat{H}^I_i$和$\hat{H}^H_i$相等。
+
+同样的相互作用绘景和薛定谔绘景之间的关系为
+\begin{equation}
+    \ket{\psi^i (t)} = \exp \left( \frac{\ii}{\hbar} \hat{H}_0^S t \right).
+\end{equation}
 
 相互作用绘景在微扰量子场论计算中起到了非常重要的作用，因为正如\autoref{sec:qft-free-dynamics}中展示的那样，通过对称性分析可以直接得到自由场的哈密顿量密度和演化方程，因此我们可以将相互作用项——也就是不同场之间的耦合——独立考虑，从而大大简化计算。
 更加重要的是，此时相互作用绘景可以为我们提供有关量子场的态空间的结构的信息，实际上我们将在\autoref{sec:from-qft-to-many-body}中看到，如果假定态空间中有一个唯一的真空态——也就是所有场都是零的态——那么量子场的态空间就是多粒子态福克空间，在此基础上我们可以很自然地处理粒子创生和湮灭的过程。这就为我们展示了量子理论的另一面：波动看起来就像粒子一样。%
@@ -1153,19 +1175,11 @@ $\hat{U}^H$可以写出显式表达式
 
 % TODO:总结
 
-\subsubsection{散射与测量}\label{sec:scatter-and-measure}
+\subsubsection{测量}\label{sec:measure}
 
-% 一个可能的方案：系综。首先证明：具有某种初态的仪器和系统发生相互作用之后，系统和仪器的波函数都大大定域化了；然后表明：如果仪器的初态在系综中均匀分布，那么仪器的波函数定域的位置在系综中的分布正是按照系统的波函数的平方分布的
-
-所谓散射指的是这样一个过程：$t = -\infty$处系统处于某个确定的初态$\ket{i}$，$t = \infty$时系统处于另一个确定的末态$\ket{f}$。
-显然，不是所有的过程都是散射过程，例如如果某个物理过程是周期性的，其状态在$t$趋向$\pm \infty$时就不可能有确定的极限。
-通常我们只关心初末态之间的联系而不关心中间过程，因为通常中间过程是很难测量的。这就大大简化了问题，因为态演化是线性的，所以可以使用很多线性代数的方法。
-
-我们在相互作用绘景中讨论问题。设
-
-\textbf{测量}是一种特殊的散射过程。所谓测量指的是这样一个过程：两个系统（分别称为\textbf{待测系统}和\textbf{仪器}）发生相对剧烈而时间短促的散射，散射后待测系统的态发生很大改变，而仪器的态则体现了散射前待测系统的某些信息。
-采用相互作用绘景，设$\hat{q}$完全描述了仪器的态空间，$\hat{a}$是待测系统的某个算符，它和另一个算符$\hat{b}$共同描述了待测系统的态空间。（被测量的量$\hat{a}$未必能够完整描述待测系统。下文中需要将待测系统的态做展开，因此引入$\hat{b}$）
-由于散射非常剧烈而时间短促，仪器和待测系统的相互作用哈密顿量可以写成
+\textbf{测量}指的是这样一个过程：两个系统（分别称为\textbf{待测系统}和\textbf{仪器}）发生相对剧烈而时间短促的相互作用，相互作用后待测系统的态发生很大改变，而仪器的态则体现了相互作用前待测系统的某些信息。
+采用相互作用绘景，设$\hat{q}$完全描述了仪器的态空间，$\hat{a}$是关于待测系统的某个算符，它和另一个算符$\hat{b}$共同描述了待测系统的态空间。（被测量的量$\hat{a}$未必能够完整描述待测系统。下文中需要将待测系统的态做展开，因此引入$\hat{b}$）
+由于相互作用非常剧烈而时间短促，仪器和待测系统的相互作用哈密顿量可以写成
 \begin{equation}
     H_\text{int} = - \gamma(t-t_0) \hat{a} \otimes \hat{p},
 \end{equation}
@@ -1202,6 +1216,9 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
     \ket{f} = \int \dd{q} \sum_{k, l} \braket{q - g a_k}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q}.
     \label{eq:standard-measurement}
 \end{equation}
+需要注意的是由于我们采取的是相互作用绘景，算符$\hat{a}$和$\hat{b}$一直会发生变化。
+然而，由于自由哈密顿量不显含时间，\eqref{eq:standard-measurement}中$\ket{a_k, b_l}$的时间演化和$\bra{a_k, b_l}$的时间演化抵消了，等等，从而$\ket{f}$在相互作用结束后没有时间演化——正如我们预期的那样。
+
 \eqref{eq:standard-measurement}看起来仍然十分复杂。
 然而，在很多情况下（具体是什么情况我们很快会看到）仪器的初始态非常接近$\hat{q}$的本征态，也就是说$\braket{q}{D}$只有在$q$和某一个$q_0$非常接近的时候才有较大的值，其余时候都接近零，因此实际上是一个$\delta$函数。
 这样的情况称为\textbf{理想测量}。我们现在可以看到为什么要求$\hat{q}$具有连续谱了，因为要实施一次理想测量必须允许仪器有连续分布的状态。此时\eqref{eq:standard-measurement}近似为
@@ -1210,7 +1227,7 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
     \label{eq:ideal-measurement}
 \end{equation}
 我们这样就得到了一个典型的纠缠态，其中每一个分量中，仪器和待测系统在测量之后都处于完全对应的状态。
-总之，如果待测系统和仪器组成的系统和外界毫无相互作用，那么测量就是如下所示的散射过程：
+总之，如果待测系统和仪器组成的系统和外界毫无相互作用，那么测量就是如下所示的过程：
 \[
     \ket{i} = \left(\sum_{k, l} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \right) \ket{D} \longrightarrow \ket{f} = \sum_{k, l} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q = q_0 + g a_k},
 \]
@@ -1222,14 +1239,41 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 也就是说，测量$\hat{a}$得到$a_k$（同时将待测系统的态转化为$\ket{a_k}$）的概率就是
 \begin{equation}
     P(a_k) = \sum_l \abs{\braket{a_k, b_l}{\psi_i}}^2,
+    \label{eq:probablity-of-measurement}
 \end{equation}
+同样，由于我们使用的是相互作用绘景，$\ket{a_k, b_l}$也有时间演化，但因为自由哈密顿量不显含时间，\eqref{eq:probablity-of-measurement}中的
+\[
+    \braket{\psi_i}{a_k, b_l} \braket{a_k, b_l}{\psi_i}
+\]
+的时间演化相互抵消，因此$P(a_k)$本身没有时间演化。
 于是容易证明，待测系统为$\ket{\psi_i}$态时做测量，测量值的期望为
 \begin{equation}
     \expval{\hat{a}} = \mel{\psi_i}{\hat{a}}{\psi_i}.
 \end{equation}
+同样，这个期望值也没有时间演化。
+
+% TODO:不同绘景中的情况？？？
 
 实际上，我们可以把四面八方的光子或者空气分子或者这一类的干扰看成是一个巨型仪器：它和待测系统的相互作用使待测系统和它的态按照\eqref{eq:ideal-measurement}纠缠在一起，而由于这是开放体系，退相干快速发生，这就意味着在充满干扰的环境中实际上很难真的展示出待测系统的量子特性：待测系统几乎总是出现在其偏好本征态附近，因为它没完没了地受到测量。
 这也是理想测量很容易就能够实现的原因：真的会用来做测量的仪器总是被做得很大，因此它们自身可以看成不停地被空气、杂散光或者别的什么东西不断测量的系统，因此它们的态总是出现在其偏好本征态附近。
+
+在$\hat{a}$本身是待测系统的一个CSCO，从而不需要$\hat{b}$的情况下，测量$\hat{a}$得到$a_k$的概率为
+\begin{equation}
+    P(a_k) = \abs{\braket{a_k}{\psi_i}}^2.
+\end{equation}
+这表明，假如我们有一个正交归一化基$\{\ket{a_k}\}_k$，就可以使用一组不同的实数$a_k$构造算符
+\[
+    \hat{a} = \sum_k a_k \dyad{a_k},
+\]
+使用这个算符对系统做测量，则测量结束之后系统位于态$\ket{a_k}$的概率就是
+\begin{equation}
+    P(\ket{a_k}) = \abs{\braket{a_k}{\psi_i}}^2.
+\end{equation}
+注意到这个表达式只和$\ket{a_k}$有关。因此，对态矢量为$\ket{\psi}$的系统做一次测量，发现系统测量后处于态$\ket{\phi}$的概率为
+\begin{equation}
+    P(\ket{\phi}) = \abs{\braket{\phi}{\psi}}^2,
+\end{equation}
+于是我们称$\braket{\phi}{\psi}$为\textbf{概率振幅}。
 
 需注意以上讨论建立在几个关键假设上：其一，仪器和待测系统的相互作用非常强而短促；其二，仪器和环境有杂乱无章的相互作用。
 这意味着合理地构造不怎么受外界干扰而又不会严重地扰动待测系统的仪器，我们就能够得到关于待测系统状态的不完整信息而与此同时不让待测系统的态塌缩到某个本征态上。
@@ -1630,7 +1674,7 @@ $\hat{a}^\dagger$的共轭转置，也就是$\hat{a}$就是满足这个条件的
 \end{equation}
 就是\textbf{总粒子数算符}，它的本征态也是\eqref{eq:sym-basis}和\eqref{eq:asym-basis}，本征值为对应的态的总粒子数。
 
-\subsubsection{产生湮灭算符的代数结构}
+\subsubsection{产生湮灭算符的代数结构}\label{sec:algebra-ca-op}
 
 % TODO：然后问题就来了：诸粒子数算符能不能完整描述被场算符完整描述的态空间？
 在前面几节中，我们通过$M$表象下的单粒子空间构造出了全同粒子体系的希尔伯特空间，
@@ -1998,8 +2042,8 @@ $F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性�
     \label{eq:ca-op-from-field}
 \end{equation}
 因此对一个固定的时间$t$，$\hat{a}_i^\dagger(\vb*{x}, t)$和$\hat{a}_i (\vb*{x}, t)$构成了一组产生湮灭算符，由它们产生的单粒子态可以完全被$\vb*{x}$和$i$标记。
-从而，由它们产生的单粒子态可以分解成两个空间$\{\ket{\vb*{x}}\}$和$\{\ket{i}\}$的直积；
-单粒子态的CSCO为位置算符$\hat{\vb*{x}}$（当然也可以是与之能够相互导出的另一些算符，比如动量），还有与$\{\ket{i}\}$有关的算符。
+从而，由它们产生的单粒子态可以分解成两个空间$\{\ket{\vb*{x}}\}_{\vb*{x}}$和$\{\ket{i}\}_i$的直积；
+单粒子态的CSCO为位置算符$\hat{\vb*{x}}$（当然也可以是与之能够相互导出的另一些算符，比如动量），还有与$\{\ket{i}\}_i$有关的算符。
 我们称前者为\textbf{空间自由度}，而称后者为\textbf{内禀自由度}，因为后者来自于场算符的内部结构（有几个分量、在$\Lambda$作用下如何变换，等等）。%
 \footnote{如果场算符的取值有某些限制（例如，电磁波一定是横波，等等），那么不能够保证$i$的可能取值的数目一定是场算符的分量数。}
 总之，量子化方案\eqref{eq:symmetry-commutator}给出的场算符导致一个对称的福克空间$F_S$。我们称这样的福克空间描述的粒子为\textbf{玻色子}。
@@ -2018,6 +2062,8 @@ $F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性�
 它取某个粒子数的子空间则是一个不可约表示。由于$n$粒子态空间就是$n$个单粒子态空间的直积的对称化或者反对称化，我们只需要讨论单粒子态即可。于是现在我们把注意力转移到单粒子态上。
 % TODO:场表示的标签，比如$P_\mu P^\mu$给出的$m^2$，无论是在场表示还是其$n$粒子态表示中，都是一样的。天晓得这是不是真的。。。
 完全刻画空间自由度只需要一个位置算符就可以了，或者按照\autoref{sec:single-particle-quantity}中的做法，使用动量算符。
+
+% TODO：哈密顿量的全体本征态就是单粒子态、二粒子态、三粒子态……
 
 \subsubsection{场算符作为波函数}
 
@@ -2850,6 +2896,8 @@ $J_+$让本征值加一，$J_-$让本征值减一。两个算符采取同样的�
 本节讨论单粒子量子力学。实际上，本节提供的大部分物理基本上已经在\autoref{sec:quantization-of-free-fields}中讨论了。本节的目的在于给出在完全不知道相对论性量子场论时怎么使用对称性工具重新得到这些物理。
 所谓单粒子态指的是这样一种态：其上的一个CSCO是位置算符$\vb*{x}$连同一些别的量，从而其态空间可以写成一个坐标空间（或者说轨道空间）和一个内禀自由度空间的直积。
 
+% TODO:有时候会把波函数当成一个场来定义类似于S矩阵这一类的东西，现在看来这本质上是在使用薛定谔场？？
+
 \subsection{重要的物理量}\label{sec:single-particle-quantity}
 
 所谓单粒子态应该能够使用粒子位置和一些附加的自由度完全描述。
@@ -2988,7 +3036,7 @@ $\hat{x}^1, \hat{x}^2, \hat{x}^3$的本征值均跑遍整条实数轴，因此$\
 \end{equation}
 所有生成元彼此对易。这样三维空间平移群的李代数就被拆分成了三个一维空间平移群的李代数的直和，三维空间平移群就被拆分成了三个一维空间平移群的直积。
 这三个一维空间平移群分别是$x^1$方向上的平移群$\hat{Q}_1(a)$，$x^2$方向上的平移群$\hat{Q}_2(a)$，以及$x^3$方向上的平移群$\hat{Q}_3(a)$。
-另一方面，注意到三维位置算符对应的本征态张成的空间$\{ \ket{x^1, x^2, x^3} \}$实际上是三个一维位置算符对应的本征态张成的空间的直积，
+另一方面，注意到三维位置算符对应的本征态张成的空间$\{ \ket{x^1, x^2, x^3} \}_{x_1,x_2,x_3}$实际上是三个一维位置算符对应的本征态张成的空间的直积，
 这是因为$\hat{x}^1, \hat{x}^2, \hat{x}^3$彼此对易。于是我们做拆分
 \[
     \mathcal{H}_\text{3d} = \mathcal{H}_\text{1d1} \otimes \mathcal{H}_\text{1d2} \otimes \mathcal{H}_\text{1d3},
@@ -3029,7 +3077,7 @@ $\hat{x}^1, \hat{x}^2, \hat{x}^3$的本征值均跑遍整条实数轴，因此$\
 其中$\psi$是某个场。因此$\hat{E}$就是能量。我们不说这是哈密顿量是因为它仅仅关于被讨论的单个粒子，而真正的哈密顿量应该关于整个体系。
 按照\autoref{sec:translation}中的描述，四维动量的四个分量彼此对易。因此，四维矢量算符$\hat{p}^\mu$是态空间
 \[
-    \{\ket{p}\} = \{\ket{\vb*{p}} \ket{E}\}
+    \{\ket{p}\}_p = \{\ket{\vb*{p}} \ket{E}\}
 \]
 的CSCO。然而，完整地描述单粒子的坐标空间实际上并不需要全部的$\{\ket{\vb*{p}} \ket{E}\}$——这是当然的，既然使用$\hat{p}$已经能够完整描述态空间了。
 事实上，考虑到\eqref{eq:momentum-and-mass}，我们有
@@ -3309,6 +3357,7 @@ $\phi$构造出的一次不变量有$\phi$，二次不变量有$\phi^2$，$\part
 由于拉氏量可以任意地乘上非零常数，我们通过重新定义常数可以得到
 \begin{equation}
     \mathcal{L} = \frac{1}{2} (\partial_\mu \phi \partial^\mu \phi - m^2 \phi^2).
+    \label{eq:klein-gordon-lagrangian}
 \end{equation}
 这个拉氏量导致下面的运动方程：
 \begin{equation}
@@ -3718,6 +3767,7 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 本文为了追求等式简洁，通常使用方案\eqref{eq:expanding-field-operator}，又为了避免反复使用根号，通常使用含有$(2\pi)^3$的写法，也就是设
 \begin{equation}
     \hat{\phi}(\vb*{x}, t) = \sum_\sigma \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{\sqrt{2 E_{\vb*{p}}}} \left( \hat{a}^\dagger_{\vb*{p}, \sigma} \ee^{- \ii \vb*{p} \cdot \vb*{x} + \ii E_{\vb*{p}} t} + \hat{a}_{\vb*{p}, \sigma} \ee^{\ii \vb*{p} \cdot \vb*{x} - \ii E_{\vb*{p}} t} \right) e_\sigma. 
+    \label{eq:field-operator-fourier}
 \end{equation}
 
 我们有
@@ -3735,6 +3785,7 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 \[
     \hat{\phi}^\sigma (\vb*{x}, t) \ket{0} \propto \ket{\vb*{x}(t), \sigma},
 \]
+也就是说一个海森堡绘景中的场算符导致了一个薛定谔绘景中的用位置标记的单粒子态。
 或者说
 \[
     \mel{\vb*{x}}{\hat{\phi}^\sigma (\vb*{x}, t)}{0} \propto \text{single particle wavefunction}.
@@ -3743,6 +3794,7 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 
 判断应该使用对易关系来量子化场还是应该使用反对易关系来量子化场应当遵守几个条件：
 \begin{itemize}
+    \item 非平凡性。哈密顿量不应该给出平凡的结果。
     \item 因果性。在某一个时空点施加相互作用只应该产生局域的影响。特别的，在一个时空点做测量不应该对与之间隔（指的是闵可夫斯基时空中的“距离”）为正的时空点产生影响。
     \item 能量正定性。哈密顿量应该可以写成产生湮灭算符的正定二次型，以避免能量无限下降。
 \end{itemize}
@@ -3759,13 +3811,23 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
     \hat{\pi}(\vb*{x}, t) = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \  \ii \sqrt{\frac{E_{\vb*{p}}}{2}} \left( \hat{a}^\dagger_{\vb*{p}} \ee^{ - \ii \vb*{p} \cdot \vb*{x} + \ii E_{\vb*{p}} t} - \hat{a}_{\vb*{p}} \ee^{ \ii \vb*{p} \cdot \vb*{x} - \ii E_{\vb*{p}} t} \right)
 \end{equation}
 共轭动量不是洛伦兹协变的。这并不让人意外，因为其定义和时间维的选取有关。
+计算得到
+\[
+    \hat{H} = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2} E_{\vb*{p}} (\hat{a}_{\vb*{p}}^\dagger \hat{a}_{\vb*{p}} + \hat{a}_{\vb*{p}} \hat{a}^\dagger_{\vb*{p}}).
+\]
 
-我们首先尝试将正则对易关系\eqref{eq:symmetry-commutator}施加到标量场$\hat{\phi}$上。
+正则对易关系\eqref{eq:symmetry-commutator}施加到标量场$\hat{\phi}$上。
 通过计算可以得知，这等价于
 \begin{equation}
     \comm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}'}} = (2\pi)^3 \delta^3 (\vb*{p} - \vb*{p}'), \quad \comm*{\hat{a}_{\vb*{p}}}{\hat{a}_{\vb*{p}'}} = 0.
+    \label{eq:quantization-scalar}
 \end{equation}
-代入哈密顿量的表达式，得到
+相应的，反对易关系等价于
+\[
+    \acomm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}'}} = (2\pi)^3 \delta^3 (\vb*{p} - \vb*{p}'), \quad \acomm*{\hat{a}_{\vb*{p}}}{\hat{a}_{\vb*{p}'}} = 0.
+\]
+将反对易关系代入哈密顿量表达式会导致哈密顿量变成常数，因此这是平凡解，舍去。
+将对易关系代入哈密顿量的表达式，得到
 \begin{equation}
     \hat{H} = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} E_{\vb*{p}} \left(\hat{a}_{\vb*{p}}^\dagger \hat{a}_{\vb*{p}}  + \frac{1}{2} \comm*{\hat{a}_{\vb*{p}}}{\hat{a}^\dagger_{\vb*{p}}} \right).
     \label{eq:hamiltonian-of-klein-gordon}
@@ -3778,6 +3840,11 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 \end{equation}
 这是一个福克空间上的$1$粒子算符。它表明自由场情况下单粒子携带能量为$E_{\vb*{p}}$。
 % TODO：还是需要讨论场的守恒量和粒子的守恒量之间的关系
+通过反复使用对易关系\eqref{eq:quantization-scalar}以及真空态被湮灭算符作用后得到$0$这一事实，可以计算出
+\begin{equation}
+    \hat{H} \hat{a}_{\vb*{p}}^\dagger \ket{0} = E_{\vb*{p}} \hat{a}_{\vb*{p}}^\dagger \ket{0}.
+\end{equation}
+因此正如我们预期的那样，单粒子态$\ket{\vb*{p}}$是哈密顿量的本征态。
 
 需要注意的是如果我们讨论的问题不是定义在全空间上的，可能不能直接把\eqref{eq:hamiltonian-of-klein-gordon}中的第二项——现在称为\textbf{真空零点能}——丢弃。例如，设有两块无穷大的金属板，它们施加的边界条件会让\eqref{eq:expanding-klein-gordon-field}中的一些模式为零，通过计算可以发现板间的真空零点能小于板外，从而产生一个板之间的吸引力。
 
@@ -3791,10 +3858,19 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 \end{equation}
 因此场的动量也是单粒子算符。
 
+标量场没有内禀自由度，因此也不携带自旋角动量。
+
+总之，标量场需要使用\eqref{eq:symmetry-commutator}来量子化。因此标量场描述$0$自旋玻色子。
+
 \subsubsection{旋量场}
 
+% 反粒子
 
 \subsection{相互作用}
+
+% TODO:多场耦合的态空间
+
+\subsubsection{相互作用项}
 
 下面分析场之间的相互作用以及它引入的物理。带有相互作用的拉氏量一般形如
 \begin{equation}
@@ -3802,8 +3878,131 @@ $\partial_0 \psi - b^i \partial_i \psi$应该能够写成以上两种旋量梯�
 \end{equation}
 我们认为相互作用项中不应该出现导数（不然就总是可以重新定义一个场来把导数消除掉）。
 
-\section{微扰理论}
+加入相互作用之后系统的基态和自由场情况下的基态是不一样的。通常使用$\ket{\Omega}$来表示这个基态。
 
-% TODO： 微扰展开、相互作用绘景、费曼图
+% TODO：可重整性、量纲分析
+\subsubsection{可重整性和量纲}
+
+回顾时间演化算符，我们发现
+\[
+    \left[ \int \dd{t} H \right] = 1,
+\]
+也就是说
+\[
+    \left[ \int \dd[4]{x} \mathcal{H} \right] = 1,
+\]
+从而
+\[
+    [\mathcal{H}] = [\mathcal{L}] = \text{length}^{-4}.
+\]
+由于三种场在非相对论情况下都退化为薛定谔场，它们的质量都退化为薛定谔场描述的粒子的质量，可以确信，这三种场的质量具有相同的量纲。
+从标量场的拉氏量，我们发现
+\[
+    [m^2] = [\partial_\mu \partial^\mu] = \text{length}^{-2},
+\]
+从而
+\[
+    \text{mass} = \text{length}^{-1}.
+\]
+由于质量是唯一的参数，我们使用质量的量纲作为比较的标准。我们有
+\[
+    \text{length} = \text{mass}^{-1},
+\]
+从而
+\[
+    [\mathcal{H}] = [\mathcal{L}] = \text{mass}^4.
+\]
+动量的量纲和质量的量纲一致。
+然后就可以分别根据三种场的拉氏量评定场的量纲了。分别考虑
+
+\subsubsection{散射}
+
+本节讨论散射理论。我们使用相互作用绘景。因此，场算符和自由场的情况一模一样，按照\eqref{eq:field-operator-fourier}展示的方式演化，而态矢量则根据相互作用哈密顿量$H_i^I$演化。
+
+假定系统处于散射态，那就是说，在$t=-\infty$和$t=+\infty$处没有相互作用——等价地说，就是系统状态在$t \to -\infty$和$t \to +\infty$时有极限，且均为自由场态。
+% TODO:相互作用态和自由态的态空间有区别吗？
+设$t = -\infty$时系统处于其初态$\ket{\Psi_i}$，这是一个自由场的态。
+记$\hat{U}$为相互作用绘景下的时间演化算符，则系统末态为$U(\infty, -\infty) \ket{\Psi_i}$。
+所以只需要计算出
+\[
+    \mel{\Psi_f}{U(\infty, -\infty)}{\Psi_i}
+\]
+并平方就得到了系统经过观察，终结于态$\ket{\Psi_f}$的概率。
+这就是要计算\textbf{S矩阵}
+\begin{equation}
+    \hat{S} = U(\infty, -\infty).
+\end{equation}
+按照\eqref{eq:time-evolution-in-interation-picture}，我们有
+\[
+    \hat{U}(t, t_0) = T \exp \left( - \ii \int \dd{t} \hat{H}_i^I(t) \right),
+\]
+从而
+\begin{equation}
+    \hat{S} = T \exp \left( - \ii \int_{-\infty}^\infty \dd{t} \hat{H}_i^I(t) \right)
+\end{equation}
+
+% TODO:真空态、相互作用绘景下的相互作用哈密顿量怎么就变成含时的了，为什么for ameutar上又把它当成不含时来看待
+
+\subsubsection{束缚态}
+
+\section{微扰散射理论}
+
+\subsection{迪森级数和维克定理}
+
+我们假定相互作用实际上并不强，因此可以合理地将S矩阵做展开：
+\begin{equation}
+    \begin{aligned}
+        \hat{S} &= T \exp \left( - \ii \int_{-\infty}^\infty \dd{t} \hat{H}_i^I(t) \right) \\
+        &= \sum_{n=0}^\infty \frac{(-\ii)^n}{n!} \int_{-\infty}^\infty \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty \dd{t_1} \dd{t_2} \cdots \dd{t_n} T [\hat{H}_i^I(t_1) \hat{H}_i^I(t_2) \cdots \hat{H}_i^I(t_n)].
+    \end{aligned} 
+    \label{eq:dyson-series}
+\end{equation}
+这就是所谓的迪森级数。
+
+计算编时算符的作用相对困难，这里介绍一个将编时算符转化为正规序算符的方法。
+记两个算符的\textbf{收缩}为
+\begin{equation}
+    {\contraction{}{\hat{A}}{}{\hat{B}} \hat{A}\hat{B}} = T[\hat{A} \hat{B}] - N[\hat{A} \hat{B}].
+\end{equation}
+通过对易关系可以计算出，无论是费米子还是玻色子，其场算符或产生湮灭算符的收缩都是一个复数。
+进一步，定义任意的算符序列的收缩为
+\begin{equation}
+    {\contraction{}{\hat{A}}{\cdots}{\hat{B}} \hat{A} \cdots \hat{B}} = (\pm 1)^s {\contraction{}{\hat{A}}{}{\hat{B}} \hat{A}\hat{B}} \cdots,
+\end{equation}
+其中玻色子取$+1$，费米子取$-1$，$s$指的是将序列$\hat{A} \cdots \hat{B}$重排为$\hat{A}\hat{B} \cdots$需要的置换数目。
+一个算符序列的收缩可以是从中取两个算符做收缩，也可以是从里面先取两个算符做收缩，再取两个算符做收缩，也就是说取两对算符做收缩，又可以是取三对算符做收缩，等等。
+那么我们有\textbf{维克定理}：
+\begin{equation}
+    T[\hat{A} \hat{B} \hat{C} \cdots] = N[\hat{A} \hat{B} \hat{C} \cdots + \text{all possible contractions of } \hat{A} \hat{B} \hat{C} \cdots].
+\end{equation}
+
+这样我们就把\eqref{eq:dyson-series}转化为了计算$N[\hat{A}\hat{B} \cdots]$这样的表达式。
+这样的好处在，我们可以计算
+\[
+    \begin{aligned}
+        \mel{p'_1 p'_2 \cdots}{\hat{S}}{p_1 p_2 \cdots} = \mel{0}{\hat{a}_{\vb*{p}'_2}}{\hat{S}}{\hat{a}^\dagger_{\vb*{p}_1}}
+    \end{aligned}
+\]
+% 设\eqref{eq:field-operator-fourier}中的正频部分为$\hat{\phi}^+$，负频部分为$\hat{\phi}^-$，显然前者只含有产生算符，后者只含有湮灭算符。
+
+由于
+
+% TODO： 费曼图
+费曼关联函数，又称两点格林函数
+\begin{equation}
+    G(x, y) = \mel{\Omega}{T \hat{\phi} (x) \hat{\phi}^\dagger(y) }{\Omega},
+\end{equation}
+
+四点格林函数
+\begin{equation}
+    G^{(4)} (x_1, x_2, x_3, x_4) = \mel{\Omega}{T \hat{\phi} (x_1) \hat{\phi}(x_2) \hat{\phi}^\dagger(x_3) \hat{\phi}^\dagger (x_4) }{\Omega}
+\end{equation}
+
+自由场
+\begin{equation}
+    \Delta (x, y) = \mel{0}{T \hat{\phi} (x) \hat{\phi}^\dagger(y) }{0}
+\end{equation}
+自由场的传播子确实是场方程的格林函数。
+% TODO:为什么会有这个巧合？
 
 \end{document}
