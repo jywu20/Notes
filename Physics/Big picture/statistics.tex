@@ -380,13 +380,13 @@
     (\trace_2 \hat{\rho}) \otimes (\trace_1 \hat{\rho}) = \hat{\rho}.
 \end{equation}
 
-\subsubsection{未归一化的密度算符}
+\subsubsection{未归一化的密度算符}\label{sec:relative-density-operator}
 
 以上讨论的密度算符在定义时保证了其系数真的就是对应的态出现的概率。有时我们能够比较容易地计算出某个态出现的概率正比于某个值，即只知道
 \begin{equation}
     P(\ket{\psi_i}) \propto f(\psi_i),
 \end{equation}
-而不容易将它归一化。此时可以定义未归一化的密度算符为
+而不容易将它归一化。此时可以定义未归一化的密度算符或者说相对密度算符为
 \begin{equation}
     \hat{\rho} = \sum_i f(\psi_i) \dyad{\psi_i},
 \end{equation}
@@ -412,7 +412,17 @@
 
 现在我们引入几个量的严格定义。仅仅从这些量的性质出发对系统的能量状况做的分析叫做\textbf{热力学}。
 
-设$\hat{\rho}$是归一化的密度算符。首先定义
+设$\hat{\rho}$是归一化的密度算符。首先定义%
+\footnote{关于下式中的$\ln \hat{\rho}$：设算符$\hat{A}$可被谱展开为
+\[
+    \hat{A} = \sum_i A_i \dyad{i},
+\]
+则可以验证，一个解析函数作用在$\hat{A}$上的结果为
+\[
+    f(\hat{A}) = \sum_i f(A_i) \dyad{i}.
+\]
+因此即使函数$f$的性质不那么好，我们也规定上式成立。
+}%
 \begin{equation}
     S = - \trace (\hat{\rho} \ln \hat{\rho})
     \label{eq:neumann-entropy}
@@ -465,6 +475,9 @@
 
 \subsection{平衡态多粒子系统}
 
+本节讨论由多个粒子组成的平衡态系统的密度算符以及各种性质。
+% TODO：产生湮灭。。声子怎么办？肯定要有的
+
 \subsubsection{微正则系综}
 
 接下来我们来讨论，当一个系统达到平衡态时它会具有什么性质。在系统很大（从而它不是可积的），并且和外界有小但确实有的相互作用（从而它的演化轨迹会时不时从一条偏移到另外一条上，但每条轨迹又不会有很大偏离）时，我们有\textbf{各态遍历性}：在一段时间内，系统会经过所有可能的态。%
@@ -476,17 +489,16 @@
 \footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}%
 相应的，系统取各个态的概率是相同的。
 % TODO:为什么是相同的？
-从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。
+从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。这就是\textbf{等概率原理}。
 
 许多系统如果和外界毫无接触，那么并不会有遍历性；但是几乎我们关心的所有系统都或多或少地和外界有小的相互作用。
-这种系统和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。
+这种系统和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。相应的，系统和外界的小的相互作用以及它带来的能量变化称为\textbf{热涨落}。
 
 \subsubsection{正则系综}
 
 接下来我们讨论系统和环境有较多能量交换的情况。设系统和环境中的一部分之间有能量传递，且这一部分远大于系统，称其为\textbf{热库}。%
 \footnote{由于环境远大于系统，如果热库不远大于系统，总是可以将环境中的另外一些部分加入热库使之远大于系统。}%
 较小的系统和热库组成了一个大系统，这个大系统宏观上是封闭的，微观上则可以受到环境中其它部分的微小作用，因此它满足各态遍历假设。我们关心的小系统却未必能够满足这个假设。
-我们还要求系统和环境不交换物质，这实际上只是一个人为的约定，因为我们总是可以把一群总量不变的粒子当成一个系统。%TODO：这个假设在哪里被使用了？似乎哪里都没有用到？？
 我们假定系统和热库的相交部分非常小（通常情况是，系统和热库接触的部分只是一个表面），这样两者的相互作用哈密顿量并不大，从而没有必要考虑相互作用能，系统和热库的总能量为
 \begin{equation}
     E_T = E_s + E_r,
@@ -494,114 +506,107 @@
 \end{equation}
 其中$E_s$指系统能量，$E_r$指热库能量。
 
-记态密度为 % TODO:能级实际上总是离散的
+系统哈密顿量的本征态形如$\ket{E^{(i)}, j}$，其中$\{E^{(i)}\}$指的是一组不同的能量，$j$代表简并。
+为方便起见，我们记这些本征态为$\{\ket{n}\}$，并设$E_n$为$\ket{n}$对应的本征态的能量。
+请注意$E_n$和$E^{(n)}$是不一样的：后者在$n$不同时没有重复，而前者由于能量简并可以有重复。
+接下来我们需要根据等概率原理计算出系统具有不同能量——或者说出现在不同\textbf{能级}，也就是能量相同的本征态的集合——的概率。
+由于等概率原理是针对系统和热库组成的总系统而言的，我们需要讨论总系统的状态和系统的状态之间的关系。
+首先尝试记有$\Omega_1 (E)$个彼此独立的系统的能量为$E$的态，有$\Omega_2 (E)$个彼此独立的热库的能量为$E$的态，有$\Omega(E)$个彼此独立的总系统的能量为$E$的态。
+我们似乎有
 \begin{equation}
-    d = \dv{\Omega}{E}.
+    \Omega (E) = \sum_{n} \Omega_1 (E_1^{(n)}) \Omega_2 (E - E_1^{(n)}).
+    \label{eq:total-system-state-number}
 \end{equation}
-由于\eqref{eq:total-energy}，我们有
+但这个方程显然是有问题的：由于系统和热库的哈密顿量都可能是离散谱，设$E_1^{(n)}$是系统哈密顿量的本征值，$E-E_1^{(n)}$却未必是热库的哈密顿量的本征值！
+然而，由于热库非常大，其能级几乎是连续的，因此我们可以认为$E-E_1^{(n)}$应该落在热库的某个能级附近。
+因此我们接受\eqref{eq:total-system-state-number}。
+
+关于\eqref{eq:total-system-state-number}还有一个值得注意的地方。由于系统和热库的能级可以是连续的或者几乎是连续的，$\Omega$应该怎么定义实际上需要进一步澄清。
+对能谱连续的情况，设$d(E)$为态密度，然后做以下替换：
 \[
-    \dd{E_s} \dd{E_r} = \dd{E_s} (\dd{E} - \dd{E_s}) = \dd{E_s} \dd{E},
+    \sum_n \longrightarrow \int , \quad \Omega \longrightarrow d(E) \dd{E},
 \]
-于是
+就得到了正确的结果，也就是
+\[
+    d(E) \dd{E} = \int d_1 (E_1) \dd{E_1} d_2 (E - E_1) (\dd{E} - \dd{E_1}),
+\]
+即
+\begin{equation}
+    d(E) = \int \dd{E_1} d_1 (E_1) d_2 (E - E_1).
+\end{equation}
+因此我们只需要讨论离散谱的情况，就可以推广到连续谱。
+实际上我们完全可以反过来，首先讨论连续谱然后再推广到离散谱。在离散谱情况下，定义
+\[
+    d(E) = \sum_n \Omega(E^{(n)}) \delta(E - E^{(n)}),
+\]
+这样得到的$d(E)$是一个一个尖峰。我们取$\epsilon$为能量差的分辨率的尺度，定义
+\[
+    \Omega_\epsilon (E) = \int_{E-\epsilon/2}^{E+\epsilon/2} \dd{E} d(E),
+\]
+就恢复到了\eqref{eq:total-system-state-number}。需要注意的是并非所有的$\epsilon$都能够让$\Omega_\epsilon$恢复到$\Omega$。
+然而，由于$\Omega(E)$、$d(E)$和$\Omega_\epsilon(E)$之间的换算关系是完全均匀的，当离散谱各能级的间距很小时，可以把等概率原理应用到它们任何一个上面。
+% TODO:进一步说明，、。。关于$\epsilon$的东西我没算清楚过
+
+记总系统的能量为$E_T$。这个能量会有热涨落，但是大体上可以看成恒定。
+在其中系统具有能量$E_1$的总系统状态一共有$\Omega_1 (E_1) \Omega_2 (E_T - E_1)$个，因此
+\begin{equation}
+    P(E_1) = \frac{\Omega_1(E_1) \Omega_2(E_T-E_1)}{\Omega_T(E_T)},
+\end{equation}
+具有能量$E_1$的彼此独立的态正好就有$\Omega_1(E_1)$个，其中每一个态出现的概率都是$P(E_1) / \Omega_1 (E_1)$，这样系统的归一化的密度算符就是
 \[
     \begin{aligned}
-        d_T (E_T) &= \int_{E_s + E_r = E_T} \dd{E_s} \dd{E_r} d_r (E_r) d_s (E_s) \\
-        &= \int \dd{E_s} \dd{E} d_r (E_T - E_s) d_s (E_s),
+        \hat{\rho} &= \sum_{\text{all states of the system}} \dyad{\text{a state with energy $E_1$}} \frac{P(E_1)}{\Omega_1 (E_1)} \\
+        &= \sum_n \dyad{n} \frac{\Omega_2 (E_T - E_{1n})}{\Omega_T(E_T)} \\
+        &= \frac{1}{\Omega_T(E_T)} \sum_{n} \dyad{n} \Omega_2 (E_T - E_{1n}).
     \end{aligned}
 \]
-从而
+我们并不知道热库的具体结构，因此也无从分析$\Omega_2(E_T-E_{1n})$的表达式。
+然而，注意到热库通常来说都是很大的，因此$E_{1n}$相对$E_T$来说总是很小，因此我们能够通过泰勒展开取第一项来分析问题。
+由于$\Omega_2$随着热库规模的增大指数增长，实际上我们不能够直接对$\Omega_2 (E_T - E_{1n})$做展开。要看出为什么，注意到
 \[
-    d_T (E_T) = \int \dd{E_s} d_r (E_T - E_s) d_s (E_s).
+    \Omega_2 (E_T - E_{1n}) \sim (E_T - E_{1n})^M,
 \]
-由于热库远大于系统，$d_s$只有在$E_s$远小于$E_T$时才有比较大的值，因此
+其中$M$与热库规模——例如其粒子数——同阶。这样就有
+\[
+    \Omega_2 (E_T - E_{1n}) \sim E_T^M \left( 1 - M \frac{E_{1n}}{E_T} + \frac{1}{2} M (M-1) \left(\frac{E_{1n}}{E_T}\right)^2 + \cdots \right),
+\]
+$M$的巨大数量级意味着取一阶展开有可能并不能达到足够的精度。
+为此我们使用一个技巧：展开
+\[
+    \exp(\ln \Omega_2(E_T-E_{1n})) \sim \exp \left( M \ln (E_T - E_{1n}) \right),
+\]
+由于$M$不再出现在展开式当中，从$E_{1n}$相比总能量$E_T$很小这个事实就可以直接取一阶展开式了。于是
+\[
+    \begin{aligned}
+        \hat{\rho} &= \frac{1}{\Omega_T(E_T)} \sum_{n} \dyad{n} \Omega_2 (E_T - E_{1n}) \\
+        &= \frac{1}{\Omega_T(E_T)} \sum_{n} \dyad{n} \ee^{\ln \Omega_2 (E_T - E_{1n})} \\
+        &= \frac{1}{\Omega_T(E_T)} \sum_{n} \dyad{n} \exp \left( \ln \Omega_2 (E_T) - \eval{\pdv{\ln \Omega_2 (E)}{E}}_{E=E_T} E_{1n} + \cdots \right),
+    \end{aligned}
+\]
+仅保留到一阶项，并重新定义常数，就得到
 \begin{equation}
-    d_T (E_T) = d_r (E_T).
+    \hat{\rho} = \frac{1}{Z} \sum_n \dyad{n} \ee^{-\beta E_n}.
+    \label{eq:canonical-ensemble-density-operator}
 \end{equation}
-% 这个公式有什么用吗？
+这里我们已经为了书写简便将$E_{1n}$简写为了$E_n$，因为一旦得到了\eqref{eq:canonical-ensemble-density-operator}，我们就完全只使用系统以及一些常数得到了系统的状态，而不再有必要考虑热库的结构了。
+但热库并非对系统的状态毫无影响。
+容易看出归一化因子$Z$就是\autoref{sec:relative-density-operator}中提到的配分函数，于是
+\begin{equation}
+    Z = \sum_n \ee^{-\beta E_n} = \sum_{E^{(n)}} \Omega(E^{(n)}) \ee^{-\beta E^{(n)}}.
+\end{equation}
+这里将$\Omega_1(E)$简写为$\Omega(E)$，因为有了\eqref{eq:canonical-ensemble-density-operator}之后就不再需要考虑热库了。
 
-我们来分析系统取特定能量的概率。%
-\footnote{请注意由于系统可以和热库有相互作用，系统的能量并不是固定的。当然，到平衡态时，系统的能量的期望是固定的。平衡态系统的能量在其期望附加有上下涨落。}%
-我们称系统处于某个能量上的所有态的总和为\textbf{能级}。
-首先假定系统的能级没有简并，或者各个能级的简并情况是相同的（也就是说，每个能级上的简并数相同）。%
-\footnote{等价地说就是，系统的态空间可以写成能量空间直积上别的某些自由度。另一种等价的说法是，系统的哈密顿算符$\hat{H}$和别的某几个算符可以构成系统的一组CSCO。}%
-由于系统和热库总能量恒定，我们有
-\[
-    P(E_s) \propto d_r (E_T - E_s),
-\]
-从而
-\[
-    \frac{P(E_s)}{P(E_{s'})} = \frac{d_r (E_T - E_s)}{d_r (E_T - E_{s'})}.
-\]
-等式右边是一个关于$E_T, E_s, E_{s'}$的表达式。因此我们成功地确定了一个事实：$E_s$的变动导致的概率的变动仅仅依赖于$E_s, E_{s'}$和$E_T$。
-但实际上，$E_T$并不会改变概率比值。只要满足热库远大于系统，将环境中的什么部分算作热库是完全任意的，因此完全可以将环境中和原热库和系统没有相互作用的一部分算作热库，这增大了$E_T$，却对系统的行为没有任何影响。这表明我们有
-\[
-    \frac{P(E_s)}{P(E_{s'})} \propto f(E_s, E_{s'}).
-\]
-最后，注意到系统的能量可以整体地加上一个常数而不影响其行为%
-\footnote{我们就是在这里用到了系统无简并或者各个能级的简并情况相同这一假设。如果系统不同能级上的简并数不同，那当我们整体地将能量加上一个常数时还需要调整对应能级的简并数才能够让系统行为保持不变。
-例如，设能级$E_0$上的简并数为$n_1$，$E_0 + \Delta E$上的简并数为$n_2$，现在如果将能量整体地加上常数$\Delta E$，那需要重新规定能级$E_0 + \Delta E$上的简并数为$n_1$。}%
-，因此上式右边只应该关于$E_s$和$E_{s'}$的差值，从而
-\[
-    \frac{P(E_s)}{P(E_{s'})} \propto f(E_s - E_{s'}).
-\]
-满足这个关系的唯一可能就是
+因为各$\ket{n}$彼此正交，\eqref{eq:canonical-ensemble-density-operator}意味着，能量$E^{(n)}$出现的概率为
 \begin{equation}
-    P(E_s) \propto \ee^{- \beta E_s}.
-    \label{eq:gibbs-distribution-without-degenerate}
+    P(E^{(n)}) = \frac{\Omega(E^{(n)})}{Z} \ee^{-\beta E^{(n)}}.
 \end{equation}
-这就是所谓的\textbf{玻尔兹曼分布}或者\textbf{吉布斯分布}。与环境交换物质能量的系统在平衡时一定会落在这个分布上。
-
-进一步，假定系统能级无简并。这样可以很容易地对\eqref{eq:gibbs-distribution-without-degenerate}做归一化，就有
-\begin{equation}
-    P(E_s) = \frac{1}{Z} \ee^{ - \beta E_s},
-    \label{eq:distribution-of-energy-without-degenerate}
-\end{equation}
-其中
-\begin{equation}
-    Z = \sum_{E_s} \ee^{ - \beta E_s}
-    \label{eq:partition-function-without-degenerate}
-\end{equation}
-就是在引入未归一化的密度算符时提到的配分函数。相应的，密度算符为
-\begin{equation}
-    \hat{\rho} = \sum_{E_s} P(E_s) \dyad{E_s} = \sum_{E_s} \ee^{-\beta E_s} \dyad{E_s} = \sum_n \ee^{-\beta E_n} \dyad{n}.
-    \label{eq:density-operator-without-degenerate}
-\end{equation}
-其中$n$是能量本征态的标记，$E_n$指的是$\ket{n}$的本征值。
-
-如果系统的能级有简并，这说明能量$\hat{H}$不足以成为描述系统的CSCO；还需要一些其它的算符来完整地描述系统。我们把它们打包设为$\hat{A}$。
-于是，可以先在哈密顿量中引入微小的关于$\hat{A}$的扰动，即
-\[
-    \hat{H}' = \hat{H} + \lambda \hat{H}_1 (\hat{A}), \quad \lambda \ll 1,
-\]
-让简并消失，但与此同时不对态空间产生很大影响，此时\eqref{eq:density-operator-without-degenerate}就适用了。现在让$\lambda$趋于零，我们注意到\eqref{eq:density-operator-without-degenerate}中关于$E_s$的所有表达式在$\lambda$取0时会出现突变，因为此时本来能够分开的$E_s$突然变得不能分开了，但是关于$\ket{n}$的表达式的变化却是可微的。
-因此有简并时的密度算符为%
-\footnote{设算符$\hat{A}$可被谱展开为
-\[
-    \hat{A} = \sum_i A_i \dyad{i},
-\]
-则可以验证，一个解析函数作用在$\hat{A}$上的结果为
-\[
-    f(\hat{A}) = \sum_i f(A_i) \dyad{i}.
-\]
-因此即使函数$f$的性质不那么好，我们也规定上式成立。
-}
-\begin{equation}
-    \hat{\rho} = \sum_n \ee^{-\beta E_n} \dyad{n} = \ee^{-\beta \hat{H}}.
-    \label{eq:gibbs-density-operator}
-\end{equation}
-相应的，可以读出
-\begin{equation}
-    P(E_i) = \frac{1}{Z} \sum_{E_n = E_i} \mel{n}{\hat{\rho}}{n} = \frac{1}{Z} g_i \ee^{-\beta E_i},
-\end{equation}
-其中$E_i$指的是第$i$个能级的能量，$g_i$指的是第$i$个能级的简并度。相应的配分函数为
-\begin{equation}
-    Z = \sum_i g_i \ee^{- \beta E_i} = \sum_\text{eigenstate $\ket{n}$} \ee^{- \beta E_n} .
-\end{equation}
-第二个等号表示对所有能量本征态求和，当然，此时没有必要使用简并数因子，因为所有态，无论简并不简并，都已被考虑了。
+这种较高的能量出现的概率指数下降的分布为\textbf{玻尔兹曼分布}。
+与微正则系综不同，正则系综中由于热库的存在，系统可以出现在不同能量的能级上。
+这也就是微正则系综在名称上似乎比正则系综“小”的原因：微正则系综中系统可能出现的状态少于正则系综。
 
 下面计算各物理量的期望值。能量的期望可以直接从配分函数中读出来。注意到
 \[
-    \expval*{\hat{E}} = \sum_i E_i P(E_i) = \frac{1}{Z} \sum_i E_i g_i \ee^{- \beta E_i},
+    \expval*{\hat{E}} = \sum_i E^{(i)} P(E^{(i)}) = \frac{1}{Z} \sum_i E^{(i)} \Omega(E^{(i)}) \ee^{- \beta E^{(i)}} = \frac{1}{Z} \sum_\text{eigenstate $\ket{n}$} E_n \ee^{-\beta E_n} ,
 \]
 可以得到
 \begin{equation}
@@ -668,7 +673,7 @@
 
 \subsubsection{平衡态热力学}
 
-首先指出一个事实：玻尔兹曼分布\eqref{eq:gibbs-density-operator}是让熵取极大值的分布。可以使用拉格朗日乘子法导出这一点。记$\hat{\rho}$为归一化的密度算符，则%
+首先指出一个事实：玻尔兹曼分布\eqref{eq:canonical-ensemble-density-operator}是让熵取极大值的分布。可以使用拉格朗日乘子法导出这一点。记$\hat{\rho}$为归一化的密度算符，则%
 \footnote{这只是一个条件，但我们只需要说明“所有可能的熵极大值都对应吉布斯平衡态”即可，如果只使用这个条件就能够推出这个结论，那就没有问题。}
 \[
     \trace \hat{\rho} = 1.
