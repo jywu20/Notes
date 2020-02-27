@@ -289,9 +289,9 @@
     \expval*{\hat{A}} = \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
 \end{equation}
 
-\subsubsection{复合系统}
+\subsubsection{复合系统}\label{sec:combining-systems}
 
-本节将讨论，如果我们已有一个大系统的密度算符，而实际上我们只想讨论其中的一部分的行为，那么要如何写出这个部分的密度算符。
+本节将讨论，如果我们已有一个总系统的密度算符，而实际上我们只想讨论其中的一部分的行为，那么要如何写出这个部分的密度算符。
 将系统分成两部分，其中一部分称为系统1，另一部分称为系统2。
 设$\hat{A}$是只和系统1有关的一个算符。记描述系统2的一组基态为$\ket{\chi_i}$；$\ket{\phi_i}$是系统1的一组态，但它们未必满足正交归一化条件。
 则系统的任何一个态均形如
@@ -303,6 +303,7 @@
 \[
     \hat{\rho} = \sum_k p_k \sum_{i,j} \abs{c_{k,ij}}^2 \ket{\phi_i} \ket{\chi_j} \bra{\phi_i} \bra{\chi_j}
 \]
+请注意所谓的“两个系统”并不一定意味着这是空间上隔离的两个系统——我们只不过是把两个态空间直积而成的态空间中关于两个态空间的信息分别称为系统1和系统2。
 
 现在使用$\hat{A}$对系统1做一次测量，得到$A_i$的概率为
 \[
@@ -360,11 +361,11 @@
     \hat{\rho}_1 = \sum_i P(\ket*{\psi_i^{(1)}}) \dyad*{\psi_i^{(1)}}, \quad \hat{\rho}_2 = \sum_i P(\ket*{\psi_i^{(2)}}) \dyad*{\psi_i^{(2)}}.
 \]
 现在把系统1和系统2看成同一个系统。实际上，我们是把描述系统1的系综和描述系统2的系综拼成了一个大系综。这个大系综中的态可以写成$\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}$的形式。
-现在使用这一组态对大系统做一次测量，由于系统1和系统2无关，有
+现在使用这一组态对总系统做一次测量，由于系统1和系统2无关，有
 \[
     P(\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}) = P(\ket*{\psi_i^{(1)}}) P(\ket*{\psi_j^{(2)}}),
 \]
-从而，大系统的密度矩阵就是
+从而，总系统的密度矩阵就是
 \begin{equation}
     \hat{\rho} = \hat{\rho}_1 \otimes \hat{\rho}_2.
     \label{eq:independent-systems-combinition}
@@ -413,6 +414,8 @@
 
 \subsection{宏观量}
 
+% TODO:这一部分文章的结构需要调整
+
 宏观上能够观察的量可以分成两类。一类在微观层面具有良定义，其宏观形式就是它的统计平均。这一类量的例子有能量等。还有一类量在微观层面并无明确定义，它们是大量粒子的集体行为涌现出现的结果。
 
 \subsubsection{熵}
@@ -432,9 +435,9 @@
 }%
 \begin{equation}
     S = - \trace (\hat{\rho} \ln \hat{\rho}) = - \expval*{\ln \hat{\rho}}.
-    \label{eq:neumann-entropy}
+    \label{eq:von-neumann-entropy}
 \end{equation}
-为\textbf{熵}，或称为\textbf{冯诺依曼熵}来和信息熵和经典熵区分。设密度算符被谱展开为
+为\textbf{熵}，或称为\textbf{冯诺依曼熵}来和我们将要看到的另一种熵区分。设密度算符被谱展开为
 \[
     \hat{\rho} = \sum_n \rho_n \dyad{n},
 \]
@@ -465,7 +468,7 @@
 \[
     \hat{\rho} = \sum_{i,j} \rho_i^{(1)} \rho_j^{(2)} \dyad*{i^{(1)}, j^{(2)}}.
 \]
-组成的大系统的熵为
+组成的总系统的熵为
 \[
     \begin{aligned}
         S(\hat{\rho}) &= - \sum_{i, j} \rho_i^{(1)} \rho_j^{(2)} \ln (\rho_i^{(1)} \rho_j^{(2)}) \\
@@ -474,7 +477,7 @@
         &= S(\hat{\rho}_1) + S(\hat{\rho}_2).
     \end{aligned}
 \]
-也就是说，彼此独立的系统组成的大系统的熵就是组成它的各个系统的熵之和。
+也就是说，彼此独立的系统组成的总系统的熵就是组成它的各个系统的熵之和。
 我们只能够得到这个程度的结论：一个系统的熵未必是它的各个子系统的熵之和。
 熵对任何系统的可加性只有在更加特定的情况下才能够成立。
 
@@ -515,15 +518,19 @@
 
 \section{平衡态多粒子系统}
 
-本节讨论由多个粒子组成的平衡态系统的密度算符以及各种性质。
+本节讨论由大量粒子组成的平衡态系统的密度算符以及各种性质。
 % TODO：产生湮灭。。声子怎么办？肯定要有的
 
 \subsection{微正则系综}
 
-接下来我们来讨论，当一个系统达到平衡态时它会具有什么性质。在系统很大（从而它不是可积的），并且和外界有小但确实有的相互作用（从而它的演化轨迹会时不时从一条偏移到另外一条上，但每条轨迹又不会有很大偏离）时，我们有\textbf{各态遍历性}：在一段时间内，系统会经过所有可能的态。%
+\subsubsection{概率分布与密度算符}
+
+\textbf{孤立系统}是指很大（从而它不是可积的），并且和外界有小但确实有的相互作用（从而它的演化轨迹会时不时从一条偏移到另外一条上，但每条轨迹又不会有很大偏离）的系统。
+称它为孤立系统是因为宏观上看它和外界没有物质能量交换。
+平衡态的孤立系统具有\textbf{各态遍历性}：在一段时间内，系统会经过所有可能的态。%
 \footnote{这些条件都是必要的：如果系统很简单，比如说，就是理想的二体问题，那么就算系统和环境有纠缠或者持续的小的相互作用也不会各态遍历——可积系统不会热化。}%
 所谓可能指的是和系统已知的各个参数一致，例如如果系统和外界无能量交换，那么所有可能的态就是指能量和初始能量相等的态。%
-\footnote{类似于“系统有硬边界”这样的条件，如“系统装在一个盒子里”，可以看成是系统受到一个外加势的作用，这个外加势在盒子内部为零，在盒子外部为无穷大，从而由系统能量有限可以知道，系统中的粒子绝对不会跑到盒子外部去。}
+\footnote{类似于“系统有硬边界”这样的条件，如“系统装在一个盒子里”，可以看成是系统受到一个外加势的作用，这个外加势在盒子内部为零，在盒子外部为无穷大，从而由系统能量有限可以知道，系统中的粒子绝对不会跑到盒子外部去。}%
 系统遍历所有可能的态的时间，也就是\textbf{遍历时间}，通常远远小于我们观察的时间尺度。
 显然，这就意味着在我们观察的时间尺度上均匀取样地对系统做观察，得到的结果是随机的。%
 \footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}%
@@ -532,38 +539,42 @@
 从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。这就是\textbf{等概率原理}。
 
 许多系统如果和外界毫无接触，那么并不会有遍历性；但是几乎我们关心的所有系统都或多或少地和外界有小的相互作用。
-这种系统和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。相应的，系统和外界的小的相互作用以及它带来的能量变化称为\textbf{热涨落}。
-
-\subsection{正则系综}
-
-\subsubsection{系统状态}\label{sec:canonical-ensemble-state}
-
-接下来我们讨论系统和环境有较多能量交换的情况。设系统和环境中的一部分之间有能量传递，且这一部分远大于系统，称其为\textbf{热库}。%
-\footnote{由于环境远大于系统，如果热库不远大于系统，总是可以将环境中的另外一些部分加入热库使之远大于系统。}%
-较小的系统和热库组成了一个大系统，这个大系统宏观上是封闭的，微观上则可以受到环境中其它部分的微小作用，因此它满足各态遍历假设。我们关心的小系统却未必能够满足这个假设。
-我们假定系统和热库的相交部分非常小（通常情况是，系统和热库接触的部分只是一个表面），这样两者的相互作用哈密顿量并不大，从而没有必要考虑相互作用能，系统和热库的总能量为
-\begin{equation}
-    E_T = E_s + E_r,
-    \label{eq:total-energy}
-\end{equation}
-其中$E_s$指系统能量，$E_r$指热库能量。描述这样的系统的系综就是\textbf{正则系综}。
+这种系统达到平衡，且和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。相应的，系统和外界的小的相互作用以及它带来的能量变化称为\textbf{热涨落}。
 
 系统哈密顿量的本征态形如$\ket{E^{(i)}, j}$，其中$\{E^{(i)}\}$指的是一组不同的能量，$j$代表简并。
 为方便起见，我们记这些本征态为$\{\ket{n}\}$，并设$E_n$为$\ket{n}$对应的本征态的能量。
 请注意$E_n$和$E^{(n)}$是不一样的：后者在$n$不同时没有重复，而前者由于能量简并可以有重复。
-接下来我们需要根据等概率原理计算出系统具有不同能量——或者说出现在不同\textbf{能级}，也就是能量相同的本征态的集合——的概率。
-由于等概率原理是针对系统和热库组成的总系统而言的，我们需要讨论总系统的状态和系统的状态之间的关系。
-首先尝试记有$\Omega_1 (E)$个彼此独立的系统的能量为$E$的态，有$\Omega_2 (E)$个彼此独立的热库的能量为$E$的态，有$\Omega_T(E)$个彼此独立的总系统的能量为$E$的态。
-我们似乎有
-\begin{equation}
-    \Omega_T (E) = \sum_{n} \Omega_1 (E_1^{(n)}) \Omega_2 (E - E_1^{(n)}).
-    \label{eq:canonical-total-system-state-number}
-\end{equation}
-但这个方程显然是有问题的：由于系统和热库的哈密顿量都可能是离散谱，设$E_1^{(n)}$是系统哈密顿量的本征值，$E-E_1^{(n)}$却未必是热库的哈密顿量的本征值！
-然而，由于热库非常大，其能级几乎是连续的，因此我们可以认为$E-E_1^{(n)}$应该落在热库的某个能级附近。
-因此我们接受\eqref{eq:canonical-total-system-state-number}。
 
-关于\eqref{eq:canonical-total-system-state-number}还有一个值得注意的地方。由于系统和热库的能级可以是连续的或者几乎是连续的，$\Omega$应该怎么定义实际上需要进一步澄清。
+在以上讨论的基础上可以直接写出微正则系综的密度算符为
+\begin{equation}
+    \hat{\rho} = \frac{1}{\Omega(E)} \sum_{E_n = E} \dyad{n},
+    \label{eq:microcanonical-ensemble-density-operator}
+\end{equation}
+其中$\{\ket{n}\}$为系统哈密顿算符的各正交本征态，$\Omega(E)$给出了能量为$E$的哈密顿量的彼此独立的本征态的数目。
+我们把具有同一个能量的所有态称为一个\textbf{能级}，那么$\Omega(E)$就是能级$E$的简并度。
+
+\subsubsection{相互接触的系统}\label{sec:contacting-systems}
+
+考虑两个系统，分别称为系统1和系统2。首先记系统1有$\Omega_1 (E)$个彼此独立的能量为$E$的态，系统2有$\Omega_2 (E)$个彼此独立的能量为$E$的态。
+如果将两个系统组建成一个总系统，在系统1和系统2无相互作用时，总系统的哈密顿量就是
+\[
+    \hat{H}_T = \hat{H}_1 + \hat{H}_2,
+\]
+由于$\hat{H}_1$和$\hat{H}_2$对易，$\hat{H}_T$的本征值就是两者的本征值之和。设总系统有$\Omega_T(E)$个彼此独立的总系统的能量为$E$的态，那么
+\[
+    \Omega_T (E_T) = \sum_{E_T=E_1^{(m)}+E_2^{(n)}} \Omega_1 (E_1^{(m)}) \Omega_2 (E_2^{(n)}),
+\]
+或者
+\begin{equation}
+    \Omega_T (E) = \sum_{n} \Omega_1 (E_1^{(n)}) \Omega_2 (E - E_1^{(n)}),
+    \label{eq:total-system-state-number}
+\end{equation}
+其中$E$为$\hat{H}_T$的某个本征值。
+
+现在让两个系统“接触”，也就是让它们产生一个相对于它们各自的哈密顿量来说比较小的相互作用。此时\eqref{eq:total-system-state-number}就不再适用了，因为总系统的哈密顿量还要加上一个相互作用项，由于系统1和系统2的哈密顿量都可能是离散谱，设$E_1^{(n)}$是系统1哈密顿量的本征值，$E-E_1^{(n)}$却未必是系统2的哈密顿量的本征值！
+但由于我们考虑的系统的粒子数都非常大，系统2的能谱近似是连续的，也即，$E-E_1^{(n)}$总是非常接近系统2的一个能级。因此我们接受\eqref{eq:total-system-state-number}。
+
+关于\eqref{eq:total-system-state-number}还有一个值得注意的地方。由于系统1和系统2的能级可以是连续的或者几乎是连续的，$\Omega$应该怎么定义实际上需要进一步澄清。
 对能谱连续的情况，设$d(E)$为态密度，然后做以下替换：
 \[
     \sum_n \longrightarrow \int , \quad \Omega \longrightarrow d(E) \dd{E},
@@ -575,6 +586,7 @@
 即
 \begin{equation}
     d_T(E) = \int \dd{E_1} d_1 (E_1) d_2 (E - E_1).
+    \label{eq:canonical-state-continue}
 \end{equation}
 因此我们只需要讨论离散谱的情况，就可以推广到连续谱。
 实际上我们完全可以反过来，首先讨论连续谱然后再推广到离散谱。在离散谱情况下，定义
@@ -585,12 +597,159 @@
 \[
     \Omega_\epsilon (E) = \int_{E-\epsilon/2}^{E+\epsilon/2} \dd{E} d(E),
 \]
-就恢复到了\eqref{eq:canonical-total-system-state-number}。需要注意的是并非所有的$\epsilon$都能够让$\Omega_\epsilon$恢复到$\Omega$。
+就恢复到了\eqref{eq:total-system-state-number}。需要注意的是并非所有的$\epsilon$都能够让$\Omega_\epsilon$恢复到$\Omega$。
 然而，由于$\Omega(E)$、$d(E)$和$\Omega_\epsilon(E)$之间的换算关系是完全均匀的，当离散谱各能级的间距很小时，可以把等概率原理应用到它们任何一个上面，只要它们是微正则系综中的。 % TODO
-因此很多时候并不需要让$\Omega_\epsilon(E)$为实际的处在能级$E$上的量子态个数。
+因此很多时候并不需要让$\Omega_\epsilon(E)$为实际的处在能级$E$上的量子态个数——实际上，实际计算时也不可能真的算出来实际的处在能级$E$上的量子态个数。
 % TODO:进一步说明，、。。关于$\epsilon$的东西我没算清楚过
 
+\subsubsection{熵和温度}\label{eq:entropy-and-temperature}
+
+微正则系综下冯诺依曼熵的计算特别容易。由于\eqref{eq:microcanonical-ensemble-density-operator}的形式非常简单，可以直接得到
+\[
+    S = - \sum_\text{eigenstate $\ket{n}$} \frac{1}{\Omega(E)} \ln \frac{1}{\Omega(E)},
+\]
+由于求和号内的表达式并不显含$n$，而求和一共进行了$\Omega(E)$次，我们就得到
+\begin{equation}
+    S(E) = \ln \Omega(E).
+    \label{eq:entropy-and-state-number}
+\end{equation}
+我们把微正则系综中的冯诺依曼熵写成关于能量的函数，因为系统的哈密顿量只是描写了系统的结构，或者说可能有多少能量，却并没有说明系统实际上有多少能量。当然一般情况下，系统的态可以不是能量本征态，所以也说不上有什么确定的能量，但由于本节仅讨论微正则系综，不会出现这种情况。
+
+实际上，微正则系综的冯诺依曼熵\eqref{eq:entropy-and-state-number}是孤立体系的冯诺依曼熵中最大的。
+使用拉格朗日乘子法可以导出这一点。考虑最大化问题
+\[
+    S = - \trace (\hat{\rho} \ln \hat{\rho}) \quad \text{s.t.} \quad \begin{bigcase}
+        \hat{\rho} &= \sum_{E_n=E} \rho_n \dyad{n}, \\
+        \trace \hat{\rho} &= 1,
+    \end{bigcase}
+\]
+系统的孤立性意味着系统只能出现在能级$E$上，这也就是上式中我们认为密度算符的所有参与态的能量本征值都是$E$的原因。
+$\trace \hat{\rho} = 1$等价于
+\[
+    \sum_{E_n=E} \rho_n = 1,
+\]
+且我们有
+\[
+    S = - \sum_{E_n=E} \rho_n \ln \rho_n,
+\]
+于是取目标函数为
+\[
+    u = - \sum_{E_n=E} \rho_n \ln \rho_n + \lambda \left(1 - \sum_{E_n=E} \rho_n\right),
+\]
+对任意一个$\rho_m$优化，得到
+\[
+    0 = - \ln \rho_m - 1 - \lambda,
+\]
+可见所有$\{\rho_n\}$都是相等的，从而
+\[
+    \hat{\rho} \propto \sum_{E_n=E} \dyad{n},
+\]
+归一化就得到\eqref{eq:entropy-and-state-number}。因此我们得到\textbf{最大熵原理}：孤立系统达到平衡，当且仅当其冯诺依曼熵达到最大。
+只要孤立系统的冯诺依曼熵达到了最大值，它就一定已经平衡，并且服从微正则系综。
+
+实际上，\eqref{eq:entropy-and-state-number}可以作为另一种熵的定义，称为\textbf{玻尔兹曼熵}。
+玻尔兹曼熵对彼此独立的系统也具有可加性，因为两个彼此无关的系统组成的总系统的状态数为
+\begin{equation}
+    \Omega_T = \Omega_1 \Omega_2.
+\end{equation}
+不过，由于\eqref{eq:entropy-and-state-number}的成立是有条件的，玻尔兹曼熵和冯诺依曼熵是不同的。
+两者只有在平衡态孤立体系上才是一样的，此时我们统称它们为\textbf{熵}。
+
+相互接触的系统自然地导出了温度的概念。两个系统在孤立时，它们达到平衡时的状况可以各自使用微正则系综描述，从而
+\[
+    S_1(E) = \ln \Omega_1 (E), \quad S_2 (E) = \ln \Omega_2 (E).
+\]
+当两个系统发生接触之后，它们就不再是系统1和系统2的冯诺依曼熵了，而是这两个系统的玻尔兹曼熵
+设两个系统分别在能级$E_1$和$E_2$上。现在让它们接触。平衡时它们接触而成的总系统的熵为
+\[
+    S_T(E_T) = \ln \Omega_T (E_T) = \ln \sum_{n} \Omega_1 (E_1^{(n)}) \Omega_2 (E_T - E_1^{(n)}),
+\]
+其中
+\[
+    E_T = E_1 + E_2.
+\]
+当然，由于两个系统之间的相互作用，它们接触之后会发生能量交换，并产生纠缠，因此平衡后的系统的熵并不是$S_1$和$S_2$的简单相加。
+但我们总是可以使用$S_1$和$S_2$写出$\Omega_1$和$\Omega_2$的表达式，得到
+\begin{equation}
+    S_T(E_T) = \ln \sum_{n} \exp \left(S_1(E_1^{(n)})+S_2(E_T-E_1^{(n)})\right).
+    \label{eq:combined-system-entropy}
+\end{equation}
+请注意被求和的函数随着自变量的增长而增长得非常快。对比较大的系统，我们有
+\[
+    \Omega \sim 2^N,
+\]
+其中$N$表示系统的粒子数（具体底数是多少不重要，因为$N$很大时底数不改变数量级），从而
+\[
+    S \sim N.
+\]
+因此随着系统规模的增长，$S$可以不受限制地增长，这样，对比较大的系统，\eqref{eq:combined-system-entropy}的值几乎完全由它右边的求和式中最大的一项决定，也就是%
+\footnote{实际上这就是计算积分近似值时常用的鞍点法。}
+\[
+    \begin{aligned}
+        S_T &= \ln \max_{E_1^{(n)}} \left( \exp \left(S_1(E_1^{(n)})+S_2(E_T-E_1^{(n)})\right) \right) \\
+        &= \max_{E_1^{(n)}} \left(S_1(E_1^{(n)})+S_2(E_T-E_1^{(n)})\right),
+    \end{aligned}
+\]
+由于系统规模很大，能谱几乎是连续的，可以认为$E_1^{(n)}$近似为连续变量，从而可以对它求导，通过计算
+\[
+    \pdv{E_\star} \left( S_1(E_\star) + S_2(E_T-E_\star) \right) = 0
+\]
+我们得到
+\begin{equation}
+    \eval{\pdv{S_1(E)}{E}}_{E=E_\star} = \eval{\pdv{S_2(E)}{E}}_{E=E_T-E_\star}.
+    \label{eq:equilibrium-condition-original}
+\end{equation}
+从而，两系统接触之后形成的总系统平衡时的熵就是
+\begin{equation}
+    S_T = S_1(E_\star) + S_2(E_T-E_\star),
+\end{equation}
+其中$E_\star$是\eqref{eq:equilibrium-condition-original}的解。
+这也是两系统组成的总系统能够达到的最大熵。
+
+我们注意到一个惊人的事实：如果在两系统接触之前，系统1平衡于能级$E_\star$上，系统2平衡于能级$E_T-E_\star$上，那么系统1和系统2接触之后立刻就达到了平衡，形成了一个能量为$E_T$的总系统。
+这是因为两系统接触之前，它们组成的总系统的熵按照熵的叠加性为
+\[
+    S_1(E_\star) + S_2(E_T-E_\star),
+\]
+恰好就是两系统接触之后的熵。由于$S_T$是两系统组成的总系统能够达到的最大熵，两系统接触前后的密度算符是完全一样的。
+于是对任意一个达到平衡的系统——它未必是孤立的——我们定义物理量\textbf{温度}$T$为
+\begin{equation}
+    \frac{1}{T} = \pdv{S}{E} = \pdv{\ln \Omega}{E},
+\end{equation}
+其中的$S$指的是这个系统的玻尔兹曼熵，也就是这个系统孤立平衡时它的冯诺依曼熵。
+如果两个系统孤立时具有相同的温度，那么它们接触之后立刻达到平衡。
+由于两系统接触前后密度算符没有发生变化，两系统接触之后各自的温度毫无变化。%
+\footnote{需要注意的是系统接触后密度算符没有变化只有在两个系统的粒子数都比较大时才成立。正如我们在关于正则系综的论述中会看到的那样，一个与外界接触的系统有一定的可能出现在远离其平均能量的能级上，因此显然，两系统接触后密度算符实际上会有一定的变化。然而，当粒子数很大时，这种变化是可以略去的。}
+实际上，两系统接触之后形成的总系统的温度也和两系统的温度一样。这是因为\eqref{eq:equilibrium-condition-original}实际上给出了$E_T$和$E_\star$的函数关系，从而
+\[
+    \begin{aligned}
+        \pdv{S_T}{E_T} &= \pdv{E_T} \left(S_1(E_\star(E_T)) + S_2(E_T-E_\star(E_T))\right) \\
+        &= \eval{\pdv{S_1}{E}}_{E=E_\star} \dv{E_\star}{E_T} + \eval{\pdv{S_2}{E}}_{E=E_T-E_\star} \left( 1 - \dv{E_\star}{E_T} \right) \\
+        &= \left( \eval{\pdv{S_1}{E}}_{E=E_\star} - \eval{\pdv{S_2}{E}}_{E=E_T-E_\star} \right) \dv{E_\star}{E_T} + \eval{\pdv{S_2}{E}}_{E=E_T-E_\star} \\
+        &= \frac{1}{T}.
+    \end{aligned}
+\]
+总之，温度一致的任意两个系统接触之后立刻达到平衡，且接触之后两个系统的温度没有变化，接触之后形成的总系统的温度就是两个系统的温度。
+另一方面，设一个孤立系统是两个子系统接触而形成的，当它达到平衡时，我们会发现其子系统的温度就是这个孤立系统的温度。
+% TODO：整理一下这里的论证。实际上可以把这里的论证放到热力学那一节里面
+综上我们得出结论：温度相同的平衡态系统
+
+\subsection{正则系综}
+
 \subsubsection{正则系综的密度算符}
+
+接下来我们讨论系统和环境有较多能量交换的情况。设系统和环境中的一部分之间有能量传递，且这一部分远大于系统，称其为\textbf{热库}。%
+\footnote{由于环境远大于系统，如果热库不远大于系统，总是可以将环境中的另外一些部分加入热库使之远大于系统。}%
+我们分别用1来标记系统，用2来标记热库。较小的系统和热库组成了一个总系统，这个总系统宏观上是封闭的，微观上则可以受到环境中其它部分的微小作用，因此它满足各态遍历假设。我们关心的小系统却未必能够满足这个假设。
+我们假定系统和热库的相交部分非常小（通常情况是，系统和热库接触的部分只是一个表面），这样两者的相互作用哈密顿量并不大，从而没有必要考虑相互作用能，系统和热库的总能量为
+\begin{equation}
+    E_T = E_s + E_r,
+    \label{eq:total-energy}
+\end{equation}
+其中$E_s$指系统能量，$E_r$指热库能量。描述这样的系统的系综就是\textbf{正则系综}。
+
+接下来我们需要根据等概率原理计算出系统出现在不同的能级的概率。
+由于等概率原理是针对系统和热库组成的总系统而言的，我们需要讨论总系统的状态和系统的状态之间的关系。
 
 记总系统的能量为$E_T$。这个能量会有热涨落，但是大体上可以看成恒定。
 在其中系统具有能量$E_1$的总系统状态一共有$\Omega_1 (E_1) \Omega_2 (E_T - E_1)$个，因此
@@ -636,7 +795,15 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
     \label{eq:canonical-ensemble-density-operator}
 \end{equation}
 这里我们已经为了书写简便将$E_{1n}$简写为了$E_n$，因为一旦得到了\eqref{eq:canonical-ensemble-density-operator}，我们就完全只使用系统以及一些常数得到了系统的状态，而不再有必要考虑热库的结构了。
-但热库并非对系统的状态毫无影响。
+但热库并非对系统的状态毫无影响。可以看到
+\[
+    \beta = \eval{\pdv{\ln \Omega_2 (E)}{E}}_{E=E_T},
+\]
+由于热库远大于系统，$E_T$近似就是热库的能量$E_2$，于是
+\begin{equation}
+    \beta = \eval{\pdv{\ln \Omega_2 (E)}{E}}_{E=E_2} = \frac{1}{T}.
+\end{equation}
+这里$T$指的是热库的温度，由于系统和热库共同达到了平衡，这就是系统的温度。
 容易看出归一化因子$Z$就是\autoref{sec:relative-density-operator}中提到的配分函数，于是
 \begin{equation}
     Z = \trace \ee^{-\beta \hat{H}} = \sum_n \ee^{-\beta E_n} = \sum_{E^{(n)}} \Omega(E^{(n)}) \ee^{-\beta E^{(n)}}.
@@ -834,11 +1001,11 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
 从而
 \begin{equation}
     S = \ln \Delta \Omega.
-    \label{eq:entropy-and-number-of-states}
+    \label{eq:canonical-entropy-and-number-of-states}
 \end{equation}
-关于\eqref{eq:entropy-and-number-of-states}的导出有几个应当说明的地方。首先，它的导出一定依赖于能谱几乎连续这一事实，否则$\bar{E}$不一定会落在任何一个能级上，则类似于$W(\bar{E})$（既然能谱离散，它实际上是$\Omega(E)$乘上一个$\delta$函数）这样的表达式全部为零，因此不可能导出\eqref{eq:entropy-and-number-of-states}。
-然而，一旦能谱连续，出现在\eqref{eq:entropy-and-number-of-states}中的对数函数中的$\Delta\Omega$就不可能是真正的“某个能级上的独立状态数”，因为既然$\Omega$关于$E$连续分布，一个完全确定的$E$对应的独立状态数实际上是零。
-因此我们通过计算“峰附近的独立状态数”引入了一个$\Delta\Omega$，这才让\eqref{eq:entropy-and-number-of-states}成立。
+关于\eqref{eq:canonical-entropy-and-number-of-states}的导出有几个应当说明的地方。首先，它的导出一定依赖于能谱几乎连续这一事实，否则$\bar{E}$不一定会落在任何一个能级上，则类似于$W(\bar{E})$（既然能谱离散，它实际上是$\Omega(E)$乘上一个$\delta$函数）这样的表达式全部为零，因此不可能导出\eqref{eq:canonical-entropy-and-number-of-states}。
+然而，一旦能谱连续，出现在\eqref{eq:canonical-entropy-and-number-of-states}中的对数函数中的$\Delta\Omega$就不可能是真正的“某个能级上的独立状态数”，因为既然$\Omega$关于$E$连续分布，一个完全确定的$E$对应的独立状态数实际上是零。
+因此我们通过计算“峰附近的独立状态数”引入了一个$\Delta\Omega$，这才让\eqref{eq:canonical-entropy-and-number-of-states}成立。
 $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 
 通过经典统计力学的论证也可以得到类似的一个公式。但由于经典统计力学中不可能良定义一个状态数（在本文展示的量子统计力学首先考虑分散的能级，然后推广到连续谱，而经典统计力学中任何东西都是连续的），朴素地写下
@@ -866,15 +1033,16 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 现在我们引入另一个物理量：系统中的粒子数。设系统内有$s$种不同的粒子，它们的粒子数算符记作$\hat{N}_1, \hat{N}_2, $等等。
 仅考虑非相对论情况，则由于系统的哈密顿量仅仅关于系统内的算符，它和这些粒子数算符全部是对易的——显然我们可以将系统放进一个封闭的盒子里，则由薛定谔场的$U(1)$对称性我们发现海森堡绘景下粒子数没有时间演化，从而任何绘景下粒子数算符和哈密顿量都是对易的。
 然而，系统中的粒子数却未必守恒，因为在海森堡绘景下，系统中的粒子可以移动到系统外。我们称粒子有分布而又不在系统中的区域为\textbf{粒子库}。
+% TODO：但是即使是非相对论情况，也会有分子的形成和打散。。
 系统中的粒子数加上粒子库中的粒子数的和是守恒的，因为总系统中的粒子数算符和总系统的哈密顿量对易，而总系统中的一切都按照总系统的哈密顿量（系统的哈密顿量只是它的一部分）发生时间演化。
 
 由于系统的哈密顿量和各个粒子数算符彼此对易，系统的哈密顿量的本征态可以被标记为
 \[
     \ket{E^{(i)}, N_1^{(j_1)}, N_2^{(j_2)}, \ldots, k},
 \]
-我们使用和\autoref{sec:canonical-ensemble-state}中一样的记号，使用右上角标标记各可观察量的不同本征值。$k$指的是可能出现的额外的自由度，因为仅仅使用粒子数可能不足以完全区分$\hat{H}$的简并本征态。
+我们使用和\autoref{sec:contacting-systems}中一样的记号，使用右上角标标记各可观察量的不同本征值。$k$指的是可能出现的额外的自由度，因为仅仅使用粒子数可能不足以完全区分$\hat{H}$的简并本征态。
 
-仿照\eqref{eq:canonical-total-system-state-number}，我们有
+仿照\eqref{eq:total-system-state-number}，我们有
 \begin{equation}
     \begin{aligned}
         \Omega_T (E, N_1, \ldots, N_s) = \sum_{m, n_1, \ldots, n_s} &\Omega_1 (E_1^{(m)}, N_{1,1}^{(n_1)}, \ldots, N_{1,s}^{(n_s)}) \\
@@ -882,7 +1050,7 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
     \end{aligned}
 \end{equation}
 同样，$E-E^{(m)}_1$虽然可能并不是热库的哈密顿量的本征值，但由于热库很大，它总是几乎是热库的哈密顿量的本征值。
-按照\autoref{sec:canonical-ensemble-state}中的方式也可以得到连续能谱情况下的表达式。由于连续能谱意味着粒子数很大，我们也可以把诸$N_i$看成连续的，从而做替换
+按照\autoref{sec:contacting-systems}中的方式也可以得到连续能谱情况下的表达式。由于连续能谱意味着粒子数很大，我们也可以把诸$N_i$看成连续的，从而做替换
 \[
     \sum \longrightarrow \int, \quad \Omega \longrightarrow d(E, N_1, \ldots, N_s) \dd{E} \dd{N_1} \cdots \dd{N_s},
 \]
@@ -905,7 +1073,8 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 \]
 或者通过重新定义常数，有
 \begin{equation}
-    \hat{\rho} = \frac{1}{\Xi} \sum_n \dyad{n} \exp \left(-\beta \left(E_n - \sum_i \mu_i N_{i,n}\right)\right).
+    \hat{\rho} = \frac{1}{\Xi} \sum_n \dyad{n} \exp \left(-\beta \left(E_n - \sum_i \mu_i N_{i,n}\right)\right) = \frac{1}{\Xi} \ee^{- \beta \left( \hat{H} - \sum_i \mu_i \hat{N}_i \right) }.
+    \label{eq:grand-canonical-ensemble-density-operator}
 \end{equation}
 同样我们使用$E,N_1,\ldots$特指系统的能量、第一种粒子的数目、第二种粒子的数目，等等。
 其中$\Xi$称为\textbf{巨配分函数}，为
@@ -914,7 +1083,27 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 \end{equation}
 
 一个有趣的事实是，巨正则系综实际上也服从正则系综。
-可以从两方面看到这个事实。首先，\eqref{eq:grand-canonical-ensemble-states}
+可以从两方面看到这个事实。首先，在已知$d(E, N_1, \ldots, N_s)$时，仅仅考虑量子态在能量上的分布，就得到
+\[
+    d(E) = \int \dd{N_1} \dd{N_2} \cdots \dd{N_s} d(E, N_1, \ldots, N_s),
+\]
+在\eqref{eq:grand-canonical-ensemble-states}中应用此式，积掉所有粒子数变量就得到
+\[
+    d_T(E) = \int \dd{E_1} d_1(E_1) d_2(E-E_1),
+\]
+这正是正则系综的状态数公式\eqref{eq:canonical-state-continue}。从这个公式结合等概率原理就能够推导出正则系综。
+也就是说，我们把粒子数信息当成了正则系综中用于区分能量简并态的东西。
+另一种思路是，\eqref{eq:grand-canonical-ensemble-density-operator}由于$\hat{H}$和诸粒子数算符对易，可以写成
+\[
+    \hat{\rho} = \frac{1}{\Xi} \ee^{-\beta \hat{H}} \ee^{\beta \sum_i \mu_i \hat{N}_i},
+\]
+于是可以把粒子数算符部分迹掉，得到
+\[
+    \trace_{\hat{N}} \hat{\rho} = \frac{1}{\Xi} \trace \left( \ee^{\beta \sum_i \mu_i \hat{N}_i} \right) \ee^{-\beta \hat{H}}.
+\]
+因此凡是只通过$\hat{H}$就能够得到的信息也可以通过密度算符$\trace_{\hat{N}} \hat{\rho}$计算得到。%
+\footnote{回顾\autoref{sec:combining-systems}节中关于约化密度算符的论述，我们把系统哈密顿量以及额外的自由度$k$提供的信息看成一个系统，把系统粒子数算符提供的信息看成另一个系统，将密度算符中粒子数部分求迹，就能够得到一个约化密度算符。}%
+当然，巨正则系综实际上服从正则系综这件事是可以预期的，因为推导正则系综时没有用到任何关于粒子数的知识，因此关于正则系综的论述自然也适用于巨正则系综。
 
 \subsection{从量子统计退化到经典统计}
 
