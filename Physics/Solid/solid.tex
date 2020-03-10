@@ -27,6 +27,8 @@
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
 \newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -41,11 +43,62 @@
 
 \maketitle
 
-相互作用电子气
+记号约定：费米子的产生湮灭算符为$\hat{c}^\dagger$和$\hat{c}$，而如果是关于位置的产生湮灭算符，则为$\hat{\psi}^\dagger$和$\hat{\psi}$。
 
-单体哈密顿量为
+\section{固体的组成部分}
+
+\subsection{相互作用电子气}
+
+考虑非相对论极限下的电子-电磁场耦合系统，电子由薛定谔场完全描述，电磁场由库伦势完全描述。由此产生的系统具有$U(1)$对称性，因此无粒子数生灭，可以直接从单粒子量子力学出发构造其哈密顿量。该体系称为\textbf{相互作用电子气}。
+
+% TODO:怎么没考虑自旋？？
+使用自然单位制。单体哈密顿量为电子的动能项加上单体势能项：
+\[
+    \hat{H}_1 = \frac{\hat{\vb*{p}}}{2m} + V(\vb*{r}),
+\]
+在坐标表象下它就是
+\[
+    \hat{H}_1 = - \frac{\laplacian}{2m} + V(\vb*{r}).
+\]
+二体哈密顿量为电子两两作用而产生的库伦势能是
+\[
+    \hat{H}_2 = \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}},
+\]
+从而，相互作用电子气的二次量子化哈密顿量为
 \begin{equation}
-    \hat{H}_1 = \frac{\hat{p}}{2m} + V
+    \begin{aligned}
+        \hat{H} = &\int \dd[3]{\vb*{r}} \hat{\psi}^\dagger(\vb*{r}) \left( - \frac{\laplacian}{2m} + V(\vb*{r}) \right) \hat{\psi}(\vb*{r}) \\
+        &+ \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger (\vb*{r}_2) \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1). 
+        \label{eq:electron-gas-hamiltonian}
+    \end{aligned}
 \end{equation}
+其中$\hat{\psi}^\dagger(\vb*{r})$是薛定谔场的场算符，它也是在位置为$\vb*{r}$的位置产生一个电子的产生算符。这个哈密顿量当然也可以通过QED的低能近似得到，但并没有必要这么做。请注意电子是费米子。
+\eqref{eq:electron-gas-hamiltonian}实际上不是对角的，因为它的单粒子项涉及一个梯度算符。
+
+\subsubsection{Hatree-Fock近似}
+
+假定体系\eqref{eq:electron-gas-hamiltonian}的基态近似为
+\begin{equation}
+    \ket{\text{HF}} = \sum_\alpha \hat{c}_\alpha \ket{0},
+    \label{eq:hatree-fock-ansatz}
+\end{equation}
+其中参与求和的$\hat{c}_\alpha$共有$n$个，$n$是事先给定的系统中的粒子数。
+这个拟设等于是说，体系的基态和某个乘积态非常接近。一般而言，不能够保证\eqref{eq:electron-gas-hamiltonian}真的有形如\eqref{eq:hatree-fock-ansatz}的本征态，但是我们总是可以让\eqref{eq:hatree-fock-ansatz}的能量期望值取最小值，也即求解以下问题：
+\begin{equation}
+    \argmin_{\hat{\psi}} \mel{\text{HF}}{\hat{H}}{\text{HF}} \suchthat \text{$\hat{\psi}$ is a field operator}.
+    \label{eq:minimize-energy}
+\end{equation}
+由于Hatree-Fock态是乘积态，可以使用Wick定理，并注意到依照定义有
+\[
+    \mel{0}{\hat{\psi}(\vb*{r})\hat{c}^\dagger_\alpha}{0} = \braket{\vb*{r}}{\phi_\alpha} = \phi_\alpha(\vb*{r}),
+\]
+$\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在坐标空间中的波函数，可以计算出
+\[
+    E_\text{HF} = \mel{\text{HF}}{\hat{H}}{\text{HF}} = 
+\]
+于是最优化问题\eqref{eq:minimize-energy}就变成一个约束优化问题：
+\[
+    \argmin_{\phi_\alpha(\vb*{r})} E_\text{HF} \suchthat \int \dd[3]{\vb*{r}} \abs{\phi_\alpha(\vb*{r})}^2 = 1, \quad \text{for all $\alpha$}.
+\]
 
 \end{document}
