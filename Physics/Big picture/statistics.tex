@@ -547,7 +547,7 @@
 
 \section{平衡态多粒子系统}\label{sec:equilibrium-system}
 
-本节讨论由大量粒子组成的平衡态系统的密度算符以及各种性质。大部分物理系统的平衡态几乎都可以使用这一套框架来描述，因为量子场自然地导致多粒子态。
+本节讨论由大量粒子组成的平衡态系统的密度算符以及各种性质。大部分物理系统的平衡态几乎都可以使用这一套框架来描述，因为量子场论自然地导致多粒子态（可以使用单粒子量子力学描述的系统实际上就是使用薛定谔场描述的系统）。
 我们假定哈密顿量不显含时间，从而保证平衡态的存在性，而将含时演化留到后面讨论。
 
 \subsection{微正则系综}
@@ -1107,13 +1107,12 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
     S = \ln \frac{\Delta x \Delta p}{(2\pi\hbar)^s}.
 \end{equation}
 
-% TODO:热力学第零定律
+实际上，也可以通过配分函数计算熵。直接使用冯诺依曼熵的定义，可以计算得到
+\begin{equation}
+    S = \ln Z - \frac{\beta}{Z} \pdv{\ln Z}{\beta}.
+\end{equation}
 
-\[
-    S = \ln Z - \frac{\beta}{Z} \pdv{\ln Z}{\beta}
-\]
-
-\subsection{巨正则系综}
+\subsection{巨正则系综}\label{sec:grand-canonical-ensemble}
 
 现在我们考虑对系统的更加精细的描写。我们考虑系统还具有能量以外的守恒荷，这样得到的系综称为\textbf{巨正则系综}。
 
@@ -1201,13 +1200,45 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 因此凡是只通过$\hat{H}$和$\Xi$就能够得到的信息也可以通过密度算符$\trace_{\hat{N}} \hat{\rho}$连同一个按照\eqref{eq:partition-function-with-disturbance}做过扰动的配分函数$Z(\beta, \lambda)$计算得到，因为巨配分函数$\Xi$正好具有\eqref{eq:partition-function-with-disturbance}的形式，因此它正是正则系综受到守恒荷算符扰动之后得到的配分函数。从而，从今以后没有必要特别明确地区分巨配分函数和正则系综的配分函数——两者实际上是一回事。
 但解析求解时，守恒荷算符的出现实际上可以简化计算，因此巨正则系综仍然是非常有用的。
 
-第二种将巨正则系综和正则系综联系起来的方式是，注意到我们可以通过一些宏观的论证来比较容易地计算出化学势（见\autoref{sec:many-body-system-in-thermo}），那么诸化学势实际上是已知的，所以我们可以重新定义哈密顿量为
+第二种将巨正则系综和正则系综联系起来的方式是，注意到我们可以通过一些宏观的论证来比较容易地计算出化学势（见\autoref{sec:from-statistical-to-thermo}），那么诸化学势实际上是已知的，所以我们可以重新定义哈密顿量为
 \[
     \hat{H}_\text{eff} = \hat{H} - \sum_i \mu_i \hat{N}_i,
 \]
 则以$\hat{H}_\text{eff}$为哈密顿量的正则系综正是以$\hat{H}$为哈密顿量的巨正则系综。当然，$\hat{H}_\text{eff}$与其说是哈密顿量，不如说是等效能量，因为它并不能够指导物理量做时间演化，而且只在平衡态下有良好定义。
 
 最后，我们总是可以让所有化学势都取零，此时巨正则系综就回退到了正则系综。因此，形式上我们可以将巨正则系综当成平衡态系统的密度算符的一般形式。
+
+现在我们来分析怎么从巨配分函数计算各种物理量。为了书写方便，我们定义
+\begin{equation}
+    \alpha_i = - \beta \mu_i,
+\end{equation}
+这样就有
+\begin{equation}
+    \Xi(\beta, \alpha) = \sum_n \ee^{-\beta E_n - \sum_i \alpha_i N_{i,n}},
+\end{equation}
+粒子数前面的系数在使用$\beta$和$\alpha$（而不是化学势）表示时就和$\beta$无关了；这个$\alpha$当然和以粒子数算符为扰动的\eqref{eq:partition-function-with-disturbance}中的$\beta\lambda$具有一样的作用。
+通过和正则系综类似的方法，可以计算出
+\begin{equation}
+    \expval*{\hat{N}_k} = - \pdv{\ln \Xi}{\alpha_k}.
+    \label{eq:expectation-of-charge-grand}
+\end{equation}
+若使用$\beta$和$\mu$为变量，有
+\begin{equation}
+    \expval*{\hat{H}} = - \pdv{\ln \Xi}{\beta} + \sum_i \frac{\mu_i}{\beta} \pdv{\ln \Xi}{\mu_i},
+\end{equation}
+若使用$\beta$和$\alpha$为变量，则有
+\begin{equation}
+    \expval*{\hat{H}} = - \pdv{\ln \Xi}{\beta}.
+    \label{eq:expactation-of-energy-grand}
+\end{equation}
+熵的表达式使用$\beta$和$\mu$为变量，是
+\begin{equation}
+    S = \ln \Xi - \beta \pdv{\ln \Xi}{\beta} - \sum_j \mu_j \pdv{\ln \Xi}{\mu_j},
+\end{equation}
+使用$\beta$和$\alpha$为变量则是
+\begin{equation}
+    S = \ln \Xi - \beta \pdv{\ln \Xi}{\beta} - \sum_j \alpha_j \pdv{\ln \Xi}{\alpha_j}
+\end{equation}
 
 \subsection{从量子统计退化到经典统计}
 
@@ -1294,7 +1325,7 @@ $B$和$C$热平衡的充要条件也可以写成
 我们称能够用于计算的温度定义为\textbf{温标}。
 
 通常为了和日常生活中的“冷热”概念保持一致，我们对温度添加一个额外的要求：如果系统$A$和系统$B$接触之后能量从系统$A$流向系统$B$，%
-\footnote{这里我们使用了“流动”的概念，也即假定了能量是一个守恒的广延量，实际上这用到了热力学第一定律。}%
+\footnote{这里我们使用了“流动”的概念，也即认为一个系统的能量变化$\Delta E$，则与之直接接触的系统的能量变化$-\Delta E$。实际上这用到了热力学第一定律。}%
 那么就认为系统$A$的温度高于系统$B$。
 
 % TODO：实际上这人为地认定了“能量流动的方向”具有传递性，所以已经用到了热力学第二定律了。。。有待修正
@@ -1304,12 +1335,10 @@ $B$和$C$热平衡的充要条件也可以写成
 % TODO:统计力学中认定平衡时能量不流动
 现在我们讨论系统的能量流动。按照先前在平衡态统计物理当中的论述，能量流动意味着有相互作用，有相互作用就有相互作用能，但通常哈密顿量中的相互作用项可以略去，从而我们仍有能量可加性。
 
-能量流动可以分成两部分。一部分
-
-% TODO：热量和统计力学。将热量和功区分开的方法是，温度相同的系统不交换热量。
-
+\textbf{热力学第一定律}指出：能量流动可以分成两部分。一部分称为\textbf{功}，它的大小可以写成若干个形如$X_i \dd{Y_i}$的项的和；另一部分称为\textbf{热量}，它没有特殊的表达式。两个量都是从一个系统到另外一个系统的流，也即，如果在一个过程中，某个系统得到了一个功$W$或者热量$Q$，那么与之接触的其它系统（也就是所谓的外界）必定失去了等量的功或者热量，或者等价地说，得到了$-W$或者$-Q$的功或者热量；并且，功和热量具有可加性。对单个系统，记$W$和$Q$分别是它得到的功和热量，则存在一个称为\textbf{内能}的状态函数，使得
 \begin{equation}
     \dd{U} = \delta{Q} + \sum_i X_i \dd{Y_i} = \var{Q} + \var{W}.
+    \label{eq:thermodynamics-first-law}
 \end{equation}
 
 我们使用$\delta$表示热量和功的微元是因为一般来说热量微元不是一个恰当微分形式%
@@ -1636,14 +1665,84 @@ $f$实际上是递增的。设$\Theta_1<\Theta_2$，且对温度为$\Theta_1$和
 
 \subsubsection{热力学第三定律和熵的零点}
 
-\subsection{多粒子系统}\label{sec:many-body-system-in-thermo}
+\subsection{与统计力学的关系}\label{sec:from-statistical-to-thermo}
 
 现在我们开始考虑具体的系统的结构，而不只是凭借对“系统”、“热”等概念的直觉行事。
-本节将考虑\autoref{sec:equilibrium-system}中提到的系统。
+本节将考虑\autoref{sec:equilibrium-system}中提到的系统。为了保持一般性，我们将讨论可以和外界交换守恒荷的系统，也即，平衡时需要使用巨正则系综描述的系统。
+我们总是这样选择系统的范围，让系统和外界的相互作用哈密顿量相对于系统自己的哈密顿量来说并不大。
 
-\subsubsection{从统计物理推导出热力学}
+\subsubsection{从统计力学推导出热力学}
 
 首先要问的是，热力学是不是对\autoref{sec:equilibrium-system}中提到的系统成立？
+
+首先看热力学第一定律。在热力学中我们没有给出区分热量和功的方法，而只是笼统地讨论了“热量需要满足如何如何的性质，功要满足如何如何的性质”。实际上我们也没有定义内能。
+因此我们需要指出，热力学量在统计力学中的确有对应物。
+
+% TODO:温度
+
+接着来看热力学第一定律和热力学第二定律，也即，功、热量、内能的概念。
+热力学第一定律\eqref{eq:thermodynamics-first-law}中提到，功可以看成某个广义力乘上某个热力学坐标的变化量。所谓热力学坐标在统计物理中应当是关于系统的某些参数。这些参数无非属于下面三类：
+\begin{itemize}
+    \item \autoref{sec:grand-canonical-ensemble}中提到，系统中的守恒荷决定系统可能处于的量子态，因此它们的期望值是热力学参数；% TODO：如守恒荷的涨落等物理量都是可以使用它们计算出来的
+    \item 和哈密顿量有关但并非守恒荷的参数，例如对盒中气体而言，体积就是一个这样的参数，它确定了势阱的大小，从而影响气体的动力学，但是并不是守恒荷；
+    \item 大量粒子涌现出来的物理量，如温度、化学势等，它们有可能在非平衡态时难以良好定义。
+\end{itemize}
+第一类的热力学坐标使用$\{N_i\}$表示，第二类的热力学坐标使用$\{q_i\}$表示。
+
+现在我们认定：内能$U$就是系统的平均能量$\bar{E}$，并且%
+\footnote{这里我们把$N_i$也就是$\expval*{\hat{N}_i}$当成了$\hat{H}$的一个参数，% TODO：为什么可以这么做？？
+}
+\[
+    \dd{U} = \underbrace{\sum_i \expval{\pdv{\hat{H}}{q_i}} \dd{q_i} + \sum_i \expval{\pdv{\hat{H}}{N_i}} \dd{N_i}}_{\var{W}} + \underbrace{\text{others}}_{\var{Q}}.
+\]
+$\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功和热量。这样定义的功和热量是不是系统之间的流动？
+答案是肯定的。首先我们来说明这样定义的功确实是系统和外界之间的流动。由于系统和外界组成的总系统的哈密顿量自身是守恒量，我们有
+\[
+    \expval*{\hat{H}+\hat{H}_\text{out}+\hat{H}_\text{int}} = 0.
+\]
+如前所述，相互作用哈密顿量相对于系统自身的哈密顿量来说并不大（但必须要有，否则系统和外界不能交换能量），所以
+\[
+    \expval*{\hat{H}+\hat{H}_\text{out}} = 0.
+\]
+这样就有
+\[
+    \expval{\pdv{\hat{H}}{q_i}} = - \expval{\pdv{\hat{H}_\text{out}}{q_i}}.
+\]
+同样
+\[
+    \expval{\pdv{\hat{H}}{N_i}} = - \expval{\pdv{\hat{H}_\text{out}}{N_i}}.
+\]
+总之，各个参数$\{q_i\}$和$\{N_i\}$是功传递的渠道。如果系统通过某个参数的改变获得了一定功，那么外界通过这个参数的改变就会得到正负号相反的功。这表明功确实在系统和外界之间流动。
+
+按照内能的定义，我们还有
+\[
+    \dd{U}+\dd{U}_\text{out} = 0,
+\]
+我们有
+\[
+    \dd{U} = \var{W} + \var{Q}, \quad \dd{U}_\text{out} = \var{W}_\text{out} + \var{Q}_\text{out},
+\]
+如前所述，有（这里的$\var{W}_\text{out}$指的是由于外界和系统相互作用而得到的功，即系统向外界做的功）
+\[
+    \var{W} = - \var{W}_\text{out},
+\]
+从而
+\[
+    \var{Q}_\text{out} = - \var{Q},
+\]
+从而热量也在系统和外界之间流动。%TODO：可加性？？
+
+总之，按照以上方法定义的内能、功、热量完全符合热力学第一定律的要求。它们是否也符合热力学第二定律的要求？
+首先考虑一个演化过程始终是平衡态的过程。我们有
+\[
+    \var{Q} = \dd{U} - \var{W},
+\]
+使用$\beta$和$\alpha$为变量，我们有
+\[
+    \var{Q} = \dd{\left( - \pdv{\ln\Xi}{\beta} \right)} - 
+\]
+% 平衡态好做
+
 % TODO，尤其是热力学第二定律。为什么熵增？可能的解释是，平衡态的数目比非平衡态要多。
 
 \subsubsection{自然热力学坐标}
