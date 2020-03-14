@@ -1,0 +1,311 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{固体理论}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+记号约定：费米子的产生湮灭算符为$\hat{c}^\dagger$和$\hat{c}$，而如果是关于位置的产生湮灭算符，则为$\hat{\psi}^\dagger$和$\hat{\psi}$。
+由于本文不涉及相对论性过程，设$\vb*{a}$为一个矢量，则使用$a$表示其模长。
+
+\section{物质的组成}
+
+本节取普朗克单位制，即认为$\hbar=c=1$，且$4\pi\epsilon_0=1$。
+
+\subsection{离子实和价电子}
+
+普通的固体、液体、气体由一系列原子组成。通过实验和计算可以发现，原子的最外层电子在各种过程中容易发生重新排列，称为\textbf{价电子}；内层电子和原子核（合称为\textbf{离子实}）则通常保持为一个整体，也即，其内部状态发生变化的物理过程的描述需要使用QCD，其涉及的能标远高于价电子发生变化涉及的能标。
+
+本文基本上只分析涉及价电子低能运动的物理过程。这样，完全不必考虑QCD，价电子和离子实可以当成简单的带点粒子来看待。
+因此这是一个非相对论极限下的电荷-电磁场耦合系统，带电粒子由薛定谔场完全描述，电磁场由库伦势完全描述。由此产生的系统具有$U(1)$对称性，因此无粒子数生灭，可以直接从单粒子量子力学出发构造其哈密顿量。而又由于体系很大，通常有确定的粒子数。
+设有$N_e$个价电子，$N_i$个离子实（i表示离子）。
+固体的（一次量子化）哈密顿量就是
+\begin{equation}
+    \hat{H} = \hat{H}_\text{e} + \hat{H}_\text{i} + \hat{H}_\text{ei},
+    \label{eq:many-body-hamiltonian}
+\end{equation}
+其中$\hat{H}_\text{e}$表示仅涉及价电子的哈密顿量，$\hat{H}_\text{i}$表示仅涉及离子实的哈密顿量，最后一项则是两者的相互作用。
+
+诸价电子组成的系统就好像由电子组成的气体，称为\textbf{相互作用电子气}。单体哈密顿量为电子的动能项加上单体势能项。在物质不受外界作用时当然不应该有单体势能项，于是
+\[
+    \hat{H}_\text{e1} = \frac{\hat{\vb*{p}}^2}{2m},
+\]
+在坐标表象下它就是
+\[
+    \hat{H}_\text{e1} = - \frac{\laplacian}{2m}.
+\]
+二体哈密顿量为电子两两作用而产生的库伦势能是
+\[
+    \hat{H}_\text{e2} = \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}},
+\]
+从而价电子本身的能量以及它们之间发生库伦相互作用的能量就是
+\begin{equation}
+    \hat{H}_\text{e} = \sum_{i=1}^{N_\text{e}} \frac{\hat{p}_i^2}{2m_\text{e}} + \frac{1}{2} \sum_{i\neq j} \frac{e^2}{\abs{\vb*{r}_i - \vb*{r}_j}}.
+\end{equation}
+
+使用类似的方法，离子实的组成的系统（如果是晶体那就是晶格）的哈密顿量为
+\begin{equation}
+    \hat{H}_\text{i} = \sum_{\alpha=1}^{N_\text{i}} \frac{\hat{p}_\alpha^2}{2m_i} + \frac{1}{2} \sum_{\alpha\neq\beta} V(\vb*{R}_\alpha-\vb*{R}_\beta).
+\end{equation}
+由于离子实中的内层电子结构复杂，离子实之间的相互作用能写不出特别简单的表达式。请注意这个相互作用能是平移不变的，这是当然的，因为QED是平移不变的；但是实际的晶体在短距离上并不是平移不变的，因为在低能下有对称性自发破缺。
+
+离子实和价电子的相互作用则是
+\begin{equation}
+    \hat{H}_\text{ei} = \sum_{\alpha, i} V_\text{ei}(\vb*{r}_i-\vb*{R}_\alpha). 
+\end{equation}
+分别使用$i$表示价电子，用$\alpha$表示离子实；由于价电子和离子实不全同，不需要加上$1/2$系数。
+同样我们还是假定了相互作用本身的平移不变性。
+
+以上给出的所有项都不涉及自旋。的确，没有磁场的环境中自旋和其它自由度完全没有耦合，因此可以略去。
+
+\subsection{电子气}
+
+\subsubsection{玻恩–奥本海默近似}
+
+在大部分过程中，由于原子核的质量比电子的质量大至少三个数量级，涉及价电子的过程通常比涉及离子实的过程发生得快很多，从而在价电子的时间尺度上，诸离子实的位置可以看成是给定的。
+从而，在分析价电子时我们可以将$\hat{H}_i$项直接略去，而将$\hat{H}_\text{ei}(\vb*{r}_i-\vb*{R}_\alpha)$项对$\vb*{R}_\alpha$求和得到$V(\vb*{r}_i)$（既然系统中没有别的势了）。这个近似称为\textbf{玻恩–奥本海默近似}。这样一来相互作用电子气的一次量子化哈密顿量在坐标表象下就是
+\begin{equation}
+    \hat{H} = \sum_{i=1}^{N_\text{e}} \left( - \frac{\laplacian}{2m_\text{e}} + V(\vb*{r}_i)\right) + \frac{1}{2} \sum_{i\neq j} \frac{e^2}{\abs{\vb*{r}_i - \vb*{r}_j}},
+    \label{eq:electron-gas-hamiltonian}
+\end{equation}
+从而二次量子化哈密顿量为
+\begin{equation}
+    \begin{aligned}
+        \hat{H} = &\int \dd[3]{\vb*{r}} \hat{\psi}^\dagger(\vb*{r}) \left( - \frac{\laplacian}{2m} + V(\vb*{r}) \right) \hat{\psi}(\vb*{r}) \\
+        &+ \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger (\vb*{r}_2) \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1). 
+        \label{eq:electron-gas-hamiltonian-sq}
+    \end{aligned}
+\end{equation}
+其中$\hat{\psi}^\dagger(\vb*{r})$是薛定谔场的场算符，它也是在位置为$\vb*{r}$的位置产生一个电子的产生算符。这个哈密顿量当然也可以通过QED的低能近似得到，但并没有必要这么做。请注意电子是费米子。
+\eqref{eq:electron-gas-hamiltonian-sq}实际上不是对角的，因为它的单粒子项涉及一个梯度算符。
+
+\subsubsection{Hatree-Fock近似}
+
+假定体系\eqref{eq:electron-gas-hamiltonian-sq}的基态近似为
+\begin{equation}
+    \ket{\text{HF}} = \sum_\alpha \hat{c}_\alpha \ket{0},
+    \label{eq:hatree-fock-ansatz}
+\end{equation}
+其中参与求和的$\hat{c}_\alpha$共有$n$个，$n$是事先给定的系统中的粒子数。
+这个拟设等于是说，体系的基态和某个乘积态非常接近。%
+\footnote{这个拟设为什么合理涉及到平均场理论，这里暂时不涉及。}%
+一般而言，不能够保证\eqref{eq:electron-gas-hamiltonian-sq}真的有形如\eqref{eq:hatree-fock-ansatz}的本征态，但是我们总是可以让\eqref{eq:hatree-fock-ansatz}的能量期望值取最小值，也即求解以下问题：
+\begin{equation}
+    \argmin_{\hat{\psi}} \mel{\text{HF}}{\hat{H}}{\text{HF}} \suchthat \text{$\hat{\psi}$ is a field operator}.
+    \label{eq:minimize-energy}
+\end{equation}
+由于Hatree-Fock态是乘积态，可以使用Wick定理，并注意到依照定义有
+\[
+    \mel{0}{\hat{\psi}(\vb*{r})\hat{c}^\dagger_\alpha}{0} = \braket{\vb*{r}}{\phi_\alpha} = \phi_\alpha(\vb*{r}),
+\]
+$\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在坐标空间中的波函数，可以计算出
+\[
+    E_\text{HF} = \mel{\text{HF}}{\hat{H}}{\text{HF}} = 
+\]
+于是最优化问题\eqref{eq:minimize-energy}就变成一个约束优化问题：
+\[
+    \argmin_{\phi_\alpha(\vb*{r})} E_\text{HF} \suchthat \int \dd[3]{\vb*{r}} \abs{\phi_\alpha(\vb*{r})}^2 = 1, \quad \text{for all $\alpha$}.
+\]
+
+\subsubsection{自由电子气}
+
+很难一上手就处理带有复杂相互作用的电子气，因此我们首先处理自由电子气，也即$V(\vb*{r})$在物体内部为常数（可以看成零）的情况。此时可以将价电子一个个分开处理，既然它们之间没有相互作用。
+
+我们在坐标表象下处理问题。计算单个电子的波函数：
+\[
+    - \frac{\laplacian}{2m_\text{e}} \psi(\vb*{r}) = \epsilon \psi(\vb*{r}),
+\]
+这种方程的解当然是平面波解的线性组合。一个这样的平面波解形如
+\[
+    \psi(\vb*{r}) \propto \ee^{\ii \vb*{k} \cdot \vb*{r}}.
+\]
+只能保证这个式子在物体内部成立，因为物体边界处$V(\vb*{r})$不可能是常数。
+然后我们归一化这些平面波。电子可以自发地溢出物体，但是这样的概率并不大，所以我们可以简单地认为电子只会出现在物体内部（也即，物体被放置在一个无限深势陷当中）。设物体体积为$V$，就有
+\[
+    \int \dd[3]{\vb*{r}} \abs{\psi(\vb*{r})}^2 = 1,
+\]
+于是
+\[
+    \psi (\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad \epsilon = \frac{k^2}{2m_\text{e}}.
+\]
+很容易看出这些波函数实际上是动量算符的本征态，$\vb*{k}$实际上就是动量。另一方面，这些波函数定义在坐标空间中，坐标空间中的一切都和自旋算符对易，因此这些波函数也是自旋本征态。于是动量和自旋的一组共同正交本征函数为
+\begin{equation}
+    \psi_{\vb*{k},\sigma} (\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad \epsilon_{\vb*{k},\sigma} = \frac{k^2}{2m_\text{e}}.
+\end{equation}
+% 真的是这个名字吗？这些波函数称为\textbf{布洛赫波函数}。
+$\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大，具体取什么样的边界条件对物体内部的过程毫无影响。
+
+% 无能隙的激发能够把特别奇异的相互作用屏蔽掉（RPA近似），从而让微扰展开收敛得非常快。如果担心RPA不对，只需要把对的部分加上做微扰就可以了
+% 通常称玻色型的模式为“集体激发”，而称费米型的模式为“准粒子”
+
+\section{晶体}
+
+所谓晶体指的是一种在三个独立的空间方向上具有离散的平移不变性且并没有连续平移不变性的物体。\eqref{eq:many-body-hamiltonian}显然具有连续的平移不变性，因此晶体的形成必然经历了对称性自发破缺，且在较高的能量下原本的晶体一定会相变成某种更加均匀的东西。
+
+\subsection{晶格}
+
+我们采取玻恩–奥本海默近似，将离子实看成一个背景，而忽略其中的自由度（既然这些自由度在价电子的物理过程的时间尺度上基本上不参加相互作用）。这样一来离散的平移不变性只应该来自$V(\vb*{r})$。
+我们于是看到了形成晶体的对称性自发破缺的来源：低能下离子实自发地排成了比较规则的序列，从而虽然晶体服从的物理规律实际上确实是连续平移不变的，近似定律\eqref{eq:electron-gas-hamiltonian}却由于离子实排列成了空间重复的序列而只有离散平移不变性而没有连续平移不变性。
+我们称这种离子实周期性排列形成的结构为\textbf{晶格}。
+
+既然晶格具有空间周期性，只要知道了一个离子实的位置以及空间周期性的方向（晶体的空间指向）就可以知道所有离子实的位置。任意两个离子实之间的位置矢量形如
+\begin{equation}
+    \vb*{R}_n = n_1 \vb*{a}_1 + n_2 \vb*{a}_2 + n_3 \vb*{a}_3, \quad n = (n_1, n_2, n_3) \in \mathbb{N}^3.
+\end{equation}
+这些位置矢量构造了一架三维网格，这个网格称为\textbf{布拉维格子}，这些矢量称为\textbf{布拉维格矢}。
+
+布拉维格子的\textbf{原胞}（也就是空间周期性结构的最小单位）有许多划分方法。可以以$\vb*{a}_1, \vb*{a}_2, \vb*{a}_3$张成的长方体为一个原胞，称为\textbf{初基原胞}。
+另一种原胞是\textbf{维格纳-赛兹原胞}，它是空间中与某个特定格点的距离小于与任何其它格点的距离的点的轨迹，或者等价地说，它是某个特定格点与相邻格点的连线的垂直平分面包围出的立体。
+维格纳-赛兹原胞的特别之处在于，任意一个空间矢量都可以写成维格纳-赛兹原胞中的一个矢量加上一个布拉维格矢，这可以使用非常直观的方式证明。
+
+\subsubsection{晶格分类}
+
+% TODO：群论
+
+\subsubsection{倒格子}
+
+有关晶体的所有可观察物理量均具有和布拉维格矢一样的对称性，也即，它们在三个方向上以$\vb*{a}_1,\vb*{a}_2,\vb*{a}_3$为周期。
+回顾傅里叶级数的公式，我们有
+\[
+    f(x) = \frac{1}{T} \sum_{m=-\infty}^\infty \ee^{\ii \frac{2\pi m x}{T}} \left(\int \dd{t} f(t) \ee^{-\ii \frac{2\pi m t}{T}}\right) ,
+\]
+其三维形式就是
+\[
+    f(\vb*{r}) = \frac{1}{V} \sum_{m=-\infty}^\infty \ee^{\ii \vb*{G}_m \cdot \vb*{r}} \int_V \dd[3]{\vb*{r}'} f(\vb*{r}') \ee^{- \ii \vb*{G}_m \cdot \vb*{r}}, \quad \vb*{G}_m \cdot \vb*{a}_i = 2\pi N_i, \quad N_i \in \mathbb{N}.
+\]
+$\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
+\begin{equation}
+    \vb*{G}_m \cdot \vb*{R}_n = 2\pi N, \quad N \in \mathbb{N},
+\end{equation}
+这又等价于，
+\begin{equation}
+    \vb*{G}_m = G_1 \vb*{b}_1 + G_2 \vb*{b}_2 + G_3 \vb*{b}_3, \quad \vb*{a}_i \cdot \vb*{b}_j = 2 \pi \delta_{ij}.
+\end{equation}
+因此诸$\vb*{G}_m$也构成一个布拉维格子，我们称它为\textbf{倒格子}，与$\vb*{R}_n$构成的空间网格（称为\textbf{正格子}）相区分。倒格子的基矢量和正格子的基矢量互为共轭基矢量。
+两种格子的基矢量可以通过下式
+\begin{equation}
+    \frac{1}{2\pi} \vb*{b}_1 = \frac{\vb*{a}_2 \times \vb*{a}_3}{\vb*{a}_1 \cdot (\vb*{b}_2 \times \vb*{b}_3)}
+\end{equation}
+及其轮换相互换算。
+在写出倒格子的显式表达式之后，晶体中的可观察量的傅里叶变换就是
+\begin{equation}
+    F(\vb*{r}) = \sum_{\vb*{g}} \tilde{F}(\vb*{g}) \ee^{\ii \vb*{g} \cdot \vb*{r}},
+\end{equation}
+其中$\vb*{g}$是布拉维格矢，且
+\begin{equation}
+    \tilde{F}(\vb*{g}) = \frac{1}{V} \int_V \dd[3]{\vb*{r}} F(\vb*{r}) \ee^{-\ii \vb*{g} \cdot \vb*{r}}.
+\end{equation}
+
+倒格子的维格纳-赛兹原胞称为\textbf{第一布里渊区}，相应的，某格点和它所有次近邻格点的垂直平分面包围成的区域称为\textbf{第二布里渊区}，等等。
+
+\subsection{布洛赫电子和能带理论}
+
+\subsubsection{布洛赫电子}
+
+现在尝试求解晶体中的电子气。由于晶格具有离散平移不变性，\eqref{eq:electron-gas-hamiltonian}也具有（而且只有）离散平移不变性，从而波函数也具有这样的不变性。我们有
+\[
+    \psi(\vb*{r}+\vb*{R}_n) = \ee^{\ii \alpha} \psi(\vb*{r}).
+\]
+请注意波函数的对称性可以略微低于哈密顿量，只要由它计算出的物理量的对称性和哈密顿量一致就可以，因此我们加上了复数因子。由于平移运算构成群，且$n$是群参数，有
+\[
+    R_{n_1+n_2} = R(n_1) R(n_2),
+\]
+波函数的形式只能是
+\begin{equation}
+    \psi(\vb*{r}+\vb*{R}_n) = \ee^{\ii \vb*{k} \cdot \vb*{R}_n} \psi(\vb*{r})
+    \label{eq:periodic-wavefunction}
+\end{equation}
+及其线性组合。因此\eqref{eq:periodic-wavefunction}构成晶体中电子气中单个电子的态空间的一组基，且$\vb*{k}$是一个好量子数。
+$\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}又说明，我们可以设
+\begin{equation}
+    \psi_{\vb*{k}}(\vb*{r}) = \ee^{\ii \vb*{k} \cdot \vb*{r}} u_{\vb*{k}}(\vb*{r}), \quad u_{\vb*{k}}(\vb*{r}+\vb*{a}_i) = u_{\vb*{k}}(\vb*{r}), \quad i = 1, 2, 3.
+    \label{eq:bloch-wavefunction}
+\end{equation}
+因此，晶体中的波函数是一个受到一个周期为$\vb*{a}_1,\vb*{a}_2, \vb*{a}_3$的振幅调制的平面波。
+\eqref{eq:bloch-wavefunction}称为\textbf{布洛赫波函数}，处于这种状态的电子称为\textbf{布洛赫电子}。
+
+关于$\vb*{k}$的取值需要说明的是，由于指数函数的周期性，设$\vb*{G}$是一个任意的倒格子格矢，那么就有
+\[
+    \psi_{\vb*{k}}(\vb*{r}) = \psi_{\vb*{k}+\vb*{G}}(\vb*{r}).
+\]
+因此，没有必要让$\vb*{k}$取遍整个空间。由维格纳-赛兹原胞的性质，对任何一个$\vb*{k}$，都存在一个第一布里渊区内部的$\vb*{k}'$，使得
+\[
+    \psi_{\vb*{k}}(\vb*{r}) = \psi_{\vb*{k}'}(\vb*{r}).
+\]
+另一方面，第一布里渊区内部的矢量彼此的差值不可能达到一个倒格子格矢的大小，因此第一布里渊区内部的$\vb*{k}$不会导致重复的波函数。于是不失一般性地我们要求$\vb*{k}$在第一布里渊区内部。
+
+\subsubsection{定态解}
+
+波函数表达式\eqref{eq:bloch-wavefunction}没有时间演化，所以现在我们讨论布洛赫电子的动力学。即使使用了波恩-奥本海姆近似，\eqref{eq:electron-gas-hamiltonian}仍然要求把系统内所有的电子均考虑进去。
+为了简便，我们采用平均场近似，将电子之间的相互作用使用一个平均场代替，从而只需讨论单电子的薛定谔方程。这通常是合理的，因为电子由于泡利不相容原理，彼此通常离得比较远。于是布洛赫电子的动力学等价于求解形如\eqref{eq:bloch-wavefunction}的波函数在某个势场下的束缚态解。将\eqref{eq:bloch-wavefunction}代入
+\[
+    -\frac{\laplacian}{2m_\text{e}} \psi(\vb*{r}) + V(\vb*{r}) \psi(\vb*{r}) = E \psi(\vb*{r}),
+\]
+得到
+\begin{equation}
+    \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{\vb*{k}}(\vb*{r}) = E u_{\vb*{k}}(\vb*{r}).
+    \label{eq:block-energy-problem}
+\end{equation}
+在$\vb*{k}$已知的情况下求解该本征值问题，可以得到一组$u$以及对应的$E$。由于先前要求$u(\vb*{r})$是周期函数，该本征值问题必定给出离散谱，也即，我们会获得一组$(\psi_{\vb*{k},n}, E_{\vb*{k}, n})$，使得
+\begin{equation}
+    \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{\vb*{k},n}(\vb*{r}) = E_{\vb*{k}, n} u_{\vb*{k},n}(\vb*{r}).
+\end{equation}
+显然，$n$是另一个好量子数。一旦$\vb*{k}$和$n$给定，布洛赫波函数及其时间演化就完全求解出来了，从而$\vb*{k}$和$n$是坐标空间中的布洛赫波函数的全部好量子数。我们称取不同$n$值的电子处于不同的\textbf{能带}上，$n$为能带标记。
+
+由于晶体近似在一个无限深势阱中，波函数在晶体边界处快速衰减为零。这就意味着$\vb*{k}$实际上是离散的。然而，由于晶体的尺度通常远大于原子的尺度，$\vb*{k}$近似可认为是连续的。于是可以写出函数
+\[
+    E = E_n(\vb*{k}),
+\]
+由于$\vb*{k}$加上任何一个倒格矢之后都是
+
+低能有效理论。讨论低能物理时只需要讨论费米面附近的能带即可。
+
+\[
+    \psi_{nk}(\vb*{r})
+\]
+$k$只在布里渊区内部取值。
+% TODO 费米面、布里渊区，基本的晶体
+
+\[
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \psi_{nk}^*(\vb*{r}) \psi_{mk'}(\vb*{r}) = \delta_{mn} \delta(\vb*{k}-\vb*{k}')
+\]
+
+\end{document}
