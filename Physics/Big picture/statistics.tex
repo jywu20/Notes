@@ -552,6 +552,13 @@
 
 \subsection{退化到经典情况}\label{sec:back-to-classical}
 
+在我们讨论的问题的尺度（能量变化、空间大小，等等）远大于$\hbar$时——或者等价地说，$\hbar\to 0$时——量子统计就退化为了经典统计。
+此时所有可观察量都近似是对易的，从而系统的态可以使用正则坐标
+\[
+    (x_1, x_2, \ldots, x_n, p_1, p_2, \ldots, p_n)
+\]
+表示。
+
 对纯态，在半经典情况下可以证明这样一个表达式：设$x,p$是一对共轭变量，则
 \begin{equation}
     \frac{1}{2\pi} \oint p \dd{x} = \hbar \left(n + \frac{1}{2}\right), \quad n = 0, 1, 2, \ldots.
@@ -571,13 +578,17 @@
 
 相格以一种直观的方式展示了量子力学的不确定性原理：实际上我们并不能同时精确地讨论坐标和动量。
 
-对混合态，可以将一个系综中的各个系统的纯态单独地画在相空间当中，并记这些点的密度为$\rho(x, p, t)$，称为\textbf{密度函数}。
+对混合态，可以将一个系综中的各个系统的纯态（称为\textbf{代表点}，因为它们代表了系统可能的状态；代表点可能有重复）单独地画在相空间当中，并记这些点的密度为$\rho(x, p, t)$，称为\textbf{密度函数}。
 则由经典分析力学的刘维尔定理，有
 \begin{equation}
     \pdv{\rho}{t} = [H, \rho].
 \end{equation}
 方程右边的方括号指的是经典的泊松括号而不是对易子，因为经典情况下哈密顿量是数。
-可见，密度算符$\hat{\rho}$在量子统计力学中的地位就是经典统计力学中的密度函数。
+可见，密度算符$\hat{\rho}$在量子统计力学中的地位就是经典统计力学中的密度函数。但要注意：$\hbar\to 0$时$\hat{\rho}$和$\rho$之间有线性关系，但是$\hat{\rho}$并不直接退化为$\rho$。
+记$\Gamma$为相空间，则经典统计力学中的物理量期望值就是
+\begin{equation}
+    \expval{A} = \int \dd{\Gamma} \rho A(x, p).
+\end{equation}
 
 \section{平衡态多粒子系统}\label{sec:equilibrium-system}
 
@@ -1277,7 +1288,47 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 
 \subsection{从量子统计退化到经典统计}
 
-大致的方法：剖分相格、将所有算符视作对角化的
+在经典统计力学中我们使用代表点密度而不是密度算符来处理问题。这两者之间有一个线性关系，从而
+\[
+    \rho \propto \ee^{-\beta \hat{H}} \sim \ee^{-\beta H(x, p)},
+\]
+于是对正则系综，有
+\begin{equation}
+    \rho = \frac{1}{Z} \ee^{- \beta H(x, p)},
+\end{equation}
+其中
+\begin{equation}
+    Z = \int \dd{\Gamma} \ee^{- \beta H(x, p)},
+\end{equation}
+巨正则系综可以有类似的处理。需注意这里的配分函数和量子统计力学的配分函数未必有特别简单的关系。
+
+经典统计力学可以使用微积分处理位置和动量，性质更加良好，因此可以证明一些量子统计力学中并不一般成立的结果。例如我们有\textbf{能量均分定理}。以正则系综为例，我们有
+\[
+    \begin{aligned}
+        Z &= \int \dd{\Gamma} \pdv{x_k}{x_k} \ee^{- \beta H(x, p)} \\
+        &= \int \dd{\Gamma} \pdv{x_k} \left(x_k \ee^{- \beta H(x, p)}\right) - \int \dd{\Gamma} x_k \pdv{\ee^{- \beta H(x, p)}}{x_k} \\
+        &= \int \dd{\Gamma_k} \eval{x_k \ee^{- \beta H(x, p)}}_\text{boundary} - \int \dd{\Gamma} x_k ( - \beta) \pdv{H}{x_k} \ee^{- \beta H(x, p)},
+    \end{aligned}
+\]
+其中$\dd{\Gamma_k}=\dd{\Gamma}/\dd{x_k}$，即不对$x_k$积分。
+有物理意义的系统，相空间边缘处的能量应该是无穷大（否则这就不是真正的边界：怎样保证系统不会越过相空间的边缘呢？），从而第一项为零，于是
+\[
+    Z = \beta \int \dd{\Gamma} x_k \pdv{H}{x_k} \ee^{-\beta H(x, p)},
+\] 
+将$Z$移动到右边，我们会发现方程右边正是一个系综平均，于是
+\begin{equation}
+    \expval{x_k \pdv{H}{x_k}} = \frac{1}{\beta}.
+\end{equation}
+这就是能量均分定理。由系综等价性，上式对平衡态系统普遍成立。
+这个定理叫做能量均分定理是因为，如果$H$是二次型，且不同自由度之间无耦合，那么就有
+\[
+    x_k \pdv{H}{x_k} = 2 E_k,
+\]
+其中$E_k$是哈密顿量中分配在自由度$x_k$上的能量（这是良定义的，既然不同自由度无耦合，所以没有相互作用能），从而
+\begin{equation}
+    \expval{E_k} = \frac{1}{2\beta}.
+\end{equation}
+关于“无耦合”要说一句：如果不同自由度真的一点耦合也没有，那么系统根本不能够达到热平衡，因为没有能量交换。但实际上，微正则系综会受到小的外界扰动，正则系综和巨正则系综中的不同自由度和热库都有耦合，因此即使系统自己的哈密顿量中不同自由度之间没有耦合，系统和外界的接触也会让系统能够达到热平衡，从而让能量均分定理适用。
 
 \subsection{对单位制的说明}
 
@@ -1387,6 +1438,7 @@ $B$和$C$热平衡的充要条件也可以写成
 \subsubsection{热力学第一定律}
 
 % TODO:统计力学中认定平衡时能量不流动
+% TODO：功转化为热量
 现在我们讨论系统的能量流动。按照先前在平衡态统计物理当中的论述，能量流动意味着有相互作用，有相互作用就有相互作用能，但通常哈密顿量中的相互作用项可以略去，从而我们仍有能量可加性。
 
 \textbf{热力学第一定律}指出：能量流动可以分成两部分。一部分称为\textbf{功}，它的大小可以写成若干个形如$X_i \dd{Y_i}$的项的和；另一部分称为\textbf{热量}，它没有特殊的表达式。两个量都是从一个系统到另外一个系统的流，也即，如果在一个过程中，某个系统得到了一个功$W$或者热量$Q$，那么与之接触的其它系统（也就是所谓的外界）必定失去了等量的功或者热量，或者等价地说，得到了$-W$或者$-Q$的功或者热量；并且，功和热量具有可加性。对单个系统，记$W$和$Q$分别是它得到的功和热量，则存在一个称为\textbf{内能}的状态函数，使得
@@ -1792,7 +1844,7 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 \[
     \var{Q}_\text{out} = - \var{Q},
 \]
-从而热量也在系统和外界之间流动。%TODO：可加性？？
+从而热量也在系统和外界之间流动。%TODO：可加性？？而且这没有考虑类似于“焦耳热”这样，功转化为热量的情况
 
 总之，按照以上方法定义的内能、功、热量完全符合热力学第一定律的要求。它们是否也符合热力学第二定律的要求？
 首先考虑一个演化过程始终是平衡态的过程。我们有
@@ -1809,12 +1861,14 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 
 \subsubsection{自然热力学坐标}\label{sec:natural-thermo-coor}
 
+% TODO：可逆过程实际上就是热力学坐标空间中的曲线；平衡态系统需要最少的状态
 于是，对可逆过程，热力学第一定律为
 \begin{equation}
     \dd{U} = T \dd{S} + \sum_i F_i \dd{q_i} + \sum_i \mu_i \dd{N_i}.
     \label{eq:equilibrium-first-law}
 \end{equation}
 配合上描述诸$q_i, N_i, S$等之间的关系的状态方程，就完整地描述了一个平衡态系统。可逆过程的每一步都是两个平衡系统之间的转换，因此平衡态系统的宏观状态就是元组$(U, \{q_i\}, \{N_i\})$。它们是默认的热力学坐标。
+非平衡状态需要使用比这更多的参数才能够确定。
 
 回顾\eqref{eq:increasing-entropy}，对任何一个过程，都有
 \[
@@ -1943,18 +1997,45 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 \begin{equation}
     S_{BA}(\omega) = \int_{-\infty}^\infty \dd{t} S_{BA}(t) \ee^{\ii \omega t}, \quad G_{BA}^\text{ret}(\omega) = \int_{-\infty}^\infty \dd{t} G_{BA}^\text{ret}(t) \ee^{\ii \omega t}.
 \end{equation}
-实际上由\eqref{eq:retarded-green-function}，
+实际上由\eqref{eq:retarded-green-function}，$t<0$处推迟格林函数为零，从而
 \[
     G_{BA}^\text{ret}(\omega) = \int_0^\infty \dd{t} G_{BA}^\text{ret}(t) \ee^{\ii \omega t}.
 \]
-那么，我们有\textbf{涨落耗散定理}：
+那么，我们有\textbf{涨落耗散定理}：%
+\footnote{频域上的响应函数的虚部代表了耗散，而关联函数则代表了两个物理量共同涨落的强弱。}
 \begin{equation}
     \Im G_{BA}^\text{ret}(\omega) = \frac{1 - \ee^{-\beta\hbar\omega}}{2\hbar} S_{BA}(\omega).
 \end{equation}
 
 下面我们来证明这一点。首先注意到，$h(t)$和$y(t)$都是实数，从而联系它们的推迟格林函数也一定是实数，这样就有
+\[
+    \begin{aligned}
+        \Im G_{BA}^\text{ret}(\omega) &= \frac{1}{2\ii} \left( G_{BA}^\text{ret}(\omega) -( G_{BA}^\text{ret}(\omega))^* \right) \\
+        &= \frac{1}{2\ii} \left( \int_0^\infty \dd{t} \ee^{\ii \omega t} G_{BA}^\text{ret}(t) -\int_0^\infty \dd{t} \ee^{- \ii \omega t} G_{BA}^\text{ret}(t) \right) \\
+        &= \frac{1}{2\ii} \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} G_{BA}^\text{ret}(t) \\
+        &= \frac{1}{2\hbar} \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \expval{\comm{\hat{B}(t)}{\hat{A}(0)}} \\
+        &= \frac{1}{2\hbar} \left( \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \hat{B}(t) \hat{A}(0) - \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \hat{A}(0) \hat{B}(t) \right).
+    \end{aligned}
+\]
+第一项正是关联函数。对第二项，
+\[
+    \begin{aligned}
+        \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \hat{A}(0) \hat{B}(t) &= \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \hat{A}(0) \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \right) \\
+        &= \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta\hat{H}} \hat{A}(0) \ee^{-\beta \hat{H}} \ee^{\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \right) \\
+        &= \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \ee^{\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \ee^{-\beta\hat{H}} \hat{A}(0) \right) \\
+        &= \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} (t - \ii \hbar \beta)} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} (t - \ii \hbar \beta)} \hat{A}(0) \right) \\
+        &= \int_{-\infty+\ii\hbar\beta}^{\infty+\ii\hbar\beta} \dd{t} \ee^{\ii \omega (t + \ii \hbar \beta)} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \hat{A}(0) \right).
+    \end{aligned}
+\]
+\autoref{sec:spectral-function}中会证明，被积函数在区域$0 < \Im t < \hbar \beta$内是解析的，从而就有
+\[
+    \begin{aligned}
+        \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \hat{A}(0) \hat{B}(t)  &= \ee^{-\omega \hbar \beta} \int_{-\infty+\ii\hbar\beta}^{\infty+\ii\hbar\beta} \dd{t} \ee^{-\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \hat{A}(0) \right) \\
+        &= \ee^{-\omega \hbar \beta} \int_{-\infty}^{\infty} \dd{t} \ee^{-\ii \omega t} \frac{1}{Z} \trace \left( \ee^{-\beta \hat{H}} \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{ - \frac{\ii}{\hbar} \hat{H} t} \hat{A}(0) \right),
+    \end{aligned}
+\]
+于是就证明了涨落耗散定理。
 
-% TODO
 \subsubsection{Kramers-Kronig关系}
 
 实际上，推迟格林函数的实部和虚部也有关系。要看出这个关系只需要利用推迟格林函数的两个性质：
@@ -2009,8 +2090,8 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 
 总之，在频域上，推迟格林函数的实部、虚部和关联函数这三者是一一对应的，因此实际的自由度只有一个。
 
-\subsubsection{谱函数}
-
+\subsubsection{谱函数}\label{sec:spectral-function}
+% TODO：准粒子寿命？？？
 定义
 \begin{equation}
     A_{BA}(\omega) = \frac{1}{\pi} \Im G_{BA}^\text{ret}(\omega)
@@ -2050,22 +2131,19 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 
 \subsection{量子场论的处理方法}
 
-\subsubsection{费米场和玻色场的格林函数}
-
-现在的问题是，怎么计算关于两个可观察量的推迟格林函数？任何一个可观察量都是一系列单体或多体二次量子化算符或它们的线性组合，因此只需要发展出一种方法，使得对一组产生湮灭算符，可以计算出
-
-% TODO：Wick定理在这里是成立的
-
-\begin{equation}
-    G_{AB}(\omega_n) \stackrel{\ii \omega_n \rightarrow \omega + \ii 0^+}{\longrightarrow} G_{AB}^\text{ret} (\omega).
-\end{equation}
-
-% TODO：Wick定理的统计系综版本要求哈密顿量是二次型？也即自由量？？
-
-% TODO：量子涨落、基态、热力学极限下才会出现对称性破缺
-
-
 \subsubsection{松原理论}
+
+现在的问题是，怎么计算关于两个可观察量的推迟格林函数？任何一个系统都可以通过一个场论产生，例如非相对论多电子体系由一个薛定谔场产生，电子对撞由QED产生，等等。
+使用场论的语言，任何一个可观察量都是一系列单体或多体二次量子化算符或它们的线性组合。
+我们现在处理的问题都是一个自由哈密顿量加上一个外界扰动，这意味着可以使用Wick定理，从而将任何一个物理量的期望值拆分成一系列两点关联函数——即形如$\expval*{\hat{\psi}(x_1)\hat{\psi}^\dagger(x_2)}$函数——的乘积的线性组合。%
+\footnote{自由哈密顿量是场算符的二次型，因此可以找到一组乘积态作为它的完备本征函数集。我们有
+\[
+    \expval{\hat{O}} = \frac{1}{Z} \sum_n \ee^{-\beta E_n} \mel{n}{\hat{O}}{n},
+\]
+如果$\hat{O}$中的产生算符数目和湮灭算符数目不一致，那么$\mel{n}{\hat{O}}{n}$就一定是零，因此单个场算符的期望值是零，并且奇数个算符的乘积的期望值也是零，从而Wick定理适用，并且凡是产生算符数目和湮灭算符数目不一致的$n$点关联都为零。
+}%
+然而，推迟格林函数并不是简单的一连串算符的期望值的形式，因此将Wick定理作用在推迟格林函数上计算较繁琐。这让我们设想，是不是可以把推迟格林函数写成某种关联函数，从而可以轻松地应用Wick定理。
+\textbf{松原理论}通过引入一个虚时间，解决了这个问题。
 
 算符的运动方程是
 \[
@@ -2081,13 +2159,109 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 \end{equation}
 我们称$\tau$为\textbf{虚时间}。
 
+现在定义\textbf{松原格林函数}为
+\begin{equation}
+    G_{AB}(\tau_1, \tau_2) = - \frac{1}{\hbar} T_\tau \expval*{\hat{A}(\tau_1)\hat{B}(\tau_2)},
+\end{equation}
+其中$\hat{A}$和$\hat{B}$为海森堡绘景中的算符，特别的，它们可以是场算符（而不是可观察量），可以是费米算符也可以是玻色算符，$T_\tau$是虚时间的编时算符，它总是重排一个场算符的序列，让时间最早的算符出现在最后；如果场算符是费米算符，设重排了$s$次，则需要乘上一个因子$(-1)^s$。（而如果$\hat{A}$和$\hat{B}$是可观察量，那么可以把它们展开成一系列场算符的乘积的线性组合之后作用编时算符）
+时间平移不变性意味着松原格林函数可以写成$G_{AB}(\tau_1-\tau_2)$的形式，从而可以定义单变量傅里叶变换。
+在切换到频域前，注意到一个非常有用的性质，那就是玻色子的松原格林函数是周期性的，而费米子的松原格林函数是反周期性的，也即，设$\eta$对费米子是$-1$，对玻色子是$1$，则
+\begin{equation}
+    G_{AB}(\tau) = \eta G_{AB}(\tau+\beta).
+    \label{eq:period-matrubara}
+\end{equation}
+这是因为我们有%
+\footnote{下面有些“交换算符顺序”实际上是迹运算的轮换性质，因此即使交换的是费米子算符也不需要加上负号。}%
+\[
+    \begin{aligned}
+        \hbar G_{AB}(\tau) &= - T_\tau \expval{\hat{A}(\tau)\hat{B}(0)} \\
+        &= - \frac{1}{Z} T_\tau \trace \left( \ee^{-\beta \hat{H}} \ee^{\tau \hat{H}} \hat{A}(0) \ee^{ - \tau \hat{H}} \hat{B}(0) \right) \\
+        &= - \frac{1}{Z} T_\tau \trace \left(  \ee^{ - \tau \hat{H}} \hat{B}(0) \ee^{-\beta \hat{H}} \ee^{\tau \hat{H}} \hat{A}(0) \right) \\
+        &= - \frac{1}{Z} T_\tau \trace \left( \ee^{-\beta \hat{H}} \ee^{(\beta-\tau) \hat{H}} \hat{B}(0) \ee^{-(\beta-\tau)\hat{H}} \hat{A}(0) \right) \\
+        &= \hbar G_{BA} (\beta - \tau),
+    \end{aligned}
+\]
+于是
+\begin{equation}
+    G_{AB}(\tau) = G_{BA} (\beta - \tau), \quad G_{AB}(\beta+\tau) = G_{BA}(-\tau),
+\end{equation}
+另一方面我们有%
+\footnote{倒数第二个等号是由于编时算符的性质。对费米子算符而言，有
+\[
+    T_\tau (\hat{A} \hat{B}) = - T_\tau (\hat{B} \hat{A}),
+\]
+对玻色子算符而言则是
+\[
+    T_\tau (\hat{A} \hat{B}) = T_\tau (\hat{B} \hat{A}).
+\]
+导出这个等号用到的不是迹运算的轮换性。
+}
+\[
+    \begin{aligned}
+        \hbar G_{BA}(-\tau) &= - T_\tau  \expval{\hat{B}(-\tau)\hat{A}(0)} \\
+        &= - T_\tau \expval{\hat{B}(0)\hat{A}(\tau)} \\
+        &= - \eta T_\tau \expval{\hat{A}(\tau)\hat{B}(0)} = \eta \hbar G_{AB}(\tau),
+    \end{aligned}
+\]
+于是就得到我们想要的\eqref{eq:period-matrubara}。
+
+以上推导中涉及到场算符独有性质的地方只有编时算符的作用导致的$\eta$系数。
+实际上，很大一类可观察量的期望值被编时算符作用之后也会产生一个这样的系数。
+如果$\hat{A}$和$\hat{B}$关于不同的场，那么它们对易，于是$\eta=1$。
+如果$\hat{A}$和$\hat{B}$关于同一个玻色场，那么虽然它们未必对易（可能处在不同的时间），但由玻色子算符的性质，我们仍然有
+\[
+    T_\tau \expval{\hat{A}(\tau)\hat{B}(0)} = T_\tau \expval{\hat{B}(0)\hat{A}(\tau)},
+\]
+也即，应取$\eta=1$。
+如果$\hat{A}$和$\hat{B}$关于同一个费米场，事情会略微复杂一些。如果$\hat{A}$关于场算符的多项式表示的每一项中含有奇数个场算符%
+\footnote{例如
+\[
+    \hat{A} = \hat{a}+\hat{a}^\dagger,
+\]
+请注意$\hat{A}$和$\hat{B}$是可观察量。}，并且$\hat{B}$关于场算符的多项式表示的每一项中含有偶数个场算符，或者正好相反，那么应取$\eta=-1$，否则应取$\eta=1$。%
+\footnote{举例：设$\hat{a}$是费米型湮灭算符，且$\hat{A}=\hat{a}_1^\dagger \hat{a}_1$，$\hat{B}=\hat{a}_2^\dagger \hat{a}_3^\dagger \hat{a}_3 \hat{a}_2$，则容易验证
+\[
+    T_\tau \expval{\hat{A}(\tau)\hat{B}(0)} = T_\tau (\hat{B}(0) \hat{A}(\tau)).
+\]
+}%
+我们称$\eta=1$的情况为\textbf{玻色型松原格林函数}，$\eta=-1$的情况为\textbf{费米型松原格林函数}。
+以上规则覆盖不到的情况均可通过期望值的线性性展开为以上情况中的一种或几种而得到计算。
+实际计算中，基本上可观察量的每一项都含有相同数目的产生湮灭算符，因此两个可观察量的松原格林函数就都是玻色型的。
+
+周期性条件\eqref{eq:period-matrubara}意味着，松原格林函数的傅里叶变换实际上就是傅里叶级数。那就是说，
+\begin{equation}
+    G_{AB}(\omega) = \int_0^\beta \dd{\tau} \ee^{\ii \omega_n t} G_{AB}(\tau),
+\end{equation}
+反过来就有
+\begin{equation}
+    G_{AB}(\tau) = \frac{1}{\beta} \sum_{\omega_n} G_{AB}(\omega_n) \ee^{- \ii \omega_n \tau}.
+\end{equation}
+其中对玻色子而言有
+\begin{equation}
+    \omega_n = \frac{2\pi}{\beta} n
+\end{equation}
+称为\textbf{玻色子的松原频率}，而\textbf{费米子的松原频率}则是
+\begin{equation}
+    \omega_n = \frac{\pi}{\beta} (2n+1).
+\end{equation}
+
+现在我们指出重要的事实：对松原格林函数做以下替换：
+\begin{equation}
+    G_{AB}(\omega) \xrightarrow{\ii \omega_n \longrightarrow \omega+\ii 0^+} G_{AB}^\text{ret} (\omega),
+\end{equation}
+就得到了推迟格林函数。
+
+总之，任何一个推迟格林函数都可以转化为松原格林函数来计算。
+
+\subsubsection{费米场和玻色场的格林函数}
+
+% TODO：量子涨落、基态、热力学极限下才会出现对称性破缺
+
 \section{一般的统计场论}
 
 % TODO:随机过程和轨道。
 % $P(\text{event $A$ occurs at $t$})=P_t(\text{event $A$ occurs})$，前者定义为“所有$A$发生在时间$t$处的轨道总数除以轨道总数”，后者定义为“时间$t$处，$A$发生的概率”，由定义两者相等。
 
-\subsection{Keldysh理论}
 
-\subsection{玻尔兹曼方程}
 
 \end{document}
