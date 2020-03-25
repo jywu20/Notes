@@ -125,7 +125,20 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 例如，考虑一个粒子数给定的系统，从而可以从其二次量子化哈密顿量写出一次量子化哈密顿量（未必真的要写出，只需要知道粒子数对不上的态全部可以弃去即可），如果系统的哈密顿量是二次型的，则基态可以确定是一个乘积态，粒子从低到高占据能量尽可能低的能级；但如果有相互作用，那么根本就谈不上有特别明确的能级。
 
 \textbf{平均场近似}是一种化解这个问题的方式，在其中，我们将粒子间的相互作用看成是一个外加的场（就是所谓的平均场），从而让系统的哈密顿量解耦为一系列单粒子哈密顿量的叠加。
-从相互作用
+
+例如，考虑相互作用电子气。对接近平衡态的体系，在我们考虑的空间尺度相对于单电子的特征尺度非常大时（例如，如果没有特别剧烈的电子-电子散射，从而诸电子可以认为离得很远），可以使用库伦相互作用能的期望值代替其本身。这个期望值为
+\[
+    \begin{aligned}
+        \expval*{\hat{H}_\text{columbic}} &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1)} \\
+        &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \\
+        & \times \left( \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2)} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_1) - \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_1)}} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_2)} \right),
+    \end{aligned}
+\]
+在大尺度上第二项趋于零，因为库仑力会衰减，且屏蔽效应等负反馈机制会加速这个衰减，而第一项是粒子数算符的期望，于是就得到
+\begin{equation}
+    \expval*{\hat{H}_\text{columbic}} = \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{n} (\vb*{r}_1)} \expval*{\hat{n} (\vb*{r}_2)}.
+\end{equation}
+% TODO
 
 平均场近似倾向于高估系统的对称性破缺，因为在构造平均场时往往需要手动放入不对称性；有时平均场近似
 
@@ -429,15 +442,18 @@ $\vb*{k}$的取值局限在第一布里渊区内部，但是这并没有改变�
     \end{equation}
     \item 总电势变化$\phi_\text{eff}$导致了电荷密度变化$\var{n}$，而电荷密度变化和$\var{\phi}$之间有一个关系，
 \end{enumerate}
-从而可以确定所有物理量。% 这里似乎还做了一个半经典近似，将电势能当成经典情况实际上是忽略了交换能
+从而可以确定所有物理量。
 
 由于没有电子间相互作用且体系充分大，我们使用费米-狄拉克分布
 \begin{equation}
-    n(\vb*{r}) = \sum_{\vb*{k}, \sigma} \frac{1}{1 + \ee^{\beta (\epsilon_{\vb*{k}} - \mu)}},
+    n = \sum_{\vb*{k}, \sigma} \frac{1}{1 + \ee^{\beta (\epsilon_{\vb*{k}} - \mu)}},
 \end{equation}
-由于体系足够大，屏蔽作用让外加电荷的作用几乎是局域的，则$\var{n}(\vb*{r})$可以写成$V_\text{eff}(\vb*{r})$的函数而不涉及长程相互作用，而由于外加电荷很小，采取线性近似（第二个等号是因为费米-狄拉克分布的形式）
+$V_\text{eff}$改变粒子排布的方式是，通过让单电子的能量发生一个小的变化，且这个小的变化在不同位置通常是不一样的。
+我们在较大的尺度上分析问题（采取半经典模型），从而每个$\vb*{r}$位置附近的诸电子都可以认为是组成了一个正则系综，记这个系综的粒子数算符为$\hat{n}(\vb*{r})$。
+由于体系足够大，屏蔽作用让外加电荷的作用几乎是局域的，则$\var{n}(\vb*{r})$可以写成$V_\text{eff}(\vb*{r})$的函数而不涉及长程相互作用。
+而由于外加电荷很小，可以采取线性近似，于是（第二个等号是因为费米-狄拉克分布的形式）
 \[
-    \var{n} = \pdv{n}{V_\text{eff}} V_\text{eff} = - \pdv{n}{\mu} V_\text{eff},
+    \var{n} = \dv{n}{V_\text{eff}} V_\text{eff} = \sum_{\vb*{k}} \pdv{n}{\epsilon_{\vb*{k}}} V_\text{eff} = - \pdv{n}{\mu} V_\text{eff},
 \]
 定义
 \begin{equation}
@@ -445,7 +461,7 @@ $\vb*{k}$的取值局限在第一布里渊区内部，但是这并没有改变�
 \end{equation}
 其中我们将$n$的表达式中的$\mu$换成了变量$\mu'$，而使用$\mu$表示实际系统的化学势。使用该记号，则
 \begin{equation}
-    \var{n}(\vb*{r}) = - N(0) V_\text{eff}.
+    \var{n}(\vb*{r}) = - N(0) V_\text{eff}(\vb*{r}).
 \end{equation}
 这就是从$V_\text{eff}$计算$\var{n}$的方法。通过$\var{n}$计算$\var{\phi}$的方程为泊松方程
 \[
@@ -519,6 +535,8 @@ $\vb*{k}$的取值局限在第一布里渊区内部，但是这并没有改变�
 \[
     G_{nn}^\text{0, ret} = \sum_\sigma \sum_k 
 \]
+
+\subsubsection{等离子体和等离激元}
 
 \subsection{磁矩}
 
