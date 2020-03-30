@@ -1001,7 +1001,7 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
 \begin{equation}
     \expval*{\hat{A}} = - \frac{1}{\beta Z} \eval{\pdv{Z(\beta, \lambda)}{\lambda}}_{\lambda = 0} = - \frac{1}{\beta} \eval{\pdv{\ln Z(\beta, \lambda)}{\lambda}}_{\lambda=0}.
 \end{equation}
-于是我们从配分函数得到了所有物理量的期望。
+于是我们从配分函数得到了所有可观察量的期望。
 
 为了避免反复书写$\beta$这个数，我们做代换
 \[
@@ -1018,13 +1018,15 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
 使用这个形式的配分函数（此时称为\textbf{生成函数}），就有
 \begin{equation}
     \expval*{\hat{A}_{k_1} \hat{A}_{k_2} \cdots \hat{A}_{k_n}} = \frac{1}{Z(\beta,0)} \eval{\frac{\partial^n Z}{\partial J_{k_1} \partial J_{k_2} \cdots \partial J_{k_n}}}_{J=0}.
+    \label{eq:correlation-function-from-partition-function}
 \end{equation}
 而能量的期望还是\eqref{eq:canonical-expectation-of-energy}。注意在使用$Z(\beta, \lambda)$形式的生成函数时这个式子不成立，因为指数上有$\lambda$和$\beta$的乘积。
+任何在统计物理上有意义的物理量——无论是宏观统计量还是微观量——都可以写成一些可观察量的某个函数的期望，因此\eqref{eq:correlation-function-from-partition-function}意味着，只需要计算出配分函数实际上就得到了一个系统的所有统计物理性质。
 
 在连续极限下，$\hat{A}_i$变成了量子场$\hat{A}(\vb*{x})$，我们这就得到了所谓的\textbf{平衡态统计场论}，这只需要将偏导数换成偏泛函导数$\fdv{\phi}$即可。
 
 与量子场论中的路径积分相比较，$\hbar$的地位和$T=1/\beta$的地位类似。不同的$T$对应着不同的行为，正如不同的$\hbar$（实际上$\hbar$固定不变，场值在变，但也可以等效地认为场值不变而$\hbar$在变）对应不同的行为。
-不过，实际计算时并不会把$\beta$替换为$1$，而是把它当成对一个时间维的积分。
+不过，实际计算时很多时候并不会把$\beta$替换为$1$（因为大部分系统的温度都会发生变化），而是把它当成对一个时间维的积分。
 
 \subsubsection{与微正则系综之间的关系}
 
@@ -1061,7 +1063,7 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
 因此在热力学极限下，正则系综实际上就是一个以$\bar{E}$为能量的微正则系综。
 从以上推导过程也可以看出，微正则系综实际上只是追踪了$P(E)-E$曲线峰值附近的那一部分系统，而正则系综考虑了整条曲线，但在热力学极限下，两者并无区别，因为远离峰的状态几乎不可能出现。
 
-\subsubsection{热力学性质}
+\subsubsection{熵和温度}
 
 首先指出一个事实：玻尔兹曼分布\eqref{eq:canonical-ensemble-density-operator}是让熵取极大值的分布。可以使用拉格朗日乘子法导出这一点。记$\hat{\rho}$为归一化的密度算符，则%
 \footnote{这只是一个条件，但我们只需要说明“所有可能的熵极大值都对应吉布斯平衡态”即可，如果只使用这个条件就能够推出这个结论，那就没有问题。}
@@ -1163,7 +1165,8 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 
 实际上，也可以通过配分函数计算熵。直接使用冯诺依曼熵的定义，可以计算得到
 \begin{equation}
-    S = \ln Z - \frac{\beta}{Z} \pdv{\ln Z}{\beta}.
+    S = \ln Z - \beta \pdv{\ln Z}{\beta}.
+    \label{eq:entropy-from-partition-function}
 \end{equation}
 无论使用的是不带外部扰动的配分函数$Z(\beta)$还是带外部扰动的$Z(\beta, J)$，上式均成立。使用$Z(\beta, \lambda)$时上式不成立，因为这个表达式中有$\beta$和$\lambda$相乘的部分。
 
@@ -1804,8 +1807,9 @@ $f$实际上是递增的。设$\Theta_1<\Theta_2$，且对温度为$\Theta_1$和
 \]
 就有% TODO
 \begin{equation}
-    \var{W}_\text{output} \leq T 
+    \var{W}_\text{output} \leq \text{somgthing},
 \end{equation}
+因此一个初末态确定的过程能够做的功有一个上限。以上不等式取等号的充要条件是过程可逆，或者说这是准静态过程，因此我们得出结论：同样的初末条件，准静态过程做功最多。
 
 \subsubsection{热力学第三定律和熵的零点}
 
@@ -1910,10 +1914,29 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 \end{equation}
 代入特定的状态方程（举例：$N$不变，或者$F$和$q$有某种关系，等等），通过勒让德变换就能够得到形如
 \[
-    \dd{\text{something}} \leq 0
+    \dd{(\text{something})} \leq 0
 \]
-的不等式。微分号内的部分称为这种条件下的\textbf{热力学势}，有时也称为\textbf{自由能}。
+的不等式。微分号内的部分称为这种条件下的\textbf{热力学势}。
 % TODO:存在性，以及为什么自由能是能够用来做功的能量
+
+定义
+\begin{equation}
+    F = U - TS, 
+\end{equation}
+则对准静态过程有
+\[
+    \dd{F} = \var{W} - S \dd{T},
+\]
+在等温条件下就有
+\[
+    \dd{F} = \var{W}.
+\]
+可见$\Delta F$给出了一个等温过程如果是准静态过程会做的功。既然准静态过程做功最多，$F$的变化量给出了系统在等温条件（在过程非平衡时这里的温度应为系统和外界接触点的温度）下能够做的最大功。
+% TODO：以下是正则系综
+考虑到\eqref{eq:entropy-from-partition-function}和\eqref{eq:canonical-expectation-of-energy}，我们有
+\begin{equation}
+    F = - \frac{1}{\beta} \ln Z = - T \ln Z.
+\end{equation}
 
 \section{近平衡态理论}
 
@@ -2362,5 +2385,55 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 % TODO:随机过程和轨道。
 % $P(\text{event $A$ occurs at $t$})=P_t(\text{event $A$ occurs})$，前者定义为“所有$A$发生在时间$t$处的轨道总数除以轨道总数”，后者定义为“时间$t$处，$A$发生的概率”，由定义两者相等。
 
+\subsection{粗粒化}
+
+% TODO:详细说明
+\[
+    Z = \sum_n \ee^{- \beta E_n},
+\]
+引入相对较粗糙的某个量$m$来标记具有类似性质的一系列$\ket{n}$之和，我们有
+\[
+    Z = \sum_m \sum_{n|m} \ee^{- \beta E_n},
+\]
+定义$F(m)$使得近似有
+\[
+    \ee^{- \beta F(m)} = \sum_{n|m} \ee^{- \beta E_n},
+\]
+我们就得到了粗粒化之后的配分函数
+\[
+    Z' = \sum_m \ee^{- \beta F(m)}.
+\]
+换而言之，我们“积掉”了$\ket{n}$提供的那部分不需要的自由度（或者说把它们对$n|m$平均掉了），而只留下泛泛而谈的$m$。这就是\textbf{粗粒化}。
+
+具体积掉什么自由度要按照不同的需求考虑。如果只需要讨论一小片区域内的问题，就应该使用坐标表象，积掉区域以外的自由度；如果只需要讨论较低能量的问题，就应该使用动量表象，积掉快场或者说“紫外场”。
+
+有几种办法可以计算出有效的$F(m)$。一种是真的动手去算那个平均值，还有一种是通过对称性分析和类似的论证。
+例如如果$\hat{H}$是局域的，那么$F(m)$一定也是局域的，又比如$F(m)$一定具有$\hat{H}$具有的对称性，而且可能还会多出来一些对称性（例如，$\hat{H}$可能会导致空间上局部的起伏，但是在大尺度上这些起伏可以被略去，于是我们得到空间平移不变性）。
+通过这样的分析可以写出$F(m)$关于$m$的形式，这个表达式通常会带有一些常数，这些常数是$\hat{H}$中的常数在大尺度上涌现出来的结果，可以通过数值分析计算但不太方便解析求解。
+
+动量空间下的重整化：考虑理论
+\[
+    Z = \int \mathcal{D} \phi \ee^{- F[\phi]},
+\]
+在动量空间中写出，它就是
+\[
+    Z = \int \prod_{\vb*{k} < \Lambda} \dd{\phi_{\vb*{k}}} \ee^{ - F[\phi_{\vb*{k}}]},
+\]
+其中$\Lambda$是一个截断。考虑另一个截断
+\[
+    \Lambda' = \frac{\Lambda}{\zeta}, \quad \zeta > 1,
+\]
+则
+\[
+    Z = \int \mathcal{D} \phi^{-}_{\vb*{k}} 
+\]
+% TODO:integrate out
+然后重新选取场的单位、调整动量和坐标的单位。
+
+最后的结果是，关联距离发生了
+\[
+    \xi' = \frac{\xi}{\zeta}
+\]
+的变化。也即，在重整化的不动点处或是关联距离为零，或是关联距离为无穷大。后者对应相变的情况。
 
 \end{document}
