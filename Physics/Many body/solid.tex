@@ -126,6 +126,8 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 
 \textbf{平均场近似}是一种化解这个问题的方式，在其中，我们将粒子间的相互作用看成是一个外加的场（就是所谓的平均场），从而让系统的哈密顿量解耦为一系列单粒子哈密顿量的叠加。
 
+% 关键点：假定其态为自由态，零温时就是Slater行列式，有限温时就是。能这么假定当然是因为没有粒子间相互作用，且没有实质性的粒子自身相互作用；这样做的动机是可以使用Wick1定理
+
 例如，考虑相互作用电子气。对接近平衡态的体系，在我们考虑的空间尺度相对于单电子的特征尺度非常大时（例如，如果没有特别剧烈的电子-电子散射，从而诸电子可以认为离得很远），可以使用库伦相互作用能的期望值代替其本身。这个期望值为
 \[
     \begin{aligned}
@@ -244,6 +246,11 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \subsection{离子实}
 
 % TODO：声子
+
+\subsection{费米海和空穴}
+
+% TODO:
+% TODO：粒子空穴对称性？？
 
 \section{晶体}
 
@@ -544,21 +551,102 @@ $V_\text{eff}$改变粒子排布的方式是，通过让单电子的能量发生
 
 \subsubsection{等离子体和等离激元}
 
-\subsection{磁矩}
+\subsection{单杂质与局域磁矩}
 
-% TODO：什么是金属？
-考虑一个无相互作用的体系。单杂质的Anderson模型
-% TODO：费米液体
-有一个费米海、有一个单个的能级
-巡游电子
-
-% 似乎只考虑了一条能带？
+% TODO：什么是金属？% TODO：费米液体
+考虑一个无相互作用的体系，我们在其中引入一个杂质，并且假定该杂质能够将电子紧密地约束在其周围。
+这样一来我们就有了两套能级：一套是原本的费米液体，还有一套是一个单独的能级，处于这个能级的电子被束缚在杂质周围。
+需要使用坐标和自旋标记前者（不考虑多个能带），因此称为\textbf{巡游电子}；后者的坐标受限，只需要使用自旋即可标记后者，称为\textbf{d电子}。
+前者和后者可以自然地转化，即两者之间有\textbf{杂化}，于是描述它们的模型就是以下\textbf{单杂质的Anderson模型}：
 \begin{equation}
-    \hat{H} = \sum_{\vb*{k},\sigma} E_{\vb*{k}} \hat{c}^\dagger_{\vb*{k}\sigma} \hat{c}_{\vb*{k}\sigma} 
+    \hat{H} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma \epsilon_\text{d} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.} + U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}.
+\end{equation}
+不失一般性地认为$V_{\vb*{k} \text{d}}$都是实数，如果它不是实数，那总是可以通过重新定义$\hat{c}_{\vb*{k} \text{d}}$（乘上一个复数因子）来让它变成实数。
+最后一项是因为同处于d能级的两个电子之间会有库伦排斥作用，这一项实际上是唯一的真正的相互作用，因为前三项都是二次型。请注意这一项具有自选旋转不变性，这也是合理的。
+
+d电子的相互作用项意味着d轨道上出现两个电子会大大增大能量，如果费米面位于d轨道出现一个电子和d轨道出现两个电子的能量之间，那么巡游电子总会填充d轨道，而且填充一个电子，其结果就是产生杂质附近的局域磁矩。
+
+\[
+    \Delta E \propto \frac{1}{\tau} \propto \sum_{\vb*{k}} \abs{V_{\vb*{k} \text{d}}}^2 N(\epsilon_\text{d}).
+\]
+
+当$U \gg \epsilon_\text{d} \gg \Delta E$时，展宽、良定义的局域磁矩
+
+当$U \gg \Delta E \gg \epsilon_\text{d}$时能级已经很不清楚，和费米海混合的电子
+
+\subsubsection{平均场近似}
+
+相互作用项为
+\[
+    U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow} = U \hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow} \hat{c}^\dagger_{\text{d} \downarrow} \hat{c}_{\text{d} \downarrow},
+\]
+现在尝试应用平均场近似。考虑其平均值并假定系统处在一个近似自由的态上，从而应用Wick定理，有
+\[
+    \begin{aligned}
+        \expval{U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}} &= U \expval{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow} \hat{c}^\dagger_{\text{d} \downarrow} \hat{c}_{\text{d} \downarrow}} \\
+        &= U ( \expval*{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow}} \expval*{\hat{c}_{\text{d} \downarrow}^\dagger \hat{c}_{\text{d} \downarrow}} + \expval*{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \downarrow}} \expval*{\hat{c}_{\text{d} \uparrow} \hat{c}^\dagger_{\text{d} \downarrow}} ),
+    \end{aligned}
+\]
+第二项如果有非零值，$z$方向上的自旋旋转对称性就破缺了。
+确实有这样的可能，就是系统基态有对称性自发破缺，但这里暂时假定没有这种情况。%
+\footnote{我们也可以看到平均场近似总是倾向于高估系统的对称性破缺。}%
+这样就有
+\[
+    \expval{U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}} = U \expval*{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow}} \expval*{\hat{c}_{\text{d} \downarrow}^\dagger \hat{c}_{\text{d} \downarrow}},
+\]
+这又告诉我们，我们有
+\[
+    \expval{U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}} = \expval{ U \hat{n}_{\text{d} \uparrow} \expval*{\hat{n}_{\text{d} \downarrow}} + U \expval*{\hat{n}_{\text{d} \uparrow}} \hat{n}_{\text{d} \downarrow} - U \expval*{\hat{n}_{\text{d} \uparrow}} \expval*{\hat{n}_{\text{d} \downarrow}} },
+\]
+那么如果相互作用哈密顿量适用平均场近似我们就有
+\begin{equation}
+    U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow} \approx U \hat{n}_{\text{d} \uparrow} \expval*{\hat{n}_{\text{d} \downarrow}} + U \expval*{\hat{n}_{\text{d} \uparrow}} \hat{n}_{\text{d} \downarrow} - U \expval*{\hat{n}_{\text{d} \uparrow}} \expval*{\hat{n}_{\text{d} \downarrow}}.
+\end{equation}
+当然，这只是一种可能的平均场分解——没有理由认为这就是最理想的近似，但实际上使用变分计算可以确定这确实是最理想的近似。
+忽略仅改变能量零点的常数项，得到平均场哈密顿量
+\begin{equation}
+    \hat{H}_\text{MF} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma \epsilon_\text{d} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.} + U \hat{n}_{\text{d} \uparrow} \expval*{\hat{n}_{\text{d} \downarrow}} + U \expval*{\hat{n}_{\text{d} \uparrow}} \hat{n}_{\text{d} \downarrow}.
+    \label{eq:anderson-mf}
+\end{equation}
+这是一个二次型哈密顿量。\eqref{eq:anderson-mf}含有不确定的平均场序参量$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$，但是可以将它们当成参数，求解出$\hat{n}_{\text{d} \uparrow}$和$\hat{n}_{\text{d} \downarrow}$之后回代，从而形成自洽方程。
+这样求解出的$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$
+
+求解\eqref{eq:anderson-mf}，在适当的条件上
+% 但是这样还是破缺了自旋守恒。。那一开始的假设还是成立的吗？
+
+可以对\eqref{eq:anderson-mf}做对角化。定义
+\begin{equation}
+    E_{\text{d} \sigma} = \epsilon_\text{d} + U \expval*{\hat{n}_{\text{d} (-\sigma)}},
+\end{equation}
+则
+\begin{equation}
+    \hat{H}_\text{MF} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma E_{\text{d} \sigma} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.}
+\end{equation}
+可以直接使用成熟的矩阵方法来对角化这个哈密顿量。或者，采用下面的技巧：设已有对角化形式
+\[
+    \hat{H}_\text{Mf} = \sum_{n, \sigma} \epsilon_{n \sigma} \hat{c}^\dagger_{n\sigma} \hat{c}_{n\sigma},
+\]
+其中$n$是某个未知的量子数。这样$\hat{c}_{n \sigma}$可以写成$\hat{c}_{\vb*{k} \sigma}$和$\hat{c}_{\text{d} \sigma}$的幺正变换，与此同时
+
+\begin{equation}
+    \begin{aligned}
+        \epsilon_{n\sigma} \braket{\vb*{k}\sigma}{n \sigma} = \braket{\vb*{k} \sigma}{n \sigma} \epsilon_{\vb*{k}} + \braket{\text{d} \sigma}{n \sigma} V_{\vb*{k} \text{d}}, \\
+        \epsilon_{n \sigma} \braket{\text{d} \sigma}{n \sigma} = \braket{\text{d} \sigma}{n \sigma} E_{\text{d} \sigma} + \sum_{\vb*{k}} \braket{\vb*{k} \sigma}{n \sigma} V_{\vb*{k} \sigma}.
+    \end{aligned}
 \end{equation}
 
-平均场的选择和对称性自发破缺
+\subsubsection{平均场近似下的格林函数}
 
-% TODO：粒子空穴对称性？？
+由于系统自旋守恒，两个自旋不同的算符的格林函数为零，因此可以使用$G_{\text{dd}, \sigma}$标记d轨道电子的格林函数。
+在$n-\sigma$表象下哈密顿量对角，于是使用$G_{n\sigma}$标记$n$表象电子的格林函数。
+首先考虑松原格林函数，考虑到$n$表象下系统是自由的，有
+\begin{equation}
+    G_{n\sigma} (\omega_n) = \frac{1}{\ii \omega_n - \epsilon_n},
+\end{equation}
+请注意这里有两种$n$：$\omega_n$中的$n$标记频率，$\epsilon_n$和$G$的下标中的$n$则是量子数。
+使用幺正变换，可以得到
+\begin{equation}
+    G_{dd, \sigma} = \sum_n \frac{1}{\ii \omega_n - \epsilon_n} \braket{\text{d} \sigma}{n \sigma} \braket{n \sigma}{\text{d} \sigma}.
+\end{equation}
 
 \end{document}
