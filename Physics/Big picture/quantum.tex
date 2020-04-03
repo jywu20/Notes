@@ -21,6 +21,7 @@
 \postauthor{\par\end{center}}
 
 \DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\diff}{\mathop{}\!\mathrm{d}}
@@ -28,6 +29,7 @@
 \newcommand*{\const}{\mathrm{const}}
 \newcommand*{\comment}{\paragraph{注记}}
 \newcommand*{\scheq}{Schr\"odinger's Equation}
+\newcommand*{\reals}{\mathbb{R}}
 
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
@@ -42,9 +44,60 @@
     首先使用正则量子化建立算符化的力学。
 \end{abstract}
 
-\section{描述系统}
+\section{抽象代数}
 
-\subsection{态和算符}
+\subsection{指标升降}
+
+符号约定：$\vb*{A}^2$代表$\vb*{A}$的模长平方，$A^2$则表示分量。
+
+\subsection{算符和态}
+
+\[
+    \comm{\hat{A}}{\hat{B}}^\dagger = \comm{\hat{B}}{\hat{A}},
+\]
+因此两个算符对易当且仅当它们的共轭转置对易。
+
+% TODO：分析三种绘景下的态
+% 两个态表示了同样的物理状态，当且仅当，
+% $\ket{\psi}$和$\hat{A}$组成的系统和$\hat{Q}\ket{\psi}$和$\hat{Q} \hat{A} \hat{Q}^\dagger$组成的系统等价，其中$\hat{Q}$是一个幺正算符；反之，如果两个长度等价的向量描述等价的系统，
+% TODO: 设算符$\hat{A}$是CSCO，且它在幺正变换$\hat{P}$下不变，那么对任何一个本征值$A_i$，有一个单位复数，使得$\hat{P} \ket{A_i} = c \ket{A_i}$.
+% TODO：虽然描写一个态空间可以需要不止一个算符（或者说这个空间的CSCO的大小不为1），但往往可以将这些CSCO拼凑成一个：
+% \hat{A} \ket{a_1 a_2 \cdots} = \pmqty{a_1 & a_2 & \cdots} \ket{a_1 a_2 \cdots}
+% 只要推导中不涉及本征值的乘除，这样做就没有任何问题。
+% 因此下文中将常常这么写。
+% 谱结构和对易关系之间有什么联系？
+
+\textbf{表象}指的是态空间的一组正交完备基。由于通常这样一组基是某个CSCO$\hat{M}$的本征态，我们通常使用对应的$CSCO$来标记表象。例如，我们有坐标表象、动量表象，等等。
+表象变换公式
+\begin{equation}
+    \braket{A_i}{\psi} = \sum_j \braket{A_i}{B_j} \braket{B_j}{\psi}
+\end{equation}
+是基的完备性的推论。
+
+变换
+\[
+    \braket{A_i}{\psi} \longrightarrow \mel{A_i}{\hat{B}}{\psi}
+\]
+称为算符$\hat{B}$在$A$表象下的表示。显然，$\hat{A}$在$A$表象下的表示就是
+\[
+    \braket{A_i}{\psi} \longrightarrow A_i \braket{A_i}{\psi}.
+\]
+
+在离散谱的情况下，归一化条件相当简单：
+\[
+    \braket{A_i}{A_j} = \delta_{ij}
+\]
+在连续谱的情况下，需要使用积分代替求和，使用$\delta$函数代替$\delta$符号。
+多分量算符的本征值有可能不是按照$\reals^n$的方式分布的，而是分布在一个弯曲的空间上（例如，分布在一个球面上）。此时通常需要使用类似于
+\[
+    \int \dd[n]{x} \delta(f(x))
+\]
+这样的测度，其中$f(x)$为描述弯曲空间的方程。其结果是，即使两个表象中的态矢量能够做到一一对应，由于使用的测度不同，它们仍然可以差一个模长不为1的系数。
+换而言之，相同的态在不同的表象中会以不同的内积被归一化。
+
+\subsection{李群和李代数，以及它们的表示}
+% TODO:形如$\exp(\phi_1 G_1 + \phi_2 G_2 + \ldots)$的映射是不是一定可以写成$\exp (\phi_1' G_1) \exp (\phi_2' G_2) \ldots$?
+在讨论对称性和守恒量的联系的时候
 
 回顾经典物理，我们会发现对任何一种系统我们都尝试使用一系列固定的物理量描述它，例如一个粒子有位置、动量，一个场有各点的场量，等等。
 有时也可以使用另一些物理量描述它，例如我们可以在速度和动量之间切换，可以使用不同的坐标系，等等。
@@ -134,6 +187,1395 @@ $\hat{A}$是一个同构。容易看出，若$\hat{O}$是$\mathcal{H}$中的一�
 \end{equation}
 其中$U$为酉算符。要求$U$是酉算符是为了确保变换之后的$A'$的本征态的正交性，从而确保它确实是可观察量。
 （由此也可以看出，要求使用复希尔伯特空间来描述系统而又一定要求可观察量的取值为实数实际上是很强的条件）
+
+\subsubsection{从李群到李代数}
+
+本文中我们将不对李群的流形结构进行正式的分析，而仅仅满足于使用一定的群参数把一个李群完整地表示出来。
+一个李群中的成员可以一般地写成
+\begin{equation}
+    g = \exp(\ii \theta_i \sigma_i) \equiv \exp (\ii \theta^i \sigma_i) = \exp (\ii \vb*{\theta} \vb*{\sigma}),
+    \label{eq:lie-group-element}
+\end{equation}
+其中$\theta_i$指的是群参数，而$\sigma_i$指的是生成元。
+通常要求群参数为实数。
+$\ii$是一个无关紧要的系数，加上它和不加上它唯一的区别就是$\sigma$需不需要乘上一个$\ii$。
+为了方便，常常将诸$\theta$排成行向量，$\sigma$排成列向量。由于没有度规，无需区分上下指标。
+对应的，设$\theta$是一个群参数，对应的生成元为
+\begin{equation}
+    \sigma = \frac{1}{\ii} \dv{g}{\theta}.
+\end{equation}
+需注意\eqref{eq:lie-group-element}假定了
+\[
+    g(\theta_1) g(\theta_2) = g(\theta_1 + \theta_2),
+\]
+这又等价于，无论$\theta$取什么值，$g$对$\theta$求导都会得到完全相同的结果。
+在大多数情况下可以不失一般性地要求这个性质成立，因为群参数到底是什么并不重要
+——我们总是可以巧妙地定义$\theta$使得$g$对$\theta$求导的结果与$\theta$无关%
+\footnote{这是来自常微分方程的基本结论：设$X$是一个生成元，那么必定可以找到李群的一个单参数子群$c(t)$，使得
+\[
+    \dv{t} c(t) = c(t) \cdot X,
+\]
+从而可以定义指数映射。这是解析映射，因此可以使用诸如求导等运算。}，
+% 但是真的如此吗？时间演化一定构成李群吗？
+% 一种可能的质疑是：在球面上随意画一条闭合轨迹，它显然描述了起点位于球心，终点位于球上面的矢量的一个连续变换，
+% 然而它却不能使用$\exp (\alpha G)$的形式表示出来。
+% 但这个质疑本身不成立，因为通常的李群总是可以作用在线性空间上的，然而上述变换显然没有线性性。
+% 感觉还是很奇怪。
+但是有一个重要的例外：时间演化。
+我们关注的是“正常人眼中的时间”，而不能随意定义时间流逝的速率，
+因此并没有什么能够保证不同$t$处时间演化算符对$t$求导的结果都是$t=0$（也就是恒等映射附近）时间演化算符对$t$求导的结果。
+记$U(t, t_0)$为从$t_0$演化到$t$的算符，也即
+\[
+    U(t, t_0) U(t_0) = U(t),
+\]
+由于$t$不再能够任意选取，我们不能够写出\eqref{eq:lie-group-element}这样的指数映射，但是可以证明，一定存在一个$H(t)$使得
+\begin{equation}
+    U(t, t_0) = T \exp \left( \int_{t_0}^t \dd{t} H(t) \right).
+    \label{eq:time-dependent-lie-group}
+\end{equation}
+这里我们略去了\autoref{sec:time-evolution}中的公式中的因子$- \ii /\hbar$，不过这无关紧要。$T$为编时算符。
+在不同时刻的$H(t)$彼此对易的情况下可以把$T$去掉，因为此时重排各算符顺序不会产生任何影响。
+
+\eqref{eq:lie-group-element}和\eqref{eq:time-dependent-lie-group}的区别体现在很多地方。
+\eqref{eq:lie-group-element}意味着
+\[
+    g^{-1}(\theta) = g(-\theta),
+\]
+或者说
+\[
+    \left( \exp(\theta \sigma) \right)^{-1} = \exp(- \theta \sigma),
+\]
+但是在不同时刻的$H(t)$彼此不对易时，
+\[
+    T \exp(\int \dd{t} H(t))^{-1} \neq T \exp(- \int \dd{t} H(t)).
+\]
+相应的，
+\[
+    \dv{t} \left(T \exp(\int \dd{t} H(t))^{-1}\right) \neq -H.
+\]
+这就是\autoref{sec:time-evolution}中做绘景变换时不同绘景下的哈密顿算符不相等的根本原因。
+
+李代数是李群在单位元附近的切空间，也就是说，是$g$在$\theta=0$附近沿着任意方向对$\theta$求导之后得到的结果组成的代数。
+接下来我们将讨论\eqref{eq:lie-group-element}的李群，因为“不同点处求导结果不同”基本上只会在处理时间演化时用到，
+而此时只有一个生成元（就是哈密顿量），没有必要讨论李代数。
+由于李代数的封闭性，设$g_1, g_2, \ldots$是一组相互独立的生成元，它们中任意两个的李括号$\comm*{g_1}{g_2}$一定也是一个生成元，
+这意味着它可以使用$g_1, g_2, \ldots$线性表示。
+从而我们有
+\begin{equation}
+    \comm*{g_i}{g_j} = f_{ij}^k g_k.
+    \label{eq:structure-of-lie-algebra}
+\end{equation}
+如果我们只讨论抽象的李代数的性质而不考虑它作用在某些对象上产生的结果，那么\eqref{eq:structure-of-lie-algebra}就完全刻画了一个李代数的结构。
+因此，称$f_{ij}^k$为\textbf{结构常数}。
+
+\subsubsection{李代数的具体计算}
+
+% TODO：把前面用到这一节的内容的部分写得更加简洁一些
+若
+\[
+    \comm*{\hat{q}}{\hat{p}} = c,
+\]
+则
+\[
+    \comm*{\hat{q}}{\hat{p}^n} = n c \hat{p}^{n-1}.
+\]
+
+\subsubsection{表示论}\label{sec:rep-th}
+
+接下来需要讨论李群和李代数的表示。
+通常考虑两种表示，其一是李群和李代数在向量空间上的作用，
+也就是说，我们在李群、李代数和向量空间上的算符组成的群（以算符的复合为乘法）之间建立一个同态，
+一旦建立起这个同态，我们实际上就得到了李群或李代数的一个表示。
+比较方便的做法是，先讨论李代数在特定向量空间上的表示，然后使用指数映射获得对应的李群的表示。
+第二种表示是，李群和李代数在向量空间上的算符构成的向量空间上的作用。
+这种表示和第一种表示是紧密相关的。
+设李群$G$在向量空间$V$上的表示为$G_V$，则$G_V \subset GL(V)$。这就自然地诱导出了李群在$GL(V)$上的表示。
+算符$\hat{B} \in GL(V)$建立起了这样的关系：
+\[
+    \phi = \hat{B} \psi,
+\]
+现在我们把$\hat{A} \in G_V$作用在$\phi$和$\psi$上面，就得到
+\[
+    \phi' = \hat{A} \phi, \quad \psi' = \hat{A} \psi,
+\]
+如果我们还是希望在$\phi'$和$\psi'$之间建立关系
+\[
+    \phi' = \hat{B}' \psi',
+\]
+应该怎么选取$\hat{B}$？
+考虑到$\phi$和$\psi$的任意性，容易看出，
+\[
+    \hat{B}' = \hat{A} \hat{B} \hat{A}^{-1}.
+\]
+我们没有规定$\hat{B}$是什么——它是完全任意选取的。这样一来，$G_V$中的每一个元素$\hat{A}$都对应到下面的映射：
+\begin{equation}
+    \hat{B} \longrightarrow \hat{A} \hat{B} \hat{A}^{-1},
+    \label{eq:group-action-on-operators}
+\end{equation}
+\eqref{eq:group-action-on-operators}是一个从$GL(V)$到$GL(V)$的映射，也就是满足封闭性。
+请注意该映射是$GL(GL(V))$的成员，而不是$GL(V)$的成员——它作用在$V$上的算符上而不是$V$中的向量上。
+因此，我们通常只讨论简单的向量空间上的群表示，因为这些向量空间上的算符组成的向量空间上的群表示可以使用前者按照\eqref{eq:group-action-on-operators}写出。
+另外注意，不同的$\hat{A}$可能对应着同一个\eqref{eq:group-action-on-operators}型的从算符到算符的映射。
+这一点在处理旋转群时体现得很明显。
+
+李群和李代数通常被作用在几类向量空间上。
+首先是有有限个分量的向量空间。李群在其上的作用形如
+\[
+    v \longrightarrow v', \quad (v')^\mu = R_{\nu}^\mu (\Lambda) v^\nu.
+\]
+其中$\Lambda$指抽象的李群。
+在有限维向量空间$V$上的表示可能有不变子空间，也就是说，存在$V$的一个子空间$V'$，使得李群中的任何一个成员作用在$v \in V'$上之后得到的结果都还是在$V'$中。当然，$V$以及$\{0\}$一定是不变子空间。
+如果一个表示有不是这两个空间的不变子空间，那么这就是一个\textbf{可约表示}，反之则为\textbf{不可约表示}。
+可以证明，任何一个可约表示都可以写成一系列不可约表示的直和。因此对有限维表示而言，只需要讨论不可约表示就可以了，因为可约表示可以使用不可约表示组装出来。
+现在讨论不可约有限维表示。
+首先可以证明，任何李群的生成元至少有一个（当然也可以有很多个）可以相似变换为对角矩阵。
+% TODO：是不是每一个生成元都可以？
+这些被对角化的生成元的集合称为Cartan子代数，它是对应的李群的李代数的表示的子代数。
+Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量，对应的各生成元的本征值——也就是对角矩阵的对角元——可以用来标记这个不可约表示。
+要找到一组Cartan子代数并不难：只需要从李群中找到一个交换子代数，然后尝试对角化这个交换子代数中的某一个成员就可以了。
+% TODO:李代数在怎样的程度上决定了对应的算符的谱结构？
+非奇异矩阵表示一定可以通过相似变换而变成幺正表示（就是所有矩阵都是幺正的表示）。
+这也就是我们频繁地讨论幺正表示的原因。但有许多重要的群——例如洛伦兹群——都不是紧致的（或者说群对应的流形无界），因此它们实际上并没有有限维的幺正表示。就洛伦兹群而言，我们将会看到，其推动生成元的有限维表示不是厄米的，因此整个群也没有幺正的有限维表示。
+
+容易验证，设$\hat{X}$是厄米算符，且
+\begin{equation}
+    \comm*{\hat{a}^\dagger}{\hat{X}} = c \hat{a}^\dagger,
+    \label{eq:raising-operator}
+\end{equation}
+那么
+\[
+    \hat{a}^\dagger \ket{X} \propto \ket{X+c},
+\]
+相应的，
+\[
+    \hat{a} \ket{X} \propto \ket{X-c}.
+\]
+因此称$\hat{a}^\dagger$为$\hat{X}$的\textbf{升算符}，$\hat{a}$为$\hat{X}$的\textbf{降算符}。
+数学上可以证明，在李代数的有限维表示上可以定义内积
+\begin{equation}
+    \langle \hat{A}, \hat{B} \rangle = \trace \hat{A} \hat{B},
+\end{equation}
+通过合适的线性组合，能够写出一组正交归一化的生成元。
+此时非Cartan子代数的生成元中的每一个都是Cartan子代数中的每一个成员的升降算符，
+并且任意两个非Cartan子代数的生成元的对易子都可以使用Cartan子代数的成员线性表示。
+% TODO:看起来Cartan子代数似乎构成它的不可约表示空间的一个CSCO
+% Symmetry and the Standard Model, p108
+因此对一个一般的、没有正交归一化的李代数的有限维表示，我们总是可以从李代数的成员构造出一个升算符。设$\hat{X}$为$g_i$，且
+\[
+    \hat{a}^\dagger = \lambda^j g_j,
+\]
+则\eqref{eq:raising-operator}等价于
+\[
+    \comm*{\lambda^j g_j}{g_i} = c \lambda^j g_j,
+\]
+代入\eqref{eq:structure-of-lie-algebra}，上式又等价于
+\begin{equation}
+    \left( f^k_{ji} - c \delta_j^k \right) \lambda^j = 0,
+    \label{eq:determine-ladder-operators}
+\end{equation}
+于是通过求解
+\begin{equation}
+    \det \left( f^k_{ji} - c \delta_j^k \right) = 0
+    \label{eq:possible-c}
+\end{equation}
+就可以得到所有可能的$c$，然后将它们代入\eqref{eq:determine-ladder-operators}就能够得到所有能够被非Cartan子代数表示出来的升降算符。
+最后，由于是有限维表示，通过以上手法得到的升降算符实际上就是全部可能的升降算符，因此从一个本征态出发，通过它们可以构造出所有的本征态。
+有限维表示还意味着，设$\hat{a}^\dagger$是某个升算符，那么对充分大的$N$，$(\hat{a}^\dagger)^N = 0$，$\hat{a}^N=0$，因为本征态的个数有限。
+这些条件可用于确定什么样的不可约表示是被允许的。
+% TODO：数学证明，不过多半鸽了
+这些操作的一个典型的例子见对旋转群的处理。
+
+现在我们分析一种比较特殊的情况。以上我们都是在“李代数可以分解成一个Cartan子代数和非Cartan元素，后者构成前者的升降算符”的框架下分析问题，那么如果李代数中所有元素都对易，那此时它会有怎样的表示？
+由于没有非Cartan元素，这样的一个李代数——从而它的李群——不会有有限维的不可约表示。
+通常这样的李群对应着某种空间平移操作。
+
+% TODO：连续谱的情况
+以上讨论的不可约表示都是有限维的。无限维表示——这里指的是函数空间的表示——则需要一套不同的框架。设$\hat{q}$具有连续谱，且
+\begin{equation}
+    \comm*{\hat{q}}{\hat{p}} = \ii,
+\end{equation}
+则
+\begin{equation}
+    \exp \left( \ii \lambda \hat{p} \right) \ket{q} = \ket{q + \lambda}.
+\end{equation}
+也就是说$\exp (\ii \lambda \hat{p})$是让$\hat{q}$的本征矢对应的本征值上升$\lambda$的升算符。
+
+由于空间坐标无非是一种向量，李群和李代数也可以被作用在坐标上。
+作用在坐标上的有限维表示又诱导出了作用在函数上的无限维表示%
+\footnote{在有限维表示中，上下标$\mu$标记向量的诸分量；在函数空间中，坐标$x^\mu$标记“向量”——也就是函数——的诸“分量”——也就是函数在这一点的值。
+李群在有限维向量空间上的表示通常是某个矩阵群，它将不同分量混合在一起，即
+\[
+    \psi^\mu \longrightarrow R^\mu_\nu \psi^\nu.    
+\]
+李群在无限维向量空间上的表示通常是“改变坐标$x^\mu$”。
+}%
+。设$f=f(x)$，若李群在坐标上的表示为
+\[
+    x \longrightarrow x', \quad (x')^\mu = R_\nu^\mu (\Lambda) x^\nu,
+\]
+则它在关于坐标的函数——也就是“场”——组成的无限维向量空间上的表示就是
+\[
+    f \longrightarrow f', \quad f(x) = f'(x') = f'(R(\Lambda) x),
+\]
+或者等价的，
+\begin{equation}
+    (x \mapsto f(x)) \longrightarrow (x \mapsto f'(x) = f(R(\Lambda)^{-1} x)).
+    \label{eq:infinite-dim-rep}
+\end{equation}
+换而言之，坐标变动“牵引”了从坐标到场值的映射。
+考虑到$f$可能是某个多分量对象（比如矢量、矢量的张量积，或者接下来要看到的旋量）的分量，
+李群在此多分量场上的作用还包括通常的有限维表示，也就是
+\[
+    \psi^a \longrightarrow M(\Lambda)^a_b \psi^b.
+\]
+需注意此处我们使用了另外一个表示$M^a_b$而不是$R^\mu_\nu$，因为不能够保证$\Lambda$在多分量场$\psi$上的作用和它在坐标向量上的作用来自同一个有限维表示。
+由于大部分情况下我们都是从一个群在通常意义上的矢量的作用出发讨论其结构的，可以将$R(\Lambda) x$简记为$\Lambda x$，也就是群元$\Lambda$在$x$上的作用。
+这样上式就可以简洁地写成
+\begin{equation}
+    \psi^a(x) \longrightarrow {\psi'}^a (x) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
+    \label{eq:wigner-transform}
+\end{equation}
+这种同时考虑了多分量场在李群作用下各分量重新混合（这是一个有限维表示）和李群作用下坐标拖曳而改变场（这对坐标而言是另一个有限维表示，对场而言是一个无限维表示）的李群的表示就是\textbf{场表示}。
+需要注意的是，不同的$\Lambda$作用到坐标上可能会得出同样的结果，而它们对应的$M$作用到场上却有不同的结果，正如$SU(2)$和$SO(3)$的关系告诉我们的那样。
+
+\eqref{eq:wigner-transform}给出的是李群的场表示的一般形式，但此时我们还只有形式上的变换而没有显式的表达式。
+我们来分析其李代数。取%
+\footnote{虽然可以任意地调整群参数，从而让生成元前面的系数随意变动，但是通常对有限维表示和无限维表示我们总是采用同样的群参数。这就意味着，在有限维表示确定之后不能随意调节无限维表示的生成元前面的系数，不能随意加一个$\ii$或者改变正负号。这也就是我们在场表示中一并处理有限维表示和无限维表示的原因，因为此时两者的群参数自动地就是相同的。
+
+下式中的$g$的定义可以是\[
+    g = \frac{1}{\ii} \pdv{G}{g},
+\]
+但也可以是像我们定义旋转生成元时的那样，取
+\[
+    g = \ii \pdv{G}{g},
+\]
+只需要将$\epsilon$取为负值就可以了。无论$g$是怎么定义的，下式都是成立的。}%
+\[
+    \Lambda = I + \ii \epsilon g,
+\]
+其中$g$是一个生成元，我们就有
+\[
+    \begin{aligned}
+        \psi^a \longrightarrow {\psi'}^a &= M^a_b (\Lambda) \psi^b (\Lambda^{-1} x) \\
+        &= (I + \ii \epsilon M^a_b(g)) \psi^b (x - \ii \epsilon g x) \\
+        &= (I + \ii \epsilon M^a_b(g)) (\psi^b - \ii \epsilon g x \cdot \grad{\psi^b}) \\
+        &= \psi^b + \ii \epsilon M^a_b(g) \psi^b - \ii \epsilon g x \cdot \grad{\psi^b},
+    \end{aligned}
+\]
+于是
+\[
+    {\psi'}^a = (I + \ii \epsilon  (M^a_b(g) - g x \cdot \grad)) \psi^a,
+\]
+于是场表示的生成元可以写成
+\begin{equation}
+    M_\text{field} = M_\text{fin} + M_\text{inf}, \quad M_\text{fin} = M^a_b(g), \quad M_\text{inf} = - (g x) \cdot \grad.
+    \label{eq:fin-and-inf-rep}
+\end{equation}
+其中$M_\text{fin}$就是我们所熟悉的李群在有限维向量空间上的矩阵表示，而$M_\text{inf}$则是李群作用在坐标上，拖曳坐标而对场产生的影响。
+显然，它们和$g$之间能够建立同态关系。$gx$和$\Lambda x$一样，都是“$g$在坐标空间上的有限维矩阵表示作用于$x$”的简写。
+与通常物理中的记号不同，此处的梯度算符作用在所有坐标上，不仅仅是空间坐标，还包括时间坐标。
+
+在以上讨论的基础上我们讨论态矢量。我们总是使用李群在希尔伯特空间上的幺正表示，因为需要保证变换前后的态矢量都是物理的，也就是说，都是正交归一化的。
+我们刚才讨论了李群的场表示，这个场表示当然可以被作用在算符场上。但是注意到算符场是态空间上的算符，因此按照\eqref{eq:group-action-on-operators}，李群的场表示自然地如下导出了李群在希尔伯特空间上的表示：
+\begin{equation}
+    \hat{U}(\Lambda) \hat{\psi}^b(\vb*{x}) \hat{U}^{-1}(\Lambda) = M^a_b (\Lambda) \psi^b (\Lambda^{-1} x).
+    \label{eq:field-rep-and-state-rep-lie-group}
+\end{equation}
+由于对$\hat{\phi}$的变换等价于对其本征值做变换，这又等价于保持本征值不变而重新安排本征态，按照上式诱导出的在希尔伯特空间上的李群表示$\hat{U}$也是幺正的。
+
+相应的，\eqref{eq:field-rep-and-state-rep-lie-group}也导致了对应的李代数在希尔伯特空间上的表示。对\eqref{eq:field-rep-and-state-rep-lie-group}取微元，得到
+\[
+    (1 + \ii \epsilon M_\text{state}) \hat{\psi}^b (1 - \ii \epsilon M_\text{state}) = \ii \epsilon M_\text{field} \hat{\psi},
+\]
+从而
+\begin{equation}
+    \comm*{M_\text{state}}{\psi} = M_\text{field} \psi.
+    \label{eq:field-rep-and-state-rep-gen}
+\end{equation}
+实际上，时间演化方程\eqref{eq:quantum-evolution}就是一个例子：时间平移群在希尔伯特空间上的表示是哈密顿算符$\hat{H}$，在场——这里是任何一种物理量——上的表示是$\frac{1}{\ii} \dv{t}$，那么
+\[
+    \comm*{\hat{H}}{\hat{A}} = \frac{1}{\ii} \dv{t},
+\]
+这就是时间演化方程。
+
+考虑一个简单的单粒子量子力学的例子：$\hat{x} + a$是将大小为$a$的平移作用在$\hat{x}$上的结果，而考虑被$\hat{x}$完全描述的一个希尔伯特空间，在其上有
+\[
+    \hat{x} + a = \int \dd{x} x \dyad{x} + a \int \dd{x} \dyad{x} 
+    = \int \dd{x} (x + a) \dyad{x} = \int \dd{x'} x' \dyad{x'-a},
+\]
+因此作用在$\hat{x}$上的大小为$a$的平移就等价于作用在态空间基矢量上的大小为$-a$的平移。
+更一般的，将某一个李群$Q(a)$作用在某一算符上就相当于将这一李群的群参数倒转过来得到新的李群$Q'$，
+也就是定义$Q'(a) = Q(a)^{-1}$（由于是群，$Q'$和$Q$同构），然后将$Q'(a)$作用在态空间的基矢量上。
+由于$Q'$和$Q$同构，两者的区别仅仅是重新规定了群参数，因此它们对应着同样的对称性。
+% TODO：以上说法的推广
+总之，我们既可以直接从某种李群的场表示出发，推导它允许的算符场有哪些，然后使用二次量子化的有关知识导出其对应的单粒子态，%
+\footnote{关于何为“粒子”需要说明：一般把能够使用一个不很复杂的CSCO描述的量子系统称为粒子，例如可以使用$\hat{\vb*{x}}$或$\hat{\vb*{p}}$描述一个粒子。但按照这种定义，原子能级也可以算粒子了——实际上这并不是胡思乱想，在处理量子光学等领域的一些问题时确实可以将能级看成一种粒子，定义其产生湮灭算符，得到费米场，等等——因此，何为粒子更多的是一种约定的说法。实际上任何一个哈密顿量都可以对角化，写出能级之后将不同能级看成不同粒子，然后使用二次量子化的语言描述它。}%
+也可以从李群在希尔伯特空间上的表示出发，直接得到单粒子态然后构造算符场。
+两种方法是完全一致的。舒尔引理告诉我们，卡西米尔算符（和所有生成元都对易）在不可约表示中一定是恒等算符的常数倍。这个常数可以用来标记相应的不可约表示；事实上这一类常数往往会出现在相应的表示描写的场/粒子的运动方程中，因为运动方程中会出现卡西米尔算符的场表示。
+相对而言，在推导运动方程的时候，使用场的观点更加方便，因为相对论情况下粒子数通常是不确定的，因此使用单粒子态难以写出哈密顿量。
+
+概括以下我们至今得到的结果：李群和李代数的表示有下面几种，它们彼此之间有非常密切的关系。
+首先，李群和李代数在有限维向量空间上的表示是矩阵，它们或者是可约表示，或者不可约，前者可以通过直和运算由后者组装出来。
+不可约有限维表示的结构可以通过使用李代数中的非Cartan元素构造Cartan子代数的升降算符来确定。
+通过将有限维表示作用在坐标上，我们得到了作用在关于坐标的函数组成的向量空间上的无限维表示。
+将作用在多分量对象上的有限维表示和作用在坐标函数上的无限维表示结合起来，就得到了场表示。
+李群在向量空间上的表示很自然地就诱导出了李群在作用在向量空间上的算符上的表示。
+
+\section{动力学}
+
+% 似乎拉格朗日动力学中含有虚部的场要看成两个场，而哈密顿动力学中含有虚部的场只需要看成一个场。
+在进一步展开下面的叙述之前，我们先回顾现代物理的数学框架。总的来说，有两套可用的框架，
+其一是拉格朗日动力学，路径积分方法是它的量子版本；其二是哈密顿动力学，正则量子化是它的量子版本。
+尽管这两个框架在数学上是独立的，我们仍然可以找到它们之间非常深厚的联系。
+
+本节首先从经典拉氏量出发，然后得到经典哈密顿量，然后再过渡到量子形式。
+常见的物理问题涉及$3+1$维闵可夫斯基时空中或$0+1$维时空，而后者可以看成前者的一个退化情况，
+于是我们将局限在$3+1$维闵可夫斯基时空中，
+虽然无论是拉格朗日动力学还是哈密顿力学都适用于比这广得多的体系。
+所谓闵可夫斯基时空指的是度规可以化为
+\begin{equation}
+    \eta_{\mu\nu} = \diag (1, -1, -1, -1)
+\end{equation}
+的四维几何。通常使用$t, x, y, z$或者$x^0, x^1, x^2, x^3$来依次标记这4个坐标。
+容易看出$x, y, z$或者说$x^1, x^2, x^3$就构成一个三维欧氏几何，它们是\textbf{空间维}。
+$x^0$则是\textbf{时间维}。
+
+我们还将假设，所有场量在无穷远处的值都是零。
+我们将要分析的对象是时空中的场，它是从闵可夫斯基时空到某一线性空间的光滑映射。
+
+\subsection{拉格朗日动力学}
+
+所谓\textbf{拉氏量密度}$\mathcal{L}$——在场论中简称为\textbf{拉氏量}——是这样一个量，它是场的局域泛函，
+这就是说，它可以写成$\phi, \partial_\mu \phi, \ldots$以及时空坐标的函数。
+本文假定所有的拉氏量仅含有一阶导数，这是为了避免含有高阶导数的拉氏量产生“可以无穷下降的能量”等反直觉现象，并且简化计算。
+幸运的是，已有的实验数据并不要求我们考虑更高阶的拉氏量。
+我们还假定物理规律在时空上是均匀的，因此我们不认为拉氏量中显含时空坐标。%
+\footnote{
+    需要注意的是在系统中有相互作用且其中一部分的运动状态已知的情况下，另一部分的等效拉氏量中是有可能出现时空坐标的，
+    例如粒子在势场中的运动就是一个典型例子，在那里由于产生势场的物理机制远远比粒子本身要强，因此势场可以看成是给定的，
+    于是粒子具有的等效拉氏量就显含了空间坐标。}%
+从而我们有
+\begin{equation}
+    \mathcal{L} = \mathcal{L}(\phi, \partial_\mu \phi).
+    \label{eq:lagrangian}
+\end{equation}
+需要注意的是\eqref{eq:lagrangian}中的$\phi$可以代表任何一个“从时空坐标到数量”的映射，
+它可能是一个标量场也可能是一个矢量场的分量，或者是别的什么东西。
+\textbf{作用量}是拉氏量在整个闵可夫斯基时空上的积分。
+
+现在我们将一个任意的无穷小变换作用在泛函$S$上，观察其无穷小变动。
+需要注意的是无穷小变换同时作用在$\phi$的场值和坐标上，从而$\phi$完整的变化%
+\footnote{在实际计算时往往更加容易求出$\var{\phi}$，因为一旦把$\phi'(x')$完全写出，只需要计算$\phi'(x')-\phi(x)$ 即可。}%
+同时包含两部分：
+\begin{equation}
+    \var{\phi} = \bar{\var} \phi + \partial_\mu \phi \var{x}^\mu,
+    \label{eq:variance-of-phi}
+\end{equation}
+其中第一项指的是场值本身的变化%
+\footnote{这个变化又有可能来自两个方面。
+其一是“场的平移”，也就是我们手动把场$\phi$加减特定值；
+其二是“场的旋转”，当$\phi$实际上是某个更大的对象（如矢量）的某个分量时，基矢量的旋转会导致不同的分量混在一起。
+通常我们使用一样的基矢量来书写场的分量和坐标的分量，因此除了坐标平移外，坐标变换也伴随着非零的$\bar{\var}{\phi}$。}%
+，第二项指的是坐标变换的“拖曳”作用。
+坐标的变化还会导致导数算符和积分测度发生变化。这两个几何效应的具体表达式为
+\begin{equation}
+    \begin{bigcase}
+        \partial_{\mu'} = \partial_\mu - \partial_\mu \var{x^\nu} \partial_\nu, \\
+        \dd[4]{x'} = (1 + \partial_\mu \var{x^\mu}) \dd[4]{x}.
+    \end{bigcase}
+\end{equation}
+由于$\partial_\mu$算符随着坐标变换会发生变化，我们发现$\partial_\mu \phi$的变化量的形式和$\phi$不完全一致：
+\begin{equation}
+    \var{\partial_\mu \phi} = \partial_\mu \bar{\var}{\phi} + \partial_\mu \partial_\nu \phi \var{x^\nu}.
+\end{equation}
+这样一来我们可以计算出
+\begin{equation}
+    \var{S} = \int \dd[4]{x} \left(
+        \left( \pdv{\mathcal{L}}{\phi} - \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi} \right) \bar{\var}{\phi} + 
+        \partial_\mu \left( \mathcal{L} \var{x^\mu} + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}{\phi} \right)
+    \right).
+    \label{eq:variance-of-s}
+\end{equation}
+在推导\eqref{eq:variance-of-s}时我们没有使用任何关于$\var{\phi}$和$\var{x}$的假设，因此它给出的是最一般的$\var{S}$形式。
+
+实际的场的动力学由保持时空坐标$x$不变且$\phi$在无穷远处固定为零（从而无穷远处$\bar{\var}{\phi}$为零）的情况下的泛函极值问题
+\begin{equation}
+    \var{S} = \var{\int \dd[4]x \mathcal{L}(\phi, \partial_\mu \phi)}
+    \label{eq:min-action}
+\end{equation}
+给出。
+显然这个泛函极值问题的解就是
+\begin{equation}
+    \pdv{\mathcal{L}}{\phi} - \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi} = 0.
+    \label{eq:el-eq}
+\end{equation}
+这就是欧拉-拉格朗日方程。
+由于推导欧拉-拉格朗日方程时用到了$\var{\phi}$的任意性，这意味着$\phi$被假定是一个实的场。
+如果某些场有虚部，那么在使用\eqref{eq:el-eq}以及相关结论的时候需要把它的实部和虚部分开，当成两个场来处理。
+并且，容易证明，设复场$\phi$的实部和虚部分别是$\phi_1$和$\phi_2$，且
+\[
+    \pmqty{\psi_1 \\ \psi_2} = \pmqty{a & b \\ c & d} \pmqty{\phi_1 \\ \phi_2},
+\]
+其中$a,b,c,d$为复常数，则$\psi_1$和$\psi_2$的运动方程也可以从\eqref{eq:el-eq}得出。
+常见的选择包括取
+\[
+    \psi_1 = \phi, \psi_2 = \phi^\dagger,
+\]
+或者如果$\phi$是多分量场，设有一系列复矩阵（不必都是复矩阵，有一个是复的就可以）$\gamma^\mu$，取
+\[
+    \psi_1 = \phi, \psi_2 = \gamma^\mu \phi_\mu.
+\]
+
+需要注意如果两个拉氏量的形式不同，这并不意味着它们描述了不同的物理过程。
+实际上容易看出，两个拉氏量描述了相同的物理过程，
+当且仅当，它们给出的作用量$S$只相差一个相对于$\dd[4]{x}$的零测集上的积分（这样的积分不影响泛函极值问题的求解，因为它“太小”），
+这又等价于这两个拉氏量相差一个散度项，即存在一个$\Lambda^\mu$使得
+\begin{equation}
+\mathcal{L}' = \mathcal{L} + \partial_\mu \Lambda^\mu.
+\end{equation}
+
+当场量$\phi$是物理解的时候，将$\phi$代入到$S$中，然后再做一个无穷小变换，此时\eqref{eq:variance-of-s}中的第一项为零，
+于是我们有
+\[
+    \var{S} = \int \dd[4]{x} \partial_\mu \left( \mathcal{L} \var{x}^\mu + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi \right).
+\]
+如果这个无穷小变换实际上不改变系统的动力学，也就是说系统在这个无穷小变化下是对称的，
+那么$\var{S}$就应该能够写成一个表面积分，于是我们得到
+\begin{equation}
+    \partial_\mu \left(\pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi + \mathcal{L} \var{x^\mu} + \Lambda^\mu\right) = 0.
+    \label{eq:noether}
+\end{equation}
+当然，如果无穷小变换更进一步不改变拉氏量，那么$\Lambda=0$。
+
+如果无穷小变换是一个李群的李代数的表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的。可以使用小量近似将$\bar{\var}{\phi}$写成小量$ \ii \epsilon$乘以李代数的场表示\eqref{eq:fin-and-inf-rep}，$\var{x^\mu}$写成小量$\ii \epsilon$乘以李代数的四维矢量表示，
+于是我们在\eqref{eq:noether}中除去一个$\epsilon$，就得到了一个守恒流。
+于是\eqref{eq:noether}的括号中的内容能够完全写成坐标的函数。
+这就是\textbf{诺特定理}：系统的无穷小对称性诱导出一个守恒流。
+由于是四维闵可夫斯基时空，四维的一个守恒流
+\begin{equation}
+    \partial_\mu j^\mu = 0
+\end{equation}
+就意味着三维的一个输运方程
+\begin{equation}
+    \partial_t j^0 + \partial_a j^a = 0.
+\end{equation}
+从而，
+\begin{equation}
+    Q = \int \dd[3]x j^0
+\end{equation}
+就是一个\textbf{守恒荷}。如果其积分范围是一个有限的区域，那么它就是一个局域守恒量，也就是
+\[
+    \dv{t} Q = - \int \dd{\vb*{S}} \cdot \vb*{j},
+\]
+而如果其积分范围是全空间，那么它就是守恒的。
+
+我们来检查一下常见的对称性导致的守恒量（这些对称性的数学结构参见\autoref{sec:symmetry}）。%
+\footnote{表面上看，下面的讨论在体系并不非常对称的情况下并无意义，而不非常对称的体系占了多数。
+不对称性带来的后果是，我们不再有完美的守恒流方程，取而代之的是一个有源的输运方程
+\[
+    \partial_\mu j^\mu = \text{something},
+\]
+由于对称性分析无助于找到源的具体形式，使用对称性诱导出特定的物理量似乎并没有什么意义。
+然而，我们相信，最基本的物理定律总应该是对称的，因此大部分体系的不对称性可以归结为我们人为地将它从环境中隔离出来进行研究，从而导致类似下面的方程：
+\[
+    \partial_\mu (j^\mu_\text{sys} + j^\mu_\text{env}), \quad \partial j^\mu_\text{sys} = - j^\mu_\text{env}
+\]
+第二个方程给出了我们想要的含源的输运方程。因此在分析基本的物理框架时我们可以不讨论“不对称”的情况，
+而是导出了基本的方程之后再通过“隔离出一部分系统”来引入不对称性。
+}%
+假定拉氏量在变换下不变。下面处理的问题都只含有一个场，不过由拉氏量的叠加性，在拉氏量含有多个场的时候只需要把各部分加起来即可。
+首先是最简单的平移。处理平移时假定场是标量场，这无损一般性，因为平移没有有限维表示，因此不会导致场分量发生混合。
+平移变换作用于场上得到的结果是：
+\[
+    \begin{split}
+        x^\mu \longrightarrow x^{\mu'} = x^\mu + a^\mu, \\
+        \var{\phi} = \phi'(x') - \phi(x) = 0.
+    \end{split}
+\]
+% TODO:群作用怎么取
+按照\eqref{eq:variance-of-phi}，可以计算出
+\[
+    \bar{\var}{\phi} = - \partial_\mu \phi \var{a^\mu},
+\]
+或者，由于场在坐标拖曳下的变动实际上就是平移变换的无限维表示，可以直接使用\eqref{eq:transition-inf-rep}得到上式。
+于是对应的守恒流为
+\[
+    0 = \partial_\mu \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi \var{a^\nu} + \mathcal{L} \var{a^\mu} \right) 
+    = \partial_\mu \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi + \mathcal{L} \delta^\mu_\nu \right) \var{a^\nu},
+\]
+考虑到$\var{a^\mu}$的任意性，我们有
+\begin{equation}
+    T_\mu^\nu = \pdv{\mathcal{L}}{\partial_\nu \phi} \partial_\mu \phi - \mathcal{L} \delta^\nu_\mu, \quad \partial_\nu T_\mu^\nu = 0.
+\end{equation}
+我们称$T^\nu_\mu$为\textbf{能动张量}。它给出了4个守恒荷，其中一个是来自时间平移不变性的\textbf{能量}
+\begin{equation}
+    E = \int \dd[3]{x} T^0_0 = \int \dd[3]{x} \left( \pdv{\mathcal{L}}{\partial_0 \phi} \partial_0 \phi - \mathcal{L} \right) ,
+    \label{eq:field-energy}
+\end{equation}
+另外三个是来自空间平移不变性的\textbf{动量}
+\begin{equation}
+    P_i = \int \dd[3]{x} T^0_i = \int \dd[3]{x} \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi .
+    \label{eq:field-momentum}
+\end{equation}
+能动张量的纯空间部分是能量和动量的输运流，因此就是\textbf{应力张量}。%
+\footnote{在非相对论连续介质力学中这些结果也是成立的，因为时间和空间平移同时出现在伽利略群和庞加莱群中。}
+相应的，
+\begin{equation}
+    \mathcal{P}_\mu = \pdv{\mathcal{L}}{\partial_0 \phi} \partial_\mu \phi - g_\mu^0 \mathcal{L}
+\end{equation}
+为四维动量$(E, \vb*{p})$的密度。
+在计算场的三维动量时要注意一点：由于闵可夫斯基度规为$(+, -, -, -)$，闵可夫斯基时空中空间部分的基矢量实际上是指向空间坐标减少的方向的。从而，
+\[
+    \begin{aligned}
+        \vb*{P} &= \int \dd[3]{x} \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi \vb*{g}^i \\
+        &= - \int \dd[3]{x} \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi \vb*{g}^i_{\text{3dim}},
+    \end{aligned}
+\]
+也即
+\begin{equation}
+    \vb*{P} = - \int \dd[3]{\vb*{x}} \pi \grad{\phi}.
+\end{equation}
+
+接下来是旋转对称性。%
+\footnote{同样，这个对称性无论是在相对论性场论还是非相对论性场论中都是成立的。}%
+旋转对称性不涉及时间维，于是我们有
+\[
+    \var{x^i} = \epsilon^i_{\ jk}  x^j \theta^k,
+\]
+相应的
+\[
+    \bar{\var}{\phi^a} = \ii (J_i)^a_{\ b} \theta^i \phi^b - \epsilon^i_{\ jk}  x^j \theta^k \partial_i \phi^a.
+\]
+其中指标$a,b$跑遍$\phi$的所有分量，$J$指的是旋转生成元在$\phi$所属的向量空间上的表示，具体表达式见\autoref{sec:rotation}。
+我们使用了$\epsilon^i_{jk}  x^j \theta^k$这样的记号是因为要与\eqref{eq:generators-of-so3}保持一致，因为若取$J$为\eqref{eq:generators-of-so3}，正好就有
+\[
+    \epsilon^i_{\ jk}  x^j \theta^k = (\ii \theta^k J_k x)^i.
+\]
+则诺特定理导致的守恒流为
+\[
+    \begin{aligned}
+        0 &= \partial_0 \left( \pdv{\mathcal{L}}{\partial_0 \phi^a} \left( \ii (J_k)^a_b \theta^k \phi^b - \epsilon^i_{\ jk}  x^j \theta^k \partial_i \phi^a \right) \right) + \partial_i (\text{something}) \\
+        &= \theta^k \partial_0 \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} - \epsilon^i_{\ jk} x^j \mathcal{P}_i \right) \\
+        &= \theta^k \partial_0 \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} + \epsilon^i_{\ jk} x^j \mathcal{P}_i \right),
+    \end{aligned}
+\]
+于是我们就得到了一个守恒量 % TODO:正负号
+\begin{equation}
+    L_k = \int \dd[3]{\vb*{x}} \left( \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a} + \epsilon^i_{\ jk} x^j \mathcal{P}_i \right).
+    \label{eq:field-angular-momentum}
+\end{equation}
+其中的
+\begin{equation}
+    \mathcal{M}_k = \epsilon^i_{\ jk} x^j \mathcal{P}_i 
+\end{equation}
+部分和质点的角动量形式一致，称为\textbf{轨道角动量}，另一部分
+\begin{equation}
+    \mathcal{S}_k = \ii (J_k)^a_b \phi^b \pdv{\mathcal{L}}{\partial_0 \phi^a}
+    \label{eq:spin-angular-momentum}
+\end{equation}
+则不会出现在没有内部结构的质点的角动量内部。由于其形式和有自转的粒子除去轨道角动量以外的角动量一致，称其为\textbf{自旋角动量}。
+正如其名称暗示的那样，自旋角动量源自场的内禀旋转自由度，也就是说，旋转群在场上的表示不仅仅含有无穷维的表示，还含有一个有限维的表示的时候就会出现自旋角动量。
+如果场是标量场，那么旋转群在其上的有限维表示就是平凡的，此时$J_i$全部为零，就没有自旋角动量。
+
+然后我们分析场的内禀对称性带来的守恒量。容易看出场的平移，也就是
+\[
+    \bar{\var}{\phi} = a, \; \var{x} = 0
+\]
+对应着守恒流
+\[
+    \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi } a = 0,
+\]
+其守恒荷为
+\begin{equation}
+    \Pi = \int \dd[3]x \pdv{\mathcal{L}}{\partial_0 \phi}.
+\end{equation}
+这称为$\phi$的\textbf{共轭动量}，相应的其密度
+\begin{equation}
+    \pi = \pdv{\mathcal{L}}{\partial_0 \phi}
+    \label{eq:def-pi}
+\end{equation}
+就是\textbf{共轭动量密度}。
+需注意此“动量”的名称只是类比而得，它未必和$P_i$有特别紧密的联系。
+
+最后，我们对拉氏量的形式做出一些限定。我们称导出的方程完全线性、且其中的每一项的次数不超过2的拉氏量为\textbf{自由场拉氏量}，并认为一个涉及多个场的拉氏量一定形如每个场的自由场拉氏量之和加上一系列相互作用项，其中相互作用项不含有导数。
+在实际问题中，相互作用项可以含有导数，但因为本文探讨的是最基本的物理机制，我们倾向于认为这些机制是足够简单的。
+% TODO：相互作用真的没有导数吗？
+这就意味着，虽然相互作用的存在让\eqref{eq:field-momentum}和\eqref{eq:field-angular-momentum}不再是守恒量，但如果整个系统的拉氏量$\mathcal{L}$满足空间平移不变性或者旋转不变性，对每一个场计算\eqref{eq:field-momentum}和\eqref{eq:field-angular-momentum}并相加，得到的量仍然是守恒的。
+并且由于满足旋转不变性的自由场拉氏量只含有二次项（一次项如果是旋转不变的，就可以通过重新定义场来消去；如果不是旋转不变的，那就不满足条件；\autoref{sec:qft-free-dynamics}给出了典型例子），场的动量和角动量也只含有二次项。
+另一方面，相互作用会引入额外的能量，因此不能简单地将各个场使用\eqref{eq:field-energy}计算出的能量加起来。
+
+\subsection{哈密顿动力学}
+
+\subsubsection{经典哈密顿动力学}
+原本可以直接从拉氏量通过一个勒让德变换得到哈密顿动力学，但当底流形有多个坐标时我们需要选择合适的一个或几个坐标来充当“时间”，也就是哈密顿系统的参数。
+共轭动量使我们有了一个很好的选择。本文取$t=x^0$为哈密顿系统的单参数。接下来我们要观察共轭动量的变化情况，从而凑出一个哈密顿系统。
+
+容易看出$\Pi$的运动方程为%
+\footnote{本节的结果也不仅仅适用于相对论性场论。任何能够良定义场的平移并且保证场平移不改变拉氏量的拉格朗日动力学场论都可以使用本节的方法构造对应的哈密顿表述，因为本节只用到了场的内禀平移不变性诱导出的结构。}
+\[
+    \dv{\Pi}{t} = \int \dd[3]x \partial_0 \pdv{\mathcal{L}}{\partial_0 \phi} = \int \dd[3]x \left( \pdv{\mathcal{L}}{\phi} - \partial_i \pdv{\mathcal{L}}{\partial_i \phi} \right).
+\]
+被积函数是$\int \dd[3]x \mathcal{L}$在将$x^0$当成常数后对$\phi$泛函求导的结果。于是定义%
+\footnote{在$\phi$是多分量场的时候，我们把它看成列向量，记号$\partial \mathcal{L} / \partial \phi$定义为一个行向量，从而所有公式形式上仍然成立。例如，
+\[
+    \pdv{\vb*{a} \cdot \vb*{x}}{\vb*{x}} = \vb*{a}^\top.
+\]
+% TODO:需要使用度规吗？
+}%
+\begin{equation}
+    H = \int \dd[3]x \mathcal{H} 
+    = \int \dd[3]x \eval{\left( \pdv{\mathcal{L}}{\partial_0 \phi} \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi} 
+    = \int \dd[3]x \eval{\left( \pi \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi}.
+    \label{eq:lagrangian-to-hamitonian}
+\end{equation}
+我们通过将$\partial_0 \phi$用$\pi$表示使得任何对$H$的泛函求导都不会将$\partial_0 \phi$当成变量。
+看出，$H$对$\phi$泛函求导就是$-\int \dd[3]x \mathcal{L}$对$\phi$泛函求导，于是我们有
+\[
+    \dv{\Pi}{t} = - \int \dd[3]x \fdv{H}{\phi}.
+\]
+另一方面由于$H$不显含任何$\pi$的导数，我们有
+\[
+    \begin{aligned}
+        \fdv{H}{\pi} &= \pdv{\pi} \eval{\left( \pi \partial_0 \phi - \mathcal{L} \right)}_{\partial_0 \phi \to \pi} 
+        = \partial_0 \phi + \pi \pdv{\partial_0 \phi}{\pi} - \pdv{\pi} \eval{\mathcal{L}}_{\partial_0 \to \pi} \\
+        &= \partial_0 \phi + \pi \pdv{\partial_0 \phi}{\pi} - \pdv{\mathcal{L}}{\partial_0} \pdv{\partial_0}{\pi} = \partial_0 \phi.
+    \end{aligned}
+\]
+于是就得到了3+1维场论的哈密顿表述：
+\begin{equation}
+    \dv{\pi}{t} = - \fdv{H}{\phi}, \quad \dv{\phi}{t} = \fdv{H}{\pi}.
+    \label{eq:hamitonian-eq}
+\end{equation}
+其中$H$仅仅是$\phi, \partial_i \phi$和$\pi$的函数。
+方程中的全导数也可以写成偏导数，我们把它写成全导数是因为我们通常只在一个固定的空间点观察场的变化，也就是说在\eqref{eq:hamitonian-eq}中我们只把时间看成变量而将空间坐标看成“标签”（见\autoref{note:spacial-label}）。
+由于我们讨论的基本上是场论问题，常常使用下面的记号：%
+\footnote{在一些上下文中，场的时间全导数常常被定义为某个位置会随时间发生变化的场点处的场的导数，也就是
+\[
+    \dot{\phi} = \dv{t} \phi(\vb*{x}, t) = \pdv{\phi}{t} + \dot{\vb*{x}} \cdot \grad{\phi} = \partial_0 A = \partial^0 A.
+\]
+本文不涉及这样的问题，因此不使用这个记号。
+}%
+\[
+    \dot{A} = \dv{A}{t} = \pdv{A(\vb*{x}, t)}{t}.
+\]
+在同一个场有多个分量的情况下，我们记各场为$\phi^i$，如果还是希望维持形式上的指标升降关系，$\pi$就可以写成$\pi_i$。
+
+总之，使用拉氏量描述的3+1维经典场也能够使用一个哈密顿动力学描述，这个哈密顿动力学的演化参数为$x^0$也就是时间维，而使用空间维作为连续的“正则坐标”的标记。%
+\footnote{也就是说，空间坐标$x^1, x^2, x^3$对应离散情况下的场量标签，
+如$\phi^1(x, y, z)$指的是以$1, x, y, z$为标签的一个正则坐标，正如离散时的$q^{1}$代表以$1$为标签的一个正则坐标。
+注意到这种哈密顿表述并没有以统一的方式对待时间和空间。\label{note:spacial-label}}%
+任何物理量都是$\phi$和$\partial_\mu \phi$的函数，因此它们能够写成$\phi, \partial_i \phi$和$\pi$的函数，从而它们的演化都可以使用\eqref{eq:hamitonian-eq}确定，因为
+\begin{equation}
+    \dv{A}{t} = \pdv{A}{\phi} \dv{\phi}{t} + \pdv{A}{\partial_i \phi} \partial_i \dv{\phi}{t} + \pdv{A}{\pi} \dv{\pi}{t}.
+    \label{eq:evolution-of-any-quantity}
+\end{equation}
+
+哈密顿动力学（无论是经典哈密顿动力学还是下一节讨论的正则量子化）中如果场是复的，仍然可以使用\eqref{eq:lagrangian-to-hamitonian}从拉氏量得到哈氏量，但此时不能够保证$\phi$、$\phi^\dagger$、$\pi$、$\pi^\dagger$彼此独立。
+% TODO
+
+\subsubsection{正则量子化}\label{sec:canonical-quantization}
+
+下面我们转而讨论量子情况下的哈密顿动力学。这种使用哈密顿动力学建立量子理论的方法称为\textbf{正则量子化}。
+完整地描述一个量子系统的状态和演化情况需要一个三元组：
+首先是一个希尔伯特空间，称为\textbf{态空间}，其中的矢量称为\textbf{态矢量}，它们表示了系统的状态，
+并且我们认为只差了一个倍数的态矢量等价，从而我们可以仅使用单位长度的态矢量描述任何的系统；
+其次是一组\textbf{可观察量}，它们是希尔伯特空间上的厄米算符，这意味着它们可以被幺正对角化，并且本征值都是实数%
+\footnote{后面会提到，如果一个理论在正则量子化时必须选择反对易子的量子化方案，那么实际上它描写的场算符的本征值是格拉斯曼数。
+但是如果我们在正则量子化的框架下工作，就从来不关注这种理论对应的场算符的本征值到底是多少，因此没有必要特意讨论它们。
+在路径积分量子化的框架中，由于需要讨论费米子的经典场，格拉斯曼数是比较重要的。}%
+；
+最后是一个\textbf{哈密顿量}或者说\textbf{哈密顿算符}，它自身也是一个可观察量（在经典极限下就是经典哈密顿量），且它指示了系统的演化方式。
+经典哈密顿理论中同样有对应的三元组，
+只不过态空间并不是一个可以做线性叠加的向量空间，从而可观察量也只是从态到实数的映射而不是希尔伯特空间上的算符。
+由于所谓的场量$\phi$需要使用算符$\hat{\phi}$代替，因此不再能够良好地定义$\mathcal{H}$对各场量的偏导数，
+从而我们也不能良好地定义$\var{H}/\var{\phi}$，等等。
+现在动力学方程由
+\begin{equation}
+    \dv{\hat{A}}{t} = \frac{1}{\ii \hbar} [\hat{A}, \hat{H}]
+    \label{eq:quantum-evolution}
+\end{equation}
+确定。%
+\footnote{我们不讨论其定义显含时间的算符，因为它们不会出现在基本的物理规律中。}%
+此时有意义的物理量虽然是算符，但在正则量子化之下仍然能够写成场算符$\phi, \partial_i \phi$和$\pi$的函数，
+因此一旦$\phi$和$\pi$的演化确定了，\eqref{eq:evolution-of-any-quantity}就以一种和经典情况完全一致的方式确定了所有物理量的演化。
+换而言之，\eqref{eq:hamitonian-eq-quantum}完全等价于
+\begin{equation}
+    \dv{\hat{\phi}}{t} = \frac{1}{\ii \hbar} [\hat{\phi}, \hat{H}], 
+    \quad \dv{\hat{\pi}}{t} = \frac{1}{\ii \hbar} [\hat{\pi}, \hat{H}].
+    \label{eq:hamitonian-eq-quantum}
+\end{equation}
+
+运动方程\eqref{eq:quantum-evolution}意味着，哈密顿量就是与时间平移不变性对应的守恒量。我们称其本征值为\textbf{能量}，相应的，其本征态就是\textbf{能量本征态}。
+
+要确定系统的动力学，只需要讨论$[\hat{\phi}, \hat{H}]$和$[\hat{\pi}, \hat{H}]$就可以，
+而要讨论这两者又只需要讨论所有有关的场之间的对易关系即可，因为我们总是可以把$H$写成这些场的多项式。
+（下文中讨论量子化方案时有对这一点的形象说明）
+因此，取对易子为李括号，一个理论中涉及的所有算符就构成了一个李代数，而基本的场之间的对易关系又完全确定了这个李代数的结构。
+
+仅仅有一个抽象的李代数并不能获得完整的理论。
+例如，单粒子体系中$\hat{\vb*{x}}$和$\hat{\vb*{p}}$之间的李代数和多粒子体系中每一个粒子的$\hat{\vb*{x}}$和$\hat{\vb*{p}}$之间的李代数具有完全一样的结构，但是显然单粒子体系不是多粒子体系。
+例如单粒子体系中$\vb*{x}$的谱没有简并而多粒子体系中$\vb*{x}$的谱有简并。
+要获得完整的理论，我们还需要讨论态空间的结构。
+我们将不讨论完整的数学，而只是对物理上常用的一些操作做一些说明。
+
+当我们选定一个希尔伯特空间并且将（抽象的李代数中的）算符作用于其上时，实际上是对这个算符做了一个幺正表示。
+进一步，当我们说一个系统的希尔伯特空间$H$能够被一组相互对易的算符$S$完全描述时，
+我们实际上是说，算符集合$S$在$H$上的（幺正）表示组成了$H$上的一个完备相容算符集合，也即，$S$中各个算符在$H$上的表示共享的本征矢量构成$H$的一组基。
+可以证明，如果$S_1,S_2$是$S$的一个划分，且$S_1$完全描述了$H_1$而$S_2$完全描述了$H_2$，那么就有$H$和$H_1 \otimes H_2$同构。
+因此我们把$H$完全分解成了若干空间的直积，这些空间中的每一个都由完整描述系统需要的算符中的其中一个完全刻画。
+
+一旦同时知道了各算符的对易关系（从而建立起它们的李代数），以及完整描述系统需要的完备相容算符集合，
+我们就可以完整地推导出这个系统每一时刻的状态以及其演化方式了。
+实际上，我们真正关注的是完备相容算符集合中各算符的谱结构。
+
+根据上下文，我们可以容易地分辨作为抽象的李代数成员的算符，以及它们在各个希尔伯特空间上的表示，
+因此为方便陈述，以下不再对这些略有不同的对象做详细的区分。
+对算符而言这样做是合理的，因为从某个表示中得到的代数关系只要不涉及具体的表示的细节，就在抽象的李代数中也成立。
+例如如果我们在某个表示中推导出$[\hat{x}, \hat{p}] = \ii \hbar \hat{I}$，那么在抽象的李代数中必定也有这个式子成立，
+因为其中只牵扯到算符而没有牵扯到态矢量。
+同样，可以比较容易地分辨各个希尔伯特空间中的态矢量，因此在不引起混淆的情况下我们也不刻意区分它们。
+
+现在我们要做的是，分析$\phi$和$\pi$之间要具有什么样的代数关系%
+\footnote{实际上只需要分析同一个时间$t$下$\phi(\vb*{x}, t)$和$\pi(\vb*{y}, t)$之间的关系就可以了，
+因为\eqref{eq:hamitonian-eq-quantum}中从来不会出现不同时间的量之间的对易子。
+这是量子版本的哈密顿动力学不适宜用于分析洛伦兹协变性的一个例子。
+另外请注意这套理论并不能原封不动地适用于广义相对论时空，因为那里会需要讨论“不同时间处的量之间的关系”。}，
+才能够让\eqref{eq:hamitonian-eq-quantum}在$\hbar \to 0$时退化到经典情况\eqref{eq:hamitonian-eq}。
+选定这样一个代数关系就称为选取一种\textbf{量子化方案}，因为一旦给定了这样的代数关系，我们就把\eqref{eq:hamitonian-eq}推广到了量子理论中。
+我们将不试图穷举所有可以的量子化方案，而只是举两个行之有效的例子——也就是说，实验数据要求使用这样的量子化方案。%
+\footnote{我们说“穷举所有情况”意味着，面对同一个经典哈密顿量密度$\mathcal{H}$，
+有不止一种指定$\hat{\phi}$和$\hat{\pi}$的方式，
+使得我们能够得到一个量子动力学\eqref{eq:hamitonian-eq-quantum}，
+并且在$\hbar \to 0$的极限情况下回退到经典动力学\eqref{eq:hamitonian-eq}。
+这是可以预期的，因为“取$\hbar\to 0$的极限”这个操作显然不是一一对应的，或者说量子化方案可以不止一种。
+}
+
+第一个方案是指定对易子为
+\begin{equation}
+    [\hat{\phi}^i(\vb*{x}, t), \hat{\pi}_j(\vb*{y}, t)] = \ii \hbar \delta^i_j \delta^3(\vb*{x} - \vb*{y}), 
+    \quad [\hat{\phi}^i(\vb*{x}, t), \hat{\phi}^j(\vb*{y}, t)] = [\hat{\pi}_i(\vb*{x}, t), \hat{\pi}_j(\vb*{y}, t)] = 0.
+    \label{eq:symmetry-commutator}
+\end{equation}
+从中可以容易地看出
+\begin{equation}
+    [\partial_\mu \hat{\phi}^i(\vb*{x}, t), \hat{\phi}^j(\vb*{y}, t)] = 0, 
+    \quad [\grad{\hat{\phi}^i(\vb*{x}, t)}, \hat{\pi}_j(\vb*{y}, t)] = \ii \hbar \delta^i_j \grad{\delta^3(\vb*{x} - \vb*{y})}.
+    \label{eq:symmetry-partial-mu-commutator}
+\end{equation}
+只需要将导数看成非常接近的两个量之差，然后利用对易子的线性性即可导出上式。
+
+现在我们来推导$\hbar\to 0$时\eqref{eq:hamitonian-eq-quantum}的极限。
+为方便起见，推导过程中假定$\hat{\phi}$是标量场。这并不会有损一般性，因为推导过程中没有用到任何关于坐标变换导致场变化的知识，从而我们可以把同一个多分量场的不同分量看成不同的标量场。
+使用\eqref{eq:symmetry-commutator}，已知$\hat{\phi} \hat{\pi}$就能够写出$\hat{\pi} \hat{\phi}$。
+将$\hat{\mathcal{H}}$写成关于$\hat{\phi}, \partial_i \hat{\phi}$和$\pi$的多项式，
+我们可以使用\eqref{eq:symmetry-commutator}和\eqref{eq:symmetry-partial-mu-commutator}
+将形如$\hat{\pi}\hat{\phi}$、$\hat{\pi}\partial_i \hat{\phi}$这样的式子改写为形如$\hat{\phi}\hat{\pi}$、$\hat{\partial_i \hat{\phi}}\hat{\pi}$这样的式子。这称为取\textbf{正规积序}：我们总是可以使用对易关系把一个算符多项式转化为一个与之恒等的多项式，后者中的每一项中的算符排列顺序都满足一定的要求。
+因此不失一般性地，我们认为$\hat{\mathcal{H}}$的多项式表达式中的每一项都形如$\hat{\phi}^l (\partial_i \hat{\phi})^m \pi^n$。
+我们有（因为时间$t$都一样，以下略去$t$变量）%
+\footnote{注意下面的$\delta(\vb*{x} - \vb*{x}')$是系数，因此可以自由地移动；写在它们左边的算符不会作用在它们上面！}
+\[
+    \begin{aligned}
+        &\quad\comm{\hat{\phi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\
+        &= \int \dd[3]{x} \comm{\hat{\phi}(\vb*{x}')}{\hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n (\vb*{x})} \\
+        &= \int \dd[3]{x} \left( \hat{\phi}^l (\vb*{x}) \comm{\hat{\phi}(\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x}) \pi^n (\vb*{x})} + [\hat{\phi}(\vb*{x}'), \hat{\phi}^l (\vb*{x})] \partial_i \hat{\phi}^m (\vb*{x}) \pi^n(\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) \left( (\partial_i \hat{\phi})^m (\vb*{x}) \comm{\hat{\phi} (\vb*{x}')}{\hat{\pi}^n (\vb*{x})} + \comm{\hat{\phi} (\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x})} \pi^n (\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \comm{\hat{\phi} (\vb*{x}')}{\hat{\pi}^n (\vb*{x})} \\
+        &= \int \dd[3]{x} \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \ii \hbar \delta^3(\vb*{x'} - \vb*{x}) n \hat{\pi}^{n-1}(\vb*{x}) \\
+        &= \ii \hbar n \hat{\phi}^l (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^{n-1}(\vb*{x}'), 
+    \end{aligned}
+\]
+这正是求导公式。当$\hbar$接近零的时候$\phi$和$\pi$可以交换，于是$\mathcal{H}$可以写成普通的、字母顺序无关紧要的函数，此时
+我们有
+\[
+    \begin{aligned}
+        \dv{\hat{\phi}}{t} = \frac{1}{\ii \hbar} [\hat{\phi}(\vb*{x}), \hat{H}] &= \frac{1}{\ii \hbar} \sum_\text{terms} \comm{\hat{\phi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\
+        &= \frac{1}{\ii \hbar} \sum_\text{terms} \ii \hbar n \hat{\phi}^l (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^{n-1}(\vb*{x}') \\
+        &= \pdv{\hat{\mathcal{H}}}{\hat{\pi}} = \fdv{\hat{H}}{\hat{\pi}},
+    \end{aligned}
+\]
+这就意味着$\hbar\to 0$时关于$\hat{\phi}$的方程能够回退到经典版本。
+同样也有
+\[
+    \begin{aligned}
+        &\quad \comm{\hat{\pi}(\vb*{x}')}{\int \dd[3]{x} \hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\ 
+        &= \int \dd[3]{x} \comm{\hat{\pi}(\vb*{x}')}{\hat{\phi}^l(\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \pi^n(\vb*{x})} \\
+        &= \int \dd[3]{x} \left( \hat{\phi}^l (\vb*{x}) (\partial_i \hat{\phi} )^m (\vb*{x}) \comm{\hat{\pi}(\vb*{x}')}{\hat{\pi}^n(\vb*{x})} + \hat{\phi}^l (\vb*{x}) \comm{\hat{\pi}(\vb*{x}')}{(\partial_i \hat{\phi})^m (\vb*{x})} \hat{\pi}^n (\vb*{x}) + \comm{\hat{\pi}(\vb*{x}')}{\hat{\phi}^l (\vb*{x})} (\partial_i \hat{\phi})^m (\vb*{x}) \hat{\pi}^n (\vb*{x}) \right) \\
+        &= \int \dd[3]{x} \left( - \hat{\phi}^l (\vb*{x}) \ii \hbar \grad{\delta^3 (\vb*{x} - \vb*{x}')} m (\partial_i \hat{\phi})^{m-1} (\vb*{x}) \hat{\pi}^n (\vb*{x}) - \ii \hbar \delta^3(\vb*{x} - \vb*{x}') l \hat{\phi}^{l-1} (\vb*{x}) (\partial_i \hat{\phi})^m (\vb*{x}) \hat{\pi}^n (\vb*{x}) \right) \\
+        &= \ii \hbar \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) - \ii \hbar l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}').
+    \end{aligned}
+\]
+当$\hbar \to 0$时
+\[
+    \begin{aligned}
+        \dv{\hat{\pi}}{t} &= \frac{1}{\ii \hbar} [\hat{\pi}(\vb*{x}), H] \\
+        &= \frac{1}{\ii \hbar} \sum_\text{terms} \left(\ii \hbar \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) - \ii \hbar l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) \\
+        &= - \sum_\text{terms} \left(l \hat{\phi}^{l-1} (\vb*{x}') (\partial_i \hat{\phi})^m (\vb*{x}') \hat{\pi}^n (\vb*{x}') - \partial_i \left(m (\partial_i \hat{\phi})^{m-1} (\vb*{x}') \hat{\pi}^n (\vb*{x}')\right) \right) \\
+        &= - \left( \pdv{\hat{\mathcal{H}}}{\hat{\phi}} - \partial_i \pdv{\hat{\mathcal{H}}}{\partial_i \hat{\phi}} \right) = - \fdv{\hat{H}}{\hat{\phi}},
+    \end{aligned}
+\]
+因此关于$\pi$的方程也回退到经典情况。
+这表明\eqref{eq:symmetry-commutator}是一个可行的量子化方案。
+
+第二个方案是指定反对易子——而不是对易子——为%
+\footnote{彼此无关的场，无论它们自己服从\eqref{eq:symmetry-commutator}还是\eqref{eq:antisymmetry-commutator}，相互之间总是对易的。在\eqref{eq:symmetry-commutator}中这是显然的，因为可以将无关的场看成某个多分量场的分量，然后因为它们是不同的分量，它们自然对易。但在\eqref{eq:antisymmetry-commutator}方案下需要额外增加一个规定：
+\[
+    \comm*{\hat{\phi}(\vb*{x}, t)}{\hat{\psi}(\vb*{y}, t)} = 0.
+\]
+}
+\begin{equation}
+    \{\hat{\phi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = \ii \hbar \delta^3(\vb*{x} - \vb*{y}), \quad \{\hat{\phi}(\vb*{x}, t), \hat{\phi}(\vb*{y}, t)\} = \{\hat{\pi}(\vb*{x}, t), \hat{\pi}(\vb*{y}, t)\} = 0.
+    \label{eq:antisymmetry-commutator}
+\end{equation}
+同样，我们可以将哈密顿量写成若干个$\hat{\phi}^l (\partial_i \hat{\phi})^m \pi^n$形式的项的和。
+需要注意的是\eqref{eq:antisymmetry-commutator}直接导出
+\[
+    \hat{\phi}(\vb*{x})^2 = 0, \quad \hat{\pi}(\vb*{x})^2 = 0, \quad (\partial_i \hat{\phi})^2(\vb*{x}) = 0,
+\]
+因此哈密顿量中$l, m, n \leq 1$。
+这意味着这个量子化方案并不适用于所有的场，而是只适用于能够保证在任何情况下哈密顿量中的每一项都满足$l, m, n \leq 1$的场。
+对于正常的实数/复数值场，这是一个不可能的事情。
+事实上，设$\hat{\phi}$在$\vb*{x}$处的值为$\int \dd \phi(\vb*{x}) \dyad{\phi}$，
+在$\vb*{y}$处的值为$\int \dd \phi(\vb*{y}) \dyad{\phi}$，则通过反对易关系能够得到
+\[
+    \phi(\vb*{x}) \phi(\vb*{y}) = - \phi(\vb*{y}) \phi(\vb*{x}).
+\]
+因此，反对易子意味着对应的场算符的本征值——也就是其经典极限——实际上并不是实数，甚至也不是复数，而是格拉斯曼数。
+在复数域中满足反对易关系的场算符不能被对角化。
+在路径积分量子化中，格拉斯曼数非常重要，因为路径积分量子化会分析经典场值的演化路径。
+在正则量子化中只需要把这些格拉斯曼数看成算符（准确地说，是产生算符）就可以了——我们并不会用到它的微积分，因此也无需将它们看成数。
+
+为了看出反对易方案的不同寻常，我们指出如下事实：一个通过\eqref{eq:antisymmetry-commutator}量子化的场不可能是厄米的。
+我们有
+\[
+    \hat{\phi}(\vb*{x}, t) \hat{\pi} (\vb*{y}, t) + \hat{\pi} (\vb*{y}, t) \hat{\phi} (\vb*{x}, t) = \ii \hbar \delta(\vb*{x} - \vb*{y}),
+\]
+于是
+\[
+    \left(\hat{\phi}(\vb*{x}, t) \hat{\pi} (\vb*{y}, t) + \hat{\pi} (\vb*{y}, t) \hat{\phi} (\vb*{x}, t)\right)^\dagger = - \ii \hbar \delta(\vb*{x} - \vb*{y}),
+\]
+如果场是厄米的，那么就有
+\[
+    \hat{\pi} (\vb*{y}, t) \hat{\phi} (\vb*{x}, t) + \hat{\phi}(\vb*{x}, t) \hat{\pi} (\vb*{y}, t) = - \ii \hbar \delta(\vb*{x} - \vb*{y}).
+\]
+于是我们得到了一个矛盾。因此，使用\eqref{eq:antisymmetry-commutator}量子化的场应该分解成非零的厄米和反厄米部分，即
+\begin{equation}
+    \hat{\phi} = \hat{\phi}_1 + \ii \hat{\phi}_2,
+\end{equation}
+其中$\hat{\phi}_1$和$\hat{\phi}_2$分别是两个厄米算符。
+对应的，描述它的拉氏量当中的场有实部和虚部，需要把它们——或者它们的线性组合——看成两个独立的场来列写\eqref{eq:el-eq}。
+
+此外，$\mathcal{H}$中各项阶数的限制还意味着由此导出的运动方程在时间上只能是一阶的。
+从而，$\pi$和$\phi$不是彼此独立的。这样，在哈密顿量只关于$\phi$和$\pi$时，我们总是可以适当地调节拉氏量和哈密顿量，或者对$\phi$和$\pi$做一些线性变换，使得$\pi$和$\phi$之间有线性关系。
+这个关系显然不能是“乘以某个倍数”，否则将不能够区分这两个变量。
+因此两者之间的关系涉及复共轭。通常取
+\begin{equation}
+    \pi = \ii \phi^\dagger.
+\end{equation}
+这也表明了取$\phi$为复场的重要性——否则将不能够区分$\phi$和$\pi$，从而难以建立哈密顿动力学。
+% TODO:这段还是有问题
+
+需要注意的是，无论是\eqref{eq:symmetry-commutator}还是\eqref{eq:antisymmetry-commutator}，实际上都假定了$\phi^i$和$\pi_i$在时空变换下是协变的。
+在场具有某些附加结构——例如，有某些外加约束以消除非物理的自由度——的时候，如果我们直接把独立的自由度拿出来写成$\phi^i$，就不能保证它们的协变性（虽然把原来的场恢复出来之后它仍是协变的），此时不能直接套用\eqref{eq:symmetry-commutator}或\eqref{eq:antisymmetry-commutator}，而需要使用带约束的场论的有关知识。
+
+此外，虽然本节通过表明指定对易子或者反对易子能够得到经典哈密顿动力学来论证量子化方案\eqref{eq:symmetry-commutator}和\eqref{eq:antisymmetry-commutator}的合理性，但是实际上这两个方案在本文展示的经典哈密顿动力学以外仍然适用。例如，如果哈氏量中出现了广义动量的导数，那么\eqref{eq:hamitonian-eq}需要做出修正，但是\eqref{eq:hamitonian-eq-quantum}仍然适用。换而言之，本节展示的量子动力学实际上才是最根本的理论。
+% TODO：真的吗？
+
+从正则量子化得到的算符运动方程就是经典的场运动方程算符化的结果，而后者又等价于通过最小作用量原理求出的运动方程。
+这就产生了一个问题：路径积分量子化告诉我们，最小作用量原理只是路径积分的最速下降近似而已，
+为什么在正则量子化中精确的运动方程却可以从最小作用量原理求出？
+其原因在于，算符在演化过程中不同的本征态会混在一起（一个经典情况下不可能出现的现象），正是这一点构成了量子和经典的区别，
+正则量子化中的本征态混合正好对应于路径积分量子化中非经典的路径。
+
+\subsubsection{时间演化和绘景}\label{sec:time-evolution}
+% TODO: 表征了相同的物理状态的态矢量之间只差了一个复数常数。好量子数就是守恒量（这是一个算符！）的值，它可以用来标记态。
+在\autoref{sec:canonical-quantization}中我们仅仅将态矢量当成一个可以让场算符作用上去的对象。
+但实际上如果我们想要的话，也可以让态矢量动起来而对算符做对应的修改，使得算符的谱结构始终不变（本征矢量重数一一对应、彼此对应的本征矢的内积相同），并且本征值不变。
+只要算符的谱结构不变、对应的各个本征值不变，算符就正确地描述了系统。
+两个算符的谱结构一致、对应的本征值相同的充要条件是它们酉相似（相似矩阵可以随时间变化）。
+需要注意的是两个描述了同一个系统的算符会给出不同的基矢量，所以切换绘景的时候还需要改变态矢量。
+综上，绘景变换公式为
+\begin{equation}
+    \hat{A}' = \hat{Q} \hat{A} \hat{Q}^\dagger, \quad \ket{\psi'} = \hat{Q} \ket{\psi},
+    \label{eq:picture-trans}
+\end{equation}
+其中$\hat{Q}$为一个幺正算符，它可以显含时间。
+对易子在绘景变换之下会发生下面的改变：
+\begin{equation}
+    \comm{\hat{A}}{\hat{B}} \longrightarrow \hat{Q} \comm{A}{B} \hat{Q}^\dagger = \comm{\hat{A}'}{\hat{B}'}.
+\end{equation}
+
+在\autoref{sec:canonical-quantization}中我们已经讨论了态矢量固定不动时怎么确定系统的动力学。
+这种让态矢量固定、算符变动的方案称为\textbf{海森堡绘景}。以下我们使用上标$H$代表海森堡绘景下的量。
+我们要证明的第一件事是，不同时间点上的同一个可观察量的值彼此酉相似。
+要看清楚这是为什么，我们将酉相似的方程
+\begin{equation}
+    \hat{A}^H (t) = \hat{U}^H(t, t_0) \hat{A}^H (t_0) (\hat{U}^H)^\dagger(t, t_0)
+    \label{eq:quantum-evolution-hes-u-operator}
+\end{equation}
+做一个等价变换，看看它等价于什么。%
+\eqref{eq:quantum-evolution-hes-u-operator}中的$U$在$t=t_0$时必定为恒等变换，因为此时$\hat{A}^H (t) = \hat{A}^H (t_0)$；同时容易看出$\hat{U}^H(\tau)$实际上构成一个李群。这样我们就能够写出其生成元，记之为$\hat{G}(t)$：
+\[
+    \hat{U}^H(t+\dd{t}, t) = \hat{I} + \frac{\ii}{\hbar} \hat{G}(t) \dd{t}.
+\]
+$\hat{U}^H$是幺正的等价于$\hat{G}$是厄米的。
+于是就能够写出\eqref{eq:quantum-evolution-hes-u-operator}的无穷小等价形式：
+\[
+    \hat{A}^H (t_0) + \dd{\hat{A}^H}(t_0) = \left( \hat{I} + \frac{\ii}{\hbar} \hat{G}(t) \dd{t} \right) \hat{A}^H (t_0) \left( \hat{I} - \frac{\ii}{\hbar} \hat{G}(t) \right) = \hat{A}^H (t_0) + \frac{\dd{t}}{\ii \hbar} \comm{\hat{A}^H}{\hat{G}(t)}.
+\]
+我们发现这就是\eqref{eq:quantum-evolution}，只需要把$\hat{G}(t)$换成$\hat{H}(t)$；并且正则量子化的时候已经要求$\hat{H}$是厄米的了，因此$\hat{G}$的确是厄米的，从而$\hat{U}^H$是幺正的。
+于是我们得出结论：海森堡绘景中的算符演化实际上是在做幺正变换，或者等价地说，海森堡绘景中各算符的本征态在做幺正变换。算符的变换式为\eqref{eq:quantum-evolution-hes-u-operator}，相应的，本征态的变换式为
+\begin{equation}
+    \ket{a(t)} = \hat{U}^H(t, t_0) \ket{a(t_0)}.
+\end{equation}
+于是我们称$\hat{U}^H$为海森堡绘景下的时间演化算符。
+$\hat{U}^H$可以写出显式表达式
+\begin{equation}
+    \hat{U}^H(t, t_0) = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H (t) \right).
+\end{equation}
+注意\eqref{eq:quantum-evolution-hes-u-operator}保证了，一个可观察量在经过时间演化之后仍然是可观察量。
+
+现在我们尝试使用\eqref{eq:picture-trans}来把时间演化完全转移到态矢量上面。
+因此，我们希望在新的绘景中，$\hat{A}$始终不变。我们称这新的绘景为\textbf{薛定谔绘景}。
+按照\eqref{eq:quantum-evolution-hes-u-operator}，有
+\[
+    \hat{A}^H(t) = \hat{U}^H(t, t_0) \hat{A}^H (t_0) (\hat{U}^H)^\dagger(t, t_0) = \hat{U}^H(t, t_0) \hat{A}^S( \hat{U}^H)^\dagger(t, t_0),
+\]
+不失一般性地我们取$t=0$时的$\hat{A}^H$为$\hat{A}^S$，那么我们有
+\[
+    \hat{A}^H (t) = \hat{U}^H(t, 0) \hat{A}^S( \hat{U}^H)^\dagger(t, 0).
+\]
+将这个方程和\eqref{eq:picture-trans}对比可以看出
+\[
+    \hat{Q} = (\hat{U}^H)^\dagger(t, 0),
+\]
+于是得到薛定谔绘景下的态矢量演化公式
+\[
+    \ket{\psi^S(t)} = \hat{Q} \ket{\psi^H} = (\hat{U}^H)^\dagger (t, 0) \ket{\text{a constant}},
+\]
+考虑到$t=0$时$\hat{U}^H (t, 0)$就是恒等算符，上式又等价于
+\[
+    \ket{\psi^S(t)} = (\hat{U}^H)^\dagger (t, 0) \ket{\psi^S (0)},
+\]
+也即，薛定谔绘景下的时间演化算符和海森堡绘景下的时间演化算符互为逆。
+这个方程还告诉我们，
+\[
+    \ket{\psi^H} = \ket{\psi^S(t_0)}.
+\]
+现在推导时间演化方程的微分形式。我们有
+\[
+    \begin{aligned}
+        \ket{\psi^S (t + \dd{t})} &= \left( \hat{U}^H (t + \dd{t}, t) \hat{U}^H (t, 0)  \right)^\dagger \ket{\psi^S(0)} \\
+        &= \left( (\hat{I} + \frac{\ii}{\hbar} \hat{H}(t) \dd{t})   \hat{U}^H (t, 0) \right)^\dagger \ket{\psi^S (0)} \\
+        &= (\hat{U}^H)^\dagger (t, 0) \ket{\psi^S (0)} + \frac{\dd{t}}{\ii \hbar} (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \ket{\psi^S (0)} \\
+        &= \ket{\psi^S (t)} + \frac{\dd{t}}{\ii \hbar} (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0) \ket{\psi^S (t)},
+    \end{aligned}
+\]
+从而
+\[
+    \ii \hbar \dv{t} \ket{\psi^S (t)} = (\hat{U}^H)^\dagger (t, 0) \hat{H}(t) \hat{U}^H (t, 0) \ket{\psi^S (t)}.
+\]
+为了方便区分，我们将海森堡绘景中的$\hat{H}$记作$\hat{H}^H$，则它对应的薛定谔绘景中的算符为
+\[
+    \hat{H}^S = \hat{Q} \hat{H}^H \hat{Q}^\dagger = (\hat{U}^H)^\dagger (t, 0) \hat{H}^H(t) \hat{U}^H (t, 0), 
+\]
+这正是薛定谔绘景中态矢量的运动方程中出现的那个量，因此就获得了薛定谔绘景中的运动方程：
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi^S(t)} = \hat{H}^S (t) \ket{\psi^S(t)}.
+\end{equation}
+% TODO：证明$\hat{H}^I_i$确实是$\hat{H}_i^H$在相互作用绘景下的
+设$\hat{U}^S(t, t_0)$是薛定谔绘景下的时间演化算符，则容易证明$\hat{H}^S$是它的生成元，既然$\hat{H}^H$是厄米的，$\hat{H}^S$也是厄米的，从而$\hat{U}^S$是幺正的。%
+\footnote{注意$\hat{H}^H$是$\hat{U}^H$的生成元而$\hat{H}^S$是$(\hat{U}^H)^\dagger$的生成元；由于$\hat{H}^H$可能含时，一般情况下
+\[
+    T \exp(\int \hat{H}^H (t) \dd{t})^\dagger \neq T \exp(- \int \hat{H}^H (t) \dd{t}),
+\]
+也就是说$\hat{H}^H$和$\hat{H}^S$之间没有简单的关系，而必须使用绘景变换公式联系两者。
+}
+因此薛定谔绘景中时间演化始终保持态矢量的幺正性。
+时间演化算符的显式表达式为
+\begin{equation}
+    \hat{U}^S(t, t_0) = T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^S(t) \right),
+\end{equation}
+其中$T$为编时算符。
+
+为了明显起见，我们将薛定谔绘景和海森堡绘景中哈密顿量相互换算的关系重复如下：
+\begin{equation}
+    \begin{aligned}
+        \hat{H}^H(t) = T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H(t) \right) \hat{H}^S(t_0) \left(T \exp \left( \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^H(t) \right)\right)^\dagger, \\
+        \hat{H}^S(t_0) = T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^S \right) \hat{H}^H(t) \left( T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}^S \right)\right)^\dagger,
+    \end{aligned}
+\end{equation}
+在$\hat{H}^H$在各个时间点的值彼此对易时，$\hat{U}^H$无非是$\hat{H}^H$的级数，因此它们对易，从而$\hat{H}^S$和$\hat{H}^H$相等。
+这也等价于$\hat{H}^S$在各个时间点的值彼此对易。
+
+事实上，虽然我们是从海森堡绘景出发建立我们的理论框架的，但\autoref{sec:back-to-classical}告诉我们，和经典力学中的系统状态直接对应的实际上就是态矢量，而不是算符，因此很多文献是从薛定谔绘景出发建立理论的。
+
+% TODO：这里有些地方写得是有问题的。标准的相互作用绘景应该是薛定谔绘景的推论。但这个也奇怪得很：量子场论中的微扰论难道是使用薛定谔绘景的吗？？
+现在我们已经讨论了“让可观察量变动”和让基矢量变动“两种方案的不同了。我们还可以把哈密顿算符分解成一个比较简单的不含时部分和一个含时的部分，并要求这两者均为厄米算符，然后分别用两者让算符和态矢量都动起来。这样的方案称为\textbf{相互作用绘景}。
+为方便起见，考虑从薛定谔绘景到相互作用绘景的变换。当然也可以从海森堡绘景出发推导相互作用绘景，但实际上这样会很不自然。对薛定谔绘景下的哈密顿量做分解
+\begin{equation}
+    \hat{H}^S = \hat{H}_0^S + \hat{H}_i^S,
+\end{equation}
+称前者为\textbf{自由哈密顿量}（通常我们要求它不显含时间），后者为\textbf{相互作用哈密顿量}，并指定
+\begin{equation}
+    \ket{\psi^I(t)} = \hat{U}_0^\dagger(t,t_0) \ket{\psi^S(t)},
+\end{equation}
+其中
+\begin{equation}
+    \hat{U}_0 = T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}_0^S(t) \right).
+\end{equation}
+于是可观察量的绘景变换为
+\begin{equation}
+    \hat{A}^I(t) = \hat{U}_0^\dagger(t,t_0) \hat{A}^S(t) \hat{U}_0(t,t_0).
+    \label{eq:operator-from-schodinger-to-interaction}
+\end{equation}
+通过求导，分别可以计算出态矢量和可观察量的时间演化方程为
+\begin{equation}
+    \ii \hbar \dv{t} \ket{\psi^I(t)} = \hat{H}^I_i(t) \ket{\psi^I(t)},
+    \label{eq:time-evolution-in-interation-picture}
+\end{equation}
+以及
+\begin{equation}
+    \dv{t} \hat{A}^I(t) = \frac{1}{\ii \hbar} \comm*{\hat{A}^I(t)}{\hat{H}_0^I}.
+\end{equation}
+其中$\hat{H}_0^I$和$\hat{H}_i^I$正是对$\hat{H}_0^S$和$\hat{H}_i^S$做绘景变换\eqref{eq:operator-from-schodinger-to-interaction}得到的结果。
+这样我们就成功地让时间演化分别由态矢量和可观察量各自承担一部分。
+
+如果我们在海森堡绘景中工作，要怎么样切换到相互作用绘景中呢？最一般的公式非常复杂。
+但是，实际上，如果哈密顿量含时，通常直接在薛定谔绘景中工作；如果哈密顿量不含时，那么薛定谔绘景和海森堡绘景下的哈密顿量是一样的，那么只需要选择一个较简单的可观察量$\hat{H}_0$，指定它为$\hat{H}_0^S$，就可以切换到相互作用绘景。需注意整个过程并没有用到$\hat{H}_0^H$，一般来说，它和$\hat{H}_0^S$可能会有区别，但是我们从来不关注这个区别。
+
+相互作用绘景在微扰量子场论计算中起到了非常重要的作用，因为正如\autoref{sec:qft-free-dynamics}中展示的那样，通过对称性分析可以直接得到自由场的哈密顿量密度和演化方程，因此我们可以将相互作用项——也就是不同场之间的耦合——独立考虑，从而大大简化计算。
+更加重要的是，此时相互作用绘景可以为我们提供有关量子场的态空间的结构的信息，实际上我们将在\autoref{sec:from-qft-to-many-body}中看到，如果假定态空间中有一个唯一的真空态——也就是所有场都是零的态——那么量子场的态空间就是多粒子态福克空间，在此基础上我们可以很自然地处理粒子创生和湮灭的过程。这就为我们展示了量子理论的另一面：波动看起来就像粒子一样。%
+\footnote{需要注意的是，在处理相对论性量子场论的时候其实并不能完全放心地使用相互作用绘景。如果我们取$\hat{H}_i=0$，那么相互作用绘景就退化为了自由场的海森堡绘景；这样我们就看到了$\hat{H}_i$项的作用：它把带相互作用的场的态（也就是$\ket{\psi^I(t)}$）和自由场的态（$\ket{\psi^I(0)}$，因为如果$\hat{H}_i=0$那么态就不会变化）使用一个幺正算符联系了起来，而且这个幺正算符是唯一的。然而Haag定理说，含相互作用的场有无数个不等价的幺正表示，因此我们并不能唯一地将带相互作用的场的态和自由场的态使用一个唯一的幺正算符联系起来。特别的，由于我们要求自由场和相互作用场的态空间都满足一定的物理条件（如有稳定的真空态，等等），自由场的态空间和相互作用场的满足这些条件的态空间一般来说并不幺正等价。这意味着类似于$\int \dd{t} \hat{H}^H_i$之类的表达式实际上并不收敛，于是相互作用绘景就失效了。但是有很多手段可以绕过这个定理的限制——例如因为我们从来只讨论一定能标下的物理现象而不把相对论性量子场论当成终极理论，实际上我们可以把空间格点化，这样量子场论就变成了有限自由度的量子力学，于是就可以使用相互作用绘景了。}
+
+此外容易验证，各种形式的时间演化算符都满足以下公式：
+\begin{equation}
+    \hat{U}(t_3,t_2) \hat{U}(t_2,t_1) = \hat{U}(t_3,t_1),
+\end{equation}
+以及
+\begin{equation}
+    \hat{U}^\dagger (t_2, t_1) = \hat{U} (t_1, t_2).
+\end{equation}
+
+\subsubsection{测量}\label{sec:measure}
+
+\textbf{测量}指的是这样一个过程：两个系统（分别称为\textbf{待测系统}和\textbf{仪器}）发生相对剧烈而时间短促的相互作用，相互作用后待测系统的态发生很大改变，而仪器的态则体现了相互作用前待测系统的某些信息。
+采用相互作用绘景，设$\hat{q}$完全描述了仪器的态空间，$\hat{a}$是关于待测系统的某个算符，它和另一个算符$\hat{b}$共同描述了待测系统的态空间。（被测量的量$\hat{a}$未必能够完整描述待测系统。下文中需要将待测系统的态做展开，因此引入$\hat{b}$）
+由于相互作用非常剧烈而时间短促，仪器和待测系统的相互作用哈密顿量可以写成
+\begin{equation}
+    H_\text{int} = - \gamma(t-t_0) \hat{a} \otimes \hat{p},
+\end{equation}
+% 为什么偏偏就是这个形式？为什么所有量都是一次项？
+其中$\hat{p}$是$\hat{q}$对应的共轭动量，也就是说
+\[
+    \comm*{\hat{q}}{\hat{p}} = \ii \hbar,
+\]
+$\gamma$是一个函数，它是一个$t_0$附近的尖峰。
+极限情况下，$\gamma(t) = g \delta(t)$，这称为\textbf{冯诺依曼测量}或者\textbf{标准量子测量}，
+我们在相互作用绘景下分析问题。系统初态为
+\[
+    \ket{i} = \ket{\psi_i} \ket{D} = \int \dd{q} \sum_{k, n} \braket{q}{D} \braket{a_k, b_n}{\psi_i} \ket{a_k} \ket{b_n} \ket{q},
+\]
+其中$\ket{\psi_i}$和$\ket{D}$分别为待测系统和仪器的初态，本征态$\ket{a}_k$，$\ket{b}_n$和$\ket{q}$是$t_0$时刻对应算符的本征态（下同）。%
+\footnote{提醒：算符本征态反映的是算符的代数结构，它们的时间演化是由自由哈密顿量而不是相互作用哈密顿量指导的。}%
+我们要求$\hat{q}$是连续谱，而$\hat{a}$和$\hat{b}$可以是离散谱也可以是连续谱。要求$\hat{q}$是连续谱的原因很快就可以看到。
+系统的末态为
+\[
+    \begin{aligned}
+        \ket{f} &= T \exp \left( - \frac{\ii}{\hbar} \int \dd{t} H_\text{int} \right) \ket{i} \\
+        &= T \exp \left( \frac{\ii}{\hbar} g \int \dd{t} \delta(t-t_0) \hat{a}(t) \otimes \hat{p}(t) \right) \ket{i} \\
+        &= \exp \left( \frac{\ii}{\hbar} g \hat{a}(t_0) \otimes \hat{p}(t_0) \right) \ket{i} \\
+        &= \sum_{n=0}^\infty \frac{1}{n!} \left(\frac{\ii}{\hbar} g\right)^n \hat{a}(t_0)^n \hat{p}(t_0)^n \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \sum_{n=0}^\infty \frac{1}{n!} \left(\frac{\ii}{\hbar} g\right)^n \hat{a}(t_0)^n \ket{a_k} \ket{b_l} \hat{p}(t_0)^n \ket{q} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \sum_{n=0}^\infty \frac{1}{n!} \left(\frac{\ii}{\hbar} g\right)^n a_k^n \ket{a_k} \ket{b_l} \hat{p}(t_0)^n \ket{q} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \sum_{n=0}^\infty \frac{1}{n!} \left(\frac{\ii}{\hbar} g a_k \hat{p}(t_0) \right)^n \ket{q} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \exp \left( \frac{\ii}{\hbar} g a_k \hat{p}(t_0) \right) \ket{q} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q + g a_k} \\
+        &= \int \dd{q} \sum_{k, l} \braket{q - g a_k}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q} .
+    \end{aligned}
+\]
+总之我们得到经典测量前后态的变化公式
+\begin{equation}
+    \ket{f} = \int \dd{q} \sum_{k, l} \braket{q - g a_k}{D} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q}.
+    \label{eq:standard-measurement}
+\end{equation}
+需要注意的是由于我们采取的是相互作用绘景，算符$\hat{a}$和$\hat{b}$一直会发生变化。
+然而，由于自由哈密顿量不显含时间，\eqref{eq:standard-measurement}中$\ket{a_k, b_l}$的时间演化和$\bra{a_k, b_l}$的时间演化抵消了，等等，从而$\ket{f}$在相互作用结束后没有时间演化——正如我们预期的那样，因为相互作用结束之后相互作用哈密顿量就是零。
+
+\eqref{eq:standard-measurement}看起来仍然十分复杂。
+然而，在很多情况下（具体是什么情况我们很快会看到）仪器的初始态非常接近$\hat{q}$的本征态，也就是说$\braket{q}{D}$只有在$q$和某一个$q_0$非常接近的时候才有较大的值，其余时候都接近零，因此实际上是一个$\delta$函数。
+这样的情况称为\textbf{理想测量}。我们现在可以看到为什么要求$\hat{q}$具有连续谱了，因为要实施一次理想测量必须允许仪器有连续分布的状态。此时\eqref{eq:standard-measurement}近似为
+\begin{equation}
+    \ket{f} = \sum_{k, l} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q = q_0 + g a_k}.
+    \label{eq:ideal-measurement}
+\end{equation}
+我们这样就得到了一个典型的纠缠态，其中每一个分量中，仪器和待测系统在测量之后都处于完全对应的状态。
+总之，如果待测系统和仪器组成的系统和外界毫无相互作用，那么测量就是如下所示的过程：
+\[
+    \ket{i} = \left(\sum_{k, l} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \right) \ket{D} \longrightarrow \ket{f} = \sum_{k, l} \braket{a_k, b_l}{\psi_i} \ket{a_k} \ket{b_l} \ket{q = q_0 + g a_k},
+\]
+也就是待测系统将其信息复制到了仪器当中。
+然而，假如仪器足够大，那么待测系统和仪器组成的系统和外界将会有大量的相互作用。
+例如，仪器可能被放置在灯光下来方便我们读取其示数，这就意味着它要不停地受到四面八方的光子的轰击。
+这就意味着\eqref{eq:ideal-measurement}会很快发生退相干，最后终结于$\hat{a} \otimes \hat{b} \otimes \hat{q}$的某个本征态上，因此最后仪器停留在某个$q=q_0 + g a_k$附近，且待测系统的态也转化为$\ket{a_k}$。
+将待测系统和仪器组成的系统以及所有可能的环境变量放在一起就得到了一个系综；系综中，待测系统和仪器组成的系统在退相干之后停留在本征态$\ket{a_k} \ket{b_l} \ket{q = q_0 + g a_k}$的概率正是$\abs{\braket{a_k, b_l}{\psi_i}}^2$，
+也就是说，在时刻$t$测量$\hat{a}$得到$a_k$（同时将待测系统的态转化为$\ket{a_k}$）的概率就是
+\begin{equation}
+    P_t(a_k) = \sum_l \abs{\braket{a_k, b_l(t)}{\psi_i}}^2,
+    \label{eq:probablity-of-measurement}
+\end{equation}
+由\eqref{eq:probablity-of-measurement}出发容易证明，待测系统为$\ket{\psi_i}$态时做测量，测量值的期望为
+\begin{equation}
+    \expval{\hat{a}}(t) = \mel{\psi_i}{\hat{a}(t)}{\psi_i}.
+\end{equation}
+
+实际上，我们可以把四面八方的光子或者空气分子或者这一类的干扰看成是一个巨型仪器：它和待测系统的相互作用使待测系统和它的态按照\eqref{eq:ideal-measurement}纠缠在一起，而由于这是开放体系，退相干快速发生，这就意味着在充满干扰的环境中实际上很难真的展示出待测系统的量子特性：待测系统几乎总是出现在其偏好本征态附近，因为它没完没了地受到测量。
+这也是理想测量很容易就能够实现的原因：真的会用来做测量的仪器总是被做得很大，因此它们自身可以看成不停地被空气、杂散光或者别的什么东西不断测量的系统，因此它们的态总是出现在其偏好本征态附近。
+
+在$\hat{a}$本身是待测系统的一个CSCO，从而不需要$\hat{b}$的情况下，测量$\hat{a}$得到$a_k$的概率为
+\begin{equation}
+    P(a_k) = \abs{\braket{a_k}{\psi_i}}^2.
+\end{equation}
+这表明，假如我们有一个正交归一化基$\{\ket{a_k}\}_k$，就可以使用一组不同的实数$a_k$构造算符
+\[
+    \hat{a} = \sum_k a_k \dyad{a_k},
+\]
+使用这个算符对系统做测量，则测量结束之后系统位于态$\ket{a_k}$的概率就是
+\begin{equation}
+    P(\ket{a_k}) = \abs{\braket{a_k}{\psi_i}}^2.
+\end{equation}
+注意到这个表达式只和$\ket{a_k}$有关。因此，对态矢量为$\ket{\psi}$的系统做一次测量，发现系统测量后处于态$\ket{\phi}$的概率为
+\begin{equation}
+    P(\ket{\phi}) = \abs{\braket{\phi}{\psi}}^2,
+\end{equation}
+于是我们称$\braket{\phi}{\psi}$为\textbf{概率振幅}。
+
+需注意以上讨论建立在几个关键假设上：其一，仪器和待测系统的相互作用非常强而短促；其二，仪器和环境有杂乱无章的相互作用。
+这意味着合理地构造不怎么受外界干扰而又不会严重地扰动待测系统的仪器，我们就能够得到关于待测系统状态的不完整信息而与此同时不让待测系统的态塌缩到某个本征态上。
+这称为\textbf{弱测量}。
+
+\subsubsection{有效哈密顿量}
+
+有时，一个物理系统的哈密顿量涉及大量复杂的过程，而特定的初始条件意味着这个系统的态基本上只会出现在态空间的一小部分当中。
+但这并不意味着态空间的其它部分就不会对系统的动力学造成影响。
+例如，设想一个三能级系统，其中一个能级的能量远远高于另外两个能级，这意味着系统基本上不可能出现在这个能级上，但如果其余两个能级和这个高能量能级有耦合，那么这个高能量能级就可能成为另外两个能级相互转换的渠道。
+
+设投影算符$\hat{P}$选择出了我们关注的那部分态空间，而且这部分态空间的定义不随时间变化而变化；设$\hat{Q}$是与之互补的投影算符，则
+\[
+    \hat{P} + \hat{Q} = 1, \quad \hat{P}^2 = \hat{P}, \quad \hat{Q}^2 = \hat{Q}.
+\]
+考虑薛定谔绘景，运动方程为
+\[
+    \hat{H} \ket{\psi} = \ii \hbar \dv{t} \ket{\psi},
+\]
+将投影算符作用于其上得到
+\[
+    \begin{aligned}
+        \hat{P} \hat{H}(\hat{P}+\hat{Q}) \ket{\psi} = \ii \hbar \dv{t} \hat{P} \ket{\psi}, \\
+        \hat{Q} \hat{H}(\hat{P}+\hat{Q}) \ket{\psi} = \ii \hbar \dv{t} \hat{Q} \ket{\psi}.
+    \end{aligned}
+\]
+哈密顿量可以分成四部分，一部分完全位于$\hat{P}$筛选出来的空间中，一部分完全位于$\hat{Q}$筛选出来的空间中，另外两部分从其中一个空间跳跃到另一个空间，这四部分分别是
+\[
+    \hat{H}_{PP} = \hat{P} \hat{H} \hat{P}, \quad \hat{H}_{QQ} = \hat{Q} \hat{H} \hat{Q}, \quad \hat{H}_{PQ} = \hat{P} \hat{H} \hat{Q}, \quad \hat{H}_{QP} = \hat{Q} \hat{H} \hat{P}.
+\]
+使用投影算符的性质可以写出
+\[
+    \begin{aligned}
+        \hat{H}_{PP} \hat{P} \ket{\psi} + \hat{H}_{PQ} \hat{Q} \ket{\psi} = \ii \hbar \dv{t} \hat{P} \ket{\psi}, \\
+        \hat{H}_{QP} \hat{P} \ket{\psi} + \hat{H}_{QQ} \hat{Q} \ket{\psi} = \ii \hbar \dv{t} \hat{Q} \ket{\psi},
+    \end{aligned}
+\]
+从后一个方程可以解出
+\[
+    \hat{Q} \ket{\psi} = \frac{1}{\ii \hbar \dv{t} - \hat{H}_{QQ}} \hat{H}_{QP} \hat{P} \ket{\psi},
+\]
+代入前一个方程就得到
+\[
+    \ii \hbar \dv{t} \hat{P} \ket{\psi} = \left(\hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{\ii \hbar \dv{t} - \hat{H}_{QQ}} \hat{H}_{QP}\right) \hat{P} \ket{\psi}.
+\]
+因此我们发现，我们关注的那一部分态的时间演化由等效哈密顿量
+\begin{equation}
+    \hat{H}_\text{eff} = \hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{\ii \hbar \dv{t} - \hat{H}_{QQ}} \hat{H}_{QP}
+    \label{eq:effective-hamiltonian-original}
+\end{equation}
+指导，而且由$\hat{H}_{PP}, \hat{H}_{PQ}, \hat{H}_{QP}$的定义，该等效哈密顿量是$\hat{P}$筛选出的空间中的算符。
+\eqref{eq:effective-hamiltonian-original}非常符合我们的直觉：时间演化可以仅仅涉及$\hat{H}_{PP}$，也可以以$\hat{H}_{QQ}$为中介。
+
+一种特殊的情况是，态空间可以写成两个空间（记为$\mathcal{H}_1$和$\mathcal{H}_2$）的直积，系统的初始条件决定了大部分有意义的过程都发生在$\mathcal{H}_1$中，但由于耦合，不能简单地将$\mathcal{H}_2$排除掉。
+这时可以构造算符$\hat{P}$使之筛选出只在$\mathcal{H}_1$中有显著活动的态，计算出有效哈密顿量；$\hat{P}$筛选出的态均形如$\ket{\psi}_1 \otimes \ket{0}_2$，由于有效哈密顿量仅涉及$\ket{\psi}_1$，不会出现两个空间之间的耦合，于是可以直接将$\mathcal{H}_2$去掉，使用$\mathcal{H}_1$和$\hat{H}_\text{eff}$来描述系统。
+
+然而，\eqref{eq:effective-hamiltonian-original}显含一个时间求导算符的倒数，这意味着$\hat{H}_\text{eff}$实际上显含时间，而且还显含关于时间的算符，也即我们实际上是手动把关于$\mathcal{H}_2$的时间演化放进了有效哈密顿量当中，这是不便计算的。
+为了让有效哈密顿量看起来像一个正常的哈密顿量，设我们考虑的过程的能量近似在$E_r$水平上，则对$\mathcal{H}_1$空间中的态，近似有
+\[
+    \ii \hbar \dv{t} \sim E_r,
+\]
+于是
+\[
+    \hat{H}_\text{eff} \sim \hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{E_r - \hat{H}_{QQ}} \hat{H}_{QP}.
+\]
+对$\mathcal{H}_1$中$\hat{H}$的本征态而言，上式严格成立，我们得到自洽方程
+\begin{equation}
+    \left( \hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{E - \hat{H}_{QQ}} \hat{H}_{QP} \right) \ket{\psi} = E \ket{\psi}.
+\end{equation}
+从这个方程求解出$E$，我们就得到了$\hat{H}_\text{eff}$在$\mathcal{H}_1$的一组基上的作用结果，于是也就完全确定下了$\hat{H}_\text{eff}$。
+换而言之，完全精确求解的有效哈密顿量保留了原哈密顿量在我们关注的空间上的全部能谱。
+
+然而，即使上述自洽方程也难以求解。为此通常使用微扰展开的方法。
+设原哈密顿量中$\mathcal{H}_1$与$\mathcal{H}_2$没有耦合的部分为$\hat{H}_0$，其余部分为$\hat{H}'$，也即，以$\mathcal{H}_1$和$\mathcal{H}_2$为子空间将算符做分块，则$\hat{H}_0$包含对角部分，$\hat{H}'$包含非对角部分，则
+\[
+    \hat{H}_\text{eff} \sim \hat{H}_{0} + \hat{H}'_{PQ} \frac{1}{E_r - \hat{H}_{QQ}} \hat{H}'_{QP}.
+\]
+如果$\hat{H}'$让
+
+在高能自由度和低能自由度的耦合并不明显时，高能自由度的存在与否对$\mathcal{H}_1$中的能量本征态只有不大的影响，这时可以以原哈密顿量中仅包含低能自由度的部分的本征值和本征态为起点，以低能自由度和高能自由度的耦合以及高能自由度的哈密顿量为微扰，求解出$\hat{H}$在$\mathcal{H}_1$中的本征态$\{\ket{n}\}$和本征值$\{E_n\}$。由于是本征态，它们和高能自由度没有耦合，于是低能自由度的运动完全由
+\begin{equation}
+    \hat{H}_\text{eff} = \sum_{\ket{n} \in \mathcal{H}_1} E_n \dyad{n}
+\end{equation}
+确定，我们也就得到了有效哈密顿量。
+
+\begin{equation}
+    \mel{m}{\hat{H}_\text{eff}}{n} = E_m \delta_{mn} + \mel{m}{\hat{H}'}{n} + \frac{1}{2} \sum_{\text{$l$ in $\mathcal{H}_2$}} \left( \frac{\mel{m}{\hat{H}'}{l} \mel{l}{\hat{H}'}{n}}{E_m - E_l} + \frac{\mel{m}{\hat{H}'}{l} \mel{l}{\hat{H}'}{n}}{E_n - E_l} \right) + \cdots.
+\end{equation}
+
+另一种做实际计算的方法是，考虑$\hat{H}$的本征态$\ket{\psi_n}$，其能量为$E_n$，则我们有
+\[
+    \hat{H} \ket{\psi_n} = E_n \ket{\psi_n}.
+\]
+有效哈密顿量只需要指导$\mathcal{H}_1$中的态的运行即可，因此它需要满足
+\[
+    \hat{H}_\text{eff} \ket{\psi_n} = E_n \ket{\psi_n}, \quad \text{for $\ket{\psi_n} \in \mathcal{H}_1$}.
+\]
+由于$\hat{H}_\text{eff}$是$\mathcal{H}_1$中的算符，以上方程的展开式为
+\begin{equation}
+    \sum_{\text{span}\{\ket{m}\} = \mathcal{H}_1} (\mel{l}{\hat{H}_\text{eff}}{m} - E_n \delta_{lm}) \braket{m}{\psi_n} = 0.
+    \label{eq:effective-hamiltonian-eq-unfolded}
+\end{equation}
+这里我们使用一组任意的正交归一化基底$\{\ket{m}\}$，它们未必就是哈密顿量的本征态。相应的，$\hat{H}$满足
+\begin{equation}
+    \sum_m (\mel{l}{\hat{H}}{m} - E_n \delta_{lm}) \braket{m}{\psi_n} = 0, \quad \text{for $\ket{l} \in \mathcal{H}_1$}.
+    \label{eq:hamiltonian-eq-unfolded}
+\end{equation}
+显然，\eqref{eq:hamiltonian-eq-unfolded}必须能够推导出\eqref{eq:effective-hamiltonian-eq-unfolded}，线性代数上的结论告诉我们，记那些张成$\mathcal{H}_1$的基矢量的编号组成的集合为$W$，其余基矢量的编号组成的集合为$U$，则有
+\[
+    \mel{l}{\hat{H}_\text{eff}}{m} = \mel{l}{\hat{H}}{m} - \sum_{\alpha \in U} \frac{\mel{l}{H}{\alpha} \mel{\alpha}{H}{m}} {D_\alpha^W} + \sum_{\alpha \neq \beta \in U} \frac{\mel{l}{H}{\alpha} \mel{\alpha}{H}{\beta} \mel{\beta}{H}{m}}{D^W_{\alpha \beta}} + \cdots,
+\]
+其中，记$S$为一系列编号组成的集合，单脚标的$D$函数定义为
+\[
+    D_\alpha^S = H_{\alpha \alpha} - E_n - \sum_{\beta \in U, \beta \notin S} \frac{\mel{\alpha}{H}{\beta} \mel{\beta}{H}{\alpha}}{D_\alpha^S} + \sum_{\beta \neq \gamma \in U, \; \beta, \gamma \notin S} \frac{\mel{l}{H}{\alpha} \mel{\alpha}{H}{\beta} \mel{\beta}{H}{m}}{D_{\alpha \beta}^S} + \cdots,
+\]
+多脚标的$D$函数递归定义为
+\[
+    D_{\alpha \beta}^S = D_\alpha^S D_{\beta}^{S, \alpha}, \quad D_{\alpha, \beta, \gamma}^S = D_{\alpha}^S D_{\beta}^{S, \alpha} D_{\gamma}^{S, \alpha, \beta}, \ldots
+\]
+% TODO:和通常使用的微扰论有何关系？？？
+
+\subsubsection{退化到经典情况}\label{sec:back-to-classical}
+
+前面提到，$\hbar \to 0$时，海森堡绘景下的量子时间演化方程\eqref{eq:quantum-evolution}退化为经典的时间演化方程\eqref{eq:evolution-of-any-quantity}。
+但需要注意的是，在$\hbar\to 0$时由\eqref{eq:quantum-evolution}退化得到的方程仍然是一个算符方程。
+要获得通常的关于物理量的方程，还需要做一些操作。$\hbar\to 0$时得到的演化方程是
+\[
+    \dv{\hat{A}}{t} = \pdv{\hat{A}}{\hat{\phi}} \dv{\hat{\phi}}{t} + \pdv{\hat{A}}{\partial_i \hat{\phi}} \partial_i \dv{\hat{\phi}}{t} + \pdv{\hat{A}}{\hat{\pi}} \dv{\hat{\pi}}{t},
+\]
+这个方程仅在海森堡绘景下成立。记系统的态矢量为$\ket{\psi}$，我们就得到
+\[
+    \dv{t} \mel{\psi}{\hat{A}}{\psi} =  \mel{\psi}{\pdv{\hat{A}}{\hat{\phi}} \dv{\hat{\phi}}{t}}{\psi} + \mel{\psi}{\pdv{\hat{A}}{\partial_i \hat{\phi}} \partial_i \dv{\hat{\phi}}{t}}{\psi} + \mel{\psi}{\pdv{\hat{A}}{\hat{\pi}} \dv{\hat{\pi}}{t}}{\psi}.
+\]
+在$\hbar\to 0$时，所有算符都近似是对易的，从而它们全部可以在同一组基下对角化。设这一组基为$\{\ket{n}\}$，则
+% TODO:似乎$\ket{\psi}$总是几乎是这组基中的一个，为什么？
+\[
+    \begin{aligned}
+        \mel{\psi}{\hat{A}\hat{B}}{\psi} &= \sum_{m,n} \braket{\psi}{m} \mel{m}{\hat{A}\hat{B}}{n} \braket{n}{\psi} \\
+        &= \sum_{n} \braket{\psi}{n} \mel{n}{\hat{A}\hat{B}}{n} \braket{n}{\psi} \\
+        &= 
+    \end{aligned}
+\]
+% TODO
+% 总之核心思想是，算符在$\hbar\to 0$时也不是实数物理量，真正的实数物理量的表达式必定会牵扯到态矢量。这也就是场算符的傅里叶分量看起来似乎是固定的值一样的原因，因为场算符本身包含了所有可能的经典场的取值，在$\hbar\to 0$时经典场的取值是多少不是场算符决定的而是态矢量决定的。
+
+\subsection{关于单位制的注记}
+
+到现在为止我们的理论还带有一些常数。用以标记我们的理论多大程度上偏离了经典情况的$\hbar$是一个重要的常数，同时标记了时间和空间的换算关系的光速$c$是另外一个。
+通过做变换
+\[
+    t \longrightarrow t' = ct,
+\]
+我们可以让光速$c$从所有的公式中消失。相应的，时间导数算符发生了
+\[
+    \partial_t \longrightarrow \partial_{t'} = \frac{1}{c} \partial_t
+\]
+的变换。
+$\hbar$在计算对易子的时候出现。做变换
+\[
+    \pi \longrightarrow \pi' = \frac{\pi}{\hbar}
+\]
+也可以完全消去这个常数。由于$\pi$是通过$\mathcal{L}$对$\partial_0 \phi$求导计算出来的，这个变换实际上就是对拉氏量做了变换
+\[
+    \mathcal{L} \longrightarrow \mathcal{L}' = \frac{\mathcal{L}}{\hbar},
+\]
+而这当然不影响实际的物理。事实上它改变的是能量和动量的单位。
+
+从本节开始，在本文的剩余部分我们将使用自然单位制，那就是说，取消时间和空间的单位差异，并且取$\hbar = 1$。
+从自然单位制恢复到国际单位制就是把上面的变换反过来，也就是做变换
+\[
+    \begin{aligned}
+        \mathcal{L}_\text{nat} &\longrightarrow \mathcal{L}_\text{int} = \hbar \mathcal{L}_\text{nat}, \\
+        E_\text{nat} &\longrightarrow E_\text{int} = \hbar E_\text{nat} , \\
+        \vb*{p}_\text{nat} &\longrightarrow \vb*{p}_\text{int} = \hbar \vb*{p}_\text{nat}, \\
+        t_\text{nat} &\longrightarrow t_\text{int} = c t_\text{nat}.
+    \end{aligned}
+\]
+与此同时保持各个公式的形式不变。
+
+\subsection{单粒子情况}
+
+在已经知道了3+1维场论的理论之后，单粒子情况实际上就是一个退化情况，因为它实际上是0+1维场论。
+在单粒子情况下底流形就是时间轴，其上定义有各种物理量$\hat{A}(t)$。单粒子情况下几乎不需要使用反对易量子化方案\eqref{eq:antisymmetry-commutator}，物理量和它的共轭动量之间的关系可以全部取
+\begin{equation}
+    \comm*{\hat{x}}{\hat{p}} = \ii.
+\end{equation}
+下面推导$\hat{x}, \hat{p}$和任意物理量的对易关系。
+设能够将物理量$\hat{F}$展开为$\hat{x}, \hat{p}$的多项式$\hat{F} = F(\hat{x}, \hat{p})$。
+对其中的每一项，都可以使用对易关系\eqref{eq:x-p-commutator-1d}把$\hat{x}$挪到最前面而把$\hat{p}$挪到后面，
+因此展开式最后就可以写成若干个$a \hat{x}^m \hat{p}^n$形式的项之和。
+现在分析其中的一项：
+\[
+    [\hat{x}, \hat{x}^m \hat{p}^n] = \hat{x}^m [\hat{x}, \hat{p}^n] + [\hat{x}, \hat{x}^m] \hat{p}^n = \hat{x}^m [\hat{x}, \hat{p}^n],
+\]
+而
+\[
+    [\hat{x}, \hat{p}^n] = [\hat{x}, \hat{p} \hat{p}^{n-1}] = 
+    \hat{p} [\hat{x}, \hat{p}^{n-1}] + [\hat{x}, \hat{p}] \hat{p}^{n-1} = \hat{p} [\hat{x}, \hat{p}^{n-1}] + \ii \hat{p}^{n-1}
+\]
+于是递推得到
+\[
+    [\hat{x}, \hat{p}^n] = \ii n \hat{p}^{n-1},
+\]
+因此
+\[
+    [\hat{x}, \hat{x}^m \hat{p}^n] = \ii n \hat{x}^m \hat{p}^{n-1}.
+\]
+这样就可以写出
+\begin{equation}
+    [\hat{x}, \hat{F}(\hat{x}, \hat{p})] = \ii \pdv{p} \hat{F}(\hat{x}, \hat{p}),
+\end{equation}
+在作用偏微分符号之前需要先把$F$中的每一项都变形成$\hat{x}$在前$\hat{p}$在后的形式。
+使用同样的方法还可以导出
+\begin{equation}
+    [\hat{p}, \hat{F}(\hat{x}, \hat{p})] = - \ii \pdv{x} \hat{F}(\hat{x}, \hat{p}),
+\end{equation}
+同样，作用偏微分符号之前需要先把$F$中的每一项都变形成$\hat{x}$在前$\hat{p}$在后的形式。
+
+在海森堡绘景下
+\[
+    \dv{\hat{A}}{t} = \frac{1}{\ii} [\hat{A}, H] + \pdv{\hat{A}}{t},
+\]
+于是
+\[
+    \dv{\hat{x}}{t} = \frac{1}{\ii} [\hat{x}, H] = \pdv{p} \hat{H}(\hat{x}, \hat{p}), \quad
+    \dv{\hat{p}}{t} = \frac{1}{\ii} [\hat{p}, H] = -\pdv{x} \hat{H}(\hat{x}, \hat{p})
+\]
+当$\hbar \to 0$时，上式仍然成立，而此时$\hat{x}$和$\hat{p}$已经是对易的了，因此它们退化为了可以直接使用实数表示的情况，我们也就过渡到了经典力学。
 
 \section{量子动力学（正则表述）}
 
@@ -272,15 +1714,9 @@ $\hat{A}$是一个同构。容易看出，若$\hat{O}$是$\mathcal{H}$中的一�
 \]
 所以什么情况下确凿无疑的有$H$是厄米算符呢？
 
-\subsection{从拉氏量到哈密顿量}
-
-拉氏量的作用：分析时空对称性
-
 直和：一个参数本来只能取这些值，现在可以取另一些值了（加入了基矢量），则两个空间要做直和。
 
 直积：本来只需要考虑这个参数，现在需要考虑别的参数了。
-
-问题：$\mel{\psi}{A}{\psi}$；绘景等价；量子力学给出什么样的宏观量、它们和一般的场论有何关系，或者说，怎样的绘景相互等价。
 
 \section{算符、对称群、李代数}
 
@@ -389,11 +1825,6 @@ TODO：正则对易关系与运动方程。好像如果不使用正则对易关�
 
 现在的问题是怎样构造出升降算符。当然，任何情况下升降算符都应该满足对易关系$[\hat{x}, \hat{a}] = c \hat{a}$，但是这是不是足够了？
 实际上还是能够构造出反例的，但是这些反例都是基于具体的分析构造，而物理上应该仅仅关心有关的代数结构。
-
-\section{量子统计}
-
-考虑$N$个遵循一模一样的动力学而可能有着不同的初始态、从而也会有不同的演化轨迹的量子系统，它们彼此没有相互作用，而$N$很大。
-（原则上可以使用二次量子化分析它们？）
 
 能量、能级：能级实际上只对二次型哈密顿量比较好处理，此时总是可以把哈密顿量写成
 \[
