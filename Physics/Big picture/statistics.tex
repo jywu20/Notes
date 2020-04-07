@@ -44,6 +44,8 @@
 
 \maketitle
 
+以下涉及场论的地方，如无特殊说明均以$D$为空间维数。
+
 \section{量子统计理论}
 
 我们将讨论量子系统的统计力学。本文中我们将采用标准的关于“测量”的理论而不分析其背后的原理。
@@ -319,6 +321,10 @@
 \begin{equation}
     \expval*{\hat{A}} = \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
 \end{equation}
+
+如果密度算符能够被对角化，那么实际上可以使用经典概率的观点看待体系：体系出现某个态的概率为多少，出现另一个态的概率为多少。
+密度算符的非对角元则对应着量子纠缠等非经典的结果。
+% TODO：详细说明
 
 \subsubsection{复合系统}\label{sec:combining-systems}
 
@@ -1036,7 +1042,7 @@ $M$的巨大数量级意味着取一阶展开有可能并不能达到足够的�
 
 在连续极限下，$\hat{A}_i$变成了量子场$\hat{A}(\vb*{x})$，我们这就得到了所谓的\textbf{平衡态统计场论}，这只需要将偏导数换成偏泛函导数$\fdv{\phi}$即可。此时的配分函数为
 \begin{equation}
-    Z[J] = \int \fd{\phi} \ee^{-\beta \int \dd[3]{\vb*{r}} (\mathcal{H}[\phi(\vb*{r})] + J(\vb*{r}) \phi(\vb*{r}))}.
+    Z[J] = \int \fd{\phi} \ee^{-\beta \int \dd[D]{\vb*{r}} (\mathcal{H}[\phi(\vb*{r})] + J(\vb*{r}) \phi(\vb*{r}))}.
     \label{eq:path-integral-equilibrium}
 \end{equation}
 
@@ -1305,20 +1311,22 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 
 \subsection{基于配分函数的计算}
 
-% TODO：把前面求期望值什么的拿到这里来
+% TODO：把前面求期望值什么的拿到这里来;配分函数差一个常数因子没有关系
 顺带提一句：使用熵和状态数的关系，原则上可以只使用\eqref{eq:entropy-and-state-number}这一个统计力学的公式，加上热力学方程就能够完全计算出体系的全部性质。但实际上，在相互作用比较明显时，难以写出能量本征态，自然也很难数出$\Omega$；此外，$\Omega$通常很大，其结果是$\ln \Omega$难以精确计算，通常只能够使用斯特林公式获得近似结果。因此，基于配分函数的计算仍然是最好用的方案。
 
 \subsubsection{粗粒化}
 
-% TODO:详细说明
+回顾配分函数的表达式
 \[
     Z = \sum_n \ee^{- \beta E_n},
 \]
-引入相对较粗糙的某个量$m$来标记具有类似性质的一系列$\ket{n}$之和，我们有
+对比较复杂的系统，通常难以写出所有能量本征态。为简化问题，引入相对较粗糙的某个量$\hat{m}$来标记具有类似性质的一系列$\ket{n}$之和，我们有
 \[
     Z = \sum_m \sum_{n|m} \ee^{- \beta E_n},
 \]
-定义$F(m)$使得近似有
+定义\textbf{有效自由能}$F(m)$%
+\footnote{回顾\eqref{eq:free-energy-and-partition-function}，$F(m)$就是$\hat{m}$的取值固定为$m$，其余不变的系统的自由能。}%
+使得近似有
 \[
     \ee^{- \beta F(m)} = \sum_{n|m} \ee^{- \beta E_n},
 \]
@@ -1328,11 +1336,143 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
 \]
 换而言之，我们“积掉”了$\ket{n}$提供的那部分不需要的自由度（或者说把它们对$n|m$平均掉了），而只留下泛泛而谈的$m$。这就是\textbf{粗粒化}。
 
-具体积掉什么自由度要按照不同的需求考虑。如果只需要讨论一小片区域内的问题，就应该使用坐标表象，积掉区域以外的自由度；如果只需要讨论较低能量的问题，就应该使用动量表象，积掉快场或者说“紫外场”。
+具体积掉什么自由度要按照不同的需求考虑。如果只需要讨论一小片区域内的问题，就应该使用坐标表象，积掉区域以外的自由度；如果只需要讨论较低能量的问题，就应该使用动量表象，积掉快场或者说“紫外场”（见下节）。
 
 有几种办法可以计算出有效的$F(m)$。一种是真的动手去算那个平均值，还有一种是通过对称性分析和类似的论证。
 例如如果$\hat{H}$是局域的，那么$F(m)$一定也是局域的，又比如$F(m)$一定具有$\hat{H}$具有的对称性，而且可能还会多出来一些对称性（例如，$\hat{H}$可能会导致空间上局部的起伏，但是在大尺度上这些起伏可以被略去，于是我们得到空间平移不变性）。
 通过这样的分析可以写出$F(m)$关于$m$的形式，这个表达式通常会带有一些常数，这些常数是$\hat{H}$中的常数在大尺度上涌现出来的结果，可以通过数值分析计算但不太方便解析求解。
+
+在所分析的体系需要使用连续的场$\hat{m}(\vb*{x})$标记时，$F$将是场$m(\vb*{x})$的泛函，此时我们记之为$F[m(\vb*{x})]$，有
+\[
+    F[m(\vb*{x})] = \int \dd[D]{\vb*{r}} \mathcal{F}(m(\vb*{r}), \grad{m}, \ldots). 
+\]
+
+\subsubsection{量纲、尺度变换和重整化群}
+
+考虑理论
+\[
+    Z = \int \fd{\phi} \ee^{- F[\phi]},
+\]
+我们特意使用了基于场的理论，这是为了不失一般性：如果系统并不需要用场来描述，只需要把$\phi$用离散的量代替就可以了。
+我们已经将对温度的依赖整合进了有效自由能当中，因为可以巧妙地重新定义场和各常数来把温度这个因子吸收掉。
+下面的论述将使用坐标或动量来标记不同位置的场值，不过这并没有失去一般性，因为我们没有用到任何关于空间或者动量的特殊性质，因此原则上可以使用任何连续或者离散的量来代替坐标或动量。
+
+在理论必须满足的对称性条件确定时，$F[\phi]$的形式也就确定了，不确定的仅仅是其中各项的系数，也即理论中的参数。这些参数标记了不同的理论，它们组成一个\textbf{理论空间}。
+
+在动量空间中写出我们的理论：
+\begin{equation}
+    Z = \int \prod_{\abs{\vb*{k}} < \Lambda} \dd{\phi(\vb*{k})} \ee^{ - F[\phi(\vb*{k})]},
+    \label{eq:theory-in-momentum-space}
+\end{equation}
+其中$\Lambda$是一个截断。会有这个截断是因为我们考虑的系统涉及的过程不会具有任意高的动量，并且当动量高到一定程度时我们的理论可能失效。例如，高动量对应着较低的特征长度，而$F[\phi]$可能是经过粗粒化的，那么当动量对应的特征尺度接近粗粒化的特征尺度时，理论就失效了。
+
+如果我们关注的过程涉及的动量甚至远小于$\Lambda$，就需要考虑另一个截断
+\[
+    \Lambda' = \frac{\Lambda}{\zeta}, \quad \zeta > 1,
+\]
+由于低动量过程和高动量过程可能有耦合，不能够直接以
+\[
+    Z = \int \prod_{\abs{\vb*{k}} < \Lambda' } \dd{\phi(\vb*{k})} \ee^{ - F[\phi(\vb*{k})]},
+\]
+作为新的配分函数。
+我们定义
+\[
+    \phi(\vb*{k}) = \phi^-(\vb*{k}) + \phi^+(\vb*{k}),
+\]
+$\phi^-(\vb*{k})$在$\abs{\vb*{k}} > \Lambda'$时为零，$\phi^+(\vb*{k})$在$\abs{\vb*{k}} < \Lambda'$时为零，两者在$\vb*{k} > \Lambda$时都为零。
+我们写出低动量过程和高动量过程（分别称为\textbf{红外端}和\textbf{紫外端}，对应的场称为红外场和紫外场，或者说慢场和快场）的耦合：
+\[
+    F[\phi(\vb*{k})] = F_0 [\phi^-(\vb*{k})] + F_0 [\phi^+(\vb*{k})] + F_I [\phi^-(\vb*{k}) , \phi^+ (\vb*{k})],
+\]
+则
+\[
+    \begin{aligned}
+        Z &= \int \prod_{\abs{\vb*{k}} < \Lambda'} \dd{\phi^{-}(\vb*{k})} \prod_{\Lambda' < \abs{\vb*{k}} < \Lambda} \dd{\phi^+ (\vb*{k})} \ee^{- (F_0 [\phi^-(\vb*{k})] + F_0 [\phi^+(\vb*{k})] + F_I [\phi^-(\vb*{k}) , \phi^+ (\vb*{k})])} \\
+        &= \int \prod_{\abs{\vb*{k}} < \Lambda'} \ee^{- F_0 [\phi^-(\vb*{k})]} \prod_{\Lambda' < \abs{\vb*{k}} < \Lambda} \ee^{- (F_0 [\phi^+(\vb*{k})] + F_I [\phi^-(\vb*{k}) , \phi^+ (\vb*{k})])},
+    \end{aligned}
+\]
+定义
+\[
+    \ee^{-F'[\phi^-(\vb*{k})]} = \ee^{- F_0 [\phi^-(\vb*{k})]} \prod_{\Lambda' < \abs{\vb*{k}} < \Lambda} \ee^{- (F_0 [\phi^+(\vb*{k})] + F_I [\phi^-(\vb*{k}) , \phi^+ (\vb*{k})])},
+\]
+就有
+\begin{equation}
+    Z = \int \fd{\phi^-} \ee^{-F'[\phi^-]}.
+    \label{eq:low-energy-effective-theory}
+\end{equation}
+现在我们的理论中没有紫外场$\phi^+$了。我们知道对配分函数中的场求导可以获得系统的各种信息，\eqref{eq:theory-in-momentum-space}中的场跑遍所有小于$\Lambda$的动量，而\eqref{eq:low-energy-effective-theory}中的场，在原来的动量尺度（也就是$\vb*{k}$而不是$\vb*{k}'$）下只跑遍小于$\Lambda'$的动量，因此\eqref{eq:low-energy-effective-theory}只能够提供关于在原来的动量尺度下只跑遍小于$\Lambda'$的动量的那部分场的信息，紫外端的信息全部丢失了，仅仅保留了红外部分的物理。
+
+注意到在做积分\eqref{eq:theory-in-momentum-space}时，动量的值实际上是不重要的，因为我们总是可以通过调整自由能表达式中的参数，并重新定义场的方法，把对动量的尺度变换吸收掉。
+因此对理论$F'[\phi^-]$，我们做一个动量的尺度变换以及与之相关的坐标的尺度变换，
+\[
+    \vb*{k}' = \zeta \vb*{k}, \quad \vb*{r}' = \frac{1}{\zeta} \vb*{r},
+\]
+这样它的动量截断和$F[\phi]$的动量截断一样，同时调整各参数、重新定义场，以保持配分函数不变，在完成了这一系列手续之后我们的理论就变成了
+\[
+    Z = \int \prod_{\vb*{k'} < \Lambda} \dd{\phi'(\vb*{k}')} \ee^{-F_\zeta [\phi'(\vb*{k}')]},
+\]
+显然$F_\zeta[\phi']$仍然在原理论空间中，但是它的参数发生了变化，且这些变化可以通过$\zeta$确定。这种积掉紫外自由度之后参数发生的变化称为\textbf{参数跑动}。
+
+这种选取紫外场，积掉紫外场，然后重新定义场、参数以获得一个低能有效理论的操作称为\textbf{重整化群}。重整化群只是一个半群，因为它不可逆——紫外端的信息在重整化之后全部丢失了。
+
+如前所述的对$\vb*{k}$和$\vb*{r}$的尺度变换实际上自然地导出了量纲的概念。
+我们要求尺度变换前后的理论是等价的，这就意味着尺度变换前后的配分函数只应该差一个常数因子。
+换而言之，应该有
+\[
+    \int \fd{\phi'} \ee^{- F'[\phi']} = \const \cdot \int \fd{\phi} \ee^{ - F[\phi]},
+\]
+由于$\phi$在变换前后的确只相差一个因子，上式等价于
+\[
+    F[\phi] = F'[\phi'],
+\]
+即
+\[
+    \int \dd[D]{\vb*{r}} \mathcal{F}[\phi(\vb*{r})] = \int \frac{\dd[D]{\vb*{r}}}{\zeta^D} \mathcal{F}' [\phi'(\vb*{r}')],
+\]
+也即
+\[
+    \mathcal{F}[\phi(\vb*{r})] = \frac{1}{\zeta^D} \mathcal{F}' [\phi'(\vb*{r}')].
+\]
+$\mathcal{F}$是$\phi$本身和它的各阶导数的多项式，即
+\[
+    \mathcal{F}[\phi] \sim \sum g \phi^{n_0} (\grad{\phi})^{n_1} \cdots,
+\]
+$g$是理论中含有的参数之一。因此，理论的尺度变换不变性等价于可以找到参数$\lambda_\phi$和$\lambda_g$，使得对每一项都有
+\[
+    g \phi^{n_0} (\grad{\phi})^{n_1} \cdots = \frac{1}{\zeta^D} \zeta^{\lambda_g} g (\zeta^{\lambda_\phi} \phi)^{n_0} (\zeta \grad{\zeta^{\lambda_\phi} \phi})^{n_1} \cdots, 
+\]
+从而
+\[
+    1 = \frac{1}{\zeta^D} \zeta^{\lambda_g} (\zeta^\lambda_\phi)^{n_0} (\zeta \zeta^{\lambda_\phi})^{n_1} \cdots,
+\]
+可以看出，$\lambda_\phi$和$\lambda_g$实际上正是取长度量纲为$-1$时对应量的量纲。自由能的量纲，据此计算，就是零，这是合理的因为自由能直接出现在$\ee$指数中，所以应该是无量纲量。
+
+重整化群可以有不动点，在不动点的不同方向做扰动（在某个方向上做扰动，就是让自由能表达式中这个方向对应的项前面的系数发生小的变化，如在$(\grad{\phi})^2$方向上做扰动，就是让自由能加上$\epsilon (\grad{\phi})^2$），可能是稳定的，也可能是不稳定的，也可能是临界的（即此时一系列不动点排成一条连续的线，则沿着这个线的方向做扰动只会从一个不动点变动到另一个不动点）。
+如果一个方向上的扰动是不稳定的，这个方向对应的自由能表达式中的项就是\textbf{相关的（relevant）}，因为这意味着这一项会显著改变一个理论在重整化群作用下会趋于的不动点；反之，如果一个方向上的扰动是稳定的，这个方向对应的自由能表达式中的项就是\textbf{无关的（irrelevant）}，因为它对不动点并无显著影响。
+显然，理论在不动点处的行为主要由相关的项确定。
+
+可以通过简单的量纲分析来判断一个项是相关的还是无关的，又或者是临界的。重整化群的作用总是伴随着大于1的$\zeta$，因此如果某一项的系数的量纲大于$0$，那在重整化过程中它一定会增大，因此它是相关的；如果某一项的系数的量纲小于$0$，则在重整化过程中它会衰减，因此是无关的。如果量纲正好是$0$，那就是临界的。
+将每一项除了系数以外的部分记作$\mathcal{O}$，即
+\[
+    \mathcal{F} \sim \sum g \mathcal{O},
+\]
+则
+\[
+    [g] + [\mathcal{O}] - d = 0,
+\]
+于是
+\begin{itemize}
+    \item $g \mathcal{O}$是相关的，当且仅当$d > [\mathcal{O}]$，
+    \item $g \mathcal{O}$是无关的，当且仅当$d < [\mathcal{O}]$，
+    \item $g \mathcal{O}$是临界的，当且仅当$d = [\mathcal{O}]$。
+\end{itemize}
+
+在一次重整化之后，理论中的任何一个特征长度都会发生
+\[
+    \xi' = \frac{\xi}{\zeta}
+\]
+的变化。也即，在不动点处或是特征长度为零，或是特征长度为无穷大。
+这意味着重整化群的不动点处没有有限而非零的特征长度，因此重整化群的不动点处的理论在单纯的尺度变换之下不应该有任何变化。
 
 \subsubsection{近独立系统}
 
@@ -1404,6 +1544,8 @@ $\Delta\Omega$可以不是任何一个实际的能级上的独立状态数。
     \expval*{\hat{N}_k} = \frac{g_k}{1 - \eta \ee^{- (\alpha + \beta \epsilon_k)}} = \frac{g_k}{1 - \eta \ee^{- \beta (\epsilon_k - \mu)}}.
 \end{equation}
 $\eta=1$的情况称为\textbf{玻色-爱因斯坦分布}，$\eta=-1$的情况称为\textbf{费米-狄拉克分布}。
+
+上式给出的是所有能量为$\epsilon_k$的粒子总数的期望值。实际上，通过
 
 \subsection{从量子统计退化到经典统计}
 
@@ -2059,6 +2201,7 @@ $\bar{E}$确实是一个状态函数，因此我们这就定义了内能、功�
 考虑到\eqref{eq:entropy-from-partition-function}和\eqref{eq:canonical-expectation-of-energy}，我们有
 \begin{equation}
     F = - \frac{1}{\beta} \ln Z = - T \ln Z.
+    \label{eq:free-energy-and-partition-function}
 \end{equation}
 
 \subsubsection{近独立系统}
@@ -2295,7 +2438,7 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 \]
 场方程关于时间或者是一阶微分方程，或者是二阶微分方程。如果是前者，则哈密顿量可以只使用场算符来写出（而不涉及场对应的共轭动量），设其为
 \[
-    \hat{H} = \int \dd[3]{\vb*{r}''} \hat{\psi}^\dagger (\vb*{r}'', t) A(\vb*{r}'', t) \hat{\psi}(\vb*{r}'', t),
+    \hat{H} = \int \dd[D]{\vb*{r}''} \hat{\psi}^\dagger (\vb*{r}'', t) A(\vb*{r}'', t) \hat{\psi}(\vb*{r}'', t),
 \]
 其中$A$可以是算符，代入前式得到
 \[
@@ -2531,7 +2674,7 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 % TODO：费米子谱函数
 % TODO：谱函数代表了态密度？？
 \[
-    \rho(\omega) \propto \int \dd[3]{\vb*{k}} A(\vb*{k}, \omega)
+    \rho(\omega) \propto \int \dd[D]{\vb*{k}} A(\vb*{k}, \omega)
 \]
 
 粒子-粒子谱函数为
@@ -2858,7 +3001,7 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 
 事实上，一般的场由连续变量（而不是离散的$i$）标记，故取极限得到
 \begin{equation}
-    \int \fd{[\alpha^*(\vb*{r}), \alpha(\vb*{r})]} \exp \left( - \int \dd[3]{\vb*{r}} \alpha^*(\vb*{r}) \alpha(\vb*{r}) \right) \ket{\alpha} \bra{\alpha^*} = 1,
+    \int \fd{[\alpha^*(\vb*{r}), \alpha(\vb*{r})]} \exp \left( - \int \dd[D]{\vb*{r}} \alpha^*(\vb*{r}) \alpha(\vb*{r}) \right) \ket{\alpha} \bra{\alpha^*} = 1,
     \label{eq:completeness-of-boson}
 \end{equation}
 其中
@@ -2868,7 +3011,7 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 $\alpha_i$和$\alpha^*_i$是将$\alpha(\vb*{r})$和$\alpha^*(\vb*{r})$做$N$点离散化的结果。
 类似地，通过离散化再相乘的方法，可以得到内积公式
 \begin{equation}
-    \braket{\alpha^*}{\beta} = \exp \left( \int \dd[3]{\vb*{r}} \alpha^*(\vb*{r}) \beta(\vb*{r}) \right).
+    \braket{\alpha^*}{\beta} = \exp \left( \int \dd[D]{\vb*{r}} \alpha^*(\vb*{r}) \beta(\vb*{r}) \right).
 \end{equation}
 
 对费米子也可以进行类似的操作。比较棘手的地方在于费米场算符一般来说不会有复数本征值（很容易在有限维复线性代数中处理这个问题），因此我们需要使用一些算符来充当形式上的本征值。
@@ -2913,7 +3056,7 @@ $\alpha_i$和$\alpha^*_i$是将$\alpha(\vb*{r})$和$\alpha^*(\vb*{r})$做$N$点�
 
 和玻色场相同，对使用连续变量标记的场，有
 \begin{equation}
-    \int \fd{[c^*(\vb*{r}), c(\vb*{r})]} \exp \left( - \int \dd[3]{\vb*{r}} c^*(\vb*{r}) c(\vb*{r}) \right) \ket{c} \bra{c^*} = 1,
+    \int \fd{[c^*(\vb*{r}), c(\vb*{r})]} \exp \left( - \int \dd[D]{\vb*{r}} c^*(\vb*{r}) c(\vb*{r}) \right) \ket{c} \bra{c^*} = 1,
     \label{eq:completeness-of-fermion}
 \end{equation}
 其中
@@ -2923,7 +3066,7 @@ $\alpha_i$和$\alpha^*_i$是将$\alpha(\vb*{r})$和$\alpha^*(\vb*{r})$做$N$点�
 $c_i$和$c_i^*$是$c(\vb*{r})$和$c^*(\vb*{r})$做$N$点离散化的结果。
 相应的内积是
 \begin{equation}
-    \braket{c^*}{d} = \exp \left( \int \dd[3]{\vb*{r}} c^*(\vb*{r}) d(\vb*{r}) \right).
+    \braket{c^*}{d} = \exp \left( \int \dd[D]{\vb*{r}} c^*(\vb*{r}) d(\vb*{r}) \right).
 \end{equation}
 
 \subsubsection{路径积分计算配分函数}
@@ -2962,16 +3105,16 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \footnote{由于哈密顿量不含时，海森堡绘景中的哈密顿量和薛定谔绘景中的哈密顿量是相等的，且两者关于各自的绘景中的场算符的表达式也是相等的。
 更明确地说，设
 \[
-    \hat{H}^S[\hat{\phi}^S] = \int \dd[3]{\vb*{r}} f(\hat{\phi}^S, \grad{\hat{\phi}^S}),
+    \hat{H}^S[\hat{\phi}^S] = \int \dd[D]{\vb*{r}} f(\hat{\phi}^S, \grad{\hat{\phi}^S}),
 \]
 则
 \[
-    \hat{H}^H[\hat{\phi}^H] = \int \dd[3]{\vb*{r}} f(\hat{\phi}^H, \grad{\hat{\phi}^H}).
+    \hat{H}^H[\hat{\phi}^H] = \int \dd[D]{\vb*{r}} f(\hat{\phi}^H, \grad{\hat{\phi}^H}).
 \]
 这也就是为什么对不含时系统，我们从来不区分哈密顿量在哪个绘景中，也不区分不同绘景中哈密顿量的表达式。
 同样，记$\phi$为能量本征态$\ket{\phi}$相对场算符的本征值，$H$为它相对哈密顿量的本征值，则有
 \[
-    H = \int \dd[3]{\vb*{r}} f(\phi(\vb*{r}), \grad{\phi(\vb*{r})}),
+    H = \int \dd[D]{\vb*{r}} f(\phi(\vb*{r}), \grad{\phi(\vb*{r})}),
 \]
 而与绘景无关，因为绘景变换不改变$\phi$和$H$。
 本文的剩余部分使用更加通常的记号，将$f$记作$\mathcal{H}$。
@@ -3003,8 +3146,8 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \[
     \begin{aligned}
         &\quad \; \mel{\bar{\phi}(\tau_N)}{\ee^{- \beta \hat{H}}}{\phi(\tau_0)} \\
-        &= \mel{\bar{\phi}(\tau_N)}{\ee^{-\Delta \tau \hat{H}} \prod_{k=1}^{N-1} \int \mathcal{D}_{\vb*{r}}[\bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k)] \ee^{- \int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \dyad{\phi(\tau_k)} \ee^{ - \Delta \tau \hat{H}} }{\phi(\tau_0)} \\
-        &= \prod_{k=0}^{N-1} \int \mathcal{D}_{\vb*{r}}[\bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau)] \ee^{- \int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \mel{\bar{\phi}(\tau_{k+1})}{\ee^{ - \Delta \tau \hat{H}}}{\phi(\tau_k)},
+        &= \mel{\bar{\phi}(\tau_N)}{\ee^{-\Delta \tau \hat{H}} \prod_{k=1}^{N-1} \int \mathcal{D}_{\vb*{r}}[\bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k)] \ee^{- \int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \dyad{\phi(\tau_k)} \ee^{ - \Delta \tau \hat{H}} }{\phi(\tau_0)} \\
+        &= \prod_{k=0}^{N-1} \int \mathcal{D}_{\vb*{r}}[\bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau)] \ee^{- \int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \mel{\bar{\phi}(\tau_{k+1})}{\ee^{ - \Delta \tau \hat{H}}}{\phi(\tau_k)},
     \end{aligned}
 \]
 而由于$\Delta \tau$可以取得任意小，我们有
@@ -3012,16 +3155,16 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
     \begin{aligned}
         \mel{\bar{\phi}(\tau_{k+1})}{\ee^{-\Delta \tau \hat{H}}}{\phi(\tau_k)} &= \mel{\bar{\phi}(\tau_{k+1})}{1 - \Delta \tau \hat{H}}{\phi(\tau_k)} \\
         &= (1 - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)]) \braket{\bar{\phi}(\tau_{k+1})}{\phi(\tau_k)} \\
-        &= \exp \left( - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right) \exp \left( \int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) \right) \\
-        &= \exp \left( \int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right).
+        &= \exp \left( - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right) \exp \left( \int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) \right) \\
+        &= \exp \left( \int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right).
     \end{aligned}
 \]
 结合以上各式，得到
 \[
     \begin{aligned}
-        Z &= \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_0), \phi(\vb*{r}, \tau_0) ]  \prod_{k=1}^{N-1} \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k) ] \ee^{- \int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \\
-        & \quad \times \ee^{\int \dd[3]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)]} \\
-        &= \prod_{k=0}^{N-1} \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k) ] \ee^{\sum_j \Delta \tau \left( \int \dd[3]{\vb*{r}} \frac{\bar{\phi}(\vb*{r}, \tau_{j+1}) - \bar{\phi}(\vb*{r}, \tau_j) }{\Delta \tau} \phi(\vb*{r}, \tau_j) - H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right) },
+        Z &= \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_0), \phi(\vb*{r}, \tau_0) ]  \prod_{k=1}^{N-1} \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k) ] \ee^{- \int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_k) \phi(\vb*{r}, \tau_k) } \\
+        & \quad \times \ee^{\int \dd[D]{\vb*{r}} \bar{\phi}(\vb*{r}, \tau_{k+1}) \phi(\vb*{r}, \tau_k) - \Delta \tau H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)]} \\
+        &= \prod_{k=0}^{N-1} \int \mathcal{D}_{\vb*{r}}[ \bar{\phi}(\vb*{r}, \tau_k), \phi(\vb*{r}, \tau_k) ] \ee^{\sum_j \Delta \tau \left( \int \dd[D]{\vb*{r}} \frac{\bar{\phi}(\vb*{r}, \tau_{j+1}) - \bar{\phi}(\vb*{r}, \tau_j) }{\Delta \tau} \phi(\vb*{r}, \tau_j) - H[\bar{\phi}(\tau_{k+1}), \phi(\tau_k)] \right) },
     \end{aligned}
 \]
 令$N \to \infty$，并定义
@@ -3030,7 +3173,7 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \end{equation}
 就得到
 \begin{equation}
-    Z = \int \fd{[\bar{\phi}, \phi]} \exp \left( \int_0^\beta \dd{\tau} \left( \int \dd[3]{\vb*{r}} \pdv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - H[\bar{\phi}(\vb*{r}, \tau), \phi(\vb*{r}, \tau)] \right) \right).
+    Z = \int \fd{[\bar{\phi}, \phi]} \exp \left( \int_0^\beta \dd{\tau} \left( \int \dd[D]{\vb*{r}} \pdv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - H[\bar{\phi}(\vb*{r}, \tau), \phi(\vb*{r}, \tau)] \right) \right).
     \label{eq:one-field-partition-function}
 \end{equation}
 
@@ -3046,7 +3189,7 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \]
 当成哈密顿量而对场$\phi_i$做积分，重复$n$次，就得到
 \[
-    Z = \int \prod_i \fd{[\bar{\phi_i}, \phi_i]} \exp \left( \int_0^\beta \dd{\tau} \left( \sum_j \int \dd[3]{\vb*{r}} \pdv{\bar{\phi_j}(\vb*{r}, \tau)}{\tau} \phi_j(\vb*{r}, \tau) - H[\{\bar{\phi_i}(\vb*{r}, \tau), \phi_i(\vb*{r}, \tau)\}] \right) \right),
+    Z = \int \prod_i \fd{[\bar{\phi_i}, \phi_i]} \exp \left( \int_0^\beta \dd{\tau} \left( \sum_j \int \dd[D]{\vb*{r}} \pdv{\bar{\phi_j}(\vb*{r}, \tau)}{\tau} \phi_j(\vb*{r}, \tau) - H[\{\bar{\phi_i}(\vb*{r}, \tau), \phi_i(\vb*{r}, \tau)\}] \right) \right),
 \]
 为简化书写，定义列向量$\phi$包含所有的$\{\phi_i\}$，行向量$\bar{\phi}$包含所有的$\{\bar{\phi}_i\}$，%
 \footnote{这就是我们使用$\bar{\phi}$而不是$\phi^*$表示单个场的复共轭的原因，因为有多个场时复共轭要被共轭转置代替，而又不能使用符号$\dagger$，因为诸$\phi_i$在这里并不是作用在态矢量上的算符。}%
@@ -3061,8 +3204,8 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 其中作用量为
 \begin{equation}
     \begin{aligned}
-        S[\phi] &= \int_0^\beta \dd{\tau} \left( \int \dd[3]{\vb*{r}} \dv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - H[\bar{\phi}(\tau), \phi(\tau)] \right) \\
-        &= \int_0^\beta \dd{\tau} \int \dd[3]{\vb*{r}} \left( \dv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - \mathcal{H}[\bar{\phi}(\tau), \phi(\tau)] \right).
+        S[\phi] &= \int_0^\beta \dd{\tau} \left( \int \dd[D]{\vb*{r}} \dv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - H[\bar{\phi}(\tau), \phi(\tau)] \right) \\
+        &= \int_0^\beta \dd{\tau} \int \dd[D]{\vb*{r}} \left( \dv{\bar{\phi}(\vb*{r}, \tau)}{\tau} \phi(\vb*{r}, \tau) - \mathcal{H}[\bar{\phi}(\tau), \phi(\tau)] \right).
     \end{aligned}
 \end{equation}
 
@@ -3093,40 +3236,13 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \end{equation}
 其中
 \begin{equation}
-    S[\phi, J] = S[\phi] + \int_0^\beta \dd{\tau} \int \dd[3]{\vb*{r}} J(\vb*{r}, \tau) \phi(\vb*{r}, \tau),
+    S[\phi, J] = S[\phi] + \int_0^\beta \dd{\tau} \int \dd[D]{\vb*{r}} J(\vb*{r}, \tau) \phi(\vb*{r}, \tau),
 \end{equation}
 则由泛函求导可以得到
 \begin{equation}
     T_\tau \expval*{\hat{\phi}(\vb*{r}_1, \tau_1) \hat{\phi}(\vb*{r}_2, \tau_2) \cdots \hat{\phi}(\vb*{r}_n, \tau_n)} = (-1)^n \frac{1}{Z(J=0)} \frac{\var^n J[\phi]}{\var{\phi(\vb*{r}_1, \tau_1)} \cdots \var{\phi(\vb*{r}_n \tau_n)}}.
 \end{equation}
 可以对$\bar{\phi}$引入同样的扰动做计算。
-
-\subsubsection{重整化}
-
-动量空间下的重整化：考虑理论
-\[
-    Z = \int \fd{\phi} \ee^{- F[\phi]},
-\]
-在动量空间中写出，它就是
-\[
-    Z = \int \prod_{\vb*{k} < \Lambda} \dd{\phi_{\vb*{k}}} \ee^{ - F[\phi_{\vb*{k}}]},
-\]
-其中$\Lambda$是一个截断。考虑另一个截断
-\[
-    \Lambda' = \frac{\Lambda}{\zeta}, \quad \zeta > 1,
-\]
-则
-\[
-    Z = \int \fd{\phi^{-}_{\vb*{k}}}  
-\]
-% TODO:integrate out
-然后重新选取场的单位、调整动量和坐标的单位。
-
-最后的结果是，关联距离发生了
-\[
-    \xi' = \frac{\xi}{\zeta}
-\]
-的变化。也即，在重整化的不动点处或是关联距离为零，或是关联距离为无穷大。后者对应相变的情况。
 
 \section{Keldysh理论}
 
