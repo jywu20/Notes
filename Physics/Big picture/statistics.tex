@@ -1064,7 +1064,8 @@ $f$实际上是递增的。设$\Theta_1<\Theta_2$，且对温度为$\Theta_1$和
 显然，这就意味着在我们观察的时间尺度上均匀取样地对系统做观察，得到的结果是随机的，因此需要引入一个系综来处理这个问题。%
 \footnote{这是又一个虽然没有实际上的随机性，但信息的缺乏意味着我们必须引入概率测度来分析问题的例子。}%
 许多系统如果和外界毫无接触，那么并不会有遍历性；但是几乎我们关心的所有系统都或多或少地和外界有小的相互作用。
-这种系统达到平衡，且和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。相应的，系统和外界的小的相互作用以及它带来的能量变化称为\textbf{热涨落}。
+这种系统达到平衡，且和外界虽有小的相互作用但相互作用对系统能量影响不大，以至于系统总能量可以看成是给定的的情况称为\textbf{微正则系综}。相应的，系统和外界的小的相互作用以及它带来的能量变化称为\textbf{热涨落}。%
+\footnote{物理量涨落的大小定义为其标准差。}%
 
 系统取各个态的概率是多少呢？数学上可以证明，设系统的所有可能的态组成希尔伯特空间，且给定该希尔伯特空间的一组基，则系统取这组基中的任何一个的概率都是一样的。
 从而，系统具有某个宏观性质的概率就正比于满足这个性质的正交态的数目。这就是\textbf{等概率原理}，有时也称为\textbf{统计物理基本假设}。
@@ -2100,6 +2101,10 @@ $g$是理论中含有的参数之一。因此，理论的尺度变换不变性�
 % TODO，尤其是热力学第二定律。为什么熵增？可能的解释是，平衡态的数目比非平衡态要多，而非平衡态以一种分形的方式均匀地分布在态空间中，因此一个非平衡态周围几乎全部都是平衡态或者接近平衡的态。实际上我们有涨落定理：熵增加$S$的概率和熵减少同样值的概率之比正比于$\ee^{At}$
 % 复杂系统如果从一个比较纯的密度算符开始演化，其状态会逐渐弥散到整个态空间中，所以出现高熵态的可能性随着时间演化越来越大。这就是表面上的不可逆性的来源：如果要求初态是基本上确定的，那么必然在接下来的演化中熵很可能增大，而如果想要观察到熵的自发减小，就需要构造一个“弥散到整个态空间中”的初态，然后做反演的时间演化，而这是很难的，因为我们能够明确写出的态基本上都是纯态或者不是非常复杂的混合态。
 
+\subsubsection{热力学第三定律}
+
+$T\to 0$——即$\beta \to \infty$——时，密度算符趋于系统的全部基态等几率混合而成的混合态。
+
 \subsubsection{配分函数与热力学坐标}
 
 回顾\eqref{eq:increasing-entropy}，对任何一个过程，都有
@@ -2226,17 +2231,44 @@ $g$是理论中含有的参数之一。因此，理论的尺度变换不变性�
 % TODO:将$\alpha$改成$\alpha_i$
 很容易计算出
 \begin{equation}
-    \expval*{\hat{n}_k} = \frac{g_k}{1 - \eta \ee^{- (\alpha + \beta \epsilon_k)}} = \frac{g_k}{1 - \eta \ee^{- \beta (\epsilon_k - \mu)}}.
+    \expval*{\hat{n}_k} = \frac{g_k}{\ee^{\alpha + \beta \epsilon_k} - \eta} = \frac{g_k}{\ee^{\beta (\epsilon_k - \mu)} - \eta}.
 \end{equation}
 $\eta=1$的情况称为\textbf{玻色-爱因斯坦分布}，$\eta=-1$的情况称为\textbf{费米-狄拉克分布}。
 
 上式给出的是所有能量为$\epsilon_k$的粒子总数的期望值。实际上，通过引入微小的扰动，我们总是可以让能级$\epsilon_i$分裂成$g_i$个能量略有差别的能级，从而让能量简并消失，这表明，设$i$为标记产生湮灭算符的量子数（而不仅仅是标记能级的量子数），则
 \begin{equation}
-    \expval*{\hat{n}_i} = \frac{1}{1 - \eta \ee^{- (\alpha + \beta \epsilon_i)}} = \frac{1}{1 - \eta \ee^{- \beta (\epsilon_i - \mu)}}.
+    \expval*{\hat{n}_i} = \frac{1}{\ee^{ \alpha + \beta \epsilon_i} - \eta } = \frac{1}{\ee^{\beta (\epsilon_i - \mu)} - \eta }.
 \end{equation}
 
 粒子数算符显然是一个热力学量，因此可以预期，其期望值就是极大概然值。
 通过拉格朗日乘子法可以证明的确如此。
+% TODO：极大概然？？
+
+在零温极限下，即$\beta \to + \infty$时，费米子和玻色子在不同能级上的排布具有不同规律。
+对费米子很容易可以看出
+\begin{equation}
+    \expval*{\hat{n}_i} = \begin{cases}
+        1, \quad \epsilon_i < \mu, \\
+        0, \quad \epsilon_i > \mu.
+    \end{cases}
+\end{equation}
+对玻色子，如果有某个能级$\epsilon_i < \mu$，则该能级上
+\[
+    \expval*{\hat{n}_i} = \frac{1}{\ee^{  \beta (\epsilon_i - \mu)} - 1} \to -1,
+\]
+显然这是不可能的，因此化学势$\mu$一定小于等于最低的能级。
+而如果$\epsilon_i > \mu$，则$\expval*{\hat{n}_i}$趋于零。
+因此
+\[
+    \expval*{\hat{n}_i} = \begin{cases}
+        \infty, \quad \epsilon_i = \mu, \\
+        0, \quad \epsilon_i \neq \mu.
+    \end{cases}
+\]
+显然这意味着$\mu$的值一定是某个能级。零温下体系总能量最低，因此$\mu$取$\epsilon_i$应当为$\{\epsilon_i\}$中的最小值。
+不失一般性地通常我们取之为零。也即，零温下的玻色子的粒子数期望在最低能级上非零，其余能级上均为零。
+%需注意以上仅仅给出了粒子数的期望，即使在零温下也不能够保证系统的态一定就是$\ket{1, 1, 1, \ldots, 0, 0, \ldots}$或者$\ket{M, 0, 0, \ldots}$。
+% TODO:玻色-爱因斯坦凝聚
 
 \subsubsection{热力学量计算}
 
@@ -2264,15 +2296,15 @@ $\eta=1$的情况称为\textbf{玻色-爱因斯坦分布}，$\eta=-1$的情况�
 
 前面提到过化学势可以使用其它参量计算出来，对近独立系统而言这特别简单，只需要求解自洽方程
 \begin{equation}
-    \sum_k \frac{1}{1 - \eta \ee^{-\beta (\epsilon_k - \mu)}} = N,
+    \sum_k \frac{1}{\ee^{\beta (\epsilon_k - \mu)} - \eta} = N,
 \end{equation}
 其中$k$跑遍粒子所有的自由度的全部可能取值，$N$是总粒子数。如果用$k$表示能级编号则上式需要改写成
 \[
-    \sum_k \frac{g_k}{1 - \eta \ee^{-\beta (\epsilon_k - \mu)}} = N.
+    \sum_k \frac{g_k}{\ee^{\beta (\epsilon_k - \mu)} - \eta} = N.
 \]
 求解得到的$\mu$是$N,T$的表达式。这个方程通常过于复杂而不能解析求解，不过我们注意到
 \[
-    \pdv{N}{\mu} = \sum_k \eta \beta \frac{\ee^{-\beta (\epsilon_k - \mu)}}{(1- \eta \ee^{ - \beta (\epsilon_k - \mu)})^2},
+    \pdv{N}{\mu} = \sum_k \eta \beta \frac{\ee^{\beta (\epsilon_k - \mu)}}{(\ee^{ \beta (\epsilon_k - \mu)} - \eta)^2},
 \]
 右边求和号中的每一项都是正的，因此
 \[
@@ -3086,6 +3118,10 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 
 自由系统适用Wick定理，而$\hat{U}(\beta, 0)$可以级数展开，于是\eqref{eq:relation-to-free-system}可以使用费曼图逐阶计算。
 这样可以获得很多物理图像非常清晰的计算，如哈密顿量中每一项的阶数就是一个可能的过程中涉及到的粒子数，微扰展开的阶数则是粒子发生相互作用的次数，等等。
+和零温场论中一样，可以将$\expval*{T_\tau (\hat{A}^I (\tau) \hat{U}(\beta, 0))}_0$对应的费曼图分成连通图和非连通图，并证明非连通图可以被提取出来形成一个因子，这个因子正好就是$\expval*{\hat{U}(\beta, 0)}_0$，即
+\begin{equation}
+    T_\tau \expval*{\hat{A}^H (\tau)} = \sum \text{connected diagrams of $\expval*{T_\tau (\hat{A}^I (\tau) \hat{U}(\beta, 0))}_0$}.
+\end{equation}
 
 \subsection{虚时间路径积分}
 
