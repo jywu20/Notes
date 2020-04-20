@@ -367,19 +367,6 @@ $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
     \item 第一布里渊区是定义在正格子上的函数的傅里叶变换的动量取值范围。
 \end{itemize}
 
-\subsection{晶格和声子}
-
-首先考虑做小幅运动的离子实，即取简谐近似，这样晶格实际上仍然可以看成一个自由系统，哈密顿量为
-\begin{equation}
-    \hat{H} = \sum_i \frac{\hat{P}_n^2}{2M} + 
-\end{equation}
-其中$i$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$。
-
-% TODO：声学声子和光学声子
-
-可以看到，声子和电子的量子化是很不相同的。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
-换而言之，没有声子的一次量子化：定义声子时我们的理论就是二次量子化的。
-
 \subsection{布洛赫电子和能带理论}
 
 \subsubsection{布洛赫电子}
@@ -493,7 +480,7 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 \]
 取
 \begin{equation}
-    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{-\ii \vb*{k} \cdot \vb*{r}_i},
+    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{-\ii \vb*{k} \cdot \vb*{r}_i}, \quad \psi_{n\vb*{k}} = \sum_{\vb*{r}_i} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} w_{ni}(\vb*{r}),
 \end{equation}
 这样归一化条件就是
 \begin{equation}
@@ -534,7 +521,22 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
     \hat{H} = \sum_{n,i,m,i}
 \end{equation}
 
+\subsection{晶格和声子}
+
+首先考虑做小幅运动的离子实，即取简谐近似，这样晶格实际上仍然可以看成一个自由系统，哈密顿量为
+\begin{equation}
+    \hat{H} = \sum_i \frac{\hat{P}_n^2}{2M} + 
+\end{equation}
+其中$i$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$。
+
+% TODO：声学声子和光学声子
+
+可以看到，声子和电子的量子化是很不相同的。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
+换而言之，没有声子的一次量子化：定义声子时我们的理论就是二次量子化的。
+
 \section{线性响应}
+
+本节讨论对晶体引入小的外界扰动会导致的结果。
 
 \subsection{外加电荷}
 
@@ -660,6 +662,7 @@ $V_\text{eff}$改变粒子排布的方式是，通过让单电子的能量发生
 前者和后者可以自然地转化，即两者之间有\textbf{杂化}，于是描述它们的模型就是以下\textbf{单杂质的Anderson模型}：
 \begin{equation}
     \hat{H} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma \epsilon_\text{d} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.} + U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}.
+    \label{eq:impurity-anderson}
 \end{equation}
 不失一般性地认为$V_{\vb*{k} \text{d}}$都是实数，如果它不是实数，那总是可以通过重新定义$\hat{c}_{\vb*{k} \text{d}}$（乘上一个复数因子）来让它变成实数。
 最后一项是因为同处于d能级的两个电子之间会有库伦排斥作用，这一项实际上是唯一的真正的相互作用，因为前三项都是二次型。请注意这一项具有自选旋转不变性，这也是合理的。
@@ -746,18 +749,63 @@ d电子的相互作用项意味着d轨道上出现两个电子会大大增大能
 请注意这里有两种$n$：$\omega_n$中的$n$标记频率，$\epsilon_n$和$G$的下标中的$n$则是量子数。
 格林算符为
 \begin{equation}
-    \hat{G}(\omega_n) = \sum_{n\sigma} \frac{\dyad{n\sigma}}{\ii \omega_n - \epsilon_n} = \frac{1}{\ii \omega_n - \hat{h}_\text{MF}},
+    \hat{G}(\omega_n) = \sum_{n, \sigma} \frac{\dyad{n\sigma}}{\ii \omega_n - \epsilon_n} = \frac{1}{\ii \omega_n - \hat{h}_\text{MF}},
 \end{equation}
-其中$\hat{h}_\text{MF}$就是单体哈密顿量。d轨道的格林函数就是
+其中$\hat{h}_\text{MF}$就是单体哈密顿量，为
 \begin{equation}
-    G_{\text{dd}, \sigma} = \sum_n \frac{1}{\ii \omega_n - \epsilon_n} \braket{\text{d} \sigma}{n \sigma} \braket{n \sigma}{\text{d} \sigma}.
+    \hat{h}_\text{MF} = \sum_{\vb*{k} \sigma} \epsilon_{\vb*{k}} \dyad{\vb*{k} \sigma} + \sum_\sigma E_{\text{d} \sigma} \dyad{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} ( \ket{\vb*{k} \sigma} \bra{\text{d} \sigma} + \text{h.c.} ).
 \end{equation}
+由此可以计算出所有的格林函数。
+格林算符的求解方式大致如下：我们有
+\[
+    (\ii \omega_n - \hat{h}_\text{MF}) \hat{G}(\omega_n) = 1,
+\]
+分别计算这个方程的不同矩阵元，可以得到
+\begin{equation}
+    (G_{\text{dd}, \sigma}(\omega_n))^{-1} = \ii \omega_n - E_{\text{d}\sigma} - \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\ii \omega_n - \epsilon_{\vb*{k}}}.
+\end{equation}
+从以上松原格林函数可以容易地计算出推迟格林函数
+\begin{equation}
+    (G_{\text{dd}, \sigma}^\text{ret}(\omega))^{-1} = \omega - E_{\text{d}\sigma} - \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}.
+\end{equation}
+显然格林函数偏离了自由格林函数。自能为
+\[
+    \Sigma_{\text{d} \sigma} = \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}
+\]
+其虚部就是能级展宽的量级。可以把自能的实部归结到能级$E_{\text{d}\sigma}$中，因为后者是根本就不知道的。
 
+\[
+    A_{\text{d}\sigma} = \frac{1}{\pi} \frac{\Delta}{(\omega-E_{\text{d}\sigma})^2 + \Delta^2}
+\]
+
+\subsubsection{平均场自洽计算}
+
+\subsubsection{Kondo效应}
+
+在\eqref{eq:impurity-anderson}中$U > \abs{\epsilon_\text{d}} \gg V$时，d轨道上通常会有单个电子，从而导致一个局域磁矩。
+我们使用平均场近似得到了一些定性的结果，本节则讨论在此基础上的涨落。
+$U > \abs{\epsilon_\text{d}}$意味着空的d轨道、半满的d轨道、全满的d轨道分得非常开，因此我们只讨论仅涉及单满的d轨道的一个低能有效模型，为此需要把空的d轨道、全满的d轨道这两个态积掉。
 
 \section{低维系统的特殊性质}
 
-\subsection{一维电子系统}
+\subsection{一维电子系统的玻色化}
 
-一维系统的动量只有一个可能的方向，
+考虑一个一维近独立电子系统。
+一维系统的动量只有一个可能的方向。因此，一维系统的费米面无非是两个点。由对称性这两个点距离动量原点的位置是相同的。我们称它们为\textbf{费米点}。
+
+考虑费米点附近的能量。使用巨正则系综并考虑扣除了化学势的有效哈密顿量，此时做线性近似，有
+\begin{equation}
+    \epsilon_{k} = \pm v_\text{F} (k - k_\text{F}).
+\end{equation}
+方程前面加正负号是因为色散关系是左右对称的，所以在两个费米点处的斜率互为相反数。
+从费米面以下到费米面以上能量总是增加的，于是斜率为正表示$k>0$，斜率为负表示$k<0$。
+
+我们将讨论费米点附近的低能有效理论，则晶格上的坐标表象湮灭算符（即和Wannier波函数有关的那个）几乎以$k_\text{F}$为频率振荡，于是做拟设
+\begin{equation}
+    \hat{c}_{n\sigma} = \ee^{\ii k_\text{F} na} \hat{c}_{\sigma \text{R}} + \ee^{ - \ii k_\text{F} na} \hat{c}_{\sigma \text{L}},
+\end{equation}
+其中$\hat{c}_{\sigma \text{L}}$和$\hat{c}_{\sigma \text{R}}$在空间上是缓变的。
+R和L分别表示对应的模式在$k>0$处（称为\textbf{右模式}），以及对应的模式在$k<0$处（称为\textbf{左模式}）。
+
 
 \end{document}

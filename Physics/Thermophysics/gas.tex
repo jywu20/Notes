@@ -124,6 +124,11 @@ Good physicists have studied under very fine teachers.
 \]
 因此内能只和温度有关。对别的类型的气体这个式子未必成立。
 
+\begin{equation}
+    S = Nk \ln V + \frac{i}{2} Nk \ln T + \const.
+    \label{eq:entropy-from-thermodynamics}
+\end{equation}
+
 \subsection{麦克斯韦速度分布律}
 
 在热平衡时理想气体中气体分子的速度分布是什么样的？实际上可以使用简单的对称性分析得到其速度分布律。
@@ -164,34 +169,62 @@ Good physicists have studied under very fine teachers.
 
 \subsection{配分函数}
 
-理想气体的配分函数是
+首先考虑球形粒子，即只有质心三个自由度的粒子，那么理想气体的经典配分函数是
 \begin{equation}
-    Z = \int \prod_i \dd{p_i} \dd{q_i} \ee^{- \beta \sum_i \frac{p_i^2}{2m}}.
+    Z = \int \prod_i \dd{p_i} \dd{q_i} \ee^{- \beta \sum_i \frac{p_i^2}{2m}} = \prod_i \int \dd{q_i} \int \dd{p_i} \ee^{- \frac{p_i^2}{2m} }.
+    \label{eq:simplest-ideal-gas-partition-def}
 \end{equation}
-首先尝试经典的计算，即认为$p,q$可以连续取值。设单个粒子有$s$个自由度，其中有三个是其质心的坐标，那么
+首先尝试经典的计算，即认为$p,q$可以连续取值。设共有$N$个粒子，则
 \[
-    Z = \prod_i \int \dd{q_i} \int \dd{p_i} \ee^{- \frac{p_i^2}{2m} },
+    \prod_i \int \dd{q_i} = V^{N},
 \]
-其中
+而
 \[
-    \prod_i \int \dd{q_i} = \const \cdot V^{N},
-\]
-前面的常数是粒子内部自由度积分的结果，而
-\[
-    \prod_i \int \dd{p_i} \ee^{- \beta \frac{p_i^2}{2m}} = \left( \frac{\pi m}{\beta} \right)^{\frac{Ns}{2}},
+    \prod_i \int \dd{p_i} \ee^{- \beta \frac{p_i^2}{2m}} = \left( \frac{2\pi m}{\beta} \right)^{\frac{3N}{2}},
 \]
 于是
-\[
-    Z \propto \const \cdot V^{N} \left( \frac{\pi m}{\beta} \right)^{\frac{Ns}{2}},
-\]
-前面的系数并不重要，故略去，得到
 \begin{equation}
-    Z = V^{N} \left( \frac{\pi m}{\beta} \right)^{\frac{Ns}{2}}.
+    Z = V^{N} \left( \frac{2\pi m}{\beta} \right)^{\frac{3N}{2}}.
+    \label{eq:simplest-ideal-gas-partition}
 \end{equation}
+如果我们把经典配分函数\eqref{eq:simplest-ideal-gas-partition-def}当成正确的配分函数用于计算自由能，那么
+\[
+    F = - k T \ln Z = - kNT \ln V - \frac{3}{2} kNT \ln (2\pi m T),
+\]
+从而可以计算熵为
+\begin{equation}
+    S = - \pdv{F}{T} = Nk \ln V + \frac{3}{2} kN \ln T + \frac{3}{2} kN + \frac{3}{2} kN \ln (2\pi m).
+    \label{eq:naive-entropy}
+\end{equation}
+\eqref{eq:naive-entropy}和\eqref{eq:entropy-from-thermodynamics}是一致的——本该如此。\eqref{eq:naive-entropy}的不足之处在于它不满足可加性。
+如果两个分别达到平衡，彼此只隔着一个隔板的同种粒子、温度相同的理想气体系统具有一样的压强，那么抽去隔板之后总系统立即达到平衡。
+% TODO:为什么？虽然直觉上理应如此
+然而，\eqref{eq:naive-entropy}不满足这个条件，因为显然其中的第一项不是线性的。
+这就是吉布斯佯谬——本应具有可加性的熵变得不可加了。
+为了让熵具有可加性我们不得不手动校准其零点，从而需要修改$F$，在其中引入一些不改变热力学预言的项，这表明\eqref{eq:simplest-ideal-gas-partition-def}不是正确的配分函数，它差了一些常数因子。
 
-不过
+考虑全同粒子的不可分辨性（它意味着交换两个粒子虽然会让系统的正则坐标发生变化但并不改变系统状态，为了消除掉这种重复，在配分函数前面加上因子$1/N!$）以及相空间需要划分为相格（它在配分函数前面加上因子$1/h^{3N}$），将\eqref{eq:simplest-ideal-gas-partition}修改为
+\begin{equation}
+    Z = \frac{1}{N!} V^{N} \left( \frac{m}{2\pi \beta \hbar^2} \right)^{\frac{3N}{2}}.
+\end{equation}
+重复以上计算，得到
+\[
+    F = - kNT \ln V - \frac{3}{2} kNT \ln \left(\frac{m T}{2\pi \hbar^2}\right) + k T \ln N!,
+\]
+从而熵为
+\[
+    S = N k \ln V + \frac{3}{2} Nk \ln T + \frac{3}{2} kN + \frac{3}{2} kN \ln \left( \frac{m}{2\pi \hbar^2} \right) - k \ln N!.
+\]
+表面上这个熵表达式仍然没有可加性，但请注意由于经典统计仅仅适用于大粒子数系统，我们可以应用斯特林公式
+\[
+    \ln N! \approx N \ln N - N,
+\]
+然后得到的熵表达式就是可加的了。总之，为了导出正确的熵，不能使用代表点密度的归一化常数为配分函数，而必须加上必要的修正因子。
 
-考虑量子效应，有
+回顾以上修正。关于相空间应该分成相格的问题我们不做过多讨论，如果不加入这个修正因子，最后得到的熵实际上还是具有可加性的。加入这个因子的作用仅仅是为了确保通过经典统计物理计算出来的熵和量子统计的结果一致。
+真正恢复了可加性的实际上是因子$1/N!$。我们知道，吉布斯佯谬只有在混合的两盒气体真正是全同的时候才是佯谬，如果混合的两盒气体是不一样的，那么混合它们就是会有熵增的。
+换而言之，经典配分函数前面的修正因子必须能够区分全同粒子和非全同粒子。
+$1/N!$正是这样一个因子。
 
 \section{微分方程描述}
 
