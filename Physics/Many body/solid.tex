@@ -29,6 +29,8 @@
 \newcommand*{\comment}{\paragraph{注记}}
 \newcommand*{\suchthat}{\quad \text{s.t.} \quad}
 \newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -790,22 +792,120 @@ $U > \abs{\epsilon_\text{d}}$意味着空的d轨道、半满的d轨道、全满�
 
 \subsection{一维电子系统的玻色化}
 
+\subsubsection{费米点附近的有效理论}
+
 考虑一个一维近独立电子系统。
 一维系统的动量只有一个可能的方向。因此，一维系统的费米面无非是两个点。由对称性这两个点距离动量原点的位置是相同的。我们称它们为\textbf{费米点}。
 
 考虑费米点附近的能量。使用巨正则系综并考虑扣除了化学势的有效哈密顿量，此时做线性近似，有
 \begin{equation}
-    \epsilon_{k} = \pm v_\text{F} (k - k_\text{F}).
+    \xi_{k} = \pm v_\text{F} (k - k_\text{F}).
 \end{equation}
 方程前面加正负号是因为色散关系是左右对称的，所以在两个费米点处的斜率互为相反数。
 从费米面以下到费米面以上能量总是增加的，于是斜率为正表示$k>0$，斜率为负表示$k<0$。
 
-我们将讨论费米点附近的低能有效理论，则晶格上的坐标表象湮灭算符（即和Wannier波函数有关的那个）几乎以$k_\text{F}$为频率振荡，于是做拟设
+我们将讨论费米点附近的低能有效理论，则晶格上的布洛赫产生湮灭算符中只有晶格动量集中在$\abs{k_\text{F}}$附近的部分是有意义的。
+由于哈密顿量中不同动量的模式无耦合，可以直接弃去高动量模式，得到有效哈密顿量为
+\[
+    \hat{H}_\text{eff} = \sum_{\text{$k$ near $\pm k_\text{F}$}} \xi_k \hat{c}^\dagger_{k \sigma} \hat{c}_{k \sigma} = \sum_{\text{$k$ near $k_\text{F}$}} v_\text{F} (k - k_\text{F}) \hat{c}^\dagger_{k \sigma} \hat{c}_{k \sigma} - \sum_{\text{$k$ near $-k_\text{F}$}} v_\text{F} (k - k_\text{F}) \hat{c}^\dagger_{k \sigma} \hat{c}_{k \sigma}  ,
+\]
+为了简化，记
 \begin{equation}
-    \hat{c}_{n\sigma} = \ee^{\ii k_\text{F} na} \hat{c}_{\sigma \text{R}} + \ee^{ - \ii k_\text{F} na} \hat{c}_{\sigma \text{L}},
+    p = \begin{cases}
+        k - k_\text{F}, \quad k > 0, \\
+        k_\text{F} - k, \quad k < 0,
+    \end{cases}
 \end{equation}
-其中$\hat{c}_{\sigma \text{L}}$和$\hat{c}_{\sigma \text{R}}$在空间上是缓变的。
-R和L分别表示对应的模式在$k>0$处（称为\textbf{右模式}），以及对应的模式在$k<0$处（称为\textbf{左模式}）。
+并使用$p$来标记布洛赫模式，则
+\begin{equation}
+    \hat{H}_\text{eff} = \sum_{\abs{p} < \Lambda} (v_\text{F} p \hat{c}^\dagger_{ \text{L} p\sigma} \hat{c}_{\text{L} p\sigma} + v_\text{F} p \hat{c}^\dagger_{ \text{R} p\sigma} \hat{c}_{\text{R} p\sigma}),
+\end{equation}
+其中$\Lambda$是一个截断参量，R和L分别表示对应的模式在$k>0$处（称为\textbf{右模式}），以及对应的模式在$k<0$处（称为\textbf{左模式}）。
+在自由哈密顿量中不同自旋之间完全解耦，暂时只考虑一个自旋取值，于是
+\begin{equation}
+    \hat{H}_\text{eff} = \sum_{\abs{p} < \Lambda} (v_\text{F} p \hat{c}^\dagger_{\text{L} p} \hat{c}_{\text{L} p} + v_\text{F} p \hat{c}^\dagger_{\text{R} p} \hat{c}_{\text{R} p}).
+    \label{eq:one-dimension-linear-model}
+\end{equation}
+若以$p$为动量，则$\hat{c}_{\text{R} p}$在坐标空间中对应着什么？容易发现，它对应的坐标空间中的湮灭算符正是$\hat{c}_{n\sigma}$以频率$\pm k_\text{F}$在空间上振荡的振幅，即
+\begin{equation}
+    \hat{c}_{n\sigma} = \ee^{\ii k_\text{F} na} \hat{c}_{\text{R} n \sigma } + \ee^{ - \ii k_\text{F} na} \hat{c}_{\text{L} n \sigma},
+\end{equation}
+它们在空间上是缓变的。% TODO：$\hat{\psi}_{\text{R}}(x)$？？
 
+\subsubsection{玻色化}
+
+首先考虑右模式的电子。
+按照\eqref{eq:one-dimension-linear-model}，对一个能量本征态，将一个动量为$p$的右模式电子变为动量为$p+q$的右模式电子，则得到的结果仍然是一个能量本征态，且能量上升了$v_\text{F} q$。
+而由于粒子数守恒，实际上任何一个能量本征态都可以通过“让费米海中的一些电子的动量增加”构造出来。这表明“将一个动量为$p$的右模式电子变为动量为$p+q$的右模式电子”是一个准粒子模式，其产生算符大体上如下：
+\[
+    \hat{b}_{\text{R} q}^\dagger \sim \sum_p \hat{c}^\dagger_{\text{R} (p+q)} \hat{c}_{\text{R} p} ,
+\]
+但是这样$p$可以取任何大的值，而低能有效理论\eqref{eq:one-dimension-linear-model}仅仅对比较小的$p$成立。
+因此不出意外会产生一个发散的问题。例如，按照\eqref{eq:one-dimension-linear-model}费米海中实际上有无限多的电子，从而不受限制的对$p$求和会导致无穷大的结果。
+可以在$\hat{b}_{\text{R} q}^\dagger$的表达式中引入一个截断，但是更好的做法实际上是使用正规排序。
+设实空间的粒子数密度算符为
+\[
+    \hat{\rho}_\text{R}(x) = \hat{\psi}_\text{R}^\dagger(x) \hat{\psi}_\text{R}(x),
+\]
+它在动量空间的形式为%
+\footnote{它不一定就是动量为$p$的粒子数。}%
+\[
+    \hat{\rho}_\text{R}(p) = \frac{1}{\sqrt{L}} \int \dd{x} \ee^{-\ii p x} \hat{\rho}_\text{R}(x) = \frac{1}{\sqrt{L}} \sum_k \hat{c}^\dagger_{\text{R} (k - p)} \hat{c}_{\text{R} k}.
+\]
+可以看到这个表达式和$\hat{b}^\dagger_{\text{R} p}$之间有线性关系，既然粒子数在没有截断时发散，$\hat{b}^\dagger_{\text{R} p}$必然也发散。
+为了消除掉发散，重新定义粒子数密度算符为其原本的值的正规序：
+\[
+    \hat{\rho}_\text{R}(x) = \normalorder{\hat{\psi}_\text{R}^\dagger(x) \hat{\psi}_\text{R}(x)}, \quad \hat{\rho}_\text{R}(p) = \frac{1}{\sqrt{L}} \sum_k \normalorder{\hat{c}^\dagger_{\text{R} (k - p)} \hat{c}_{\text{R} k}}.
+\]
+计算对易关系得到
+\[
+    \comm*{\hat{\rho}_\text{R}(p)}{\hat{\rho}_\text{R}(p')} = - \frac{p}{2\pi} \delta_{pp'},
+\]
+这几乎就是一个玻色子对易关系了。缩放一下，定义
+\[
+    \hat{b}_{\text{R} p} = \sqrt{\frac{2\pi}{p}} \hat{\rho}_\text{R}(p), \quad \hat{b}^\dagger_{\text{R} p} = \sqrt{\frac{2\pi}{p}} \hat{\rho}_\text{R}(-p),
+\]
+就得到了正确的玻色子产生湮灭算符，它们描述的玻色子就是“将一个动量为$p$的右模式电子变为动量为$p+q$的右模式电子”这种模式。
+
+现在我们需要反过来做正则量子化：在已经找到了一种粒子的产生湮灭算符之后，分析什么样的（定义在坐标空间中的）场能够产生这种粒子。
+\[
+    \hat{\phi}_\text{R}(p) = \frac{2\pi}{\ii p} \hat{\rho}_\text{R}(p),
+\]
+切换到坐标空间中就是
+\[
+    \hat{\rho}_\text{R}(x) = \frac{1}{2\pi} \grad \phi_\text{R}(x).
+\]
+我们写出场的傅里叶变换如下：
+\[
+    \phi_\text{R} (x) = \frac{1}{\sqrt{L}} \sum_p \ee^{- \alpha \abs{p} / 2} \phi_\text{R}(p) \ee^{\ii p x},
+\]
+这可以用来计算对易关系。
+
+定义
+\[
+    \begin{bigcase}
+        \hat{\phi}_\text{R} &= \hat{\phi} + \hat{\theta}, \\
+        \hat{\phi}_\text{L} &= \hat{\phi} - \hat{\theta},
+    \end{bigcase}
+\]
+通过$\hat{\rho}$的对易关系可以得到
+\[
+    \comm*{\hat{\phi}(x')}{\grad \hat{\theta}(x)} = -\ii \pi \delta(x' - x).
+\]
+中间其实还有很多对易关系？
+
+写出
+\[
+    \hat{H} = v_\text{F} \sum_n p \hat{b}^\dagger_{\text{R} p} \hat{b}_{\text{R} p} + p \hat{b}^\dagger_{\text{L} p} \hat{b}_{\text{L} p}
+\]
+% TODO:这确实和\eqref{eq:one-dimension-linear-model}一致吗。。
+\[
+    H = \frac{v_\text{F}}{2\pi} \int \dd{x} (\grad{\phi})^2 + (\grad{\theta})^2
+\]
+
+有相互作用的体系经过玻色化之后也会得到同样的表达式
+\[
+    H = \frac{v_\text{F}}{2\pi} \int \dd{x} (\grad{\phi})^2 + (\grad{\theta})^2
+\]
 
 \end{document}
