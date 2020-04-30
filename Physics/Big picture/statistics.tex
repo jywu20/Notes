@@ -2769,7 +2769,6 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
     \comm*{\hat{A}}{\hat{B}}_\eta = \hat{A} \hat{B} - \eta \hat{B} \hat{A},
 \end{equation}
 在$\hat{A}$和$\hat{B}$构成一组玻色型算符时它取$+1$，在$\hat{A}$和$\hat{B}$构成一组费米型算符时它取$-1$。
-本节的定义和上一节差了一个负号，这是为了和粒子物理中的记号保持一致。
 “费米型算符”和“玻色型算符”的概念是比较奇怪的，我们马上解释它们。
 简单地说，$\eta$可以由下式确定：
 \begin{equation}
@@ -2900,6 +2899,17 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 这就意味着我们可以对$t-t'$做傅里叶变换，从而得到频域上的格林函数，记作$G_{AB}(\omega)$（对场算符格林函数这就是$G_{\sigma \sigma'}(\vb*{r}, \vb*{r}', \omega)$）。
 在自由场的情况下，这就是外加一个周期性载荷（而不是冲击载荷），场给出的响应。
 
+在写下$G_{AB}(t-t')$时我们实际上已经固定了$t$和$t'$的地位，用前者表示$\hat{A}$所在的时刻，用后者表示$\hat{B}$所在的时刻，从而
+\[
+    G_{AB}(t) = -\eta G_{BA}(-t),
+\]
+因为在$G_{BA}$中$t$表示$\hat{B}$的时刻而$t'$表示$\hat{A}$的时刻，所以需要把时间颠倒一下。
+相应的，有
+\[
+    G_{AB}(\omega) = -\eta G_{BA}(-\omega).
+\]
+不过需要注意的是由于要保持因果性，上式并不严格成立，而是差一个无穷小虚部。% TODO
+
 \subsubsection{涨落耗散定理}
 
 本节展示推迟格林函数的一个非常重要的性质。采取海森堡绘景，定义两个算符的\textbf{关联函数}为它们的涨落的乘积的期望，即
@@ -3020,11 +3030,11 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 
 % TODO:似乎以下定义的谱函数只对$\hat{A}$和$\hat{B}$相同的情况才适用
 
-定义
+定义% TODO:什么时候加上$\eta$？？
 \begin{equation}
-    A_{BA}(\omega) = \frac{1}{\pi} \Im G_{BA}^\text{ret}(\omega) = \frac{1}{2 \pi} \int_{-\infty}^\infty \dd{t} \expval*{\comm*{\hat{B}(t)}{\hat{A}(0)}} \ee^{\ii \omega t}
+    A_{BA}(\omega) = \frac{1}{\pi} \Im G_{BA}^\text{ret}(\omega) = \frac{1}{2 \pi} \int_{-\infty}^\infty \dd{t} \expval*{\comm*{\hat{B}(t)}{\hat{A}(0)}_\eta} \ee^{\ii \omega t}
 \end{equation}
-为\textbf{谱函数}。当然，推迟格林函数可以很容易地使用谱函数表示出来：
+为\textbf{谱函数}。当然，推迟格林函数可以很容易地使用谱函数表示出来：% 但是小量$\ii 0^+$的正负号好像错了
 \begin{equation}
     \begin{bigcase}
         \Re G_{BA}^\text{ret}(\omega) &= \primevalue \int_{-\infty}^\infty \dd{\omega'} \frac{A_{BA}(\omega)}{\omega'-\omega} , \\
@@ -3058,9 +3068,9 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 \[
     \begin{aligned}
         A_{BA} (\omega) &= \frac{1}{\pi} \Im G_{BA}(\omega) \\
-        &= \frac{1}{2 \pi \hbar} \int_{-\infty}^\infty \dd{t} \expval*{\comm*{\hat{B}(t)}{\hat{A}(0)}} \ee^{\ii \omega t} \\
+        &= \frac{1}{2 \pi \hbar} \int_{-\infty}^\infty \dd{t} \expval*{\comm*{\hat{B}(t)}{\hat{A}(0)}_\eta} \ee^{\ii \omega t} \\
         &= \frac{1}{2 \pi \hbar} \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \frac{1}{Z} \\
-        & \quad \quad \times \sum_m \left( \mel{m}{\ee^{-\beta E_m} \ee^{\frac{\ii}{\hbar} E_m t} \hat{B}(0) \ee^{- \frac{\ii}{\hbar} \hat{H} t} \hat{A}(0) }{m} - \mel{m}{\ee^{-\beta E_m} \hat{A}(0) \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{- \frac{\ii}{\hbar} E_m t} }{m} \right).
+        & \quad \quad \times \sum_m \left( \mel{m}{\ee^{-\beta E_m} \ee^{\frac{\ii}{\hbar} E_m t} \hat{B}(0) \ee^{- \frac{\ii}{\hbar} \hat{H} t} \hat{A}(0) }{m} - \eta \mel{m}{\ee^{-\beta E_m} \hat{A}(0) \ee^{\frac{\ii}{\hbar} \hat{H} t} \hat{B}(0) \ee^{- \frac{\ii}{\hbar} E_m t} }{m} \right).
     \end{aligned}
 \]
 上式中我们已经将紧邻左矢或右矢的哈密顿算符写成了本征值的形式。通过在每一个期望值中间再插入一组完备正交基，我们得到
@@ -3081,11 +3091,11 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 \]
 通过交换第二项中的$m$和$n$，并计算有关积分，就得到
 \begin{equation}
-    A_{BA}(\omega) = \frac{1}{\hbar Z} \sum_{m,n} \left( \ee^{-\beta E_m} - \ee^{-\beta E_n} \right) \mel{m}{\hat{B}}{n} \mel{n}{\hat{A}}{m} \delta\left( \omega + \frac{E_m - E_n}{\hbar} \right).
+    A_{BA}(\omega) = \frac{1}{\hbar Z} \sum_{m,n} \left( \ee^{-\beta E_m} - \eta \ee^{-\beta E_n} \right) \mel{m}{\hat{B}}{n} \mel{n}{\hat{A}}{m} \delta\left( \omega + \frac{E_m - E_n}{\hbar} \right).
 \end{equation}
 这就是谱表示的具体表达式。考虑到狄拉克函数的性质，可以写出一个不那么对称的表达式：
 \begin{equation}
-    A_{BA}(\omega) = \frac{1}{\hbar Z} \sum_{m,n} \ee^{-\beta E_m} (1 - \ee^{- \beta \hbar \omega}) \mel{m}{\hat{B}}{n} \mel{n}{\hat{A}}{m} \delta\left( \omega + \frac{E_m - E_n}{\hbar} \right). 
+    A_{BA}(\omega) = \frac{1}{\hbar Z} \sum_{m,n} \ee^{-\beta E_m} (1 - \eta \ee^{- \beta \hbar \omega}) \mel{m}{\hat{B}}{n} \mel{n}{\hat{A}}{m} \delta\left( \omega + \frac{E_m - E_n}{\hbar} \right). 
 \end{equation}
 
 从谱表示出发可以获得涨落耗散定理的另一个证明，因为我们可以证明关联函数的形式实际上和谱表示只差了一个常数因子。
@@ -3192,9 +3202,26 @@ $T$是编时算符，它总是重排一个场算符的序列，让时间最早�
 \[
     \text{Fourier transformation of }(- \ii \Theta(t-t') \braket{\text{state1 at $t$}}{\text{state2 at $t'$}}) = \mel{\text{state1}}{\hat{G}(\omega)}{\text{state2}}.
 \]
-因此推迟格林函数实际上是格林算符的矩阵元。从这里我们也可以很容易看到一个性质：若哈密顿量在某表象下是对角化的，则该表象下格林算符也是对角化的，相应的非对角的推迟格林函数在该表象下恒为零。
+因此推迟格林函数实际上是推迟格林算符的矩阵元。
+实际上，考虑到任何一种格林函数对于$\hat{A}$和$\hat{B}$的双线性特征，任何一种格林函数都是某个格林算符的矩阵元。
+从这里我们也可以很容易看到一个性质：若哈密顿量在某表象下是对角化的，则该表象下推迟格林算符也是对角化的，相应的非对角的推迟格林函数在该表象下恒为零。
 当然，通过守恒性的论证可以发现这个性质在有限温理论中也是成立的。
-由于一般的场论的能谱基本上不可能解析求解，对它定义格林算符在实际计算上没有意义，因此通常并不讨论场的格林算符。
+由于一般的场论的能谱基本上不可能解析求解，对它定义推迟格林算符在实际计算上没有意义，因此通常并不讨论场的推迟格林算符，而只是讨论它在乘积态下的矩阵元，也就是各种推迟格林函数。
+
+零温的情况还意味着我们可以去数自由体系中单个粒子本征态的数目。实际上，态密度和谱函数有着非常直接的关系。
+注意到
+\[
+    \delta(\omega' - \omega) = - \frac{1}{\pi} \Im \frac{1}{\omega' - \omega + \ii 0^+},
+\]
+而动量表象下的态密度为
+\[
+    \rho(\omega) = \int \dd[3]{\vb*{k}} \delta(\omega(\vb*{k}) - \omega),
+\]
+于是就发现
+\begin{equation}
+    \rho(\omega) = \int \dd[3]{\vb*{k}} A(\vb*{k}, \omega).
+\end{equation}
+换而言之，谱函数实际上是态密度。
 
 \subsection{松原理论}\label{sec:matsubara-theory}
 
@@ -3701,6 +3728,11 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
     Z = \int \fd{[\bar{\phi}, \phi]} \exp \left( \ii \int \dd{t} \int \dd[D]{\vb*{r}} \left( \pi(\vb*{r}, t) \pdv{\phi(\vb*{r}, t)}{t} - \mathcal{H} \right) \right)
 \]
 相对比，我们发现只需要做Wick转动，并限制时间的积分区域在$0$到$\beta$，就可以从零温场论的配分函数过渡到有限温的虚时间配分函数。
+
+使用路径积分表述有非常多的好处，首先是理论在形式上非常简洁，因此有利于一些数学上的分析；其次，路径积分中时间和空间并无明显差异，且场变量都是经典的（格拉斯曼变量不那么“经典”，但是单纯的反交换肯定比反对易关系简单多了），因此可以做一些正则量子化表述下物理意义不是很清晰的运算。
+例如，可以把场从时域切换到频域，在正则量子化中时间是一个单独被拿出来的参量，因此对时间做傅里叶变换看起来相当奇怪，但在路径积分表述中这就毫无问题。
+又比如，两个彼此之间有相互作用的场会导致所谓的“推迟相互作用”，即某个场某一点通过影响其它场来间接地影响它本身。如果我们只关心某一个场，使用正则量子化方法处理这种问题非常困难，因为需要手动把延时放进仅含我们关心的场的哈密顿量中（很多时候，不扩充哈密顿动力学甚至根本就不能够找到合适的哈密顿量描述这样的系统！），而并没有比较自然的方法可以把其它场消除掉。
+在路径积分表述中，可以很自然地将不需要的场积掉，得到的有效作用量自然地会给出正确的延迟。
 
 \subsubsection{从配分函数导出松原格林函数}
 
