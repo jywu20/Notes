@@ -59,15 +59,15 @@
 \[
     pc + m_e c^2 = p' c + \sqrt{{p_e'}^2 c^2 + m_e^2 c^4},
 \]
-设散射角为$\theta$，计算得到
+设散射角为$\varphi$，计算得到
 \begin{equation}
-    \Delta \lambda = \frac{h}{m_e c} (1 - \cos \theta).
+    \Delta \lambda = \frac{h}{m_e c} (1 - \cos \varphi).
 \end{equation}
 波长移动仅仅和散射角有关，而和其它任何因素，如靶是什么原子等，完全无关。
 
 散射光子的能量为
 \begin{equation}
-    E' = p'c = \frac{E}{1 + \dfrac{E}{m_e c^2}(1 - \cos \theta)} \geq \frac{E}{1 + \dfrac{2 E}{m_e c^2}}.
+    E' = p'c = \frac{E}{1 + \dfrac{E}{m_e c^2}(1 - \cos \varphi)} \geq \frac{E}{1 + \dfrac{2 E}{m_e c^2}}.
 \end{equation}
 
 我们也可以看到为什么经典理论下散射光的波长不应该变化：经典理论下电磁波完全是连续的，这等价于单个光子的能量充分小，因此光子的能量相比于与之碰撞的电子的束缚能很小，因此只能够发生相干散射，因此散射出的光子的波长并未发生变化。
@@ -126,7 +126,7 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
     \ii \hbar \pdv{\psi}{t} = - \frac{\laplacian}{2m} \psi + V \psi.
 \end{equation}
 
-\section{被束缚的电子系统}
+\section{束缚态单电子系统}
 
 \subsection{势阱}
 
@@ -134,55 +134,199 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
 
 无限高，无限厚的势阱：没有任何隧穿。
 
-\subsection{库伦势场中的单电子}
+\subsection{有心力场中的单电子}
+
+\subsubsection{哈密顿量和薛定谔方程}
+
+有心力场中的单个电子的哈密顿量为
+\begin{equation}
+    \hat{H} \psi = \frac{\hat{p}^2}{2m} \psi + V(r) \psi.
+\end{equation}
+求解此问题等价于求解坐标表象下的定态方程
+\begin{equation}
+    \frac{\hat{p}^2}{2m} \psi + V(r) \psi = - \frac{\hbar^2}{2m} \laplacian \psi + V(r) \psi = E \psi,
+    \label{eq:centered-force-eq}
+\end{equation}
+使用球坐标系，以$\theta$为和$z$轴的夹角，$\varphi$为$x$-$y$平面上的转角，则
+\[
+    \hat{p}^2 = -\hbar^2 \laplacian = - \hbar^2 \left( \frac{1}{r^2} \pdv{r} r^2 \pdv{r} + \frac{1}{r^2 \sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{r^2 \sin^2 \theta} \pdv[2]{\varphi} \right) .
+\]
+可以直接分离变量，但让我们首先采取一种物理意义比较明显的变形。注意到轨道角动量算符的平方为
+\[
+    \hat{L}^2 = \hat{\vb*{r}}^2 \hat{\vb*{p}}^2 - (\hat{\vb*{r}} \cdot \hat{\vb*{p}}) (\hat{\vb*{p}} \cdot \hat{\vb*{r}}),
+\]
+在球坐标系下$\vb*{r}$只在$r$方向上有分量，于是上式变成
+\[
+    \hat{L}^2 = r^2 \hat{p}^2 - r \left( - \hbar^2 \pdv[2]{r} \right) r,
+\]
+注意到（实际上这是动量-坐标对易关系的自然推论）
+\[
+    r \pdv[2]{r} r = \pdv{r} r^2 \pdv{r},
+\]
+这就给出了角动量长度平方的一个简洁的表达式：
+\begin{equation}
+    \hat{L}^2 = - \hbar^2 \left( \frac{1}{\sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{\sin^2 \theta} \pdv[2]{\varphi} \right),
+\end{equation}
+当然也可以按照定义直接计算出这个表达式。相应的，哈密顿量在球坐标系下就是
+\[
+    \hat{H} = - \frac{\hbar^2}{2 m r} \pdv[2]{r} r + \frac{\hat{L}^2}{2 m r^2} + V(r).
+\]
+以上对哈密顿量的改写和经典情况可以类比。经典情况下，径向运动是有效势阱中的一维运动，且满足
+\[
+    \frac{p_r^2}{2m} + \frac{L^2}{2mr^2} - \frac{Ze^2}{4\pi \epsilon_0 r} = E,
+\]
+正好是将所有算符替换成实数之后的结果——本该如此。
+
+现在，定态薛定谔方程成为
+\[
+    - \frac{\hbar^2}{2 m r} \pdv[2]{r} (r \psi) + \frac{\hat{L}^2}{2 m r^2} \psi + V(r) \psi = E \psi,
+\]
+算符$\hat{L}^2$仅仅和$\varphi$和$\theta$有关，因此我们可以将径向部分和角向部分做分离变量。
+设
+\[
+    \psi = R(r) Y(\theta, \varphi),
+\]
+则径向部分的方程是
+\begin{equation}
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} \alpha + V(r) \right) R = E R,
+    \label{eq:original-r-equation}
+\end{equation}
+角向部分的方程为
+\begin{equation}
+    \hat{L}^2 Y = \alpha \hbar^2 Y.
+    \label{eq:angle-equation}
+\end{equation}
+其中$\alpha$为常数。
+
+\subsubsection{角向部分的方程的求解}
+
+径向部分的方程包含一个可变的$V(r)$项，而角向部分的方程可以直接解出。
+请注意角向部分实际上是一个拉普拉斯方程的角向部分，因此其解为球谐函数。
+下面简单地展示其求解过程。设
+\[
+    Y(\theta, \varphi) = \Theta(\theta) \Phi(\varphi),
+\]
+代入
+\[
+    - \left( \frac{1}{\sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{\sin^2 \theta} \pdv[2]{\varphi} \right) Y = \alpha Y,
+\]
+得到两个方程
+\[
+    \frac{1}{\Phi} \dv[2]{\Phi}{\varphi} = c,
+\]
+以及
+\[
+    - \left( \frac{1}{\sin \theta} \dv{\theta} \sin \theta \dv{\theta} + \frac{1}{\sin^2 \theta} c \right) \Theta = \alpha \Theta.
+\]
+$\Phi$必须是单值的，因为波函数应该是单值的，于是
+\[
+    c = m^2, \quad m = 0, 1, 2, \ldots,
+\]
+而
+\[
+    - \left( \dv{\cos \theta} (1 - \cos^2 \theta) \dv{\cos \theta} + \frac{1}{1 - \cos^2 \theta} m^2 \right) \Theta = \alpha \Theta.
+\]
+这是一个连带勒让德方程，为了保证$\Theta(\theta)$单值且有界，应有
+\[
+    \alpha = l(l+1), \quad l \geq \abs{m}, \quad l = 0, 1, 2, \ldots,
+\]
+于是\eqref{eq:angle-equation}的一组正交解为
+\[
+    Y(\theta, \varphi) = \ee^{\ii m \varphi} \mathrm{P}_l^m(\cos \theta),
+\]
+其中$\mathrm{P}_l^m$表示缔合勒让德多项式。归一化使用球坐标系的角向积分
+\[
+    \int \sin \theta \dd{\theta} \dd{\varphi},
+\]
+最后得到正交归一化的球谐函数
+% TODO:(-1)^m因子？
+\begin{equation}
+    Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \mathrm{P}_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \quad l = 0, 1, \ldots, m = \pm l, \pm (l-1), \ldots, 0 .
+\end{equation}
+
+球谐函数是$\hat{L}^2$的本征函数，但它带有两个量子数$l$和$m$，这意味着$\hat{L}^2$的本征函数存在简并；$l,m$分别标记了$\hat{L}^2$的本征值和某个不确定的可观察量的本征值。
+注意到球坐标系中
+\[
+    \hat{L}_z = - \ii \hbar \pdv{\varphi},
+\]
+它正是$\Phi(\varphi)$满足的本征方程中的那个算符，因此$m$标记的是$\hat{L}_z$的本征值，$l$标记的是$\hat{L}^2$的本征值。
+这是正确的，因为
+\[
+    m = \pm l, \pm (l-1), \ldots, 0
+\]
+正是角动量代数的重要性质。我们下面记此处的$m$为$m_l$，与自旋角动量在$z$方向上的取值$m_s = \pm \frac{1}{2}$相区分。
+球谐函数$Y_{lm}(\theta, \varphi)$同时是$\hat{L}^2$和$L_z$的本征函数，相应的本征值为
+\begin{equation}
+    \hat{L}^2 Y_{lm} = l(l+1) \hbar^2 Y_{lm}, \quad \hat{L}_z Y_{lm} = m \hbar Y_{lm}.
+\end{equation}
+
+\subsubsection{量子数}
+
+现在径向方程\eqref{eq:original-r-equation}成为了
+\begin{equation}
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} l(l+1) + V(r) \right) R = E R.
+    \label{eq:r-equation}
+\end{equation}
+这是一个单变量的本征值问题，它还会产生一个（而且也只有一个，因为一旦$E$确定了，$R$就确定了，不存在简并）量子数$n$，它标记不同的能量。
+请注意由于角动量部分被分离变量出去了，实际上多出来了一个有效势$l(l+1)$项。
+
+这样，\eqref{eq:centered-force-eq}有一组由$n, l, m_l$标记的正交归一化解，再考虑到自旋自由度，电子的状态就完全确定了。
+通过求解过程可以看出前三个量子数标记了$\hat{H}, \hat{L}^2, \hat{L}_z$的本征值；
+它们是通过分离变量求解坐标空间中的薛定谔方程得到的，因此随着时间变化，它们对应的物理量是守恒的且彼此对易，能够找到这样三个守恒且彼此对易的物理量当然是因为有心力系统的对称性。
+目前尚未引入任何涉及自旋的机制，因此自旋也是恒定不变的。
+于是我们找到了四个标记电子的好量子数：
+\begin{enumerate}
+    \item 主量子数$n$，它标记不同的能量，它是分立的，因为电子陷在一个势阱中，从而是离散谱；
+    \item 角量子数$l$，它标记不同的角动量大小，它是分立的，因为波函数在角方向上是单值的；
+    \item 磁量子数$m_l = 0, \pm 1, \ldots, \pm l$，它标记$z$轴上的角动量分量，同样也是分立的；
+    \item 自旋量子数$m_s = \pm \frac{1}{2}$，它来自电子的内禀旋转自由度；自旋量子数和我们刚才讨论的轨道空间无关。
+\end{enumerate}
+
+这四个量子数直接决定了波函数的形状。主量子数决定了径向概率分布，角量子数和磁量子数决定了波函数的角向概率分布。
+这四个量子数还可以确定其它一些量子数。例如，做宇称变换
+\[
+    (r, \theta, \varphi) \longrightarrow (r, \pi - \theta, \pi + \varphi),
+\]
+径向部分始终不变，若$l$为奇数则球谐函数会差一个负号，从而波函数为奇宇称，若$l$为偶数则球谐函数不变，从而波函数为偶宇称。
+
+纯量子的理论展现出了和经典理论很不同的一些特性。请注意量子理论中电子可以完全没有角动量，这在经典理论下是不可能的——电子会直接落入有心力的力心，比如说原子核。
+然而，哈密顿量\eqref{eq:columb-electron-hamiltonian}中各项不对易从而有量子涨落，因此如果角动量确定为零，那么电子的位置就不能够确定，因此电子并不会落入力心。
+
+\subsubsection{库伦势场}
 
 库伦势场中的单个电子的哈密顿量为
 \begin{equation}
     \hat{H} \psi = \frac{\hat{p}^2}{2m} \psi - \frac{Z}{4\pi \epsilon_0} \frac{e^2}{\abs{\vb*{r}}} \psi.
     \label{eq:columb-electron-hamiltonian}
 \end{equation}
-求解此问题等价于求解定态方程
-\begin{equation}
-    \frac{\hat{p}^2}{2m} \psi - \frac{1}{4\pi \epsilon_0} \frac{e^2}{\abs{\vb*{r}}} \psi = E \psi,
-\end{equation}
-可以直接分离变量，但让我们首先采取一种物理意义比较明显的变形。
+我们常常将这样的体系称为类氢原子，因为它和氢原子的结构除了$Z$可能不一样以外完全一致。
+此时\eqref{eq:r-equation}为
 \[
-    \hat{H} = - \frac{\hbar^2}{2 m r} \pdv[2]{r} r + \frac{\hat{L}^2}{2 m r^2} - \frac{1}{4\pi \epsilon_0} \frac{e^2}{\abs{\vb*{r}}}.
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} l(l+1) - \frac{1}{4\pi \epsilon_0} \frac{e^2}{r} \right) R = E R,
 \]
-算符$\hat{L}^2$仅仅和$\theta$和$\varphi$有关，因此我们可以将径向部分和角向部分做分离变量。
-能够这么容易地分离变量当然是因为库伦势场中的单电子非常对称，因此可以找到很多守恒量。
+显然这是一个束缚在势阱中的电子的方程，它必定有束缚态解，从而可以提供我们需要的主量子数。
 
-标记电子的量子数：
-\begin{enumerate}
-    \item 主量子数$n=1, 2, \ldots$，它标记不同的能量，它是分立的，因为电子陷在一个势阱中，从而是离散谱；
-    \item 角量子数$l = 0, 1, \ldots, n$，它是分立的，因为波函数在角方向上是单值的；
-    \item 磁量子数$m_l = 0, \pm 1, \ldots, \pm l$，它
-\end{enumerate}
+% TODO：拉盖尔方程
+
+\[
+    l = 0, 1, 2, \ldots, n-1.
+\]
 
 可以依稀从量子力学中的氢原子看出一些经典的图像。在经典的原子模型中，粒子可以做椭圆运动，但是运动的能量仅仅关乎一个参数即椭圆的半长轴$a$，而和半短轴$b$无关；半短轴$b$则决定角动量等。
+因此能量和角动量是分开的。角动量可以有不同的指向，因此角动量长度和它在$z$轴上的投影也没有必然的关系（当然，角动量在$z$轴上的投影不可能超过总的角动量长度）
 
-求解出来的解是$\hat{H}, \hat{L}^2, \hat{L}_z$的共同本征态，存在这样的共同本征态是因为这三个量对易。
-
-能级简并度
+求解出氢原子的薛定谔方程的完整解之后，可以发现主量子数为$n$的能级上有$n+1$个可能的角量子数，每个角量子数又允许$2l+1$个磁量子数，而最后还有两个自旋量子数，因此主量子数为$n$的能级上有
 \[
-    g_n = n^2
+    \frac{1}{2} (1 + (n-1)) n = \frac{1}{2}n^2
 \]
-
-\begin{equation}
-    L^2 = l(l+1) \hbar^2
-\end{equation}
-
-磁量子数不改变径向概率密度。
-
-径向运动是有效势阱中的一维运动
-\[
-    \frac{p_r^2}{2m} + \frac{L^2}{2mr^2} - \frac{Ze^2}{4\pi \epsilon_0 r} = E
-\]
-
-纯量子的理论也展现出了和经典理论很不同的一些特性。请注意量子理论中电子可以完全没有角动量，这在经典理论下是不可能的——电子会直接落入原子核。
-然而，哈密顿量\eqref{eq:columb-electron-hamiltonian}有量子涨落，因此如果角动量确定为零，那么电子的位置就不能够确定，因此电子并不会落入原子核。
+个轨道，有$n^2$个电子。
 
 \subsection{跃迁和发光}
+
+电子和电磁场耦合，因此可以在不同能级之间跃迁而发射或吸收光子。
+跃迁包括受激跃迁（电子首先吸收光子，然后发生跃迁）以及自发跃迁（电子直接发生跃迁）。
+对这一过程的完整计算涉及量子电动力学的束缚态，但通常对能标不是非常高的过程，使用量子化的原子和经典电动力学就足够计算一些问题。
+受激跃迁只需要量子化原子加上经典电动力学即可完全解释，而自发跃迁不能使用经典电动力学解释而必须将光场量子化，因为“自发”意味着光场的真空涨落，这要使用量子理论处理。
 
 \subsubsection{跃迁的费米黄金法则}
 
@@ -211,7 +355,7 @@ $a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=
 \begin{equation}
     P_k(t) = \frac{4 \abs*{\mel{k}{\hat{H}'}{m}}^2}{\hbar^2} \frac{\sin^2 \omega_{km} t / 2}{\omega_{km}^2}.
 \end{equation}
-现在假如系统实际上是一个开放系统，且诸$\ket{m}$构成一组偏好基，则可以使用一个经典马尔可夫过程来描述系统。
+现在假如系统实际上是一个开放系统，且诸$\ket{m}$构成一组偏好基，则可以使用一个经典马尔可夫过程来描述系统的演化，而使用经典的态（各个态出现的概率就是$\ket{m}$的振幅的模长平方）描述系统的状态。
 系统每个时刻都有一定概率跃迁，也有一定概率不跃迁而等待下一时刻，此时跃迁速率为
 \begin{equation}
     \Gamma_k(t) = \dv{P_k}{t} = \frac{2 \abs*{\mel{k}{\hat{H}'}{m}^2}}{\hbar^2} \frac{\sin \omega_{km} t}{\omega_{km}}.
@@ -232,15 +376,11 @@ $a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=
     \Gamma(t) = \frac{2\pi}{\hbar} \rho(E) \abs*{\mel{k}{\hat{H}'}{m}^2}.
 \end{equation}
 
-跃迁的两种机制：受激跃迁、自发跃迁
-
-受激跃迁只需要量子化原子+经典电动力学即可解决，自发跃迁必须使用QED
-
-爱因斯坦有唯象理论
+\subsubsection{爱因斯坦的唯象理论}
 
 考虑温度为$T$的空腔中有大量相同的原子，显然处于定态$i$和$j$的原子需要满足玻尔兹曼分布率
 \[
-    N_i \propto \ee^{-\frac{E_i}{kT}},
+    N_i \propto \ee^{-\frac{E_i}{k_\text{B} T}},
 \]
 \[
     \frac{N_j}{N_i} = \ee^{-\hbar \omega_{ji} / kT},
@@ -264,5 +404,53 @@ $T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to
 \[
     A_{ji} = \frac{\omega_{ji}^3}{3\pi \epsilon_0 \hbar c^3}
 \]
+
+\subsubsection{自发跃迁和受激跃迁}
+
+\subsubsection{选择定则}
+
+不满足选择定则的跃迁称为\textbf{禁戒跃迁}。通过磁偶极跃迁、电四极子跃迁、双光子跃迁等方法，禁戒跃迁也是可以发生的，但是相对来说发生概率不大，从而对应的能级为亚稳态。
+
+\subsection{磁性}
+
+\subsubsection{磁矩}
+
+轨道磁矩。经典理论：
+\[
+    \hat{L} = m_\text{e} \vb*{r} \times \dv{\vb*{r}}{t} = 2 m_\text{e} \dv{\vb*{S}}{t},
+\]
+电磁学中
+\[
+    \vb*{\mu} = I \vb*{S} = - \frac{e \vb*{S}}{\tau},
+\]
+就有
+\[
+    \vb*{\mu} = - \frac{e}{2m_\text{e}} \vb*{L},
+\]
+\begin{equation}
+    \vb*{\mu}_l = - \frac{\mu_\text{B}}{\hbar} \vb*{L},
+\end{equation}
+其中
+\begin{equation}
+    \mu_\text{B} = \frac{e\hbar}{2m_\text{e}}
+\end{equation}
+称为\textbf{玻尔磁子}，为电子磁矩的最小单位。
+
+\begin{equation}
+    \vb*{\mu}_s = - \frac{e}{m_\text{e}} \vb*{S}
+\end{equation}
+
+\subsubsection{半经典理论}
+
+轨道角动量有明确的经典意义，于是可以使用半经典理论描述它。\textbf{拉莫尔进动}，角动量在一个锥面上运动
+
+如果磁场是不均匀的，那么磁矩不仅受到力矩还受力。
+
+自旋并没有经典对应。表面上可以将它看成电子绕着轴的运动，但是这样磁矩的值会差一个因子$2$。
+自旋磁矩的确定直接来自QED。
+
+\subsubsection{精细结构}
+
+自旋-轨道耦合。
 
 \end{document}
