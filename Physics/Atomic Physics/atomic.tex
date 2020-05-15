@@ -21,7 +21,6 @@
 
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\ii}{\mathrm{i}}
-\renewcommand*{\dd}{\mathop{}\!\mathrm{d}}
 \newcommand*{\st}{\quad \text{s.t.} \quad}
 \newcommand*{\const}{\mathrm{const}}
 \newcommand*{\natnums}{\mathbb{N}}
@@ -30,9 +29,10 @@
 \DeclareMathOperator{\timeorder}{T}
 \newcommand*{\ogroup}[1]{\mathrm{O}(#1)}
 \newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
+\DeclareMathOperator{\legpoly}{P}
 
 \title{原子物理}
-\author{wujinq}
+\author{吴何友}
 
 \begin{document}
 
@@ -47,6 +47,8 @@
 本节总结一些原子物理中常见的不能够仅仅使用经典力学加上经典电磁场理论讨论的问题。本节给出的解答仍然是半经典的，也即，并不直接使用第一性的量子理论。
 
 \subsubsection{黑体辐射}
+
+% 韦恩定律，金斯公式，等等
 
 \subsubsection{光电效应}
 
@@ -122,9 +124,15 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
 由于传统上认为是波的对象实际上具有粒子性，传统上认为是粒子的对象实际上具有波动性，需要寻找一个波动方程，被它描述的波同时也能够被赋予粒子性的意义。
 这种波称为\textbf{物质波}或\textbf{德布罗意波}。
 
+量子力学给出以下薛定谔方程：
 \begin{equation}
     \ii \hbar \pdv{\psi}{t} = - \frac{\laplacian}{2m} \psi + V \psi.
 \end{equation}
+如果考虑磁场，那么就有
+\begin{equation}
+    \ii \hbar \pdv{\psi}{t} = - \frac{(\nabla - \ii e \vb*{A}/c)^2}{2m} \psi + V \psi.
+\end{equation}
+这当然只是“磁场让动理动量和正则动量不同”的量子版本。
 
 \section{束缚态单电子系统}
 
@@ -232,16 +240,16 @@ $\Phi$必须是单值的，因为波函数应该是单值的，于是
 \]
 于是\eqref{eq:angle-equation}的一组正交解为
 \[
-    Y(\theta, \varphi) = \ee^{\ii m \varphi} \mathrm{P}_l^m(\cos \theta),
+    Y(\theta, \varphi) = \ee^{\ii m \varphi} \legpoly_l^m(\cos \theta),
 \]
-其中$\mathrm{P}_l^m$表示缔合勒让德多项式。归一化使用球坐标系的角向积分
+其中$\legpoly_l^m$表示缔合勒让德多项式。归一化使用球坐标系的角向积分
 \[
     \int \sin \theta \dd{\theta} \dd{\varphi},
 \]
 最后得到正交归一化的球谐函数
 % TODO:(-1)^m因子？
 \begin{equation}
-    Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \mathrm{P}_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \quad l = 0, 1, \ldots, m = \pm l, \pm (l-1), \ldots, 0 .
+    Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \legpoly_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \quad l = 0, 1, \ldots, m = \pm l, \pm (l-1), \ldots, 0 .
 \end{equation}
 
 球谐函数是$\hat{L}^2$的本征函数，但它带有两个量子数$l$和$m$，这意味着$\hat{L}^2$的本征函数存在简并；$l,m$分别标记了$\hat{L}^2$的本征值和某个不确定的可观察量的本征值。
@@ -375,6 +383,8 @@ $a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=
 \begin{equation}
     \Gamma(t) = \frac{2\pi}{\hbar} \rho(E) \abs*{\mel{k}{\hat{H}'}{m}^2}.
 \end{equation}
+这样，如果我们有数目巨大的一系列完全相同的系统，总数为$N$，它们之间相互影响很小，那么在$\dd{t}$时间内，发生跃迁的系统的数目几乎确定为$N \Gamma(t) \dd{t}$。
+因此可以列出某个状态的系统的数目服从的微分方程。
 
 \subsubsection{爱因斯坦的唯象理论}
 
@@ -382,21 +392,53 @@ $a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=
 \[
     N_i \propto \ee^{-\frac{E_i}{k_\text{B} T}},
 \]
+或者写成
 \[
-    \frac{N_j}{N_i} = \ee^{-\hbar \omega_{ji} / kT},
+    \frac{N_j}{N_i} = \ee^{-\hbar \omega_{ji} / kT}.
 \]
-平衡态时从$E_j > E_i$向上跃迁跃迁率为
+能够达到热力学平衡意味着电子需要在不同能级之间跃迁。
+电子和电磁场有耦合，因此电子在不同能级上跃迁确实是可以的。跃迁发生的机制可能有这么几种：
+\begin{enumerate}
+    \item 自发发射，也就是电子放出一个光子，跃迁到较低的能级；
+    \item 受激发射，即电子先吸收一个光子再放出一个光子，然后发生跃迁；
+    \item 吸收，即电子吸收一个光子然后跃迁到较高的轨道上。
+\end{enumerate}
+请注意受激发射和吸收可以使用量子化的原子和一个经典电磁场耦合来解释，但是自发发射在这个框架下是很难解释的，因为一个激发态的原子放在完全没有电磁场的空间内照样会有自发发射。
+对这一现象的完整解释显然涉及真空涨落，因此需要量子电动力学。
+
+设温度为$T$的光场中频率为$\omega$附近的能量密度为$u(\omega, T)$。设有两个能级$i$和$j$，且$E_j > E_i$。
+我们假定（之后会通过量子力学严格证明）自发发射的跃迁率和$u$无关，而受激发射和吸收的跃迁率正比于$u(\omega_{ji}, T)$，其中
+\begin{equation}
+    \hbar \omega_{ji} = E_j - E_i,
+    \label{eq:photon-energy}
+\end{equation}
+这样在这两个能级之间的自发发射、受激发射、吸收的跃迁率分别是
 \[
-    \lambda_{ij} = B_{ij} u(\omega_{ji}, T),
+    A_{ji} N_j, \quad B_{ji} N_j u(\omega_{ji}, T), \quad C_{ij} N_i u(\omega_{ji}, T).
 \]
+能级$i$向上跃迁到$j$的跃迁率为
 \[
-    \lambda_{ji} = B_{ji} u(\omega_{ji}, T) + A_{ji},
+    \lambda_{ij} = C_{ij} u(\omega_{ji}, T),
 \]
-$B$为受激发射系数，$A$为自发发射系数。平衡时两者相等，即有
+能级$j$向下跃迁到$i$的跃迁率为
 \[
-    N_i B_{ij} u(\omega_{ji}, T) = N_j (B_{ji} u(\omega_{ji}, T) + A_{ji})
+    \lambda_{ji} = B_{ji} u(\omega_{ji}, T) + A_{ji}.
 \]
-$T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to \infty$，$B_{ij} = B_{ji}$，
+平衡时两者相等，即有
+\[
+    N_i C_{ij} u(\omega_{ji}, T) = N_j (B_{ji} u(\omega_{ji}, T) + A_{ji})
+\]
+$T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to \infty$，而上式仍然成立，因此$C_{ij} = B_{ji}$%
+\footnote{请注意对温度的依赖被完全归入$u(\omega, T)$中，系数$C$和$B$由电子和光场耦合的方式决定，因此不依赖温度。}%
+，这样就有
+\[
+    u(\omega_{ji}) = \frac{A_{ji} / B_{ji}}{\ee^{\omega_{ji} \hbar / k T} - 1}.
+\]
+由于原子能级可以随意调整，我们有
+\[
+    u(\omega) = \frac{A_{ji} / B_{ji}}{\ee^{\omega \hbar / k T} - 1}.
+\]
+
 \[
     u = \frac{\hbar \omega^3}{\pi^2 c^3} \frac{1}{\ee^{\hbar \omega / kT} - 1}
 \]
@@ -405,9 +447,53 @@ $T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to
     A_{ji} = \frac{\omega_{ji}^3}{3\pi \epsilon_0 \hbar c^3}
 \]
 
-\subsubsection{自发跃迁和受激跃迁}
+\subsubsection{跃迁系数和选择定则}
 
-\subsubsection{选择定则}
+\begin{equation}
+    B_{ji} = \frac{4\pi^2 e^2}{3 \hbar^2} \abs{\expval*{\vb*{r}_{ji}}}^2,
+\end{equation}
+其中
+\begin{equation}
+    e \expval*{\vb*{r}_{ji}} = e \int \dd[3]{\vb*{r}} \psi_i^*(\vb*{r}) \vb*{r} \psi_j(\vb*{r})
+    \label{eq:electro-dipole}
+\end{equation}
+为电偶极矩。也即，受激发射系数主要由电偶极矩确定。对波长非常短的光需要考虑电四极辐射。
+
+\eqref{eq:electro-dipole}中的波函数对$(r, \theta, \varphi)$是分离变量的，而
+\[
+    \begin{aligned}
+        r_x &= r \sin \theta \cos \varphi, \\
+        r_y &= r \sin \theta \sin \varphi, \\
+        r_z &= r \cos \theta 
+    \end{aligned}
+\]
+也是分离变量的。
+记$\psi_1$和$\psi_2$的量子数分别是$n_1, l_1, m_1$和$n_2, l_2, m_2$。
+\eqref{eq:electro-dipole}给出非零结果的必要条件是其角部分均不为零。
+在$\varphi$方向上，积分是
+\[
+    \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \cos \varphi \ee^{\ii m_2 \varphi} \vb*{e}_x + \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \sin \varphi \ee^{\ii m_2 \varphi} \vb*{e}_y + \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \ee^{\ii m_2 \varphi} \vb*{e}_z,
+\]
+让三个分量不全为零的可能取值是：
+\[
+    m_2 - m_1 = \pm 1, 0.
+\]
+在$\theta$方向上，积分是
+\[
+    \int_0^\pi \dd{\theta} \sin \theta \legpoly_{l_1}^{m_1} (\cos \theta) \legpoly_{l_2}^{m_2} (\cos \theta) (\vb*{e}_x + \vb*{e}_y) + \int_0^\pi \dd{\theta} \cos \theta \legpoly_{l_1}^{m_1} (\cos \theta) \legpoly_{l_2}^{m_2} (\cos \theta) \vb*{e}_z,
+\]
+使用勒让德多项式的性质，可以证明让三个分量不全为零的可能取值为
+\[
+    l_2 - l_1 = \pm 1.
+\]
+总之，要让受激发射系数不为零，需要
+\begin{equation}
+    \Delta m = 0, \pm 1, \quad \Delta l = \pm 1.
+\end{equation}
+这就是\textbf{单电子原子跃迁的选择定则}。
+
+实际上，也可以通过对称性分析得到这个结论。
+% TODO：这个过程到底涉及多少光子？？
 
 不满足选择定则的跃迁称为\textbf{禁戒跃迁}。通过磁偶极跃迁、电四极子跃迁、双光子跃迁等方法，禁戒跃迁也是可以发生的，但是相对来说发生概率不大，从而对应的能级为亚稳态。
 
@@ -455,9 +541,7 @@ $T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to
 
 \section{多电子系统}
 
-\subsection{波函数的交换对称}
-
-轨道部分对称则自旋部分反对称；轨道部分反对称则自旋部分对称。
+1轨道部分对称则自旋部分反对称；轨道部分反对称则自旋部分对称。
 
 \subsection{双电子原子}
 
