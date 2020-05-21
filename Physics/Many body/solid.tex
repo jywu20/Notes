@@ -24,6 +24,7 @@
 \DeclareMathOperator{\timeorder}{T}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\sgn}{sgn}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -62,6 +63,9 @@
 $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 
 对离散格点系统，使用$\pair{i, j}$表示最接近的一对格点。
+
+在不涉及自旋-轨道耦合的场合，在书写哈密顿量时我们直接略去自旋的下标，这是合理的，因为只需要把不考虑自旋的哈密顿量中的各个产生湮灭算符根据自旋守恒的性质机械地加上自旋下标再求和就能够得到完整的哈密顿量。
+在需要实际计算粒子数时就不能这么做了。
 
 \section{物质的组成}
 
@@ -511,7 +515,10 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
     \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{\vb*{k}}(\vb*{r}) = \epsilon u_{\vb*{k}}(\vb*{r}).
     \label{eq:block-energy-problem}
 \end{equation}
-在$\vb*{k}$已知的情况下求解该本征值问题，可以得到一组$u$以及对应的$E$。由于先前要求$u(\vb*{r})$是周期函数，该本征值问题必定给出离散谱，也即，我们会获得一组$(\psi_{n \vb*{k}}, \epsilon_{n \vb*{k}})$，使得
+在$\vb*{k}$已知的情况下求解该本征值问题，可以得到一组$u$以及对应的$E$。由于先前要求$u(\vb*{r})$是周期函数，该本征值问题必定给出离散谱%
+\footnote{还可以从另一个角度理解为什么会出现多条能带。自由电子的能谱是抛物线，既然是在晶体内，动量会被约束在第一布里渊区内部，抛物线穿过第一布里渊区边界而折返回来，这样反复和自我交叉。
+现在加上相互作用，相互作用会抹去奇异性，从而交叉点退开，自我交叉的单一能带分离成一系列不相交的波浪线，这就得到了一系列不同的能带。}%
+，也即，我们会获得一组$(\psi_{n \vb*{k}}, \epsilon_{n \vb*{k}})$，使得
 \begin{equation}
     \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} u_{n \vb*{k}}(\vb*{r}).
 \end{equation}
@@ -1079,14 +1086,18 @@ $\hat{H}_1$会让半满的d轨道变成全满，或者让半满的d轨道变成�
     \hat{\psi}_\text{L} \sim \ee^{\ii \phi_\text{L}(x)}
 \]
 
-\subsubsection{Anderson局域化}
+\subsection{Anderson局域化}
 
 \subsection{超导}
 
-电子之间可以通过交换声子来产生相互作用
-\[
-    \hat{H} = \frac{1}{2N} \sum_{\vb*{k}, \vb*{k}', \vb*{q}'} \sum_{\alpha, \beta} \abs{M_{\vb*{q}}}^2 
-\]
+\subsubsection{交换声子导致的有效电子吸引相互作用}
+
+电子-声子相互作用的顶角为一个电子入射，一个电子出射，产生/消灭一个声子。
+现在积掉声子，并只考虑最低阶修正，则电子之间可以通过交换声子来产生一个四电子相互作用
+\begin{equation}
+    \hat{H}_{4\text{e}} = \frac{1}{2N} \sum_{\vb*{k}, \vb*{k}', \vb*{q}'} \sum_{\alpha, \beta} \abs{M_{\vb*{q}}}^2 \frac{\omega_{\vb*{q}}}{(\epsilon_{\vb*{k}} - \epsilon_{\vb*{k}+\vb*{q}})^2 - \omega_{\vb*{q}}^2} \hat{c}^\dagger_{(\vb*{k}+\vb*{q}) \alpha} \hat{c}^\dagger_{(\vb*{k}'-\vb*{q}) \beta} \hat{c}_{\vb*{k}' \beta} \hat{c}_{\vb*{k} \alpha}.
+\end{equation}
+更高阶的有效相互作用已经忽略。
 
 考虑低能有效理论，假设我们需要考虑的过程发生在费米面附近，假设所有能量接近于$\epsilon_\text{F}$
 
@@ -1146,8 +1157,13 @@ $\vb*{k} + \vb*{k}' = 0$的过程是最重要的，此时发生相互作用的�
 
 \subsection{二维正方晶格的反铁磁长程序}
 
+\subsubsection{二维正方晶格上的自旋}
+
 费米子体系中可以有各种各样的密度波：自旋密度波、电荷密度波、超导配对密度波等。所谓密度波实际上就是一种长程序，它在空间中有一种周期性振荡，可以是相位的振荡也可以是大小的振荡。
-也即，这样的长程序对应的序参量形如
+也即，这样的长程序对应的序参量形如%
+\footnote{请注意这个序参量实际上是一种二电子集体运动模式，即相邻的两个电子的自旋总是保持一上一下的这种运动模式。
+这暗示我们，如果需要超越平均场近似的理论，只需要把这种模式定义成一个新的（玻色）场就可以。
+这个技巧和一维电子系统的玻色化很相似。}%
 \begin{equation}
     \Delta(\vb*{r}) \sim \Delta_0 \ee^{\ii \vb*{Q} \cdot \vb*{r}}.
 \end{equation}
@@ -1173,7 +1189,9 @@ $\vb*{k} + \vb*{k}' = 0$的过程是最重要的，此时发生相互作用的�
     (-1)^i = (-1)^{i_x + i_y}
 \]
 的简写。为了方便起见，我们把$(i_x + i_y)$为奇数的格点的全体记为$A$，将$(i_x + i_y)$为偶数的格点的全体记为$B$，于是$A$中任何一个格点的近邻格点都在$B$中，反之亦然。
-如果$\vb*{\phi}$非零，那么显然$\expval*{\hat{\vb*{S}}_i}$在$i \in A$时和$\expval*{\hat{\vb*{S}}_i}$在$i \in B$时差一个负号，正好意味着形成了反铁磁序。
+如果$\vb*{\phi}$非零，那么显然$\expval*{\hat{\vb*{S}}_i}$在$i \in A$时和$\expval*{\hat{\vb*{S}}_i}$在$i \in B$时差一个负号，即相邻的自旋一定是反向的，正好意味着形成了反铁磁序。
+
+不失一般性地令晶格常数为1，则第一布里渊区为$[-\pi, \pi)^2$。在形成了一个完整的反铁磁序之后序参量$\Delta$的周期应该是两个格点，于是应有$\vb*{Q}=(\pi, \pi)$。
 
 \subsubsection{平均场近似}
 
@@ -1205,11 +1223,7 @@ $\vb*{k} + \vb*{k}' = 0$的过程是最重要的，此时发生相互作用的�
 \begin{equation}
     \hat{H}_\text{int} = - \sum_i (-1)^i \hat{S}_i^z \Delta = - \sum_i (-1)^i \Delta (\hat{c}_{i\uparrow}^\dagger \hat{c}_{i \uparrow} - \hat{c}_{i \downarrow}^\dagger \hat{c}_{i \downarrow}).
 \end{equation}
-不失一般性地令晶格常数为1，则第一布里渊区为$[-\pi, \pi)^2$，且
-\[
-    (-1)^i = \ee^{\ii \pi (i_x + i_y)},
-\]
-设$\vb*{Q}=(\pi, \pi)$，则相互作用哈密顿量可以写成以下傅里叶变换的形式：
+设$\vb*{Q}=(\pi, \pi)$，则相互作用哈密顿量可以写成以下傅里叶变换的形式： 
 \begin{equation}
     \hat{H}_\text{int} = - \sum_i \ee^{\ii \vb*{Q} \cdot \vb*{r}_i} \Delta (\hat{c}_{i\uparrow}^\dagger \hat{c}_{i \uparrow} - \hat{c}_{i \downarrow}^\dagger \hat{c}_{i \downarrow}) 
     = - \Delta \sum_{\vb*{k}} (\hat{c}_{(\vb*{k} + \vb*{Q})\uparrow}^\dagger \hat{c}_{\vb*{k} \uparrow} - \hat{c}_{(\vb*{k}+\vb*{Q}) \downarrow}^\dagger \hat{c}_{\vb*{k} \downarrow}).
@@ -1230,7 +1244,7 @@ $\vb*{k} + \vb*{k}' = 0$的过程是最重要的，此时发生相互作用的�
 \end{equation}
 这样可以得到两条能带，在$\Delta$为零时它们可以交叉，在$\Delta$不为零时能带交叉的部位就打开了一个能隙。
 
-\subsubsection{“热点”}
+\subsubsection{“热点”和它附近的低能有效理论}
 
 \eqref{eq:2dim-square-spin-mf}是\eqref{eq:2dim-square-spin}在反铁磁序相的一个有效理论。反铁磁序破缺了晶格上的平移不变性，因为反铁磁序状态中每个晶格和临近的晶格的自旋差一个负号。
 反铁磁序还保留了一部分平移不变性：子格点$A$和$B$上仍有平移不变性，这两个子格点对应的倒格矢都是$\vb*{Q}$。
@@ -1242,15 +1256,64 @@ $\vb*{k} + \vb*{k}' = 0$的过程是最重要的，此时发生相互作用的�
 布里渊区变小当然是因为原胞变大了——从单个格点变成了一个$A$格点加上一个$B$格点。
 
 % TODO
-布里渊区折叠了，费米面交叉处打开能隙，形成一系列小费米pocket。
+布里渊区折叠了，费米面交叉处打开能隙，形成一系列小费米pocket。热点附近的$\vb*{k}$和$\vb*{k} + \vb*{Q}$都在热点附近。
 
-超越平均场的涨落：低能激发的自由度是什么？
-
-最基本的散射过程：一个自旋波模式和费米子发生散射
-如果是低能有效理论，那么由于能标要对齐，$\epsilon_{\vb*{k}}, \epsilon_{\vb*{k} + \vb*{q}}$
+接下来讨论在热点附近的低能有效理论。\eqref{eq:2dim-square-spin}中的相互作用项是一个电子和一个自旋波模式（这是玻色子）发生散射，得到另一个电子，%
+\footnote{自旋波模式是高能电子被积掉之后得到的，和低能费米子是两群不同的电子。}%
+因此低能有效理论的散射项形如
+\[
+    \hat{\phi}_{\vb*{q}} \hat{c}^\dagger_{\vb*{k}+\vb*{q}\sigma} \hat{c}_{\vb*{k}\sigma'},
+\]
+由于是低能有效理论，我们认为形成了一个基本上稳定的反铁磁序，于是$\vb*{q}$接近$\vb*{Q}$，而电子能量$\epsilon_{\vb*{k}}$和$\epsilon_{\vb*{k}+\vb*{q}}$都在费米面附近。
+这些条件只有在热点附近才能达到。
+当然由于热点是费米面交叠之后打开能隙的位置，在这附近有低能有效理论是非常合理的。
+这样，一个散射过程涉及两个热点。分别用1和2标记两个热点，记它们的动量为$\vb*{K}_1$和$\vb*{K}_2$，则有
+\[
+    \vb*{K}_2 = \vb*{K}_1 + \vb*{Q},
+\]
+并重新定义$\vb*{q}$和$\vb*{k}$为它们偏离$\vb*{Q}$和$\vb*{K}_1$的大小。这样，相互作用哈密顿量就是
+\[
+    \hat{\vb*{\phi}}_{\vb*{q}} \cdot (\sum_{\alpha, \beta} \hat{c}^\dagger_{1(\vb*{k} + \vb*{q})\alpha} \vb*{\sigma}_{\alpha \beta} \hat{c}_{2\vb*{k} \beta} + \text{h.c.}),
+\]
+完整的有效理论的哈密顿量为
+\begin{equation}
+    \hat{H}_\text{eff} = \sum_{\vb*{k}, \sigma} (\xi_{1\vb*{k}} \hat{c}^\dagger_{1\vb*{k} \sigma} \hat{c}_{1 \vb*{k} \sigma} + \xi_{2\vb*{k}} \hat{c}^\dagger_{2\vb*{k} \sigma} \hat{c}_{2 \vb*{k} \sigma}) + \hat{H}[\vb*{\phi}] + \lambda \sum_{\vb*{q}} \hat{\vb*{\phi}}_{\vb*{q}} \cdot (\sum_{\alpha, \beta} \hat{c}^\dagger_{1(\vb*{k} + \vb*{q})\alpha} \vb*{\sigma}_{\alpha \beta} \hat{c}_{2\vb*{k} \beta} + \text{h.c.}).
+    \label{eq:2dim-square-spin-eff}
+\end{equation}
+上式中没有明确提玻色场——也就是自旋波场——的自由哈密顿量。这个自由哈密顿量通常是通过对称性分析得出的。
+% TODO：为什么没有涉及别的场？一维电子气体的玻色化就涉及两个场
 
 \[
-    \hat{H}_\text{eff} = \lambda (\phi_{\vb*{q}} \hat{c}^\dagger \hat{c}) + \hat{H}[\phi] + 
+    \xi_{\vb*{k}} = \vb*{v}_1 \cdot \vb*{k}
 \]
+
+\subsubsection{朗道阻尼}
+
+现在我们尝试把电子完全积掉，只留下玻色型的自旋波模式。需要指出的是这个操作并不总是可行的：由于自旋波模式和电子都是低能自由度，简单地积掉其中一个自由度可能不能得到一个良定义的有效理论。
+实际上，对二维体系的确会有这种棘手的细节。
+下面的操作都是在默认确实可以积掉电子的前提下进行的。
+
+从\eqref{eq:2dim-square-spin-eff}可以看出，一个自旋波模式可以衰变成一对电子空穴对，或者说一个自旋波模式可以将动量转移给一个电子而得到另一个电子，而自身湮灭。
+因此自旋波模式是有有限的寿命的。由费米黄金法则，
+\[
+    \frac{1}{\tau} \sim \lambda^2 \int 
+\]
+总之最后自旋波模式的寿命为
+\begin{equation}
+    \frac{1}{\tau} \sim \frac{\lambda^2}{\abs{\vb*{p}_1 \times \vb*{p}_2}} \omega = \gamma \omega.
+\end{equation}
+衰变几率会直接反映在$\vb*{\phi}$的格林函数——从而有效作用量——中。
+\[
+    G_{\vb*{\phi}}^{-1} = \ii \gamma \abs{\omega} + \cdots = \ii  \gamma \sgn(\omega) \omega,
+\]
+第二个等号是为了正确的解析延拓。这就意味着自旋波模式的有效热力学作用量为
+\[
+    S_\text{eff} = \sum_{\vb*{q}, \omega_n} \vb*{\phi}(-\vb*{q}, -\omega_n) (\gamma \abs{\omega_n} + \omega_n^2 + a \vb*{q}^2 + \cdots) \vb*{\phi}(\vb*{q}, \omega_n), 
+\]
+$\omega_n^2$项和$\vb*{k}^2$项可以容易地切换到实空间，它们分别对应着时间导数平方项$(\partial_\tau \phi)^2$和梯度平方项$(\grad{\phi})^2$，但$\abs{\omega_n}$在实空间中没有简单的形式。
+
+\subsubsection{Hertz理论}
+
+最后我们讨论上一节得到的低能有效理论的
 
 \end{document}
