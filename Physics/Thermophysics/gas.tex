@@ -250,7 +250,7 @@ $1/N!$正是这样一个因子。
 \end{enumerate}
 前几个假设要求气体分子是简单的点粒子且气体稀薄，最后一个假设（称为\textbf{分子混沌假设}）并不是非常显然，但通过BBGKY层级可以证明它是正确的。
 % TODO
-把每个气体分子的坐标和动量都绘制在一个六维空间$(\vb*{r}, \vb*{p})$中
+把每个气体分子的坐标和动量都绘制在一个六维空间$(\vb*{r}, \vb*{p})$中%
 \footnote{注意这不是系统的相空间而是单个粒子的相空间，系统的相空间是一个$6N$维空间。}%
 这样，
 
@@ -268,17 +268,28 @@ $1/N!$正是这样一个因子。
 
 \begin{equation}
     \pdv{\rho}{t} + \div{\rho \vb*{v}} = 0.
+    \label{eq:transportation-eq}
 \end{equation}
 
+\subsubsection{声波}
+
+当速度的时间变化相比于空间输运非常大时，即
+\[
+    \pdv{t} \gg \vb*{v} \cdot \grad
+\]
+时，近似有
 \[
     \rho \pdv{\vb*{v}}{t} = - \grad{p},
 \]
+两边计算散度，并利用输运方程\eqref{eq:transportation-eq}，得到
 \[
     \laplacian{p} = \pdv[2]{\rho}{t},
 \]
+再假定压强变化不大，有
 \[
     \rho = \eval{\pdv{\rho}{P}}_{P_0} (P - P_0) = \eval{\pdv{\rho}{P}}_{P_0} p,
 \]
+于是就得到波动方程
 \begin{equation}
     \frac{1}{c^2} \pdv[2]{p}{t} = \laplacian{p},
 \end{equation}
@@ -286,8 +297,11 @@ $1/N!$正是这样一个因子。
 \begin{equation}
     \frac{1}{c^2} = \eval{\pdv{\rho}{P}}_{P_0}.
 \end{equation}
+这就是说，快速振动而振幅不大的流体中会有线性机械波，这就是\textbf{声波}。
 
 \section{非经典气体}
+
+以下如无特殊说明，所有的气体系统都是三维的。
 
 \subsection{玻色-爱因斯坦凝聚}
 
@@ -303,14 +317,41 @@ $1/N!$正是这样一个因子。
 \]
 由于动量空间的各向同性，只保留$\dd{p}$之后态密度为
 \[
-    \dd{N} = V \frac{4\pi p^2 \dd{p}}{h^3}.
+    \dd{N} = V \frac{4\pi p^2 \dd{p}}{h^3} = \frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon},
 \]
+其中$\epsilon$为自由费米子的能谱，即$p^2/2m$。
 这样，近似有
 \begin{equation}
-    N = \int \dd{p} V \frac{4\pi p^2 \dd{p}}{h^3} \frac{1}{\exp(\beta \left( \frac{p^2}{2m} - \mu \right)) - 1}.
+    N = \int_0^\infty \frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon} \frac{1}{\exp(\beta (\epsilon - \mu)) - 1} = \frac{2V}{\sqrt{\pi}} \frac{1}{\lambda_T^3} g_{3/2}(\ee^{\beta \mu}),
+\end{equation}
+其中$g_\nu(z)$定义为
+\[
+    g_\nu(z) = \int_0^\infty \frac{x^{\nu-1}}{z^{-1} \ee^{x} - 1},
+\]
+而$\lambda_T$或者说\textbf{热德布罗意波长}是一个定义如下的长度尺度：
+\begin{equation}
+    \lambda_T = \sqrt{\frac{h^2}{2\pi m k_B T}}.
 \end{equation}
 上式成立的条件是能级间距非常密——这总是成立的——以及相邻能级上的粒子数变化得足够平滑——这却不总是成立。
-请注意等式右边是有最大值的：在零温下因子$\ee^{-\beta \mu}$取最小值，从而整个积分取最大值。
+请注意等式右边是有最大值的：当$z$取$1$时$g_{3/2}(z)$取最大值
 
+\subsection{费米面}
+
+考虑一个非相对论自由理想费米气体。此时气体分子倾向于待在最低的能级上，在$\vb*{p}$空间中填充一个球面。我们有
+\begin{equation}
+    \expval{n} = \begin{cases}
+        1, \quad \epsilon < \mu, \\
+        0, \quad \epsilon > \mu.
+    \end{cases}
+\end{equation}
+$\mu$给出了有粒子填充的最高能级，称为\textbf{费米面}。费米面内部的粒子数为
+\begin{equation}
+    N = \int \dd{\epsilon} \underbrace{\frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \alpha}_\text{space density} = \frac{4\pi V (2m)^{3/2} \alpha}{3h^3} \epsilon_\text{F}^{3/2},
+\end{equation}
+其中$\alpha$指的是粒子的自旋可能的取值个数。
+基态能量为（下面的推导用到了非相对论自由粒子的态密度）
+\begin{equation}
+    E = \int \dd{\epsilon} \underbrace{\frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \alpha}_\text{space density} \epsilon = \frac{4 \pi V (2m)^{3/2} \alpha}{5 h^3} \epsilon_\text{F}^{5/2} = \frac{3}{5} N \epsilon_\text{F}.
+\end{equation}
 
 \end{document}
