@@ -40,7 +40,7 @@
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
 \title{第一性原理计算}
-\author{吴晋渊}
+\author{吴何友}
 
 \begin{document}
 
@@ -200,7 +200,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \[
     \mel{\psi}{\hat{V}_\text{int}}{\psi} \approx V_H = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
 \]
-但是正如我们在Hartree-Fock近似中看到的那样，在量子尺度下会有一个交换能。既然$\mel{\psi}{\hat{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
+但是正如我们在Hartree-Fock近似中看到的那样，在电子云存在交叠的情况下会有一个交换能。既然$\mel{\psi}{\hat{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
 因此实际工作中必须猜测一个\textbf{交换-关联能}$E_\text{XC}$，从而写出能量泛函
 \begin{equation}
     E[\rho(\vb*{r})] = T_s[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})].
@@ -226,11 +226,30 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 
 这样，只需要写出一个$E_\text{XC}[\rho(\vb*{r})]$并联立求解\eqref{eq:kohn-sham-eq}和\eqref{eq:kohn-sham-density}，就得到了$\rho(\vb*{r})$，从而得到了我们需要的一切结果。
 除了$E_\text{XC}[\rho(\vb*{r})]$的形式以外以上步骤是完全严格的。
+库仑定律的形式告诉我们，密度关联泛函的形式肯定是不局域的，因为有$\abs{\vb*{r} - \vb*{r}'}$这样的因子，并且同时要对$\vb*{r}$和$\vb*{r}'$两个变量求积分。
+但实际上由于屏蔽作用等这种空间上的非局域性衰减得很快，于是密度关联泛函总是可以写成以下的局域表达式：%
+\footnote{
+    如果非局域性衰减得很快，那么可以做多级展开
+    \[
+        f(\vb*{r} - \vb*{r}') = f(\vb*{r}) + (\vb*{r} - \vb*{r}') \cdot \grad{f} + \cdots,
+    \]
+    这样就可以先积掉$\vb*{r}'$这个变量，得到
+    \[
+        \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} f(\vb*{r} - \vb*{r}') = \int \dd[3]{\vb*{r}} g(f(\vb*{r}), \grad{f(\vb*{r})}, \ldots).
+    \]
+}%
+\[
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} f(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots),
+\]
+而由于交换能与$\rho(\vb*{r})$的平方同阶，通常会设
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots).
+\end{equation}
 
 常用的交换-关联泛函的形式包括以下几种：
 \begin{itemize}
-    \item \textbf{局域密度近似（LDA）}：$E_\text{XC}[\rho(\vb*{r})] = E_\text{XC}(\rho(\vb*{r}))$；
-    \item \textbf{广义梯度近似（GGA）}：$E_\text{XC}[\rho(\vb*{r})] = E_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
+    \item \textbf{局域密度近似（LDA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}))$；
+    \item \textbf{广义梯度近似（GGA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
     \item \textbf{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
     \item \textbf{混合泛函}：Hatree-Fock近似和别的一些东西的线性组合；
     \item \textbf{经验泛函}：有一大堆参数，根据实际数据微调参数。
@@ -244,9 +263,25 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \label{fig:excahnge-correlation-functional}
 \end{figure}
 
+\subsubsection{LDA近似}
+
+当电子密度变化非常平缓时，$\grad{\rho},\laplacian{\rho}$等全部可以看成是零，此时交换关联泛函的形式是
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r})).
+\end{equation}
+这就是所谓的局域密度近似：每单位的交换关联能只和该地点的电子密度有关。
+
+首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。我们取它为均匀自由电子气的基态的交换能就可以。
+自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道，
+% TODO:为什么交换能前面会有一个1/4的因子，以及不均匀气体即$\rho(\vb*{r})$的计算
+
 \subsection{自洽计算}
 
+\section{密度泛函理论的后处理}
 
+\subsection{基态}
+
+基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
 
 \subsection{晶体}
 
