@@ -48,8 +48,6 @@
 
 \section{第一性原理}
 
-\subsection{哈密顿量}
-
 本节使用自然单位制。用拉丁字母作为电子下标，希腊字母作为原子核的下标；用大写字母表示原子核的变量，小写字母表示电子的变量。
 
 通常的物质由原子构成，原子包括原子核和核外电子。
@@ -87,9 +85,30 @@
 \end{equation}
 这个二次量子化问题只含有一个空间变量，但是它涉及一个场算符，这甚至更难以处理。
 
+\section{半经验方法}
+
+本节介绍一些经验性的近似。这些近似方法当然不再是完全第一性原理的，但是它们为接下来要介绍的密度泛函理论提供了先声。
+
 \subsection{Hartree-Fock近似}
 
-单粒子模型总是容易处理的。于是，使用平均场近似，
+单粒子模型总是容易处理的。
+
+\subsection{Thomas-Fermi近似}
+
+假定不同电子的波函数几乎没有重叠，这样就没有交换能。在这种情况下，我们会发现，实际上所有的物理量都可以使用电子数密度给出。
+库伦势能可以由电子数密度给出是显然的，而实际上动能也可以。
+
+\begin{equation}
+    \rho = \frac{(2m)^{3/2} \epsilon_\text{F}^{3/2}}{3 \pi^2 \hbar^3}.
+\end{equation}
+
+\begin{equation}
+    t = \frac{3}{5} \epsilon_\text{F},
+\end{equation}
+
+\begin{equation}
+    T = \int \dd[3]{\vb*{r}} \frac{3}{5} \frac{(3\pi^2)^{2/3} \hbar^2}{2m} \rho(\vb*{r})^{5/3}.
+\end{equation}
 
 \section{密度泛函理论}
 
@@ -200,24 +219,29 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \[
     \mel{\psi}{\hat{V}_\text{int}}{\psi} \approx V_H = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
 \]
-但是正如我们在Hartree-Fock近似中看到的那样，在电子云存在交叠的情况下会有一个交换能。既然$\mel{\psi}{\hat{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
+但是正如我们在Hartree-Fock近似中看到的那样，在电子云存在交叠的情况下会有一个交换能，而且Hartree-Fock近似与真实能量还存在偏差（称为\textbf{关联能}，这种误差肯定会有因为Hartree-Fock近似是一个平均场理论）。既然$\mel{\psi}{\hat{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
 因此实际工作中必须猜测一个\textbf{交换-关联能}$E_\text{XC}$，从而写出能量泛函
 \begin{equation}
-    E[\rho(\vb*{r})] = T_s[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})].
+    \begin{aligned}
+        E[\rho(\vb*{r})] &= T_s[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})] \\
+        &= - \frac{1}{2m_\text{e}} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r})
+        + \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ext}(\vb*{r}) \\
+        &+ \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + E_\text{XC} [\rho(\vb*{r})].
+    \end{aligned}
     \label{eq:kohn-sham-functional}
 \end{equation}
-将\eqref{eq:kohn-sham-functional}对$\psi_i^*(\vb*{r})$做优化，即求解
+将\eqref{eq:kohn-sham-functional}对$\phi_i^*(\vb*{r})$做优化，即求解
 \[
     \var \left( E[\rho(\vb*{r})] - \epsilon_i \left( \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) \right) \right) = 0,
 \]
 得到
 \begin{equation}
-    \left( - \frac{1}{2 m_\text{e}} \laplacian + \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + V_\text{ext}(\vb*{r}) + V_\text{XC}(\vb*{r}) \right) \psi_i(\vb*{r}) = \epsilon_i \psi_i(\vb*{r}),
+    \left( - \frac{1}{2 m_\text{e}} \laplacian + \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + V_\text{ext}(\vb*{r}) + V_\text{XC}(\vb*{r}) \right) \phi_i(\vb*{r}) = \epsilon_i \phi_i(\vb*{r}),
     \label{eq:kohn-sham-eq}
 \end{equation}
 其中
 \begin{equation}
-    V_\text{XC}(\vb*{r}) \psi_i(\vb*{r}) = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\psi^*_i(\vb*{r})} = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\phi(\vb*{r})} \psi_i(\vb*{r}).
+    V_\text{XC}(\vb*{r}) \phi_i(\vb*{r}) = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\phi^*_i(\vb*{r})} = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\rho(\vb*{r})} \phi_i(\vb*{r}).
 \end{equation}
 \eqref{eq:kohn-sham-eq}是一个有$N$个显含$\rho(\vb*{r})$的方程的方程组，称为\textbf{Kohn-Sham方程}。
 它们与\eqref{eq:kohn-sham-density}联立就给出了所有的$\psi_i(\vb*{r})$，并立即可以求出$\rho(\vb*{r})$，从而完全解出了系统的一切性质。
@@ -251,7 +275,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \item \textbf{局域密度近似（LDA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}))$；
     \item \textbf{广义梯度近似（GGA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
     \item \textbf{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
-    \item \textbf{混合泛函}：Hatree-Fock近似和别的一些东西的线性组合；
+    \item \textbf{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
     \item \textbf{经验泛函}：有一大堆参数，根据实际数据微调参数。
 \end{itemize}
 不同泛函的分类如\autoref{fig:excahnge-correlation-functional}所示。
@@ -271,9 +295,72 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \end{equation}
 这就是所谓的局域密度近似：每单位的交换关联能只和该地点的电子密度有关。
 
-首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。我们取它为均匀自由电子气的基态的交换能就可以。
-自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道，
-% TODO:为什么交换能前面会有一个1/4的因子，以及不均匀气体即$\rho(\vb*{r})$的计算
+首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。我们取它为均匀自由电子气的基态的交换能加关联能就可以，即
+\begin{equation}
+    E_\text{XC}[\rho] = E_\text{X}[\rho] + E_\text{C}[\rho].
+\end{equation}
+自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道。设这些轨道为$\{\phi_i(\vb*{r})\}$。
+仅考虑库伦相互作用引入的一阶微扰，则有
+\[
+    E = \sum_{\sigma, \sigma'} \mel{\Psi}{
+        \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \hat{\psi}^\dagger_{\sigma}(\vb*{r}) \hat{\psi}^\dagger_{\sigma'}(\vb*{r}') \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \hat{\psi}_{\sigma'}(\vb*{r}') \hat{\psi}_\sigma(\vb*{r})
+    }{\Psi}.
+\]
+这里必须完整地考虑自旋自由度的作用。可以使用Wick定理把上式展开，从而得到Hartree-Fock近似型的表达式。
+请注意由于均匀电子气中没有自旋翻转，任何形如
+\[
+    \mel{\Psi}{\hat{\psi}_\sigma^\dagger \hat{\psi}_{\sigma'}}{\Psi}, \quad \sigma \neq \sigma'
+\]
+的项都是零，而
+\[
+    \mel{\Psi}{\hat{\psi}^\dagger_\sigma(\vb*{r}) \hat{\psi}_{\sigma}(\vb*{r}')}{\Psi} = \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}'),
+\]
+于是最后能量修正为
+\[
+    E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
+        \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
+    \bigg).
+\]
+交换能项前面的因子是$2$而不是$4$是因为自旋不同的电子之间的交换能全部抵消了。这样交换能就是
+\begin{equation}
+    E_\text{X} = - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \abs{\sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}')}^2 . 
+    \label{eq:exchange-energy-homogeneous-gas}
+\end{equation}
+对箱归一化的均匀电子气，有
+\[
+    \phi_i(\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{- \ii \vb*{k}_i \cdot \vb*{r}},
+\]
+于是就有
+\begin{equation}
+    \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') = \sum_{\text{occupied $\vb*{k}$}} \frac{1}{V} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')} = \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')},
+    \label{eq:homogeneous-density}
+\end{equation}
+特别的，电子密度的一半（因为只考虑了轨道自由度）为
+\[
+    n(\vb*{r}) / 2 = \frac{k_\text{F}^3}{6 \pi^2}.
+\]
+上式代入\eqref{eq:exchange-energy-homogeneous-gas}就得到交换能的形式。
+在这里我们稍微做一些推广。考虑一个非均匀的自由电子气，其非均匀性可能来自一些杂质或者特殊的相互作用，总之，每一个宏观小微观大的体积元可以看成一个用于归一化波函数的箱子，波函数定域在这个箱子里面（杂质会导致局域化）。
+这样只有$\vb*{r} - \vb*{r}'$不超出一个箱子时\eqref{eq:homogeneous-density}才有明显的非零值。
+每个箱子都有自己的费米动量，记作$k_\text{F}(\vb*{r})$（具体是关于$\vb*{r}$还是$\vb*{r}'$无关紧要因为两者总是在同一个箱子内）。
+令
+\[
+    \vb*{s} = \vb*{r} - \vb*{r}', 
+\]
+则
+\[
+    \begin{aligned}
+        E_\text{X} &= - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{s}} \right)^2 \\
+        &= - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{3}{2} \frac{\sin t - t \cos t}{t^3} n(\vb*{r}) \right)^2 \quad (t= k_\text{F}(\vb*{r}) s) \\
+        &= - 9 \pi \int \dd[3]{\vb*{r}} \int \dd{t} \frac{t}{k_\text{F}(\vb*{r})^2} n(\vb*{r})^2 \left( \frac{\sin t - t \cos t}{t^3} \right)^2 \\
+        &= - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+    \end{aligned}
+\]
+这就得到了\textbf{托马斯-费米-狄拉克泛函}：
+\begin{equation}
+    E_\text{X}[\rho] = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}
+\end{equation}
+对均匀或不均匀但缓变的电子气这个泛函适用。
 
 \subsection{自洽计算}
 
