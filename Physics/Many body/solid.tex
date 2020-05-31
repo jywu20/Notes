@@ -67,9 +67,9 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 在不涉及自旋-轨道耦合的场合，在书写哈密顿量时我们直接略去自旋的下标，这是合理的，因为只需要把不考虑自旋的哈密顿量中的各个产生湮灭算符根据自旋守恒的性质机械地加上自旋下标再求和就能够得到完整的哈密顿量。
 在需要实际计算粒子数时就不能这么做了。
 
-\section{物质的组成}
+\section{电子气模型}
 
-\subsection{离子实和价电子}
+\subsection{有限温下的开放物质系统}
 
 普通的固体、液体、气体由一系列原子组成。通过实验和计算可以发现，原子的最外层电子在各种过程中容易发生重新排列，称为\textbf{价电子}；内层电子和原子核（合称为\textbf{离子实}）则通常保持为一个整体，也即，其内部状态发生变化的物理过程的描述需要使用QCD，其涉及的能标远高于价电子发生变化涉及的能标。
 
@@ -257,9 +257,67 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 % 真的是这个名字吗？这些波函数称为\textbf{布洛赫波函数}。
 $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大，具体取什么样的边界条件对物体内部的过程毫无影响。
 
+\subsection{相互作用电子气的近独立处理}
+
+实际的电子气当然有相互作用。本节介绍了如何将相互作用较弱的相互作用电子气看成近独立电子气。
+
+\subsubsection{Hatree-Fock近似}
+
+电子气的哈密顿量涉及复杂的相互作用项，这意味着我们难以求解它，甚至不能精确求解其基态。
+例如，考虑一个粒子数给定的系统，从而可以从其二次量子化哈密顿量写出一次量子化哈密顿量（未必真的要写出，只需要知道粒子数对不上的态全部可以弃去即可），如果系统的哈密顿量是二次型的，则基态可以确定是一个乘积态，粒子从低到高占据能量尽可能低的能级；但如果有相互作用，那么根本就谈不上有特别明确的能级。
+
+\textbf{平均场近似}是一种化解这个问题的方式，在其中，我们将粒子间的相互作用看成是一个外加的场（就是所谓的平均场），从而让系统的哈密顿量解耦为一系列单粒子哈密顿量的叠加。
+这样系统就可以看成自由场，其基态可以写成乘积态，其坐标表象就是Slater行列式。
+这样的好处在于可以充分利用自由场的特有性质，如Wick定理。
+
+例如，考虑相互作用电子气。对接近平衡态的体系，在我们考虑的空间尺度相对于单电子的特征尺度非常大时（例如，如果没有特别剧烈的电子-电子散射，从而诸电子可以认为离得很远），可以使用库伦相互作用能的期望值代替其本身。
+实际上这就是将库仑相互作用看成微扰，把自由电子气看成零阶波函数，计算了这个微扰对能级的一阶修正。
+这个近似称为\textbf{Hartree-Fock近似}。
+库仑相互作用的期望值为
+\[
+    \begin{aligned}
+        \expval*{\hat{H}_\text{columbic}} &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1)} \\
+        &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \\
+        & \times \left( \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2)} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_1) - \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_1)}} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_2)} \right),
+    \end{aligned}
+\]
+如果电子比较定域%
+\footnote{直觉上，电子比较定域意味着波函数会展现为一个个峰，似乎和平滑的电子密度的图景不相符，但在宏观上总是可以将电子密度粗粒化、平滑化，因此电子比较定域这件事不会破坏电荷平滑分布的经典图景。反之，真正会破坏经典图景的是不同电子的波函数发生交叠而导致交换能。}%
+，那么不同电子的轨道波函数几乎没有重叠，于是关联函数$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减，就得到库伦能：
+\begin{equation}
+    \expval*{\hat{H}_\text{columbic}} = \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{n} (\vb*{r}_1)} \expval*{\hat{n} (\vb*{r}_2)}.
+\end{equation}
+这和经典的连续介质电动力学给出的结果完全一致。假定$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减的近似称为\textbf{托马斯-费米近似}，这个近似的意义在于将系统的所有信息都使用电子数密度期望给出了，并且库伦相互作用引入的能量修正和经典理论完全一致。
+
+在Hartree-Fock近似中，体系是自由的，于是总是可以假定体系\eqref{eq:electron-gas-hamiltonian-sq}的基态近似为
+\begin{equation}
+    \ket{\text{HF}} = \prod_\alpha \hat{c}_\alpha \ket{0},
+    \label{eq:hatree-fock-ansatz}
+\end{equation}
+其中参与求和的$\hat{c}_\alpha$共有$n$个，$n$是事先给定的系统中的粒子数。
+这个拟设等于是说，体系的基态和某个乘积态非常接近。
+一般而言，不能够保证\eqref{eq:electron-gas-hamiltonian-sq}真的有形如\eqref{eq:hatree-fock-ansatz}的本征态，但是我们总是可以让\eqref{eq:hatree-fock-ansatz}的能量期望值取最小值，也即求解以下问题：
+\begin{equation}
+    \argmin_{\hat{\psi}} \mel{\text{HF}}{\hat{H}}{\text{HF}} \suchthat \text{$\hat{\psi}$ is a field operator}.
+    \label{eq:minimize-energy}
+\end{equation}
+由于Hatree-Fock态是乘积态，可以使用Wick定理，并注意到依照定义有
+\[
+    \mel{0}{\hat{\psi}(\vb*{r})\hat{c}^\dagger_\alpha}{0} = \braket{\vb*{r}}{\phi_\alpha} = \phi_\alpha(\vb*{r}),
+\]
+$\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在坐标空间中的波函数，可以计算出
+\[
+    E_\text{HF} = \mel{\text{HF}}{\hat{H}}{\text{HF}} = 
+\]
+于是最优化问题\eqref{eq:minimize-energy}就变成一个约束优化问题：
+\[
+    \argmin_{\phi_\alpha(\vb*{r})} E_\text{HF} \suchthat \int \dd[3]{\vb*{r}} \abs{\phi_\alpha(\vb*{r})}^2 = 1, \quad \text{for all $\alpha$}.
+\]
+
+
 \subsubsection{费米液体理论}
 
-以上讨论的电子气都没有相互作用。朗道注意到，很多相互作用电子气的行为和自由电子气实际上非常相似，参数可能不同但是定性行为都是一样的。
+朗道注意到，很多相互作用电子气的行为和自由电子气实际上非常相似，参数可能不同但是定性行为都是一样的。
 这是因为对自由电子气系统，我们可以浸染地将相互作用加入，如果相互作用强度较小，这只会带来电子的自能修正，%
 \footnote{可以这么考虑这个问题：如果相互作用很小，那么可以以自由电子气系统的能量本征态为零级波函数，计算相互作用带来的一阶修正，相互作用仅仅会把自由电子气系统的能量本征态旋转一个小角度，不会改变本征态的结构。}%
 这样的近独立“电子气”称为\textbf{费米液体}。%
@@ -317,60 +375,6 @@ $\epsilon^0_{\vb*{k}}$是一个等效的单粒子能量。由于只讨论费米�
 
 无量纲参数
 
-\subsubsection{平均场近似和Hatree-Fock近似}
-
-电子气的哈密顿量涉及复杂的相互作用项，这意味着我们难以求解它，甚至不能精确求解其基态。
-例如，考虑一个粒子数给定的系统，从而可以从其二次量子化哈密顿量写出一次量子化哈密顿量（未必真的要写出，只需要知道粒子数对不上的态全部可以弃去即可），如果系统的哈密顿量是二次型的，则基态可以确定是一个乘积态，粒子从低到高占据能量尽可能低的能级；但如果有相互作用，那么根本就谈不上有特别明确的能级。
-
-\textbf{平均场近似}是一种化解这个问题的方式，在其中，我们将粒子间的相互作用看成是一个外加的场（就是所谓的平均场），从而让系统的哈密顿量解耦为一系列单粒子哈密顿量的叠加。
-这样系统就可以看成自由场，其基态可以写成乘积态，其坐标表象就是Slater行列式。
-这样的好处在于可以充分利用自由场的特有性质，如Wick定理。
-
-例如，考虑相互作用电子气。对接近平衡态的体系，在我们考虑的空间尺度相对于单电子的特征尺度非常大时（例如，如果没有特别剧烈的电子-电子散射，从而诸电子可以认为离得很远），可以使用库伦相互作用能的期望值代替其本身。这个期望值为
-\[
-    \begin{aligned}
-        \expval*{\hat{H}_\text{columbic}} &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1)} \\
-        &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \\
-        & \times \left( \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2)} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_1) - \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_1)}} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_2)} \right),
-    \end{aligned}
-\]
-如果电子比较定域%
-\footnote{直觉上，电子比较定域意味着波函数会展现为一个个峰，似乎和平滑的电子密度的图景不相符，但在宏观上总是可以将电子密度粗粒化、平滑化，因此电子比较定域这件事不会破坏电荷平滑分布的经典图景。反之，真正会破坏经典图景的是不同电子的波函数发生交叠而导致交换能。}%
-，那么在大尺度上关联函数$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减，于是就得到大尺度上的库伦能：
-\begin{equation}
-    \expval*{\hat{H}_\text{columbic}} = \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{n} (\vb*{r}_1)} \expval*{\hat{n} (\vb*{r}_2)}.
-\end{equation}
-这和经典的连续介质电动力学给出的结果完全一致。假定大尺度上$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减的近似称为\textbf{托马斯-费米近似}，这个近似的意义在于将系统的所有信息都使用电子数密度期望给出了，并且库伦能和经典理论完全一致。
-
-假定体系\eqref{eq:electron-gas-hamiltonian-sq}的基态近似为
-\begin{equation}
-    \ket{\text{HF}} = \prod_\alpha \hat{c}_\alpha \ket{0},
-    \label{eq:hatree-fock-ansatz}
-\end{equation}
-其中参与求和的$\hat{c}_\alpha$共有$n$个，$n$是事先给定的系统中的粒子数。
-这个拟设等于是说，体系的基态和某个乘积态非常接近。
-一般而言，不能够保证\eqref{eq:electron-gas-hamiltonian-sq}真的有形如\eqref{eq:hatree-fock-ansatz}的本征态，但是我们总是可以让\eqref{eq:hatree-fock-ansatz}的能量期望值取最小值，也即求解以下问题：
-\begin{equation}
-    \argmin_{\hat{\psi}} \mel{\text{HF}}{\hat{H}}{\text{HF}} \suchthat \text{$\hat{\psi}$ is a field operator}.
-    \label{eq:minimize-energy}
-\end{equation}
-由于Hatree-Fock态是乘积态，可以使用Wick定理，并注意到依照定义有
-\[
-    \mel{0}{\hat{\psi}(\vb*{r})\hat{c}^\dagger_\alpha}{0} = \braket{\vb*{r}}{\phi_\alpha} = \phi_\alpha(\vb*{r}),
-\]
-$\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在坐标空间中的波函数，可以计算出
-\[
-    E_\text{HF} = \mel{\text{HF}}{\hat{H}}{\text{HF}} = 
-\]
-于是最优化问题\eqref{eq:minimize-energy}就变成一个约束优化问题：
-\[
-    \argmin_{\phi_\alpha(\vb*{r})} E_\text{HF} \suchthat \int \dd[3]{\vb*{r}} \abs{\phi_\alpha(\vb*{r})}^2 = 1, \quad \text{for all $\alpha$}.
-\]
-
-\subsection{离子实}
-
-现在我们转而讨论晶格本身的运动。为了避免混淆使用大写字母表示关于离子实的物理量。使用
-
 \section{理想晶体}
 
 所谓晶体指的是一种在三个独立的空间方向上具有离散的平移不变性且并没有连续平移不变性的物体。\eqref{eq:many-body-hamiltonian}显然具有连续的平移不变性，因此晶体的形成必然经历了对称性自发破缺，且在较高的能量下原本的晶体一定会相变成某种更加均匀的东西。
@@ -406,8 +410,9 @@ $\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在�
 \]
 其三维形式就是
 \[
-    f(\vb*{r}) = \frac{1}{V} \sum_{m=-\infty}^\infty \ee^{\ii \vb*{G}_m \cdot \vb*{r}} \int_V \dd[3]{\vb*{r}'} f(\vb*{r}') \ee^{- \ii \vb*{G}_m \cdot \vb*{r}}, \quad \vb*{G}_m \cdot \vb*{a}_i = 2\pi N_i, \quad N_i \in \mathbb{N}.
+    f(\vb*{r}) = \frac{1}{V} \sum_{m=-\infty}^\infty \ee^{\ii \vb*{G}_m \cdot \vb*{r}} \int_V \dd[3]{\vb*{r}'} f(\vb*{r}') \ee^{- \ii \vb*{G}_m \cdot \vb*{r}}, \quad \vb*{G}_m \cdot \vb*{a}_i = 2\pi N_i, \quad N_i \in \mathbb{N},
 \]
+其中$V$指的是单位晶胞的大小。
 $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
 \begin{equation}
     \vb*{G}_m \cdot \vb*{R}_n = 2\pi N, \quad N \in \mathbb{N},
@@ -422,7 +427,7 @@ $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
     \frac{1}{2\pi} \vb*{b}_1 = \frac{\vb*{a}_2 \times \vb*{a}_3}{\vb*{a}_1 \cdot (\vb*{b}_2 \times \vb*{b}_3)}
 \end{equation}
 及其轮换相互换算。
-在写出倒格子的显式表达式之后，晶体中的周期性量的傅里叶变换就是
+在写出倒格子的显式表达式之后，晶体中具有正格子的周期性的物理量的傅里叶变换就是
 \begin{equation}
     F(\vb*{r}) = \sum_{\vb*{g}} \tilde{F}(\vb*{g}) \ee^{\ii \vb*{g} \cdot \vb*{r}},
 \end{equation}
@@ -441,15 +446,16 @@ $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
 其中$\vb*{a}_i$指的是$i$对应的位矢，$N$是晶格中总离子数，$\vb*{g}$扫过整个倒格子。$\delta(\vb*{k} - \vb*{k}')$实际上应该是离散$\delta$函数，但是为了和连续动量的情况保持一致我们还是使用这个记号。
 可以看到方程右边是周期性的，如果限制$\vb*{k}$在第一布里渊区中，那么就有非常简单的形式：
 \begin{equation}
-    \frac{1}{N} \sum_{\vb*{a}_i} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{a}_i} = \delta(\vb*{k} - \vb*{k}'),
+    \frac{1}{N} \sum_{\vb*{a}_i} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{a}_i} = \delta_{\vb*{k} \vb*{k}'},
 \end{equation}
 从而得到与之对偶的
 \[
-    \frac{1}{N} \sum_{\vb*{k}} \ee^{\ii (\vb*{a}_i - \vb*{a}_j)} = \delta_{ij}.
+    \frac{1}{N} \sum_{\vb*{k}} \ee^{\ii (\vb*{a}_i - \vb*{a}_j) \cdot \vb*{k}} = \delta_{ij},
 \]
+其中$\vb*{k}$扫过
 这又意味着第一布里渊区内的动量取值数目可以认为是$N$个，当然这是正确的，因为实空间中的$N$点离散信号做离散傅里叶变换之后会得到倒空间中的周期性离散信号，其周期正好是$N$，第一布里渊区正好是一个周期。
 
-并非所有晶体中的物理量都是周期性的，它们的傅里叶变换中的动量不局限在倒格子上。
+并非所有晶体中的物理量具有正格子的周期性（有的周期性强于正格子，有的也许弱于正格子），它们的傅里叶变换中的动量不局限在倒格子上。
 
 \subsubsection{有限大小的晶体}
 
@@ -471,18 +477,56 @@ $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
 }%
 这个三维点阵正是局限在晶体内部的任何函数做空间傅里叶变换得到的波矢的取值范围，且有如下归一化条件：
 \begin{equation}
-    \frac{1}{V} \int \dd[3]{\vb*{r}} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} = \delta(\vb*{k} - \vb*{k}'),
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} = \delta_{\vb*{k}\vb*{k}'}.
 \end{equation}
-其中$\delta(\vb*{k} - \vb*{k}')$实际上应该是离散$\delta$函数，但是为了和连续动量的情况保持一致我们还是使用这个记号。
 
 现在我们有三种动量空间：
-\begin{itemize}
-    \item 晶格常数为$2\pi / L$的三维点阵是被限制在边长为$L$的实空间方盒中的函数的傅里叶变换的动量取值范围；
-    \item 倒格子是具有和晶格一样的周期性的函数的傅里叶变换的动量取值范围；
-    \item 第一布里渊区是定义在正格子上的函数的傅里叶变换的动量取值范围。
-\end{itemize}
+\begin{enumerate}
+    \item 晶格常数为$2\pi / L$的三维点阵是被限制在边长为$L$的实空间方盒中的函数的傅里叶变换的动量取值范围，由于$L$通常很大，这个点阵要比倒格子密得多，在倒格子的尺度上工作时没有必要考虑晶格常数为$2\pi / L$的三维点阵是离散的这一事实。
+    该三维点阵动量空间虽然是离散的，却是无限大的，因为它实际上给出的是一个箱子中所有可能的平面波的波矢，而这当然可以取到无限大。
+    与这个动量空间相关的傅里叶变换的归一化表达式为
+    \begin{equation}
+        \frac{1}{V} \int_V \dd[3]{\vb*{r}} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} = \delta_{\vb*{k} \vb*{k}'}, \quad \frac{1}{V} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')} = \delta(\vb*{r} - \vb*{r}'),
+    \end{equation}
+    第二个表达式中的$\delta$函数就是动量空间无限大的一个结果。于是通常如此定义傅里叶变换：
+    \begin{equation}
+        f(\vb*{k}) = \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}), \quad f(\vb*{r}) = \frac{1}{\sqrt{V}} \sum_{\vb*{k}} ee^{\ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}).
+    \end{equation}
+    有时会需要调整归一化常数，下同。在$V$很大时，考虑到点阵的晶格常数为$2\pi / L$，可以做替换
+    \begin{equation}
+        \frac{1}{V} \sum_{\vb*{k}} \longrightarrow \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3}.
+    \end{equation}
+    \item 倒格子是具有和晶格一样的周期性的连续函数的傅里叶变换的动量取值范围。与之相关的归一化表达式为
+    \begin{equation}
+        \frac{1}{V_\text{u.c.}} \int_{V_\text{u.c.}} \dd[3]{\vb*{r}} \ee^{\ii \vb*{r} \cdot (\vb*{k} - \vb*{k}')} = \delta_{\vb*{k} \vb*{k}'}, \quad \frac{1}{V_\text{u.c.}} \sum_{\vb*{k}} \ee^{\ii \vb*{r} \cdot (\vb*{k} - \vb*{k}')} = \delta(\vb*{r} - \vb*{r}'), 
+        \label{eq:normalization-periodic}
+    \end{equation}
+    其中$\vb*{k}$取遍整个倒格子而$\vb*{r}$取遍一个正格子晶胞内部的所有点（因为仅讨论周期函数）。这里我们使用$V_\text{u.c.}$表示一个正格子晶胞的大小，来和整块晶体的大小区分开。相应的，傅里叶变换为
+    \begin{equation}
+        f(\vb*{k}) = \frac{1}{\sqrt{V_\text{u.c.}}} \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}), \quad f(\vb*{r}) = \frac{1}{\sqrt{V_\text{u.c.}}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}).
+    \end{equation}
+    倒格子是无限大的，因此以上展示的傅里叶变换的动量空间同样是无限大的。
+    \item 第一布里渊区是定义在正格子上的函数的傅里叶变换的动量取值范围。归一化表达式为
+    \begin{equation}
+        \frac{1}{N} \sum_{\vb*{a}_i} \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{a}_i} = \delta_{\vb*{k} \vb*{k}'}, \quad \frac{1}{N} \sum_{\vb*{k}} \ee^{\ii (\vb*{a}_i - \vb*{a}_j)} = \delta_{ij}.
+    \end{equation}
+    第二个表达式表明对定义在正格子上的函数，它在动量空间中在第一布里渊区中的动量取值有$N$个。傅里叶变换为
+    \begin{equation}
+        f(\vb*{k}) = \frac{1}{\sqrt{N}} \sum_{i} \ee^{- \ii \vb*{k} \cdot \vb*{a}_i} f(i), \quad f(i) = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{a}_i} f(\vb*{k}).
+    \end{equation}
+    与前两种情况不同，上式中的动量空间中只有有限个（共$N$个）动量。实际上容易验证，这$N$个动量恰恰是一个第一布里渊区中容纳的全部来自晶格常数为$2\pi / L$的点阵的格点。
+    这样，我们就有
+    \[
+        N = \frac{2\pi / V_\text{u.c.}}{2\pi / V},
+    \]
+    即
+    \begin{equation}
+        V = N V_\text{u.c.},
+    \end{equation}
+    正好是预期中的结果。
+\end{enumerate}
 
-\subsection{布洛赫电子和能带理论}
+\subsection{近独立电子气和能带理论}
 
 \subsubsection{布洛赫电子}
 
@@ -518,10 +562,11 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 \]
 另一方面，第一布里渊区内部的矢量彼此的差值不可能达到一个倒格子格矢的大小，因此第一布里渊区内部的$\vb*{k}$不会导致重复的波函数。于是不失一般性地我们可以要求$\vb*{k}$在第一布里渊区内部。
 
-\subsubsection{定态解，即布洛赫波函数}
+\subsubsection{布洛赫波函数和能带}
 
 波函数表达式\eqref{eq:bloch-wavefunction}没有时间演化，所以现在我们讨论布洛赫电子的动力学。即使使用了波恩-奥本海姆近似，\eqref{eq:electron-gas-hamiltonian}仍然要求把系统内所有的电子均考虑进去。
-为了简便，我们采用平均场近似，将电子之间的相互作用使用一个平均场代替，从而只需讨论单电子的薛定谔方程。这通常是合理的，因为电子由于泡利不相容原理，彼此通常离得比较远。于是布洛赫电子的动力学等价于求解形如\eqref{eq:bloch-wavefunction}的波函数在某个势场下的束缚态解。将\eqref{eq:bloch-wavefunction}代入
+我们假定系统可以使用近独立电子气描述——也许是通过一个平均场理论，也许是更加完整的费米液体计算——于是只需要考虑单个电子的薛定谔方程即可。
+于是布洛赫电子的动力学等价于求解形如\eqref{eq:bloch-wavefunction}的波函数在某个势场下的束缚态解。将\eqref{eq:bloch-wavefunction}代入
 \[
     -\frac{\laplacian}{2m_\text{e}} \psi(\vb*{r}) + V(\vb*{r}) \psi(\vb*{r}) = \epsilon \psi(\vb*{r}),
 \]
@@ -530,11 +575,7 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
     \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{\vb*{k}}(\vb*{r}) = \epsilon u_{\vb*{k}}(\vb*{r}).
     \label{eq:block-energy-problem}
 \end{equation}
-在$\vb*{k}$已知的情况下求解该本征值问题，可以得到一组$u$以及对应的$E$。由于先前要求$u(\vb*{r})$是周期函数，该本征值问题必定给出离散谱%
-\footnote{还可以从另一个角度理解为什么会出现多条能带。自由电子的能谱是抛物线，既然是在晶体内，动量会被约束在第一布里渊区内部，抛物线穿过第一布里渊区边界而折返回来，这样反复和自我交叉。
-现在加上相互作用，相互作用会抹去奇异性，从而交叉点退开，自我交叉的单一能带分离成一系列不相交的波浪线，这就得到了一系列不同的能带。
-此时我们说，相互作用在能带之间打开了一个能隙，让原本交叉的能带之间出现了间隙。}%
-，也即，我们会获得一组$(\psi_{n \vb*{k}}, \epsilon_{n \vb*{k}})$，使得
+在$\vb*{k}$已知的情况下求解该本征值问题，可以得到一组$u$以及对应的$E$。由于先前要求$u(\vb*{r})$是周期函数，该本征值问题必定给出离散谱，也即，我们会获得一组$(\psi_{n \vb*{k}}, \epsilon_{n \vb*{k}})$，使得
 \begin{equation}
     \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} u_{n \vb*{k}}(\vb*{r}).
 \end{equation}
@@ -550,6 +591,12 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 由于$\vb*{k}$加上任何一个倒格矢之后给出同样的布洛赫波函数，$E$相对于$\vb*{k}$应该具有周期性，那么它必定是有界的。
 这就是“能带”这个名称的来源：穷举第一布里渊区内部的所有$\vb*{k}$，得到的所有能量组成一条有限宽的条带。
 
+还可以从另一个角度理解为什么会出现多条能带。自由电子的能谱是抛物线，既然是在晶体内，动量会被约束在第一布里渊区内部，抛物线穿过第一布里渊区边界而折返回来，这样反复和自我交叉。
+现在加上相互作用，相互作用会抹去奇异性，从而交叉点退开，自我交叉的单一能带分离成一系列不相交的波浪线，这就得到了一系列不同的能带。
+此时我们说，相互作用在能带之间\textbf{打开了能隙}，让原本交叉的能带之间出现了间隙。
+
+两条不同的能带之间的间隙提供了一个自然的能量截断，因此在我们已经知道了系统的能带之后，如果需要一个低能有效理论，可以只考虑能量较低的能带，而将粒子跃迁到能量较高的能带再跃迁回来作为微扰，进行能量修正，即可以很自然地将高能能带积掉。
+
 最后我们指定波函数的归一化方式。可以在积分号前面加上一个系数，即
 \begin{equation}
     \frac{1}{V} \int \dd[3]{\vb*{r}} \psi_{n\vb*{k}}^*(\vb*{r}) \psi_{m\vb*{k}'}(\vb*{r}) = \delta_{mn} \delta(\vb*{k}-\vb*{k}'),
@@ -560,11 +607,12 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 \[
     V = N V_\text{u.c.},
 \]
-从而可以得到% TODO：详细推导
+从而可以得到
 \begin{equation}
     \frac{1}{V_\text{u.c.}} \int_\text{u.c.} \dd[3]{\vb*{r}} u_{m\vb*{k}}^*(\vb*{r}) u_{n\vb*{k}}(\vb*{r}) = \delta_{mn}.
 \end{equation}
 只需要求解出一组满足以上条件的$\{u_{n\vb*{k}}\}$，就得到了一组正交归一化波函数$\{\psi_{n\vb*{k}}\}$。
+归一化系数使用$V_\text{u.c.}$是非常合理的，因为如\eqref{eq:normalization-periodic}所示这正是具有正格子的周期性的函数通常使用的归一化系数。
 
 \eqref{eq:bloch-is-basis}意味着布洛赫波函数是正交归一化波函数且对应的积分测度为
 \[
@@ -578,6 +626,7 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 哈密顿量在这一组基下是对角化的，于是写出二次量子化哈密顿量（已经加入化学势项）
 \begin{equation}
     \hat{H} = \sum_{n, \vb*{k}} (\epsilon_{n\vb*{k}} - \mu) \hat{c}^\dagger_{n\vb*{k}} \hat{c}_{n\vb*{k}}.
+    \label{eq:bloch-band-hamiltonian}
 \end{equation}
 $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑周期势的边长为$L$的正方体势阱中的电子的$\vb*{k}$可以取遍所有位于那个边长为$2\pi / L$的格点。
 但实际上两者的自由度是一样的，因为我们还有$n$标记各个能带，也即，我们相当于把所有能带中的动量都移动到了第一布里渊区内部。
@@ -618,9 +667,9 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
     w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} u_{n\vb*{k}} (\vb*{r} - \vb*{r}_i) \ee^{\ii \vb*{k} (\vb*{r} - \vb*{r}_i)},
 \end{equation}
 这表明Wannier波函数实际上是$\vb*{r} - \vb*{r}_i$的函数，可以写成
-\[
+\begin{equation}
     w_{ni}(\vb*{r}) = w_{n}(\vb*{r} - \vb*{r}_i),
-\]
+\end{equation}
 这当然是正确的，因为晶格中绝对位置$\vb*{r}$并无意义。
 在$\vb*{r}$远离$\vb*{r}_i$时，指数因子快速振荡，导致整个求和基本上为零，因此Wannier函数只在$\vb*{r}_i$附加有较明显的值，因此它定域在格点$\vb*{r}_i$附近。
 
@@ -631,15 +680,37 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 
 总之，晶格中的电子的波函数可以以高度定域在格点附近的一组波函数为基底，并且以对应的格点为一个量子数。
 
-\subsubsection{紧束缚模型}
+\subsubsection{Wannier基下的哈密顿量和紧束缚模型}
 
-对一对$\{mi, nj\}$的组合只求和一次，就得到
+我们用\eqref{eq:bloch-band-hamiltonian}给出了布洛赫基下的能带理论哈密顿量。现在来看同样的理论在Wannier基下会呈现什么形式。
+设能带理论下单电子哈密顿量为$\hat{h}$，则可以做表象变换
+\[
+    \hat{H} = \sum_{mi, nj} \hat{c}^\dagger_{mi} \mel{mi}{\hat{h}}{nj} \hat{c}_{nj},
+\]
+其中我们令
 \begin{equation}
-    \hat{H} = - \sum_{\{mi, nj\}} t_{mi, nj} \hat{c}_{mi}^\dagger \hat{c}_{nj} + \text{h.c.}.
+    - t_{mi, nj} = \mel{mi}{\hat{h}}{nj} = \frac{1}{V_\text{u.c.}} \int \dd[3]{\vb*{r}} w_m^*(\vb*{r} - \vb*{r}_i + \vb*{r}_j) \hat{h} w_n(\vb*{r}),
 \end{equation}
-
+则
+\[
+    \hat{H} = - \sum_{mi, nj} t_{mi, nj} \hat{c}^\dagger_{mi} \hat{c}_{nj}.
+\]
+记号$\{mi, nj\}$表示对一组顺序不限的$\{mi, nj\}$组合只求和一次，就得到
 \begin{equation}
-    \hat{H} = \sum_{n,i,m,i}
+    \hat{H} = - \sum_{\{mi, nj\}} (t_{mi, nj} \hat{c}_{mi}^\dagger \hat{c}_{nj} + \text{h.c.}).
+    \label{eq:hamiltonian-in-wannier}
+\end{equation}
+我们得到了一个非对角化的哈密顿量，这当然是正确的，因为系统显然应该在动量基——即布洛赫基——下对角化。
+但\eqref{eq:hamiltonian-in-wannier}提供了非常清晰的物理图像：电子会从一个格点跃迁到另一个格点。
+
+最后我们考虑一个极限情况。假定晶格的吸引作用是如此之强，以至于电子是高度定域的，这样只有最近邻的格点之间才会跃迁。
+进一步，考虑一个单能带的低能有效理论，就得到
+\begin{equation}
+    \hat{H} = - \sum_{\pair{i, j}} (t_{ij} \hat{c}^\dagger_i \hat{c}_j + \text{h.c.}).
+\end{equation}
+这称为\textbf{紧束缚模型}。如果满足平移不变性，就有
+\begin{equation}
+    \hat{H} = - \sum_{\pair{i, j}} (t \hat{c}^\dagger_i \hat{c}_j + \text{h.c.}).
 \end{equation}
 
 \subsection{晶格和声子}
@@ -673,106 +744,6 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 \subsection{热力学性质}
 
 \subsubsection{比热}
-
-\section{线性响应}
-
-\subsection{外加磁场}
-
-\subsubsection{朗道能级}
-
-本节给出外加磁场的二维电子气的运动状况。我们采用\textbf{对称规范}，设磁场方向为$z$方向，且设
-\begin{equation}
-    A_x = - \frac{1}{2} B y, \quad A_y = \frac{1}{2} B x,
-\end{equation}
-这样通过
-\[
-    \vb*{B} = \curl{\vb*{A}}
-\]
-就得到一个$z$方向上大小为$B$的磁场。系统的哈密顿量为
-\begin{equation}
-    \hat{H} = \frac{\hbar^2}{2m} \left( \grad - \frac{\ii e}{\hbar c} \vb*{A} \right)^2.
-    \label{eq:magnetic-hamiltonian}
-\end{equation}
-我们把$\hbar$放回了定义中，因为本节将需要频繁地用到这个能量尺度。
-\eqref{eq:magnetic-hamiltonian}中的导数被协变导数替代了，以满足$U(1)$对称性。
-通过量纲分析可以发现\eqref{eq:magnetic-hamiltonian}中有一个特征长度
-\begin{equation}
-    l_0 = \sqrt{\frac{\hbar c}{e B}},
-\end{equation}
-相应的可以定义一个特征磁通量
-\begin{equation}
-    \Phi_0 = \frac{h c}{e} \sim 2 B \pi l_0^2.
-\end{equation}
-这样，两个方向上的协变导数为
-\begin{equation}
-    D_x = \partial_x + \frac{\ii}{2l_0^2} y, \quad D_y = \partial_y - \frac{\ii}{2l_0^2}x.
-\end{equation}
-哈密顿量就转化为
-\[
-    \hat{H} = - \frac{\hbar^2}{2m} (D_x^2 + D_y^2).
-\]
-容易验证$D_x$和$D_y$之间具有对易关系
-现在定义
-\begin{equation}
-    D^\pm = D_x \pm \ii D_y,
-\end{equation}
-并定义复变量$z$为
-\begin{equation}
-    z = x + \ii y,
-\end{equation}
-则可以得到
-\begin{equation}
-    \comm*{D^-}{D^+} = - \frac{2}{l_0^2}.
-\end{equation}
-这意味着它们差一个常数就是一对升降算符。定义
-\begin{equation}
-    \hat{a} = \ii \frac{l_0}{\sqrt{2}} D^-,
-\end{equation}
-就有
-\begin{equation}
-    \hat{H} = \frac{\hbar^2}{m l_0^2} \left(\hat{a}^\dagger \hat{a} + \frac{1}{2} \right).
-\end{equation}
-因此系统具有分立的能级，称为\textbf{朗道能级（Landau Lowest Level, LLL）}。
-回过头看，$\frac{\hbar^2}{m l_0^2}$实际上是经典图景中电子在磁场下做匀速圆周运动的圆频率。
-
-实际上，朗道能级对应的波函数可以写成一个全纯函数乘以一个高斯因子。设$\Psi$是基态波函数，我们做拟设
-\[
-    \Psi(x, y) = f(z, z^*) \ee^{- z z^* / 4l_0^2},
-\]
-由于
-\[
-    D^- \Psi = 0,
-\]
-展开计算可以发现
-\[
-    \partial_{z^*} f = 0,
-\]
-这表明$f$一定是全纯函数，即得所求证。
-
-朗道能级的简并度
-
-注意到由于$\Psi(\vb*{r})$可以被恰当地归一化，它在电子气占据的范围内不应该有任何奇点，于是可以做泰勒展开
-\[
-    f(z) = c_0 + c_1 z + c_2 z^2 + \cdots,
-\]
-实际上可以证明，$\{z^m \ee^{- \abs{z}^2 / 4 l_0^2}\}$构成一组完备正交基。
-现在寻找波函数幅值最大的位置，即计算
-\[
-    \pdv{\abs{\Psi_n(\vb*{r})}^2}{r} = 0
-\]
-的解，其解为
-\[
-    r_n = \sqrt{2n} l_0.
-\]
-换而言之我们得到了一组年轮一样的基矢量。设基态简并度为$n$则
-\[
-    S = \sqrt{2n} l_0,
-\]
-从而
-\[
-    n = S \cdot \frac{eB}{\hbar c} = \frac{\Phi}{\Phi_0}.
-\]
-这就是
 
 \section{外加杂质}
 
@@ -1167,11 +1138,78 @@ $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋�
 
 下面根据\eqref{eq:kondo-spin-up-down}计算一些散射振幅。我们将计算$\hat{T}$矩阵的矩阵元。
 
-
 % TODO：费曼图绘制
+
+\begin{equation}
+    \rho = \rho_0 \left(1 + 2 J_0 N(0) \ln \frac{T_\text{F}}{T} \right)
+\end{equation}
+
+需要注意的是，上式实际上意味着当温度非常低时算到二阶的微扰论是错误的，因为此时散射概率会超过1。
+会出现这种现象的原因在于当温度变小时有效的$J_{0}^\text{eff}$实际上会变大，从而破坏微扰论的基础。
+% TODO：低温下耦合增大实际上就是零温下能标下降时耦合增大
+显然，只要
+\begin{equation}
+    J_0 N(0) \ln \frac{T_\text{F}}{T} \sim 1,
+\end{equation}
+那么微扰论就不再适用。对应的温度尺度
+\begin{equation}
+    T_\text{K} = T_\text{F} \ee^{- \frac{4}{3J_0 N(0)}}
+\end{equation}
+称为\textbf{Kondo温度}（$3/4$的因子是更严格计算导致的）。当温度大于Kondo温度时微扰论适用，而对小于Kondo温度的系统，d电子和巡游电子强烈的自旋-自旋相互作用会导致一个巡游电子和d电子紧密地结合起来，形成一个自旋单态，从而屏蔽d电子对巡游电子的扰动，
+这就是所谓的\textbf{Kondo屏蔽}。
+
+\subsubsection{重整化群}
+
+
 
 \subsection{Anderson局域化}
 
+\subsubsection{无序导致电子局域化}
+
+本节将介绍一种现象：当固体中被掺入一些杂质——或者更一般地说，出现无序，即平移对称性破缺——时，电子会倾向于留在原地而不发生长距离跃迁。
+这种现象称为\textbf{Anderson局域化}。
+例如可以写出这样的一个带有格点无序的紧束缚模型：
+\begin{equation}
+    \hat{H} = - t \sum_{\pair{i, j}} (\hat{c}_i^\dagger \hat{c}_j + \text{h.c.}) + \sum_i \epsilon_i \hat{c}_i^\dagger \hat{c}_i,
+    \label{eq:tight-binding-with-disorder}
+\end{equation}
+其中$\epsilon_i$是一个随机变量。接下来考虑这样的特例：
+\begin{equation}
+    \expval*{\epsilon_i} = 0, \quad \expval*{\epsilon_i^2} = W^2 \neq 0.
+\end{equation}
+这样，$W/t$就表征了无序的大小。在$W/t=0$时就得到一个普通的能带，而如果$W/t \gg 1$，即无序很强，则体系的哈密顿量近似为
+\[
+    \hat{H} = \sum_i \epsilon_i \hat{c}_i^\dagger \hat{c}_i,
+\]
+这样电子倾向于固定在原地，即出现局域化。
+
+\eqref{eq:tight-binding-with-disorder}是自由理论，因此是严格可解的。通常我们会计算所谓的无序平均，即对每个可能的$\{\epsilon_i\}$构型，计算出某个物理量$O$，然后求出平均值$\expval*{O}$。
+对一个热力学系统，如果$O$是关于系统全局的，则$O$和无序平均$\expval*{O}$大概率是非常接近的，这是等概率原理的空间版本。
+例如如果我们要计算两点格林函数，就有
+\[
+    G^{-1}_{ij}(\omega) = \omega + t_{ij} - \epsilon_i \delta_{ij},
+\]
+做微扰展开（虽然是自由系统但微扰展开总是合法的），就有
+\[
+    G_{ij}(\omega) = \frac{1}{\omega + t_{ij}} + (- \epsilon_i \delta_{ij}) \frac{1}{\omega + t_{ij}} (- \epsilon_i \delta_{ij}) + \cdots,
+\]
+用格林函数计算出各种可以观测的物理量，对$\{\epsilon_i\}$求平均即可。
+
+\subsubsection{弱局域化}
+
+上一节并没有解释为何当无序越来越强时到底发生了什么才导致局域化。本节将提供一些物理图像。
+
+系统中总是有大量热涨落，因此电子在长距离运动时会出现退相干。
+设$l$为电子的相干长度，则参数
+\begin{equation}
+    \gamma = \frac{1}{\pi k_\text{F} l}
+\end{equation}
+表征了长距离相干性。在$\gamma$非常小时，两个杂质的间距远大于电子相关长度，因此可以使用经典模型处理问题。
+这样，我们认为电子以费米速度运动，并与杂质发生弹性碰撞。于是可以认为电子在做一个随机行走，两步之间没有任何关联。
+这样，两条路径
+
+现在假定虽然$\gamma$很小，但相干的散射还是可能的。这样两点之间的跃迁概率就会出现超越经典模型的修正。
+从一个点出发经过一系列点然后又回来的路径会因为相干叠加而获得很大概率（经典概率的两倍）。
 
 \section{集体行为和相变}
 
@@ -1831,22 +1869,60 @@ e粒子、m粒子和$\epsilon$粒子这三种拓扑激发都只能成对出现�
 
 以下一维模型称为\textbf{Kitaev链}：
 \begin{equation}
-    \hat{H} = - t \sum_i (\hat{c}_i^\dagger \hat{c}_{i+1} + \text{h.c.}) - \mu \sum_i \hat{c}_i^\dagger \hat{c}_i + \sum_i (\Delta \hat{c}_i^\dagger \hat{c}_{i+1} + \text{h.c.} ).
+    \hat{H} = - t \sum_i (\hat{c}_i^\dagger \hat{c}_{i+1} + \text{h.c.}) - \mu \sum_i \hat{c}_i^\dagger \hat{c}_i + \sum_i (\Delta \hat{c}_i \hat{c}_{i+1} + \text{h.c.} ).
     \label{eq:kitaev-chain-hamiltonian}
 \end{equation}
-这个模型通常是这么来的：一个一维纳米线被放置在一个超导体上，两者的相互作用诱导前者也发生$U(1)$对称性破缺，然后我们使用平均场理论分析问题而引入一个$\Delta$参量。
-\eqref{eq:kitaev-chain-hamiltonian}是一个p波超导模型。
+\eqref{eq:kitaev-chain-hamiltonian}是一个p波超导模型，这个模型通常是这么来的：一个一维纳米线被放置在一个超导体上，两者的相互作用诱导前者也发生$U(1)$对称性破缺，然后我们使用平均场理论分析问题而引入一个$\Delta$参量。
 \eqref{eq:kitaev-chain-hamiltonian}是一个紧束缚模型，
-对\eqref{eq:kitaev-chain-hamiltonian}做傅里叶变换然后再做Bogoliubov变换，可以得到以下能谱：
+对\eqref{eq:kitaev-chain-hamiltonian}做傅里叶变换，可以得到
+\begin{equation}
+    \hat{H} = \frac{1}{2} \sum_{\vb*{k}} \underbrace{\pmqty{\hat{c}^\dagger_{\vb*{k}} & \hat{c}_{-\vb*{k}}}}_{\hat{\Psi}^\dagger} \pmqty{\epsilon_{\vb*{k}} - \mu & -2 \ii \Delta^* \sin k \\ 2 \ii \Delta \sin k & - \epsilon_{\vb*{k}} + \mu} \underbrace{\pmqty{\hat{c}_{\vb*{k}} \\ \hat{c}^\dagger_{-\vb*{k}}}}_{\hat{\Psi}},
+\end{equation}
+然后再做Bogoliubov变换，计算出以下能谱：
 \begin{equation}
     E_{\vb*{k}} = \pm \sqrt{(2t \cos k - \mu)^2 + 4 \abs{\Delta}^2 \sin^2 k}.
 \end{equation}
 
-只有能隙开闭可能产生相变。
-在化学势很低时，即$\mu$趋于负无穷时，几乎没有电子。因此从$-\infty$到$-2t$的部分肯定是平庸的？
+\eqref{eq:kitaev-chain-hamiltonian}具有粒子-空穴对称性。% TODO
+总之就有一个约束就是设$P$为粒子空穴变换，我们有
+\[
+    P \hat{\Psi}_{\vb*{k}} P^{-1} = \tau^* \hat{\Psi}_{-\vb*{k}}^*
+\]
+
+Kitaev链不存在对称性自发破缺，但能隙可开可闭。当
+\begin{equation}
+    \mu = \pm 2t
+    \label{eq:kitaev-gap-point}
+\end{equation}
+时，能隙会关闭。除此之外任何参数的变动都只会引起连续的变化。
+因此，如果体系发生相变，那么只能是在\eqref{eq:kitaev-gap-point}处发生一个和对称性无关的相变。在化学势很低时，即$\mu$趋于负无穷时，根本就没有电子，因此从$-\infty$到$-2t$的部分肯定是平庸的。
+化学势非常高时（大于$2t$时）电子全满，同样是平庸的。
+因此有趣的行为集中在$-2t$到$2t$之间。下面会看到，当$\mu$越过\eqref{eq:kitaev-gap-point}这两个点时，会发生一个拓扑相变。
+
+$W = \pm 1$，这是一个定义在立体中的量？
 
 \subsubsection{Kitaev链中的拓扑不变量}
 
 下面定义一个能带的拓扑不变量。
+
+总之，当$\mu$扫过$\mu=-2t$时，我们有
+\[
+    \hat{c}_i = \frac{1}{2} (\hat{\gamma}_{i\text{A}} + \ii \hat{\gamma}_{i \text{B}}),
+\]
+容易验证均为
+\begin{equation}
+    \acomm{\hat{\gamma}_\alpha}{\hat{\gamma}_\beta^\dagger} = 2 \delta_{\alpha \beta},
+\end{equation}
+
+\subsubsection{时间反演对称性保护的拓扑超导}
+
+刚才描述的拓扑超导和对称性没有特别明确的对称性。当然可以说它有粒子-空穴对称性，但是这完全是一个数学上的处理。
+
+\section{强关联系统}
+
+\subsection{自旋-电荷分离}
+
+自从上世纪80年代高温超导发现以来，大量的理论被提出来解释这一现象，以至于理论比理论家还多。
+自旋-电荷分离是一个非常重要的概念，它最早用于解释高温超导材料，但在很多其他领域也有应用。
 
 \end{document}
