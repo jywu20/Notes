@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{siunitx}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
@@ -35,15 +36,20 @@
 \title{量子理论的必要性}
 \author{吴何友}
 
+\begin{document}
+
+\maketitle
+
 % TODO：黑体温度和辐射等
 
-\section{量子理论的必要性}
+\begin{abstract}
+    本文总结一些原子物理中常见的不能够仅仅使用经典力学加上经典电磁场理论讨论的问题。
+    对每个问题，首先介绍经典理论的处理，并指出其不完善之处，然后使用量子理论处理。
+\end{abstract}
 
-\subsection{半经典问题}
+\section{黑体辐射}
 
-本节总结一些原子物理中常见的不能够仅仅使用经典力学加上经典电磁场理论讨论的问题。本节给出的解答仍然是半经典的，也即，并不直接使用第一性的量子理论。
-
-\subsubsection{黑体辐射}
+\subsection{热平衡辐射场中的物体和绝对黑体}
 
 物体可以吸收辐射，而热的物体也会发出热辐射。对一个物体，记$E_\omega$为单位时间单位频率的热辐射能量，$A_\omega$为圆频率为$\omega$的频段上的吸收系数。
 \textbf{基尔霍夫辐射定律}表明：设一个物体与辐射场保持热平衡，则存在一个普适的、和物体具体结构无关的函数$j(\omega, T)$，使得
@@ -74,9 +80,13 @@
 换而言之，$j(\omega, T)$就是温度为$T$（因为与辐射场平衡而辐射场温度为$T$）的绝对黑体的单位面积辐射功率谱。
 实际上当然制造不出来绝对黑体，但是考虑一个开有小孔的大空腔，任何打到小孔上的电磁波都会进入空腔，然后在其中反复反射，而很难逃逸出去。因此，这个小孔是非常好的黑体，而它的温度就是空腔内辐射场的温度。
 这样一来对绝对黑体的分析就转化为了对充满了杂乱的辐射场的空腔的分析。
+由于此时所谓的黑体辐射$j(\omega, T)$实际上就是空腔中的辐射透过小孔外溢的能流密度，通过电动力学可以计算出
 \begin{equation}
     j(\omega, T) = \frac{\rho(\omega, T) c}{8 \pi}.
 \end{equation}
+换而言之，只需要计算出空腔中特定温度、特定频段的能量分布$\rho(\omega, T)$——或者说推导出一个辐射定律——整个黑体辐射问题就解决了。
+
+\subsection{充满辐射场的空腔}
 
 我们还不知道怎么写出$\rho(\omega, T)$的表达式。然而，可以首先使用热力学得到一些它必须遵循的规律。
 电磁场能量密度为
@@ -105,9 +115,152 @@
 \end{equation}
 其中$\sigma$是一个常数。这就是\textbf{斯特藩定律}。任何一个辐射公式，只要将频率积掉，必须服从斯特藩定律，否则肯定是错的，因为它违反了热力学关系。
 
-\subsubsection{光电效应}
+通过热力学关系还可以得到另一个公式。具体来说，应有
+\begin{equation}
+    \rho(\nu, T) = \nu^3 f(\nu / T),
+\end{equation}
+称为\textbf{维恩定律}。这里使用$\nu$即$\omega/2\pi$，即频率而不是圆频率，从而与历史上的形式一致。
 
-\subsubsection{康普顿散射}
+\subsection{经典计算}
+
+根据实验数据和维恩定律，猜测得到\textbf{维恩公式}
+\begin{equation}
+    \rho(\nu, T) = \frac{8\pi \alpha \nu^3}{c^3} \ee^{- \beta \nu / T},
+    \label{eq:wein-eq}
+\end{equation}
+其中$\alpha$和$\beta$是两个常数。在近红外，$T$取\SI{400}{K}到\SI{1600}{K}附近，\eqref{eq:wein-eq}工作良好。
+
+另一方面，通过能均分定理，可以推导出另一个结果，称为\textbf{瑞利公式}。
+考虑被封装在边长全部为$L$的立方体空腔中的一个辐射场，空腔壁无吸收，这样这个辐射场中的一个驻波的波矢可以写成
+\begin{equation}
+    \vb*{k} = \frac{\pi n_1}{L} \vb*{e}_x + \frac{\pi n_2}{L} \vb*{e}_y + \frac{\pi n_3}{L} \vb*{e}_z,
+\end{equation}
+其中$n_1, n_2, n_3$均为整数。任何一个场构型都可以展开为一系列这样的驻波，而系统哈密顿量可以写成一系列驻波模长平方之和，每个$\vb*{k}$对应的驻波可以看成一个简谐振子% TODO：验证，还有电磁波偏振
+由于
+\[
+    \dd{N} = 2 \cdot \frac{1}{8} \cdot \frac{4\pi k^2 \dd{k}}{(\pi / L)^3} = \frac{8\pi V \nu^2 \dd{\nu}}{c^3},
+\]
+我们有（使用$k_\text{B} T$是因为驻波被看成谐振子）
+\[
+    \dd{E} = k_\text{B} T \dd{N} = k_\text{B} T \frac{8\pi V \nu^2 \dd{\nu}}{c^3},
+\]
+于是就得到
+\begin{equation}
+    \rho(\nu, T) = \frac{8\pi \nu^2}{c^3}.
+    \label{eq:rayleigh-eq}
+\end{equation}
+这就是\textbf{瑞利公式}。
+
+瑞利公式的荒唐之处一眼可见：随着波长减小，辐射密度会快速上升——这就是所谓的\textbf{紫外灾难}。
+另一方面，半经验的维恩公式适用性很好，但在特别长的长波波段其实并不符合，即所谓\textbf{红外灾难}。
+经典理论给出了两个自相矛盾并且都在一定频段失效的公式，这表明其具有局限性。
+
+\subsection{普朗克公式}
+
+将\eqref{eq:rayleigh-eq}和\eqref{eq:wein-eq}做一个插值，可以得到一个和实验数据符合得很好的公式，即\textbf{普朗克公式}。
+普朗克最早提出这个公式时并未采用瑞利的结果（他不信任玻尔兹曼的统计理论）。他的思路重述如下。
+
+首先考虑空腔中的一个谐振子——比如说腔中有一个煤灰。辐射场作用于其上，它会被电磁场加速，而与此同时加速度导致它也会发射电磁波。
+先假定腔中只有一种频率的驻波的情况，这样振子位移满足方程
+\[
+    m(\ddot{x} + \gamma \dot{x} + \omega_0^2 x) = e E_0 \sin(\omega t),
+\]
+其中辐射阻尼为
+\[
+    \gamma = \frac{1}{6\pi} \frac{e^2}{m \epsilon_0 c^3} \omega_0^2.
+\]
+振子的能量为
+\[
+    U_\omega = \expval{\frac{1}{2} m \dot{x}^2 + \frac{1}{2} m \omega_0^2 x^2},
+\]
+由傅里叶变换的能量定理，在振子受到含有多种频率成分的场的作用时，有
+\[
+    U = \int \dd{\omega} U_\omega.
+\]
+可以计算出
+\[
+    - \dv{U}{t} = 3\gamma U.
+\]
+% TODO
+\begin{equation}
+    U = \frac{c^3}{8\pi \nu^2} \rho(\nu, T).
+\end{equation}
+这就把振子能量和空腔中辐射场的能量联系了起来。普朗克承认维恩公式\eqref{eq:wein-eq}，于是在高频我们有
+\begin{equation}
+    \dv[2]{S}{U} = - \frac{1}{\beta \nu U},
+    \label{eq:high-freq-entropy}
+\end{equation}
+在低频，有（维恩公式符合这一点但是普朗克并不承认维恩公式，而是直接从实验数据出发得到以下结果）
+\[
+    U = k T,
+\]
+于是
+\begin{equation}
+    \dv[2]{S}{U} = - \frac{k}{U^2}.
+    \label{eq:low-freq-entropy}
+\end{equation}
+普朗克猜测，严格的公式应该是
+\begin{equation}
+    \dv[2]{S}{U} = - \frac{1}{\beta \nu U + U^2 / k},
+    \label{eq:planck-entropy}
+\end{equation}
+在$U$较高和较低时它分别退化为\eqref{eq:high-freq-entropy}和\eqref{eq:low-freq-entropy}。
+将\eqref{eq:planck-entropy}积分两次之后得到
+\begin{equation}
+    S = k_\text{B} \left( \left( \frac{U}{h \nu} + 1 \right) \ln \left( \frac{U}{h \nu} + 1 \right) - \frac{U}{h \nu} \ln \frac{U}{h \nu} \right),
+    \label{eq:planck-entropy-energy}
+\end{equation}
+据此求解出$U$然后计算出辐射能量密度，得到\textbf{普朗克辐射公式}
+\begin{equation}
+    \rho(\nu, T) = \frac{8\pi \nu^2}{c^3} \frac{h \nu}{\ee^{h \nu / k_\text{B} T} - 1}.
+    \label{eq:planck-eq}
+\end{equation}
+这个公式在任何频段经实验证明都是适用的，并且容易证明它在高频和低频会退化为\eqref{eq:wein-eq}和\eqref{eq:rayleigh-eq}。
+因此，维恩公式和瑞利公式都不是最终的答案，而只是紫外/红外的近似而已。
+
+总之，普朗克通过假象空腔中有一个振子，建立了振子能量和辐射场能量的对应关系，根据实验数据猜测了振子的熵对内能的二阶导数之后，反推出辐射定律。
+整个过程没有直接将\eqref{eq:rayleigh-eq}和\eqref{eq:wein-eq}结合起来做插值，而是对$\dv[2]{S}{U}$做了插值。
+
+\subsection{普朗克公式意味着什么}
+
+现在的问题是，为什么竟然会有\eqref{eq:planck-eq}这样一个公式？通过玻尔兹曼统计只能够得到瑞利公式\eqref{eq:rayleigh-eq}，因此必须使用一种不同的统计理论。
+
+普朗克声称：将$p$份大小为$\epsilon$的离散能量分配在$n$个振子上，有
+\begin{equation}
+    W = \frac{(n+p-1)!}{(n-1)!p!}
+    \label{eq:planck-counting}
+\end{equation}
+种方法。\eqref{eq:planck-counting}是将$p$个完全相同的物体分配进$n$个全部不能为空的集合的分配方式数目。
+这样，使用极大概然法并使用斯特林公式，有
+\[
+    S = k_\text{B} \ln W = k_\text{B} \left( \left(\frac{p}{n} + 1\right) \ln \left(\frac{p}{n} + 1 \right) - \frac{p}{n} \ln \frac{p}{n} \right),
+\]
+以及单个振子的内能为
+\[
+    U = \frac{p \epsilon}{n}.
+\]
+与\eqref{eq:planck-entropy-energy}比较，得到
+\begin{equation}
+    \epsilon = h \nu.
+    \label{eq:energy-quanta}
+\end{equation}
+这就意味着，实验证实为正确的普朗克辐射定律\eqref{eq:planck-eq}可以从以下假定推导出来：分配在振子上的能量是离散的，且每个振子的能量是\eqref{eq:energy-quanta}的整数倍。
+振子能量的离散化当然也意味着辐射的能量是离散的。
+
+普朗克不得不承认，辐射能量量子化实在是一种绝望的举动，因为经典电动力学没有提供任何这方面的依据。
+实际上，即使认可能量可以量子化，\eqref{eq:planck-counting}也不像是非常有道理的，至少玻尔兹曼不是这么做统计的。
+至少在以下几个方面，\eqref{eq:planck-counting}完全说不通：
+\begin{enumerate}
+    \item 玻尔兹曼的确考虑过“离散的能量分配在不同系统中”这样的想法，但是这不过是处理连续能量时为求方便的权宜之计；
+    \item 即使在考虑离散能量时，玻尔兹曼的思考方式是“原子在不同能级上怎么分布”，不是“离散的能量怎么分布在不同原子上”；
+    \item 即使采用“离散的能量怎么分布在不同原子上”的想法，\eqref{eq:planck-counting}暗示的全同不可分辨的物体在经典统计物理中也毫无意义，因为全同物体在经典图景下是可以做标记以区分的。
+\end{enumerate}
+
+爱因斯坦则提出了更为激进的假设：辐射就是粒子化的（即\textbf{光子}）。
+
+\section{光电效应}
+
+\section{康普顿散射}
 
 非相干散射
 \[
@@ -131,7 +284,7 @@
 
 原子序数增大，则原子周围的电子大部分都是被束缚的内层电子，因此相干散射随着原子序数增大而增强。
 
-\subsubsection{原子结构}
+\section{原子结构}
 
 如果原子是一个完全经典的体系，那么由于电子绕着原子核做周期性运动，它会向外发射电磁波，由此带来的电磁阻尼会导致电子失去能量而落入原子核。但实际上原子是非常稳定的，因此描述原子不能只使用经典力学。
 
@@ -174,7 +327,7 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
     \item \textbf{洛伦兹展宽}，即被测原子和其它粒子发生碰撞，能量交换而改变了释放出来的波列的频率，从而谱线展宽。
 \end{itemize}
 
-\subsection{薛定谔方程}
+\section{薛定谔方程}
 
 由于传统上认为是波的对象实际上具有粒子性，传统上认为是粒子的对象实际上具有波动性，需要寻找一个波动方程，被它描述的波同时也能够被赋予粒子性的意义。
 这种波称为\textbf{物质波}或\textbf{德布罗意波}。
@@ -289,3 +442,5 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
     n = S \cdot \frac{eB}{\hbar c} = \frac{\Phi}{\Phi_0}.
 \]
 这就是
+
+\end{document}
