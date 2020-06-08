@@ -24,6 +24,7 @@
 \DeclareMathOperator{\timeorder}{T}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
@@ -62,7 +63,7 @@
 
 $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 
-对离散格点系统，使用$\pair{i, j}$表示最接近的一对格点。
+对离散格点系统，使用$\pair{i, j}$表示最接近的一对格点。（只求和一次，即认为$\pair{i, j}$和$\pair{j, i}$相同）
 
 在不涉及自旋-轨道耦合的场合，在书写哈密顿量时我们直接略去自旋的下标，这是合理的，因为只需要把不考虑自旋的哈密顿量中的各个产生湮灭算符根据自旋守恒的性质机械地加上自旋下标再求和就能够得到完整的哈密顿量。
 在需要实际计算粒子数时就不能这么做了。
@@ -145,6 +146,15 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
     \xi_{\vb*{k}} = \epsilon_{\vb*{k}} - \mu.
 \end{equation}
 化学势的大小由系统中的粒子数决定。
+
+薛定谔场满足$U(1)$对称性，因此通过诺特定理可以得到守恒荷（当然就是电荷）
+\begin{equation}
+    \rho(\vb*{r}) = - e \hat{\psi}^\dagger(\vb*{r}) \hat{\psi}(\vb*{r}),
+\end{equation}
+以及守恒流（也即电流密度）
+\begin{equation}
+    \hat{\vb*{j}} = \frac{\ii e}{2m} (\hat{\psi}^\dagger(\vb*{r}) \grad{\hat{\psi}}(\vb*{r}) - \hat{\psi}(\vb*{r}) \grad{\hat{\psi}^\dagger}(\vb*{r})).
+\end{equation}
 
 \subsection{近独立电子气}
 
@@ -257,6 +267,32 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 % 真的是这个名字吗？这些波函数称为\textbf{布洛赫波函数}。
 $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大，具体取什么样的边界条件对物体内部的过程毫无影响。
 
+自由电子气的费米面是球状的（即\textbf{费米球}）。对三维系统，态密度为
+\[
+    \dd{N} = 2 \frac{\dd[3]{\vb*{r}} \dd[3]{\vb*{k}}}{(2\pi)^3},
+\]
+因子$2$是因为电子有两个自旋。积掉无用的坐标自由度和动量角自由度之后得到
+\[
+    \dd{N} = \frac{V k^2 \dd{k}}{\pi^2}.
+\]
+由于
+\[
+    \epsilon = \frac{k^2}{2m},
+\]
+可以推导出
+\[
+    \dd{N} = \frac{V (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon}}{2 \pi^2}.
+\]
+这样就可以计算出总粒子数和费米能（即零温化学势）之间的关系：
+\begin{equation}
+    N = \int_{\epsilon=0}^{\epsilon_{\text{F}}} \dd{N} = \frac{V (2m)^{3/2}}{3 \pi^2} \epsilon_\text{F}^{3/2},
+\end{equation}
+以及总能量
+\begin{equation}
+    E = \int_{\epsilon=0}^{\epsilon_{\text{F}}} \epsilon \dd{N} = \frac{V (2m)^{3/2}}{5 \pi^2} \epsilon_\text{F}^{5/2} = \frac{3}{5} N \epsilon_{\text{F}}.
+\end{equation}
+对二维或者一维的自由电子气也可以使用类似的方法得到系数不同的结论。
+
 \subsection{相互作用电子气的近独立处理}
 
 实际的电子气当然有相互作用。本节介绍了如何将相互作用较弱的相互作用电子气看成近独立电子气。
@@ -287,7 +323,8 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \begin{equation}
     \expval*{\hat{H}_\text{columbic}} = \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{n} (\vb*{r}_1)} \expval*{\hat{n} (\vb*{r}_2)}.
 \end{equation}
-这和经典的连续介质电动力学给出的结果完全一致。假定$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减的近似称为\textbf{托马斯-费米近似}，这个近似的意义在于将系统的所有信息都使用电子数密度期望给出了，并且库伦相互作用引入的能量修正和经典理论完全一致。
+这和经典的连续介质电动力学给出的结果完全一致。若电子气比较稀疏，从而不同电子的波函数重叠并不明显，则$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$可以略去，这个近似称为\textbf{托马斯-费米近似}，它的的意义在于将系统的所有信息都使用电子数密度期望给出了，并且库伦相互作用引入的能量修正和经典理论完全一致。
+托马斯-费米近似同时需要两个条件：首先相互作用并不强，从而可以近似认为电子之间近独立；其次电子气要足够稀疏，让关联能消失。
 
 在Hartree-Fock近似中，体系是自由的，于是总是可以假定体系\eqref{eq:electron-gas-hamiltonian-sq}的基态近似为
 \begin{equation}
@@ -361,7 +398,7 @@ $\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在�
 通常只分析费米面附近的物理，部分原因在于只有这里才确定有稳定的准粒子，部分原因在于费米海的结构可以非常复杂，因此只考虑费米面附近的物理是比较容易的，也是比较有实际意义的。
 考虑一个能量本征态，其中准粒子在费米面之上的数量为$\var{n}$，则总是把能量本征值相对于零温平衡态（由于费米海的结构可以非常复杂，平衡态能量反而是算不出来的）的变化写成以下级数展开（$\vb*{k}$在费米面附近）：
 \begin{equation}
-    \var{E} = \underbrace{\sum_{\vb*{k}, \sigma} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{E_1} + \underbrace{\frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \sigma, \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{E_2},
+    \var{E} = \underbrace{\sum_{\vb*{k}, \sigma} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1}} + \underbrace{\frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \sigma, \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2}},
     \label{eq:fermi-liquid-energy}
 \end{equation}
 其中$\var{n}$表示准粒子数目相对基态的变化。
@@ -416,7 +453,67 @@ $\theta$是$\vb*{k}$和$\vb*{k}'$的夹角。这样，设
 \end{equation}
 这个公式在实验上非常重要，如果确定一个体系是费米液体（如发现低温下热容正比于温度），那么就可以据此测出电子的有效质量。
 
-\section{理想晶体}
+也可以计算费米液体的磁化率。考虑弱场近似，则磁化率
+\[
+    \chi = \pdv{M}{H}
+\]
+近似为
+\[
+    \chi = \frac{M}{H},
+\]
+其中$M$表示磁化强度，$H$表示磁场强度（不是哈密顿量），而磁化强度为
+\[
+    M = \pdv{E}{H},
+\]
+于是得到
+\[
+    \frac{1}{\chi} = \pdv[2]{E}{M}.
+\]
+这样只需要使用$M$表示出$E$就可以了。
+记自旋向上（以磁场方向为$z$轴）和向下的电子数为$N_\uparrow$和$N_\downarrow$，则
+\[
+    M = \mu_\text{B} (N_\uparrow - N_\downarrow),
+\]
+其中$\mu_\text{B}$为玻尔磁子。磁场导致自旋向上和向下的电子数发生变化的原因是，自旋和磁场一致的电子的费米面会扩大，自旋和磁场相反的电子的费米面会缩小，从而让$N_\uparrow$变大，$N_\downarrow$缩小。
+由于电子数不变，有
+\[
+    \var{N_\uparrow} = - \var{N_\downarrow},
+\]
+而没有磁场时向上和向下的电子数一样，于是
+\[
+    M = 2 \mu_\text{B} \var{N}_\uparrow.
+\]
+$\var{N_\uparrow}$和费米动量的变化之间的关系是
+\[
+    \var{N_\uparrow} = \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} = \frac{V k_\text{F}^2 \var{k_\text{F}}}{2\pi^2}.
+\]
+现在可以将$M$用$\var{k_\text{F}}$表示出来了。接下来将能量写成$\var{k_\text{F}}$的函数。
+对动能部分$E_1$，我们有
+\[
+    \var{E_1} = \sum_{\sigma, \vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) \var{n}_{\vb*{k} \sigma},
+\]
+$n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k_\text{F}}$的区域内从$0$变成$1$，$n_{\vb*{k} \downarrow}$仅有的变化是在$k_\text{F} - \var{k_\text{F}} < k < k_\text{F}$的区域内从$1$变成$0$。
+这样就有
+\[
+    \begin{aligned}
+        \var{E_1} &= \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) + \int_{k_\text{F} - \var{k_\text{F}} < k < k_\text{F}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) (-1) \\
+        &= \frac{V k_\text{F}^3}{2 \pi^2 m^*} (\var{k_\text{F}})^2.
+    \end{aligned}
+\]
+最后，得到$\var{E_1}$和$M$的关系：
+\[
+    \var{E_1} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} M^2.
+\]
+同理，可以计算得到（计算的关键点在于意识到对全空间计算积分，则只有零阶勒让德多项式能够给出非零结果）
+\[
+    \var{E_2} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} F_0^\text{A} M^2.
+\]
+这样就得到了$\var{E}$关于$M$的表达式，从而最终得到
+\begin{equation}
+    \chi = \frac{1}{1 + F_0^\text{A}} \frac{m^* \mu_\text{B}^2 V k_\text{F}}{\pi^2}.
+\end{equation}
+
+\section{理想晶体的晶格结构}
 
 所谓晶体指的是一种在三个独立的空间方向上具有离散的平移不变性且并没有连续平移不变性的物体。\eqref{eq:many-body-hamiltonian}显然具有连续的平移不变性，因此晶体的形成必然经历了对称性自发破缺，且在较高的能量下原本的晶体一定会相变成某种更加均匀的东西。
 
@@ -671,7 +768,6 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 \end{equation}
 $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑周期势的边长为$L$的正方体势阱中的电子的$\vb*{k}$可以取遍所有位于那个边长为$2\pi / L$的格点。
 但实际上两者的自由度是一样的，因为我们还有$n$标记各个能带，也即，我们相当于把所有能带中的动量都移动到了第一布里渊区内部。
-% TODO：自由布洛赫电子的哈密顿量是不是也和自由电子气差不多？？
 
 \subsubsection{Wannier波函数}
 
@@ -754,43 +850,115 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
     \hat{H} = - \sum_{\pair{i, j}} (t \hat{c}^\dagger_i \hat{c}_j + \text{h.c.}).
 \end{equation}
 
-\subsection{晶格和声子}
+\section{晶格运动和声子}
 
-首先考虑做小幅运动的离子实，即取简谐近似，这样晶格实际上仍然可以看成一个自由系统，哈密顿量为
+\subsection{离子实位移的正则量子化}
+
+实际上，离子实也会运动，于是我们得到一个定义在正格子上的场，这个场的激发就是\textbf{声子}。
+离子实的哈密顿量大致如下：（使用大写字母以和电子区分）
 \begin{equation}
-    \hat{H} = \sum_i \frac{\hat{P}_n^2}{2M} + 
+    \hat{H} = \sum_n \frac{\hat{P}_n^2}{2M_n} + \frac{1}{2} \sum_{\pair{m, n}} \omega_{mn}^2 (\hat{X}_{m} - \hat{X}_{n})^2 + \cdots, 
 \end{equation}
-其中$i$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$。
+其中$n$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$，
+\[
+    \vb*{X} = \vb*{R} - \vb*{R}_0
+\]
+为某个离子实的位移。
+正则量子化之后，哈密顿量中的前两项给出一个自由场，而离子实之间的非线性相互作用则给出声子-声子散射过程。
+由于坐标-动量关系是对易关系而不是反对易关系，声子是玻色子。
 
-% TODO：声学声子和光学声子
+离子实和电子的相互作用通常取这样的形式：
+\[
+    H_\text{ei} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n, i} (\vb*{R}_n - \vb*{R}_{n}^0) \cdot \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}_i) + \cdots,
+\]
+其中$R^0_n$指的是离子实$n$未发生移动时的位置，即$n$号正格子的位置。
+对位移场$\vb*{X}$做正则量子化，并将关于电子的部分做二次量子化，得到
+\[
+    \hat{H}_{\text{ei}} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n} \int \dd[3]{\vb*{r}} \hat{\vb*{X}} \cdot \hat{\psi}^\dagger(\vb*{r}) \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}) \hat{\psi}(\vb*{r}) + \cdots,
+\]
+这就是电子-声子相互作用。可以看出以上哈密顿量对$\hat{\vb*{X}}$不具有$U(1)$对称性，因此声子一般来说不是守恒的。
 
-可以看到，声子和电子的量子化是很不相同的。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
+声子和电子的量子化过程很不一样。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
 换而言之，没有声子的一次量子化：定义声子时我们的理论就是二次量子化的。
 
-\section{宏观量的微观表达式}
+\subsection{一维简谐振子链}
 
-\subsection{电和磁}
-
-\subsubsection{电荷和电流}
-
-薛定谔场满足$U(1)$对称性，因此通过诺特定理可以得到守恒荷（当然就是电荷）
+首先考虑一个一维的、均质的晶格，并假定非线性效应很微弱，即不存在声子-声子散射，从而
 \begin{equation}
-    \rho(\vb*{r}) = - e \hat{\psi}^\dagger(\vb*{r}) \hat{\psi}(\vb*{r}),
+    \hat{H} = \sum_n \frac{\hat{P}_n^2}{2 M} + \frac{M}{2} \sum_{n} \omega^2 (\hat{X}_{n+1} - \hat{X}_{n})^2.
+    \label{eq:one-dim-osc-hamiltonian}
 \end{equation}
-以及守恒流（也即电流密度）
+记晶格常数为$a$，做傅里叶变换
+\[
+    \hat{P}_n = \frac{1}{\sqrt{N}} \sum_{k} \ee^{\ii k n a} \hat{P}_k, \quad \hat{X}_n = \frac{1}{\sqrt{N}} \sum_{k} \ee^{\ii k n a} \hat{X}_k,
+\]
+由于$\vb*{X}$和$\vb*{P}$都是实场，将$k$换成$-k$只会导致共轭转置。
+可以计算出对易关系
 \begin{equation}
-    \hat{\vb*{j}} = \frac{\ii e}{2m} (\hat{\psi}^\dagger(\vb*{r}) \grad{\hat{\psi}}(\vb*{r}) - \hat{\psi}(\vb*{r}) \grad{\hat{\psi}^\dagger}(\vb*{r})).
+    \comm*{\hat{X}_{k}}{\hat{P}_{k'}} = \ii \delta_{k+k', 0}, \quad \comm*{\hat{X}_{k}}{\hat{X}_{k'}} = \comm*{\hat{P}_{k}}{\hat{P}_{k'}} = 0,
+\end{equation}
+并将哈密顿量写成
+\[
+    \hat{H} = \frac{1}{2M} \sum_{k} \hat{P}_{-k} \hat{P}_{k} + \sum_k \frac{M \omega_{k}}{2} \hat{X}_{-k} \hat{X}_k,
+\]
+其中
+\begin{equation}
+    \omega_k^2 = 2 (1 - \cos k a) \omega_0^2.
+\end{equation}
+做变换
+\begin{equation}
+    \hat{b}_{k} = \sqrt{\frac{M \omega_k}{2}} \hat{X}_k + \ii \frac{1}{\sqrt{2 M \omega_k}} P_k, \quad \hat{b}^\dagger_{k} = \sqrt{\frac{M \omega_k}{2}} \hat{X}_k - \ii \frac{1}{\sqrt{2 M \omega_k}} P_k,
+\end{equation}
+则有
+\begin{equation}
+    \hat{H} = \sum_k \omega_k \left(\hat{b}^\dagger_k \hat{b}_k + \frac{1}{2}\right).
+\end{equation}
+这样就得到了声子。
+
+\subsection{三维正方晶格}
+
+\subsubsection{单成分晶体}
+
+现在想象一个三维的正方晶格，各个离子实还是一模一样的。用下标标记晶格坐标，用上标标记矢量的分量，得到\eqref{eq:one-dim-osc-hamiltonian}的三维版本（已经略去了一个无关紧要的基态能量$V_0$）：
+\begin{equation}
+    \hat{H} = \frac{1}{2 M} \sum_n \hat{P}_n^2 + \frac{1}{2} \sum_{\pair{m, n}} \pdv{V}{R^a}{R^b} (X_m^a - X_n^a) (X_m^b - X_m^b).
+\end{equation}
+将$\vb*{X}_n$和$\vb*{P}_n$做如下展开：
+\begin{equation}
+    \vb*{X}_n = \frac{1}{\sqrt{N}} \sum_{\vb*{k}, \lambda} \vb*{\lambda} X_{n \lambda} \ee^{\ii \vb*{k} \cdot \vb*{R}_n^0}, \quad \vb*{P}_n = \frac{1}{\sqrt{N}} \sum_{\vb*{k}, \lambda} \vb*{\lambda} P_{n \lambda} \ee^{\ii \vb*{k} \cdot \vb*{R}_n^0},
+\end{equation}
+其中$\vb*{\lambda}$是对称矩阵$\pdv{V}{R^a}{R^b}$的特征方向，我们用它表示不同的偏振方向（由于$\vb*{X}$是矢量，声子会有一个额外的偏振自由度）。
+在系统对称性比较好的时候，无论$\vb*{k}$方向如何，都可以找到三个合适的$\vb*{\lambda}$，一个平行于$\vb*{k}$，两个垂直于$\vb*{k}$，即可以区分出明确的纵波模式和横波模式，从而可以对不同的$\vb*{k}$选取不同的$\vb*{\lambda}$，记作$\vb*{\lambda}_{\vb*{k}}$。
+这样，哈密顿量就是
+\begin{equation}
+    \hat{H} = \frac{1}{2 M} \sum_{\vb*{k}, \lambda} \hat{P}_{-\vb*{k} \lambda} \hat{P}_{\vb*{k}\lambda} + \frac{M}{2} \sum_{\vb*{k}, \lambda} \omega_{\vb*{k} \lambda}^2 \hat{X}_{-\vb*{k} \lambda} \hat{X}_{\vb*{k} \lambda}.
+\end{equation}
+做变换
+\begin{equation}
+    \hat{b}_{\vb*{k} \lambda} = \sqrt{\frac{M \omega_{\vb*{k} \lambda}}{2}} \hat{X}_{\vb*{k} \lambda} + \ii \frac{1}{\sqrt{2 M \omega_{\vb*{k} \lambda}}} P_{\vb*{k} \lambda}, \quad \hat{b}^\dagger_{\vb*{k} \lambda} = \sqrt{\frac{M \omega_{\vb*{k} \lambda}}{2}} \hat{X}_{\vb*{k} \lambda} - \ii \frac{1}{\sqrt{2 M \omega_{\vb*{k} \lambda}}} P_{\vb*{k} \lambda},
+\end{equation}
+哈密顿量就成为
+\begin{equation}
+    \hat{H} = \sum_{\vb*{k}, \lambda} \omega_{\vb*{k} \lambda} \left( \hat{c}^\dagger_{\vb*{k} \lambda} \hat{c}_{\vb*{k} \lambda} + \frac{1}{2} \right).
 \end{equation}
 
-\subsection{热力学性质}
+\subsubsection{光学声子}
 
-\subsubsection{比热}
+如果晶格中实际上有好多种离子实，那么$\vb*{X}$需要两个量子数来标记，其一是格点坐标，其二是表明它是哪种离子实的位移的一个标签。
+这样，如果晶格有$n_\text{i}$好多种离子实，那么它就有$n_\text{i}$种不同的声子模式。
+
+\subsubsection{电子-声子耦合}
+
+% TODO：声学声子和光学声子
 
 \section{外加杂质}
 
 本节讨论对晶体引入小的外界扰动——通常是某种形式的掺杂——会导致的结果。响应可能是微小的，也可能是巨大的。
 
-\subsection{外加电荷}\label{sec:ext-charge}
+\subsection{外加电荷的稀疏电子气}\label{sec:ext-charge}
+
+本节讨论一个足够稀疏，从而可以忽略交换作用的电子气系统。
+由于可以忽略交换作用，可以完全照搬经典静电学，即认为一个电子的全部能量是其动能加上电势能，而不考虑任何交换能或者关联能。
 
 \subsubsection{托马斯-费米静态屏蔽势}
 
@@ -862,7 +1030,7 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 描述，而响应就是%
 \footnote{我们没有将$V_\text{ext}$写进$\hat{H}$中而是把它看成了外界扰动，这样电子气本身的哈密顿量仍然是空间平移不变的。}%
 \begin{equation}
-    \expval*{\var{\hat{n}}(\vb*{r}, t)} = \int \dd{t'} G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') V_\text{ext}(\vb*{r}', t),
+    \expval*{\var{\hat{n}}(\vb*{r}, t)} = \int \dd{t'} G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') V_\text{ext}(\vb*{r}', t'),
 \end{equation}
 在频域中就是
 \begin{equation}
@@ -874,7 +1042,7 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 外加势场是怎么影响电荷分布的？同上一节的经典处理一样，自洽方程可以通过下面的方法给出。
 \begin{enumerate}
     \item 外加电荷引入外加电势能，
-    \item 外加电势能导致屏蔽电荷，屏蔽电荷导致总的电势能变化，
+    \item 外加电势能加上屏蔽电荷产生的电势能等于总的电势能变化$V_\text{ext}$，
     \item 总的电势能变化可以反推出屏蔽电荷。
 \end{enumerate}
 
@@ -887,9 +1055,9 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 \begin{equation}
     k^2 \var{V}(\vb*{k}, \omega) = 4\pi e^2 \expval*{\var{\hat{n}}(\vb*{k}, \omega)}.
 \end{equation}
-于是第三步完成了。
+于是第二步完成了。
 
-第二步则要求写出由于我们讨论的是一般的近独立电子气，格林函数是不容易计算的。
+第三步则要求写出由于我们讨论的是一般的近独立电子气，格林函数是不容易计算的。
 为简化问题我们做\textbf{RPA（Random Phase Approximation）近似}%
 \footnote{这个名称最早来自核物理，在那里它是通过对某个随机相位的求和得到的。}%
 ，即认为$\var{\hat{n}}$和$V_\text{eff}$之间的响应函数近似是自由电子的密度-密度格林函数，即
@@ -925,6 +1093,8 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 
 \subsection{单杂质与局域磁矩}
 
+\subsubsection{Anderson模型}\label{sec:anderson-model}
+
 考虑一个无相互作用的体系，我们在其中引入一个杂质，并且假定该杂质能够将电子紧密地约束在其周围。
 这样一来我们就有了两套能级：一套是原本的费米液体，还有一套是一个单独的能级，处于这个能级的电子被束缚在杂质周围。
 需要使用晶格动量和自旋标记前者（仅考虑能量最低的能带），称为\textbf{巡游电子}，因为它的波函数是布洛赫波函数，并不定域；后者是定域的，只需要使用自旋即可标记后者，称为\textbf{d电子}（因为很多时候这个轨道是杂质的d轨道）。
@@ -937,14 +1107,16 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 最后一项是因为同处于d能级的两个电子之间会有库伦排斥作用，这一项实际上是唯一的真正的相互作用，因为前三项都是二次型。请注意这一项具有自选旋转不变性，这也是合理的。
 
 d电子的相互作用项意味着d轨道上出现两个电子会大大增大能量，如果费米面位于d轨道出现一个电子和d轨道出现两个电子的能量之间，那么巡游电子总会填充d轨道，而且填充一个电子，其结果就是产生杂质附近的局域磁矩。
+实际上，这样会导致一个低能有效理论，见\autoref{sec:kondo-effect}。
+本节则主要观察什么时候会出现一个局域磁矩，即什么时候会出现对称性自发破缺。
 
+在展开计算之前，首先尝试做一些定性的分析。记能谱展宽为$\Delta$，则由费米黄金法则，
 \[
-    \Delta E \propto \frac{1}{\tau} \propto \sum_{\vb*{k}} \abs{V_{\vb*{k} \text{d}}}^2 N(\epsilon_\text{d}).
+    \Delta \propto \frac{1}{\tau} \propto \sum_{\vb*{k}} \abs{V_{\vb*{k} \text{d}}}^2 N(\epsilon_\text{d}).
 \]
-
-当$U \gg \epsilon_\text{d} \gg \Delta E$时，展宽、良定义的局域磁矩
-
-当$U \gg \Delta E \gg \epsilon_\text{d}$时能级已经很不清楚，和费米海混合的电子
+只有$U$很大时才能够产生局域磁矩，否则d轨道可以很容易地填满。
+当$U \gg \epsilon_\text{d} \gg \Delta$时，d电子能谱发生弱展宽，但仍然有清晰的能级，并且会有一个良定义的局域磁矩。
+而当$U \gg \Delta \gg \epsilon_\text{d}$时能级已经很不清楚，d电子可以和费米海中大范围的电子发生相互作用，因此虽然d轨道上只有一个电子，但它会频繁地发生自旋翻转，因此不会有局域磁矩。
 
 \subsubsection{平均场近似}
 
@@ -952,7 +1124,7 @@ d电子的相互作用项意味着d轨道上出现两个电子会大大增大能
 \[
     U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow} = U \hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow} \hat{c}^\dagger_{\text{d} \downarrow} \hat{c}_{\text{d} \downarrow},
 \]
-现在尝试应用平均场近似。考虑其平均值并假定系统处在一个近似自由的态上，从而应用Wick定理，有
+现在尝试应用平均场近似。假定体系近似自由，我们有
 \[
     \begin{aligned}
         \expval{U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}} &= U \expval*{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow} \hat{c}^\dagger_{\text{d} \downarrow} \hat{c}_{\text{d} \downarrow}} \\
@@ -961,7 +1133,8 @@ d电子的相互作用项意味着d轨道上出现两个电子会大大增大能
 \]
 第二项如果有非零值，$z$方向上的自旋旋转对称性就破缺了。
 确实有这样的可能，就是系统基态有对称性自发破缺，但这里暂时假定没有这种情况。%
-\footnote{我们也可以看到平均场近似总是倾向于高估系统的对称性破缺。}%
+\footnote{从这里也可以看到平均场近似总是倾向于高估系统的对称性破缺，因为我们完全可以假定$z$方向上的自旋旋转对称性真的破缺了，从而得到一个$z$方向上自选旋转对称性真的破缺的平均场理论。
+}%
 这样就有
 \[
     \expval{U \hat{n}_{\text{d} \uparrow} \hat{n}_{\text{d} \downarrow}} = U \expval*{\hat{c}_{\text{d} \uparrow}^\dagger \hat{c}_{\text{d} \uparrow}} \expval*{\hat{c}_{\text{d} \downarrow}^\dagger \hat{c}_{\text{d} \downarrow}},
@@ -980,76 +1153,144 @@ d电子的相互作用项意味着d轨道上出现两个电子会大大增大能
     \hat{H}_\text{MF} = \sum_{\vb*{k}, \sigma} \xi_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma \epsilon_\text{d} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.} + U \hat{n}_{\text{d} \uparrow} \expval*{\hat{n}_{\text{d} \downarrow}} + U \expval*{\hat{n}_{\text{d} \uparrow}} \hat{n}_{\text{d} \downarrow}.
     \label{eq:anderson-mf}
 \end{equation}
-这是一个二次型哈密顿量。\eqref{eq:anderson-mf}含有不确定的平均场序参量$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$，但是可以将它们当成参数，求解出$\hat{n}_{\text{d} \uparrow}$和$\hat{n}_{\text{d} \downarrow}$之后回代，从而形成自洽方程。
-这样求解出的$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$
+这是一个二次型哈密顿量。\eqref{eq:anderson-mf}含有不确定的参数$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$（这两个参数实际上是序参量，它们的差给出了$z$轴上的磁矩），但是可以将它们当成参数，求解出$\hat{n}_{\text{d} \uparrow}$和$\hat{n}_{\text{d} \downarrow}$之后回代，从而形成自洽方程。
 
-求解\eqref{eq:anderson-mf}，在适当的条件上
-% 但是这样还是破缺了自旋守恒。。那一开始的假设还是成立的吗？
+求解\eqref{eq:anderson-mf}，在适当的条件上我们会看到$\expval*{\hat{n}_{\text{d} \uparrow}} - \expval*{\hat{n}_{\text{d} \downarrow}}$不等于零，即出现了一个自发磁矩。
+虽然出现了一个局域磁矩，但这和我们的假定——$z$方向上自选旋转不变——并不矛盾，因为$z$方向上的自旋破缺的是$x$或$y$方向的自旋旋转不变性。
+换而言之，以上我们证明的结论是：平均场理论下，$x, y, z$三个方向上的自选旋转不变性不可能全部保留，保留$z$轴的自旋旋转不变性就必定破坏其它两个方向的自选旋转不变性。
 
 可以对\eqref{eq:anderson-mf}做对角化。定义
 \begin{equation}
     E_{\text{d} \sigma} = \epsilon_\text{d} + U \expval*{\hat{n}_{\text{d} (-\sigma)}},
+    \label{eq:energy-d-sigma}
 \end{equation}
 则
 \begin{equation}
     \hat{H}_\text{MF} = \sum_{\vb*{k}, \sigma} \xi_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \sum_\sigma E_{\text{d} \sigma} \hat{c}_{\text{d}\sigma}^\dagger \hat{c}_{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} \hat{c}_{\vb*{k} \sigma}^\dagger \hat{c}_{\text{d} \sigma} + \text{h.c.}
 \end{equation}
-可以直接使用成熟的矩阵方法来对角化这个哈密顿量。或者，采用下面的技巧：设已有对角化形式
+下面要对角化该哈密顿量。设已有对角化形式
 \[
     \hat{H}_\text{MF} = \sum_{n, \sigma} \epsilon_{n \sigma} \hat{c}^\dagger_{n\sigma} \hat{c}_{n\sigma},
 \]
-其中$n$是某个未知的量子数。这样$\hat{c}_{n \sigma}$可以写成$\hat{c}_{\vb*{k} \sigma}$和$\hat{c}_{\text{d} \sigma}$的幺正变换，与此同时
-
+其中$n$是某个未知的量子数，$\hat{c}_{n \sigma}$可以写成$\hat{c}_{\vb*{k} \sigma}$和$\hat{c}_{\text{d} \sigma}$的幺正变换，通过要求对易关系一致（或者别的什么技巧）就得到方程组
 \begin{equation}
     \begin{aligned}
-        \epsilon_{n\sigma} \braket{\vb*{k}\sigma}{n \sigma} = \braket{\vb*{k} \sigma}{n \sigma} \xi_{\vb*{k}} + \braket{\text{d} \sigma}{n \sigma} V_{\vb*{k} \text{d}}, \\
-        \epsilon_{n \sigma} \braket{\text{d} \sigma}{n \sigma} = \braket{\text{d} \sigma}{n \sigma} E_{\text{d} \sigma} + \sum_{\vb*{k}} \braket{\vb*{k} \sigma}{n \sigma} V_{\vb*{k} \sigma}.
+        \epsilon_{n\sigma} \braket{\vb*{k}\sigma}{n \sigma} &= \braket{\vb*{k} \sigma}{n \sigma} \xi_{\vb*{k}} + \braket{\text{d} \sigma}{n \sigma} V_{\vb*{k} \text{d}}, \\
+        \epsilon_{n \sigma} \braket{\text{d} \sigma}{n \sigma} &= \braket{\text{d} \sigma}{n \sigma} E_{\text{d} \sigma} + \sum_{\vb*{k}} \braket{\vb*{k} \sigma}{n \sigma} V_{\vb*{k} \sigma}.
     \end{aligned}
 \end{equation}
+求解此方程组，并加入幺正性条件，就可以完成对角化。
 
 \subsubsection{平均场近似下的格林函数}
 
-由于系统自旋守恒，两个自旋不同的算符的格林函数为零，因此可以使用$G_{\text{dd}, \sigma}$标记d轨道电子的格林函数。
+由于系统自旋守恒，两个自旋不同的算符的格林函数为零，因此可以使用$G_{\text{dd}, \sigma}$标记d轨道电子的格林函数，用$G_{\vb*{k} \text{d}, \sigma}$标记从$\vb*{k}$动量的巡游电子跃迁为d电子的格林函数。
+从一个巡游电子到另一个巡游电子的过程动量守恒（因为相当于积掉了d电子自由度），用$G_{\vb*{k}\sigma}$标记这个过程的格林函数。
+我们并不会计算这些格林函数，于是首先考虑$n$-$\sigma$表象下的格林函数，然后再使用表象变换得到d电子或者别的什么东西的格林函数。
+要计算d点子格林函数是为了计算$\expval*{\hat{n}_{\text{d}\uparrow}}$和$\expval*{\hat{n}_{\text{d}\downarrow}}$。
+
 在$n$-$\sigma$表象下哈密顿量对角，于是使用$G_{n\sigma}$标记$n$表象电子的格林函数。
 首先考虑松原格林函数，考虑到$n$表象下系统是自由的，有
 \begin{equation}
     G_{n\sigma} (\omega_n) = \frac{1}{\ii \omega_n - \epsilon_n},
 \end{equation}
 请注意这里有两种$n$：$\omega_n$中的$n$标记频率，$\epsilon_n$和$G$的下标中的$n$则是量子数。
-格林算符为
+虚频单电子格林算符定义为
+\[
+    (\ii \omega_n - \hat{h}_\text{MF}) \hat{G}(\omega_n) = 1,
+\]
+使用$G_{n \sigma}$，单电子格林算符就是
 \begin{equation}
     \hat{G}(\omega_n) = \sum_{n, \sigma} \frac{\dyad{n\sigma}}{\ii \omega_n - \epsilon_n} = \frac{1}{\ii \omega_n - \hat{h}_\text{MF}},
 \end{equation}
 其中$\hat{h}_\text{MF}$就是单体哈密顿量，为
 \begin{equation}
-    \hat{h}_\text{MF} = \sum_{\vb*{k} \sigma} \xi_{\vb*{k}} \dyad{\vb*{k} \sigma} + \sum_\sigma E_{\text{d} \sigma} \dyad{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} ( \ket{\vb*{k} \sigma} \bra{\text{d} \sigma} + \text{h.c.} ).
+    \hat{h}_\text{MF} = \sum_{\vb*{k}, \sigma} \xi_{\vb*{k}} \dyad{\vb*{k} \sigma} + \sum_\sigma E_{\text{d} \sigma} \dyad{\text{d} \sigma} + \sum_{\vb*{k}, \sigma} V_{\vb*{k} \text{d}} ( \ket{\vb*{k} \sigma} \bra{\text{d} \sigma} + \text{h.c.} ).
+    \label{eq:anderson-green-operator}
 \end{equation}
-由此可以计算出所有的格林函数。
-格林算符的求解方式大致如下：我们有
-\[
-    (\ii \omega_n - \hat{h}_\text{MF}) \hat{G}(\omega_n) = 1,
-\]
-分别计算这个方程的不同矩阵元，可以得到
+格林算符在不同表象下的矩阵元就给出了全部的单电子格林函数（或者说二算符格林函数）。
+
+计算\eqref{eq:anderson-green-operator}在$\vb*{k}, \text{d}$表象下的不同矩阵元，可以得到$G_{\text{dd}, \sigma}$，$G_{\vb*{k} \text{d}, \sigma}$和$G_{\vb*{k}, \sigma}$之间的关系。
+可以预期$G_{\vb*{k}, \sigma}$和自由情况不会差太多，因为巡游电子远远多于d电子。
+d电子的格林函数相对自由电子格林函数则会有较大的修正，具体而言，是
 \begin{equation}
     (G_{\text{dd}, \sigma}(\omega_n))^{-1} = \ii \omega_n - E_{\text{d}\sigma} - \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\ii \omega_n - \epsilon_{\vb*{k}}}.
 \end{equation}
-从以上松原格林函数可以容易地计算出推迟格林函数
+相应的推迟格林函数是
 \begin{equation}
     (G_{\text{dd}, \sigma}^\text{ret}(\omega))^{-1} = \omega - E_{\text{d}\sigma} - \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}.
 \end{equation}
-显然格林函数偏离了自由格林函数。自能为
+自能修正为
+\begin{equation}
+    \Sigma_{\text{d} \sigma}^\text{ret} = \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+} = \frac{V}{(2\pi)^3} \int \dd[3]{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}.
+\end{equation}
+它来自d电子通过和巡游电子作用，间接地“自己和自己相互作用”。它的实部带来能级修正，它的虚部就是能级展宽的量级。
+实部是通常的柯西积分主值
 \[
-    \Sigma_{\text{d} \sigma} = \sum_{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}
+    \Re \Sigma_{\text{d} \sigma}^\text{ret} = \frac{V}{(2\pi)^3} \primevalue \int \dd[3]{\vb*{k}} \frac{V_{\vb*{k}\text{d}}^2}{\omega - \epsilon_{\vb*{k}} + \ii 0^+},
 \]
-其虚部就是能级展宽的量级。可以把自能的实部归结到能级$E_{\text{d}\sigma}$中，因为后者是根本就不知道的。
-
+虚部为
 \[
-    A_{\text{d}\sigma} = \frac{1}{\pi} \frac{\Delta}{(\omega-E_{\text{d}\sigma})^2 + \Delta^2}
+    \Im \Sigma_{\text{d} \sigma}^\text{ret} = - \sum_{\vb*{k}} \delta(\omega - \epsilon_{\vb*{k}}) V_{\vb*{k} \text{d}}^2, 
 \]
+Anderson模型中的巡游电子只有一个能带，这个能带通常在费米面附近，于是我们有
+\[
+    \Im \Sigma_{\text{d} \sigma}^\text{ret} = - \pi \expval*{V_{\vb*{k} \text{d}}^2}_\text{FS} N(\omega).
+\]
+费米子谱函数为
+\[
+    A_{\text{d} \sigma} = -\frac{1}{\pi} \Im G_{\text{d} \sigma}^\text{ret},
+\]
+它在$\omega = E_{\text{d} \sigma}$附近有峰，其它位置接近零。
+由于通常能级展宽很小，在计算谱函数时假定自能中的$\omega$始终取$E_{\text{d} \sigma}$，同时将自能修正归入$E_{\text{d} \sigma}$。（$E_{\text{d} \sigma}$是做过重整化的，所以它到底取什么值根本就不知道，因此将自能实部也归入其中是合理的）
+以自能虚部绝对值为能级展宽量级，记作
+\begin{equation}
+    \Delta = \pi \expval*{V_{\vb*{k} \text{d}}^2}_\text{FS} N(\omega),
+\end{equation}
+谱函数就是
+\begin{equation}
+    A_{\text{d}\sigma} = \frac{1}{\pi} \frac{\Delta}{(\omega-E_{\text{d}\sigma})^2 + \Delta^2}.
+    \label{eq:anderson-spectral}
+\end{equation}
 
 \subsubsection{平均场自洽计算}
 
-\subsection{Kondo效应}
+我们现在完成平均场计算的最后一步，即获得关于平均场序参量$\expval*{\hat{n}_{\text{d} \uparrow}}$和$\expval*{\hat{n}_{\text{d} \downarrow}}$的自洽方程。
+由谱函数的性质可以计算出
+\[
+    \expval*{\hat{n}_{\text{d} \sigma}} = \int \dd{\omega} A_{\text{d} \sigma} f(\omega),
+\]
+上式与\eqref{eq:energy-d-sigma}和\eqref{eq:anderson-spectral}联立，就得到自洽方程
+\begin{equation}
+    \begin{aligned}
+        \expval*{\hat{n}_{\text{d} \sigma}} &= \int \dd{\omega} \frac{1}{\pi} \frac{\Delta}{(\omega-E_{\text{d}\sigma})^2 + \Delta^2} f(\omega), \\
+        E_{\text{d} \sigma} &= \epsilon_\text{d} + U \expval*{\hat{n}_{\text{d} (-\sigma)}}.
+    \end{aligned}
+\end{equation}
+例如，在零温情况下，就得到自洽方程
+\begin{equation}
+    \expval*{\hat{n}_{\text{d} \sigma}} = \frac{1}{\pi} \arccot \left( \frac{\epsilon_{\text{d}} + U \expval*{\hat{n}_{\text{d} (-\sigma)}}}{\Delta} \right).
+    \label{eq:anderson-zero-temperature-sc}
+\end{equation}
+这个三角超越方程难以写出解析解。为了观察它能否给出自发局域磁矩，考虑$\epsilon_{\text{d}} = - U / 2$的情况（此时实际上有电子-空穴对称性），且基态d轨道总占据数应该是1，这样
+\[
+    \expval*{\hat{n}_{\text{d} \uparrow}} + \expval*{\hat{n}_{\text{d} \downarrow}} = 1,
+\]
+我们设
+\[
+    \hat{n}_{\text{d} \uparrow, \downarrow} = \frac{1}{2} \pm x,
+\]
+若出现自发磁矩则$x$不为零。此时\eqref{eq:anderson-zero-temperature-sc}为
+\[
+    x = \frac{1}{\pi} \arctan \left( \frac{U}{\Delta} x \right).
+\]
+$x=0$是平凡解；当
+\[
+    \frac{\pi \Delta}{U} < 1
+\]
+时，有三个解，也即会有沿着$z$轴的局域磁矩。这是符合直觉的，因为当$\Delta$比较大，即$V_{\vb*{k} \text{d}}$比较大时，巡游电子和d轨道电子不停发生相互作用，d轨道电子的自旋会不断上下翻转，因此不应该有局域磁矩。
+这和\autoref{sec:anderson-model}中的分析一致。
+
+\subsection{Kondo效应}\label{sec:kondo-effect}
 
 \subsubsection{Anderson单杂质模型的低能有效理论}
 
@@ -1188,6 +1429,13 @@ $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋�
 
 % TODO：费曼图绘制
 
+记d电子自旋为$m$。
+
+一阶过程：
+\begin{equation}
+    T^{(1)}_{\vb*{k}\uparrow \longrightarrow \vb*{k}' \uparrow} = \frac{J_0 m}{2V}, .
+\end{equation}
+
 \begin{equation}
     \rho = \rho_0 \left(1 + 2 J_0 N(0) \ln \frac{T_\text{F}}{T} \right)
 \end{equation}
@@ -1270,7 +1518,7 @@ $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋�
 考虑一个一维近独立电子系统。
 一维系统的动量只有一个可能的方向。因此，一维系统的费米面无非是两个\textbf{费米点}。由对称性这两个点距离动量原点的位置是相同的。
 
-考虑费米点附近的能量。使用巨正则系综并考虑扣除了化学势的有效哈密顿量，此时做线性近似，有
+考虑费米点附近的能量，做线性近似，有
 \begin{equation}
     \xi_{k} = \pm v_\text{F} (k - k_\text{F}).
 \end{equation}
@@ -1422,6 +1670,7 @@ $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋�
 然而，实际上库伦相互作用很容易被屏蔽，因为把低能电子看成外加电荷，那么高能电子就会来屏蔽它（见\autoref{sec:ext-charge}），因此把高能电子积掉之后得到的屏蔽库仑相互作用并不强，因此在重整化下，库仑相互作用实际上只是对电子能带的修正（这和费米液体的想法很相似：渐染地加入一个不大的相互作用仅仅会导致电子自能修正而已）。
 另一方面，电-声子相互作用是不容易屏蔽的，实际上推迟相互作用就是不容易屏蔽的。
 因此，\eqref{eq:low-energy-4-electron}在重整化之后是主要的电子间相互作用。
+还有一种看待这个问题的方式是，电-声子相互作用会导致有效的吸引，在重整化下一个吸引相互作用通常会导致粒子配对取代单粒子自由度成为主要的自由度，因此吸引相互作用不可能只是对能带的修正；库仑相互作用在这里是排斥的，不会造成粒子配对，因此正如Hartree-Fock近似中的那样，仅仅对电子能级产生了一个修正。
 
 声子的频率只出现在0和德拜频率$\omega_\text{D}$之间，换而言之吸引相互作用只出现在
 \[
