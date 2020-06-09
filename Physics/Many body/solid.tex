@@ -68,6 +68,11 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 在不涉及自旋-轨道耦合的场合，在书写哈密顿量时我们直接略去自旋的下标，这是合理的，因为只需要把不考虑自旋的哈密顿量中的各个产生湮灭算符根据自旋守恒的性质机械地加上自旋下标再求和就能够得到完整的哈密顿量。
 在需要实际计算粒子数时就不能这么做了。
 
+若无特殊说明，$f(z)$定义为近独立费米子的分布函数，即
+\[
+    f(z) = \frac{1}{\ee^{\beta z} + 1}.
+\]
+
 \section{电子气模型}
 
 \subsection{有限温下的开放物质系统}
@@ -1105,18 +1110,57 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
     G^\text{ret}_{nn}(\vb*{k}, \omega) = \frac{G^\text{0, ret}_{nn}(\vb*{k}, \omega)}{1 - \frac{4\pi e^2}{k^2} G^\text{0, ret}_{nn}(\vb*{k}, \omega)}.
 \end{equation}
 
-计算出自由电子的密度-密度格林函数之后问题就完全解决了。使用松原理论，
+这样，计算出自由电子的密度-密度格林函数之后问题就完全解决了。依照定义，
 \[
-    G_{nn}^\text{0, ret}(\vb*{r}-\vb*{r}', \tau-\tau') = \sum_{\sigma, \sigma'} G
+    \begin{aligned}
+        G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') &= - T_\tau \expval*{\var{\hat{n}}(\vb*{r}, \tau) \var{\hat{n}}(\vb*{r}', \tau')} \\
+        &= - T_\tau \expval*{{\hat{n}}(\vb*{r}, \tau) {\hat{n}}(\vb*{r}', \tau')} + \expval*{\hat{n}(\vb*{r}, \tau)} \expval*{\hat{n}(\vb*{r}', \tau')} \\
+        &= \sum_{\sigma, \sigma'} T_\tau \expval*{\hat{\psi}_{\sigma'}(\vb*{r}', \tau') \hat{\psi}^\dagger_\sigma(\vb*{r}, \tau)} T_\tau \expval*{ \hat{\psi}_\sigma(\vb*{r}, \tau) \hat{\psi}^\dagger_{\sigma'}(\vb*{r}', \tau') } ,
+    \end{aligned}
 \]
+其中最后一个等号用到了Wick定理。由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，则得到
 \[
-    G_{nn}^\text{0, ret}(\vb*{q}, \ii \omega_n) = \sum_{\sigma} \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} G_\sigma(\vb*{q}, \ii \nu_n) G_\sigma(\vb*{k} + \vb*{q}, \ii (\omega_n + \nu_n))
+    G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') = \sum_\sigma G_\sigma(\vb*{r}' - \vb*{r}, \tau' - \tau) G_\sigma(\vb*{r} - \vb*{r}', \tau - \tau').
+\]
+上式具有卷积的形式，切换到频谱，就是
+\[
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = \sum_{\sigma} \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} G_\sigma(\vb*{q}, \ii \nu_n) G_\sigma(\vb*{k} + \vb*{q}, \ii (\omega_n + \nu_n)),
 \]
 其中
 \[
-    \nu_n = \frac{\pi(2n+1)}{\beta}
+    \nu_n = \frac{\pi(2n+1)}{\beta}, \quad \omega_n = \frac{2\pi n}{\beta},
 \]
-为费米子的松原频率。自由费米子的松原格林函数为
+前者是费米子的松原频率，后者则是玻色子的，因为电子配对形成玻色子。自由费米子的谱函数为
+\[
+    A(\vb*{k}, \omega) = \delta(\omega - \xi_{\vb*{k}}), \quad \xi_{\vb*{k}} = \frac{\vb*{k}^2}{2m} - \mu,
+\]
+格林函数为
+\[
+    G_\sigma(\vb*{r}, \ii \omega_n) = \frac{1}{\ii \omega_n - \xi_{\vb*{k}}}.
+\]
+于是，有
+\[
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} \frac{1}{\ii \nu_n - \xi_{\vb*{k}}} \frac{1}{\ii \omega_n + \ii \nu_n - \xi_{\vb*{k}+\vb*{q}}}.
+\]
+要计算上式，常用的一个技巧是将求和转化为围道积分。注意到$\{\ii \nu_n\}$正是$f(z)$的全部极点，而且这些极点都是一阶极点。
+容易看出这些极点的留数都是$-1/\beta$，于是对一个在虚轴上解析的函数$F(z)$，有
+\[
+    \frac{1}{\beta} \sum_{\nu_n} F(\ii \nu_n) = - \oint \frac{\dd{z}}{2\pi \ii} f(z) F(z),
+\]
+于是设围绕虚轴的环路为$C$，它实际上就是从$-\ii \infty + 0^+$到$-\ii \infty + 0^+$，再从$\ii \infty - 0^+$到$-\ii \infty - 0^+$，
+有
+\[
+    \begin{aligned}
+        G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) &= - 2 \sum_{\vb*{k}} \oint_C \frac{\dd{z}}{2\pi \ii} f(z) \frac{1}{z - \xi_{\vb*{k}}} \frac{1}{z +  \ii \omega_n - \xi_{\vb*{k}+\vb*{q}}} \\
+        &= 2 \sum_{\vb*{k}} \left( \frac{f(\xi_{\vb*{k}})}{\xi_{\vb*{k}} + \ii \omega_n - \xi_{\vb*{k} + \vb*{q}}} + \frac{f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)}{\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n - \xi_{\vb*{k}}} \right).
+    \end{aligned}
+\]
+负号消失了是因为绕极点$z=\xi_{\vb*{k}}$和$z = \xi_{\vb*{k} + \vb*{q}} - \ii \omega_n$是顺时针而不是留数定理通常是的逆时针。
+由$\{\omega_n\}$的定义，$f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)$就是$f(\xi_{\vb*{k} + \vb*{q}})$，于是得到松原格林函数
+\begin{equation}
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \frac{f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})}{\ii \omega_n + \xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}}}.
+\end{equation}
+
 
 \subsubsection{等离子体和等离激元}
 
@@ -2588,18 +2632,41 @@ $s$和$p$均有$N$个，于是所有可能的$\{A_s\}$和$\{B_p\}$的组合总�
 
 \subsubsection{任意子表}
 
-\begin{equation}
-    \theta_e = \theta_m = 1, \quad M_{em} = 1.
-\end{equation}
-
 现在的问题是，环面上的Toric-code模型中最多能够弄出来多少任意子？显然e粒子和m粒子都是任意子，虽然两者自己满足玻色统计，但它们之间有一个非平凡的相位。
-实际上还有一种$\epsilon$粒子，它是一个e粒子和m粒子聚合而成的粒子。
+我们下面将以拓扑性质分类激发，即，拓扑性质相同的激发算作一种。
+可以用两个量来标记一种激发的拓扑性质：设$M_{ab}$为$b$绕着$a$转一圈导致的复数因子，$\theta_a$指的是交换两个$a$导致的复数因子（或者说一个$a$绕着另一个$a$转半圈导致的复数因子）。这样，有
+\begin{equation}
+    \theta_\mathrm{e} = \theta_\mathrm{m} = 1, \quad M_\mathrm{em} = - 1.
+\end{equation}
+除了e粒子和m粒子以外肯定还有一种$\mathrm{\epsilon}$粒子，它是一个e粒子和m粒子聚合%
+\footnote{所谓聚合指的是将两个激发放得尽可能近，从而得到的复合激发。e粒子和m粒子定义在不同的格点上，因此一个e粒子和一个m粒子的聚合就是在一个正方格子中央放置一个m粒子，在它的某个角上放置一个e粒子之后得到的激发，从远处看这近似于一个粒子。}%
+而成的粒子，即
+\begin{equation}
+    \mathrm{\epsilon} = \mathrm{e} \otimes \mathrm{m}.
+\end{equation}
 可以容易地验证
 \begin{equation}
-    M_{e\epsilon} = M_{m\epsilon} = -1, \quad \theta_\epsilon = -1.
+    M_\mathrm{e\epsilon} = M_\mathrm{m\epsilon} = -1, \quad \theta_\mathrm{\epsilon} = -1.
 \end{equation}
-e粒子、m粒子和$\epsilon$粒子这三种拓扑激发都只能成对出现。
+e粒子、m粒子和$\mathrm{\epsilon}$粒子这三种拓扑激发都只能成对出现。
 除了这三种激发以外还有一些平凡的激发，比如声子之类，将它们全部记为$\mathbbm{1}$。
+
+实际上，e粒子、m粒子和$\epsilon$粒子和$\mathbbm{1}$就是全部拓扑激发。
+由于$\mathbbm{1}$无论如何绕圈都不会产生附加的相位，就有
+\[
+    \mathbbm{1} \otimes a = a.
+\]
+两个e粒子放在一起，得到的就是某个边上的$\sigma^x$发生了翻转，这是一个普通的激发；m粒子和$\mathrm{\epsilon}$粒子也是如此，于是
+\[
+    \mathrm{e} \otimes \mathrm{e} = \mathrm{m} \otimes \mathrm{m} = \mathrm{\epsilon} \otimes \mathrm{\epsilon} = \mathbbm{1}.
+\]
+上式实际上说明了一个非常重要的事实：封闭流形上无论有多少拓扑激发，这个态都可以通过对基态作用一些产生算符得到，或者等价地说改变基态上某些格点的值得到，那么如果将这些拓扑激发聚合到一起，得到的只是基态上局域的一些点被改变了，也即得到了一个平凡的激发。
+总之，封闭流形上所有的拓扑激发聚合在一起，只会得到平凡的激发。这就从另一个角度解释了为什么非平凡的拓扑激发一定成对出现。
+$\mathrm{\epsilon}$和e粒子聚合，就相当于两个e粒子先聚合得到一个平凡的激发，剩下一个m粒子，$\mathrm{\epsilon}$粒子和m粒子聚合则会留下一个e粒子和一个平凡的激发，于是
+\[
+    \mathrm{\epsilon} \otimes \mathrm{e} = \mathrm{m}, \quad \mathrm{\epsilon} \otimes \mathrm{m} = \mathrm{e}.
+\]
+因此，e粒子、m粒子和$\epsilon$粒子和$\mathbbm{1}$在聚合运算$\otimes$下是封闭的。
 
 \subsubsection{四重简并和Berry相}
 
@@ -2633,8 +2700,22 @@ $\hat{L}^x_\text{e}$和$\hat{L}^x_\text{m}$将e粒子绕着$x$轴转动一圈，
         \hat{L}^x_\text{m} \hat{L}^x_\text{e} \ket{0} &= \ket{L_\text{e}^y=-1, L_\text{m}^y=-1}.
     \end{aligned}
 \end{equation}
-我们发现四重简并和四种基本的任意子正好能够对应上。这是拓扑序的一般特征：基态简并和任意子有对应。
+我们发现四重简并和四种基本的任意子正好能够对应上。这是拓扑序的一般特征：基态简并和任意子有对应，基态简并数目就是任意子数目的亏格次方。
 我们这里是在亏格（洞的数目）为1的环面上工作，因此基态简并的数目为$4^1=4$种。
+如果在亏格为0的球面上，基态简并的数目就是$4^0=1$种。
+还有另一种方法也可以推导出这个结果。设亏格为$g$，由欧拉公式
+\[
+    V - E + F = 2 - 2g,
+\]
+于是
+\[
+    E - (V + F - 2) = 2g.
+\]
+而$V$是$A_s$格点的数目，$F$是$B_p$格点的数目，再减去\eqref{eq:toric-code-pair-condition}造成的两个约束，则$V+F-2$是一个二维表面Toric-code态的自由度个数。
+Toric-code模型总的自由度个数为$E$，因此有$2g$个自由度用于标记简并态，由于每个自由度有两个取值，简并度为
+\[
+    2^{2g} = 4^g.
+\]
 
 \subsection{一维拓扑超导体}
 
