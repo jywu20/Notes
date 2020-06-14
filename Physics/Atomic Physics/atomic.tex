@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{siunitx}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
@@ -32,6 +33,7 @@
 \newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
 \DeclareMathOperator{\legpoly}{P}
 \newcommand*{\lsterm}[3]{$^{#1}${#2}$_{#3}$}
+\newcommand*{\nuclear}[3]{^{#2}_{#3}\text{#1}}
 
 \title{原子物理}
 \author{吴何友}
@@ -39,6 +41,12 @@
 \begin{document}
 
 \maketitle
+
+\section{散射}
+
+\subsection{康普顿散射}
+
+\subsection{自旋}
 
 \section{束缚态单电子系统}
 
@@ -244,6 +252,28 @@ $n-l$决定了径向峰值的数目
 对这一过程的完整计算涉及量子电动力学的束缚态，但通常对能标不是非常高的过程，使用量子化的原子和经典电动力学就足够计算一些问题。
 受激跃迁只需要量子化原子加上经典电动力学即可完全解释，而自发跃迁不能使用经典电动力学解释而必须将光场量子化，因为“自发”意味着光场的真空涨落，这要使用量子理论处理。
 
+\subsubsection{光子}
+
+我们首先从经典电动力学中的平面波来探讨问题，这是可以的，因为实际上光子的产生湮灭算符对应着量子化的电磁场的傅里叶分量的振幅，于是单个光子的经典对应就是一个平面波。
+考虑以下单色平面波
+\begin{equation}
+    \vb*{E} = \vb*{E}_0 \ee^{\ii(\vb*{k} \cdot \vb*{r} - \omega t)}, \quad \vb*{E}_0 = \sum_{m_s} E_{m_s} \vb*{e}_{m_s}, \quad m_s = -1, 0, 1,
+\end{equation}
+这里的$m_s$指的就是自旋。光场是矢量场，因此自旋为1，这样其内禀旋转自由度有三个方向，正好和矢量有$x, y, z$三个方向对应。
+定义
+\begin{equation}
+    \vb*{e}_{\pm 1} = \mp \frac{1}{\sqrt{2}} (\vb*{e}_x \pm \ii \vb*{e}_y), \quad \vb*{e}_0 = \vb*{e}_z,
+\end{equation}
+容易看出它们正交，且$\vb*{e}_1$对应着电场垂直于$z$轴，且绕$z$轴逆时针旋转，$\vb*{e}_{-1}$对应着电场垂直于$z$轴，且绕$z$轴顺时针旋转，因此$\vb*{e}_{\pm 1}$是垂直于$z$轴的圆偏振基，称它们为$\sigma^\pm$基，而$\vb*{e}_0$是平行于$z$轴的线偏振基，称为$\pi$基。
+
+照惯例，取$\vb*{k}$的方向为$z$轴，电磁波只有横波模式没有纵波模式（往深里说，这是$U(1)$规范场的性质，总是可以选取一个规范让纵波消失），因此$\pi$基没有复振幅，光从来不在$\pi$基上有偏振，或者等价地说，光子在其传播方向上的自旋只有$\pm 1$，没有$0$。纵光子是观测不到的。
+
+原子发射光子时，由对称性分析，如果能够良定义一个光子位置$\vb*{r}$，且将位矢零点放在原子中心，那么有
+\[
+    \vb*{r} \times \vb*{k} = 0,
+\]
+因此将位矢放在原子中心时由原子发射的光子没有轨道角动量。于是光子的角动量仅含有自旋角动量。
+
 \subsubsection{爱因斯坦的唯象理论}
 
 考虑温度为$T$的空腔中有大量相同的原子，显然处于定态$i$和$j$的原子需要满足玻尔兹曼分布率
@@ -349,9 +379,10 @@ $T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to
     \Delta m = 0, \pm 1, \quad \Delta l = \pm 1.
 \end{equation}
 这就是\textbf{单电子原子跃迁的选择定则}。
-
-实际上，也可以通过对称性分析得到这个结论。
-% TODO：这个过程到底涉及多少光子？？
+实际上，也可以通过守恒量分析得到这个结论。%
+\footnote{这里可能会遇到一个疑难：光子的自旋角动量只在其前进方向上有投影，且只有$\pm 1$两种取值，那么似乎$z$方向角动量守恒意味着只能有$\Delta m = \pm 1$。
+然而，光子的前进方向和我们选取的电子$z$方向未必相同，因此光子的自旋角动量投影在$z$方向上还是会有$0, \pm 1$三种取值。
+}%
 
 不满足选择定则的跃迁称为\textbf{禁戒跃迁}。通过磁偶极跃迁、电四极子跃迁、双光子跃迁等方法，禁戒跃迁也是可以发生的，但是相对来说发生概率不大，从而对应的能级为亚稳态。
 
@@ -580,7 +611,7 @@ $e$系中任何一个角动量的进动都是% TODO：经典力学
     \label{eq:asym-spin}
 \end{equation}
 不需要其它任何条件，自旋部分的波函数就完全确定了（可以差一个因子但这无关紧要）。
-因此轨道部分相同的两个电子的自旋角动量代数是单态的，即$l=0, m=0$。
+因此轨道部分相同的两个电子的自旋角动量代数是单态的，即$s=0, m_s=0$。
 
 如果两个电子的轨道运动不同，那么轨道部分的波函数可以是对称的也可以是反对称的。
 假定它是对称的，那么自旋部分的波函数一定反对称，因此两个电子的自旋不可能相等。这就意味着自旋部分的波函数还是\eqref{eq:asym-spin}。
@@ -598,12 +629,12 @@ $e$系中任何一个角动量的进动都是% TODO：经典力学
     \chi = \chi_{\uparrow 1} \chi_{\uparrow 2}, \quad \chi_{\downarrow 1} \chi_{\downarrow 2}, \quad \frac{1}{\sqrt{2}} (\chi_{\uparrow 1} \chi_{\downarrow 2} + \chi_{\uparrow 2} \chi_{\downarrow 1}).
     \label{eq:sym-spin}
 \end{equation}
-\eqref{eq:sym-spin}是一个三重态，$l=1, m=0, \pm 1$。
+\eqref{eq:sym-spin}是一个三重态，$s=1, m_s=0, \pm 1$。
 
-从角动量代数的角度，两个电子放在一起，它们的角动量代数的复合是两个$l=1/2$的角动量代数的复合，所得结果的$l$取值范围为$0, 1$，和刚才推导得到的一致。
-具体$l$取多少由轨道波函数的情况决定。轨道部分如果对称，那么自旋部分必须反对称%
+从角动量代数的角度，两个电子放在一起，它们的角动量代数的复合是两个$s=1/2$的角动量代数的复合，所得结果的$s$取值范围为$0, 1$，和刚才推导得到的一致。
+具体$s$取多少由轨道波函数的情况决定。轨道部分如果对称，那么自旋部分必须反对称%
 \footnote{注意这是交换对称不是空间对称，空间对称由宇称描述。}%
-，这对应$l=0$；反之，轨道部分反对称，则自旋部分必须对称，对应$l=1$。
+，这对应$s=0$；反之，轨道部分反对称，则自旋部分必须对称，对应$s=1$。
 
 \subsubsection{交换能}
 
@@ -779,11 +810,14 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 精细结构的能级差为
 \begin{equation}
     E_{\{n_i l_i\} LSJ} - E_{\{n_i l_i\} LS(J-1)} = J \zeta_{\{n_i l_i\}} \hbar^2.
+    \label{eq:lande-gapping}
 \end{equation}
 这就是\textbf{朗德间隔定则}：如果原子遵循L-S耦合则它成立，如果原子不遵循L-S耦合，它通常会被违反。
 
 使用所有$\{l_i\}$合成出$L$是非常繁琐的。
 在合成时，我们总是可以首先把一个满支壳层中的所有电子的角动量代数合成，而单个电子无论是磁量子数还是自旋量子数都可以跑遍$\pm l$或$\pm \frac{1}{2}$中的全部整数或半整数值，它们求和会得到零，因此一个满支壳层中所有电子的角动量合成之后，$M_L$和$M_S$一定是零，从而一个满支壳层的$L$和$S$只能是零。因此实际上满支壳层对整个原子的$L$和$S$是没有贡献的。
+
+% 偶数定则：交换两个电子会产生一个$(-1)^{l_1 + l_2 - l}$的因子
 
 \subsubsection{j-j耦合}
 
@@ -855,7 +889,7 @@ j-j耦合中原子组态已知时谱项表示为$(j_1, j_2, \ldots, j_N)_J$。
 因此满支壳层的角动量代数的磁量子数唯一的取值是零，因此$J=0$，即这个角动量代数对整个原子的总角动量代数没有贡献。
 实际上，使用类似的方法，可以证明满支壳层带来的自旋-轨道修正也是零，因为能量修正有的为正有的为负，加起来等于没修正。
 
-\subsection{多电子原子的偶极跃迁}
+\subsection{多电子原子的偶极辐射}
 
 \subsubsection{选择定则}
 
@@ -868,10 +902,7 @@ j-j耦合中原子组态已知时谱项表示为$(j_1, j_2, \ldots, j_N)_J$。
     \Delta J = \pm 1, 0, 
 \]
 而且$J$和$J'$不能同时为零，否则角动量不可能守恒。
-同样，磁量子数的变化为%
-\footnote{这里可能会遇到一个疑难：光子的自旋角动量只在其前进方向上有投影，且只有$\pm 1$两种取值。
-然而，光子的前进方向和我们选取的电子$z$方向未必相同，因此光子的自旋角动量投影在$z$方向上还是会有$0, \pm 1$三种取值。
-}%
+同样，磁量子数的变化为
 \[
     \Delta M_J = \pm 1, 0.
 \]
@@ -1001,14 +1032,18 @@ j-j耦合中原子组态已知时谱项表示为$(j_1, j_2, \ldots, j_N)_J$。
 
 \subsubsection{弱磁场近似}
 
-首先假定磁场很弱，比剩余相互作用和自旋-轨道耦合都弱，从而只计算一阶微扰。
-计算结果是，
+首先假定磁场很弱，比剩余相互作用和自旋-轨道耦合都弱，即
+\begin{equation}
+    \hat{H}_3 \ll \hat{H}_1, \hat{H}_2 \ll \hat{H}_0,
+\end{equation}
+从而可以在L-S耦合或者j-j耦合的基础上，计算$\hat{H}_3$引入的一阶微扰。计算结果是，
 \begin{equation}
     E^{\text{mag}, (1)}_{JM_J} = \frac{J_z}{\hbar} g_J \mu_\text{B} B = - \vb*{\mu}_J \cdot \vb*{B},
 \end{equation}
 其中
 \begin{equation}
     \vb*{\mu}_J = - g_J \frac{\mu_\text{B}}{\hbar} \vb*{J}
+    \label{eq:atom-mean-magnetic}
 \end{equation}
 称为\textbf{原子平均磁矩}。这个形式和单电子自旋角动量或轨道角动量对磁矩的贡献非常相似：要乘以一个无量纲修正因子$g_J$（称为\textbf{朗德g因子}）。
 无论如何，能量关于$M_J$的简并就解出了。
@@ -1070,12 +1105,17 @@ $\vb*{\mu}_i$绕$\vb*{j}_i$的进动在拉莫尔进动的时间尺度下非常�
 代入上式即可。
 
 以上两个推导都建立在拉莫尔进动非常慢这一假设上。
+可以计算出，与$\vb*{J}$的变化对应的力矩为
 \[
     \vb*{M}_J = \vb*{\mu}_J \times \vb*{B},
 \]
-再设$\vb*{\omega}_\text{L}$为$\vb*{J}$的进动角速度，即
+则$\vb*{J}$的运动方程为
 \[
-    \dv{\vb*{J}}{t} = \vb*{\omega}_\text{L} \times \vb*{J},
+    \dv{\vb*{J}}{t} = \vb*{\mu}_J \times \vb*{B},
+\]
+当然也可以直接从哈密顿量得到这个公式。将\eqref{eq:atom-mean-magnetic}代入上式，就得到
+\[
+    \dv{\vb*{J}}{t} = \frac{g_J \mu_\text{B} \vb*{B}}{\hbar} \times \vb*{J},
 \]
 从而推导出\textbf{拉莫尔进动角速度}
 \begin{equation}
@@ -1084,6 +1124,7 @@ $\vb*{\mu}_i$绕$\vb*{j}_i$的进动在拉莫尔进动的时间尺度下非常�
 这就是总角动量绕着磁场进动的角速度。相应的，可以计算出 % TODO: $M_J$是什么？磁量子数还是别的什么东西？
 \begin{equation}
     E^{\text{mag}, (1)}_{JM_J} = M_J g_J \mu_\text{B} B = M_J \hbar \omega_\text{L},
+    \label{eq:small-magnetic-gapping}
 \end{equation}
 和量子力学计算出的结果一致。在拉莫尔进动中总角动量不守恒，但是磁量子数和角量子数——总角动量的进动锥体的母线和高度——都还是好量子数。
 可以看到，磁矩和磁场的夹角越大，能量越高。
@@ -1098,5 +1139,139 @@ $M_J$越大意味着角动量和磁场的夹角越小（磁场在$z$方向上）
 塞曼效应发现时量子力学尚未建立，但是塞曼的老师——洛伦兹——通过经典电偶极振子模型计算出来正常塞曼效应。这也就是“正常”和“反常”这两个概念的来源。
 
 正常塞曼效应的模型大体上是这样的：原子价电子受到正离子线性回复力，做简谐运动，
+
+\subsubsection{强磁场和帕邢-巴克效应}
+
+当磁场非常强时，若原子在没有磁场时为L-S耦合，则
+\begin{equation}
+    \hat{H}_2 \ll \hat{H}_3 \ll \hat{H}_1 \ll \hat{H}_0,
+\end{equation}
+此时做完剩余相互作用的微扰之后就应该考虑$\hat{H}_3$。我们知道$\hat{H}_2$引入的能级分裂满足朗德间隔定则\eqref{eq:lande-gapping}，即%
+\footnote{这里我们使用某部分哈密顿量引入的能级差来衡量其影响。哈密顿量本身的绝对大小并无意义，因为总是可以加上或者减去任意大小的常数。系统中的量子数发生变化，对应的能级会发生什么变化才真正体现这一部分相互作用是否重要。}%
+\[
+    H_2 \sim J \zeta_{LS} \hbar^2.
+\]
+$\hat{H}_3$引入的能级分裂满足\eqref{eq:small-magnetic-gapping}，即能级间隙为$\hbar \omega_\text{L}$，于是
+\[
+    H_3 \sim \hbar \omega_\text{L}.
+\]
+当磁场强到
+\begin{equation}
+    \omega_\text{L} \gg \zeta_{LS} \hbar,
+\end{equation}
+即拉莫尔进动的速度远快于自旋-轨道耦合时，先前的弱磁场近似就不再适用了。
+我们在做完$\hat{H}_1$的微扰之后需要直接做$\hat{H}_3$的微扰。
+在$\hat{H}_3$的扰动之后，$L, M_L, S, M_S$仍然是好量子数。注意到$\hat{H}_3$形如
+\[
+    \hat{H}_3 = (\hat{L}_z + 2 \hat{S}_z) \frac{\mu_\text{B} B}{\hbar}, 
+\]
+它在$L M_L S M_S$的表象下的本征值为
+\begin{equation}
+    E^{\text{mag}, (1)}_{\{n_i l_i\} L M_L S M_S} = (M_L + 2 M_S) \mu_\text{B} B,
+\end{equation}
+则先考虑$\hat{H}_1$的微扰，再考虑$\hat{H}_3$的微扰之后，有
+\[
+    E^{\text{rem,mag}, (0)}_{\{n_i l_i\} L M_L S M_S} = E^{\text{rem}, (1)}_{\{n_i l_i\} LS} + E^{\text{mag}, (1)}_{\{n_i l_i\} L M_L S M_S}.
+\]
+然后再考虑$\hat{H}_2$的微扰，此时$\vb*{L}$和$\vb*{S}$都在绕着$\vb*{B}$进动，$\vb*{J}$实际上并不守恒，已经失去意义了。
+选择定则为
+\begin{equation}
+    \Delta L = 0, \pm 1, \quad \Delta S = 0, \quad \Delta M_S = 0, \quad \Delta M_L = 0, \pm 1.
+\end{equation}
+可以看到所有关于$J$的定则都被移除了。若原子放出光子，则
+\begin{equation}
+    \omega = \omega_0 + \frac{\mu_\text{B} B}{\hbar} \Delta M_L.
+\end{equation}
+$\Delta M_L$取$1$和$-1$代表光子是$\sigma$光，取$0$则代表光子是$\pi$光。
+
+\subsubsection{磁共振}
+
+外加磁场导致能级分裂，由于选择定则，分裂的能级之间不存在电偶极跃迁。但实际上，这些能级之间可以有磁偶极跃迁。
+实际上，这就是\textbf{磁共振}的原理。本节首先从一个半经典图像来分析磁共振，然后再考虑严格的量子理论。
+
+由于$\vb*{J}$和$\vb*{\mu}$平行，我们有
+\[
+    \dv{\vb*{\mu}_J}{t} = \vb*{\omega}_J \times \vb*{\mu}_J,
+\]
+其中
+\[
+    \vb*{\omega}_J = \frac{g_J \mu_\text{B} \vb*{B}}{\hbar}.
+\]
+没有使用下标L是因为我们将要考虑方向随着时间变动的磁场。
+现在如果施加两个磁场，一个磁场是恒定的$\vb*{B}_0$，还有一个是以平行于$z$轴的角速度$\vb*{\omega}$左旋的弱磁场
+\begin{equation}
+    \vb*{B}_1 = B_1 (\cos(\omega t) \vb*{e}_x + \sin(\omega t) \vb*{e}_y),
+\end{equation}
+则
+\begin{equation}
+    \vb*{\omega}_J = \vb*{\omega}_\text{L} + \vb*{\omega}_{1}, \quad \vb*{\omega}_\text{L} = \frac{g_J \mu_\text{B} B_0}{\hbar} \vb*{e}_z, \quad \vb*{\omega}_1 = \frac{g_J \mu_\text{B} B_1}{\hbar} (\cos(\omega t) \vb*{e}_x + \sin (\omega t) \vb*{e}_y).
+\end{equation}
+将实验室坐标系记为$S$，将相对实验室坐标系以角速度$\vb*{\omega}$旋转的参考系记为$S'$，则
+\[
+    \dv{t} = \vb*{\omega} \times + \dv'{t},
+\]
+于是
+\[
+    \dv'{t} \vb*{\mu}_J = (\vb*{\omega}_\text{L} - \vb*{\omega} + \vb*{\omega}_1) \times \vb*{\mu}_J.
+\]
+由于在$S'$系中$\vb*{B}_1$是恒定的，上式意味着在$S'$系中$\vb*{\mu}_J$以\textbf{Rabi角速度}
+\begin{equation}
+    \vb*{\omega}_\text{R} = \vb*{\omega}_\text{L} - \vb*{\omega} + \vb*{\omega}_1, \quad \omega_\text{R} = \sqrt{(\omega_\text{L} - \omega)^2 + \omega_1^2}
+\end{equation}
+进动。我们首先考虑一个简化的情况：初始时，$\vb*{J}$和$\vb*{B}_0$平行。这样，以$\vb*{\omega}_\text{R}$在$S'$系中的指向为$z'$轴，并要求$t=0$时$S'$系的$x'$轴和$S$系的$x$轴重合，则在$S'$系中有
+\begin{equation}
+    \mu_{Jx}' = \mu_J \frac{\omega_1}{\omega_\text{R}} \sin (\omega_\text{R} t), \quad \mu_{Jy}' = - \mu_J \frac{\omega_1}{\omega_\text{R}} \cos (\omega_\text{R} t), \quad \mu_{Jz}' = \mu_J \frac{\omega_\text{L} - \omega}{\omega_\text{R}}.
+\end{equation}
+切换回$S$系，就有
+\begin{equation}
+    \mu_{Jz} = \mu_J \left( \frac{(\omega_\text{L} - \omega)^2}{\omega_\text{R}^2} + \frac{\omega_1^2}{\omega_\text{R}^2} \cos (\omega_\text{R} t) \right).
+\end{equation}
+在没有时变磁场时$\mu_{Jz}$不会有时间变化，因为显然此时$\omega_1=0$。因此，$\mu_{Jz}$的波动范围越大，时变磁场带来的影响越明显。
+当$\omega_\text{L}=\omega$时，$\mu_{Jz}$的波动最为明显，即磁矩与外场有效地交换能量，达到共振状态。此时$\vb*{\mu}_J$在$S'$系中完全位于$x'$-$y'$平面内。
+此时
+\begin{equation}
+    \begin{aligned}
+        \mu_{Jx} &= \mu_J \sin(\omega_1 t) \cos(\omega_\text{L} t - \pi / 2), \\
+        \mu_{Jy} &= \mu_J \sin(\omega_1 t) \sin(\omega_\text{L} t - \pi / 2), \\
+        \mu_{Jz} &= \mu_J \cos(\omega_t t).
+    \end{aligned}
+\end{equation}
+$\mu_{Jx}$和$\mu_{Jy}$是水平旋转磁场$\vb*{B}_1$带来的感生磁矩，它有一个相位落后$\pi / 2$。
+由于$B_1$比$B_0$小得多，有$\omega_1 \ll \omega_\text{L}$，因此感生磁矩不停地绕着$z$轴以角速度$\omega_\text{L}$转动，而转动平面的经度以$\omega_1$升高。
+
+使用类似的方法也可以得到系统对右旋磁场或者沿着$z$方向线偏振磁场的响应，不过这两种磁场实际上并不能够导致磁共振。
+总之，对系统施加一个周期性磁场，只有其左旋成分会导致磁共振。
+
+\section{核物理}
+
+以上讨论的都是原子核以外的物理，而下面将要讨论原子核内部的物理。原子核内部的物理涉及强力和弱力，完整地处理这些相互作用需要QCD，本文将不详细讨论这个理论。
+
+\subsection{原子核的成分}
+
+质子的发现来自1919年卢瑟福使用$\alpha$粒子轰击轻元素而得到的一种“共有成分”。现在我们知道，他大致是发现了这么一个过程：
+\[
+    \nuclear{He}{4}{2} + \nuclear{X}{A}{Z} \longrightarrow \nuclear{Y}{A+3}{Z+1} + \nuclear{H}{1}{1}.
+\]
+在此过程中质量数（左上标）和电荷数（左下标）守恒。
+那么，质子——事后发现这就是氢原子核——应当是原子核的一个组成部分。
+
+当时还发现了另一个过程：
+\[
+    \nuclear{X}{A}{Z} \longrightarrow \nuclear{Y}{A}{Z+1} + \text{e},
+\]
+即$\beta$衰变。乍一看似乎非常自然地可以认为原子核同时由质子和电子组成。但实际上这个假设给出了错误的核半径、核自旋、磁矩。
+就核半径而言，电子和质子组成的体系可以看成电子嵌入在均匀的正电荷“凝胶”中，则电子实际上是三维简谐振子。计算发现要能够稳定地将电子约束在原子核内，原子核的尺度要达到原子尺度——显然这是错误的。
+就核自旋而言，质子和电子都是自旋$1/2$，那么，质量数为偶数，电荷数为奇数的原子核的自旋应该是半整数，而实验结果为整数。
+从磁矩的角度，质子磁矩远小于电子，则核磁矩应该是玻尔磁子的数量级，且质子的磁矩可以略去，但实际测量得到的磁矩全部都是质子的量级。
+因此，这个核模型是错误的。
+
+1920年，卢瑟福猜测，原子核内存在质量和质子接近的一种粒子。1930年，用$\alpha$轰击Be，得到一种穿透力很强的中性射线，当时假定为$\gamma$射线；1931年，用这种射线轰击石蜡，得到\SI{4.8}{MeV}的质子流，当时假定为$\gamma$射线和质子发生康普顿散射，按此假设，$\gamma$射线的能量要达到\SI{50}{MeV}。
+1932年，用氮原子核代替石蜡，得到\SI{1.2}{MeV}的质子流，则对应的$\gamma$射线能量要达到\SI{89}{MeV}。
+这么高的光子质量实在是离谱，且使用同一放射源产生这么大能量范围的射线完全解释不通。
+查德威克于是断言，此射线不可能是$\gamma$射线，而应该是一种电中性粒子组成的，$\alpha$射线轰击原子核会发生以下过程：
+\[
+    \nuclear{He}{4}{2} + \nuclear{X}{A}{Z} \longrightarrow \nuclear{Y}{A+3}{Z+2} + \nuclear{n}{1}{0}.
+\]
+这种质量数为1（和质子相同），不带电的粒子就是中子。
 
 \end{document}
