@@ -1,1 +1,0 @@
-quirky-case subjects: some verbs require dative subject

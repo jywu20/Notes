@@ -3,7 +3,6 @@
 ## Questions found
 
 - How can verbs be classified according to their syntactic features? For examples: unaccusative, unergative, OC, ECM, raising structure and so on
-- Is affix lowering a fundamental operation or is it a combination of Merge and Agree? Does it really exist?
 - What are clitics and how do they work?
 - Can Merge have access into inner structures of phrases it merges? Or, does it simply depend on categorical labels of phrases?
 
@@ -57,3 +56,15 @@ complement has an indefinite nominal or pronominal internal argument.
 Expletive *it* can only be merged as the specifier of a light verb which does not
 c-command any accessible nominal or pronominal expression with some active
 case or phi-feature(s)
+
+# Verb
+
+I want Mary to come to Japan and for her to see my parents.
+
+Some verbs are that-deletion verbs or for-deletion verbs:
+
+`*She wanted for him to apologize.`
+
+`She wanted him to apologize.`
+
+This may be a consequence of the complementizer being cliticized to the verb, giving a null spellout of the complementizer.
