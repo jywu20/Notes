@@ -7,6 +7,7 @@
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
+\usepackage{autobreak}
 \usepackage{cite}
 \usepackage{graphicx}
 \usepackage{subfigure}
@@ -230,10 +231,18 @@ $1/N!$正是这样一个因子。
 
 
 
-\section{宏观气体的动力学}
+\section{宏观气体的动理学}
 
-本节讨论微分方程表述的宏观气体的动力学。由于热涨落，通常不能够直接使用哈密顿量做动力学演化而需要加入一些环境项而得到主方程。
+本节讨论微分方程表述的宏观气体的动理学。由于热涨落，通常不能够直接使用哈密顿量做动力学演化而需要加入一些环境项而得到主方程。
 由于我们关注的是宏观气体，可以认为气体几乎总是处于经典的状态，即动量和坐标近似对易，密度算符在坐标-动量基下对角化。
+
+我们认为气体中的分子相互作用仅包含二分子相互作用，即
+\begin{equation}
+    H = \sum_i \frac{p_i^2}{2m} + \sum_{i \neq j} U(\abs*{\vb*{r}_i - \vb*{r}_j}).
+    \label{eq:general-gas-hamiltonian}
+\end{equation}
+这个假设通常是合理的，因为气体分子发生相互作用的时间尺度通常远小于电磁场的传播需要的时间，因此在气体分子发生相互作用的时间尺度上，基本上只有静电学和静磁学现象。
+这样，分子间相互作用无非是某种由于电荷分布不均匀而非常复杂的库伦相互作用。
 
 \subsection{波尔兹曼方程}
 
@@ -241,22 +250,189 @@ $1/N!$正是这样一个因子。
 
 考虑无粒子生灭的气体，假定
 \begin{enumerate}
-    \item 气体相互作用时涉及到的自由度只有整体的坐标和动量；
+    \item 只考虑二体弹性碰撞，即不讨论碰撞导致化学反应，也不讨论多体过程（这个假设已经包含在\eqref{eq:general-gas-hamiltonian}中了）；
+    \item 气体相互作用时涉及到的自由度只有整体的坐标和动量（这个假设也已经包含在\eqref{eq:general-gas-hamiltonian}中了）；
     \item 气体不非常密集以至于气体的平均自由时间相对于气体分子散射的时间尺度很大，从而碰撞可以看成是瞬时的；
     \item 气体分子间的相互作用随距离增长快速衰减，从而碰撞可以看成是定域的；
     \item 气体分子受外力作用的时间尺度远大于碰撞，即漂移和碰撞解耦；
-    \item 只考虑二体碰撞；
     \item 气体分子的分布彼此独立。
 \end{enumerate}
 前几个假设要求气体分子是简单的点粒子且气体稀薄，最后一个假设（称为\textbf{分子混沌假设}）并不是非常显然，但通过BBGKY层级可以证明它是正确的。
 % TODO
-把每个气体分子的坐标和动量都绘制在一个六维空间$(\vb*{r}, \vb*{p})$中%
+把每个气体分子的坐标和动量都绘制在一个六维空间$(\vb*{r}, \vb*{p})$中，%
 \footnote{注意这不是系统的相空间而是单个粒子的相空间，系统的相空间是一个$6N$维空间。}%
-这样，
+设此单粒子相空间中的分布函数为$f$，它是多粒子分布函数积掉$N-1$个粒子，只剩下单个粒子所得到的结果：
+\begin{equation}
+    f(\vb*{q}, \vb*{p}, t) = \int \prod_{i=1}^{N-1} \dd{\vb*{q}_i} \dd{\vb*{p}_i} \rho(\{\vb*{q}_i\}, \{\vb*{p}_i\}, t),
+\end{equation}
+那么对只涉及单粒子的物理量或者一系列仅涉及单粒子的物理量之和$A$，就有
+\begin{equation}
+    \expval*{A(t)} = \int \dd{\vb*{p}} \dd{\vb*{q}} f(\vb*{q}, \vb*{p}, t) A(\vb*{q}, \vb*{p}).
+\end{equation}
+我们来推导输运方程，即$f$服从的方程。
+
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} + \frac{\vb*{F}}{m} \cdot \pdv{f}{\vb*{v}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{r}-\vb*{r}_2} (\underbrace{f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t)}_\text{in} - \underbrace{f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)}_\text{out}).
+    \label{eq:boltzmann-eq}
+\end{equation}
+等号右边的一长串称为碰撞积分。对一个相互作用势能$U(r)$，理论上总是可以计算出散射截面和碰撞之后的速度变化。
+
+\subsubsection{细致平衡条件和麦克斯韦分布}
+
+\eqref{eq:boltzmann-eq}意味着相空间中位于$\vb*{r}, \vb*{v}$附近的粒子数有进有出，并且粒子的转移是无记忆的。\textbf{细致平衡条件}是说，很大一类系统平衡时从状态$i$转移到状态$j$和从状态$j$转移到状态$i$的概率相同，在这里就是
+\begin{equation}
+    f(\vb*{r}, \vb*{v}'_1, t) f(\vb*{r}, \vb*{v}'_{2}, t) = f(\vb*{r}, \vb*{v}_1, t) f(\vb*{r}, \vb*{v}_{2}, t).
+\end{equation}
+这个方程有没有解，到现在还不得而知，不过马上可以看到\eqref{eq:boltzmann-eq}可以直接推导出麦克斯韦分布。
+两边取对数得到
+\[
+    \ln f(\vb*{r}, \vb*{v}'_1, t) + \ln f(\vb*{r}, \vb*{v}'_{2}, t) = \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t),
+\]
+这个方程意味着$\ln f_1 + \ln f_2$是某种守恒量。\eqref{eq:general-gas-hamiltonian}没有给出任何单粒子守恒量（除了粒子数以外），因此只能是
+\[
+    \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t) = F(\vb*{v}_1, \vb*{v}_2).
+\]
+要让等式右边能够分解成一个关于$\vb*{v}_1$的函数加上一个关于$\vb*{v}_2$的函数之和，仅有的可能是
+\[
+    \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t) = \sum_i \underbrace{(F_i(\vb*{v}_1) + F_i(\vb*{v}_2))}_{=\const}.
+\]
+\eqref{eq:general-gas-hamiltonian}的独立守恒量包括粒子数守恒、动量守恒（即任何方向上都有空间平移不变性）、动能守恒（即时间平移不变性）。
+（角动量守恒可以从动量守恒推出）
+因此，我们有
+\[
+    \ln f(\vb*{r}, \vb*{v}, t) = A + \vb*{\alpha} \cdot \vb*{v} + C v^2,
+\]
+或者等价的
+\[
+    \ln f(\vb*{r}, \vb*{v}, t) = A (\vb*{v} - \vb*{v}_0)^2.
+\]
+加入温度等常数，我们就得到了麦克斯韦分布。
 
 \subsubsection{H定理与时间反演}
 
+虽然表面上看起来，使用H定理让我们能够从牛顿方程推出热力学第二定律，但仔细考虑会发现几个很大的问题：
+\begin{enumerate}
+    \item 牛顿方程是时间反演不变的，热力学第二定律不是；
+    \item 庞加莱回归意味着封闭系统的演化总是可以几乎回到其初始状态，即熵可以回到原点，这似乎和热力学第二定律矛盾；
+    \item 
+\end{enumerate}
 
+如果一开始粒子之间的分布确实是完全无关的，发生几次散射之后它们的分布就产生关联了，或者说一个粒子的运动情况的信息会传递给别的粒子。分子混沌假设等于人为引入了环境扰动，使得关于粒子运动情况的信息会源源不断地被导向外部，这是熵增的根本原因。
+
+\subsection{BBGKY序列}
+
+\subsubsection{BBGKY序列的导出}
+
+实际上，还可以直接从刘维尔方程出发推导气体的动理学方程。\eqref{eq:general-gas-hamiltonian}会导致如下的刘维尔方程：
+\[
+    \dv{P_N}{t} + \sum_i \left( \vb*{v}_i \cdot \pdv{P_N}{\vb*{r}_i} + \frac{\vb*{F}_i}{m} \cdot \pdv{P_N}{\vb*{v}_i} \right), \quad \vb*{F}_i = - \sum_{j \neq i} \pdv{U_{ij}}{\vb*{r}_i}, 
+\]
+其中$P_N$是$\{\vb*{q}_i, \vb*{p}_i\}$的函数，且随意交换两个粒子，$P_N$不变。考虑如下的$s$粒子边缘分布：
+\begin{equation}
+    P_N^{(s)} = \int \prod_{i \geq s+1} \dd{\vb*{r}_i} \dd{\vb*{v}_i} P_N,
+\end{equation}
+使用$P_N$的对称性以及积分边界项为零的事实，可以推导出
+\begin{equation}
+    \pdv{P_N^{(1)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(1)}}{\vb*{r}_1} = \frac{N-1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1},  
+    \label{eq:from-p2-to-p1}
+\end{equation}
+以及类似的从$P^{(3)}_N$推导出$P^{(2)}_N$的方程
+\begin{align}
+    \begin{autobreak}
+        \pdv{P_N^{(2)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+        + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} 
+        = \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \left( \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} + \pdv{P_N^{(3)}}{\vb*{v}_2} \cdot \pdv{U_{23}}{\vb*{r}_2} \right),
+    \end{autobreak}
+    \label{eq:from-p3-to-p2}
+\end{align}
+还有从$P_N^{(4)}$推导出$P_N^{(3)}$等等的方程。这就是\textbf{BBGKY序列}。
+将某个高阶$P_N^{(s)}$取为零，就可以做一个截断，从而得到一组自洽方程，可以从$P_N^{(s)}$计算$P_N^{(s-1)}$，最后计算出$P_N^{(1)}$，这就得到了$f$。
+
+\subsubsection{BBGKY序列和玻尔兹曼方程}
+
+\eqref{eq:from-p3-to-p2}右边的空间积分只有在两个粒子间距在相互作用力程$d$中，即满足
+\[
+    \abs*{\vb*{r}_i - \vb*{r}_j} \lesssim d
+\]
+时才有非零值，因此该积分应该和$d^3$同阶。另一方面，设分子间距的数量级为$\delta$，则系统体积满足
+\[
+    V \sim N \delta^3.
+\]
+最后，注意到对整个系统体积和动量空间积分，有
+\[
+    \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1},
+\]
+于是合起来就有
+\[
+    \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \frac{1}{m} \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \frac{d^3}{\delta^3}.
+\]
+如果气体非常稀薄，那么$d/\delta$就是小量，于是\eqref{eq:from-p3-to-p2}右边可以略去，得到
+\begin{equation}
+    \pdv{P_N^{(2)}}{t} 
+    + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+    + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} = 0.
+    \label{eq:effective-2-particle}
+\end{equation}
+上式实际上可以写成一个全微分的形式：
+\[
+    \dv{P_N^{(2)}}{t}=0,
+\]
+这个全微分沿着哈密顿量
+\begin{equation}
+    H_\text{eff} = \frac{p_1^2}{2m} + \frac{p_2^2}{2m} + U(\abs*{\vb*{r}_1 - \vb*{r}_2})
+    \label{eq:2-particle-hamiltonian}
+\end{equation}
+描写的相轨道。这当然是正确的，因为近似\eqref{eq:effective-2-particle}只使用了两对坐标-动量对，因此描述了一个近似只有两个粒子的系统，那么它显然应该服从二粒子系统的刘维尔定律。
+
+假定不同粒子的分布基本独立（我们在此引入分子混沌性假设），从而
+\[
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_1, \vb*{v}_1, t) P^{(1)}_N(\vb*{r}_2, \vb*{v}_2, t).
+\]
+将上式沿着\eqref{eq:2-particle-hamiltonian}描述的相轨道积分就得到
+\[
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_{10}, \vb*{v}_{10}, t_0) P^{(1)}_N(\vb*{r}_{20}, \vb*{v}_{20}, t_0).
+\]
+注意这里的$\vb*{r}_{10}, \vb*{r}_{20}$是$t-t_0,\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数，而$\vb*{v}_{10}, \vb*{v}_{20}$是$\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数。
+将上式代入\eqref{eq:from-p2-to-p1}，并将$N-1$近似为$N$，考虑到$f=NP_N^{(1)}$，得到
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \frac{1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{v}_1}.
+\]
+由于$f$要出现显著的变化需要在平均自由程的尺度上，而上式所述的积分在该尺度上是高度定域的（$d$远小于平均自由程），我们有
+\[
+    \pdv{\vb*{r}}{t} \cdot \pdv{f}{\vb*{r}} \ll \pdv{U}{\vb*{r}} \cdot \pdv{f}{\vb*{v}},
+\]
+这样可以将\eqref{eq:effective-2-particle}中的时间偏导数项去掉，而对$\vb*{r}_2$的偏导数对$\dd{\vb*{r}_2}$积分之后得到表面项，为零，于是
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \left( \vb*{v}_1 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_1} + \vb*{v}_2 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_2} \right) \\
+        &= \int \dd{\vb*{r}} \dd{\vb*{v}_2} \vb*{u} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}},
+    \end{aligned}
+\]
+其中$\vb*{r}$和$\vb*{u}$分别是粒子1和粒子2的相对位移和相对速度。
+以$\vb*{u}$的方向为$z$轴建立柱坐标系，得到
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0))\big|_{z=-\infty}^\infty.
+\]
+请注意$\vb*{r}$是两个发生碰撞的粒子的相对位移，$\vb*{u}$指向碰撞发生的方向，则$z$趋于$\infty$意味着碰撞结束，而$z$趋于$-\infty$意味着碰撞开始。
+无论是碰撞开始还是结束，做一个小的时间平移$t \longrightarrow t_0$都不会造成什么影响，而由于碰撞高度定域，碰撞前后位矢可认为基本不变，且均位于$\vb*{r}_1$附近。于是就得到
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{2}, \vb*{v}_{2}, t))\big|_{z=-\infty}^\infty \\
+        &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}'_{1}, t) f(\vb*{r}_{1}, \vb*{v}'_{2}, t) - f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{1}, \vb*{v}_{2}, t)),
+    \end{aligned}
+\]
+$\vb*{r}(t)$曲线组成一束束流管，微分形式$\rho \dd{\rho} \dd{\varphi}$实际上就是散射截面：
+\[
+    \rho \dd{\rho} \dd{\varphi} = \sigma \dd{\Omega},
+\]
+于是把$\vb*{v}_1$和$\vb*{r}_1$的下标去掉，最终得到
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{r}-\vb*{r}_2} (f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t) - f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)).
+\end{equation}
 
 \subsubsection{和连续介质力学的联系}
 
