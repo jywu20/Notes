@@ -14,6 +14,7 @@
 \usepackage{physics}
 \usepackage{siunitx}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
 \titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
@@ -35,6 +36,10 @@
 \DeclareMathOperator{\laguerre}{L}
 \newcommand*{\lsterm}[3]{$^{#1}${#2}$_{#3}$}
 \newcommand*{\nuclear}[3]{^{#2}_{#3}\text{#1}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
 
 \title{原子物理}
 \author{吴何友}
@@ -116,11 +121,6 @@
 \[
     m_\text{n} = \SI{1.674927471e-27}{kg}
 \]
-
-泡利矩阵为
-\begin{equation}
-    \sigma_x = \pmqty{0 & 1 \\ 1 & 1}, \quad \sigma_y = \pmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_z = \pmqty{1 & 0 \\ 0 & -1}.
-\end{equation}
 
 \subsection{斯特恩-盖拉赫实验}
 
@@ -318,7 +318,10 @@ $\Phi$必须是单值的，因为波函数应该是单值的，于是
 最后得到正交归一化的球谐函数
 % TODO:(-1)^m因子？
 \begin{equation}
-    Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \legpoly_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \quad l = 0, 1, \ldots, m = \pm l, \pm (l-1), \ldots, 0 .
+    \begin{split}
+        Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \legpoly_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \\
+        l = 0, 1, \ldots, \quad m = \pm l, \pm (l-1), \ldots, 0 .
+    \end{split}
 \end{equation}
 
 球谐函数是$\hat{L}^2$的本征函数，但它带有两个量子数$l$和$m$，这意味着$\hat{L}^2$的本征函数存在简并；$l,m$分别标记了$\hat{L}^2$的本征值和某个不确定的可观察量的本征值。
@@ -335,6 +338,7 @@ $\Phi$必须是单值的，因为波函数应该是单值的，于是
 球谐函数$Y_{lm}(\theta, \varphi)$同时是$\hat{L}^2$和$L_z$的本征函数，相应的本征值为
 \begin{equation}
     \hat{L}^2 Y_{lm} = l(l+1) \hbar^2 Y_{lm}, \quad \hat{L}_z Y_{lm} = m \hbar Y_{lm}.
+    \label{eq:orbital-angular-momentum}
 \end{equation}
 
 \subsubsection{量子数}\label{sec:quantum-number}
@@ -368,6 +372,70 @@ $\Phi$必须是单值的，因为波函数应该是单值的，于是
 
 纯量子的理论展现出了和经典理论很不同的一些特性。请注意量子理论中电子可以完全没有角动量，这在经典理论下是不可能的——电子会直接落入有心力的力心，比如说原子核。
 然而，哈密顿量\eqref{eq:columb-electron-hamiltonian}中各项不对易从而有量子涨落，因此如果角动量确定为零，那么电子的位置就不能够确定，因此电子并不会落入原子核。
+
+\subsubsection{角动量代数}\label{sec:algebra-of-angular}
+
+本节从对称性的角度来分析有心力场中的电子的角量子数。
+有心力场各向同性的性质意味着系统具有$SO(3)$对称性，从而$SO(3)$的李代数中的每个生成元都是守恒量，当然这就是大名鼎鼎的角动量守恒。使用$\hat{J}$表示这些生成元。
+$SO(3)$的李代数的对易关系就是角动量算符的对易关系，即
+\begin{equation}
+    \hat{\vb*{J}} \times \hat{\vb*{J}} = \ii \hbar \hat{\vb*{J}},
+\end{equation}
+或者也可以写成显式的李括号的形式：
+\begin{equation}
+    \comm*{\hat{J}_i}{\hat{J}_j} = \ii \hbar \epsilon_{ijk} \hat{J}_k.
+\end{equation}
+从这个李代数可以马上发现$\hat{\vb*{J}}^2$是卡西米尔元。
+对每个不可约表示，三个方向的角动量互不对易，因此只需要取一个角动量，列出其本征态即可完整地描述角动量空间。
+这样就可以使用$\hat{\vb*{J}}^2$和$\hat{J}_z$的共同本征态作为角动量空间的基底，无论是不是不可约表示。
+
+对$SO(3)$的不可约表示，设$j$是角量子数，有
+\begin{equation}
+    \hat{\vb*{J}}^2 \ket{j,m_j} = j(j+1)\hbar^2 \ket{j,m_j}, \quad \hat{J}_z \ket{j,m_j} = m_j \hbar \ket{j,m_j},
+    \label{eq:eigenvalue-of-angular}
+\end{equation}
+其中$j$和$m_j$都是整数或者半整数。我们知道$j$唯一地标记了每个有限维不可约表示，而
+\begin{equation}
+    m_j = -j, -j+1, \ldots, j.
+\end{equation}
+要证明\eqref{eq:eigenvalue-of-angular}（并做一些别的计算），通常需要定义产生湮灭算符，具体来说，定义
+\begin{equation}
+    \hat{J}_\pm = \frac{1}{\sqrt{2}} (\hat{J}_x \pm \ii \hat{J}_y),
+\end{equation}
+可以计算得到对易关系
+\begin{equation}
+    \comm*{\hat{J}_z}{\hat{J}_\pm} = \hbar \hat{J}_\pm,
+\end{equation}
+因此$\hat{J}_+$和$\hat{J}_-$就是$\hbar m_j$的升降算符，每作用一次增加或者减少$\hbar$的$z$方向角动量。
+如果是有限维表示，必定有
+\begin{equation}
+    \hat{J}_\pm \ket{j, m_j} = \sqrt{\frac{(j \mp m_j)(j \pm m_j + 1)}{2}} \hbar \ket{j, m_j \pm 1}.
+\end{equation}
+从上式也可以推导出
+\begin{equation}
+    \begin{aligned}
+        \hat{J}_x \ket{j, m_j} &= \frac{1}{2} \sqrt{(j-m_j)(j+m_j+1)} \hbar \ket{j, m_j+1} \\
+        &+ \frac{1}{2} \sqrt{(j+m_j)(j-m_j+1)} \hbar \ket{j, m_j-1} , \\
+        \hat{J}_y \ket{j, m_j} &= \frac{1}{2} \ii \sqrt{(j+m_j)(j-m_j+1)} \hbar \ket{j, m_j-1} \\
+        &- \frac{1}{2} \ii \sqrt{(j-m_j)(j+m_j+1)} \hbar \ket{j, m_j+1}.
+    \end{aligned}
+    \label{eq:apply-jx-jy-to-angular-state}
+\end{equation}
+
+现在回过头和\eqref{eq:orbital-angular-momentum}中求解出来的轨道角动量做对比，会发现中心场下的束缚态电子的轨道角动量的确是一个$SO(3)$的有限维表示。
+电子对应的量子场是一个有质量的旋量场，它的内禀自由度是$SO(3)$的一个二维不可约表示，因此也就有两个自旋量子数：$1/2$和$-1/2$。
+实际上，如果依次取自旋空间的基底为$\ket{1/2}$和$\ket{-1/2}$，则$\hat{S}_z$的矩阵形式为
+\[
+    \hat{S}_z = \pmqty{\frac{1}{2} \hbar & 0 \\ 0 & -\frac{1}{2} \hbar}.
+\]
+定义泡利矩阵为
+\begin{equation}
+    \sigma_x = \pmqty{0 & 1 \\ 1 & 0}, \quad \sigma_y = \pmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_z = \pmqty{1 & 0 \\ 0 & -1},
+\end{equation}
+使用\eqref{eq:apply-jx-jy-to-angular-state}可以计算出
+\begin{equation}
+    \hat{S}_i = \frac{\hbar}{2} \sigma_i.
+\end{equation}
 
 \subsubsection{库伦势场}
 
@@ -425,8 +493,9 @@ $\Phi$必须是单值的，因为波函数应该是单值的，于是
 \end{equation}
 将各个常数放回上式并归一化就得到
 \begin{equation}
-    R_{n, l} = - \sqrt{\left( \frac{2 Z}{n a_1} \right)^3 \frac{(n-(l+1))!}{2n ((n + l)!)^3}} \exp(- \frac{Z r}{n a_1}) \left( \frac{2 Z r}{n a_1} \right)^l \laguerre_{n+l}^{2l+1}\left(\frac{2 Z r}{n a_1}\right).
+    R_{n, l} = - \sqrt{\left( \frac{2 Z}{n a_1} \right)^3 \frac{(n-(l+1))!}{2n ((n + l)!)^3}} \exp(- \frac{Z r}{n a_1}) \left( \frac{2 Z r}{n a_1} \right)^l \laguerre_{n+l}^{2l+1}\left(\frac{2 Z r}{n a_1}\right),
 \end{equation}
+其中$\laguerre_{n+l}^{2l+1}$是合流拉盖尔多项式。
 $n-l$决定了径向峰值的数目。为了让合流拉盖尔多项式有良定义，我们有
 \begin{equation}
     l = 0, 1, 2, \ldots, n-1.
@@ -442,7 +511,7 @@ $n-l$决定了径向峰值的数目。为了让合流拉盖尔多项式有良定
 \]
 个轨道，有$2n^2$个电子。
 
-\subsection{跃迁和发光}
+\subsection{跃迁和偶极辐射}\label{sec:electro-dipole}
 
 电子和电磁场耦合，因此可以在不同能级之间跃迁而发射或吸收光子。
 跃迁包括受激跃迁（电子首先吸收光子，然后发生跃迁）以及自发跃迁（电子直接发生跃迁）。
@@ -463,7 +532,7 @@ $n-l$决定了径向峰值的数目。为了让合流拉盖尔多项式有良定
 \end{equation}
 容易看出它们正交，且$\vb*{e}_1$对应着电场垂直于$z$轴，且绕$z$轴逆时针旋转，$\vb*{e}_{-1}$对应着电场垂直于$z$轴，且绕$z$轴顺时针旋转，因此$\vb*{e}_{\pm 1}$是垂直于$z$轴的圆偏振基，称它们为$\sigma^\pm$基，而$\vb*{e}_0$是平行于$z$轴的线偏振基，称为$\pi$基。
 
-照惯例，取$\vb*{k}$的方向为$z$轴，电磁波只有横波模式没有纵波模式（往深里说，这是$U(1)$规范场的性质，总是可以选取一个规范让纵波消失），因此$\pi$基没有复振幅，光从来不在$\pi$基上有偏振，或者等价地说，光子在其传播方向上的自旋只有$\pm 1$，没有$0$。纵光子是观测不到的。
+照惯例，取$\vb*{k}$的方向为$z$轴，电磁波只有横波模式没有纵波模式（这是$U(1)$规范场的性质：总是可以选取一个规范让纵波消失），因此$\pi$基没有复振幅，光从来不在$\pi$基上有偏振，或者等价地说，光子在其传播方向上的自旋只有$\pm 1$，没有$0$。纵光子是观测不到的。
 
 原子发射光子时，由对称性分析，如果能够良定义一个光子位置$\vb*{r}$，且将位矢零点放在原子中心，那么有
 \[
@@ -535,7 +604,7 @@ $T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to
     A_{ji} = \frac{\omega_{ji}^3}{3\pi \epsilon_0 \hbar c^3}
 \]
 
-\subsubsection{跃迁系数的推导}
+\subsubsection{跃迁系数的推导}\label{sec:electro-dipole-hopping}
 
 现在尝试从头计算跃迁率。如前所述，热平衡（实际上不仅仅是热平衡）时受激发射和吸收的跃迁率相等，这是由细致平衡条件以及高温下辐射密度趋于无限大这两个事实保证的，没有用到任何关于辐射机制的细节。
 这样就只需要计算自发发射和受激发射的跃迁率。
@@ -594,7 +663,7 @@ $m, n$等表示一组正交基——在这里就是使用$(n, l, m_l, m_s)$表�
         &= \frac{e^2}{3 \hbar^2} \abs*{\mel{j}{\hat{\vb*{r}}}{i}}^2 \int \dd{\omega} p(\omega) E(\omega)^2 \frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2}.
     \end{aligned}
 \]
-我们关心的时间尺度通常比较大，而随着$t$增大，$\frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2}$会变得越来越尖锐，只在$\omega = \omega_{ji}$附近有比较明显的非零值，于是近似有
+我们关心的时间尺度通常比较大，而随着$t$增大，$\frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2}$会变得越来越尖锐，只在$\omega = \omega_{ji}$附近有比较明显的非零值，于是近似有（这个近似表明跃迁几乎总是发出频率就是$\omega_{ji}$的电磁波，这当然是正确的）
 \[
     \begin{aligned}
         P_{i \to j} &= \frac{e^2}{3 \hbar^2} \abs*{\mel{j}{\hat{\vb*{r}}}{i}}^2 p(\omega_{ji}) E(\omega_{ji})^2 \int_{-\infty}^\infty \dd{\omega} \frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2} \\
@@ -701,6 +770,7 @@ $m, n$等表示一组正交基——在这里就是使用$(n, l, m_l, m_s)$表�
 \[
     \vb*{\mu} = - \frac{e}{2m_\text{e}} \vb*{L}.
 \]
+负号的出现是因为电子携带负电荷，后面推导核子的磁矩时就没有这个负号。
 为了与原子物理的背景保持一致，引入下标$l$表示这是来自轨道角动量的磁矩，并且设
 \begin{equation}
     \mu_\text{B} = \frac{e\hbar}{2m_\text{e}}
@@ -786,6 +856,14 @@ $e$系中任何一个角动量的进动都是% TODO：经典力学
 \end{equation}
 得到% TODO
 
+\subsubsection{更精细的物理}
+
+% TODO
+
+实际上，以上讨论还是不能够覆盖所有的物理现象。核磁矩的存在、电四极辐射以及其它一些机制会导致能级进一步分裂，产生\textbf{超精细结构}。
+
+相对论性量子力学也是不够的，因为兰姆位移。
+
 \section{多电子系统}
 
 多电子处于同一系统时会产生更多有趣的结果。由于电子是费米子，体系的波函数（同时包括轨道部分和自旋部分）一定是交换反对称的。
@@ -793,7 +871,7 @@ $e$系中任何一个角动量的进动都是% TODO：经典力学
 
 \subsection{双电子原子}
 
-\subsubsection{角动量代数}
+\subsubsection{反对称化}
 
 首先考虑一个双电子原子。如果两个电子的轨道运动相同，那么轨道部分的波函数一定是对称的（如果是反对称的就变成零了），那么自旋部分的波函数一定是反对称的，并且两个电子的自旋一定不相同（否则所有状态都相同，违反泡利不相容原理）。
 这样，自旋部分的波函数就是
@@ -862,7 +940,7 @@ $e$系中任何一个角动量的进动都是% TODO：经典力学
 \end{equation}
 现在我们看出，交换能实际上会让电子的自旋倾向于趋于一致。
 
-实际上可以看到，只要两个电子之间有相互作用，就肯定会有交换相互作用。
+实际上，以上推导没有用到任何关于库伦相互作用的信息，因此可以看出，只要两个电子之间有相互作用，就肯定会有交换相互作用。
 
 \subsection{中心场近似下的多电子原子}
 
@@ -921,7 +999,25 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 
 \subsubsection{角动量的合成}
 
-% TODO:自旋角动量的合成，$S$的数值和对称、反对称直接相关；轨道角动量则未必，只要不同科
+一个很自然的问题是，如何从不同电子的角动量代数推导出整个原子的角动量代数。
+这样做的目的至少有两个，首先，在不涉及原子失去或者得到电子的情况下，只需要将原子作为整体讨论其角动量就可以；其次，在中心场近似的基础上将电子之间的相互作用作为微扰引入时，需要使用角动量的合成来获得一组基（见\autoref{sec:ls-coupling}和\autoref{sec:jj-coupling}）。
+
+角动量代数的合成实际上就是将$SO(3)$的表示的直积（显然也是$SO(3)$的某个表示）分解成一系列不可约表示的直和的过程。
+我们已经在\autoref{sec:algebra-of-angular}中讨论了其不可约表示的结构，现在需要分析怎么做分解。
+
+首先讨论两个角动量代数的合成。设我们有算符$\hat{\vb*{J}}_1$和$\hat{\vb*{J}}_2$，它们各自的角量子数和磁量子数为$j_1, m_1$和$j_2, m_2$（略去了$m_j$的下标$j$）。
+简单地将两个空间直积起来，可以得到一组正交归一化基
+\begin{equation}
+    \ket{j_1 j_2 m_1 m_2} = \ket{j_1 m_1} \otimes \ket{j_2 m_2}.
+\end{equation}
+
+% TODO：$S$的数值和对称、反对称直接相关；轨道角动量则不是如此
+
+需要格外注意的是，无论怎么将不同的电子的角动量代数做合成，最后得到的本征态必须整体是反对称的，而以上给出的合成方法不能够保证这一点。
+如果参与合成的电子全部不同科，那么不会有任何问题，因为能够保证所有电子的单电子态矢量都是不一样的，因此可以随意做对称化和反对称化；
+如果参与合成的电子有同科电子，那么由泡利不相容原理，同科电子磁量子数相同必定意味着轨道部分是对称的，从而自旋部分必须是反对称的。
+
+% 偶数定则：交换两个电子会产生一个$(-1)^{l_1 + l_2 - l}$的因子
 
 \subsection{相互作用带来的能量修正}
 
@@ -933,9 +1029,11 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 \end{equation}
 以及
 \begin{equation}
-    \hat{H}_2 = \sum_{i=1}^N \xi(\vb*{r}_i) \vb*{l}_i \cdot \vb*{s}_i.
+    \hat{H}_2 = \sum_{i=1}^N \xi(r_i) \vb*{l}_i \cdot \vb*{s}_i.
     \label{eq:spin-orbital-many}
 \end{equation}
+上式中$\xi$的宗量为$\vb*{r}$的模长，这是空间各向同性的推论。
+
 可以估计出
 \[
     H_1 \sim Z, \quad H_2 \sim Z^4,
@@ -943,11 +1041,15 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 且电子相距越近，剩余相互作用越明显。下面我们会发现，如果剩余相互作用远大于自旋轨道相互作用，则会导致L-S耦合，反之会导致j-j耦合，因此大部分元素的基态、轻元素的低激发态适用L-S耦合，重元素的激发态适用j-j耦合。
 在$\hat{H}_1$和$\hat{H}_2$同阶时，会出现中间耦合，这适用于轻元素的高激发态和中等元素的激发态。
 
-\subsubsection{L-S耦合}
+\subsubsection{L-S耦合}\label{sec:ls-coupling}
 
 % TODO:同科电子的合成。在将轨道角动量和自旋角动量合成成总角动量时，如果不涉及同科电子，那么只需要放心大胆地根据角动量代数的合成法则做就可以，因为总角动量算符的每一个基矢量都可以做反对称化而不会变成零。但有同科电子时，必须把违反全同性的那些态排除掉。。TODO
 
-如果剩余相互作用的修正远大于自旋-轨道相互作用，就首先考虑$\hat{H}_1$的作用。此时两个电子的自旋角动量之间存在耦合，从而不同电子的轨道角动量之间也存在耦合，但是自旋角动量和轨道角动量之间尚无耦合，这称为\textbf{L-S耦合}。
+如果剩余相互作用的修正远大于自旋-轨道相互作用，即
+\begin{equation}
+    H_2 \ll H_1 \ll H_0,
+\end{equation}
+就首先考虑$\hat{H}_1$的作用。此时两个电子的自旋角动量之间存在耦合，从而不同电子的轨道角动量之间也存在耦合，但是自旋角动量和轨道角动量之间尚无耦合，这称为\textbf{L-S耦合}。
 这样，在加入了$\hat{H}_1$之后的好量子数由$\hat{H}_0, \hat{L}^2, \hat{L}_z, \hat{S}^2, \hat{S}_z$给出，它们具有共同本征函数系。
 于是把$\{n_i l_i m_{li} m_{si}\}$表象线性变换成$\{n_i l_i\} L M_L S M_S$表象，$\hat{H}_1$带来的修正在这一组表象下应当是对角的。%
 \footnote{由于多个电子角动量合成之后的角动量代数是可约的，即使每个电子的$l_i$都知道了，还是必须明确给出$L$和$S$，从经典图像上说，这是因为我们不知道各个电子的角动量的指向如何。}%
@@ -1013,12 +1115,15 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 
 使用所有$\{l_i\}$合成出$L$是非常繁琐的。
 在合成时，我们总是可以首先把一个满支壳层中的所有电子的角动量代数合成，而单个电子无论是磁量子数还是自旋量子数都可以跑遍$\pm l$或$\pm \frac{1}{2}$中的全部整数或半整数值，它们求和会得到零，因此一个满支壳层中所有电子的角动量合成之后，$M_L$和$M_S$一定是零，从而一个满支壳层的$L$和$S$只能是零。因此实际上满支壳层对整个原子的$L$和$S$是没有贡献的。
+这个结论还意味着，当要耦合的电子数较大时，可以把它们看成“从满的支壳层拿掉少数几个电子”，由于空穴的角动量代数和电子完全一样，这样得到的角动量代数也是正确的。
 
-% 偶数定则：交换两个电子会产生一个$(-1)^{l_1 + l_2 - l}$的因子
+\subsubsection{j-j耦合}\label{sec:jj-coupling}
 
-\subsubsection{j-j耦合}
-
-如果自旋-轨道相互作用的修正远大于剩余相互作用，就需要首先考虑$\hat{H}_2$，此时每个电子的自旋角动量和轨道角动量有很强的耦合，但是不同电子的总角动量之间并没有很强的耦合，这称为\textbf{j-j耦合}。
+如果自旋-轨道相互作用的修正远大于剩余相互作用，即
+\begin{equation}
+    H_1 \ll H_2 \ll H_0,
+\end{equation}
+就需要首先考虑$\hat{H}_2$，此时每个电子的自旋角动量和轨道角动量有很强的耦合，但是不同电子的总角动量之间并没有很强的耦合，这称为\textbf{j-j耦合}。
 在加入$\hat{H}_2$之后，电子之间还是没有相互作用，因此我们可以只讨论单个电子的运动情况。
 单个电子的哈密顿量包括两项，其一是中心场近似下的
 \[
@@ -1039,7 +1144,6 @@ $l$支壳层有$2(2l+1)$个电子，即$2l+1$个轨道，$2$个自旋，因此$n
 \begin{equation}
     \xi_{nl} = \int_0^\infty \dd{r} (r R_{nl}(r))^2 \xi(r).
 \end{equation}
-% TODO:\xi(r)为什么没有角向部分？
 由于电子间没有相互作用，这就意味着原子总能量为
 \[
     E_{\{n_i l_i j_i\}} = \sum_{n, l, j} N_{nlj} \epsilon_{nlj},
@@ -1121,9 +1225,10 @@ j-j耦合中原子组态已知时谱项表示为$(j_1, j_2, \ldots, j_N)_J$。
 同一组态中的谱项之间不能发生电偶极跃迁，因为轨道角动量没有发生变化，从而不满足宇称守恒。
 这样就得到了任何一个多电子原子的偶极跃迁应遵循的选择定则：
 \begin{equation}
-    \Delta J = 0, \pm 1, \quad \Delta L = \pm 1, \pm 3, \ldots, \quad \Delta M_J = \pm 1, 0.
+    \Delta J = 0, \pm 1, \quad \Delta L = \pm 1, \pm 3, \ldots, \quad \Delta M_J = \pm 1, 0,
     \label{eq:many-electron-selective}
 \end{equation}
+且$J$不能从0变化到0。
 
 除了以上规则，通过计算跃迁矩阵元，还可以发现一些选择定则（称为附加定则）。对L-S耦合，有
 \begin{equation}
@@ -1194,7 +1299,7 @@ j-j耦合中原子组态已知时谱项表示为$(j_1, j_2, \ldots, j_N)_J$。
 三重态原子的自旋波函数是对称的，因此轨道波函数必须反对称，因此两个价电子不能出现在同一个轨道上。
 由于仅考虑低激发态即只有一个价电子，两个价电子出现在同一轨道上只可能意味着电子组态为基态组态，即$n$s$^2$。
 由于自旋平行会让能量降低，同一电子组态的正氦能量低于仲氦。
-总之，正氦没有$n$s$^2$价电子组态，且同一电子组态的能力低于仲氦。
+总之，正氦没有$n$s$^2$价电子组态，且同一电子组态的能量低于仲氦。
 
 基于L-S耦合，仲氦的谱项列举如下：（以下$n=1$指的是价壳层）
 \begin{enumerate}
@@ -1302,11 +1407,7 @@ $\vb*{\mu}_i$绕$\vb*{j}_i$的进动在拉莫尔进动的时间尺度下非常�
 代入上式即可。
 
 以上两个推导都建立在拉莫尔进动非常慢这一假设上。
-可以计算出，与$\vb*{J}$的变化对应的力矩为
-\[
-    \vb*{M}_J = \vb*{\mu}_J \times \vb*{B},
-\]
-则$\vb*{J}$的运动方程为
+可以计算出，与$\vb*{J}$的变化对应的力矩为$\vb*{\mu}_J \times \vb*{B}$，则$\vb*{J}$的运动方程为
 \[
     \dv{\vb*{J}}{t} = \vb*{\mu}_J \times \vb*{B},
 \]
@@ -1318,7 +1419,7 @@ $\vb*{\mu}_i$绕$\vb*{j}_i$的进动在拉莫尔进动的时间尺度下非常�
 \begin{equation}
     \vb*{\omega}_\text{L} = \frac{g_J \mu_\text{B} \vb*{B}}{\hbar}.
 \end{equation}
-这就是总角动量绕着磁场进动的角速度。相应的，可以计算出 % TODO: $M_J$是什么？磁量子数还是别的什么东西？
+这就是总角动量绕着磁场进动的角速度。相应的，可以计算出
 \begin{equation}
     E^{\text{mag}, (1)}_{JM_J} = M_J g_J \mu_\text{B} B = M_J \hbar \omega_\text{L},
     \label{eq:small-magnetic-gapping}
@@ -1328,9 +1429,10 @@ $\vb*{\mu}_i$绕$\vb*{j}_i$的进动在拉莫尔进动的时间尺度下非常�
 
 \subsubsection{塞曼效应}
 
-既然磁场在能量中引入了$M_J$的依赖，原本L-S耦合和j-j耦合的$2J+1$重简并会发生等间距的分裂。
+既然磁场在能量中引入了$M_J$的依赖，原本L-S耦合和j-j耦合的每一个谱项$2J+1$重简并会发生等间距的分裂。
 $M_J$越大意味着角动量和磁场的夹角越小（磁场在$z$方向上）。
 分裂产生的$2J+1$个子能级称为\textbf{塞曼能级}，它会导致弱磁场中的原子光谱出现分裂，即\textbf{塞曼效应}。
+磁场的加入彻底地消除了所有简并。
 
 塞曼效应可以分成两种，一种是\textbf{正常塞曼效应}，谱线等间距分裂成三根，另一种是\textbf{反常塞曼效应}，即不满足以上条件的光谱分裂。
 塞曼效应发现时量子力学尚未建立，但是塞曼的老师——洛伦兹——通过经典电偶极振子模型计算出来正常塞曼效应。这也就是“正常”和“反常”这两个概念的来源。
@@ -1367,15 +1469,15 @@ $M_J$越大意味着角动量和磁场的夹角越小（磁场在$z$方向上）
     g_J = \frac{3}{2} + \frac{-L(L+1)}{2J(J+1)} = 1,
 \]
 因此能级分裂和通过经典谐振子模型计算出来的相同。
-总之，总自旋为零的原子发生正常塞曼效应，而总自旋不为零的原子发生反常塞曼效应。
+总之，总自旋不为零的能级必然发生反常塞曼效应，总自旋为零且$J=1$的能级发生正常塞曼效应。
 
 \subsubsection{强磁场和帕邢-巴克效应}
 
-当磁场非常强时，若原子在没有磁场时为L-S耦合，则
+当磁场比较强时，若原子在没有磁场时为L-S耦合，则
 \begin{equation}
-    \hat{H}_2 \ll \hat{H}_3 \ll \hat{H}_1 \ll \hat{H}_0,
+    {H}_2 \ll {H}_3 \ll {H}_1 \ll {H}_0,
 \end{equation}
-此时做完剩余相互作用的微扰之后就应该考虑$\hat{H}_3$。我们知道$\hat{H}_2$引入的能级分裂满足朗德间隔定则\eqref{eq:lande-gapping}，即%
+此时做完剩余相互作用的微扰之后就应该考虑$\hat{H}_3$，相比之下自旋-轨道耦合则是非常小的。我们知道$\hat{H}_2$引入的能级分裂满足朗德间隔定则\eqref{eq:lande-gapping}，即%
 \footnote{这里我们使用某部分哈密顿量引入的能级差来衡量其影响。哈密顿量本身的绝对大小并无意义，因为总是可以加上或者减去任意大小的常数。系统中的量子数发生变化，对应的能级会发生什么变化才真正体现这一部分相互作用是否重要。}%
 \[
     H_2 \sim J \zeta_{LS} \hbar^2.
@@ -1464,12 +1566,51 @@ $\Delta M_L$取$1$和$-1$代表光子是$\sigma$光，取$0$则代表光子是$\
         \mu_{Jy} &= \mu_J \sin(\omega_1 t) \sin(\omega_\text{L} t - \pi / 2), \\
         \mu_{Jz} &= \mu_J \cos(\omega_t t).
     \end{aligned}
+    \label{eq:rotating-spin}
 \end{equation}
 $\mu_{Jx}$和$\mu_{Jy}$是水平旋转磁场$\vb*{B}_1$带来的感生磁矩，它有一个相位落后$\pi / 2$。
 由于$B_1$比$B_0$小得多，有$\omega_1 \ll \omega_\text{L}$，因此感生磁矩不停地绕着$z$轴以角速度$\omega_\text{L}$转动，而转动平面的经度以$\omega_1$升高。
 
 使用类似的方法也可以得到系统对右旋磁场或者沿着$z$方向线偏振磁场的响应，不过这两种磁场实际上并不能够导致磁共振。
 总之，对系统施加一个周期性磁场，只有其左旋成分会导致磁共振。
+
+从更加量子的角度看，磁共振实际上是电子磁矩导致的电子和外部磁场的耦合。
+哈密顿量$\hat{H}_3$和$-\vb*{d} \cdot \vb*{E}$形式一致，它会导致\textbf{磁偶极辐射}。
+在这里由于外界磁场是完全给定的，不需要像考虑电偶极辐射那样将所有可能的电场模式造成的跃迁做非相干叠加。
+仿照电偶极辐射的推导（见\autoref{sec:electro-dipole-hopping}），我们有% 下面的说法是错的
+\[
+    \braket{j}{\psi(t)} = \frac{\ii}{\hbar} \ee^{-\ii E_n t / \hbar} \mel{j}{\hat{\mu}_z}{i} B_1 \frac{\ee^{\ii(\omega_{ji}-\omega) t} - 1}{\ii (\omega_{ji} - \omega)},
+\]
+因此是否能够发生跃迁取决于两点：首先，外加磁场的频率必须要和$\omega_{ji}$匹配；其次，磁矩的矩阵元不应该是零。
+后一个要求就是\textbf{磁偶极跃迁的选择定则}。通过计算矩阵元可以发现，有
+\begin{equation}
+    \Delta J = 0, \pm 1, \quad \Delta M_J = 0, \pm 1, \quad \Delta l = 0, \Delta n = 0,
+\end{equation}
+且$J$不能从$0$变化到$0$。这说明原子组态不能够发生任何变化。对L-S耦合，还有以下附加定则：
+\begin{equation}
+    \Delta L = \Delta S = 0.
+\end{equation}
+
+例如，因为外加磁场而分裂出来的塞曼能级之间肯定能够发生跃迁。
+由于$\Delta M_J=\pm 1$（不能够取$0$否则就没有发生任何跃迁），有
+\[
+    \hbar \omega_{ij} = g_J \mu_\text{B} B M_J,
+\]
+于是能够发生的跃迁对应的圆频率就是$\omega_\text{L}$。
+这对应微波频段。
+特别的，如果只有一个价电子，且没有轨道角动量，那么
+\[
+    L = 0, \quad S = \frac{1}{2}, \quad J = \frac{1}{2},
+\]
+此时
+\begin{equation}
+    \omega = \omega_\text{L} = \frac{2 \mu_\text{B} B}{\hbar},
+\end{equation}
+即\textbf{电子自旋共振}。
+
+计算磁矩的期望值，会发现只要把\eqref{eq:rotating-spin}中的磁矩替换为期望值，结果就是正确的。
+
+实际上，只要有磁场和带磁矩的粒子，就能够发生磁共振，因此完全可以做\textbf{核磁共振}，通过共振情况推断不同成分的原子的含量。
 
 \section{核物理}
 
