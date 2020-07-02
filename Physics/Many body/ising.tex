@@ -1,0 +1,420 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+\title{伊辛模型和统计场论}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+本文如无说明，采用自然单位制。
+
+\section{伊辛模型的定义}
+
+考虑一个$d$维空间中的晶格，共有$N$个格点。每个格点上有一个自旋。我们照惯例采用$z$方向的自旋来标记每个格点的状态，记之为$s_i$而省略$z$下标。
+在\textbf{伊辛模型}中，假定：
+\begin{enumerate}
+    \item 格点$i$处的自选取值为$\pm 1$（具体值其实不重要，因为它们在尺度变换之下可以改变；关键是，自旋只有两个取值）；
+    \item 只有相邻格点会发生相互作用；
+    \item 自旋-自旋相互作用仅仅含有关于最近邻两格点的$\hat{s}_i \hat{s}_j$形式的项，也就是说，自旋的$x$和$y$分量不参与相互作用；\footnote{需要注意在实际的材料中这样的相互作用并不容易制备，但我们姑且假定相互作用是这样的形式。}
+    \item 外部磁场和自旋线性耦合；
+\end{enumerate}
+由于不同格点的自旋算符显然是对易的，$\{s_i\}$表象就是系统的能量本征态，且
+\begin{equation}
+    E = - B \sum_i s_i - J \sum_{\pair{i,j}} s_i s_j.
+    \label{eq:ising-energy}
+\end{equation}
+这里我们略去了第一项中的常数，把它们全部归入磁场中。
+
+显然，在$J>0$且绝对值很大时，自旋倾向于同向排列，即形成一个\textbf{铁磁序}；而当$J<0$而绝对值很大时，自旋倾向于一上一下地排列，形成一个\textbf{反铁磁序}。
+
+有限温下，我们写出\eqref{eq:ising-energy}对应的配分函数和热力学自由能：
+\[
+    Z(T, J, B) = \sum_{\{s_i\}} \ee^{- \beta E[s_i]}, \quad F_\text{thermo} = \expval{E} - TS  = - T \ln Z.
+\]
+原则上这就包含了关于系统的全部信息。
+
+带有相互作用的配分函数通常很难计算。如果我们关心的只是比较大尺度上的磁化情况，那么其实并不需要完整的$\{s_i\}$。
+定义$m(\vb*{x})$为在某个长度尺度$L$上平均化的$\{s_i\}$，$F[m(\vb*{x})]$是它对应的有效自由能。
+也即，我们将$\{s_i\}$做空间傅里叶变换，把特征尺度小于$L$的成分全部积掉，就得到
+\[
+    F[m(\vb*{x})] = \sum_{\{s_i\} | m} E[s_i], \quad Z = \sum_m \ee^{-\beta F[m(\vb*{x})]}.
+\]
+
+严格从\eqref{eq:ising-energy}出发计算$F[m(\vb*{x})]$一般是非常困难的。
+通常我们使用朗道-金斯堡方法，即根据\eqref{eq:ising-energy}的对称性写出$F[m(\vb*{x})]$的普遍形式。
+这样写出的$F[m(\vb*{x})]$中的各个常数都是没有确定的，要确定这些常数肯定需要从\eqref{eq:ising-energy}出发严格计算。
+这些使用统计场论处理问题的方式见\autoref{sec:ising-effective-field}和\autoref{sec:ising-rg}。
+
+\section{平均场处理方法}
+
+\subsection{均匀系统}
+
+本节讨论一个非常简单的情况：我们把截断尺度$L$选取到整个体系，从而使用一个单独的$m$描述整个体系。
+此时
+\begin{equation}
+    m = \frac{1}{N} \sum_i s_i,
+\end{equation}
+容易看出$-1 < m < 1$，它就是平均磁化强度。实际上它是一个序参量，因为如果系统处于顺磁相那么$m$应该接近$1$或者$-1$，而如果系统处于无序相那么$m$应该接近$0$。
+$m$本质上仍然是离散的，它能够发生的最小变化是一个$-1$格点变成$+1$，即它能够发生的最小变化是$2/N$。
+在大$N$极限下有
+\begin{equation}
+    Z = \frac{N}{2} \int_{-1}^1 \dd{m} \ee^{-\beta F(m)}.
+\end{equation}
+下面要做的是计算出$F(m)$。我们假定系统充分均匀，则将\eqref{eq:ising-energy}中的所有$s_i$和$s_j$都使用$m$代替，从而得到
+\begin{equation}
+    \frac{E}{N} = - B m - \frac{1}{2} J q m^2,
+    \label{eq:ising-energy-m-approx}
+\end{equation}
+其中$q$是每个格点周围最近邻格点的数目，和维数有关。请注意这一步近似\eqref{eq:ising-energy-m-approx}的可靠性完全没有保障：我们并不知道$\{s_i\}$的涨落情况，自然不可能知道将它们全部替换成$m$之后是不是能够得到足够精确的结果。
+正如通常的平均场理论一样，这只是一个近似的起步，需要在此基础上逐阶考虑涨落的影响。
+不过我们还是先姑且按照这个假设算下去，仅仅因为它方便处理。
+由定义可以得到
+\[
+    m = \frac{N_\uparrow - N_\downarrow}{N} = \frac{2N_\uparrow - N}{N}, \quad \Omega = \frac{N!}{N_\uparrow!(N-N_\uparrow)!},
+\]
+使用斯特林公式可以计算出以下近似值
+\begin{equation}
+    \ln\Omega(m) = - \frac{m+1}{2} N \ln\frac{m+1}{2} - \frac{1-m}{2} N \ln\frac{1-m}{2},
+    \label{eq:lattice-entropy}
+\end{equation}
+设$f(m)$为平均每个格点的有效自由能，则根据
+\[
+    \ee^{-\beta F(m)} = \Omega(m) \ee^{-\beta E},
+\]
+即
+\[
+    -\beta N f(m) = \ln \Omega(m) - \beta E,
+\]
+可以计算出
+\begin{equation}
+    f(m) = - Bm - \frac{1}{2} J q m^2 + T \left( \frac{m+1}{2} \ln(m+1) + \frac{1-m}{2} \ln(1-m) - \ln 2 \right).
+    \label{eq:free-energy-of-m}
+\end{equation}
+取鞍点近似，由于$F(m)$的极小值就是$f(m)$的极小值，我们有
+\[
+    \eval{\pdv{f}{m}}_{m=\expval*{m}} = 0,
+\]
+于是发现热平衡时的平均自旋$\expval*{m}$满足
+\begin{equation}
+    m = \tanh(\beta B + \beta J q m).
+    \label{eq:self-consistency-m-approx}
+\end{equation}
+我们得到了一个自洽方程。
+
+\subsection{平均场分解}
+
+实际上，也可以显式地将相互作用项做平均场分解来得到\eqref{eq:self-consistency-m-approx}：做分解
+\[
+    \begin{aligned}
+        s_i s_j &\approx \expval*{s_i} s_j + s_i \expval*{s_j} - \expval*{s_i} \expval*{s_j} \\
+        &\approx \expval*{m} (s_i + s_j) - \expval*{m}^2,
+    \end{aligned}
+\]
+其中第二个约等号表示系统的均匀性，即每个点的自选取值都和$m$相差不大，并注意到
+\[
+    \sum_i s_i = N m,
+\]
+\[
+    \sum_{\pair{i,j}} \expval*{m} s_i = \frac{1}{2} \expval*{m} q \sum_i s_i = \frac{1}{2} \expval*{m} q N m,
+\]
+而
+\[
+    \sum_{\pair{i,j}} m^2 = \frac{1}{2} \expval*{m}^2 q N,
+\]
+则得到平均场哈密顿量
+\begin{equation}
+    E = - B N m - J q N \expval*{m} m + \frac{1}{2} J q N \expval*{m}^2.
+    \label{eq:ising-mean-field-energy}
+\end{equation}
+可以看到除了一个常数项以外，相当于有一个大小为
+\begin{equation}
+    B_\text{eff} = B + J q \expval*{m}
+\end{equation}
+的场被作用在了$m$上。使用\eqref{eq:ising-mean-field-energy}连同\eqref{eq:lattice-entropy}，根据热力学第一定律就可以推导出\eqref{eq:self-consistency-m-approx}。
+这也就是我们称它为平均场解的原因。
+
+\subsection{相变}
+
+我们只是知道\eqref{eq:self-consistency-m-approx}给出了所有解，但是并不知道这些解有几个，是不是稳定等。
+回顾\eqref{eq:free-energy-of-m}，做泰勒展开得到
+\begin{equation}
+    f(m) = - T \ln 2 - Bm + \frac{1}{2} (T-Jq) m^2 + \frac{1}{12} T m^4 + \cdots,
+\end{equation}
+在$m$和$B$均不大时取开头四项已经足够确定自由能曲线的形状了。
+
+\subsubsection{无磁场情况下的二级相变}
+
+\begin{figure}
+    \centering
+    \subfigure[$T>T_\text{c}$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (0, 0) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-free-energy}
+    }
+    \subfigure[$T<T_\text{c}$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (1, -0.25) {};
+            \node[circle,fill,inner sep=1.5pt] at (-1, -0.25) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-free-energy}
+    }
+    \caption{不同形状的自由能曲线}
+    \label{fig:chemical-potential}
+\end{figure}
+
+在$B=0$时$m=0$肯定是一个极小值点，稳定不稳定暂时不论。
+略去自由能中无关紧要的常数项，$T-Jq$的正负决定了曲线在$m=0$附加是上凸还是下凹。
+如果它是正的，那么曲线下凹，而由于四次方项也是正的，整个曲线都是下凹的，也就是说只有$m=0$一个极小值点，而且这是稳定的极小值点，如\autoref{fig:small-t-free-energy}。
+如果它是负的那么曲线在$m=0$附近上凸，$m=0$不是稳定解，于是出现两个极小值点，如\autoref{fig:big-t-free-energy}。
+
+这意味着在$B=0$时，当$T$经过
+\begin{equation}
+    T_\text{c} = Jq
+\end{equation}
+时出现了一个相变，因为随着$T$的增大，不为零的序参量$m$变为零且一直停留在零。
+在\autoref{fig:big-t-free-energy}中出现了自发对称性破缺，原本具有的自旋翻转对称性被破缺了。
+因此$T<T_\text{c}$时出现了一个铁磁序，这个铁磁序破缺了自旋翻转对称性；$T>T_\text{c}$对应一个无序相。
+计算稳态时序参量$m$的值，可以得到
+\begin{equation}
+    m = \begin{cases}
+        \pm \sqrt{\frac{3(T_\text{c}-T)}{T}}, \quad T < T_\text{c}, \\
+        0, \quad T > T_\text{c},
+    \end{cases}
+    \label{eq:mf-stable-m}
+\end{equation}
+上式绘图如\autoref{fig:mf-m-and-t-relation}。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+            
+        % T横轴
+        \draw[->] (-1,0) -- (6,0) node[right] {$T$};
+        % 磁化强度纵轴
+        \draw[->] (0,-3) -- (0,3) node[above] {$m$};
+        
+        % 绘制铁磁相的曲线
+        \draw[samples=50, smooth, thick, domain=0:2.5] plot(\x, {sqrt(2.5-\x)});
+        \draw[samples=50, smooth, thick, domain=0:2.5] plot(\x, {-sqrt(2.5-\x)});
+
+        % 绘制无序相的曲线
+        \draw[thick] (2.5, 0) -- (5,0);
+
+        % 标出极小值点
+        \node[dot, label=above right:$T_\text{c}$] at (2.5, 0) {};
+
+    \end{tikzpicture}
+    \caption{稳态时磁化强度序参量和温度的关系}
+    \label{fig:mf-m-and-t-relation}
+\end{figure}
+\autoref{fig:mf-m-and-t-relation}中$x$轴和$y$轴的交点不是零；
+我们没有把$T$外推到$0$，因为显然此时\eqref{eq:mf-stable-m}是错误的——它没有能够保证$-1<m<1$，而是给出了发散的结果。
+
+在$T_\text{c}$附近的相变实际上是一个二级相变。这是因为$m$是连续的，而$F(m)$是$m$的函数，从而也是连续的；但是$F(m)$并不光滑，因为\eqref{eq:mf-stable-m}并不光滑，因此$F(m)$的导数不连续，从而是二级相变。
+
+\subsubsection{一级相变}
+
+上一节的结果都是假定了$B=0$，然后在这条等磁线上我们有一个二级相变。显然按照\eqref{eq:free-energy-of-m}，磁场变化会让自由能的极小值点发生偏移，如\autoref{fig:mf-b-and-free-energy}所示。
+当$T>T_\text{c}$时，只有一个偏离$m=0$的稳定极小值点；当$T<T_\text{c}$时，两个极小值点中的一个的自由能变高，变为亚稳态，或者甚至直接变成鞍点，而另一个则为全局最小值。
+$B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就不连续，因此这是一个一级相变。
+当$T>T_\text{c}$时随着$B$的变化热力学稳态是连续变化的，即不存在相变。
+
+\begin{figure}
+    \centering
+    \subfigure[$T>T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-1.9:2.5] plot(\x,{-1*\x+0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (0.82, -0.43) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-positive-b-free-energy}
+    }
+    \subfigure[$T>T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.5:1.9] plot(\x,{1*\x+0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (-0.82, -0.43) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-negative-b-free-energy}
+    }
+    \subfigure[$T<T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{-0.25*\x-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (1.11, -0.51) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-positive-b-free-energy}
+    }
+    \subfigure[$T<T_\text{c}, B<0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{0.25*\x-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (-1.11, -0.51) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-negative-b-free-energy}
+    }
+    \caption{磁场变化导致自由能曲线变化}
+    \label{fig:mf-b-and-free-energy}
+\end{figure}
+
+这就意味着，我们可以得到如\autoref{fig:mf-phase-diagram}所示的相图：$T<T_\text{c}$时有明确区分的两相，$B=0$为两相共存曲线；而$T>T_\text{c}$时两相混合。
+这和水的气液相变的相图非常相似。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+            
+        % T横轴
+        \draw[->] (0,0) -- (5,0) node[right] {$T$};
+        % B纵轴
+        \draw[->] (0,-2) -- (0,2) node[above] {$B$};
+        
+        % 相变曲线
+        \draw[thick] (0, 0) -- (2,0);
+
+        % 标出二级相变点
+        \node[dot, label=above:$T_\text{c}$] at (2, 0) {};
+
+        % 标出两相
+        \node[] at (1, 1) {$m>0$};
+        \node[] at (1, -1) {$m<0$};
+        \node[] at (4, 0.5) {disordered};
+
+    \end{tikzpicture}
+    \caption{平均场理论下的相图}
+    \label{fig:mf-phase-diagram}
+\end{figure}
+
+\subsubsection{相变指数}
+
+\subsection{平均场理论的可靠性}
+
+随着维数增大，每个格点周围的格点变多，因此相互作用也就越接近平均场理论的预言。
+在伊辛模型中，
+\begin{itemize}
+    \item $d=1$时平均场理论完全是错的，根本就没有相变；
+    \item $d=2,3$时平均场理论给出了定性大致正确的结果，但是临界指数之类的细节都是错的；
+    \item $d \geq 4$时平均场理论是对的。
+\end{itemize}
+
+\section{伊辛模型的有效场论}\label{sec:ising-effective-field}
+
+\subsection{金斯堡-朗道理论}
+
+\subsection{直接做平均}
+
+\section{伊辛模型的重整化群}\label{sec:ising-rg}
+
+\end{document}
