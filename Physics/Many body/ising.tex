@@ -495,7 +495,7 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
 直接从定义出发得到关于$m(\vb*{x})$的有效理论的方法见\autoref{sec:ab-initio-effective-theory}，本节讨论怎样使用金斯堡-朗道方法，从对称性出发得到一个有效理论。
 
 临界点附近有尺度不变性，由于$m(\vb*{x})$是将$\{s_i\}$粗粒化之后得到的结果，在临界点附近可以放心地只保留$m(\vb*{x})$来描述系统状态，即只使用此局域序参量来描述系统状态。
-在没有磁场，且晶格为正方晶格时，一个$d=2, 3$维的有效理论应该满足：
+在晶格为正方晶格时，一个$d=2, 3$维的有效理论应该满足：
 \begin{enumerate}
     \item 首先伊辛模型是局域的，所以总是可以写出
     \[
@@ -503,25 +503,92 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
     \]
     显然梯度项决定了每一个点如何影响附近的点。
     \item 平移和旋转对称性。正方晶格具有离散的平移和旋转不变性，当$L$取得相对于晶格常数来说很大时，这两个对称性就是连续的。
-    \item $\mathbb{Z}(2)$对称性，即自旋翻转不变，在这里就是在
+    \item 没有磁场时应有$\mathbb{Z}(2)$对称性，即自旋翻转不变，在这里就是在
     \[
         m(\vb{x}) \longrightarrow -m(\vb{x})
     \]
     下不变。当然磁场的加入会破坏这个对称性。
+    \item 最小耦合，即磁场的作用形如
+    \[
+        \int \dd[3]{\vb*{x}} B m(\vb*{x}).
+    \]
     \item 解析性。$F[m]$显然关于$m$是解析的，因为每个格点的自旋可以随意翻转，对自由能产生有界的影响。假定$m(\vb{x})$变化平缓，从而自由能关于$\grad{m}$也是解析的。
 \end{enumerate}
 
 $\mathbb{Z}_2$对称性意味着$f$的每一项都应该是偶数次项，从而我们做泰勒展开：
 \begin{equation}
-    f = \frac{1}{2} \alpha_2(T) m^2 + \frac{1}{4} \alpha_4(T) m^4 + \frac{1}{2} \gamma(T) (\grad{m})^2 + \cdots,
+    f = Bm + \frac{1}{2} \alpha_2(T) m^2 + \frac{1}{4} \alpha_4(T) m^4 + \frac{1}{2} \gamma(T) (\grad{m})^2 + \cdots,
     \label{eq:gl-free-energy}
 \end{equation}
 由于常数项只会让配分函数多一个常数因子，已经略去。
 没有出现形如$\vb*{a} \cdot \grad{m}$这样的项，因为这会引入一个特殊的空间方向。没有取太高阶的$m^n$项是因为$m$并不是很大，只需要前几项；没有取太高阶的导数项或者$(\grad{m})^n$项是因为这些项的量纲很快会超出$d$的范围，从而这些项在重整化下是无关的。
+很容易发现\eqref{eq:gl-free-energy}实际上就是$\phi^4$理论，一个常见的玩具模型。
 
 \subsubsection{鞍点近似}
 
 首先使用和平均场理论类似的粗糙手段处理\eqref{eq:gl-free-energy}，而先不计算路径积分。完整的路径积分计算见\autoref{sec:path-integral}。
+
+先考虑无磁场的情况。使用欧拉-拉格朗日方程，我们有
+\begin{equation}
+    \alpha_2 m + \alpha_4 m^3 = \gamma \laplacian m.
+\end{equation}
+最简单的情况当然是$\phi$在空间上为常数的情况，此时如果$\alpha_2 < 0$，则稳定解为
+\[
+    m = \pm m_0 = \pm \sqrt{- \frac{\alpha_2}{\alpha_4}},
+\]
+否则$m=0$。这和平均场理论一致，只需要假定$T>T_\text{c}$时$\alpha_2>0$而$T<T_\text{c}$时$\alpha_2<0$即可。
+
+接着考虑格点中出现磁畴的情况。例如，不失一般性地假定磁畴壁垂直于$x$轴，则（由于磁畴通常比较大，局部的磁畴壁几乎总是平直的，无需使用曲面坐标系）
+\[
+    \alpha_2 m + \alpha_4 m^3 = \gamma \dv[2]{m}{x},
+\]
+边界条件为
+\[
+    m\big|_{-\infty} = -m_0, \quad m\big|_{\infty} = m_0,
+\]
+解得
+\begin{equation}
+    m = m_0 \tanh(\frac{x-X}{W}), \quad W = \sqrt{- \frac{\gamma}{\alpha_2}}, 
+\end{equation}
+其中$X$是磁畴壁的位置，而$W$给出了其厚度。
+现在我们要估算磁畴壁的存在对自由能的影响。
+显然自由能因为磁畴壁的存在而上升，且上升的量正比于磁畴壁的面积（而不是格点系统的体积），即
+\[
+    F_\text{wall} \sim L^{d-1},
+\]
+而\eqref{eq:gl-free-energy}中，
+\[
+    \int \dd[d]{\vb*{x}} \alpha_2 m^2 = \alpha_2 m_0^2 \int \dd[d]{\vb*{x}} \tanh^2\left(\frac{x}{W}\right) \sim \alpha_2 m_0^2 L^{d-1} W \sim L^{d-1} \sqrt{-\frac{\gamma \alpha_2^3}{\alpha_4^2}},
+\]
+另外两项也会给出类似的结果，于是磁畴壁引入的自由能变化为
+\begin{equation}
+    F_\text{wall} \sim L^{d-1} \sqrt{-\frac{\gamma \alpha_2^3}{\alpha_4^2}}.
+\end{equation}
+如果有多个磁畴，由于不同磁畴壁离得比较远，可以认为自由能变化就是$nF_\text{wall}$。
+
+当$T$接近$T_\text{c}$时，$\alpha_2$趋于零，于是$F_\text{wall}$接近零，即指向不同的磁畴有和没有区别不大了。
+换而言之，\autoref{fig:mf-phase-diagram}中的两相开始融合。我们就这样直观地说明了为什么会出现$T=T_\text{c}$处的二级相变。
+
+实际上，以上关于磁畴壁的论述还可以用于确定为什么$d=1$时没有相变。
+$d=1$时，设系统中有$n$个磁畴壁，如果$n$是奇数则长为$L$的一段系统两端的自旋指向相反，如果$n$是偶数则长为$L$的一段系统两端的自旋指向相同。
+我们有
+\[
+    \begin{aligned}
+        p(n) &\sim \frac{1}{Z} \ee^{-\beta n F_\text{wall}} \int_{-L/2<x_1<x_2<\cdots<x_n<L/2} \frac{\dd{x_i}}{W} \\
+        &= \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n,
+    \end{aligned}
+\]
+则
+\[
+    p(\text{$n$ even}) = \sum_{\text{$n$ even}} \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n = \frac{1}{Z} \cosh(\frac{\ee^{-\beta F_\text{wall}} L}{W}),
+\]
+\[
+    p(\text{$n$ odd}) = \sum_{\text{$n$ odd}} \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n = \frac{1}{Z} \cosh(\frac{\ee^{-\beta F_\text{wall}} L}{W}).
+\]
+由于$L$通常都很大，实际上$n$为奇数和为偶数的概率都差不多。
+会出现这种情况的原因是，虽然指数因子$\ee^{-\beta n F_\text{wall}}$随着$n$增大被快速压低，但是状态数因子（也即熵的指数）却快速增大。
+因此在一维伊辛模型中不可能出现任何序，也就不会有相变。
+$d=2$时$F_\text{wall}$正比于$L$，从而指数因子被压低得更快，此时涨落很重要，但是序还是可以形成的。
 
 \subsection{直接做平均}\label{sec:ab-initio-effective-theory}
 
@@ -587,23 +654,44 @@ Stratonovich变换}
 \]
 第二个等号处我们把$\vb{x}$积掉了。上式说明$\expval*{\vb{x}}$实际上正比于$\vb{s}$的期望值。这样重新定义
 \begin{equation}
-    \vb{\varphi} = T \vb{J}^{-1} \vb{x},
+    \vb{\phi} = T \vb{J}^{-1} \vb{x},
 \end{equation}
 则\eqref{eq:action-of-x}应改写为
 \begin{equation}
-    Z = \int \fd{\vb{\varphi}} \ee^{-\tilde{S}}, \quad \tilde{S} = \frac{\beta}{2} \sum_{i,j} \varphi_i J_{ij} \varphi_j - \sum_{i=1}^N \ln(2\cosh(\beta(B + \sum_{j=1}^N J_{ij} \varphi_j))).
+    Z = \int \fd{\vb{\phi}} \ee^{-\tilde{S}}, \quad \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \sum_{i=1}^N \ln(2\cosh(\beta(B + \sum_{j=1}^N J_{ij} \phi_j))).
+    \label{eq:action-of-phi}
 \end{equation}
-这里的$\vb{\varphi}$和$\vb{s}$是等效的，但是写成上式便于实施截断，从而得到一个有效场论。
+这里的$\vb{\phi}$和$\vb{s}$是等效的，但是写成上式便于实施截断，从而得到一个有效场论。
 
-有一个比较微妙的地方：由于我们并不知道$\vb{\varphi}$和$\vb{s}$的涨落的关系，一般来说总是有
+有一个比较微妙的地方：由于我们并不知道$\vb{\phi}$和$\vb{s}$的涨落的关系，一般来说总是有
 \[
-    \expval{\varphi_{i_1} \varphi_{i_2} \cdots \varphi_{i_n}} \neq \expval{s_{i_1} s_{i_2} \cdots s_{i_n}}.
+    \expval{\phi_{i_1} \phi_{i_2} \cdots \phi_{i_n}} \neq \expval{s_{i_1} s_{i_2} \cdots s_{i_n}}.
 \]
-但使用\eqref{eq:partition-function-x-s}可以发现，两者相差的所有项都正比于$J_{ij}$，而当$i_1, i_2, \ldots$基本上不相邻时这些项都是零。因此只要$i_1, i_2, \ldots$分布足够稀疏，我们都可以将$\vb{\varphi}$和$\vb{s}$视为相同。
+但使用\eqref{eq:partition-function-x-s}可以发现，两者相差的所有项都正比于$J_{ij}$，而当$i_1, i_2, \ldots$基本上不相邻时这些项都是零。因此只要$i_1, i_2, \ldots$分布足够稀疏，我们都可以将$\vb{\phi}$和$\vb{s}$视为相同。
 
 \subsubsection{截断}
 
+将\eqref{eq:action-of-phi}做级数展开，保留前两阶，并略去常数项，有
+\[
+    \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^2 + + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^4.
+\]
+对$\phi_i$做离散傅里叶变换，并照固体物理的惯例施加一个周期性边界条件，有
+\[
+    \phi_i = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} \phi_{\vb*{k}},
+\]
+
+
 \section{路径积分和微扰论}\label{sec:path-integral}
+
+为了和场论中的记号更为接近，我们设
+\[
+    m(\vb*{x}) \longrightarrow \phi(\vb*{x}),
+\]
+并直接忽略自由能中可能的高阶项，即以
+\begin{equation}
+    F = \int \dd[d]{\vb*{x}} \left( \frac{1}{2} \alpha_2(T) \phi^2 + \frac{1}{4} \alpha_4(T) \phi^4 + \frac{1}{2} \gamma(T) (\grad{\phi})^2 + B \phi \right)
+\end{equation}
+为自由能。
 
 \section{伊辛模型的重整化群}\label{sec:ising-rg}
 

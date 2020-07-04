@@ -1,0 +1,147 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+
+\title{蒙特卡罗方法}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{经典蒙特卡洛方法}
+
+\subsection{马尔科夫链蒙特卡洛方法}\label{sec:mcmc-method}
+
+平衡态统计物理的核心问题就是计算配分函数
+\begin{equation}
+    Z = \sum_\mathcal{C} \ee^{-\beta H[\mathcal{C}]} = \sum_\mathcal{C} W(\mathcal{C}).
+    \label{eq:partition-function}
+\end{equation}
+这里我们用$\mathcal{C}$表示一个任意的系统能量本征态，经典情况下这就是一个系统构型，量子情况下还需要对哈密顿量做一个对角化。
+本节将主要讨论经典系统，因为它不涉及通常难以计算的算符对角化，并且实际上很多时候量子系统可以化归为经典系统。
+如果能够将每个$\mathcal{C}$对应的$W[\mathcal{C}]$算出来那还可以大大简化期望值的计算。
+
+显然，涉及系统构型的路径积分的\eqref{eq:partition-function}是非常难以计算的。
+一种近似方法是\textbf{马尔科夫链蒙特卡洛法}，即构造一个各态遍历、不可约的马尔可夫链
+\[
+    \cdots \longrightarrow \mathcal{C}_{i-1} \longrightarrow \mathcal{C}_i \longrightarrow \mathcal{C}_{i+1} \longrightarrow \cdots,
+\]
+使得
+\begin{equation}
+    \frac{p(\mathcal{C} \rightarrow \mathcal{D})}{p(\mathcal{D} \rightarrow \mathcal{C})} = \frac{W(\mathcal{D})}{W(\mathcal{C})} = \ee^{-\beta(H[\mathcal{D}]-H[\mathcal{C}])},
+    \label{eq:markov-mcmc}
+\end{equation}
+则达到平衡时必定有细致平衡条件
+\[
+    p(\mathcal{C}) p(\mathcal{C} \rightarrow \mathcal{D}) = p(\mathcal{D}) p(\mathcal{D} \rightarrow \mathcal{C}),
+\]
+就有
+\[
+    \frac{W(\mathcal{D})}{W(\mathcal{C})} = \frac{p(\mathcal{D})}{p(\mathcal{C})}.
+\]
+专门使用$\pi(\mathcal{C})$来表示平衡态概率，即有
+\begin{equation}
+    \frac{W(\mathcal{D})}{W(\mathcal{C})} = \frac{\pi(\mathcal{D})}{\pi(\mathcal{C})}.
+\end{equation}
+这样我们只需要让这个马尔可夫链计算到收敛（有限、时不变、不可约、非循环的马尔科夫链肯定可以收敛，而由于可以找到一个$p(\mathcal{C})$的安排让细致平衡条件成立，总是可以收敛到$W(\mathcal{C})/Z$），
+此时按照系综平均等于时间平均的原理，任何一个物理量的期望值就是
+\begin{equation}
+    \expval{O} = \sum_{\mathcal{C}} \frac{W(\mathcal{C})}{Z} O[\mathcal{C}] = \frac{1}{N} \sum_i O[\mathcal{C}_i].
+\end{equation}
+也即过程收敛之后，只需要在时间序列$\{\mathcal{C}_i\}$上分别计算$O$的值，做时间平均，就得到了$O$的期望值。
+需要注意的是实际上$N$不能取无穷大，因此我们希望平衡之后$\{\mathcal{C}_i\}$尽可能随机，即自相关要足够小。
+
+因此问题的核心就是如何设计一个满足\eqref{eq:markov-mcmc}的不可约各态历经马尔可夫链。
+这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。
+不可约性相对来说是容易做到的，因此需要巧妙地设计$p(\mathcal{C} \rightarrow \mathcal{D})$，并且确认平衡后的$\{\mathcal{C}_i\}$在长时间上没有自相关。
+
+\subsection{Metropolis-Hastings算法}
+
+本节讨论一个能够达到\autoref{sec:mcmc-method}中要求的算法：Metropolis-Hastings算法，即\autoref{alg:metro-hast}。
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwData{this text}
+    \KwResult{how to write algorithm with \LaTeX2e }
+    initialization\;
+    \While{not at end of this document}{
+        read current\;
+        \eIf{understand}{
+            go to next section\;
+            current section becomes this one\;
+        }{
+            go back to the beginning of current section\;
+        }
+    }
+    \caption{Metropolis-Hastings算法}
+    \label{alg:metro-hast}
+\end{algorithm}
+    
+
+\end{document}
