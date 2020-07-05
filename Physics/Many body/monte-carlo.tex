@@ -40,6 +40,7 @@
 \newcommand*{\normalorder}[1]{: #1 :}
 \newcommand*{\pair}[1]{\langle #1 \rangle}
 \newcommand*{\fd}[1]{\mathcal{D} #1}
+\newcommand*{\bigO}{\mathcal{O}}
 
 % prettyref setting
 \newrefformat{sec}{第\ref{#1}节}
@@ -66,6 +67,7 @@
 \SetKwFor{While}{while}{:}{}
 \SetKwInput{KwData}{输入}
 \SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
 
 \title{蒙特卡罗方法}
 \author{吴何友}
@@ -87,8 +89,8 @@
 本节将主要讨论经典系统，因为它不涉及通常难以计算的算符对角化，并且实际上很多时候量子系统可以化归为经典系统。
 如果能够将每个$\mathcal{C}$对应的$W[\mathcal{C}]$算出来那还可以大大简化期望值的计算。
 
-显然，涉及系统构型的路径积分的\eqref{eq:partition-function}是非常难以计算的。
-一种近似方法是\textbf{马尔科夫链蒙特卡洛法}，即构造一个各态遍历、不可约的马尔可夫链
+显然，涉及系统构型的路径积分\eqref{eq:partition-function}是非常难以计算的。
+一种近似方法是\textbf{马尔科夫链蒙特卡洛法（MCMC）}，即构造一个各态遍历、不可约的马尔可夫链
 \[
     \cdots \longrightarrow \mathcal{C}_{i-1} \longrightarrow \mathcal{C}_i \longrightarrow \mathcal{C}_{i+1} \longrightarrow \cdots,
 \]
@@ -116,6 +118,15 @@
 \end{equation}
 也即过程收敛之后，只需要在时间序列$\{\mathcal{C}_i\}$上分别计算$O$的值，做时间平均，就得到了$O$的期望值。
 需要注意的是实际上$N$不能取无穷大，因此我们希望平衡之后$\{\mathcal{C}_i\}$尽可能随机，即自相关要足够小。
+马尔科夫链普遍具有这样的性质：由于每一时刻的状态只和前一时刻有关，后一时刻和前一时刻的分布不是独立的，但是随着时间推移，自相关会指数衰减，即
+\begin{equation}
+    A(\Delta t) \sim \ee^{- \Delta t / \tau}.
+\end{equation}
+如果我们需要抽取$N$个彼此统计无关的平衡态构型作为样本计算期望值，那么计算一个期望值的时间复杂度就是
+\begin{equation}
+    \bigO(t) \sim \bigO(\text{one step}) \cdot \tau \cdot N,
+\end{equation}
+因为两个不相关的样本之间大约有$\tau$的时间。
 
 因此问题的核心就是如何设计一个满足\eqref{eq:markov-mcmc}的不可约各态历经马尔可夫链。
 这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。
@@ -126,22 +137,38 @@
 本节讨论一个能够达到\autoref{sec:mcmc-method}中要求的算法：Metropolis-Hastings算法，即\autoref{alg:metro-hast}。
 
 \begin{algorithm}[H]
+
+    \DontPrintSemicolon
     \SetAlgoLined
-    \KwData{this text}
-    \KwResult{how to write algorithm with \LaTeX2e }
-    initialization\;
-    \While{not at end of this document}{
-        read current\;
-        \eIf{understand}{
-            go to next section\;
-            current section becomes this one\;
+
+    \KwData{不同构型$\mathcal{C}$对应的$W[\mathcal{C}]$，计算步数$N$，一个容易抽样的分布$Q(\mathcal{C}' | \mathcal{C}_0)$}
+    \KwResult{序列$\{\mathcal{C}_t\}$}
+    
+    选定一个初始状态$\mathcal{C}_0$\;
+    $t=0$\;
+    \While{$t<N$}{
+        从分布$Q(\mathcal{C}' | \mathcal{C}_t)$中抽样出$\mathcal{C}'$ \;
+        $A(\mathcal{C}' | \mathcal{C}_t) = \min(1, \frac{W(\mathcal{C}') Q(\mathcal{C}_t | \mathcal{C}')}{W(\mathcal{C}_t) Q(\mathcal{C}' | \mathcal{C}_t)})$\;
+        从$[0,1]$的均匀分布抽样出$u$\;
+        \eIf{$u \leq A(\mathcal{C}' | \mathcal{C}_t)$}{
+            $\mathcal{C}_{t+1} = \mathcal{C}'$ \;
         }{
-            go back to the beginning of current section\;
+            $\mathcal{C}_{t+1} = \mathcal{C}_t$ \; 
         }
     }
+    \Return{序列$\{\mathcal{C}_i\}$}\;
+
     \caption{Metropolis-Hastings算法}
     \label{alg:metro-hast}
 \end{algorithm}
-    
+
+从\autoref{alg:metro-hast}中很容易看出，
+\begin{equation}
+    p(\mathcal{C} \to \mathcal{C}') = Q(\mathcal{C}' | \mathcal{C}) A(\mathcal{C}' | \mathcal{C}) = Q(\mathcal{C}' | \mathcal{C}) \min \left(1, \frac{W(\mathcal{C}') Q(\mathcal{C} | \mathcal{C}')}{W(\mathcal{C}) Q(\mathcal{C}' | \mathcal{C})} \right).
+    \label{eq:prob-metro-hast}
+\end{equation}
+分类讨论可以发现\eqref{eq:markov-mcmc}的确是成立的。
+只要我们保证$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链是不可约的，那么\eqref{eq:prob-metro-hast}描述的马尔可夫链就是不可约的，因为随意两个构型之间都能够跃迁。
+因此，只要$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链不可约，Metropolis-Hastings算法一定是一个好的马尔可夫链蒙特卡洛方法。
 
 \end{document}
