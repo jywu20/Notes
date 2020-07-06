@@ -1,8 +1,11 @@
-DM = Distributed Morphology
-LMP = Lexicalist Minimalist Program
-VI = Vocabulary Item
+符号约定：
 
-符号约定：√ROOT表示一个没有范畴的实义词根；斜体字母*root*表示语音实现；functional head用普通字体表示。
+- DM = Distributed Morphology
+- LMP = Lexicalist Minimalist Program
+- VI = Vocabulary Item
+- √ROOT表示一个没有范畴的实义词根；
+- 斜体字母*root*表示语音实现；
+- functional head用普通字体表示。
 
 主要参考文献：
 
@@ -67,7 +70,7 @@ tomatoes' growth是合法的，而John's growth of tomatoes是不合法的。如
 
 这基本上就是经典的Y型模型，只不过Y的两臂最后都接在概念-意向系统上。
 以上推导过程都是cyclic的，包括Vocabulary Insertion也是cyclic的，所以后加入的词缀能够“看到”先加入的词缀。这当然是合理的——拉丁语的变格、变位法就是这样的东西。
-换句话说Vocabulary Insertion和句法推导实际上是交替进行的。
+换句话说spellout和句法推导实际上是交替进行的。
 
 # 基本操作
 
@@ -112,27 +115,9 @@ Fission将一个terminal node拆分成几个不同的terminal nodes。
 1. Subset Principle: 如果两个VI都能够插入同一个node，那么含有较多specified features的VI优先（正如上面所说的los先于el）；
 2. 如果有两个VI实现了同样数目的特征，那么需要一定的机制在它们中间挑选出来一个。常见的一种理论是说：Universal Hierarchy of Features: VIs that realize features higher on the hierarchy are preferred for insertion. 比如说我们可以认为第一、第二人称比第三人称重要。
 
-VI被插入当然依赖于被插入的那个node（这种现象称为primary exponent）；但也可以依赖于附近的一些node（称为secondary exponent），例如同样是过去时后缀，我们说wanted而不是\*wantt，却又可以说burnt。
-这可能是因为Agree让附近的node的一些特征扩散到了正在被插入的node上面。
-例如，一些functional head c-command了一个特定的root，发生feature assignment（注：如果我们严格地认为DM中每个head不应该携带多于一个特征，那么就不会发生任何Agree，没有feature assignment；这种时候我们说，secondary exponent是由直接管辖目标node的那个functional head决定的；但我们会发现这种说法和认为存在Agree运算完全等价，因此这只不过是notation的问题），导致插入到这个root中的VI被唯一确定（举例：T c-command了V，从而让V带上了过去时的属性，那么如果V是√EAT，插入的VI就是*ate*而不是*eat*），这导致了**licensing**。
-上面的机制意味着，即使是实词词根也可能会彼此竞争，因为*eat*没有明确的时态，那么根据underspecification的原则用它实现一个带有过去时的√EAT好像也没有什么不可以。
-如果我们认为实词词根不会相互竞争，那么eat->ate之类的现象就需要使用readjustment来分析。
-Syntax within the Word认为实词词根的VI也会互相竞争。
-
 不同VI的互相竞争这一步是可以出差错的，实际上这就解释了“想着一个东西说出了另一个”这一现象。
 
-### Readjustment
-
-Readjustment产生形态变体，但是是因为morphology的原因而不是phonology的原因。例如drive->drove, ride->rode。Readjustment作用在一个或者一类VI上面。
-请注意实际上有好多种不同的readjustment，而不像Merger或者Fusion又或者Fission一样虽然触发条件在不同语言中不同但是操作是相同的。
-
 # 常见疑难问题的解答
-
-## 俚语、习语
-
-一些短语如*kick the bucket*, *buy the farm*, *rain cats and dogs*需要被整体认读，因为它们的意思并不是组成它们的每个词的意思。
-还有一些俚语甚至根本就算不上短语：比如说“the hell out of”。
-TODO
 
 ## 形态变体
 
@@ -148,9 +133,109 @@ TODO
 
 问题在于，这样基本上什么也没有解释；而且我们单独为了一个不规则复数专门建立了一条语法规则，属实繁冗。
 
+## Readjustment
+
+旧版DM中还有一个特殊的形态操作：readjustment。
+Readjustment产生形态变体，但是是因为morphology的原因而不是phonology的原因。例如drive->drove, ride->rode。Readjustment作用在一个或者一类VI上面。
+请注意实际上有好多种不同的readjustment，而不像Merger或者Fusion又或者Fission一样虽然触发条件在不同语言中不同但是操作是相同的。
+
+可以假定所谓一个VI被readjust的VI后产生的VI变体实际上是不同的VIs，这样readjustment就不再需要了。
+
+表面上看，移除readjustment规则会导致可学习性的问题：的确，孩子怎么会知道mouse和mice实际上指的是同一种东西呢？拥有互补（从而可能互相竞争）的functional head并不会导致可学习性的问题，例如，不同的系动词就不会产生可学习性的问题，因为儿童知道判断句中应该有一个系动词，那么不管那是am, is, are，无论如何那都是一个系动词。
+但是儿童显然不可能一开始就知道mouse和mice是同一个动词。
+
+问题在于，如果我们认为可学习性要求不能够有多个VI和同一个实义词根有关，我们很难解释go-went, person-people, wuuti-momoyam（霍皮语，“女人”的单复数）这样的现象。
+换而言之实际上就是可以有多个VI和同一个实义词根有关。（这称为suppletion）
+
+## Licensing
+
+所谓licensing指的是，设有一个functional head c-command一个实义词根，则前者可以筛选后者的内容。
+这是一个典型的secondary exponent现象，即VI的插入和附近的一些node都有关。
+licensing可以用于解释为什么有些词只有名词形式没有动词形式，或者只有动词形式没有名词形式：因为n或者v筛选了可以和它们组合的实义词根，或者说它们license一些实义词根，而不license另一些。
+
+然而，也可以采用这样的方式解释licensing：functional head和实义词根发生了fusion，fusion之后的结果作为一个整体被语音实现。
+这样，一些词缺乏动词形式可以解释为相应的词根和v发生fusion之后，没有VI能够匹配得上所得结果。
+这样可以大大简化理论，因为无需额外引入licensing的机制就会有licensing的现象。
+
+## Secondary exponent
+
+VI被插入当然依赖于被插入的那个node（这种现象称为primary exponent）；但也可以依赖于附近的一些node（称为secondary exponent），例如同样是过去时后缀，我们说wanted而不是\*wantt，却又可以说burnt。
+这可能是因为Agree让附近的node的一些特征扩散到了正在被插入的node上面。
+例如，一些functional head c-command了一个特定的root，发生feature assignment（注：如果我们严格地认为DM中每个head不应该携带多于一个特征，那么就不会发生任何Agree，没有feature assignment；这种时候我们说，secondary exponent是由直接管辖目标node的那个functional head决定的；但我们会发现这种说法和认为存在Agree运算完全等价，因此这只不过是notation的问题；此外，如果我们认为secondary exponent实际上是通过feature assignment——或者说得更加DM一些，通过某些fusion操作来完成的，那么它实际上就是特殊的primary exponent：因为fusion完成后的terminal node可以唯一确定将要插入哪个VI），导致插入到这个root中的VI被唯一确定（举例：T c-command了V，从而让V带上了过去时的属性，那么如果V是√EAT，插入的VI就是*ate*而不是*eat*），这就是**licensing**。
+上面的机制意味着，即使是实词词根也可能会彼此竞争，因为*eat*没有明确的时态，那么根据underspecification的原则用它实现一个带有过去时的√EAT好像也没有什么不可以。
+如果我们认为实词词根不会相互竞争，那么eat->ate之类的现象就需要使用readjustment来分析。
+
+Syntax within the Word认为实词词根的VI也会互相竞争。这样的好处在于无需使用不同的机制来解释实词词根和functional head的语音实现；此外，licensing也可以很容易地分析：实际上这就是一个带有part of speech特征的functional head和实义词根发生了fusion，而如果VI正好带有part of speech特征，那么就需要两者的part of speech一致才能够发生Vocabulary Insertion。这就导致了licensing。
+
+## Null head的使用
+
+旧版DM中，即使是一个简单的名词，也需要这样的结构：
+
+[<sub>NumP</sub> Num [<sub>nP</sub> n √MOUSE ] ]
+
+为了一个有语音实现的词根，我们就引入了两个不可见的functional heads。
+这些functional heads是绝对必要的，因为要让词根带上part of speech，还要触发licensing（这当然也可以看成让词根带上part of speech的附带结果）。 
+DM中的null heads是如此之多，比其它理论中的null heads都要多。
+
+本文中的DM也需要这么多的functional heads，但是它们并不是没有语音实现；相反，它们和附近的词根发生fusion，一并被语音实现了。
+
+## fusion何时失败？
+
+为了在不使用secondary exponent的前提下描述licensing，我们认为functional heads和roots一定会发生融合，融合之后得到的单一terminal node被语音实现。
+但实际上，也有一些时候functional heads需要自己被语音实现，否则第三人称单数这样的现象就不会出现了。
+总之，在一些时候，我们要让fusion失败，从而能够有独立的functional head的语音实现，另一些时候我们要让fusion成功，从而产生suppletion。
+这两种情况分别以普通过去时和不规则过去时为例子。
+
+因此，我们需要仔细地考虑，一个head可以带有哪些特征，来指导形态操作。
+
+一种可能的方案是，允许VI具有¬-specification，也就是指定哪些情况下一个VI不能被插入。
+例如，考虑动词pick。我们假定VI为：
+
+- [PAST] -> *-ed*
+- √PICK ¬[PAST] [v] -> *pick*
+
+现在有这样的复合体：[PAST] [v] √PICK，则应该怎么插入VI？
+
+1. 不能插入*pick*，因为¬[PAST]和[PAST]冲突。
+2. 尝试插入*-ed*。由于underspecification，可以插入，但是这样有词根没有被实现；
+3. 实义词根不能不被语音实现，否则就有违faithfulness了。
+4. 句法推导失败。
+
+这表明不能够形成[PAST] [v] √PICK这样的复合node，于是转而尝试没有做过fusion的结构，也就是
+
+[<sub>TP</sub> [PAST] [<sub>vP</sub> [v] √PICK ] ]
+
+于是产生 *-ed* + *pick*，即*picked*。
+
+当然，最直截了当的分析肯定是认为时态后缀具有不同的分类，它自己可以选择是参加fusion还是独立语音实现。
+但是这样的分析实际上只是描写——我们要解释为什么会有这样的分类。
+不过实际上，我还是觉得这种解释过于依赖“巧合”了，并不是完美的。
+
+## 为什么需要Fusion
+
+到现在为止我们还没有解释什么触发了fusion。实际上，由于fusion需要额外的语法操作，它加重了运算的负担。
+然而，fusion在每一次句法运算中都会被触发——只有当它失败了，才尝试没有fusion的版本（见上一节）。
+这一点的证据是不规则过去时的存在：如果fusion可以触发也可以不触发，那么就应该存在eated这样的不合法的过去时；实际上，我们几乎总是说ate，因此，fusion的优先级要比不fusion的优先级高。
+一种可能的解释是这样一条原则：
+
+**Minimize Exponence**: The most economical derivation will be the one that maximally realizes all the formal features of the derivation with the fewest morphemes.
+
+fusion可以用一个VI覆盖尽可能多的features，所以fusion越多，Minimize Exponence被满足得越好，即说话人可以产生更大的信息流。
+但是另一方面，fusion多了就需要更多的VI，这又让语言的理解变得更为困难。
+因此，实际的语言在这两者之间有一个平衡。
+
+## 俚语、习语
+
+一些短语如*kick the bucket*, *buy the farm*, *rain cats and dogs*需要被整体认读，因为它们的意思并不是组成它们的每个词的意思。
+还有一些俚语甚至根本就算不上短语：比如说“the hell out of”。
+TODO
+
+与其说俚语需要被整体认读，还不如说无论是俚语还是普通的词都是被整体认读的。这就是概念-意向系统和语法的接口同时需要PF和LF的原因？
 
 # DM的粗粒化
 
 TODO：什么时候可以将DM中的东西看成普通的词？
+
+被语音实现完之后的nP可以看成NP
 
 Head movement constraint = adjacent merger，因为被作用merger的heads必然构成一个constituent，从而所有head一个c-command另一个，等效来看相当于head movement只能是最短距离，即[<sub></sub> X [<sub>YP</sub> Y ] ] -> [<sub></sub> [X Y] [<sub>YP</sub> <del>Y</del> ] ] 
