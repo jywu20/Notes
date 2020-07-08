@@ -69,8 +69,9 @@ tomatoes' growth是合法的，而John's growth of tomatoes是不合法的。如
 6. PF和LF的结果共同和概念-意向系统连接。
 
 这基本上就是经典的Y型模型，只不过Y的两臂最后都接在概念-意向系统上。
-以上推导过程都是cyclic的，包括Vocabulary Insertion也是cyclic的，所以后加入的词缀能够“看到”先加入的词缀。这当然是合理的——拉丁语的变格、变位法就是这样的东西。
-换句话说spellout和句法推导实际上是交替进行的。
+以上推导过程都是cyclic的，包括Vocabulary Insertion也是cyclic的，所以后加入的词缀能够“看到”先加入的词缀。这当然是合理的——拉丁语的变格、变位法就是例子。
+
+可否认为句法推导、形态学操作和spellout实际上是交替进行的：在每个phase中，先发生句法推导，然后形态学操作，然后spellout，每个phase都不大，因此句法推导是比较局域的。
 
 # 基本操作
 
@@ -91,7 +92,9 @@ $$
 [ \; X \; [ \; Y \; \ldots \; ] \; ] \longrightarrow [ \; \sout{X} \; [ \; [ \; X \;  Y \;] \; \ldots \; ] \; ] .
 $$
 
-问题：怎么限制merger的使用？如何避免过度生成？可能还是需要选择特征或者unvalued feature之类的东西。
+问题：怎么限制merger的使用？如何避免过度生成？或者说，怎么确保merger是局域的？
+可能还是需要选择特征或者unvalued feature之类的东西。
+还有一种方法是采用phase-cased的方法，也就是每个phase含有的heads非常少，从而只能是局域的。
 
 例如，T,v,V的merger是这样的：
 
@@ -118,13 +121,20 @@ Fusion将一个constituent合并成一个terminal head。例如，在发生了�
 ### Fission
 
 Fission将一个terminal node拆分成几个不同的terminal nodes。
+某种意义上Fission也可以看成特殊的AGR Node Insertion。
+
+### AGR Insertion
+
+通常认为一致性运算是在句法层面完成的，不过如果
+TODO
 
 ## Vocabulary Insertion
 
 语音实现的方式是每个terminal node被符合这一terminal node携带的特征的VI代替。
 无论怎么样，Vocabulary Insertion应该遵从以下原则：
 
-- 插入一个node的VI不应该含有比这个node还要多的特征（因为在语义上有贡献的特征只出现在node中）；
+- 插入一个node的VI可以含有比这个node还要少的特征（即所谓的underspecification）；
+- 插入一个node的VI不应该含有比这个node还要多的特征（因为在语义上有贡献的特征只出现在node中），也就是说可以underspecification不能够overspecification；
 - 虽然VI未必含有该node具有的所有特征，一旦插入完成，这个node具有的特征就应该被认为是全部完全实现了（这些特征全部被discharge了；这个过程称为exponent）；
 - VI可以对该node周围的其它node具有的特征敏感。
 
@@ -211,6 +221,12 @@ $$
 这就是所谓的AGR node Insertion schema，即发生Agree时需要插入一个AGR node。
 具体AGR插入的时间是句法推导中还是形态运算中其实并不重要，很多DM文献认为这是形态运算的一部分，即到了PF才出现AGR node insertion。
 
+## Affix Lowering和Head Movement
+
+这两个东西，正如别的形态操作一样，完全可以通过增加各种AGR head然后使用Agree来求值这些AGR heads。
+一种可能的思路是将它们看成同一个特征的多个Copy，然后Chiain reduction。
+这个思路也可以用于导出Merger
+
 # 常见疑难问题的解答
 
 ## 形态变体
@@ -271,6 +287,25 @@ $$
 fusion可以用一个VI覆盖尽可能多的features，所以fusion越多，Minimize Exponence被满足得越好，即说话人可以产生更大的信息流。
 但是另一方面，fusion多了就需要更多的VI，这又让语言的理解变得更为困难。
 因此，实际的语言在这两者之间有一个平衡。
+
+## 构词
+
+基本上，从基本的词根出发派生出新词的方法无非下面几种：
+
+- 屈折，也就是说词在句中发生了一系列一致操作（通常要么是主语-动词agreement或者宾语-动词agreement，要么是名词性短语内部的concord）pick up了一些特征，然后发生了形态的改变；
+- 派生，也就是词的形态改变完全是语义驱动的，不是在句法推导中和别的什么东西发生Agree而产生的。这个又分成两种：
+  - 一种是词性变化，也就是名词变形容词什么的；
+  - 一种是形成复合词，也就是是多个实义词根结合在一起。
+
+当然这样的分析肯定是非常粗糙的，比如说黏着要算什么呢？比如说，日语的格助词你要算什么呢？
+
+DM的基本框架并不区分这些构词方法。基本上，屈折
+
+词性变化通常是依靠加入一些特殊的functional head来完成的，比如说加入-ize, -tion等；形成复合词实际上也需要特殊的functional head。
+
+## Adjunct
+
+DM不需要adjunct因为underspecification已经提供了足够用于描述“可选句法成分”的信息。
 
 ## 俚语、习语
 
