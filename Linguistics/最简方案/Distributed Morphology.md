@@ -61,11 +61,11 @@ tomatoes' growth是合法的，而John's growth of tomatoes是不合法的。如
 
 语言产出遵循这样的机制：
 
-1. 一些语素从List A中被取出（numberation，“从思想的云朵里落下一阵语素的雨”），发生Merge，Move等操作；
-2. 第1步得到的结果进入PF，发生形态操作，如fusion，merger等；
-3. 第2步运算得到的抽象句法结构被语音实现，即发生Vocabulary Insertion；
+1. 一些语素从List A中被取出（numberation，“从思想的云朵里落下一阵语素的雨”），发生Merge，Move等操作，这一步是纯句法操作；
+2. 第1步得到的结果进入PF，发生形态操作，如fusion，merger等，得到所谓的morphological structure，这一步还是不含有语音形式的，它们被安排在纯句法操作之后是因为它们不影响语义；
+3. 第2步运算得到的抽象句法结构被语音实现，即发生Vocabulary Insertion，这一步就是spellout；
 4. 第3步运算得到的语音形式发生音系操作；
-5. 第1步中运算得到的抽象句法结构被转化为逻辑结构，即进入LF；
+5. 第1步中运算得到的抽象句法结构被转化为逻辑结构，即进入LF，然后发生类似于quantifier raising之类的操作；
 6. PF和LF的结果共同和概念-意向系统连接。
 
 这基本上就是经典的Y型模型，只不过Y的两臂最后都接在概念-意向系统上。
@@ -80,23 +80,40 @@ tomatoes' growth是合法的，而John's growth of tomatoes是不合法的。如
 
 形态学操作是PF操作，因为它对逻辑结构没有影响。虽然如此，它并不是语音学操作，因为它涉及的不完全是发音。
 
+实际上，形态学操作大部分可以通过增加functional head并且利用Agree来完成。但既然它们并不影响逻辑结构，那么似乎也没什么必要这么做。
+
 ### Merger
 
-Merger将几个构成同一个constituent的terminal node合并。例如，名词被加上前缀、后缀就是Merger的作用。
+Merger将几个在同一个个constituent内的terminal node合并。例如，名词被加上前缀、后缀就是Merger的作用。
 通常被作用Merger的terminal nodes都是相邻的（类似于[ X [ Y [ Z ] ] ]的形式），此时的merger称为adjacent merger。
+Merger的作用方式为
+$$
+[ \; X \; [ \; Y \; \ldots \; ] \; ] \longrightarrow [ \; \sout{X} \; [ \; [ \; X \;  Y \;] \; \ldots \; ] \; ] .
+$$
 
 问题：怎么限制merger的使用？如何避免过度生成？可能还是需要选择特征或者unvalued feature之类的东西。
+
 例如，T,v,V的merger是这样的：
 
 1. [<sub>T'</sub> T [<sub>vP</sub> DP v V ] ]
 2. [<sub>TP</sub> DP T [<sub>vP</sub> <del>DP</del> v V ] ]
 3. 最关键的一步：T,V,v被作用了merger，合并为一个node——请问是什么决定了这个node应该放在原本v的位置或者原本T的位置？
 
-一种可能的思路：affix lowering和(upward) head movement实际上都是feature assignment而已，即v具有未求值的feature（或者如果我们要求每个head只带有一个feature，那么就是v带有）
+显然，merger把affix lowering和head movement统一起来了。
+
+如果要把merger做的事情放到句法中，一种可能的思路：affix lowering和(upward) head movement实际上都是feature assignment而已，即v具有未求值的feature（或者如果我们要求每个head只带有一个feature，那么就是vP中的某些AGR head有未求值的feature），然后通过和据说是被移动的functional head发生Agree。
+
+不过，这么做其实很不自然，因为讲白了这就是四个参数画大象。
 
 ### Fusion
 
-Fusion将一些terminal node合并成同一个terminal head。例如，AGR（包含人称和数）和T（包含时态）被合并。
+Fusion将一个constituent合并成一个terminal head。例如，在发生了主语-动词agreement之后，形成了[AGR T]结构，然后AGR（包含人称和数）和T（包含时态）被合并以产生英语第三人称单数之类的现象。
+合并之后的terminal head含有多个特征，而不是只含有一个特征。
+很多时候merger作用完之后，fusion运算会跟上。
+
+如果我们认为Vocabulary Insertion中，一个VI可以代替一个树而不是一个node，那么就可以不使用fusion操作，因为所谓被聚合在一起的nodes可以整体被替换成一个VI，是不是有fusion操作无关紧要。
+但这样一来必须把“什么样的树可以被整体替换”放进Vocabulary中，Vocabulary就会非常冗长。
+因此引入fusion操作可以让理论更加清晰。
 
 ### Fission
 
@@ -117,21 +134,9 @@ Fission将一个terminal node拆分成几个不同的terminal nodes。
 
 不同VI的互相竞争这一步是可以出差错的，实际上这就解释了“想着一个东西说出了另一个”这一现象。
 
-# 常见疑难问题的解答
+# 关于DM理论内部的一些差异
 
-## 形态变体
-
-有些词的变形并不规则，例如mouse->mice。如果mouse的复数是规则的，那么应该发生下面的derivation：
-
-1. 组装形成[<sub>NumP</sub> [PLURAL] [<sub>nP</sub> n √MOUSE ] ]
-2. √MOUSE的VI被插入，这个VI要求名词性的环境，而n允准了这一点，即我们说“n licenses the insertion of the VI of √MOUSE”，插入之后形成[ [PLURAL] *mouse* ]
-3. [PLURAL]被语音实现，变成后缀-s
-4. NumP整体被语音实现，发生形态操作Merger，-s被附加到mouse后面，形成mouses
-
-当然，如果名词不是mouse，那么以上过程就没有任何问题；所以我们需要解释，*mice*这种特殊的形态变体是怎么产生的。
-最直接了当的分析当然是readjustment: 我们可以认为英语有一个特殊的语法规则，即“带有[PLURAL]属性的*mouse*”应当被重新分析为*mice*。
-
-问题在于，这样基本上什么也没有解释；而且我们单独为了一个不规则复数专门建立了一条语法规则，属实繁冗。
+上面所说的DM理论和有些其它文献所阐述的还是有一定区别的，本节讨论这些区别。
 
 ## Readjustment
 
@@ -178,6 +183,49 @@ Syntax within the Word认为实词词根的VI也会互相竞争。这样的好�
 DM中的null heads是如此之多，比其它理论中的null heads都要多。
 
 本文中的DM也需要这么多的functional heads，但是它们并不是没有语音实现；相反，它们和附近的词根发生fusion，一并被语音实现了。
+
+# DM和最简方案
+
+本节讨论DM和最简方案中的一些比较general的概念的相容性。
+
+## DM的粗粒化
+
+TODO：什么时候可以将DM中的东西看成普通的词？
+
+被语音实现完之后的nP可以看成NP
+
+Head movement constraint = adjacent merger，因为被作用merger的heads必然构成一个constituent，从而所有head一个c-command另一个，等效来看相当于head movement只能是最短距离，即[<sub></sub> X [<sub>YP</sub> Y ] ] -> [<sub></sub> [X Y] [<sub>YP</sub> <del>Y</del> ] ] 
+
+## Agree
+
+Agree运算在DM中应该怎样实现？由于每一个head只携带一个特征，似乎很难使用通常的feature copying来实现。
+不过实际上，只需要做以下处理即可：如果一个head可以发生Agree，那么它一定选择一个携带了一些未求值的特征的AGR head，这不会其它selection步骤，如下所示：
+
+$$
+[_\alpha \; \ldots \; \alpha ] \longrightarrow [_\alpha \; \ldots \; [_\alpha \; \text{AGR} \; \alpha ] ]
+$$
+
+即$\alpha$先和AGR发生Merge，再和别的成分发生Merge。当feature assignment发生时，AGR中的未求值成分被求值。
+随后，在形态学操作中AGR可以和$\alpha$被fusion在一起，也可以分开语音实现。
+
+这就是所谓的AGR node Insertion schema，即发生Agree时需要插入一个AGR node。
+具体AGR插入的时间是句法推导中还是形态运算中其实并不重要，很多DM文献认为这是形态运算的一部分，即到了PF才出现AGR node insertion。
+
+# 常见疑难问题的解答
+
+## 形态变体
+
+有些词的变形并不规则，例如mouse->mice。如果mouse的复数是规则的，那么应该发生下面的derivation：
+
+1. 组装形成[<sub>NumP</sub> [PLURAL] [<sub>nP</sub> n √MOUSE ] ]
+2. √MOUSE的VI被插入，这个VI要求名词性的环境，而n允准了这一点，即我们说“n licenses the insertion of the VI of √MOUSE”，插入之后形成[ [PLURAL] *mouse* ]
+3. [PLURAL]被语音实现，变成后缀-s
+4. NumP整体被语音实现，发生形态操作Merger，-s被附加到mouse后面，形成mouses
+
+当然，如果名词不是mouse，那么以上过程就没有任何问题；所以我们需要解释，*mice*这种特殊的形态变体是怎么产生的。
+最直接了当的分析当然是readjustment: 我们可以认为英语有一个特殊的语法规则，即“带有[PLURAL]属性的*mouse*”应当被重新分析为*mice*。
+
+问题在于，这样基本上什么也没有解释；而且我们单独为了一个不规则复数专门建立了一条语法规则，属实繁冗。
 
 ## fusion何时失败？
 
@@ -231,11 +279,3 @@ fusion可以用一个VI覆盖尽可能多的features，所以fusion越多，Mini
 TODO
 
 与其说俚语需要被整体认读，还不如说无论是俚语还是普通的词都是被整体认读的。这就是概念-意向系统和语法的接口同时需要PF和LF的原因？
-
-# DM的粗粒化
-
-TODO：什么时候可以将DM中的东西看成普通的词？
-
-被语音实现完之后的nP可以看成NP
-
-Head movement constraint = adjacent merger，因为被作用merger的heads必然构成一个constituent，从而所有head一个c-command另一个，等效来看相当于head movement只能是最短距离，即[<sub></sub> X [<sub>YP</sub> Y ] ] -> [<sub></sub> [X Y] [<sub>YP</sub> <del>Y</del> ] ] 
