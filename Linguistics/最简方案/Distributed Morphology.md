@@ -227,6 +227,9 @@ $$
 一种可能的思路是将它们看成同一个特征的多个Copy，然后Chiain reduction。
 这个思路也可以用于导出Merger
 
+实际上，我是觉得DM中真正重要的还是Vocabulary Insertion这一步，以及“参与句法运算的是词根和functional heads而不是明确的一个个词”。具体形态操作在句法内部还是句法后、是真的有一个独立的merger操作还是实际上这只是functional heads+Agree，更多的是formalism的问题。
+换句话说，Benjamin Bruening的Doing Away with Post-Syntactic Operations一文实际上只是将DM换了一种方式表述出来而已。
+
 # 常见疑难问题的解答
 
 ## 形态变体

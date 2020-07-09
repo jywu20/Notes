@@ -115,6 +115,7 @@
 此时按照系综平均等于时间平均的原理，任何一个物理量的期望值就是
 \begin{equation}
     \expval{O} = \sum_{\mathcal{C}} \frac{W(\mathcal{C})}{Z} O[\mathcal{C}] = \frac{1}{N} \sum_i O[\mathcal{C}_i].
+    \label{eq:classical-expectation}
 \end{equation}
 也即过程收敛之后（收敛之前的过程称为\textbf{热化}，这一段数据并不是特别有用），只需要在时间序列$\{\mathcal{C}_i\}$上分别计算$O$的值，做时间平均，就得到了$O$的期望值。
 需要注意的是实际上$N$不能取无穷大，因此我们希望平衡之后$\{\mathcal{C}_i\}$尽可能随机，即自相关要足够小。
@@ -179,5 +180,31 @@
 此时需要别的策略来做更新。
 
 通常需要误差棒
+
+\section{辅助场量子蒙特卡洛}
+
+现在我们转而分析一个格点上的量子的平衡态统计系统。
+特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
+在路径积分表述中，量子的平衡态统计系统和经典的不同之处在于：
+\begin{itemize}
+    \item 配分函数的$\ee$指数上并不是简单的$\beta$乘以哈密顿量，而是哈密顿量加上一个$\pi \dot{\phi}$项以后对虚时间做积分，积分限为$0$到$\beta$。（在$\beta$很小——也即，在高温极限下——这个积分当然就等于哈密顿量乘以$\beta$）
+    \item “每个格点上的粒子具有确定的状态”未必是能量本征态，换句话说偏好基未必是能量本征态。
+\end{itemize}
+由于这两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
+因此我们不再僵化地使用\eqref{eq:classical-expectation}，而是转而通过
+\begin{equation}
+    \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}}
+    \label{eq:second-quantization-expectation}
+\end{equation}
+来计算期望。我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:second-quantization-expectation}是可以用的。
+我们照惯例做$\ee$指数的离散化：
+\[
+    \ee^{-\beta \hat{H}} = \prod_{i=1}^{\beta / \Delta t} \ee^{-\Delta \tau \hat{H}}.
+\]
+一般来说哈密顿量可以写成自由哈密顿量加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，即我们有
+\begin{equation}
+    \hat{H} = \hat{H}_0 + \hat{H}_I, \quad \hat{H}_I = - W \sum_{i} \left( \hat{O}^{(i)} \right)^2.
+\end{equation}
+这里我们假定已经将$\hat{H}_I$做了对角化，即在单粒子表象$\{\ket*{i}\}$下将它分解成一系列单粒子可观察量的平方之和。
 
 \end{document}
