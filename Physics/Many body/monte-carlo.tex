@@ -40,7 +40,7 @@
 \newcommand*{\normalorder}[1]{: #1 :}
 \newcommand*{\pair}[1]{\langle #1 \rangle}
 \newcommand*{\fd}[1]{\mathcal{D} #1}
-\newcommand*{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
 
 % prettyref setting
 \newrefformat{sec}{第\ref{#1}节}
@@ -133,6 +133,9 @@
 这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。
 不可约性相对来说是容易做到的，因此需要巧妙地设计$p(\mathcal{C} \rightarrow \mathcal{D})$，并且确认平衡后的$\{\mathcal{C}_i\}$在长时间上没有自相关。
 
+最后注意一点：实际上在以上推导中我们根本就没有使用过$W(\mathcal{C})$构成一个玻尔兹曼分布这一条件。
+因此，经典蒙特卡洛法实际上可以用于任何抽样问题。
+
 \subsection{Metropolis-Hastings算法}
 
 本节讨论一个能够达到\autoref{sec:mcmc-method}中要求的算法：Metropolis-Hastings算法，即\autoref{alg:metro-hast}。
@@ -181,30 +184,85 @@
 
 通常需要误差棒
 
-\section{辅助场量子蒙特卡洛}
+\section{量子蒙特卡洛概述}
 
 现在我们转而分析一个格点上的量子的平衡态统计系统。
 特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
-在路径积分表述中，量子的平衡态统计系统和经典的不同之处在于：
+在计算配分函数时，量子的平衡态统计系统和经典的不同之处在于：
 \begin{itemize}
     \item 配分函数的$\ee$指数上并不是简单的$\beta$乘以哈密顿量，而是哈密顿量加上一个$\pi \dot{\phi}$项以后对虚时间做积分，积分限为$0$到$\beta$。（在$\beta$很小——也即，在高温极限下——这个积分当然就等于哈密顿量乘以$\beta$）
     \item “每个格点上的粒子具有确定的状态”未必是能量本征态，换句话说偏好基未必是能量本征态。
 \end{itemize}
 由于这两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
-因此我们不再僵化地使用\eqref{eq:classical-expectation}，而是转而通过
+如果要使用\eqref{eq:classical-expectation}，实际上就是要计算
 \begin{equation}
-    \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}}
+    \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}}.
     \label{eq:second-quantization-expectation}
 \end{equation}
-来计算期望。我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:second-quantization-expectation}是可以用的。
-我们照惯例做$\ee$指数的离散化：
-\[
-    \ee^{-\beta \hat{H}} = \prod_{i=1}^{\beta / \Delta t} \ee^{-\Delta \tau \hat{H}}.
-\]
+依照定义计算上式计算量非常大；当然，可以首先将哈密顿量对角化，但对复杂的系统这基本上不可能完成。
+归根到底，量子力学允许态做线性叠加的特点意味着系统可以取的状态相比于经典力学不成比例得多，因此只能够根据系统的特征，对每一类问题采取不同的手段，依据不同的系统的特殊性把它们划归到某个经典蒙特卡洛问题上。
+
+于是我们回顾固体物理中通常会出现什么样的问题。
 一般来说哈密顿量可以写成自由哈密顿量加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，即我们有
 \begin{equation}
     \hat{H} = \hat{H}_0 + \hat{H}_I, \quad \hat{H}_I = - W \sum_{i} \left( \hat{O}^{(i)} \right)^2.
 \end{equation}
 这里我们假定已经将$\hat{H}_I$做了对角化，即在单粒子表象$\{\ket*{i}\}$下将它分解成一系列单粒子可观察量的平方之和。
+
+\section{世界线蒙特卡洛方法}
+
+设哈密顿量可以被分解成
+\begin{equation}
+    \hat{H} = \hat{H}_1 + \hat{H}_2,
+\end{equation}
+其中$\hat{H}_1$和$\hat{H}_2$分别对应两个比较容易求解的问题。当然也可以把$\hat{H}$分解成更多哈密顿量之和，处理起来是类似的。
+考虑到以下公式：
+\begin{equation}
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}} + \frac{\Delta \tau}{2} \underbrace{\int_0^\beta \dd{\tau} \ee^{-(\beta-\tau) \hat{H}} \comm*{\hat{H}_1}{\hat{H}_2} \ee^{-\tau \hat{H}}}_{\hat{A}} + \bigO(\Delta \tau^2), \quad m \Delta \tau = \beta,
+\end{equation}
+我们有
+\[
+    \frac{\trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}{\trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}}) + \frac{\Delta \tau}{2} \trace(\hat{O} \hat{A})}{\trace(\ee^{-\beta \hat{H}}) + \frac{\Delta \tau}{2} \trace\hat{A}} + \bigO(\Delta \tau^2),
+\]
+容易验证
+\[
+    \trace(\hat{A})^* = - \trace \hat{A}, \quad \trace(\hat{O} \hat{A})^* = - \trace(\hat{O} \hat{A}),
+\]
+于是如果
+% TODO 误差分析
+就能够有小到$\bigO(\Delta \tau^2)$的误差。
+代入\eqref{eq:second-quantization-expectation}，就得到
+\[
+    \expval{O} = \frac{\trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}{\trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}.
+\]
+使用标准的插入完备性条件的方法，并假定我们使用的表象是$\hat{O}$的本征态（由于$\hat{O}$的定义通常不会很复杂，它的本征态是可以计算出来的），那么
+\[
+    \trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)} = \sum_{n_1, n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1},
+\]
+而
+\[
+    \trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)} = \sum_{n_1, n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1} O_{n_1},
+\]
+其中$O_{n_1}$指的是$\hat{O}$在本征态$\ket*{n_1}$上的本征值。
+于是只要指定
+\begin{equation}
+    W(n_1) = \sum_{n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1},
+    \label{eq:worldline-weight}
+\end{equation}
+套用\eqref{eq:classical-expectation}就计算出了$\expval{O}$。
+\eqref{eq:worldline-weight}中的一系列矩阵元连乘实际上就是离散化的路径积分，一组这样的连乘对应着一条$\tau=i \Delta \tau$时状态为$\ket{n_i}$的虚时间世界线，因此这种方法称为\textbf{世界线蒙特卡洛}。
+
+比较糟糕的是，\eqref{eq:worldline-weight}中的诸矩阵元并不能够保证是正数，因此计算出来的路径积分权重\eqref{eq:worldline-weight}也不能够保证是正数。
+因此，实际上我们并不能够得到一个真正的概率分布。
+这可能导致蒙特卡洛算法不收敛，或者虽然收敛但由于分母非常小（正负抵消）而精度很差。
+这就是所谓的\textbf{符号问题}——$W(n)$的正负号不定导致模拟困难。
+
+\section{行列式蒙特卡洛方法}
+
+我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:second-quantization-expectation}是可以用的。
+我们照惯例做$\ee$指数的离散化：
+\[
+    \ee^{-\beta \hat{H}} = \prod_{i=1}^{\beta / \Delta t} \ee^{-\Delta \tau \hat{H}}.
+\]
 
 \end{document}

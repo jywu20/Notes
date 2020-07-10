@@ -2780,7 +2780,7 @@ $C$正比于$\ln Z$，而彼此独立的系统的$\ln Z$具有可加性，因此
 \end{equation}
 涨落量级为$1/\sqrt{N}$
 
-\subsection{从量子统计退化到经典统计}
+\subsection{从量子统计退化到经典统计}\label{sec:from-quantum-to-classical}
 
 \subsubsection{代表点密度和经典配分函数}
 
@@ -4370,7 +4370,7 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
     \end{aligned}
 \end{equation}
 
-需注意上式和\eqref{eq:path-integral-equilibrium}的区别：上式的积分中，变量$\phi$跑遍时空中所有可能的场构型，而\eqref{eq:path-integral-equilibrium}的积分中变量$\phi$仅仅跑遍空间中所有可能的场构型。
+需注意上式和\eqref{eq:path-integral-equilibrium}的区别：上式的积分中，变量$\phi$跑遍时空中所有可能的场构型（也跑遍每个虚时间点，因此实际上我们是在对不同的\textbf{世界线}求和），而\eqref{eq:path-integral-equilibrium}的积分中变量$\phi$仅仅跑遍空间中所有可能的场构型。
 正如下一节要看到的那样，使用上式可以求解出各场算符处于不同虚时间点的松原格林函数，而\eqref{eq:path-integral-equilibrium}仅能用于计算同一时刻的平衡态关联函数。
 
 实际上，这里得到的路径积分表述和零温路径积分只差了一个Wick转动。首先，考虑到场变量在$\tau=0$和$\tau=\beta$处的边界条件，并使用分部积分法，我们有
@@ -4414,9 +4414,10 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 由$\tau=0$和$\tau=\beta$处的边界条件，上式中的全微分对作用量中的积分没有贡献，从而导出\eqref{eq:action-with-phi-pi}。
 在获得了\eqref{eq:action-with-phi-pi}之后我们会发现其形式和零温量子场论中的作用量更加接近了。
 实际上，按照\eqref{eq:action-with-phi-pi}，配分函数为
-\[
+\begin{equation}
     Z = \int \fd{[\bar{\phi}, \phi]} \exp \left( - \int_0^\beta \dd{\tau} \int \dd[D]{\vb*{r}} \left( \frac{1}{\ii} \pi(\vb*{r}, \tau) \pdv{\phi(\vb*{r}, \tau)}{\tau} + \mathcal{H} \right) \right),
-\]
+    \label{eq:path-integral-partition-function}
+\end{equation}
 与零温场论中的配分函数
 \[
     Z = \int \fd{[\bar{\phi}, \phi]} \exp \left( \ii \int \dd{t} \int \dd[D]{\vb*{r}} \left( \pi(\vb*{r}, t) \pdv{\phi(\vb*{r}, t)}{t} - \mathcal{H} \right) \right)
@@ -4430,7 +4431,30 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 又比如，两个彼此之间有相互作用的场会导致所谓的“推迟相互作用”，即某个场某一点通过影响其它场来间接地影响它本身。如果我们只关心某一个场，使用正则量子化方法处理这种问题非常困难，因为需要手动把延时放进仅含我们关心的场的哈密顿量中（很多时候，不扩充哈密顿动力学甚至根本就不能够找到合适的哈密顿量描述这样的系统！），而并没有比较自然的方法可以把其它场消除掉。
 在路径积分表述中，可以很自然地将不需要的场积掉，得到的有效作用量自然地会给出正确的延迟。
 
-% TODO：在高温下似乎可以把$\pi \pdv{\phi}{\tau}$项直接积掉，从而得到经典配分函数？
+\subsubsection{经典统计与量子统计}
+
+比较\eqref{eq:path-integral-partition-function}和经典统计中看起来也可以写成路径积分的配分函数
+\[
+    Z = \int \prod_i \dd{q_i} \dd{p_i} \exp(-\beta H) = \int \fd{q, p} \exp(-\int_0^\beta \int \dd[D]{\vb*{r}} \mathcal{H}),
+\]
+会发现两个不同：
+\begin{itemize}
+    \item 量子统计的配分函数中有$\pi \partial_\tau \phi$项，这一项也称为\textbf{Berry相位项}。这一项的出现意味着必须做虚时间积分，而不是简单地乘以$\beta$。
+    \item 量子统计的积分变量是场算符，而不是系统状态。在经典统计中“物理量”和“物理量取某些值形成的状态”基本上可以不做区分，但是量子物理中前者是算符，后者是态矢量。
+\end{itemize}
+因此，量子路径积分和经典“路径积分”的对应并不那么容易看出。
+
+第一个问题：量子统计如何退化到经典统计？我们知道高能量（能标远大于$\hbar$，但是没有出现新物理，即哈密顿量的形式可以不变）下量子理论退化为经典理论，因为对易关系中的$\hbar$可以忽略。
+正如我们所预期的那样，高温下（从而高能标下），$\beta$非常小，则Berry相位项可以略去。
+这就得到了一个经典“路径积分”。需要注意的是此配分函数仍然是以场为表象的而不是以粒子为表象的，和\autoref{sec:from-quantum-to-classical}中的经典配分函数并不相同。
+
+第二个问题：和经典“路径积分”相对应的量子理论到底是什么？
+实际上它就是
+\[
+    Z = \trace \ee^{-\beta \hat{H}} = \sum_{n_1, n_2, \ldots, n_m} \mel{n_1}{\ee^{-\Delta \tau \hat{H}}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}}}{n_3} \cdots \mel{n_{m-1}}{\ee^{-\Delta \tau \hat{H}}}{n_m}, \quad m \Delta \tau = \beta.
+\]
+之前推导的“场算符的路径积分”实际上仅仅给出了一种可能的路径积分，其积分变量是场构型；但是实际上在做“将虚时间演化分割成很多小片，每个小片插入完备性条件”时，可以不使用相干态为表象；此时照样能够有路径积分，一条世界线就是$\tau=\Delta\tau$时系统状态$\ket{n_1}$，$\tau=2\Delta\tau$时系统状态$\ket{n_2}$这样。
+这种类型的路径积分也许不便手工计算，但是数值计算有时可能会用到。
 
 \subsubsection{从配分函数导出松原格林函数}
 
@@ -4467,6 +4491,7 @@ $\eta$对玻色子取$1$，对费米子取$-1$，它的出现来自于我们交�
 \subsubsection{粒子和场的互换}
 
 % TODO
+
 
 直觉上看，粒子的集体行为就好像一个场，例如原子的集体振动形成了声子场。这个场的激发当然是某种新的粒子，事实上它就是前一种粒子的元激发。
 
