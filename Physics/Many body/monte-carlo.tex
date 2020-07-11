@@ -121,7 +121,7 @@
 需要注意的是实际上$N$不能取无穷大，因此我们希望平衡之后$\{\mathcal{C}_i\}$尽可能随机，即自相关要足够小。
 马尔科夫链普遍具有这样的性质：由于每一时刻的状态只和前一时刻有关，后一时刻和前一时刻的分布不是独立的，但是随着时间推移，自相关会指数衰减，即
 \begin{equation}
-    A(\Delta t) \sim \ee^{- \Delta t / \tau}.
+    A(\Delta t) = \frac{\expval*{O(t+\Delta t) Q(t)} - \expval*{O(t)}^2}{\expval*{O(t)^2} - \expval*{O(t)}^2} \sim \ee^{- \Delta t / \tau}.
 \end{equation}
 如果我们需要抽取$N$个彼此统计无关的平衡态构型作为样本计算期望值，那么计算一个期望值的时间复杂度就是
 \begin{equation}
@@ -190,33 +190,36 @@
 特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
 在计算配分函数时，量子的平衡态统计系统和经典的不同之处在于：
 \begin{itemize}
-    \item 配分函数的$\ee$指数上并不是简单的$\beta$乘以哈密顿量，而是哈密顿量加上一个$\pi \dot{\phi}$项以后对虚时间做积分，积分限为$0$到$\beta$。（在$\beta$很小——也即，在高温极限下——这个积分当然就等于哈密顿量乘以$\beta$）
+    \item 配分函数的$\ee$指数上并不是简单的$\beta$乘以哈密顿量，而是哈密顿量加上一个$\pi \partial_\tau \phi$项以后对虚时间做积分，积分限为$0$到$\beta$。（在$\beta$很小——也即，在高温极限下——这个积分当然就等于哈密顿量乘以$\beta$）
     \item “每个格点上的粒子具有确定的状态”未必是能量本征态，换句话说偏好基未必是能量本征态。
+    \item 计算任务的多样化：可能要计算系综平均值\eqref{eq:classical-expectation}，实际上就是要计算
+    \begin{equation}
+        \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}},
+        \label{eq:quantum-expectation}
+    \end{equation}
+    也可能要计算基态能量，由于基态能量最低，如果基态不简并则很容易验证它就是
+    \begin{equation}
+        \ket{\Psi_0} = \lim_{\tau \to \infty} \ee^{-\tau \hat{H}} \ket{\Psi},
+        \label{eq:ground-state-infty}
+    \end{equation}
+    其中$\ket{\Psi}$是任意一个态矢量。
 \end{itemize}
-由于这两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
-如果要使用\eqref{eq:classical-expectation}，实际上就是要计算
-\begin{equation}
-    \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}}.
-    \label{eq:second-quantization-expectation}
-\end{equation}
-依照定义计算上式计算量非常大；当然，可以首先将哈密顿量对角化，但对复杂的系统这基本上不可能完成。
-归根到底，量子力学允许态做线性叠加的特点意味着系统可以取的状态相比于经典力学不成比例得多，因此只能够根据系统的特征，对每一类问题采取不同的手段，依据不同的系统的特殊性把它们划归到某个经典蒙特卡洛问题上。
+由于前两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
+例如，如果要计算系综期望值，使用\eqref{eq:classical-expectation}依照定义计算上式计算量非常大；当然，可以首先将哈密顿量对角化，但对复杂的系统这基本上不可能完成。
+归根到底，量子力学允许态做线性叠加的特点意味着系统可以取的状态相比于经典力学不成比例得多，因此不能够简单地将经典蒙特卡洛的方法推广到量子蒙特卡洛，而只能尝试将量子问题化归到一个经典蒙特卡洛采样问题上。
 
-于是我们回顾固体物理中通常会出现什么样的问题。
-一般来说哈密顿量可以写成自由哈密顿量加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，即我们有
-\begin{equation}
-    \hat{H} = \hat{H}_0 + \hat{H}_I, \quad \hat{H}_I = - W \sum_{i} \left( \hat{O}^{(i)} \right)^2.
-\end{equation}
-这里我们假定已经将$\hat{H}_I$做了对角化，即在单粒子表象$\{\ket*{i}\}$下将它分解成一系列单粒子可观察量的平方之和。
+不同的计算任务还要求不同的算法。例如\eqref{eq:quantum-expectation}对应的问题称为\textbf{有限温度量子蒙特卡洛（Finite Temperature Quantum Monte Carlo, FTQMC）}，\eqref{eq:ground-state-infty}对应的问题称为\textbf{投影量子蒙特卡洛（Projector Quantum Monte Carlo, PQMC）}。
+从\eqref{eq:quantum-expectation}和\eqref{eq:ground-state-infty}中可以看出，无论哪种量子蒙特卡洛，很大一部分工作是要计算$\ee^{-\beta \hat{H}}$，实际上就是计算虚时间路径积分。
+我们将在\autoref{sec:worldline-mc}中显式地写出这个路径积分的表达式，但是它的用处不局限在\autoref{sec:worldline-mc}中。
 
-\section{世界线蒙特卡洛方法}
+\section{世界线蒙特卡洛方法}\label{sec:worldline-mc}
 
 设哈密顿量可以被分解成
 \begin{equation}
     \hat{H} = \hat{H}_1 + \hat{H}_2,
 \end{equation}
 其中$\hat{H}_1$和$\hat{H}_2$分别对应两个比较容易求解的问题。当然也可以把$\hat{H}$分解成更多哈密顿量之和，处理起来是类似的。
-考虑到以下公式：
+考虑到以下公式（\textbf{Trotter-Suzuki近似}）：
 \begin{equation}
     \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}} + \frac{\Delta \tau}{2} \underbrace{\int_0^\beta \dd{\tau} \ee^{-(\beta-\tau) \hat{H}} \comm*{\hat{H}_1}{\hat{H}_2} \ee^{-\tau \hat{H}}}_{\hat{A}} + \bigO(\Delta \tau^2), \quad m \Delta \tau = \beta,
 \end{equation}
@@ -231,7 +234,7 @@
 于是如果
 % TODO 误差分析
 就能够有小到$\bigO(\Delta \tau^2)$的误差。
-代入\eqref{eq:second-quantization-expectation}，就得到
+代入\eqref{eq:quantum-expectation}，就得到
 \[
     \expval{O} = \frac{\trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}{\trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}.
 \]
@@ -252,17 +255,48 @@
 套用\eqref{eq:classical-expectation}就计算出了$\expval{O}$。
 \eqref{eq:worldline-weight}中的一系列矩阵元连乘实际上就是离散化的路径积分，一组这样的连乘对应着一条$\tau=i \Delta \tau$时状态为$\ket{n_i}$的虚时间世界线，因此这种方法称为\textbf{世界线蒙特卡洛}。
 
-比较糟糕的是，\eqref{eq:worldline-weight}中的诸矩阵元并不能够保证是正数，因此计算出来的路径积分权重\eqref{eq:worldline-weight}也不能够保证是正数。
+比较糟糕的是，\eqref{eq:worldline-weight}中的诸矩阵元并不能够保证是正数，甚至不能够保证是实数，因此计算出来的路径积分权重\eqref{eq:worldline-weight}也不能够保证是正数甚至是实数。
 因此，实际上我们并不能够得到一个真正的概率分布。
 这可能导致蒙特卡洛算法不收敛，或者虽然收敛但由于分母非常小（正负抵消）而精度很差。
 这就是所谓的\textbf{符号问题}——$W(n)$的正负号不定导致模拟困难。
 
-\section{行列式蒙特卡洛方法}
+\section{辅助场蒙特卡洛方法}
 
-我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:second-quantization-expectation}是可以用的。
-我们照惯例做$\ee$指数的离散化：
+为了解决世界线蒙特卡洛方法中的问题，我们尝试把路径积分转化成稍微容易计算一些的形式。
+我们回顾固体物理中通常会出现什么样的问题。
+一般来说哈密顿量可以写成自由哈密顿量加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，即我们有
+\begin{equation}
+    \hat{H} = \hat{H}_0 + \hat{H}_I, \quad \hat{H}_I = - W \sum_{i} \left( \hat{O}^{(i)} \right)^2.
+    \label{eq:two-fermions-hamiltonian}
+\end{equation}
+这里我们假定已经将$\hat{H}_I$做了对角化，即在单粒子表象$\{\ket*{i}\}$下将它分解成一系列单粒子可观察量的平方之和。
+
+虚时间路径积分实际上就是要计算一个$\ee$指数矩阵的迹。如果哈密顿量是自由的，也就是说，能够写成
+\[
+    \hat{H} = \hat{H}_0 = \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j
+\]
+的形式，那么这就比较容易，因为
+\begin{equation}
+    \trace(\ee^{-\beta \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j}) = \det(1 + \ee^{-\beta \vb{A}}).
+\end{equation}
+很容易通过对角化验证上式。实际上，更加一般的，我们有
+\begin{equation}
+    \trace(\ee^{-\beta \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{-\beta \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j}) = \det(1 + \ee^{-\beta \vb{A}}\ee^{-\beta \vb{B}}),
+\end{equation}
+甚至更一般的情况。
+总之，自由费米子哈密顿量的路径积分可以很容易地将费米子算符积掉，留下一个（可以使用标准的线性代数方法计算的）行列式。
+那么，我们就需要设法将$\hat{H}_I$转化为单粒子算符的形式，也就是说要引入一个辅助场，让费米子之间的相互作用等效为费米子和这个辅助场的相互作用。
+由于我们只讨论二费米子过程\eqref{eq:two-fermions-hamiltonian}，可以使用H-S变换引入这个辅助场，然后积掉费米子自由度。
+
+我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:quantum-expectation}是可以用的。
+和\autoref{sec:worldline-mc}中一样，我们做$\ee$指数的离散化，使用$n$标记离散的虚时间，使用$\vb*{i}$标记格点坐标：
 \[
     \ee^{-\beta \hat{H}} = \prod_{i=1}^{\beta / \Delta t} \ee^{-\Delta \tau \hat{H}}.
 \]
+
+我们有离散H-S变换
+\begin{equation}
+    \ee^{\Delta \tau W O^2} = \sum_{l = \pm 1, \pm 2} \gamma(l) \ee^{\sqrt{\Delta \tau W} \eta(l) O} + \bigO(\Delta \tau^3),
+\end{equation}
 
 \end{document}
