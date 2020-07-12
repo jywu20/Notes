@@ -1,0 +1,138 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\title{统计推断}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{统计推断的基本概念}
+
+我们常常需要面对这样的问题：设有一个在我们关心的范围内不随时间变化的随机变量（称为\concept{总体}）$\mathcal{X}$，我们并不完全知道这个随机变量的形式。
+现在我们获知了和$\mathcal{X}$有关的一系列事件$X$（称为\concept{证据}），要通过它们来推知关于$\mathcal{X}$的一些信息，这个过程就是\concept{统计推断}。
+例如，证据可以是反复运行$\mathcal{X}$而获得的一组取值
+\begin{equation}
+    \mathcal{D} = \{X_i\},
+\end{equation}
+这称为\concept{样本}，获得取值的方式称为\concept{采样}）。
+
+\subsection{常见的统计推断任务}
+
+常见的统计推断任务包括
+\begin{itemize}
+    \item \concept{假设检验}，即从一系列证据出发，判断是否应该认为关于$\mathcal{X}$的某个命题成立；
+    \item \concept{概率估计}，即判断某个命题为真的概率有多大，这和假设检验有非常显然的联系；
+    \item \concept{参数估计}，即判断与总体相关的一些参数的取值（或者取值的概率分布）；
+    \item \concept{相关性分析}，这是在$\mathcal{X}$有多个分量时使用的，即分析这些变量之间的关系；
+\end{itemize}
+还有许许多多其它的任务。
+
+从样本出发做统计推断的一个特殊的例子是
+\begin{equation}
+    \mathcal{X} = (\vb{x}, y),
+\end{equation}
+$\vb{x}$是一组数据（通常称为\concept{特征}），$y$是和这组数据有关的另一个数据（通常称为\concept{标签}），此时的统计推断就是\concept{机器学习}。
+如果直接从样本分析$p(\vb{x}, y)$的特征，就是\concept{生成模型}，而如果从样本分析$p(y|\vb{x})$的特征，那就是\concept{判别模型}。两者之间有着这样的关系：
+\begin{equation}
+    p(y | \vb{x}) = \frac{p(\vb{x}, y)}{p(\vb{x})} = \frac{p(\vb{x}, y)}{\sum_{y'} p(\vb{x}, y')}, 
+\end{equation}
+这里使用的记号需要特殊说明一下：$p(y | \vb{x})$实际上是“在某次运行$\mathcal{X}$，得到的特征是$\vb{x}$的条件下，发现其标签为$y$”的概率的简写，$p(\vb{x}, y)$同理。
+为了简洁我们接下来在不至于混淆时不强调“随机变量”和“随机变量的可能取值”的区别。
+
+\subsection{模型}
+
+当然，既然$\mathcal{X}$是自然界中一系列随机性过程给出的输出，我们总是可以找到一系列数目往往非常大的随机变量$\alpha_1, \alpha_2, \ldots, \alpha_N$，它们决定了$\mathcal{X}$，即
+\[
+    \mathcal{X} = F(\alpha_1, \alpha_2, \ldots, \alpha_N).
+\]
+我们可以把物理定律当成某种“计算过程”，向它输入一些事件，就可以输出一个$\mathcal{X}$的值。
+我们当然不可能使用如此大量的随机变量来描述$\mathcal{X}$，即使技术上可行，这也没有提供给我们任何有价值的信息，因为这相当于做了一次虚拟仿真实验。
+但，如果我们能够找到某个事件$H$和一个随机变量$\theta$（它可能也含有大量的分量，但无论如何比$\{\alpha\}$简洁），使得
+\[
+    p(\mathcal{X} = C | H, \theta) = f(C ; \theta), 
+\]
+且$p(H)$非常大，那就可以大大简化我们要处理的问题，并且提供给我们一个“因为所以”式的\emph{解释}——因为$\theta$取了某些值，所以$\mathcal{X}$取了这个特定的值。
+我们称$H$为\concept{模型假设}，$f(\mathcal{X};\theta)$为\concept{模型}，$\theta$为\concept{参数}。
+在$p(H)$非常大（以至于可以认为$H$是确凿无疑的一个命题）时，我们就有
+\begin{equation}
+    p(\mathcal{X} = C | \theta) = f(C ; \theta).
+\end{equation}
+模型假设是否正确可以通过假设检验来判断，也可以通过专家知识给出。
+
+\section{频率学派}
+
+\end{document}

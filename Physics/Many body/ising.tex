@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{autobreak}
 \usepackage{tikz}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
@@ -37,6 +38,7 @@
 \newcommand*{\normalorder}[1]{: #1 :}
 \newcommand*{\pair}[1]{\langle #1 \rangle}
 \newcommand*{\fd}[1]{\mathop{}\!\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -52,6 +54,9 @@
 \tikzstyle ray=[directed, thick]
 \tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
 
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
 \title{伊辛模型和统计场论}
 \author{吴何友}
 
@@ -64,7 +69,7 @@
 \section{伊辛模型的定义}\label{sec:ising-def}
 
 考虑一个$d$维空间中的晶格，共有$N$个格点。每个格点上有一个自旋。我们照惯例采用$z$方向的自旋来标记每个格点的状态，记之为$s_i$而省略$z$下标。
-在\textbf{伊辛模型}中，假定：
+在\concept{伊辛模型}中，假定：
 \begin{enumerate}
     \item 格点$i$处的自选取值为$\pm 1$（具体值其实不重要，因为它们在尺度变换之下可以改变；关键是，自旋只有两个取值）；
     \item 只有相邻格点会发生相互作用；
@@ -78,7 +83,7 @@
 \end{equation}
 这里我们略去了第一项中的常数，把它们全部归入磁场中。
 
-显然，在$J>0$且绝对值很大时，自旋倾向于同向排列，即形成一个\textbf{铁磁序}；而当$J<0$而绝对值很大时，自旋倾向于一上一下地排列，形成一个\textbf{反铁磁序}。
+显然，在$J>0$且绝对值很大时，自旋倾向于同向排列，即形成一个\concept{铁磁序}；而当$J<0$而绝对值很大时，自旋倾向于一上一下地排列，形成一个\concept{反铁磁序}。
 
 有限温下，我们写出\eqref{eq:ising-energy}对应的配分函数和热力学自由能：
 \[
@@ -495,7 +500,7 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
 直接从定义出发得到关于$m(\vb*{x})$的有效理论的方法见\autoref{sec:ab-initio-effective-theory}，本节讨论怎样使用金斯堡-朗道方法，从对称性出发得到一个有效理论。
 
 临界点附近有尺度不变性，由于$m(\vb*{x})$是将$\{s_i\}$粗粒化之后得到的结果，在临界点附近可以放心地只保留$m(\vb*{x})$来描述系统状态，即只使用此局域序参量来描述系统状态。
-在晶格为正方晶格时，一个$d=2, 3$维的有效理论应该满足：
+在晶格为正方晶格（晶格常数为$a$）时，一个$d=2, 3$维的有效理论应该满足：
 \begin{enumerate}
     \item 首先伊辛模型是局域的，所以总是可以写出
     \[
@@ -523,6 +528,9 @@ $\mathbb{Z}_2$对称性意味着$f$的每一项都应该是偶数次项，从而
 由于常数项只会让配分函数多一个常数因子，已经略去。
 没有出现形如$\vb*{a} \cdot \grad{m}$这样的项，因为这会引入一个特殊的空间方向。没有取太高阶的$m^n$项是因为$m$并不是很大，只需要前几项；没有取太高阶的导数项或者$(\grad{m})^n$项是因为这些项的量纲很快会超出$d$的范围，从而这些项在重整化下是无关的。
 很容易发现\eqref{eq:gl-free-energy}实际上就是$\phi^4$理论，一个常见的玩具模型。
+
+需要强调只有在\emph{临界点附近}才有\eqref{eq:gl-free-energy}适用，因为只有在这里才能够只使用一个体系属于的普适类的信息就描述一个体系。
+我们将在\autoref{sec:ab-initio-effective-theory}中显式地证明这一点。
 
 \subsubsection{鞍点近似}
 
@@ -600,7 +608,14 @@ Stratonovich变换}
 \begin{equation}
     E = - \vb{B}^\top \vb{s} - \frac{1}{2} \vb{s}^\top \vb{J} \vb{s}, 
 \end{equation}
-其中$\vb{B}$的每个元素的值都是$B$，而$\vb{J}$是对称矩阵，只在$i$和$j$代表相邻格点时$J_{ij}$取值$J$，其余为零，则
+其中$\vb{B}$的每个元素的值都是$B$，而$\vb{J}$是对称矩阵，只在$i$和$j$代表相邻格点时$J_{ij}$取值$J$，其余为零，即实际上
+\begin{equation}
+    J_{ij} = J(\vb{r}_i - \vb{r}_j) = \begin{cases}
+        J, \quad &\pair{i, j} \\
+        0, \quad &\text{otherwise},
+    \end{cases}
+\end{equation}
+则
 \[
     Z = \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s}).
 \]
@@ -673,17 +688,61 @@ Stratonovich变换}
 
 将\eqref{eq:action-of-phi}做级数展开，保留前两阶，并略去常数项，有
 \[
-    \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^2 + + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^4.
+    \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^2 + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^4.
+\]
+我们只讨论弱磁场的情况（似乎也没有讨论特别强的磁场的必要，因为强磁场下肯定磁化了，基本上不会有太大涨落），并且，由于我们关心临界点附近的行为，假定$\phi$也不大，从而$\phi^3 B$项应当被略去，那么就有
+\[
+    \begin{split}
+        \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left( \sum_{j=1}^N J_{ij} \phi_j \right)^2 - \beta^2 B \sum_{i, j=1}^N J_{ij} \phi_j \\
+        + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(\sum_{j=1}^N J_{ij} \phi_j\right)^4 + \bigO(B^2, \phi^3 B, \phi^6),
+    \end{split}
 \]
 对$\phi_i$做离散傅里叶变换，并照固体物理的惯例施加一个周期性边界条件，有
 \[
-    \phi_i = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} \phi_{\vb*{k}},
+    \phi_i = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} \phi_{\vb*{k}}, \quad J_{\vb*{k}} = \frac{1}{\sqrt{N}} \sum_i \ee^{-\ii \vb*{k} \cdot \vb*{r}_i} J(\vb*{r}_i),
 \]
+由于它们均为实场，我们有
+\[
+    \phi_{\vb*{k}} = \phi_{-\vb*{k}}^*, \quad J_{\vb*{k}} = J_{-\vb*{k}}^* = J_{-\vb*{k}}.
+\]
+对各项做傅里叶变换可以得到
+\begin{align}
+    \begin{autobreak}
+        \tilde{S} = \frac{\beta}{2} \sqrt{N} \sum_{\vb*{k}} J_{\vb*{k}} \phi_{-\vb*{k}} \phi_{\vb*{k}} 
+        - \frac{1}{2} \beta^2 N \sum_{\vb*{k}} J_{\vb*{k}} J_{-\vb*{k}} \phi_{\vb*{k}} \phi_{-\vb*{k}} 
+        - \beta^2 B N \phi_{\vb*{k}=0} J_{\vb*{k}=0}
+        + \frac{1}{12}\beta^4 N \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} \delta_{\vb*{k}_1+\vb*{k}_2 + \vb*{k}_3 + \vb*{k}_4, 0} J_{\vb*{k}_1} J_{\vb*{k}_2} J_{\vb*{k}_3} J_{\vb*{k}_4} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} 
+        + \bigO(B^2, \phi^3 B, \phi^6).
+    \end{autobreak}
+    \label{eq:discrete-momentum-action}
+\end{align}
 
+下面我们做一个截断：将太大的动量（从而，太小的长度尺度）去掉，只留下长波行为。严格来说应该把高动量模式积掉，但我们暂且先直接丢弃高动量模式，获得一个一阶近似。
+依照$J_{\vb*{r}}$的定义，可以计算出
+\[
+    J_{\vb*{k}} = \frac{1}{\sqrt{N}} 2 J \sum_{i=1}^d \cos(k_i a) = \frac{1}{\sqrt{N}} 2 J \left( d - \frac{a^2 \vb*{k}^2}{2} + \bigO(\vb*{k}^4) \right),
+\]
+代入\eqref{eq:discrete-momentum-action}，就得到
+\begin{align*}
+    \begin{autobreak}
+        \tilde{S} = - 2 \beta^2 B \sqrt{N} J d \phi_{\vb*{k}=0}
+        + \frac{\beta}{2} \sqrt{N} \sum_{\vb*{k}} J_{\vb*{k}} (1 - \sqrt{N} \beta J_{-\vb*{k}}) \phi_{-\vb*{k}} \phi_{\vb*{k}} 
+        + \frac{1}{12}\beta^4 N \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} \delta_{\vb*{k}_1+\vb*{k}_2 + \vb*{k}_3 + \vb*{k}_4, 0} J_{\vb*{k}_1} J_{\vb*{k}_2} J_{\vb*{k}_3} J_{\vb*{k}_4} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} 
+        + \bigO(B^2, \phi^3 B, \phi^6, \vb*{k}^2 \phi^2).
+    \end{autobreak}
+\end{align*}
+使用以下粗粒化方案
+\[
+    \frac{1}{V} \sum_{\vb*{k}} \longrightarrow \frac{1}{(2\pi)^3} \int \dd[3]{\vb*{k}},
+\]
+并注意到
+\[
+    V = N a^d,
+\]
 
 \section{路径积分和微扰论}\label{sec:path-integral}
 
-为了和场论中的记号更为接近，我们设
+为了和场论中的记号更为接近，我们统一设
 \[
     m(\vb*{x}) \longrightarrow \phi(\vb*{x}),
 \]
@@ -692,6 +751,7 @@ Stratonovich变换}
     F = \int \dd[d]{\vb*{x}} \left( \frac{1}{2} \alpha_2(T) \phi^2 + \frac{1}{4} \alpha_4(T) \phi^4 + \frac{1}{2} \gamma(T) (\grad{\phi})^2 + B \phi \right)
 \end{equation}
 为自由能。
+这样做的原因一方面是表明我们正在处理一个场论问题，一方面是为了表明以上自由能实际上并不一定描述伊辛模型的物理，而是能够描写整整一个普适类的物理。
 
 \section{伊辛模型的重整化群}\label{sec:ising-rg}
 
