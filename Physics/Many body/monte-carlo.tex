@@ -191,7 +191,7 @@
 
 \section{量子蒙特卡洛概述}
 
-现在我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统。
+现在我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统，设其维数为$d$。
 特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
 在计算配分函数时，量子的平衡态统计系统和经典的不同之处在于：
 \begin{itemize}
@@ -291,7 +291,7 @@
 \end{equation}
 很容易通过对角化验证上式。实际上，更加一般的，我们有
 \begin{equation}
-    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}} \cdots),
+    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}_{\vb{s}}} \cdots),
     \label{eq:trace-to-det}
 \end{equation}
 甚至更一般的情况。
@@ -349,24 +349,38 @@
 其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
 为了简写我们引入记号
 \begin{equation}
-    \hat{U}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{- \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{-\vb{h}_\text{I}(\vb{s}_n)},
+    \hat{U}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{- \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{-\vb{h}_\text{I}(\vb{s}_n)},
 \end{equation}
 使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
 \[
-    \trace(\ee^{-\beta \hat{H}}) = \sum_{\vb{s}} C(\vb{s}) \trace \hat{U}(\beta, 0) = \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}(\beta, 0)),
+    \trace(\ee^{-\beta \hat{H}}) = \sum_{\vb{s}} C(\vb{s}) \trace \hat{U}(\beta, 0) = \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)),
 \]
 而
 \[
     \begin{aligned}
         \trace(\ee^{-\beta \hat{H}} \hat{O}) &= \sum_{\vb{s}} C(\vb{s}) \trace(\hat{O} \ee^{-\beta \hat{H}}) \\
         &= \sum_{\vb{s}} C(\vb{s}) \trace\hat{U}(\beta, 0) \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)} \\
-        &= \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}(\beta, 0)) \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)}.
+        &= \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)) \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)}.
     \end{aligned} 
 \]
 现在构造一个经典的随机现象，使得
 \begin{equation}
-    p(\vb{s}) = \frac{ C(\vb{s}) \det(1 + \vb{B}(\beta, 0))}{\sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}(\beta, 0))}, \quad \expval{O}_{\vb{s}} = \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)},
+    p(\vb{s}) = \frac{ C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}{\sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}, \quad \expval{O}_{\vb{s}} = \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)},
 \end{equation}
 并且使用标准的有限温度平衡态场论的方法计算出$\expval{O}_{\vb{s}}$（由于是自由场论，Wick定理适用），我们就可以使用\eqref{eq:classical-expectation}得到各种物理量的期望值了。
+注意$\vb{s}$实际上是一个$d+1$维的网格。这是量子统计的普遍特征：$d$维的量子系统等价于$d+1$维的经典系统，多出来的一个维度是（有限大小的）虚时间。
+
+使用生成泛函，有
+\begin{equation}
+    \expval{O}_{\vb{s}} = \eval{\pdv{\ln \trace(\ee^{\eta \hat{O}} \hat{U}(\beta, 0))}{\eta}}_{\eta=0},
+\end{equation}
+在$\hat{O}$是单体算符时，设
+\begin{equation}
+    \hat{O} = \hat{c}^\dagger \vb{A} \hat{c},
+\end{equation}
+则容易看出
+\begin{equation}
+    \expval{O}_{\vb{s}} = \trace((1 - (1+\vb{B}_{\vb{s}}(\beta, 0))^{-1}) \vb{A}).
+\end{equation}
 
 \end{document}
