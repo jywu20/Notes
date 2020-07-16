@@ -467,6 +467,7 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
         0, &\quad T > T_\text{c}, 
     \end{cases}
     \quad c \sim \abs*{T-T_\text{c}}^{-\alpha}, \quad \alpha = 0.
+    \label{eq:mf-c-divergence}
 \end{equation}
 
 \subsection{平均场理论的可靠性}
@@ -749,9 +750,116 @@ Stratonovich变换}
 并直接忽略自由能中可能的高阶项，即以
 \begin{equation}
     F = \int \dd[d]{\vb*{x}} \left( \frac{1}{2} \alpha_2(T) \phi^2 + \frac{1}{4} \alpha_4(T) \phi^4 + \frac{1}{2} \gamma(T) (\grad{\phi})^2 + B \phi \right)
+    \label{eq:free-energy-phi-4}
 \end{equation}
 为自由能。
 这样做的原因一方面是表明我们正在处理一个场论问题，一方面是为了表明以上自由能实际上并不一定描述伊辛模型的物理，而是能够描写整整一个普适类的物理。
+
+\subsection{自由场论}
+
+\subsubsection{自由场论的配分函数}
+
+本节处理只含有二次项的场论，也就是所谓的自由场论。
+
+我们将从伊辛模型的物理意义出发解释为什么要这么做。
+当$T>T_\text{c}$时，不会出现对称性自发破缺，因此只有一个基态，因此必须有$\alpha_2 > 0$，于是在场强较弱（由于\eqref{eq:free-energy-phi-4}仅仅在临界点附近适用，这个假设在接近极小值点但并不非常接近极小值点时适用），我们可以略去对极小值点的行为不重要的四次方项，而把自由能写成
+\begin{equation}
+    F[\phi(\vb*{x})] = \frac{1}{2} \int \dd[d]{\vb*{x}} (\gamma (\grad{\phi})^2 + \mu^2 \phi^2).
+    \label{eq:free-field}
+\end{equation}
+在更加接近临界点时，由于涨落变大，四次方项会变得重要起来。
+临界点处系统会呈现出一些比较奇异的行为，这些行为最好还是使用重整化群来分析。
+$T<T_\text{c}$时由于$\phi=0$不是稳定极小值点，四次方项总是重要的。
+然而，我们总是可以重新定义场：
+\[
+    \phi' = \phi - \expval{\phi},
+\]
+这样还是可以在一个稳定的极小值点附近展开自由能，并且合理地略去高阶项。
+总之，\eqref{eq:free-field}是合理的起点；我们可以先讨论这个理论，然后将$\phi^4$项作为微扰加入。
+
+我们采取标准的场论方法，考虑到\eqref{eq:free-field}具有平移不变性，我们使用傅里叶变换消去所有导数项。
+我们和之前一样施加一个周期边界条件，然后将周期性的场$\phi(\vb*{x})$切换到动量空间：
+\begin{equation}
+    \phi(\vb*{x}) = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \ee^{\ii \vb*{k} \cdot \vb*{x}} \phi_{\vb*{k}},
+\end{equation}
+则\eqref{eq:free-field}变成
+\begin{equation}
+    F[\phi_{\vb*{k}}] = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{-\vb*{k}} = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*.
+\end{equation}
+它对应的配分函数就是（我们略去了任何归一化常数，本文不计算熵，所以这不会有什么问题）
+\[
+    \begin{aligned}
+        Z &\sim \prod_{\vb*{k}} \int \dd{\phi_{\vb*{k}}} \dd{\phi_{\vb*{k}}^*} \exp(-\beta \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*) \\
+        &= \prod_{\vb*{k}} \int \dd{\phi_{\vb*{k}}} \dd{\phi_{\vb*{k}}^*} \exp(- \frac{\beta}{2V} \sum_{\vb*{k}} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*) ,
+    \end{aligned}
+\]
+需要注意的是在实空间中配分函数仅仅对$\phi$一个实场做积分，则动量空间中也只应该对一个场做积分，而不是两个场。
+这是正确的，因为$\phi_{\vb*{k}}$和$\phi_{\vb*{k}}^*$之间存在以下约束关系
+\[
+    \phi_{\vb*{k}} = \phi_{-\vb*{k}}^*,
+\]
+因此如果我们设定$\phi_{\vb*{k}}$自由变动，$\phi_{\vb*{k}}^*$就不能自由变动。显然，$\ee$指数是$\abs*{\phi_{\vb*{k}}}$的函数，而$(\phi_{\vb*{k}}, \phi_{\vb*{k}}^*)$的自由度也可以看成$\abs*{\phi_{\vb*{k}}}$和一个相角的自由度，我们选定前者为积分变量，那么后者就不能自由变动。
+因此我们有
+\[
+    Z \sim \prod_{\vb*{k}} \int \dd{\abs*{\phi_{\vb*{k}}}} \exp(- \frac{\beta}{2V} \sum_{\vb*{k}} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*).
+\]
+使用高斯积分，就得到（略去常数因子）
+\begin{equation}
+    Z = \prod_{\vb*{k}} \sqrt{\frac{2\pi T V}{\gamma k^2 + \mu^2}}.
+\end{equation}
+自由能为
+\begin{equation}
+    F = - T \ln Z = - \frac{T}{2} \sum_{\vb*{k}} \ln(\frac{2\pi V T}{\gamma k^2 + \mu}) = - \frac{V T}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \ln(\frac{2\pi V T}{\gamma k^2 + \mu}).
+\end{equation}
+这个自由能不具有可加性，这当然是因为我们计算配分函数时略去了必要的含有$V$的因子。
+但既然本文只关心单一的热力学系统，是不是具有可加性也无关紧要。
+
+\subsubsection{自由场论的物理量}
+
+本节计算一些常见的物理量。需要注意的是，仅仅靠对称性分析不能够确定可能随着温度变化的系数$\gamma$、$\mu$等具体有多大。
+本节只是演示，所以我们首先在$T > T_\text{c}$下工作，并将使用比较任意的参数安排
+\begin{equation}
+    \mu^2 = T - T_\text{c}, \quad \gamma = \const.    
+\end{equation}
+$\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这一说法则没有任何支持，因此以上参数安排未必是伊辛模型的参数，但我们姑且接受它。
+
+首先计算单位体积的等容热容，即
+\begin{equation}
+    c = - \frac{T}{V} \pdv[2]{F}{T} = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( 1 - \frac{2T}{\gamma k^2 + \mu^2} + \frac{T^2}{(\gamma k^2 + \mu^2)^2} \right).
+\end{equation}
+第一项是能量均分定理的结果：如果我们认为$\mu$也是常数，则能量均分定理适用，于是导致第一项；第二、三项是$\mu$随着温度可以发生变化的结果。
+我们来对这两项做尺度分析。首先
+\[
+    \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{T}{\gamma k^2 + \mu^2} \sim \int_0^\Lambda \dd{k} \frac{k^{d-1}}{\gamma k^2 + \mu^2} \sim \begin{cases}
+        \frac{1}{\mu}, \quad &d=1, \\
+        \ln \Lambda, \quad &d=2, \\
+        \Lambda^{d-2}, \quad &d>2,
+    \end{cases}
+\]
+这里我们引入了一个动量截断$\Lambda$，发现在$d=1$时热容不会出现任何发散；$d\geq 2$时热容会发散，这当然是合理的，因为$\Lambda$不能真的取到无穷大——$\phi^4$理论是伊辛模型粗粒化之后的结果，不能够简单地认为是在任意高的动量尺度上都适用的理论。
+一个自然的选择是
+\[
+    \Lambda \sim \frac{1}{a}.
+\]
+类似地，分析第三项，有
+\[
+    \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{T^2}{2(\gamma k^2 + \mu^2)^2} \sim \int_0^\Lambda \dd{k} \frac{k^{d-1}}{(\gamma k^2 + \mu^2)^2} \sim \begin{cases}
+        \mu^{d-4}, \quad &d<4, \\
+        \ln \Lambda, \quad &d=4, \\
+        \Lambda^{d-4}, \quad &d>4,
+    \end{cases}
+\]
+它在$d \geq 4$时发散。
+
+我们假定以上结果在非常接近临界点的地方也适用，那么就会发现在$d < 4$时，
+\begin{equation}
+    c \sim \frac{1}{\abs*{T - T_\text{c}}^{\alpha}}, \quad \alpha = \frac{d-4}{2}.
+    \label{eq:t-tc-c-divergence}
+\end{equation}
+这和\eqref{eq:mf-c-divergence}不一致，后者认为$\alpha = 0$。
+虽然\eqref{eq:t-tc-c-divergence}仍然是不可靠的（它建立在$\mu$和平均场理论中一致，而$\gamma$为常数的前提上），它还是展示了和平均场理论不同的行为。
+我们由此看到为什么平均场理论不可靠——对很多系统，仅仅考虑配分函数的鞍点是不够精确的。
+上面的结果也暗示，$d=4$和$d=2$是系统行为发生很大变化的两个维数。
 
 \section{伊辛模型的重整化群}\label{sec:ising-rg}
 

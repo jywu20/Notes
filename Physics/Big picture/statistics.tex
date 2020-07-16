@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{ulem}
 \usepackage{tikz}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
@@ -30,6 +31,7 @@
 \newcommand*{\const}{\mathrm{const}}
 \newcommand*{\comment}{\paragraph{注记}}
 \newcommand*{\fd}[1]{\mathcal{D}{#1}}
+\newcommand*{\cexpval}[1]{\langle \langle #1 \rangle \rangle}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -2385,8 +2387,12 @@ $L$趋于无穷大时出现了不止一个普适类，这就表明在不同的�
 对称性自发破缺会让系统变得更加有序（因为此时对系统做对应的操作之后系统会发生改变，即系统的构型能够传递更多信息），称更无序的相中恒为零、在更有序的相中有非零取值的量为\textbf{序参量}。
 序参量一定是存在的，因为更有序的相既然发生了对称性破缺，应当需要更多的参数来标记。（还是以墨西哥草帽为例，需要一个额外的参量来表示系统位于帽子下陷位置的哪一点）
 
-% TODO：朗道-金斯堡理论，写出关于序参量的低能有效理论
-% 需要注意的是朗道-金斯堡理论中描述系统状态的可能不仅仅是序参量，还可以包括一些其它自由度
+容易证明，在临界点附近，具有同样的对称性（即在特定变换下变化方式一样）的序参量之间有正比关系。
+这也就意味着实际上序参量的选择具有很大的任意性。
+例如，为了一些原因，我们可以引入一个辅助场$\psi$，把系统中某种场$\phi$的自相互作用转变为$\phi$和$\psi$的相互作用（对两体相互作用而言，这就是Hubbard–Stratonovich变换），而如果能够适当选择辅助场，我们可以让$\psi$成为序参量，并积掉所有其它的场，从而得到一个临界点附近的、仅仅关于序参量的有效理论。
+有时可能会碰到其它场无法积掉的情况，此时就会得到临界点附近的、同时含有序参量和其它场的有效理论。
+视具体情况而定，我们可以获得临界点附近的主要模式（序参量，以及可能的其它场）以及对称性，从而写出关于序参量（或者还有别的变量的）的低能有效理论，这就是\textbf{金斯堡-朗道理论}。
+
 % TODO：平均场理论就是只考虑最可几位形
 
 也有一些相变并不涉及对称性的变化，此时就不能够使用序参量来表征相变。例如水的气液相变和有外磁场的伊辛模型的铁磁区自旋顺着磁场和逆着磁场的相变就是一个典型例子。
@@ -2722,9 +2728,37 @@ $C$正比于$\ln Z$，而彼此独立的系统的$\ln Z$具有可加性，因此
 \]
 我们定义
 \begin{equation}
-    \langle \langle A_1 A_2 \cdots A_n \rangle \rangle = \frac{\partial^n F}{\partial J_1 \partial J_2 \cdots J_n},
+    \cexpval{A_1 A_2 \cdots A_n} = \frac{\partial^n F}{\partial J_1 \partial J_2 \cdots J_n},
 \end{equation}
-则% TODO
+称它们为\textbf{联通（connected）关联函数}或\textbf{累积量（cumulant）}（这是统计学上的术语）。
+联通关联函数可以直接使用自由能求导并乘上某个系数计算出来。
+可以证明一个$n$点关联函数可以写成$n$点、$n-1$点、……联通关联函数的函数。
+通过展开$\ln Z$的导数，我们得到
+\begin{equation}
+    \begin{bigcase}
+        \cexpval{\phi} &= \expval*{\phi}, \\
+        \cexpval{\phi_1 \phi_2} &= \expval*{\phi_1 \phi_2} - \expval*{\phi_1} \expval*{\phi_2}, \\
+        \cexpval{\phi_1 \phi_2 \phi_3} &= \expval*{\phi_1 \phi_2 \phi_3} - \expval*{\phi_1 \phi_2} \expval*{\phi_3} - \expval*{\phi_1 \phi_3} \expval*{\phi_2} - \expval*{\phi_2 \phi_3} \expval*{\phi_1} + 2\expval*{\phi_1} \expval*{\phi_2} \expval*{\phi_3}, \\
+        \ldots
+    \end{bigcase}
+\end{equation}
+反过来，我们有
+\begin{equation}
+    \begin{bigcase}
+        \expval*{\phi} &= \cexpval{\phi}, \\
+        \expval*{\phi_1 \phi_2} &= \cexpval{\phi_1 \phi_2} + \cexpval{\phi_1} \cexpval{\phi_2}, \\
+        \expval*{\phi_1 \phi_2 \phi_3} &= \cexpval{\phi_1 \phi_2 \phi_3} + \cexpval{\phi_1 \phi_2} \cexpval{\phi_3} + \cexpval{\phi_1 \phi_3} \cexpval{\phi_2} + \cexpval{\phi_2 \phi_3} \cexpval{\phi_1} + \cexpval{\phi_1} \cexpval{\phi_2} \cexpval{\phi_3}, \\
+        \ldots
+    \end{bigcase}
+\end{equation}
+通过数学归纳法可以证明更加一般的形式：
+\begin{equation}
+    \begin{aligned}
+        \expval*{\phi_1 \phi_2 \cdots \phi_n} &= \cexpval{\phi_1 \phi_2 \cdots \phi_n} + \sum_{i} \cexpval{\phi_1 \cdots \widehat{\phi_i} \cdots \phi_n} \cexpval{\phi_i} \\
+        &+ \sum_{i < j} \cexpval{\phi_1 \cdots \widehat{\phi_i} \cdots \widehat{\phi_j} \cdots \phi_n} \cexpval{\phi_i \phi_j} + \cdots + \expval*{\phi_1} \expval*{\phi_2} \cdots \expval*{\phi_n}.
+    \end{aligned}
+\end{equation}
+其中，一连串算符的乘积中将一个算符戴上尖帽子$\widehat{\ }$表示这个算符不参与乘法运算，如$\phi_1 \widehat{\phi_2} \phi_3$表示$\phi_1 \phi_3$，$\phi_2$不出现。
 
 以上结果建立在认定内能就是$\expval*{\hat{H}}$的基础上；如果内能的定义有变，则需要使用$\expval*{\hat{H}} - TS$代替所有$F$。
 采用和\autoref{sec:head-work-energy-explained}一样的记号，设
