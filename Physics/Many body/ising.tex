@@ -14,6 +14,7 @@
 \usepackage{physics}
 \usepackage{autobreak}
 \usepackage{tikz}
+\usepackage{tikz-feynhand}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
 
@@ -104,7 +105,10 @@
 这样写出的$F[m(\vb*{x})]$中的各个常数都是没有确定的，要确定这些常数肯定需要从\eqref{eq:ising-energy}出发严格计算。
 这些使用统计场论处理问题的方式见\autoref{sec:ising-effective-field}和\autoref{sec:ising-rg}。
 
-\section{平均场处理方法}
+最后，我们分析伊辛模型的对称性。容易看出它具有格点平移和旋转对称性，以及自旋翻转对称性$Z^2$。
+前两个对称性在$a \to 0$时变成连续对称性，但$Z^2$对称性始终是离散的。
+
+\section{平均场处理方法}\label{sec:mean-field-ing}
 
 \subsection{均匀系统}
 
@@ -490,6 +494,7 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
 % TODO:第二个原因
 
 消除第三个原因的尝试则要求我们更加精确地考虑怎么样对系统做粗粒化，这也就引出了\autoref{sec:ising-effective-field}。
+实际上，在一个允许空间上存在磁化强度的起伏的平均场理论（如\autoref{sec:free-theory}）中，我们可以很容易地分析本节所用的完全均匀的平均场理论何时失效（见\autoref{sec:when-mf-failed}）。
 
 \section{伊辛模型的有效场论}\label{sec:ising-effective-field}
 
@@ -755,11 +760,11 @@ Stratonovich变换}
 为自由能。
 这样做的原因一方面是表明我们正在处理一个场论问题，一方面是为了表明以上自由能实际上并不一定描述伊辛模型的物理，而是能够描写整整一个普适类的物理。
 
-\subsection{自由场论}
+\subsection{自由场论}\label{sec:free-theory}
 
-\subsubsection{自由场论的配分函数}
+\subsubsection{自由场论的配分函数}\label{sec:free-field-theory-partition-function}
 
-本节处理只含有二次项的场论，也就是所谓的自由场论。
+本节处理只含有二次项的场论，也就是所谓的自由场论。我们暂时不讨论非零磁场存在的情况。
 
 我们将从伊辛模型的物理意义出发解释为什么要这么做。
 当$T>T_\text{c}$时，不会出现对称性自发破缺，因此只有一个基态，因此必须有$\alpha_2 > 0$，于是在场强较弱（由于\eqref{eq:free-energy-phi-4}仅仅在临界点附近适用，这个假设在接近极小值点但并不非常接近极小值点时适用），我们可以略去对极小值点的行为不重要的四次方项，而把自由能写成
@@ -814,12 +819,13 @@ $T<T_\text{c}$时由于$\phi=0$不是稳定极小值点，四次方项总是重�
 这个自由能不具有可加性，这当然是因为我们计算配分函数时略去了必要的含有$V$的因子。
 但既然本文只关心单一的热力学系统，是不是具有可加性也无关紧要。
 
-\subsubsection{自由场论的物理量}
+\subsubsection{自由场论的热容}
 
-本节计算一些常见的物理量。需要注意的是，仅仅靠对称性分析不能够确定可能随着温度变化的系数$\gamma$、$\mu$等具体有多大。
+本节计算自由场论的热容。需要注意的是，仅仅靠对称性分析不能够确定可能随着温度变化的系数$\gamma$、$\mu$等具体有多大。
 本节只是演示，所以我们首先在$T > T_\text{c}$下工作，并将使用比较任意的参数安排
 \begin{equation}
     \mu^2 = T - T_\text{c}, \quad \gamma = \const.    
+    \label{eq:mf-parameter-assumption}
 \end{equation}
 $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这一说法则没有任何支持，因此以上参数安排未必是伊辛模型的参数，但我们姑且接受它。
 
@@ -860,6 +866,171 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
 虽然\eqref{eq:t-tc-c-divergence}仍然是不可靠的（它建立在$\mu$和平均场理论中一致，而$\gamma$为常数的前提上），它还是展示了和平均场理论不同的行为。
 我们由此看到为什么平均场理论不可靠——对很多系统，仅仅考虑配分函数的鞍点是不够精确的。
 上面的结果也暗示，$d=4$和$d=2$是系统行为发生很大变化的两个维数。
+
+原则上，任何物理量都可以通过计算关联函数得到。本节只计算了热容是因为关联函数的计算实际上要求计算自由能对磁场的导数，而\autoref{sec:free-field-theory-partition-function}中只考虑了没有磁场的情况。
+因此，我们马上来讨论加入磁场之后的理论以及关联函数。
+
+\subsection{磁场和关联函数}
+
+\subsubsection{含有磁场的配分函数}
+
+磁场的作用是提供一个外界作用力，它相当于一个“激励”，可以产生一定响应。
+加入磁场之后可以类似地做傅里叶变换，得到
+\begin{equation}
+    F[\phi_{\vb*{k}}] = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( \frac{1}{2} (\gamma k^2 + \mu^2) \phi_{-\vb*{k}} \phi_{\vb*{k}} + B_{-\vb*{k}} \phi_{\vb*{k}} \right).
+\end{equation}
+做变量代换
+\begin{equation}
+    \tilde{\phi}_{\vb*{k}} = \phi_{\vb*{k}} + \frac{B_{\vb*{k}}}{\gamma k^2 + \mu^2},   
+\end{equation}
+就得到
+\begin{equation}
+    F[\tilde{\phi}_{\vb*{k}}] = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( \frac{1}{2} (\gamma k^2 + \mu^2) \tilde{\phi}_{\vb*{k}} \tilde{\phi}_{-\vb*{k}} - \frac{1}{2} \frac{B_{\vb*{k}} B_{-\vb*{k}}}{\gamma k^2 + \mu^2} \right).
+\end{equation}
+这样一来，设\autoref{sec:free-field-theory-partition-function}中的自由能和配分函数为$F_\text{free}$和$Z_\text{free}$，就有
+\[
+    Z = Z_\text{free} \exp(\frac{\beta}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{B_{\vb*{k}} B_{-\vb*{k}}}{\gamma k^2 + \mu^2}).
+\]
+这正是我们预期的形式——$B$与$\phi$的耦合方式是线性的，从而导致一个线性响应，即在配分函数的$\ee$指数上产生一个二次项，积分核（即格林函数）就是$B=0$的场的两点格林函数，而由于$B=0$时是自由场，此两点格林函数正是$F_\text{free}[\phi]$的鞍点满足的方程（即\eqref{eq:free-field}的欧拉-拉格朗日方程）
+\[
+    \gamma \laplacian \phi = \mu^2 \phi
+\]
+外加冲击之后的平面波解
+\[
+    G(\vb*{k}) = \frac{1}{\gamma k^2 + \mu^2}.
+\]
+写成实空间的形式，就是
+\begin{equation}
+    Z = Z_\text{free} \exp(\frac{\beta}{2} \int \dd[d]{\vb*{x}} \dd[d]{\vb*{y}} B(\vb*{x}) G(\vb*{x} - \vb*{y}) B(\vb*{y})), \quad G(\vb*{x}) = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{\gamma k^2 + \mu^2}.
+    \label{eq:path-integral-mag}
+\end{equation}
+这里我们不失一般性地指定$G(\vb*{x}, \vb*{y})$应当是对称的（二次型的普遍性质：积分核可以化成对称的），而由于$\phi^4$理论是空间平移不变的，我们有
+\[
+    G(\vb*{x}, \vb*{y}) = G(\vb*{x} - \vb*{y}).
+\]
+从\eqref{eq:path-integral-mag}也可以更加清楚地看到外加扰动的格林函数和自由场的两点关联函数的关系：
+\begin{equation}
+    \expval*{\phi(\vb*{x}_1) \phi(\vb*{x}_2)}_0 = \frac{1}{\beta} G(\vb*{x}_1 - \vb*{x}_2).
+\end{equation}
+从今往后，我们用$\expval*{\cdot}_0$表示自由场期望，使用$\expval*{\cdot}_B$表示外加磁场后的期望。
+
+实际上，完全可以更加机械化地使用高斯积分导出以上所有结论，$G(\vb*{x}, \vb*{y})$就是格林算符
+\[
+    \hat{G} = (-\gamma \laplacian + \mu^2)^{-1}
+\]
+在坐标表象下的矩阵元，或者说坐标表象下的传播子（因为是自由场，传播子就是场的关联函数）。
+
+\subsubsection{关联函数的计算}
+
+本节尝试计算关联函数。由于系统具有旋转不变性，我们可以把格林函数写成
+\[
+    G(\vb*{r}) = G(r) = \frac{1}{\gamma} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{k^2 + \frac{1}{\xi^2}},
+\]
+其中
+\begin{equation}
+    \xi^2 = \frac{\gamma}{\mu^2}
+\end{equation}
+是一个特征长度。
+考虑到
+\[
+    \frac{1}{k^2 + 1/\xi^2} = \int_0^\infty \dd{t} \ee^{-t(k^2 + 1/\xi^2)},
+\]
+我们可以得到
+\begin{equation}
+    G(r) = \frac{1}{\gamma (4\pi)^{d/2}} \int_0^\infty \dd{t} t^{-d/2} \ee^{-t/\xi^2} \ee^{-r^2/4t}.
+\end{equation}
+
+我们尝试使用鞍点近似估计上式，设
+\[
+    S(t) = \frac{t}{\xi^2} + \frac{r^2}{4 t} + \frac{d}{2} \ln t,
+\]
+则
+\[
+    G(r) \sim \ee^{-S(t_\star)} \sqrt{\frac{\pi}{2 S''(t_\star)}},
+\]
+其中$t_\star$是$S'(t)$的根
+\[
+    t_\star = \frac{\xi^2}{2} \left( - \frac{d}{2} + \sqrt{\frac{d^2}{4} + \frac{r^2}{\xi^2}} \right).
+\]
+做渐进分析，当$r \gg \xi$时，
+\[
+    t_\star = \frac{r \xi}{2},
+\]
+则
+\[
+    G(r) \sim \frac{\ee^{-r/\xi}}{\xi^{d/2-3/2} r^{d/2 - 1/2}}.
+\]
+另一方面，如果$r \ll \xi$，则
+\[
+    t_\star = \frac{r^2}{4d},
+\]
+则
+\[
+    G(r) \sim \frac{1}{r^{d-2}}.
+\]
+综上，我们有
+\begin{equation}
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim G(\vb*{x}) = G(r) \sim \begin{cases}
+        \ee^{-r/\xi} / r^{(d-1)/2}, \quad &r \gg \xi, \\
+        1/r^{d-2}, \quad &r \ll \xi.
+    \end{cases}
+\end{equation}
+此即\concept{Ornstein-Zernicke关联函数}。
+可以看到在$\xi$以内，关联函数随着$r$增大只是缓慢地衰减，而在$\xi$以外就指数衰减了。
+换句话说，场构型的“斑块”（即一块$\phi$的值变化不大的区域）的直径的尺度就是$\xi$。
+因此$\xi$就是系统的关联长度。
+
+按照$\xi$的定义，以及我们的假设\eqref{eq:mf-parameter-assumption}，可以发现在临界点附近有
+\begin{equation}
+    \xi \sim \frac{1}{\abs*{T - T_\text{c}}^{1/2}}. 
+\end{equation}
+当然，具体的指数可能也不正确（因为\eqref{eq:mf-parameter-assumption}取成和平均场一致，未必可靠），但是它的确说明临界点附近关联函数发散——本该如此。
+
+我们现在引入了两个关键的物理量——关联长度和（$r$很小时的）关联函数——它们引入了两个新的临界指数：
+\begin{equation}
+    \xi \sim \frac{1}{\abs*{T - T_\text{c}}^\nu}, 
+\end{equation}
+以及
+\begin{equation}
+    G(r) \sim \frac{1}{r^{d-2+\eta}}, \quad r \ll \xi.
+\end{equation}
+本节采取的计算由于完全没有考虑$\phi^4$项，实际上还是一种平均场理论（虽然它给出的热容和把平均场当成完全均匀的平均场理论，也就是\autoref{sec:mean-field-ing}不同）。
+平均场理论预言，$\nu=1/2$而$\eta=0$。
+再一次，在四维及以上这两个结果是正确的，在二维和三维则不是（一维完全没有相变）。
+
+\subsubsection{何时平均场理论失效}\label{sec:when-mf-failed}
+
+实际上，从平均场理论出发就可以判断它自己什么时候失效。我们将这个判断留到这一节是因为接下来要做的计算需要用到关联函数，而在有磁场的情况下引入关联函数比较自然。
+
+假定系统均匀的平均场理论（即\autoref{sec:mean-field-ing}）成立，那么需要两个条件：
+\begin{enumerate}
+    \item 涨落$\expval*{(\phi-\expval*{\phi})^2}$相比于$\phi^2$要尽可能小（金斯堡判据）；
+    \item 在空间上的起伏也要尽可能小。
+\end{enumerate}
+要让这两个条件同时成立，就是要求
+\[
+    \frac{\int_{r<\xi} \dd[d]{\vb*{x}} \expval*{\phi(\vb*{x}) \phi(0)}}{\int_{r<\xi} \dd[d]{\vb*{x}} m_0^2} \ll 1.
+\]
+由于超过一定距离，关联函数会快速衰减，我们不失一般性地对积分范围做了一个截断；$m_0$指的是用\autoref{sec:mean-field-ing}中的均匀平均场计算出来的磁化强度，加平方单纯是为了保持整个式子没有量纲。
+这里有一个微妙的地方：由于发生了对称性自发破缺而$\expval*{\cdot}$还是将所有可能的态都考虑了进去，应该有
+\[
+    \expval*{\phi} = 0,
+\]
+但是对已经发生了对称性自发破缺的系统（例如，大部分自旋指向上方），一部分态是不可及的（例如，大部分自旋指向下方的态），因此我们应当使用$m_0$作为磁化强度期望值。
+代入$r \ll \xi$的关联函数表达式计算后得到
+\[
+    \frac{\xi^{2-d}}{m_0^2} \ll 1.
+\]
+代入临界指数关系，就得到
+\[
+    \frac{1}{\abs*{T-T_\text{c}}^{(4-d)/2}} \ll 1.
+\]
+上式成立，当且仅当$d \geq 4$，于是我们得出结论：$d < 4$时不能够保证均匀的平均场理论的正确性。
+我们从平均场理论出发，导出了它自己的局限性。严格来说，上式并不能够保证$d<4$时一定会出问题，但是实际结果表明，$d < 4$时确实平均场理论不再适用。
+
+为何$d=1$时相变会消失则需要从另一个角度看待。我们知道相变出现要求$F[\phi]$的极小值点之间彼此不可及，但实际上通过计算可以发现，$d=1$时$F[\phi]$的极小值点之前总是可以互相跃迁的。
+换句话说，$d=1$时相变温度在$T=0$——有限温下总是不会出现相变。
+实际上，这可以通过与$d=1$的$\phi^4$统计场论对应的$d=0$维量子力学的特征看出来，后者只有一个基态，它是两个$F[\phi]$的极小值点的线性叠加。
 
 \section{伊辛模型的重整化群}\label{sec:ising-rg}
 
