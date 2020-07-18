@@ -1,6 +1,7 @@
 \documentclass[hyperref, UTF8, a4paper]{ctexart}
 
 \usepackage{geometry}
+\usepackage{float}
 \usepackage{titling}
 \usepackage{titlesec}
 \usepackage{paralist}
@@ -540,7 +541,7 @@ $\mathbb{Z}_2$对称性意味着$f$的每一项都应该是偶数次项，从而
 
 \subsubsection{鞍点近似}
 
-首先使用和平均场理论类似的粗糙手段处理\eqref{eq:gl-free-energy}，而先不计算路径积分。完整的路径积分计算见\autoref{sec:path-integral}。
+首先使用和平均场理论类似的粗糙手段处理\eqref{eq:gl-free-energy}，而先不计算路径积分。
 
 先考虑无磁场的情况。使用欧拉-拉格朗日方程，我们有
 \begin{equation}
@@ -746,7 +747,7 @@ Stratonovich变换}
     V = N a^d,
 \]
 
-\section{路径积分和微扰论}\label{sec:path-integral}
+\section{路径积分和关联函数}\label{sec:path-integral}
 
 为了和场论中的记号更为接近，我们统一设
 \[
@@ -842,7 +843,7 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
         \Lambda^{d-2}, \quad &d>2,
     \end{cases}
 \]
-这里我们引入了一个动量截断$\Lambda$，发现在$d=1$时热容不会出现任何发散；$d\geq 2$时热容会发散，这当然是合理的，因为$\Lambda$不能真的取到无穷大——$\phi^4$理论是伊辛模型粗粒化之后的结果，不能够简单地认为是在任意高的动量尺度上都适用的理论。
+这里我们引入了一个动量截断$\Lambda$，发现在$d=1$时热容不会出现任何发散；$d\geq 2$时热容会发散，这当然是合理的，因为$\Lambda$不能真的取到无穷大——$\phi^4$理论是伊辛模型粗粒化之后的结果，不能够简单地认为是在任意高的动量尺度上都适用的理论。（关于这件事的具体说明，以及怎样将无穷大扔掉而得到可靠的热容表达式，见\autoref{sec:ising-rg}）
 一个自然的选择是
 \[
     \Lambda \sim \frac{1}{a}.
@@ -1000,7 +1001,8 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
 
 \subsubsection{何时平均场理论失效}\label{sec:when-mf-failed}
 
-实际上，从平均场理论出发就可以判断它自己什么时候失效。我们将这个判断留到这一节是因为接下来要做的计算需要用到关联函数，而在有磁场的情况下引入关联函数比较自然。
+实际上，从平均场理论出发就可以判断它自己什么时候失效。
+我们将这个判断留到这一节是因为接下来要做的计算需要用到关联函数，而在有磁场的情况下引入关联函数比较自然。
 
 假定系统均匀的平均场理论（即\autoref{sec:mean-field-ing}）成立，那么需要两个条件：
 \begin{enumerate}
@@ -1032,6 +1034,114 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
 换句话说，$d=1$时相变温度在$T=0$——有限温下总是不会出现相变。
 实际上，这可以通过与$d=1$的$\phi^4$统计场论对应的$d=0$维量子力学的特征看出来，后者只有一个基态，它是两个$F[\phi]$的极小值点的线性叠加。
 
-\section{伊辛模型的重整化群}\label{sec:ising-rg}
+\section{微扰论}
+
+到目前为止我们都还没有考虑关键的$\phi^4$项带来的影响。本节讨论怎么微扰计算$\phi^4$的影响。
+我们重新定义$\phi^4$项前面的参数，将$\phi^4$理论写成
+\begin{equation}
+    F[\phi] = \int \dd[d]{\vb*{x}} \left( 
+        \frac{1}{2} \gamma (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + g \phi^4 + B \phi
+    \right).
+    \label{eq:phi-4-g}
+\end{equation}
+
+\subsection{图形}
+
+$\phi^4$理论只有一种角点，就是\autoref{fig:vertex}所示的四条边连在一起的角点。
+由于$\phi$是实场，无所谓$U(1)$对称性，则也没有粒子数守恒，无需标记边的方向。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (-1.5, -1.5);
+            \vertex (b) at (-1.5, 1.5);
+            \vertex (c) at (1.5, -1.5);
+            \vertex (d) at (1.5, 1.5);
+            \vertex[dot] (o) at (0, 0) {};
+            \propag (a) to (o);
+            \propag (b) to (o);
+            \propag (c) to (o);
+            \propag (d) to (o);
+        \end{feynhand}
+    \end{tikzpicture}
+    \caption{$\phi^4$理论的角点}
+    \label{fig:vertex}
+\end{figure}
+
+\section{重整化群}\label{sec:ising-rg}
+
+\subsection{常数和量纲}
+
+\subsubsection{自由能归一化}
+
+本节讨论重整化群。\autoref{eq:phi-4-g}中出现了这些参数：
+\begin{itemize}
+    \item $(\grad{\phi})^2$项的系数$\gamma$；
+    \item $\phi^2$项的系数$\mu^2$；
+    \item $\phi^4$项的系数$g$。
+\end{itemize}
+此外，还有两个计算配分函数时需要的额外参数：
+\begin{itemize}
+    \item 温度倒数$\beta$；
+    \item 动量截断尺度$\Lambda$，或者其倒数——即晶格参数——$a$。
+\end{itemize}
+由于$\beta$是直接乘在自由能上的，可以将$\beta$吸收到$\gamma$、$\mu$和$g$中，从而将配分函数写成
+\[
+    Z = \int \fd{\phi} \ee^{-F[\phi]},
+\]
+其中
+\[
+    \ee^{-F[\phi]} = \exp(-\int \dd[d]{\vb*{x}} \left(
+        \frac{1}{2} \gamma (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + g \phi^4
+    \right) ).
+\]
+
+到现在为止，从自由能表达式还不能够确定任何一个物理量的量纲，这说明仍有冗余的常数。
+具体来说，我们可以重新定义$\phi$，让$\gamma=1$，这样就有
+\begin{equation}
+    F[\phi] = \int \dd[d]{\vb*{x}} \left(
+        \frac{1}{2} (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + g \phi^4
+    \right).
+\end{equation}
+
+任何一个温度下的理论都可以这样做归一化，最终得到一组不同的$(\mu, g)$。
+如果固定截断$a$不动，它们就是理论空间中不同理论的坐标。
+温度的改变会导致$(\mu, g)$的变动。
+
+原则上我们也可以将坐标无量纲化，从而消去对$a$的显式依赖，但由于我们需要分析计算结果对截断的依赖，通常不这样做。
+
+\subsubsection{临界指数}
+
+临界点附近关联常数发散到无穷大，因此我们有
+\[
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2+\eta}}
+\]
+恒成立。由于临界点也是重整化群不动点，我们将尝试通过量纲分析来估计临界指数。
+
+首先，由于
+\[
+    [\dd[d]{\vb*{x}} (\grad{\phi})^2] = 0,
+\]
+我们有
+\[
+    [\phi] = \frac{d-2}{2},
+\]
+这里我们照惯例设长度的量纲为$-1$。这就意味着，
+\[
+    [\expval*{\phi(\vb*{x}) \phi(0)}] = d-2.
+\]
+乍一看这似乎意味着
+\[
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2}},
+\]
+这是平均场理论的结果，即认为$\eta=0$。然而，由于我们没有将长度无量纲化，$a$也会影响关联函数。因此，考虑到量纲要正确，且关联函数关于$a$也服从幂律，实际上应该有
+\[
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2}} \left( \frac{a}{r} \right)^\eta.
+\]
+我们看到，由于关联函数同时依赖于两个长度量纲的物理量，即$r$和隐式的$a$，仅仅知道关联函数的量纲是$d-2$不能够让我们明确地写出关联函数在临界点附近关于$r$的幂律的具体形式。
+这就是所谓的\concept{反常量纲}：将$a$定死，变动$r$而产生的尺度变换指数（也就是$a$定死之后$r$的量纲）和$a$和$r$均可变动时的量纲（称为\concept{工程量纲}）是不一样的。
+而如果我们将$a$吸收到长度中，那么无可避免地会出现$\phi$的量纲确定不下来的情况。
+总之，在本文——以及很多其它的固体系统中——由于截断的存在，基本上不可能通过简单的量纲分析就得到幂律。
 
 \end{document}
