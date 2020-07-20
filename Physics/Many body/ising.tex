@@ -913,7 +913,8 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
 \]
 从\eqref{eq:path-integral-mag}也可以更加清楚地看到外加扰动的格林函数和自由场的两点关联函数的关系：
 \begin{equation}
-    \expval*{\phi(\vb*{x}_1) \phi(\vb*{x}_2)}_0 = \frac{1}{\beta} G(\vb*{x}_1 - \vb*{x}_2).
+    \expval*{\phi(\vb*{x}_1) \phi(\vb*{x}_2)}_0 = \frac{1}{\beta} G(\vb*{x}_1 - \vb*{x}_2) = \frac{1}{\beta} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{\gamma k^2 + \mu^2}.
+    \label{eq:propagator}
 \end{equation}
 从今往后，我们用$\expval*{\cdot}_0$表示自由场期望，使用$\expval*{\cdot}_B$表示外加磁场后的期望。
 
@@ -1047,11 +1048,19 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
     \right).
     \label{eq:phi-4-g}
 \end{equation}
+为了方便起见我们将在动量空间讨论费曼规则。
 
-\subsection{图形}
+\subsection{费曼图及其规则}
 
-$\phi^4$理论只有一种角点，就是\autoref{fig:vertex}所示的四条边连在一起的角点。
-由于$\phi$是实场，无所谓$U(1)$对称性，则也没有粒子数守恒，无需标记边的方向。
+\subsubsection{顶角和基本过程}\label{sec:basic-steps}
+
+$\phi^4$理论只有一种顶角，就是\autoref{fig:vertex}所示的四条边连在一起的顶角。
+由于$\phi$是实场，无所谓$U(1)$对称性，则也没有粒子数守恒，无需标记边的方向，或者说可以任意地标记边的方向。
+例如\autoref{fig:vertex}可以理解成\autoref{fig:vertex-intepretation}中的任何一个过程，或是它们的逆过程，它们给出的图的值都是一样的。
+标记箭头的目的主要是为了写出正确的动量守恒表达式。如\autoref{fig:vertex-intepretation}中，三个图的动量守恒表达式分别是
+\[
+    \delta(\vb*{k}_3+\vb*{k}_4-\vb*{k}_1-\vb*{k}_2), \quad \delta(\vb*{k}_1-\vb*{k}_2-\vb*{k}_3-\vb*{k}_4), \quad \delta(\vb*{k}_1+\vb*{k}_2+\vb*{k}_3+\vb*{k}_4).
+\]
 
 \begin{figure}
     \centering
@@ -1068,9 +1077,134 @@ $\phi^4$理论只有一种角点，就是\autoref{fig:vertex}所示的四条边�
             \propag (d) to (o);
         \end{feynhand}
     \end{tikzpicture}
-    \caption{$\phi^4$理论的角点}
+    \caption{$\phi^4$理论的顶角}
     \label{fig:vertex}
 \end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[粒子数守恒]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, -1.5) {$\vb*{k}_1$};
+                \vertex (b) at (-1.5, 1.5) {$\vb*{k}_2$};
+                \vertex (c) at (1.5, -1.5) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 1.5) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (a) to (o);
+                \propag [fermion] (b) to (o);
+                \propag [fermion] (o) to (c);
+                \propag [fermion] (o) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一进三出]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2.1, 0) {$\vb*{k}_1$};
+                \vertex (b) at (0.75, 1.8) {$\vb*{k}_2$};
+                \vertex (c) at (0.75, -1.8) {$\vb*{k}_3$};
+                \vertex (d) at (2.1, 0) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (a) to (o);
+                \propag [antfer] (b) to (o);
+                \propag [antfer] (c) to (o);
+                \propag [antfer] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[“爆炸”]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, -1.5) {$\vb*{k}_1$};
+                \vertex (b) at (-1.5, 1.5) {$\vb*{k}_2$};
+                \vertex (c) at (1.5, -1.5) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 1.5) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (o) to (a);
+                \propag [fermion] (o) to (b);
+                \propag [fermion] (o) to (c);
+                \propag [fermion] (o) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{$\phi^4$理论中的部分过程}
+    \label{fig:vertex-intepretation}
+\end{figure}
+
+\subsubsection{传播子和源}
+
+由于只有一种场，传播子也就只有一种，就是$\phi$的传播子，先前已经讨论过的。
+由于有效自由能中唯一的外场就是磁场，而它是线性的，源是显然的，每个源只连接一条传播子。
+
+\subsubsection{费曼规则}
+
+下面推导费曼规则，也就是，给定一个未知的期望表达式$\expval*{\phi_1 \cdots \phi_n}$，怎么用无相互作用的二体关联函数$\expval*{\phi_1 \phi_2}$算出它。
+传播子的表达式是已知的，就是\eqref{eq:propagator}，而顶角引入的系数就是$g$。$\phi^4$理论满足动量守恒，无其它值得注意的守恒律。于是我们有以下费曼规则：
+\begin{enumerate}
+    \item 对每个传播子，
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex (b) at (1, 0);
+                \propag [fermion] (a) to [edge label={$\vb*{k}$}] (b) ;
+            \end{feynhand}
+        \end{tikzpicture}
+        = \frac{1}{\beta} \frac{1}{\gamma k^2 + \mu^2}.
+    \]
+    \item 对每个顶角，
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, -1);
+                \vertex (b) at (-1, 1);
+                \vertex (c) at (1, -1);
+                \vertex (d) at (1, 1);
+                \vertex[dot] (o) at (0, 0) {};
+                \propag (a) to (o);
+                \propag (b) to (o);
+                \propag (c) to (o);
+                \propag (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+        = -\beta g.
+    \]
+    有$-\beta$因子是因为$\ee$指数上自由能要乘以$-\beta$。
+    \item 如果外线是指定坐标而不是动量的，那么要加上对应的傅里叶变换因子。粒子消灭的外线为
+    \[
+        \begin{aligned}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a0) at (-1.3, 0) {$\vb*{x}$};
+                    \vertex [dot] (a) at (-1, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag [fermion] (a) to [edge label={$\vb*{k}$}] (b) ;
+                \end{feynhand}
+            \end{tikzpicture}
+            = \ee^{\ii \vb*{k} \cdot \vb*{x}} , \\
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a0) at (-1.3, 0) {$\vb*{x}$};
+                    \vertex [dot] (a) at (-1, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag [antfer] (a) to [edge label={$\vb*{k}$}] (b) ;
+                \end{feynhand}
+            \end{tikzpicture}
+            = \ee^{- \ii \vb*{k} \cdot \vb*{x}}.
+        \end{aligned}
+    \]
+    \item 在每个顶角处加入保证动量守恒的$\delta$函数，如\autoref{sec:basic-steps}中那样。
+    \item 对所有图中没有给定的动量，做积分
+    \[
+        \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d}.
+    \]
+    \item 乘上对称性因子，除以$n!$，$n$为顶角的个数。
+\end{enumerate}
+
+\subsection{各阶费曼图}
+
+
 
 \section{重整化群}\label{sec:ising-rg}
 
