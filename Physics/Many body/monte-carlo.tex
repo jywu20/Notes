@@ -187,7 +187,17 @@
 不过，局部更新的策略并不总是适用的。在临界点附近，有大量长程关联，局部更新是非常缓慢的，这称为\concept{临界慢化}。
 此时需要别的策略来做更新。
 
-通常需要误差棒
+\subsection{结果评估}
+
+结果评估通常需要两个因素：一个是关联时间（用来评价采样是否足够均匀），一个是标准差（用来评价由于数据波动导致的误差有多大）。
+
+为了方便起见，会使用binning技术来评估这两个因素，即把计算历史分割成一系列共计$M$个等长的连续区段，计算每一段的平均值，（用$O_i^{(M)}$表示），然后计算所有bin的平均值的标准差
+\begin{equation}
+    \Delta_M = \sqrt{\frac{1}{M(M-1)} \sum_{i=1}^M (O_i^{(M)} - \overline{O^{(M)}})^2},
+\end{equation}
+如果$M$非常接近$N$，那么$\Delta_M$就是直接使用计算历史$\{O_i\}$计算出来的标准差。反之，如果$M=1$，那么就根本没有标准差，因为只有非常少的数据点。
+随着$M$的增大，标准差会不断增大，然后趋于平缓。标准差开始趋于平缓时，不同的区段之间就应该基本上不相关了，因为这说明一个区段携带的信息实际上基本上就是这个区段的平均值提供的信息。
+这就给了我们一种非常便捷的估算数据标准差（从而可以给计算结果标上误差棒）的方法：从比较小的$M$开始不断增加，直至标准差上升平缓，此时的$\Delta_M$就近似为实际的标准差，且$\Delta \tau$约等于此时的$N/M$。
 
 \section{量子蒙特卡洛概述}
 
@@ -300,14 +310,19 @@
 由于我们只讨论二费米子过程\eqref{eq:two-fermions-hamiltonian}，可以使用H-S变换引入这个辅助场，然后积掉费米子自由度，最后就使用关于一系列辅助场构型的行列式之和写出了虚时间路径积分。
 
 我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:quantum-expectation}是可以用的。
-和\autoref{sec:worldline-mc}中一样，我们做$\ee$指数的离散化，使用$n$标记离散的虚时间，使用$i$表示\eqref{eq:two-fermions-hamiltonian}中标记相互作用部分中单粒子算符的量子数。使用Trotter-Suzuki近似，
+和\autoref{sec:worldline-mc}中一样，我们做$\ee$指数的离散化，使用$n$标记离散的虚时间，使用$i$表示\eqref{eq:two-fermions-hamiltonian}中标记相互作用部分中单粒子算符的量子数。使用Trotter-Suzuki近似，%
+\footnote{为了和时间演化算符的通常写法保持一致，本文默认
+\[
+    \prod_{i=1}^n a_i = a_n a_{n-1} \cdots a_1.
+\]
+}%
 \[
     \begin{aligned}
         \ee^{-\beta \hat{H}} &= \prod_{n=1}^{m} \ee^{-\Delta \tau \hat{H}_0} \ee^{-\Delta \tau \hat{H}_\text{I}} \\
         &= \prod_{n=1}^{m} \ee^{-\Delta \tau \hat{H}_0} \prod_{i=1}^N \ee^{\Delta \tau W (\hat{O}^{(i)})^2}.
     \end{aligned}
 \]
-第一个和第二个等号均使用了Trotter-Suzuki近似% TODO:误差估计
+第一个和第二个等号均使用了Trotter-Suzuki近似，这个近似的误差控制在$\Delta \tau^2$量级。% TODO
 我们使用离散H-S变换
 \begin{equation}
     \ee^{\Delta \tau W O^2} = \sum_{l = \pm 1, \pm 2} \gamma(l) \ee^{\sqrt{\Delta \tau W} \eta(l) O} + \bigO(\Delta \tau^3),
