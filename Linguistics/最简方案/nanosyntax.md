@@ -68,7 +68,7 @@ Nanosyntax和DM的相同点主要有：
 - Nanosyntax只有一个词库，但是DM实际上有三个；
 - Nanosyntax的句法实际上是先于词库的：一开始，句法操纵的只是完全抽象的概念（这相当于DM中的List A），然后从词库中抽取条目来实现这些概念；DM的句法的输入就是词库，因此句法后于词库；
 - Nanosyntax中已经被语音实现好了的语音-句法树-语义组合可以放进词库里，而DM中不那么简单
-- Nanosyntax中没有真正的形态操作：所有的形态学都是spellout过程中自然而然产生的；DM中还是有专门的形态操作的
+- Nanosyntax中没有真正的形态操作：所有的形态学都是spellout过程中自然而然产生的；DM中还是有专门的形态操作的（但应当指出的是，Nanosyntax使用诸如spellout-driven movement之类的东西来统一解释head movement和affix lowering现象，因此spellout的这一瞬间理论上也可以认为是形态操作）
 - Nanosyntax中完全没有feature bundle；DM中，形态操作，以及一些特殊的词库条目，可以引入feature bundle
 
 可以看到NS相对DM其实更加“简化”了。
