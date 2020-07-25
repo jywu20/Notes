@@ -6,7 +6,7 @@
 \usepackage{abstract}
 \usepackage{amsmath, amssymb}
 \usepackage{qtree}
-% \usepackage{gb4e}
+\usepackage{gb4e}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
 
@@ -26,6 +26,8 @@
 
 \newrefformat{fig}{Figure \ref{#1}}
 
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
 \title{The Framework of Minimalist Syntax}
 \author{wujinq}
 
@@ -35,181 +37,144 @@
 
 \begin{abstract}
     This article is a summary of Minimalist syntax in modern generative grammar.
-    We start by introduction of syntactic objects and syntactic operations on them.
-    % TODO
+    We review the mutually recognized primitives of the Minimalist Program, its main motivation, and its main achievements.
+    We also present main disputes - both theoretical and empirical issues around this research program, and list some dominant frameworks trying to settle these issues.  
 \end{abstract}
 
-\section{Syntactic objects and operations}\label{sec:syn-obj}
+% TODO:
+% successive cyclic
+% head movement
+
+\section{Introduction}
+
+The tradition of the \concept{Principle and Parameter} (henceforward P\&P) approach has achieved huge success since 1980s. 
+It, however, is definitely not the end of the generative enterprise, with too many principles and parameters required to cover all empirical observation, sometimes rendering P\&P simply curve-fitting of complicated phenomena instead of an explanatory theory.
+If the goal of P\&P was to explore and explain the universal rules of all human languages, then the \concept{Minimalist Program} (henceforward MP) is focused on explore and explain P\&P.
+What are obligatory? What can be explained using other concepts? 
+We investigate the necessity of every concept used in P\&P, tring to find the real building blocks of human language.
+
+That is why MP is called a \emph{research program} instead of a theory: there are, of course, something basic stipulations in MP that fall in the range of Chomskyan derivational syntax.
+For example, there is Merge as the fundamental structure building operation, and Move is the origin of non-locality.
+Besides these, however, over many issues no mutual consensus is achieved. We present some of these issues in this article and relevant solutions.
+
+\section{The structure of grammar}
 
 This section deals with syntactic objects, like morphemes, words, phrases, and the operations used to build them.
 We are not to give a formalization of Minimalist syntax here so we will not use much technical terms, 
 and often discussion about a certain concept will involves concepts yet to be defined.
 
-\subsection{Syntactic objects and their structures}
+\subsection{The Y-shaped model}
 
-A \textbf{syntactic object} may be a morpheme, a word or a constituent.
-It is either taken directly from the \textbf{lexicon}, 
-or formed by syntactic operations with other syntactic objects.
-A \textbf{morphemes} is a minimal unit in the lexicon, which is a bundle of features.
-A \textbf{feature} is a key-value pair specifying attributes of a certain syntactic object.
-It may express something about the object itself 
-(for example whether it is referential, whether it is in single form or plural form, or if it is countable.), 
-and in this case it is called a \textbf{categorical feature};
-or it may instruct how its host can be merged with other objects 
-(for example a transitive verb is to be merged with a nominal expression), 
-and in this case it is called a \textbf{selector feature}
- - correspondingly, categorical features of the object to be selected to merge is called \textbf{selectee features}.
-A \textbf{word} is a object without selector features that select morphemes (or, equivalently, trigger head merge), 
-which may be a single morpheme or a tree of morphemes constructed by head merge.
-A \textbf{constituent} is an object 
-that is a word or is created by phrasal merging of a word and a constituent, or two constituents.
-A constituent without any selector features that drive phrasal merge is called a \textbf{phrase}.
+\begin{exe}
+    \ex
+    \gll Wenn jemand in die W\"uste zieht ... \\
+    If someone in the desert draws and lives ... \\
+    \trans `if one retreats to the desert and ... '
+\end{exe}
 
-Constituents are also called as \textbf{projections}, 
-because they can be formed by merging a single word with a constituent, and merging the result with some constituent else, and on and on, so the single word in the beginning \textbf{projects into a constituent}.
-And since a phrase no longer selects other constituent, it is called a \textbf{maximal projection}.
-In contrary, non-phrase constituents are called \textbf{intermediate projections}.
-\prettyref{fig:x-bar-structure-one} shows a constituent formed directly by one word.
-\prettyref{fig:x-bar-structure-two}, \prettyref{fig:x-bar-structure-three} and \prettyref{fig:x-bar-structure-four} shows a series of constituents with increasing numbers of arguments.
-Take \prettyref{fig:x-bar-structure-four} as an example.
-X is a word, and it is first merged with YP, and then ZP, and finally WP. 
-As the merge process goes on, the constituent's tree diagram expands, 
-just like the expansion of the light cone of a projector as we goes far.
-That is why constituents are called projections. 
+\subsection{Purely syntactic operations}
 
-\begin{figure}
-    \centering
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.XP {X \\ the head} ]
-        \subcaption{Bare head as a constituent}
-        \label{fig:x-bar-structure-one}
-    \end{minipage}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.XP {X \\ the head} {YP \\ an argument} ]
-        \subcaption{One argument}
-        \label{fig:x-bar-structure-two}
-    \end{minipage}
-    \vfill
-    \vspace{2em}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.XP [.X' {YP \\ an argument} {X \\ the head } ] !\qsetw{2cm} {ZP \\ an argument} ]
-        \subcaption{Two arguments}
-        \label{fig:x-bar-structure-three}
-    \end{minipage}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.XP [.X' {ZP \\ an argument} !\qsetw{2cm} [.X' {X \\ the head} {YP \\ an argument} ] ] !\qsetw{2.2cm} {WP \\ an argument} ]
-        \subcaption{Three arguments}
-        \label{fig:x-bar-structure-four}
-    \end{minipage}
-    \caption{X-Bar structures}
-    \label{fig:x-bar-structure}
-\end{figure}
+\subsubsection{Merge: External and Internal}
 
-In tree diagrams of constituents we usually use XP to denote a phrase, 
-and use X' to denote an intermediate projection.
-This X-X'-\dots-X'-XP scheme is therefore called \textbf{X-Bar scheme}, 
-and notations X, X', XP, Y, Y', YP, \dots are called \textbf{labels}.
-X is called the \textbf{head} of the X' or XP containing it.
-Since features of all heads are clearly stored in the lexicon, 
+\concept{Maximal projection}
 
-\begin{figure}
-    \centering
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.{$>$} $\theta$ [.$<$ $\alpha$ [.$<$ $\beta$ $\gamma$ ] ] ]
-        \subcaption{A bare phrase structure}
-        \label{fig:bps-example-origin}
-    \end{minipage}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.{$\alpha$} $\theta$ [.{$\alpha$} $\alpha$ [.{$\beta$} $\beta$ $\gamma$ ] ] ]
-        \subcaption{\autoref{fig:bps-example-origin} with heads annotated}
-    \end{minipage}
-    \vfill
-    \vspace{2em}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.AP $\theta$ [.AP $\alpha$ [.BP $\beta$ $\gamma$ ] ] ]
-        \subcaption{Corresponding X-Bar structure}
-    \end{minipage}
-    \caption{X-Bar structure and bare phrase structures}
-    \label{fig:x-bar-and-bps}
-\end{figure}
+\subsubsection{Agree}
 
-\subsection{Structure building operations}
+% feature assignment
 
-Now we discuss basic structure building operations.
-In \autoref{sec:syn-obj} we already learned that all operations must be triggered by certain features.
-Since discrete features can be tricky to deal with in probabilistic grammars, 
-in this section we will not consider which feature triggers which operation.
-We will use flexible terms like ``$\alpha$ selects $\beta$'', which can be easily assigned a probabilistic meaning.
+\subsubsection{Anything else?}
 
-\textbf{Phrasal merge} means to merge a word to a maximal projection, 
-or to merge an intermediate projection to a maximal projection.
-% TODO: left selection and right selection
-\begin{equation}
-    \pmergel(\alpha, \beta) = \begin{cases}
-        \synbracket[<]{\alpha & \beta}, & \quad \text{if $\alpha$ is a word and $\beta$ is a phrase and $\alpha$ selects $\beta$}, \\
-        \undefined, & \quad \text{otherwise}
-    \end{cases}.
-    \label{eq:pmergel-def}
-\end{equation}
+Merge, Move, Agree, and possibly Copy - do these form a exhaustive list of purely syntactic operations? 
+The answer differs within different frameworks (See \prettyref{sec:framework} for some examples), and any possible additional operations are highly controversial (See \prettyref{sec:issue-op} for some discussion).
+Here we only list some possible choices, reserving debate about their existence to \prettyref{sec:issue-op}.
 
-\textbf{Head merge} means to merge two morphemes together to form a larger object,
-which takes all features on the two morphemes except features driving the merge.
-This means head merge may change the argument structure of a certain head.
-For example, suppose $\alpha$ is of category $A$ and selects one argument of category $B$,
-and can be optionally merged with $\beta$ with category $B$ which selects an argument of category $C$.
-Head merging between $\alpha$ and $\beta$ creates $\alpha \beta$, which selects two arguments, 
-of which one is of category $B$ and the other of category $C$.
+Frequently proposed operations other than Merge, Move, Agree and Copy include:
 
-\begin{figure}
-    \centering
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.X Z [.X X Y ] ]
-        \subcaption{A complex head}
-    \end{minipage}
-    \begin{minipage}[b]{0.4\linewidth}
-        \Tree [.XP [.X' MP [.X Z [.X X Y ] ] ] !\qsetw{2cm} NP ]
-        \subcaption{Complex head in a constituent}
-    \end{minipage}
-    \caption{Head merge}
-    \label{fig:head-merge}
-\end{figure}
+\begin{itemize}
+    \item \concept{Adjoin}, to attach an \concept{adjunct} - something optional and semantically interpreted differently with complements and specifiers - to a maximal projection. 
+    \item \concept{Head movement}, to move a head to another head and adjoin these two heads, forming a complex head.
+    \item \concept{Match}, to link two constituents' reference to the same object.
+\end{itemize}
 
-\begin{equation}
-    \copyl (\synbracket[\alpha]{\ldots \beta \ldots}) = \begin{cases}
-        \synbracket[<]{\beta & \synbracket[\alpha]{\ldots \beta \ldots}} & \quad \text{if $\synbracket[\alpha]{\ldots \beta \ldots}$ selects $\beta$}, \\
-        \undefined & \quad \text{otherwise}
-    \end{cases}.
-\end{equation}
+Some purely syntactic operations can be substituted by post-syntactic operation, and vice versa.
 
-\subsection{Probabilistic derivation}
+\subsection{Syntax-phonology interface and syntax-morphology interface}
 
-\textbf{Syntactic derivation} denotes the process of taking morphemes out of the lexicon (called \textbf{numeration}), merging them into words and constituents, and transferring them into phonetic forms. 
-In each stage of derivation, there is one or more syntactic object on building.
-The set of all syntactic objects completely describe the state of the current state, so we call the set \textbf{workspace}.
-% Therefore, the derivation is a Markov process, and workspaces are states. 
-% TODO: why do we never care about the time, or in other words, the number of steps?
-% I guess I get the point. It is not a Markov process?!
-% It is a Markov process in its stable status?
+\subsubsection{Transferring and phases}
 
-The concept of adjunction is completely absent in this section, because we do not view adjunction as a primitive operation in syntactic derivation. Rather, we take it as a secondary phenomenon emerging from % TODO
+\subsubsection{Post-syntactic operations}
 
-\section{Skeleton of sentences}
+It should be noted that whether post-syntactic operations really exist is still questionable. (See \prettyref{sec:post-syn-op} for some discussion)
+This section only list some possible post-syntactic operations, which may be just phenomenological.
 
 \subsection{Categories}
 
-\subsection{The lexical structure}
+\subsection{Constraints}
 
-% VP and light verb 
+\subsubsection{Constituent selection}
 
-\subsection{The periphery hierarchy}
+\subsubsection{What triggers a movement?}
 
-% TODO:topic, focus, force
+\subsubsection{Cyclic-successive derivation}
 
-\subsection{Adjunction and conjunction}
+A constituent should be moved to the edge of the current constituent.
 
-% TODO: [C A], [C B] -> [C [_&P A & B ]]
-% For example:
-% He gets a zero as his score and gets mad.
-% [_vP he gets a zero as his score ] + [_vP he gets mad] -> [_TP He [_&P [gets a zero as his score] and [gets mad] ] ]
+\subsubsection{Locality and anti-locality of movements}
+
+\section{Frameworks and programs within MP}\label{sec:framework}
+
+\subsection{Cartography}
+
+\subsection{Antisymmetry}
+
+\subsubsection{The failiure of LCA, and a possible alternative}
+
+\subsection{Distributed Morphology}
+
+\subsection{Nanosyntax}
+
+\section{Issues regarding operations}\label{sec:issue-op}
+
+\subsection{Head movement}
+
+% TODO: snowball roll-up
+
+\subsubsection{Alternative: post-syntactic operations}
+
+\subsubsection{Alternative: remnant movement}
+
+\subsection{Adjunction}
+
+\subsection{Post-syntactic operations}\label{sec:post-syn-op}
+
+\subsection{The mechanism of Agree}
+
+\subsection{Puzzles about the lexicon}
+
+\section{Morphosyntax phenomena}
+
+\subsection{Word formation, or what is a word}
+
+\subsubsection{The Lexicalist Hypothesis and why it is wrong}
+
+\subsection{Agreement and concord}
+
+\subsection{Pronouns, reflexives and others}
+
+\section{Sentence structures}
+
+\subsection{Word order}
+
+\subsection{Modifying and adjunction}
+
+\subsection{Relative clauses}
+
+\subsection{Asymmetry}
+
+% more SOV, less VOS
+
+\section{Conclusion: where we are and where to proceed}
+
+% TODO:reference and bibtex
 
 \end{document}

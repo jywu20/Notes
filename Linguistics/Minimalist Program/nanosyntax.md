@@ -144,7 +144,8 @@ Nanosyntax和DM的相同点主要有：
 remnant movement的问题似乎在于，它的生成能力实在太强：我们只需要将EppP, MainverbP, ObjectP这一类的functional head任意排列（或者等价地说，任意地指定spellout-driven movement的次序），实际上可以产生任何我们想要的语序。
 这样一来，生成语法实际上又回退到了“没完没了地精细描写语法现象”的老路，而解释不了什么，因为它可以容纳所有还算正常的自然语言现象，从而做不出任何有效的预言。
 这又引出了另一个问题：为什么我们要有spellout-driven movement，或者要有EppP, MainverbP, ObjectP之类的结构？
-移位的自然性问题非常大。
+移位的自然性问题非常大，因为缺乏显著的trigger。
+缺乏trigger也意味着没法解释为什么有这样的remnant movement而不是那样的remnant movement。
 
 ## 混成词
 

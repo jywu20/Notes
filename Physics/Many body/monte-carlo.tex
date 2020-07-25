@@ -171,11 +171,16 @@
     \label{alg:metro-hast}
 \end{algorithm}
 
-从\autoref{alg:metro-hast}中很容易看出，提议$\mathcal{C}'$被接受的概率（也就是所谓的\concept{接受率}）为
+从\autoref{alg:metro-hast}中很容易看出，提议$\mathcal{C}'$被接受的概率为
 \begin{equation}
     p(\mathcal{C} \to \mathcal{C}') = Q(\mathcal{C}' | \mathcal{C}) A(\mathcal{C}' | \mathcal{C}) = Q(\mathcal{C}' | \mathcal{C}) \min \left(1, \frac{W(\mathcal{C}') Q(\mathcal{C} | \mathcal{C}')}{W(\mathcal{C}) Q(\mathcal{C}' | \mathcal{C})} \right).
     \label{eq:prob-metro-hast}
 \end{equation}
+上式中的
+\begin{equation}
+    R = \frac{W(\mathcal{C}') Q(\mathcal{C} | \mathcal{C}')}{W(\mathcal{C}) Q(\mathcal{C}' | \mathcal{C})}
+\end{equation}
+就是所谓的\concept{接受率}。
 分类讨论可以发现\eqref{eq:markov-mcmc}的确是成立的。
 只要我们保证$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链是不可约的，那么\eqref{eq:prob-metro-hast}描述的马尔可夫链就是不可约的，因为随意两个构型之间都能够跃迁。
 因此，只要$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链不可约，Metropolis-Hastings算法一定是一个好的马尔可夫链蒙特卡洛方法。
@@ -325,12 +330,16 @@
 我们就需要设法将$\hat{H}_\text{I}$转化为单粒子算符的形式，也就是说要引入一个辅助场，让费米子之间的相互作用等效为费米子和这个辅助场的相互作用。
 由于我们只讨论二费米子过程\eqref{eq:two-fermions-hamiltonian}，可以使用离散H-S变换引入这个辅助场，然后积掉费米子自由度而剩下辅助场自由度。辅助场自由度是一整个辅助场世界线，也就是说如果有$d$个空间维度，那么辅助场世界线就有$d+1$个维度。
 这是量子统计的普遍特征：$d$维的量子系统等价于$d+1$维的经典系统，多出来的一个维度是（有限大小的）虚时间。最后就使用关于一系列辅助场构型的行列式之和写出了虚时间路径积分。
+由于辅助场的形式往往需要按照相互作用哈密顿量的形式确定，本节只是指出辅助场的存在性，而不具体讨论怎么做H-S变换。
+
+由于本文基本上只考虑单电子量子力学问题，我们引入以下记号：如无特殊说明，使用$\tau$表示虚时间，$n, m$等表示离散的虚时间点的编号；使用$i, j$表示格点坐标，使用$\sigma$表示自旋，使用$x, y$等表示电子在坐标表象下的量子数，即$x=(i, \sigma)$。
+设$\hat{c}^\dagger$表示适当表象下的费米子产生算符排成的行向量，$\vb{s}_n$和$\vb{s}_\tau$表示第$n$个虚时间采样点（也即，$\tau=n\Delta \tau$）处的辅助场构型，如无特殊说明$\vb{s}$就表示整个辅助场时间线。
 
 \subsubsection{虚时间路径积分的行列式表示}
 
-接下来我们引入一些简便记号。设$\hat{c}^\dagger$表示适当表象下的费米子产生算符排成的行向量，$\vb{s}_n$和$\vb{s}_\tau$表示第$n$个虚时间采样点（也即，$\tau=n\Delta \tau$）处的辅助场构型，如无特殊说明$\vb{s}$就表示整个辅助场时间线，并将虚时间路径积分写成
+虚时间路径积分可以写成
 \begin{equation}
-    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{-H_\text{I}(\vb{s}_n)}, 
+    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{H_\text{I}(\vb{s}_n)}, 
     \label{eq:imaginary-time-path-integral-with-aux-field}
 \end{equation}
 应注意其中$H_\text{I}(\vb{s}_n)$和之前定义的$\hat{H}_\text{I}$未必相等，它现在是积掉了费米子自由度之后的哈密顿量。
@@ -341,7 +350,7 @@
 其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
 为了简写我们显式地引入虚时间演化算符（由于虚时间演化算符含有全部动力学，我们这里采取的是虚时间的薛定谔绘景：不需要考虑算符的变动）
 \begin{equation}
-    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{- \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{-\vb{h}_\text{I}(\vb{s}_n)},
+    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{ \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{\vb{h}_\text{I}(\vb{s}_n)},
 \end{equation}
 使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
 \[
@@ -368,6 +377,7 @@
 原则上，我们可以直接使用以上方法现在构造一个经典的随机现象，使得
 \begin{equation}
     p(\vb{s}) = \frac{ C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}{\sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}, \quad \expval{O}_{\vb{s}} = \frac{\trace(\hat{O} \hat{U}_{\vb{s}}(\beta, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)},
+    \label{eq:ftqmc-prob}
 \end{equation}
 并且使用标准的有限温度平衡态场论的方法，也就是
 \begin{equation}
@@ -381,9 +391,11 @@
 \end{equation}
 则容易看出
 \begin{equation}
-    \expval{O}_{\vb{s}}(t) = \trace((1 - (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}) \vb{A}).
+    \expval{O}_{\vb{s}}(\tau) = \trace((1 - (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}) \vb{A}).
 \end{equation}
-相应的，格点坐标表象下的等时格林函数就是
+一旦单体算符的期望确定了，多体算符的期望可以使用单体算符的期望算出来。
+
+从计算单体算符的期望的方式可以马上看出，格点坐标表象下的等时格林函数就是
 \begin{equation}
     \expval*{\hat{c}_x(\tau) \hat{c}^\dagger_y(\tau)}_{\vb{s}} = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}_{xy},
 \end{equation}
@@ -393,9 +405,62 @@
 \end{equation}
 需要说明的是这里其实没有用到任何关于标签$x, y$的特殊性质——它们可以是$(i, \sigma)$，即格点坐标和自旋的组合，或者，如果能够保证自旋旋转不变性，那么不同的自旋实际上是解耦的，则可以取$x, y$为格点坐标，而单独附加标注自旋。
 
-多体算符可以使用格林函数算出来。
+进一步，我们考虑不等时格林函数。这些格林函数实际上对蒙特卡洛更新非常重要（见下一节）。
+设$\tau_1 > \tau_2$，则
+\[
+    \begin{aligned}
+        G_{\vb{s}}(x, \tau_1; y, \tau_2) &= \expval*{\hat{c}_x(\tau_1) \hat{c}^\dagger_y(\tau_2)} \\
+        &= \frac{\trace (\hat{U}_{\vb{s}}(\beta, \tau_2) \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}_x \hat{U}_{\vb{s}}(\tau_1, \tau_2) \hat{c}_y^\dagger \hat{U}_{\vb{s}}(\tau_2, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)},
+    \end{aligned}
+\]
+因此问题的核心就是要计算$\hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}_x \hat{U}_{\vb{s}}(\tau_1, \tau_2)$。
+我们首先容易证明恒等式
+\[
+    \ee^{\Delta \tau \hat{c}^\dagger \vb{A} \hat{c}} \hat{c} \ee^{- \Delta \tau \hat{c}^\dagger \vb{A} \hat{c}} = \ee^{- \Delta \tau \vb{A}} \hat{c},
+\]
+从而容易看出
+\[
+    \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c} \hat{U}_{\vb{s}}(\tau_1, \tau_2) = \vb{B}_{\vb{s}}(\tau_1, \tau_2) \hat{c},
+\]
+对上式取共轭转置，并重新定义$\hat{U}$，就得到
+\[
+    \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}^\dagger \hat{U}_{\vb{s}}(\tau_1, \tau_2) = \hat{c}^\dagger \vb{B}^{-1}(\tau_1, \tau_2).
+\]
+而$\vb{B}$矩阵中不显含任何电子自由度，于是可以把它提到迹运算的外面，并且使用矩阵形式，就得到
+\[
+    \vb{G}_{\vb{s}}(\tau_1, \tau_2) = \vb{B}_{\vb{s}}(\tau_1, \tau_2) \vb{G}_{\vb{s}}(\tau_2), \quad \tau_1 > \tau_2.
+\]
+在$\tau_2 > \tau_1$时可以得到类似的结果，最后
+\begin{equation}
+    \vb{G}_{\vb{s}}(\tau_1, \tau_2) = \begin{cases}
+        \vb{B}_{\vb{s}}(\tau_1, \tau_2) \vb{G}_{\vb{s}}(\tau_2), \quad &\tau_1 > \tau_2, \\
+        - (1 - \vb{G}_{\vb{s}}(\tau_1)) \vb{B}^{-1}_{\vb{s}}(\tau_1, \tau_2) , \quad &\tau_1 < \tau_2.
+    \end{cases}
+\end{equation}
 
 \subsubsection{更新}
+
+原则上\eqref{eq:ftqmc-prob}就足够计算接受率了，从而可以用于更新，但是这样在计算上是非常不经济的，因为需要真的计算一系列矩阵的$\ee$指数的积，计算上非常耗时，并且由于每个矩阵都不大，乘起来会造成很大的误差。
+下面我们将讨论怎么高效、精确地计算更新率。
+
+设我们一次只更新$(i, n)$位置的$\vb{s}$格点，也就是，一次只更新一个固定虚时间点上的辅助场的一个格点。
+显然这只会影响一个$\vb{B}$帧，于是设
+% TODO：是一般结果吗？
+更新之后的$\vb{B}$矩阵是
+\begin{equation}
+    \vb{B}_{\vb{s}'}(\beta, 0) = \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0), \quad \tau = n \Delta \tau.
+\end{equation}
+这样就可以计算出接受率为
+\begin{equation}
+    \begin{aligned}
+        R &= \frac{\det(1 + \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0))}{\det(1 + \vb{B}_{\vb{s}}(\beta, 0))} \\
+        &= \det \left( 1 + \vb{\Delta}^{(i)} (1 - \vb{G}_{\vb{s}}(\tau)) \right).
+    \end{aligned}
+\end{equation}
+可以看出，接受率实际上完全由$(i, n)$的位置以及等时格林函数确定。
+
+然而，即使等时格林函数也不容易计算，因为它还是涉及$\vb{B}$矩阵的连续相乘和取逆。
+为了保证精度，我们必须分析什么地方可能出现数值不稳定性，并使用适当的矩阵算法规避这些不稳定性。
 
 \subsection{Hubbard型相互作用}
 
@@ -403,9 +468,41 @@
 
 考虑如下相互作用：
 \begin{equation}
-    \hat{H}_\text{I} = U \sum_i (\hat{n}_{i, \uparrow} - \frac{1}{2}) (\hat{n}_{i, \downarrow} - \frac{1}{2}),
+    \hat{H}_\text{I} = U \sum_i \left(\hat{n}_{i, \uparrow} - \frac{1}{2} \right) \left(\hat{n}_{i, \downarrow} - \frac{1}{2} \right),
 \end{equation}
 我们特意在标准的Hubbard相互作用的粒子数中减去了$1/2$，不过这无关紧要，无非是改变了化学势的零点而已。
+这是Hubbard模型的相互作用。
+我们如下引入离散H-S变换：
+\begin{equation}
+    \exp(-\Delta \tau U \sum_i (\hat{n}_{i, \uparrow} - 1/2) (\hat{n}_{i, \downarrow} - 1/2)) = C \sum_{s_1, \ldots, s_N = \pm 1} \exp(\alpha \sum_i s_i (\hat{n}_{i, \uparrow} - \hat{n}_{i, \downarrow})),
+\end{equation}
+其中
+\begin{equation}
+    \cos \alpha = \exp(-\Delta \tau U / 2), \quad C = \exp(\Delta \tau U N / 4) / 2^N.
+\end{equation}
+辅助场是一个只有$\pm 1$的场，因此实际上它是一个所谓的“伊辛场”，当然，Hubbard模型和经典伊辛模型的这种对应关系只有数值模拟上的意义。
+这样就有
+\begin{equation}
+    \vb{h}_{\text{I}}(\vb{s}_n) = \alpha \pmqty{\dmat{\diag \vb{s}_n, - \diag \vb{s}_n}},
+\end{equation}
+而$C(\vb{s})$实际上和$\vb{s}$的构型无关，只和点阵的大小有关，那么我们可以直接略去它。
+
+\subsubsection{更新策略}
+
+设
+\begin{equation}
+    A_{x, y}^{(i)} = \delta_{x, y} \delta_{x, (i, \sigma)}, \quad \sigma = \pm 1,
+\end{equation}
+那么就有
+\[
+    \ee^{\vb{h}_\text{I}(\vb{s}_n)} = \exp(\alpha \sum_j s_{j, n} \vb{A}^{(j)}).
+\]
+这样，设$(i, n)$处的$\vb{s}$被翻转了，那么
+\begin{equation}
+    \ee^{\vb{h}_\text{I}(\vb{s}_n')} = \exp(-\alpha s_{i, n} \vb{A}^{(i)}) \exp(\alpha \sum_{j \neq i} s_{j, n} \vb{A}^{(j)}) = ( 1 + \underbrace{( \ee^{-2 \alpha s_{i, n} \vb{A}^{(i)}} - 1)}_{\vb{\Delta}^{(i)}} ) \ee^{\vb{h}_\text{I}(\vb{s}_n)} .
+\end{equation}
+$\vb{A}$是一个非常稀疏的矩阵，只有两个非零元素，从而$\vb{\Delta}^{(i)}$也是一个非常稀疏的矩阵，只有两个非零元素，它们位于$x=y=(i, \sigma)$，$\sigma$可以取$\pm 1$。
+这样
 
 \subsection{完全平方型相互作用哈密顿量}
 

@@ -1,0 +1,221 @@
+\documentclass[a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{abstract}
+\usepackage{amsmath, amssymb}
+\usepackage{qtree}
+% \usepackage{gb4e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+
+\DeclareMathOperator{\pmergel}{PMergeL}
+\DeclareMathOperator{\pmerger}{PMergeR}
+\DeclareMathOperator{\hmergel}{HMergeL}
+\DeclareMathOperator{\hmerger}{HMergeR}
+\DeclareMathOperator{\copyl}{CopyL}
+\DeclareMathOperator{\copyr}{CopyR}
+\DeclareMathOperator{\agree}{Agree}
+\DeclareMathOperator{\move}{Move}
+\DeclareMathOperator{\undefined}{undefined}
+\setlength{\arraycolsep}{2pt}
+\newcommand*{\synbracket}[2][{}]{[_\mathrm{#1} \; \begin{matrix} #2 \end{matrix} \; ]}
+
+\newrefformat{fig}{Figure \ref{#1}}
+
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\title{The Framework of Minimalist Syntax}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This article is a summary of Minimalist syntax in modern generative grammar.
+    We review the mutually recognized primitives of the Minimalist Program, its main motivation, and its main achievements.
+    We also present main disputes - both theoretical and empirical issues around this research program, and list some dominant frameworks trying to settle these issues.  
+\end{abstract}
+
+\section{Why Minimalism}
+
+The Principle and Parameter 
+
+\section{Syntactic objects and operations}\label{sec:syn-obj}
+
+This section deals with syntactic objects, like morphemes, words, phrases, and the operations used to build them.
+We are not to give a formalization of Minimalist syntax here so we will not use much technical terms, 
+and often discussion about a certain concept will involves concepts yet to be defined.
+
+\subsection{Syntactic objects and their structures}
+
+A \concept{syntactic object} may be a morpheme, a word or a constituent.
+It is either taken directly from the \concept{lexicon}, 
+or formed by syntactic operations with other syntactic objects.
+A \concept{morphemes} is a minimal unit in the lexicon, which is a bundle of features.
+A \concept{feature} is a key-value pair specifying attributes of a certain syntactic object.
+It may express something about the object itself 
+(for example whether it is referential, whether it is in single form or plural form, or if it is countable.), 
+and in this case it is called a \concept{categorical feature};
+or it may instruct how its host can be merged with other objects 
+(for example a transitive verb is to be merged with a nominal expression), 
+and in this case it is called a \concept{selector feature}
+ - correspondingly, categorical features of the object to be selected to merge is called \concept{selectee features}.
+A \concept{word} is a object without selector features that select morphemes (or, equivalently, trigger head merge), 
+which may be a single morpheme or a tree of morphemes constructed by head merge.
+A \concept{constituent} is an object 
+that is a word or is created by phrasal merging of a word and a constituent, or two constituents.
+A constituent without any selector features that drive phrasal merge is called a \concept{phrase}.
+
+Constituents are also called as \concept{projections}, 
+because they can be formed by merging a single word with a constituent, and merging the result with some constituent else, and on and on, so the single word in the beginning \concept{projects into a constituent}.
+And since a phrase no longer selects other constituent, it is called a \concept{maximal projection}.
+In contrary, non-phrase constituents are called \concept{intermediate projections}.
+\prettyref{fig:x-bar-structure-one} shows a constituent formed directly by one word.
+\prettyref{fig:x-bar-structure-two}, \prettyref{fig:x-bar-structure-three} and \prettyref{fig:x-bar-structure-four} shows a series of constituents with increasing numbers of arguments.
+Take \prettyref{fig:x-bar-structure-four} as an example.
+X is a word, and it is first merged with YP, and then ZP, and finally WP. 
+As the merge process goes on, the constituent's tree diagram expands, 
+just like the expansion of the light cone of a projector as we goes far.
+That is why constituents are called projections. 
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.XP {X \\ the head} ]
+        \subcaption{Bare head as a constituent}
+        \label{fig:x-bar-structure-one}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.XP {X \\ the head} {YP \\ an argument} ]
+        \subcaption{One argument}
+        \label{fig:x-bar-structure-two}
+    \end{minipage}
+    \vfill
+    \vspace{2em}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.XP [.X' {YP \\ an argument} {X \\ the head } ] !\qsetw{2cm} {ZP \\ an argument} ]
+        \subcaption{Two arguments}
+        \label{fig:x-bar-structure-three}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.XP [.X' {ZP \\ an argument} !\qsetw{2cm} [.X' {X \\ the head} {YP \\ an argument} ] ] !\qsetw{2.2cm} {WP \\ an argument} ]
+        \subcaption{Three arguments}
+        \label{fig:x-bar-structure-four}
+    \end{minipage}
+    \caption{X-Bar structures}
+    \label{fig:x-bar-structure}
+\end{figure}
+
+In tree diagrams of constituents we usually use XP to denote a phrase, 
+and use X' to denote an intermediate projection.
+This X-X'-\dots-X'-XP scheme is therefore called \concept{X-Bar scheme}, 
+and notations X, X', XP, Y, Y', YP, \dots are called \concept{labels}.
+X is called the \concept{head} of the X' or XP containing it.
+Since features of all heads are clearly stored in the lexicon, 
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.{$>$} $\theta$ [.$<$ $\alpha$ [.$<$ $\beta$ $\gamma$ ] ] ]
+        \subcaption{A bare phrase structure}
+        \label{fig:bps-example-origin}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.{$\alpha$} $\theta$ [.{$\alpha$} $\alpha$ [.{$\beta$} $\beta$ $\gamma$ ] ] ]
+        \subcaption{\autoref{fig:bps-example-origin} with heads annotated}
+    \end{minipage}
+    \vfill
+    \vspace{2em}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.AP $\theta$ [.AP $\alpha$ [.BP $\beta$ $\gamma$ ] ] ]
+        \subcaption{Corresponding X-Bar structure}
+    \end{minipage}
+    \caption{X-Bar structure and bare phrase structures}
+    \label{fig:x-bar-and-bps}
+\end{figure}
+
+\subsection{Structure building operations}
+
+Now we discuss basic structure building operations.
+In \autoref{sec:syn-obj} we already learned that all operations must be triggered by certain features.
+Since discrete features can be tricky to deal with in probabilistic grammars, 
+in this section we will not consider which feature triggers which operation.
+We will use flexible terms like ``$\alpha$ selects $\beta$'', which can be easily assigned a probabilistic meaning.
+
+\concept{Phrasal merge} means to merge a word to a maximal projection, 
+or to merge an intermediate projection to a maximal projection.
+% TODO: left selection and right selection
+\begin{equation}
+    \pmergel(\alpha, \beta) = \begin{cases}
+        \synbracket[<]{\alpha & \beta}, & \quad \text{if $\alpha$ is a word and $\beta$ is a phrase and $\alpha$ selects $\beta$}, \\
+        \undefined, & \quad \text{otherwise}
+    \end{cases}.
+    \label{eq:pmergel-def}
+\end{equation}
+
+\concept{Head merge} means to merge two morphemes together to form a larger object,
+which takes all features on the two morphemes except features driving the merge.
+This means head merge may change the argument structure of a certain head.
+For example, suppose $\alpha$ is of category $A$ and selects one argument of category $B$,
+and can be optionally merged with $\beta$ with category $B$ which selects an argument of category $C$.
+Head merging between $\alpha$ and $\beta$ creates $\alpha \beta$, which selects two arguments, 
+of which one is of category $B$ and the other of category $C$.
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.X Z [.X X Y ] ]
+        \subcaption{A complex head}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\linewidth}
+        \Tree [.XP [.X' MP [.X Z [.X X Y ] ] ] !\qsetw{2cm} NP ]
+        \subcaption{Complex head in a constituent}
+    \end{minipage}
+    \caption{Head merge}
+    \label{fig:head-merge}
+\end{figure}
+
+\begin{equation}
+    \copyl (\synbracket[\alpha]{\ldots \beta \ldots}) = \begin{cases}
+        \synbracket[<]{\beta & \synbracket[\alpha]{\ldots \beta \ldots}} & \quad \text{if $\synbracket[\alpha]{\ldots \beta \ldots}$ selects $\beta$}, \\
+        \undefined & \quad \text{otherwise}
+    \end{cases}.
+\end{equation}
+
+\subsection{Probabilistic derivation}
+
+\concept{Syntactic derivation} denotes the process of taking morphemes out of the lexicon (called \concept{numeration}), merging them into words and constituents, and transferring them into phonetic forms. 
+In each stage of derivation, there is one or more syntactic object on building.
+The set of all syntactic objects completely describe the state of the current state, so we call the set \concept{workspace}.
+% Therefore, the derivation is a Markov process, and workspaces are states. 
+% TODO: why do we never care about the time, or in other words, the number of steps?
+% I guess I get the point. It is not a Markov process?!
+% It is a Markov process in its stable status?
+
+The concept of adjunction is completely absent in this section, because we do not view adjunction as a primitive operation in syntactic derivation. Rather, we take it as a secondary phenomenon emerging from % TODO
+
+\section{Skeleton of sentences}
+
+\subsection{Categories}
+
+\subsection{The lexical structure}
+
+% VP and light verb 
+
+\subsection{The periphery hierarchy}
+
+% TODO:topic, focus, force
+
+\subsection{Adjunction and conjunction}
+
+% TODO: [C A], [C B] -> [C [_&P A & B ]]
+% For example:
+% He gets a zero as his score and gets mad.
+% [_vP he gets a zero as his score ] + [_vP he gets mad] -> [_TP He [_&P [gets a zero as his score] and [gets mad] ] ]
+
+\end{document}
