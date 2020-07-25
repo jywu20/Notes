@@ -350,7 +350,7 @@
 其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
 为了简写我们显式地引入虚时间演化算符（由于虚时间演化算符含有全部动力学，我们这里采取的是虚时间的薛定谔绘景：不需要考虑算符的变动）
 \begin{equation}
-    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{ \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{\vb{h}_\text{I}(\vb{s}_n)},
+    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{ \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \underbrace{\ee^{-\Delta \tau \vb{h}_0} \ee^{\vb{h}_\text{I}(\vb{s}_n)}}_{\vb{B}_{\vb{s}}(\tau_1+\Delta \tau, \tau_1)},
 \end{equation}
 使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
 \[
@@ -401,7 +401,7 @@
 \end{equation}
 相应的记其系数矩阵为$\vb{G}(\tau, \tau)$，则有
 \begin{equation}
-    \vb{G} = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}.
+    \vb{G}(\tau, \tau) = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}.
 \end{equation}
 需要说明的是这里其实没有用到任何关于标签$x, y$的特殊性质——它们可以是$(i, \sigma)$，即格点坐标和自旋的组合，或者，如果能够保证自旋旋转不变性，那么不同的自旋实际上是解耦的，则可以取$x, y$为格点坐标，而单独附加标注自旋。
 
@@ -461,6 +461,9 @@
 
 然而，即使等时格林函数也不容易计算，因为它还是涉及$\vb{B}$矩阵的连续相乘和取逆。
 为了保证精度，我们必须分析什么地方可能出现数值不稳定性，并使用适当的矩阵算法规避这些不稳定性。
+请注意系统的能谱一般来说是比较宽的，即$\hat{H}$最大的本征值和最小的本征值可以差很多，从而每一个$\exp(-\Delta \tau \vb{h}_0) \exp(\vb{h}_\text{I})$的最大和最小的特征值可以相差很多，它们连乘会产生一个条件数特别大的、几乎是奇异的矩阵，因此$\vb{B}$矩阵是非常病态的，稍有误差就会产生很大影响。
+考虑到计算机的精度不可能无限制提高，我们应该尽可能避免计算真的显式计算$\vb{B}$矩阵，而应该使用一些不那么病态的对象代替它。
+至少我们应该把不同的能量尺度分开来考虑，来避免条件数没完没了地增大。
 
 \subsection{Hubbard型相互作用}
 
