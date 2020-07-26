@@ -288,7 +288,7 @@
 
 \section{辅助场蒙特卡洛方法}
 
-\subsection{用辅助场代替系统状态}
+\subsection{辅助场蒙特卡洛方法的一般理论}
 
 \subsubsection{H-S变换引入辅助场}
 
@@ -465,6 +465,28 @@
 考虑到计算机的精度不可能无限制提高，我们应该尽可能避免计算真的显式计算$\vb{B}$矩阵，而应该使用一些不那么病态的对象代替它。
 至少我们应该把不同的能量尺度分开来考虑，来避免条件数没完没了地增大。
 
+于是我们先来看一看怎么把“不同的能量尺度”（或者说不同的本征值）分开。
+设$\vb*{M}$是这样一个非常病态的矩阵，记其维数为$N_p \times N_p$，设
+\begin{equation}
+    \vb{M} = \pmqty{\vb{v}_1 & \vb{v}_2 & \cdots & \vb{v}_{N_p}},
+\end{equation}
+对它们做Gram-Schimidt正交化，得到$\{\vb{v}_i'\}$，并设两者之间的转换矩阵由下式给出：
+\begin{equation}
+    \pmqty{\vb{v}'_1 & \vb{v}'_2 & \cdots & \vb{v}'_{N_p}} = \pmqty{\vb{v}_1 & \vb{v}_2 & \cdots & \vb{v}_{N_p}} \vb{V}_R^{-1}.
+\end{equation}
+容易验证，存在对角矩阵$\vb{D}_R$，使得
+\begin{equation}
+    \vb{M} = \underbrace{\pmqty{\vb{v}_1 / \abs*{\vb{v}_1} & \vb{v}_2 / \abs*{\vb{v}_2} & \cdots & \vb{v}_{N_p} / \abs*{\vb{v}_{N_p}}}}_{\vb{U}_R} \vb{D}_R \vb{V}_R,
+\end{equation}
+可以估计，$\vb{U}_R$和$\vb{V}_R$都不非常病态，则$\vb{D}_R$是比较病态的——这就是说，其对角线上的元素大小相差很大。
+于是我们就将$\vb{M}$中病态的部分收集到了一个对角矩阵中，以便妥善处理。
+
+\subsubsection{有限尺度效应}
+
+计算复杂度大约是点阵规模的三次方。虽然这是多项式关系，但无论如何很大的点阵（足够让我们得到热力学性质的大小）直接拿来模拟是不现实的。
+为了在并不非常大的系统中获得还算可以的效果，我们必须系统考虑点阵边界带来的效应，即\concept{有限尺度效应}或者\concept{边界效应}。
+实际上这是数值模拟中总是要碰到的难题，求解无限大空间中的偏微分方程也常常要定义一个模拟上的“无限远”而避免边界引入一些非平凡的、在实际的无限大系统中看不到的物理。
+
 \subsection{Hubbard型相互作用}
 
 \subsubsection{H-S变换}
@@ -555,47 +577,5 @@ $\vb{A}$是一个非常稀疏的矩阵，只有两个非零元素，从而$\vb{\
     \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{-H_\text{I}(\vb{s}_n)}, \quad C(\vb{s}) \ee^{-H_\text{I}(\vb{s}_n)} = \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}},
     \label{eq:o2-path-integral}
 \end{equation}
-应注意其中$H_\text{I}(\vb{s}_n)$和之前定义的$\hat{H}_\text{I}$未必相等。
-由于$\hat{H}_0$是二次型，而由H-S变换的性质，$\hat{H}_\text{I}$也是二次型，则可以设
-\begin{equation}
-    \hat{H}_0 = \hat{c}^\dagger \vb{h}_0 \hat{c}, \quad \hat{H}_\text{I} = \hat{c}^\dagger \vb{h}_\text{I} \hat{c},
-\end{equation}
-其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
-为了简写我们引入记号
-\begin{equation}
-    \hat{U}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{- \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \vb{h}_0} \ee^{-\vb{h}_\text{I}(\vb{s}_n)},
-\end{equation}
-使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
-\[
-    \trace(\ee^{-\beta \hat{H}}) = \sum_{\vb{s}} C(\vb{s}) \trace \hat{U}(\beta, 0) = \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)),
-\]
-而
-\[
-    \begin{aligned}
-        \trace(\ee^{-\beta \hat{H}} \hat{O}) &= \sum_{\vb{s}} C(\vb{s}) \trace(\hat{O} \ee^{-\beta \hat{H}}) \\
-        &= \sum_{\vb{s}} C(\vb{s}) \trace\hat{U}(\beta, 0) \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)} \\
-        &= \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)) \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)}.
-    \end{aligned} 
-\]
-现在构造一个经典的随机现象，使得
-\begin{equation}
-    p(\vb{s}) = \frac{ C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}{\sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}, \quad \expval{O}_{\vb{s}} = \frac{\trace(\hat{O} \hat{U}(\beta, 0))}{\trace \hat{U}(\beta, 0)},
-\end{equation}
-并且使用标准的有限温度平衡态场论的方法计算出$\expval{O}_{\vb{s}}$（由于是自由场论，Wick定理适用），我们就可以使用\eqref{eq:classical-expectation}得到各种物理量的期望值了。
-
-使用生成泛函，有
-\begin{equation}
-    \expval{O}_{\vb{s}} = \eval{\pdv{\ln \trace(\ee^{\eta \hat{O}} \hat{U}(\beta, 0))}{\eta}}_{\eta=0},
-\end{equation}
-在$\hat{O}$是单体算符时，设
-\begin{equation}
-    \hat{O} = \hat{c}^\dagger \vb{A} \hat{c},
-\end{equation}
-则容易看出
-\begin{equation}
-    \expval{O}_{\vb{s}} = \trace((1 - (1+\vb{B}_{\vb{s}}(\beta, 0))^{-1}) \vb{A}).
-\end{equation}
-
-% TODO：怎么计算二体物理量？
 
 \end{document}

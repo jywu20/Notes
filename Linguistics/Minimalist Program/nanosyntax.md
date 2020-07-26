@@ -44,6 +44,13 @@ Nanosyntax框架本身并不特别关注phase，但是phase是很容易可以加
 
 # 与最简方案有关的话题
 
+## Selection
+
+是什么指导了Merge？一个简单的想法是，terminal nodes含有选择特征之类的东西，这些（语义无解的）特征驱动了Merge，可能也驱动了Move。
+然而，语义无解特征的存在必定要求feature bundle。
+
+可以认为错误的Merge产生的结构不能被正确地spell out，即把选择特征等东西全部放到词库中。
+
 ## Agree
 
 大概也要依靠feature copying来实现Agree；前提是，Nanosyntax允许出现unvalued features。
@@ -54,6 +61,9 @@ Nanosyntax框架本身并不特别关注phase，但是phase是很容易可以加
 
 ## 所谓Adjunct
 
+Nanosyntax是不是承认adjunct实际上反而和这个理论本身关系不大，而和与它一起使用的句子结构理论关系比较大。
+如果我们将Nanosyntax和比较现代版本的Cartography一起使用，那么就不会存在adjunct，因为所有可选的论元都是被某个functional head携带出来的。
+
 ## Feature bundle和Word formation
 
 凡是含有feature bundle的head都必须被分解成一系列分裂的heads。例如，英语中的T同时含有EPP和时间，那么就应该分析成
@@ -61,6 +71,9 @@ Nanosyntax框架本身并不特别关注phase，但是phase是很容易可以加
 [<sub>EppP</sub> ... [EPP] [<sub>TP</sub> ... T ... ] ]
 
 然后EPP驱动的movement让主语移动到EppP的specifier上。这是经典的head splitting分析；如果不需要这么细粒度的分析，考虑到remnant movement会让需要被合并为一个词的成分自然地聚集起来，也可以沿用过去的feature bundle分析。
+
+需要注意的是，由于我们总是可以像把人称和数组合起来一样，把多个的特征组合成单个特征，feature bundle不存在这个论断也是可以被部分绕开的。
+但是，像人称和数的融合那样非常自然的融合是非常少见的，大多数情况下不同的语法范畴还是会以不同的方式呈现出来，这就是为什么“feature bundle”不存在这个说法还是有意义的。
 
 # 与Distributed Morphology的关系
 
