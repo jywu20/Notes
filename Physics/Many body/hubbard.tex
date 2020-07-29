@@ -82,33 +82,59 @@
 
 \section{Hubbard模型的定义}
 
+\concept{Hubbard模型}是一种常见的强关联电子模型，它是一个定义在点阵上的模型，以下我们照惯例用$i, j$等表示格点坐标。
 不包含化学势的哈密顿量为
 \begin{equation}
-    \hat{H} = -t \sum_{\pair{i, j}, \sigma} \hat{c}_{i\sigma}^\dagger \hat{c}_{j\sigma} + \text{h.c.} + U \sum_i \hat{n}_{i \uparrow} \hat{n}_{i \downarrow}.
+    \hat{H} = \underbrace{-t \sum_{\pair{i, j}, \sigma} \hat{c}_{i\sigma}^\dagger \hat{c}_{j\sigma} + \text{h.c.}}_{\hat{H}_0} + \underbrace{U \sum_i \hat{n}_{i \uparrow} \hat{n}_{i \downarrow}}_{\hat{H}_\text{I}}.
 \end{equation}
 或者，为了后面蒙特卡洛模拟的方便，重新定义化学势，也可以有
 \begin{equation}
-    \hat{H} = -t \sum_{{i, j}, \sigma} \hat{c}_{i\sigma}^\dagger \hat{c}_{j\sigma} + \text{h.c.} 
+    \hat{H} = -t \sum_{\pair{i, j}, \sigma} \hat{c}_{i\sigma}^\dagger \hat{c}_{j\sigma} + \text{h.c.} 
     + U \sum_i \left(\hat{n}_{i\uparrow} - \frac{1}{2}\right) \left(\hat{n}_{i\downarrow} - \frac{1}{2}\right).
 \end{equation}
 
 \section{Hubbard模型的量子蒙特卡洛模拟}
 
-\subsection{Trotter分解和辅助场}
+\subsection{Trotter分解和辅助场引入}
 
-设
-\begin{equation}
-    \hat{H}_\text{I} = 
-\end{equation}
-
+下面我们尝试对Hubbard模型做Trotter分解。设虚时间间隔为$\Delta\tau$，总共有$m$个虚时间点，$\tau=m\Delta \tau$。
 对Hubbard模型，有一种特殊的分解方法：
 \begin{equation}
     \ee^{-\Delta \tau \hat{H}_\text{I}} = \gamma \sum_{s_1, s_2, \ldots, s_N = \pm 1} \ee^{\alpha \sum_i s_i (\hat{n}_{i\uparrow} - \hat{n}_{i \downarrow})}, 
     \quad \gamma = \frac{1}{2^N} \ee^{\Delta \tau U N / 4}, \quad \cosh(\alpha) = \ee^{\Delta \tau U / 2},
 \end{equation}
-这种方法破坏了$SU(2)$对称性
-
-$\vb{B}$是一个$2N \times 2N$矩阵。在$2N$维中，前$N$维对应自旋向上的态，后$N$维对应自旋向下的态。
-$N$个点的排列顺序：
+可以看到$\gamma$是一个和辅助场$\{s_i\}$（照惯例我们下面记它的时间线为$\vb{s}$）无关的量，考虑到配分函数的常数因子无关紧要，略去此因子，则配分函数为
+\[
+    \begin{aligned}
+        Z &= \trace \prod_{n=1}^m \sum_{\vb{s}_{n}} \ee^{\alpha \sum_i s_i (\hat{n}_{i\uparrow} - \hat{n}_{i \downarrow})} \ee^{\Delta \tau t \sum_{\pair{i, j}, \sigma} \hat{c}_{i\sigma}^\dagger \hat{c}_{j\sigma} + \text{h.c.}} \\
+        &= \sum_{\vb{s}} \prod_{n=1}^m \ee^{\alpha \hat{c}^\dagger_{\uparrow} \diag{\vb{s}_n} \hat{c}_{\uparrow}} \ee^{- \alpha \hat{c}^\dagger_{\downarrow} \diag{\vb{s}_n} \hat{c}_{\downarrow}} \ee^{- \Delta \tau \hat{c}_\uparrow^\dagger \vb{T} \hat{c}_\uparrow} \ee^{- \Delta \tau \hat{c}_\downarrow^\dagger \vb{T} \hat{c}_\downarrow},
+    \end{aligned}
+\]
+其中我们指定$\vb{T}$是动能部分$\hat{H}_0$在单粒子表象下的系数矩阵，即
+\begin{equation}
+    T_{ij} = \begin{cases}
+        -t, \quad &\pair{i, j}, \\
+        0, \quad &\text{otherwise}.
+    \end{cases}
+\end{equation}
+应用公式
+\begin{equation}
+    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}} \cdots),
+    \label{eq:trace-to-det}
+\end{equation}
+我们积掉费米子自由度，得到
+\[
+    Z = \sum_{\vb{s}} \det(1 + \prod_{n=1}^m \exp(\alpha \diag{\vb{s}_n \oplus (-\vb{s}_n)}) \exp( -\Delta \tau \pmqty{\dmat{\vb{T}, \vb{T}}})).
+\]
+上式中出现了矩阵拼接，因为电子的量子数同时包括位置和自旋，因此需要$2N \times 2N$的矩阵（在$2N$维中，前$N$维对应自旋向上的态，后$N$维对应自旋向下的态）。
+然而，Hubbard模型的自选旋转不变性意味着以上矩阵是分块对角的，从而可以拆分开来，得到下式：
+\begin{equation}
+    Z = \det(1 + \prod_{\sigma=\uparrow, \downarrow} \prod_{n=1}^m \vb{B}_{\vb{s}}^\sigma(\tau) ),
+\end{equation}
+其中
+\begin{equation}
+    \vb{B}^\uparrow_{\vb{s}}(\tau) = \ee^{\alpha \diag \vb{s}_n} \ee^{-\Delta \tau \vb{T}}, \quad \vb{B}^\downarrow_{\vb{s}}(\tau) = \ee^{- \alpha \diag \vb{s}_n} \ee^{-\Delta \tau \vb{T}}.
+\end{equation}
+所有$\vb{B}_{\sigma}$都是一个$N \times N$矩阵，而不是$2N \times 2N$的矩阵。
 
 \end{document}

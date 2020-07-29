@@ -7,6 +7,7 @@
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
 \usepackage{bbm}
 \usepackage{cite}
 \usepackage{graphicx}
@@ -317,7 +318,7 @@
 \end{equation}
 很容易通过对角化验证上式。实际上，更加一般的，我们有
 \begin{equation}
-    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}_{\vb{s}}} \cdots),
+    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}} \cdots),
     \label{eq:trace-to-det}
 \end{equation}
 甚至更一般的情况。
@@ -399,11 +400,16 @@
 \begin{equation}
     \expval*{\hat{c}_x(\tau) \hat{c}^\dagger_y(\tau)}_{\vb{s}} = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}_{xy},
 \end{equation}
-相应的记其系数矩阵为$\vb{G}(\tau, \tau)$，则有
+相应的记其系数矩阵为$\vb{G}(\tau, \tau)$，或者简写为$\vb{G}(\tau)$，则有
 \begin{equation}
-    \vb{G}(\tau, \tau) = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}.
+    \vb{G}(\tau, \tau) = \vb{G}(\tau) = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}.
 \end{equation}
 需要说明的是这里其实没有用到任何关于标签$x, y$的特殊性质——它们可以是$(i, \sigma)$，即格点坐标和自旋的组合，或者，如果能够保证自旋旋转不变性，那么不同的自旋实际上是解耦的，则可以取$x, y$为格点坐标，而单独附加标注自旋。
+容易看出等时格林函数满足以下递推关系：
+\begin{equation}
+    \vb{G}_{\vb{s}}(\tau + 1) = \vb{B}_{\vb{s}}(\tau+1, \tau) \vb{G}_{\vb{s}}(\tau) \vb{B}_{\vb{s}}(\tau+1, \tau)^{-1}.
+    \label{eq:eq-time-green-function-iter}
+\end{equation}
 
 进一步，我们考虑不等时格林函数。这些格林函数实际上对蒙特卡洛更新非常重要（见下一节）。
 设$\tau_1 > \tau_2$，则
@@ -440,7 +446,7 @@
 
 \subsubsection{更新}
 
-原则上\eqref{eq:ftqmc-prob}就足够计算接受率了，从而可以用于更新，但是这样在计算上是非常不经济的，因为需要真的计算一系列矩阵的$\ee$指数的积，计算上非常耗时，并且由于每个矩阵都不大，乘起来会造成很大的误差。
+原则上\eqref{eq:ftqmc-prob}就足够计算接受率了，从而可以直接用于蒙特卡洛模拟，但是这样在计算上是非常不经济的，因为需要真的计算一系列矩阵的$\ee$指数的积，计算上非常耗时，并且由于每个矩阵都不大，乘起来会造成很大的误差。
 下面我们将讨论怎么高效、精确地计算更新率。
 
 设我们一次只更新$(i, n)$位置的$\vb{s}$格点，也就是，一次只更新一个固定虚时间点上的辅助场的一个格点。
@@ -449,8 +455,10 @@
 更新之后的$\vb{B}$矩阵是
 \begin{equation}
     \vb{B}_{\vb{s}'}(\beta, 0) = \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0), \quad \tau = n \Delta \tau.
+    \label{eq:updated-b-matrix}
 \end{equation}
-这样就可以计算出接受率为
+这样更新前后的$\vb{B}$矩阵只需要动一帧就够了，大大简化了计算。
+同时可以计算出接受率为
 \begin{equation}
     \begin{aligned}
         R &= \frac{\det(1 + \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0))}{\det(1 + \vb{B}_{\vb{s}}(\beta, 0))} \\
@@ -458,6 +466,15 @@
     \end{aligned}
 \end{equation}
 可以看出，接受率实际上完全由$(i, n)$的位置以及等时格林函数确定。
+
+实际上，我们还可以一并把更新之后的格林函数使用更新之前的格林函数计算出来，这样就避免了在更新后重新计算格林函数而需要连乘$\vb{B}$矩阵。
+我们需要用到公式
+\[
+    (\vb{A} + \vb{u} \vb{v}^\top)^{-1} = \vb{A}^{-1} - \frac{\vb{A}^{-1} \vb{u} \vb{v}^\top \vb{A}^{-1}}{1 + \vb{v}^\top \vb{A}^{-1} \vb{u}}.
+\]
+按照\eqref{eq:updated-b-matrix}，我们有
+
+然后再应用\eqref{eq:eq-time-green-function-iter}。% TODO
 
 然而，即使等时格林函数也不容易计算，因为它还是涉及$\vb{B}$矩阵的连续相乘和取逆。
 为了保证精度，我们必须分析什么地方可能出现数值不稳定性，并使用适当的矩阵算法规避这些不稳定性。
@@ -479,13 +496,33 @@
     \vb{M} = \underbrace{\pmqty{\vb{v}_1 / \abs*{\vb{v}_1} & \vb{v}_2 / \abs*{\vb{v}_2} & \cdots & \vb{v}_{N_p} / \abs*{\vb{v}_{N_p}}}}_{\vb{U}_R} \vb{D}_R \vb{V}_R,
 \end{equation}
 可以估计，$\vb{U}_R$和$\vb{V}_R$都不非常病态，则$\vb{D}_R$是比较病态的——这就是说，其对角线上的元素大小相差很大。
-于是我们就将$\vb{M}$中病态的部分收集到了一个对角矩阵中，以便妥善处理。
+于是我们就将$\vb{M}$中病态的部分收集到了一个对角矩阵中，以便妥善处理（例如要尽可能少用它们做任何计算，特别是矩阵连乘）。
+
+总之，在行列式蒙特卡洛模拟中等时格林函数是核心。一方面它可以用于计算我们想要的所有物理量，一方面它决定了蒙特卡洛模拟的更新：更新前后的等时格林函数有闭形式的关系，并且接受率由等时格林函数确定。
 
 \subsubsection{有限尺度效应}
 
 计算复杂度大约是点阵规模的三次方。虽然这是多项式关系，但无论如何很大的点阵（足够让我们得到热力学性质的大小）直接拿来模拟是不现实的。
 为了在并不非常大的系统中获得还算可以的效果，我们必须系统考虑点阵边界带来的效应，即\concept{有限尺度效应}或者\concept{边界效应}。
 实际上这是数值模拟中总是要碰到的难题，求解无限大空间中的偏微分方程也常常要定义一个模拟上的“无限远”而避免边界引入一些非平凡的、在实际的无限大系统中看不到的物理。
+
+如果一个系统中的过程在实空间中是非常局域化的，那么毫无疑问边界效应不会很明显；反之，边界效应就会很明显。
+因此就格点理论而言，受边界效应影响最大的可能就是紧束缚模型一类的自由模型。
+一般来说相互作用会减弱边界效应的影响，因此使用自由理论可以有效地估计边界效应什么时候会大到不可接受。
+
+考虑紧束缚模型
+\begin{equation}
+    \hat{H} = - t \sum_{\pair{i, j}} \hat{c}_i^\dagger \hat{c}_j + \text{h.c.},
+\end{equation}
+设点阵边长为$L$，则为了减轻边界效应的影响，我们应当使用以下模型
+\begin{equation}
+    \hat{H}_\text{finite size} = - \sum_{\pair{i, j}}  \hat{c}_i^\dagger \hat{c}_j + \text{h.c.},
+\end{equation}
+其中
+\begin{equation}
+    \lim_{L \to \infty} t_{ij}(L) = t.
+\end{equation}
+这可以看成实空间的重整化，在动量空间中，是积掉了红外部分（而不是通常的紫外部分）。
 
 \subsection{Hubbard型相互作用}
 

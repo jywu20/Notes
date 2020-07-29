@@ -4,11 +4,19 @@
 
 总之目前和Antisymmetry结合的NS非常魔怔就对了。
 
+# 术语和缩写
+
+- fseq: functional head sequence
+- SMS: 句法，形态和语义
+- Syncretism: 不同的结构被同一个语音形式实现了（举例：法语的à可以翻译成to也可以翻译成at）
+- paradigm: 一个词根屈折产生的所有词
+- *ABA: 指的是不同语言中syncretism出现的一种共同模式：我们总是可以适当地排列与一个词根放在一起的其它特征，使得只有相邻的特征才会出现syncretism；换句话说，设有特征序列F1, F2, F3，则有可能出现F1-A, F2-B, F3-C的语音实现关系，或是F1-A, F2-A, F3-B，但从来不会出现F1-A, F2-B, F3-A。
+
 # Nanosyntax理论
 
 ## Nanosyntax的结构
 
-1. 抽象概念，包括但不限于抽象的词根、functional heads等；
+1. 抽象概念，包括但不限于抽象的词根、functional heads等；one head one feature（似乎不包括selectional features）；
 2. 句法，将抽象特征组合起来，其操作就是我们熟悉的Merge，Agree，Move等等；
 3. 词库，每个条目有三个部分组成：一个句法树，一个语音，一个语义；
 4. 语音实现，即将句法树的一部分使用一个词库条目替代；
@@ -44,12 +52,22 @@ Nanosyntax框架本身并不特别关注phase，但是phase是很容易可以加
 
 # 与最简方案有关的话题
 
+## 参数
+
+为什么会有parameter？我们认同The Borer–Chomsky Conjecture: 语言中所有的变化都可以归结到词库的不同。
+换句话说，不同的语言就是以不同的词汇（语音形式，等等）实现同样的句法树。
+这样，parameter就可以归结到词库的不同。
+
 ## Selection
 
 是什么指导了Merge？一个简单的想法是，terminal nodes含有选择特征之类的东西，这些（语义无解的）特征驱动了Merge，可能也驱动了Move。
 然而，语义无解特征的存在必定要求feature bundle。
 
-可以认为错误的Merge产生的结构不能被正确地spell out，即把选择特征等东西全部放到词库中。
+可以认为错误的Merge产生的结构不能被正确地spell out，即把选择特征等东西全部放到词库中。具体来说，我们认为：
+
+1. 抽象特征本身含有selectional features,这些未必是句法上的feature而可以来自一般的认知机制，因此不受one feature one head的影响，例如，“A打了B”可以写成
+    [ [ [case:nom] ... ] [ 动作“打” [ case:acc ] ] ]
+2. 
 
 ## Agree
 
@@ -72,8 +90,13 @@ Nanosyntax是不是承认adjunct实际上反而和这个理论本身关系不大
 
 然后EPP驱动的movement让主语移动到EppP的specifier上。这是经典的head splitting分析；如果不需要这么细粒度的分析，考虑到remnant movement会让需要被合并为一个词的成分自然地聚集起来，也可以沿用过去的feature bundle分析。
 
+那么，一个含有feature bundle的head的complements和specifier应该怎么分析？实际上只要把这些complement和specifier分配给分裂出来的heads就可以了。
+这里的过程非常类似于将管约论中的大NP分解成DP-NumP-ClP-NP的过程。
+
 需要注意的是，由于我们总是可以像把人称和数组合起来一样，把多个的特征组合成单个特征，feature bundle不存在这个论断也是可以被部分绕开的。
 但是，像人称和数的融合那样非常自然的融合是非常少见的，大多数情况下不同的语法范畴还是会以不同的方式呈现出来，这就是为什么“feature bundle”不存在这个说法还是有意义的。
+
+无论如何，在实际分析时采用含有feature bundle的理论还是有必要的，否则真的过于冗长。
 
 # 与Distributed Morphology的关系
 
@@ -181,13 +204,22 @@ KNUT TARALD TARALDSEN. Spanning versus Constituent Lexicalization.
 
 ## 词界
 
-为什么竟然会有“词”的概念？
+为什么竟然会有“词”的概念？一种比较好的方法可能是在语音形式中强行引入“词界”，即#
+
+## spellout是非常局域的
+
+也即，一个成分被spell out时不会参考同一个phase中的其它内容——那么怎么解释反身代词？？
 
 ## functional head和roots有区别吗？
 
 ## Agree运算
 
 ## 特征驱动的移位
+
+## 为何会出现主语不提前、某些投射没有显式形式等情况？
+
+因为主语不提前、某些投射没有显式形式的句子结构被编码在了词库中，由于cyclic spellout，一旦这些结构形成就立刻被spellout了，于是主语提前、有那些投射的显式形式的句子结构就不会出现。
+这实际上形式化了“language specific rules比较费力，能少就少”的想法：language specific rules全部是词库里面拿出来的，那么自然比较简单的结构被spellout了之后就不会出现比较复杂的结构。
 
 ## 参数和语言演化
 
