@@ -1,2 +1,0 @@
-# Tricks used in MG
-
