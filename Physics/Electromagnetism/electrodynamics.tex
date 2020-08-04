@@ -13,6 +13,7 @@
 \usepackage{physics}
 \usepackage{slashed}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
 \titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
@@ -31,9 +32,15 @@
 \newcommand*{\ogroup}[1]{\mathrm{O}(#1)}
 \newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
 \DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\diag}{diag}
 
 \renewcommand{\emph}[1]{\textbf{#1}}
 \newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
 
 \title{电动力学基本原理}
 \author{吴何友}
@@ -46,7 +53,8 @@
 
 \subsection{规范场和狄拉克旋量场的最小耦合}
 
-在相对论性量子场论中——也即，在以闵可夫斯基时空为底流形的量子场论中，我们尝试将一个自旋$1/2$的狄拉克旋量场和一个无质量矢量场耦合起来。
+在相对论性量子场论中——也即，在以闵可夫斯基时空（具体细节见\prettyref{sec:minkowsky}）
+为底流形的量子场论中，我们尝试将一个自旋$1/2$的狄拉克旋量场和一个无质量矢量场耦合起来。
 旋量场的拉氏量为
 \begin{equation}
     \mathcal{L}_\text{spin} = - m \bar{\psi} \psi + \ii \bar{\psi} \gamma_\mu \partial^\mu \psi,
@@ -54,7 +62,7 @@
 \end{equation}
 而矢量场的拉氏量为
 \begin{equation}
-    \mathcal{L}_\text{vec} = \partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu.
+    \mathcal{L}_\text{vec} = - \frac{1}{2} (\partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu).
     \label{eq:vec-lagrangian}
 \end{equation}
 很容易看出\eqref{eq:spin-lagrangian}具有全局$U(1)$对称性：它在变换
@@ -91,7 +99,7 @@ $\psi$的变换的相位因子是一个标量；$A^\mu$的场的平移量也是�
 \begin{equation}
     \mathcal{L} = 
     \underbrace{- m \bar{\psi} \psi + \ii \bar{\psi} \gamma_\mu \partial^\mu \psi }_{\mathcal{L}_\text{spin}}
-    \underbrace{+ \partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu}_{\mathcal{L}_\text{vec}}
+    \underbrace{- \frac{1}{2} (\partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu)}_{\mathcal{L}_\text{vec}}
     \underbrace{- e A^\mu \bar{\psi} \gamma_\mu \psi}_\text{interaction}
     \label{eq:qed-lagrangian}
 \end{equation}
@@ -118,23 +126,152 @@ $\psi$的变换的相位因子是一个标量；$A^\mu$的场的平移量也是�
         \mathcal{L} &= \bar{\psi} (\ii \gamma^\mu D_\mu - m) \psi - \frac{1}{4} F_{\mu \nu} F^{\mu \nu} \\
         &= \bar{\psi} (\ii \slashed{D} - m) \psi - \frac{1}{4} F_{\mu \nu} F^{\mu \nu}. 
     \end{aligned}
+    \label{eq:short-qed-lagrangian}
 \end{equation}
 这里我们用斜杠记号表示$\gamma_\mu A^\mu$。
 
-\subsection{电荷}
+\subsection{运动方程和守恒量}
 
-考虑
+从\eqref{eq:qed-lagrangian}马上可以使用欧拉-拉格朗日方程写出运动方程。对$\psi$我们有
+\[
+    \ii \partial_\mu \bar{\psi} \gamma^\mu + e \bar{\psi} \gamma_\mu A^\mu + m \bar{\psi} = 0,
+\]
+对其取共轭，或者对$\bar{\psi}$应用欧拉-拉格朗日方程，就得到
+\begin{equation}
+    \ii \gamma^\mu \partial_\mu \psi - m \psi = e \gamma_\mu A^\mu \psi.
+    \label{eq:movement-eq-1}
+\end{equation}
+对$A^\mu$应用欧拉-拉格朗日方程，则有
+\begin{equation}
+    \partial_\mu F^{\mu \nu} = \partial_\mu (\partial^\mu A^\nu - \partial^\nu A^\mu) = e \bar{\psi} \gamma^\nu \psi.
+    \label{eq:movement-eq-2}
+\end{equation}
+以上两个方程给出了\eqref{eq:qed-lagrangian}的运动方程。（如前所述，$\psi$和$\bar{\psi}$虽然是独立的场，但它们的运动方程并不独立，因为运动方程是一阶的）
+
+现在我们分析局域$U(1)$对称性带来的守恒量。在局域$U(1)$变换下，我们有
+\[
+    \var{\psi} = \ii e \psi \var{a}, \quad \var{A^\mu} = \partial^\mu \var{a},
+\]
+则守恒流为
+\[
+    \begin{aligned}
+        J^\mu \var{a} &= - e \bar{\psi} \gamma^\mu \psi \var{a} + (-\partial^\mu A^\nu + \partial^\nu A^\mu) \partial_\nu \var{a} \\
+        &= - e \bar{\psi} \gamma^\mu \psi \var{a} - \partial_\nu (\partial^\nu A^\mu - \partial^\mu A^\nu) \var{a},
+    \end{aligned}
+\]
+第二个等号实际上是忽略了一个边界项后得到的结果。%
+\footnote{考虑到$\var{a}$在每一点都可以独立地变化，$\int A\var{a} = \int B \var{a}$意味着$A=B$。}%
+无论如何，这个守恒流的第二项是平凡的，因为它就是电磁张量的一个指标求散度之后的结果，它的散度当然是零。
+那么，我们就有以下守恒荷：
+\begin{equation}
+    J^\mu = e \bar{\psi} \gamma^\mu \psi , \quad \partial_\mu J^\mu = 0.
+    \label{eq:four-current}
+\end{equation}
+回过头看，实际上这是\emph{全局$U(1)$对称性}的守恒荷——全局$U(1)$对称性中$a$在时空上是均匀的，那么$\partial_\mu \var{a}$就是零，正好让含有$A$的那个平凡的项消失。
+实际上从\eqref{eq:movement-eq-2}中我们也可以得到这个守恒流。由于电磁张量是反对称的，我们有：
+\[
+    0 = \partial_\mu \partial_\nu F^{\mu \nu} = \partial_\mu (e \bar{\psi} \gamma^\mu \psi).
+\]
+这就导出了\eqref{eq:four-current}。我们将会看到实际上这个是\concept{电荷}。或者说，电荷是全局$U(1)$对称性对应的守恒荷。
+
+使用\eqref{eq:four-current}可以将\eqref{eq:movement-eq-2}写成
+\begin{equation}
+    \partial_\mu F^{\mu \nu} = J^\nu.
+    \label{eq:four-maxwell}
+\end{equation}
+我们将会看到，这实际上就是麦克斯韦方程。
+
+\subsection{规范}
+
+电动力学在局域$U(1)$变换下的对称性实际上是一个\emph{规范对称性}，也就是说，做任意的局域$U(1)$变换，不会有任何可以观察到的变化，也就是说\eqref{eq:qed-lagrangian}中实际上有多余的自由度。
+我们需要对$A$和$\psi$施加适当的约束，以确保满足这个约束的$A$和$\psi$取值可以覆盖所有物理上可能产生的状态，同时不含有任何冗余的自由度，也即要\emph{选取一个规范}。
+
+形式最漂亮的应该是\concept{洛伦兹规范}，也就是
+\begin{equation}
+    \partial_\mu A^\mu = 0,
+\end{equation}
+在这个规范下\eqref{eq:four-maxwell}转化为
+\begin{equation}
+    \Box^2 A = J, \quad \Box^2 = \partial_\mu \partial^\mu.
+\end{equation}
+我们得到了一个四维波动方程，当然，这就是\concept{电磁波}。
 
 \section{麦克斯韦方程}
 
-\subsection{麦克斯韦方程组的几种形式}
+如前所述，\eqref{eq:four-maxwell}实际上是麦克斯韦方程。本节将要展示它如何能够化成在实际计算中更加常用的形式。
 
-\subsection{单位制}
+\subsection{基于电场和磁场的表述}
 
-\subsection{边界条件}
+\subsubsection{三维形式的电场和磁场}
 
-\subsection{能量}
+我们可以直接选择将电磁张量的分量写下来。我们首先观察电磁张量在\emph{空间}坐标变换（不涉及时间）下的变换。
+首先电磁张量的对角元都是零，非对角元一共有$6$个独立变量，我们不妨设它们为
+\[
+    F^{\mu \nu} = \pmqty{
+        0 & E_x & E_y & E_z \\
+        -E_x & 0 & -B_z & B_y \\
+        -E_y & B_z & 0 & -B_x \\
+        -E_z & -B_y & B_x & 0
+    }.
+\]
+一个不涉及时间的坐标变换一定形如
+\[
+    \pmqty{\dmat{1, \xmat*{a}{3}{3} }},
+\]
+我们将它作用在$F^{\mu \nu}$上（注意二阶张量的两个指标都要作用一遍），会发现$\pmqty{E_x & E_y & E_z}$在坐标变换矩阵$\{a_{ij}\}$下发生了坐标变换，而
+\[
+    \pmqty{
+        0 & -B_z & B_y \\
+        B_z & 0 & -B_x \\
+        -B_y & B_x & 0
+    }
+\]
+在坐标变换矩阵$\{a_{ij}\}$下作为张量发生了坐标变换。
+这就意味着$(E_x, E_y, E_z)$构成一个三维矢量的分量，而含有$B_i$的那部分矩阵构成一个三维二阶张量的分量。我们称前者为\concept{电场}，它是一个极矢量。
+至于后者，它是某个三元组和一个三指标反对称张量缩并而成的，反对称张量在连续的坐标变换下确实按照张量的方式变换，但是在反射下会变号，因此三元组$(B_x, B_y, B_z)$构成一个轴矢量的分量，称为\textbf{磁场}。
 
-\section{狭义相对论与电动力学}
+\subsubsection{单位制}\label{sec:unit-system}
+
+\subsubsection{边界条件}
+
+\subsubsection{能量}
+
+\subsection{反推出电势和磁矢势}
+
+\section{闵可夫斯基时空和狭义相对论}\label{sec:minkowsky}
+
+\subsection{闵可夫斯基时空中的几何对象}
+
+\subsubsection{四维矢量的分量}\label{sec:components-of-four-vector}
+
+本节暂时不区分时间和空间的单位，具体的讨论见\prettyref{sec:unit-system}。
+为了避免不必要的麻烦，我们在直角坐标系加时间维下讨论问题。设时间维为第$0$维，闵可夫斯基时空的度规为
+\begin{equation}
+    g_{\mu \nu} = g^{\mu \nu} = \diag(1, -1, -1, -1).
+\end{equation}
+对一个四维矢量$A^\mu$，我们设
+\begin{equation}
+    A^\mu = (A^0, \vb*{A}),
+\end{equation}
+则由指标升降关系自然得到
+\begin{equation}
+    A_\mu = (A_0, -\vb*{A}), \quad A_0 = A^0.
+\end{equation}
+梯度算符也是矢量，也即应该有
+\begin{equation}
+    \partial^\mu = \pdv{x_\mu} = (\partial^0, \partial^i) = (\partial_t, \grad), \quad \partial_t = \partial^t,
+\end{equation}
+对应的
+\begin{equation}
+    \partial_\mu = \pdv{x^\mu} = (\partial_t, -\grad).
+\end{equation}
+这样就有
+\begin{equation}
+    \Box^2 = \partial_t^2 - \laplacian.
+\end{equation}
+
+\subsection{从时空结构推导出狭义相对论}
+
+\section{量子化}
 
 \end{document}
