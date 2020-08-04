@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{slashed}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
@@ -31,6 +32,9 @@
 \newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
 \DeclareMathOperator{\legpoly}{P}
 
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
 \title{电动力学基本原理}
 \author{吴何友}
 
@@ -38,11 +42,94 @@
 
 \maketitle
 
-\section{规范场和狄拉克旋量场的最小耦合}
+\section{电动力学是局域$U(1)$理论}
+
+\subsection{规范场和狄拉克旋量场的最小耦合}
+
+在相对论性量子场论中——也即，在以闵可夫斯基时空为底流形的量子场论中，我们尝试将一个自旋$1/2$的狄拉克旋量场和一个无质量矢量场耦合起来。
+旋量场的拉氏量为
+\begin{equation}
+    \mathcal{L}_\text{spin} = - m \bar{\psi} \psi + \ii \bar{\psi} \gamma_\mu \partial^\mu \psi,
+    \label{eq:spin-lagrangian}
+\end{equation}
+而矢量场的拉氏量为
+\begin{equation}
+    \mathcal{L}_\text{vec} = \partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu.
+    \label{eq:vec-lagrangian}
+\end{equation}
+很容易看出\eqref{eq:spin-lagrangian}具有全局$U(1)$对称性：它在变换
+\[
+    \psi \longrightarrow \psi' = \psi \ee^{\ii \alpha}
+\]
+下保持不变。同样，\eqref{eq:vec-lagrangian}具有场的全局平移不变性，它在变换
+\[
+    A^\mu \longrightarrow A'^\mu = A^\mu + a^\mu
+\]
+下保持不变。这两个对称性都是全局的：如果$\alpha$或$a^\mu$依赖于坐标，由于导数的链式法则，会多出来一些项。
+具体来说，我们有
+\[
+    \mathcal{L}_\text{spin} \longrightarrow \mathcal{L}_\text{spin}' = \mathcal{L}_\text{spin} - \bar{\psi} \psi \gamma_\mu \partial^\mu \alpha.
+\]
+对于矢量场，在$a^\mu$的形式任意的情况下，$\mathcal{L}_\text{vec}$的变换无规律可循，但是如果我们用某个标量的梯度$\partial^\mu a$代替$a^\mu$，那么有
+\[
+    A^\mu \longrightarrow A'^\mu = A^\mu + \partial^\mu a, \quad
+    \mathcal{L}_\text{vec} \longrightarrow \mathcal{L}_\text{vec}' = \mathcal{L}_\text{vec}.
+\]
+也就是说，矢量场的场的平移对称性实际上可以稍加推广而仍然成立。
+
+$\psi$的变换的相位因子是一个标量；$A^\mu$的场的平移量也是一个标量的梯度。很容易想到的尝试是，我们是否可以将两个场耦合起来，并要求整个系统在变换（$e$是常数而$a(\vb*{x})$依赖于坐标）
+\begin{equation}
+    \psi \longrightarrow \psi' = \psi \ee^{\ii e a}, \quad A^\mu \longrightarrow A'^\mu = A^\mu + \partial^\mu a
+    \label{eq:gauge-transformation}
+\end{equation}
+下保持不变？自由矢量场部分肯定是不变的，那么就要适当设计相互作用项的形式，把$\psi$做局域$U(1)$变换之后拉氏量多出来的一项吸收掉。
+当然，如果相互作用项是$- e A^\mu \bar{\psi} \gamma_\mu \psi$，那就正好，因为
+\[
+    - e A^\mu \bar{\psi} \gamma_\mu \psi - \bar{\psi} \psi \gamma_\mu \partial^\mu (e a) = - e A'^\mu \bar{\psi'} \gamma_\mu \psi'.
+\]
+于是我们得出结论：拉氏量
+\begin{equation}
+    \mathcal{L} = 
+    \underbrace{- m \bar{\psi} \psi + \ii \bar{\psi} \gamma_\mu \partial^\mu \psi }_{\mathcal{L}_\text{spin}}
+    \underbrace{+ \partial^\mu A^\nu \partial_\mu A_\nu - \partial^\mu A^\nu \partial_\nu A_\mu}_{\mathcal{L}_\text{vec}}
+    \underbrace{- e A^\mu \bar{\psi} \gamma_\mu \psi}_\text{interaction}
+    \label{eq:qed-lagrangian}
+\end{equation}
+具有局域$U(1)$不变性。推导出\eqref{eq:qed-lagrangian}的方法就是\concept{最小耦合}。
+
+于是，我们得出结论：一个自旋$1/2$狄拉克旋量场和一个无质量矢量场耦合，并要求理论具有\emph{局域}$U(1)$对称性，那么就会得到
+我们将会看到，这个理论实际上就是电动力学。
+
+还可以引入一些记号来简化\eqref{eq:qed-lagrangian}。首先引入反对称张量\concept{电磁张量}
+\begin{equation}
+    F^{\mu \nu} = \partial^\mu A^\nu - \partial^\nu A^\mu,
+\end{equation}
+则自由矢量场拉氏量为
+\[
+    \mathcal{L}_\text{vec} = - \frac{1}{4} F_{\mu \nu} F^{\mu \nu}.
+\]
+另一方面，相互作用项和含有旋量场的导数的项形式非常接近，因此可以定义\concept{协变导数}
+\begin{equation}
+    \ii D^\mu = \ii \partial^\mu - e A^\mu,
+\end{equation}
+最后将\eqref{eq:qed-lagrangian}写成
+\begin{equation}
+    \begin{aligned}
+        \mathcal{L} &= \bar{\psi} (\ii \gamma^\mu D_\mu - m) \psi - \frac{1}{4} F_{\mu \nu} F^{\mu \nu} \\
+        &= \bar{\psi} (\ii \slashed{D} - m) \psi - \frac{1}{4} F_{\mu \nu} F^{\mu \nu}. 
+    \end{aligned}
+\end{equation}
+这里我们用斜杠记号表示$\gamma_\mu A^\mu$。
+
+\subsection{电荷}
+
+考虑
 
 \section{麦克斯韦方程}
 
 \subsection{麦克斯韦方程组的几种形式}
+
+\subsection{单位制}
 
 \subsection{边界条件}
 
