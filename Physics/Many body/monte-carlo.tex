@@ -295,7 +295,7 @@
 
 为了解决世界线蒙特卡洛方法中的问题，我们尝试把路径积分转化成稍微容易计算一些的形式。
 我们回顾固体物理中通常会出现什么样的问题。
-一般来说哈密顿量可以写成自由哈密顿量加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，
+一般来说哈密顿量可以写成自由哈密顿量（通常是某个动能项）加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况，
 
 虚时间路径积分实际上就是要计算一个$\ee$指数矩阵的迹。使用Trotter-Suzuki近似%
 \footnote{为了和时间演化算符的通常写法保持一致，本文默认
@@ -305,10 +305,11 @@
 }%
 ，我们如下将虚时间路径积分写成自由部分和相互作用部分分离的形式：
 \[
-    \ee^{-\beta \hat{H}} = \prod_{n=1}^{m} \ee^{-\Delta \tau \hat{H}_0} \ee^{-\Delta \tau \hat{H}_\text{I}}.
+    \ee^{-\beta \hat{H}} = \prod_{n=1}^{m} \ee^{-\Delta \tau \hat{H}_\text{I}} \ee^{-\Delta \tau \hat{H}_0}.
 \]
 这里用到了Trotter-Suzuki近似，这个近似的误差控制在$\Delta \tau^2$量级。% TODO
-如果哈密顿量是自由的，也就是说，能够写成
+实际上也可以使用不同的Trotter分解顺序，比如说把自由哈密顿量写在前面，而把相互作用哈密顿量写在后面。
+如果没有相互作用哈密顿量，则能够将上式写成
 \[
     \hat{H} = \hat{H}_0 = \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j
 \]
@@ -340,7 +341,7 @@
 
 虚时间路径积分可以写成
 \begin{equation}
-    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{H_\text{I}(\vb{s}_n)}, 
+    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{H_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \hat{H}_0}, 
     \label{eq:imaginary-time-path-integral-with-aux-field}
 \end{equation}
 应注意其中$H_\text{I}(\vb{s}_n)$和之前定义的$\hat{H}_\text{I}$未必相等，它现在是积掉了费米子自由度之后的哈密顿量。
@@ -351,7 +352,7 @@
 其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
 为了简写我们显式地引入虚时间演化算符（由于虚时间演化算符含有全部动力学，我们这里采取的是虚时间的薛定谔绘景：不需要考虑算符的变动）
 \begin{equation}
-    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{-\Delta \tau \hat{H}_0} \ee^{ \hat{H}_\text{I}(\vb{s}_n)}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \underbrace{\ee^{-\Delta \tau \vb{h}_0} \ee^{\vb{h}_\text{I}(\vb{s}_n)}}_{\vb{B}_{\vb{s}}(\tau_1+\Delta \tau, \tau_1)},
+    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{ \hat{H}_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \hat{H}_0}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \underbrace{\ee^{\vb{h}_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \vb{h}_0}}_{\vb{B}_{\vb{s}}(\tau_1+\Delta \tau, \tau_1)},
 \end{equation}
 使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
 \[
