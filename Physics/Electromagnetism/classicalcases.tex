@@ -1,0 +1,256 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{slashed}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\DeclareMathOperator{\timeorder}{T}
+\newcommand*{\ogroup}[1]{\mathrm{O}(#1)}
+\newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\diag}{diag}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\title{经典电动力学常见问题}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{麦克斯韦方程及其推论}
+
+\subsection{不同单位制下的麦克斯韦方程}
+
+\begin{equation}
+    \pdv{\rho}{t} + \div{\vb*{j}} = 0,
+    \label{eq:charge-transportation}
+\end{equation}
+
+\begin{equation}
+    \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = - \curl{\vb*{j}}.
+\end{equation}
+
+\section{真空中的解}
+
+\subsection{李纳-维谢尔势}
+
+\subsection{电磁波}
+
+\subsection{静电学}
+
+\section{介质和边界条件}
+
+\section{电路理论}
+
+\subsection{电路理论的基本方程}
+
+\subsubsection{似稳条件}
+
+考虑以下特殊情况：磁场是高度局域的，也就是说某一点的电流产生的磁场的衰减特征尺度远小于我们研究的电磁场的振动频率对应的波长。
+这种情况多见于体系中的电流被束缚在一些体积相对于电磁波波长不大的导体中的情况，也就是多见于\concept{电路}。
+既然有介质，我们就需要考虑错综复杂的各种（可能是各向异性的、有滞后的、非线性的）响应关系。
+但为了简单起见，我们还是将极化、磁化电流纳入研究范围，从而真空中的麦克斯韦方程适用。这样唯一和材料有关的就是电导率张量$\vb*{\sigma}$，它背后的物理机制是电流的动能转移给了其它组分，如晶格动能。
+
+既然电流产生的磁场传播不了太远，磁场和电流之间的关系可以看成是瞬时的，即电流发生变化后磁场立即发生对应的变化，不需要任何传播过程（因为实际上的传播时间非常短），即可以找到一个二阶张量响应函数$\vb*{G}_{B, j}$使得
+\[
+    \vb*{B}(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \dd{t} \vb*{G}_{B, j}(\vb*{r}, \vb*{r}') \cdot \vb*{j}(\vb*{r}', t),
+\]
+其中$\vb*{B}$和$\vb*{j}$未必在同一个空间点上。具体的比例系数取决于电路结构。当然，很容易看出这就是对磁场应用了似稳条件。
+再看电场满足的两个方程：
+\[
+    \div{\vb*{E}} = \frac{\rho}{\epsilon_0}, \quad \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} \sim - \pdv{\vb*{j}}{t},
+\]
+根据矢量场的亥姆霍兹分解定理，我们有
+\[
+    \vb*{E}(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \rho(\vb*{r}', t) - \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \partial_t j}(\vb*{r}, \vb*{r}') \cdot \pdv{\vb*{j}(\vb*{r}', t)}{t} ,
+\]
+其中$\vb*{G}_{E, \rho}$是一个矢量而$\vb*{G}_{E, \partial_t j}$是一个二阶张量。
+第二项前面的负号是为了体现电场总是倾向于削弱电流变化，即楞次定律。
+最后，考虑到
+\[
+    \vb*{j} = \vb*{\sigma} \cdot (\vb*{E} + \vb*{K}),
+\]
+我们有
+\[
+    \vb*{j}(\vb*{r}, t) = \vb*{\sigma}(\vb*{r}) \cdot \left( \vb*{K}(\vb*{r}, t) + \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \rho(\vb*{r}', t) - \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \partial_t j}(\vb*{r}, \vb*{r}') \cdot \pdv{\vb*{j}(\vb*{r}', t)}{t} \right),
+\]
+两边对时间求导数，得到
+\begin{equation}
+    \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \div{\vb*{j}}(\vb*{r}', t) + \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \partial_t j}(\vb*{r}, \vb*{r}') \cdot \pdv[2]{\vb*{j}(\vb*{r}', t)}{t} + \vb*{\rho} \cdot \pdv{\vb*{j}}{t} = \pdv{\vb*{K}}{t}.
+    \label{eq:circuit-eq}
+\end{equation}
+其中$\vb*{\rho}$是电阻率张量，它是$\vb*{\sigma}$的逆。
+可以看到：
+\begin{itemize}
+    \item \eqref{eq:circuit-eq}的右边是外部激励，这对应\concept{电源}；
+    \item 左边第一项来自静电力，即电荷堆积在某处会影响电场，这种现象就是\concept{电容}，请注意从电荷到电场分布的关系和静电学完全一致；
+    \item 左边第二项是电流产生磁场，磁场又产生感生电场的结果，如果我们研究的一部分$\vb*{j}$是给定的，那么这一部分$\vb*{j}$也可以认为是产生一个一个感生电源，这种现象就是\concept{电感}，同样，从电流到磁场的关系也和静磁学一样；
+    \item 左边第三项来自$\vb*{j}$和$\vb*{E}$的线性关系，也就是来自\concept{电阻}。
+\end{itemize}
+
+在一般的变化的电磁场中，由于$\vb*{E}$的有旋部分依赖于$\vb*{B}$而$\vb*{B}$又以一种非常复杂的方式依赖于$\vb*{E}$，“电压”的概念用处不大。
+但在\eqref{eq:circuit-eq}中，虽然$\vb*{E}$显然有有旋部分（电感导致的结果），但是由于$\vb*{B}$被假定可以瞬时地被$\vb*{j}$确定，实际上电感导致的那部分$\vb*{E}$是完全可以写成电流的导数的函数的，从而电感导致的无非是一个“感生电动势”而已。
+因此在电路理论中，虽然我们要讨论变化的电磁场，电压的概念仍然是有用的。
+
+% TODO：电压实际上需要重新定义，感生电动势纳入电压实际上一般来说是不对的
+
+辅以适当的边界条件和初始条件，\eqref{eq:circuit-eq}给出了电路系统的全部性质——一个电路系统完全由电容、电阻、电感，以及初始条件和外界激励确定。
+此外，求解它也是可行的，因为虽然\eqref{eq:circuit-eq}中出现了遍及全空间的积分，看起来非常复杂，但是既然我们假定磁场局限在很小的范围内，而能够约束磁场的边界条件往往也能约束电，那么其实这些积分也局限在相比于波长很小的范围内。
+
+\eqref{eq:circuit-eq}是无记忆的，但那是我们把所有电荷都纳入考虑的结果。如果我们只考虑一部分电荷和电流（比如说只考虑“自由电荷”而将极化、磁化当成一个黑箱子），那么介质就可以有内部状态，那么就可以是有记忆的；此时需要将\eqref{eq:circuit-eq}中的所有$G$换成$G(t-t')$，将等式左边的所有$t$时刻的物理量取为$t'$时刻，并且加一个对$t'$的积分。
+
+\subsubsection{几个时间尺度}
+
+在\eqref{eq:circuit-eq}适用的前提下，我们还可以做出更多简化。我们有几个时间尺度：导体达到静电平衡的弛豫时间，电磁场传播的时间（系统长度尺度除以光速），电压、电流变化的时间尺度（实际上就是外界策动的频率尺度的倒数）。
+我们来分析这些时间尺度的意义。
+
+在各向同性的均匀材料内部，电导率张量退化为一个标量$\sigma$，我们有
+\[
+    \div{\vb*{j}} = \sigma \div{\vb*{E}} = \sigma \frac{\rho}{\epsilon_0},
+\]
+而由电流输运方程\eqref{eq:charge-transportation}，我们有
+\[
+    \pdv{\rho}{t} + \frac{\sigma}{\epsilon_0} \rho = 0.
+\]
+这就是说，均匀导电材料内存不住电荷——量级为
+\begin{equation}
+    \tau_\text{relax} = \frac{\epsilon_0}{\sigma}
+    \label{eq:static-relaxation-time}
+\end{equation}
+的弛豫时间过后元件内部的电荷密度降为零。原本的电荷或者被导线导走了，或者转移到了元件中不均匀的地方——例如说元件表面或是不同材料的交界面。
+这又意味着，弛豫时间过后，我们有
+\[
+    \div{\vb*{j}} = 0,
+\]
+即流入该区域的电流和流出该区域的电流相同。
+
+在实际的电路问题中，基本上弛豫时间都远小于我们关心的时间尺度，因此我们将忽略此弛豫过程；如果弛豫过程真的如此重要，那么通常电路理论也是不够用的。
+此外，注意到\eqref{eq:static-relaxation-time}正是导体达到静电平衡需要的时间，通常可以保证系统中各个量的变化的时间尺度远大于\eqref{eq:static-relaxation-time}，那么电荷聚集情况可以直接使用静电平衡的有关理论来分析。%
+\footnote{\eqref{eq:circuit-eq}只是保证了从电荷到电场的关系是静电学的，没有保证从电场到电荷的关系也是静电学的。例如，一个金属圆球上不均匀地分布着一些电荷这个场景可能出现在\eqref{eq:circuit-eq}中，但是不可能出现在系统中各个量的变化的时间尺度远大于\eqref{eq:static-relaxation-time}的情况下。}%
+需要注意的是弛豫时间\eqref{eq:static-relaxation-time}和“充放电时间”不是一回事：很多体系，比如平行板电容器，会有很明显的充电和放电过程，但是这些过程的每一瞬时，体系状态都可以近似当成静电平衡的，变化的只是体系中的总电荷量。
+
+既然电路理论中弛豫时间总是非常小的，接下来只需要比较电磁场传播时间$\tau_\text{prop}$和电路状态变化的时间尺度$\tau_\text{change}$即可。
+如果$\tau_\text{prop}$远小于$\tau_\text{change}$，即
+\begin{equation}
+    L \ll c \tau_\text{change} = \frac{c}{f_\text{change}},
+\end{equation}
+则系统的内部状态基本上是均匀的，可以用几个数值（电荷总量、电流、电压、磁通量，等等）表示，即描述系统的行为只需要常微分方程。此时的系统称为\concept{集总}的。
+反之，如果$\tau_\text{prop}$并不远小于$\tau_\text{change}$，那么系统的内部状态就需要使用空间分布来描述（如电荷密度、电流密度），此时的系统称为\concept{分布}的。
+
+\subsubsection{初始条件和衔接条件}
+
+关于初始条件，虽然初始条件可以任意选取，但很容易想到，实际的初始条件无非这么几类：通电，即原本没有任何$\vb*{K}$而突然加上了$\vb*{K}$；电路结构改变，如开关
+
+% TODO:通电之后，需要发生的弛豫过程包括：电场传播；均匀介质内部电荷清除；静电平衡？（它和前一个一致吗？）；或者也许还有别的；传输线模型放弃了哪个假设？
+
+可以将初始静电电荷当成0，因为叠加原理 % TODO
+
+\subsection{集总元件}
+
+电路中的\concept{元件}指的是这样的体系：除了其与外界连接的端口外，外界的电磁场基本被它的边界屏蔽，它内部的电磁场也不影响外界。
+换而言之，元件与外界仅有的交互就是它和外界连接的电流端口，并且这个端口的尺寸非常小以至于无论电流密度在端口上怎么分布，真的会显著影响元件行为的只是总电流，
+否则元件与外界的连接处的电流密度分布会显著影响元件内部的电场的分布，即元件和外界的连接处的电场分布会显著影响元件行为，那么再称这样的装置为元件就不合适了。
+一个电路可以认为是不同的元件使用\concept{理想导线}——无电阻、电容、电感，其上也没有任何$\vb*{K}$的导线——连接而成的。
+\concept{集总元件}就是空间尺度足够小，从而其行为可以完全使用常微分方程描述的元件。
+
+现在我们来看有哪些集总元件。我们首先讨论一系列理想的集总元件，然后会惊讶地发现，仅仅依靠这些概念实际上就能够很好地描述一个由集总元件构成的电路，甚至分布电路。
+
+\subsubsection{常见理想元件}
+
+% 二端口各向同性均匀材料集总元件
+
+考虑一个使用各向同性均匀材料（可以多种材料贴在一起）做成的二端口集总元件。
+我们只讨论$\tau_\text{relax}$之后的情况，因此输入电流等于输出电流。
+这样，集总元件的行为完全可以由关于它两端的电压和流经它的电流满足的关系（未必是函数关系，可能是一个微分方程）确定。
+
+本节先只讨论几种常见的二端口集总元件。首先我们有\concept{理想电源}，就是一个单纯提供一个$\vb*{K}$的元件。
+由于是集总元件，对$\vb*{K}$求线积分，积分路径两端为输入端口和输出端口，取不同路径不会有太大差别，于是设
+\begin{equation}
+    \mathcal{E} = \int \dd{\vb*{l}} \cdot \vb*{K}
+\end{equation}
+为\concept{电源电动势}。
+
+然后讨论\concept{理想电容器}。理想电容器有两个互不相交的电荷可以聚集的区域（比如说导体边界），除此以外没有电流也没有电荷，也没有任何电动势。
+没有电流意味着没有感生电动势，两个电荷聚集区域之间没有电流意味着元件内部也没有空间电流密度，从而元件行为由
+\[
+    \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \div{\vb*{j}}(\vb*{r}', t) + \pdv{\vb*{E}}{t} = 0
+\]
+完全确定，或者说由
+\[
+    \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \rho(\vb*{r}', t) = \vb*{E}
+\]
+完全确定。由于元件内净电荷为0，两个电荷聚集区域含有的电荷数量相等而正负号相反，记它们的绝对值为$Q$。由线性性，$Q$增大或者减小并不改变元件内部的电场线形状，而只是改变电场大小，电场线形状由两个电荷聚集区的几何形状确定，由于电路理论中假设电荷分布近似为静电分布，电荷密度的分布也由两个电荷聚集区的几何形状确定。
+因此只需要一个$Q$就可以完整描述理想电容器的状态。这样我们就可以写出
+\begin{equation}
+    U = \frac{Q}{C},
+    \label{eq:capacity}
+\end{equation}
+其中$U$为理想电容器两端的电压，而$C$是一个常数，也称为\concept{电容}；行为满足\eqref{eq:capacity}的二端口集总元件统称为\concept{电容器}或者简称电容。
+从\eqref{eq:capacity}也可以看出
+\[
+    \dv{U}{t} = \frac{I}{C}.
+\]
+
+我们再来看\concept{理想电感器}，在理想电感器中没有电荷聚集区，没有电动势，也没有任何电阻，只有从一个端口进，连续流至另一个端口的电流。
+这样，控制方程就是
+\[
+    \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \partial_t j}(\vb*{r}, \vb*{r}') \cdot \pdv{\vb*{j}(\vb*{r}', t)}{t} + \vb*{E} = 0.
+\]
+
+最后是\concept{理想电容器}，
+
+电容、电阻、电感都是\concept{线性元件}，也就是说描述它们的行为的方程都是线性的。
+
+\subsubsection{分布参数}
+
+实际的集总元件的结构当然比这些
+
+分布参数的出现并不意味着电路就是分布的
+
+简单地说：把感生电动势单独用磁通量表示，带有电容的电阻就是电阻和电容并联。
+% TODO
+
+从结构确定集总元件参数的步骤：加电流，绘制电流管线图，计算电阻；加电荷，绘制电场线图，算电容；然后加入感生电动势。
+能这么做是因为叠加原理。
+
+\subsubsection{介质}
+
+在以上推导中我们显式用到介质性质的地方只有电阻。
+
+\subsection{分布元件}
+
+% TODO：分布元件转化为集总元件 ；是否这总是可行的？
+
+\end{document}

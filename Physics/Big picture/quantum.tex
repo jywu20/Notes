@@ -42,8 +42,11 @@
 
 % 总之我在这几篇文章中把“可观察量”一词玩坏了，它可以表示厄米算符也可以表示其期望……
 % 类似的还有“多粒子态”……
+% TODO：LSZ约化公式
 
 \section{抽象代数}
+
+事实证明，在量子理论中抽象代数具有非常重要的作用，因此我们将专门用一节介绍它。
 
 \subsection{指标升降}
 
@@ -579,11 +582,22 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 在进一步展开下面的叙述之前，我们先回顾现代物理的数学框架。总的来说，有两套可用的框架，
 其一是拉格朗日动力学，路径积分方法是它的量子版本；其二是哈密顿动力学，正则量子化是它的量子版本。
 尽管这两个框架在数学上是独立的，我们仍然可以找到它们之间非常深厚的联系。
-
 本节首先从经典拉氏量出发，然后得到经典哈密顿量，然后再过渡到量子形式。
-常见的物理问题涉及$3+1$维闵可夫斯基时空中或$0+1$维时空，而后者可以看成前者的一个退化情况，
-于是我们将局限在$3+1$维闵可夫斯基时空中，
-虽然无论是拉格朗日动力学还是哈密顿力学都适用于比这广得多的体系。
+
+一个物理系统无非是这样的：我们有一组\textbf{动力学变量}，其自由度就是\textbf{动力学自由度}，能够表示其它任何动力学变量但是彼此不能相互表示的一组动力学变量称为一组\textbf{完备的}动力学变量，它们的总数当然就是动力学自由度；我们与此同时也有一个\textbf{系统状态}，给定一个系统状态，动力学自由度可以是完全确定的也可以并不确定。
+物理学的任务就是描述系统状态如何发生\textbf{演化}，演化方式——比如说物理量满足的微分方程——就称为系统的\textbf{动力学}。
+通常有一个参数称为\textbf{时间}（记作$t$）来标记演化的进度。
+当然，实际上完全可以存在有多个时间维度的物理理论，但是本文暂时不考虑这么深入的问题。
+一个物理量在不同时间点的取值放在一起就是它的\textbf{世界线}。
+表面上看，似乎系统状态就应该是动力学自由度的取值，但我们将看到事情其实没有那么简单。
+
+动力学自由度有\textbf{标签}，标签的取值可以是离散的——如“第一号粒子，第二号粒子”等，或者离散而无限的，也可以是连续的。
+后两者情况下，我们将不同格点/不同空间点处的某个动力学自由度放在一起，得到一个从点阵/流形到物理量的映射，这就是一个\textbf{场}。
+理论中的彼此独立的场的数目称为\textbf{场自由度}。显然，有限个场自由度可以导致无限个动力学自由度。
+如果系统中没有场自由度，且动力学自由度本身代表空间位置和/或动量等物理量，那么这就是一个关于\textbf{粒子}的理论。
+时间轴直积上场的标签来自的空间得到的结果就是所谓的\textbf{底流形}，它是物理现象发生的“舞台”。
+我们设空间维数为$d$，则底流形就是$d+1$维时空，或者说$D$维时空。
+常见的底流形如$3+1$维闵可夫斯基时空中或$0+1$维时空（即关于粒子的理论），而后者可以看成前者的一个退化情况，
 所谓闵可夫斯基时空指的是度规可以化为
 \begin{equation}
     \eta_{\mu\nu} = \diag (1, -1, -1, -1)
@@ -592,8 +606,12 @@ Cartan子代数中的诸算符共享一组可以张成整个$V$的本征矢量�
 容易看出$x, y, z$或者说$x^1, x^2, x^3$就构成一个三维欧氏几何，它们是\textbf{空间维}。
 $x^0$则是\textbf{时间维}。
 
+很容易就可以想到，关于场的理论和关于粒子的理论是可以互相转化的，本文将时不时提到这一点。
+例如，定义在格点上的场论也可以认为是关于大量（不怎么移动，动力学自由度主要是除了空间坐标以外的自由度或者说\textbf{内禀自由度}的）粒子的粒子理论，而由于我们总是可以对连续的场论取微元做离散化，那么任何一个连续场论实际上都可以看成一个粒子理论。
+反过来，粒子可以认为是以场为产生湮灭算符而产生的（见\autoref{sec:second-quantization}），那么关于粒子的理论也可以转化为一个场论。
+
 我们还将假设，所有场量在无穷远处的值都是零。
-我们将要分析的对象是时空中的场，它是从闵可夫斯基时空到某一线性空间的光滑映射。
+我们将要分析的对象是时空中的场，它是从底流形到某一线性空间的光滑映射，或者也可以说是空间中的场的世界线。
 
 \subsection{拉格朗日动力学}
 
@@ -603,9 +621,9 @@ $x^0$则是\textbf{时间维}。
 幸运的是，已有的实验数据并不要求我们考虑更高阶的拉氏量。
 我们还假定物理规律在时空上是均匀的，因此我们不认为拉氏量中显含时空坐标。%
 \footnote{
-    需要注意的是在系统中有相互作用且其中一部分的运动状态已知的情况下，另一部分的等效拉氏量中是有可能出现时空坐标的，
+    需要注意的是在系统中有相互作用且其中一部分的运动状态已知的情况下，另一部分的有效拉氏量中是有可能出现时空坐标的，
     例如粒子在势场中的运动就是一个典型例子，在那里由于产生势场的物理机制远远比粒子本身要强，因此势场可以看成是给定的，
-    于是粒子具有的等效拉氏量就显含了空间坐标。}%
+    于是粒子具有的有效拉氏量就显含了空间坐标。}%
 从而我们有
 \begin{equation}
     \mathcal{L} = \mathcal{L}(\phi, \partial_\mu \phi).
@@ -633,7 +651,7 @@ $x^0$则是\textbf{时间维}。
 \begin{equation}
     \begin{bigcase}
         \partial_{\mu'} = \partial_\mu - \partial_\mu \var{x^\nu} \partial_\nu, \\
-        \dd[4]{x'} = (1 + \partial_\mu \var{x^\mu}) \dd[4]{x}.
+        \dd[D]{x'} = (1 + \partial_\mu \var{x^\mu}) \dd[D]{x}.
     \end{bigcase}
 \end{equation}
 由于$\partial_\mu$算符随着坐标变换会发生变化，我们发现$\partial_\mu \phi$的变化量的形式和$\phi$不完全一致：
@@ -642,7 +660,7 @@ $x^0$则是\textbf{时间维}。
 \end{equation}
 这样一来我们可以计算出
 \begin{equation}
-    \var{S} = \int \dd[4]{x} \left(
+    \var{S} = \int \dd[D]{x} \left(
         \left( \pdv{\mathcal{L}}{\phi} - \partial_\mu \pdv{\mathcal{L}}{\partial_\mu \phi} \right) \bar{\var}{\phi} + 
         \partial_\mu \left( \mathcal{L} \var{x^\mu} + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}{\phi} \right)
     \right).
@@ -652,7 +670,7 @@ $x^0$则是\textbf{时间维}。
 
 实际的场的动力学由保持时空坐标$x$不变且$\phi$在无穷远处固定为零（从而无穷远处$\bar{\var}{\phi}$为零）的情况下的泛函极值问题
 \begin{equation}
-    \var{S} = \var{\int \dd[4]x \mathcal{L}(\phi, \partial_\mu \phi)}
+    \var{S} = \var{\int \dd[D]x \mathcal{L}(\phi, \partial_\mu \phi)}
     \label{eq:min-action}
 \end{equation}
 给出。
@@ -680,7 +698,7 @@ $x^0$则是\textbf{时间维}。
 
 需要注意如果两个拉氏量的形式不同，这并不意味着它们描述了不同的物理过程。
 实际上容易看出，两个拉氏量描述了相同的物理过程，
-当且仅当，它们给出的作用量$S$只相差一个相对于$\dd[4]{x}$的零测集上的积分（这样的积分不影响泛函极值问题的求解，因为它“太小”），
+当且仅当，它们给出的作用量$S$只相差一个相对于$\dd[D]{x}$的零测集上的积分（这样的积分不影响泛函极值问题的求解，因为它“太小”），
 这又等价于这两个拉氏量相差一个散度项，即存在一个$\Lambda^\mu$使得
 \begin{equation}
 \mathcal{L}' = \mathcal{L} + \partial_\mu \Lambda^\mu.
@@ -689,7 +707,7 @@ $x^0$则是\textbf{时间维}。
 当场量$\phi$是物理解的时候，将$\phi$代入到$S$中，然后再做一个无穷小变换，此时\eqref{eq:variance-of-s}中的第一项为零，
 于是我们有
 \[
-    \var{S} = \int \dd[4]{x} \partial_\mu \left( \mathcal{L} \var{x}^\mu + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi \right).
+    \var{S} = \int \dd[D]{x} \partial_\mu \left( \mathcal{L} \var{x}^\mu + \pdv{\mathcal{L}}{\partial_\mu \phi} \bar{\var}\phi \right).
 \]
 如果这个无穷小变换实际上不改变系统的动力学，也就是说系统在这个无穷小变化下是对称的，
 那么$\var{S}$就应该能够写成一个表面积分，于是我们得到
@@ -699,15 +717,15 @@ $x^0$则是\textbf{时间维}。
 \end{equation}
 当然，如果无穷小变换更进一步不改变拉氏量，那么$\Lambda=0$。
 
-如果无穷小变换是一个李群的李代数的表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的。可以使用小量近似将$\bar{\var}{\phi}$写成小量$ \ii \epsilon$乘以李代数的场表示\eqref{eq:fin-and-inf-rep}，$\var{x^\mu}$写成小量$\ii \epsilon$乘以李代数的四维矢量表示，
+如果无穷小变换是一个李群的李代数的表示，那么$\bar{\var}{\phi},\var{x^\mu}, \Lambda^\mu$都是完全确定的。可以使用小量近似将$\bar{\var}{\phi}$写成小量$ \ii \epsilon$乘以李代数的场表示\eqref{eq:fin-and-inf-rep}，$\var{x^\mu}$写成小量$\ii \epsilon$乘以李代数的矢量表示，
 于是我们在\eqref{eq:noether}中除去一个$\epsilon$，就得到了一个守恒流。
 于是\eqref{eq:noether}的括号中的内容能够完全写成坐标的函数。
 这就是\textbf{诺特定理}：系统的无穷小对称性诱导出一个守恒流。
-由于是四维闵可夫斯基时空，四维的一个守恒流
+时空中的守恒流
 \begin{equation}
     \partial_\mu j^\mu = 0
 \end{equation}
-就意味着三维的一个输运方程
+就意味着空间的一个输运方程
 \begin{equation}
     \partial_t j^0 + \partial_a j^a = 0.
 \end{equation}
@@ -763,12 +781,12 @@ $x^0$则是\textbf{时间维}。
 \begin{equation}
     T_\mu^\nu = \pdv{\mathcal{L}}{\partial_\nu \phi} \partial_\mu \phi - \mathcal{L} \delta^\nu_\mu, \quad \partial_\nu T_\mu^\nu = 0.
 \end{equation}
-我们称$T^\nu_\mu$为\textbf{能动张量}。它给出了4个守恒荷，其中一个是来自时间平移不变性的\textbf{能量}
+我们称$T^\nu_\mu$为\textbf{能动张量}。它给出了一系列共$D$个守恒荷，其中一个是来自时间平移不变性的\textbf{能量}
 \begin{equation}
     E = \int \dd[3]{x} T^0_0 = \int \dd[3]{x} \left( \pdv{\mathcal{L}}{\partial_0 \phi} \partial_0 \phi - \mathcal{L} \right) ,
     \label{eq:field-energy}
 \end{equation}
-另外三个是来自空间平移不变性的\textbf{动量}
+另外$d$个是来自空间平移不变性的\textbf{动量}
 \begin{equation}
     P_i = \int \dd[3]{x} T^0_i = \int \dd[3]{x} \pdv{\mathcal{L}}{\partial_0 \phi} \partial_i \phi .
     \label{eq:field-momentum}
@@ -779,7 +797,7 @@ $x^0$则是\textbf{时间维}。
 \begin{equation}
     \mathcal{P}_\mu = \pdv{\mathcal{L}}{\partial_0 \phi} \partial_\mu \phi - g_\mu^0 \mathcal{L}
 \end{equation}
-为四维动量$(E, \vb*{p})$的密度。
+为时空中的动量$(E, \vb*{p})$的密度。
 在计算场的三维动量时要注意一点：由于闵可夫斯基度规为$(+, -, -, -)$，闵可夫斯基时空中空间部分的基矢量实际上是指向空间坐标减少的方向的。从而，
 \[
     \begin{aligned}
@@ -792,17 +810,7 @@ $x^0$则是\textbf{时间维}。
     \vb*{P} = - \int \dd[3]{\vb*{x}} \pi \grad{\phi}.
 \end{equation}
 
-接下来是旋转对称性。%
-\footnote{同样，这个对称性无论是在相对论性场论还是非相对论性场论中都是成立的。}%
-旋转对称性不涉及时间维，于是我们有
-\[
-    \var{x^i} = \epsilon^i_{\ jk}  x^j \theta^k,
-\]
-相应的
-\[
-    \bar{\var}{\phi^a} = \ii (J_i)^a_{\ b} \theta^i \phi^b - \epsilon^i_{\ jk}  x^j \theta^k \partial_i \phi^a.
-\]
-其中指标$a,b$跑遍$\phi$的所有分量，$J$指的是旋转生成元在$\phi$所属的向量空间上的表示。
+上面的推导暗示能量是非常重要的物理量，因为它来自时间平移不变性，那么能量守恒应该是非常普遍的定律。的确如此——实际上在哈密顿动力学中能量是动力学演化的核心。
 
 然后我们分析场的内禀对称性带来的守恒量。容易看出场的平移，也就是
 \[
@@ -890,12 +898,13 @@ $x^0$则是\textbf{时间维}。
     \label{eq:evolution-of-any-quantity}
 \end{equation}
 
-哈密顿动力学（无论是经典哈密顿动力学还是下一节讨论的正则量子化）中如果场是复的，仍然可以使用\eqref{eq:lagrangian-to-hamitonian}从拉氏量得到哈氏量，但此时不能够保证$\phi$、$\phi^\dagger$、$\pi$、$\pi^\dagger$彼此独立。
-% TODO
+哈密顿动力学（无论是经典哈密顿动力学还是下一节讨论的正则量子化）中如果场是复的，仍然可以使用\eqref{eq:lagrangian-to-hamitonian}从拉氏量得到哈氏量，但此时不能够保证$\phi$、$\phi^\dagger$、$\pi$、$\pi^\dagger$彼此独立，例如如果选取了$\phi$和$\pi$作为独立变量那么$\phi$和$\phi^\dagger$就不再独立了。
+总之，处理复场必须非常小心地注意哪些变量构成一组完备的动力学变量。
 
 \subsubsection{正则量子化}\label{sec:canonical-quantization}
 
 下面我们转而讨论量子情况下的哈密顿动力学。这种使用哈密顿动力学建立量子理论的方法称为\textbf{正则量子化}。
+（\textbf{量子化}这个术语指的是给定哈密顿量或拉格朗日量，写出对应的量子理论的过程；我们还会看到除了正则量子化以外还有路径积分量子化）
 完整地描述一个量子系统的状态和演化情况需要一个三元组：
 首先是一个希尔伯特空间，称为\textbf{态空间}，其中的矢量称为\textbf{态矢量}，它们表示了系统的状态，
 并且我们认为只差了一个倍数的态矢量等价，从而我们可以仅使用单位长度的态矢量描述任何的系统；
@@ -938,9 +947,9 @@ $x^0$则是\textbf{时间维}。
 要获得完整的理论，我们还需要讨论态空间的结构。
 我们将不讨论完整的数学，而只是对物理上常用的一些操作做一些说明。
 
-当我们选定一个希尔伯特空间并且将（抽象的李代数中的）算符作用于其上时，实际上是对这个算符做了一个幺正表示。
+当我们选定一个希尔伯特空间并且将（抽象的李代数中的）算符作用于其上时，实际上是对这个李代数成员做了一个厄米表示。
 进一步，当我们说一个系统的希尔伯特空间$H$能够被一组相互对易的算符$S$完全描述时，
-我们实际上是说，算符集合$S$在$H$上的（幺正）表示组成了$H$上的一个完备相容算符集合，也即，$S$中各个算符在$H$上的表示共享的本征矢量构成$H$的一组基。
+我们实际上是说，算符集合$S$在$H$上的（厄米）表示组成了$H$上的一个完备相容算符集合，也即，$S$中各个算符在$H$上的表示共享的本征矢量构成$H$的一组基。
 可以证明，如果$S_1,S_2$是$S$的一个划分，且$S_1$完全描述了$H_1$而$S_2$完全描述了$H_2$，那么就有$H$和$H_1 \otimes H_2$同构。
 因此我们把$H$完全分解成了若干空间的直积，这些空间中的每一个都由完整描述系统需要的算符中的其中一个完全刻画。
 
@@ -958,8 +967,7 @@ $x^0$则是\textbf{时间维}。
 现在我们要做的是，分析$\phi$和$\pi$之间要具有什么样的代数关系%
 \footnote{实际上只需要分析同一个时间$t$下$\phi(\vb*{x}, t)$和$\pi(\vb*{y}, t)$之间的关系就可以了，
 因为\eqref{eq:hamitonian-eq-quantum}中从来不会出现不同时间的量之间的对易子。
-这是量子版本的哈密顿动力学不适宜用于分析洛伦兹协变性的一个例子。
-另外请注意这套理论并不能原封不动地适用于广义相对论时空，因为那里会需要讨论“不同时间处的量之间的关系”。}，
+另外请注意这套理论并不能原封不动地适用于时空度规和其它物理过程有关的情况（比如广义相对论），因为那里会需要讨论“不同时间处的量之间的关系”。}，
 才能够让\eqref{eq:hamitonian-eq-quantum}在$\hbar \to 0$时退化到经典情况\eqref{eq:hamitonian-eq}。
 选定这样一个代数关系就称为选取一种\textbf{量子化方案}，因为一旦给定了这样的代数关系，我们就把\eqref{eq:hamitonian-eq}推广到了量子理论中。
 我们将不试图穷举所有可以的量子化方案，而只是举两个行之有效的例子——也就是说，实验数据要求使用这样的量子化方案。%
@@ -969,6 +977,7 @@ $x^0$则是\textbf{时间维}。
 并且在$\hbar \to 0$的极限情况下回退到经典动力学\eqref{eq:hamitonian-eq}。
 这是可以预期的，因为“取$\hbar\to 0$的极限”这个操作显然不是一一对应的，或者说量子化方案可以不止一种。
 }
+% TODO:和二次量子化和拓扑的联系
 
 第一个方案是指定对易子为
 \begin{equation}
@@ -1279,6 +1288,7 @@ $\hat{U}^H$可以写出显式表达式
 \subsubsection{测量}\label{sec:measure}
 
 \textbf{测量}指的是这样一个过程：两个系统（分别称为\textbf{待测系统}和\textbf{仪器}）发生相对剧烈而时间短促的相互作用，相互作用后待测系统的态发生很大改变，而仪器的态则体现了相互作用前待测系统的某些信息。
+我们为了方便起见将主要分析粒子理论的测量，场论中的测量要复杂很多（可想而知），因为测量显然只能一次发生在一个空间点，因此测量导致的扰动也许需要以某个有限的速度传播出去。
 采用相互作用绘景，设$\hat{q}$完全描述了仪器的态空间，$\hat{a}$是关于待测系统的某个算符，它和另一个算符$\hat{b}$共同描述了待测系统的态空间。（被测量的量$\hat{a}$未必能够完整描述待测系统。下文中需要将待测系统的态做展开，因此引入$\hat{b}$）
 由于相互作用非常剧烈而时间短促，仪器和待测系统的相互作用哈密顿量可以写成
 \begin{equation}
@@ -1375,6 +1385,14 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 
 \subsubsection{有效哈密顿量}
 
+设有哈密顿量$\hat{H}$，如果某个物理量$\hat{A}$满足
+\[
+    \comm*{\hat{H}}{\hat{A}} = \comm*{\hat{H}'(A)}{\hat{A}},
+\]
+其中$\hat{H}'$是只和$\hat{A}$有关的物理量，那么在只关心$\hat{A}$时可以以$\hat{H}'$为有效哈密顿量。
+
+其实也可以通过路径积分的观点看这个问题：与$\hat{A}$对易的那些自由度可以直接积掉而只留下一个因子。
+
 有时，一个物理系统的哈密顿量涉及大量复杂的过程，而特定的初始条件意味着这个系统的态基本上只会出现在态空间的一小部分当中。
 但这并不意味着态空间的其它部分就不会对系统的动力学造成影响。
 例如，设想一个三能级系统，其中一个能级的能量远远高于另外两个能级，这意味着系统基本上不可能出现在这个能级上，但如果其余两个能级和这个高能量能级有耦合，那么这个高能量能级就可能成为另外两个能级相互转换的渠道。
@@ -1413,12 +1431,12 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
 \[
     \ii \hbar \dv{t} \hat{P} \ket{\psi} = \left(\hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{\ii \hbar \dv{t} - \hat{H}_{QQ}} \hat{H}_{QP}\right) \hat{P} \ket{\psi}.
 \]
-因此我们发现，我们关注的那一部分态的时间演化由等效哈密顿量
+因此我们发现，我们关注的那一部分态的时间演化由有效哈密顿量
 \begin{equation}
     \hat{H}_\text{eff} = \hat{H}_{PP} + \hat{H}_{PQ} \frac{1}{\ii \hbar \dv{t} - \hat{H}_{QQ}} \hat{H}_{QP}
     \label{eq:effective-hamiltonian-original}
 \end{equation}
-指导，而且由$\hat{H}_{PP}, \hat{H}_{PQ}, \hat{H}_{QP}$的定义，该等效哈密顿量是$\hat{P}$筛选出的空间中的算符。
+指导，而且由$\hat{H}_{PP}, \hat{H}_{PQ}, \hat{H}_{QP}$的定义，该有效哈密顿量是$\hat{P}$筛选出的空间中的算符。
 \eqref{eq:effective-hamiltonian-original}非常符合我们的直觉：时间演化可以仅仅涉及$\hat{H}_{PP}$，也可以以$\hat{H}_{QQ}$为中介。
 
 一种特殊的情况是，态空间可以写成两个空间（记为$\mathcal{H}_1$和$\mathcal{H}_2$）的直积，系统的初始条件决定了大部分有意义的过程都发生在$\mathcal{H}_1$中，但由于耦合，不能简单地将$\mathcal{H}_2$排除掉。
@@ -1488,6 +1506,33 @@ $\gamma$是一个函数，它是一个$t_0$附近的尖峰。
     D_{\alpha \beta}^S = D_\alpha^S D_{\beta}^{S, \alpha}, \quad D_{\alpha, \beta, \gamma}^S = D_{\alpha}^S D_{\beta}^{S, \alpha} D_{\gamma}^{S, \alpha, \beta}, \ldots
 \]
 % TODO:和通常使用的微扰论有何关系？？？
+
+\subsubsection{对称性和守恒量}\label{sec:hamiltonian-symmetry}
+
+如果某个数学对象$A$在某个操作$O$下保持不变，我们就说$A$具有$O$-对称性或者$O$-不变性。
+我们已经看到拉格朗日动力学中对称性和守恒量之间的关系（诺特定理），而在哈密顿动力学中这实际上更加明显。
+设$U$是一个对称群，则系统的动力学不变等价于系统的哈密顿量在$U$作用下不变。
+设$U$在态空间上的表示（而不是作用在算符上的表示）的生成元为$\{G_i\}$，共有$n$个，则系统的哈密顿量不变等价于
+\[
+    \comm*{\hat{H}}{G_i} = 0,
+\]
+于是我们就得到了$n$个守恒量。
+
+如果对称群$U$中的每个操作都是“先做操作$U_1$，再做操作$U_2$，……”这样形成的，那么$G_i$的形式就会不同——如果是连续对称群，那么每一个$G_i$就是任取每个$U_m$的生成元中的一个加起来得到的，而对离散对称群，每一个$G_i$则是任取每个$U_m$的生成元中的一个乘起来得到的。
+
+系统的动力学具有的对称性未必为它可能的状态具有，例如我们的世界遵从的动力学规律是平移不变的，但是它的状态未必是。
+这种现象就是\textbf{自发对称性破缺}。
+光观察哈密顿量的形式，未必能够看出来系统会发生自发对称性破缺。
+
+然而，系统的状态的对称性未必就和动力学毫无关系。
+设总的希尔伯特空间为$H$，由于守恒量、拓扑性质（也可以看成特殊的守恒量，拓扑不变量在拓扑变换下守恒）等，满足某个特定约束条件的态组成的空间为$H'$，则$H / H'$标记了不同的守恒量、拓扑性质等的参数。
+如果出于某些原因，一个状态$\ket{\psi}$不能演化到$U \ket{\psi}$，那么希尔伯特空间就分裂成几个分支：每个分支都不具备$U$对称性，$U$的作用是在不同分支之间切换。
+此时如果我们写下关于某个分支的有效哈密顿量，这个有效哈密顿量就很可能不具备$U$对称性。
+实际上就是在这里，对称性自发破缺真的展现出了有趣的行为：我们从一个对称的理论得到了一个不对称的理论！
+
+很容易看出上面的步骤其实可以反过来：我们可以在系统中引入冗余的、非物理的自由度，让加入这个自由度之后的态空间分裂成（互相不能演化过去的）几个分支。
+这种情况下通常不说这是“对称性”，而是说这是“冗余的自由度”。这种对称性只是哈密顿量或者拉氏量的对称；态空间中的这种“对称”是应该被模掉的。
+例如，在场论中，\textbf{规范对称性}就是这样一种冗余性，它是作用在空间局域上的一种变换，变换前后系统状态实际上没有发生任何物理的变化。
 
 \subsection{关于单位制的注记}
 
@@ -1576,6 +1621,19 @@ $\hbar$在计算对易子的时候出现。做变换
     \dv{\hat{p}}{t} = \frac{1}{\ii} [\hat{p}, H] = -\pdv{x} \hat{H}(\hat{x}, \hat{p})
 \]
 当$\hbar \to 0$时，上式仍然成立，而此时$\hat{x}$和$\hat{p}$已经是对易的了，因此它们退化为了可以直接使用实数表示的情况，我们也就过渡到了经典力学。
+
+% TODO：如果两组同类型粒子彼此没有相互作用，那么计算其中一群时可以忽略另一群，举例：
+\[
+    \frac{1}{\sqrt{6}} \left( \ket{1}\ket{2}\ket{3} + \ket{1}\ket{3}\ket{2} + \ket{2}\ket{1}\ket{3} + \ket{2}\ket{3}\ket{1} + \ket{3}\ket{1}\ket{2} + \ket{3}\ket{2}\ket{1}
+    \right)
+\]
+如果1、2有相互作用而和3没有相互作用（注意如果12和3都和另一个系统有相互作用，那么它们之间还是有相互作用；判断两个系统之间有没有相互作用要把别的自由度都积掉只剩下这两个系统），那么在只考虑3时可以把$\ket{3}$略去，这样就剩下
+\[
+    \ket{1}\ket{2} + \ket{2}\ket{1}
+\]
+在计算只涉及1和2的振幅时，不管使用含有123的态还是只含有12的态都会得到一样的结果。
+
+实际上这就是密度矩阵的分解。
 
 \section{准经典理论}
 
@@ -1678,10 +1736,6 @@ $\hbar$在计算对易子的时候出现。做变换
 \]
 所以什么情况下确凿无疑的有$H$是厄米算符呢？
 
-直和：一个参数本来只能取这些值，现在可以取另一些值了（加入了基矢量），则两个空间要做直和。
-
-直积：本来只需要考虑这个参数，现在需要考虑别的参数了。
-
 TODO：正则对易关系与运动方程。好像如果不使用正则对易关系，那么算符演化方程就和通过对应的拉氏量写出的运动方程不一致。
 
 可以使用傅里叶变换把哈密顿量中的$\nabla \phi$之类的项弄掉。
@@ -1699,7 +1753,7 @@ TODO：正则对易关系与运动方程。好像如果不使用正则对易关�
 
 把问题规范一下：现在我们已知系统的演化可以完全由一组算符$\hat{O}_1, \hat{O}_2, \ldots, \hat{O}_n$描述，也就是说能够写出哈密顿算符$\hat{H}$来描述它们的演化。此外，这些算符的对易关系全部给定，从而$[\hat{O}_i, \hat{H}]$也确定了。
 现在的问题是，态矢量应该怎么取？或者说，对应的希尔伯特空间应该是怎样的结构？
-实际上在量子场论中这似乎并不是一个问题，因为很少用到态矢量。这是因为只有算符是重要的，态矢量实际上只是算符对应的李代数的幺正表示而已。
+实际上在量子场论中这似乎并不是一个问题，因为很少用到态矢量。这是因为只有算符是重要的，态空间实际上只是算符对应的李代数的幺正表示的表示空间而已。
 
 设算符$\hat{O}_1, \hat{O}_2$分别是希尔伯特空间$H_1$、$H_2$的CSCO，且它们组成的集合是$H$的CSCO，那么$H = H_1 \otimes H_2$，并且$\ket{x_1, x_2} = \ket{x_1} \otimes \ket{x_2}$，其中$\ket{x_1} \in H_1, \ket{x_2} \in H_2$，$\ket{x_1, x_2} \in H$。
 顺便抨击一下常见的量子力学教材：一上来就讲态矢量在概念上真的很不清楚！
@@ -1713,7 +1767,793 @@ TODO：正则对易关系与运动方程。好像如果不使用正则对易关�
 
 粒子数表象。
 
-\section{二次量子化}
+\section{二次量子化}\label{sec:second-quantization}
+
+在单粒子量子力学中我们发现要完整描述系统需要分析$\hat{\vb*{x}}$的各个本征态，
+从而经典情况下描述$\vb*{x}$的轨迹方程在量子情况下不再适用，
+而要改用关于\textbf{波函数}$\braket{\vb*{x}}{\phi} = \phi(\vb*{x})$的偏微分方程。
+因此，量子理论中对粒子的描述涉及一个场。
+本节将讨论相反的问题：量子理论中的场实际上能够自然地诱导出“粒子”的概念。
+我们还将发现，单粒子量子力学中的波函数实际上真的相当于像电磁场这样的一个场。
+将经典场量子化、并且从量子化的场当中发现粒子性的操作统称为\textbf{二次量子化}。
+相应的，完全使用单粒子图像做的分析称为\textbf{一次量子化}。
+有一些问题使用单粒子图像难以处理，因此二次量子化实际上是比一次量子化更加基本的理论，但很多时候我们先获得了一个一次量子化的理论，然后再构造一个能够推导出这个一次量子化的理论的场论以方便计算，从而似乎我们是在一次量子化理论上又做了一次量子化。
+这并不是事实，虽然这种感觉正是“二次量子化”一词的来源。
+
+在本节接下来的推导中（以及别的很多地方）我们都认为体系的动力学自由度就只有一个算符。
+这个说法当然是不确切的，例如一个单粒子的状态就同时需要使用$\vb*{x}$和自旋来描述；但是能够将这两者直积起来，得到的算符的本征值是$\pmqty{ x^1 & x^2 & x^3 & S }$，于是它一个算符就成为了整个体系的CSCO。
+
+\subsection{多粒子态空间}\label{sec:many-body-state}
+
+本节我们将从两个方向分析含有多个粒子的系统，也就是所谓的\textbf{多体系统}。
+首先我们将从一系列完全相同的单粒子希尔伯特空间构造多粒子福克空间，
+然后我们将说明，这种多粒子福克空间实际上可以使用一对产生湮灭算符和一个唯一的真空态干脆利落地构造出来。
+
+\subsubsection{$n$粒子希尔伯特空间}\label{sec:n-particle-space}
+
+考虑一个有$n$个粒子构成的体系。我们使用$\hat{M}_i$表示完全描述了第$i$号粒子的单粒子算符，也就是说它无简并。
+既然不同的$i$对应的$\hat{M}_i$作用于不同的希尔伯特空间，它们当然就是对易的，
+从而$M_1, M_2, \ldots, M_n$组成了一个完备对易算符集，整个体系的哈密顿量$\hat{H}$是这个算符集的函数。
+设每个粒子的希尔伯特空间为$H_i$，那么整个体系的希尔伯特空间就是
+\[
+    H = H_1 \otimes H_2 \otimes \cdots \otimes H_n,
+\]
+且每个$H_i$都彼此同构。空间$H$的本征态可以写成
+\[
+    \ket{\text{eigenstate}} = \prod_i \ket{\text{one of $\hat{M}_i$'s eigenstates}}.
+\]
+
+我们说这些粒子是全同粒子，当且仅当
+\begin{enumerate}
+    \item 诸$M_i$具有相同的谱结构；从而，诸态空间$H_i, \; i=1, 2, \ldots$幺正等价，于是我们可以不失一般性地认为诸粒子的态空间都是相同的，且$M_1, M_2, \ldots$实际上可以看成某个抽象的李代数的元素$\hat{M}$在一系列幺正等价的态空间$H_1, H_2, \ldots$上的表示；
+    \item 交换任意两个粒子之后系统的动力学不变，或者说交换两个粒子之后系统的哈密顿量不变。%
+    \footnote{如果系统中粒子数恒等，这就是说系统的哈密顿量中不同粒子具有同等的地位；不过我们在这里并不处理这样的$n$粒子哈密顿量，因为在很多情况下粒子数会发生变化，从而哈密顿量中不可能直接含有各个粒子的算符。我们在\autoref{sec:from-qft-to-many-body}中会看到，此时哈密顿量中应该显含某种场算符，而单粒子算符是可以使用场算符弄出来的。} % TODO：这一段没写清楚
+\end{enumerate}
+这两个要求缺一不可；前者要求诸粒子是同样的对象，后者要求交换粒子不改变系统的动力学。
+
+下面我们来讨论交换粒子意味着什么。形如
+\[
+    \hat{P} (\ket{\psi_1}\ket{\psi_2}\cdots) = \ket{\psi_{k_1}}\ket{\psi_{k_2}}\cdots, \quad \{1, 2, \ldots\} = \{k_1, k_2, \ldots\}
+\]
+的算符$\hat{P}$称为\textbf{粒子交换算符}。显然，任何一个粒子交换算符都可以写成一系列交换两个粒子的算符的乘积。设算符$\hat{P}$交换了第$i$个粒子和第$j$个粒子，那么我们有
+\[
+    \hat{P} \left( \ket{\psi_1} \ket{\psi_2} \cdots \ket{\psi_i} \cdots \ket{\psi_j} \cdots \ket{\psi_n} \right) = \ket{\psi_1} \ket{\psi_2} \cdots \ket{\psi_j} \cdots \ket{\psi_i} \cdots \ket{\psi_n},
+\]
+既然$H$是各粒子态空间的直积而各个粒子的态空间实际上是完全一样的，算符$\hat{P}$实际上是从$H$到$H$的算符。
+此外注意到$\hat{P}$并不改变态矢量的模，因此它还是一个幺正算符。
+对一个全同粒子体系，交换两个粒子的信息不会改变系统的动力学，也就是说$\hat{H}$在$\hat{P}$的作用下不变，
+因此$\hat{P}$和$\hat{H}$是对易的，这又意味着$\hat{P}$不会有时间演化。
+于是可以迭代说明，任何一种粒子交换算符都没有时间演化。
+这又意味着，设$\ket{\psi}$经过某个时间演化过程之后变化为$\ket{\psi'}$，那么$\hat{P} \ket{\psi}$经过同样的时间演化过程之后变化为$\hat{P} \ket{\psi'}$。
+我们发现希尔伯特空间中出现了\autoref{sec:hamiltonian-symmetry}中提到的冗余自由度。% TODO
+
+考虑到交换任意两个$M_i$和$M_j$不改变系统的动力学，任何有意义的关于此$n$体系统的可观察量（它们是诸$M$的函数）在交换$M_i$和$M_j$之后形式保持不变。这就带来了一个结果：设$\hat{P}$是一个粒子交换算符（交换了哪些粒子随意），且$\hat{\phi}$是一个关于整个$n$粒子系统的可观察量%
+\footnote{正如这个符号暗示的那样，$\hat{\phi}$通常可以被理解为某种量子化的场。我们将在\autoref{sec:from-qft-to-many-body}中看到这样的例子。}，
+那么$\hat{P}$和$\hat{\phi}$对易，于是
+\[
+    \hat{\phi} \left(\hat{P} \ket{\phi}\right) = \hat{P} \hat{\phi} \ket{\phi} = \hat{P} \phi \ket{\phi} = \phi \hat{P} \ket{\phi},
+\]
+这意味着任何一个本征态的置换都是另一个本征态，且本征值相同。这意味着$H$上任何有意义的可观察量以及它们的组合都不能够成为一组CSCO：任何有意义的可观察量都一定有简并！这样的简并称为\textbf{交换简并}。
+这样，如果我们只关注系统的$\phi$属性的值，那么使用$\ket{\text{system}}$做计算和使用归一化的态$\sum_i \hat{P}_i \ket{\text{system}}$做计算得到的结果完全一样。
+% TODO:对这一句话的严格解释：做什么样的计算？
+因此$H$实际上是过大的——我们应该讨论某种比它的维度更低的空间，但其上的算符的结构不应该有变化。
+也就是说，描写实际的全同粒子体系只需要$H$的一个子代数%
+\footnote{当然，不构造子代数原则上也是可以的，但是有意义的算符都不构成CSCO这件事会大大加大处理问题的难度。
+需注意虽然我们是把$H$的一部分孤立出来讨论，但这和构造混合态时“只考虑系统的一部分”是完全不同的。
+全同粒子体系的态不会是不满足对称或者反对称条件的态矢量，因此从$H$缩小到$H$的对称化或反对称化子代数不会损失任何信息。
+反之，构造混合态时被忽视的那部分系统仍然携带了信息。因此构造全同粒子体系不会产生混合态。}，
+任何一个$H$中的态都可以对应到这个子代数中的一个态，并且$\hat{\phi}$构成这个子代数的一个CSCO
+——由于$\hat{\phi}$在粒子交换下不变，这又意味着，将交换算符作用在这个子代数的某一基矢量之后态的改变应该只是乘上了一个复数因子。
+而由于粒子交换算符是幺正的，这个复数因子的模长一定是1。
+% TODO：在我们只关注某些算符提供的信息时对希尔伯特空间的简化
+% 一个可能的思路：记$f$将$H$中的态$\ket{\psi}$映射到了$H$的一个子代数上，且$f$是一个满射，且等价的态被$f$作用之后仍然是等价的；由于子代数中我们关注的算符构成CSCO，$H$中等价的态被$f$作用之后的结果只差了一个系数。
+% TODO：定义什么叫做态“等价”，或者说“表示同一个系统”
+
+具体这个复数因子是多少，不同的基矢量对应的复数因子是不是都相同，都值得讨论；
+我们将只讨论这因子取$\pm 1$的情况，其余情况可以类推。%
+\footnote{这个因子具体能够取什么值和底流形拓扑等有关系，有些取值会导致一些矛盾或者非物理的结果。}%
+总之，现在我们需要构造$H$的对称化和反对称化子代数。
+最简单的方法是，使用$H$的诸基矢量构造一组对称化与反对称化基矢量，这样无需对$H$上的算符做任何修改。
+
+\subsubsection{对称与反对称基矢量}
+
+这一节我们需要分析具体的粒子交换，因此引入一些记号。
+$n$元组有$n!$种排列方式；我们将这$n!$种排列方式从$1$到$n!$编上号，并设$\hat{P}_s$为第$s$种排列方式对应的粒子交换算符，$p_s$是第$s$种排列方式对应的交换数。
+
+设$M^{(1)}, M^{(2)}, \ldots$是$\hat{M}$的本征值。这里我们把$\hat{M}$看成离散谱的，但是可以取其极限得到连续谱的情况。
+这样$H$的基矢量就全部可以写成
+\[
+    \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n = \ket{M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}
+\]
+的形式。其中下标$1, 2, \ldots$指的是这个基矢量在空间$H_1, H_2, \ldots$中。
+设$k_1, k_2, k_3, \ldots$中有$n_1$个$1$，$n_2$个$2$，等等，称这些$n_1, n_2, \ldots$为\textbf{占据数}；不重复的$k_i$——从而不重复的$M^{(k_i)}$——总共有$m$个，并且
+\begin{equation}
+    \sum_{i=1}^m n_i = n.
+\end{equation}
+
+现在尝试构造对称化子代数和反对称化子代数的基矢量。设$\ket{\psi}$是$H_S$或$H_A$中的一个态。当然，它也是$H$中的态，从而
+\[
+    \ket{\psi} = \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+且
+\[
+    \hat{P}_s \ket{\psi} = (\pm 1)^{p_s} \ket{\psi},
+\]
+若$\ket{\psi}$是对称化的，则取$+1$，若$\ket{\psi}$是反对称化的，取$-1$。
+然后就有
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{\psi} = \sum_s (\pm 1)^{p_s} \hat{P}_s \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+此方程的左边是
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{\psi} = \sum_s (\pm 1)^{p_s} (\pm 1)^{p_s} \ket{\psi} = \sum_s \ket{\psi} = n! \ket{\psi},
+\]
+右边是
+\[
+    \begin{aligned}
+        &\quad \sum_s (\pm 1)^{p_s} \hat{P}_s \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_{k_1, k_2, \ldots, k_n} c_{k_1 k_2 \cdots k_n} \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+    \end{aligned}
+\]
+因此$\ket{\psi}$可以完全被形如
+\[
+    \sum_s (\pm 1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n
+\]
+的矢量线性表示。
+如果我们能够归一化这些矢量，并且证明它们的正交性，那么它们归一化之后就是$H_S$和$H_A$的基矢量。
+
+首先我们讨论对称化子代数$H_S$。我们取$H$的形如下式的对称化基矢量：
+\[
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_S \propto \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n,
+\]
+我们要计算其归一化系数。首先
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_{s, s'} \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_{s'}^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n, 
+    \end{aligned}
+\]
+注意到由于$\hat{P}$的幺正性和可逆性，$\hat{P}_{s'}^\dagger \hat{P}_s$也是一个粒子交换算符，
+并且固定$s$不动，不同的$s'$会让$\hat{P}_{s'}^\dagger \hat{P}_s$取不同的值；
+从而，对每个$s$，$\hat{P}_{s'}^\dagger \hat{P}_s$都有$n!$个值，
+也即固定$s$不动而让$s'$从$1$取到$n!$，$\hat{P}_{s'}^\dagger \hat{P}_s$的值不重复地取遍所有共计$n!$个粒子交换算符；
+从而当$s$和$s'$都从$1$计数到$n!$时，$\hat{P}_{s'}^\dagger \hat{P}_s$的值取遍所有粒子交换算符，且每个重复$n!$次，从而
+\[
+    \begin{aligned}
+        &\quad \sum_{s, s'} \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_{s'}^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! \sum_s \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \end{aligned}
+\]
+我们知道$\hat{M}$的各个本征态是正交的，因此上式中的内积只有在$\hat{P}$作用在$\ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n$得到的结果和作用前一样时才能取$1$，否则均取零。这样的排列方式总共有$n_1!n_2!\cdots n_m!$个，也就是说上式右边的求和号中值为$1$的项共有$n_1!n_2!\cdots n_m!$个，其余均为零，所以我们得到
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! \sum_s \bra{M^{(k_1)}}_1 \bra{M^{(k_2)}}_2 \cdots \bra{M^{(k_n)}}_n \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= n! n_1 ! n_2! \cdots ,
+    \end{aligned}
+\]
+于是得到归一化对称基矢量
+\begin{equation}
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_S = \frac{1}{\sqrt{n! n_1 ! n_2! \cdots}} \sum_s \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \label{eq:sym-basis}
+\end{equation}
+
+同样的，我们考虑形如
+\[
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A \propto \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+\]
+的反对称化基矢量。
+使用和对称化基矢量同样的方法可以归一化这个基矢量。
+在动手之前，注意到如果$\ket{M^{(k_1)}}_1$,$\ket{M^{(k_2)}}_2$,..., $\ket{M^{(k_n)}}_n$中有重复的态，
+那么必定会导致相应的$\ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A$为零。
+这是因为设$\hat{P}$交换了两个重复的态，那么就有
+\[
+    \hat{P} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A = \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A,
+\]
+而由于这是反对称化基矢量，我们又有
+\[
+    \hat{P} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A = - \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A,
+\]
+于是相应的反对称化基矢量就是零。因此我们只需要讨论其中所有单粒子态都不重复的反对称化基矢量。
+如果单粒子态不重复，那么求和号中的态彼此正交，于是
+\[
+    \begin{aligned}
+        &\quad \left(\sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_s (-1)^{2p_s} \left(\hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n\right)^\dagger \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n \\
+        &= \sum_s 1 = n!,
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}_A 
+    = \frac{1}{\sqrt{n!}} \sum_s (-1)^{p_s} \hat{P}_s \ket{M^{(k_1)}}_1 \ket{M^{(k_2)}}_2 \cdots \ket{M^{(k_n)}}_n.
+    \label{eq:asym-basis}
+\end{equation}
+当然，由于此时$n_1 = n_2 = \cdots = 1$，\eqref{eq:asym-basis}也可以写成\eqref{eq:sym-basis}的形式。
+
+然后我们来讨论\eqref{eq:sym-basis}和\eqref{eq:asym-basis}的正交归一性。
+归一化性已经通过计算归一化系数完成了，我们接下来讨论正交性。
+无论作用怎么样的$\hat{P}_s$，都不会改变一个态中的占据数$n_1, n_2, \ldots$，
+因此两个\eqref{eq:sym-basis}中占据数不同的态的求和号中出现的所有态都不相同%
+\footnote{需要注意的是占据数相同的态也有可能不同。在$H_S$中占据数相同的态完全相同，因为它们之间差了有限次粒子交换；
+$H_A$中占据数相同的态如果差了奇数次粒子交换，那么它们就差了一个负号，差了偶数次粒子交换则相同。}，
+因此两个\eqref{eq:sym-basis}中占据数不同的态的内积是零；
+同样的思路也说明\eqref{eq:asym-basis}中占据数不同的态的内积是零。
+在已经做了归一化之后，我们确认，\eqref{eq:sym-basis}和\eqref{eq:asym-basis}都满足正交归一化条件。
+
+至此我们发现，实际的全同粒子系统只需要使用$H$的对称化子代数$H_S$或者反对称化子代数$H_A$描述，
+\eqref{eq:sym-basis}是$H_S$的基底，\eqref{eq:asym-basis}是$H_A$的基底。
+我们还知道，$H_A$中的基矢量中不会有两个粒子处于同样的态上，
+从这个结论容易推导出，$H_A$中任何一个态中都不会有两个粒子的单粒子态完全相同。
+
+\subsubsection{福克空间与产生湮灭算符}
+% TODO:将“粒子数算符”的名称改为“占据数算符”
+现在对任何一个正整数$n$，我们都已经建立起了$n$粒子全同粒子系统的态空间——那就是说，对称化和反对称化希尔伯特空间。
+而我们也可以指定$n=0$时的“全同粒子系统”的态空间是平凡的向量空间$\{0\}$，并记其中唯一一个矢量为$\ket{0}$。
+于是我们记$n$粒子对称化或反对称化希尔伯特空间为$H_S^{(n)}$和$H_A^{(n)}$，且$H_S^{(0)}$和$H_A^{(0)}$就是$\{\ket{0}\}$。
+本节我们转而考虑这样的问题：在这一系列空间之间有什么联系？
+
+在维数不同、互不等价的线性空间之间操作是非常麻烦的，因此我们尝试把诸$H_S^{(n)}$和$H_A^{(n)}$放在一个更大的空间中讨论，
+这个更大的空间包含且仅包含诸$H_S^{(n)}$和$H_A^{(n)}$中的矢量。
+构造这种“更大的空间”的方法有很多。
+我们需要的操作绝对不是直积，因为两个空间的直积中含有原来的两个空间没有的向量。
+因此尝试使用直和操作。
+的确，并没有特殊的证据要求我们一定要使用直和，
+但是如果我们讨论的系统中不涉及粒子数变动，那么具体使用的是直和还是别的什么操作无关紧要，
+因为此时诸$H_S^{(n)}$和$H_A^{(n)}$直和出来的空间并没有物理意义
+——我们只会把其中的粒子数和我们讨论的系统的粒子数相同的部分拿来做动力学计算。
+而在\autoref{sec:from-qft-to-many-body}中会看到，使用直和是正确的。
+总之，定义\textbf{对称的福克空间}
+\[
+    F_S = H_S^{(0)} \oplus H_S^{(1)} \oplus H_S^{(2)} \oplus \cdots,
+\]
+以及\textbf{反对称的福克空间}
+\[
+    F_A = H_A^{(0)} \oplus H_A^{(1)} \oplus H_A^{(2)} \oplus \cdots.
+\]
+每个空间的基矢量为
+\[
+    \ket{0}, \; \ket{1;M^{(k_1)}}, \; \ket{2;M^{(k_1)} M^{(k_2)}}, \; \ldots,
+\]
+其中$k_1, k_2, \ldots$跑遍所有可能的本征值。
+
+现在我们定义\textbf{产生湮灭算符}。%
+\footnote{产生湮灭算符未必有动力学上的意义。例如，在粒子数固定的动力学中它们就只是一种新的观点。但是在粒子数会变的情况下它们很重要。}%
+以下我们略去了下角标$A$和$S$，因为这些定义与对称还是反对称无关。
+首先取\textbf{产生算符}$a^\dagger$，使之满足
+\begin{equation}
+    \hat{a}^\dagger (M^{(i)}) \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i + 1} \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}.
+    \label{eq:creation-operator}
+\end{equation}
+其中${n_i}$指的是$\ket{n; M^{(k_1)} M^{(k_2)}}$中$M^{(i)}$态的个数。
+给定了相应的系数，上式就完全地确定了一个福克空间（无论对称还是反对称）上的算符。%
+\footnote{至于为什么要取这个$\sqrt{n_i + 1}$的系数，我们将在定义粒子数算符的时候看到。}
+产生算符将$n$粒子态转化为$n+1$粒子态。
+现在要问：有没有一个算符能够将$n+1$粒子态转化为$n$粒子态？
+实际上由共轭转置的定义（注意到\eqref{eq:creation-operator}只涉及基矢量），
+$\hat{a}^\dagger$的共轭转置，也就是$\hat{a}$就是满足这个条件的算符，
+因为由共轭转置的定义可以导出
+\[
+    \hat{a} (M^{(i)}) \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i + 1} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}},
+\]
+其中$n_i$指的是$\ket{n;M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M^{(i)}$态的个数，
+于是我们称$\hat{a}$为\textbf{湮灭算符}。
+这里还有一个微妙的细节。注意到$\hat{a}^\dagger(M^{(i)})$作用在任何一个态上面都不可能产生一个不含有$M^{(i)}$态的态，因此不能仅仅依靠\eqref{eq:creation-operator}得到$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上的结果。
+于是我们额外规定：$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上得到长度为零的向量%
+\footnote{不是得到$\ket{0}$——$\ket{0}$是真实的物理态，而长度为零的向量不是。}%
+，从而$\hat{a}$和$\hat{a}^\dagger$在整个福克空间上都定义好了。%
+\footnote{刚才提到的这种情况实际上来自数学上的一个结论：在希尔伯特空间中，$(\hat{a}^\dagger)^\dagger$未必就是$\hat{a}$。当然，我们在这里的处理方法并没有什么逻辑漏洞——当我们要求\eqref{eq:creation-operator}成立时我们只是要求存在某个算符$\hat{a}$（而不是产生算符）使得此方程成立，而接下来要求$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上得到长度为零的向量就唯一确定了$\hat{a}$。}
+这样如果重新定义$n_i$为$\ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M_i$态的数量，那么就可以使用一个式子完全刻画$\hat{a}(M^{(i)})$的行为：
+\begin{equation}
+    \hat{a} (M^{(i)}) \ket{n+1; M^{(i)} M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = \sqrt{n_i} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}.
+    \label{eq:annihitation-operator}
+\end{equation}
+于是\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}就给出了产生湮灭算符的定义。
+请注意这两个式子中的$n_i$是不同的；它们分别是两个式子中被算符作用前的态中$M^{(i)}$态的个数。
+
+现在指出一个事实：任何一个\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中的态都可以通过产生算符和真空态$\ket{0}$推导出来。原因很简单：重复使用\eqref{eq:creation-operator}，我们有
+\begin{equation}
+    \ket*{n; \underbrace{M^{(1)} M^{(1)} \cdots}_{n_1} \underbrace{M^{(2)} M^{(2)} \cdots}_{n_2} \cdots} = \frac{1}{\sqrt{n_1! n_2! \cdots}} \left(\hat{a}^\dagger (M^{(1)})\right)^{n_1} \left(\hat{a}^\dagger (M^{(2)})\right)^{n_2} \cdots \ket{0},
+    \label{eq:creation-basis}
+\end{equation}
+而通过排列算符，\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中的每一个基矢量都可以写成上式左边的形式（可能差一个负号），
+因此所有的基矢量都可以通过产生算符构造出来。我们称形如\eqref{eq:creation-basis}这样的态也即，像\eqref{eq:sym-basis}和\eqref{eq:asym-basis}这样的态，为\textbf{乘积态}，因为它们可以写成一系列产生算符乘积作用在真空态上的形式。
+
+定义产生湮灭算符之后可以定义
+\begin{equation}
+    \hat{n}(M^{(i)}) = \hat{a}^\dagger (M^{(i)}) \hat{a} (M^{(i)})
+    \label{eq:number-operator}
+\end{equation}
+为\textbf{占据数算符}。它叫做占据数算符是因为，按照\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}可以验证，我们有
+\begin{equation}
+    \hat{n}(M^{(i)}) \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = n_i \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}},
+    \label{eq:number-eigenstate}
+\end{equation}
+其中$n_i$指$\ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}}$中$M^{(i)}$态的个数。
+\eqref{eq:number-eigenstate}意味着\eqref{eq:sym-basis}和\eqref{eq:asym-basis}都是$\hat{n}(M^{(i)})$的本征态，本征值就是$M^{(i)}$态的数目。
+这就是占据数算符一词的来源。
+相应的
+\begin{equation}
+    \hat{N} = \sum_i \hat{n}(M^{(i)})
+    \label{eq:total-number-operator}
+\end{equation}
+就是\textbf{总粒子数算符}，它的本征态也是\eqref{eq:sym-basis}和\eqref{eq:asym-basis}，本征值为对应的态的总粒子数。
+
+\subsubsection{产生湮灭算符的代数结构}\label{sec:algebra-ca-op}
+
+% TODO：然后问题就来了：诸粒子数算符能不能完整描述被场算符完整描述的态空间？
+在前面几节中，我们通过$M$表象下的单粒子空间构造出了全同粒子体系的希尔伯特空间，
+通过全同性得到了有物理意义的对称化和反对称化希尔伯特空间，然后将它们直和起来得到福克空间，最后在其上定义了产生湮灭算符。
+本节我们将推导产生湮灭算符的几个代数性质，然后接着我们会发现，通过这几个性质可以反过来，
+从产生湮灭算符和一个真空态$\ket{0}$能够得到对称和反对称福克空间，然后退化到单粒子态。
+
+首先我们推导产生湮灭算符的对易关系。我们有
+\[
+    \begin{split}
+        \ket{n+2;M^{(i)}M^{(j)}M^{(k_1)}M^{(k_2)} \cdots} = \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots}, \\ 
+        \quad \ket{n+2;M^{(i)}M^{(j)}M^{(k_1)}M^{(k_2)} \cdots} = \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots},
+    \end{split}
+\]
+从而对$F_S$和$F_A$分别有
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots} = \pm \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}) \ket{n; M^{(k_1)}M^{(k_2)} \cdots}
+\]
+$F_S$取正号，$F_A$取负号。考虑到被它们作用的矢量的任意性，得到
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger = \pm \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(j)}).
+\]
+于是对$F_S$有
+\[
+    [\hat{a}^\dagger (M^{(i)}), \hat{a}^\dagger (M^{(j)})] = 0,
+\]
+对$F_A$有
+\[
+    \acomm{\hat{a}^\dagger (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = 0.
+\]
+特别的，
+\[
+    \hat{a}^\dagger (M^{(i)}) \hat{a}^\dagger (M^{(i)}) = 0.
+\]
+对以上公式取共轭转置，可以推出，对$F_S$有
+\[
+    \comm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = 0,
+\]
+对$F_A$有
+\[
+    \acomm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = 0.
+\]
+然后再考虑一个产生算符和一个湮灭算符的对易关系。
+使用和上面类似的方式，可以推导出
+\[
+    \hat{a}(M^{(i)}) \hat{a}^\dagger (M^{(j)}) \pm \hat{a}^\dagger (M^{(j)}) \hat{a} (M^{(i)}) = \delta_{ij} \hat{I}.
+\]
+综上，在$F_S$中有
+\begin{equation}
+    \comm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = \comm{\hat{a}^\dagger(M^{(i)})}{\hat{a}^\dagger(M^{(j)})} = 0, \quad \comm{\hat{a} (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = \delta_{ij},
+    \label{eq:commutator-of-ca-op}
+\end{equation}
+在$F_A$中有
+\begin{equation}
+    \acomm{\hat{a}(M^{(i)})}{\hat{a}(M^{(j)})} = \acomm{\hat{a}^\dagger(M^{(i)})}{\hat{a}^\dagger(M^{(j)})} = 0, \quad \acomm{\hat{a} (M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = \delta_{ij}.
+    \label{eq:anticommutator-of-ca-op}
+\end{equation}
+从\eqref{eq:anticommutator-of-ca-op}可以看出，在$n_i > 1$时
+\[
+    \left( \hat{a}^\dagger (M^{(i)}) \right)^{n_i} = 0,
+\]
+结合\eqref{eq:creation-basis}，我们再次发现反对称情况下不可能有重复出现的单粒子态。
+
+我们可以看到，\eqref{eq:commutator-of-ca-op}和\eqref{eq:anticommutator-of-ca-op}的导出和交换两个粒子，态矢量是不是会改变正负号有关系。
+这两种方案实际上正好对应\autoref{sec:canonical-quantization}中的对易和反对易关系。
+如果交换粒子导致其它的系数，那么就可能制造出除了对易关系和反对易关系以外的算符关系——实际上，的确有这样的情况。
+实际上交换粒子导致的系数和底流形的拓扑有一定关系：例如，如果两个粒子交换后再交换回来并不让态矢量复原，那么就可以有除了\eqref{eq:commutator-of-ca-op}和\eqref{eq:anticommutator-of-ca-op}以外的关系。
+
+得到了\eqref{eq:commutator-of-ca-op}和\eqref{eq:anticommutator-of-ca-op}之后，我们再来分析粒子数算符的性质。
+首先可以计算出对易关系
+\begin{equation}
+    \begin{aligned}
+        \comm{\hat{n}(M^{(i)})}{\hat{a}(M^{(i)})} = - \hat{a}(M^{(i)}), \quad \comm{\hat{n}(M^{(i)})}{\hat{a}^\dagger(M^{(i)})} = \hat{a}^\dagger(M^{(i)}), \\
+        \comm{\hat{n}(M^{(i)})}{\hat{a}(M^{(j)})} = \comm{\hat{n}(M^{(i)})}{\hat{a}^\dagger (M^{(j)})} = 0
+        \label{eq:commutator-n-a}
+    \end{aligned}
+\end{equation}
+无论对$F_S$还是$F_A$均成立，这表明产生算符是与它关于同一个态的粒子数算符的升算符，湮灭算符是与它关于同一个态的粒子数算符的降算符。
+将此对易关系线性叠加，得到
+\begin{equation}
+    \comm{\hat{n}}{\hat{a}^\dagger (M^{(i)})} =  \hat{a}^\dagger (M^{(i)}), \quad \comm{\hat{n}}{\hat{a} (M^{(i)})} =  -\hat{a} (M^{(i)}),
+    \label{eq:commutator-ntotal-a}
+\end{equation}
+因此任何$M^{(i)}$标记的产生湮灭算符都是总粒子数算符的升降算符。
+此外还有
+\begin{equation}
+    \comm{\hat{n}(M^{(i)})}{\hat{n}(M^{(j)})} = 0,
+    \label{eq:commutator-n-and-n}
+\end{equation}
+无论$i$和$j$是不是相等、是$F_S$还是$F_A$。
+另一方面，从基矢量\eqref{eq:sym-basis}和\eqref{eq:asym-basis}中任取一个，记它当中$M^{(1)}$态有$n_1$个，$M^{(2)}$态有$n_2$个，等等，则它和
+\[
+    \ket*{n; \underbrace{M^{(1)} M^{(1)} \cdots}_{n_1} \underbrace{M^{(2)} M^{(2)} \cdots}_{n_2} \cdots} 
+\]
+最多差一个负号，由于$n_1, n_2, \ldots$可以自由地变动而彼此无影响，诸粒子数算符$\hat{n}(M^{(1)}), \hat{n}(M^{(2)}), \ldots$足够完全描述诸态矢量了，从而也足够描述诸态空间了。
+因此全体粒子数算符组成的集合是福克空间的一个CSCO。
+既然我们使用的本征矢\eqref{eq:sym-basis}和\eqref{eq:asym-basis}是诸粒子数算符的共同本征矢（见\eqref{eq:number-eigenstate}），我们可以将使用诸粒子数算符为CSCO、使用\eqref{eq:sym-basis}或\eqref{eq:asym-basis}为基矢量的福克空间的表象称为\textbf{粒子数表象}或者\textbf{占据数表象}（因为我们讨论占据数$n_1$，$n_2$，等等）。
+相应地，可以记基矢量为$\ket{n(M^{(1)}), n(M^{(2)}), \ldots}$。
+
+现在我们选取一条反过来的思路。首先设我们找到了一族算符$\hat{a}(M^{(i)})$，$i=1, 2, \ldots$，并且这些算符满足\eqref{eq:commutator-of-ca-op}或\eqref{eq:anticommutator-of-ca-op}中的其中一个，并满足
+\begin{equation}
+    \hat{a}(M^{(i)}) \ket{0} = 0,
+    \label{eq:annihitation-on-vaccum}
+\end{equation}
+以及一个唯一的真空态$\ket{0}$。
+一旦确认了这一点，按照\eqref{eq:number-operator}和\eqref{eq:total-number-operator}定义粒子数算符，立刻可以推导出\eqref{eq:commutator-n-a}，从而\eqref{eq:commutator-ntotal-a}和\eqref{eq:commutator-n-and-n}。
+使用\eqref{eq:creation-basis}计算出一系列矢量，这些矢量满足\eqref{eq:creation-operator}和\eqref{eq:annihitation-operator}，且容易证明这些矢量张成一个对称（如果使用\eqref{eq:commutator-of-ca-op}）或者反对称（如果使用\eqref{eq:anticommutator-of-ca-op}）福克空间，且粒子数算符组成的集合构成这个空间上的一个CSCO。
+和前面从多粒子态上的产生算符导出湮灭算符时一样，单单依靠\eqref{eq:creation-basis}不能够确定湮灭算符作用在$\ket{0}$上的结果。但既然我们已经有了\eqref{eq:annihitation-on-vaccum}，通过对易或反对易关系很容易就能够证明$\hat{a}(M^{(i)})$作用在一个不含$M^{(i)}$态的态上给出$0$。
+最后，该福克空间上的单粒子态为
+\begin{equation}
+    \ket{1;M^{(i)}} = \hat{a}^\dagger (M^{(i)}) \ket{0}
+\end{equation}
+张成的希尔伯特空间，其上可以定义单粒子算符
+\begin{equation}
+    \hat{M} = \sum_i M^{(i)} \dyad{M^{(i)}}.
+\end{equation}
+这表明，一个唯一的真空态，和一组满足\eqref{eq:commutator-of-ca-op}或\eqref{eq:anticommutator-of-ca-op}中的其中一个的算符，就能够完全刻画一个福克空间。
+
+但是很快我们就会注意到一件事：我们从单粒子态出发定义福克空间的时候是有一个内积结构的，而使用一套产生湮灭算符和一个真空态构造出来的福克空间上的内积结构应该怎么定义呢？
+实际上并不需要为产生湮灭算符引入额外的结构来描述福克空间的内积。
+要看出这是为什么，注意到两个态的内积无非形如
+\[
+    \begin{aligned}
+        \braket{\psi_1}{\psi_2} &\propto \left( \hat{a}(M^{(i_1)})^\dagger \hat{a}(M^{(i_2)})^\dagger \cdots \ket{0} \right)^\dagger \left( \hat{a}(M^{(j_1)})^\dagger \hat{a}(M^{(j_2)})^\dagger \cdots \ket{0} \right) \\
+        &= \mel{0}{\cdots \hat{a}(M^{(i_2)}) \hat{a}(M^{(i_1)}) \hat{a}^\dagger(M^{(j_1)}) \hat{a}^\dagger (M^{(j_2)}) \cdots }{0},
+    \end{aligned}
+\]
+推导上式只使用了\eqref{eq:creation-basis}，因此在通过产生湮灭算符构造出来的福克空间和使用单粒子态构造出来的福克空间中都成立。
+我们总是可以使用对易关系\eqref{eq:commutator-of-ca-op}或者反对易关系\eqref{eq:anticommutator-of-ca-op}，把形如$\hat{a}_i \hat{a}^\dagger_j$的表达式写成形如$\hat{a}^\dagger_j \hat{a}_i$的表达式和一个常数之和，不断重复这个步骤，整个
+\[
+    \cdots \hat{a}(M^{(i_2)}) \hat{a}(M^{(i_1)}) \hat{a}^\dagger(M^{(j_1)}) \hat{a}^\dagger (M^{(j_2)}) \cdots
+\]
+就能够写成几种\textbf{正规序列}——也就是所有产生算符都在所有湮灭算符左边的算符连乘积，还有若干常数的线性组合。线性组合的系数和线性组合中出现的常数完全由\eqref{eq:commutator-of-ca-op}或\eqref{eq:anticommutator-of-ca-op}确定。
+因此，只要使用产生湮灭算符的代数关系求出正规序列的真空态期望，就能够使用产生湮灭算符的代数结构刻画福克空间的内积。
+如果正规序列中有湮灭算符，那么其真空态期望就是零，因为
+\[
+    \mel{0}{\cdots \hat{a}(M^{(i)})}{0} = \left( \cdots \ket{0} \right)^\dagger \hat{a}(M^{(i)}) \ket{0} = 0.
+\]
+而如果正规序列中只有产生算符，那么由于
+\[
+    \mel{0}{\hat{a}^\dagger(M^{(i)}) \hat{a}^\dagger(M^{(j)}) \cdots}{0} = \mel{0}{\cdots \hat{a}(M^{(j)}) \hat{a}(M^{(i)})}{0}^*,
+\]
+其真空态期望照样是零。因此正规序列的真空态期望一定是零。
+因此，福克空间的内积结构也被产生湮灭算符描述了。
+
+最后我们讨论表象变换。以上所有的讨论使用的都是$M$表象。现在如果我们使用$G$表象的单粒子态构造出了另外一套福克空间，这两个空间之间有什么样的联系？
+综合使用\eqref{eq:sym-basis}和\eqref{eq:asym-basis}以及\eqref{eq:creation-basis}，还有我们熟悉的单粒子态的表象变换公式
+\[
+    \ket{M^{(i)}} = \sum_j \ket{G^{(j)}} \braket{G^{(j)}}{M^{(i)}},
+\]
+可以发现，设$\hat{a}(M^{(i)})$是用$M$表象建立起来的福克空间的湮灭算符，$\hat{a}(G^{(i)})$是用$G$表象建立起来的福克空间的湮灭算符，且两个空间同时使对称空间或者同时是反对称空间，那么
+\begin{equation}
+    \begin{bigcase}
+        \hat{a}^\dagger (M^{(i)}) = \sum_j \braket{G^{(j)}}{M^{(i)}} \hat{a}^\dagger (G^{(j)}), \\
+        \hat{a} (M^{(i)}) = \sum_j \braket{M^{(i)}}{G^{(j)}} \hat{a} (G^{(j)}).
+    \end{bigcase}
+    \label{eq:creation-and-annihitation-trans}
+\end{equation}
+反之，在已有一套$\hat{a}(M^{(i)})$满足\eqref{eq:creation-and-annihitation-trans}且有真空态，从而能够使用这套算符构造一个$M$表象的对称福克空间时，使用\eqref{eq:creation-and-annihitation-trans}可以得到另一套$\hat{a}(G^{(i)})$，使用它们可以构造出一个$G$表象的对称福克空间；反对称同理。
+
+\subsubsection{二次量子化形式的算符}
+
+在\autoref{sec:n-particle-space}中已经说明，多粒子系统中有意义的可观察量在粒子交换下不变。
+本节讨论所有这样的有意义的可观察量的形式。
+我们首先考虑能够在多粒子态基底\eqref{eq:sym-basis}或\eqref{eq:asym-basis}下被对角化的算符。设$\hat{A}$是一个这样的算符，则
+\[
+    \hat{A} = \sum_i \sum_{j_1, j_2, \ldots, j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i},
+\]
+上标$(i)$表示这是定义在$i$粒子希尔伯特空间中的算符，下标$j_1, j_2, \ldots$表示这是作用在第$j_1, j_2, \ldots$号粒子上的算符。
+如果序列$j_1, j_2, \ldots$中有重复的序号，那么相应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$实际上完全可以使用只涉及$i-1$粒子空间甚至粒子数目更少的空间上的算符来表示，因此不失一般性地，我们要求
+\[
+    \hat{A} = \sum_i \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i}.
+\]
+考虑到$\hat{A}$是有意义的可观察量，它和任何一个粒子交换算符都是对易的。
+这又意味着，所有的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$都是厄米算符，且它们和粒子交换算符都是对易的。
+因此如果两个序列$j_1, j_2, \ldots, j_i$ \\
+和$j'_1, j'_2, \ldots, j'_i$中出现的数完全相同，它们对应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$就是完全相同的算符。
+因此通过调整每一项所含的算符前面的系数我们可以写出
+\begin{equation}
+    \hat{A} = \sum_i \sum_{j_1 < j_2 < \ldots < j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i},
+    \label{eq:fock-observable-original}
+\end{equation}
+求和号中包含的所有项都是厄米的，且它们各不相同。如果处理严格递增的指标比较麻烦，可以等价地写出
+\begin{equation}
+    \hat{A} = \sum_i \frac{1}{i!} \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \hat{A}^{(i)}_{j_1 j_2 \ldots j_i}.
+    \label{eq:fock-observable}
+\end{equation}
+\eqref{eq:fock-observable}和\eqref{eq:fock-observable-original}中的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$完全相同；\eqref{eq:fock-observable}中的阶乘系数是为了消除下标重复计数，因为含有$i$个各不相同的数的序列有$i!$种排列方式，每种排列方式对应的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$都完全一样，且都对应着\eqref{eq:fock-observable-original}中要求$j_1 < j_2 < \ldots$的那个$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$。
+再次，由于$\hat{A}$是有意义的可观察量，\eqref{eq:fock-observable}中的$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$只相差了一个粒子交换变换（请注意这是作用在算符上的变换而不是作用在态上的），即使它们涉及编号不同的粒子。
+反之，如果任何两个$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$和$\hat{A}^{(i)}_{j'_1 j'_2 \ldots j'_i}$只相差一个粒子交换变换，且对彼此互为重排的两个序列
+\[
+    j_1, j_2, \ldots, j_i, \quad j'_1, j'_2, \ldots, j'_i
+\]
+它们对应的$\hat{A}^{(i)}$完全相同，
+那么通过\eqref{eq:fock-observable}或等价的\eqref{eq:fock-observable-original}给出的$\hat{A}$一定是福克空间上的可观察量。由于\eqref{eq:fock-observable}中第二个求和号涉及的任何一个$j_1, j_2, \ldots$这样的序列都不含有重复的元素，诸$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$实际上可以通过将一个作用在$i$粒子对称化或反对称化希尔伯特空间上的算符作用在$j_1, j_2, \ldots$号粒子上得到，也就是说，\eqref{eq:fock-observable}中对$i$的求和号中的每一项都是使用同一个$i$粒子算符作用在不同的粒子上得出的。
+因此我们有最后的结论：算符$\hat{A}$是福克空间上可使用\eqref{eq:sym-basis}或\eqref{eq:asym-basis}对角化的可观察量，当且仅当，可以找到一系列定义在$i$粒子希尔伯特空间中的可观察量$\hat{A}^{(i)}$，使得\eqref{eq:fock-observable}或等价的\eqref{eq:fock-observable-original}成立，其中$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$指的是$\hat{A}^{(i)}$在$j_1, j_2, \ldots, j_i$号粒子上的作用。
+
+需要注意的是，现在我们有两种“$i$粒子算符”：一种是定义在$i$粒子希尔伯特空间下的算符，一种是定义在福克空间中的，可以从前者根据\eqref{eq:fock-observable}导出的算符。
+前者在粒子交换变换下未必不变，但后者在粒子交换变换下肯定不变；前者是一次量子化的，后者是二次量子化的。
+为了区分，同时强调二次量子化方法可以处理含有任意多的粒子的情况，我们称后者为\textbf{$i$体算符}。
+
+现在再尝试使用产生湮灭算符写出\eqref{eq:fock-observable}中的每一项。
+对粒子的编号完全是任意的（当然也可以是任意的，既然交换粒子之后什么都没有变），因此我们将随时采用最方便的安排方式。
+设$\hat{A}^{(i)}$是一个定义在$i$粒子希尔伯特空间上的算符，且它与粒子交换算符对易。
+% 下面的说法仍然有很大的直觉考量因素。能否从数学上严格处理？
+% 在$n < i$时，
+% \[
+%     \hat{A}^{(i)}_{j_1 j_2 \ldots j_i} \ket{n;M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} = 0,
+% \]
+% 而在$n \geq i$时，
+% \[
+%     \begin{aligned}
+%         &\quad \hat{A}^{(i)}_{j_1 j_2 \ldots j_i} \ket{n; M^{(k_1)} M^{(k_2)} \cdots M^{(k_n)}} \\
+%         &= \begin{bigcase}
+%             \sum_{l_1, l_2, \ldots, l_i} \ket{n; M^{(k'_1) M^{(k'_2)}} \cdots M^{(k'_n)}} \mel{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}}{\hat{A}^{(i)}}{M^{(k_{j_1})} M^{(k_{j_2})} \cdots M^{(k_{j_i})}}, \\ \text{with no repetition in $M^{(k_1)}, M^{(k_2)}, \ldots$}, \\
+%             0, \quad \text{with repetition.}
+%         \end{bigcase},
+%     \end{aligned}
+% \]
+% 其中
+% \[
+%     k'_a = \begin{cases}
+%         k_a, \quad a \neq j_1, j_2, \ldots, j_i, \\
+%         l_b, \quad a = j_b, \; b = 1, 2, \ldots, i.
+%     \end{cases}
+% \]
+% TODO：实际上以上两个式子就是“\hat{A}^{(i)}作用在n粒子态上”的定义，为什么可以这么定义？
+那么，$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$就是
+\[
+    \begin{aligned}
+        &\hat{A}^{(i)}_{j_1 j_2 \ldots j_i} 
+        = \sum_{k_1, k_2, \ldots, k_i} \sum_{l_1, l_2, \ldots, l_i} \\
+        &\ket{M^{(k_1)}}_{j_1} \ket{M^{(k_2)}}_{j_2} \cdots \ket{M^{(k_i)}}_{j_i} 
+        \bra{M^{(l_1)}}_{j_1} \bra{M^{(l_2)}}_{j_2} \cdots \bra{M^{(l_i)}}_{j_i} \\ 
+        &\mel{M^{(k_1)} M^{(k_2)} \cdots M^{(k_i)}}{\hat{A}^{(i)}}{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}}.
+    \end{aligned}
+\]
+我们把$\hat{A}^{(i)}_{j_1 j_2 \ldots j_i}$作用在一个任意粒子数的基矢量上，其结果是将上式中的右矢和多粒子态基矢量做张量缩并的产物。
+可以看出，
+\[
+    \begin{aligned}
+        &\quad \sum_{j_1 \neq j_2 \neq \ldots \neq j_i} \ket{M^{(k_1)}}_{j_1} \ket{M^{(k_2)}}_{j_2} \cdots \ket{M^{(k_i)}}_{j_i} 
+        \bra{M^{(l_1)}}_{j_1} \bra{M^{(l_2)}}_{j_2} \cdots \bra{M^{(l_i)}}_{j_i} \\
+        &= \hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)})  
+    \end{aligned}
+\]
+结合以上各式，我们得出：
+\begin{equation}
+    \begin{aligned}
+        \hat{A} = \sum_i \frac{1}{i!} &\sum_{k_1, k_2, \ldots, k_i} \sum_{l_1, l_2, \ldots, l_i} \\
+        &\mel{M^{(k_1)} M^{(k_2)} \cdots M^{(k_i)}}{\hat{A}^{(i)}}{M^{(l_1)} M^{(l_2)} \cdots M^{(l_i)}} \\
+        &\hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)}).
+        \label{eq:general-form-of-fock-observable}
+    \end{aligned}
+\end{equation}
+\eqref{eq:general-form-of-fock-observable}给出了福克空间上的可使用多粒子态基矢量对角化的可观察量的一般形式。
+特别的，一个$n$体（二次量子化）可观察量一定具有形式
+\begin{equation}
+    \begin{aligned}
+        \hat{A} = &\frac{1}{n!} \sum_{k_1, k_2, \ldots, k_n} \sum_{l_1, l_2, \ldots, l_n} A_{k_1 k_2 \cdots k_n l_1 l_2 \cdots l_n} \\
+        &\hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_n)}) \hat{a} (M^{(l_n)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)}),
+    \end{aligned}
+    \label{eq:n-particles-observable}
+\end{equation}
+其中系数$A_{k_1 k_2 \cdots k_n l_1 l_2 \cdots l_n}$在交换$k$和$l$以后应该和原来的值相差一个共轭变换，因为它是一个定义在$n$粒子希尔伯特空间上的厄米算符的分量矩阵。
+占据数算符是一种特殊的单体算符（它是二次量子化算符，不是一次量子化算符）。
+
+同样本节的论述可以双向地使用：给定一系列$\hat{A}^{(1)}, \hat{A}^{(2)}, \ldots$，总是可以使用\eqref{eq:general-form-of-fock-observable}构造出福克空间上的可观察量；反之，假定我们从一套产生湮灭算符和一个真空态构造出了一个福克空间，并且确认$\hat{A}$是这个福克空间上可用多粒子态基矢量对角化的可观察量，那么它一定可以展开成\eqref{eq:general-form-of-fock-observable}的形式。
+
+以上讨论了可以使用\eqref{eq:sym-basis}或\eqref{eq:asym-basis}对角化的二次量子化可观察量。
+还有一类二次量子化可观察量不能使用多粒子态基矢量对角化。在$n$粒子空间中不可能定义这样的可观察量，但在福克空间中可以，因此这一类可观察量不能和$n$个单粒子态空间的张量积上的算符建立类似于\eqref{eq:fock-observable}这样的联系。
+一个不能使用多粒子态矢量对角化的可观察量的例子：
+\[
+    \hat{a}(M^{(i)}) + \hat{a}^\dagger(M^{(i)}).
+\]
+这一类二次量子化可观察量写成产生湮灭算符的多项式后，同一项内产生算符的数目和湮灭算符不一样。
+无论如何，对任何一个算符，它在乘积态基矢量下的矩阵元和把它写成产生湮灭算符的多项式的各项系数之间是一一对应的：
+\begin{equation}
+    \hat{A} = \sum_{(i_1, i_2, \ldots), (j_1, j_2, \ldots)} \cdots \hat{a}(M^{(i_2)}) \hat{a}(M^{(i_1)}) \mel{M^{(i_1)} M^{(i_2)} \cdots}{\hat{A}}{M^{(j_1)} M^{(j_2)} \cdots} \hat{a}^\dagger(M^{(i_1)}) \hat{a}^\dagger(M^{(i_2)}) \cdots.
+\end{equation}
+
+\subsubsection{关于连续谱的注记}
+
+以上讨论都建立在单粒子态可以使用离散谱描述的基础上。连续谱的情况基本上是一样的，只不过要将“对所有基的求和”改成积分，并且将$\delta_{ij}$改成$\delta(x - x')$。
+需要注意的是可能会使用不同的积分测度，一般的，若有
+\[
+    \sum_i \longrightarrow \int \dd[n]{x} f(x),
+\]
+则有
+\[
+    \delta_{ij} \longrightarrow \frac{1}{f(x)} \delta^n(x - x').
+\]
+另外，由于连续谱情况下，福克空间中的多粒子态中两个粒子具有完全一样的状态的概率是零（点在连续谱中是零测的），所以可以忽略这种情况，而有
+\begin{equation}
+    \ket{\vb*{x}_1, \vb*{x}_2, \ldots, \vb*{x}_n} = \hat{a}^\dagger(\vb*{x}_1) \hat{a}^\dagger(\vb*{x}_2) \cdots \hat{a}^\dagger (\vb*{x}_n ) \ket{0}.
+\end{equation}
+
+在连续谱的情况中还有另一个问题需要注意。一般的，一个单粒子算符可以展开为
+\[
+    \mel{x}{\hat{A}}{\psi} = \mathcal{A} \braket{x}{\psi},
+\]
+如果算符$\hat{A}$是对角化的，那么$\mathcal{A}$就是一个数，否则它是一个作用在一个经典场上的算符。傅里叶变换可以证明即使$\hat{A}$不能对角化，$\hat{A}$的二次量子化形式也是
+\[
+    \hat{A}_\text{sq} = \int \dd{x} \hat{a}^\dagger (x) \mathcal{A} \hat{a}(x), 
+\]
+$\mathcal{A}$作用在湮灭算符$\hat{a}(x)$上。
+
+\subsection{多体系统的动力学}\label{sec:many-body-dynamics}
+
+\subsubsection{二次量子化哈密顿量}
+
+% TODO:首先我们有二次量子化的哈密顿量，然后不同的守恒荷的值将相空间分成了不同的部分，每个部分内部的运动可以使用一个与二次量子化哈密顿量不同的哈密顿量描述。
+% 需要做的则是讨论这两者的关系。
+% 例如，考虑一个薛定谔场和静电场耦合的系统，无论系统中有多少粒子，关于场算符的哈密顿量也就是所谓的“二次量子化哈密顿量”都是完全一样的；另一方面，我们可以写出$n$粒子的这种系统的哈密顿量，这完全就是一个粒子数确定的单粒子量子力学的哈密顿量。前者是二次量子化哈密顿量，后者是一次量子化哈密顿量；对各守恒荷给定的态，一次量子化哈密顿量和二次量子化哈密顿量作用于其上得到完全一样的结果。
+% 可以考虑将“多粒子态算符”分为一次量子化算符和二次量子化算符
+
+\autoref{sec:many-body-state}节描述了描述全同粒子系统态的基本框架，现在我们来让这些态动起来。
+由于产生湮灭算符足够描写福克空间，我们可以使用产生湮灭算符构造哈氏量（它本身应该是一个可观察量！）；哈氏量中不应该显式出现一次量子化算符。
+从而，只含有一种粒子的哈氏量的基本形式为
+\begin{equation}
+    \begin{split}
+        \hat{H} = \sum_i c_i \hat{a}^\dagger (M^{(i)}) \hat{a} (M^{(i)}) + \underbrace{\sum_{m, n} S_{mn} \hat{a}^\dagger (M^{(m)}) \hat{a} (M^{(n)}) }_\text{one particle terms} + \\
+        \underbrace{\frac{1}{2} \sum_{m, n, p, q} D_{mnpq} \hat{a}^\dagger (M^{(m)}) \hat{a}^\dagger (M^{(n)}) \hat{a} (M^{(q)}) \hat{a} (M^{(p)}) }_\text{two particles terms} + \cdots \\
+        + \text{creation and annihilation terms},
+    \end{split}
+    \label{eq:one-kind-many-body-hamitonian}
+\end{equation}
+其中单粒子项、二粒子项等项均取\eqref{eq:general-form-of-fock-observable}的形式，产生湮灭项指的是不能使用多粒子基矢量\eqref{eq:sym-basis}或\eqref{eq:asym-basis}对角化的项，也就是不能和某个粒子数固定的希尔伯特空间上的可观察量建立类似于\eqref{eq:fock-observable}这样的对应的那些项，或者说每一项内产生算符的数目和湮灭算符不一样的项。我们称它们为产生湮灭项的原因是，系统粒子数守恒的充要条件是
+\begin{equation}
+    0 = \comm*{\hat{N}}{\hat{H}} = \sum_i \comm*{\hat{a}^\dagger (M^{(i)}) \hat{a} (M^{(i)})}{\hat{H}},
+\end{equation}
+而如果没有所谓的产生湮灭项，那么哈密顿量可以写成一系列形如
+\[
+    \hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)})
+\]
+的算符的线性组合。无论是费米子还是玻色子，都有
+\[
+    \comm*{\hat{a}^\dagger (M^{(k_1)}) \hat{a}^\dagger (M^{(k_2)}) \cdots \hat{a}^\dagger (M^{(k_i)}) \hat{a} (M^{(l_i)}) \cdots \hat{a} (M^{(l_2)}) \hat{a} (M^{(l_1)})}{\hat{N}} = 0,
+\]
+因此在没有产生湮灭项时粒子数一定是守恒的。
+没有产生湮灭项等价于粒子数守恒；事实上，这还等价于系统具有\textbf{$U(1)$对称性}，即具有和复数辐角旋转相同的对称性。这是因为，对系统做$U(1)$变换就是做变换
+\[
+    \hat{a}^\dagger(M^{(k)}) \longrightarrow \ee^{\ii \alpha} \hat{a}^\dagger(M^{(k)}), \quad \hat{a}(M^{(k)}) \longrightarrow \ee^{-\ii \alpha} \hat{a}(M^{(k)}),
+\]
+哈密顿量中没有产生湮灭项意味着哈密顿量中的每一项都含有相同数目的产生算符和湮灭算符，所以诸$\ee^{\ii \alpha}$因子和$\ee^{-\ii \alpha}$因子相互抵消了，于是，哈密顿量在$U(1)$变换下保持不变。
+我们可以看到粒子数正是$U(1)$对称性对应的守恒荷。
+
+当然，哈氏量中还可以出现导数，但是通过对相应的算符做傅里叶变换总是可以把所有导数都变成系数，从而得到\eqref{eq:one-kind-many-body-hamitonian}型的哈密顿量。
+
+在哈密顿量仅仅含有\eqref{eq:one-kind-many-body-hamitonian}中第一项的时候，我们有
+\[
+    \dv{t} \hat{a}(M^{(i)}) = - \ii c_i \hat{a} (M^{(i)}),
+\]
+这不论是在$F_S$还是$F_A$上都是成立的。因此就有
+\[
+    \hat{a} (M^{(i)}) = \ee^{- \ii t} \hat{a}_0 (M^{(i)}).
+\]
+因此这样的哈密顿量描述了一个没有相互作用的体系。这样的体系实际上对应着一个自由场。
+在这样的体系中，也就只有在这样的体系中，场做简谐运动是被允许的。
+当然，自由场中粒子数是守恒的。
+
+含有多种粒子的哈密顿量的形式则为
+\begin{equation}
+    \hat{H} = \sum \hat{H}_\text{single} + \hat{H}_\text{interaction},
+\end{equation}
+其中每一个$\hat{H}_\text{single}$均取\eqref{eq:one-kind-many-body-hamitonian}的形式，而相互作用部分则取关于不同的粒子的\eqref{eq:general-form-of-fock-observable}的乘积。
+显然，要出现粒子数的变化，相互作用部分同样应该出现产生算符的数目和湮灭算符不一样的项，如
+\[
+    \hat{a} \hat{b} + \hat{b}^\dagger \hat{a}^\dagger
+\]
+
+需要注意的是，由于产生湮灭算符可以服从\eqref{eq:commutator-of-ca-op}也可以服从\eqref{eq:anticommutator-of-ca-op}，哈密顿量的形式相同绝对不意味着系统的行为相同。
+例如，同样是自由哈密顿量，玻色子可以取同样的量子态而费米子不行，为什么哈密顿量相同而竟然有不同的物理现象？
+因为玻色子的产生湮灭算符和费米子的产生湮灭算符的对易关系不一样。
+
+\subsubsection{元激发}
+
+在有相互作用时，实际上并不存在真正的单粒子态：粒子之间会发生相互作用，会出现粒子的产生和湮灭，因此并无稳定存在、可以追踪轨迹的单个粒子。
+有时我们会发现，对已有的产生湮灭算符做一个线性组合可以得到另一种产生湮灭算符，它们能够大大简化哈密顿量的形式，这种凭空构造出来的产生湮灭算符描述的多粒子态称为\textbf{准粒子}或者\textbf{元激发}，它们是粒子的运动模式。
+类似的，准粒子之间也会有相互作用，会有准粒子的产生湮灭，等等。
+通常的习惯是，将玻色型的准粒子称为元激发，而将费米型的准粒子称为准粒子。
+
+准粒子可以分成\textbf{个别激发}和\textbf{集体激发}，前者的准粒子产生湮灭算符是单个实际粒子的产生湮灭算符做线性变换之后的结果，后者的准粒子产生湮灭算符则是多个实际粒子的产生湮灭算符的线性组合。
+个别激发的典型例子包括\textbf{空穴}，即做变换
+\[
+    \hat{b}^\dagger(M^{(i)}) = \hat{a}(M^{(i)}),
+\]
+以实际粒子的不存在为准粒子。
+另一个个别激发的例子是\textbf{裹粒子}，即某个实际粒子（相应地称为\textbf{裸粒子}）射入已有的一个体系，从而该实际粒子一边发生运动，体系内原有的粒子跟着它运动而形成的模式。
+集体激发的例子包括系统的CSCO的一部分可以看成一个场（无论坐标是连续的还是离散的），从而可以通过一个线性变换得到这个场对应的产生湮灭算符；如果系统的一部分能量本征态可以使用一套产生算符从一个“基态”（未必是定义系统时取的真空态）构造出来，那么我们也获得了一种集体激发。
+
+还有一些激发只涉及少数几个粒子。例如如果一种粒子总是成对出现或者消失，那么可以认为$\hat{a}^\dagger_1 \hat{a}^\dagger_2$是一种准粒子。
+可以递归地证明，这种复合粒子的自旋（就是组成它的各个粒子的自旋之和）如果是半整数，则它是费米子，否则是玻色子。
+由于轨道角动量的$j$一定是整数（空间旋转群是角动量代数的矢量表示，不是旋量表示，因此$j$不可能是半整数），我们也可以讨论复合粒子的角动量代数，$j$为偶数时为玻色子，为奇数时是费米子。
+
+对准粒子而言的真空态和实际粒子的真空态通常是不一样的。实际上，虽然我们使用了准粒子和实际粒子的区分，它们仅有的区别是真空态不相同，我们并不能够保证现在所认为的实际粒子——比如，电子、夸克等——不是某些更为基本的粒子形成的准粒子。
+
+以上讨论了哈密顿量。关于二次量子化系统的绘景还需要说一句：在哈密顿量不显含时间时，海森堡绘景中的产生湮灭算符产生出的二次量子化基矢量以薛定谔绘景的方式演化。
+
+\subsubsection{从量子场论到多粒子体系}\label{sec:from-qft-to-many-body}
+
+以上我们讨论了怎样从单粒子态得到全同多粒子态，以及全同多粒子态可以使用一个真空态和一组产生湮灭算符产生。
+现在讨论一个反向的问题：我们需要的这种产生湮灭算符从何处来？
+马上可以看到，我们需要的这种产生湮灭算符实际上就是算符场的一个线性组合。
+我们并不在意场算符$\hat{\phi}$是矢量、旋量还是就是标量，因为不管怎么样，$\hat{\phi}^\dagger \hat{\phi}$肯定是标量，因此粒子数算符也是标量，从而不会产生任何矛盾。
+% TODO 但是下面的讨论明显把场算符当成了标量
+
+以下我们讨论自由场。这无损一般性，因为相互作用绘景意味着我们能够将带相互作用的问题的态空间和自由场的态空间使用某个幺正变换（也就是相互作用绘景的时间演化算符）相互联系，而只要从自由场场算符构造出一套产生湮灭算符，与场的真空态——也就是所有场都为零的一个唯一的态——我们就完全刻画了自由场的态空间。
+\autoref{sec:canonical-quantization}中提到了两种量子化方案：其一是对易方案\eqref{eq:symmetry-commutator}，其二是反对易方案\eqref{eq:antisymmetry-commutator}。
+对前者，在某个固定的时间点$t$我们设
+%
+\footnote{具体系数是多少无关紧要，系数只是为了让产生湮灭算符的对易子给出正确的系数。}
+\[
+    \hat{\phi}^i(\vb*{x}, t) = \frac{1}{\sqrt{2}} \left( \hat{a}_i^\dagger (\vb*{x}, t) + \hat{b}_i(\vb*{x}, t) \right), \quad 
+    \hat{\pi}_i(\vb*{x}, t) = \frac{\ii}{\sqrt{2}} \left( \hat{a}_i^\dagger (\vb*{x}, t) - \hat{b}_i (\vb*{x}, t) \right)
+\]
+考虑到$\hat{\phi}$和$\hat{\pi}$的厄米性，有
+\[
+    \hat{a}_i^\dagger = \hat{b}^i,
+\]
+于是
+\begin{equation}
+    \hat{\phi}^i(\vb*{x}, t) = \frac{1}{\sqrt{2}} \left( \hat{a}_i^\dagger (\vb*{x}, t) + \hat{a}_i(\vb*{x}, t) \right), \quad 
+    \hat{\pi}_i(\vb*{x}, t) = \frac{\ii}{\sqrt{2}} \left( \hat{a}_i^\dagger (\vb*{x}, t) - \hat{a}_i (\vb*{x}, t) \right).
+\end{equation}
+切换到自然单位制下，取$\hbar=1$，则通过\eqref{eq:symmetry-commutator}计算得到
+\begin{equation}
+    \comm*{\hat{a}_i(\vb*{x}, t)}{\hat{a}_j^\dagger (\vb*{y}, t)} = \delta_{ij} \delta (\vb*{x} - \vb*{y}), \quad \comm*{\hat{a}_i(\vb*{x}, t)}{\hat{a}_j(\vb*{y}, t)} = \comm*{\hat{a}_i^\dagger (\vb*{x}, t)}{\hat{a}_j^\dagger (\vb*{y}, t)} = 0.
+    \label{eq:ca-op-from-field}
+\end{equation}
+因此对一个固定的时间$t$，$\hat{a}_i^\dagger(\vb*{x}, t)$和$\hat{a}_i (\vb*{x}, t)$构成了一组产生湮灭算符，由它们产生的单粒子态可以完全被$\vb*{x}$和$i$标记。
+从而，由它们产生的单粒子态可以分解成两个空间$\{\ket{\vb*{x}}\}_{\vb*{x}}$和$\{\ket{i}\}_i$的直积；
+单粒子态的CSCO为位置算符$\hat{\vb*{x}}$（当然也可以是与之能够相互导出的另一些算符，比如动量），还有与$\{\ket{i}\}_i$有关的算符。
+我们称前者为\textbf{空间自由度}，而称后者为\textbf{内禀自由度}，因为后者来自于场算符的内部结构（有几个分量、在$\Lambda$作用下如何变换，等等）。%
+\footnote{如果场算符的取值有某些限制（例如，电磁波一定是横波，等等），那么不能够保证$i$的可能取值的数目一定是场算符的分量数。}
+总之，量子化方案\eqref{eq:symmetry-commutator}给出的场算符导致一个对称的福克空间$F_S$。我们称这样的福克空间描述的粒子为\textbf{玻色子}。
+如果场满足特殊的时空对称性——比如洛伦兹对称性——那么内禀自由度实际上由这种时空对称性中不改变单粒子态的$\vb*{x}$（或者也可以是不改变$\vb*{p}$）的群（称为\textbf{小群}）确定，这个群的李代数在单粒子态上的表示的Cartan子代数就是内禀自由度空间的CSCO。
+当然，也可以通过讨论场的内禀自由度来分析单粒子态的内禀自由度。
+
+% TODO:实际上，内禀自由度还可以用来表示复合粒子。我们将两个场$\psi, \phi$写成一个列向量$\Psi = \pmqty{\psi & \phi}^\top$，它是洛伦兹群的一个可约表示；$\Psi(x)$可以分解成产生算符和湮灭算符之和，它就描述了由$\psi$场对应的粒子和$\phi$场对应的粒子复合而成的粒子。如果哈密顿量可以近似地用$\Psi$表示且不涉及其内部自由度（这又涉及到重整化的概念：$\Psi$的内部自由度仅和较高能的过程耦合，在低能下可以被略去），那么就不必考虑复合粒子的内部结构。
+
+对于量子化方案\eqref{eq:antisymmetry-commutator}，我们不能够使用\eqref{eq:ca-op-from-field}，因为这不能导出正确的对易关系。
+实际上由于使用这种量子化方案的场一定是复的，相当于两个厄米场，我们需要引入两对产生湮灭算符。
+
+我们看到，费米子和玻色子的概念的导出实际上是两种量子化方案\eqref{eq:symmetry-commutator}和\eqref{eq:antisymmetry-commutator}的必然推论。
+值得注意的是，在讨论场的动力学或者粒子的动力学时，我们都是首先获得了一组能够完全描述态空间的可观察量，然后用它们标记不同的态；而在二次量子化中，我们是首先通过带标记$\vb*{x}$或$i$等的产生湮灭算符得到了一组多粒子态，并自然地使用这些量标记多粒子态，然后再讨论关于单粒子、二粒子……的可观察量。
+
+之前我们提到过，场表示自然诱导出时空对称性在这个算符场作用的希尔伯特空间上的表示。
+场算符诱导出的产生湮灭算符刻画了一个由单粒子态空间、二粒子态空间……直和而成的福克空间，这表明，算符场作用的希尔伯特空间实际上是一个可约表示。
+它取某个粒子数的子空间则是一个不可约表示。由于$n$粒子态空间就是$n$个单粒子态空间的直积的对称化或者反对称化，我们只需要讨论单粒子态即可。于是现在我们把注意力转移到单粒子态上。
+完全刻画空间自由度只需要一个位置算符就可以了，或者当然也可以使用与之满足正则对易关系的动量算符。
+
+% TODO:场表示的标签，比如$P_\mu P^\mu$给出的$m^2$，无论是在场表示还是其$n$粒子态表示中，都是一样的。天晓得这是不是真的。。。
+
+% TODO：哈密顿量的全体本征态就是单粒子态、二粒子态、三粒子态……
+
+\subsubsection{回退到一次量子化}
+
+以上我们论证了，有粒子生灭的系统需要使用福克空间描述，并且对应一个场论。
+那么如果粒子生灭比较微弱，以至于在一段时间内可以认为粒子数不变，我们其实还是可以使用粒子数固定的一次量子化方法讨论问题。
+态空间不必多言，比较重要的是动力学。当然，二次量子化哈密顿量在$n$粒子希尔伯特空间下的投影就是我们需要的一次量子化哈密顿量。
+实际上，如果我们知道了二次量子化哈密顿量遵循的限制（或者说对应的场论遵循的限制，比如对称性），那么也可以使用一次量子化哈密顿量反推二次量子化哈密顿量。
+
+另一个值得说明的事实是，我们有
+\[
+    \ket{\vb*{x}} = \hat{\phi}(\vb*{x}, t) \ket{0}
+\]
+然后我们会发现关于$\hat{\phi}$的海森堡绘景方程实际上就是关于$\ket{\vb*{x}}$的薛定谔绘景方程。
+
+% TODO：二次量子化场满足的方程和单粒子量子力学的波动方程之间的关系
+
+\section{路径积分量子化}
+
+通过生成泛函求导计算出来的是编时格林函数。这可以按照定义验证，但实际上是非常合理的：交换求导次序，生成泛函的导数不变或加一个负号，而交换算符顺序，不变或只是加一个负号的只有编时格林函数。
 
 \section{微扰散射理论}
 % TODO：T矩阵，S矩阵，似乎前者是关于“跃迁率”的，即每秒事件发生的可能性，后者是关于无限长时间的散射
@@ -1795,26 +2635,8 @@ $a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=
 再考虑一个略有不同的情况——外界作用周期性地施加在
 % TODO
 
-\section{自由度解耦}
-
-设有哈密顿量$\hat{H}$，如果某个物理量$\hat{A}$满足
-\[
-    \comm*{\hat{H}}{\hat{A}} = \comm*{\hat{H}'(A)}{\hat{A}},
-\]
-其中$\hat{H}'$是只和$\hat{A}$有关的物理量，那么在只关心$\hat{A}$时可以以$\hat{H}'$为等效哈密顿量。
-
-其实也可以通过路径积分的观点看这个问题：与$\hat{A}$对易的那些自由度可以直接积掉而只留下一个因子。
-
 % TODO：什么时候可以将算符用其期望替代，因为这会改变对易关系。。
 
 \section{浸染近似和几何相位}
-
-% TODO:希尔伯特空间分裂成几个分支
-设总的希尔伯特空间为$H$，由于守恒量、拓扑性质等，满足某个特定约束条件的态组成的空间为$H'$，则$H / H'$标记了不同的守恒量、拓扑性质等的参数。
-例如对称性自发破缺意味着有序参量出现。
-% 衡量哈密顿量的大小需要通过其造成的能级分裂的大小，而不是绝对大小，因为绝对大小可以通过加上或者减去一个任意的常数来轻易改变。
-有些时候，一个理论中的两个不同的态可以看成是等价的态，这当然是因为系统中有冗余的、非物理的自由度。
-这种情况下通常不说这是“对称性”，而是说这是“冗余的自由度”。这种对称性只是拉氏量的对称；态空间中的这种“对称”已经被模掉了。
-% TODO:拉氏量的对称性和态空间的对称性
 
 \end{document}
