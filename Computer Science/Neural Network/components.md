@@ -12,6 +12,14 @@ $$
 
 # 神经网络常用组件
 
+---
+
+**提示**
+
+不少深度学习框架，比如tensorflow，的输入输出全部都是分batch的，所以可能输出会多出来一个batch维度。
+
+---
+
 ## Dense
 
 全连接层，它由以下参数确定：
@@ -22,7 +30,7 @@ $$
 
 全连接层是$\mathbb{R}^m \longrightarrow \mathbb{R}^n$，具体来说，设输入为$\bold{x}$，输出为$\bold{y}$，那么
 $$
-\bold{y} = f(\bold{A} \bold{x} + \bold{b})
+\mathrm{Dense}:= \bold{x} \longrightarrow \bold{y} = f(\bold{A} \bold{x} + \bold{b})
 $$
 
 在TF中：
@@ -41,6 +49,23 @@ keras.layers.Dense(n, input_shape(m,))
 - 是否在边缘填充零
 
 与全连接神经网络相比，卷积神经网络的感受野是局域的、不同感受野的权值是共享的，因此它可以大大减小参数数目。
+
+## Embedding
+
+将一系列整数index转化为一个向量。它由以下参数确定：
+
+- 总共有多少可能的index（比如说如果是word to vec，那么就是单词总数）
+- 输出向量的维数
+
+输入一个index序列，输出一个向量序列。输入被编码为一系列one-hot向量排成的矩阵（每一行都是一个one-hot向量），设共有$m$个可能的index，需要把它们embedding到$n$维空间中，输入序列长度为$l$，则我们有$\bold{x} \in \mathbb{R}^{l \times m}$，而输出的$\bold{y}$则同样是将每个输入的index做embedding后得到的向量作为行向量排成的矩阵。
+embedding的过程为
+$$
+\mathrm{Embedding} := \bold{x} \longrightarrow \bold{y} = \bold{x} \bold{A}, \quad \bold{A} \in \mathbb{R}^{m \times n}.
+$$
+
+Embedding实际上就是一个线性神经网络。
+
+（至于为什么不将上式取一个转置，那是因为传统上我们认为$x[i]$应该表示“序列中第$i$个index”，那么第$i$个index应该对应$\bold{x}$的第$i$行）
 
 # 常用损失函数和正则化
 

@@ -1,0 +1,117 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$}
+
+\title{阻尼}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{谐振子热浴}
+
+所谓阻尼无非是我们考虑的系统出于某些原因和某个系统（“热浴”）发生了耦合，导致能量逃逸到了外界。
+本节讨论最为简单的谐振子热浴。谐振子的实时间作用量为
+\begin{equation}
+    S = \int \dd{t} \left( \frac{1}{2} m \dot{x}^2 - \frac{1}{2} m \omega_0^2 x^2 \right) = - \int \dd{t} x \left( \frac{1}{2} m \dv[2]{t} + \frac{1}{2} m \omega_0^2 \right) x,
+\end{equation}
+于是实时间格林函数为（这里涉及一些比较麻烦的符号问题，比如说格林函数要不要加上一个负号或是虚数单位；由于我们不需要计算散射截面之类，暂且采取以下比较简洁的写法）
+\begin{equation}
+    G(t-t') = \left( m \dv[2]{t} + m \omega_0^2 \right)^{-1},
+\end{equation}
+在时域计算此格林函数并不方便，我们切换到频域：
+\begin{equation}
+    G(\omega) = \frac{1}{- m \omega^2 + m \omega_0^2 - \ii 0^+},
+\end{equation}
+此处已经为了保证因果性加入了$\ii 0^+$。现在假定某个变量$y(t)$和$x(t)$发生线性耦合，即
+\begin{equation}
+    S = S_y + S_x + S_\text{int}, \quad S_\text{int} = g \int \dd{t} xy,
+\end{equation}
+考虑到$S_x$是自由的，我们可以非常容易地严格积掉$x$自由度，只保留$y$，得到
+\begin{equation}
+    \begin{aligned}
+        S_\text{eff} &= S_y + \frac{g}{2} \int \dd{t} \dd{t'} y(t) G(t-t') y(t') \\
+        &= S_y + \frac{g}{2} \int \dd{\omega} y(-\omega) G(\omega) y(\omega).
+    \end{aligned}
+\end{equation}
+我们得到一个推迟相互作用，这是不足为怪的，因为$x$变量本身需要时间去响应$y$引入的冲击，然后再传递给$y$，那么必然导致推迟相互作用。
+
+以上步骤可以很容易地推广。我们更换记号，用$x(t)$表示我们关心的场而使用$q_i(t)$表示一群谐振子（因为热库通常非常大，肯定是一群数量很大的谐振子），那么就有
+\begin{equation}
+    S = \underbrace{\int \dd{t} \left( \frac{1}{2} m \dot{x}^2 + F(t) x(t) - V(x) \right)}_{S_x} + \int \dd{t} \sum_i g_i q_i(t) x(t) + \underbrace{\int \dd{t} \sum_i \left( \frac{1}{2} \dot{q}_i^2 - \frac{1}{2} \omega_i^2 q_i \right)}_{S_q}.
+\end{equation}
+
+\end{document}
