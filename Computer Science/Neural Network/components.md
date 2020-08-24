@@ -57,10 +57,10 @@ keras.layers.Dense(n, input_shape(m,))
 - 总共有多少可能的index（比如说如果是word to vec，那么就是单词总数）
 - 输出向量的维数
 
-输入一个index序列，输出一个向量序列。输入被编码为一系列one-hot向量排成的矩阵（每一行都是一个one-hot向量），设共有$m$个可能的index，需要把它们embedding到$n$维空间中，输入序列长度为$l$，则我们有$\bold{x} \in \mathbb{R}^{l \times m}$，而输出的$\bold{y}$则同样是将每个输入的index做embedding后得到的向量作为行向量排成的矩阵。
+输入一个index序列，输出一个向量序列。输入被编码为一系列one-hot向量排成的矩阵（每一行都是一个one-hot向量），设共有$m$个可能的index，需要把它们embedding到$n$维空间中，输入序列长度为$l$，则我们有$\mathrm{onehot}(s) \in \mathbb{R}^{l \times m}$，而输出的$\bold{y}$则同样是将每个输入的index做embedding后得到的向量作为行向量排成的矩阵。
 embedding的过程为
 $$
-\mathrm{Embedding} := \bold{x} \longrightarrow \bold{y} = \bold{x} \bold{A}, \quad \bold{A} \in \mathbb{R}^{m \times n}.
+\mathrm{Embedding} := s \longrightarrow \bold{y} = \bold{x} \bold{A}, \quad \bold{x} = \mathrm{onehot}(s), \quad \bold{A} \in \mathbb{R}^{m \times n}.
 $$
 
 Embedding实际上就是一个线性神经网络。
