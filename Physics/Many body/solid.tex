@@ -203,19 +203,114 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 \end{itemize}
 无论如何，凝聚态模型通常都足够复杂，且可能有很强的相互作用，以至于分析方法多种多样，但是没有哪一种能够占有支配地位。
 
-\subsubsection{可测量量}
+\subsubsection{外加电磁场}
 
-固体系统常见的可测量量（这里不是指可观察量算符，而是指真的做量子测量能够测出来的物理量，比如说期望，等等）就是声、光、热等信息，即力学性能、电磁学性能和热学性能。
+现在讨论外加电磁场导致的哈密顿量变化，或者说“辐射和物质相互作用”导致的哈密顿量变化。
+一般的，设系统被放置在电磁场$(\varphi, \vb*{A})$中，则一次量子化哈密顿量（使用一次量子化哈密顿量是为了和经典的“一群电子定向移动”的物理图像对应上）为
+\begin{equation}
+    \hat{H} = \frac{1}{2m} \sum_i (\hat{\vb*{p}_i} - q_i \vb*{A}(\hat{\vb*{r}_i}))^2 + \sum_i q_i \varphi(\hat{\vb*{r}}_i) + \hat{H}_\text{int},
+\end{equation}
+其中$\vb*{p}$是正则动量，$\hat{H}_\text{int}$表示粒子间相互作用。
+本文仅考虑外加电磁场产生的线性响应，于是考虑辐射场不很强以至于$\vb*{A}^2$可以忽略的情况，也即，仅保留单光子过程，忽略一切$\vb*{A}^2$项。
+实际上，当辐射场强到非线性效应开始产生时，是不是应该单独列出来一个$\hat{H}_\text{int}$然后将物质和辐射做$U(1)$极小耦合已经很成问题了：
+哈密顿量中电子间的库伦排斥能和辐射场引入的能量简单相加相当于将$(\hat{\vb*{p}} - q \vb*{A})^2$括号打开，丢弃$\vb*{A}$的平方项，然后积掉\emph{一部分}光子，将剩下的光子诠释为辐射场。
+因此我们的确只应该讨论电磁场产生的线性响应，因为当需要考虑非线性响应时，本节的模型已经失效了。
 
+对电子系统，$q=-e$，那么就有
+\begin{equation}
+    \begin{aligned}
+        \hat{H} &= \frac{1}{2m} \sum_i (\hat{\vb*{p}_i} + e \vb*{A}(\hat{\vb*{r}_i}))^2 - e \sum_i \varphi(\hat{\vb*{r}}_i) + \hat{H}_\text{int} \\ 
+        &= - \frac{1}{2m} \sum_i (\grad + \ii e \vb*{A}(\hat{\vb*{r}_i}))^2 - e \sum_i \varphi(\hat{\vb*{r}}_i) + \hat{H}_\text{int}.
+    \end{aligned}
+\end{equation}
+设$\Omega$是某个空间区域，电流密度为$\vb*{J}$，则
+\begin{equation}
+    \int_\Omega \dd[3]{\vb*{r}} \hat{\vb*{J}} = - \sum_i e \hat{\vb*{v}}_i,
+\end{equation}
+其中$\vb*{v}_i$是电子移动的速度，满足
+\begin{equation}
+    \hat{\vb*{v}}_i = \pdv{H}{\vb*{r}_i} = \frac{\hat{\vb*{p}}_i + e \vb*{A}(\hat{\vb*{r}}_i)}{m}.
+\end{equation}
+考虑到$\Omega$的任意性，我们就有以下近似表达式：
+\begin{equation}
+    \hat{\vb*{J}} = \underbrace{- \frac{e}{m} \sum_i ( \delta(\vb*{r} - \hat{\vb*{r}}_i) \hat{\vb*{p}} + \hat{\vb*{p}} \delta(\vb*{r} - \hat{\vb*{r}}_i) )}_{\hat{\vb*{j}}} \underbrace{- \frac{e^2}{m} \hat{n}_\text{e}}_{\hat{\vb*{j}}_\text{D}} \vb*{A}.
+\end{equation}
+$\hat{\vb*{j}}$项特意被写成了厄米的形式；$\hat{\vb*{j}}_\text{D}$已经做了一遍粗粒化了，将诸$\vb*{A}_i$平均了一遍。
+通常这是合理的，因为电磁波的波长通常不会特别小，从而不会有很大的空间起伏。（而如果有很大的空间起伏，我们就会使用cQED而不是经典电动力学讨论问题了）
+
+现在写出略去高阶项的哈密顿量的形式。选取库伦规范，并认为$\varphi=0$，此时会发现，实际上我们有
+\[
+    \hat{H} = \frac{1}{2m} \sum_i \hat{\vb*{p}}_i^2 + \hat{H}_\text{int} + \frac{e}{m} \sum_i \hat{\vb*{p}}_i \cdot \vb*{A}(\hat{\vb*{r}}_i) - e \sum_i \varphi(\hat{\vb*{r}_i}),
+\]
+$\vb*{A}(\hat{\vb*{r}}_i)$和$\hat{\vb*{p}}_i$本来是不对易的，但是库伦规范下它们对易。
+代入$\hat{\vb*{J}}$的表达式并再次略去高阶项，就有
+\[
+    \hat{H} = \frac{1}{2m} \sum_i \hat{\vb*{p}}_i^2 + \hat{H}_\text{int} - \int \dd[3]{\vb*{r}} \hat{\vb*{J}} \cdot \vb*{A} - e \sum_i \varphi(\hat{\vb*{r}_i}).
+\]
+至于含有电势的那一项，注意到电荷密度为
+\[
+    \hat{\rho} = - e \sum_{i} \delta(\hat{\vb*{r}}_i - \vb*{r}),
+\]
+于是最后得到
+\begin{equation}
+    \hat{H} = \frac{1}{2m} \sum_i \hat{\vb*{p}}_i^2 + \hat{H}_\text{int} + \int \dd[3]{\vb*{r}} \varphi \hat{\rho} - \int \dd[3]{\vb*{r}} \hat{\vb*{J}} \cdot \vb*{A}.
+\end{equation}
+虽然物质本身的哈密顿量不是洛伦兹协变的（因为取了非相对论近似），但是物质和辐射的相互作用项却是洛伦兹协变的——对电磁场的描述一般都是如此。
+以上哈密顿量实际上仅仅讨论了轨道部分，电子还有自旋磁矩
+\[
+    \hat{H}_{\text{spin}} = \sum_i \hat{\vb*{\mu}}_i \cdot \vb*{B}(\hat{\vb*{r}}_i),
+\]
+我们可以如法炮制地将它写成
+\[
+    \hat{H}_{\text{spin}} = \int \dd[3]{\vb*{r}} \hat{\vb*{\mu}} \cdot \vb*{B}.
+\]
+因此完整的哈密顿量实际上是
+\begin{equation}
+    \hat{H} = - \frac{1}{2m} \sum_i \hat{\vb*{p}}_i^2 + \hat{H}_\text{int} + \int \dd[3]{\vb*{r}} \varphi \hat{\rho} - \int \dd[3]{\vb*{r}} \hat{\vb*{J}} \cdot \vb*{A} + \int \dd[3]{\vb*{r}} \hat{\vb*{\mu}} \cdot \vb*{B}.
+    \label{eq:hamiltonian-with-eb}
+\end{equation}
+所有和单粒子携带的电荷数量有关的量全部被藏在电荷密度和电流密度中了，上式在电荷正反变换下不变。
+
+\eqref{eq:hamiltonian-with-eb}当然也可以非常容易地写成二次量子化的形式。
 薛定谔场满足$U(1)$对称性，因此通过诺特定理可以得到守恒荷（当然就是电荷）
 \begin{equation}
-    \rho(\vb*{r}) = - e \hat{\psi}^\dagger(\vb*{r}) \hat{\psi}(\vb*{r}),
+    \rho = - e \sum_\sigma \hat{\psi}^\dagger_\sigma \hat{\psi}_\sigma = - e \hat{n}_\text{e},
 \end{equation}
-以及守恒流（也即电流密度）
+守恒流（也即电流密度）
 \begin{equation}
-    \hat{\vb*{j}} = \frac{\ii e}{2m} (\hat{\psi}^\dagger(\vb*{r}) \grad{\hat{\psi}}(\vb*{r}) - \hat{\psi}(\vb*{r}) \grad{\hat{\psi}^\dagger}(\vb*{r})).
+    \hat{\vb*{j}} = - \frac{\ii e}{2m} \sum_\sigma (\hat{\psi}_\sigma^\dagger(\vb*{r}) \grad{\hat{\psi}_\sigma}(\vb*{r}) - (\grad{\hat{\psi}_\sigma^\dagger}(\vb*{r})) \hat{\psi}_\sigma(\vb*{r})) - \frac{e^2}{m} \vb*{A}(\vb*{r}) \sum_\sigma \hat{\psi}^\dagger_\sigma(\vb*{r}) \hat{\psi}_\sigma(\vb*{r}),
 \end{equation}
+而另一方面自旋磁矩为
+\begin{equation}
+    \hat{\vb*{\mu}} = \hat{\psi}^\dagger_\alpha \vb*{\sigma}_{\alpha \beta} \hat{\psi}_\beta.
+\end{equation}
+这样就把三个对外加电磁场的线性响应全部写成二次量子化的形式了；我们可以用推迟格林函数计算出有关的响应大小。
 
+由线性响应理论，我们有
+\[
+    \begin{aligned}
+        \expval*{\hat{J}_i}_A (t) &= \expval*{\hat{J}_i}_0 + \ii \int \dd{t} \int \dd[3]{\vb*{r}'} \theta(t-t') \expval*{\comm*{\hat{J}_i(\vb*{r}, t)}{\hat{J}_j(\vb*{r}', t')}} A_j(\vb*{r}', t') \\
+        &= - \frac{e^2}{m} \expval*{\hat{n}_\text{e}} A_i + \ii \int \dd{t} \int \dd[3]{\vb*{r}'} \theta(t-t') \expval*{\comm*{\hat{j}_i(\vb*{r}, t)}{\hat{j}_j(\vb*{r}', t')}} A_j(\vb*{r}', t').
+    \end{aligned}
+\]
+这里的$i, j$为维度脚标，并不表示粒子编号，且使用爱因斯坦求和约定；下标$A$表示有外场$\vb*{A}$时的期望值；$\hat{j}_i$的无外场期望是零，这是对称性的结果。
+
+实际上，电阻率定义为%
+\footnote{$\vb*{A}(\vb*{r}, t)$完全可以不是时间、空间平移不变的，但是既然我们将$\vb*{A}$当成扰动，只需要无扰动的系统的动力学时间、空间平移不变即可。}%
+\begin{equation}
+    J_i(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \int_{-\infty}^t \sigma_{ij}(\vb*{r}-\vb*{r}', t - t') E_j(\vb*{r}', t'),
+\end{equation}
+于是为了避免繁琐的时间上的微积分我们切换到频域上，有
+% TODO:确认记号问题
+
+现在我们回到二次量子化的框架下，考虑怎么计算有关的推迟格林函数。
+
+\subsubsection{力学和热学性质}
+
+固体系统常见的可测量量（这里不是指可观察量算符，而是指真的做量子测量能够测出来的物理量，比如说期望，等等）除了前一节提到的各种电学和磁学性质以外还包括热学性质和力学性质。
+
+我们来计算
+ 
 \subsection{近独立电子气}
 
 \subsubsection{哈密顿量、分布和格林函数}
@@ -265,7 +360,7 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 不同粒子数对应的费米能量是不同的；并且，在分析有限温问题时，化学势不再是费米能量。然而，在温度不很高、粒子数很大时，不同粒子数对应的费米能量相差不大，并且化学势和费米能量（也就是$T=0$时的化学势）相差不大，因此有时会使用费米能量近似作为化学势。%
 \footnote{关于本节的论述要着重指出一点：虽然我们采用了统计物理的论证来表明必然存在着一个费米面，从而有对应的费米能量，但统计物理的论证仅仅为我们提供了系统基态的性质，而无论系统是不是需要使用平衡态系综描述，它一定有一个基态。因此，费米面、费米能级等概念在任何情况下——无论是平衡态还是非平衡态、纯态还是混合态——全部是适用的。这些概念并不依赖统计物理的框架！}%
 化学势的大小由系统中的电子数决定，或者也可以反过来说，化学势的高度决定了系统基态中哪些位置被电子填充。这个对应关系形象地展示如\autoref{fig:chemical-potential}，化学势越高，被描黑的态——也就是基态有电子填充的态——就越多。
-再次强调，这个“电子能量形式固定，改变化学势往系统中填充电子”的物理图像不适用于强关联系统，因为在那里等效的电子能量形式\eqref{eq:single-electron-hamiltonian}随着电子填入会发生剧烈变化；相应的，从这个物理图像衍生出来的所有理论，如能带理论（见\autoref{sec:energy-band}）也不再适用。
+再次强调，这个“电子能量形式固定，改变化学势往系统中填充电子”的物理图像不适用于强关联系统，因为在那里等效的电子能量形式\eqref{eq:single-electron-hamiltonian}随着电子填入会发生剧烈变化；相应的，从这个物理图像衍生出来的理论，如能带理论（见\autoref{sec:energy-band}）也不再适用。
 
 \begin{figure}
     \centering
@@ -1820,8 +1915,8 @@ $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋�
 
 \subsubsection{固体中的无序}
 
-本节将介绍一种现象：当固体中被掺入一些杂质——或者更一般地说，出现无序，即平移对称性破缺——时，电子会倾向于留在原地而不发生长距离跃迁。
-这种现象称为\concept{Anderson局域化}。
+本节将介绍一种现象：当固体中出现无序，即平移对称性破缺时，电子会倾向于留在原地而不发生长距离跃迁。
+这种现象称为\concept{Anderson局域化}。无序可以来自掺杂，也可以来自离子实实际上并没有构成晶体这一事实。
 例如可以写出这样的一个带有格点无序的紧束缚模型：
 \begin{equation}
     \hat{H} = - t \sum_{\pair{i, j}} (\hat{c}_i^\dagger \hat{c}_j + \text{h.c.}) + \sum_i \epsilon_i \hat{c}_i^\dagger \hat{c}_i,
