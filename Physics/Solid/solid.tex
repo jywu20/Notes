@@ -1403,7 +1403,7 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 \footnote{这个名称最早来自核物理，在那里它是通过对某个随机相位的求和得到的。}%
 ，这个近似要求以下两点：
 \begin{itemize}
-    \item $\var{\hat{n}}$和$V_\text{eff}$之间的响应函数近似是自由电子的$\var{\hat{n}}$-$\var{\hat{n}}$格林函数；
+    \item $\var{\hat{n}}$和$V_\text{eff}$之间的响应函数近似是自由电子的$\var{\hat{n}}$-$\var{\hat{n}}$格林函数，即我们认为$V_\text{eff}$中来自电子屏蔽的部分在其它电子上的作用和一个外加势场完全没有区别；
     \item 只考虑经典静电能，即将电子数密度期望当成经典电子数密度，忽略所有交换能或关联能。
 \end{itemize}
 RPA近似看起来似乎没有什么明确的意义，但它实际上对应着费曼图的一阶近似，它把最为奇异剧烈效应考虑在内，并且给出了定性上正确的屏蔽库伦势（从一个长程的相互作用变成了一个短程的相互作用）。如果RPA近似不准，只需要多算几个微扰就可以。
@@ -1440,8 +1440,13 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
     \label{eq:ext-electron-ret-nn}
 \end{equation}
 其中$\epsilon(\vb*{k}, \omega)$是介电常数。
+这样，计算出自由电子的密度-密度格林函数之后问题就完全解决了。
 
-这样，计算出自由电子的密度-密度格林函数之后问题就完全解决了。依照定义，
+实际上从\eqref{eq:ext-electron-ret-nn}就可以看出RPA近似的实质。将\eqref{eq:ext-electron-ret-nn}做级数展开，我们有
+\[
+    G^\text{ret}_{nn}(\vb*{k}, \omega) = G^\text{0, ret}_{nn}(\vb*{k}, \omega) + G^\text{0, ret}_{nn}(\vb*{k}, \omega) \frac{4\pi e^2}{k^2} G^\text{0, ret}_{nn}(\vb*{k}, \omega) + \cdots,
+\]
+上式两边加上电子数密度平方，并注意到$G^\text{0, ret}_{nn}(\vb*{k}, \omega)$就是二电子组成的圈图的贡献——依照定义，自由电子的密度-密度格林函数为
 \[
     \begin{aligned}
         G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') &= - T_\tau \expval*{\var{\hat{n}}(\vb*{r}, \tau) \var{\hat{n}}(\vb*{r}', \tau')} \\
@@ -1449,7 +1454,10 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
         &= \sum_{\sigma, \sigma'} T_\tau \expval*{\hat{\psi}_{\sigma'}(\vb*{r}', \tau') \hat{\psi}^\dagger_\sigma(\vb*{r}, \tau)} T_\tau \expval*{ \hat{\psi}_\sigma(\vb*{r}, \tau) \hat{\psi}^\dagger_{\sigma'}(\vb*{r}', \tau') } ,
     \end{aligned}
 \]
-其中最后一个等号用到了Wick定理。由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，则得到
+其中最后一个等号用到了Wick定理——我们就发现\eqref{eq:ext-electron-ret-nn}实际上就是环形图近似。
+\eqref{eq:ext-electron-ret-nn}实际上给出了$G^\text{ret}_{nn}$中最为奇异的部分，因为环形图会产生次数非常高的$1/k^n$型的项，从而发散得最厉害。
+
+由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，我们得到
 \[
     G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') = \sum_\sigma G_\sigma(\vb*{r}' - \vb*{r}, \tau' - \tau) G_\sigma(\vb*{r} - \vb*{r}', \tau - \tau').
 \]
