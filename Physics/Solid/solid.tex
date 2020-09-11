@@ -195,7 +195,7 @@ $\text{h.c.}$表示厄米共轭，$\text{c.c.}$表示复共轭。
 上式中的动能项和相互作用项的形式由对称性确定，具体系数可以暂时不设置具体值（因为直接从\eqref{eq:full-electron-gas-hamiltonian}出发做重整化群计算显然是非常困难的）。
 处理这类模型的常用方法包括：
 \begin{itemize}
-    \item 直接做费曼图计算，由于相互作用是二体的，在相互作用较弱时计算一到二圈图就可以得到很好的效果；
+    \item 直接做费曼图计算（需要注意由于库伦相互作用是瞬时的，通常将库仑相互作用顶角写成用虚线连接的两个顶角，每个顶角有一个电子入射和一个电子出射，虚线可以携带动量），由于相互作用是二体的，在相互作用较弱时计算一到二圈图就可以得到很好的效果，不过实际上相互作用并不总是那么弱，此时需要一些其它近似手段；
     \item 由于相互作用项是四阶的，可以使用Hubbard-Stratonovich变换引入一个辅助场，通过适当选取辅助场（通常要和某个有趣的序参量具有同样的对称性）并积掉电子自由度，则接近临界点时，辅助场满足的场论就给出了长程自由度；
     \item 做平均场计算并与实验或数值计算作比较（可以对原来的模型做平均场也可以对Hubbard-Stratonovich变换之后的辅助场做平均场）；
     \item 在定性论证出来一些现象后考虑其上的涨落，获得一个关于平均值附近涨落的理论（可以和平均场一起使用）；
@@ -1287,7 +1287,7 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
     \hat{H}_\text{int} = \gamma \sum_{\vb*{q}, \lambda} \frac{\ii q_\lambda}{\sqrt{2 M \omega_{\vb*{q} \lambda}}} (\hat{b}_{\vb*{q} \vb*{\lambda}} + \hat{b}^\dagger_{-\vb*{q} \vb*{\lambda}}) \underbrace{\sum_{\vb*{k}, \sigma} \hat{c}^\dagger_{\vb*{k} \sigma} \hat{c}_{\vb*{k} \sigma}}_{\hat{\rho}_{\text{e} \vb*{q}}}.
     \label{eq:simple-phonon-electron-int}
 \end{equation}
-于是我们就得到了二电子、一声子的相互作用顶角。
+于是我们就得到了二电子、一声子的相互作用，在费曼图中体现为一个二电子线一进一出、一声子线的顶角。
 
 \subsubsection{声子格林函数和路径积分}
 
@@ -1376,7 +1376,7 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 \end{equation}
 这个结果就是\concept{托马斯-费米屏蔽}。
 
-\subsubsection{动态屏蔽响应}
+\subsubsection{RPA近似下的动态屏蔽响应}
 
 托马斯-费米屏蔽是静态的。现在考虑一般的近独立电子气的线性响应。
 外加电势导致如下的相互作用哈密顿量：
@@ -1397,7 +1397,9 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
     \expval*{\var{\hat{n}}(\vb*{k}, \omega)} = G^\text{ret}_{nn}(\vb*{k}, \omega) V_\text{ext}(\vb*{k}, \omega).
     \label{eq:green-function-electro-shielding}
 \end{equation}
-当然，在系统的构成已知的情况下，可以直接计算出格林函数$G^\text{ret}_{nn}$，但是本节不这么处理问题。相反，我们希望通过静电屏蔽效应的一般讨论来得到$G^\text{ret}_{nn}$的一个近似表达式。
+当然，在系统的构成已知的情况下，可以直接用费曼图计算出格林函数$G^\text{ret}_{nn}$，但是本节不这么处理问题。
+但如果真的这么做很快就会遇到数学上的困难：费曼图求和需要经过一些特殊的重求和步骤才能够给出有意义的结果。
+因此本节只是做一个近似，将最为奇异的那部分费曼图做一个求和，然后发现它确实能够给出有意义的结果。
 
 为简化问题我们做\concept{RPA（Random Phase Approximation）近似}%
 \footnote{这个名称最早来自核物理，在那里它是通过对某个随机相位的求和得到的。}%
@@ -1406,7 +1408,7 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
     \item $\var{\hat{n}}$和$V_\text{eff}$之间的响应函数近似是自由电子的$\var{\hat{n}}$-$\var{\hat{n}}$格林函数，即我们认为$V_\text{eff}$中来自电子屏蔽的部分在其它电子上的作用和一个外加势场完全没有区别；
     \item 只考虑经典静电能，即将电子数密度期望当成经典电子数密度，忽略所有交换能或关联能。
 \end{itemize}
-RPA近似看起来似乎没有什么明确的意义，但它实际上对应着费曼图的一阶近似，它把最为奇异剧烈效应考虑在内，并且给出了定性上正确的屏蔽库伦势（从一个长程的相互作用变成了一个短程的相互作用）。如果RPA近似不准，只需要多算几个微扰就可以。
+RPA近似看起来似乎没有什么明确的意义，但它实际上把最为奇异剧烈效应考虑在内，并且给出了定性上正确的屏蔽库伦势（从一个长程的相互作用变成了一个短程的相互作用）。如果RPA近似不准，只需要多算几个微扰就可以。
 这样，自洽方程可以通过下面的方法给出。
 \begin{enumerate}
     \item 外加电荷引入外加电势能，
@@ -1414,8 +1416,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
     \item 总的电势能变化可以反推出屏蔽电荷。
 \end{enumerate}
 
-粒子数的平均值近似为一个经典的数密度，% TODO：什么时候可以这么做。。。交换能怎么办？还是这里没有考虑
-从而$\var{V}$可以使用泊松方程写成
+粒子数的平均值近似为一个经典的数密度，从而$\var{V}$可以使用泊松方程写成
 \[
     - \laplacian \var{V}(\vb*{r}, t) = - 4\pi e^2 \expval*{\var{\hat{n}}(\vb*{r}, t)},
 \]
@@ -1446,7 +1447,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
 \[
     G^\text{ret}_{nn}(\vb*{k}, \omega) = G^\text{0, ret}_{nn}(\vb*{k}, \omega) + G^\text{0, ret}_{nn}(\vb*{k}, \omega) \frac{4\pi e^2}{k^2} G^\text{0, ret}_{nn}(\vb*{k}, \omega) + \cdots,
 \]
-上式两边加上电子数密度平方，并注意到$G^\text{0, ret}_{nn}(\vb*{k}, \omega)$就是二电子组成的圈图的贡献——依照定义，自由电子的密度-密度格林函数为
+上式两边加上电子数密度平方，并注意到$G^\text{0, ret}_{nn}(\vb*{k}, \omega)$就是电子-空穴组成的环的贡献——依照定义，自由电子的密度-密度格林函数为
 \[
     \begin{aligned}
         G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') &= - T_\tau \expval*{\var{\hat{n}}(\vb*{r}, \tau) \var{\hat{n}}(\vb*{r}', \tau')} \\
@@ -1455,7 +1456,9 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
     \end{aligned}
 \]
 其中最后一个等号用到了Wick定理——我们就发现\eqref{eq:ext-electron-ret-nn}实际上就是环形图近似。
-\eqref{eq:ext-electron-ret-nn}实际上给出了$G^\text{ret}_{nn}$中最为奇异的部分，因为环形图会产生次数非常高的$1/k^n$型的项，从而发散得最厉害。
+\eqref{eq:ext-electron-ret-nn}实际上给出了$G^\text{ret}_{nn}$中最为奇异的部分，因为环形图会产生次数非常高的$1/k^n$型的项，从而发散得最厉害；但是将所有这些发散的图求和起来却能够得到一个收敛的结果。
+环形图近似的成立条件是粒子数密度很高，从而主要的相互作用形式是电子通过库仑相互作用，激发出一些电子-空穴对（即环形图中的环），即主要的相互作用是环形图。
+也可以从另一个角度理解这件事：粒子数密度较高意味着屏蔽作用很强，所以$1/k^n$发散得不那么厉害的那些项没有什么贡献。
 
 由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，我们得到
 \[
@@ -1515,7 +1518,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
 \[
     G_{nn}^\text{ret, 0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \dv{f(\xi_{\vb*{k}})}{\xi_{\vb*{k}}} = - 2 \sum_{\vb*{k}} \dv{f(\xi_{\vb*{k}})}{\mu} = - \pdv{n}{\mu} = - N(0),
 \]
-这正是我们在托马斯-费米屏蔽中做的近似。
+这正是我们在托马斯-费米屏蔽中做的近似。这也表明RPA近似的确有些道理。
 
 \subsubsection{等离子体和等离激元}
 
@@ -1546,13 +1549,13 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上对应着�
 \begin{equation}
     \epsilon(\vb*{k}, \omega \to 0) = 1 - \frac{\omega_\text{p}^2}{\omega^2}.
 \end{equation}
-考虑到\eqref{eq:ext-electron-ret-nn}，当$\omega = \omega_\text{p}$时格林函数出现奇点，即此处有集体激发。实际上，这正是\concept{等离子激元}。
+考虑到\eqref{eq:ext-electron-ret-nn}，当$\omega = \omega_\text{p}$时格林函数出现奇点，即此处有集体激发。实际上，这正是\concept{等离激元}。
 $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任意的动量，在$\omega = \omega_\text{p}$处都有一个密度波的集体激发模式。
 这个集体激发的频谱是平的，这当然是因为我们假定光速无穷大，完全使用库伦相互作用。如果考虑到光速有限，使用麦克斯韦方程可以推出
 \begin{equation}
     \omega_{\vb*{k}}^2 = \omega_\text{p}^2 + c^2 k^2,
 \end{equation}
-即光子的一个模式和固体发生耦合，打开了一个能隙。在假定光速无限时，丢弃不可见、恒定的无穷大项就得到
+即光子的一个模式和固体发生耦合，打开了一个能隙。在假定光速无限时，丢弃不可见、恒定的无穷大项（相当于将元激发的产生湮灭算符的时间演化加上一个因子$\ee^{\ii c k t}$）就得到
 \[
     \omega_{\vb*{k}} = \omega_\text{p},
 \]
@@ -1744,7 +1747,7 @@ Anderson模型中的巡游电子只有一个能带，这个能带通常在费米
 \]
 我们设
 \[
-    \hat{n}_{\text{d} \uparrow, \downarrow} = \frac{1}{2} \pm x,
+    \expval*{\hat{n}_{\text{d} \uparrow, \downarrow}} = \frac{1}{2} \pm x,
 \]
 若出现自发磁矩则$x$不为零。此时\eqref{eq:anderson-zero-temperature-sc}为
 \[
@@ -1872,7 +1875,7 @@ $\hat{H}_1$会让半满的d轨道变成全满，或者让半满的d轨道变成�
 \begin{equation}
     \hat{H}_\text{eff} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} \hat{c}_{\vb*{k}\sigma}^\dagger \hat{c}_{\vb*{k} \sigma} + \frac{J_0}{2V} \sum_{\vb*{k}, \vb*{k}'} \hat{c}^\dagger_{\vb*{k} \alpha} \vb*{\sigma}_{\alpha \beta} \hat{c}_{\vb*{k}' \beta} \cdot \hat{\vb*{S}_\text{d}}.
 \end{equation}
-这就是所谓的\concept{Kondo模型}。注意Kondo模型中还是有d电子的，这个自由度没有被完全积掉，但是始终只有一个d电子，它唯一可变的参数是自旋。
+这就是所谓的\concept{Kondo模型}。注意Kondo模型中还是有d电子的，这个自由度没有被完全积掉（因为它提供的自旋和巡游电子的自旋之间有相互作用），但是始终只有一个d电子，它唯一可变的参数是自旋。
 
 \subsubsection{低温下电子的散射和电阻}
 
@@ -1892,12 +1895,11 @@ $\hat{H}_1$会让半满的d轨道变成全满，或者让半满的d轨道变成�
 \end{equation}
 $\hat{S}^+_\text{d}$和$\hat{S}^-_\text{d}$项分别表示$z$方向上的自旋角动量从巡游电子传递给了d电子，或者从d电子传递给了巡游电子。
 
-下面根据\eqref{eq:kondo-spin-up-down}计算一些散射振幅。我们将计算$\hat{T}$矩阵的矩阵元。以下记d电子自旋为$m$。
+下面根据\eqref{eq:kondo-spin-up-down}计算一些散射振幅。我们需要的是跃迁概率，因此需要计算$\hat{T}$矩阵的矩阵元。以下记d电子自旋为$m$。
 % TODO：费曼图绘制
-
-一阶过程：
+不失一般性地假定入射巡游电子的自旋为$\uparrow$。一阶过程包括两个图，一个是入射电子自旋没有发生翻转的，一个是入射电子自旋发生了翻转的。它们的跃迁矩阵元分别是
 \begin{equation}
-    T^{(1)}_{\vb*{k}\uparrow \longrightarrow \vb*{k}' \uparrow} = \frac{J_0 m}{2V}, .
+    T^{(1)}_{\vb*{k}\uparrow \longrightarrow \vb*{k}' \uparrow} = \frac{J_0 m}{2V}, \quad T^{(1)}_{\vb*{k}\uparrow \longrightarrow \vb*{k}' \downarrow} = 
 \end{equation}
 
 \begin{equation}
@@ -3302,12 +3304,5 @@ $W = \pm 1$，这是一个定义在立体中的量？
 \subsubsection{时间反演对称性保护的拓扑超导}
 
 刚才描述的拓扑超导和对称性没有特别明确的对称性。当然可以说它有粒子-空穴对称性，但是这完全是一个数学上的处理。
-
-\section{强关联系统}
-
-\subsection{自旋-电荷分离}
-
-自从上世纪80年代高温超导发现以来，大量的理论被提出来解释这一现象，以至于理论比理论家还多。
-自旋-电荷分离是一个非常重要的概念，它最早用于解释高温超导材料，但在很多其他领域也有应用。
 
 \end{document}
