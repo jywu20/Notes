@@ -39,6 +39,8 @@
 
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}} 
+
 \title{第一性原理计算}
 \author{吴何友}
 
@@ -78,8 +80,9 @@
 \eqref{eq:bo-hamiltonian}可以改写成二次量子化哈密顿量
 \begin{equation}
     \begin{aligned}
-        \hat{H} &= - \int \dd[3]{\vb*{r}} \hat{\psi}^\dagger(\vb*{r}) \frac{\laplacian}{2m_\text{e}} \hat{\psi}(\vb*{r}) \\
-        &+ \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \hat{\psi}^\dagger (\vb*{r}) \hat{\psi}^\dagger (\vb*{r}') V_\text{int} (\vb*{r} - \vb*{r}') \hat{\psi}(\vb*{r}') \hat{\psi}(\vb*{r}) + \int \dd[3]{\vb*{r}} \hat{\psi}^\dagger(\vb*{r}) V_\text{ext}(\vb*{r}) \hat{\psi}(\vb*{r}).
+        \hat{H} = &\sum_{\sigma} \int \dd[3]{\vb*{r}} \hat{\psi}_\sigma^\dagger(\vb*{r}) \left( - \frac{\laplacian}{2m} + V_\text{ext}(\vb*{r}) \right) \hat{\psi}_\sigma(\vb*{r}) \\
+        &+ \frac{1}{2} \sum_{\alpha, \beta} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} 
+        \hat{\psi}_\alpha^\dagger (\vb*{r}_1) \hat{\psi}_\beta^\dagger (\vb*{r}_2) \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \hat{\psi}_\beta (\vb*{r}_2) \hat{\psi}_\alpha (\vb*{r}_1). 
     \end{aligned}
     \label{eq:bo-second-hamiltonian}
 \end{equation}
@@ -91,7 +94,59 @@
 
 \subsection{Hartree-Fock近似}
 
-单粒子模型总是容易处理的。
+电子气的哈密顿量涉及复杂的相互作用项，这意味着我们难以求解它，甚至不能精确求解其基态。
+例如，考虑一个粒子数给定的系统，从而可以从其二次量子化哈密顿量写出一次量子化哈密顿量（未必真的要写出，只需要知道粒子数对不上的态全部可以弃去即可），如果系统的哈密顿量是二次型的，则基态可以确定是一个乘积态，粒子从低到高占据能量尽可能低的能级；但如果有相互作用，那么根本就谈不上有特别明确的能级。
+
+\concept{平均场近似}是一种化解这个问题的方式，在其中，我们将粒子间的相互作用看成是一个外加的场（就是所谓的平均场），从而让系统的哈密顿量解耦为一系列单粒子哈密顿量的叠加。
+这样系统就可以看成自由场，其基态可以写成乘积态，其坐标表象就是Slater行列式。
+这样的好处在于可以充分利用自由场的特有性质，如Wick定理。
+
+例如，考虑相互作用电子气。对接近平衡态的体系，在我们考虑的空间尺度相对于单电子的特征尺度非常大时（例如，如果没有特别剧烈的电子-电子散射，从而诸电子可以认为离得很远），可以使用库伦相互作用能的期望值代替其本身。
+实际上这就是将库仑相互作用看成微扰，把自由电子气看成零阶波函数，计算了这个微扰对能级的一阶修正。
+这个近似称为\concept{Hartree-Fock近似}。
+库仑相互作用的期望值为
+\[
+    \begin{aligned}
+        \expval*{\hat{H}_\text{columbic}} &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{\psi}^\dagger (\vb*{r}_1) \hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2) \hat{\psi}(\vb*{r}_1)} \\
+        &= \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \\
+        & \times \left( \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_2)} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_1) - \expval*{\hat{\psi}^\dagger(\vb*{r}_2) \hat{\psi} (\vb*{r}_1)}} \expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi} (\vb*{r}_2)} \right),
+    \end{aligned}
+\]
+如果电子比较定域%
+\footnote{直觉上，电子比较定域意味着波函数会展现为一个个峰，似乎和平滑的电子密度的图景不相符，但在宏观上总是可以将电子密度粗粒化、平滑化，因此电子比较定域这件事不会破坏电荷平滑分布的经典图景。反之，真正会破坏经典图景的是不同电子的波函数发生交叠而导致交换能。}%
+，那么不同电子的轨道波函数几乎没有重叠，于是关联函数$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$会快速衰减，就得到库伦能：
+\begin{equation}
+    \expval*{\hat{H}_\text{columbic}} = \frac{1}{2} \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} \frac{e^2}{\abs{\vb*{r}_1 - \vb*{r}_2}} \expval*{\hat{n} (\vb*{r}_1)} \expval*{\hat{n} (\vb*{r}_2)}.
+\end{equation}
+这和经典的连续介质电动力学给出的结果完全一致。若电子气比较稀疏，从而不同电子的波函数重叠并不明显，则$\expval*{\hat{\psi}^\dagger(\vb*{r}_1) \hat{\psi}(\vb*{r}_2)}$可以略去，这个近似称为\concept{托马斯-费米近似}，它的的意义在于将系统的所有信息都使用电子数密度期望给出了，并且库伦相互作用引入的能量修正和经典理论完全一致。
+托马斯-费米近似同时需要两个条件：首先相互作用并不强，从而可以近似认为电子之间近独立；其次电子气要足够稀疏，让关联能消失。
+
+在Hartree-Fock近似中，体系是自由的，于是总是可以假定体系的基态近似为
+\begin{equation}
+    \ket{\text{HF}} = \prod_\alpha \hat{c}_\alpha \ket{0},
+    \label{eq:hatree-fock-ansatz}
+\end{equation}
+其中参与求和的$\hat{c}_\alpha$共有$n$个，$n$是事先给定的系统中的粒子数。
+这个拟设等于是说，体系的基态和某个乘积态非常接近。
+一般而言，不能够保证\eqref{eq:electron-gas-hamiltonian-sq}真的有形如\eqref{eq:hatree-fock-ansatz}的本征态，但是我们总是可以让\eqref{eq:hatree-fock-ansatz}的能量期望值取最小值，也即求解以下问题：
+\begin{equation}
+    \argmin_{\hat{\psi}} \mel{\text{HF}}{\hat{H}}{\text{HF}} \suchthat \text{$\hat{\psi}$ is a field operator}.
+    \label{eq:minimize-energy}
+\end{equation}
+由于Hatree-Fock态是乘积态，可以使用Wick定理，并注意到依照定义有
+\[
+    \mel{0}{\hat{\psi}(\vb*{r})\hat{c}^\dagger_\alpha}{0} = \braket{\vb*{r}}{\phi_\alpha} = \phi_\alpha(\vb*{r}),
+\]
+$\phi_\alpha(\vb*{r})$为产生算符$\hat{c}^\dagger_\alpha$产生的粒子在坐标空间中的波函数。
+可以机械地计算出
+\[
+    E_\text{HF} = \mel{\text{HF}}{\hat{H}}{\text{HF}},
+\]
+于是最优化问题\eqref{eq:minimize-energy}就变成一个约束优化问题：
+\[
+    \argmin_{\phi_\alpha(\vb*{r})} E_\text{HF} \suchthat \int \dd[3]{\vb*{r}} \abs{\phi_\alpha(\vb*{r})}^2 = 1, \quad \text{for all $\alpha$}.
+\]
+平均场近似会让能量取最小值。
 
 \subsection{Thomas-Fermi近似}
 
