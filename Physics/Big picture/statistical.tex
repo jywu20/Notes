@@ -1,0 +1,720 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{ulem}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\primevalue}{P}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\fd}[1]{\mathcal{D}{#1}}
+\newcommand*{\cexpval}[1]{\langle \langle #1 \rangle \rangle}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{统计物理}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+以下涉及场论的地方，如无特殊说明均以$D$为空间维数。
+
+本文将讨论量子系统的统计力学，我们将采用标准的关于“测量”的理论而不分析其背后的原理。
+使用$\{\ket{n}\}$表示系统态空间的一组完备正交基。
+有物理意义的哈密顿量都有基态，因此我们可以通过移动能量零点的方法，让哈密顿量的各个本征值都大于零。
+
+使用$\expval*{\hat{A}}$或者$\bar{A}$来表示可观察量$\hat{A}$的期望值。
+使用$T$表示编时算符，$\Theta(t)$表示阶跃函数。
+
+\section{经典非平衡态统计物理}
+
+\subsection{刘维尔方程}
+
+设系统中有一组正则变量，正则坐标为$\{q_i\}$而正则动量为$\{p_i\}$。按照经典的哈密顿动力学，我们有
+\[
+    \dot{p}_i = \pdv{H}{q_i}, \quad \dot{q}_i = - \pdv{H}{p_i}.
+\]
+原则上求解这组方程我们就可以预言一切系统的行为，然而在自由度非常大的时候这并不可行。那么，我们就只能留下“主要的”自由度，而不考虑一些不那么重要的自由度。
+显然，这意味着我们必须引入概率的概念，因为被我们忽视的那部分自由度的时间演化并不知道，于是我们可以认为它们就是随机的。
+这样就不能够说“系统处于某某状态”，而只能说“系统处于某某状态的概率是多少”。
+概率是归一化的，处理起来很讨厌。我们于是在想象中引入一系列系统（称为\textbf{代表点}；虽然系统中可以有大量粒子，但我们不妨将系统本身看成一个具有庞大的内部自由度的“粒子”，在相空间中就是一个点），处于某个状态的系统数正比于这个系统出现的概率，这样就可以将归一化留到最后去做。
+\textbf{代表点密度}是单位相空间中代表点的密度，记作$\rho$。
+
+从以上假设我们可以推导出\textbf{刘维尔方程}
+\begin{equation}
+    \pdv{\rho}{t} + \comm*{\rho}{H} = 0.
+\end{equation}
+实际上这是相空间中的一个流体连续性方程，它成立意味着相空间中的代表点没有产生和消灭。
+
+\subsection{平衡态}
+
+对混沌系统，
+
+需要注意的是，不是所有的系统都可以使用以上方法处理。对所谓的可积系统（如真正的无相互作用系统），没有任何混沌现象，因此即使
+或者说，可积系统\textbf{不热化}。
+
+很多可积系统在扰动下是不稳定的：我们一加入（即使非常小的）相互作用，它立刻变得混沌起来。这些可积系统并没有特殊的理论意义。但是是否有这样的可积系统，使得即使加入微小的相互作用，它也保持可积性？这个问题尚未明确的答案。
+
+\section{量子非平衡统计物理}
+
+\subsection{关于混合态的量子力学}
+
+\subsubsection{引入密度算符}\label{sec:introduction-of-density-operator}
+
+很多量子系统——即使简单如一个单粒子——的态空间都可以分解成一些态空间的直积。
+一些时候我们只是关心整个系统的一部分。因此，接下来称我们关心的这部分为\textbf{系统}，称我们不关心的部分为\textbf{环境}。
+我们设环境完全被算符$\hat{B}$描述而$\hat{A}$是关于系统的一个算符，则系统-环境对的态可以写成这样：
+\begin{equation}
+    \ket{\text{sys-env}} = \sum_i c_i \ket{\psi_i} \ket{B_i}.
+    \label{eq:sys-env-state}
+\end{equation}
+也就是说我们把系统-环境对的态中含有的所有项都整理成以上形式。
+我们还假定系统的演化独立于环境，这或者是因为环境对系统的作用并不强以至于可以忽略，或者是因为环境对系统的作用如此之强以至于其结果可以很容易地知道而不需要考虑环境的内部状态（例如，考虑原子核对电子的作用）。
+然而，虽然系统和环境之间没有耦合，但在制备系统的时候\eqref{eq:sys-env-state}中的$\ket{\psi_i}$和$\ket{B_i}$之间有某种关系，
+例如，如果通过裂变的方式制备具有某种自旋的粒子束，那么我们需要的粒子和我们丢弃的粒子放在一起的态就是%
+\footnote{可以看到，产生纠缠态还是需要系统和环境发生相互作用。如果系统和环境在$t=-\infty$时就没有发生相互作用，并且它们的动力学彼此不相关，那么它们的态就永远不会有纠缠。但纠缠态产生之后，就算系统和环境不再发生相互作用，纠缠还是会一直存在。\label{note:entangled-states}}
+\[
+    \ket{\text{all}} = \frac{1}{\sqrt{2}} \ket{\uparrow} \ket{\uparrow} + \frac{1}{\sqrt{2}} \ket{\downarrow} \ket{\downarrow},
+\]
+两个粒子一旦被制备就不再有相互作用，但是显然不可能使用$\ket{\uparrow}$和$\ket{\downarrow}$的叠加写出其中任何一个粒子的态——不能够写出
+\[
+    \ket{\text{all}} = \left( a_1 \ket{\uparrow} + b_1 \ket{\downarrow} \right) \otimes \left( a_2 \ket{\uparrow} + b_2 \ket{\downarrow} \right)
+\]
+这样的表达式。
+把第一个粒子看成系统而第二个粒子看成环境的一部分我们就得到了\eqref{eq:sys-env-state}形式的态。这种“总系统的态不能够写成各个部分的态的直积”情况称为\textbf{量子纠缠}。
+这意味着，系统的观察结果不可能完全由诸$\ket{\psi_i}$确定，而必须考虑环境；但是通常环境是什么样的我们并不知道。
+因此不能够简单地通过“求解系统-环境对的运动方程”来计算我们关心的结果，而必须通过某种手段把环境“积掉”。
+具体怎么做，接下来很快会看到。
+
+可以制备大量的这种系统-环境对，这些系统-环境对之间并没有相互作用，它们的集合称为\textbf{系综}。
+系综很自然地导致一个使用古典概型的\textbf{概率}。
+通过系综计算出来的概率和真的动手做变量控制得足够好的实验时的概率是一致的：动手做实验时实验结果依赖于某些环境参数$\theta$，
+只要环境是足够杂乱，以至于$\theta$的分布完全随机（环境通常足够大，因此总是这样），
+那么重复做实验就是采集了大量$\theta$样本，每个$\theta$确定了一个系统，从而建立了一个系综。%
+\footnote{当然，系综中系统-环境对的数目总是很大的，而真实的实验做不了那么多次。这里只是原理性地说明系综这一概念的合理性。}%
+另一种会自然地要求我们讨论系综的情景是，系统的初态依赖某些参数，而我们并不知道这些参数是什么，于是不得不列出所有可能的参数然后平行地让这些可能的态往前演化，看看具有不同性质的态各占多少。
+很容易看出这和“多次做实验”根本就是一回事。%
+\footnote{可能出现的另一个问题是，为什么我们能够合理地将各种可能的系统放在一起构造一个系综；最直截了当的做法是假定有一个宇宙波函数，测量、实验等过程使得其结果和宇宙中其它部分的状态纠缠在一起，从而宇宙波函数可以写成一系列直积态的叠加，这些直积态单独拿出来就组成一个系综。}
+
+现在我们从这个系综当中随机取出一个系统-环境对，然后对它做一次测量，会得到什么样的结果？
+算符$\hat{A}$在系统的态空间和环境的态空间的直积上显然是简并的（无论$\hat{A}$在系统的态空间上是不是简并的）。
+测量态\eqref{eq:sys-env-state}的$\hat{A}$值。设$\hat{A}$的本征值$A_i$对应着系统的本征态$\ket{A_i^{(j)}}$，$j=1, 2, \ldots$。
+测量结果为$A_i$的概率是
+\[
+    \begin{aligned}
+        P(A_i) &= \sum_{j,k} \abs{\bra{A_i^{(j)}} \bra{B_k} \ket{\text{sys-env}}}^2 \\
+        &= \sum_{j, k} \abs{ \bra{A_i^{(j)}} \sum_l c_l \ket{\psi_l} \braket{B_k}{B_l} }^2 \\
+        &= \sum_{j, k} \abs{c_k}^2 \abs{\braket{A_i^{(j)}}{{\psi_k}}}^2 \\
+        &= \sum_j \ev{ \sum_k \abs{c_k}^2 \dyad{\psi_k} }{A_i^{(j)}}
+    \end{aligned}
+\]
+从系综中随机抽取一个系统-环境对，用$\hat{A}$做测量，得到结果为$A_i$的概率是：
+\[
+    \begin{aligned}
+        P(A_i) &= \sum_j P(\ket{\text{sys-env}_j}) P(\text{$\ket{\text{sys-env}_j}$ gives $A_i$}) \\
+        &= \sum_l P(\ket{\text{sys-env}_l}) \sum_j \ev{ \sum_k \abs{c_{l, k}}^2 \dyad{\psi_{l, k}} }{A_i^{(j)}} \\
+        &= \sum_j \ev{ \sum_{l, k} P(\ket{\text{sys-env}_l}) \abs{c_{l, k}}^2 \dyad{\psi_{l, k}} }{A_i^{(j)}},
+    \end{aligned}
+\]
+其中下标$l, k$指的是系综中第$l$个系统的第$k$个$\ket{\psi}$（见\eqref{eq:sys-env-state}）。
+我们定义\textbf{密度算符}
+\begin{equation}
+    \hat{\rho} = \sum_{l, k} P(\ket{\text{sys-env}_l}) \abs{c_{l, k}}^2 \dyad{\psi_{l, k}},
+    \label{eq:density-operator-def}
+\end{equation}
+就有
+\begin{equation}
+    P(A_i) = \sum_j \ev{\hat{\rho}}{A_i^{(j)}}.
+    \label{eq:prop-of-quantity}
+\end{equation}
+相应的，期望值为
+\[
+    \expval*{\hat{A}} = \sum_{i, j} A_i \ev{\hat{\rho}}{A_i^{(j)}}.
+\]
+注意到
+\[
+    \sum_{i, j} \ev{\hat{\rho} A_i }{A_i^{(j)}} = \sum_{i, j} \ev{\hat{\rho} \hat{A} }{A_i^{(j)}} = \trace \left(\hat{\rho} \hat{A}\right),
+\]
+我们得到
+\begin{equation}
+    \expval*{\hat{A}} = \sum_{i, j} A_i \ev{\hat{\rho}}{A_i^{(j)}} = \trace \left(\hat{\rho} \hat{A}\right).
+    \label{eq:expectation}
+\end{equation}
+
+在\eqref{eq:density-operator-def}中$\abs{c_{l, k}}^2$相当于是$P(\ket{\psi_{l, k}}|\ket{\text{sys-env}_l})$（归一化性质是显然的），
+于是\eqref{eq:density-operator-def}写成%
+\footnote{由于量子态的平方才是概率，如果我们认为量子态本身是某种概率性理论中的对象，我们就必须要区分经典概率和量子概率：前者是从一个系综中取出一个系统，这个系统具有某些性质的可能性，后者则是这个系统的可观察量取不同值的概率。
+但正如此处我们看到的那样，实际上两者可以以统一的方式处理，我们完全可以良定义一个$P(\ket{psi_i})$。
+如果回顾测量的意义，我们会发现所谓测量无非就是系统与环境相互作用，导致系统和环境出现纠缠，而具体得到什么结果和我们未知——因此只能够使用一个概率分布来模拟的——环境变量有关，可见量子态本身和概率毫无关系，量子力学中的概率的概念完全是因为做测量时对环境的无知导致的，而使用概率分布来穷举所有可能的环境变量的方式和我们穷举所有可能出现的系统状态构造一个系综（从而引入所谓“经典概率”）的方式完全一样。
+因此，根本就没有所谓经典概率和量子概率的区分：量子力学中的概率和构造统计系综时引入的概率具有同样的起源。
+只有一种概率，就是系统演化过程中由于与环境的相互作用导致系统状态不能确定，因此必须使用混合态描述系统而导致的概率。
+这同一种概率起源如果出现在观测时，就导致观测结果的涨落，即所谓“量子测量的不确定性”，如果出现在观测前，就导致系统从纯态变得不纯，即所谓“退相干”。
+退相干也可以理解成环境在不停地测量系统。
+}%
+\begin{equation}
+    \hat{\rho} = \sum_{i} P(\ket{\psi_i}) \dyad{\psi_i},
+    \label{eq:density-operator}
+\end{equation}
+其中$P(\ket{\psi_i})$指的是从系综中随机取出一个态，经过测量发现它处于$\ket{\psi_i}$的概率。%
+\footnote{更准确地说，这是“经过测量之后发现它在各个$\ket{\psi}$态之中处于$\ket{\psi_i}$”的概率。
+测量永远是针对一个算符的而不是针对一个单独的态的，对系统做一次测量，观察它会落到诸$\ket{\psi}$中的哪一个的方法是，构造算符
+\[
+    \hat{A} = \sum_i A_i \dyad{\psi_i},
+\]
+其中不同的$i$对应不同的$A_i$，然后使用这个算符对系统做测量，若测量结果是某个$A_i$，那么系统就落在了态$\ket{\psi_i}$上。单独把态$\ket{\psi_i}$拿出来讨论“它出现的概率”是和量子力学的框架相矛盾的。不过，为了说明方便，在各个$\ket{\psi}$态给定的情况下，我们常用“系统取$\ket{\psi_i}$的概率这样的说法”。}%
+需要注意的是，即使诸$\ket{\psi_i}$相互并不正交，\eqref{eq:density-operator}也是成立的。
+\eqref{eq:density-operator}中的每一项的系数都是正的，因此$\hat{\rho}$是正定的。
+而又由于\eqref{eq:density-operator}中每一项的系数都小于等于$1$，数学上可以证明，$\hat{\rho}$的本征值全部在$0$和$1$之间，可以取到$1$。
+当然，如果\eqref{eq:density-operator}中的某一个$P(\ket{\psi_i})$真的取到了$1$，那么按照概率的性质，此时其余的$P(\ket{\psi_j})$都是零，从而
+\[
+    \hat{\rho} = \dyad{\psi_i},
+\]
+因此系统处于纯态。类似地也可以说明，$\hat{\rho}$的本征值取到$1$，当且仅当系统处于纯态；此时$\hat{\rho}$的本征态就是系统的态矢量。
+
+如果可能的$\psi_i$只有一个，那么称此时的系综是\textbf{纯}的，或者说系统处于纯态，因为此时根本不需要引入系综的概念：直接对这个仅有的$\ket{\psi}$解运动方程就可以得到想要的一切信息。
+否则，称此时的系综为\textbf{混合}的，或者说系统处于混合态。
+需要注意的是即使是纯态也会引入随机性，因为测量所用的算符的本征态未必和$\ket{\psi_i}$一致。
+但混合态引入了另一种随机性：我们甚至不知道系统（从系综中随便选取的某一个）具体处于什么态！
+这种随机性是由于我们缺乏某些信息而产生的：我们或者不知道和我们关心的系统纠缠的态是什么样的，或者不知道我们关心的系统到底在什么态上面。
+
+通常，对一个系综我们只关心特定的物理量取某些值的概率，以及物理量的期望，后者又可以从前者推出来。
+从\eqref{eq:prop-of-quantity}和\eqref{eq:expectation}可以看出，密度算符给出了所有这些信息。
+因此我们认为密度算符完整描述了系综。
+除了这两项信息以外的信息则不能从密度算符中提取。例如，请注意从\eqref{eq:density-operator}中不能读取出$\ket{\psi_i}$分别都是什么，因为可以找到多组$\ket{\psi_i}$，使用不同的$P$，而得到同样的$\hat{\rho}$，也就是说不同构造的系综可以有同样的密度算符。
+通常称诸$\ket{\psi_i}$，也就是有非零系数的态，为\textbf{参与态}。显然密度算符提供不了参与态具体是什么的信息，不过一般我们也不需要这些信息。
+实际上，\eqref{eq:density-operator}本身就体现了这一点：我们并不关心混合态是因为系统和环境的纠缠还是因为别的什么引起的，因此使用统一的\eqref{eq:density-operator}处理两种情况。
+
+一般来说，对实际的、通常规模很大的系统，我们不可能知道它的所有信息。或者我们不知道它的某些参数，或者我们不知道它是不是和环境纠缠在一起。无论哪种情况，描述系统都需要使用混合态。
+因此接下来在不至于引起混淆时我们不严格区分“系统”和“系综”，因为我们根本就不知道“实际上的系统”是什么样子的，而只能讨论系综。于是称纯的系综处于\textbf{纯态}，混合系综处于\textbf{混合态}。
+相应的，凡是不能够从密度算符中读取得到的信息，我们一概不讨论，因为这些信息不能从系综中读出来。
+
+\subsubsection{时间演化}
+
+下面我们分析密度算符的时间演化。我们将只讨论不显含时间的物理量。为了一般性，首先在相互作用绘景下分析问题。此时
+\[
+    \ii \hbar \dv{t} \ket{\psi^I} = \hat{H}_i^I \ket{\psi^I},
+\]
+由于系统和环境的演化可认为是彼此独立的，于是系统-环境的时间演化算符是系统的时间演化算符和环境的时间演化算符的直积，两者均为幺正算符，从而随着时间演化，$c_i$不会变化。
+另一方面，如果两个态在某一个时刻不同，那么它们不会在某一个连续的时间区间内处处相同；
+既然$P(\ket{\text{sys-env}_l})$是通过系综中相同的态的个数除以总个数算出来的，显然我们有
+\[
+    P_{t_1} (\ket{\text{sys-env}_l (t_1)}) = P_{t_2} (\ket{\text{sys-env}_l (t_2)}).
+\]
+于是以下我们略去$P$的时间下标以及其括号内的时间标记，因为这个参数对$P$而言没有意义。
+因此$P(\ket{\psi_i})$恒定不变。
+这样可以推导出
+\begin{equation}
+    \dv{\hat{\rho}^I}{t} = \frac{1}{\ii \hbar} \comm*{\hat{H}_i^I}{\hat{\rho}^I}.
+\end{equation}
+请注意这个方程的对易子和算符运动方程的对易子是反的。
+由此，我们顺带得出了薛定谔绘景中的密度算符演化方程
+\begin{equation}
+    \dv{\hat{\rho}^S}{t} = \frac{1}{\ii \hbar} \comm*{\hat{H}^S}{\hat{\rho}^S},
+    \label{eq:quantum-liouville}
+\end{equation}
+以及海森堡绘景中的密度算符演化方程
+\begin{equation}
+    \hat{\rho}^H = \const.
+\end{equation}
+请注意这些方程在$\hbar \to 0$时退化为经典统计力学中的刘维尔方程，因此称其为\textbf{量子刘维尔方程}。
+
+为方便起见，我们将薛定谔绘景和相互作用绘景之间的关系罗列如下：
+做哈密顿量的分解
+\begin{equation}
+    \hat{H}^S = \hat{H}_0 + \hat{H}_i^S,
+\end{equation}
+则
+\begin{equation}
+    \ket{\psi^I(t)} = \hat{U}_0^\dagger(t,t_0) \ket{\psi^S(t)},
+\end{equation}
+从而密度算符的切换关系为
+\begin{equation}
+    \hat{\rho}^I = \hat{U}_0^\dagger(t,t_0) \hat{\rho}^S \hat{U}_0(t,t_0),
+\end{equation}
+可观察量的切换关系为
+\begin{equation}
+    \hat{A}^I = \hat{U}_0^\dagger(t,t_0) \hat{A}^S \hat{U}_0(t,t_0),
+\end{equation}
+其中
+\begin{equation}
+    \hat{U}_0 = T \exp \left( - \frac{\ii}{\hbar} \int_{t_0}^t \dd{t} \hat{H}_0 \right),
+\end{equation}
+当$\hat{H}_0$不含时时就是简单的
+\begin{equation}
+    \hat{U}_0 = \ee^{-\frac{\ii}{\hbar} (t-t_0) \hat{H}_0}.
+\end{equation}
+
+系综达到平衡，也就是说，各个物理量出现的概率都不再发生任何变化的时候，意味着密度算符不变，这又等价于
+\begin{equation}
+    [\hat{\rho}, \hat{H}] = 0.
+    \label{eq:equilibrium-case}
+\end{equation}
+这个方程的成立不依赖于绘景。如果$\hat{H}$不显含时间（系统能够达到平衡通常意味着这一点），那么平衡时的$\hat{\rho}$就和绘景选取无关。
+
+迹运算和很多其它的运算不依赖于具体的基矢量，因此它们在绘景变换下不变。
+
+\subsubsection{密度算符的性质}
+
+现在来分析密度算符的性质。为方便起见以下记
+\[
+    P(\ket{\psi_i}) = p_i.
+\]
+首先，
+\[
+    \trace \hat{\rho} = \sum_n \mel{n}{\hat{\rho}}{n} = \sum_n \mel{n}{\sum_i p_i \dyad{\psi_i}}{n} = \sum_{n, i} p_i \braket{n}{\psi_i} \braket{\psi_i}{n},
+\]
+于是
+\begin{equation}
+    \trace \hat{\rho} = 1.
+    \label{eq:trace-of-density-operator}
+\end{equation}
+容易看出导出\eqref{eq:trace-of-density-operator}的论证也可以反过来用。在已知\eqref{eq:trace-of-density-operator}的情况下，可以推知，若$\hat{\rho}$可以被展开为一系列归一化态的叠加
+\[
+    \hat{\rho} = \sum_i \rho_i \dyad{\psi_i},
+\]
+则
+\[
+    \sum_i \rho_i = 1,
+\]
+无论诸$\ket{\psi_i}$是否正交。通常称$\rho_i$为\textbf{分布函数}。
+
+\eqref{eq:trace-of-density-operator}无论是对纯态还是混合态都是成立的。
+然而，$\hat{\rho}^2$的迹却并非如此。对纯态而言
+\[
+    \hat{\rho}^2 = \dyad{\psi} \dyad{\psi} = \dyad{\psi} = \hat{\rho},
+\]
+而对混合态，
+\[
+    \hat{\rho}^2 = \sum_{i, j} p_i p_j \braket{\psi_i}{\psi_j} \dyad{\psi_i}{\psi_j},
+\]
+从而
+\[
+    \begin{aligned}
+        \trace \hat{\rho}^2 &= \sum_n \mel{n}{\sum_{i, j} p_i p_j \braket{\psi_i}{\psi_j} \dyad{\psi_i}{\psi_j}}{n} \\
+        &= \sum_{n, i, j} p_i p_j \braket{\psi_i}{\psi_j} \braket{\psi_j}{n} \braket{n}{\psi_i} \\
+        &= \sum_{i, j} p_i p_j \braket{\psi_i}{\psi_j} \braket{\psi_j}{\psi_i} \\
+        &=  \sum_{i, j} p_i p_j \abs{\braket{\psi_i}{\psi_j}}^2 \\
+        &< \sum_{i, j} p_i p_j = 1 = \trace \hat{\rho}.
+    \end{aligned}
+\]
+上式中我们取小于号而不是小于等于号是因为混合态中诸态不可能全部相互平行。
+总之，$\hat{\rho}$幂等的充要条件是它描述了一个纯态，且
+\begin{equation}
+    \trace \hat{\rho}^2 \begin{cases}
+        = 1, \quad & \text{for pure states}, \\
+        < 1, \quad & \text{for mixed states}.
+    \end{cases}
+    \label{eq:inequality-of-mixed-state}
+\end{equation}
+也就是说密度算符能够提供“纯态还是混合态”的信息。于是可以定义一个密度算符的\textbf{纯度}为
+\begin{equation}
+    \varsigma = \trace \hat{\rho}^2,
+\end{equation}
+它越接近$1$说明系统越接近纯态。
+
+此外很容易看出密度算符是厄米的。如果各个参与态相互正交，那么密度算符的本征值就是对应的本征态出现的概率。
+当然，各个参与态完全可以不正交，但因为我们从密度算符中并不能判断出哪些是参与态，因此总是可以将密度算符使用它自身的本征态展开，不失一般性地假定各个参与态就是密度算符的本征态。
+在各个参与态正交时，可以具体地写出任何一个物理量的期望的公式。我们有
+\[
+    \begin{aligned}
+        \hat{\rho} &= \sum_n P(\ket{n}) \dyad{n}, \\
+        \expval*{\hat{A}} &= \trace \hat{\rho} \hat{A} \\
+        &= \sum_m \mel{m}{\left(\sum_n P(\ket{n}) \dyad{n} \hat{A} \right)}{m} \\
+        &= \sum_{m, n} P(\ket{n}) \braket{m}{n} \mel{n}{\hat{A}}{m}, 
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    \expval*{\hat{A}} = \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
+\end{equation}
+
+如果密度算符能够被对角化，那么实际上可以使用经典概率的观点看待体系：体系出现某个态的概率为多少，出现另一个态的概率为多少。
+密度算符的非对角元则对应着量子纠缠等非经典的结果。
+% TODO：详细说明
+
+\subsubsection{复合系统}\label{sec:combining-systems}
+
+本节将讨论，如果我们已有一个总系统的密度算符，而实际上我们只想讨论其中的一部分的行为，那么要如何写出这个部分的密度算符。
+将系统分成两部分，其中一部分称为系统1，另一部分称为系统2。
+设$\hat{A}$是只和系统1有关的一个算符。记描述系统2的一组基态为$\ket{\chi_i}$；$\ket{\phi_i}$是系统1的一组态，但它们未必满足正交归一化条件。
+则系统的任何一个态均形如
+\[
+    \ket{\psi} = \sum_{i, j} c_{ij} \ket{\phi_i} \ket{\chi_j},
+\]
+也就是说我们使用系统2的基矢量展开整个系统的态。
+从而整个系统的密度算符形如
+\[
+    \hat{\rho} = \sum_k p_k \sum_{i,j} \abs{c_{k,ij}}^2 \ket{\phi_i} \ket{\chi_j} \bra{\phi_i} \bra{\chi_j}
+\]
+请注意所谓的“两个系统”并不一定意味着这是空间上隔离的两个系统——我们只不过是把两个态空间直积而成的态空间中关于两个态空间的信息分别称为系统1和系统2。
+
+现在使用$\hat{A}$对系统1做一次测量，得到$A_i$的概率为
+\[
+    \begin{aligned}
+        P(A_i) &= \sum_{j, k} \bra*{A^{(j)}_i} \bra{\chi_k} \hat{\rho} \ket*{A^{(j)}_i} \ket{\chi_k} \\
+        &= \sum_{j, k, l, m, n} p_l \abs{c_{l, mn}}^2 \braket*{A_i^{(j)}}{\phi_m} \braket*{\phi_m}{A_i^{(j)}} \braket{\chi_k}{\chi_n} \braket{\chi_n}{\chi_k} \\
+        &= \sum_j \mel*{A_i^{(j)}}{\sum_m \left(\sum_{l, n} p_l \abs{c_{l, mn}}^2 \right) \dyad{\phi_m}}{A_i^{(j)}} 
+    \end{aligned}.
+\]
+记
+\[
+    \hat{\rho}_1 = \sum_m \left(\sum_{l, n} p_l \abs{c_{l, mn}}^2 \right) \dyad{\phi_m}.
+\]
+每一项的系数看起来有些复杂，不过请注意
+\[
+    \abs{c_{l, mn}}^2 = P(\ket{\phi_m} \ket{\chi_n} | \ket{\psi_l}),
+\]
+有
+\[
+    \sum_{l, n} p_l \abs{c_{l, mn}}^2 = \sum_{l, n} P(\ket{\psi_l}) P(\ket{\phi_m} \ket{\chi_n} | \ket{\psi_l}) = P(\ket{\phi_m}),
+\]
+也就是说这个系数就是“从系综中随便取一个态做测量结果发现系统1正好就在$\ket{\phi_m}$上”的概率。
+从而我们导出
+\[
+    \hat{\rho}_1 = \sum_m P(\ket{\phi_m}) \dyad{\phi_m}.
+\]
+这个表达式的形式和\eqref{eq:density-operator}一模一样。
+而系统1经过测量得到$A_i$的概率则是
+\[
+    P(A_i) = \sum_j \mel{A^{(j)}_i}{\hat{\rho}_1}{A^{(j)}_i},
+\]
+相应的$\hat{A}$的期望值就是
+\[
+    \begin{aligned}
+        \sum_i A_i P(A_i) &= \sum_{i, j} \mel{A^{(j)}_i}{\hat{\rho}_1 A_i}{A^{(j)}_i} \\
+        &= \sum_{i, j} \mel{A^{(j)}_i}{\hat{\rho}_1 \hat{A}}{A^{(j)}_i} = \trace_1 \left(\hat{\rho}\hat{A}\right),
+    \end{aligned}
+\]
+其中$\trace$的下标1表示我们是在系统1的希尔伯特空间上做迹运算。
+所有这些结果都和\eqref{eq:prop-of-quantity}和\eqref{eq:expectation}完全一致。
+因此我们称$\hat{\rho}_1$为\textbf{约化密度算符}。
+容易验证，它可以由
+\begin{equation}
+    \hat{\rho}_1 = \trace_2 \hat{\rho}
+\end{equation}
+得到。我们说这是把系统2从密度算符中\textbf{迹掉了}，因为上式仅仅对系统2求迹，而保留了关于系统1的信息。
+
+很容易就可以看出，以上推导和\autoref{sec:introduction-of-density-operator}中从纠缠态导出（通常描述了混合态的）密度算符的方式完全一样。
+这是当然的，因为系统1可以和系统2有纠缠，因此人为把系统1孤立出来必然导致\autoref{sec:introduction-of-density-operator}节中的操作。
+
+我们将看到，将系统2迹掉会让密度算符变得更加远离纯态。设我们对系统1和系统2分别有正交归一化基$\{\ket{m^{(1)}}\}$和$\{\ket{n^{(2)}}\}$，将$\hat{\rho}$展开就得到
+\[
+    \hat{\rho} = \sum_{m,n} \rho_{mn} \ket{m^{(1)}} \ket{n^{(2)}},
+\]
+其中的$\rho_{mn}$都是实数，因为密度算符是厄米的。从而
+\[
+    \hat{\rho}^2 = \sum_{m,n} \rho_{mn} \ket{m^{(1)}} \ket{n^{(2)}},
+\]
+\[
+    \trace \hat{\rho}^2 = \sum_{m,n} \rho_{mn}^2.
+\]
+另一方面我们有
+\[
+    \hat{\rho}_1 = \trace_2 \hat{\rho} = \sum_m \left(\sum_n \rho_{mn}\right) \ket{m^{(1)}},
+\]
+同样可以计算出
+\[
+    \trace \hat{\rho}_1^2 = \sum_m \left(\sum_n \rho_{mn}\right)^2,
+\]
+使用不等式
+\[
+    \left(\sum_n \rho_{mn}\right)^2 \leq \sum_n \rho_{mn}^2,
+\]
+我们发现$\hat{\rho}_1$的纯度小于等于$\hat{\rho}$的纯度。
+不等式取到等号的条件是可以把$\rho_{mn}$分解成一个仅仅关于$m$的数和一个仅仅关于$n$的实数的乘积，也即，
+\[
+    \rho_{mn} = \rho^{(1)}_m \rho^{(2)}_n,
+\]
+从而容易看出
+\[
+    \hat{\rho} = \hat{\rho}_1 \otimes \hat{\rho}_2.
+\]
+这意味着什么，我们马上可以看到。
+
+设我们有两个相互独立的系统，称为系统1和系统2。
+所谓相互独立指的是对其中一个系统做某些操作（或者说，让其中一个系统和另一些东西产生相互作用）不影响另一个系统的状态。例如，对其中一个系统做测量不会影响另一个系统的状态。这等价于说两个系统没有量子纠缠。
+设两个系统的密度算符分别为
+\[
+    \hat{\rho}_1 = \sum_i P(\ket*{\psi_i^{(1)}}) \dyad*{\psi_i^{(1)}}, \quad \hat{\rho}_2 = \sum_i P(\ket*{\psi_i^{(2)}}) \dyad*{\psi_i^{(2)}}.
+\]
+现在把系统1和系统2看成同一个系统。实际上，我们是把描述系统1的系综和描述系统2的系综拼成了一个大系综。这个大系综中的态可以写成$\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}$的形式。
+现在使用这一组态对总系统做一次测量，由于系统1和系统2无关，有
+\[
+    P(\ket*{\psi_i^{(1)}} \otimes \ket*{\psi_j^{(2)}}) = P(\ket*{\psi_i^{(1)}}) P(\ket*{\psi_j^{(2)}}),
+\]
+从而，总系统的密度算符就是
+\begin{equation}
+    \hat{\rho} = \hat{\rho}_1 \otimes \hat{\rho}_2.
+    \label{eq:independent-systems-combinition}
+\end{equation}
+反之也容易验证，如果\eqref{eq:independent-systems-combinition}成立，那么设$\hat{H}_1$仅仅作用在系统1上，则
+\[
+    \begin{aligned}
+        \dv{t} \hat{\rho}_1 \otimes \hat{\rho}_2 &= \frac{1}{\ii \hbar} \comm*{\hat{H}_1}{\hat{\rho}_1 \otimes \hat{\rho}_2} \\
+        &= \frac{1}{\ii \hbar} \comm*{\hat{H}_1}{\hat{\rho}_1} \otimes \hat{\rho}_2,
+    \end{aligned}
+\]
+因此对系统1做的操作不影响系统2，反之亦然。
+因此，两个系统独立，当且仅当\eqref{eq:independent-systems-combinition}成立。
+这又等价于，
+\begin{equation}
+    (\trace_2 \hat{\rho}) \otimes (\trace_1 \hat{\rho}) = \hat{\rho}.
+\end{equation}
+
+总之，将总系统的一部分单独抽取出来分析，抽取出来的这部分的密度算符不会比总系统的密度算符更纯；它们的纯度一致，当且仅当被抽取出来的这部分系统和剩余部分彼此独立。
+
+以上讨论导致一个显然的推论。如果一个纯态系统的某些自由度与其它自由度从来不发生相互作用（从而也不可能让这些自由度与其它自由度纠缠起来——见\autoref{note:entangled-states}），那么将这些自由度从密度算符中迹掉之后得到的密度算符还是纯态。
+从希尔伯特空间的角度也可以得到这个结论，因为如果一个纯态系统的某些自由度与其它自由度从来不发生相互作用，那么系统实际上采取的态矢量一定可以写成前面这些自由度确定的一个态矢量和其余自由度确定的一个态矢量的直积。因此两部分自由度可以被分开处理。
+
+\subsubsection{未归一化的密度算符}\label{sec:relative-density-operator}
+
+以上讨论的密度算符在定义时保证了其系数真的就是对应的态出现的概率。有时我们能够比较容易地计算出某个态出现的概率正比于某个值，即只知道
+\begin{equation}
+    P(\ket{\psi_i}) \propto f(\psi_i),
+\end{equation}
+而不容易将它归一化。此时可以定义未归一化的密度算符或者说相对密度算符为
+\begin{equation}
+    \hat{\rho} = \sum_i f(\psi_i) \dyad{\psi_i},
+\end{equation}
+定义\textbf{配分函数}
+\begin{equation}
+    Z = \sum_i f(\psi_i) = \trace \hat{\rho},
+\end{equation}
+则$\hat{\rho} / Z$就是归一化的密度算符。使用这个关系，我们得到期望值公式为
+\begin{equation}
+    \expval*{\hat{A}} = \frac{1}{Z} \trace \left(\hat{\rho} \hat{A}\right) = \frac{\trace \left(\hat{\rho} \hat{A}\right)}{\trace \hat{\rho}},
+\end{equation}
+在参与态为正交归一化基时这就是
+\begin{equation}
+    \expval*{\hat{A}} = \frac{1}{Z} \sum_n P(\ket{n}) \mel{n}{\hat{A}}{n}.
+\end{equation}
+纯度公式为
+\begin{equation}
+    \varsigma = \frac{\trace \hat{\rho}^2}{\trace \hat{\rho}},
+\end{equation}
+越接近1说明态越纯。
+
+\subsection{熵和信息}
+
+宏观上能够观察的量可以分成两类。一类在微观层面具有良定义，其宏观形式就是它的统计平均。这一类量的例子有能量等，它们的计算已经在\eqref{eq:expectation}中给出了。
+还有一类量在微观层面并无明确定义，它们是大量粒子的集体行为涌现出现的结果。这一类物理量也可以通过密度算符得到，但具体方法并没有一定之规。
+本节将讨论一个典型的这种涌现出来的物理量。
+
+设$\hat{\rho}$是归一化的密度算符。首先定义%
+\footnote{关于下式中的$\ln \hat{\rho}$：设算符$\hat{A}$可被谱展开为
+\[
+    \hat{A} = \sum_i A_i \dyad{i},
+\]
+则可以验证，一个解析函数作用在$\hat{A}$上的结果为
+\[
+    f(\hat{A}) = \sum_i f(A_i) \dyad{i}.
+\]
+因此即使函数$f$的性质不那么好，我们也规定上式成立。显然如果$\hat{A}$是厄米的，且$f$是实函数，那么$f(\hat{A})$也是厄米的。
+}%
+\begin{equation}
+    S = - \trace (\hat{\rho} \ln \hat{\rho}) = - \expval*{\ln \hat{\rho}}.
+    \label{eq:von-neumann-entropy}
+\end{equation}
+为\textbf{熵}，或称为\textbf{冯诺依曼熵}来和我们将要看到的另一种熵区分。设密度算符被谱展开为
+\[
+    \hat{\rho} = \sum_n \rho_n \dyad{n},
+\]
+我们只取其中非零的项。那么熵就可以写成分布函数的函数：
+\begin{equation}
+    S = - \sum_n \rho_n \ln \rho_n.
+\end{equation}
+这意味着如果把诸$\ket{n}$一起相同的幺正变换，$S$不变。这就是说，$S$在密度算符做幺正变换时不变，也即
+\begin{equation}
+    S(\hat{\rho}) = S(\hat{U} \hat{\rho} \hat{U}^{-1}).
+\end{equation}
+如前所述，$0 < \rho_n \leq 1$，从而$S \geq 0$。
+
+如果系统处于纯态，那么总是有一个态$\ket{\psi}$使密度算符可以写成
+\[
+    \hat{\rho} = \dyad{\psi},
+\]
+此时$\rho_n$只有一个，且它的值为$1$，从而$S=0$。反之，如果$S=0$，那么所有的$\rho_n$都是1，因此只有一个$\rho_n$且它是1，因此系统处于纯态。
+这意味着熵为$0$是系统处于纯态的充要条件。因此熵可以看成系统偏离纯态的量度，或者说看成“我们对系统有多无知”的量度。
+
+我们已经发现了熵取最小值意味着什么。顺带而来的问题：熵取极大值又意味着什么？我们会看到，这意味着系统达到了平衡态。
+
+设有两个彼此独立的系统，它们各自的密度算符被谱展开为
+\[
+    \hat{\rho}_1 = \sum_i \rho_i^{(1)} \dyad*{i^{(1)}}, \quad \hat{\rho}_2 = \sum_j \rho_j^{(2)} \dyad*{j^{(2)}},
+\]
+从而
+\[
+    \hat{\rho} = \sum_{i,j} \rho_i^{(1)} \rho_j^{(2)} \dyad*{i^{(1)}, j^{(2)}}.
+\]
+组成的总系统的熵为
+\[
+    \begin{aligned}
+        S(\hat{\rho}) &= - \sum_{i, j} \rho_i^{(1)} \rho_j^{(2)} \ln (\rho_i^{(1)} \rho_j^{(2)}) \\
+        &= - \sum_{i, j} \rho_i^{(1)} \rho_j^{(2)} \ln \rho_i^{(1)} - \sum_{i, j} \rho_i^{(1)} \rho_j^{(2)} \ln \rho_j^{(2)} \\
+        &= - \sum_i \rho_i^{(1)} \ln \rho_i^{(1)} - \sum_j \rho_j^{(2)} \ln \rho_j^{(2)} \\
+        &= S(\hat{\rho}_1) + S(\hat{\rho}_2).
+    \end{aligned}
+\]
+也就是说，彼此独立的系统组成的总系统的熵就是组成它的各个系统的熵之和。
+我们只能够得到这个程度的结论：一个系统的熵未必是它的各个子系统的熵之和。
+熵对任何系统的可加性只有在更加特定的情况下才能够成立。
+
+需要注意的是随着各种物理过程的发生，冯诺依曼熵并非在所有情况下都会增长。
+
+\subsection{退化到经典情况}\label{sec:back-to-classical}
+
+% 一些不成熟的想法：很多时候我们使用纯量子的动力学方程来计算诸如跃迁速率之类的东西，而另一方面又把系统状态或者系统出现在某一状态的概率当成纯粹经典的对象来考虑，或许可以将这种看似矛盾的操作当成是在处理一个开放系统：它时不时会被环境测量，从而很少出现叠加态或者纠缠，因此它的每一个时刻的状态都可以认为是经典的；另一方面，测量的频率没有快到出现量子芝诺效应，因此两次测量之间的系统演化却又满足纯粹的薛定谔方程
+
+\subsubsection{半经典的坐标-动量不确定关系}
+
+在我们讨论的问题的尺度（能量变化、空间大小，等等）远大于$\hbar$时——或者等价地说，$\hbar\to 0$时——量子统计就退化为了经典统计。
+此时所有可观察量都近似是对易的，从而系统的态可以使用正则坐标
+\[
+    (x_1, x_2, \ldots, x_n, p_1, p_2, \ldots, p_n)
+\]
+表示。
+
+对纯态，在半经典情况下可以证明这样一个表达式：设$x,p$是一对共轭变量，则
+\begin{equation}
+    \frac{1}{2\pi} \oint p \dd{x} = \hbar \left(n + \frac{1}{2}\right), \quad n = 0, 1, 2, \ldots.
+\end{equation}
+这里$n$是量子态的标记，不同$n$对应不同量子态。在系统规模很大时$n$也很大，从而
+\begin{equation}
+    \oint p \dd{x} \sim 2 \pi \hbar n.
+    \label{eq:phase-cell}
+\end{equation}
+由于等式左边是分析力学中的角变量，是相平面上的闭路积分，这个公式意味着在系统规模很大时，可以这样分析其动力学：使用经典哈密顿力学，但是计算类似于\eqref{eq:phase-cell}这样的积分时应该假定相平面被分成了许多大小为$2\pi \hbar$的格子（所谓\textbf{相格}）。
+在系统有$s$对坐标-动量%
+\footnote{很多时候也说系统有$s$个自由度。自由度这一概念可以有多种意思，它可以表示系统的CSCO的数目，在采取这个定义时$s$对坐标-动量意味着$s$个自由度。有时它也用于表示经典变量的个数，此时$s$个坐标-动量对就会导致$2s$个自由度。}%
+时，单个相格大小为$(2\pi \hbar)^s$。
+由于一个相格对应一个$n$，在$\Delta x \Delta p$的范围内共有
+\begin{equation}
+    \Omega = \frac{\Delta x \Delta p}{(2\pi \hbar)^s}
+\end{equation}
+个彼此独立的量子态。
+
+相格以一种直观的方式展示了量子力学的不确定性原理：实际上我们并不能同时精确地讨论坐标和动量。实际上，在纯态问题中量子力学的不确定性原理的合适的经典图像是相格而不是概率：将相空间分成相格之后系统演化仍然是决定论的，没有任何随机因素，但就是不能同时确定动量和坐标。
+动量越确定，每个相格在动量维上就越窄，相应的在坐标维上就越宽，坐标就越不确定。
+相格的图像不能展示量子力学允许的叠加态——实际上也没有什么经典图像能够很好地展示叠加态。
+
+对混合态，可以将一个系综中的各个系统的纯态（称为\textbf{代表点}，因为它们代表了系统可能的状态；代表点可能有重复）单独地画在相空间当中，并记这些点的密度为$\rho(x, p, t)$，称为\textbf{密度函数}。
+则由经典分析力学的刘维尔定理，有
+\begin{equation}
+    \pdv{\rho}{t} = [H, \rho].
+\end{equation}
+方程右边的方括号指的是经典的泊松括号而不是对易子，因为经典情况下哈密顿量是数。
+可见，密度算符$\hat{\rho}$在量子统计力学中的地位就是经典统计力学中的密度函数。但要注意：$\hbar\to 0$时$\hat{\rho}$和$\rho$之间有线性关系，但是$\hat{\rho}$并不直接退化为$\rho$。
+记$\Gamma$为相空间，则经典统计力学中的物理量期望值就是
+\begin{equation}
+    \expval{A} = \int \dd{\Gamma} \rho A(x, p).
+\end{equation}
+
+\subsubsection{跃迁}
+
+设已知系统在$t_0$时刻处于某状态，使用一组基在$t_1$时刻对系统做测量，显然会发现系统处于这组状态中的某一个。
+由于系统总是受到各种扰动，我们可以认为系统几乎总是位于一组偏好基上，只是由于系统内部的相互作用等时不时从一个状态跳变到了另一个状态，这就称为跃迁。这样，可以使用一个经典的随机过程描述跃迁；量子理论的作用在于计算出跃迁概率。
+计算纯态跃迁几率的方式就是计算散射振幅。对混合态，需要做的就是把不同参与态的散射振幅的平方依概率加起来。设
+\[
+    \hat{\rho} = \sum_i p_i \dyad{i},
+\]
+则
+\[
+    P(A \longrightarrow B) = \sum_i \abs{\mel{i}{\hat{A}^\dagger \hat{S} \hat{B}}{i}}^2.
+\]
+\begin{equation}
+    P(A \longrightarrow B) = \expval*{\hat{A}^\dagger \hat{S} \hat{B}}.
+\end{equation}
+
+在相互作用的强度较弱且相互作用不含时时，有一个计算跃迁概率的规则：\textbf{费米黄金法则}。
+设系统的自由哈密顿量为$\hat{H}_0$，它的一组基矢量为$\{\ket{m}\}$，本征值记为$\{E_m\}$，相互作用哈密顿量为$\hat{H}'$。
+假定相互作用哈密顿量不显含时间。设系统初态为$\ket{m}$，态随时间的演化为
+\[
+    \ket{\psi(t)} = \sum_n a_n(t) \ket{n} \ee^{- \ii E_n t / \hbar},
+\]
+显然$t=0$时除了$a_m=1$以外其它$a$均为零。使用Dyson级数并只计算到一阶，有
+\[
+    \ii \hbar a^{(1)}_k(t) = \sum_n \int \dd{t'} \mel{k}{\hat{H}'}{n} \ee^{\ii \omega_{kn} t'} a_n^{(0)},
+\]
+其中
+\[
+    \omega_{mn} = \frac{E_m - E_n}{\hbar}.
+\]
+$a_n^{(0)}$只在$n=m$时有非零值，且时间演化是从$t'=0$演化到$t'=t$，于是
+\[
+    \begin{aligned}
+        \ii \hbar a^{(1)}_k(t) &= \sum_n \int \dd{t'} \mel{k}{\hat{H}'}{n} \ee^{\ii \omega_{kn} t'} a_n^{(0)} \\
+        &= \mel{k}{\hat{H}'}{m} \frac{\sin \omega_{km} t / 2}{\omega_{km} / 2} \ee^{\ii \omega_{km} t / 2}. 
+    \end{aligned}
+\]
+注意到$m \neq k$时$a_k = a_k^{(1)}$，而$a_k(t)$的模长平方正是$t'=0$时系统状态为$\ket{m}$而$t'=t$时系统经过观测状态为$\ket{k}$的概率，此概率就是所谓的跃迁概率，于是跃迁概率的表达式就是
+\begin{equation}
+    P_k(t) = \frac{4 \abs*{\mel{k}{\hat{H}'}{m}}^2}{\hbar^2} \frac{\sin^2 \omega_{km} t / 2}{\omega_{km}^2}.
+\end{equation}
+现在假如系统实际上是一个开放系统，且诸$\ket{m}$构成一组偏好基，则可以使用一个经典马尔可夫过程来描述系统的演化，而使用经典的态（各个态出现的概率就是$\ket{m}$的振幅的模长平方）描述系统的状态。
+系统每个时刻都有一定概率跃迁，也有一定概率不跃迁而等待下一时刻，此时跃迁速率为
+\begin{equation}
+    \Gamma_k(t) = \dv{P_k}{t} = \frac{2 \abs*{\mel{k}{\hat{H}'}{m}^2}}{\hbar^2} \frac{\sin \omega_{km} t}{\omega_{km}}.
+\end{equation}
+如果我们并不关心系统跃迁到了哪一个态而只关心系统事实上发生了跃迁，那么总跃迁速率为
+\[
+    \Gamma(t) = \sum_k \Gamma_k(t) = \sum_{E_k} \frac{2 \abs*{\mel{k}{\hat{H}'}{m}^2}}{\hbar^2} \frac{\sin \omega_{km} t}{\omega_{km}},
+\]
+如果跃迁之后的能级是连续谱，那么就有
+\[
+    \begin{aligned}
+        \Gamma(t) &= \int \dd{\omega} \hbar \rho(E) \frac{2 \abs*{\mel{k}{\hat{H}'}{m}^2}}{\hbar^2} \frac{\sin \omega t}{\omega} \\
+        &= \frac{2 \abs*{\mel{k}{\hat{H}'}{m}^2}}{\hbar} \int \dd{\omega} \rho(E) \frac{\sin \omega t}{\omega}, 
+    \end{aligned}
+\]
+其中$E = \hbar \omega + \const$，而实际上$\sin \omega t / \omega$是一个非常尖锐的峰，因此可以把态密度$\rho(E)$提到积分号外面，最后计算得到
+\begin{equation}
+    \Gamma(t) = \frac{2\pi}{\hbar} \rho(E) \abs*{\mel{k}{\hat{H}'}{m}^2}.
+\end{equation}
+这样，如果我们有数目巨大的一系列完全相同的系统，总数为$N$，它们之间相互影响很小，那么在$\dd{t}$时间内，发生跃迁的系统的数目几乎确定为$N \Gamma(t) \dd{t}$。
+因此可以列出某个状态的系统的数目服从的微分方程。
+
+% TODO:在系统足够大时，跃迁概率中的态密度实际上可以使用态密度期望值代替
+
+\section{噪声、扰动和主方程}
+
+\subsection{主方程}
+
+% TODO:环境退相干、对角化的密度算符等价于经典概率、偏好基，即密度算符在某些基下几乎总是对角化的。经典概率的图景下我们可以讨论“这个能级上有多少电子”，等等，而不必考虑叠加态。
+% 退相干只发生在有限温情况下（原则上宇宙波函数永远是纯态，会出现退相干必定意味着我们把一些我们不想要的自由度迹掉了）
+% 纯态的态矢量本身并不能被赋予概率诠释：随机性是在测量时引入的。经典概率是用于描述对角化的密度算符的；那些非对角的部分对应的半经典理论不是概率，而是相空间上的相格；不确定性不是通过概率展现出来的，而是通过不对易的量不同时具有完全确定的值而只能够大致确定“它们在哪个相格中”展示出来的
+
+% TODO：环境充分大时，可以使用一个非厄米哈密顿量描写系统，其中会有噪声算符
+
+% TODO:随机过程和轨道。
+% $P(\text{event $A$ occurs at $t$})=P_t(\text{event $A$ occurs})$，前者定义为“所有$A$发生在时间$t$处的轨道总数除以轨道总数”，后者定义为“时间$t$处，$A$发生的概率”，由定义两者相等。
+
+\end{document}
