@@ -1,0 +1,168 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\integers}{\mathbb{Z}}
+\newcommand*{\reals}{\mathbb{R}}
+
+\newcommand*{\diff}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+\DeclareMathOperator{\exception}{\mathbb{E}}
+
+% \renewenvironment{itemize}{\begin{compactitem}}{\end{compactitem}}
+% \renewenvironment{enumerate}{\begin{compactenum}}{\end{compactenum}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{计算和信息论}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+符号规定：以下如无特殊说明，$\log$以$2$为底。这是不重要的，实际上完全可以使用别的底。
+
+\section{经典信息论}
+
+\subsection{信息熵及其衍生概念}
+
+\subsubsection{香农信息熵}
+
+我们知道，密度算符$\hat{\rho}$的冯诺依曼熵为
+\begin{equation}
+    S = - \trace (\hat{\rho} \ln \hat{\rho}),
+\end{equation}
+在经典情况下——也就是密度算符在某一组基底下始终是对角的，这通常是因为环境扰动导致了一组偏好基——密度算符就可以完全使用随机变量表示，而做一次观测就是从随机变量中做一个抽样。
+设有离散型随机变量$X \sim p(x)$是某个系统的密度算符在经典情况下对应的随机变量，我们称它为\textbf{信源}。我们需要衡量这个随机变量携带的信息量，或者说，这个随机变量的值如果能够确定，我们可以收到多少信息。
+所谓信息，就是不确定性的消除，因此我们只需要衡量这个随机变量有多混乱（也即，这个随机变量的值确定之后能够消除多少混乱），就衡量了它能够提供的信息。
+这种混乱程度称为\textbf{信息熵}，它是随机变量$X$的不同取值的概率的函数，即
+\[
+    H = S(p_1, p_2, \ldots).
+\]
+具体每个$p_i$对应的$X_i$的值实际上不那么重要，因为最关键的显然是这些值能够彼此区分开来；两个$m$元集合之间可以建立一个一一对应，而直觉上它们的信息量肯定是一样的。
+我们下面使用
+\[
+    H_m (p_1, p_2, \ldots, p_m)
+\]
+表示一个有$m$个不同的可能取值，第$i$个取值的概率为$p_i$的随机变量的信息熵。
+
+当然，可以直接从玻尔兹曼熵推导出（经典的）信息熵，但是也可以通过公理化方法。
+我们要求信息熵满足以下条件：
+\begin{enumerate}
+    \item 连续性，即$S$对各个$p_i$都是连续的。
+    \item 在等概率时，即如果$X$有$N$个取值，每个取值的概率是$1/N$时，$N$越大$S$越大（这是很合理的，因为涉及越长的编码的随机变量携带的信息显然越多）。
+    \item 可加性，这个性质叙述起来比较麻烦。我们把$m$个可能的结果分到$n$个不交集合中，用$I_s$表示第$s$个集合。
+    显然，“观察结果落在$I_s$中”的概率为
+    \[
+        P(I_s) = \sum_{i \in I_s} p_i,
+    \]
+    且我们将集合$I_s$中的可能结果放在一起，做成一个新的随机变量，则其概率分布为
+    \[
+        p_{s, i} = \frac{p_i}{P(I_s)} = \frac{p_i}{\sum_{i \in I_s} p_i}.
+    \]
+    我们当然可以固定$s$，使用$p_{s, i}$计算信息熵，并且非常合理地，我们会要求信息熵是线性可加的，即
+    \begin{equation}
+        H_m(p_1, \ldots, p_m) = \sum_s P(I_s) H_{\left\| I_s \right\|} (\{p_{s, i} | i \in I_s \}).
+    \end{equation}
+\end{enumerate}
+满足以上条件的信息熵定义，差一个常数因子，可以唯一确定为
+\begin{equation}
+    H(X) = - \sum_{\text{possible } x} p(x) \log p(x).
+\end{equation}
+很容易看出这就是玻尔兹曼熵的特例。$H(X)$不小于零，且当且仅当毫无随机性，即可以找到一个$i$使得$p_i=1$时，$H(X)=0$。
+
+\subsubsection{联合熵、条件熵、互信息}
+
+实际问题中涉及的信源肯定不止一个，从信息熵出发可以定义很多衡量两个信源之间的关系。
+首先可以定义\textbf{联合熵}$H(X, Y)$，它是两个信源的笛卡尔积$(X, Y)$的信息熵，计算公式为
+\begin{equation}
+    H(X, Y) = - \sum_{x, y} p(x, y) \log p(x, y),
+\end{equation}
+且非常合理地，可以验证$H(X, Y) = H(Y, X)$。
+假设我们首先从$X$那里获得了一些信息，然后又从$Y$那里获得了一些信息%
+\footnote{在这里以及之后，如无特殊说明都假定$X, Y$等信源在两次观察之间没有发生时间演化。}%
+，则从$X$那里获取的信息量为$H(X)$而先从$X$再从$Y$那里获得信息之后获得的信息量为$H(X, Y)$，则“从$X$那里获得信息后，再从$Y$那里获得的额外的信息量”——也即\textbf{条件熵}——为
+\begin{equation}
+    H(Y|X) = H(X, Y) - H(X),
+\end{equation}
+根据条件概率的定义马上可以得到
+\begin{equation}
+    H(Y|X) = - \sum_{x, y} p(x, y) \log p(y|x).
+\end{equation}
+此外，很容易看出无论条件熵还是联合熵都大于等于零，且
+\begin{equation}
+    0 \leq H(X|Y) \leq H(X),
+\end{equation}
+当且仅当$X$和$Y$分布独立时取右边等号（即知道$Y$后再测量$X$获得的纯粹就是$X$的信息），当且仅当存在双射函数$g$使得$X=g(Y)$时取左边等号（即$X$提供的信息就是$Y$提供的信息，知道$Y$后再测量$X$获得不了任何新的信息）。
+
+条件熵和联合熵都是在分析“总的信息量”。如果我们只想知道一个信源——比如说$X$——提供的信息，那么在尚未从$Y$获得信息时，单独观测$X$能够获得信息$H(X)$，而从$Y$获得信息之后，再观测$X$获得的信息就是$H(X|Y)$，从而$Y$提供的关于$X$的信息就是
+\begin{equation}
+    I(X;Y) = H(X) - H(X|Y) = H(X, Y) - H(X|Y) - H(Y|X),
+\end{equation}
+称为\textbf{互信息}。显然
+\begin{equation}
+    I(X;Y) = I(Y;X),
+\end{equation}
+且由于
+\[
+    0 \leq H(X|Y) \leq H(x),
+\]
+我们有
+\begin{equation}
+    0 \leq I(X;Y) \leq \min(H(X), H(Y)),
+\end{equation}
+当且仅当$X$和$Y$独立时取左边等号（即$X$和$Y$对确定对方的信息毫无作用），当且仅达存在双射函数$g$使得$X=g(Y)$时取右边等号，此时
+\[
+    H(X) = H(Y).
+\]
+
+\subsubsection{编码和比特}
+
+如果信源$X$可以被一个单射映射到信源$Y$上，我们就说$Y$\textbf{编码}了$X$。编码的概念是直观上非常合理的。当然，如果$X$和$Y$之间能够建立一一对应，那么它们的信息量就是完全一样的；反之，$Y$中就含有\textbf{冗余信息}，此时$Y$的信息熵大于$X$的信息熵。
+总之，如果$H(Y) \geq H(X)$，那么$Y$就可以编码$X$，否则不行。
+% TODO:这里缺乏一个反向的论证，即是否任意两个集合之间都可以建立某种映射；可能涉及一些集合论比较tricky的地方
+
+我们下面寻找一种非常简单，具有非常良好的性质，然而又足够普适的编码方案。设$X$是$N$个取值的随机变量，那么就有
+\[
+    H(X) = - \sum_{i=1}^N p_i \log p_i, \quad \sum_i p_i = 1,
+\]
+容易验证让$H(X)$最大的选择是让所有事件都是等可能的，此时
+\begin{equation}
+    H(X) = \log N.
+\end{equation}
+进一步，我们假定
+\[
+    N = 2^M,
+\]
+那么$X$又可以编码为一系列彼此独立的二值随机变量的积，每一个事件都可以写成$100110\cdots$的形式，且
+\[
+    H(X) = M.
+\]
+如果不以$2$为底数上式需要乘上一个因子。现在我们看到了信息熵在编码上的含义：如果$X$可以使用$M$个彼此独立的二值随机变量（称为$n$个\textbf{比特}）的积编码，那么它的信息量就是$M$。
+一般情况下，$X$的信息量不会是一个整数，设
+\[
+    M < H(X) < M+1,
+\]
+则$M$个比特不足以编码$X$，$M+1$个比特足以编码$X$但是会有冗余。
+
+\end{document}
