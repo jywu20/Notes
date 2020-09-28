@@ -42,6 +42,8 @@
 \newrefformat{fig}{图\ref{#1}}
 \renewcommand{\autoref}{\prettyref}
 
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
 \title{经典电动力学常见问题}
 \author{吴何友}
 
@@ -65,19 +67,6 @@
     \right.
     \label{eq:maxwell-eq}
 \end{equation}
-从以上方程可以推导出电荷输运方程
-\begin{equation}
-    \pdv{\rho}{t} + \div{\vb*{j}} = 0,
-    \label{eq:charge-transportation}
-\end{equation}
-以及场满足的波动方程
-\begin{equation}
-    \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = - \curl{\vb*{j}}.
-\end{equation}
-麦克斯韦方程本身没有给出电荷的动力学，但是它确实给出了一个守恒荷。
-
-\subsection{不同单位制下的麦克斯韦方程}
-
 在\concept{国际单位制}下，我们有
 \begin{equation}
     \left\{
@@ -90,6 +79,26 @@
     \right.
     \label{eq:maxwell-eq-si}
 \end{equation}
+以下如无特殊说明，均使用国际单位制。
+
+从以上方程可以推导出电荷输运方程
+\begin{equation}
+    \pdv{\rho}{t} + \div{\vb*{j}} = 0,
+    \label{eq:charge-transportation}
+\end{equation}
+以及场满足的波动方程
+\begin{equation}
+    \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} - \laplacian{\vb*{E}} = - \frac{1}{\epsilon_0} \grad{\rho} - \mu_0 \pdv{\vb*{j}}{t} , \quad \frac{1}{c^2} \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = \mu_0 \curl{\vb*{j}},
+    \label{eq:wave-eq-general}
+\end{equation}
+其中
+\begin{equation}
+    \frac{1}{c^2} = \epsilon_0 \mu_0
+\end{equation}
+为\concept{光速}，实际上就是电磁波传播的速度。
+麦克斯韦方程本身没有给出电荷的动力学，但是它确实给出了一个守恒荷。
+
+本文讨论的都是经典电动力学，在其中，电场和磁场既是物理量又标记了系统的状态，因此有时候它们看起来像量子理论中的算符，有时候看起来像某种波函数，这都是合理的。
 
 \section{真空中的解}
 
@@ -97,14 +106,188 @@
 
 \subsubsection{静电学}
 
-首先考虑\concept{静电}的情况，此时没有任何电流，从而每一点的电荷密度都不发生任何变化。这样我们就发现
+首先考虑\concept{静电}的情况。所谓“静电”指的是系统中没有任何电流的情况，此时我们有$\div{\vb*{j}}=0$，从而电荷密度分布没有变化。
+注意我们没有使用“电荷密度没有变化”作为定义，因为恒稳电路也具有这样的性质，但是与此同时的确有电荷流动。
+在静电的条件下我们有
+\[
+    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t}, \quad \curl{\vb*{B}} = \mu_0 \epsilon_0 \pdv{\vb*{E}}{t},
+\]
+然后我们会发现磁场$\vb*{B}$满足一个波动方程。看起来这非常奇怪，因为在根本没有电流的时候磁场怎么会存在呢？
+这实际上是来自边界条件的不清晰。在处理电磁波时我们并不要求无穷远处场强衰减至零，因为我们实际上是认为电磁波由非常远的地方的一个源产生的，没完没了地传播到其它地方，从而处理电磁波时“无穷远处”有源是完全可以的。
+在静电学中我们要求电荷约束在一个有限的范围内，从而无穷远处场强快速衰减，那么磁场满足的波动方程如果要有非平凡解，只能取类似球面波的形式，但是这样一来$\div{\vb*{B}}$会不为零，和磁场无源的条件违背。
+总之，在静电学情况下$\vb*{B}=0$。于是我们就有静电学方程
+\begin{equation}
+    \div{\vb*{E}} = \frac{\rho}{\epsilon_0}, \quad \curl{\vb*{E}} = 0,
+    \label{eq:static-e-field}
+\end{equation}
+或者
+\begin{equation}
+    \vb*{E} = - \grad{\phi}, \quad \laplacian{\phi} = - \frac{\rho_0}{\epsilon_0}.
+    \label{eq:static-phi-field}
+\end{equation}
+这是拉普拉斯方程，有现成的解法，即
+\begin{equation}
+    \phi(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
+    \label{eq:from-q-to-phi}
+\end{equation}
 
+\subsubsection{静磁学}
+
+和静电学类似，我们可以考虑恒定电流的情况，即虽然有电流但是没有任何电荷变化，电流强度也不变的情况，则由输运方程有$\div{\vb*{j}}=0$。
+我们可以直接引用\eqref{eq:wave-eq-general}，得到
+\[
+    \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} - \laplacian{\vb*{E}} = - \frac{1}{\epsilon_0} \grad{\rho} , \quad \frac{1}{c^2} \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = \mu_0 \curl{\vb*{j}},
+\]
+由于$\rho$和$\vb*{j}$都不随时间变化，如果我们像在静电学中一样，要求无穷远处场强衰减足够快，那么以上两式可以直接化为静态的拉普拉斯方程
+\[
+    \laplacian{\vb*{E}} = \frac{1}{\epsilon_0} \grad{\rho}, \quad \laplacian{\vb*{B}} = - \mu_0 \curl{\vb*{j}}.
+\]
+由于$\vb*{B}$不会变化，我们直接得到\eqref{eq:static-e-field}，于是就可以求解出电场。
+至于$\vb*{B}$，引入磁矢势，就得到
+\[
+    \curl{\laplacian{\vb*{B}}} = - \mu_0 \curl{\vb*{j}},
+\]
+那么只需要取库伦规范$\div{A}=0$就可以有
+\[
+    \div{\laplacian{\vb*{B}}} = - \mu_0 \div{\vb*{j}}
+\],
+于是就得到
+\begin{equation}
+    \vb*{B} = \curl{\vb*{A}}, \quad \laplacian{\vb*{A}} = - \mu_0 \vb*{j}.
+\end{equation}
+这个方程的形式和\eqref{eq:static-phi-field}非常相似，也是拉普拉斯方程，从而直接可以写出
+\begin{equation}
+    \vb*{A}(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
+    \label{eq:from-j-to-a}
+\end{equation}
+
+总之，在电荷分布不变、电流分布不变的情况下，电场可以用$\rho$表示出来，并且是无旋场；磁场可以用$\vb*{j}$表示出来。这分别称为静电学和静磁学。
 
 \subsection{李纳-维谢尔势}
 
 \subsection{电磁波}
 
 \section{介质和边界条件}
+
+\subsection{介质作用}
+
+\eqref{eq:maxwell-eq-si}常常被称为“真空中的麦克斯韦方程”，但是实际上它当然是什么地方都适用的。
+介质起作用的方式是，其内部已经有一个电荷分布，当外加电场的时候电荷重新排列、发生运动，在此过程中产生额外的电流、电场、磁场。
+于是假定电荷和电流可以做以下分解：
+\[
+    \left\{
+        \begin{aligned}
+            &\vb*{j} = \vb*{j}_\text{f} + \vb*{j}_\text{r}, \quad \rho = \rho_\text{f} + \rho_\text{r}, \\
+            &\pdv{\rho_\text{f}}{t} + \div{\vb*{j}_\text{f}} = 0, \\
+            &\pdv{\rho_\text{r}}{t} + \div{\vb*{j}_\text{r}} = 0
+        \end{aligned}
+    \right.
+\]
+其中$\vb*{j}_\text{f}$是所谓的自由电流，而$\vb*{j}_\text{r}$是介质的响应。但是这种二分法实际上很大程度上是任意的。
+例如，金属能导电，因为其内部含有大量几乎是自由的电子——那么，外加电场产生的金属中的电流就应该是自由电流了；
+但是分析金属的光学属性的时候，这些由于外加电场产生的电流又无疑是介质的响应。
+因此$\vb*{j}_\text{f}$和$\vb*{j}_\text{r}$只是辅助量，没有特殊的物理含义。
+为了能够将$\vb*{j}_\text{f}$和$\vb*{j}_\text{r}$整合进两个形式上和电场和磁感应强度很像的辅助量，
+从而在形式上让\eqref{eq:maxwell-eq-si}变成一个只和自由电荷和自由电流有关的方程组，我们进一步做下面的分解：
+\[
+    \vb*{j}_\text{r} = \vb*{j}_\text{s} + \vb*{j}_\text{c}
+\]
+且$\vb*{j}_\text{c}$是一个有旋无源场。光有这个条件不足以在给定$\vb*{j}_\text{r}$时唯一地确定下$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$，
+因此还可以引入一个假设而不至于让$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$无解。
+为了让\eqref{eq:maxwell-eq-si}中第一式的右边只剩下自由电荷，做以下假定，引入\concept{极化强度}$\vb*{P}$：
+\[
+    \rho_\textbf{r} = - \div{\vb*{P}}
+\]
+这个假设\emph{没有}缩小$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$的选择范围，因为任意给定性质足够良好的$\rho_\text{r}$，相对应的$\vb*{P}$总是存在的（而且显然不唯一）。
+同时由于$\vb*{j}_\text{c}$是一个有旋无源场，可以再引进一个辅助量$\vb*{M}$（称为\concept{磁化强度}）使
+\[
+    \vb*{j}_\text{c} = \curl{\vb*{M}}
+\]
+此时$\rho_\text{r}$的输运方程成为
+\[
+    \pdv{\rho_\text{r}}{t} + \div{\vb*{j}_\text{s}} = 0
+\]
+因为$\curl{\vb*{j}_\text{c}}$的散度为零。这个式子又可以写成
+\[
+    \div{\left(\vb*{j}_\text{s}-\pdv{\vb*{P}}{t}\right)} = 0
+\]
+受到这个式子的启发，我们\emph{假设}（不是推出，因为光有上式不能定解，而先前我们只对$\vb*{j}_\text{c}$做过假设而没有对$\vb*{j}_\text{s}$做过假设，因此后者的取值仍然是任意的）有
+\[
+    \vb*{j}_\text{s} = \pdv{\vb*{P}}{t}
+\]
+这个假设不会让$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$无解。
+
+将以上引入的所有物理量代入\eqref{eq:maxwell-eq-si}，得到
+\[
+    \begin{bigcase}
+        \epsilon_0 \div{\vb*{E}} &= \rho_\text{f} - \div{\vb*{P}}, \\
+        \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\frac{\vb*{B}}{\mu_0}} &= \vb*{j}_\text{f} + \curl{\vb*{M}} + \pdv{\vb*{P}}{t} + \epsilon_0 \pdv{\vb*{E}}{t}
+    \end{bigcase}
+\]
+引入辅助量$\vb*{D}$和$\vb*{H}$（分别称为\concept{电位移矢量}和\concept{磁场强度}）
+\begin{equation}
+    \vb*{D} = \epsilon_0 \vb*{E} + \vb*{P}, \quad \vb*{H} = \frac{\vb*{B}}{\mu_0} - \vb*{M},
+\end{equation}
+就得到了
+\begin{equation}
+    \begin{bigcase}
+        \div{\vb*{D}} &= \rho_\text{f}, \\
+        \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\vb*{H}} &= \vb*{j}_\text{f} + \pdv{\vb*{D}}{t}
+    \end{bigcase}
+    \label{eq:maxwell-material}
+\end{equation}
+这就是\concept{介质中的麦克斯韦方程}。
+
+方程组\eqref{eq:maxwell-material}除去了\eqref{eq:maxwell-eq-si}中由于介质产生的电荷密度和电流密度，形式上更加简洁，
+但是即使在自由电荷密度和电流密度已经给定的情况下，只靠\eqref{eq:maxwell-material}本身也没有办法定解，因为未知数太多了。
+考虑到从$\vb*{E}, \vb*{B}$到$\vb*{D}, \vb*{H}$的变换是线性的，这就意味着\eqref{eq:maxwell-eq-si}在自由电荷密度和电流密度已经给定的情况下其实也不能定解。
+这是理所当然的，因为到现在为止我们没有真的描述介质如何响应自由电荷。
+
+下面的问题是，在自由电荷密度和电流密度已经给定的情况下，增加什么方程能够让\eqref{eq:maxwell-material}定解？
+当然，只要知道了从$\vb*{E}, \vb*{B}$到$\vb*{D}, \vb*{H}$的变换的具体计算式（而不是显含$\vb*{j}_\text{r}$的定义式）
+就能够定解。
+更进一步，在什么都不知道，只有初始条件和边界条件的情况下，怎样能够让\eqref{eq:maxwell-material}定解？
+只需要增补$\vb*{j}_\text{f}$和$\vb*{E}$的显式关系，以及输运方程
+\begin{equation}
+    \pdv{\rho_\text{f}}{t} + \div{\vb*{j}_\text{f}} = 0
+    \label{eq:transportation}
+\end{equation}
+就能够定解。
+
+因此要求解出介质中的电磁场变化情况，首先需要\emph{物理方程}\eqref{eq:maxwell-material}，
+然后是\emph{本构关系}也就是$\vb*{D}$，$\vb*{H}$，$\vb*{j}_\text{f}$关于其他量的表达式，最后是\emph{几何关系}\eqref{eq:transportation}，
+再加上适当的边界条件和初始条件，就能够定解。
+
+关于本构关系实际上有一个问题，就是从$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$到$\vb*{D}$和$\vb*{H}$是不是真的有一个函数关系。
+如果相同的$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$实际上对应着不同的系统状态，那就糟糕了。
+但是在经典电动力学中$\vb*{E}$，$\vb*{B}$是仅有的场，而如果对$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$加上足够的限制，总是可以使用$\vb*{j}_\text{f}$确定下整个$\vb*{j}$的分布，从而$\rho$的分布，因此$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$能够完全确定系统状态，从而本构关系总是可以写出来的。
+
+\subsection{线性介质}
+
+如果$\vb*{D}$和$\vb*{E}$、$\vb*{H}$和$\vb*{B}$之间的关系是线性的，那么这样的介质就是\concept{线性介质}。
+最一般的关系是
+\begin{equation}
+    \vb*{D}(\vb*{r}, t) = \int \dd[3]{\vb*{r}} \dd{t} \vb*{\epsilon}(\vb*{r} - \vb*{r}', t - t') \vb*{E}(\vb*{r}', t'), \quad
+    \vb*{B}(\vb*{r}, t) = \int \dd[3]{\vb*{r}} \dd{t} \vb*{\mu}(\vb*{r} - \vb*{r}', t - t') \vb*{H}(\vb*{r}', t').
+\end{equation}
+当然，总是可以做傅里叶变换将上式切换到频域空间。
+
+真空是一种典型的线性介质。
+
+电偶极子的图像、分子电流的图像
+
+\subsection{边界条件}
+
+当两个介质被贴在一起时，实际上出现了三层介质结构：两层原来的介质，一层过渡层。
+通常我们并不在乎过渡层内部的细节，而只是
+
+\begin{equation}
+    \vb*{n} \cdot 
+\end{equation}
 
 \section{静电学}
 
@@ -134,10 +317,10 @@
 \]
 其中$\vb*{G}_{E, \rho}$是一个矢量而$\vb*{G}_{E, \partial_t j}$是一个二阶张量。
 第二项前面的负号是为了体现电场总是倾向于削弱电流变化，即楞次定律。
-最后，考虑到
-\[
+最后，假定电流对电场和非电场力的响应是线性的，即
+\begin{equation}
     \vb*{j} = \vb*{\sigma} \cdot (\vb*{E} + \vb*{K}),
-\]
+\end{equation}
 我们有
 \[
     \vb*{j}(\vb*{r}, t) = \vb*{\sigma}(\vb*{r}) \cdot \left( \vb*{K}(\vb*{r}, t) + \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \rho}(\vb*{r}, \vb*{r}') \rho(\vb*{r}', t) - \int \dd[3]{\vb*{r}'} \vb*{G}_{E, \partial_t j}(\vb*{r}, \vb*{r}') \cdot \pdv{\vb*{j}(\vb*{r}', t)}{t} \right),
@@ -150,7 +333,7 @@
 其中$\vb*{\rho}$是电阻率张量，它是$\vb*{\sigma}$的逆。
 可以看到：
 \begin{itemize}
-    \item \eqref{eq:circuit-eq}的右边是外部激励，这对应\concept{电源}；
+    \item \eqref{eq:circuit-eq}的右边是外部激励，这对应\concept{电源}，其余元件，相应地，可以称为\concept{用电器}；
     \item 左边第一项来自静电力，即电荷堆积在某处会影响电场，这种现象就是\concept{电容}，请注意从电荷到电场分布的关系和静电学完全一致；
     \item 左边第二项是电流产生磁场，磁场又产生感生电场的结果，如果我们研究的一部分$\vb*{j}$是给定的，那么这一部分$\vb*{j}$也可以认为是产生一个一个感生电源，这种现象就是\concept{电感}，同样，从电流到磁场的关系也和静磁学一样；
     \item 左边第三项来自$\vb*{j}$和$\vb*{E}$的线性关系，也就是来自\concept{电阻}。
@@ -158,7 +341,18 @@
 
 在一般的变化的电磁场中，由于$\vb*{E}$的有旋部分依赖于$\vb*{B}$而$\vb*{B}$又以一种非常复杂的方式依赖于$\vb*{E}$，“电压”的概念用处不大。
 但在\eqref{eq:circuit-eq}中，虽然$\vb*{E}$显然有有旋部分（电感导致的结果），但是由于$\vb*{B}$被假定可以瞬时地被$\vb*{j}$确定，实际上电感导致的那部分$\vb*{E}$是完全可以写成电流的导数的函数的，从而电感导致的无非是一个“感生电动势”而已。
-因此在电路理论中，虽然我们要讨论变化的电磁场，（满足基尔霍夫电压方程的）电压的概念仍然是有用的。
+因此在电路理论中，虽然我们要讨论变化的电磁场，（满足基尔霍夫电压方程的）电压的概念仍然是有用的，虽然将什么量当成电压仍然不确定。实际上，“电压”此时是可以胡乱定义的，因为唯一将电流和电场、磁场联系起来的有意义的方程是
+\[
+    \vb*{j} = \vb*{\sigma} \cdot (\vb*{E} + \vb*{K}),
+\]
+在其中$\vb*{K}$和$\vb*{E}$是完全等价的，那么把其中一部分的线积分称为电压，把其中另一部分的线积分称为电动势，不会有任何影响。
+一般来说我们有这样几种选择：
+\begin{enumerate}
+    \item 要求“电压等于电流乘以电阻”成立，则电容、电感、电源全部当成电动势，即将电容和电感等效为电源。
+    \item 要求“电压是静电场的线积分”，则电感、电源被当成电动势。
+    \item 要求“电压就是和电源平衡的物理量”，即直接要求$U=\mathcal{E}$，即将电容、电感都当成用电器。
+\end{enumerate}
+这三种选择其实无非是将\eqref{eq:circuit-eq}的各项在等号左右移动罢了。
 
 辅以适当的边界条件和初始条件，\eqref{eq:circuit-eq}给出了电路系统的全部性质——一个电路系统完全由电容、电阻、电感，以及初始条件和外界激励确定。
 此外，求解它也是可行的，因为虽然\eqref{eq:circuit-eq}中出现了遍及全空间的积分，看起来非常复杂，但是既然我们假定磁场局限在很小的范围内，而能够约束磁场的边界条件往往也能约束电，那么其实这些积分也局限在相比于波长很小的范围内。

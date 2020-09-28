@@ -679,16 +679,19 @@ $\mu$给出了有粒子填充的最高能级，称为\concept{费米能级}，�
     \label{eq:fermi-liquid-energy}
 \end{equation}
 其中$\var{n}$表示准粒子数目相对基态的变化。
-取到二阶项，因为一些微扰论计算表明前两项有时是同阶的，后面的高阶项（对应多体相互作用）则可以略去；把能量写成粒子数的函数假定了自旋守恒。
-也可以从另一个角度看\eqref{eq:fermi-liquid-energy}的导出。我们知道由于相互作用的存在，总能量$E$肯定不是单粒子哈密顿量（比如说$k^2/2m$这种形式）的期望值简单加起来的结果，但是显然能量具有可加性，那么应该能够写出
+取到二阶项，因为前两项有时是同阶的，后面的高阶项（对应多体相互作用）则可以略去（具体为什么马上可以看到）；把能量写成粒子数的函数假定了自旋守恒。
+对动量做求和化积分，就得到
+\begin{equation}
+    \frac{\var{E}}{V} = \underbrace{\sum_{\sigma} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1} / V} + \underbrace{\frac{1}{2} \sum_{\sigma, \sigma'} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2} / V}
+\end{equation}
+
+我们来说明一下\eqref{eq:fermi-liquid-energy}中各项的意义。我们知道由于相互作用的存在，总能量$E$肯定不是单粒子哈密顿量（比如说$k^2/2m$这种形式）的期望值简单加起来的结果，但是显然能量具有可加性，设想我们改变了准粒子数分布，这样应该有
 \[
-    E = \sum_{\vb*{k}} n_{\vb*{k}} \epsilon_{\vb*{k}},
+    \var{E} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k} \sigma} \var{n_{\vb*{k} \sigma}},
 \]
-其中$\epsilon_{\vb*{k}}$是每个准粒子的能量（即带有相互作用的哈密顿量严格对角化得到的能谱），它的一部分是单粒子能量，一部分是其它粒子给它的相互作用能之和。现在设想我们改变了准粒子数分布，那么就有
-\[
-    \var{E} = \sum_{\vb*{k}} (\var{n_{\vb*{k}}} \epsilon_{\vb*{k}} + n_{\vb*{k}} \var{\epsilon_{\vb*{k}}}).
-\]
-$\epsilon$会依赖准粒子数分布是因为它有一部分来自相互作用能，由于我们只研究二体相互作用，我们有
+其中$\epsilon_{\vb*{k}}$是在近平衡态激发一个准粒子的能量，它的一部分是单粒子能量，一部分是其它粒子给它的相互作用能之和。
+（$\epsilon_{\vb*{k}}$未必和带有相互作用的哈密顿量严格对角化得到的能谱一样，因为它是“边际能量”；计算$\epsilon_{\vb*{k}}$需要做的是将带有相互作用的哈密顿量严格对角化之后对粒子数求变分）
+$\epsilon_{\vb*{k}}$会依赖准粒子数分布是因为它有一部分来自相互作用能，由于我们只研究二体相互作用，我们有
 \[
     \epsilon \sim \sum_{\vb*{k}'} \text{something} \cdot n_{\vb*{k}'},
 \]
@@ -696,7 +699,16 @@ $\epsilon$会依赖准粒子数分布是因为它有一部分来自相互作用�
 \[
     \var{\epsilon_{\vb*{k} \sigma}} = \frac{1}{V} \sum_{\vb*{k}', \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k}' \sigma'}},
 \]
-代入$\var{E}$中就得到\eqref{eq:fermi-liquid-energy}；第二项的$1/2$因子是因为一对粒子会被计数两次，所以要除以$2$；由于我们假定准粒子分布相对于零温只有微小的偏离，$\epsilon_{\vb*{k}}$被取为零温的值。
+记$\epsilon_{\vb*{k}}^0$为$n_{\vb*{k}}$一概为零的$\epsilon_{\vb*{k}}$，代入$\var{E}$中就得到\eqref{eq:fermi-liquid-energy}；第二项的$1/2$因子是因为一对粒子会被计数两次，所以要除以$2$；由于我们假定准粒子分布相对于零温只有微小的偏离，$\epsilon_{\vb*{k}}$被取为零温的值。
+虽然$\epsilon^0 \var{n}$看起来比$f\var{n} \var{n}$大，但需要注意到我们在巨正则系综中工作，则真的有意义的应该是$E-\mu N$（且由于是近平衡，应有$\var{E} = \mu \var{N}$），而
+\[
+    \sum_{\vb*{k}} (\epsilon^0_{\vb*{k}} - \mu) \var{n_{\vb*{k}}} \sim \var{n}^2,
+\]
+于是$\epsilon^0 \var{n}$项和$f\var{n} \var{n}$项的贡献是同阶的，都需要考虑。
+在已经知道了$E$的表达式之后（比如说微扰计算出了体系能量），可以用变分计算出各个物理量：
+\begin{equation}
+    \epsilon_{\vb*{k}} = \fdv{E}{n_{\vb*{k} \sigma}} , \quad f_{\sigma \sigma' \vb*{k} \vb*{k}'} = V \frac{\var[2]{E}}{\var{n_{\vb*{k} \sigma}}\var{n_{\vb*{k}' \sigma'}}}, \quad \mu = \pdv{E}{N}.
+\end{equation}
 
 \eqref{eq:fermi-liquid-energy}是一个经典的表达式，它当中的$\var{n}$可以诠释为粒子数算符（对应于纯态的算符），也可以诠释为密度矩阵（对应于纯态的态矢量）。我们先来看将$\var{n}$当成粒子数算符后\eqref{eq:fermi-liquid-energy}给出的费米液体的哈密顿量。
 \eqref{eq:fermi-liquid-energy}中的一阶项可以看成一个等效的单粒子能量。由于只讨论费米面附近的理论，我们让能量从费米面量起，即使用$\xi$代替$\epsilon$，$k=k_\text{F}$时$\xi^0_{\vb*{k}}$就是零，在假定费米面具有旋转对称性的情况下可以做展开
@@ -744,7 +756,7 @@ $\vartheta$是$\vb*{k}$和$\vb*{k}'$的夹角。这样，设
 实际上，如果一个费米液体系统可以确定是一个实际的费米气体加入相互作用的结果，并且如前所述，能够保证准粒子个数和实际费米子的个数一样，自旋相同，等等，并且保证自旋旋转不变性、空间平移不变性、空间各向同性，那么费米液体中准粒子的等效质量和实际费米子的质量有一个简单的，使用$\{F_l^\text{S,A}\}$写出的关系。
 由于
 \[
-    E = \sum_{\vb*{k}} n_{\vb*{k}} \epsilon_{\vb*{k}},
+    E - E_0 = \sum_{\vb*{k}} \var{n_{\vb*{k}}} \epsilon_{\vb*{k}},
 \]
 由动量为$\vb*{k}$的一个准粒子的运动速度为
 \[
