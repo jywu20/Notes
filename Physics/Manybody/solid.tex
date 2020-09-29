@@ -636,6 +636,15 @@ $\vb*{G}_m$满足的条件等价于，对任意的布拉维格矢都有
     \begin{equation}
         f(\vb*{k}) = \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}), \quad f(\vb*{r}) = \frac{1}{\sqrt{V}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}} f(\vb*{r}).
     \end{equation}
+    这样定义的好处在于，我们知道$\hat{\psi}^\dagger(\vb*{r})$和$\hat{c}^\dagger_{\vb*{k}}$彼此为傅里叶变换，而如果采用上式的傅里叶变换定义，那么从
+    \[
+        \acomm*{\hat{\psi}_\alpha(\vb*{r})}{\hat{\psi}^\dagger_\beta(\vb*{r}')} = \delta(\vb*{r}-\vb*{r}') \delta_{\alpha \beta}
+    \]
+    可以得到
+    \[
+        \acomm*{\hat{c}_{\vb*{k}\alpha}}{\hat{c}^\dagger_{\vb*{k}' \beta}} = \delta_{\vb*{k} \vb*{k}'} \delta_{\alpha \beta},
+    \]
+    于是动量表象下的产生湮灭算符关系也是非常简单的。
     有时会需要调整归一化常数，下同。在$V$很大时，考虑到点阵的晶格常数为$2\pi / L$，可以做替换
     \begin{equation}
         \frac{1}{V} \sum_{\vb*{k}} \longrightarrow \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3}.
@@ -2624,22 +2633,18 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     \label{eq:s-wave-superconductive-hamiltonian}
 \end{equation}
 
-\eqref{eq:s-wave-superconductive-hamiltonian}的能谱可以通过对角化矩阵的方式求出。
-求解之后会发现能带为
-\begin{equation}
-    E_{\vb*{k}} = \pm \sqrt{ \xi_{\vb*{k}}^2 + \abs{\Delta}^2 }.
-    \label{eq:s-wave-energy-band}
-\end{equation}
-这个结果具有粒子-空穴对称性，但是这并不具有太多物理意义，因为它实际上是对角化时交换了一对产生湮灭算符，从而把一部分粒子自由度写成了空穴而已。
-\eqref{eq:s-wave-energy-band}中，序参量$\Delta$把原本发生交叉的两条能带$E=\pm \xi_{\vb*{k}}$的交叉点分开了，即打开了一个能隙。
-
-在\eqref{eq:s-wave-superconductive-hamiltonian}中总是可以对$\hat{c}$和$\hat{c}^\dagger$做一个$U(1)$变换，让$\Delta$为实数，因此以下假定$\Delta$为实数。
-用一个幺正变换重新定义一组准粒子（这就称为\concept{Bogoliubov变换}），使这组准粒子能够让\eqref{eq:s-wave-superconductive-hamiltonian}对角化（从而这组准粒子的能谱就是\eqref{eq:s-wave-energy-band}）：
+在\eqref{eq:s-wave-superconductive-hamiltonian}中总是可以对$\hat{c}$和$\hat{c}^\dagger$做一个幺正变换，让$\Delta$为实数，因此以下假定$\Delta$为实数。
+用一个幺正变换重新定义一组准粒子（这就称为\concept{Bogoliubov变换}），使这组准粒子本身是费米子，并且能够让\eqref{eq:s-wave-superconductive-hamiltonian}对角化（从而这组准粒子的能谱就是\eqref{eq:s-wave-energy-band}）。
+首先我们有费米子的对易关系
+\[
+    \acomm*{\hat{\gamma}_{\vb*{k}_1 \alpha}}{\hat{\gamma}^\dagger_{\vb*{k}_2 \beta}} = \delta_{\vb*{k}_1 \vb*{k}_2} \delta_{\alpha \beta}, \quad \acomm*{\hat{\gamma}_{\vb*{k}_1 \alpha}}{\hat{\gamma}_{\vb*{k}_2 \beta}} = 0,
+\]
+并且可以看到，以下正交变换
 \[
     \pmqty{\hat{\gamma}_{\vb*{k} \uparrow} \\ \hat{\gamma}^\dagger_{-\vb*{k} \downarrow}} = \pmqty{u_{\vb*{k}} & -v_{\vb*{k}} \\ v_{\vb*{k}} & u_{\vb*{k}}} \pmqty{\hat{c}_{\vb*{k} \uparrow} \\ \hat{c}^\dagger_{-\vb*{k} \downarrow}},
-    \quad u_{\vb*{k}}^2 + v_{\vb*{k}}^2 = 1,
+    \quad u_{\vb*{k}}^2 + v_{\vb*{k}}^2 = 1
 \]
-可以解出
+能够给出正确的对易关系，则可以解出
 \begin{equation}
     u_{\vb*{k}} = \sqrt{\frac{E_{\vb*{k}} + \xi_{\vb*{k}}}{2 E_{\vb*{k}}}}, \quad v_{\vb*{k}} = \sqrt{\frac{E_{\vb*{k}} - \xi_{\vb*{k}}}{2 E_{\vb*{k}}}}.
 \end{equation}
@@ -2659,6 +2664,16 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     \end{cases}
     \label{eq:inverse-bogoliubov-transform}
 \end{equation}
+由于从$\hat{c}$到$\hat{\gamma}$的线性变换是一个正交变换%
+\footnote{这件事不是一般成立的，有时候真的要用一个非正交变换；关键在于对易关系必须正确，不是所有的线性变换形式都能够给出正确的对易关系。}%
+，\eqref{eq:s-wave-superconductive-hamiltonian}的能谱可以通过对角化矩阵的方式求出。
+求解之后会发现能带为
+\begin{equation}
+    E_{\vb*{k}} = \pm \sqrt{ \xi_{\vb*{k}}^2 + \abs{\Delta}^2 }.
+    \label{eq:s-wave-energy-band}
+\end{equation}
+这个结果具有粒子-空穴对称性，但是这并不具有太多物理意义，因为它实际上是对角化时交换了一对产生湮灭算符，从而把一部分粒子自由度写成了空穴而已。
+\eqref{eq:s-wave-energy-band}中，序参量$\Delta$把原本发生交叉的两条能带$E=\pm \xi_{\vb*{k}}$的交叉点分开了，即打开了一个能隙。
 
 \subsubsection{平均场自洽计算}
 
