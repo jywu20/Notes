@@ -285,6 +285,130 @@ Toffoli门加上辅助比特就可以实现所有计算，因为它可以容易�
 态矢量的确会有超距变化，但是并没有信息的超距传输。这非常类似“相速度”的概念：两个相隔很远的地方依次发生两个事件，看起来似乎有什么东西在超距传播，但是实际上并没有信息的超距流动。
 总之，波函数可以发生超距变化这件事意味着我们必须在实在性和定域性之间放弃一个。% TODO
 
+密度矩阵：完全混态纯度最低，是平均分布
+
+\subsection{纠缠}
+
+\subsubsection{纠缠和纠缠熵}
+
+首先我们回顾一个线性代数上简单的事实：任何一个有两个子系统$A$和$B$的系统的态矢量都可以写成
+\begin{equation}
+    \ket{\psi} = \sum_i s_i \ket{i_A} \otimes \ket{i_B}, \quad \sum_i s_i^2 = 1, \quad s_i \in \mathbb{R},
+\end{equation}
+其中$\{\ket{i_A}\}$和$\{\ket{i_B}\}$分别是$A$和$B$的某一组正交归一化基。
+证明是显然的，因为我们总是可以任取两个系统的正交归一化基各一组，做直积，将$\ket{\psi}$在这组基下展开，然后做奇异值分解；这也保证了$\{s_i\}$的唯一性。
+这个结论就是\textbf{施密特分解}。
+
+在经典物理中，两个子系统的物理量放在一起就完全描述了它们结合而成的系统。
+这相当于将两个子系统的态矢量做直积。然而，显然我们可以构造出
+\[
+    c_1 \ket{1_A} \ket{1_B} + c_2 \ket{2_A} \ket{2_B}
+\]
+形式的态，即将两个直积态做线性组合。这样得到的态没有经典类比。
+于是我们定义：不能写成两个子系统的态矢量的直积的态称为\textbf{纠缠态}。
+
+按照定义判定一个态是不是纠缠是很麻烦的，况且也难以分析它“多么纠缠”。
+
+\begin{equation}
+    E(\ket{\psi}) = - \sum_i s_i^2 \log s_i^2.
+\end{equation}
+
+纠缠熵和“转化率”？
+
+\begin{equation}
+    0 \leq E(\ket{\psi}) \leq \log d,
+\end{equation}
+左边等号当且仅当$\ket{\psi}$是直积态时取到，右边等号当且仅当$\ket{\psi}$是最大纠缠态时取到。
+
+纠缠态和混合态是紧密相关的。纠缠态迹掉一些自由度之后可以得到混合态，而任何一个混合态也可以“纯化”为纠缠态。
+
+\subsubsection{非局域性}
+
+量子纠缠的存在立刻可以导出一些非常反直觉的东西，其中最为著名的是EPR悖论。
+我们无疑会要求两件事：
+
+请注意在以上步骤中动力学没有显式的非局域性：没有任何超距作用。
+但是，结果是，态矢量本身发生了超距的变化。这意味着我们或者需要放弃态矢量的实在性，或者需要放弃物理的定域性。
+无论放弃哪个性质，似乎都意味着量子力学不是完备的物理理论。
+
+对这一疑难的最直接的回答是，
+
+\subsection{测量}
+
+本节讨论怎样在量子系统中做测量。所谓测量，就是使用一个
+测量发生之后，如果只关心仪器或者系统，将得到一个高度非对角化的混合态密度算符，这就是“测量导致量子态权重变为经典概率”的机制。
+
+\subsubsection{投影测量}
+
+标准的测量——测量导致系统坍缩到某个态上，或者说测量后系统状态需要使用不同经典概率的量子态组成的密度算符描述的测量——可以被归结为\textbf{投影测量}。设$\hat{M}$是一个可观察量，它可以做特征分解
+\begin{equation}
+    \hat{M} = \sum_m m \hat{P}_m, \quad \hat{P}_m = \sum_{i \in I_m} \dyad*{i}{i},
+\end{equation}
+则容易验证，测量得到$m$的概率为
+\begin{equation}
+    P(m) = \mel*{\psi}{\hat{P}_m}{\psi},
+\end{equation}
+测量结束后态矢量为
+\begin{equation}
+    \ket{\psi'} = \frac{\hat{P}_m \ket{\psi}}{\sqrt{P(m)}}.
+\end{equation}
+容易验证，测量平均值和方差分别为
+\begin{equation}
+    \expval*{\hat{M}} = \mel*{\psi}{\hat{M}}{\psi}, \quad \abs*{\Delta_M}^2 = \expval*{\hat{M}^2} - \expval*{\hat{M}}^2 = \mel*{\psi}{\hat{M}^2}{\psi} - \mel*{\psi}{\hat{M}}{\psi}^2.
+\end{equation}
+显然，关于系统的CSCO的测量是投影测量的一个特例，即每个$\hat{P}_m$都形如$\dyad*{m}{m}$的情况。
+
+\subsubsection{POVM测量及其实现}
+
+在最狭义的标准测量中，我们得到系统的一组CSCO的测量值，并且确保测量后系统落在某个特定的态上；投影测量则让我们得知某个可能不能完全确定系统状态的物理量的测量值，同时确保测量之后系统落在某个特定的态上。
+我们还可以进一步推广测量的概念：为什么一定要“测量一个物理量”？完全可以把系统状态分成几类，然后做一个测量，确定系统状态实际上属于哪一类，而不涉及任何“可观察量的测量值”。
+
+考虑到投影算符是厄米的，且对投影算符$\hat{P}^2 = \hat{P}$，在投影测量中我们有
+\[
+    P(m) = \mel*{\psi}{\hat{P}_m^\dagger \hat{P}_m}{\psi},
+\]
+那么一个很自然的推广似乎是
+\begin{equation}
+    P(m) = \mel*{\psi}{\hat{M}_m^\dagger \hat{M}_m}{\psi},
+    \label{eq:generalized-measurement}
+\end{equation}
+其中$\hat{M}_m$是任意的算符。
+于是我们做出一个非常合理的猜测：存在一种测量过程，在其中我们有一系列可能的结局$\{m\}$，且和这些结局相对应的有一组\textbf{测量算符}$\{\hat{M}_m\}$，测量结果为$m$的概率为\eqref{eq:generalized-measurement}。
+这种测量称为\textbf{POVM测量}，即正算符值测量，有这个名字是因为$\hat{M}^\dagger \hat{M}$一定是正算符。
+\eqref{eq:generalized-measurement}还意味着一个归一化条件：
+\begin{equation}
+    \sum_m \hat{M}^\dagger_m \hat{M} = 1.
+\end{equation}
+
+实际上，POVM测量可以非常容易地使用投影测量实现。具体过程如下。
+首先加上一个辅助系统，设其初态为$\ket{0}$，并且其希尔伯特空间的维数和$\{m\}$的个数相同。
+显然，可以找到幺正算符$\hat{U}$，使得
+\begin{equation}
+    \hat{U} (\ket{\psi} \otimes \ket{0}) = \sum_m \hat{M}_m \ket{\psi} \otimes \ket{m},
+\end{equation}
+其中$\ket{m}$为辅助系统的一组正交归一化基，这是因为
+\[
+    \begin{aligned}
+        \mel*{\phi, 0}{\hat{U}^\dagger \hat{U}}{\psi, 0} &= \sum_{m, n} \mel*{\phi}{\hat{M}^\dagger_m \hat{M}_n}{\psi} \braket*{m}{n} \\
+        &= \sum_n \mel*{\phi}{\hat{M}^\dagger_n \hat{M}_n}{\psi} \\
+        &= \braket*{\phi}{\psi} = \braket*{\phi, 0}{\psi, 0}.
+    \end{aligned}
+\]
+现在我们对辅助系统做一次投影测量，投影算符为$\dyad*{m}{m}$，立刻可以发现测量结果为$m$的概率正是\eqref{eq:generalized-measurement}，并且测量结束后$\ket{\psi}$转变为
+\begin{equation}
+    \ket{\psi_m} = \frac{\hat{M}_m \ket{\psi}}{\sqrt{P(m)}}.
+\end{equation}
+
+POVM测量是投影测量的推广，并且又可以用投影测量实现，因此这两种测量实际上是等价的。
+
+\subsubsection{不确定性}
+
+\begin{equation}
+    H(A) + H(B) \geq \log c^{-1}, \quad 
+\end{equation}
+
+纠缠：最大纠缠、最小
+
 \section{量子计算}
 
 在量子计算中可逆性表现得更为明显，因为量子计算实际上就是特殊的幺正变换，而幺正变换当然是可逆的。
@@ -311,31 +435,6 @@ Toffoli门加上辅助比特就可以实现所有计算，因为它可以容易�
 
 量子不可复制定理意味着经典计算中的赋值是不可能的。
 
-\subsection{标准测量}
 
-本节讨论怎样在量子计算系统中做测量。
-
-首先考虑\textbf{投影测量}。设$\hat{M}$是一个可观察量，它可以做特征分解
-\begin{equation}
-    \hat{M} = \sum_m m \hat{P}_m, \quad \hat{P}_m = \sum_{i \in I_m} \dyad*{i}{i},
-\end{equation}
-则容易验证，测量得到$m$的概率为
-\begin{equation}
-    P(m) = \mel*{\psi}{\hat{P}_m}{\psi},
-\end{equation}
-测量结束后态矢量为
-\begin{equation}
-    \ket{\psi'} = \frac{\hat{P}_m \ket{\psi}}{\sqrt{P(m)}}.
-\end{equation}
-容易验证，测量平均值和方差分别为
-\begin{equation}
-    \expval*{\hat{M}} = \mel*{\psi}{\hat{M}}{\psi}, \quad \abs*{\Delta_M}^2 = \expval*{\hat{M}^2} - \expval*{\hat{M}}^2 = \mel*{\psi}{\hat{M}^2}{\psi} - \mel*{\psi}{\hat{M}}{\psi}^2.
-\end{equation}
-
-Massen-
-
-\begin{equation}
-    H(A) + H(B) \geq \log d
-\end{equation}
 
 \end{document}

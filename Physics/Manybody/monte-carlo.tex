@@ -105,7 +105,11 @@
     \frac{p(\mathcal{C} \rightarrow \mathcal{D})}{p(\mathcal{D} \rightarrow \mathcal{C})} = \frac{W(\mathcal{D})}{W(\mathcal{C})} = \ee^{-\beta(H[\mathcal{D}]-H[\mathcal{C}])},
     \label{eq:markov-mcmc}
 \end{equation}
-则达到平衡时必定有细致平衡条件
+则达到平衡时有平衡条件
+\[
+    \sum_{\mathcal{C}} p(\mathcal{C}) p(\mathcal{C} \rightarrow \mathcal{D}) = \sum_{\mathcal{D}} p(\mathcal{D}) p(\mathcal{D} \rightarrow \mathcal{C}).
+\]
+以上条件是普遍适用的，但是非常弱，所以通常我们取一个足够复杂的马尔可夫链，它满足以下\concept{细致平衡条件}
 \[
     p(\mathcal{C}) p(\mathcal{C} \rightarrow \mathcal{D}) = p(\mathcal{D}) p(\mathcal{D} \rightarrow \mathcal{C}),
 \]
@@ -117,8 +121,7 @@
 \begin{equation}
     \frac{W(\mathcal{D})}{W(\mathcal{C})} = \frac{\pi(\mathcal{D})}{\pi(\mathcal{C})}.
 \end{equation}
-这样我们只需要让这个马尔可夫链计算到收敛（有限、时不变、不可约、非循环的马尔科夫链肯定可以收敛，而由于可以找到一个$p(\mathcal{C})$的安排让细致平衡条件成立，总是可以收敛到$W(\mathcal{C})/Z$），
-此时按照系综平均等于时间平均的原理，任何一个物理量的期望值就是
+各态历经、细致平衡的马尔可夫链如果收敛，一定收敛到一个唯一的结果上，这样我们只需要让这个马尔可夫链计算到收敛（有限、时不变、不可约、非循环的马尔科夫链肯定可以收敛，而如果可以找到一个$p(\mathcal{C})$的安排让细致平衡条件成立，总是可以收敛到$W(\mathcal{C})/Z$），此时按照系综平均等于时间平均的原理，任何一个物理量的期望值就是
 \begin{equation}
     \expval{O} = \sum_{\mathcal{C}} \frac{W(\mathcal{C})}{Z} O[\mathcal{C}] = \frac{1}{N} \sum_i O[\mathcal{C}_i].
     \label{eq:classical-expectation}
@@ -136,11 +139,12 @@
 因为两个不相关的样本之间大约有$\tau$的时间。
 
 因此问题的核心就是如何设计一个满足\eqref{eq:markov-mcmc}的不可约各态历经马尔可夫链。
-这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。
+这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。从物理上看，这是因为在讨论平衡态统计系统时我们故意将系统的动力学扔掉了，只留下统计性质，而现在要做模拟计算时要设法将动力学“找回来”。
 不可约性相对来说是容易做到的，因此需要巧妙地设计$p(\mathcal{C} \rightarrow \mathcal{D})$，并且确认平衡后的$\{\mathcal{C}_i\}$在长时间上没有自相关。
 
 最后注意一点：实际上在以上推导中我们根本就没有使用过$W(\mathcal{C})$构成一个玻尔兹曼分布这一条件。
 因此，经典蒙特卡洛法实际上可以用于任何抽样问题。
+虽然给定一个马尔可夫链，判断它是否收敛是非常困难的，但多次数值实验足以判断它是否收敛。
 
 \subsection{Metropolis-Hastings算法}
 
@@ -192,6 +196,18 @@
 
 不过，局部更新的策略并不总是适用的。在临界点附近，有大量长程关联，局部更新是非常缓慢的，这称为\concept{临界慢化}。
 此时需要别的策略来做更新。
+
+\subsection{混合蒙特卡洛}
+
+Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完全离散的，即通过翻转每个格点上的信息来更新系统状态。
+我们当然也可以使用更加“连续”的方法，即给$H[\mathcal{C}]$加上一个动力学项，然后通过求解哈密顿方程来做更新。
+在软物质凝聚态物理中这可以称为分子动力学模拟。分子动力学模拟的主要问题在于，自动生成的微分方程数值格式通常没法保证能量守恒，从而出现“模拟溶液系统，计算着计算着水自己开了”的荒诞结果。
+但如果我们只是做统计系统模拟，其实能量守恒也不那么重要。
+
+\begin{enumerate}
+    \item $\ee^{- \frac{p^2}{2m}}$，直接采样
+    \item 如果能量
+\end{enumerate}
 
 \subsection{结果评估}
 
