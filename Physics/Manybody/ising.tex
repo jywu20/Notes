@@ -110,9 +110,11 @@
 最后，我们分析伊辛模型的对称性。容易看出它具有格点平移和旋转对称性，以及自旋翻转对称性$Z^2$。
 前两个对称性在$a \to 0$时变成连续对称性，但$Z^2$对称性始终是离散的。
 
-\section{平均场处理方法}\label{sec:mean-field-ing}
+\section{平均场方法}\label{sec:mean-field-ing}
 
-\subsection{均匀系统}
+\subsection{平均场分解}
+
+\subsubsection{均匀系统}
 
 本节讨论一个非常简单的情况：我们把截断尺度$L$选取到整个体系，从而使用一个单独的$m$描述整个体系。
 此时
@@ -166,7 +168,7 @@ $m$本质上仍然是离散的，它能够发生的最小变化是一个$-1$格�
 \end{equation}
 我们得到了一个自洽方程。
 
-\subsection{平均场分解}
+\subsubsection{平均场能量}
 
 实际上，也可以显式地将相互作用项做平均场分解来得到\eqref{eq:self-consistency-m-approx}：做分解
 \begin{equation}
@@ -198,6 +200,45 @@ $m$本质上仍然是离散的，它能够发生的最小变化是一个$-1$格�
 \end{equation}
 的场被作用在了$m$上。使用\eqref{eq:ising-mean-field-energy}连同\eqref{eq:lattice-entropy}，根据热力学第一定律就可以推导出\eqref{eq:self-consistency-m-approx}。
 这也就是我们称它为平均场解的原因。
+
+据\eqref{eq:ising-mean-field-energy}，可以计算出
+\[
+    \expval*{s_i} = \tanh(\beta B + \beta J q m),
+\]
+这样就形成了自洽方程：要求$\expval*{s_i}=m$，我们就得到\eqref{eq:self-consistency-m-approx}。
+
+平均场解未必总是正确的；我们将在\autoref{sec:reliability-mf}中详细地讨论这一问题。
+使用平均场近似的主要原因是它很容易做，并且可以计算出来一些东西，从而可以提供一个粗糙的物理图像。
+
+\subsubsection{平均场自由能}
+
+本节从变分的角度出发推导伊辛模型的平均场理论。设
+\[
+    E_\text{MF} = - \sum_i B_\text{eff} s_i = - \sum_i (B + J q m) s_i,
+\]
+其中$m$是一个变分参数；从刚才的讨论中可以看到它实际上对应磁化强度，不过下面的计算其实也用不到这个性质。
+极值条件为
+\[
+    \min \expval*{E - E_\text{MF}}_\text{MF},
+\]
+从中可以确定$m$的值。
+计算可知
+\[
+    \begin{aligned}
+        \expval*{E - E_\text{MF}}_\text{MF} &= - J \sum_{\pair{i,j}} \expval*{s_i s_j - s_i m - s_j m}_\text{MF} \\
+        &= - \frac{J N q}{2} \left( \expval*{s_i}^2_\text{MF} - 2 m \expval*{s}_i \right),
+    \end{aligned}
+\]
+第二个等号用到了平均场哈密顿量中不同自旋之间没有相互作用这一事实。
+使用平均场哈密顿量可以计算出
+\[
+    \expval*{s_i}_\text{MF} = \tanh(\beta q J m),
+\]
+就得到
+\begin{equation}
+    F_\text{MF} = - \frac{N}{\beta} \ln(2\cosh(\beta q J m)) - J \frac{N q}{2} \tanh^2(\beta q J m) + J N q m \tanh(\beta q J m).
+\end{equation}
+要求自由能取极小值（忽略所有涨落），就得到\eqref{eq:self-consistency-m-approx}。
 
 \subsection{相变}
 
@@ -383,7 +424,17 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
     \label{fig:mf-b-and-free-energy}
 \end{figure}
 
-这就意味着，我们可以得到如\autoref{fig:mf-phase-diagram}所示的相图：$T<T_\text{c}$时有明确区分的两相，$B=0$为两相共存曲线；而$T>T_\text{c}$时两相混合。$T=T_\text{c},B=0$为临界点。这和水的气液相变的相图非常相似。
+这就意味着，我们可以得到如\autoref{fig:mf-phase-diagram}所示的相图：$T<T_\text{c}$时有明确区分的两相，$B=0$为两相共存曲线；而$T>T_\text{c}$时两相混合。$T=T_\text{c},B=0$为临界点。
+这和水的气液相变的相图非常相似：气液相变是一个一级相变，伊辛模型在$m>0$铁磁相和$m<0$铁磁相之间的相变也是一个一级相变；沿着气液相变曲线，经过一个临界点之后会发生一个二级相变，发生此二级相变之后就没有气液相变了，伊辛模型在两个铁磁相的一级相变曲线（即$B=0$曲线）上也有一个二级相变点，过了这个二级相变点之后也没有一级相变了。
+这意味着伊辛模型和气体模型，虽然看起来非常不同，实际上具有同样的普适类。
+
+实际上，可以使用伊辛模型来理解气液相变点的一些行为。既然气相和液相是某个$Z_2$对称性破缺的结果，我们可以预期，$s_i=1$的自旋团簇为气相，$s_i=-1$的自旋团簇为液相（或者正好相反）。
+实际上的确如此——我们将空间离散化为一个正方格子，如果格子$i$中是气相，我们设它的值为为$\sigma_i = 1$，反之为$\sigma_i = -1$，那么设气相能量密度为$\rho_\text{G}$而液相能量密度为$\rho_\text{L}$，则有
+\[
+    E = \sum_i \left( \sigma_i \frac{\rho_\text{G} - \rho_\text{L}}{2} + \frac{\rho_\text{G} + \rho_\text{L}}{2} \right),
+\]
+而气液相之间存在张力，所以还需要额外引入一个$-J \sum_{\pair{i, j}} \sigma_i \sigma_j$相。
+这样就得到了一个伊辛模型。
 
 \begin{figure}
     \centering
@@ -476,7 +527,7 @@ $B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就
     \label{eq:mf-c-divergence}
 \end{equation}
 
-\subsection{平均场理论的可靠性}
+\subsection{平均场理论的可靠性}\label{sec:reliability-mf}
 
 以上给出的平均场理论可能会因为以下几个原因而不精确：
 \begin{enumerate}
@@ -1062,7 +1113,7 @@ $\mu$的值实际上是平均场理论中推导出来的，$\gamma$是常数这�
 $\phi^4$理论只有一种顶角，就是\autoref{fig:vertex}所示的四条边连在一起的顶角。
 由于$\phi$是实场，无所谓$U(1)$对称性，则也没有粒子数守恒，无需标记边的方向，或者说可以任意地标记边的方向。
 例如\autoref{fig:vertex}可以理解成\autoref{fig:vertex-intepretation}中的任何一个过程，或是它们的逆过程，它们给出的图的值都是一样的。
-标记箭头的目的主要是为了写出正确的动量守恒表达式。如\autoref{fig:vertex-intepretation}中，三个图的动量守恒表达式分别是
+标记箭头的目的主要是为了写出正确的动量守恒表达式；在计算费曼图时应该忽视这些箭头，以得到正确的对称性因子（或者，也可以对每个图形，统计所有可能的箭头标法，但这样过于繁琐）。如\autoref{fig:vertex-intepretation}中，三个图的动量守恒表达式分别是
 \[
     \delta^d(\vb*{k}_3+\vb*{k}_4-\vb*{k}_1-\vb*{k}_2), \quad \delta^d(\vb*{k}_1-\vb*{k}_2-\vb*{k}_3-\vb*{k}_4), \quad \delta^d(\vb*{k}_1+\vb*{k}_2+\vb*{k}_3+\vb*{k}_4).
 \]
