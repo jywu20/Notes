@@ -137,9 +137,67 @@ Bloch球以一种直观的方式展现了量子比特系统和经典比特系统
 
 \subsection{CHSH游戏}
 
+\concept{CHSH游戏}指的是这样一个过程：一个真随机数发生器产生一对均匀分布、彼此无关的比特$x$和$y$，将它们分别提供给Alice和Bob，两人相距一段距离，彼此不能联系，然后Alice和Bob分别产生一个比特，记作$a$和$b$，如果
+\begin{equation}
+    x \land y = a \oplus b,
+\end{equation}
+游戏就成功了。
+
+当然，Alice和Bob可以采取不同的策略来增大游戏成功的概率，不过显然游戏成功的概率有一个小于$1$的上限。我们将指出，如果量子力学实际上是错误的，也即，可以用局域的隐变量模拟各种量子现象，那么游戏成功的概率的上限要小于量子力学实际上成立时的概率上限。
+这意味着量子力学的一部分不同诠释实际上有可观察的效应。
+
+由于$x$和$y$是均匀分布且彼此独立的，有
+\begin{equation}
+    \begin{aligned}
+        P_\text{win} &= \sum_{a, b, x, y} V(x, y, a, b) p_{AB|XY}(a, b | x, y) p_{XY}(x, y) \\
+        &= \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{AB|XY}(a, b | x, y).
+    \end{aligned}
+\end{equation}
+其中$V(x, y, a, b)$是指示函数，在游戏成功时为$1$，否则为$0$。现在要做的就是分析$p_{AB|XY}(a, b | x, y)$的形式。
+
 \subsubsection{隐变量理论的上限}
 
+Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之后看起来还是有远距离关联，这是隐变量理论模拟量子纠缠的思路。
+我们取一个非常一般化的形式：设有隐变量为$\Lambda$，且
+\[
+    p_{AB|XY}(a, b | x, y) = \int \dd{\lambda} p_\Lambda(\lambda) p_{A|\Lambda X} (a | \lambda, x) p_{B|\Lambda Y}(b | \lambda, b).
+\]
+由于Alice和Bob分开之后才根据$x, y$决定$a, b$，$a$和$b$的产生是彼此独立的，因此我们有上式的形式。
+这样
+\[
+    \begin{aligned}
+        P_\text{win} &= \int \dd{\lambda} p_\Lambda(\lambda) \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{A|\Lambda X} (a | \lambda, x) p_{B|\Lambda Y}(b | \lambda, b) \\
+        &\leq \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{A|\Lambda X} (a | \lambda^*, x) p_{B|\Lambda Y}(b | \lambda^*, b),
+    \end{aligned}
+\]
+不等号是因为对$\lambda$的积分无非是一种平均值，因此只需要适当调节$\lambda^*$就可以让被积函数大于最后的积分值，且等号可以取到。
+这意味着隐变量其实在此处并没有什么意义——最有效的策略中隐变量是定死的。更进一步，我们可以发现让只有$x, y, a, b$能够胜利时概率取$1$其它情况取$0$能够获得最大胜率，因此胜率最大的策略中$a$是$x$的函数，而$b$是$y$的函数。
+这意味着我们需要让
+\[
+    0 = a_1 \oplus b_0, \quad 0 = a_0 \oplus b_1, \quad 0 = a_0 \oplus b_0, \quad 1 = a_1 \oplus b_1
+\]
+尽可能成立。这四个式子不能都成立，最多只能成立三个，否则会产生矛盾，于是我们会发现$P_\text{win}$最大为$3/4$。
+
 \subsubsection{量子关联的胜率上限}
+
+另一方面，如果标准的量子力学的纠缠态是可以实现的，我们将会获得比$3/4$更大的胜率上界。
+这里不再使用隐变量来编码Alice和Bob的关联，而是真的认为Alice和Bob组成的系统由一个密度矩阵$\hat{\rho}$描述。
+这覆盖了隐变量的机制，同时还允许真正的量子纠缠，即所谓密度矩阵的非对角部分。
+
+由于$x, y$是给定的，Alice和Bob可以根据他们得到的确定的$x, y$值来分别决定给出什么输出。
+唯一能够试图利用他们之间的关联的方法是通过测量$\hat{\rho}$，于是
+\[
+    p_{AB|XY}(a, b | x, y) = \trace (\hat{\rho} \hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}),
+\]
+其中诸$\hat{\Pi}$均为正定算符，是POVM测量的测量算符，且满足归一化条件。
+最大值肯定是在$\hat{\rho}$代表纯态时取到的，因为测量算符是正定的。因此接下来我们讨论纯态的情况，即
+\[
+    p_{AB|XY}(a, b | x, y) = \mel{\phi}{\hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}}{\phi}.
+\]
+
+我们
+
+因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况。
 
 \section{量子电路模型}
 
