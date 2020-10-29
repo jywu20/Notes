@@ -195,9 +195,14 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
     p_{AB|XY}(a, b | x, y) = \mel{\phi}{\hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}}{\phi}.
 \]
 
-我们
+最大纠缠态时取到等号。
+所谓的\concept{Tsirelson不等式}。
 
 因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况。
+
+\subsection{贝尔实验}
+
+CHSH游戏可以一般化为这样一个场景：
 
 \section{量子电路模型}
 
@@ -208,7 +213,7 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 \begin{enumerate}
     \item 制备量子态，包括但不限于根据（可能是经典的）输入制备量子比特和引入辅助位；
     \item 幺正演化，即让量子比特经过一系列幺正矩阵（\concept{量子逻辑门}）的变换；
-    \item 测量。
+    \item 测量。我们通常将测量放在最后，因为可以根据\concept{推迟测量原则}，任何在计算过程中发生的测量都可以推迟到线路的最后。
 \end{enumerate}
 
 \subsection{量子逻辑门}
@@ -217,23 +222,51 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 
 单比特操作是非常容易实现的，但是显然是不够的，因为多量子比特系统经过单比特操作之后一定会得到直积态，而不能产生纠缠态。
 
-最容易想到的量子门包括泡利矩阵，我们分别用$X, Y, Z$指代三个方向上的泡利矩阵。
-
-\concept{Hadamard门}是指
+最容易想到的量子门包括泡利矩阵，我们分别用$X, Y, Z$指代三个方向上的泡利矩阵，这样就获得了三个门。
+除此以外还有更多的门，如\concept{Hadamard门}是指
 \begin{equation}
     H = \frac{1}{\sqrt{2}} \pmqty{1 & 1 \\ 1 & -1},
 \end{equation}
 它可以用于实现态叠加。
-
 \concept{相位门}是指
 \begin{equation}
     S = \pmqty{1 & 0 \\ 0 & \ii},
 \end{equation}
-
-\concept{T门}或者\concept{$\pi/8$门}
+它可以在单个量子比特的两种可能本征态之间产生一个$\pi/2$的相对相位。
+有了$\pi/2$相位当然还可以有别的相位，如\concept{T门}或者\concept{$\pi/8$门}
 \begin{equation}
-    T = \pmqty{1 & 0 \\ 0 & \exp(\ii \pi / 4)}
+    T = \pmqty{1 & 0 \\ 0 & \exp(\ii \pi / 4)}.
 \end{equation}
+
+单量子比特逻辑门有通用的构造方法。我们有\concept{旋转}
+\begin{equation}
+    R_x(\theta) = \exp(-\frac{\ii \theta X}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \ii \sin \frac{\theta}{2} \\ - \ii \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
+\end{equation}
+\begin{equation}
+    R_y(\theta) = \exp(-\frac{\ii \theta Y}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \sin \frac{\theta}{2} \\ \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
+\end{equation}
+\begin{equation}
+    R_z(\theta) = \exp(-\frac{\ii \theta Z}{2}) = \pmqty{\dmat{\ee^{- \frac{\ii \theta}{2}}, \ee^{\frac{\ii \theta}{2}}}}.
+\end{equation}
+实际上，更加一般的，绕着轴$\vb*{n}$的旋转门为
+\begin{equation}
+    R_{\vb*{n}}(\theta) = \cos \frac{\theta}{2} I - \ii \sin \frac{\theta}{2} \vb*{n} \cdot \hat{\vb*{\sigma}}.
+\end{equation}
+可以证明，任何一个单比特幺正变换均形如
+\begin{equation}
+    U = \ee^{\ii \alpha} R_z(\beta) R_y(\gamma) R_z(\delta) = \pmqty{ \ee^{\ii (\alpha - \beta/2 - \delta / 2)} \cos \frac{\gamma}{2} & - \ee^{\ii (\alpha - \beta/2 + \delta / 2)} \sin \frac{\gamma}{2} \\ \ee^{\ii (\alpha + \beta/2 - \delta / 2)} \sin \frac{\gamma}{2} & \ee^{\ii (\alpha + \beta/2 + \delta / 2)} \cos \frac{\gamma}{2} },
+\end{equation}
+因此写出了单量子比特变换之后可以用三个旋转门连同一个一般的相位门来实现它。
+这个一般形式没有用到$R_x$门，但是这并没有什么奇怪的——实际上它就是欧拉角。
+上式的分解有一个简单的变形。设
+\begin{equation}
+    A = R_z(\beta) R_y \left( \frac{\gamma}{2} \right), \quad B = R_y\left( - \frac{\gamma}{2} \right) R_z\left( - \frac{\delta + \beta}{2} \right), \quad C = R_z\left( \frac{\delta - \beta}{2} \right),
+\end{equation}
+则
+\begin{equation}
+    U = \ee^{\ii \alpha} A X B X C, \quad ABC = I.
+\end{equation}
+这个结论在实现受控$U$门时可以用到。
 
 我们有以下简单的逻辑门恒等式：
 \begin{equation}
@@ -241,26 +274,6 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 \end{equation}
 \begin{equation}
     H X H = Z, \quad H Z H = X, H Y H = - Y.
-\end{equation}
-
-现在考虑一些更加高级的逻辑门。我们有\concept{旋转}
-\begin{equation}
-    R_x(\theta) = \exp(-\frac{\ii \theta X}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \ii \sin \frac{\theta}{2} \\ - \ii \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
-\end{equation}
-
-\begin{equation}
-    R_y(\theta) = \exp(-\frac{\ii \theta Y}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \sin \frac{\theta}{2} \\ \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
-\end{equation}
-\begin{equation}
-    R_z(\theta) = \exp(-\frac{\ii \theta Z}{2}) = \pmqty{\dmat{\ee^{-\ii \theta}, \ee^{\ii \theta}}}.
-\end{equation}
-实际上，更加一般的，有
-\begin{equation}
-    R_{\vb*{n}}(\theta) = \cos \frac{\theta}{2} I - \ii \sin \frac{\theta}{2} \vb*{n} \cdot \hat{\vb*{\sigma}}.
-\end{equation}
-可以证明，任何一个单比特幺正变换均形如
-\begin{equation}
-    U = \ee^{\ii \alpha} R_z(\beta) R_y(\gamma) R_z(\delta).
 \end{equation}
 
 \subsubsection{二量子比特门}
@@ -275,7 +288,7 @@ CNOT门满足以下恒等式：
     C X_1 C = X_1 X_2, \quad C Y_1 C = Y_1 X_2, \quad C Z_1 C = Z_1,
 \end{equation}
 
-更加一般的，设$U$是任意一个操作，可以定义被单个量子比特控制的\concept{受控$U$门}为
+更加一般的，设$U$是任意一个操作，被单个量子比特控制的\concept{受控$U$门}可以验证为
 \begin{equation}
     \pmqty{\dmat{1 & 0 \\ 0 & 1, U}},
 \end{equation}
@@ -283,6 +296,22 @@ CNOT门满足以下恒等式：
 \begin{equation}
     C^n(U) \ket{x_1, x_2, \ldots, x_n} \ket{\psi} = \ket{x_1, x_2, \ldots, x_n} U^{x_1 x_2 \ldots x_n} \ket{\psi}.
 \end{equation}
-多量子比特的受控$U$门可以使用
+
+二量子比特的受控$U$门可以使用CNOT配合一些单量子比特门实现。
+具体来说，设
+
+\subsection{测量}\label{sec:measurement}
+
+\subsubsection{测量一个算符}
+
+设要用投影算符$M_0$和$M_1$做单比特测量，设
+\begin{equation}
+    M_0 = I + U, \quad M_1 = I - U,
+\end{equation}
+则
+
+\begin{equation}
+    V = (H \otimes I) C(U) (H \otimes I)
+\end{equation}
 
 \end{document}
