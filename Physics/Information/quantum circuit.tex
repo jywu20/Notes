@@ -261,6 +261,7 @@ CHSH游戏可以一般化为这样一个场景：
 上式的分解有一个简单的变形。设
 \begin{equation}
     A = R_z(\beta) R_y \left( \frac{\gamma}{2} \right), \quad B = R_y\left( - \frac{\gamma}{2} \right) R_z\left( - \frac{\delta + \beta}{2} \right), \quad C = R_z\left( \frac{\delta - \beta}{2} \right),
+    \label{eq:abc-decomposition}
 \end{equation}
 则
 \begin{equation}
@@ -276,10 +277,13 @@ CHSH游戏可以一般化为这样一个场景：
     H X H = Z, \quad H Z H = X, H Y H = - Y.
 \end{equation}
 
-\subsubsection{二量子比特门}
+\subsubsection{受控门}
 
 最为平凡的二量子比特门可能是两个单量子比特门直积得到的（注意张量积不可交换，虽然$A \otimes B \simeq B \otimes A$）。
-稍微复杂一些的二量子比特门是所谓\concept{受控操作}，如CNOT：
+仅仅靠门的直积不能得到所有可能的量子逻辑门，因为这样不能产生纠缠态。
+
+稍微复杂一些的二量子比特门是所谓\concept{受控操作}，即只有在某个量子比特（称为\concept{控制位}）为$1$时才对另一个量子比特（称为\concept{目标位}）做操作。物理地说，受控门的作用是产生纠缠，原因是显然的——它对应量子比特之间的相互作用。
+CNOT是一个典型的受控门，它形如
 \begin{equation}
     \mathrm{CNOT} = \pmqty{1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0}.
 \end{equation}
@@ -287,7 +291,6 @@ CNOT门满足以下恒等式：
 \begin{equation}
     C X_1 C = X_1 X_2, \quad C Y_1 C = Y_1 X_2, \quad C Z_1 C = Z_1,
 \end{equation}
-
 更加一般的，设$U$是任意一个操作，被单个量子比特控制的\concept{受控$U$门}可以验证为
 \begin{equation}
     \pmqty{\dmat{1 & 0 \\ 0 & 1, U}},
@@ -297,10 +300,46 @@ CNOT门满足以下恒等式：
     C^n(U) \ket{x_1, x_2, \ldots, x_n} \ket{\psi} = \ket{x_1, x_2, \ldots, x_n} U^{x_1 x_2 \ldots x_n} \ket{\psi}.
 \end{equation}
 
-二量子比特的受控$U$门可以使用CNOT配合一些单量子比特门实现。
-具体来说，设
+此外，没有什么要求我们一定要在控制比特为$1$时对目标位做操作，例如完全可以在控制比特为$0$时对目标位做操作。
+总之，“在一些量子比特满足某些条件时对另一些量子比特做操作”的量子门统称\concept{广义受控门}。
+
+实际上，二量子比特的一切量子门都可以使用CNOT配合单量子比特门实现实现。
+任何一个二量子比特量子门都可以分解为\eqref{eq:abc-decomposition}，而直接代入检验会发现
+\begin{equation}
+    C(U) = 
+\end{equation}
+对这个结论的证明实际上和量子线路模型的通用性密切相关，因此我们将在\autoref{sec:universal}中系统地讨论这一点。
+
+\subsubsection{通用量子门}\label{sec:universal}
+
+two level unitary transformation (exact)
+
+任何$d \times d$的幺正变换$U$可以写成$k$个two level unitary的乘积，其中$k \leq d(d-1)/2$。
+具体的方法是直接通过
+
+single-qubit and CNOT (exact)
+
+上面提到的量子门的集合都是连续的，这当然也是正确的，因为量子线路模型中可以有相位变换而这是一种连续的操作。
+不够还有一种思路是，不要求精确地构造任何可能的幺正变换，而要求可能任意精确地逼近一个幺正变换。这就是近似通用量子门，可以用一个离散的集合做近似通用量子门。例如，
+
+Hadamard, phase, CNOT, T gates (approximate)
+
+使用$\infty$-范数体现两个算符的差异。设
+
+\begin{equation}
+    E(R_{\vb*{n}}(\alpha), R_{\vb*{n}}(\theta)^k) < \frac{\epsilon}{3}
+\end{equation}
+
+实际上，这种逼近不仅是可能的，还是比较高效的。\concept{Solovay-Kitaev定理}说，通过Hadamard门和T门对任何一个单量子比特门做精度$\epsilon$的近似可以通过最多
+\begin{equation}
+    N \sim \bigO(\log^c(1/\epsilon))
+\end{equation}
+个量子门实现，其中$c$大约是$2$。
+
+通用量子门的存在意味着量子电路模型的表现力是非常强大的，可以覆盖任何实际的计算任务。
 
 \subsection{测量}\label{sec:measurement}
+
 
 \subsubsection{测量一个算符}
 
@@ -313,5 +352,19 @@ CNOT门满足以下恒等式：
 \begin{equation}
     V = (H \otimes I) C(U) (H \otimes I)
 \end{equation}
+
+principle of implicit measurement
+
+测量只依赖于子系统的约化密度矩阵，因此自始至终未被测量的量子比特可以当成已经测量的，原因也是显而易见的：
+\begin{equation}
+    \trace (\hat{\rho}(\hat{E} \otimes \hat{I})) = \trace (\hat{\rho}_A \hat{E}).
+\end{equation}
+这个结论当然应该是正确的，否则就有信息的超距传播了。
+
+\section{量子算法}
+
+\subsection{量子傅里叶变换}
+
+\subsection{量子相位估计}
 
 \end{document}
