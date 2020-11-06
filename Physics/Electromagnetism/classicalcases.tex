@@ -223,22 +223,22 @@
 \end{equation}
 或者
 \begin{equation}
-    \vb*{E} = - \grad{\phi}, \quad \laplacian{\phi} = - \frac{\rho_0}{\epsilon_0}.
+    \vb*{E} = - \grad{\varphi}, \quad \laplacian{\varphi} = - \frac{\rho_0}{\epsilon_0}.
     \label{eq:static-phi-field}
 \end{equation}
 这是拉普拉斯方程，有现成的解法，即
 \begin{equation}
-    \phi(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
+    \varphi(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
     \label{eq:from-q-to-phi}
 \end{equation}
 
 静电学中能量可以看成是电荷携带的而不是电场携带的。这是因为一个区域内的能量为
 \[
-    E = \int \dd[3]{\vb*{r}} \frac{1}{2} \epsilon_0 \vb*{E}^2 = \frac{1}{2} \epsilon_0 \int \dd[3]{\vb*{r}} (\grad{\phi})^2,
+    E = \int \dd[3]{\vb*{r}} \frac{1}{2} \epsilon_0 \vb*{E}^2 = \frac{1}{2} \epsilon_0 \int \dd[3]{\vb*{r}} (\grad{\varphi})^2,
 \]
 做分部积分
 \[
-    \int \dd[3]{\vb*{r}} (\grad{\phi})^2 = 
+    \int \dd[3]{\vb*{r}} (\grad{\varphi})^2 = 
 \]
 
 \subsubsection{静磁学}
@@ -411,16 +411,18 @@ $\epsilon$和$\mu$这两个参数仍然可以在空间中发生变化。
 
 \section{静电学}
 
+\subsection{静电系统的基本方程}
+
 本节讨论仅含有导体和线性电介质的静电系统。此时我们有
 
 \begin{equation}
-    \phi|_\text{surface} = \const,
+    \varphi|_\text{surface} = \const,
 \end{equation}
 \begin{equation}
-    \pdv{\phi}{\vb*{n}} = - \frac{\sigma}{\epsilon}
+    \pdv{\varphi}{\vb*{n}} = - \frac{\sigma}{\epsilon}
 \end{equation}
 
-真空中或者均匀线性电介质中不能有电势极大值或者极小值，因为在这样的区域内$\phi$是调和函数，而调和函数在它调和的区域内部不能有极大值、极小值。
+真空中或者均匀线性电介质中不能有电势极大值或者极小值，因为在这样的区域内$\varphi$是调和函数，而调和函数在它调和的区域内部不能有极大值、极小值。
 物理上这很好理解，如极大值出现意味着从这一点向它周围的各个方向都有电场，因此这一点上应该有电荷，矛盾。
 
 在计算静电系统中导体的受力时，不能简单地将无导体的空间内的电场外推到导体表面，然后使用$\vb*{f}=\sigma\vb*{E}$，因为导体表面电场是不连续的。
@@ -435,6 +437,46 @@ $\epsilon$和$\mu$这两个参数仍然可以在空间中发生变化。
 反之，在两者之间的关系实际上不一一对应的时候，唯一性定理就被破坏了。例如，如果$\vb*{D}-\vb*{E}$关系实际上构成了一条电滞回线，那就没有唯一性定理。
 
 % TODO: 有限大小的体系内电荷总量应该为零：这是高斯定理的推论
+
+\subsection{电多极子}
+
+设空间中的电荷密度为$\rho$，可能还要算上面密度，电势为
+\[
+    \varphi(\vb*{r}) = \frac{1}{4\pi \epsilon_0} \int \dd[3]{\vb*{r}'} \frac{1}{\abs*{\vb*{r} - \vb*{r}'}} \rho(\vb*{r}'),
+\]
+对$1/\abs*{\vb*{r}-\vb*{r}'}$做多级展开：
+\[
+    \frac{1}{\abs*{\vb*{r}-\vb*{r}'}} = \frac{1}{\abs*{\vb*{r}}} - \vb*{r}' \cdot \grad{\frac{1}{\abs*{\vb*{r}}}} + \frac{1}{2} \vb*{r}' \vb*{r}' : \grad{\grad{\frac{1}{\abs*{\vb*{r}}}}} + \cdots,
+\]
+就得到一个$\varphi$的展开式，即所谓\concept{多级展开}，其中
+\begin{equation}
+    \varphi^{(0)}(\vb*{r}) = \frac{1}{4\pi \epsilon_0} \frac{1}{\abs*{\vb*{r}}} \underbrace{\int \dd[3]{\vb*{r}'} \rho(\vb*{r}')}_{Q}
+\end{equation}
+就是将整个体系当成一个点电荷计算得到的电势，
+\begin{equation}
+    \varphi^{(1)}(\vb*{r}) = - \frac{1}{4\pi \epsilon_0} \grad{\frac{1}{\abs*{\vb*{r}}}} \cdot \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}'
+\end{equation}
+是电偶极矩，电四极矩是
+\begin{equation}
+    \varphi^{(2)}(\vb*{r}) = \frac{1}{4 \pi \epsilon_0} \frac{1}{6} \grad{\grad{\frac{1}{\abs*{\vb*{r}}}}} : \underbrace{3 \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}' \vb*{r}' }_{\vb*{D}}.
+\end{equation}
+在电荷分布相对于坐标系原点空间反演对称时，电偶极矩是零，而当电荷分布相对于坐标系原点空间反演反对称时，电四极矩是零。
+
+容易看出，电四极矩$D_{ij}$是对称的，因此有6个独立分量。实际上这些独立分量并不都是有用的，注意到$\vb*{r} \neq 0$时
+\[
+    \laplacian{\frac{1}{\abs*{\vb*{r}}}} = 0,
+\]
+我们发现
+\[
+    \grad{\grad{\frac{1}{\abs*{\vb*{r}}}}} : \vb*{I} = 0,
+\]
+即我们可以任意地在$\vb*{D}$中加上单位张量的倍数，而不改变电势分布。因此我们可以手动加入一个约束：定义\concept{约化电四极矩}
+\begin{equation}
+    \tilde{\vb*{D}} = \vb*{D} - \frac{1}{3} \trace(\vb*{D}) \vb*{I} = \int \dd[3]{\vb*{r}'} (3 \vb*{r}' \vb*{r}' - \abs*{\vb*{r}'}^2 \vb*{I}) \rho(\vb*{r}') ,
+\end{equation}
+则用$\tilde{\vb*{D}}$代替$\vb*{D}$同样可以得到正确的电四极矩；$\tilde{\vb*{D}}$独立的分量有5个。
+
+电四极矩造成的电势衰减得比电偶极矩造成的电势快，电偶极矩造成的电势的衰减又比点电荷快。随着场点越来越接近源点，越来越复杂的电多极矩结构开始展现出来。
 
 \section{电路理论}
 
