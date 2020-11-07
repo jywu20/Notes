@@ -1156,6 +1156,8 @@ Hartree图有一个$1/2$的对称性因子，因为它具有轴对称性，于�
 
 电子-电子格林函数的计算相对来说更加容易，因为有更少的对称性因子
 
+RPA近似修正了相互作用。正如我们所预期的那样，相互作用变得更加“柔和”了。
+
 \section{玻色子系统}
 
 \subsection{理想玻色气体}
@@ -1587,7 +1589,14 @@ $\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性
 \]
 其中所有算符都使用$k=(\omega_n, \vb*{k})$标记。（我们利用了能量守恒的性质）
 
-使用费曼图，并使用梯形图近似，顶角修正为（推导这个公式时需要注意顶角修正在这里只和输入的两个电子的动量和有关，和自旋、电子各自的动量无关）
+使用费曼图，并使用梯形图近似%
+\footnote{
+    表面上看，梯形图近似是对所有梯形图重求和而RPA近似是对所有项链图重求和，但这种差别只是表面上的。
+    在这里，我们既可以遵循从QED得到的提示，将相互作用顶角看成两个电子交换了一个光子，也可以等效地认为两个电子先融合成了一个电子对，然后电子对再拆散。
+    前面一种图景的梯形图近似就是后一种图景的RPA近似。
+    \label{note:rpa-graph}
+}%
+，顶角修正为（推导这个公式时需要注意顶角修正在这里只和输入的两个电子的动量和有关，和自旋、电子各自的动量无关）
 \[
     \Gamma_{q} = g + \frac{g}{\beta L^d} \sum_{p} G^0_{p + q} G^0_{- p} \Gamma_{q},
 \]
@@ -1601,7 +1610,7 @@ $\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性
 \]
 于是
 
-在$T>T_\text{c}$时，这个关联函数的虚部给出了一个预料之中的指数衰减，但是$T = T_\text{c}$时出现奇异性。
+在$T>T_\text{c}$时，这个关联函数的虚部给出了一个预料之中的指数衰减，但是$T = T_\text{c}$时出现奇异性。实际上这就是梯形图近似或者RPA近似（见\autoref{note:rpa-graph}）的作用：它给出了形如$1/(1-\text{something})$的一个因子，从而可以预言相变的位置。
 
 \subsubsection{平均场理论}
 
@@ -1651,11 +1660,29 @@ $G_0^{(\text{h})}$和$G_0^{(\text{p})}$可以分别理解为自由空穴和自�
 
 现在可以将电子场积掉，因为这是简单的高斯积分，得到
 \begin{equation}
-    Z = \int \fd(\bar{\Delta}, \Delta) \exp(- \frac{1}{g} \int \dd{\tau} \dd[d]{\vb*{r}} \abs*{\Delta}^2 + \int \dd[d]{\vb*{r}} \ln \det \mathcal{G}^{-1}).
+    Z = \int \fd(\bar{\Delta}, \Delta) \exp(- \frac{1}{g} \int \dd{\tau} \dd[d]{\vb*{r}} \abs*{\Delta}^2 + \underbrace{\ln \det \mathcal{G}^{-1}}_{\trace \ln \mathcal{G}^{-1}}).
 \end{equation}
-上式实际上还有一个常数因子，因为做格拉斯曼场高斯积分的时候，二次型前面没有负号，不过它也不重要。
+上式实际上还有一个常数因子，因为做格拉斯曼场高斯积分的时候，二次型前面没有负号，从而行列式中可能会有一个负因子；不过总是可以把这个负因子提取出来，然后由于外层的$\ln$，它是一个无关紧要的常数。
+$\ln \det$一项看起来有点奇怪，因为它不包含任何对$\vb*{r}$和$\tau$的积分——这些积分都在$\det$运算里面了，并且使用何种表象并不重要。无穷维矩阵的行列式并不好定义，所以实际计算时通常使用$\trace \ln$形式。
+这就得到了描述序参量$\Delta$的有效理论。当然，这只是把复杂性从一个地方转移到了另一个地方，因为$\mathcal{G}^{-1}$是非常难以准确计算的。
 
 \subsubsection{金斯堡-朗道理论}
+
+我们现在微扰计算$\det \mathcal{G}^{-1}$，从而尝试得到一个显式的有效理论。切换到动量-频率表象下，引入记号
+\[
+    \hat{\Delta} = \pmqty{ & \Delta \\ \bar{\Delta} & }, \quad \mathcal{G}_0 = \mathcal{G} |_{\Delta = 0},
+\]
+有
+\[
+    \begin{aligned}
+        \trace \ln \mathcal{G}^{-1} &= \trace \ln (\mathcal{G}^{-1}_0 (1 + \mathcal{G}_0 \hat{\Delta})) \\
+        &= \underbrace{\trace \ln \mathcal{G}^{-1}_0}_{\const} + \trace \ln (1 + \mathcal{G}_0 \hat{\Delta}) \\
+        &= \trace \ln \mathcal{G}^{-1}_0 - \sum_{n \geq 1} \frac{1}{2n} \trace (\mathcal{G}_0 \hat{\Delta})^{2n} ,
+    \end{aligned}
+\]
+第二个等号是普遍成立的，不要求$\ln$的宗量中的两个矩阵对易；第三个等号是来自$\mathcal{G}^{-1}_0 \hat{\Delta}$无迹这一事实。
+展开式的第一项是
+
 
 \subsubsection{BCS下的Goldstone模}
 
