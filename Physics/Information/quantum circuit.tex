@@ -125,8 +125,19 @@ Bloch球以一种直观的方式展现了量子比特系统和经典比特系统
 
 \subsection{多量子比特}
 
+两个量子比特形成的系统的密度矩阵具有如下的一般形式：
 \begin{equation}
     \hat{\rho}_{AB} = \frac{1}{4} (1 + \vb*{a} \cdot \hat{\vb*{\sigma}} \otimes 1_B + 1_A \otimes \vb*{b} \cdot \hat{\vb*{\sigma}} + \sum_{jk} T_{jk} \hat{\sigma}_j \otimes \hat{\sigma}_k ).
+\end{equation}
+通过对这一密度矩阵做适当的求迹可以得到各个参数：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \trace (\hat{\rho}_{AB} (\hat{\vb*{\sigma}} \otimes 1_B)) &= \vb*{a}, \\
+            \trace (\hat{\rho}_{AB} (1_A \otimes \hat{\vb*{\sigma}})) &= \vb*{b}, \\
+            \trace (\hat{\rho}_{AB} (\hat{\sigma}_i \otimes \hat{\sigma}_j) ) &= T_{ij}.
+        \end{aligned}
+    \right.
 \end{equation}
 
 \subsection{量子比特系统的制备}
@@ -189,16 +200,61 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 \[
     p_{AB|XY}(a, b | x, y) = \trace (\hat{\rho} \hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}),
 \]
-其中诸$\hat{\Pi}$均为正定算符，是POVM测量的测量算符，且满足归一化条件。
-最大值肯定是在$\hat{\rho}$代表纯态时取到的，因为测量算符是正定的。因此接下来我们讨论纯态的情况，即
+其中诸$\hat{\Pi}$均为正定算符，是POVM成员，且满足归一化条件。（Alice和Bob的POVM成员可能是不一样的，使用指标$x$和$y$区分它们）
+最大值肯定是在$\hat{\rho}$为纯态时取到的，因为POVM成员都是正定的。因此接下来我们讨论纯态的情况，即
 \[
     p_{AB|XY}(a, b | x, y) = \mel{\phi}{\hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}}{\phi}.
 \]
+在$(x, y)$为$01$，$10$或$00$时游戏成功意味着$a=b$，此时赢的概率为
+\[
+    \mel{\phi}{\hat{\Pi}^{(x)}_0 \otimes \hat{\Pi}^{(y)}_0}{\phi} + \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_1}{\phi},
+\]
+而输的概率为
+\[
+    \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_0}{\phi} + \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_0}{\phi},
+\]
+于是赢的概率减去输的概率为
+\[
+    \mel{\phi}{(\hat{\Pi}_0^{(x)} - \hat{\Pi}_1^{(x)}) \otimes (\hat{\Pi}_0^{(y)} - \hat{\Pi}_1^{(y)})}{\phi}.
+\]
+类似的，$(x, y)$为$11$时赢的概率减去输的概率为
+\[
+    - \mel{\phi}{(\hat{\Pi}_0^{(x)} - \hat{\Pi}_1^{(x)}) \otimes (\hat{\Pi}_0^{(y)} - \hat{\Pi}_1^{(y)})}{\phi}.
+\]
+设
+\[
+    \hat{A}^{(x)} = \hat{\Pi}^{(x)}_0 - \hat{\Pi}^{(x)}_1, \quad \hat{B}^{(y)} = \hat{\Pi}^{(y)}_0 - \hat{\Pi}^{(y)}_1,
+\]
+并定义
+\[
+    \hat{C}_{AB} = \hat{A}^{(0)} \otimes \hat{B}^{(0)} + \hat{A}^{(0)} \otimes \hat{B}^{(1)} + \hat{A}^{(1)} \otimes \hat{B}^{(0)} - \hat{A}^{(1)} \otimes \hat{B}^{(1)},
+\]
+通过贝叶斯公式可以得到
+\[
+    P_\text{win} - P_\text{lose} = \frac{1}{4} \mel{\phi}{\hat{C}_{AB}}{\phi}.
+\]
+通过一些代数计算可以得到
+\[
+    \hat{C}_{AB}^2 = 4 1_{AB} - \comm*{\hat{A}^{(0)}}{\hat{A}^{(1)}} \otimes \comm*{\hat{B}^{(0)}}{\hat{B}^{(1)}},
+\]
+最后就有
+\[
+    P_\text{win} - P_\text{lose} \leq \frac{\sqrt{2}}{2}.
+\]
+由于
+\[
+    P_\text{win} + P_\text{lose} = 1,
+\]
+我们得到
+\begin{equation}
+    P_\text{win} \leq \frac{2 + \sqrt{2}}{4},
+\end{equation}
+并且可以验证以下
 
 最大纠缠态时取到等号。
 所谓的\concept{Tsirelson不等式}。
 
-因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况。
+因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况；如果观察到了$(2+\sqrt{2})/2$的胜率，那么量子理论也是不足够的，需要引入超越量子理论的关联。
 
 \subsection{贝尔实验}
 
@@ -211,9 +267,9 @@ CHSH游戏可以一般化为这样一个场景：
 
 一个量子电路模型通常可以分为三步：
 \begin{enumerate}
-    \item 制备量子态，包括但不限于根据（可能是经典的）输入制备量子比特和引入辅助位；
-    \item 幺正演化，即让量子比特经过一系列幺正矩阵（\concept{量子逻辑门}）的变换；
-    \item 测量。我们通常将测量放在最后，因为可以根据\concept{推迟测量原则}，任何在计算过程中发生的测量都可以推迟到线路的最后。
+    \item 制备量子态，包括但不限于根据（可能是经典的）输入制备量子比特和引入辅助位；这些量子态称为\concept{量子寄存器}。
+    \item 幺正演化，即让量子比特经过一系列幺正矩阵（\concept{量子逻辑门}）的变换。
+    \item 测量。我们通常将测量放在最后，因为可以根据\concept{推迟测量原则}，受控门和测量算符对易，于是任何在计算过程中发生的测量都可以推迟到线路的最后。
 \end{enumerate}
 
 \subsection{量子逻辑门}
@@ -399,27 +455,40 @@ principle pf deferred measurement
 
 \subsection{量子傅里叶变换}
 
-量子傅里叶变换形如
+量子傅里叶变换是指如下变换：
 \begin{equation}
     \ket*{j} \longrightarrow \frac{1}{\sqrt{N}} \sum_k \ee^{2 \pi \ii j k / N} \ket*{k},
 \end{equation}
 其中$N$是$\ket*{i}$的个数。我们通常将数值编码为二进制，从而设数据位数为$n$，则$N=2^n$。
-通过直接证明可以发现上式可以在量子比特的框架下被写成
+通过直接展开可以发现上式可以在量子比特的框架下被写成
 \begin{equation}
-    2^{n/2} \ket*{j_1 j_2 \cdots j_n} = (\ket*{0} + \ee^{2\pi \ii 0.j_n} \ket*{1}) \cdots (\ket*{0} + \ee^{2 \pi \ii 0.j_n j_{n-1} \cdots j_1} \ket*{1}),
+    \ket*{j_1 j_2 \cdots j_n} \longrightarrow 2^{n/2} (\ket*{0} + \ee^{2\pi \ii 0.j_n} \ket*{1}) \cdots (\ket*{0} + \ee^{2 \pi \ii 0.j_1 j_2 \cdots j_n} \ket*{1}),
     \label{eq:bin-quantum-ft}
 \end{equation}
-其中$0.j_n j_{n-1} \cdots$表示二进制小数，$j_1 j_2 \cdots$表示二进制整数。
-\eqref{eq:bin-quantum-ft}可以比较容易地使用量子线路实现，
-其时间复杂度为$\bigO{n^2}$。作为对比，经典傅里叶变换的时间复杂度为
+其中$0.j_n j_{n-1} \cdots$表示二进制小数，$j_1 j_2 \cdots$表示二进制整数；在推导上式时要注意到$\ee^{2\pi \ii}$的整数倍是$1$。
+
+\eqref{eq:bin-quantum-ft}可以比较容易地使用量子线路实现，具体步骤为
+% TODO
+实现的关键在于意识到$j_1$只需要被使用一次，所以一开始就可以直接在它上面做操作，而$j_2$需要被使用两次，所以需要等$j_1$上的操作完成了才能在$j_2$上做操作，等等。
+其时间复杂度为$\bigO(n^2)$。作为对比，经典傅里叶变换的时间复杂度为
 量子傅里叶变换尚未有效实现的主要原因是难以制备那么多量子比特，并且也很难测量相位——如果要精确测量，需要制备大量同样的量子态，这本身需要指数次操作。
 
 \subsection{量子相位估计}
 
-一次估计即可
+设某个量子寄存器$\ket{u}$是某个幺正操作的本征态，有
+\begin{equation}
+    \hat{U} \ket{u} = \ee^{2\pi \ii \varphi} \ket{u}, \quad 0 < \varphi < 1.
+\end{equation}
+现在需要设计一种算法来估计$\varphi$的前$n$位。
+
+\begin{equation}
+    t = 
+\end{equation}
 
 \subsection{order finding}
 
-
+\begin{equation}
+    x^r = 1 \mod{1}
+\end{equation}
 
 \end{document}
