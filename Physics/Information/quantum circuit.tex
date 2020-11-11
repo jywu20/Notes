@@ -113,6 +113,7 @@
 在Bloch球上建立球坐标系，以$(r, \theta, \varphi)$为球坐标。对$r=1$的点，即纯态，代入\eqref{eq:bloch-ball}，做特征分解可以得到
 \begin{equation}
     \ket{\psi(\vb*{r})} = \cos \frac{\theta}{2} \ket{0} + \sin \frac{\theta}{2} \ee^{\ii \varphi} \ket{1},
+    \label{eq:state-on-ball}
 \end{equation}
 而与它正交、位于Bloch球另一边的$\ket{\psi(-\vb*{r})}$是
 \begin{equation}
@@ -139,6 +140,15 @@ Bloch球以一种直观的方式展现了量子比特系统和经典比特系统
         \end{aligned}
     \right.
 \end{equation}
+
+二量子比特系统的最大纠缠态为所谓的\concept{贝尔态}，它们是
+\begin{equation}
+    \begin{aligned}
+        \ket{\Phi^+} &= \frac{1}{\sqrt{2}} (\ket{00} + \ket{11}), \quad \ket{\Phi^-} = \frac{1}{\sqrt{2}} (\ket{00} - \ket{11}), \\
+        \ket{\Psi^+} &= \frac{1}{\sqrt{2}} (\ket{01} + \ket{10}), \quad \ket{\Psi^-} = \frac{1}{\sqrt{2}} (\ket{01} - \ket{10}).
+    \end{aligned}
+\end{equation}
+最大纠缠态是很多量子关联问题中最优解的实现方式。例如，在量子关联中，最大纠缠态通常会带来最大的关联。
 
 \subsection{量子比特系统的制备}
 
@@ -237,9 +247,17 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 \[
     \hat{C}_{AB}^2 = 4 1_{AB} - \comm*{\hat{A}^{(0)}}{\hat{A}^{(1)}} \otimes \comm*{\hat{B}^{(0)}}{\hat{B}^{(1)}},
 \]
-最后就有
+使用无穷范数，有
 \[
-    P_\text{win} - P_\text{lose} \leq \frac{\sqrt{2}}{2}.
+    \begin{aligned}
+        \|\hat{C}_{AB}^2\| &\leq 4 + \|\comm*{\hat{A}^{(0)}}{\hat{A}^{(1)}}\| \|\comm*{\hat{B}^{(0)}}{\hat{B}^{(1)}}\| \\
+        &\leq 4 + (\|\hat{A}^{(0)} \hat{A}^{(1)}\| + \|\hat{A}^{(1)} \hat{A}^{(0)}\|) (\|\hat{B}^{(0)} \hat{B}^{(1)}\| + \|\hat{B}^{(1)} \hat{B}^{(0)}\|) \\
+        &= 4 + 2 \cdot 2 = 8,
+    \end{aligned}
+\]
+考虑到无穷范数的定义我们就有
+\[
+    P_\text{win} - P_\text{lose} = \frac{1}{4} \mel{\phi}{\hat{C}_{AB}}{\phi} \leq \frac{\sqrt{2}}{2}.
 \]
 由于
 \[
@@ -249,9 +267,7 @@ Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之
 \begin{equation}
     P_\text{win} \leq \frac{2 + \sqrt{2}}{4},
 \end{equation}
-并且可以验证以下
-
-最大纠缠态时取到等号。
+这个不等式的等号是可以取到的，为此我们尝试令最大纠缠态时取到等号。
 所谓的\concept{Tsirelson不等式}。
 
 因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况；如果观察到了$(2+\sqrt{2})/2$的胜率，那么量子理论也是不足够的，需要引入超越量子理论的关联。
@@ -304,6 +320,12 @@ CHSH游戏可以一般化为这样一个场景：
 \begin{equation}
     R_z(\theta) = \exp(-\frac{\ii \theta Z}{2}) = \pmqty{\dmat{\ee^{- \frac{\ii \theta}{2}}, \ee^{\frac{\ii \theta}{2}}}}.
 \end{equation}
+这些操作被称为旋转是因为将它们作用在一个态上就相当于将这个态在Bloch球上做了对应的旋转。
+例如，我们有
+\[
+    R_y(\alpha) \pmqty{\cos\frac{\theta}{2} \\ \ee^{\ii \varphi} \sin\frac{\theta}{2} } = \ee^{- \frac{\ii \alpha}{2}} \pmqty{ \cos\frac{\theta}{2} \\ \ee^{\ii (\varphi + \alpha)} \sin\frac{\theta}{2} },
+\]
+正好就是绕着$z$轴转动了$\alpha$角度。
 实际上，更加一般的，绕着轴$\vb*{n}$的旋转门为
 \begin{equation}
     R_{\vb*{n}}(\theta) = \cos \frac{\theta}{2} I - \ii \sin \frac{\theta}{2} \vb*{n} \cdot \hat{\vb*{\sigma}}.
@@ -401,6 +423,10 @@ CNOT门满足以下恒等式：
 实际上是可以的。请注意一个two level unitary transformation实际上就是某个广义受控门的行和列打乱之后的结果。
 另一方面，注意到广义CNOT门可以交换两个仅仅在某一位有差别的态，而通过\concept{Gray编码}——即一系列相邻两个编码只差一位的编码串——可以使用广义CNOT门交换任意两个态，因此广义CNOT门配合一个单一的广义受控门就可以实现任意的two level unitary transformation。
 Gray编码不是唯一的，并且最后一位是$1$变成$0$还是$0$变成$1$都无关紧要。
+最后，任意的广义CNOT门都可以使用CNOT门和单量子比特门实现，这是因为
+% TODO：需要一些辅助比特
+
+使用这样的方法，使用单量子比特门和CNOT实现一个任意的$n$比特量子门最多需要量级为$\bigO(n^2 4^n)$的操作——一个任意的$n$比特量子门是一个$2^n$阶的方阵，
 
 上面提到的量子门的集合都是连续的，如单量子比特门可以连续地调节，这当然也是正确的，因为量子线路模型中可以有相位变换而这是一种连续的操作。
 还有一种思路是，不要求精确地构造任何可能的幺正变换，而要求可能任意精确地逼近一个幺正变换。这就是近似通用量子门，可以用一个离散的集合做近似通用量子门。例如，
