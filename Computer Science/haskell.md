@@ -96,6 +96,8 @@ data Worker x y = forall Buffer b. Worker {buffer :: b, input :: x, output :: y}
 
 # 常见设计模式和范畴论
 
+一个type class就是一个范畴图，有一些（抽象的）对象和箭头。instance语句可以看成给一些具体的对象赋予了一些结构。
+
 ## Functor
 
 ```Haskell

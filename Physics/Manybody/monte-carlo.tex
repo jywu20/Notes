@@ -247,6 +247,82 @@ Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完�
 随着$M$的增大，标准差会不断增大，然后趋于平缓。标准差开始趋于平缓时，不同的区段之间就应该基本上不相关了，因为这说明一个区段携带的信息实际上基本上就是这个区段的平均值提供的信息。
 这就给了我们一种非常便捷的估算数据标准差（从而可以给计算结果标上误差棒）的方法：从比较小的$M$开始不断增加，直至标准差上升平缓，此时的$\Delta_M$就近似为实际的标准差，且$\Delta \tau$约等于此时的$N/M$。
 
+\subsection{相变}
+
+在相变点附近蒙特卡洛方法经常遇到一些特殊的困难。本节讨论这些困难和如何解决这些困难。
+
+\subsubsection{临界慢化}
+
+在一个真实的系统中会出现关联长度发散，但是扰动从一点传递到另外一点当然需要时间，因此在临界点附近关联时间——扰动从一点传递到另一点的时间——也会越来越长。
+设$\xi \sim t^{-\nu}$，则关联时间为$\tau \sim t^{-z \nu}$，$z$称为\concept{动力学指数}。（由于系统没有洛伦兹不变性，没有什么能够保证$z$一定是$1$）。
+\concept{临界慢化}就是指以上情况导致的更新不及时的现象。
+临界慢化还会导致另外一个问题，就是自关联时间变得很大，由于有效的采样的间隔必须为关联时间的量级，时间复杂度就有一个$L^{z}$的因子。%
+\footnote{这个问题在实际的物理系统中不会碰到，因为真实世界中的统计系统的涨落是并行的；临界慢化本身则是实际的统计系统中也会出现的。}%
+
+为了解决临界慢化的问题，我们需要将Metropolis算法的局部更新更改为\concept{集团更新}。具体来说，我们需要加入一些非局域的更新。
+直觉上看，临界状态下系统具有自相似性，会出现“磁畴”，那么可以将整个磁畴一次性翻转。
+一种常见的算法是\concept{Wolff算法}\footnote{PRL.62,361(1989)}，以伊辛模型为例，其步骤如下：
+
+\begin{algorithm}[H]
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+
+    \KwData{不同构型$\mathcal{C}$对应的$W[\mathcal{C}]$，计算步数$N$，一个容易抽样的分布$Q(\mathcal{C}' | \mathcal{C}_0)$}
+    \KwResult{序列$\{\mathcal{C}_t\}$}
+    
+    选定一个初始状态$\mathcal{C}_0$\;
+
+    \For{$t$=$1..N$}{
+        $\mathtt{cluster} = \{\}$ \;
+        $\mathtt{rejected} = \{\}$ \;
+        随机选取格点$i_0$加入$\mathtt{cluster}$ \;
+        \While{$\mathtt{cluster}$中还有格点有近邻没有被加入$\mathtt{rejected}$}{
+            \For{格点的边$\pair{i, j}$}{
+                \eIf{$\sigma_i \neq \sigma_j$}{
+                    将$\pair{i, j}$加入$\mathtt{rejected}$ \;
+                }{
+                    % $\ee^{-2 \beta J \sigma_i \sigma_j}$不加入，$1 - \ee^{-2 \beta J \sigma_i \sigma_j$加入 \;
+                }
+            }
+        }
+        将$\mathtt{cluster}$中的全部格点翻转 \;
+    }
+    \Return{序列$\{\mathcal{C}_i\}$}\;
+
+    \caption{Wolff算法}
+    \label{alg:wolff-alg}
+\end{algorithm}
+
+细致平衡原理成立，因为
+
+可以看到集团更新是非常高效的，因为即使更新率非常小，仅有的后果也只是集团长得比较小而已——算法总是在做一些事情。
+实际上，当$\xi$发散时集团大小也是发散的，这就克服了临界慢化问题。
+
+在高温下集团更新退化为Metropolis算法；但是低温下，集团更新会将很多自旋锁在一起，只留下少数几个自旋没有翻转，这虽然等价于Metropolis算法，但带来了很多没用的操作。
+比较好的策略是做一个切换，在临界点附近做集团更新而在其它地方用Metropolis算法；如果并不知道临界点在哪里，可以交替执行Metropolis算法和Wolff算法，然后观察两者的收敛性来决定选用哪个给出的结果。
+这样会浪费一半时间，但是节省了很多精力。
+
+\subsubsection{相变点位置}
+
+\begin{equation}
+    U = \frac{3}{2} \left( 1 - \frac{\expval*{m^4}}{3 \expval*{m^2}^2} \right) = \left\{
+        \begin{aligned}
+            &0, \quad T \to \infty, \\
+            &1, \quad T \to 0.
+        \end{aligned}
+    \right.
+\end{equation}
+由此可以判断相变点的位置。
+
+\[
+    x \longrightarrow \frac{x}{b}, \quad m \longrightarrow b^{[m]} m
+\]
+
+\[
+    \expval*{m} L^{-[m]} = f (t L^{1/\nu})
+\]
+
 \section{量子蒙特卡洛概述}
 
 现在我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统，设其维数为$d$。
