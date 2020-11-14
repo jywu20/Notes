@@ -323,9 +323,9 @@ Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完�
     \expval*{m} L^{-[m]} = f (t L^{1/\nu})
 \]
 
-\section{量子蒙特卡洛概述}
+\subsection{量子蒙特卡洛概述}
 
-现在我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统，设其维数为$d$。
+最后我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统，设其维数为$d$。
 特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
 在计算配分函数时，量子的平衡态统计系统和经典的不同之处在于：
 \begin{itemize}
@@ -350,6 +350,10 @@ Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完�
 由于前两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
 例如，如果要计算系综期望值，使用\eqref{eq:classical-expectation}依照定义计算上式计算量非常大；当然，可以首先将哈密顿量对角化，但对复杂的系统这基本上不可能完成。
 归根到底，量子力学允许态做线性叠加的特点意味着系统可以取的状态相比于经典力学不成比例得多，因此不能够简单地将经典蒙特卡洛的方法推广到量子蒙特卡洛，而只能尝试将量子问题化归到一个经典蒙特卡洛采样问题上。
+通常，这意味着需要将一个$d$维量子系统通过Trotter分解之类的方法转化为一个$d+1$维经典系统。%
+\footnote{
+    表面看，将热力学作用量当成权重即可，但实际上相干态路径积分经常有符号问题。
+}%
 
 不同的计算任务还要求不同的算法。例如\eqref{eq:quantum-expectation}对应的问题称为\concept{有限温度量子蒙特卡洛（Finite Temperature Quantum Monte Carlo, FTQMC）}，\eqref{eq:ground-state-infty}对应的问题称为\concept{投影量子蒙特卡洛（Projector Quantum Monte Carlo, PQMC）}。
 从\eqref{eq:quantum-expectation}和\eqref{eq:ground-state-infty}中可以看出，无论哪种量子蒙特卡洛，很大一部分工作是要计算$\ee^{-\beta \hat{H}}$，实际上就是计算虚时间路径积分。
@@ -374,8 +378,7 @@ Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完�
 \[
     \trace(\hat{A})^* = - \trace \hat{A}, \quad \trace(\hat{O} \hat{A})^* = - \trace(\hat{O} \hat{A}),
 \]
-于是如果
-% TODO 误差分析
+于是如果可观察量都是实数，% TODO
 就能够有小到$\bigO(\Delta \tau^2)$的误差。
 代入\eqref{eq:quantum-expectation}，就得到
 \[
@@ -404,6 +407,53 @@ Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完�
 因此，实际上我们并不能够得到一个真正的概率分布。
 这可能导致蒙特卡洛算法不收敛，或者虽然收敛但由于分母非常小（正负抵消）而精度很差。
 这就是所谓的\concept{符号问题}——$W(n)$的正负号不定导致模拟困难。
+
+% TODO:
+设哈密顿量是正定的，如果在一组基底下所有非对角元或者等于零或者小于零，那么能够保证没有符号问题。直观地看这很合理，因为根据Forbidens（？）定理，此时基态波函数在不同基态上的投影的权重都是一样的，因此系统在我们选定的基态下非常“经典”。
+当然，原则上，在哈密顿量的本征态下非对角元都是零，从而原则上只要恰当选取基底就不会有符号问题，但是如果这组基底高度非局域（从而难以构造），那么基本上没有可能使用世界线蒙特卡罗方法模拟这个系统。
+从这个意义上，世界线蒙特卡洛方法能够解决的都是比较经典的问题，而真正能够展示量子力学奇特特性的模型则难以处理。
+
+\subsection{XXZ模型}
+
+本节讨论一个例子：\concept{一维XXZ自旋链}，其哈密顿量为
+\begin{equation}
+    \hat{H} = \sum_{i} \underbrace{(J_x (\hat{S}_i^x \hat{S}_{i+1}^x + \hat{S}^y_i \hat{S}^y_{i+1}) + J_z \hat{S}_i^z \hat{S}^z_{i+1})}_{\hat{H}^{(i)}}.
+\end{equation}
+在伊辛基底（也就是所有格点都取$z$方向自旋本征态）下做Trotter分解，
+\[
+    Z = \sum_{\{\sigma_{j}\}} \mel*{\sigma_{0}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{m-1}} \mel*{\sigma_{m-1}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{m-2}} \cdots \mel*{\sigma_{1}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{0}},
+\]
+其中脚标$j$表示虚时间。为了减小Trotter分解误差，做哈密顿量分解
+\[
+    \hat{H} = \hat{H}_1 + \hat{H}_2, 
+\]
+其中
+\[
+    \hat{H}_1 = \sum_{i} \hat{H}^{(2i)}, \quad \hat{H}_2 = \sum_i \hat{H}^{(2i+1)},
+\]
+则容易验证$\hat{H}_1$和$\hat{H}_2$的各个项之间都是对易的，但是$\hat{H}_1$和$\hat{H}_2$不对易。这样就有
+\[
+    \ee^{-\Delta \tau \hat{H}_1} = \prod_i \ee^{-\Delta \tau \hat{H}^{(2i)}}, \quad \ee^{-\Delta \tau \hat{H}_2} = \prod_i \ee^{-\Delta \tau \hat{H}^{(2i+1)}}.
+\]
+我们尝试做近似
+\begin{equation}
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}}, \quad \beta = m \Delta \tau,
+\end{equation}
+这个近似的效果好到什么程度？做展开并分析最重要的几项，可以发现
+\[
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}} 
+\]
+因此误差是$\Delta \tau$的一阶项，差一个反厄米算符。如果所有可观察量都是实数——通常都是这样——反厄米算符不会影响期望值的计算，于是计算期望值时就只有$\Delta \tau^2$级的误差。这和之前一般性的分析一致。
+
+现在只需要计算$\mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2}}{\sigma_j}$，有
+\begin{equation}
+    \mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1}}{\sigma_j} = \mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2}}{\sigma_{j+\frac{1}{2}}} \mel*{\sigma_{j+\frac{1}{2}}}{\ee^{-\Delta \tau \hat{H}_2}}{\sigma_j},
+\end{equation}
+因此
+
+这里还有一些比较棘手的地方。首先，对称性意味着有一些跃迁矩阵元始终是零，因此无论如何涨落，这些态在实际的系统中都不应该出现。
+当然，朴素的Metropolis算法也确实不会接受这样的构型，但是由于不会接受的构型数目远大于会接受的构型，这会导致更新严重不及时。
+因此最好还是重新表示构型来直接去掉所有不正确的构型。
 
 \section{辅助场蒙特卡洛方法}
 
@@ -734,5 +784,50 @@ $\vb{A}$是一个非常稀疏的矩阵，只有两个非零元素，从而$\vb{\
     \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{-H_\text{I}(\vb{s}_n)}, \quad C(\vb{s}) \ee^{-H_\text{I}(\vb{s}_n)} = \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}},
     \label{eq:o2-path-integral}
 \end{equation}
+
+\section{SSE方法}
+
+\concept{SSE方法}，或者说\concept{随机级数展开方法}，是一个奇特但有用的蒙特卡洛方法。
+这个方法的想法最早来自高温展开。在低温下，相互作用变得重要起来，高温展开级数不收敛。但是可以观察到，如果随机地在这个级数中胡乱抽取一些项求和，确实能够收敛。
+
+考虑一个哈密顿量
+\begin{equation}
+    \hat{H} = \sum_l \hat{H}_l.
+\end{equation}
+高温展开为
+\[
+    \begin{aligned}
+        Z &= \trace \sum_n \frac{1}{n!} (-\beta \hat{H})^n \\
+        &= \sum_\sigma \sum_n \sum_{\{l\}} \frac{1}{n!} (-\beta)^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma}.
+    \end{aligned}
+\]
+原则上我们可以现在就开始对每个求和指标都抽样。一个比较麻烦的细节是，不同的$n$对应不同长度的$\hat{H}_{l_1} \cdots \hat{H}_{l_n}$算符串，可以固定实际抽样的$n$的上限为$L$%
+\footnote{
+    当然，的确有这样的可能：$n$的分布有长尾，从而不能取一个截断。但是我们会看到实际情况并非如此，$\expval*{n}$和$\expval*{\Delta n^2}$都是有限的，从而做截断是安全的。
+}%
+，使用单位矩阵填满$L-n$个多余的位置。
+这样，所有可能的算符串$\hat{H}_{l_1} \cdots \hat{H}_{l_n}$就是$\{1, \hat{H}_1, \hat{H}_2, \ldots\}^L$。
+由于$L-n$个单位矩阵会产生$C_L^n$个实际上相同的算符串，应有
+\begin{equation}
+    \begin{aligned}
+        Z &= \sum_\sigma \sum_{\{l\}} \frac{1}{n!} (-\beta)^n C_L^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma} \\
+        &= \sum_\sigma \sum_{\{l\}} \frac{(L-n)!}{L!} (-\beta)^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma}.
+    \end{aligned}
+\end{equation}
+
+以海森堡模型为例，我们设$l=(a, b)$，规定$\hat{H}_{0, 0} = 1$，而
+$b$用于表示算符是不是对角的。
+
+在抽样时可以遵循先做对角更新再做非对角更新
+
+\begin{equation}
+    \frac{p(\hat{H}_{0,0} \to \hat{H}_{1, i})}{p(\hat{H}_{1, i} \to \hat{H}_{0, 0})} = \frac{1}{N_b} \frac{N_b \beta (J/2)}{}
+\end{equation}
+
+物理量的计算：
+能量就正比于nontrivial的项数$n$的平均值，能量的涨落正比于$\expval*{\Delta n^2}$。
+由于能量和能量的涨落都是有限的，确实可以对$n$的取值范围做一个简单的截断。
+
+非对角矩阵的平均值：
 
 \end{document}
