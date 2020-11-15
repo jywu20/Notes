@@ -38,6 +38,7 @@
 
 \newcommand{\concept}[1]{\underline{\textbf{#1}}}
 \renewcommand{\emph}{\textbf}
+\newcommand*{\bigO}{\mathcal{O}}
 
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
@@ -1142,7 +1143,10 @@ RPA近似，即对占主导地位的费曼图做部分无穷求和，在凝聚�
 \begin{equation}
     S = \sum_{k, \alpha} \bar{\psi}_{k \alpha} (-\ii k_n + \xi_{\vb*{k}}) \psi_{k \alpha} + \frac{1}{2 \beta V} \sum_{k, k', q, \alpha, \beta} \bar{\psi}_{k+q, \alpha} \bar{\psi}_{k'-q, \beta} \underbrace{\frac{4\pi e^2}{\vb*{q}^2}}_{V(\vb*{q})} \psi_{k' \beta} \psi_{k \alpha},
 \end{equation}
-这里$k, k', q$是四维动量，所有场定义在松原频率和动量上，并且为了节约字母我们用$k_n$表示$k$中的松原频率部分。
+这里$k, k', q$是四维动量，所有场定义在松原频率和动量上，并且为了节约字母我们用$k_n$表示$k$中的松原频率部分；四维动量的点乘采取惯用的记号，即
+\begin{equation}
+    k \cdot r = \omega t - \vb*{k} \cdot \vb*{r}, \quad k = (\omega, \vb*{k}), \quad r = (t, \vb*{r}).
+\end{equation}
 $1/2$因子来自相互作用是二体的这一事实，不反映在费曼图中顶角带来的因子中。
 
 下面计算一阶自由能。我们有两种图：
@@ -1574,6 +1578,7 @@ $\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性
     \hat{H}_\text{int} = - \frac{g}{L^d} \sum_{\vb*{k}, \vb*{k}', \vb*{q}} \hat{c}^\dagger_{\vb*{k}+\vb*{q}, \uparrow} \hat{c}^\dagger_{-\vb*{k}, \downarrow} \hat{c}_{-\vb*{k}'+\vb*{q}, \downarrow} \hat{c}_{\vb*{k}' \uparrow}.
     \label{eq:bcs-hamiltonian-p}
 \end{equation}
+上式中我们选用的傅里叶正变换和逆变换的归一化因子都是$1/L^{d/2}$。
 我们将表明，这个理论的确会给出一个超导相。
 
 \subsubsection{库伯对稳定性}
@@ -1592,11 +1597,12 @@ $\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性
 使用费曼图，并使用梯形图近似%
 \footnote{
     表面上看，梯形图近似是对所有梯形图重求和而RPA近似是对所有项链图重求和，但这种差别只是表面上的。
-    在这里，我们既可以遵循从QED得到的提示，将相互作用顶角看成两个电子交换了一个光子，也可以等效地认为两个电子先融合成了一个电子对，然后电子对再拆散。
+    在这里，我们既可以遵循吸引相互作用来自声子的事实，将相互作用顶角看成两个电子交换了一个声子，也可以等效地认为两个电子先融合成了一个电子对，然后电子对再拆散。
     前面一种图景的梯形图近似就是后一种图景的RPA近似。
     \label{note:rpa-graph}
 }%
-，顶角修正为（推导这个公式时需要注意顶角修正在这里只和输入的两个电子的动量和有关，和自旋、电子各自的动量无关）
+，则$C(\vb*{q}, \omega_n)$由于相互作用会多出来一个正比于顶角修正$\Gamma_{q}$的项。计算出来这个项就定性地得到了$C(\vb*{q}, \omega_n)$的性质。
+顶角修正为（推导这个公式时需要注意顶角修正在这里只和输入的两个电子的动量和有关，和自旋、电子各自的动量无关）
 \[
     \Gamma_{q} = g + \frac{g}{\beta L^d} \sum_{p} G^0_{p + q} G^0_{- p} \Gamma_{q},
 \]
@@ -1608,13 +1614,50 @@ $\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性
 \[
     \frac{1}{\beta} \sum_{\omega_n} F(\ii \omega_n) = - \oint \frac{\dd{z}}{2\pi \ii} f(z) F(z),
 \]
-于是
+注意到系统具有镜像对称性，即
+\[
+    \xi_{-\vb*{p}} = \xi_{\vb*{p}},
+\]
+通过留数定理可以计算出
+\[
+    \begin{aligned}
+        \frac{T}{L^d} \sum_{p} G^0_{p+q} G^0_{-p} &= \frac{1}{L^d} \sum_{\vb*{p}} \frac{1}{\beta} \sum_{\nu_n} \frac{1}{\ii (\omega_n + \nu_n) - \xi_{\vb*{p}+\vb*{q}}} \frac{1}{- \ii \nu_n - \xi_{\vb*{p}}} \\
+        &= \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}}, 
+    \end{aligned}
+\]
+这里我们设$q=(\omega_n, \vb*{q})$，$p=(\nu_n, \vb*{p})$。
+这样就有
+\begin{equation}
+    \frac{1}{\Gamma_q} = \frac{1}{g} - \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}}.
+    \label{eq:bcs-rpa-correction}
+\end{equation}
 
-在$T>T_\text{c}$时，这个关联函数的虚部给出了一个预料之中的指数衰减，但是$T = T_\text{c}$时出现奇异性。实际上这就是梯形图近似或者RPA近似（见\autoref{note:rpa-graph}）的作用：它给出了形如$1/(1-\text{something})$的一个因子，从而可以预言相变的位置。
-
-\subsubsection{平均场理论}
-
-既然要通过BCS机制形成超导，我们应该以
+我们计算一个最简单的情况：空间均匀，没有时间演化，则$\vb*{p}$和$\omega_n$都是零。
+这样就有
+\[
+    \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}} = \int \nu(\epsilon) \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon},
+\]
+其中$\epsilon$指的是对能量的态密度。设费米面附近厚度为$\omega_\text{D}$的状态参与形成库伯对，则在$\epsilon<0$时$f(\epsilon)=-1$，在$\epsilon>0$时$f(\epsilon)=1$，于是
+\[
+    \begin{aligned}
+        \int \nu(\epsilon) \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon} &= \nu \int_{-\omega_\text{D}}^{\omega_\text{D}} \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon} \\
+        &= \nu \int_0^{\omega_\text{D}} \frac{\dd{\epsilon}}{\epsilon}.
+    \end{aligned}
+\]
+这是一个有红外发散的结果，会出现这个结果是因为以上各式实际上都是在有限温度下才有意义的，而有限温度下$\epsilon=0$附近$f(\epsilon)$会快速衰减，因此在红外端会有一个截断，于是
+\[
+    \begin{aligned}
+        \frac{1}{\Gamma_q} &\sim \frac{1}{g} - \nu \int_{T}^{\omega_\text{D}} \frac{\dd{\epsilon}}{\epsilon} \\
+        &= \frac{1}{g} - \nu \ln \frac{\omega_\text{D}}{T}.
+    \end{aligned}
+\]
+容易看出这里存在奇异性：温度较高时顶角修正的虚部意味着库伯对的指数衰减，但是当温度低到某一个临界温度时$\Gamma_q$无定义。
+临界温度的数量级为
+\begin{equation}
+    T_\text{c} \sim \omega_\text{D} \exp(- \frac{1}{g \nu}).
+\end{equation}
+这意味着当温度降低到这个数量级时，仅仅考虑顶角修正是不够的，更多的涨落都需要纳入考虑，也即暗示了相变的存在。
+梯形图近似或者RPA近似（见\autoref{note:rpa-graph}）常常被用于估计相变点的位置：它给出了形如$1/(1-\text{something})$的一个因子，从而可以预言相变的位置。
 
 \subsubsection{路径积分处理}
 
@@ -1661,6 +1704,7 @@ $G_0^{(\text{h})}$和$G_0^{(\text{p})}$可以分别理解为自由空穴和自�
 现在可以将电子场积掉，因为这是简单的高斯积分，得到
 \begin{equation}
     Z = \int \fd(\bar{\Delta}, \Delta) \exp(- \frac{1}{g} \int \dd{\tau} \dd[d]{\vb*{r}} \abs*{\Delta}^2 + \underbrace{\ln \det \mathcal{G}^{-1}}_{\trace \ln \mathcal{G}^{-1}}).
+    \label{eq:bcs-without-electron}
 \end{equation}
 上式实际上还有一个常数因子，因为做格拉斯曼场高斯积分的时候，二次型前面没有负号，从而行列式中可能会有一个负因子；不过总是可以把这个负因子提取出来，然后由于外层的$\ln$，它是一个无关紧要的常数。
 $\ln \det$一项看起来有点奇怪，因为它不包含任何对$\vb*{r}$和$\tau$的积分——这些积分都在$\det$运算里面了，并且使用何种表象并不重要。无穷维矩阵的行列式并不好定义，所以实际计算时通常使用$\trace \ln$形式。
@@ -1668,7 +1712,8 @@ $\ln \det$一项看起来有点奇怪，因为它不包含任何对$\vb*{r}$和$
 
 \subsubsection{金斯堡-朗道理论}
 
-我们现在微扰计算$\det \mathcal{G}^{-1}$，从而尝试得到一个显式的有效理论。切换到动量-频率表象下，引入记号
+我们现在微扰计算$\det \mathcal{G}^{-1}$，从而尝试得到一个显式的有效理论。本节先不考虑外加电磁场。
+切换到动量-频率表象下，引入记号
 \[
     \hat{\Delta} = \pmqty{ & \Delta \\ \bar{\Delta} & }, \quad \mathcal{G}_0 = \mathcal{G} |_{\Delta = 0},
 \]
@@ -1681,9 +1726,78 @@ $\ln \det$一项看起来有点奇怪，因为它不包含任何对$\vb*{r}$和$
     \end{aligned}
 \]
 第二个等号是普遍成立的，不要求$\ln$的宗量中的两个矩阵对易；第三个等号是来自$\mathcal{G}^{-1}_0 \hat{\Delta}$无迹这一事实。
-展开式的第一项是
 
-展开式的第二项是RPA近似这一点是非常正常的，因为$\Delta^2$项画成费曼图就是所有以一个$\Delta$（即库伯对）出发，终结于另一个$\Delta$的费曼图求和，那么自然只能够包括项链图。
+展开式的第一项是一个无用的常数。我们将要看到，展开式的第二项实际上是一个RPA近似——或者，如果采用标准的“电子交换光子”的图像，一个梯形图近似（见\prettyref{note:rpa-graph}）。
+
+切换到四维动量表象下%
+\footnote{
+    准确地说，此时我们的表象是自旋直积上坐标，即
+    \[
+        \pmqty{ \vb*{r}_1 & \vb*{r}_2 & \cdots & \vb*{r}_1 & \vb*{r}_2 & \cdots }^\top.
+    \]
+    我们需要分别对两个坐标空间做傅里叶变换。
+
+    请注意此时我们已经将$\Psi$场积掉了，矩阵$\mathcal{G}$的傅里叶变换就是普通的矩阵的傅里叶变换而不是将$\Psi$调整为动量表象而适当调整$\mathcal{G}$使相应的二次型不变。
+    后面一种傅里叶变换的形式非常不便于处理。
+}%
+，对任意矩阵有
+\[
+    A_{k' k} \sim \int \dd[d+1]{r'} \int \dd[d+1]{r} \ee^{\ii k' \cdot r'} A_{r' r} \ee^{- \ii k \cdot r}.
+\]
+这里我们暂时略去了傅里叶变换的归一化系数，留到最后处理。当然，$G^\text{p}(r)$变换为$G^\text{p}(p) \delta_{p'p}$，或者记作$G_p \delta_{pp'}$，而$G^\text{h}(r)$变换为$-G_{-p} \delta_{pp'}$。
+最外层的负号是因为交换了产生算符和湮灭算符，脚标中的负号是因为因子$\ee^{-\ii k \cdot r}$原本应该作用在产生算符上但是对$G^\text{h}(r)$它作用在了湮灭算符上。
+显式地写出来，就是
+\[
+    G^\text{p}_{p' p} = \delta_{p' p} \frac{1}{\ii \omega_n - \xi_{\vb*{p}}}, \quad G^\text{h}_{p' p} = \delta_{p' p} \frac{1}{\ii \omega_n + \xi_{\vb*{p}}}.
+\]
+$\Delta$和$\bar{\Delta}$分别变换为$\Delta_{k'-k}$和$\bar{\Delta}_{k-k'}$。
+这样，第二阶展开为
+\[
+    \begin{aligned}
+        - \frac{1}{2} \trace (\mathcal{G}_0 \hat{\Delta})^2 &= - \trace G^\text{p} \Delta G^\text{h} \bar{\Delta} \\
+        &= \frac{1}{\beta L^d} \sum_{p_1, p_2} G_{p_1} \Delta_{p_1-p_2} G_{-p_2} \bar{\Delta}_{p_1-p_2} \\
+        &= \frac{1}{\beta L^d} \sum_{p, q} G_p G_{q-p} \abs*{\Delta_q}^2.
+    \end{aligned}
+\]
+因此有效作用量就是
+\begin{equation}
+    S = \sum_q \Gamma_q^{-1} \abs*{\Delta_q}^2 + \bigO(\Delta^4), \quad \Gamma_q^{-1} = \frac{1}{g} - \frac{1}{\beta L^d} \sum_{p} G_p G_{q-p}.
+\end{equation}
+我们现在看到，取二阶展开，$\Delta^2$的系数从$1/g$得到了一个修正，并且这就是在讨论库伯对稳定性时做的相互作用顶角修正\eqref{eq:bcs-rpa-correction}，是一个RPA近似（见\prettyref{note:rpa-graph}）。
+这是合理的，因为$\Delta^2$项画成费曼图就是所有以一个$\Delta$（即库伯对）出发，终结于另一个$\Delta$的费曼图求和，那么自然只能够包括项链图。
+
+在\eqref{eq:bcs-rpa-correction}中将$\Gamma_q$对$\omega_n$和$\vb*{q}$做展开，注意到$\ii \omega_n$没有系数地出现在分母中，且$\Gamma_q$在动量的空间镜像对称变换下不变，于是在实空间中$\Delta^2$项就是
+\[
+    \int \dd[d]{\vb*{r}} (\bar{\Delta} \partial_\tau \Delta +  c_0 \abs*{\Delta}^2 + c_1 \abs*{\grad{\Delta}}^2 + \cdots). 
+\]
+由于我们在讨论的是一个低能有效模型，可以直接截断到动量平方项，实际上，量纲分析也表明更高阶项在重整化群下是不重要的。%
+\footnote{
+    这里，以及其它涉及截断的地方，都有一定的微妙之处。
+    的确，重整化群下高阶项都会被指数压低，但是似乎没有什么阻止$\Delta$较大时高阶项很重要，而高阶项在被指数压低之前对低阶项可以产生影响。
+    通过这种截断计算出来的系数未必总是可靠的。
+}%
+因此$\Delta^2$阶的理论形如
+\begin{equation}
+    S = \int \dd{\tau} \dd[d]{\vb*{r}} \left( \bar{\Delta} \partial_\tau \Delta + \frac{c}{2} \abs*{\grad{\Delta}}^2 + \frac{r}{2} \abs*{\Delta}^2 \right).
+\end{equation}
+类似地可以计算到四阶修正，同样$\Delta^4$项中可能有导数算符，但是既然我们在上式中假定$k \sim \Delta$，可以将所有含有导数的四阶项忽略，得到
+\begin{equation}
+    S = \int \dd{\tau} \dd[d]{\vb*{r}} \left( \bar{\Delta} \partial_\tau \Delta + \frac{c}{2} \abs*{\grad{\Delta}}^2 + \frac{r}{2} \abs*{\Delta}^2 + \frac{u}{4!} \abs*{\Delta}^4 \right).
+    \label{eq:bcs-order-delta}
+\end{equation}
+当然，这和直接通过对称性得到的金斯堡-朗道理论是一致的。
+\eqref{eq:bcs-order-delta}仅仅在相变点附近成立，否则$\Delta$会变得很大，需要引入更多项；此外，我们也不能以“重整化群会指数压低含有导数算符的项”为由忽略诸如$\abs*{\grad{\Delta}}^4$之类的项。
+
+\eqref{eq:bcs-order-delta}的鞍点近似——从而，\eqref{eq:bcs-without-electron}的鞍点近似——就是平均场近似。
+我们对$\bar{\Delta}$做优化，取\eqref{eq:bcs-without-electron}关于$\bar{\Delta}$的极值点，使用前述$\trace \ln \mathcal{G}^{-1}$的展开式，可以得到
+\begin{equation}
+    \frac{1}{g} \Delta_0 = \frac{T}{L^d} \sum_{\vb*{p}, \omega_n} \frac{\Delta_0}{\omega_n^2 + \xi_{\vb*{p}}^2 + \abs*{\Delta_0}^2} . 
+\end{equation}
+这和平均场近似给出的的方程一致。
+
+\eqref{eq:bcs-order-delta}给出了一个具有自相互作用的玻色场。
+玻色性是预期之中的，因为两个费米子组合自然得到费米子；自相互作用意味着库伯对随着时间演化会解体。
+既然如此，\eqref{eq:bcs-order-delta}描述的相变实际上就是一个超流相变。因此BCS态实际上就是库伯对的超流态。
 
 \subsubsection{BCS下的Goldstone模}
 

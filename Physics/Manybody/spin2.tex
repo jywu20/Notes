@@ -1,0 +1,118 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$\ }
+
+\title{Advanced Topics in Spin Systems}
+\author{wujinq}
+
+\begin{document}
+
+\maketitle
+
+\section{Gauge field theories on a lattice}
+
+\subsection{\Ztwo lattice gauge theory}
+
+\subsubsection{The Hilbert space}
+
+\Ztwo lattice gauge theory is the simplest lattice gauge theory with a gauge field, but it is essential for understanding some quantum liquid states because it appears to be an effective theory of several topologically-ordered states.
+
+First we describe the Hilbert space.
+Consider a two-dimensional square lattice labeled by $\vb*{i}=(i_x, i_y)$, and put a link variable $S_{\vb*{i} \vb*{j}} = s_{\vb*{j} \vb*{i}}$ which can take the two values $\pm 1$.
+If nothing else is given, this is just the Hilbert space of Ising model and $s_{\vb*{i} \vb*{j}}$s may be interpreted as spins, acting as a one-to-one labeling.
+Now we impose a local \Ztwo gauge structure: we requires that two configurations $\{s_{\vb*{i} \vb*{j}}\}$ and $\{s'_{\vb*{i} \vb*{j}}\}$ label the same state if 
+\begin{equation}
+    s'_{\vb*{i} \vb*{j}} = W_{\vb*{i}} s_{\vb*{i} \vb*{j}} W_{\vb*{j}}^{-1},
+\end{equation}
+where $W_{\vb*{i}}$ can take values $\pm 1$. 
+
+Suppose the total number of sites of the lattice is $N_\text{site}$, then there are $2 N_\text{site}$ nearest-neighbor links, so the number of possible $\{s_{\vb*{i} \vb*{j}}\}$s is $2^{2 N_\text{site}}$.
+Since $\{W_{\vb*{i}}\}$ is defined on sites, there are $2^{N_\text{site}}$ elements in the gauge group.
+However, since both of the two gauge transformations
+\[
+    W_{\vb*{i}} = 1, \quad W_{\vb*{i}} = -1
+\]
+do nothing to physical states, there is an \emph{invariant gauge group} with two elements in the gauge group.
+The invariant gauge group is obviously a normal subgroup.
+Therefore, there are actually only $2^{N_\text{site}}/2$ elements in the representation of the gauge group on the space of all $\{s_{\vb*{i} \vb*{j}}\}$s.
+So finally we get $2^{2N_\text{site}} / (2^{N_\text{site}} / 2) = 2 \times 2^{N_\text{site}}$ different gauge-equivalent classes, corresponding to $2 \times 2^{N_\text{site}}$ physical states.
+
+Now it is time to find a proper way to label these states.
+For a loop on the lattice, we define
+\begin{equation}
+    U(C) = s_{\vb*{i} \vb*{j}} s_{\vb*{j} \vb*{k}} \cdots s_{\vb*{l} \vb*{i}},
+\end{equation}
+where $\vb*{i}, \vb*{j}, \ldots, \vb*{l}$ are sites on the loop, and call $U(C)$ the \concept{\Ztwo flux} through the loop. 
+It is easy to prove $U(C)$ is \Ztwo invariant, so it is a part of the whole label of a physical state.
+Now consider the \Ztwo flux through a plaquette:
+\begin{equation}
+    F_{\vb*{i}} = s_{\vb*{i}, \vb*{i}+\hat{\vb*{x}}} s_{\vb*{i}+\hat{\vb*{x}}, \vb*{i}+\hat{\vb*{x}}+\hat{\vb*{y}}} s_{\vb*{i}+\hat{\vb*{x}}+\hat{\vb*{y}}, \vb*{i}+\hat{\vb*{y}}} s_{\vb*{i}+\hat{\vb*{y}}, \vb*{i}}.
+\end{equation}
+There 
+
+\section{Topological order}
+
+\section{Spin liquid}
+
+\section{String-net condensation}
+
+\end{document}
