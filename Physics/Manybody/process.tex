@@ -1,0 +1,181 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{autobreak}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+
+\newcommand*{\fd}[1]{\mathcal{D}{#1}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newcommand{\concept}[1]{\underline{\textbf{#1}}}
+\renewcommand{\emph}{\textbf}
+\newcommand*{\bigO}{\mathcal{O}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{多粒子系统中的涨落和关联}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{经典动力学模型}
+
+\subsection{随机行走}
+
+考虑\concept{Einstein-Smoluchauski模型}。 % TODO:名称
+考虑一个一维离散格点，其上有一个粒子，在一个时间步长$\Delta t$中它往左走$\Delta x$和往右走$\Delta x$的概率都是$1/2$。
+很自然的问题就是它走了$n$步，经过时间$t=n \Delta t$之后，
+\[
+    x(t) = \sum_{i=1}^n x_i,
+\]
+由中心极限定理平均值$x(t)/n$在$n \to \infty$时应该满足一个正态分布。另一方面，由对称性应有
+\begin{equation}
+    \expval*{x(t)} = 0,
+\end{equation}
+而
+\[
+    \expval{\left( \frac{x(t)}{n} \right)^2} = \frac{\expval*{x_i^2}}{n} = \frac{\Delta x^2 / 2 + \Delta x^2 / 2}{n} = \frac{\Delta x^2}{n},
+\]
+于是
+\begin{equation}
+    \expval*{x(t)^2} = n \Delta x^2.
+\end{equation}
+因此平均来看粒子并没有任何宏观位移，但是能找到它的区域在不断扩大。这种现象就是所谓\concept{扩散}，扩散系数为
+\begin{equation}
+    D = \frac{\expval*{x(t)^2}}{2 t} = \frac{\Delta x^2}{2 \Delta t}.
+\end{equation}
+扩散系数总是某个特征长度的平方除以时间尺度，因为能够反映扩散现象的最低阶量应该为$x^2$的期望。
+我们用$p(x, t)$表示时刻$t$的粒子分布函数，则由中心极限定理$p(x, t)$实际上就是期望值和方差为单粒子随机行走的期望值和方差的正态分布，即
+\begin{equation}
+    p(x, t) \propto \exp(-\frac{x^2}{2 n \Delta x^2}) = \exp(- \frac{x^2}{4 D t}).
+\end{equation}
+我们总是可以将$\Delta t$和$\Delta x$趋于零，于是上式就成了一个非常光滑、非常漂亮的扩散过程。
+
+现在设系统中有大量粒子，暂时不考虑粒子间相互作用，于是总的粒子分布就是单粒子分布的简单加总：
+\begin{equation}
+    p(x, t) = \frac{N}{\sqrt{4 \pi D t}} \ee^{- x^2 / 4 D t}.
+    \label{eq:random-walk-distribution}
+\end{equation}
+上式实际上是经典的扩散方程的解。我们可以先用随机行走推导Fick定律，然后从Fick定律和流体连续性导出宏观扩散方程。
+所谓\concept{Fick定律}是说，粒子浓度$n$的流$\vb*{j}$应该满足
+\begin{equation}
+    \vb*{j} = - D \grad{n}.
+    \label{eq:fick-law}
+\end{equation}
+要推导这个方程，考虑一个面积元$\Delta A$左右厚度为$\Delta x$的一片空间，从面积元一侧跳往另一侧的粒子数大约就是总粒子数乘以单个粒子的跃迁概率，于是
+\[
+    j \Delta A \Delta t = \frac{1}{2} (n(x - \Delta x / 2) - n(x + \Delta x / 2)) \Delta A \Delta x,
+\]
+做泰勒展开就得到Fick定律\eqref{eq:fick-law}。
+有了Fick定律之后，根据
+\[
+    \pdv{n}{t} + \div{\vb*{j}} = 0,
+\]
+就得到
+\begin{equation}
+    \pdv{n}{t} = D \laplacian{n}.
+\end{equation}
+这就是扩散方程。容易验证\eqref{eq:random-walk-distribution}是上式的解。
+
+我们从微观的随机行走模型出发得到了宏观的扩散方程。实际上从很多别的微观模型也可以得到宏观的扩散方程，这是合理的，因为实际的动力学过程当然不会是离散的跳跃。
+实际上扩散的概念是非常常见的。设单个粒子从$\vb*{x}_1$运动到$\vb*{x}_2$的概率为$W(\vb*{x}_1, \vb*{x}_2)$，则有主方程
+\[
+    \pdv{n(\vb*{x}, t)}{t} = \int \dd[d]{\vb*{x}'} (n(\vb*{x}', t) W(\vb*{x}', \vb*{x}) - n(\vb*{x}, t) W(\vb*{x}, \vb*{x}')).
+\]
+对具有空间平移不变性的系统，$W(\vb*{x}_1, \vb*{x}_2)$可以写成$\vb*{\xi} = \vb*{x}_2 - \vb*{x}_1$的函数，做泰勒展开到第二阶就得到
+
+\begin{equation}
+    \mu_1(x) = \int \dd{\xi} \xi W(x, \xi)
+\end{equation}
+\begin{equation}
+    \mu_2(x) = \int \dd{\xi} \xi^2 W(x, \xi)
+\end{equation}
+
+\begin{equation}
+    \pdv{n}{t} = - \pdv{(n \mu_1)}{x} + \frac{1}{2} \pdv[2]{(n \mu_2)}{x}
+\end{equation}
+这个方程称为\concept{Fokker-Planck方程}。可以看到空间不均匀性意味着粒子有漂移。一个一般的解是一个随着时间进行不断展平的高斯波包。
+
+\subsection{Langevin方程}
+
+上一节中能够给出扩散方程的过程都是实空间中的跃迁，即我们相当于积掉了动量自由度。
+现在我们处理一个看起来更加像牛顿力学的系统，即所谓\concept{Langevin方程}。
+它的形式大体上形如
+\begin{equation}
+    m \ddot{x} = - \frac{\dot{x}}{B} + F(t),
+\end{equation}
+其中$F(t)$是一个随机驱动力，$\dot{x}$是一个耗散项。这两项都是必要的，如果没有随机驱动力，粒子将很快不再有任何运动，而如果没有耗散则粒子能量可能无限上升。
+通过适当调节$F(t)$的形式，可以任意地加入随机热涨落和确定性的漂移。
+
+考虑$F(t)$期望值为零的情况，则
+\[
+    m \dv{\expval*{\vb*{v}}}{t} = - \frac{1}{B} \expval*{\vb*{v}},
+\]
+于是
+\begin{equation}
+    \expval*{\vb*{v}} \propto \ee^{-t / \tau}, \quad \tau = mB.
+\end{equation}
+如果$F(t)$的形式是较强的冲击加上较弱的随机扰动，并用上式表示两次冲击之间的过程，则我们就得到了这样的过程：粒子被“踢”了一下，然后向某个方向运动一阵以后停下来，然后又被踢了一下，如此反复。这就是随机行走模型有效的原因。
+
+在得到了一个距离尺度之后可以将Langevin方程无量纲化，得到
+\begin{equation}
+    \dv{\vb*{v}}{t} = - \frac{\vb*{v}}{\tau} + \vb*{A}(t), \quad \vb*{A} = \frac{\vb*{F}}{m}.
+\end{equation}
+
+\[
+    \dv{r^2}{t} = 2 \vb*{r} \cdot \dv{\vb*{r}}{t}, \quad \dv[2]{r^2}{t} = 2 v^2 + 2 \vb*{r} \cdot \dv{\vb*{v}}{t}.
+\]
+\begin{equation}
+    \dv[2]{\expval*{r^2}}{t} + \frac{1}{\tau} \dv{\expval*{r^2}}{t} = \expval*{v^2}.
+\end{equation}
+如果经过一段时间的演化，$\expval*{v^2}$演化到了一个常数上，那么我们就得到了一个扩散方程。
+注意到
+\[
+    \expval*{r^2} = 6 D t, \quad \expval*{v^2} = \frac{3 k_\text{B} T}{m},
+\]
+就可以得到
+\begin{equation}
+    D = \frac{k_\text{B} T}{B}.
+\end{equation}
+
+\begin{equation}
+    \expval*{\vb*{A}(s_1) \cdot \vb*{A}(s_2)} = \Gamma \delta(s_1 - s_2),
+\end{equation}
+有
+\begin{equation}
+    \Gamma = \frac{6 k_\text{B} T}{m \tau}.
+\end{equation}
+驱动力幅度
+
+\end{document}

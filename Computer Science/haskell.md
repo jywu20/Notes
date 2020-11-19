@@ -8,17 +8,31 @@ Haskell的类型并不是一等的：例如，在GHCi中可以交互式地求值
 例如在[Functor](#Functor)中我们会看到光靠Haskell本身不能够分辨一个真正的函子和一个类型签名像函子但是并不能保留范畴结构的映射。
 这意味着对Haskell程序的正确性验证通常需要在某个“真正的逻辑”中完成，比如说Coq。
 
-# 类型系统
+# 类型系统和计算模型
 
 一个从类型`A`到类型`B`的函数的类型就是`A -> B`。Haskell允许有限的类型变量，但是类型变量必须出现在函数的类型签名的最前面，因此可以有类似于`a => [a] -> a`这样的函数类型签名。
 TODO：forall quantifier的位置
 
-## data
+## 代数数据类型
+
+Haskell支持Algebraic Data Type，ADT。具体的语法如下：我们考虑一个最简单的情况，逻辑变量：
 
 ```Haskell
 data Bool = True | False
 ```
-中的`True`和`False`是**数据构造器**。数据构造器不是类型，它们是普通的函数。
+
+其中`True`和`False`是**数据构造器**。数据构造器不是类型，它们是函数；它们的名称和类型的名称可以重复，因为Haskell中没有dependent type，类型和数据基本上是分开的。
+数据构造器要以大写字母开头，这暗示它们和普通的函数（以小写字母开头）有一些不同。主要的不同是，数据构造器可以出现在模式匹配表达式的左手边中，但是一般的函数不行。
+这当然是正确的，因为任何一个ADT表达式都可以重复使用数据构造器构造出来，并且是唯一地构造出来，但是一般的函数调用未必能够正确析构。
+下面的模式匹配是良定义的：
+```Haskell
+func Maybe a = ...
+```
+而下面的模式匹配则不是：
+```Haskell
+func truncate a = ...
+```
+显然不同数值可以被四舍五入到同一个整数上，于是`a`就不能确定下来。
 
 `data`语句可以含有类型变量：
 
@@ -40,6 +54,7 @@ data Tree a = Tip | Node a (Tree a) (Tree a)
 这意味着，如果一个类型是某个type class的实例，这个类型的可能取值范围就受到了一定的约束。
 
 type class可以看成面向对象语言中的接口。通过type class可以实现ad hoc polymorphism，与它同类的机制包括函数重载和操作符重载。（我们可以认为重载的函数定义于其上的类型实现了一个只涉及一个函数的type class，操作符同理）
+实际上，type class是标准Haskell中唯一能够重载函数的方法；而且也不能重载别的任何东西。
 
 被type class约束的可以是类型也可以是类型构造器，例如Monad就约束类型构造器：
 
@@ -50,6 +65,13 @@ class Monad m where
 ```
 
 这里面，`m`是类型构造器，`m a`才是一个类型。
+
+也可以要求类型参数或者类型构造器参数已经实现了特定的type class，例如：
+```Haskell
+class  (Eq a, Show a) => Num a where
+  ...
+```
+就要求，如果`a`要实现`Num` type class，它必须首先实现`Eq`和`Show`。
 
 一个可能引起混淆的记号：`Monad m`指的其实是一个属于`Monad`类的类型或类型构造器`m`，并不表示将`Monad`作用到`m`上面，但是`m a`确实可以理解为将类型构造器`m`作用到`a`上面。
 
@@ -88,11 +110,84 @@ data Worker x y = forall Buffer b. Worker {buffer :: b, input :: x, output :: y}
 ```
 这导致了一个非常奇怪的现象，就是Haskell中虽然有existential type但是没有存在量词。
 
+## 惰性求值
+
+惰性求值的好处包括：
+
+- 语义上说，能够声明实际上是无穷的对象，例如可以写`[1..]`，一个没有终点的列表
+
+坏处在于：
+
+- 语义上说，不能区分coinductive和inductive。使用`data`声明的ADT可以看成inductive的也可以看成coinductive的。当然似乎实际写程序的人也不会太在乎这件事。
+- 在定义时看起来像是inductive的数据类型可以包含用inductive的方法构造不出来的term。一个典型的例子：Haskell中表面上自然数就是inductive的自然数，但是可以有这样的语句：
+  ```Haskell
+  n :: Int
+  n = n + 1
+  ```
+  这段代码毫无疑问可以通过编译——Haskell是惰性求值的，从而编译期不需要将`n`算出来，但是如果我们执行这样的程序：
+  ```Haskell
+  n :: Int
+  n = n + 1
+  main = putStrLn $ show $ (n + 5)
+  ```
+  好了，死循环了。此处定义的`n`是well typed的（它的类型就是`Int`），但是它会导致不停机，
+
 # 原始元素
 
 ## 列表和元组
 
+列表定义如下：
+```Haskell
+data  [a]  =  [] | a : [a]  deriving (Eq, Ord)
+```
+列表是使用类型构造器`:`从后往前构造出来的。
+
+元组是另一种ADT，通常直接以
+```
+func (a, b, c) = ...
+```
+的方式析构。
+
+一个字符串就是`[Char]`。
+
 ## 数
+
+在纯函数式语言中处理数似乎是比较麻烦的一件事，因为数自然地要求数据类型自动转换，如整数可以自动转换为浮点数。
+Haskell对此的解决方法是定义以下的抽象type class：
+```Haskell
+class  (Eq a, Show a) => Num a  where  
+    (+), (-), (⋆)  :: a -> a -> a  
+    negate         :: a -> a  
+    abs, signum    :: a -> a  
+    fromInteger    :: Integer -> a  
+ 
+class  (Num a, Ord a) => Real a  where  
+    toRational ::  a -> Rational  
+ 
+class  (Real a, Enum a) => Integral a  where  
+    quot, rem, div, mod :: a -> a -> a  
+    quotRem, divMod     :: a -> a -> (a,a)  
+    toInteger           :: a -> Integer  
+ 
+class  (Num a) => Fractional a  where  
+    (/)          :: a -> a -> a  
+    recip        :: a -> a  
+    fromRational :: Rational -> a  
+ 
+class  (Fractional a) => Floating a  where  
+    pi                  :: a  
+    exp, log, sqrt      :: a -> a  
+    (⋆⋆), logBase       :: a -> a -> a  
+    sin, cos, tan       :: a -> a  
+    asin, acos, atan    :: a -> a  
+    sinh, cosh, tanh    :: a -> a  
+    asinh, acosh, atanh :: a -> a
+```
+
+数值字面量被定义为`fromInteger`作用在数学上的整数（即大整数类型`Integer`）或是`fromRational`作用在小数上的结果，从而它们类型被设定为`Num p => p`或者`Fractional p => p`。
+例如，`12`的类型是`Num p => p`而`1.2`的类型是`Fractional p => p`。
+现在如果`12`被赋予给一个具有某个实现了`Num`的类型的变量，那不会出现任何问题：类型推断会自动导出`p`，然后`p`实现的`fromInteger`函数会自动地被作用到`Integer`类型的12上。
+这就避免了隐式数据类型转换。
 
 # 常见设计模式和范畴论
 
@@ -162,3 +257,7 @@ do语句
 ## IO
 
 诸如IO之类的东西肯定是过程式的，因此也需要使用Monad实现。
+
+# 运算符总结
+
+
