@@ -45,6 +45,25 @@ data Tree a = Tip | Node a (Tree a) (Tree a)
 
 总是可以定义类型为`a -> m a`的函数，但是并不总是能定义`m a -> a`的函数，例如不能定义类型为`Maybe a -> a`的函数，因为一个`Maybe a`表达式可以是`Nothing`，从中无法体取类型为`a`的任何东西。
 
+`data`定义的ADT在一种特殊的情况下可能是不必要的：被定义的新类型只是对一些原有类型的简单封装，从而只有一个数据构造器。
+此时为了减少性能开销Haskell有另一个关键字`newtype`。`newtype`默认是严格求值（而不是惰性求值）的，这可以从`undefined`测试看出来：以下代码
+```Haskell
+data MyBool = MyBool {myBool :: Bool}
+helloBool :: MyBool -> String
+helloBool myBool = "hello"
+
+main = putStrLn $ (helloBool undefined)
+```
+会报错，但是以下代码
+```Haskell
+newtype MyBool = MyBool {myBool :: Bool}
+helloBool :: MyBool -> String
+helloBool myBool = "hello"
+
+main = putStrLn $ (helloBool undefined)
+```
+则不会。
+
 ## type class
 
 一个type class给出了一个范畴图的模式（或者说一个**结构**）：我们有一些对象和一些态射，它们放在一起未必能够形成一个范畴，因为没有定义恒等态射。
@@ -226,6 +245,8 @@ class Monad m where
 
 自函子范畴上的幺半群
 
+实际上`List`就实现了`Monad`类。`return`就是从一个元素建立一个列表，`>>=`就是`map`。这也就是列表推导式中`<-`等记号的来源：`[a | a <- ...]`就是`a <- ... return a`。
+
 # 过程式编程
 
 ## Monad可以描述过程式编程
@@ -253,6 +274,15 @@ class Monad m where
 ## do语句
 
 do语句
+
+## 列表操作
+
+实际上，很多过程式的代码都可以使用列表重现出来，尤其是那些涉及循环的代码。
+反正Haskell默认惰性求值，列表被声明的时候并不会被计算。（这个套路在Python编程中也经常用到）
+
+对for循环，只需要使用一个列表收集循环中的中间结果，然后事后使用作用在列表上的一些`fold`之类的函数来“加总”所有的中间结果。
+
+while循环有时候是因为IO，此时关于IO的monad可以很好地处理这些问题，有时候是指“不断地解构一个输入”，此时只需要简单地使用递归就可以。
 
 ## IO
 
