@@ -76,6 +76,11 @@
     D = \frac{\expval*{x(t)^2}}{2 t} = \frac{\Delta x^2}{2 \Delta t}.
 \end{equation}
 扩散系数总是某个特征长度的平方除以时间尺度，因为能够反映扩散现象的最低阶量应该为$x^2$的期望。
+分母中的因子$2$没有什么特殊的意义，只是为了让概率分布等看起来更好看而已。
+在一个$d$维的随机行走模型中，由于不同方向可以看成独立的一维随机行走，有
+\begin{equation}
+    \expval*{r^2} = \sum_{i=1}^d \expval*{x_i^2} = 2 d D t.
+\end{equation}
 我们用$p(x, t)$表示时刻$t$的粒子分布函数，则由中心极限定理$p(x, t)$实际上就是期望值和方差为单粒子随机行走的期望值和方差的正态分布，即
 \begin{equation}
     p(x, t) \propto \exp(-\frac{x^2}{2 n \Delta x^2}) = \exp(- \frac{x^2}{4 D t}).
@@ -113,19 +118,29 @@
 \[
     \pdv{n(\vb*{x}, t)}{t} = \int \dd[d]{\vb*{x}'} (n(\vb*{x}', t) W(\vb*{x}', \vb*{x}) - n(\vb*{x}, t) W(\vb*{x}, \vb*{x}')).
 \]
-对具有空间平移不变性的系统，$W(\vb*{x}_1, \vb*{x}_2)$可以写成$\vb*{\xi} = \vb*{x}_2 - \vb*{x}_1$的函数，做泰勒展开到第二阶就得到
+我们可以将$W(\vb*{x}_1, \vb*{x}_2)$重新写成$\vb*{\xi} = \vb*{x}_2 - \vb*{x}_1$的函数，于是
+\[
+    \pdv{n(\vb*{x}, t)}{t} = \int \dd[d]{\vb*{x}'} (n(\vb*{x}+\vb*{\xi}, t) W(\vb*{x}+\vb*{\xi}, -\vb*{\xi}) - n(\vb*{x}, t) W(\vb*{x}, \vb*{x}')).
+\]
+由于实际的物理过程都是非常局域的，对积分有贡献的$\vb*{\xi}$长度通常都比较短。
+于是做泰勒展开到第二阶，并适当做变量代换，就得到
+\[
+    \pdv{n}{t} = - \int \dd[d]{\vb*{\xi}} \vb*{\xi} \cdot \grad{(n W(\vb*{x}, \vb*{\xi}))} + \frac{1}{2} \int \dd[d]{\vb*{\xi}} \vb*{\xi} \vb*{\xi} : \grad{\grad{(n W(\vb*{x}, \vb*{\xi}))}}.
+\]
+由于积分和求导涉及的变量不同，交换它们就得到\concept{Fokker-Planck方程}：
+\begin{equation}
+    \pdv{n}{t} = - \div{(n \vb*{\mu}_1)} + \frac{1}{2} \grad \grad : (n \vb*{\mu}_2),
+\end{equation}
+其中
+\begin{equation}
+    \vb*{\mu}_1(x) = \int \dd{\vb*{\xi}} W(x, \xi) \vb*{\xi},
+\end{equation}
+\begin{equation}
+    \vb*{\mu}_2(x) = \int \dd{\xi} W(x, \xi) \vb*{\xi} \vb*{\xi} .
+\end{equation}
 
-\begin{equation}
-    \mu_1(x) = \int \dd{\xi} \xi W(x, \xi)
-\end{equation}
-\begin{equation}
-    \mu_2(x) = \int \dd{\xi} \xi^2 W(x, \xi)
-\end{equation}
-
-\begin{equation}
-    \pdv{n}{t} = - \pdv{(n \mu_1)}{x} + \frac{1}{2} \pdv[2]{(n \mu_2)}{x}
-\end{equation}
-这个方程称为\concept{Fokker-Planck方程}。可以看到空间不均匀性意味着粒子有漂移。一个一般的解是一个随着时间进行不断展平的高斯波包。
+可以看到空间不均匀性意味着粒子有漂移，而二阶求导项则代表粒子的扩散。一个一般的解是一个随着时间进行不断展平的高斯波包。
+当空间各向同性、平移不变时，Fokker-Planck方程就退化为扩散方程。
 
 \subsection{Langevin方程}
 
@@ -137,6 +152,11 @@
 \end{equation}
 其中$F(t)$是一个随机驱动力，$\dot{x}$是一个耗散项。这两项都是必要的，如果没有随机驱动力，粒子将很快不再有任何运动，而如果没有耗散则粒子能量可能无限上升。
 通过适当调节$F(t)$的形式，可以任意地加入随机热涨落和确定性的漂移。
+我们还假定
+\begin{equation}
+    \expval*{\vb*{r} \cdot \vb*{F}} = 0.
+\end{equation}
+% TODO
 
 考虑$F(t)$期望值为零的情况，则
 \[
@@ -147,27 +167,39 @@
     \expval*{\vb*{v}} \propto \ee^{-t / \tau}, \quad \tau = mB.
 \end{equation}
 如果$F(t)$的形式是较强的冲击加上较弱的随机扰动，并用上式表示两次冲击之间的过程，则我们就得到了这样的过程：粒子被“踢”了一下，然后向某个方向运动一阵以后停下来，然后又被踢了一下，如此反复。这就是随机行走模型有效的原因。
+$\tau$给“踢了之后多久停下来”提供了一个时间尺度。
 
-在得到了一个距离尺度之后可以将Langevin方程无量纲化，得到
+在得到了一个时间尺度之后可以将Langevin方程无量纲化，得到
 \begin{equation}
     \dv{\vb*{v}}{t} = - \frac{\vb*{v}}{\tau} + \vb*{A}(t), \quad \vb*{A} = \frac{\vb*{F}}{m}.
 \end{equation}
-
-\[
-    \dv{r^2}{t} = 2 \vb*{r} \cdot \dv{\vb*{r}}{t}, \quad \dv[2]{r^2}{t} = 2 v^2 + 2 \vb*{r} \cdot \dv{\vb*{v}}{t}.
-\]
-\begin{equation}
-    \dv[2]{\expval*{r^2}}{t} + \frac{1}{\tau} \dv{\expval*{r^2}}{t} = \expval*{v^2}.
-\end{equation}
-如果经过一段时间的演化，$\expval*{v^2}$演化到了一个常数上，那么我们就得到了一个扩散方程。
 注意到
 \[
-    \expval*{r^2} = 6 D t, \quad \expval*{v^2} = \frac{3 k_\text{B} T}{m},
+    \dv{r^2}{t} = 2 \vb*{r} \cdot \vb*{v}, \quad \dv[2]{r^2}{t} = 2 v^2 + 2 \vb*{r} \cdot \dv{\vb*{v}}{t},
 \]
-就可以得到
+可以推导出
+\[
+    \dv[2]{r^2}{t} + \frac{1}{\tau} \dv{r^2}{t} = 2 v^2 + 2 \vb*{A} \cdot \vb*{r},
+\]
+于是
 \begin{equation}
-    D = \frac{k_\text{B} T}{B}.
+    \dv[2]{\expval*{r^2}}{t} + \frac{1}{\tau} \dv{\expval*{r^2}}{t} = 2 \expval*{v^2}.
+    \label{eq:r2-evolution}
 \end{equation}
+如果经过一段时间的演化可以达到（亚）热稳态，则$\expval*{v^2}$演化到了一个常数上，且
+\[
+    \expval*{v^2} = \frac{3 k_\text{B} T}{m},
+\]
+代入\eqref{eq:r2-evolution}，发现瞬态过程很快衰减，稳态解形如
+\[
+    \expval*{r^2} = 6 D t,
+\]
+其中
+\begin{equation}
+    D = \frac{k_\text{B} T}{B},
+    \label{eq:langevin-d}
+\end{equation}
+于是我们得出结论：Langevin方程的稳态解在宏观上也是一个扩散方程，并且扩散系数由\eqref{eq:langevin-d}给出。
 
 \begin{equation}
     \expval*{\vb*{A}(s_1) \cdot \vb*{A}(s_2)} = \Gamma \delta(s_1 - s_2),
