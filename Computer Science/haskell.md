@@ -13,6 +13,8 @@ Haskell的类型并不是一等的：例如，在GHCi中可以交互式地求值
 一个从类型`A`到类型`B`的函数的类型就是`A -> B`。Haskell允许有限的类型变量，但是类型变量必须出现在函数的类型签名的最前面，因此可以有类似于`a => [a] -> a`这样的函数类型签名。
 TODO：forall quantifier的位置
 
+因为类型系统的限制Haskell中不能直接写出Y组合子的类型，不过有一些方式可以绕开它。
+
 ## 代数数据类型
 
 Haskell支持Algebraic Data Type，ADT。具体的语法如下：我们考虑一个最简单的情况，逻辑变量：
@@ -247,7 +249,7 @@ class Monad m where
 
 实际上`List`就实现了`Monad`类。`return`就是从一个元素建立一个列表，`>>=`就是`map`。这也就是列表推导式中`<-`等记号的来源：`[a | a <- ...]`就是`a <- ... return a`。
 
-# 过程式编程
+# 过程式编程相关话题
 
 ## Monad可以描述过程式编程
 
@@ -275,7 +277,11 @@ class Monad m where
 
 do语句
 
-## 列表操作
+## IO
+
+诸如IO之类的东西肯定是过程式的，因此也需要使用Monad实现。
+
+## 迁移指南：循环
 
 实际上，很多过程式的代码都可以使用列表重现出来，尤其是那些涉及循环的代码。
 反正Haskell默认惰性求值，列表被声明的时候并不会被计算。（这个套路在Python编程中也经常用到）
@@ -284,9 +290,30 @@ do语句
 
 while循环有时候是因为IO，此时关于IO的monad可以很好地处理这些问题，有时候是指“不断地解构一个输入”，此时只需要简单地使用递归就可以。
 
-## IO
+如果用于取代循环的递归函数的参数中有一些不希望暴露给用户的中间状态，使用
+```Haskell
+publicFunction arg1 arg2 = functionWithInnerState arg1 arg2 state where
+    functionWithInnerState arg1 arg2 state = ...
+```
 
-诸如IO之类的东西肯定是过程式的，因此也需要使用Monad实现。
+将中间过程包括在函数参数中是有好处的，因为这样可以很容易地写尾递归的代码。所谓尾递归是指函数中最后一步计算是递归调用的递归，下面的写法不是尾递归：
+```Haskell
+mySum :: (Num a) => [a] -> a
+mySum [] = 0
+mySum [a] = a
+mySum (x : xs) = x + (mySum xs)
+```
+因为`mySum (x : xs)`的最后一步是加法而不是`mySum xs`。下面的写法是尾递归：
+```Haskell
+mySum :: (Num a) => [a] -> a
+mySum list = mySumWithState list 0 where
+    mySumWithState [] acc = acc
+    mySumWithState [a] acc = a + acc
+    mySumWithState (x : xs) acc = mySumWithState xs (acc + x) 
+```
+因为`mySumWithState`的最后一步就是递归调用，加法发生在函数调用之前。尾递归可以很容易地被优化，因为既然最后一步是递归调用，无需在函数调用栈中保留本次调用的信息，从而递归可以被优化为循环。
+
+`break`语句可以简单地使用递归的结束来重现。
 
 # 运算符总结
 
