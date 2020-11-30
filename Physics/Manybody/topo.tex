@@ -1,0 +1,118 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$}
+
+\title{拓扑序}
+\author{吴何友}
+
+\begin{document}
+
+\maketitle
+
+\section{KT相变}
+
+考虑一个二维经典XY模型：
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \vb*{S}_i \cdot \vb*{S}_j,
+\end{equation}
+使用$\theta_i$表示每个格点的自旋指向，并且将自旋长度整合进$J$中，就有
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j).
+\end{equation}
+如果假定诸$\theta_i$在空间上变化不大，那么就有
+\[
+    H = - J \sum_{\pair{i, j}} \left( 1 - \frac{(\theta_i - \theta_j)^2}{2} \right).
+\]
+设晶格常数为$a$，格点总数为$N$，则将上式粗粒化之后得到
+\begin{equation}
+    H = E_0 + \frac{J}{2} \int \dd[2]{\vb*{r}} (\grad{\theta})^2, \quad E_0 = 2 J N.
+    \label{eq:smooth-xy}
+\end{equation}
+\eqref{eq:smooth-xy}的鞍点近似满足二维平面上的拉普拉斯方程
+\begin{equation}
+    \laplacian{\theta} = 0.
+\end{equation}
+
+由于$\theta$是一个角度，它具有多值性，如果场构型中存在路径，其上的$\vb*{S}_i$首尾连成一个环（也即，场构型中有一个涡旋而这个环包围着涡旋），那么如果我们要求保留$\theta$的连续性，就必须允许它具有多值性。
+于是设$C$是闭合路径，设$n$为$C$中的涡旋数目（逆时针涡旋数目减去顺时针涡旋即反涡旋的数目），则
+\begin{equation}
+    \oint \dd{\vb*{r}} \cdot \grad{\theta} = 2 \pi n.
+\end{equation}
+如果进一步要求$\theta$具有单值性，就必须做适当的割线：如果有偶数个涡旋则应当将它们两两配对并将一对涡旋之间的连线上的点割除，如果有奇数个涡旋则还应该作一条通向无穷远点的割线。
+等价地看，我们认为这些割线上有等效的冲击载荷，使得$\laplacian{\theta}$在这些割线上为某个$\delta$函数而不为零。
+
+单个涡旋实际上是相当非局域的激发。其能量同时有红外发散和紫外发散，
+
+\end{document}
