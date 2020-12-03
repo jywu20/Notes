@@ -1,3 +1,5 @@
+从Haskell出发，记录一些编程语言理论中常见的主题。
+
 # Haskell概况
 
 Haskell是*纯函数式*的，基于typed lambda calculus。
@@ -153,6 +155,11 @@ data Worker x y = forall Buffer b. Worker {buffer :: b, input :: x, output :: y}
   ```
   好了，死循环了。此处定义的`n`是well typed的（它的类型就是`Int`），但是它会导致不停机，
 
+## bottom、不停机、错误处理及其它
+
+Haskell中有这样一个函数`error`，它的类型是`[Char] -> a`，即接受一个描述错误的字符串，然后可以返回任意类型的表达式。
+它返回的表达式一旦在计算中出现，就会导致一个错误，此时程序运行中止，错误被展示给用户。
+
 # 原始元素
 
 ## 列表和元组
@@ -251,7 +258,12 @@ class Monad m where
 
 实际上`List`就实现了`Monad`类。`return`就是从一个元素建立一个列表，`>>=`就是`map`。这也就是列表推导式中`<-`等记号的来源：`[a | a <- ...]`就是`a <- ... return a`。
 
-# 过程式编程相关话题
+# stateful相关话题
+
+强类型函数式编程经常被如此辩护：范畴论、typed lambda calculus、逻辑构成所谓computational trinitarianism。
+更加重视实际问题的人会反驳说，存在很多其它不同的编程范式，它们也许也有类似的underlying structure。
+的确如此——但是实际上，重要的编程范式实际上可以被归并入强类型函数式编程。
+本节讨论stateful在函数式编程中如何体现。
 
 ## Monad可以描述过程式编程
 
@@ -277,7 +289,51 @@ class Monad m where
 
 ## do语句
 
-do语句
+do语句是写出Monad的一种语法糖，它可以让Monad看起来很像过程式编程。它是monad的语法糖，具体来说，根据Haskell Report 2010：
+```
+do {e}	=	e
+do {e;stmts}	=	e >> do {stmts}
+do {p <- e; stmts}	=	let ok p = do {stmts}
+    ok _ = fail "..."
+  in e >>= ok
+do {let decls; stmts}	=	let decls in do {stmts}
+```
+过程式编程需要的各个组成部分都在这里了：顺序执行语句就是monad的`>>`，其类型签名为`Monad m => m a -> m b -> m b`，也就是先执行可能返回类型`a`的一个monad（对应一个或者一组语句），然后执行可能返回类型`b`的一个monad。
+`let`用于简单地创建一个别名，而`<-`则运行一个语句并获得它的结果；后者是可能有副作用、可能产生错误等的，而前者不会。
+（这又意味着，如果某个值需要从一个monad获得，而我们需要将它传入一个函数中，那么必须使用
+```Haskell
+x <- expr
+func(x)
+```
+而不能写`func(expr)`）
+
+可以看到`return`关键字并不立刻终止一个do语句，在它后面跟上一些别的语句后`return`没有效果。
+实际上Haskel中的`a; b; ... ; return sth`和Scala之类语言的`a; b ; ... ; sth`的意思是一样的；后者之所以看起来非常简洁只是因为后者直接接纳副作用、stateful，因此并不需要将表达式`sth`包进monad中，而Haskell需要这么做。
+
+## ST Monad
+
+和很多其它Monad不同，数据*可以*离开ST Monad：函数`runST :: forall α. (forall s. ST s α) -> α`可以用来做这件事。
+
+常见以下代码：
+```Haskell
+runST $ do           -- runST takes out stateful code and makes it pure again.
+    n <- newSTRef 0             -- Create an STRef (place in memory to store values)
+    forM_ xs $ \x -> do         -- For each element of xs ..
+        modifySTRef n (+x)      -- add it to what we have in n.
+```
+等价于过程式语言中的
+```C++
+{  // enter a block, that is, define and run a runST to take out stateful code and make it pure again
+    auto n = 0; // create an STRef (place in memory to store values)
+    for (x in xs) { // For each element of xs ..
+        n += x; // add it to what we have in n.
+    }
+}
+```
+我们在这里做的事情实际上是给过程式编程提供了一种函数式语义：一个block就是一个ST monad，block中的变量（真的可变的、可以多次赋值的量）就是`STRef`，各种`if`，`for`之类的关键字就是用于建立新monad的函数，`;`就是`>>`（使用ST monad配合do notation得到的过程式语言带着函数式风味，或者说是函数式语言带着过程式风味，不区分表达式和语句，从而一个语句可以有一个运行结果也可以有抛出错误，那么`;`就是`>>`，`;`只是忽略上一个语句的执行结果，然后执行下一个语句；Scala就是这样）。
+实际上在Haskell中可以实现各种各样的过程式语言中的特征，比如说可以实现`break`，然后还可以实现Rust中的ownership（见The Ownership Monad）。
+
+TODO:具体实现
 
 ## IO
 
@@ -316,6 +372,8 @@ mySum list = mySumWithState list 0 where
 因为`mySumWithState`的最后一步就是递归调用，加法发生在函数调用之前。尾递归可以很容易地被优化，因为既然最后一步是递归调用，无需在函数调用栈中保留本次调用的信息，从而递归可以被优化为循环。
 
 `break`语句可以简单地使用递归的结束来重现。
+
+## 迁移指南：mutable
 
 # 运算符总结
 
