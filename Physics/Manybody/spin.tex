@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{siunitx}
 \usepackage{tikz}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
@@ -190,6 +191,102 @@
 自旋之间的相互作用主要来自\concept{交换能}。这是一个纯粹量子力学的概念，是由于全同电子波函数的反对称性。由于自旋是矢量，从矢量到标量的运算主要就是点乘，
 % TODO
 
+\subsection{自旋的相干态路径积分}
+
+一个自旋$S$-的自由度的希尔伯特空间是一个$2S+1$维的空间。例如，一个$1/2$自旋的希尔伯特空间是一个二维空间。所有这些空间当然都是离散的。因此可以用两种方式指定自旋的路径积分，一种是直接以$\hat{S}_z$的本征态插入时间演化中，这会得到量子蒙特卡洛中常用的$n+1$维经典格点理论，一种是将\concept{自旋相干态}插入时间演化中，这会导致一个连续的路径积分。
+自旋相干态定义如下：
+\begin{equation}
+    \ket{\vb*{n}} = \ee^{- \ii \phi \hat{S}_z} \ee^{- \ii \theta \hat{S}_y} \ket{\uparrow} = \ket{\theta, \phi},
+\end{equation}
+其中$\vb*{n}$是指长度为$S$，球坐标下的角度就是$\theta$和$\phi$的矢量。$\vb*{n}$是连续变化的，从而以$\vb*{n}$作为不同时间的场构型，则确实可以做连续的路径积分。
+在三维空间中这个定义非常合乎直觉，在$S$任意变化时则没有太多经典直觉可言，不过无论如何自旋相干态具有直接的经典-量子对应，这也是称它为相干态的原因。
+
+定义路径积分需要这些性质：将$\mel*{\vb*{n}}{\hat{H}}{\vb*{n}}$写成复数或者格拉斯曼变量的形式；给出$\{\ket{\vb*{n}}\}$服从的完备性关系；给出$\braket{\vb*{n}'}{\vb*{n}}$在$\vb*{n}'$和$\vb*{n}$相差很小时的形式。
+下面计算这些东西。
+
+可以验证，我们有
+\begin{equation}
+    \mel*{\vb*{n}}{\hat{\vb*{S}}}{\vb*{n}} = S \vb*{n},
+\end{equation}
+于是如果$\hat{H}$是$\vb*{S}$的函数，就有
+\begin{equation}
+    \mel*{\vb*{n}}{\hat{H}(\vb*{S})}{\vb*{n}} = H(S \vb*{n}).
+    \label{eq:spin-hamiltonian-expect}
+\end{equation}
+需要注意的是自旋相干态$\ket{\vb*{n}}$并不是$\hat{\vb*{S}}$的本征态。因此，自旋相干态——从而自旋路径积分——的性质实际上没有那么好；这件事的本质原因是$SU(2)$的代数性质相比谐振子更加复杂。
+
+$\braket{\vb*{n}'}{\vb*{n}}$没有特别简单的表达式；它的模长在$\vb*{n} \neq \vb*{n}'$时显然小于$1$，并且当$S \to \infty$时它趋于零（这又是一个量子到经典的过渡）。
+路径积分中会用到$\braket{\partial_\tau \vb*{n}}{\vb*{n}}$，其中
+\[
+    \bra*{\partial_\tau \vb*{n}} = \bra*{\uparrow} (\ee^{\ii \theta \hat{S}_y} \ii \partial_\tau \theta \hat{S}_y \ee^{\ii \phi \hat{S}_z} + \ee^{\ii \theta \hat{S}_y} \ee^{\ii \phi \hat{S}_z} \ii \partial_\tau \phi \hat{S}_z),
+\]
+计算得到
+\begin{equation}
+    \braket*{\partial_\tau \vb*{n}}{\vb*{n}} = \ii S \partial_\tau \phi \cos \theta.
+    \label{eq:berry-phase-expect}
+\end{equation}
+
+就完备性关系而言，注意到$S$确定的自旋角动量代数是$SU(2)$的不可约表示，而
+\begin{equation}
+    \hat{g}(\phi, \theta, \psi) = \ee^{- \ii \phi \hat{S}_z} \ee^{- \ii \theta \hat{S}_y} \ee^{- \ii \psi \hat{S}_z}
+\end{equation}
+给出了$SU(2)$群中的任意元素。现在考虑如下算符：
+\[
+    \int \dd{g} \dyad*{g}{g},
+\]
+其中
+\[
+    \dd{g} = \sin \theta \dd{\theta} \dd{\phi} \frac{\dd{\psi}}{2\pi}
+\]
+是$SU(2)$的Haar测度，而$\ket{g}$定义为
+\begin{equation}
+    \ket{g} = \hat{g} \ket{\uparrow}.
+    \label{eq:complete-su2-element}
+\end{equation}
+设$\hat{h}$是$SU(2)$群中的任意一个元素，我们有
+\[
+    \begin{aligned}
+        \hat{h} \int \dd{g} \dyad*{g}{g} &= \int \dd{g} \dyad*{h g}{g} \\
+        &= \int \dd{g} \dyad*{h^{-1} h g}{h^{-1} g} \\
+        &= \int \dd{g} \dyad*{g}{\uparrow} \hat{g} (h^{-1})^\dagger \\
+        &= \int \dd{g} \dyad*{g}{g} \hat{h},
+    \end{aligned}
+\]
+第二个等号用到了Haar测度的性质，即被积函数中的变量$g$可以任意左乘或者右乘一个群元素而积分结果不变。
+上式表明\eqref{eq:complete-su2-element}和任意群元对易，既然自旋角动量代数是$SU(2)$的不可约表示，我们就有
+\[
+    \int \dd{g} \dyad*{g}{g} = \const \times \hat{1}. 
+\]
+
+现在可以写出路径积分了，使用通常的将时间演化分割成很多片段并插入完备性条件的做法，有
+\[
+    Z = \int \fd{\vb*{n}} \exp(- \int_0^\beta \dd{\tau} (- \braket*{\partial_\tau \vb*{n}}{\vb*{n}} + \mel*{\vb*{n}}{\hat{H}}{\vb*{n}})),
+\]
+代入\eqref{eq:berry-phase-expect}和\eqref{eq:spin-hamiltonian-expect}，就得到
+\begin{equation}
+    Z = \int \fd{\vb*{n}} \exp(- \int_0^\beta \dd{\tau} (- \ii S \cos \theta \partial_\tau \phi + H(S \vb*{n}))).
+    \label{eq:spin-path-integral}
+\end{equation}
+这就是自旋的相干态路径积分，其中的$\vb*{n}$是半径为$S$的球面上的闭合曲线。第二项给出系统的动力学，并且不出意外的是基底无关的，第一项则是Berry相位项，它乍一看是基底有关的但是我们知道它肯定是基底无关的。
+实际上它和闭合曲线的面积有关，注意到
+闭合曲线的路径有一个$4\pi S^2$的不确定性，但是这并不影响计算，因为相位
+
+\eqref{eq:spin-path-integral}中的第一项可以写成一个更加一般的形式，即\concept{Wess-Zumino-Witten项}，其形式为
+\begin{equation}
+    S_\text{top}[\vb*{n}] = \ii S \int_0^1 \dd{u} \int_0^\beta \dd{\tau} \vb*{n} \cdot (\partial_{u} \vb*{n} \times \partial_\tau \vb*{n}),
+\end{equation}
+其中$u$是一个虚设的变量，满足
+\begin{equation}
+    \vb*{n}(u=0, \tau) = \vb*{n}_0 =  \vb*{e}_z, \quad \vb*{n}(u=1, \tau) = \vb*{n}(\tau).
+\end{equation}
+从这里其实可以看出为什么物理中需要讨论$SU(2)$的有限维表示，并且$S$只能是整数或者半整数：如果不是这样，面积定义的二义性就会让配分函数有实质性的变化。
+我们这样就用一种非常折腾的方式确定了自旋量子化的方式。
+
+还可以看到半整数自旋会导致旋转\SI{360}{\degree}之后产生$-1$的相位因子。
+不伴随其它动力学过程的旋转可以 % TODO
+
+对自旋自由度组成的格点系统，Berry相位项决定了这个系统有多“量子”。如果Berry相位项可以忽略，那么很容易看出实际上我们几乎就是在处理一个经典统计问题，因为没有任何虚时间关联。
+
 \subsection{常见模型}
 
 \concept{伊辛模型}通常指经典伊辛模型，其特征是只有相邻的自旋有相互作用，并且相互作用就是简单的$s_i s_j$。可以将这个形式的相互作用做一些修改，如将其修改为自旋矢量点乘，或者也可以修改磁场的形式，加入横场，等等。
@@ -261,6 +358,32 @@
 \end{equation}
 
 \section{自旋系统的整体行为}
+
+\section{Berry相位和拓扑}
+
+\subsection{一维自旋链}
+
+考虑一维海森堡模型自旋链
+\begin{equation}
+    \hat{H} = J \sum_i \hat{\vb*{S}}_{i} \cdot \hat{\vb*{S}}_{i+1},
+\end{equation}
+显然反铁磁态是一个低能构型，不过一维情况下不能确定有没有相变。无论如何，我们考虑反铁磁态上的涨落：
+\begin{equation}
+    \vb*{n}_i = (-1)^i \vb*{\phi}_i + \vb*{m}_i,
+\end{equation}
+然后从这个哈密顿量出发做金斯堡-朗道理论，积掉（铁磁部分的）$\vb*{m}$，会得到
+\[
+    S \sim (\partial_\tau \vb*{\phi})^2 + (\partial_x \vb*{\phi})^2.
+\]
+因此一个一维的自旋链一定是有能隙的。然而，如果真的去求解自旋$1/2$的自旋链，会发现它是无能隙的。
+这里的问题就在于拓扑：自旋$1/2$系统的Berry相位项是非常重要的。
+
+在$S$为半整数时，Berry相位项给出绕数。
+
+将两个自旋自由度看成一组，一组中有一个自旋单态和一个自旋三重态，将单态积掉之后就得到一个自旋$1$的模型。
+这就是AKLT模型。虽然这是一个自旋$1$的模型，但是在开放边界条件
+最早的SPT的例子
+看起来在bulk中是trivial的但是在边界上有非平凡的
 
 \section{格点规范理论}
 

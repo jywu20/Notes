@@ -331,7 +331,8 @@ runST $ do           -- runST takes out stateful code and makes it pure again.
 }
 ```
 我们在这里做的事情实际上是给过程式编程提供了一种函数式语义：一个block就是一个ST monad，block中的变量（真的可变的、可以多次赋值的量）就是`STRef`，各种`if`，`for`之类的关键字就是用于建立新monad的函数，`;`就是`>>`（使用ST monad配合do notation得到的过程式语言带着函数式风味，或者说是函数式语言带着过程式风味，不区分表达式和语句，从而一个语句可以有一个运行结果也可以有抛出错误，那么`;`就是`>>`，`;`只是忽略上一个语句的执行结果，然后执行下一个语句；Scala就是这样）。
-实际上在Haskell中可以实现各种各样的过程式语言中的特征，比如说可以实现`break`，然后还可以实现Rust中的ownership（见The Ownership Monad）。
+实际上在Haskell中可以实现各种各样的过程式语言中的特征，比如说可以实现`break`，然后还可以实现Rust中的ownership（见The Ownership Monad；PLT上通常称这是affine type，但考虑到Rust允许mutable，在Haskell中需要用Monad模拟ownership以体现这一点；这样一来原本编译期实现的ownership检查就被拖延到了运行期，那就不尽准确了），move语义、copy语义等，由于程序运行的状态全部可以得到细粒度的控制，这些的实现几乎就是把spec翻译成代码。
+不太好实现的主要还是变量的复杂行为，如动态作用域等；要完整实现动态作用域肯定不能用`a <- ...`这样的语句冒充变量赋值了，而可能要写`createRef("a", ...)`——这就真的变成写解释器了。
 
 TODO:具体实现
 
