@@ -11,6 +11,13 @@ Haskell的类型并不是一等的：例如，在GHCi中可以交互式地求值
 这意味着对Haskell程序的正确性验证通常需要在某个“真正的逻辑”中完成，比如说Coq。
 
 Haskell代表的强类型纯函数式编程某种意义上在理论计算机科学中享有“首席”地位，因为无类型表处理函数式编程、过程式编程等更加常见的编程范式都可以毫无困难地嵌入它们中。
+Linear type可以用所谓linear monad嵌入Haskell中（虽然这并不是对类型系统的扩展），动态类型有一个Dynamic包可以做到这一点，等等。
+对类型系统的修改，如类型系统层面的linear type、dependent type等，不那么容易做到，但它们总是可以嵌入一个足够强的dependent type theory中，如嵌入Coq或是Lean中。
+
+这样可以比较容易地判断不同feature的正交性，如我们看到过程式编程实际上就是一个Monad，可以确定mutable与否和类型系统基本无关。
+TODO：关于内存安全；编译期
+
+一点个人见解：把“足够强的dependent type theory”中能够自然地模拟的feature都做出来，会得到这样的一种语言：过程式（stateful， 可以用Monad等那一套模拟），动态类型，有静态检查（老本行），允许gradual type checking，有一定面向对象能力，dot syntax（record type），subtyping等等，这不就是Julia吗？当然Julia没有dependent type。
 
 # 类型系统和计算模型
 
@@ -270,7 +277,7 @@ class Monad m where
 ## Monad可以描述过程式编程
 
 考虑一个过程式算法$s_1 ; s_2 ; \ldots ; s_n$。我们需要一种系统的方法把它转化为函数式编程。
-由于过程式算法是有状态和副作用的，每一个语句就是一个动作。
+由于过程式算法是有状态的，每一个语句就是一个动作。
 每一个动作可以产生一些值，当然也可以不产生任何值。以下记`m a`为一个可能产生类型为`a`的`m`型动作。
 
 我们知道，总是可以将$s_1 ; s_2 ; \ldots ; s_n$重新加括号为$(s_1 ; (s_2 ; \ldots ; (s_{n-1} ; s_n)))$，这一长串动作可能会有一个返回值，即它们组合在一起可以产生一个会产生一个值的大动作，所以只需要定义$(s ; s')$，以及`return`语句就可以。
@@ -310,7 +317,7 @@ func(x)
 而不能写`func(expr)`）
 
 可以看到`return`关键字并不立刻终止一个do语句，在它后面跟上一些别的语句后`return`没有效果。
-实际上Haskel中的`a; b; ... ; return sth`和Scala之类语言的`a; b ; ... ; sth`的意思是一样的；后者之所以看起来非常简洁只是因为后者直接接纳副作用、stateful，因此并不需要将表达式`sth`包进monad中，而Haskell需要这么做。
+实际上Haskel中的`a; b; ... ; return sth`和Scala之类语言的`a; b ; ... ; sth`的意思是一样的；后者之所以看起来非常简洁只是因为后者直接接纳stateful，因此并不需要将表达式`sth`包进monad中，而Haskell需要这么做。
 
 ## ST Monad
 
@@ -380,7 +387,11 @@ mySum list = mySumWithState list 0 where
 
 `break`语句可以简单地使用递归的结束来重现。
 
-## 迁移指南：mutable
+## 迁移指南：mutable和赋值
+
+如果不考虑它们本质上是`let ... in`，可以有下面的诠释：
+`let`：从无副作用的函数获得结果
+`<-`：从可能有副作用的过程获得结果
 
 # 运算符总结
 
