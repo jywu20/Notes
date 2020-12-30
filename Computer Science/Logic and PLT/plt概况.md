@@ -14,3 +14,5 @@ TODO：关于内存安全；编译期
 # mutable 
 
 TODO， Kleisli category，
+
+纯面向对象语言中的interface实际上是一个coproduct：如果我们把面向对象语言中的subtyping理解为一种从子类到父类的态射，具体来说是隐藏掉子类有而父类没有的方法，那么这就是显然的。
