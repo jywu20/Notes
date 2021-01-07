@@ -102,11 +102,45 @@
 
 本文讨论的都是经典电动力学，在其中，电场和磁场既是物理量又标记了系统的状态，因此有时候它们看起来像量子理论中的算符，有时候看起来像某种波函数，这都是合理的。
 
-\subsection{常见规范}
+看起来，麦克斯韦方程并不难求解。可以将它化成外加载荷为电流和电荷密度的二阶线性波动方程，我们马上可以在不同的边界条件下求解其本征函数，写出其格林函数（从而得到“通解”），等等。
+但是事实证明，这样并不能提供太多有用的信息。例如，在介质存在的情况下，从头求解真空中的麦克斯韦方程\eqref{eq:maxwell-eq-si}基本上是不现实的，讨论材料引入的边界条件、响应等是必要的。
+在讨论静电学和静磁学问题时，我们并不关心一个一般的体系如何收敛到静止情况，从而也无需求解完整的时间相关的麦克斯韦方程。
+在讨论电磁场和电流的相互作用时，仅仅根据格林函数写出“电荷如何影响电磁场”是不够的，因为还需要考虑电荷受到的反作用；并且\eqref{eq:wave-eq-general}的格林函数实际上非常复杂，基本上没法直接使用。
+对每一种情形——静电学，静磁学，电磁波传播，辐射——我们都需要采取不同的方法（可能还有适当的近似）求解麦克斯韦方程，而不能指望可以从一个通解出发从头计算出一切。
 
-库伦规范、洛伦兹规范、辐射规范
+\subsection{标势、矢势和常见规范}
 
-库伦规范一般用于分析静磁学问题。
+电场、磁场是直接可观测的量，实际上在相对论协变的场论中标势和矢势才是基本的场自由度，但是它们是不唯一确定的。我们有
+\begin{equation}
+    \vb*{B} = \curl{\vb*{A}}, \quad \vb*{E} = - \pdv{\vb*{A}}{t} - \grad{\varphi},
+\end{equation}
+并且可以证明，不失一般性地，总是可以取以下规范：
+\begin{equation}
+    \div{\vb*{A}} + \frac{1}{c^2} \pdv{\varphi}{t} = 0,
+\end{equation}
+称为\concept{洛伦兹规范}。在洛伦兹规范下麦克斯韦方程成为
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} - \frac{1}{c^2} \pdv[2]{\varphi}{t} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}),
+    \end{bigcase}
+\end{equation}
+此时标势和矢势非常清晰地组成一个四维矢量，它们遵从四维的波动方程，因此也是“洛伦兹”一词的来源。
+
+另一种常见的规范选择是\concept{库伦规范}，为
+\begin{equation}
+    \div{\vb*{A}} = 0.
+\end{equation}
+在库伦规范之下麦克斯韦方程成为
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}) + \frac{1}{c^2} \pdv{t} \grad{\varphi}.
+    \end{bigcase}
+\end{equation}
+换而言之，标势的行为和静电场下完全一样，但是标势会对矢势有影响。
+在电场和磁场随时间不变时库伦规范和麦克斯韦方程是一样的。
+库伦规范有时也称为\concept{辐射规范}，因为一种处理辐射的方法是以$\vb*{A}$为基本自由度，此时库伦规范就是横波条件。
 
 \subsection{能量和动量}
 
@@ -206,199 +240,6 @@
 \end{equation}
 其中$\vb*{p}$称为\concept{正则动量}。
 这个式子成立的条件是粒子本身低速运动，从而粒子产生的磁场可以忽略，且外场不变。
-
-
-
-\section{真空中的解}
-
-\subsection{稳恒问题}
-
-\subsubsection{静电学}
-
-首先考虑\concept{静电}的情况。所谓“静电”指的是系统中没有任何电流的情况，此时我们有$\div{\vb*{j}}=0$，从而电荷密度分布没有变化。
-注意我们没有使用“电荷密度没有变化”作为定义，因为恒稳电路也具有这样的性质，但是与此同时的确有电荷流动。
-在静电的条件下我们有
-\[
-    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t}, \quad \curl{\vb*{B}} = \mu_0 \epsilon_0 \pdv{\vb*{E}}{t},
-\]
-然后我们会发现磁场$\vb*{B}$满足一个波动方程。看起来这非常奇怪，因为在根本没有电流的时候磁场怎么会存在呢？
-这实际上是来自边界条件的不清晰。在处理电磁波时我们并不要求无穷远处场强衰减至零，因为我们实际上是认为电磁波由非常远的地方的一个源产生的，没完没了地传播到其它地方，从而处理电磁波时“无穷远处”有源是完全可以的。
-在静电学中我们要求电荷约束在一个有限的范围内，从而无穷远处场强快速衰减，那么磁场满足的波动方程如果要有非平凡解，只能取类似球面波的形式，但是这样一来$\div{\vb*{B}}$会不为零，和磁场无源的条件违背。
-总之，在静电学情况下$\vb*{B}=0$。于是我们就有静电学方程
-\begin{equation}
-    \div{\vb*{E}} = \frac{\rho}{\epsilon_0}, \quad \curl{\vb*{E}} = 0,
-    \label{eq:static-e-field}
-\end{equation}
-或者
-\begin{equation}
-    \vb*{E} = - \grad{\varphi}, \quad \laplacian{\varphi} = - \frac{\rho_0}{\epsilon_0}.
-    \label{eq:static-phi-field}
-\end{equation}
-这是拉普拉斯方程，有现成的解法，即
-\begin{equation}
-    \varphi(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
-    \label{eq:from-q-to-phi}
-\end{equation}
-
-静电学中能量可以看成是电荷携带的而不是电场携带的。这是因为一个区域内的能量为
-\[
-    E = \int \dd[3]{\vb*{r}} \frac{1}{2} \epsilon_0 \vb*{E}^2 = \frac{1}{2} \epsilon_0 \int \dd[3]{\vb*{r}} (\grad{\varphi})^2,
-\]
-做分部积分，并使用无穷远处场强为零这一条件，得到
-\begin{equation}
-    E = - \frac{\epsilon_0}{2} \int \dd[3]{\vb*{r}} \varphi \laplacian{\varphi} = \int \dd[3]{\vb*{r}} \rho \varphi.
-\end{equation}
-因此在静电学的情况下能量可以认为是定域在电荷周围的。
-
-\subsubsection{静磁学}
-
-和静电学类似，我们可以考虑恒定电流的情况，即虽然有电流但是没有任何电荷变化，电流强度也不变的情况，则由输运方程有$\div{\vb*{j}}=0$。
-我们可以直接引用\eqref{eq:wave-eq-general}，得到
-\[
-    \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} - \laplacian{\vb*{E}} = - \frac{1}{\epsilon_0} \grad{\rho} , \quad \frac{1}{c^2} \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = \mu_0 \curl{\vb*{j}},
-\]
-由于$\rho$和$\vb*{j}$都不随时间变化，如果我们像在静电学中一样，要求无穷远处场强衰减足够快，那么以上两式可以直接化为静态的拉普拉斯方程
-\[
-    \laplacian{\vb*{E}} = \frac{1}{\epsilon_0} \grad{\rho}, \quad \laplacian{\vb*{B}} = - \mu_0 \curl{\vb*{j}}.
-\]
-由于$\vb*{B}$不会变化，我们直接得到\eqref{eq:static-e-field}，于是就可以求解出电场。
-至于$\vb*{B}$，引入磁矢势，就得到
-\[
-    \curl{\laplacian{\vb*{B}}} = - \mu_0 \curl{\vb*{j}},
-\]
-那么只需要取库伦规范$\div{A}=0$就可以有
-\[
-    \div{\laplacian{\vb*{B}}} = - \mu_0 \div{\vb*{j}}
-\],
-于是就得到
-\begin{equation}
-    \vb*{B} = \curl{\vb*{A}}, \quad \laplacian{\vb*{A}} = - \mu_0 \vb*{j}.
-\end{equation}
-这个方程的形式和\eqref{eq:static-phi-field}非常相似，也是拉普拉斯方程，从而直接可以写出
-\begin{equation}
-    \vb*{A}(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
-    \label{eq:from-j-to-a}
-\end{equation}
-
-总之，在电荷分布不变、电流分布不变的情况下，电场可以用$\rho$表示出来，并且是无旋场；磁场可以用$\vb*{j}$表示出来。这分别称为静电学和静磁学。
-
-\subsection{运动电荷和辐射}
-
-\subsubsection{李纳-维谢尔势}
-
-本节求解空间中有单个运动电荷时的电势和矢势分布情况，所得结果称为\concept{李纳-维谢尔势}。
-在取洛伦兹规范之后，我们需要求解
-\begin{equation}
-    \begin{bigcase}
-        \laplacian{\varphi} - \frac{1}{c^2} \pdv[2]{\varphi}{t} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
-        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}).
-    \end{bigcase}
-\end{equation}
-使用格林函数法，有（暂时先不引入无穷小虚部）
-\[
-    \begin{aligned}
-        \varphi(\vb*{r}, t) &= \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{- \vb*{k}^2 + \omega^2/c^2} \left( - \frac{\rho(\vb*{k}, \omega)}{\epsilon_0} \right) \\
-        &= \frac{1}{\epsilon_0} \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{\vb*{k}^2 - \omega^2/c^2} \int \dd[3]{\vb*{r}'} \int \dd{t'} \ee^{\ii (\omega t' - \vb*{k} \cdot \vb*{r}')} \rho(\vb*{r}', t') \\
-        &= \frac{1}{\epsilon_0} \int \dd[3]{\vb*{r}'} \int \dd{t'} \rho(\vb*{r}', t') \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot (\vb*{r} - \vb*{r}') - \omega (t - t'))}}{\vb*{k}^2 - \omega^2/c^2}.
-    \end{aligned}
-\]
-首先计算$\vb*{k}$部分的积分，有
-\[
-    \begin{aligned}
-        \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} &= \int k^2 \sin \theta \dd{k} \dd{\theta} \dd{\varphi} \frac{\ee^{\ii k R \cos \theta}}{k^2 - \omega^2 / c^2} \\
-        &= 2\pi \int_0^\infty \frac{k^2 \dd{k}}{k^2 - \omega^2 / c^2} \frac{1}{\ii k R} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
-        &= \frac{\pi}{\ii R} \int_{-\infty}^\infty \frac{k \dd{k}}{k^2 - \omega^2 / c^2} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
-        &= \frac{\pi}{2 \ii R} \int_{-\infty}^\infty \dd{k} \left( \frac{1}{k + \omega / c} + \frac{1}{k - \omega / c} \right) (\ee^{\ii k R} - \ee^{-\ii k R}).
-    \end{aligned}
-\]
-此时必须在分母上加入无穷小虚部。按照关于$\omega$的零点必须在下半平面以保证因果性的原则，我们将$\omega$替换为$\omega + \ii 0^+$，并使用留数定理（注意$\ee^{\ii k R}$项应取上半平面极点而$\ee^{- \ii k R}$项应取下半平面极点）就得到
-\[
-    \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} = \frac{2 \pi^2}{R} \ee^{\ii \omega R / c}, 
-\]
-于是
-\begin{equation}
-    \begin{aligned}
-        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
-        &= \int \dd[3]{\vb*{r}'} \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} \rho(\vb*{r}', \omega) \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R}.
-    \end{aligned}
-\end{equation}
-这个结果展示了一个出射波：从$\rho(\vb*{r}', t')$出发的向外传播的球面波，而不是向内聚集的波。
-现在我们再做关于$\omega$的积分，会直接得到一个$\delta$函数：
-\[
-    \begin{aligned}
-        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
-        &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \delta(R/c + t' - t) \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0 R} \\
-        &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}.
-    \end{aligned}
-\]
-同样的操作也可以对$\vb*{A}$和$\vb*{j}$做，最终得到
-\begin{equation}
-    \begin{bigcase}
-        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}, \\
-        \vb*{A}(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}', t - R / c)}{R}.
-    \end{bigcase}
-    \label{eq:general-solution-wave}
-\end{equation}
-
-当空间中只有一个电荷时，有
-\[
-    \rho(\vb*{r}, t) = q \delta(\vb*{r} - \vb*{r}_0(t)), \quad \vb*{j}(\vb*{r}, t) = q \dot{\vb*{r}}_0(t) \delta(\vb*{r} - \vb*{r}_0(t)),
-\]
-其中$\vb*{r}_0 = \vb*{r}_0(t)$是该电荷的运动轨迹。代入\eqref{eq:general-solution-wave}，有
-\[
-    \varphi(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R},
-\]
-因此只有满足
-\begin{equation}
-    \vb*{r}' = \vb*{r}_0(t - R/c)
-    \label{eq:retarded-position-original}
-\end{equation}
-的部分才有贡献。但是要注意，$\vb*{r}'$同时也出现在$R$中，因此积分时不能仅仅将$\vb*{r}'$替换为$\vb*{r}_0(t-R/c)$，还需要做一个积分测度的变换。
-我们有
-\[
-    \grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))} = \vb*{I} - \frac{\vb*{R}}{cR} \dot{\vb*{r}_0}(t-R/c) ,
-\]
-于是
-\[
-    \det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))}) = 1 - \frac{\vb*{R}}{cR} \cdot \dot{\vb*{r}}_0(t-R/c),
-\]
-从而
-\[
-    \begin{aligned}
-        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R} \\
-        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{1}{\det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))})} \frac{q}{R}}_{\vb*{r}' = \vb*{r}_0(t - R/c)} \\
-        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{q}{R - \frac{\vb*{R} \cdot \dot{\vb*{r}}_0(t-R/c)}{c}}}_{\vb*{r}' = \vb*{r}_0(t - R/c)}.
-    \end{aligned}
-\]
-用$\vb*{v}$表示粒子的运动速度，就有
-\begin{equation}
-    \varphi(\vb*{r}, t) = \frac{1}{4\pi \epsilon_0} \frac{q}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
-    \label{eq:retarded-phi}
-\end{equation}
-类似的
-\begin{equation}
-    \vb*{A}(\vb*{r}, t) = \frac{\mu_0}{4\pi} \frac{q \vb*{v}'}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
-    \label{eq:retarded-a}
-\end{equation}
-其中$R'$和$\vb*{v}'$均为$t'$时刻的$R$和$\vb*{v}$而$t'$由
-\begin{equation}
-    R(t') = \abs*{\vb*{r} - \vb*{r}_0(t')} = c(t-t')
-    \label{eq:retarded-time}
-\end{equation}
-确定。这个方程看起来非常合理，我们将$\rho$有速度地出现在某个地方当成一个事件，它传递到$\vb*{r}$必然存在时间延迟，事件传播的速度就是光速，在$t$时刻，$\vb*{r}$点看到的$\vb*{r}_0$处的情况是$t'$时刻的，两者之差为
-\[
-    t - t' = \frac{\abs*{\vb*{r} - \vb*{r}_0(t')}}{c},
-\]
-就得到\eqref{eq:retarded-time}。
-
-前面$\delta$函数的积分改变了积分测度，让它比通常的要大一些。这看起来似乎有些奇怪，因为狭义相对论中似乎应该有尺缩效应，积分测度应该缩小。
-这里的关键在于运动电荷对某一点的电场的贡献涉及的空间积分应该体现的是“在这一点看到的运动物体的长度”（在静止参考系看到的物体两端传来的信号可能来自不同时刻）而不是“试图在静止参考系中测量得到的运动物体的长度”（测量时物体两端到达观察点的用时是一样的）。
-
-\subsubsection{运动电荷的电场和磁场}
-
-
-
-\subsection{电磁波}
 
 \section{介质和边界条件}
 
@@ -508,18 +349,18 @@
     \vb*{B}(\vb*{r}, t) = \int \dd[3]{\vb*{r}} \dd{t} \vb*{\mu}(\vb*{r} - \vb*{r}', t - t') \vb*{H}(\vb*{r}', t').
 \end{equation}
 当然，总是可以做傅里叶变换将上式切换到频域空间。
-
-真空是一种典型的线性介质。
+大部分情况下系统具有时间平移不变性，因此其本征模式总是时谐场，在时间频域下处理问题更加方便。
 
 大部分介质都是各向同性的，且没有记忆，于是
 \begin{equation}
     \vb*{D} = \epsilon \vb*{E}, \quad \vb*{B} = \mu \vb*{B}.
 \end{equation}
 $\epsilon$和$\mu$这两个参数仍然可以在空间中发生变化。
+真空是一种典型的各向同性、无记忆的线性介质，并且还是空间均匀的。
 
 $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介质中有\concept{欧姆定律}。
 
-对满足欧姆定律的均匀系统，我们有
+对满足欧姆定律的均匀系统，$\vb*{j}$和$\vb*{E}$之间只差一个标量常数，我们有
 \[
     \frac{1}{\mu} \curl{\vb*{B}} = \sigma \vb*{E} + \epsilon \pdv{\vb*{E}}{t},
 \]
@@ -528,6 +369,51 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
     \pdv{\rho}{t} + \frac{\sigma}{\epsilon} \rho = 0.
 \end{equation}
 因此导体内部电荷快速衰减。因此，只有在不均匀的地方——如边界上——才能够积累电荷。
+
+介质中的麦克斯韦方程看起来是时间平移不变的，当然，本构关系可以显含时间，因此它也许并不真的是时间平移不变的。
+为方便起见我们经常求解\concept{时谐场}，即假定$\vb*{E} \propto \ee^{- \ii \omega t}$。
+我们先前已经提到，传导电流-极化电流的二分法很大程度上是任意的。由于$\vb*{j}_\text{f}$可以由欧姆定律确定，我们可以先将所有传导电流都归并入极化电流，然后求解出$\vb*{E}$和$\vb*{B}$，最后再恢复出$\vb*{j}_\text{f}$。
+由于$\vb*{j}_\text{f}$和$\vb*{E}$之间的关系是线性的，它也是时谐的，从而介质中的麦克斯韦方程成为
+\[
+    \begin{bigcase}
+        \div{\vb*{D}} &= \rho_\text{f}, \\
+        \curl{\vb*{E}} &= \ii \omega \vb*{B}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\vb*{H}} &= \sigma \vb*{E} - \ii \omega \vb*{D},
+    \end{bigcase}
+\]
+输运方程为
+\[
+    -\ii \omega \rho_\text{f} + \div{\vb*{j}_\text{f}} = 0,
+\]
+于是
+\[
+    \begin{bigcase}
+        \div{\vb*{D}} &= \frac{1}{\ii \omega} \div{\vb*{E}}, \\
+        \curl{\vb*{E}} &= \ii \omega \vb*{B}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\vb*{H}} &= \sigma \vb*{E} - \ii \omega \vb*{D},
+    \end{bigcase}
+\]
+即
+\begin{equation}
+    \begin{bigcase}
+        \div{\vb*{D}'} &= 0, \\
+        \curl{\vb*{E}} &= \ii \omega \vb*{B}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\vb*{H}} &= - \ii \omega \vb*{D}', 
+    \end{bigcase}
+\end{equation}
+其中
+\begin{equation}
+    \vb*{D}' = \vb*{D} - \frac{\sigma \vb*{E}}{\ii \omega} = \epsilon' \vb*{E}, \quad \epsilon' = \epsilon - \frac{\sigma}{\ii \omega}.
+    \label{eq:effective-epsilon}
+\end{equation}
+因此我们只需要重新定义$\epsilon$，就得到了看起来完全没有自由电荷的介质麦克斯韦方程。这是非常正常的——麦克斯韦方程实际上是一个规范场理论，即使没有规范荷，理论的形式也会“提示”规范荷应该出现在哪里。
+自由电荷引起了一些衰减效应和时滞效应，这同样是积掉一个场后常见的结果。
+因此我们很少在时域使用$\epsilon'$，一般都是在频域。
+
+在拿到一个材料的定义之后我们还可以反其道而行之，先认为$\vb*{D} = \epsilon_0 \vb*{E}$，计算出$\vb*{j}_\text{f}$和$\vb*{E}$的响应关系之后代入\eqref{eq:effective-epsilon}。
 
 \subsection{介质中的电磁场能量和动量}
 
@@ -551,8 +437,42 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 
 \subsection{静电系统的基本方程}
 
-本节讨论仅含有导体和线性电介质的静电系统。此时我们有
+本节讨论仅含有导体和线性电介质的静电系统。所谓\concept{静电}指的是系统中没有任何电流的情况，此时我们有$\div{\vb*{j}}=0$，从而电荷密度分布没有变化。
+注意我们没有使用“电荷密度没有变化”作为定义，因为恒稳电路也具有这样的性质，但是与此同时的确有电荷流动。
+在静电的条件下我们有
+\[
+    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t}, \quad \curl{\vb*{B}} = \mu_0 \epsilon_0 \pdv{\vb*{E}}{t},
+\]
+然后我们会发现磁场$\vb*{B}$满足一个波动方程。看起来这非常奇怪，因为在根本没有电流的时候磁场怎么会存在呢？
+这实际上是来自边界条件的不清晰。在处理电磁波时我们并不要求无穷远处场强衰减至零，因为我们实际上是认为电磁波由非常远的地方的一个源产生的，没完没了地传播到其它地方，从而处理电磁波时“无穷远处”有源是完全可以的。
+在静电学中我们要求电荷约束在一个有限的范围内，从而无穷远处场强快速衰减，那么磁场满足的波动方程如果要有非平凡解，只能取类似球面波的形式，但是这样一来$\div{\vb*{B}}$会不为零，和磁场无源的条件违背。
+总之，在静电学情况下$\vb*{B}=0$。于是我们就有静电学方程
+\begin{equation}
+    \div{\vb*{E}} = \frac{\rho}{\epsilon_0}, \quad \curl{\vb*{E}} = 0,
+    \label{eq:static-e-field}
+\end{equation}
+或者
+\begin{equation}
+    \vb*{E} = - \grad{\varphi}, \quad \laplacian{\varphi} = - \frac{\rho_0}{\epsilon_0}.
+    \label{eq:static-phi-field}
+\end{equation}
+这是拉普拉斯方程，有现成的通解，即
+\begin{equation}
+    \varphi(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
+    \label{eq:from-q-to-phi}
+\end{equation}
 
+静电学中能量可以看成是电荷携带的而不是电场携带的。这是因为一个区域内的能量为
+\[
+    E = \int \dd[3]{\vb*{r}} \frac{1}{2} \epsilon_0 \vb*{E}^2 = \frac{1}{2} \epsilon_0 \int \dd[3]{\vb*{r}} (\grad{\varphi})^2,
+\]
+做分部积分，并使用无穷远处场强为零这一条件，得到
+\begin{equation}
+    E = - \frac{\epsilon_0}{2} \int \dd[3]{\vb*{r}} \varphi \laplacian{\varphi} = \int \dd[3]{\vb*{r}} \rho \varphi.
+\end{equation}
+因此在静电学的情况下能量可以认为是定域在电荷周围的。
+
+总之，求解
 \begin{equation}
     \varphi|_\text{surface} = \const,
 \end{equation}
@@ -596,11 +516,11 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 \[
     \varphi(\vb*{r}) = \frac{1}{4\pi \epsilon_0} \int \dd[3]{\vb*{r}'} \frac{1}{\abs*{\vb*{r} - \vb*{r}'}} \rho(\vb*{r}'),
 \]
-对$1/\abs*{\vb*{r}-\vb*{r}'}$做多级展开：
+对$1/\abs*{\vb*{r}-\vb*{r}'}$做多极展开：
 \[
     \frac{1}{\abs*{\vb*{r}-\vb*{r}'}} = \frac{1}{\abs*{\vb*{r}}} - \vb*{r}' \cdot \grad{\frac{1}{\abs*{\vb*{r}}}} + \frac{1}{2} \vb*{r}' \vb*{r}' : \grad{\grad{\frac{1}{\abs*{\vb*{r}}}}} + \cdots,
 \]
-就得到一个$\varphi$的展开式，即所谓\concept{多级展开}，其中
+就得到一个$\varphi$的展开式，即所谓\concept{多极展开}，其中
 \begin{equation}
     \varphi^{(0)}(\vb*{r}) = \frac{1}{4\pi \epsilon_0} \frac{1}{\abs*{\vb*{r}}} \underbrace{\int \dd[3]{\vb*{r}'} \rho(\vb*{r}')}_{Q}
 \end{equation}
@@ -635,7 +555,37 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 
 \section{静磁学}
 
-静磁学指的是存在电荷流动，但是各个物理量的分布都恒稳的情况。要保持电流存在必须有一个外部的驱动力，这意味着此时的电磁场%
+和静电学类似，我们可以考虑恒定电流的情况，即虽然有电流但是没有任何电荷变化，电流强度也不变的情况，则由输运方程有$\div{\vb*{j}}=0$。
+我们可以直接引用\eqref{eq:wave-eq-general}，得到
+\[
+    \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} - \laplacian{\vb*{E}} = - \frac{1}{\epsilon_0} \grad{\rho} , \quad \frac{1}{c^2} \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = \mu_0 \curl{\vb*{j}},
+\]
+由于$\rho$和$\vb*{j}$都不随时间变化，如果我们像在静电学中一样，要求无穷远处场强衰减足够快，那么以上两式可以直接化为静态的拉普拉斯方程
+\[
+    \laplacian{\vb*{E}} = \frac{1}{\epsilon_0} \grad{\rho}, \quad \laplacian{\vb*{B}} = - \mu_0 \curl{\vb*{j}}.
+\]
+由于$\vb*{B}$不会变化，我们直接得到\eqref{eq:static-e-field}，于是就可以求解出电场。
+至于$\vb*{B}$，引入磁矢势，就得到
+\[
+    \curl{\laplacian{\vb*{B}}} = - \mu_0 \curl{\vb*{j}},
+\]
+那么只需要取库伦规范$\div{A}=0$就可以有
+\[
+    \div{\laplacian{\vb*{B}}} = - \mu_0 \div{\vb*{j}},
+\]
+于是就得到
+\begin{equation}
+    \vb*{B} = \curl{\vb*{A}}, \quad \laplacian{\vb*{A}} = - \mu_0 \vb*{j}.
+\end{equation}
+这个方程的形式和\eqref{eq:static-phi-field}非常相似，也是拉普拉斯方程，从而直接可以写出
+\begin{equation}
+    \vb*{A}(\vb*{r}) = \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}}.
+    \label{eq:from-j-to-a}
+\end{equation}
+
+总之，在电荷分布不变、电流分布不变的情况下，电场可以用$\rho$表示出来，并且是无旋场；磁场可以用$\vb*{j}$表示出来。这分别称为静电学和静磁学。
+
+静磁学指的是存在电荷流动，但是各个物理量的分布都恒稳的情况。要保持电流存在必须有一个外部的驱动力（\concept{非静电力}），这意味着此时的电磁场%
 \footnote{
     当然，这个外部驱动力通常归根到底也是电磁力；但是我们将与它有关的那部分场自由度积掉了。
 }%
@@ -663,13 +613,7 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 
 讨论静磁学系统的能量时需要把电源考虑进去，因为系统构型的小的变化会带来一个感生电动势，从而改变一些分布？
 
-\section{响应}
-
-本节讨论如何从材料本身的结构出发计算$\epsilon$，$\mu$和$\rho$。为了方便我们将在频域下讨论问题，从而无需直接处理推迟响应等问题。
-
-\subsection{Drude模型}
-
-
+磁场的多极展开从$1$开始编号。
 
 \section{似稳场和电路}
 
@@ -690,6 +634,7 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
         \div{\vb*{B}} &= 0, \\
         \curl{\vb*{H}} &= \vb*{j}.
     \end{bigcase}
+    \label{eq:quasi-stable-field}
 \end{equation}
 
 何时能够使用似稳场近似？对良导体，位移电流肯定要充分小，即
@@ -701,8 +646,12 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
     \omega \ll \omega_\sigma = \frac{\sigma}{\epsilon}.
     \label{eq:quasi-stable-field-cond-1}
 \end{equation}
-这个条件实际上是过于宽松的，对很多金属，在$\omega$增大时，$\sigma$会有较大的虚部，因为金属中的电子在外场作用下不断“折返跑”，不会有宏观上的定向移动。
-换而言之，此时的电流更像是束缚电流而不是传导电流，$\vb*{j} = \sigma \vb*{E}$已经没有意义了。
+表面上看有这个条件就够了，但实际上这里有一个微妙的地方。在电场频率很大时，很多材料中电子在外场作用下不断“折返跑”，不会有宏观上的定向移动。此时的电流更像是束缚电流而不是传导电流，有
+\[
+    \curl{\vb*{H}} = \vb*{j} \sim \pdv{\vb*{E}}{t},
+\]
+从而又有了位移电流，因此电场实际的行为更像电磁波而不是似稳场。在频域上看，在$\omega$增大时，$\sigma$会有较大的、随着$\omega$变化的虚部，从而\eqref{eq:quasi-stable-field}的解和我们马上要看到的场的扩散方程（在其中$\sigma$就是一个常数）非常不同。
+因此如果我们将直流电阻代入\eqref{eq:quasi-stable-field-cond-1}那这个判据太弱了。
 
 对绝缘体，即在导电区域以外，显然只有$\omega=0$即完全静态的情况下才有\eqref{eq:quasi-stable-field-cond-1}成立。
 然而，这仅仅意味着我们没有全空间的似稳场近似，并不意味着在系统的空间尺度较小时没有似稳场近似。
@@ -718,6 +667,9 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
     R \ll \frac{c}{\omega}.
 \end{equation}
 这当然是非常合理的：扰动基本上以光速传递，因此如果系统足够小，那么系统内一点的扰动总是可以快速传遍整个系统。
+
+如果一个系统能够用似稳场分析，这通常意味着我们可以把系统看成某种电路：磁场可以写成电流的函数，电场可以分成两部分，一部分是磁场的变化率的函数，一部分是电荷的函数，而电流又正比于总电场，因此可以写出一个类似于“电流乘以电导率=由磁场变化导致的电场+电荷导致的电场+外加电场”这样的方程，这正好是电路的方程，其中考虑了四种效应：电阻、电感、电容、电源。
+反之，则需要将系统看成某种传导电磁波的介质。
 
 \subsubsection{场的扩散方程}
 
@@ -738,6 +690,57 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 \end{equation}
 这就是\concept{场的扩散方程}。可以发现，对良好的导体，场的扩散反而是非常慢的，这是正确的，因为静电场中导体内部不应该有电场，因此在似稳场下导体内部的电场应该很弱，正好说明场的扩散很差。
 
+在频域下，我们有
+\begin{equation}
+    \laplacian{\vb*{E}} = - \ii \omega \mu \sigma \vb*{E}, \quad \laplacian{\vb*{H}} = - \ii \omega \mu \sigma \vb*{H}.
+    \label{eq:semi-stable-omega}
+\end{equation}
+如果$\sigma$有很大的虚部，以上方程的行为看起来就更像亥姆霍兹方程，从而在时域给出传递的波动。
+在$\omega$很大时$\sigma$通常会有很大的虚部，因此此时似稳场不适用。
+
+在似稳场确实适用的情况下，导体内部基本上没有场强分布，即出现\concept{趋肤效应}。
+这可以通过在导体表面求解\eqref{eq:semi-stable-omega}看出。在一个无穷大平面边界上，设
+\begin{equation}
+    \vb*{E} = \vb*{E}_0 \ee^{-\alpha z},
+    \label{eq:damping-surface-field}
+\end{equation}
+% TODO
+趋肤深度为
+\begin{equation}
+    \delta = \sqrt{\frac{2}{\mu \omega \sigma}}.
+\end{equation}
+对理想导体，$\sigma \to \infty$，因此任何频率下电场都不会进入导体内部。
+对实际导体，频率越高，趋肤效应越明显，但是当$\omega$继续增大以至于似稳场不再适用时，趋肤效应就消失了，此时的导体是透明的。
+
+这里有一个看起来的佯谬：对有限大小的电导率，$\omega$很小时似乎有$\delta \to \infty$，也即，静电场可以直接穿透导体！
+但是应当注意到一点：似稳场近似不仅包括了静电场的那些模式，也包括了\concept{恒定电场}即导体有稳定的、不随时间变化的电流输入的那些模式。
+后者的确不存在任何趋肤效应：很容易验证，$\vb*{E}$在导体内处处均匀分布，指向同一个方向的模式是存在的，这里没有任何趋肤效应。
+实际上从麦克斯韦方程可以看出，要产生场的扩散方程，感生电场是必须的（注意$\mu$出现在了场的扩散方程中），因此趋肤效应实际上是因为导体内部感应出的涡旋电场抵消了外加电场。这个机制和静电屏蔽是不一样的。
+
+静电屏蔽实际上来自边界条件。设电场从绝缘体被打到导体上，用1标记绝缘体，2标记导体，有
+\[
+    \vb*{n} \cdot (\vb*{D}_2 - \vb*{D}_1) = \sigma, \quad \pdv{\rho}{t} = \vb*{n} \cdot \vb*{j},
+\]
+在频域下就有
+\[
+    \vb*{n} \cdot (\vb*{D}_2 - \vb*{D}_1) = \sigma, \quad - \ii \omega \sigma = \vb*{n} \cdot \vb*{j},
+\]
+于是
+\[
+    \vb*{n} \cdot \vb*{E}_2 = \frac{\vb*{n} \cdot \vb*{D}_1}{\epsilon-0 + \frac{\sigma}{\ii \omega}},
+\]
+在$\omega \to 0$时$\vb*{n} \cdot \vb*{E}_2$趋于零，即使趋肤深度很大，电场也不能进入导体。因此与静电屏蔽相关的电场衰减的尺度是微观尺度上的：在导体和绝缘体的交接层上电场已经衰减了；另一方面，趋肤效应的尺度虽然很小，但仍然是宏观的，它发生在导体体块内部，而不是导体和绝缘体的交接层上。
+我们在这里只讨论了垂直于表面的电场，因为平行于表面的电场不会出现在静电场中，但是可以出现在恒定电场中；如果导体表面附近有平行于表面的电场，那么由$\vb*{n} \times (\vb*{E}_2 - \vb*{E}_1)=0$导体内部肯定也有平行于表面的电场，因此会有电流，就和“静电场”的条件冲突了。
+
+还有另一个可能造成疑难的地方：我们知道导体可以远距离传输电流，从而必然可以远距离传输电场，但是上面的论证似乎是说，导体中的电场一定会快速衰减！
+我们来分析一下远距离传输的电场可能出现在哪里，也即，持续的、远距离的稳定电流可能出现在哪里。
+趋肤效应的推导是非常一般的，因此这样的电流只能出现在导体边界附近，并且在没有外加电流流入的地方一定平行于导体边界。
+这些电流一定最后会撞上另一个导体边界，因为电流不可能在缺乏非静电力的导体内部环流。
+因此后一个导体边界的边界条件中，电流主要分布在这个边界的边缘上，如对柱状导体，主要分布在柱子的上下底面的棱上。
+这样的场构型让\eqref{eq:damping-surface-field}在这些表面上失效，因为此时电磁场在$z$方向和$x, y$方向上都有很大变化。
+在静电学中只有静电力，我们不会产生源源不断的电流，也不会将这样的电流从某处导入导体中，因此从来不会激发这样的模式。
+在导体和绝缘体交界的界面上根本无所谓电流输入，同样不会激发这样的模式。
+
 \section{电磁波的传播}
 
 本节讨论电磁波在各种环境中的传播；电磁波的产生，即\concept{辐射}机制，留待 % TODO
@@ -745,7 +748,6 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 \subsection{基本方程}
 
 绝缘体中没有传导电流或是电荷，于是
-% TODO:带导电性，从而$\sigma$可以灵活调节
 \begin{equation}
     \begin{bigcase}
         \div{\vb*{D}} &= 0, \\
@@ -758,18 +760,354 @@ $\vb*{j}_\text{f}$和$\vb*{E}$之间的关系如果是线性的，我们说介�
 \begin{equation}
     \laplacian{\vb*{E}} = \mu \epsilon \pdv[2]{\vb*{E}}{t}, \quad \laplacian{\vb*{B}} = \mu \epsilon \pdv[2]{\vb*{B}}{t}.
 \end{equation}
+以上方程均可以很容易地切换到频域。
 
-\subsection{波导}
+导电体中还有电流，但是正如\eqref{eq:effective-epsilon}所示，可以采用适当的处理让导电体的频域方程看起来就像绝缘体的频域方程一样。
+
+\subsection{线性均匀材料中的传导}
+
+
+
+\subsection{导体}
+
+导体中存在强烈的吸收，因为电磁波会驱动导体中的电子运动，电子再发生碰撞，让电磁能转化为热能。
+
+\subsubsection{Drude模型}
+
+\concept{Drude模型}是对金属中的电子气的一个粗略近似。我们假定电子之间的散射、电子和晶格的散射可以被看成作用在单电子上的一个阻尼力，于是单个电子的运动方程为 % TODO：和玻尔兹曼方程对比
+\begin{equation}
+    m \dot{\vb*{v}} + \frac{m}{\tau} \vb*{v} = e \vb*{E}.
+\end{equation}
+对时谐场，有
+\begin{equation}
+    \vb*{v} = - \frac{e \vb*{E}}{\ii m (\omega + \ii / \tau)},
+\end{equation}
+于是
+\[
+    \vb*{j} = e n \vb*{v} = - \frac{e^2 n \vb*{E}}{\ii m (\omega + \ii / \tau)},
+\]
+从而
+\begin{equation}
+    \sigma(\omega) = - \frac{n e^2}{\ii m (\omega + \ii / \tau)}.
+\end{equation}
+使用\eqref{eq:effective-epsilon}，就可以写出考虑了传导电流的等效介电常数
+\begin{equation}
+    \epsilon = \epsilon_0 - \frac{n e^2}{m \omega (\omega + \ii / \tau)}.
+\end{equation}
+
+在$\omega \ll 1/\tau$时我们得到了经典的直流电阻率。在$\omega \gg 1/\tau$时，电子来不及发生碰撞就被电场反向加速了，即电子跟着电场做折返跑，而很少发生碰撞，此时
+\begin{equation}
+    \sigma \approx \ii \frac{ne^2}{m \omega}, \quad \epsilon \approx \epsilon_0 - \frac{n e^2}{m \omega^2}.
+\end{equation}
+在这个频段上光打在金属上不会有强吸收，反而能够透过。$\epsilon$本身是一种响应函数，在
+\begin{equation}
+    \omega_\text{p} = \sqrt{\frac{ne^2}{\epsilon_0 m}}
+\end{equation}
+处导致一个奇点，这意味着这个频率是金属中的电子气的共振频率，称为\concept{等离子体共振频率}，因此此时的金属看起来更像等离子体。
+于是我们可以近似写出
+\begin{eqnarray}
+    \epsilon_\text{r} \approx 1 - \frac{\omega_\text{p}^2}{\omega^2}.
+\end{eqnarray}
+这个等离子体是有非常明显的色散的。
+
+\subsection{旋光性}
+
+\subsection{反射和折射}
+
+在两种材料的交界面附近，一般的空间平移不变性被破坏了，而保留了时间平移不变性、垂直于界面的空间平移不变性，
+
+\section{谐振腔和波导}
+
+目前为止的电磁波传播都是没有任何边界条件约束的，此时如果介质均匀，那么电磁波可以以平面波的形式稳定传播。
+本节则讨论束缚在有限区域内的电磁波模式。
+
+\subsection{柱状波导}
+
+\concept{波导}是指一个长条状的、电磁波可以在其中传递的装置。我们讨论一个柱状的波导，它是一个形状任意的闭合曲线沿着垂直于截面的方向平移而形成的直导管，其壁为导体，内部填充了某种均匀介质。
+基本上，能够称为电磁波的电磁场构型都有很强的趋肤效应，因此接下来如无特殊说明我们认为波导的壁是理想导体，即认为导体内部没有任何场分布，即认为边界条件为
+\begin{equation}
+    \vb*{n} \cdot \vb*{B} = 0, \quad \vb*{n} \times \vb*{E} = 0.
+\end{equation}
+
+考虑时谐场。由于$z$方向上的平移不变性，我们可以认为
+\[
+    \vb*{E}, \vb*{B} \propto \ee^{\ii (k_z z - \omega t)},
+\]
+在导管内部，波动方程为
+\begin{equation}
+    \left( \pdv[2]{x} + \pdv[2]{y} + k_0^2 - k_z^2 \right) \pmqty{\vb*{E} \\ \vb*{B}} = 0, \quad k_0 = \frac{\omega}{c}.
+\end{equation}
+以上方程并不能定解，但是实际上通过使用方程$\curl{\vb*{E}}=-\partial_t \vb*{B}$以及$\curl{\vb*{H}} = \partial_t \vb*{E}$，$x, y$方向上的场可以写成$z$方向上的场及其导数的线性函数，因此我们只需要求解
+\begin{equation}
+    \left( \pdv[2]{x} + \pdv[2]{y} + k_\text{c}^2 \right) \pmqty{E_z \\ B_z} = 0, \quad k_\text{c}^2 = k_0^2 - k_z^2.
+\end{equation}
+我们不能指望$E_z$和$B_z$都是零，因为此时没有非平庸解，即波导的约束意味着严格的横波是不可能的。
+可能的偏振模式可以分成$B_z=0$的\concept{横磁波}(TM)和$E_z=0$的\concept{横电波}(TE)两类。
+
+简单的计算表明对横电波我们有（本段中所有的$\grad$都是二维平面上的，我们暂时忽略电磁场在$z$方向上的周期性波动）
+\begin{equation}
+    \vb*{B}_\text{t} = \frac{\ii k_z}{k_\text{c}^2} \grad{B_z}, \quad \vb*{E}_\text{t} = - \ii \frac{c k_0}{k_\text{c}^2} \vb*{e}_z \times \grad{B_z},
+\end{equation}
+于是从$\vb*{n} \cdot \vb*{B} = 0$得到$B_z$满足的边界条件
+\begin{equation}
+    \pdv{B_z}{n} = 0,
+\end{equation}
+并且这个条件也能够让$\vb*{n} \times \vb*{E} = 0$成立，于是据此条件求解$B_z$满足的亥姆霍兹方程就确定了一切。对横磁波类似的有
+\begin{equation}
+    \vb*{E}_\text{t} = \frac{\ii k_z}{k_\text{c}^2} \grad{E_z}, \quad \vb*{B}_\text{t} = \ii \frac{k_0}{ck_\text{c}^2} \vb*{e}_z \times \grad{E_z},
+\end{equation}
+边界条件为
+\begin{equation}
+    E_z = 0.
+\end{equation}
+这个边界条件是$\vb*{n} \times \vb*{E}=0$的直接推论，但是由于它让$\grad{E_z}$在边界上一定沿着$\vb*{n}$，可以验证$\vb*{n} \cdot \vb*{B}=0$也是成立的。
+
+在$xy$平面上求解可能的TE或是TM模式，得到的是离散谱，而电磁场在$z$方向的传播却是散射态，即$\omega$和$k_z$都可以连续取值，于是波导内的模式的能谱形如
+\begin{equation}
+    \omega = c \sqrt{k_z^2 + k_{\text{c}, mn}^2},
+\end{equation}
+其中$m, n$为标记$xy$平面上的模式的整数编号。可以看到这个能谱是有能隙的，能量低于
+\begin{equation}
+    \omega_\text{c} = \min (c k_{\text{c}, mn})
+\end{equation}
+的电磁波入射波导之后会快速衰减。
+
+\subsection{谐振腔}
+
+
 
 \section{辐射}
 
-上一节我们讨论了电磁波的传播，本节则讨论电磁波是怎么产生的。\eqref{eq:retarded-phi}和\eqref{eq:retarded-a}给出了
+我们已经讨论了电磁波的传播，本节则讨论电磁波是怎么产生的。
+
+\subsection{李纳-维谢尔势}
+
+本节求解空间中有单个运动电荷时的电势和矢势分布情况，所得结果称为\concept{李纳-维谢尔势}。
+实际上这就是在求解真空中电磁场的格林函数，但是只有在讨论辐射时这才有意义，因为只有此时我们需要确切地知道“电荷运动方式给定后电磁场的分布”。
+其它时候，或是根本不需要让电荷动起来（静电学），或是电荷运动恒稳，磁场可以直接计算出来（静磁学），或是电荷的存在根本可以归入有效介电常数中（电磁波的传播）。
+
+在取洛伦兹规范之后，我们需要求解
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} - \frac{1}{c^2} \pdv[2]{\varphi}{t} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}).
+    \end{bigcase}
+\end{equation}
+使用格林函数法，有（暂时先不引入无穷小虚部）
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{- \vb*{k}^2 + \omega^2/c^2} \left( - \frac{\rho(\vb*{k}, \omega)}{\epsilon_0} \right) \\
+        &= \frac{1}{\epsilon_0} \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{\vb*{k}^2 - \omega^2/c^2} \int \dd[3]{\vb*{r}'} \int \dd{t'} \ee^{\ii (\omega t' - \vb*{k} \cdot \vb*{r}')} \rho(\vb*{r}', t') \\
+        &= \frac{1}{\epsilon_0} \int \dd[3]{\vb*{r}'} \int \dd{t'} \rho(\vb*{r}', t') \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot (\vb*{r} - \vb*{r}') - \omega (t - t'))}}{\vb*{k}^2 - \omega^2/c^2}.
+    \end{aligned}
+\]
+首先计算$\vb*{k}$部分的积分，有
+\[
+    \begin{aligned}
+        \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} &= \int k^2 \sin \theta \dd{k} \dd{\theta} \dd{\varphi} \frac{\ee^{\ii k R \cos \theta}}{k^2 - \omega^2 / c^2} \\
+        &= 2\pi \int_0^\infty \frac{k^2 \dd{k}}{k^2 - \omega^2 / c^2} \frac{1}{\ii k R} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
+        &= \frac{\pi}{\ii R} \int_{-\infty}^\infty \frac{k \dd{k}}{k^2 - \omega^2 / c^2} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
+        &= \frac{\pi}{2 \ii R} \int_{-\infty}^\infty \dd{k} \left( \frac{1}{k + \omega / c} + \frac{1}{k - \omega / c} \right) (\ee^{\ii k R} - \ee^{-\ii k R}).
+    \end{aligned}
+\]
+此时必须在分母上加入无穷小虚部。按照关于$\omega$的零点必须在下半平面以保证因果性的原则，我们将$\omega$替换为$\omega + \ii 0^+$，并使用留数定理（注意$\ee^{\ii k R}$项应取上半平面极点而$\ee^{- \ii k R}$项应取下半平面极点）就得到
+\[
+    \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} = \frac{2 \pi^2}{R} \ee^{\ii \omega R / c}, 
+\]
+于是
+\begin{equation}
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
+        &= \int \dd[3]{\vb*{r}'} \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} \rho(\vb*{r}', \omega) \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R}.
+    \end{aligned}
+\end{equation}
+这个结果展示了一个出射波：从$\rho(\vb*{r}', t')$出发的向外传播的球面波，而不是向内聚集的波。
+现在我们再做关于$\omega$的积分，会直接得到一个$\delta$函数：
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
+        &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \delta(R/c + t' - t) \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0 R} \\
+        &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}.
+    \end{aligned}
+\]
+同样的操作也可以对$\vb*{A}$和$\vb*{j}$做，最终得到
+\begin{equation}
+    \begin{bigcase}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}, \\
+        \vb*{A}(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}', t - R / c)}{R}.
+    \end{bigcase}
+    \label{eq:general-solution-wave}
+\end{equation}
+标势的形式和静电场一致，矢势的形式和静磁场一致，只不过出现了一个时间推迟。
+我们经常把这样有时间推迟的量放在中括号里，即
+\[
+    \rho(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{[\rho]}{R},
+\]
+等等。
+
+当空间中只有一个电荷时，有
+\[
+    \rho(\vb*{r}, t) = q \delta(\vb*{r} - \vb*{r}_0(t)), \quad \vb*{j}(\vb*{r}, t) = q \dot{\vb*{r}}_0(t) \delta(\vb*{r} - \vb*{r}_0(t)),
+\]
+其中$\vb*{r}_0 = \vb*{r}_0(t)$是该电荷的运动轨迹。代入\eqref{eq:general-solution-wave}，有
+\[
+    \varphi(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R},
+\]
+因此只有满足
+\begin{equation}
+    \vb*{r}' = \vb*{r}_0(t - R/c)
+    \label{eq:retarded-position-original}
+\end{equation}
+的部分才有贡献。但是要注意，$\vb*{r}'$同时也出现在$R$中，因此积分时不能仅仅将$\vb*{r}'$替换为$\vb*{r}_0(t-R/c)$，还需要做一个积分测度的变换。
+我们有
+\[
+    \grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))} = \vb*{I} - \frac{\vb*{R}}{cR} \dot{\vb*{r}_0}(t-R/c) ,
+\]
+于是
+\[
+    \det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))}) = 1 - \frac{\vb*{R}}{cR} \cdot \dot{\vb*{r}}_0(t-R/c),
+\]
+从而
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R} \\
+        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{1}{\det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))})} \frac{q}{R}}_{\vb*{r}' = \vb*{r}_0(t - R/c)} \\
+        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{q}{R - \frac{\vb*{R} \cdot \dot{\vb*{r}}_0(t-R/c)}{c}}}_{\vb*{r}' = \vb*{r}_0(t - R/c)}.
+    \end{aligned}
+\]
+用$\vb*{v}$表示粒子的运动速度，就有
+\begin{equation}
+    \varphi(\vb*{r}, t) = \frac{1}{4\pi \epsilon_0} \frac{q}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
+    \label{eq:retarded-phi}
+\end{equation}
+类似的
+\begin{equation}
+    \vb*{A}(\vb*{r}, t) = \frac{\mu_0}{4\pi} \frac{q \vb*{v}'}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
+    \label{eq:retarded-a}
+\end{equation}
+其中$R'$和$\vb*{v}'$均为$t'$时刻的$R$和$\vb*{v}$而$t'$由
+\begin{equation}
+    R(t') = \abs*{\vb*{r} - \vb*{r}_0(t')} = c(t-t')
+    \label{eq:retarded-time}
+\end{equation}
+确定。这个方程看起来非常合理，我们将$\rho$有速度地出现在某个地方当成一个事件，它传递到$\vb*{r}$必然存在时间延迟，事件传播的速度就是光速，在$t$时刻，$\vb*{r}$点看到的$\vb*{r}_0$处的情况是$t'$时刻的，两者之差为
+\[
+    t - t' = \frac{\abs*{\vb*{r} - \vb*{r}_0(t')}}{c},
+\]
+就得到\eqref{eq:retarded-time}。
+
+前面$\delta$函数的积分改变了积分测度，让它比通常的要大一些。这看起来似乎有些奇怪，因为狭义相对论中似乎应该有尺缩效应，积分测度应该缩小。
+这里的关键在于运动电荷对某一点的电场的贡献涉及的空间积分应该体现的是“在这一点看到的运动物体的长度”（在静止参考系看到的物体两端传来的信号可能来自不同时刻）而不是“试图在静止参考系中测量得到的运动物体的长度”（测量时物体两端到达观察点的用时是一样的）。
+
+\subsection{辐射的多极展开}
+
+\eqref{eq:general-solution-wave}可以做多极展开，所得结果和静电场、静磁场完全一致，仅有的区别在于$\varphi$和$\vb*{j}$是推迟的。
+
+\subsubsection{电偶极辐射}
+
+设系统中的电荷分布主要体现为偶极子，对$\varphi$，零阶项为
+\[
+    \varphi^{(0)}(\vb*{r}, t) = \frac{1}{4\pi \epsilon_0} \frac{1}{\abs*{\vb*{r}}} \int \dd[3]{\vb*{r}'} \rho(\vb*{r}', t - R / c) = \frac{1}{4\pi \epsilon_0} \frac{Q}{r},
+\]
+不随时间变化，没有辐射。一阶项
+\[
+    \begin{aligned}
+        \varphi^{(1)}(\vb*{r}, t) &= - \frac{1}{4\pi \epsilon_0} \grad{\frac{1}{\abs*{\vb*{r}}}} \cdot \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}' \\
+        &= - \frac{1}{4\pi \epsilon_0} \div{\int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}', t-R/c) \vb*{r}'}{\abs*{\vb*{r}}}},
+    \end{aligned}
+\]
+设$\vb*{p}$为总偶极矩，则
+\begin{equation}
+    \varphi^{(1)}(\vb*{r}, t) = - \div{\frac{[\vb*{p}]}{4\pi \epsilon_0 r}}. 
+\end{equation}
+对磁矢势，有
+\[
+    \begin{aligned}
+        \vb*{A}^{(1)}(\vb*{r}, t) &= \frac{\mu_0}{4\pi} \int \dd[3]{\vb*{r}'} \frac{\vb*{j}(\vb*{r}', t - R/c)}{\abs*{\vb*{r}}} \\
+        &= \frac{\mu_0}{4\pi} \int \dd[3]{\vb*{r}'} \frac{[\rho][\vb*{v}]}{\abs*{\vb*{r}}} \\
+        &= \frac{\mu_0}{4\pi} \dv{(t-R/c)} \int \dd[3]{\vb*{r}'} \frac{[\rho][\vb*{r}']}{\abs*{\vb*{r}}}.
+    \end{aligned}
+\]
+最后一个等号需要解释一下。我们可以将电荷分布离散化，从而
+\[
+    \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{v}(\vb*{r}') = \sum_i e \vb*{v}_i = \dv{t} \sum_i e \vb*{r}_i = \dv{t} \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}',
+\]
+然后将$t$换成$t-R/c$即可。实际上，设$\phi$为某个守恒量的密度，那么一定有
+\[
+    \dv{t} \int \dd[3]{\vb*{r}} \phi \psi = \int \dd[3]{\vb*{r}} \phi \dv{\psi}{t},
+\]
+这个方程可以直接从连续性方程推得。于是我们有
+\begin{equation}
+    \vb*{A}^{(1)}(\vb*{r}, t) = \frac{\mu_0}{4\pi} \frac{[\dot{\vb*{p}}]}{r}.
+\end{equation}
+这里$[\dot{f}]$表示先让$f$对$t$求导，然后用$t-R/c$代替$t$，或者说让$f(t-R/c)$对$t-R/c$求导。
 
 \section{狭义相对论}
 
-本节将先以光速不变原理和等价原理建立狭义相对论，然后表明麦克斯韦方程实际上能够导出狭义相对论。
+最后，我们讨论如何从经典电动力学中看出洛伦兹对称性，并将它表示为四维形式。
 
-\subsection{间隔}
+\subsection{电荷}
+
+电荷总量在洛伦兹变换下不变。由于洛伦兹变换下体积元会发生改变，电荷密度在洛伦兹变换下会发生变化。
+不失一般性地，设一些电荷正在以$\vb*{u}$沿着实验室参考系的$x$轴运动，设$(t_0, x_0)$为与这些电荷保持相对静止的参考系，洛伦兹变换为
+\[
+    x_0 = \frac{x - ut}{\sqrt{1 - u^2/c^2}}, \quad t_0 = \frac{t - ux / c^2}{\sqrt{1 - u^2 / c^2}}.
+\]
+于是我们有
+\[
+    \dd{x_0} = \frac{\dd{x}}{\sqrt{1 - u^2/c^2}}, \quad \dd{V_0} = \frac{\dd{V}}{\sqrt{1 - u^2/c^2}}.
+\]
+上式实际上隐含地表达了“同时测量”的概念：在$(t_0, x_0)$参考系中测量带电体上一段长度只需要在任意的两个时刻读取出这段长度两端的点的坐标即可，而在实验室参考系中测量（此时是运动的）带电体上的一段长度则需要同时读取这段长度两侧的坐标。
+不失一般性地我们认为对其中一端的测量发生在$t=0, x=0$处，则对另一端的测量应当发生在另一个$t=0$处，且此处的$(t, x)$应该对应带电体参考系中$x$坐标为$x_0$的一个事件。
+于是就有
+\[
+    x_0 = \frac{x}{\sqrt{1 - u^2/c^2}}.
+\]
+于是就得到体积转换关系。
+
+\subsection{电磁张量}
+
+\begin{equation}
+    \partial_\nu F_{\mu \nu} = \mu_0 J_\mu.
+\end{equation}
+
+实际上电磁张量不是唯一的，
+
+\begin{equation}
+    \begin{aligned}
+        E_\parallel' &= E_\parallel, \quad B_\parallel' , \\
+        E_\bot' &= \gamma (\vb*{E} + \vb*{u} \times \vb*{B})_\bot, \quad B_\bot' = \gamma (\vb*{B} - \frac{\vb*{u}}{c^2} \times \vb*{E}).
+    \end{aligned}
+\end{equation}
+
+\subsection{洛伦兹力}
+
+洛伦兹力的形式乍一看会引起疑惑：如果我们将参考系切换到和带电粒子相对静止，此时$\vb*{v}=0$，似乎带电粒子不应该受力。
+但实际上更换参考系之后会有一个垂直的电场分量代替原本的磁场。
+
+考虑一个孤立的带电粒子，在以它自己为参考系时有
+\[
+    \vb*{E}' = \frac{1}{4\pi \epsilon_0} \frac{q \vb*{r}'}{r'^2}, \quad \vb*{B}'=0,
+\]
+于是实验室参考系中有
+\begin{equation}
+    \vb*{E} = \frac{q \vb*{r}}{4\pi \epsilon_0} \frac{1 - \beta^2}{(1 - \beta^2 \sin^2\theta)^{3/2}}, \quad \vb*{B} = \frac{vqr (1 - v^2/c^2) \sin \theta}{c^2 4\pi \epsilon_0 (1 - v^2/c^2 \sin^2\theta)^{3/2}},
+\end{equation}
+在低速极限下就有
+\begin{equation}
+    \vb*{B} = \frac{\mu_0 \vb*{j} \times \vb*{r}}{4\pi r^3}, \quad \vb*{E} = 0,
+\end{equation}
+因此任何磁场实际上都是一种相对论效应。
+
+\subsection{多普勒效应}
+
+不同参考系之间的频率能够有一个对应关系是因为$\vb*{k} \cdot \vb*{r} - \omega t$是一个不变量：无论怎么调整参考系，
+\begin{equation}
+    k_x' = \gamma (k_x - \frac{v^2}{c^2} \omega), \quad \omega' = \gamma (\omega - v k_x)
+\end{equation}
+
+光行差效应
+
 
 
 \end{document}

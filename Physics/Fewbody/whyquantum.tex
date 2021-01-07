@@ -564,7 +564,12 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
 
 在体系比较复杂时\eqref{eq:wkb-bound}和\eqref{eq:wkb-scatter}提供了很好的试探波函数，也可以代入边界条件用于求解系统本征能量。
 
-% TODO:过渡条件
+在$p$（或者$\kappa$）很小时WKB近似就失效了，因为因子$1/\sqrt{p}$会让波函数发散。
+换而言之，在经典力学允许的区域的边缘，不能使用WKB近似。我们可以使用解析延拓的技巧估算一下\eqref{eq:wkb-scatter}和\eqref{eq:wkb-bound}的衔接条件。% TODO
+$\ee$指数是解析函数，无需额外讨论衔接条件，即只需要考虑$1/\sqrt{p}$的衔接条件即可。
+$p$的变化路径为从$-\ii \infty + 0^+$到$0^+$，然后在实轴上转一个来回，然后从$0^+$到$\ii \infty + 0^+$。
+$1\sqrt{p}$是一个多值函数，在$p=0$处无定义，由于很大一块区域都有$p>0$，我们将支点取在$p=0$和$p=-\infty$处，并作割线。
+总之就是
 
 \section{外加扰动}
 
@@ -692,7 +697,8 @@ $n\to\infty$时原子几乎原理了原子核的束缚，能量趋于零，
     \dv{\sigma}{\Omega} = \left( \frac{m L^3}{2\pi \hbar^2} \right)^2 \abs*{T_{if}}^2.
     \label{eq:cross-section-and-t}
 \end{equation}
-因此，接下来要做的就是计算$T$矩阵。
+因此，接下来要做的就是计算$T$矩阵。请注意散射截面实际上是乘上了某个因子的概率分布，因此如果有多个散射道而它们彼此没有相干
+% TODO
 
 \subsection{无穷远处的散射定态}
 
@@ -771,6 +777,7 @@ $G_k(\vb*{r}, \vb*{r}')$本身是容易计算的。最简单的做法是直接�
 \eqref{eq:infty-in-box}中的因子$L^{-3/2}$当然是来自归一化因子，于是在$L \to \infty$时我们可以简单地写出
 \begin{equation}
     \varphi_k(\vb*{r}) = \ee^{\ii k z} + \frac{\ee^{\ii k r}}{r} f_k(\theta, \varphi) , \quad \text{as $r \to \infty$}.
+    \label{eq:wave-function-k-f}
 \end{equation}
 由于$f$本质上是散射定态在无穷远处中球面波成分的权重除以平面波成分的权重，归一化方式不改变它，从而\eqref{eq:cross-section-and-f}仍然成立。
 
@@ -866,22 +873,24 @@ $G_k(\vb*{r}, \vb*{r}')$本身是容易计算的。最简单的做法是直接�
 由于我们总是假定势场局限在小的空间区域中，以下仅仅讨论球对称的情况，即$V = V(r)$，或者说我们认为角动量守恒。
 需要注意的是库伦势没有特征长度，不能认为局限在小的空间区域内，不能使用分波法。
 
-由于势场具有球对称性，尝试用球贝塞尔函数展开径向波函数；我们总是可以将$z$轴设置在入射$\vb*{k}$的方向上，于是系统具有$z$轴旋转对称性，从而$m=0$，只需要考虑角量子数，于是写出波函数通解：
+对足够局域的势场，总是可以把空间分成三部分：最内部的是散射区，需要求解完整的带有势场的薛定谔方程；较外层的是中间区，散射势可以忽略，但是等效角动量势垒不能忽略；最外层的是辐射区，可以认为是自由粒子。
+
+由于势场具有球对称性，在中间区和辐射区尝试用球贝塞尔函数展开径向波函数；我们总是可以将$z$轴设置在入射$\vb*{k}$的方向上，于是系统具有$z$轴旋转对称性，从而$m=0$，只需要考虑角量子数，于是写出波函数通解：
 \[
-    \psi(\vb*{r}) = \int \dd[3]{\vb*{k}} \sum_{l} (a_l(\vb*{k}) \hankelone_l(kr) + b_l(\vb*{k}) \hankeltwo_l(kr)) \legpoly_l(\cos \theta).
+    \varphi(\vb*{r}) = \int \dd[3]{\vb*{k}} \sum_{l} (a_l(\vb*{k}) \hankelone_l(kr) + b_l(\vb*{k}) \hankeltwo_l(kr)) \legpoly_l(\cos \theta).
 \]
-在无穷远处，$\hankelone_l(kr)$是一个出射球面波而$\hankelone_l(kr)$是一个入射球面波。
+在无穷远处，$\hankelone_l(kr)$是一个出射球面波而$\hankeltwo_l(kr)$是一个入射球面波。
 散射定态中有一系列出射波和一个入射平面波。出射波肯定可以写成$\hankelone_l(kr) \legpoly_l (\cos \theta)$的线性组合，而对平面波，我们有\concept{瑞利公式}
 \begin{equation}
-    \ee^{\ii k z} = \ii^l (2l+1) \mathrm{j}_l (kr) \legpoly_l(\cos \theta),
+    \ee^{\ii k z} = \sum_{l=0}^\infty \ii^l (2l+1) \mathrm{j}_l (kr) \legpoly_l(\cos \theta),
 \end{equation}
 因此它的确可以用汉克尔函数表示。于是散射定态应该形如
 \[
-    \psi(\vb*{r}) = \int \dd[3]{\vb*{k}} A(\vb*{k}) \left( \ee^{\ii k z} + \sum_l a_l(\vb*{k}) \hankelone_l(kr)  \right).
+    \varphi(\vb*{r}) = \int \dd[3]{\vb*{k}} A(\vb*{k}) \left( \ee^{\ii k z} + \sum_l a_l(\vb*{k}) \hankelone_l(kr)  \right).
 \]
 而由于我们仅考虑单色入射波，应有
 \begin{equation}
-    \psi(\vb*{r}) = A\left( \ee^{\ii k z} + k \sum_l \ii^{l+1} (2l+1) a_l \hankelone_l(kr) \legpoly_l(\cos \theta) \right).
+    \varphi(\vb*{r}) = A\left( \ee^{\ii k z} + k \sum_l \ii^{l+1} (2l+1) a_l \hankelone_l(kr) \legpoly_l(\cos \theta) \right).
 \end{equation}
 这里我们为了后面求解的方便特意重新定义了一些常数。于是，解薛定谔方程就变成了算系数。
 
@@ -891,7 +900,8 @@ $G_k(\vb*{r}, \vb*{r}')$本身是容易计算的。最简单的做法是直接�
 \]
 于是
 \begin{equation}
-    f_k(\theta, \varphi) = \sum_l (2l+1) a_l \legpoly_l(\theta).
+    f_k(\theta, \varphi) = \sum_l (2l+1) a_l \legpoly_l(\cos \theta).
+    \label{eq:scattering-amp}
 \end{equation}
 于是总散射截面就是
 \begin{equation}
@@ -902,11 +912,14 @@ $G_k(\vb*{r}, \vb*{r}')$本身是容易计算的。最简单的做法是直接�
 角动量大的波更加不容易发生散射，因此$a_l$在快速衰减。特别的，在$k a \ll 1$时，基本上只有$l=0$的分波是重要的。
 此时可以做拟设
 \begin{equation}
-    \psi(\vb*{r}) = A (\mathrm{j}_l(kr) + \ii k a_0 \hankelone_l(kr)) \legpoly_l(\cos \theta),
+    \varphi(\vb*{r}) = A (\mathrm{j}_0(kr) + \ii k a_0 \hankelone_0(kr)) \legpoly_0(\cos \theta),
 \end{equation}
 入射波中其它的分波都可以忽略，因为它们不会产生任何散射。
-
-对足够局域的势场，总是可以把空间分成三部分：最中间的是散射区，需要求解完整的带有势场的薛定谔方程；
+由于$l$和$k$都是守恒量，在实际计算可以每次只将下面的拟设
+\begin{equation}
+    R(r) \propto \mathrm{j}_l (kr) + \ii^{l} k a_l \hankelone_l(kr)
+\end{equation}
+代入径向部分的方程中。
 
 \subsection{光学定理}
 
@@ -940,9 +953,61 @@ $G_k(\vb*{r}, \vb*{r}')$本身是容易计算的。最简单的做法是直接�
 \begin{equation}
     \Im f(\vb*{k}, \vb*{k}) = \Im f_k(0, 0) = \frac{k}{4\pi} \sigma_\text{total}.
 \end{equation}
-这个结论称为\concept{光学定理}。最早它是在计算电磁波散射截面时得到的，在那里幺正性的要求来自电磁波能量归一化。
+这个结论称为\concept{光学定理}。最早它是在计算电磁波散射截面时得到的，在那里幺正性的要求来自电磁波能量归一化，因此称为这个名字。前向散射条件$f_k(0, 0)$在极坐标系下就是$\theta=0$。
 
 实际上光学定理也可以通过复变函数的方法直接计算得到。
+
+\subsection{相移法}
+
+实际上还有一种使用入射波和反射波之间的相位差快速计算$a_l$从而快速计算散射截面的方法。
+将$\ee^{\ii k z}$的瑞利展开公式代入\eqref{eq:wave-function-k-f}中，并利用$\mathrm{j}_l(kr)$的渐进性质
+\[
+    \mathrm{j}_l(kr) = \frac{1}{2} (\hankelone_l(kr) + \hankeltwo_l(kr)) \approx \frac{1}{2} \left( \frac{(-\ii)^{l+1} \ee^{\ii k r}}{kr} + \frac{\ii^{l+1} \ee^{- \ii k r}}{kr} \right),
+\]
+就得到
+\[
+    \varphi_k(\vb*{k}) \approx \frac{1}{2\ii k r} \sum_{l=0}^\infty (2l+1) \legpoly_l(\cos \theta) (\ee^{\ii k r} - (-1)^l \ee^{- \ii k r}) + \frac{\ee^{\ii k r}}{r} \sum_{l=0}^\infty (2l+1) a_l \legpoly_l(\cos \theta),
+\]
+成立条件是$r \to \infty$。可以看到$\varphi_k(\vb*{r})$由很多入射球面波和出射球面波构成。由于散射定态（在归一化之后）也是一个正常的波函数，它必定满足概率流守恒条件，因此每个$l$对应的入射球面波和出射球面波的系数的大小必须相同，即
+\[
+    \abs{\frac{1}{2\ii k} + a_l} = \abs{\frac{1}{2\ii k} (-1)^{l+1}}.
+\]
+当然，如果完全没有散射，也就是说$a_l=0$，这个条件也是成立的。我们设散射的存在让角量子数为$l$的出射波的相位发生了$2\delta$的变化，即做拟设
+\begin{equation}
+    \varphi_k(\vb*{r}) \approx \frac{1}{2\ii k r} \sum_{l=0}^\infty (2l+1) \legpoly_l(\cos \theta) (\ee^{2\ii \delta_l} \ee^{\ii k r} - (-1)^l \ee^{- \ii k r}),
+    \label{eq:phase-shift}
+\end{equation}
+则
+\[
+    \frac{1}{2\ii k} + a_l = \frac{\ee^{2\ii \delta_l}}{2\ii k},
+\]
+即
+\begin{equation}
+    a_l = \frac{\ee^{\ii \delta_l}}{k} \sin \delta_l.
+    \label{eq:a-and-delta}
+\end{equation}
+因此求出$\delta_l$之后整个散射问题就求解完毕了。例如，散射截面就是
+\begin{equation}
+    \sigma_\text{total} = \frac{4\pi}{k^2} \sum_{l=0}^\infty (2l+1) \sin^2 \delta_l.
+\end{equation}
+因此，我们可以用$\hankelone_l(kr)$和$\hankeltwo_l(kr)$展开散射定态，计算完毕后令$r\to \infty$然后和\eqref{eq:phase-shift}作比较，计算出出射波的相位偏移，就得到了所有需要计算的东西。这称为\concept{相移法}。
+
+上面的推导用到了概率流守恒的条件，意味着实际上相移法的成立是幺正性的结论。的确，实际上我们可以从$S$矩阵的幺正性出发得到相移法。
+
+同样，不出意外的，使用相移法可以很容易地证明光学定理，因为光学定理也是幺正性的自然要求。
+将\eqref{eq:a-and-delta}代入\eqref{eq:scattering-amp}中，我们有
+\[
+    f_k(\theta) = \sum_{l=0}^\infty (2l+1) \frac{\ee^{\ii \delta_l}}{k} \sin \delta_l \legpoly_l(\cos \theta),
+\]
+于是
+\[
+    \begin{aligned}
+        \Im f_k(0) &= \Im \sum_{l=0}^\infty (2l+1) \frac{\ee^{\ii \delta_l}}{k} \sin \delta_l \legpoly_l(0) \\
+        &= \sum_{l=0}^\infty (2l+1) \frac{\sin \delta_l}{k} \sin \delta_l \\
+        &= \frac{k}{4\pi} \sigma_\text{total},
+    \end{aligned}
+\]
+就得到光学定理。
 
 \subsection{全同粒子散射}
 
