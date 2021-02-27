@@ -197,6 +197,7 @@ DM中的null heads是如此之多，比其它理论中的null heads都要多。
 # DM和最简方案
 
 本节讨论DM和最简方案中的一些比较general的概念的相容性。
+我们将发现，只需要External Merge和Internal Merge的概念（这里有一个比较微妙的地方：如果$\alpha$发生了移位，或者说被Internal Merge到了更高的地方，主流的说法是认为$\alpha$被复制了，但是这样就需要在句法树之外保留一个chain来记录哪些成分被复制到了哪里，否则PF无法决定是否删除看起来多余的副本；一个不那么主流，但是更加简洁的说法是认为Internal Merge之后，$\alpha$同时是两个节点的子节点，这样chain可以直接从句法树中看出来，并且，删除多余的副本的PF操作和其它操作一样，都是十分局域的，因为不同的副本被连接在了一起），就能够得到最简方案中的一切：c-command的重要性，Agree，等等。
 
 ## DM的粗粒化
 
@@ -220,6 +221,13 @@ $$
 
 这就是所谓的AGR node Insertion schema，即发生Agree时需要插入一个AGR node。
 具体AGR插入的时间是句法推导中还是形态运算中其实并不重要，很多DM文献认为这是形态运算的一部分，即到了PF才出现AGR node insertion。
+
+这提供了一种比较干净的能够formulate concord现象（名词和修饰它的形容词句法一致）的方法：记含有形容词的名词性短语为[ A N ]，设想实际名词和形容词都带有AGR head，且名词性短语外面带有一层功能语类CaseP: [<sub>CaseP</sub> Case [ [ A AGR ] [ N AGR ] ] ]，其中Case head携带有这个名词性短语的格（Case本身甚至也可以是某种AGR，或者其specifier是某种AGR），这个结构被移送到PF，此时local morphology rules让两个AGR都和Case取同样的值，于是就得到了adjective concord。
+
+Downward Agree运算或者说probe-goal mechanism也可以使用类似的方法得到。例如，我们假定[<sub>CaseP</sub> Case [ [ A AGR ] [ N AGR ] ] ]中的Case是没有指定的，但由于这个短语和T发生了Internal Merge而TP层中存在主格的特征，local morphology rules让Case变成主格。
+这就解释了为什么probe-goal mechanism要求发生Agree的两个成分具有c-comand关系，因为否则的话是没法发生Internal Merge的；这也解释了为什么Agree常常和Move有关。
+
+因此通过巧妙的feature copying in PF和AGR head的配合，我们就直接实现了Agree运算。
 
 ## Affix Lowering和Head Movement
 
