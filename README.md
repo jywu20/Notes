@@ -11,3 +11,7 @@ Feel free to open issues.
 # The license?
 
 DO WHAT THE FUCK YOU WANT TO.
+
+# Further progress
+
+I'm considering transferring some notes into Markdown, because it will be 
