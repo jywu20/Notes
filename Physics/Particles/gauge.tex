@@ -13,6 +13,7 @@
 \usepackage{subfigure}
 \usepackage{physics}
 \usepackage{centernot}
+\usepackage{slashed}
 \usepackage{tikz}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
@@ -32,6 +33,7 @@
 \newcommand{\fsl}[1]{{\centernot{#1}}}
 \newcommand*{\reals}{\mathbb{R}}
 \newcommand*{\complexes}{\mathbb{C}}
+\newcommand*{\fd}[1]{{\mathcal{D} #1}}
 
 \newrefformat{sec}{第\ref{#1}节}
 \newrefformat{note}{注\ref{#1}}
@@ -51,29 +53,205 @@
 
 \maketitle
 
-\section{规范对称性和规范场}
+% TODO：李代数
+\begin{equation}
+    [T^a, T^b] = \ii f^{abc} T^c.
+\end{equation}
+\begin{equation}
+    \trace{(T^a T^b)} = \frac{1}{2} \delta^{ab}, \quad \trace{T^a} = 0.
+\end{equation}
+
+\section{杨-米尔斯理论}
+
+\subsection{杨-米尔斯理论的拉氏量}
+
+\subsubsection{规范场的引入和协变导数}
 
 物理学中的对称性通常包括时空对称性（即将物理事件的时空坐标做一个变换，一般来说，是洛伦兹变换）和内部对称性（即某个参数空间中的变换，通常是各点上场的变换）。
 \concept{规范对称性}指的则是变换参数依赖场和物理量的局域时空坐标的对称性，即与定域的变换相关的对称性。
-电动力学的Maxwell理论就具有规范对称性。
+电动力学的Maxwell理论是一个比较简单的规范理论，其中旋量场可以做任意的局域$U(1)$变换
+\[
+    \Omega(x) = \ee^{\ii a(x)},
+\]
+为了让拉氏量在此变换下保持不变，一个额外的矢量场被耦合到旋量场上，当旋量场做$U(1)$变换时矢量场的场值发生一个平移，从而拉氏量在局域$U(1)$变换下不变。
+
+在电动力学的$U(1)$规范理论中，$U(1)$群的特性决定了系统中存在矢量场这一事实，并且决定了相互作用的形式。
+以一种系统性的方式决定一个理论中应该有什么场，以及相互作用应该取什么形式，显然是非常有吸引力的。
+因此，我们希望用一个更加复杂的李群做规范变换，并且开发一套看着一个李群就能够写下一个具有规范对称性的理论的方式。
+对$U(1)$规范理论的推广看起来似乎有非常多可能的选择，但所幸我们已经有一个成熟的、和微分几何紧密相关的、已经在描述强相互作用和弱相互作用的方面大获成功的理论框架：\concept{杨-米尔斯理论}。
+
+下面我们将用一种启发式的方法去导出杨-米尔斯理论，主要是通过模仿电动力学中的概念。
+我们只讨论紧致的李群$G$，此时其一定具有幺正表示，这正是我们想要的。
+对标量场，看起来唯一能够作用在其上的操作就是乘以一个复因子。
+因此如果我们想要让$G$有一个$n$维幺正矩阵表示就需要引入$n$个标量场。此时，自由理论形如
+\[
+    \mathcal{L} = \frac{1}{2} \partial_\mu \phi^\dagger \partial^\mu \phi - \frac{1}{2} m^2 \phi^2,
+\]
+其中$\phi$是$n$个标量场排成的一个列矢量。我们用$t^a$标记$G$的$n$维幺正表示的李代数成员。如果我们想让拉氏量规范不变，即在变换
+\[
+    \phi(x) \to \Omega(x) \phi(x), \quad \phi^\dagger(x) \to \phi^\dagger(x) \Omega^\dagger(x), \quad \Omega(x) = \ee^{- \ii g \theta_a(x) t^a},
+\]
+下不变，那么无需调整质量项，因为显然
+\[
+    \phi^\dagger \Omega^\dagger \Omega \phi = \phi^2.
+\]
+含有导数的项则需要修正，具体来说，我们需要找到某种协变导数，使得
+\begin{equation}
+    D_\mu (\Omega(x) \phi(x)) = \Omega(x) D_\mu \phi(x).
+    \label{eq:covariant-derivative}
+\end{equation}
+$\partial_\mu$肯定不满足这个条件，因为
+\[
+    \partial_\mu (\Omega(x) \phi(x)) = \Omega(x) \partial_\mu \phi + (\partial_\mu \Omega) \phi.
+\]
+对狄拉克旋量，表面上看如果有$n$个旋量场，$G$可以有$4n$维表示，但是这实际上是行不通的，因为旋量场的拉氏量为
+\[
+    \mathcal{L} = \bar{\psi} (\ii \gamma^\mu \partial_\mu - m) \psi,
+\]
+如果$\Omega$是$4n$维的，那么可以让$\Omega$作用到旋量内部的各个分量上。
+然而，此时$\bar{\psi}$的变换方式为
+\[
+    \bar{\psi} \to \psi^\dagger \Omega^\dagger \gamma^0,
+\]
+没有什么能够保证$\gamma$和$\Omega^\dagger$一定对易，但是$\gamma$和$\Omega^\dagger$最好是对易的，否则简单地接受\eqref{eq:covariant-derivative}并不能让拉氏量在规范变换下不变。
+一种比较方便的做法是在将$\Omega$作用于旋量场上的时候将旋量（以及各个$\gamma$矩阵）看成一个整体，不允许对其分量单独进行操作，于是$\Omega$应该是$n$维的，并且因为$\gamma^0$此时相当于一个标量，它和$\Omega$肯定是对称的。
+接受这个做法之后，在旋量场的情况下同样只需要设法找到某种协变导数使得\eqref{eq:covariant-derivative}成立即可。
+
+现在我们分析协变导数的具体形式。在杨-米尔斯理论中，我们模仿电动力学，直接引入矢量场$A_\mu$并要求
+\begin{equation}
+    D_\mu = \partial_\mu - \ii g A_\mu,
+\end{equation}
+并以此为依据决定$A_\mu$在规范变换下如何变动，即让$A_\mu$“吸收掉”多余的$(\partial_\mu \Omega) \phi$项。
+这种协变导数的形式和微分几何中的协变导数非常一致，$A$就是一个联络，即所谓\concept{规范联络}或者说\concept{规范场}。
+显然应有
+\[
+    \partial_\mu - \ii g A_\mu' = \Omega(x) (\partial_\mu - \ii g A_\mu) \Omega^{-1}(x),
+\]
+容易看出$A_\mu$的变换规则应为
+\begin{equation}
+    A_\mu(x) \to \Omega(x) A_\mu(x) \Omega^{-1}(x) + \frac{\ii}{g} \Omega (\partial_\mu \Omega^{-1}(x)). 
+\end{equation}
+请注意$\Omega(x)$是$n$维矩阵，因此为了避免得到平庸的结果，实际上我们也需要让$A_\mu$变成一个$n$维矩阵，也就是除了时空指标$\mu=0, 1, 1, 3$以外还需要让$A$带两个从$1$跑到$n$的矩阵指标。
+在杨-米尔斯理论中我们实际上会将每个时空点、每个时空分量上都是$n$维矢量的$A$场限制为李代数$\{t^a\}$的成员，因为$A_\mu$的变换规则的无穷小版本为
+\[
+    \var{A_\mu} = \ii g \theta_a \comm*{A_\mu}{t^a} - t^a \partial_\mu \theta_a,
+\]
+因此如果我们要求$A_\mu(x)$是李代数$\{t^a\}$的成员那么变换之后它还是李代数的成员。
+这样，$A$可以用三个标签标记，一个是时空点$x$，一个是矢量指标$\mu$，还有一个是规范指标$a$，写成
+\begin{equation}
+    A_\mu(x) = A_\mu^a(x) t^a,
+\end{equation}
+于是就有
+% TODO: 李代数的伴随表示
+\begin{equation}
+    \begin{aligned}
+        \var{A_\mu} &= \ii g \theta_a \comm*{A_\mu^b t^b}{t^a} - t^a \partial_\mu \theta_a \\
+        &=
+    \end{aligned}
+\end{equation}
+然后我们就会发现，如果李群是非阿贝尔的，那么$A_\mu$的无穷小变换不仅仅是场值做一个平移，还需要加上一个对易子。
+电动力学仅讨论$U(1)$变换，属于阿贝尔规范理论，杨-米尔斯理论则是非阿贝尔规范场论。
+
+\subsubsection{场强张量}
+
+规范场可以有它自己的动能项。在杨-米尔斯理论中，这个动能项大体上仍然应该和电动力学一致，即大体上仍有
+\[
+    \mathcal{L}_A = - \frac{1}{4} F_{\mu \nu} F^{\mu \nu}
+\]
+成立。在电动力学中我们有
+\[
+    \comm*{D_\mu}{D_\nu} = \ii e F_{\mu \nu},
+\]
+而在杨-米尔斯理论中，$\comm*{D_\mu}{D_\nu}$在规范变换下为
+\[
+    \comm*{D_\mu}{D_\nu} \to \Omega \comm*{D_\mu}{D_\nu} \Omega^{-1},
+\]
+因此可以定义
+\begin{equation}
+    \comm*{D_\mu}{D_\nu} = - \ii g F_{\mu \nu} = - \ii g (\partial_\mu A_\nu - \partial_\nu A_\mu - \ii g \comm*{A_\mu}{A_\nu}),
+\end{equation}
+作为电动力学中的场强张量的推广。由于$A$实际上是$n$维矩阵，$F_{\mu \nu} F^{\mu \nu}$也是$n$维矩阵，因此我们还需要加上一个求迹操作就能够得到规范不变而同时洛伦兹不变的拉氏量：
+\begin{equation}
+    \mathcal{L}_A = - \frac{1}{2} \trace(F_{\mu \nu} F^{\mu \nu}) = - \frac{1}{4} F_{\mu \nu}^a F^{a \ \mu \nu},
+\end{equation}
+如果$G$是$U(1)$，那么上式就自动退化为了电动力学。
+
+可以看到在这种思路下面规范场本身是不能有质量的，因为质量项$m^2 A_\mu A^\mu$无论如何没法变得规范不变。
+但是，通过希格斯机制，实际上可以给规范场引入一个等效的质量。本节暂时不讨论这些内容。
+
+因此我们现在就得到了杨-米尔斯理论的拉氏量：如果规范场和旋量场耦合，那么拉氏量就是
+\begin{equation}
+    \mathcal{L} = \bar{\psi} (\ii \slashed{D} - m) \psi - \frac{1}{4} F_{\mu \nu}^a F^{a \ \mu \nu}.
+    \label{eq:yang-mills-lagrangian}
+\end{equation}
+$F_{\mu \nu} F^{\mu \nu}$项前面的系数本来可以有变化，但是我们完全可以将其吸收到$A$中，然后用调整$g$来保持协变导数不变。
+这个拉氏量看起来和电动力学基本上一样，但是因为$F$中的非线性部分，其经典行为实际上就非常有趣。
+
+\subsubsection{关于李代数的限制}
+
+% TODO:对李代数的限制
+
+\subsection{Faddeev–Popov量子化}
+
+\subsubsection{规范固定和鬼场}
+
+规范对称性会导致正则量子化变得比较困难，因为需要做复杂的规范选取来消除多余的自由度，而在路径积分量子化中则可以通过Faddeev–Popov量子化比较容易地解决。
+我们已经在自由无质量矢量场的量子化中使用过了Faddeev–Popov量子化，这回我们如法炮制。
+和自由无质量矢量场的情况不同，此时不仅需要引入规范固定项，还需要引入鬼场。
+
+我们通过在$\int \fd{A_\mu}$之后插入
+\[
+    1 = \int \fd{\alpha} \delta(G(A^\alpha)) \det(\fdv{G(A^\alpha)}{\alpha})
+\]
+来设法将对只相差一个规范变换的场重复计数导致的因子提取出来，其中$\alpha$标记规范变换的参数，它带有一个规范指标；规范固定为$G(A)=0$，$G$定义为洛伦兹协变的
+\begin{equation}
+    G(A^\alpha) = \partial^\mu (A^\alpha)_\mu - \omega(x),
+\end{equation}
+其中$\omega(x)$是任意的标量场。我们让$\alpha$取无穷小量，则有
+\[
+    G(A^\alpha) = \partial^\mu A_\mu + \frac{1}{g} \partial^\mu D_\mu \alpha^a - \omega(x),
+\]
+于是
+\[
+    \begin{aligned}
+        Z &= \int \fd{A} \fd{\psi} \ee^{\ii S[A, \psi]} \\
+        &= \int \fd{A} \fd{\psi} \int \fd{\alpha} \delta(G(A^\alpha)) \det(\fdv{G(A^\alpha)}{\alpha}) \ee^{\ii S[A, \psi]} \\
+        &= \frac{1}{g} \det(\partial^\mu D_\mu) \int \fd{A} \int \fd{\psi} \int \fd{\alpha} \delta(G(A^\alpha)) \ee^{\ii S[A, \psi]} \\
+        &= \frac{1}{g} \det(\partial^\mu D_\mu) \int \fd{\psi} \int \fd{\alpha} \int \fd{A^\alpha} \delta(G(A^\alpha)) \ee^{\ii S[A^\alpha, \psi]} \\
+        &= \frac{1}{g} \det(\partial^\mu D_\mu) \int \fd{\psi} \int \fd{\alpha} \int \fd{A} \delta(G(A)) \ee^{\ii S[A, \psi]},
+    \end{aligned}
+\]
+倒数第二个等号是因为$\fd{A}$和$\fd{A^\alpha}$相同，倒数第一个等号是我们重新标记了场。
+既然$\omega(x)$可以任意取值，我们不妨重新定义配分函数，去掉无用的因子$g$，并对所有的$\omega(x)$求和，得到
+\[
+    \begin{aligned}
+        Z &= \det(\partial^\mu D_\mu) \int \fd{\omega} \ee^{-\ii \int \dd[4]{x} \frac{\omega^2}{2 \xi}} \int \fd{A} \int \fd{\psi} \int \fd{\alpha} \delta(\partial^\mu A_\mu - \omega(x)) \ee^{\ii S[A, \psi]} \\
+        &= \det(\partial^\mu D_\mu) \int \fd{\alpha} \int \fd{A} \int \fd{\psi} \exp(-\ii \int \dd[4]{x} \frac{(\partial^\mu A_\mu^a)^2}{2 \xi}) \ee^{\ii S[A, \psi]}.
+    \end{aligned}
+\]
+无用的$\int \fd{\alpha}$因子可以略去。与自由场的情况不同，此时因子$\det(\partial^\mu D_\mu)$中仍然含有场变量，不能直接丢弃。
+为此，可以引入一个\concept{鬼场}$c$，它是一个复标量场，但是是格拉斯曼数，这样就能够满足
+\[
+    \int \fd{c} \int \fd{\bar{c}} \exp(\ii \int \dd[4]{x} \bar{c} (- \partial^\mu D_\mu) c) = \det(\partial^\mu D_\mu),
+\]
+如果$c$是普通标量场，那么行列式会出现在分母上。显然$c$并没有什么物理意义，在计算协变的物理量时也没有外线。
+
+现在我们就完成了规范场论\eqref{eq:yang-mills-lagrangian}的量子化：只需要用等效的拉氏量
+\begin{equation}
+    \mathcal{L} = \bar{\psi} (\ii \slashed{D} - m) \psi - \frac{1}{4} F_{\mu \nu}^a F^{a \ \mu \nu} \underbrace{- \frac{(\partial^\mu A_\mu^a)^2}{2 \xi}}_{\text{gauge fixing}} + \underbrace{\bar{c} (- \partial^\mu D_\mu) c}_{\text{ghost}}
+\end{equation}
+做路径积分即可。
+
+\subsubsection{传播子和顶角}
+
+
+
+\subsection{守恒量}
+
+
+\section{共形场论}
 
 对二维系统，共形变换是局域变换群，共性不变的场论也是一种规范理论，称为共形场论。
 高维共性不变性是整体的，没有局域不变性，从而也不是规范理论。
-
-\subsection{规范场论的拉氏量}
-
-\begin{equation}
-    \mathcal{L}
-\end{equation}
-
-\section{规范场的量子化}
-
-规范场在正则量子化之下是非常难以处理的。规范冗余性的存在会让最为
-
-\section{Abel规范理论示例：$U(1)$规范对称性导致的电动力学理论}
-
-\begin{equation}
-    \mathcal{L} = - \frac{1}{4} F_{\mu \nu} F^{\mu \nu} - \bar{\psi} 
-\end{equation}
 
 \end{document}
