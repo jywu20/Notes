@@ -11,7 +11,8 @@ title: 密度矩阵重整化群和张量网络
 
 任何一个统计模型都可以写成一个张量网络，
 
-$$E = \sum_{\langle i, j \rangle} \left( - J \sigma_i \sigma_j - \frac{h}{2} \sigma_i - \frac{h}{2} \sigma_j \right).$$
+$$E = \sum_{\langle i, j \rangle} \left( - J \sigma_i \sigma_j - \frac{h}{2} \sigma_i - \frac{h}{2} \sigma_j \right).
+$$
 
 把格点自由度放在张量网络的边上。
 
