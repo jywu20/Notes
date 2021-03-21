@@ -15,6 +15,7 @@
 \usepackage{slashed}
 \usepackage{centernot}
 \usepackage{tikz}
+\usepackage{tikz-feynhand}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
 
@@ -2215,9 +2216,31 @@ $\gamma$矩阵可以当成洛伦兹标量。 % TODO
 
 $b$模式和$a$模式互为反粒子。通过将$\psi$场的傅里叶展开中的积分变量换成$-\vb*{p}$（不改变积分值），可以发现
 \[
-    a^\dagger_{\vb*{p}} \ee^{- \ii \omega_{\vb*{p}} t} = a_{-\vb*{p}} \ee^{\ii \omega_{\vb*{p}} t},
+    a^\dagger_{\vb*{p}} \ee^{- \ii \omega_{\vb*{p}} t} = b_{-\vb*{p}} \ee^{\ii \omega_{\vb*{p}} t},
 \]
 即它们的确互为反粒子。我们通常以$b^\dagger$为反粒子，虽然这只是习惯问题。
+在绘制含有反粒子的费曼图时应当令传播子上的箭头和与传播子平行的动量箭头方向相反，这样顶角的形式无需因为传入的是粒子还是反粒子而改变（例如，$\gamma^\mu A_\mu \bar{\psi} \psi$的形式在这种情况下永远是“一条玻色子线连接一条方向指向顶角的费米子线和一条方向远离顶角的费米子线”），而又提醒了我们一个传播子是反粒子，同时顶角的动量守恒关系也非常直观。
+这可以直观地展示为
+\[
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (0,0); \vertex (b) at (2,0);
+            \propag[fer, mom={$-k$}] (a) to (b);
+        \end{feynhand}
+    \end{tikzpicture} a(-k) = 
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (0,0); \vertex (b) at (2,0);
+            \propag[fer, revmom={$k$}] (a) to (b);
+        \end{feynhand}
+    \end{tikzpicture} =
+    b^\dagger(k) \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (0,0); \vertex (b) at (2,0);
+            \propag[anti fermion, mom={$-k$}] (a) to (b);
+        \end{feynhand}
+    \end{tikzpicture} .
+\]
 
 总之，对旋量场，由于负能量部分（即反粒子）的存在，对易关系是不适用的，因此必须选择反对易关系，这意味着旋量场一定是费米场。
 
@@ -2237,6 +2260,8 @@ $b$模式和$a$模式互为反粒子。通过将$\psi$场的傅里叶展开中�
 \begin{equation}
     D_F(x-y) = \mel{0}{T \psi(x) \bar{\psi}(y)}{0} = \int \frac{\dd[4]{p}}{(2\pi)^4} \frac{\ii (\slashed{p} + m)}{p^2 - m^2 + \ii 0^+} \ee^{- \ii p \cdot (x- y)}.
 \end{equation}
+
+% TODO：费曼图
 
 \subsection{非相对论极限}
 
@@ -2609,9 +2634,27 @@ $\xi=1$称为\concept{费曼规范}，和\eqref{eq:maxwell-lagrangian-fixed}是�
 虽然我们做出了以上形式的论证，完整地做Wilson重整化群计算而得到场强重整化因子当然还是非常繁琐的，因此本节尝试以一种更加简单的方法建立微扰计算$S$矩阵的方法。
 本节将始终在以下对高能物理来说非常一般的假设下工作：系统具有完整的洛伦兹对称性；入射和出射态中各个粒子相隔足够远；只有接近关联函数极点时的动量-能量安排才是值得分析的，因为其它时候实验现象也不明显。
 
-本节将首先介绍一些可以使用$S$矩阵计算的物理量，以展示计算$S$矩阵的必要性，然后给出
+本节将首先介绍一些可以使用$S$矩阵计算的物理量，以展示计算$S$矩阵的必要性，然后给出微扰计算$S$矩阵的方法。
 
-\subsection{S矩阵和关联函数}
+\subsection{可观察物理量}
+
+\subsubsection{散射截面}
+
+\begin{equation}
+    \mel*{p_1, p_2, \ldots, p_m}{\ii T}{k_1, k_2, \ldots, k_n} = \ii (2\pi)^4 \delta^4(\sum_i p_i - \sum_j k_j) \mathcal{M}(k_1, k_2, \ldots, k_n \to p_1, p_2, \ldots, p_m).
+\end{equation}
+
+\subsubsection{跃迁率}
+
+\subsubsection{非相对论极限}
+
+我们知道$S$矩阵可以用所谓李普曼-施温格方程写出。非相对论性单粒子量子力学中通常采取这样的归一化方案：
+\[
+    \hat{T} = \hat{H}' + \hat{H}' \frac{1}{E - \hat{H}_0} \hat{H}' + \cdots, \quad \hat{S} = 1 - 2 \pi \ii \delta(E_f - E_i) \hat{T},
+\]
+% TODO：怎么计算等效势能
+
+\subsection{S矩阵和关联函数的关系}
 
 \subsubsection{标量场编时格林函数的解析结构和LSZ约化公式}
 
@@ -2818,13 +2861,9 @@ $\xi=1$称为\concept{费曼规范}，和\eqref{eq:maxwell-lagrangian-fixed}是�
 \end{equation}
 因此，计算自能修正并得到$Z$之后，只需要计算amputated diagrams就能够微扰计算得到$S$矩阵。
 
-TODO：路径积分量子化中的LSZ
+我们还可以更加简化一些。注意到，所有只含有单粒子自能修正的图——即有$n$个入射粒子，$n$个出射粒子，总共有$n$个连通子图，不同粒子对应不同连通子图的图——在amputate之后就是简单地将入射端和出射端连接起来，而这些图正好对应$S=1 + \ii T$中的$1$，因此如果只计算$\mathcal{M}$，无需计算这些图。
 
-\subsection{可观察物理量}
-
-\subsubsection{散射截面}
-
-\subsubsection{跃迁率}
+% TODO：路径积分量子化中的LSZ
 
 \section{正规化和重整化}
 
@@ -2958,9 +2997,9 @@ TODO：路径积分量子化中的LSZ
 \[
     \exp(\int \dd[4]{x} J \phi)
 \]
-形式给出时，计算虚时间格林函数使用的泛函导数是$\fdv*{Z^\text{E}}{J}$，没有$\ii$。
-在四维欧氏时空中计算虚时间格林函数，使用Wick定理，画费曼图等使用的都是$\fdv*{Z^\text{E}}{J}$方法求出的格林函数，但是最后切换回$-+++$度规的闵氏时空时需要把$\ii$加回去。
-例如，对二体格林函数，四维欧氏时空中的虚时间格林函数计算出来之后，需要做反Wick转动，然后加上一个负号，才能得到$-+++$度规的闵氏时空中的格林函数。
+形式给出时，计算虚时间格林函数使用的泛函导数是$\fdv*{Z^\text{E}}{J}$，没有$\ii$。（这和松原格林函数又差了一个负号）
+在四维欧氏时空中计算虚时间格林函数，使用Wick定理，画费曼图等使用的都是$\fdv*{Z^\text{E}}{J}$方法求出的格林函数，但是最后切换回$-+++$度规的闵氏时空时需要把$\ii$加回去，格林函数中涉及几个场加几个。
+例如，对二体格林函数，四维欧氏时空中的虚时间格林函数计算出来之后，需要做反Wick转动（在此过程中由于$\tau = \ii t$，闵氏时空格林函数的分子上会多出$-\ii$），然后加上一个负号（由于泛函导数而导致的$\ii$有两个，因为有两个场，而$\ii^2=-1$），才能得到$-+++$度规的闵氏时空中的格林函数。
 
 对旋量场，事情略微复杂一些，因为$\gamma$矩阵也需要做同样的变换——当然其实可以不做任何变换，但是这样很多公式会看起来很奇怪。
 考虑配分函数：
