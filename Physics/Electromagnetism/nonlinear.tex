@@ -11,7 +11,10 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz-feynhand}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
 \titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
@@ -30,6 +33,11 @@
 \newcommand*{\ogroup}[1]{\mathrm{O}(#1)}
 \newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
 \DeclareMathOperator{\legpoly}{P}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
 
 \newcommand{\concept}[1]{\underline{\textbf{#1}}}
 \renewcommand{\emph}{\textbf}
@@ -57,16 +65,317 @@
 
 多光子过程：可以避免光学屏障，以及排除荧光本底
 
-\section{非线性谐振子}
+\section{非线性光学过程的经典模型}
 
+\subsection{非线性谐振子模型}
+
+本节将材料当成一系列谐振子的组合，并且暂时不考虑谐振子之间的相互作用。
+这是相对合理的，因为能够长距离传输光的介质一般不是金属，从而电子是相对定域的。
+然而，这并不意味着我们的理论是自由的。
+我们知道一个标准的经典谐振子可以用
 \begin{equation}
-    m \dv[2]{x}{t} + m \gamma \dv{x}{t} + m \omega_0^2 x = q E,
+    m \dv[2]{x}{t} + m \gamma \dv{x}{t} + m \omega_0^2 x = q E
 \end{equation}
+来描述，而如果我们加上诸如$x^3$这样的项，即让谐振子的回复力为非线性的，就可以造成谐振子模式发生自相互作用。
+我们讨论的问题的能量都并不高，谐振子运动不会特别快，因此可以认为谐振子只产生电场，并且其方式为“电偶极子产生库伦场”。
+用作用量表示，就是% TODO:有误，这里的关键在于qxE可以给出电场对电荷的作用，但是是否能够给出电荷对电场的作用？？或者说，电场和电荷的相互作用拉氏量或是哈密顿量要怎么写？？
+\[
+    S = \int \dd{t} \left( \frac{1}{2} m \dot{x}^2 - \frac{1}{2} k x^2 + \text{higher order $x^n$} + qxE \right).
+\]
+现在积掉谐振子，就能够得到非线性的光子-光子过程，即多个光子和一或是一个光子分裂为多个光子。
+
+\subsubsection{二次谐波}
+
+我们现在在谐振子能量中加入一个三次项，即在运动方程中加入一个二次回复力：
+\begin{equation}
+    m \dv[2]{x}{t} + m \gamma \dv{x}{t} + m \omega_0^2 x + m a x^2 = q E.
+    \label{eq:x3-eq}
+\end{equation}
+这相当于在能量中加入了一个$\frac{1}{3} m a x^3$项。
+我们实际上是要从电场计算$x$（从$x$计算响应电场的公式是显然的，就是大量偶极子加总为$\vb*{P}$然后从$\vb*{P}$出发算电场）。
+
+对这个问题的标准的处理是微扰求解微分方程，但是实际上可以使用费曼图分析这个问题。由于只考虑经典情况，无需计算圈图。
+“经典情况”到底指的是什么需要进一步说明：在经典情况下我们没有二次量子化，粒子图景的经典理论和场的图景的经典理论还不一样。
+粒子图景下运动方程是关于各个粒子的位置和动量的，入射和出射外线没有任何限制。
+场的图景下，我们求解系统的基本自由度（在这里是电场和谐振子坐标）的运动方程，得到场变量随时间的变化情况，即实际上在求解$\expval*{\phi}$，因此只能有一条出射外线，入射外线应当被当成外源。
+在经典极限下这两种图景不会造成太大差别：同一张图的外线数目是固定的，在场的图景下，出射外线多了外源就少，由于我们要求场强满足$\phi / \hbar \ll 1$（但与此同时能标又没有高到多顶角图非常重要，从而圈图修正有必要计算），外源较少的过程是非常不重要的。
+
+我们采用后一种图景，因为我们实际上就是在微扰求解\eqref{eq:x3-eq}。
+将电磁场和带有$x^3$形势能的非线性振子耦合，则费曼图中应该有\autoref{fig:x3-vertex}和\autoref{fig:light-osci-couple}两种基本元件。
+由于电场和谐振子的耦合是完全线性的（并且由于谐振子是一个没有空间分布的点，实际上耦合项就是电偶极子能量），且我们关心的是“非线性介质中有哪些光学过程”，可以将电场暂时当成背景场，于是\autoref{fig:light-osci-couple}应该被\autoref{fig:external-field}取代。
+例如，我们只需要分析一阶过程\autoref{fig:first-order-x3-external}就能知道\autoref{fig:first-order-x3-photon}的来源——如果$E$让$x$产生非线性响应，那就有光子分裂和合并的过程。
+
+费曼规则可以很容易地写出：（我们认为频率为$\omega$的成分携带$\ee^{- \ii \omega t}$因子）
+\begin{itemize}
+    \item 传播子为
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \propag [plain, mom={$\omega$}] (a) to (b); 
+            \end{feynhand}
+        \end{tikzpicture} = \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)}.
+    \]
+    \item 顶角为
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1,-1); \vertex (b) at (1,-1); \vertex (c) at (0,1);
+                \vertex (o) at (0,0); 
+                \propag [plain] (a) to (o);
+                \propag [plain] (b) to (o); 
+                \propag [plain] (c) to (o);    
+            \end{feynhand}
+        \end{tikzpicture} = - \ii 2 m a \cdot 2\pi \delta(\sum \omega).
+    \]
+    注意正常情况下$x^3$相互作用要配一个$1/3!$的因子但是这里只有$1/3$，因此顶角实际上是$2ma$而不是$ma$。
+    \item 外源为
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [crossdot] (a) at (0, 0){};
+                \vertex (b) at (1, 0);
+                \propag [plain, mom={$\omega$}] (a) to (b); 
+            \end{feynhand}
+        \end{tikzpicture} = \ii q E(\omega).
+    \]
+    请注意这里没有负号，而$x^3$是负号的，这是因为均匀电场会倾向于把谐振子拉向无穷远处而回复力则会将谐振子拉回来。
+    本节采取的傅里叶变换约定为
+    \[
+        E(t) = \int \dd{\omega} E(\omega) \ee^{- \ii \omega t},
+    \]
+    没有加入$2\pi$是因为很多时候入射光并不是连续谱，而是离散的几个频域分量加起来。
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \subfigure[$x^3$自相互作用顶角]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1,-1); \vertex (b) at (1,-1); \vertex (c) at (0,1);
+                \vertex [dot] (o) at (0,0) {}; 
+                \propag [plain] (a) to (o);
+                \propag [plain] (b) to (o); 
+                \propag [plain] (c) to (o);    
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:x3-vertex}
+    }
+    \subfigure[光子让谐振子被激发]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 1.5);
+                \vertex (b) at (0, 1.5);
+                \vertex (c) at (1, 1.5);
+                \propag [photon] (a) to (b);
+                \propag [plain] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:light-osci-couple}
+    }
+    \subfigure[外源驱动谐振子，即\autoref{fig:light-osci-couple}中的光子被当成无动力学的外场后得到的图形]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \propag [plain] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:external-field}
+    }
+    \caption{加入$\frac{1}{3} m a x^3$势能之后的费曼图元件}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[外场导致的响应的一阶近似]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [crossdot] (a) at (-1,-1) {};
+                \vertex [crossdot] (b) at (1,-1) {}; 
+                \vertex (c) at (0,1);
+                \vertex (o) at (0,0) ; 
+                \propag [plain, mom={$\omega_1$}] (a) to (o);
+                \propag [plain, mom={$\omega_2$}] (b) to (o); 
+                \propag [plain, mom={$\omega_1 + \omega_2$}] (o) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:first-order-x3-external}
+    }
+    \subfigure[\autoref{fig:first-order-x3-external}导致的非线性光学过程]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a0) at (-1.5, -1.5);
+                \vertex (a) at (-0.5,-0.5);
+                \vertex (b0) at (1.5, -1.5);
+                \vertex (b) at (0.5,-0.5); 
+                \vertex (c) at (0,0.5);
+                \vertex (c0) at (0, 1.5);
+                \vertex (o) at (0,0) ; 
+                \propag [photon, mom={$\omega_1$}] (a0) to (a);
+                \propag [plain] (a) to (o);
+                \propag [photon, mom={$\omega_2$}] (b0) to (b);
+                \propag [plain] (b) to (o); 
+                \propag [plain] (o) to (c);
+                \propag [photon, mom={$\omega_1 + \omega_2$}] (c) to (c0);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:first-order-x3-photon}
+    }
+    \caption{一阶过程}
+    \label{fig:x3-first-order}
+\end{figure}
+
+据此，线性响应（零阶，没有发生任何非线性效应）为
+\begin{equation}
+    x_1(\omega) = \ii q E(\omega) \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)} = \frac{q / m}{\omega_0^2 - \omega^2 - \ii \gamma \omega} E(\omega).
+\end{equation}
+一阶过程（即\autoref{fig:first-order-x3-external}）给出如下修正：
+\begin{equation}
+    \begin{aligned}
+        x_2(\omega) &= \frac{1}{2} \int \omega_1 \int \omega_2 (\ii q E(\omega_1)) (\ii q E(\omega_2)) \frac{\ii}{m(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2)} \frac{\ii}{m(\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2)} \\ 
+        &\quad \quad \times (-\ii 2 m a) \frac{\ii}{(m(\omega_1 + \omega_2)^2 + \ii \gamma (\omega_1 + \omega_2) - \omega_0^2)} 2\pi \delta(\omega_1 + \omega_2 - \omega) \\
+        &= \int \dd{\omega_1} \int \dd{\omega_2} \frac{a (q / m)^2}{(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2) (\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2) (\omega^2 + \ii \gamma \omega - \omega_0^2)} E(\omega_1) E(\omega_2) \\
+        &\quad \quad \times 2\pi \delta(\omega_1 + \omega_2 - \omega).
+    \end{aligned} 
+    \label{eq:continuous-x3-first-order}
+\end{equation}
+这里需要注意一点：\autoref{fig:first-order-x3-external}中外场出现了两次，而
+\[
+    E(t)^2 = \int \dd{\omega_1} \int \dd{\omega_2} E(\omega_1) E(\omega_2) \ee^{-\ii (\omega_1 + \omega_2) t},
+\]
+如果$\omega_1 \neq \omega_2$那么$E(\omega_1) E(\omega_2)$项实际上会被求和两次；同样，此时\eqref{eq:continuous-x3-first-order}中的$E(\omega_1) E(\omega_2)$项也会被求和两次。
+直观地看，外场是给定的而不能随意交换，所以\autoref{fig:first-order-x3-external}中的两个外场从左到右为$\omega_1$和$\omega_2$的图和从左到右为$\omega_2$和$\omega_1$的图虽然给出一样的结果，但是是两张图，不能看成一张图，它们加起来会导致因子$2$出现。
+如果我们令$E(t)$实际上只有两个频率分量，这一点会显得尤其明显。
+
+乍一看，费曼图方法不仅能够得到两个光子合并为一个光子的过程，也能够得到一个光子分裂成两个光子的过程（所谓的\concept{Spontaneous parametric down-conversion (SPDC)}），但是我们后面将看到，微分方程方法似乎只能给出两个光子合并为一个光子的过程——如果我们在$E$中放入只有一个频率$\omega_0$的波，那么非线性效应似乎只会给出$\omega=0$和$\omega=2\omega_0$两种波。
+但是其实这里并没有矛盾：SPDC过程需要两条出射外线；如前所述，我们采用场的图景，由于我们采用微分方程的写法，即从$E$求解$x$（其实是$\expval*{x}$），然后用“谐振子位置的偏离导致极化电场产生”计算总电场的变化，对$x$也要采用场的图景，所以的确只应该考虑只有一条外线的费曼图。
+这又意味着，SPDC过程实际上是非常弱的（本该如此，和频过程的振幅正比于$E^2$而SPDC过程的振幅正比于$E$）。的确，在经典图景下这个过程根本就不会出现。
+
+\begin{figure}
+    \centering
+    \subfigure[外场导致的响应的二阶近似]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [crossdot] (a) at (-1,-1) {};
+                \vertex [crossdot] (b) at (1,-1) {}; 
+                \vertex (c) at (0,1);
+                \vertex (o) at (0,0) ;
+                \vertex [crossdot] (e) at (1, 2) {};
+                \vertex  (f) at (-1, 2) ; 
+                \propag [plain, mom={$\omega_1$}] (a) to (o);
+                \propag [plain, mom={$\omega_2$}] (b) to (o); 
+                \propag [plain, mom={$\omega_1 + \omega_2$}] (o) to (c);
+                \propag [plain, mom={$\omega_3$}] (e) to (c);
+                \propag [plain, mom={$\omega_1 + \omega_2 + \omega_3$}] (c) to (f);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:second-order-x3-external}
+    }
+    \subfigure[\autoref{fig:second-order-x3-external}导致的非线性光学过程]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a0) at (-1.5, -1.5);
+                \vertex (a) at (-0.5,-0.5);
+                \vertex (b0) at (1.5, -1.5);
+                \vertex (b) at (0.5,-0.5); 
+                \vertex (c) at (0,0.5);
+                \vertex (o) at (0,0) ; 
+                \vertex (d) at (0.5, 1);
+                \vertex (e) at (-0.5, 1);
+                \vertex (d0) at (1.5, 2);
+                \vertex (e0) at (-1.5, 2);
+                \propag [photon, mom={$\omega_1$}] (a0) to (a);
+                \propag [plain] (a) to (o);
+                \propag [photon, mom={$\omega_2$}] (b0) to (b);
+                \propag [plain] (b) to (o); 
+                \propag [plain] (o) to (c);
+                \propag [plain] (c) to (e);
+                \propag [plain] (c) to (d);
+                \propag [photon, mom={$\omega_3$}] (d0) to (d);
+                \propag [photon, mom={$\omega_1 + \omega_2 + \omega_3$}] (e) to (e0);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:second-order-x3-photon}
+    }
+    \caption{二阶过程}
+    \label{fig:x3-second-order}
+\end{figure}
+
+还可以进一步往上计算微扰。例如，二阶微扰将给出\autoref{fig:x3-second-order}。
+这里给出的四光子相互作用和\autoref{fig:first-order-x3-photon}产生的等效四光子相互作用不同，后者需要两个光子先合并，产生的光子传播一会，然后再和另一个光子合并。
+\autoref{fig:second-order-x3-photon}给出的四光子相互作用是直截了当的。
+
+我们来对各阶微扰的量级做一个估计。如果$\omega$和$\omega_0$比较接近，那么微扰论根本就不适用：此时共振发生，$x$是非常大的，可能高阶修正比低阶修正还大。
+此时需要从头做光和物质耦合的计算而不能使用加入微弱非线性因素的振子模型。
+如果$\omega$远大于$\omega_0$，我们将得到等离子体，此时彼此无关的、振幅不大的振子的图像更加失效了，可能晶格都已经被破坏了，电子的运动状况主要受电场控制。
+在这两种情况下本节给出的非线性振子模型都不适用。（等离子体情况下有另一个非线性来源，即协变导数的输运项；见后文）
+对$\omega \ll \omega_0$的情况，线性响应的量级为
+\[
+    x_1 \sim \frac{(q/m) E}{\omega_0^2},
+\]
 而
-
+\[
+    x_2 \sim \frac{a (q/m)^2 E^2}{\omega_0^6},
+\]
+因此
 \begin{equation}
-    E \sim \frac{1}{E_\text{atom}}
+    \frac{x_2}{x_1} \sim \frac{a q E}{m \omega_0^4}.
 \end{equation}
-时非线性效应已经和线性响应一样大了。
+设原子对电子的束缚电场的量级为$E_\text{atom}$，即
+\[
+    q E_\text{atom} \sim m \omega_0^2 x .
+\]
+$x$的量级具体有多大是不确定的。将$x_1$和$x_2$简单地加起来可能是不明智的，因为频率不同。
+我们不妨采取一个非常极端的假设，认为线性回复力和非线性回复力已经一样大了（如果非线性回复力很小，那么当然只需要计算一阶图），此时
+\[
+    m \omega_0^2 x \sim m a x^2,
+\]
+于是
+\[
+    q E_\text{atom} \sim m \omega_0^2 \frac{\omega_0^2}{a},
+\]
+最后
+\begin{equation}
+    \frac{x_2}{x_1} \sim \frac{E}{E_\text{atom}}.
+\end{equation}
+通常原子内部电场的数量级为\SI{3e8}{V/m}，因此即使认为非线性效应和线性效应一样大，一般来说$x_2$也远小于$x_1$。
+类似地实际上可以证明
+\begin{equation}
+    \frac{x_{n+1}}{x_n} \sim \frac{E}{E_\text{atom}}.
+\end{equation}
+
+现在我们采取更加常规的，微扰求解微分方程的做法。费曼图计算已经告诉我们主要的光学过程来自\autoref{fig:first-order-x3-external}。
+因此，我们将输入的$E$设置为
+\begin{equation}
+    E = E_1 (\ee^{\ii \omega_1 t} + \ee^{-\ii \omega_1 t}) + E_2 (\ee^{\ii \omega_2 t} + \ee^{-\ii \omega_2 t}), 
+\end{equation}
+做展开
+\begin{equation}
+    x = x_1 + x_2 + \ldots, \quad x_n \sim E^{n },
+\end{equation}
+并记
+\begin{equation}
+    x_i = \sum_n x_i(\omega_n) + \text{c.c.}.
+\end{equation}
+线性项$x_1$由
+\[
+    m \ddot{x}_1 + m \gamma \dot{x_1} +  m \omega_0^2 x_1 = q E
+\]
+给出，为
+\begin{equation}
+    x_1(\omega_1) = \frac{(q/m) E_i}{\omega_0^2 } \ee^{-\ii \omega_n t},
+\end{equation}
+二阶项由
+% TODO:懒得写了
+这些项分别称为：和频，差频，倍频，光学整流（因为输入交流波而得到直流波，那当然是整流了）。
+倍频是和频的特殊情况，光学整流是差频的特殊情况。
+
+\subsection{自由电子气的输运项}
+
+此时的非线性效应来自$(\vb*{v} \cdot \grad) \vb*{v}$
+
+金属表面也能够产生二次谐波
 
 \end{document}
