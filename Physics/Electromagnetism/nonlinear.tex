@@ -49,7 +49,7 @@
 
 \maketitle
 
-\section{激光}
+\section{激光的产生}
 
 当一束光照射在介质上时，分子、原子中的电子会离开其原有位置，并受到一个回复力。
 如果光照较弱，电子总是可以看成简谐振子，从而电子自己发出的电磁辐射的频率和入射光的频率是完全一样的，电磁辐射的幅度正比于入射光的幅度，于是可以写出外场和总场之间的线性关系，从而得到所谓的\concept{线性光学}。
@@ -138,8 +138,9 @@
                 \vertex (b) at (1, 0);
                 \propag [plain, mom={$\omega$}] (a) to (b); 
             \end{feynhand}
-        \end{tikzpicture} = \ii q E(\omega).
+        \end{tikzpicture} = \ii q.
     \]
+    由于外线代表关联函数，我们将$E(\omega)$省去了。
     请注意这里没有负号，而$x^3$是负号的，这是因为均匀电场会倾向于把谐振子拉向无穷远处而回复力则会将谐振子拉回来。
     本节采取的傅里叶变换约定为
     \[
@@ -229,14 +230,14 @@
 
 据此，线性响应（零阶，没有发生任何非线性效应）为
 \begin{equation}
-    x_1(\omega) = \ii q E(\omega) \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)} = \frac{q / m}{\omega_0^2 - \omega^2 - \ii \gamma \omega} E(\omega).
+    \frac{x_1(\omega)}{E(\omega)} = \ii q \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)} = \frac{q / m}{\omega_0^2 - \omega^2 - \ii \gamma \omega}.
 \end{equation}
 一阶过程（即\autoref{fig:first-order-x3-external}）给出如下修正：
 \begin{equation}
     \begin{aligned}
-        x_2(\omega) &= \frac{1}{2} \int \omega_1 \int \omega_2 (\ii q E(\omega_1)) (\ii q E(\omega_2)) \frac{\ii}{m(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2)} \frac{\ii}{m(\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2)} \\ 
+        \frac{x_2(\omega)}{E(\omega_1) E(\omega_2)} &= \frac{1}{2} \int \omega_1 \int \omega_2 (\ii q) (\ii q) \frac{\ii}{m(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2)} \frac{\ii}{m(\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2)} \\ 
         &\quad \quad \times (-\ii 2 m a) \frac{\ii}{(m(\omega_1 + \omega_2)^2 + \ii \gamma (\omega_1 + \omega_2) - \omega_0^2)} 2\pi \delta(\omega_1 + \omega_2 - \omega) \\
-        &= \int \dd{\omega_1} \int \dd{\omega_2} \frac{a (q / m)^2}{(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2) (\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2) (\omega^2 + \ii \gamma \omega - \omega_0^2)} E(\omega_1) E(\omega_2) \\
+        &= \int \dd{\omega_1} \int \dd{\omega_2} \frac{a (q / m)^2}{(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2) (\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2) (\omega^2 + \ii \gamma \omega - \omega_0^2)}  \\
         &\quad \quad \times 2\pi \delta(\omega_1 + \omega_2 - \omega).
     \end{aligned} 
     \label{eq:continuous-x3-first-order}
@@ -377,5 +378,150 @@ $x$的量级具体有多大是不确定的。将$x_1$和$x_2$简单地加起来�
 此时的非线性效应来自$(\vb*{v} \cdot \grad) \vb*{v}$
 
 金属表面也能够产生二次谐波
+
+\subsection{局域场强化}
+
+一个在线性光学中也会出现的现象是\concept{局域场强化}。这个修正的主要思想在于电极化$\vb*{P}$本身会产生一个电场，这个电场会叠加在外加电场上面，从而修正介质粒子感受到的局域电场。
+从这个角度导出局域场强化是很容易的，不过我们采取一个更加“奇特”的方法，用自能修正和费曼图导出这件事。
+
+以下我们用短直线代表极化$P$，用波浪线代表电场；后者的意义一目了然，前者和前面几节的意义其实也是一样的，因为无非有
+\[
+    \vb*{P} = N q \vb*{x},
+\]
+其中$N$为单位体积的谐振子数目。
+
+顶角函数没有什么修正，因为我们目前还没有积掉介质，从而没有光子间相互作用，自然不会有什么顶角修正。
+一切修正都是自能修正；而由于此时光子不可能有真空极化修正，仅有的修正来自介质的自能修正。
+在这里的模型中即使在经典情况下自能修正仍然是存在的，因为“发射光子-自己吸收之前发射的光子”在经典情况下也是存在的。
+自能修正为
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex[grayblob] (b) at (1, 0) {};
+                \vertex (c) at (2, 0);
+                \propag[photon] (a) to (b);
+                \propag[double] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \frac{1}{1 - \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0.75, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (2.25, 0);
+                \propag[plain] (a) to (b);
+                \propag[plain] (b) to (c);
+                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
+                \propag[plain] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}} \ \times \ 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0.25, 0) {};
+                \vertex (b) at (1, 0);
+                \vertex (c) at (1.75, 0);
+                \propag[photon] (a) to (b);
+                \propag[plain] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}.
+\]
+在这张图中，
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0.25, 0) {};
+                \vertex (b) at (1, 0);
+                \vertex (c) at (1.75, 0);
+                \propag[photon] (a) to (b);
+                \propag[plain] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \epsilon_0 N \alpha,
+\]
+其中$\alpha$为单个谐振子振幅$x$对外加电场的响应函数，而
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0.75, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (2.25, 0);
+                \propag[plain] (a) to (b);
+                \propag[plain] (b) to (c);
+                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
+                \propag[plain] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}
+\]
+的意义有待确定。显然
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-0.5, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2.5, 0);
+                \vertex (d) at (1, 1.5);
+                \propag[plain, mom={$ $}] (a) to (b);
+                \propag[plain, mom={$ $}] (b) to (c);
+                \propag[photon, mom={$ $}] (d) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \epsilon_0 N \alpha,
+\]
+但是$\vb*{P}$产生的局部电场有多大则是不好说的，我们这里设
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-0.5, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2.5, 0);
+                \vertex (d) at (1, 1.5);
+                \propag[plain, mom={$ $}] (a) to (b);
+                \propag[plain, mom={$ $}] (b) to (c);
+                \propag[photon, mom={$ $}] (b) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \frac{\lambda}{\epsilon_0},
+\]
+其中$\lambda$是不确定的。例如，可以采取这样的模型：我们将每个谐振子都设想为放置在介质中的球形空穴之中，此时自能修正——即其它谐振子产生的电场在我们正在讨论的谐振子上的值（不讨论在经典情况下说不清楚的单个粒子受到的它自己产生的电场的电场力）——就是
+\[
+    E' = \frac{P}{3\epsilon_0},
+\]
+那么就是取$\lambda = 1/3$。于是
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0.75, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (2.25, 0);
+                \propag[plain] (a) to (b);
+                \propag[plain] (b) to (c);
+                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
+                \propag[plain] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \frac{\lambda}{\epsilon_0} \times \epsilon_0 N \alpha = \lambda N \alpha,
+\]
+于是就有
+\begin{equation}
+    \frac{P}{E} = \frac{N \alpha \epsilon_0}{1 - \lambda N \alpha}.
+\end{equation}
+当然，把这个公式稍微变形一下，就得到了熟悉的
+\begin{equation}
+    P = \epsilon_0 N \alpha E_\text{local} = \epsilon_0 N \alpha \left( E + \frac{\lambda P }{\epsilon_0} \right).
+\end{equation}
 
 \end{document}
