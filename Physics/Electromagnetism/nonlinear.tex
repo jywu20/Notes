@@ -42,6 +42,27 @@
 \newcommand{\concept}[1]{\underline{\textbf{#1}}}
 \renewcommand{\emph}{\textbf}
 
+\tikzfeynhandset{
+    every boldphoton@@/.style={
+    /tikz/draw=none,
+    /tikz/postaction={
+            /tikz/draw,
+            /tikz/double,
+            /tikz/line width = \feynhandlinesize,
+            /tikz/decoration={
+                complete sines,
+                amplitude=3\feynhandlinesize,
+                segment length=7.5\feynhandlinesize,
+            },
+            /tikz/decorate=true,
+        },
+    },
+    every boldphoton/.style={/tikzfeynhand/every boldphoton@@/.append style={#1}},
+    boldphoton/.style={
+    /tikzfeynhand/every boldphoton@@,
+    }
+}
+
 \title{非线性光学}
 \author{吴晋渊}
 
@@ -138,9 +159,8 @@
                 \vertex (b) at (1, 0);
                 \propag [plain, mom={$\omega$}] (a) to (b); 
             \end{feynhand}
-        \end{tikzpicture} = \ii q.
+        \end{tikzpicture} = \ii q E(\omega).
     \]
-    由于外线代表关联函数，我们将$E(\omega)$省去了。
     请注意这里没有负号，而$x^3$是负号的，这是因为均匀电场会倾向于把谐振子拉向无穷远处而回复力则会将谐振子拉回来。
     本节采取的傅里叶变换约定为
     \[
@@ -230,15 +250,15 @@
 
 据此，线性响应（零阶，没有发生任何非线性效应）为
 \begin{equation}
-    \frac{x_1(\omega)}{E(\omega)} = \ii q \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)} = \frac{q / m}{\omega_0^2 - \omega^2 - \ii \gamma \omega}.
+    x_1(\omega) = \ii q E(\omega) \frac{\ii}{m (\omega^2 + \ii \gamma \omega - \omega_0^2)} = \frac{q / m}{\omega_0^2 - \omega^2 - \ii \gamma \omega} E(\omega).
 \end{equation}
 一阶过程（即\autoref{fig:first-order-x3-external}）给出如下修正：
 \begin{equation}
     \begin{aligned}
-        \frac{x_2(\omega)}{E(\omega_1) E(\omega_2)} &= \frac{1}{2} \int \omega_1 \int \omega_2 (\ii q) (\ii q) \frac{\ii}{m(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2)} \frac{\ii}{m(\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2)} \\ 
+        x_2(\omega) &= \frac{1}{2} \int \omega_1 \int \omega_2 (\ii q E(\omega_1)) (\ii q E(\omega_2)) \frac{\ii}{m(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2)} \frac{\ii}{m(\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2)} \\ 
         &\quad \quad \times (-\ii 2 m a) \frac{\ii}{(m(\omega_1 + \omega_2)^2 + \ii \gamma (\omega_1 + \omega_2) - \omega_0^2)} 2\pi \delta(\omega_1 + \omega_2 - \omega) \\
         &= \int \dd{\omega_1} \int \dd{\omega_2} \frac{a (q / m)^2}{(\omega_1^2 + \ii \gamma \omega_1 - \omega_0^2) (\omega_2^2 + \ii \gamma \omega_2 - \omega_0^2) (\omega^2 + \ii \gamma \omega - \omega_0^2)}  \\
-        &\quad \quad \times 2\pi \delta(\omega_1 + \omega_2 - \omega).
+        &\quad \quad \times 2\pi \delta(\omega_1 + \omega_2 - \omega) \times E(\omega_1) E(\omega_2).
     \end{aligned} 
     \label{eq:continuous-x3-first-order}
 \end{equation}
@@ -379,149 +399,643 @@ $x$的量级具体有多大是不确定的。将$x_1$和$x_2$简单地加起来�
 
 金属表面也能够产生二次谐波
 
-\subsection{局域场强化}
+\section{非线性麦克斯韦方程}
 
-一个在线性光学中也会出现的现象是\concept{局域场强化}。这个修正的主要思想在于电极化$\vb*{P}$本身会产生一个电场，这个电场会叠加在外加电场上面，从而修正介质粒子感受到的局域电场。
-从这个角度导出局域场强化是很容易的，不过我们采取一个更加“奇特”的方法，用自能修正和费曼图导出这件事。
+本节将从一个比较唯象的角度描述经典非线性光学——我们忽略所有微观细节，只是去解麦克斯韦方程组，不过在这里，$\vb*{P}$和$\vb*{E}$之间的关系不再是线性的。
 
 以下我们用短直线代表极化$P$，用波浪线代表电场；后者的意义一目了然，前者和前面几节的意义其实也是一样的，因为无非有
 \[
     \vb*{P} = N q \vb*{x},
 \]
-其中$N$为单位体积的谐振子数目。
+其中$N$为单位体积的谐振子数目。我们知道极化强度矢量可以产生一个电场，具体来说是
+\[
+    \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right) \vb*{E} = - \frac{1}{\epsilon_0} \grad(\div{\vb*{P}}),
+\]
+这个方程是完全线性的，因此可以使用
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
 
-顶角函数没有什么修正，因为我们目前还没有积掉介质，从而没有光子间相互作用，自然不会有什么顶角修正。
-一切修正都是自能修正；而由于此时光子不可能有真空极化修正，仅有的修正来自介质的自能修正。
-在这里的模型中即使在经典情况下自能修正仍然是存在的，因为“发射光子-自己吸收之前发射的光子”在经典情况下也是存在的。
-自能修正为
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = - \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right)^{-1} \frac{1}{\epsilon_0} \grad(\div{\vb*{P}})
+\end{equation}
+表示。这是$\vb*{P}$消灭而光子产生的过程；此外我们还有任意的形如
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-0.8, 0.25) ;
+                \vertex (b) at (-0.8, -0.25) ;
+                \vertex (d) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (e) at (1, 0);
+
+                \propag[photon] (a) to (c);
+                \propag[photon] (b) to (c);
+                \propag[photon] (d) to (c);
+                \propag[plain] (c) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \alpha_{ij \cdots} 
+\end{equation}
+的产生$\vb*{P}$的顶角，使得
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (-0.8, 0.25) {};
+                \vertex[crossdot] (b) at (-0.8, -0.25) {};
+                \vertex (d) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (e) at (1, 0);
+
+                \propag[photon] (a) to (c);
+                \propag[photon] (b) to (c);
+                \propag[photon] (d) to (c);
+                \propag[plain] (c) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \alpha_{ij \cdots} E^i E^j \cdots.
+\]
+线性光学中只有一条入射线，非线性光学中可以有多条。
+
+这就是非线性麦克斯韦方程中的所有顶角了。我们马上可以发现一件事，就是虽然看起来$\vb*{P}$场能够有自能修正
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \propag[double] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \propag[plain] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (3, 0);
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+                \propag[plain] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + \cdots,
+\]
+但是，因为我们讨论的所有过程都以光子开始以光子结束，加上入射和出射线之后上式实际上是光的自能修正。因此实际上$\vb*{P}$只是一个辅助量，我们可以将
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (3, 0);
+                \propag[photon] (a) to (b);
+                \propag[plain] (b) to (c);
+                \propag[photon] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}
+\]
+看成一个整体。当然，本该如此。
+
+我们要求解外加电场下的总场。这就是说，要计算
+\[
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} + 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \vertex (d) at (3, 0);
+                    \propag[photon] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} + \cdots \\
+        &+ \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (-0.8, 0.25) {};
+                    \vertex[crossdot] (b) at (-0.8, -0.25) {};
+                    \vertex (d) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (e) at (1, 0);
+                    \vertex (f) at (2, 0);
+    
+                    \propag[photon] (a) to (c);
+                    \propag[photon] (b) to (c);
+                    \propag[photon] (d) to (c);
+                    \propag[plain] (c) to (e);
+                    \propag[photon] (e) to (f);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered}
+    \end{aligned}
+\]
+请注意上式左边的源不是$\otimes$而是一个灰色圆圈，因为非线性效应的存在让我们不知道外源被用到了多少次。
+上式直接计算当然是非常复杂的，我们做重求和，根据最后一个顶角是什么，可以将上式写成
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ .
+    \end{aligned}
+\end{equation}
+当然，稍加变形就会发现实际上这就是% TODO:具体的方程的形式
+\begin{equation}
+    \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right) (\vb*{E} - \vb*{E}_\text{ext}) = 
+\end{equation}
+求解出上式中的$\vb*{E}$就完全确定了外加电场下的总场。“外加电场”当然是一个不良定义的概念，但这是因为我们将$\otimes$的来源省去了；它可能来自介质中的电荷或是介质两边的极板（归根到底，也是一些电荷），我们通常要求它是“没有经过相互作用修正的”，从而
+\[
+    \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right) \vb*{E}_\text{ext} = 0.
+\]
+不过，具体什么是“相互作用修正”仍然有选择的余地，如我们可以将线性极化（即$\vb*{P}$关于$\vb*{E}$是线性的那部分；从$\vb*{P}$到$\vb*{E}$的转换则完全是线性的）部分作为自能修正重求和，然后将经过线性极化修正的光束（也就是服从关于不等于$\epsilon_0$的$\epsilon$的线性麦克斯韦方程组的光束）重新定义为\begin{tikzpicture}
+    \begin{feynhand}
+        \vertex (a) at (0, 0);
+        \vertex (b) at (1, 0);
+        \propag[photon] (a) to (b);
+    \end{feynhand}
+\end{tikzpicture}，此时\begin{tikzpicture}
+    \begin{feynhand}
+        \vertex (a) at (0, 0);
+        \vertex (b) at (1, 0);
+        \vertex (c) at (2, 0);
+
+        \propag[plain] (a) to (b);
+        \propag[photon] (b) to (c);
+    \end{feynhand}
+\end{tikzpicture}也需要调整（原本的意思是总的$\vb*{P}$产生真空中电场的响应函数，现在的意思是（非线性的）$\vb*{P}$产生线性介质中电场的响应函数），然后就有
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \propag[photon] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture} 
+    \end{gathered} +
+    \sum \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                \vertex (f) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (d) at (0.75, 0);
+                \vertex (e) at (1.5, 0);
+
+                \propag[boldphoton] (a) to (c);
+                \propag[boldphoton] (b) to (c);
+                \propag[boldphoton] (f) to (c);
+                \propag[plain] (c) to (d);
+                \propag[photon] (d) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} \ .
+\end{equation}
+这样做的好处一目了然：线性极化相当于对光速做了一个修正，是可以严格处理的，从而可以将主要精力集中在非线性极化上。
+
+一个在线性光学中也会出现的现象是\concept{局域场强化}。这个现象来自于，从$\vb*{P}$产生的电场在空间上可能有比较大的变化，我们关心的是空间平均过之后的电场，即只是从$\vb*{P}$产生的电场的低频傅里叶分量。
+因此我们做分解
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{low $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered},
+\end{equation}
+那么就有
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon, mom={$\text{low $k$}$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon, mom={$\text{low $k$}$}] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{low $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ .
+    \end{aligned}
+    \label{eq:non-linear-smooth-p-e}
+\end{equation}
+然而，在上式中与$\vb*{P}$有关的图中的入射电场却没有做这个动量截断。
+其结果是我们无法单纯从上式计算经过动量截断的出射电场，即我们需要手动提供没做动量截断的入射电场。
+由于入射电场通常只具有低频分量，即
 \[
     \begin{gathered}
         \begin{tikzpicture}
             \begin{feynhand}
                 \vertex[crossdot] (a) at (0, 0) {};
-                \vertex[grayblob] (b) at (1, 0) {};
-                \vertex (c) at (2, 0);
+                \vertex (b) at (1, 0);
+                \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture} 
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
                 \propag[photon] (a) to (b);
-                \propag[double] (b) to (c);
             \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered} = \frac{1}{1 - \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex (a) at (0.75, 0);
-                \vertex (b) at (1, 0);
-                \vertex (c) at (2, 0);
-                \vertex (d) at (2.25, 0);
-                \propag[plain] (a) to (b);
-                \propag[plain] (b) to (c);
-                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
-                \propag[plain] (c) to (d);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered}} \ \times \ 
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex[crossdot] (a) at (0.25, 0) {};
-                \vertex (b) at (1, 0);
-                \vertex (c) at (1.75, 0);
-                \propag[photon] (a) to (b);
-                \propag[plain] (b) to (c);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered}.
+        \end{tikzpicture} 
+    \end{gathered},
 \]
-在这张图中，
+我们有
 \[
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex[crossdot] (a) at (0.25, 0) {};
-                \vertex (b) at (1, 0);
-                \vertex (c) at (1.75, 0);
-                \propag[photon] (a) to (b);
-                \propag[plain] (b) to (c);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered} = \epsilon_0 N \alpha,
-\]
-其中$\alpha$为单个谐振子振幅$x$对外加电场的响应函数，而
-\[
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex (a) at (0.75, 0);
-                \vertex (b) at (1, 0);
-                \vertex (c) at (2, 0);
-                \vertex (d) at (2.25, 0);
-                \propag[plain] (a) to (b);
-                \propag[plain] (b) to (c);
-                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
-                \propag[plain] (c) to (d);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered}
-\]
-的意义有待确定。显然
-\[
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex (a) at (-0.5, 0);
-                \vertex (b) at (1, 0);
-                \vertex (c) at (2.5, 0);
-                \vertex (d) at (1, 1.5);
-                \propag[plain, mom={$ $}] (a) to (b);
-                \propag[plain, mom={$ $}] (b) to (c);
-                \propag[photon, mom={$ $}] (d) to (b);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered} = \epsilon_0 N \alpha,
-\]
-但是$\vb*{P}$产生的局部电场有多大则是不好说的，我们这里设
-\[
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex (a) at (-0.5, 0);
-                \vertex (b) at (1, 0);
-                \vertex (c) at (2.5, 0);
-                \vertex (d) at (1, 1.5);
-                \propag[plain, mom={$ $}] (a) to (b);
-                \propag[plain, mom={$ $}] (b) to (c);
-                \propag[photon, mom={$ $}] (b) to (d);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered} = \frac{\lambda}{\epsilon_0},
-\]
-其中$\lambda$是不确定的。例如，可以采取这样的模型：我们将每个谐振子都设想为放置在介质中的球形空穴之中，此时自能修正——即其它谐振子产生的电场在我们正在讨论的谐振子上的值（不讨论在经典情况下说不清楚的单个粒子受到的它自己产生的电场的电场力）——就是
-\[
-    E' = \frac{P}{3\epsilon_0},
-\]
-那么就是取$\lambda = 1/3$。于是
-\[
-    \begin{gathered}
-        \begin{tikzpicture}
-            \begin{feynhand}
-                \vertex (a) at (0.75, 0);
-                \vertex (b) at (1, 0);
-                \vertex (c) at (2, 0);
-                \vertex (d) at (2.25, 0);
-                \propag[plain] (a) to (b);
-                \propag[plain] (b) to (c);
-                \propag[photon] (b) to [in=90, out=90, looseness=1.5] (c);
-                \propag[plain] (c) to (d);
-            \end{feynhand}
-        \end{tikzpicture}
-    \end{gathered} = \frac{\lambda}{\epsilon_0} \times \epsilon_0 N \alpha = \lambda N \alpha,
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{high $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.5, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon, mom={$\text{high $k$}$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon, mom={$\text{high $k$}$}] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ ,
+    \end{aligned}
 \]
 于是就有
 \begin{equation}
-    \frac{P}{E} = \frac{N \alpha \epsilon_0}{1 - \lambda N \alpha}.
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton, mom={$\text{low $k$}$}] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}.
+    \label{eq:local-field-enhancement-diagram}
 \end{equation}
-当然，把这个公式稍微变形一下，就得到了熟悉的
+联立计算\eqref{eq:non-linear-smooth-p-e}和\eqref{eq:local-field-enhancement-diagram}（求解过程中很容易看到，虽然$\vb*{P}$是辅助量但是确实能够简化书写），就得到外场作用下的做了动量截断的$\vb*{E}$——实际上，由于宏观下我们讨论的“介质中电场”一般都是均一化的电场，我们将做了动量截断的$\vb*{E}$就称为$\vb*{E}$。
+此时\eqref{eq:local-field-enhancement-diagram}应当理解为“靠近介质粒子时电场的局域增强”。
+在这种视角下，有
 \begin{equation}
-    P = \epsilon_0 N \alpha E_\text{local} = \epsilon_0 N \alpha \left( E + \frac{\lambda P }{\epsilon_0} \right).
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (c);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (b) to (c);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} , \\
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} + 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered}.
+    \end{aligned}
 \end{equation}
+
+边界，反射，折射：在线性的折射、反射上引入三个相互作用，一个是介质内部的光子-光子和频和差频，一个是入射端，介质内部两个光子打在边界上然后返回形成一个光子，一个是出射端，两个光子打在边界上然后一起出射。
 
 \end{document}
