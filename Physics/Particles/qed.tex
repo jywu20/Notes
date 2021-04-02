@@ -14,6 +14,7 @@
 \usepackage{physics}
 \usepackage{centernot}
 \usepackage{tikz}
+\usepackage{tikz-feynhand}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
 \usepackage{prettyref}
 
@@ -44,23 +45,205 @@
 
 \allowdisplaybreaks[4]
 
-\title{量子电动力学}
+\title{量子电动力学的具体计算}
 \author{吴晋渊}
 
 \begin{document}
 
 \maketitle
 
-\section{非相对论近似}
+\section{非相对论极限}
 
-库伦相互作用：首先需要积掉光子，这个过程中只需要考虑纯光子传播子即可因为其它场可以看成背景场。
-电子自己需要做自能修正，让质量什么的发生变化（所谓“电磁质量”）。
+\subsection{电子，光子和电场}
 
-做低动量近似就得到库伦排斥势的形式，因为此时$(p - p')^2 \approx - (\vb*{p} - \vb*{p}')^2$。需要注意原则上还有另外一张图也是可能的：Peskin (4.119)的第二张图。
-但是，如果参与散射的两个粒子是可以分辨的（即除了动量和自旋以外还有别的标签可以区分它们），那么这张图和前一张图不在一个相互作用通道中。
-低能过程由于动量低，相应的特征尺度很大，即粒子不会离得很近，这种情况下粒子的“位置”近似起到了区分两个粒子的标签的作用。
-这意味着这个相互作用通道可以忽略。
+光子无法做非相对论近似，因为无论如何，麦克斯韦方程都应该成立，而这个方程就是洛伦兹协变的。
+需要做非相对论近似的只有电子。在非相对论近似下，一切有质量的场都退化为薛定谔场，电子也不例外。
+因此在QED的非相对论极限下，基本的粒子包括电子和光子，光子无任何变化，电子场则是动能为$\vb*{k}^2 / 2m$，不再满足相对论协变性，由动量和自旋标记的场。
+
+\subsection{树图阶的相互作用}
+
+在非相对论情况下，光子的能量不足以激发出电子-正电子对，真空极化并不重要。
+因此，光子虽然是无能隙的，一些时候仍然可以积掉光子而得到电子-电子等效相互作用，这个过程中只需要考虑纯光子传播子即可因为其它场可以看成背景场。
+积掉光子还意味着电子自己需要做自能修正，让质量什么的发生变化，即由于电子和光子的相互作用，电子带上了“电磁质量”。
+这是在经典电动力学中也已经知道的一个现象，但是在经典电动力学中不足以处理自能导致的发散。
+
+\subsubsection{库伦相互作用}
+
+不满足$\mu=1, 2$的光子可以出现在中间过程中，但是不会出现在外线中。
+既然真空极化不重要，本节直接积掉这些光子，这只会导致树图（因为QED中没有光子-光子相互作用顶角）。
+我们将得到两张图：
+\[
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (-1.5, 0.8);
+            \vertex (b) at (-1.5, -0.8);
+            \vertex (c) at (-1, 0);
+            \vertex (d) at (0, 0);
+            \vertex (e) at (0.5, 0.8);
+            \vertex (f) at (0.5, -0.8);
+
+            \propag[anti fermion] (a) to (c);
+            \propag[fermion] (b) to (c);
+            \propag[photon] (c) to (d);
+            \propag[fermion] (d) to (e);
+            \propag[anti fermion] (d) to (f);
+        \end{feynhand}
+    \end{tikzpicture}, \quad \quad 
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (-1.5, 0.8);
+            \vertex (b) at (-1.5, -0.8);
+            \vertex (c) at (-1, 0);
+            \vertex (d) at (0, 0);
+            \vertex (e) at (0.5, 0.8);
+            \vertex (f) at (0.5, -0.8);
+
+            \propag[anti fermion] (e) to (c);
+            \propag[fermion] (b) to (c);
+            \propag[photon] (c) to (d);
+            \propag[fermion] (d) to (a);
+            \propag[anti fermion] (d) to (f);
+        \end{feynhand}
+    \end{tikzpicture}
+\]
+如果参与散射的两个粒子是可以分辨的（即除了动量和自旋以外还有别的标签可以区分它们），那么第二张图和第一张图不在一个相互作用通道中。
+低能过程由于动量低，相应的特征尺度很大，即粒子不会离得很近，这种情况下粒子的“位置”近似起到了区分两个粒子的标签的作用。这意味着第二张图可以忽略。
+
+于是我们计算第一张图，它给出
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0.8);
+                \vertex (b) at (-1.5, -0.8);
+                \vertex (c) at (-1, 0);
+                \vertex (d) at (0, 0);
+                \vertex (e) at (0.5, 0.8);
+                \vertex (f) at (0.5, -0.8);
+    
+                \propag[fermion] (c) to [edge label={$p'$}] (a);
+                \propag[fermion] (b) to [edge label={$p$}] (c);
+                \propag[photon] (c) to (d);
+                \propag[fermion] (d) to [edge label={$k'$}] (e);
+                \propag[fermion] (f) to [edge label={$k$}] (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = (-\ii e)^2 \bar{u}(p') \gamma^\mu u(p) \frac{-\ii \eta_{\mu \nu}}{(p' - p)^2 + \ii 0^+} \bar{u}(k') \gamma^\nu u(k).
+\]
+我们考虑$p, p', k, k'$都几乎是零的情况，并且只对$\mu=\nu=0, 3$的情况求和——其实我们会看到，$\mu = \nu = 1, 2$两种情况并不会有贡献。
+此时计算会发现
+\[
+    \bar{u}(p') \gamma^0 u(p) = u^\dagger(p') u(p) \approx m \pmqty{\xi^\dagger & \xi^\dagger} \pmqty{\xi \\ \xi} = 2m \sigma^0,
+\]
+而
+\[
+    \bar{u}(p') \gamma^i u(p) = u^\dagger(p') \pmqty{\dmat{- \sigma^i, \sigma^i}} u(p) \approx m \pmqty{\xi^\dagger & \xi^\dagger} \pmqty{\dmat{- \sigma^i, \sigma^i}} \pmqty{\xi \\ \xi} = 0.
+\]
+于是我们就得到
+\[
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0.8);
+                    \vertex (b) at (-1.5, -0.8);
+                    \vertex (c) at (-1, 0);
+                    \vertex (d) at (0, 0);
+                    \vertex (e) at (0.5, 0.8);
+                    \vertex (f) at (0.5, -0.8);
+        
+                    \propag[fermion] (c) to [edge label={$p'$}] (a);
+                    \propag[fermion] (b) to [edge label={$p$}] (c);
+                    \propag[photon] (c) to (d);
+                    \propag[fermion] (d) to [edge label={$k'$}] (e);
+                    \propag[fermion] (f) to [edge label={$k$}] (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= (-\ii e)^2 \bar{u}(p') \gamma^\mu u(p) \frac{-\ii \eta_{\mu \nu}}{(p' - p)^2 + \ii 0^+} \bar{u}(k') \gamma^\nu u(k) \\
+        &= \ii e^2 2 m (\sigma^0)_p \frac{1}{(p' - p)^2 + \ii 0^+} 2m (\sigma^0)_k \\
+        &= - \frac{\ii e^2 (2m)^2 \sigma^0}{\abs*{\vb*{p}' - \vb*{p}}^2 - \ii 0^+}.
+    \end{aligned}
+\]
+上式是$\{\ket*{p}\}$表象下的相互作用哈密顿量矩阵元；下标$p$和$k$用于区分作用在不同单粒子态上的矩阵。
+矩阵$\sigma^0$给出了自旋的变化情况，可以看到以上相互作用通道不挑选入射自旋，也不改变入射自旋。
+我们要做非相对论近似，所以要转换到$\{\ket*{\vb*{p}}\}$表象下，由于有四条外线，要除以因子$(\sqrt{2m})^{4}$。
+于是非相对论极限下，我们获得相互作用顶角
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0.8);
+                \vertex (b) at (-1.5, -0.8);
+                \vertex (c) at (-1, 0);
+                \vertex (d) at (0, 0);
+                \vertex (e) at (0.5, 0.8);
+                \vertex (f) at (0.5, -0.8);
+    
+                \propag[fermion] (c) to [edge label={$p', \alpha$}] (a);
+                \propag[fermion] (b) to [edge label={$p, \alpha$}] (c);
+                \propag[photon] (c) to (d);
+                \propag[fermion] (d) to [edge label={$k', \beta$}] (e);
+                \propag[fermion] (f) to [edge label={$k, \beta$}] (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = -\ii \frac{e^2}{\abs*{\vb*{p} - \vb*{p}'}^2} (2\pi)^4 \delta^4(k' + p' - p - k).
+\end{equation}
+这个相互作用顶角的形式实际上正是动量空间中的库伦定律。
+为了更加清晰地看出库伦定律，我们将上式切换回实空间，做傅里叶变换
+\[
+    \begin{aligned}
+        \int \frac{\dd[4]{p'}}{(2\pi)^4} \ee^{\ii p' \cdot x_1} \int \frac{\dd[4]{k'}}{(2\pi)^4} \ee^{\ii k' \cdot x_2} \int \frac{\dd[4]{p}}{(2\pi)^4} \ee^{- \ii p \cdot x_3} \int \frac{\dd[4]{p}}{(2\pi)^4} \ee^{- \ii p \cdot x_4},
+    \end{aligned}
+\]
+计算发现
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0.8) {$x_1, \alpha$};
+                    \vertex (b) at (-1.5, -0.8) {$x_3, \alpha$};
+                    \vertex (c) at (-1, 0);
+                    \vertex (d) at (0, 0);
+                    \vertex (e) at (0.5, 0.8) {$x_2, \beta$};
+                    \vertex (f) at (0.5, -0.8) {$x_4, \beta$};
+        
+                    \propag[fermion] (c) to (a);
+                    \propag[fermion] (b) to (c);
+                    \propag[photon] (c) to (d);
+                    \propag[fermion] (d) to (e);
+                    \propag[fermion] (f) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= -\ii e^2 \delta(t_4 - t_1) \delta^4(x_1 - x_3) \delta^4(x_2 - x_4) \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{\ee^{-\ii \vb*{q} \cdot (\vb*{x}_4 - \vb*{x}_1)}}{\abs*{\vb*{q}}^2 - \ii 0^+} \\
+        &= -\ii \delta(t_4 - t_1) \delta^4(x_1 - x_3) \delta^4(x_2 - x_4) \frac{e^2}{4\pi \abs*{\vb*{x}_4 - \vb*{x}_1}}.
+    \end{aligned}
+    \label{eq:coulomb-interaction}
+\end{equation}
+因此我们的确得到了库伦相互作用。在计算时有一个细节：计算\eqref{eq:coulomb-interaction}的第一个等号右边的积分时，我们有
+\[
+    \begin{aligned}
+        \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{\ee^{-\ii \vb*{q} \cdot (\vb*{x}_4 - \vb*{x}_1)}}{\abs*{\vb*{q}}^2 - \ii 0^+} &= \frac{2\pi}{(2\pi)^3} \int_0^{\pi} \sin \theta \dd{\theta} \int_0^\infty q^2 \dd{q} \frac{\ee^{- \ii q \abs*{\vb*{x}_4 - \vb*{x}_1} \cos \theta}}{\abs*{\vb*{q}}^2 - \ii 0^+} \\
+        &= \frac{1}{4\pi^2} \int_0^\infty \frac{q^2}{q^2 - \ii 0^+} \dd{q} \frac{\ee^{- \ii q \abs*{\vb*{x}_4 - \vb*{x}_1}} - \ee^{\ii q \abs*{\vb*{x}_4 - \vb*{x}_1}}}{- \ii q \abs*{\vb*{x}_4 - \vb*{x}_1}} \\
+        &= \frac{1}{4\pi^2 \ii} \int_{-\infty}^\infty \frac{q^2}{q^2 - \ii 0^+} \dd{q} \frac{\ee^{\ii q \abs*{\vb*{x}_4 - \vb*{x}_1}}}{q \abs*{\vb*{x}_4 - \vb*{x}_1}}.
+    \end{aligned}
+\]
+如果我们将因子$q^2/(q^2 - \ii 0^+)$直接当成$1$，上式就没有确定的值了，因为极点直接出现在了积分路径上。
+不过，我们有
+\[
+    \frac{q^2}{q^2 - \ii \epsilon} = \frac{1}{1 - \frac{\ii \epsilon}{q^2}} \to 0 \text{as $q \to 0$},
+\]
+因此我们应该取积分主值，即取
+\[
+    \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{\ee^{-\ii \vb*{q} \cdot (\vb*{x}_4 - \vb*{x}_1)}}{\abs*{\vb*{q}}^2 - \ii 0^+} = \frac{1}{4\pi^2 \ii} \text{P} \int_{-\infty}^\infty \dd{q} \frac{\ee^{\ii q \abs*{\vb*{x}_4 - \vb*{x}_1}}}{q \abs*{\vb*{x}_4 - \vb*{x}_1}} = \frac{1}{4\pi^2 \ii} \frac{\pi \ii}{\abs*{\vb*{x}_4 - \vb*{x}_1}} = \frac{1}{4\pi \abs*{\vb*{x}_4 - \vb*{x}_1}}. 
+\]
 
 单粒子量子力学中的散射理论相当于梯形图近似。
+
+\subsubsection{磁矩}
+
+
+
+\section{辐射修正}
 
 \end{document}
