@@ -1,0 +1,653 @@
+\section{电子能带结构和导电性}
+
+本节展示几种能够产生能带的电子模型。它们是传统凝聚态物理中分析导电性的常用理论。
+
+
+\subsection{近独立电子气}
+
+\subsubsection{哈密顿量、分布和格林函数}
+
+很难一上手就处理带有复杂相互作用的电子气，因此我们首先处理\concept{近独立电子气}，也就是电子之间近似没有相互作用的电子气。此时我们可以单独考虑每个电子的哈密顿量
+\begin{equation}
+    {H} = \frac{{\vb*{p}}^2}{2m_\text{e}} + V(\vb*{r}).
+    \label{eq:single-electron-hamiltonian}
+\end{equation}
+整团电子气的哈密顿量是关于各个电子的哈密顿量之和。
+上式中的$V(\vb*{r})$未必就是物理意义明确（比如由原子核施加的库伦能）的势能，而有可能是相互作用电子气在一定情况下产生的等效势能。
+实际上，对任何一个相互作用系统，都可以找到赝势$V(\vb*{r})$使得其能量近似可以写成\eqref{eq:single-electron-hamiltonian}的形式，但如果相互作用很强，即使往系统中放入一个电子，赝势$V(\vb*{r})$的形式也会发生很大改变，因此将强关联系统看成近独立电子气并无意义。
+本节主要讨论$V(\vb*{r})$的形式基本上固定的情况，即电子间相互作用比较弱，与此同时电子数涨落不大的情况。
+
+近独立电子气的基态是什么？使用巨正则系综%
+\footnote{当然，我们认为系统能够达到统计平衡，就意味着电子之间不可能真的完全没有相互作用，否则能量无法传递。}%
+，对很大的近独立费米子系统，处在能量本征态$\ket{n}$上的粒子数的平均值为%
+\footnote{以下使用$\epsilon$表示单个电子的能量而使用$E$表示系统总能量。}%
+\begin{equation}
+    \expval*{{n}_n} = f(\epsilon_n) = \frac{1}{\ee^{\beta (\epsilon_n-\mu)} + 1}.
+    \label{eq:fermi-dirac-distribution}
+\end{equation}
+我们让能量尽可能低，那就是要让$T\to 0$，也就是让$\beta\to \infty$，此时就有
+\begin{equation}
+    \expval*{{n}_n} = \begin{cases}
+        1, \quad \epsilon_i \leq \mu, \\
+        0, \quad \epsilon_i > \mu.
+    \end{cases}
+\end{equation}
+这意味着，$T=0$时电子占据的所有状态就是
+\begin{equation}
+    \epsilon_i = \mu
+\end{equation}
+以内的所有能量本征态（这部分能量本征态称为\concept{费米海}）。在动量空间中这就是一个曲面，称为\concept{费米面}。位于费米面上的所有能量本征态共同组成了一个能量正好是零温化学势的能级，称为\concept{费米能级}，其能量称为\concept{费米能量}。与费米能级对应的动量称为\concept{费米动量}。
+基态的表达式就是一个乘积态，为
+\begin{equation}
+    \ket{\Psi} = \prod_{\abs{\vb*{k}} < k_\text{F}} {c}^\dagger_{\vb*{k}} \ket{0}.
+    \label{eq:ground-state}
+\end{equation}
+
+统计物理的论证只能把我们带到这里。具体化学势是多少需要根据
+\begin{equation}
+    \mu_i = \pdv{U}{N_i}
+\end{equation}
+计算。当然，化学势和粒子数、温度等因素都有关系。在$T=0$且电子数$N$给定时，常用的做法是显式地写出所有能量本征态，从小到大排列$N$个电子，从而计算出费米能量，然后我们就知道了$T=0$时的化学势。
+
+不同粒子数对应的费米能量是不同的；并且，在分析有限温问题时，化学势不再是费米能量。然而，在温度不很高、粒子数很大时，不同粒子数对应的费米能量相差不大，并且化学势和费米能量（也就是$T=0$时的化学势）相差不大，因此有时会使用费米能量近似作为化学势。%
+\footnote{关于本节的论述要着重指出一点：虽然我们采用了统计物理的论证来表明必然存在着一个费米面，从而有对应的费米能量，但统计物理的论证仅仅为我们提供了系统基态的性质，而无论系统是不是需要使用平衡态系综描述，它一定有一个基态。因此，费米面、费米能级等概念在任何情况下——无论是平衡态还是非平衡态、纯态还是混合态——全部是适用的。这些概念并不依赖统计物理的框架！}%
+化学势的大小由系统中的电子数决定，或者也可以反过来说，化学势的高度决定了系统基态中哪些位置被电子填充。这个对应关系形象地展示如\autoref{fig:chemical-potential}，化学势越高，被描黑的态——也就是基态有电子填充的态——就越多。
+再次强调，这个“电子能量形式固定，改变化学势往系统中填充电子”的物理图像不适用于强关联系统，因为在那里等效的电子能量形式\eqref{eq:single-electron-hamiltonian}随着电子填入会发生剧烈变化；相应的，从这个物理图像衍生出来的理论，如能带理论也不再适用。
+
+\begin{figure}
+    \centering
+    \subfigure[$\xi_{\vb*{k}}$和$\vb*{k}$的关系]{
+        \begin{tikzpicture}
+        
+            % 动量横轴
+            \draw[->] (-3,0) -- (3,0) node[right] {$\vb*{k}$};
+            % 动能纵轴
+            \draw[->] (0,-1.5) -- (0,2.5) node[above] {$\xi_{\vb*{k}}$};
+            
+            % 画出$\xi_{\vb*{k}}$曲线
+            \draw[samples=50, smooth, domain=-3:3] plot(\x,{0.25*(\x*\x)-1});
+            % 描黑被占据的部分
+            \draw[samples=50, smooth, thick, domain=-2:2] plot(\x,{0.25*(\x*\x)-1});
+    
+            % 标出带底
+            \draw[dash pattern=on5pt off3pt] (-2.5, -1) -- (2.5,-1) node[right] {$-\mu$};
+    
+            % 标出费米点
+            \node[dot, label=above:$\vb*{k}_\text{F}$] at (2, 0) {};
+            \node[dot, label=above:$-\vb*{k}_\text{F}$] at (-2, 0) {};
+    
+        \end{tikzpicture}
+    }
+    \subfigure[$\epsilon_{\vb*{k}}$和$\vb*{k}$的关系]{
+        \begin{tikzpicture}
+        
+            % 动量横轴
+            \draw[->] (-3,0) -- (3,0) node[right] {$\vb*{k}$};
+            % 动能纵轴
+            \draw[->] (0,-1.5) -- (0,2.5) node[above] {$\epsilon_{\vb*{k}}$};
+            
+            % 画出$\epsilon_{\vb*{k}}$曲线
+            \draw[samples=50, smooth, domain=-3:3] plot(\x,{0.25*(\x*\x)});
+            % 描黑被占据的部分
+            \draw[samples=50, smooth, thick, domain=-2:2] plot(\x,{0.25*(\x*\x)});
+    
+            % 标出费米面
+            \draw[dash pattern=on5pt off3pt] (-2.5, 1) -- (2.5,1) node[right] {$\mu$};
+
+            % 标出满带
+            \draw[dash pattern=on5pt off3pt] (2, 0) -- (2,1);
+            \draw[dash pattern=on5pt off3pt] (-2, 0) -- (-2,1);
+    
+            % 标出费米点
+            \node[dot, label=below:$\vb*{k}_\text{F}$] at (2, 0) {};
+            \node[dot, label=below:$-\vb*{k}_\text{F}$] at (-2, 0) {};
+    
+        \end{tikzpicture}
+    }
+    \caption{化学势和电子填充，描黑的态有电子填充}
+    \label{fig:chemical-potential}
+\end{figure}
+
+近独立电子气的格林函数和它的谱函数如下。谱函数为
+\begin{equation}
+    A(\vb*{k}, \omega) = \delta(\omega - \epsilon_{\vb*{k}}),
+\end{equation}
+推迟格林函数为
+\begin{equation}
+    G^\text{ret}(\vb*{k}, \omega) = \frac{1}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}.
+\end{equation}
+这些都和单电子计算出来的结果完全一样，当然也毫不意外。
+
+\subsubsection{空穴}
+
+虽然多电子态是将场算符作用在真空态上得到的，但由于本文讨论的电子都由薛定谔场描述，在任何一个物理过程中电子数都是守恒的。
+换而言之，设有一个$N$电子的系统，这个系统实际可能具有的态矢量只是态空间的一小部分，即保持电子数为$N$的部分。
+这个$N$电子空间$\mathcal{H}_N$当然可以使用一次量子化理论来描述，但能否使用二次量子化的语言描述？
+费米子的特性让这一点成为可能。请注意由于泡利不相容原理，
+\[
+    {c}^\dagger_{\vb*{k}} \ket{\Psi} = 0, \quad k < k_\text{F},
+\]
+而由产生湮灭算符的性质显然有
+\[
+    {c}_{\vb*{k}} \ket{\Psi} = 0, \quad k > k_\text{F},
+\]
+因此如果定义%
+\footnote{费米面上的态相对来说非常少，因此忽略。}%
+\begin{equation}
+    {b}^\dagger_{-\vb*{k}} = \begin{cases}
+        {c}_{\vb*{k}}, \quad k < k_\text{F}, \\
+        {c}_{\vb*{k}}^\dagger, \quad k > k_\text{F},
+    \end{cases}
+\end{equation}
+那么基态$\ket{\Psi}$实际上是${b}^\dagger$产生的准粒子的真空态。${b}^\dagger$产生的是什么？当$k>k_\text{F}$时它产生的就是费米面以上的电子，而$k<k_\text{F}$时它产生的是费米海之内的空穴。
+空穴的动量就是它占据的态如果有电子的话，这个电子的动量的相反数。
+这样，我们可以将空穴看成电子的反粒子，虽然这种“反粒子”并不像高能物理中那样，来自洛伦兹群的表示。
+使用${b}^\dagger$写出的哈密顿量在省略一个无关紧要的常数之后为
+\[
+    {H} = \sum_{k > k_\text{F}} \xi_{\vb*{k}} {b}^\dagger_{\vb*{k}} {b}_{\vb*{k}} - \sum_{k < k_\text{F}} \xi_{\vb*{k}} {b}^\dagger_{\vb*{k}} {b}_{\vb*{k}},
+\]
+因此一个空穴的能量为$-\epsilon_{\vb*{k}}$。以上的哈密顿量不是正定的，但这不会导致负能量疑难，因为费米海虽然很大，但大小有限，因此不会出现能量无限下降的问题。
+
+使用${b}^\dagger$的结果是，保持电子数不变的相互作用需要被看成粒子数可变的，例如一个费米海中的电子被激发到费米海之上就意味着产生了一个电子-空穴对。
+
+\subsubsection{自由电子气}
+
+现在我们讨论最为简单的电子气，也就是$V(\vb*{r})$在物体内部为常数（可以看成零）的情况。此时可以将价电子一个个分开处理，既然它们之间没有相互作用。
+
+我们在坐标表象下处理问题。计算单个电子的波函数：
+\[
+    - \frac{\laplacian}{2m_\text{e}} \psi(\vb*{r}) = \epsilon \psi(\vb*{r}),
+\]
+这种方程的解当然是平面波解的线性组合。一个这样的平面波解形如
+\[
+    \psi(\vb*{r}) \propto \ee^{\ii \vb*{k} \cdot \vb*{r}}.
+\]
+只能保证这个式子在物体内部成立，因为物体边界处$V(\vb*{r})$不可能是常数。
+然后我们归一化这些平面波。电子可以自发地溢出物体，但是这样的概率并不大，所以我们可以简单地认为电子只会出现在物体内部（也即，物体被放置在一个无限深势陷当中）。设物体体积为$V$，就有
+\[
+    \int \dd[3]{\vb*{r}} \abs{\psi(\vb*{r})}^2 = 1,
+\]
+于是
+\[
+    \psi (\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad \epsilon = \frac{k^2}{2m_\text{e}}.
+\]
+很容易看出这些波函数实际上是动量算符的本征态，$\vb*{k}$实际上就是动量。另一方面，这些波函数定义在坐标空间中，坐标空间中的一切都和自旋算符对易，因此这些波函数也是自旋本征态。于是动量和自旋的一组共同正交本征函数为
+\begin{equation}
+    \psi_{\vb*{k},\sigma} (\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad \epsilon_{\vb*{k},\sigma} = \frac{k^2}{2m_\text{e}}.
+\end{equation}
+% 真的是这个名字吗？这些波函数称为\concept{布洛赫波函数}。
+$\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大，具体取什么样的边界条件对物体内部的过程毫无影响。
+
+自由电子气的费米面是球状的（即\concept{费米球}）。对三维系统，态密度为
+\[
+    \dd{N} = 2 \frac{\dd[3]{\vb*{r}} \dd[3]{\vb*{k}}}{(2\pi)^3},
+\]
+因子$2$是因为电子有两个自旋。积掉无用的坐标自由度和动量角自由度之后得到
+\[
+    \dd{N} = \frac{V k^2 \dd{k}}{\pi^2}.
+\]
+由于
+\[
+    \epsilon = \frac{k^2}{2m},
+\]
+可以推导出
+\[
+    \dd{N} = \frac{V (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon}}{2 \pi^2}.
+\]
+这样就可以计算出总粒子数和费米能（即零温化学势）之间的关系：
+\begin{equation}
+    N = \int_{\epsilon=0}^{\epsilon_{\text{F}}} \dd{N} = \frac{V (2m)^{3/2}}{3 \pi^2} \epsilon_\text{F}^{3/2},
+\end{equation}
+以及总能量
+\begin{equation}
+    E = \int_{\epsilon=0}^{\epsilon_{\text{F}}} \epsilon \dd{N} = \frac{V (2m)^{3/2}}{5 \pi^2} \epsilon_\text{F}^{5/2} = \frac{3}{5} N \epsilon_{\text{F}}.
+\end{equation}
+对二维或者一维的自由电子气也可以使用类似的方法得到系数不同的结论。
+
+\subsection{金属和朗道费米液体}
+
+金属中存在可以四处移动的巡游电子，这些电子之间存在库伦排斥，而又有晶格对电子施加周期势。
+先考虑周期势的影响，裸电子将会有能量修正而成为能带电子，自由能带电子组成费米气体，很容易处理。
+库伦排斥和声子介导的吸引相互作用合并为电子-电子相互作用，非常难以处理——电子-电子相互作用可以导致各种奇特的现象，并且其量级通常与费米能的量级一致。
+然而，金属的行为在很多方面非常像费米气体，这意味着实际上描述金属的低能有效理论基本上就是一个费米气体加上一定的相互作用。
+\concept{朗道费米液体}是一个这样的低能有效理论，其基本假设为：
+\begin{enumerate}
+    \item 费米液体的状态可以和费米气体一样，使用某种费米子的占据数标记，并且系统能量可以写成占据数的函数。
+    这个假设对哈密顿量的形式做出了很强的限制，因为此时的哈密顿量已经在粒子数表象下被严格对角化了。（但是这个哈密顿量仍然可以不是自由哈密顿量，因为可以有密度-密度相互作用）不过我们将会看到，这样的限制是合理的。
+    \item 当相互作用趋于零（“被关闭”）时，费米液体态回退到实际的费米气体态，我们假设此时费米液体态的占据数和实际的费米气体态的占据数相同。
+    这个假设实际上是说，费米液体中的占据数所描述的准粒子实际上是经过某种重整化的电子，和电子可以一一对应。
+\end{enumerate}
+
+可以通过这样的方式想象费米液体可以怎样产生：对无相互作用的能带电子%
+\footnote{
+    应当注意能带电子这个名称本身有些模糊不清。只计算周期性势场的影响可以得到能带，只计算经过平滑处理的赝势也可以得到能带，将一部分相互作用作为自能修正而留下最为显著的相互作用通道作为碰撞也可以得到能带（虽然还需要额外计算碰撞的影响，如费米液体中那样），对很多系统，其实相互作用全都考虑进去了还是可以得到能带——如同用DFT计算出来的那样。
+    例如，在费米液体中，如果粒子数涨落不大，完全可以用粒子数平均值代替相互作用项中的准粒子占据数。
+    即使相互作用大一些，也可以理解成“能带被拉歪了”。
+}%
+，我们可以浸染地将相互作用加入，如果没有出现诸如费米子配对之类的情况，那么第二个假设就已经满足了。
+相互作用会导致电子出现自能修正，由于库仑相互作用的顶角是保持粒子数守恒的，不存在一个电子衰变成多个其它粒子的过程，因此自能修正是实数，即单电子态的确是本征态。%
+\footnote{
+    虽然如此，如果我们将高于费米面的电子称为电子而将低于费米面的电子称为空穴，那么的确可以出现一个电子和费米球中的空穴发生相互作用，而衰变成电子和空穴的过程。
+    见\autoref{sec:fermi-liquid-ground}。
+}%
+在很多粒子数守恒的理论——如$\phi^4$理论或是QED——中，可以有稳定的单粒子、二粒子、三粒子……本征态，虽然$n$粒子态的能量不是$n$个粒子的能量简单相加，但是无论如何，一个本征态的能量可以写成各个动量上的粒子的占据数的函数，因此量子态可以用占据数标记，能量也可以用粒子数标记，即第一个假设也是成立的。
+
+在什么情况下费米液体理论失效？如果相互作用是吸引的，那么低温下可能出现费米子配对，此时总是会出现相变。
+我们将在\autoref{sec:low-and-super}中讨论这种情况。
+如果相互作用较强，能带的图像可能就完全不适用了，此时系统的元激发可能都不是经过修正的电子，也无所谓费米液体。
+如果有一些不能写成粒子数算符乘积的相互作用通道，费米液体理论同样不成立
+令人震惊的是，虽然大部分实际体系中库仑相互作用的确很强，费米液体图像仍然是适用的。
+
+由于费米液体中的准粒子是电子的单体激发，可以从费米液体中准粒子的行为中看到很明显的普通电子的影子，由于准粒子场和电子场的对称性相同，准粒子也是费米子，准粒子能谱和电子能谱形式类似，自旋均为$1/2$，带电量相同，等等。
+唯象的讨论中可以直接将费米液体中的准粒子当成电子。
+
+\subsubsection{基态附近的激发}\label{sec:fermi-liquid-ground}
+
+与高能物理中不同，实际的凝聚态体系的基态中都有大量准粒子。由于准粒子是费米子，系统基态中有一个费米球。
+由于粒子数守恒，系统基态附近的激发态就是一些准粒子从费米球内部被打到费米球外部之后形成的，并且距离费米面均不远。
+这样，我们可以忽略费米海而认为系统中实际上有两种元激发：“电子”和“空穴”。
+实际上，在费米液体理论中通常也只分析费米面附近的物理，部分原因在于费米海的结构可以非常复杂，因此只考虑费米面附近的物理是比较容易的，也是比较有实际意义的（因为是低温近似），部分原因在于只有这里才确定有稳定的准粒子——通常准粒子的寿命在接近费米面时比较长，因此看起来像是“真正的”粒子（否则会有非常明显的能级展宽）。
+
+这件事的原因如下。首先应当注意，虽然准粒子的自能修正总是实数，从而，在没有其它任何准粒子时，单个准粒子可以永远稳定存在而不会衰变，但与高能物理中的情况不同，费米球的存在意味着如果费米面上方出现了一个准粒子，它会激发费米海内部的准粒子，从而产生一个空穴。
+因此，在基态（不是真空态，而是带有费米球的态），费米面上方的准粒子的确会发生衰变。
+将费米面上方的准粒子和费米球内部的空穴看成两种元激发可以更加清楚地看到这一点：此时费米面上方的准粒子的个数根本不是守恒的（从而，积掉费米海会产生一个非幺正的理论），从而其自能修正不可能是实数。
+
+设准粒子寿命为$\tau$，则$\tau$反比于散射速率，而散射速率正比于库仑相互作用的强度。完整地做这个计算是很困难的，因为涉及到静电屏蔽等复杂的效应。
+由于我们只做数量级估计，暂时将寿命对整个费米面做平均，从而使用一个常数$M$表示相互作用强度。
+散射的过程可以概括为：一个动量为$\vb*{p}$的费米面外部的粒子（实际上是费米液体中的准粒子，下同）的能量降低，变成了动量为$\vb*{p}_1$的粒子，同时激发了一个费米面内的动量为$\vb*{p}_2$的粒子。
+结果是，动量为$\vb*{p}$的费米面以外的粒子衰变成了两个粒子，动量分别为$\vb*{p}_1$和$\vb*{p} - \vb*{p}_1 + \vb*{p}_2$，还有一个动量为$\vb*{p}_2$的空穴。
+设动量分别为$\vb*{p}_1$和$\vb*{p} - \vb*{p}_1 + \vb*{p}_2$的两个粒子和动量为$\vb*{p}_2$的空穴的总态密度在当前温度下的期望值为$n$，由费米黄金法则有
+\[
+    \frac{1}{\tau} \propto \text{transition rate} \sim \abs{M}^2 n.
+\]
+由于系统中的粒子非常多，不同能级上粒子数的涨落可以略去，即认为不同能级上不多不少正好就有费米-狄拉克分布给出的粒子个数，%
+\footnote{这是热力学系统的一般性质：系统规模大时涨落可略去。由于本文涉及的系统都是多体系统，总是可以做这样的近似。}%
+那么就有
+\[
+    n = \int \dd[3]{\vb*{p}_1} \int \dd[3]{\vb*{p}_2} (1 - f(\epsilon_{\vb*{p}_1})) f(\epsilon_{\vb*{p}_2}) (1 - f(\epsilon_{\vb*{p} - \vb*{p}_1 + \vb*{p}_2})) \delta(\epsilon_{\vb*{p}} - \epsilon_{\vb*{p}_1} + \epsilon_{\vb*{p}_2} - \epsilon_{\vb*{p} - \vb*{p}_1 + \vb*{p}_2}).
+\]
+因子$(1-\epsilon_{\vb*{p}_1})$表示动量为$\vb*{p}_1$的粒子应该占据一个空态（或者说在接近零温时应该在费米面以外），因子$f(\epsilon_{\vb*{p}_2})$表示空穴一定来自一个已有的粒子，最后的$\delta$函数强制要求能量守恒。
+我们不严格计算这个积分，而是做一些数量级估计。
+由于$\vb*{p}_2$在费米面以下而$\vb*{p}- \vb*{p}_1 + \vb*{p}_2$在费米面以上，容易写出以下不等式
+\[
+    0 < \xi_{\vb*{p}_1} < \xi_{\vb*{p}}, \quad 0 < - \xi_{\vb*{p}_2} < \xi_{\vb*{p}} - \xi_{\vb*{p}_1} < \xi_{\vb*{p}},
+\]
+对$n$有贡献的$\vb*{p}_1$和$\vb*{p}_2$均满足这些不等式，这些不等式给出了两个宽度为$\xi_{\vb*{p}}$的球壳，因此
+\[
+    n \leq (4 \pi k_\text{F}^2 \xi_{\vb*{p}})^2,
+\]
+于是
+\begin{equation}
+    \frac{1}{\tau} \lesssim \xi_{\vb*{p}}^2.
+\end{equation}
+因此，如果准粒子非常接近费米液体的费米面，那么它是非常稳定的，因为此时$\xi_{\vb*{p}}$很小。从物理图像上看，此时的准粒子虽然会和费米海中的准粒子发生相互作用，但其能量不足以产生粒子-空穴对，因此也不会衰变。
+
+粒子“稳定”的数值判据是什么？按照费米-狄拉克分布，$\expval*{{n}}$在$\epsilon_\text{F}$附近一个大约长为$T$的区域内明显偏离阶跃函数；另一方面，由于相互作用能量本身会有一个弥散，为
+\[
+    \Delta E \sim \frac{1}{\Delta t} \sim \frac{1}{\tau},
+\]
+其中$\tau$为准粒子平均自由时间。粒子稳定意味着
+\[
+    \Delta E \ll \frac{1}{T},
+\]
+也即
+\[
+    \frac{1}{\tau} \ll T.
+\]
+准粒子平均自由时间本身和温度有关，它大约是单位时间发生碰撞的概率的倒数，而只有费米子附近准粒子数明显偏离阶跃函数的那一部分准粒子比较有可能发生碰撞（费米球内部的准粒子不怎么会被激发，费米球外面根本没有准粒子），因此
+\[
+    \frac{1}{\tau} \sim T^2,
+\]
+最后就发现我们有
+\[
+    T \ll 1.
+\]
+因此费米液体图像只在低温下适用。
+
+% TODO
+然而，设$\Delta x$为准粒子坐标的不确定度，数量级上有
+\[
+    \frac{1}{\Delta x} \sim \frac{1}{\Delta t} \sim \Gamma,
+\]
+其中$\Gamma$是单位时间的散射几率，而我们又有
+\[
+    \Delta p \Delta x \sim \hbar,
+\]
+那么就有
+\[
+    \Delta p \sim \Gamma.
+\]
+由于准粒子散射是二体过程，在低温下$\Gamma$正比于$\expval*{{n}}$在$\epsilon_\text{F}$附近明显偏离阶跃函数的区域的厚度的平方。
+可以证明低温下这确实是正确的。
+
+总之，准粒子之间的碰撞不可忽略意味着费米面以上的准粒子会衰变。
+然而，在费米面附近，这种衰变是非常缓慢的，以至于我们可以认为任何一种动量确定的准粒子分布都可以长期稳定存在，即哈密顿量在以动量标记的粒子数表象下是对角化的。
+因此，费米液体的能级结构和费米气体完全一致。
+
+\subsubsection{哈密顿量和相互作用形式}
+
+然而，费米液体的能级结构和费米气体完全一致并不意味着电子之间的相互作用完全不产生任何影响，因为每个能级具体的能量大小可以经历修正。
+此外，即使电子之间的相互作用可以忽略，向系统加入或取出电子也会让费米球发生变化，从而让系统总能量平摊到每个准粒子上的份额发生变化。
+这意味着准粒子的哈密顿量并不是简单的
+\[
+    H = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} n_{\vb*{k} \sigma},
+\]
+而有一些高阶项，它们表示密度-密度相互作用。
+
+考虑一个能量本征态，其中准粒子在费米面之上的数量为$\var{n}$（$\delta$表示相对基态的偏离，正表示有粒子，负表示有空穴）。
+考虑到费米液体理论的第一条假设，把能量本征值相对于零温平衡态（由于费米海的结构可以非常复杂，零温能量反而是算不出来的，我们也不需要计算它）的变化写成以下级数展开（$\vb*{k}$在费米面附近）：
+\begin{equation}
+    \var{E} = \underbrace{\sum_{\vb*{k}, \sigma} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1}} + \underbrace{\frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \sigma, \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2}},
+    \label{eq:fermi-liquid-energy}
+\end{equation}
+其中$\var{n}$表示准粒子数目相对基态的变化。把能量写成粒子数的函数假定了自旋守恒。对动量做求和化积分，就得到
+\begin{equation}
+    \frac{\var{E}}{V} = \underbrace{\sum_{\sigma} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1} / V} + \underbrace{\frac{1}{2} \sum_{\sigma, \sigma'} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2} / V}
+\end{equation}
+我们保留到二阶项，一阶项给出准粒子的自由理论，二阶项给出准粒子的相互作用。
+这种相互作用并不会让粒子数发生涨落或是让单个准粒子的动量发生涨落，而只会对能级做修正，是所谓的“前向散射”。
+
+重整化群可能给出更高阶项，而也许二阶项实际上可以忽略，而绕了一大圈之后发现$\abs{M}$很小，从而实际上在很大的区域内费米液体图像均适用。
+为了表明我们保留到二阶项是正确的，我们给出一个数量级估计，说明一阶项和二阶项的量级是同阶的，而低于更高阶项。
+我们知道由于相互作用的存在，总能量$E$肯定不是单粒子哈密顿量（比如说$k^2/2m$这种形式）的期望值简单加起来的结果，但是显然能量具有可加性，设想我们改变了准粒子数分布，这样应该有
+\[
+    \var{E} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k} \sigma} \var{n_{\vb*{k} \sigma}},
+\]
+其中$\epsilon_{\vb*{k}}$是在有限温度下的近平衡态激发一个准粒子的能量，它的一部分是单准粒子能量，一部分是其它准粒子给它的相互作用能之和。
+因此，$\epsilon_{\vb*{k}}$会依赖准粒子数分布。由于我们只研究二体相互作用，我们有
+\[
+    \epsilon \sim \sum_{\vb*{k}'} \text{something} \cdot n_{\vb*{k}'},
+\]
+于是设
+\[
+    \var{\epsilon_{\vb*{k} \sigma}} = \frac{1}{V} \sum_{\vb*{k}', \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k}' \sigma'}},
+\]
+记$\epsilon_{\vb*{k}}^0$为$n_{\vb*{k}}$一概为零的$\epsilon_{\vb*{k}}$，代入$\var{E}$中就得到\eqref{eq:fermi-liquid-energy}；第二项的$1/2$因子是因为一对粒子会被计数两次，所以要除以$2$；由于我们假定准粒子分布相对于零温只有微小的偏离，$\epsilon_{\vb*{k}}$被取为零温的值。
+虽然$\epsilon^0 \var{n}$看起来比$f\var{n} \var{n}$大，但需要注意到我们在巨正则系综中工作，则真的有意义的应该是$E-\mu N$（且由于是近平衡，应有$\var{E} = \mu \var{N}$），而
+\[
+    \sum_{\vb*{k}} (\epsilon^0_{\vb*{k}} - \mu) \var{n_{\vb*{k}}} \sim \var{n}^2,
+\]
+于是$\epsilon^0 \var{n}$项和$f\var{n} \var{n}$项的贡献是同阶的，都需要考虑。
+更高阶相互作用则涉及$\var{n}$的更高阶项，于是不考虑。因此，\eqref{eq:fermi-liquid-energy}的确是成立的。
+
+在已经知道了$E$的表达式之后（比如说微扰计算出了体系能量），可以用变分计算出各个物理量：
+\begin{equation}
+    \epsilon_{\vb*{k}} = \fdv{E}{n_{\vb*{k} \sigma}} , \quad f_{\sigma \sigma' \vb*{k} \vb*{k}'} = V \frac{\var[2]{E}}{\var{n_{\vb*{k} \sigma}}\var{n_{\vb*{k}' \sigma'}}}, \quad \mu = \pdv{E}{N}.
+\end{equation}
+
+\eqref{eq:fermi-liquid-energy}中的一阶项可以看成一个等效的单粒子能量。由于只讨论费米面附近的理论，我们让能量从费米面量起，即使用$\xi$代替$\epsilon$，$k=k_\text{F}$时$\xi^0_{\vb*{k}}$就是零，在假定费米面具有旋转对称性的情况下可以做展开
+\[
+    \xi^0_{\vb*{k}} = \frac{k_\text{F}}{m^*} (k - k_\text{F}).
+\]
+我们仿照自由粒子的能量
+\[
+    \xi_{\vb*{k}} = \frac{k^2}{2m} - \frac{k_\text{F}^2}{2m} \approx \frac{k_\text{F}}{m} (k - k_\text{F})
+\]
+得到了一个等效质量$m^*$。能够像上面这样做的前提是准粒子能谱要足够光滑，如果像声子那样，就没法定义任何等效质量。%
+\footnote{应注意此处的等效质量和“激发有能隙，是有质量的”中的“质量”是不同的；前者并不代表有一个能隙，而只是$\epsilon_{\vb*{k}}$的$k^2$项的系数而已。}%
+如果温度很高，以至于不能保证有趣的行为仅仅发生在费米面附近，那有效质量的概念也没有什么用；实际上此时费米液体的理论就没有什么用。
+请注意\eqref{eq:fermi-liquid-energy}完全是形式上的：诸如晶格势能造成的单粒子能量修正已经被纳入了$\var{E_1}$中，而只要费米面保持旋转对称性，就可以引入等效质量的概念。
+并且，在只有费米面附近才有明显的激发的情况下，可以不失一般性地设
+\[
+    \epsilon_{\vb*{k}}^0 = \frac{k^2}{2m^*},
+\]
+因为真正有意义的是$\epsilon_{\vb*{k}} - \mu$，只需要同时调节$\epsilon_{\vb*{k}}$和$\mu$就可以让准粒子的$\epsilon_{\vb*{k}}$取自由粒子的形式。
+再次强调，调节$\epsilon_{\vb*{k}}$和$\mu$之类的操作只适用于费米面附近；因此对一个费米液体我们通常避免讨论费米球深处有什么——这些东西对费米面附近的行为并不重要。
+
+对二阶项，假定系统具有自旋旋转不变性，则$f$的取值完全由$f_{\uparrow \uparrow \vb*{k} \vb*{k}'}$和$f_{\uparrow \downarrow \vb*{k} \vb*{k}'}$决定。
+实际上，由于$\vb*{k}$局限在费米面附近，我们有
+\[
+    f_{\alpha \beta \vb*{k} \vb*{k}'} = f_{\alpha \beta}(\vartheta),
+\]
+$\vartheta$是$\vb*{k}$和$\vb*{k}'$的夹角。这样，设
+\begin{equation}
+    \begin{aligned}
+        f_{\uparrow \uparrow}(\vartheta) &= f^\text{S}(\vartheta) + f^\text{A}(\vartheta), \\
+        f_{\uparrow \downarrow}(\vartheta) &= f^\text{S}(\vartheta) - f^\text{A}(\vartheta),
+    \end{aligned}
+\end{equation}
+或者等价地可以设
+\begin{equation}
+    {f}(\vartheta) = f^\text{S}(\vartheta) + {\sigma} {\sigma}' f^\text{A}(\vartheta)
+\end{equation}
+从而将自旋守恒这一事实一并表示出来（${\sigma}^z$就是$z$方向的泡利矩阵），并将$f^\text{S}(\vartheta)$和$f^\text{A}(\vartheta)$展开成无量纲常数：
+\begin{equation}
+    \frac{k_\text{F} m^*}{\pi^2} f^\text{S,A}(\vartheta) = \sum_{l=0}^\infty F_l^\text{S,A} \legpoly (\cos \vartheta).
+\end{equation}
+于是，给定参数$m^*$，$k_\text{F}$以及$\{F_l^\text{S,A}\}$，费米液体服从的物理规律就给定了。
+在这里，我们实际上又把准粒子当成了可以彼此散射、有相互作用的粒子，“准粒子动能”$k^2/2m^*$和“准粒子势能”$f_{\alpha \beta}(\vartheta)$是“单个准粒子能量”$\epsilon_{\vb*{k}}$的两部分；单单一个$k^2/2m^*$肯定和$\epsilon_{\vb*{k}}$是不一样的。
+
+实际上，如果一个费米液体系统可以确定是一个实际的费米气体加入相互作用的结果，并且如前所述，能够保证准粒子个数和实际费米子的个数一样，自旋相同，等等，并且保证自旋旋转不变性、空间平移不变性、空间各向同性，那么费米液体中准粒子的等效质量和实际费米子的质量有一个简单的，使用$\{F_l^\text{S,A}\}$写出的关系。
+由于
+\[
+    E - E_0 = \sum_{\vb*{k}} \var{n_{\vb*{k}}} \epsilon_{\vb*{k}},
+\]
+由动量为$\vb*{k}$的一个准粒子的运动速度为
+\[
+    \vb*{v}_i = \pdv{E}{\vb*{p}_i} = \pdv{\epsilon_{\vb*{k}}}{\vb*{k}},
+\]
+上式的量子版本就是
+\[
+    {\vb*{v}} = \pdv{{\epsilon}_{\vb*{k}}}{\vb*{k}}.
+\]
+我们于是可以将${\vb*{v}}$当成费米液体中准粒子的流速。设$\rho$是某种守恒荷的密度，则任意一个流算符的期望可以写成
+\[
+    \begin{aligned}
+        \expval*{\rho \vb*{v}} = V \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \expval{\rho \pdv{{\epsilon}}{\vb*{k}}} , 
+    \end{aligned}
+\]
+准粒子和实际的费米子数量相同，准粒子的粒子数流密度算符就是实际费米子的粒子数流密度算符，且由于动量守恒，一个准粒子的总动量就是与它对应的实际费米子的总动量%
+\footnote{
+    可以这样论证这件事：在关闭相互作用时费米液体“无缝地”退化到实际的费米气体上，因此在无相互作用点处费米液体中准粒子的动量就是实际粒子的动量。
+    现在缓慢地加上相互作用，则费米液体准粒子的动量可以发生连续变化，但有限体系中动量实际上是分立的，从而动量只能不变。
+}%
+% TODO：这里的推导细节有问题
+，而实际费米子的总动量就是总质量流（因为$\vb*{p}=m\vb*{v}$）；由于动量和自旋守恒，我们将费米子占据数算符用$\vb*{k}$和$\sigma$标记，于是我们有
+\[
+    \sum_{\vb*{k}, \sigma} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} {n}_{\vb*{k} \sigma} = \trace \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{{\epsilon}}{\vb*{k}} {n}.
+\]
+同样${\epsilon}$也适用一样的推导，于是就有
+\[
+    \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} n_{\vb*{k} \sigma} = \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} n_{\vb*{k} \sigma},
+\]
+对上式求变分，就有
+\[
+    \begin{aligned}
+        \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} \var{n_{\vb*{k} \sigma}} &= \var \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} n_{\vb*{k} \sigma} \\
+        &= m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} \var{n_{\vb*{k} \sigma}} + m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} n_{\vb*{k} \sigma} \var{n_{\vb*{k}' \sigma}} \pdv{f_{\sigma}(\vartheta)}{\vb*{p}} \\
+        &= m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} \var{n_{\vb*{k} \sigma}} - m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} \var{n_{\vb*{k} \sigma}} \pdv{n_{\vb*{k}' \sigma}}{\vb*{k}'} f_{\sigma}(\vartheta) .
+    \end{aligned}
+\]
+第三个等号交换了$\vb*{k}$和$\vb*{k}'$，但这是合理的，因为$f$只和这两者的夹角有关。
+考虑到$\var{n}$的任意性，就有
+\[
+    \frac{\vb*{k}}{m} = \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} - \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} \pdv{n_{\vb*{k}' \sigma}}{\vb*{k}'} f_{\sigma}(\vartheta).
+\]
+在上式两边点乘$\vb*{k}$，代入$n$是阶跃函数这一事实，并且注意到动量几乎总是在费米面上，从而$\vb*{k} = k_\text{F} \vb*{n}$，就得到
+\begin{equation}
+    \frac{1}{m} = \frac{1}{m^*} + \frac{k_\text{F}}{(2\pi)^3} \int \dd{\Omega} \cos \vartheta f_\sigma(\vartheta).
+    \label{eq:m-and-m-star}
+\end{equation}
+上式的形式其实有些容易让人误解，毕竟，$f$和$m^*$都是加入相互作用之后重整化得到的有效参数，而上式看起来似乎是“$f$和$m$决定了$m^*$”。
+这里还有一个疑难，就是在使用电子动量计算总动量时我们直接用了$p=mv$，而以费米液体的观点计算总动量时我们却没有这么做。
+这是因为，只是根据\eqref{eq:fermi-liquid-energy}计算出的动量并不是真正的总动量，庞大的费米海的动量被忽略了：当一个费米液体中的准粒子被激发起来时，实际的系统中的费米海会受到扰动，从而会有额外的动量。
+$f$通常和费米能级有关，因此可以提供一些关于“费米海有多重”的信息，这就是\eqref{eq:m-and-m-star}中会出现$f$的原因：\eqref{eq:m-and-m-star}来自动量守恒关系，动量守恒方程的一边含有$m$，另一边含有$m^*$和通过$f$反解出的费米海的动量，经过化简就得到\eqref{eq:m-and-m-star}。
+当然，如果实际系统中根本没有电子间排斥，那么$f$肯定一直是零。
+
+费米液体的思想是传统凝聚态物理的基础：在费米液体提出之后的很长一段时间，分析凝聚态系统的标准方式是将系统的基本激发当成某种经过重整化的电子（如费米液体理论中的准粒子），写出形式各异的无相互作用的能带，然后加入占主导地位的相互作用通道。
+一些新兴的系统，如Luttinger液体，则无法归入这个框架：一点相互作用就足以破坏能带，从而让系统的低能自由度看起来完全不像电子。
+
+\subsubsection{费米液体的宏观性质}
+
+使用以上参数：$m^*$，$k_\text{F}$以及$\{F_l^\text{S,A}\}$，可以计算费米液体的各种宏观性质。
+
+首先考虑零温附近的比热。费米气体的比热在低温极限下正比于温度，费米液体实际上也一样。
+能量由\eqref{eq:fermi-liquid-energy}给出，随着$T$增大，一些粒子从费米海溢出，从而能量增大，产生一个热容。
+实际上，在零温极限附近，\eqref{eq:fermi-liquid-energy}中的$E_2$部分没有贡献。
+这是因为
+\[
+    E_2 = \sum_{\sigma, \sigma'} \underbrace{\frac{1}{2V} \sum_{\vb*{k}} f_{\sigma \sigma'}(\theta) \var{n}_{\vb*{k} \sigma}}_{\text{constant}} \var{n}_{\vb*{k}' \sigma'},
+\]
+被大括号括起来的部分和$\vb*{k}$无关，而显然
+\[
+    \sum_{\vb*{k}} \var{n}_{\vb*{k} \sigma} = 0,
+\]
+因此$E_2$对总能量没有贡献。这样费米液体的热容和费米气体的热容就是完全一致的，为
+\begin{equation}
+    C_V = \frac{1}{3} m^* k_\text{F} T.
+\end{equation}
+这个公式在实验上非常重要，如果确定一个体系是费米液体（如发现低温下热容正比于温度），那么就可以据此测出粒子的有效质量。
+
+也可以计算费米液体的磁化率。考虑弱场近似，则磁化率
+\[
+    \chi = \pdv{M}{H}
+\]
+近似为
+\[
+    \chi = \frac{M}{H},
+\]
+其中$M$表示磁化强度，$H$表示磁场强度（不是哈密顿量），而磁化强度为
+\[
+    M = \pdv{E}{H},
+\]
+于是得到
+\[
+    \frac{1}{\chi} = \pdv[2]{E}{M}.
+\]
+这样只需要使用$M$表示出$E$就可以了。
+记自旋向上（以磁场方向为$z$轴）和向下的粒子数为$N_\uparrow$和$N_\downarrow$，则
+\[
+    M = \mu_\text{B} (N_\uparrow - N_\downarrow),
+\]
+其中$\mu_\text{B}$为玻尔磁子。磁场导致自旋向上和向下的粒子数发生变化的原因是，自旋和磁场一致的粒子的费米面会扩大，自旋和磁场相反的粒子的费米面会缩小，从而让$N_\uparrow$变大，$N_\downarrow$缩小。
+由于粒子数不变，有
+\[
+    \var{N_\uparrow} = - \var{N_\downarrow},
+\]
+而没有磁场时向上和向下的粒子数一样，于是
+\[
+    M = 2 \mu_\text{B} \var{N}_\uparrow.
+\]
+$\var{N_\uparrow}$和费米动量的变化之间的关系是
+\[
+    \var{N_\uparrow} = \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} = \frac{V k_\text{F}^2 \var{k_\text{F}}}{2\pi^2}.
+\]
+现在可以将$M$用$\var{k_\text{F}}$表示出来了。接下来将能量写成$\var{k_\text{F}}$的函数。
+对动能部分$E_1$，我们有
+\[
+    \var{E_1} = \sum_{\sigma, \vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) \var{n}_{\vb*{k} \sigma},
+\]
+$n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k_\text{F}}$的区域内从$0$变成$1$，$n_{\vb*{k} \downarrow}$仅有的变化是在$k_\text{F} - \var{k_\text{F}} < k < k_\text{F}$的区域内从$1$变成$0$。
+这样就有
+\[
+    \begin{aligned}
+        \var{E_1} &= \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) + \int_{k_\text{F} - \var{k_\text{F}} < k < k_\text{F}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) (-1) \\
+        &= \frac{V k_\text{F}^3}{2 \pi^2 m^*} (\var{k_\text{F}})^2.
+    \end{aligned}
+\]
+最后，得到$\var{E_1}$和$M$的关系：
+\[
+    \var{E_1} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} M^2.
+\]
+同理，可以计算得到（计算的关键点在于意识到对全空间计算积分，则只有零阶勒让德多项式能够给出非零结果）
+\[
+    \var{E_2} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} F_0^\text{A} M^2.
+\]
+这样就得到了$\var{E}$关于$M$的表达式，从而最终得到
+\begin{equation}
+    \chi = \frac{1}{1 + F_0^\text{A}} \frac{m^* \mu_\text{B}^2 V k_\text{F}}{\pi^2}.
+\end{equation}
+
+\subsubsection{费米液体理论的合理性}
+
+确定一个系统是否适用费米液体理论首先需要我们确定系统的低能激发是否真的与电子的行为类似，因为原则上完全可以出现诸如电子配对等现象。
+在确定系统的低能激发和电子行为类似之后，费米球的存在性，以及低能激发主要是费米面附近的准粒子和空穴就可以确定。
+此时需要讨论的主要是相互作用的类型，即是否前向散射占据主要地位。
+
+在重整化群计算中，一个二体散射项的强弱主要由这个散射项中允许的的粒子动量的取值多少确定，可能的动量占据的空间体积越大，对应的相互作用通道就越强。
+
+懒得写了，总之就是BCS相互作用和密度-密度相互作用是特别强的两种。
+
+% TODO：那Hubbard模型？
+
+\subsection{紧束缚模型}
+
+\begin{equation}
+    \begin{aligned}
+        H_{i i' j' j} &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \braket{i}{\vb*{r}} \braket{i'}{\vb*{r}'} V(\vb*{r} - \vb*{r}') \braket{\vb*{r}'}{j'} \braket{\vb*{r}}{j} \\
+        &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} w_i^*(\vb*{r}) w_{i'}^*(\vb*{r}') V(\vb*{r} - \vb*{r}') w_{j'}^*(\vb*{r}') w_j^*(\vb*{r}),
+    \end{aligned}
+    \label{eq:wannier-basis-interaction}
+\end{equation}
+于是
+\begin{equation}
+    H = \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} + \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma}.
+\end{equation}
+
+\[
+    \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} = \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma}.
+\]
+
+原则上$U_{i i' j' j}$对很多不同的$i, i', j', j$组合都有非零值。物理上这是很好理解的，因为库伦相互作用可以将任意原子附近的两个电子散射到任意的其它地方，由于高度定域的电子动量不确定，这里无所谓动量守恒的约束。
+然而，由于只有原子间距很大时，紧束缚模型才成立，实际上，足够大的矩阵元的$i, i', j', j$中，$j$和$j'$不是最近邻，就是完全一样（即所谓on-site repulsion）。
+由于Wannier波函数高度定域，从\eqref{eq:wannier-basis-interaction}中可以看出，仅有的可能是$i=i'=j=j'$，或是$i=j \neq i'=j'$，或是$i=j' \neq i' = j$。
+于是就有
+\[
+    \begin{aligned}
+        &\quad \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma} \\
+        &= \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} 
+        + \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma}
+        + \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma},
+    \end{aligned}
+\]
+第一项为
+\[
+    \begin{aligned}
+        \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} &= 2 \sum_{i} V_{iiii} n_{i \uparrow} n_{i \downarrow} + \sum_{i} U_{iiii} n_i \\
+        &= \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \frac{1}{2} \sum_{i} U_{i} n_i,
+    \end{aligned}
+\]
+这里我们重新定义
+\begin{equation}
+    U_i = 2 V_{iiii}.
+\end{equation}
+第二项实际上是密度-密度相互作用，即为
+\[
+    \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma} = \sum_{\pair{i, j}} V_{ij} n_i n_j,
+\]
+其中我们重新定义了$V_{ij} = V_{ijji}$。使用公式
+\[
+    \vb*{\sigma}_{\alpha \beta} \cdot \vb*{\sigma}_{\alpha' \beta'} = 2 \delta_{\alpha \beta'} \delta_{\beta \alpha'} - \delta_{\alpha \beta} \delta_{\alpha' \beta'},
+\]
+可以验证
+\[
+    \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma} = - 2 \sum_{\pair{i, j}} V_{i j i j} \left( \vb*{S}_{i} \cdot \vb*{S}_j + \frac{1}{4} n_i n_j \right).
+\]
+我们把上式右边的第二项吸收进$V_{ij}$中，并且重新定义$2V_{ijij}=J_{ij}$，于是总的相互作用哈密顿量就是
+\[
+    \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j + \sum_{i} U_i n_i.
+\]
+由空间平移对称性，on-site repulsion肯定是均一的，这样我们可以将$\sum_i U_i n_i$丢进化学势中；而如果它不是均一的，就意味着系统实际上不具有完美的离散平移对称结构，即系统中存在无序，直观地看，就是散布的杂质对电子产生散射，这基本上是一个单体算符，于是我们就得到了紧束缚模型最一般的哈密顿量：
+\begin{equation}
+    H = - \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma} 
+    + \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} 
+    + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j 
+    - \mu \sum_i n_i + \sum_{i, j, \sigma, \sigma'} \epsilon_{ij\alpha \beta} c^\dagger_{i \alpha} c_{j \beta}.  
+\end{equation}
+这里的每一项都是有意义的，从左到右分别是：
+\begin{enumerate}
+    \item 动能项，衡量电子在格点之间跳跃的可能性；
+    \item on-site repulsion，仅考虑这个相互作用得到的模型是所谓\concept{Hubbard模型}；
+    \item 密度-密度相互作用项，可能导致系统中出现持续的、不能平息的电子密度涨落，即所谓电荷密度波；
+    \item 自旋-自旋相互作用项，可能导致出现自旋密度波；
+    \item 化学势，调节系统中电子个数；
+    \item 无序，可能来自杂质或是晶格的缺陷。
+\end{enumerate}
+
+与自由电子气模型或凝胶模型不同，紧束缚模型对相互作用是非常敏感的，不能保证加入（即使比较弱的）相互作用后，系统能够用费米液体理论描述，也不能保证能带论仍然有效。
+这是出于一个非常直观的原因：紧束缚模型的能带通常更窄，从而也更加容易在相互作用加入之后变成强关联系统。
+
+\subsection{能带理论何时失效？}
+
+简而言之：态密度反比于群速度，从而能带越窄，态密度越大，
+平带是最容易出强关联系统的。
