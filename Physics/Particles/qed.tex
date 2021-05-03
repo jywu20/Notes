@@ -44,6 +44,8 @@
 \newcommand{\concept}[1]{\underline{\textbf{#1}}}
 \renewcommand{\emph}{\textbf}
 
+\newcommand*{\bigO}[1]{\mathcal{O}{#1}}
+
 \allowdisplaybreaks[4]
 
 \title{量子电动力学的具体计算}
@@ -232,7 +234,7 @@ $\psi$是电子的湮灭算符，其运动方程就是薛定谔绘景下单电�
 
 积掉光子的过程实际上就是计算所有外线都是电子的散射振幅的过程。
 我们下面要做的计算都是在高能场论中完成的；\eqref{eq:pauli-eq}只是关于电子旋量场的一部分分量的，从而，我们下面获得的等效相互作用在加入\eqref{eq:pauli-eq}时可能需要适当地作用投影算符。
-凝聚态物理能标下基本上只需要计算树图，我们将圈图计算留到\autoref{sec:radiation-correction}。
+凝聚态物理能标下基本上只需要计算树图，本节也不计算圈图。
 
 \subsubsection{库伦相互作用}
 
@@ -458,18 +460,9 @@ $\psi$是电子的湮灭算符，其运动方程就是薛定谔绘景下单电�
 上面的推导实际上是将$\vb*{B}$当成了一个完全确定的外场；然而，电磁场存在量子涨落。
 电子磁矩是实验可测的。粗略的实验确实指出$g=2$，更加精确的实验（基本上远远超过了凝聚态场论的能标）则显示$g$其实比$2$稍微大一些，并且计算QED圈图修正之后能够得到和实验测量结果非常接近的值，这是一个证明QED可靠性的有力论据。
 
-\section{散射实验}
-
-积掉光子还意味着电子自己需要做自能修正，让质量什么的发生变化，即由于电子和光子的相互作用，电子带上了“电磁质量”。
-这是在经典电动力学中也已经知道的一个现象，但是在经典电动力学中不足以处理自能导致的发散。
-
-\section{辐射修正}\label{sec:radiation-correction}
+\section{一圈图修正}
 
 \subsection{顶角函数}
-
-
-
-\subsection{反常磁矩}
 
 QED会导致的一个能够观测的效应是\concept{反常磁矩}，即自旋磁矩实际上不严格是$2$。
 我们此处先给出计算自旋磁矩的大致步骤。我们是要计算如下的图：
@@ -490,6 +483,10 @@ QED会导致的一个能够观测的效应是\concept{反常磁矩}，即自旋�
 其中光子线代表一个比较强的、大小基本上确定的外场；这不代表不会有量子涨落。
 在上图中所有的量子涨落可以归结入顶角函数中；电子线由于amputating，无需自能修正，而光子线代表的外场也可以默认已经是amputated的。
 因此，严格计算电子自旋磁矩就归结为计算顶角函数。
+
+在本节中，我们将计算一圈顶角函数修正，从中得到反常磁矩，并做重整化。
+
+\subsubsection{对称性分析和形状因子}\label{sec:vertex-function-symmetry}
 
 $S$矩阵矩阵元
 \[
@@ -577,6 +574,8 @@ $f_i$中仅有的多分量对象就是$\slashed{q}_1$和$\slashed{q}_2$，这两
 
 这个散射振幅提供了完整的外场和电子发生单次相互作用的方式。
 
+\subsubsection{一圈顶角函数}
+
 对自旋磁矩涉及的相互作用，我们考虑外场的$\mu=1, 2, 3$分量，因为$\vb*{B}$和电势无关。
 \eqref{eq:form-factor-vertex}的第一项和自旋无关，因此我们将要考虑第二项。
 此外，在非相对论极限下，$q_1^0=q_2^0=m$，因此在这个极限下$p_0=0$。
@@ -639,10 +638,408 @@ $F_2(0)$中树图阶的贡献我们已经在\autoref{sec:spin-magnetic-moment}�
 \end{equation}
 其中$F_2(0)$给出顶角函数圈图修正带来的修正。
 
-下面我们要做的是计算$F_2(0)$。
+下面我们要做的是计算$F_2(0)$。本节只计算一圈图，仅考虑顶角修正，有
+\begin{equation}
+    \begin{aligned}
+        \ii \mathcal{M}^{(2)} &= \int \frac{\dd[4]{k}}{(2\pi)^4} \bar{u}(q_2) (-\ii e \gamma^\nu) \frac{\ii (\slashed{p} + \slashed{k} + m)}{(p + k)^2 - m^2 + \ii 0^+} (- \ii e \gamma^\mu) \frac{\ii (\slashed{k} + m)}{k^2 - m^2 + \ii 0^+} \\
+        &\quad \quad \times (-\ii e \gamma^\sigma) u(q_1) \frac{-\ii \eta_{\sigma \nu}}{(k - q_1)^2 + \ii 0^+} \\
+        &= - e^3 \bar{u}(q_2) \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{\gamma^\nu (\slashed{p} + \slashed{k} + m) \gamma^\mu (\slashed{k} + m) \gamma_\nu}{(k^2 - m^2 + \ii 0^+) ((p + k)^2 - m^2 + \ii 0^+) ((k - q_1)^2 + \ii 0^+)} u(q_1).
+    \end{aligned}
+\end{equation}
+为了计算上式我们做费曼参数化，使用公式
+\[
+    \frac{1}{ABC} = 2 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \frac{1}{(x A + y B + z C)^3},
+\]
+就得到
+\begin{equation}
+    \ii \mathcal{M}^{(2)} = - 2 e^3 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{N^\mu}{D},
+    \label{eq:vertex-one-loop-integral}
+\end{equation}
+其中
+\begin{equation}
+    N^\mu = \bar{u}(q_2) \gamma^\nu (\slashed{p} + \slashed{k} + m) \gamma^\mu (\slashed{k} + m) \gamma_\nu u(q_1),
+\end{equation}
+而
+\begin{equation}
+    D = (x (k^2 - m^2 + \ii 0^+) + y ((p + k)^2 - m^2 + \ii 0^+) + z ((k - q_1)^2 + \ii 0^+))^3.
+\end{equation}
+上式中，$q_1$和$q_2$是在壳的，而$p$是离壳的。我们有动量守恒关系
+\begin{equation}
+    q_2 = q_1 + p.
+\end{equation}
 
-\section{重整化群分析}
+我们首先化简$D$。将其展开，配方，并且利用在壳关系$q_1^2=m^2$，就得到
+\[
+    \begin{aligned}
+        D &= (k^2 + 2y k \cdot p - 2z k \cdot q_1 + yp^2 + zq_1^2 - (x + y)m^2)^3 \\
+        &= ((k + yp - z q_1)^2 - y^2 p^2 - z^2 q_1^2 + 2 yz p \cdot q_1 + y p^2 + z q_1^2 - (x + y) m^2)^3 \\
+        &= ((k + yp - z q_1)^2 - y^2 p^2 + 2 yz p \cdot q_1 + y p^2 - z^2 m^2 + z m^2 - (x + y) m^2)^3.
+    \end{aligned}
+\]
+利用$x + y + z = 1$得到
+\[
+    - z^2 m^2 + z m^2 - (x + y) m^2 = - (1-z)^2 m^2.
+\]
+由于
+\[
+    p \cdot q_1 = \frac{1}{2} (q_1 + p)^2 - \frac{1}{2} q_1^2 - \frac{1}{2} p^2 = \frac{1}{2} (m^2 - m^2) - \frac{1}{2} p^2 = - \frac{1}{2} p^2,
+\]
+我们有
+\[
+    - y^2 p^2 + 2 yz p \cdot q_1 + y p^2 = (-y^2 + y - yz) p^2 = y(1 - y - z) p^2 = xy p^2.
+\]
+于是就得到
+\begin{equation}
+    \begin{aligned}
+        D &= ((k + yp - z q_1)^2 + xy p^2 - (1-z)^2 m^2)^3 \\
+        &= (k'^2 - \Delta)^3,
+    \end{aligned}
+\end{equation}
+其中
+\begin{equation}
+    k' = k + yp - z q_1, \quad \Delta = - xy p^2 + (1-z)^2 m^2.
+\end{equation}
+我们下面在对$k$做积分时可以将积分变量换成$k'$以简化计算。
 
-通过重整化常数，抽取$\beta$函数和反常量纲来分析物理参数随着能量标度的变化。
+然后我们分析$N^\mu$。展开$\slashed{p}$的定义，并且使用$\gamma$矩阵的代数关系，可以得到
+\begin{equation}
+    \begin{aligned}
+        N^\mu &= \bar{u}(q_2) \gamma^\nu (p_\rho \gamma^\rho + k_\rho \gamma^\rho + m) \gamma^\mu (k_\sigma \gamma^\sigma + m) \gamma_\nu u(q_1) \\
+        &= \bar{u}(q_2) (4 \eta^{\rho \mu} m (p_\rho + k_\rho) + (p_\rho + k_\rho) k_\sigma (- 2 \gamma^\sigma \gamma^\mu \gamma^\rho) + 4 \eta^{\sigma \mu} m k_\sigma + m^2 (-2 \gamma^\mu)) u(q_1) \\
+        &= \bar{u}(q_2) (4 m (p^\mu + 2 k^\mu) - 2 \slashed{k} \gamma^\mu (\slashed{p} + \slashed{k}) - 2 m^2 \gamma^\mu) u(q_1).
+    \end{aligned}
+\end{equation}
+
+到了这一步，使用原本的$k$就很难计算下去了。我们现在将$k'$当成$k$，即在所有表达式中，做替换
+\begin{equation}
+    k \longrightarrow k + z q_1 - y p,
+\end{equation}
+就得到
+\begin{equation}
+    D = (k^2 - \Delta)^3,
+    \label{eq:final-d}
+\end{equation}
+而
+\begin{equation}
+    - \frac{1}{2} N^\mu = \bar{u}(q_2) (- 2 m (p^\mu + 2 k^\mu + 2 z q_1^\mu - 2 y p^\mu) + (\slashed{k} + z \slashed{q}_1 - y \slashed{p}) \gamma^\mu (\slashed{p} + \slashed{k} + z \slashed{q}_1 - y \slashed{p}) + m^2 \gamma^\mu) u(q_1).
+\end{equation}
+然后我们需要利用几个关系——Gordon恒等式，狄拉克方程的动量空间形式和$x+y+z=1$——来化简上式。
+此外，应注意到$D$对$k$是偶函数，从而$N^\mu$相对$k$是奇函数的部分全部可以略去，既然$k$的取值范围遍布全空间。
+在上式第一项中，$k^\mu$项可以直接略去。在上式第二项中我们有
+\begin{equation}
+    \begin{aligned}
+        &\quad \bar{u}(q_2) (\slashed{k} + z \slashed{q}_1 - y \slashed{p}) \gamma^\mu (\slashed{p} + \slashed{k} + z \slashed{q}_1 - y \slashed{p}) u(q_1) \\
+        &= \bar{u}(q_2) (\slashed{k} + z \slashed{q}_2 - (y + z) \slashed{p}) \gamma^\mu (\slashed{k} + z \slashed{q}_1 + (1 - y) \slashed{p}) u(q_1) \\
+        &= \bar{u}(q_2) (\slashed{k} + z m - (y + z) \slashed{p}) \gamma^\mu (\slashed{k} + z m + (1 - y) \slashed{p}) u(q_1).
+    \end{aligned}
+    \label{eq:second-term-n-mu}
+\end{equation}
+以上计算中用到了
+\[
+    \bar{u}(q_2) \slashed{q}_2 = m \bar{u}(q_2), \quad \slashed{q}_1 u(q_1) = m u(q_1).
+\]
+\eqref{eq:second-term-n-mu}中又有一些$k$的奇函数项，可以直接略去。不能略去的项包括$\slashed{k} \gamma^\mu \slashed{k}$项，$\slashed{p} \gamma^\mu$项及其转置，以及$\slashed{p} \gamma^\mu \slashed{p}$项。
+在计算这些项时，我们有这样一个有用的公式：在所有量都是洛伦兹协变的时候，有
+\begin{equation}
+    \int \dd[4]{k} k_\mu k_\nu \times (\cdots) = \int \dd[4]{k} \frac{1}{4} \eta_{\mu \nu} k^2 \times (\cdots),
+    \label{eq:k-mu-nu-to-square}
+\end{equation}
+其推导是，首先注意到$\mu \neq \nu$时积分为零，而上式左边给出一个张量，满足这个条件的张量只有度规张量的某个倍数；系数$1/4$是通过在等式两边同时乘上$\eta^{\mu \nu}$并缩并而计算出来的。
+于是
+\[
+    \begin{aligned}
+        \slashed{k} \gamma^\mu \slashed{k} &= k_\rho k_\sigma \gamma^\rho \gamma^\mu \gamma^\sigma = \frac{1}{4} \eta_{\rho \sigma} k^2 \gamma^\rho \gamma^\mu \gamma^\sigma \\
+        &= \frac{1}{4} k^2 \gamma^\sigma \gamma^\mu \gamma_\sigma = - \frac{1}{2} k^2 \gamma^\mu,
+    \end{aligned}
+\]
+而
+\[
+    \gamma^\mu \slashed{p} = p_\sigma \frac{\acomm*{\gamma^\sigma}{\gamma^\mu} - \comm*{\gamma^\sigma}{\gamma^\mu}}{2} = p_\sigma \frac{2 \eta^{\sigma \mu} - 2 \ii \sigma^{\mu \sigma}}{2} = p^\mu - \ii \sigma^{\mu \sigma} p_\sigma,
+\]
+同理
+\[
+    \slashed{p} \gamma^\mu = p^\mu + \ii \sigma^{\mu \sigma} p_\sigma.
+\]
+对$\slashed{p} \gamma^\mu \slashed{p}$项则有
+\[
+    \begin{aligned}
+        \slashed{p} \gamma^\mu \slashed{p} &= p_\rho p_\sigma \left( 2 \gamma^\rho \eta^{\mu \sigma} - \frac{\acomm*{\gamma^\rho}{\gamma^\sigma} + \comm*{\gamma^\rho}{\gamma^\sigma}}{2} \gamma^\mu \right),
+    \end{aligned}
+\]
+注意到$p_\rho p_\sigma \comm*{\gamma^\rho}{\gamma^\sigma}$是零，因为对易子反对称，于是
+\[
+    \slashed{p} \gamma^\mu \slashed{p} = 2 \slashed{p} p^\mu - p^2 \gamma^\mu,
+\]
+而这个式子中的第一项又应当略去，因为
+\[
+    \bar{u}(q_2) \slashed{p} u(q_1) = \bar{u}(q_2) (\slashed{q}_2 - \slashed{q}_1) u(q_1) = 0.
+\]
+因此
+\[
+    \slashed{p} \gamma^\mu \slashed{p} = - p^2 \gamma^\mu.
+\]
+综合以上各式，现在我们已经把$N^\mu$写成不带有$\slashed{p}$的形式了：
+\begin{equation}
+    \begin{aligned}
+        - \frac{1}{2} N^\mu &= \bar{u}(q_2) (
+            \gamma^\mu (- \frac{1}{2} k^2 + m^2 + z^2 m^2 + (y+z)(1-y) p^2) \\
+            &\quad \quad - 2m ((1-2y) p^\mu + 2z q_1^\mu) \\
+            &\quad \quad + zm((1-y) (p^\mu - \ii \sigma^{\mu \sigma} p_\sigma) - (y+z) (p^\mu + \ii \sigma^{\mu \sigma} p_\sigma))
+        ) u(q_1).
+    \end{aligned}
+    \label{eq:no-slashed-p-n-mu}
+\end{equation}
+最后，将括号中的第二项和第三项放在一起，得到
+\[
+    \begin{aligned}
+        &\quad - 2m ((1-2y) p^\mu + 2z q_1^\mu) + zm((1-y) (p^\mu - \ii \sigma^{\mu \sigma} p_\sigma) - (y+z) (p^\mu + \ii \sigma^{\mu \sigma} p_\sigma)) \\
+        &= m((4y - 2 + z - 2yz - z^2) p^\mu - z(1+z) \ii \sigma^{\mu \nu} p_\nu - 4z q_1^\mu) \\
+        &= m((4y - 2 + 3z - 2yz - z^2) p^\mu - z(1+z) \ii \sigma^{\mu \nu} p_\nu - 2z (q_1^\mu + q_2^\mu)) \\
+        &= m(- (z-2)(z+2y-1) p^\mu - z(1+z) \ii \sigma^{\mu \nu} p_\nu - 2z (q_1^\mu + q_2^\mu)) ,
+    \end{aligned}
+\]
+使用Gordon恒等式，将$q_1 + q_2$用$2m \gamma^\mu + \ii \sigma^{\mu \nu}(q_1^\nu - q_2^\nu)$代替，得到
+\[
+    \begin{aligned}
+        &\quad - 2m ((1-2y) p^\mu + 2z q_1^\mu) + zm((1-y) (p^\mu - \ii \sigma^{\mu \sigma} p_\sigma) - (y+z) (p^\mu + \ii \sigma^{\mu \sigma} p_\sigma)) \\
+        &= m(- (z-2)(z+2y-1) p^\mu - z(1+z) \ii \sigma^{\mu \nu} p_\nu - 2z (2m \gamma^\mu - \ii \sigma^{\mu \nu} p_\nu)) \\
+        &= m((z-2)(x-y) p^\mu + z(1 - z) \ii \sigma^{\mu \nu} p_\nu - 4mz \gamma^\mu ) ,
+    \end{aligned}
+\]
+然后我们再将上式和\eqref{eq:no-slashed-p-n-mu}右边括号中的第一项放在一起，得到
+\begin{equation}
+    \begin{aligned}
+        - \frac{1}{2} N^\mu &= \bar{u}(q_2) (\gamma^\mu (- \frac{1}{2} k^2 + (z^2 - 4z + 1) m^2 + (1-x)(1-y) p^2) \\
+        &\quad \quad + \ii m z (1-z) \sigma^{\mu \nu} p_\nu + m (z-2) (x-y) p^\mu) u(q_1).
+    \end{aligned}
+    \label{eq:final-n-mu}
+\end{equation}
+
+最后，我们将\eqref{eq:final-d}和\eqref{eq:final-n-mu}放在一起，计算对$x, y, z, p$的积分。
+$N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，而按照\eqref{eq:form-factor-vertex}，只应该有两项。
+实际上我们会注意到$\Delta$中交换$x$和$y$不变，而\eqref{eq:final-n-mu}中，$p^\mu$这一项中$x$和$y$交换会多一个负号，因此$p^\mu$项对\eqref{eq:vertex-one-loop-integral}其实是没有贡献的。
+实际上，这个事实对应着Ward恒等式，因为\eqref{eq:final-n-mu}中的另外两项中，
+\[
+    \bar{u}(q_2) p^\mu \gamma^\mu u(q_1) = \bar{u}(q_2) (\slashed{q}_2 - \slashed{q}_1) u(q_1) = \bar{u}(q_2) (m - m)u(q_1) = 0, \quad p_\mu \sigma^{\mu \nu} p_\nu = 0,
+\]
+因此
+\[
+    p_\mu N^\mu = 0, \quad p_\mu \mathcal{M}^\mu = 0.
+\]
+这就是Ward恒等式。
+与\eqref{eq:form-factor-vertex}对比，我们能够得到
+\begin{equation}
+    \begin{aligned}
+        F_1\left(\frac{p^2}{m^2}\right) &= 4 \ii e^2 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \\
+        &\quad \quad \times \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{- \frac{1}{2} k^2 + (z^2 - 4z + 1) m^2 + (1-x) (1-y) p^2}{(k^2 - \Delta)^3},
+    \end{aligned}
+\end{equation}
+而
+\begin{equation}
+    F_2\left(\frac{p^2}{m^2}\right) = 8 \ii e^2 m^2 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{z(1-z)}{(k^2 - \Delta)^3}.
+\end{equation}
+
+要计算反常磁矩只需要计算$F_2$。由于
+\[
+    \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{1}{(k^2 - \Delta)^3} = - \frac{\ii}{32 \pi^2 \Delta},
+\]
+我们有
+\[
+    \begin{aligned}
+        F_2\left(\frac{p^2}{m^2}\right) &= \frac{e^2 m^2}{4\pi^2} \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \frac{z(1-z)}{(1-z)^2 m^2 - xy p^2} \\
+        &= \frac{\alpha}{\pi} m^2 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \frac{z(1-z)}{(1-z)^2 m^2 - xy p^2}.
+    \end{aligned}
+\]
+最后，我们可以计算出反常磁矩的朗德$g$因子了：
+\[
+    \begin{aligned}
+        F_2(0) &= \frac{\alpha}{\pi} m^2 \int_0^1 \dd{x} \dd{y} \dd{z} \delta(x + y + z - 1) \frac{z(1-z)}{(1-z)^2 m^2} \\
+        &= \frac{\alpha}{\pi} \int_0^1 \dd{x} \dd{y} \dd{z} \frac{z}{1-z} \\
+        &= \frac{\alpha}{2\pi},
+    \end{aligned}
+\]
+于是
+\begin{equation}
+    g = 2 + 2 F_2(0) = 2 + \frac{\alpha}{\pi}.
+\end{equation}
+这给出了电子的磁矩的正比于$\alpha$的第一阶修正。
+
+我们的运气是很好的，在计算过程中没有遇到发散，因为发散都在$F_1$里面了。
+
+\subsection{真空极化}
+
+真空极化实际上就是光子自能。我们做类似\autoref{sec:vertex-function-symmetry}中的对称性分析。
+光子自能的表达式一定是某个关于光子动能$p$的标量乘以某个正比于$p$的二次项的二阶张量。
+关于$p$的标量当然一定是$p^2$的函数，而用$p$能够构造出来的二阶张量无非是$p^\mu p^\nu$和$p^2 \eta^{\mu \nu}$，因此光子自能的一般形式是
+\begin{equation}
+    \Pi^{\mu \nu}(p) = \Delta_1(p^2, m^2) p^2 \eta^{\mu \nu} + \Delta_2(p^2, m^2) p^\mu p^\nu.
+\end{equation}
+然而，这第二项实际上没有太大作用，因为QED是规范场论，我们可以通过调整$\xi$来消掉这一项，而不产生其它任何影响。
+换而言之，在之后计算光子自能时，但凡出现$p^\mu p^\nu$项的，全部可以忽略——它们除了让$\xi$需要调整以下以外什么也不导致。
+
+光子的正规自能中的一圈图是
+\begin{equation}
+    \begin{aligned}
+        \ii \Pi^{\mu \nu} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0);
+                    \vertex (b) at (-0.5, 0);
+                    \vertex (c) at (0.5, 0);
+                    \vertex (d) at (1.5, 0);
+                    \propag[photon, mom={$p$}] (a) to (b);
+                    \propag[fermion] (b) to[half right, looseness=1.5, edge label'={$k$}] (c);
+                    \propag[fermion] (c) to[half right, looseness=1.5, edge label'={$k-p$}] (b);
+                    \propag[photon, mom={$p$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= - \int \frac{\dd[4]{k}}{(2\pi)^4} \trace (-\ii e \gamma^\mu ) \frac{\ii (\slashed{k} - \slashed{p} + m)}{(k - p)^2 - m^2 + \ii 0^+} (-\ii e \gamma^\nu) \frac{\ii (\slashed{k} + m)}{k^2 - m^2 + \ii 0^+} \\
+        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
+    \end{aligned}
+\end{equation}
+注意这里我们把光子自能图设成$\ii \Pi$而不是$- \ii \Sigma$，因为光子关联函数的形式相比电子关联函数多出来了一个负号。（但是一些书，如Schwartz，对电子用的也是$\ii \Sigma$）
+图中所有的动量都不必在壳。
+
+如果直接动手计算，马上就会发现这里有发散。我们此处做维数正规化，即计算
+\begin{equation}
+    \Pi^{\mu \nu} = \ii e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
+\end{equation}
+首先做费曼参数化，有
+\[
+    \begin{aligned}
+        \frac{1}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)} &= \int_0^1 \dd{x} \frac{1}{(x (k^2 - m^2) + (1-x) ((k - p)^2 - m^2))^2} \\
+        &= \int_0^1 \dd{x} \frac{1}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
+    \end{aligned}
+\]
+然后计算分子，根据$\gamma$矩阵的迹公式（这些公式在维数正规化下是不变的），有
+\[
+    \trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m)) = 4 (2 k^\mu k^\nu - p^\mu k^\nu - k^\mu p^\nu + \eta^{\mu \nu} (m^2 - k^2 + k \cdot p)).
+\]
+上式中的$p^\mu p^\nu$项显然可以略去，它们只会让$\xi$做一个调整；由对称性，$p^\mu k^\nu$项和$k^\mu p^\nu$项在对$k$积分后显然都会给出正比于$p^\mu p^\nu$的项，从而也可以略去。
+最后，为了保持量纲——或者说为了显式地引入$\epsilon$标记的重整化群流的标度变换部分——我们注意到在$d$维空间中$e$的量纲是$2-d/2$，因此如果我们固定$e$为四维空间中的电荷（从而其取值和$\epsilon$无关），则在$d$维空间中应该用$\mu^{2-d/2} e$代替$e$，以手动引入$\epsilon$变动导致的跑动。
+因此我们得到
+\[
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu + \eta^{\mu \nu} (m^2 + k \cdot p - k^2)}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
+\]
+容易观察出，将分母配方的方法是做积分变量平移
+\[
+    k \longrightarrow k + (1-x) p,
+\]
+就能够让分母对$k$的依赖只含有$k^2$。此时并再一次忽略所有$p^\mu p^\nu$项，以及，由于此时分母对$k$是偶函数，可以忽略所有的$k \cdot p$项，就有
+\begin{equation}
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu - \eta^{\mu \nu} (k^2 - x(1-x)p^2 - m^2)}{(k^2 + x (1-x) p^2 - m^2)^2}.
+\end{equation}
+使用\eqref{eq:k-mu-nu-to-square}，注意此时由于维数发生变化，应该使用其$d$维版本，即
+\begin{equation}
+    \int \dd[4]{k} k_\mu k_\nu \times (\cdots) = \int \dd[4]{k} \frac{1}{d} \eta_{\mu \nu} k^2 \times (\cdots)
+\end{equation}
+就得到
+\[
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{(\frac{2}{d} - 1) \eta^{\mu \nu} k^2 + \eta^{\mu \nu} (x(1-x) p^2 + m^2)}{(k^2 - \Delta)^2},
+\]
+其中
+\[
+    \Delta = m^2 - x(1-x) p^2.
+\]
+使用公式
+\[
+    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{k^2}{(k^2 - \Delta)^2} = - \frac{\ii}{(4\pi)^{d/2}} \frac{d}{2} \Gamma\left(1 - \frac{d}{2}\right) \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}},
+\]
+以及
+\[
+    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{1}{(k^2 - \Delta)^2} = \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}},
+\]
+并且在$\Pi^{\mu \nu}$的第一项中做替换
+\[
+    \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}} = \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}} (m^2 - x(1-x) p^2), \quad \Gamma\left(1 - \frac{d}{2}\right) = \frac{\Gamma\left(2 - \frac{d}{2}\right)}{1 - \frac{d}{2}},
+\]
+计算得到
+\[
+    \Pi^{\mu \nu} = - 8 p^2 \eta^{\mu \nu} \frac{e^2}{(4\pi)^{d/2}} \mu^{4-d} \Gamma\left(2 - \frac{d}{2}\right) \int_0^1 \dd{x} x(1-x) \left(\frac{1}{m^2 - x(1-x) p^2}\right)^{2 - \frac{d}{2}}.
+\]
+现在引入$d = 4 - \epsilon$展开，我们得到
+\begin{equation}
+    \begin{aligned}
+        \Pi^{\mu \nu} &= - \frac{8 p^2 \eta^{\mu \nu} e^2}{(4\pi)^2} \int_0^1 \dd{x} x(1-x) \left( 1 + \frac{\epsilon}{2} \ln(\frac{4 \pi \mu^2}{m^2 - x(1-x) p^2}) + \bigO(\epsilon^2) \right) \\
+        &\quad \quad \times \left( \frac{2}{\epsilon} - \gamma_E + \bigO(\epsilon) \right) \\
+        &= - \frac{p^2 \eta^{\mu \nu} e^2}{2 \pi^2} \int_0^1 \dd{x} x(1 - x) \left( \frac{2}{\epsilon} + \ln(\frac{\tilde{\mu}^2}{m^2 - x(1-x) p^2}) \right),
+    \end{aligned}
+    \label{eq:regularized-photon}
+\end{equation}
+其中我们定义
+\begin{equation}
+    \tilde{\mu}^2 = 4 \pi \ee^{-\gamma_E} \mu^2.
+\end{equation}
+\eqref{eq:regularized-photon}给出正规化之后的光子自能。可以看到的确存在发散，不过发散已经被提取出来了，它是$\epsilon$的一个一阶极点。
+
+\subsection{电子自能}
+
+电子和光子的相互作用存在相互作用这一事实意味着可以有“电子吸收它自己产生的光子”这样的过程，从而电子会带上“电磁质量”。
+这是在经典电动力学中也已经知道的一个现象，但是在经典电动力学中不足以处理自能导致的发散。
+
+我们现在在QED中处理电子自能。电子的正规自能中的一圈图是
+\begin{equation}
+    \begin{aligned}
+        - \ii \Sigma(\slashed{p}) &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0);
+                    \vertex (b) at (-0.5, 0);
+                    \vertex (c) at (0.5, 0);
+                    \vertex (d) at (1.5, 0);
+                    \propag[fermion] (a) to[edge label={$p$}] (b);
+                    \propag[fermion] (b) to[edge label'={$k$}] (c);
+                    \propag[fermion] (c) to[edge label={$p$}] (d);
+                    \propag[photon, mom={$p - k$}] (b) to[half left, looseness=1.5] (c); 
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \int \frac{\dd[4]{k}}{(2\pi)^4} (-\ii e \gamma^\mu) \frac{\ii}{\slashed{k} - m + \ii 0^+} (-\ii e \gamma^\nu) \frac{- \ii \eta_{\mu \nu}}{(p-k)^2 + \ii 0^+} \\
+        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
+    \end{aligned}
+\end{equation}
+图中所有的动量都不必在壳。
+
+仿照先前做光子自能计算时的步骤，首先做维数正规化，并引入因子$\mu$，得到
+\begin{equation}
+    \Sigma(\slashed{p}) = - \ii \mu^{4-d}  e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
+\end{equation}
+首先处理分子，根据$\gamma$矩阵的代数公式得到
+\[
+    \gamma^\mu (\slashed{k} + m) \gamma_\mu = md - (d-2) \slashed{k}.
+\]
+对分母，做费曼参数化，得到
+\[
+    \begin{aligned}
+        \frac{1}{(k^2 - m^2)(p - k)^2} &= \int_0^1 \dd{x} \frac{1}{(x (p-k)^2 + (1-x) (k^2 - m^2))^2} \\
+        &= \int_0^1 \dd{x} \frac{1}{(k^2 - 2 x p \cdot k + x p^2 + (x-1) m^2)^2}.
+    \end{aligned}
+\]
+容易观察出正确的配方方式是做变量替换
+\[
+    k \longrightarrow k + xp,
+\]
+此时分母变成$(k^2 - \Delta)^2$，其中
+\[
+    \Delta = (1 - x)(m^2 - p^2 x),
+\]
+而分子成为
+\[
+    md - (d-2)(\slashed{k} + x \slashed{p}).
+\]
+此时分母是$k$的偶函数，从而分子中是$k$的奇函数的项积分之后都是零，可以略去，因此最终得到
+\begin{equation}
+    \begin{aligned}
+        \Sigma(\slashed{p}) &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{md - x (d-2) \slashed{p}}{(k^2 - \Delta)^2} \\
+        &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} (md - x (d-2) \slashed{p}) \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}}. 
+    \end{aligned}
+\end{equation}
+做$d = 4 - \epsilon$展开，得到
+
+
+\subsection{红外发散}
+
+
 
 \end{document}
