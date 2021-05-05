@@ -462,6 +462,193 @@ $\psi$是电子的湮灭算符，其运动方程就是薛定谔绘景下单电�
 
 \section{一圈图修正}
 
+\subsection{三种一圈图和它们的紫外发散}
+
+用维数正规化的$d = 4 - \epsilon$将积分中的发散部分提取出来。
+
+\subsubsection{真空极化}
+
+真空极化实际上就是光子自能。对称性分析表明光子自能的表达式一定是某个关于光子动能$p$的标量乘以某个正比于$p$的二次项的二阶张量。
+关于$p$的标量当然一定是$p^2$的函数，而用$p$能够构造出来的二阶张量无非是$p^\mu p^\nu$和$p^2 \eta^{\mu \nu}$，因此光子自能的一般形式是
+\begin{equation}
+    \Pi^{\mu \nu}(p) = \Delta_1(p^2, m^2) p^2 \eta^{\mu \nu} + \Delta_2(p^2, m^2) p^\mu p^\nu.
+\end{equation}
+然而，这第二项实际上没有太大作用，因为QED是规范场论，我们可以通过调整$\xi$来消掉这一项，而不产生其它任何影响。
+换而言之，在之后计算光子自能时，但凡出现$p^\mu p^\nu$项的，全部可以忽略——它们除了让$\xi$需要调整以下以外什么也不导致。
+
+光子的正规自能中的一圈图是
+\begin{equation}
+    \begin{aligned}
+        \ii \Pi^{\mu \nu} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0);
+                    \vertex (b) at (-0.5, 0);
+                    \vertex (c) at (0.5, 0);
+                    \vertex (d) at (1.5, 0);
+                    \propag[photon, mom={$p$}] (a) to (b);
+                    \propag[fermion] (b) to[half right, looseness=1.5, edge label'={$k$}] (c);
+                    \propag[fermion] (c) to[half right, looseness=1.5, edge label'={$k-p$}] (b);
+                    \propag[photon, mom={$p$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= - \int \frac{\dd[4]{k}}{(2\pi)^4} \trace (-\ii e \gamma^\mu ) \frac{\ii (\slashed{k} - \slashed{p} + m)}{(k - p)^2 - m^2 + \ii 0^+} (-\ii e \gamma^\nu) \frac{\ii (\slashed{k} + m)}{k^2 - m^2 + \ii 0^+} \\
+        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
+    \end{aligned}
+\end{equation}
+注意这里我们把光子自能图设成$\ii \Pi$而不是$- \ii \Sigma$，因为光子关联函数的形式相比电子关联函数多出来了一个负号。（但是一些书，如Schwartz，对电子用的也是$\ii \Sigma$）
+图中所有的动量都不必在壳。
+
+如果直接动手计算，马上就会发现这里有发散。我们此处做维数正规化，即计算
+\begin{equation}
+    \Pi^{\mu \nu} = \ii e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
+\end{equation}
+首先做费曼参数化，有
+\[
+    \begin{aligned}
+        \frac{1}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)} &= \int_0^1 \dd{x} \frac{1}{(x (k^2 - m^2) + (1-x) ((k - p)^2 - m^2))^2} \\
+        &= \int_0^1 \dd{x} \frac{1}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
+    \end{aligned}
+\]
+然后计算分子，根据$\gamma$矩阵的迹公式（这些公式在维数正规化下是不变的），有
+\[
+    \trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m)) = 4 (2 k^\mu k^\nu - p^\mu k^\nu - k^\mu p^\nu + \eta^{\mu \nu} (m^2 - k^2 + k \cdot p)).
+\]
+上式中的$p^\mu p^\nu$项显然可以略去，它们只会让$\xi$做一个调整；由对称性，$p^\mu k^\nu$项和$k^\mu p^\nu$项在对$k$积分后显然都会给出正比于$p^\mu p^\nu$的项，从而也可以略去。
+最后，为了保持量纲——或者说为了显式地引入$\epsilon$标记的重整化群流的标度变换部分——我们注意到在$d$维空间中$e$的量纲是$2-d/2$，因此如果我们固定$e$为四维空间中的电荷（从而其取值和$\epsilon$无关），则在$d$维空间中应该用$\mu^{2-d/2} e$代替$e$，以手动引入$\epsilon$变动导致的跑动。
+因此我们得到
+\[
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu + \eta^{\mu \nu} (m^2 + k \cdot p - k^2)}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
+\]
+容易观察出，将分母配方的方法是做积分变量平移
+\[
+    k \longrightarrow k + (1-x) p,
+\]
+就能够让分母对$k$的依赖只含有$k^2$。此时并再一次忽略所有$p^\mu p^\nu$项，以及，由于此时分母对$k$是偶函数，可以忽略所有的$k \cdot p$项，就有
+\begin{equation}
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu - \eta^{\mu \nu} (k^2 - x(1-x)p^2 - m^2)}{(k^2 + x (1-x) p^2 - m^2)^2}.
+\end{equation}
+使用\eqref{eq:k-mu-nu-to-square}，注意此时由于维数发生变化，应该使用其$d$维版本，即
+\begin{equation}
+    \int \dd[4]{k} k_\mu k_\nu \times (\cdots) = \int \dd[4]{k} \frac{1}{d} \eta_{\mu \nu} k^2 \times (\cdots)
+\end{equation}
+就得到
+\[
+    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{(\frac{2}{d} - 1) \eta^{\mu \nu} k^2 + \eta^{\mu \nu} (x(1-x) p^2 + m^2)}{(k^2 - \Delta)^2},
+\]
+其中
+\[
+    \Delta = m^2 - x(1-x) p^2.
+\]
+使用公式
+\[
+    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{k^2}{(k^2 - \Delta)^2} = - \frac{\ii}{(4\pi)^{d/2}} \frac{d}{2} \Gamma\left(1 - \frac{d}{2}\right) \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}},
+\]
+以及
+\[
+    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{1}{(k^2 - \Delta)^2} = \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}},
+\]
+并且在$\Pi^{\mu \nu}$的第一项中做替换
+\[
+    \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}} = \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}} (m^2 - x(1-x) p^2), \quad \Gamma\left(1 - \frac{d}{2}\right) = \frac{\Gamma\left(2 - \frac{d}{2}\right)}{1 - \frac{d}{2}},
+\]
+计算得到
+\[
+    \Pi^{\mu \nu} = - 8 p^2 \eta^{\mu \nu} \frac{e^2}{(4\pi)^{d/2}} \mu^{4-d} \Gamma\left(2 - \frac{d}{2}\right) \int_0^1 \dd{x} x(1-x) \left(\frac{1}{m^2 - x(1-x) p^2}\right)^{2 - \frac{d}{2}}.
+\]
+现在引入$d = 4 - \epsilon$展开，我们得到
+\begin{equation}
+    \begin{aligned}
+        \Pi^{\mu \nu} &= - \frac{8 p^2 \eta^{\mu \nu} e^2}{(4\pi)^2} \int_0^1 \dd{x} x(1-x) \left( 1 + \frac{\epsilon}{2} \ln(\frac{4 \pi \mu^2}{m^2 - x(1-x) p^2}) + \bigO(\epsilon^2) \right) \\
+        &\quad \quad \times \left( \frac{2}{\epsilon} - \gamma_\text{E} + \bigO(\epsilon) \right) \\
+        &= - \frac{p^2 \eta^{\mu \nu} e^2}{2 \pi^2} \int_0^1 \dd{x} x(1 - x) \left( \frac{2}{\epsilon} + \ln(\frac{\tilde{\mu}^2}{m^2 - x(1-x) p^2}) \right),
+    \end{aligned}
+    \label{eq:regularized-photon}
+\end{equation}
+其中我们定义
+\begin{equation}
+    \tilde{\mu}^2 = 4 \pi \ee^{-\gamma_\text{E}} \mu^2.
+\end{equation}
+\eqref{eq:regularized-photon}给出正规化之后的光子自能。可以看到的确存在发散，不过发散已经被提取出来了，它是$\epsilon$的一个一阶极点，即
+\begin{equation}
+    \Pi^{\mu \nu} = - \frac{p^2 e^2 \eta^{\mu \nu}}{6 \pi^2 \epsilon} + \text{finite}.
+\end{equation}
+
+\subsubsection{电子自能}
+
+电子和光子的相互作用存在相互作用这一事实意味着可以有“电子吸收它自己产生的光子”这样的过程，从而电子会带上“电磁质量”。
+这是在经典电动力学中也已经知道的一个现象，但是在经典电动力学中不足以处理自能导致的发散。
+
+我们现在在QED中处理电子自能。电子的正规自能中的一圈图是
+\begin{equation}
+    \begin{aligned}
+        - \ii \Sigma(\slashed{p}) &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a) at (-1.5, 0);
+                    \vertex (b) at (-0.5, 0);
+                    \vertex (c) at (0.5, 0);
+                    \vertex (d) at (1.5, 0);
+                    \propag[fermion] (a) to[edge label={$p$}] (b);
+                    \propag[fermion] (b) to[edge label'={$k$}] (c);
+                    \propag[fermion] (c) to[edge label={$p$}] (d);
+                    \propag[photon, mom={$p - k$}] (b) to[half left, looseness=1.5] (c); 
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \int \frac{\dd[4]{k}}{(2\pi)^4} (-\ii e \gamma^\mu) \frac{\ii}{\slashed{k} - m + \ii 0^+} (-\ii e \gamma^\nu) \frac{- \ii \eta_{\mu \nu}}{(p-k)^2 + \ii 0^+} \\
+        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
+    \end{aligned}
+\end{equation}
+图中所有的动量都不必在壳。
+
+仿照先前做光子自能计算时的步骤，首先做维数正规化，并引入因子$\mu$，得到
+\begin{equation}
+    \Sigma(\slashed{p}) = - \ii \mu^{4-d}  e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
+\end{equation}
+首先处理分子，根据$\gamma$矩阵的代数公式得到
+\[
+    \gamma^\mu (\slashed{k} + m) \gamma_\mu = md - (d-2) \slashed{k}.
+\]
+对分母，做费曼参数化，得到
+\[
+    \begin{aligned}
+        \frac{1}{(k^2 - m^2)(p - k)^2} &= \int_0^1 \dd{x} \frac{1}{(x (p-k)^2 + (1-x) (k^2 - m^2))^2} \\
+        &= \int_0^1 \dd{x} \frac{1}{(k^2 - 2 x p \cdot k + x p^2 + (x-1) m^2)^2}.
+    \end{aligned}
+\]
+容易观察出正确的配方方式是做变量替换
+\[
+    k \longrightarrow k + xp,
+\]
+此时分母变成$(k^2 - \Delta)^2$，其中
+\[
+    \Delta = (1 - x)(m^2 - p^2 x),
+\]
+而分子成为
+\[
+    md - (d-2)(\slashed{k} + x \slashed{p}).
+\]
+此时分母是$k$的偶函数，从而分子中是$k$的奇函数的项积分之后都是零，可以略去，因此最终得到
+\begin{equation}
+    \begin{aligned}
+        \Sigma(\slashed{p}) &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{md - x (d-2) \slashed{p}}{(k^2 - \Delta)^2} \\
+        &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} (md - x (d-2) \slashed{p}) \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}}. 
+    \end{aligned}
+\end{equation}
+做$d = 4 - \epsilon$展开，得到
+\begin{equation}
+    \begin{aligned}
+        \Sigma(\slashed{p}) &= \frac{\ii e^2 \mu^\epsilon}{(4\pi)^2} \int_0^1 \dd{x} \Gamma\left(\frac{\epsilon}{2}\right) (4\pi)^{\epsilon/2} \frac{(4-\epsilon) m - (2-\epsilon) x \slashed{p}}{((1-x) (m^2 - x p^2))^{\epsilon/2}} \\
+        &= \frac{\alpha}{2\pi} \int_0^1 \dd{x} \left( \left( \frac{2}{\epsilon} + \ln(\frac{\tilde{\mu}^2}{(1-x) (m^2 - xp^2)}) \right) (2 m - x \slashed{p}) + (x \slashed{p} - m) \right),
+    \end{aligned}
+\end{equation}
+提取发散部分，为
+\begin{equation}
+    \Sigma(\slashed{p}) = \frac{\alpha (4m - \slashed{p})}{2 \pi \epsilon} + \text{finite}.
+\end{equation}
+
 \subsection{顶角函数}
 
 QED会导致的一个能够观测的效应是\concept{反常磁矩}，即自旋磁矩实际上不严格是$2$。
@@ -866,177 +1053,11 @@ $N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，�
 
 我们的运气是很好的，在计算过程中没有遇到发散，因为发散都在$F_1$里面了。
 
-\subsection{真空极化}
+\subsection{重整化方案}
 
-真空极化实际上就是光子自能。我们做类似\autoref{sec:vertex-function-symmetry}中的对称性分析。
-光子自能的表达式一定是某个关于光子动能$p$的标量乘以某个正比于$p$的二次项的二阶张量。
-关于$p$的标量当然一定是$p^2$的函数，而用$p$能够构造出来的二阶张量无非是$p^\mu p^\nu$和$p^2 \eta^{\mu \nu}$，因此光子自能的一般形式是
 \begin{equation}
-    \Pi^{\mu \nu}(p) = \Delta_1(p^2, m^2) p^2 \eta^{\mu \nu} + \Delta_2(p^2, m^2) p^\mu p^\nu.
+    \mathcal{L} = 
 \end{equation}
-然而，这第二项实际上没有太大作用，因为QED是规范场论，我们可以通过调整$\xi$来消掉这一项，而不产生其它任何影响。
-换而言之，在之后计算光子自能时，但凡出现$p^\mu p^\nu$项的，全部可以忽略——它们除了让$\xi$需要调整以下以外什么也不导致。
-
-光子的正规自能中的一圈图是
-\begin{equation}
-    \begin{aligned}
-        \ii \Pi^{\mu \nu} &= \begin{gathered}
-            \begin{tikzpicture}
-                \begin{feynhand}
-                    \vertex (a) at (-1.5, 0);
-                    \vertex (b) at (-0.5, 0);
-                    \vertex (c) at (0.5, 0);
-                    \vertex (d) at (1.5, 0);
-                    \propag[photon, mom={$p$}] (a) to (b);
-                    \propag[fermion] (b) to[half right, looseness=1.5, edge label'={$k$}] (c);
-                    \propag[fermion] (c) to[half right, looseness=1.5, edge label'={$k-p$}] (b);
-                    \propag[photon, mom={$p$}] (c) to (d);
-                \end{feynhand}
-            \end{tikzpicture}
-        \end{gathered} \\
-        &= - \int \frac{\dd[4]{k}}{(2\pi)^4} \trace (-\ii e \gamma^\mu ) \frac{\ii (\slashed{k} - \slashed{p} + m)}{(k - p)^2 - m^2 + \ii 0^+} (-\ii e \gamma^\nu) \frac{\ii (\slashed{k} + m)}{k^2 - m^2 + \ii 0^+} \\
-        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
-    \end{aligned}
-\end{equation}
-注意这里我们把光子自能图设成$\ii \Pi$而不是$- \ii \Sigma$，因为光子关联函数的形式相比电子关联函数多出来了一个负号。（但是一些书，如Schwartz，对电子用的也是$\ii \Sigma$）
-图中所有的动量都不必在壳。
-
-如果直接动手计算，马上就会发现这里有发散。我们此处做维数正规化，即计算
-\begin{equation}
-    \Pi^{\mu \nu} = \ii e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{\trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m))}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)}.
-\end{equation}
-首先做费曼参数化，有
-\[
-    \begin{aligned}
-        \frac{1}{((k - p)^2 - m^2 + \ii 0^+) (k^2 - m^2 + \ii 0^+)} &= \int_0^1 \dd{x} \frac{1}{(x (k^2 - m^2) + (1-x) ((k - p)^2 - m^2))^2} \\
-        &= \int_0^1 \dd{x} \frac{1}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
-    \end{aligned}
-\]
-然后计算分子，根据$\gamma$矩阵的迹公式（这些公式在维数正规化下是不变的），有
-\[
-    \trace (\gamma^\mu (\slashed{k} - \slashed{p} + m) \gamma^\nu (\slashed{k} + m)) = 4 (2 k^\mu k^\nu - p^\mu k^\nu - k^\mu p^\nu + \eta^{\mu \nu} (m^2 - k^2 + k \cdot p)).
-\]
-上式中的$p^\mu p^\nu$项显然可以略去，它们只会让$\xi$做一个调整；由对称性，$p^\mu k^\nu$项和$k^\mu p^\nu$项在对$k$积分后显然都会给出正比于$p^\mu p^\nu$的项，从而也可以略去。
-最后，为了保持量纲——或者说为了显式地引入$\epsilon$标记的重整化群流的标度变换部分——我们注意到在$d$维空间中$e$的量纲是$2-d/2$，因此如果我们固定$e$为四维空间中的电荷（从而其取值和$\epsilon$无关），则在$d$维空间中应该用$\mu^{2-d/2} e$代替$e$，以手动引入$\epsilon$变动导致的跑动。
-因此我们得到
-\[
-    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu + \eta^{\mu \nu} (m^2 + k \cdot p - k^2)}{(k^2 + (1-x) p^2 - 2(1-x) k \cdot p - m^2)^2}.
-\]
-容易观察出，将分母配方的方法是做积分变量平移
-\[
-    k \longrightarrow k + (1-x) p,
-\]
-就能够让分母对$k$的依赖只含有$k^2$。此时并再一次忽略所有$p^\mu p^\nu$项，以及，由于此时分母对$k$是偶函数，可以忽略所有的$k \cdot p$项，就有
-\begin{equation}
-    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{2k^\mu k^\nu - \eta^{\mu \nu} (k^2 - x(1-x)p^2 - m^2)}{(k^2 + x (1-x) p^2 - m^2)^2}.
-\end{equation}
-使用\eqref{eq:k-mu-nu-to-square}，注意此时由于维数发生变化，应该使用其$d$维版本，即
-\begin{equation}
-    \int \dd[4]{k} k_\mu k_\nu \times (\cdots) = \int \dd[4]{k} \frac{1}{d} \eta_{\mu \nu} k^2 \times (\cdots)
-\end{equation}
-就得到
-\[
-    \Pi^{\mu \nu} = 4 \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{(\frac{2}{d} - 1) \eta^{\mu \nu} k^2 + \eta^{\mu \nu} (x(1-x) p^2 + m^2)}{(k^2 - \Delta)^2},
-\]
-其中
-\[
-    \Delta = m^2 - x(1-x) p^2.
-\]
-使用公式
-\[
-    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{k^2}{(k^2 - \Delta)^2} = - \frac{\ii}{(4\pi)^{d/2}} \frac{d}{2} \Gamma\left(1 - \frac{d}{2}\right) \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}},
-\]
-以及
-\[
-    \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{1}{(k^2 - \Delta)^2} = \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}},
-\]
-并且在$\Pi^{\mu \nu}$的第一项中做替换
-\[
-    \left(\frac{1}{\Delta}\right)^{1-\frac{d}{2}} = \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}} (m^2 - x(1-x) p^2), \quad \Gamma\left(1 - \frac{d}{2}\right) = \frac{\Gamma\left(2 - \frac{d}{2}\right)}{1 - \frac{d}{2}},
-\]
-计算得到
-\[
-    \Pi^{\mu \nu} = - 8 p^2 \eta^{\mu \nu} \frac{e^2}{(4\pi)^{d/2}} \mu^{4-d} \Gamma\left(2 - \frac{d}{2}\right) \int_0^1 \dd{x} x(1-x) \left(\frac{1}{m^2 - x(1-x) p^2}\right)^{2 - \frac{d}{2}}.
-\]
-现在引入$d = 4 - \epsilon$展开，我们得到
-\begin{equation}
-    \begin{aligned}
-        \Pi^{\mu \nu} &= - \frac{8 p^2 \eta^{\mu \nu} e^2}{(4\pi)^2} \int_0^1 \dd{x} x(1-x) \left( 1 + \frac{\epsilon}{2} \ln(\frac{4 \pi \mu^2}{m^2 - x(1-x) p^2}) + \bigO(\epsilon^2) \right) \\
-        &\quad \quad \times \left( \frac{2}{\epsilon} - \gamma_E + \bigO(\epsilon) \right) \\
-        &= - \frac{p^2 \eta^{\mu \nu} e^2}{2 \pi^2} \int_0^1 \dd{x} x(1 - x) \left( \frac{2}{\epsilon} + \ln(\frac{\tilde{\mu}^2}{m^2 - x(1-x) p^2}) \right),
-    \end{aligned}
-    \label{eq:regularized-photon}
-\end{equation}
-其中我们定义
-\begin{equation}
-    \tilde{\mu}^2 = 4 \pi \ee^{-\gamma_E} \mu^2.
-\end{equation}
-\eqref{eq:regularized-photon}给出正规化之后的光子自能。可以看到的确存在发散，不过发散已经被提取出来了，它是$\epsilon$的一个一阶极点。
-
-\subsection{电子自能}
-
-电子和光子的相互作用存在相互作用这一事实意味着可以有“电子吸收它自己产生的光子”这样的过程，从而电子会带上“电磁质量”。
-这是在经典电动力学中也已经知道的一个现象，但是在经典电动力学中不足以处理自能导致的发散。
-
-我们现在在QED中处理电子自能。电子的正规自能中的一圈图是
-\begin{equation}
-    \begin{aligned}
-        - \ii \Sigma(\slashed{p}) &= \begin{gathered}
-            \begin{tikzpicture}
-                \begin{feynhand}
-                    \vertex (a) at (-1.5, 0);
-                    \vertex (b) at (-0.5, 0);
-                    \vertex (c) at (0.5, 0);
-                    \vertex (d) at (1.5, 0);
-                    \propag[fermion] (a) to[edge label={$p$}] (b);
-                    \propag[fermion] (b) to[edge label'={$k$}] (c);
-                    \propag[fermion] (c) to[edge label={$p$}] (d);
-                    \propag[photon, mom={$p - k$}] (b) to[half left, looseness=1.5] (c); 
-                \end{feynhand}
-            \end{tikzpicture}
-        \end{gathered} \\
-        &= \int \frac{\dd[4]{k}}{(2\pi)^4} (-\ii e \gamma^\mu) \frac{\ii}{\slashed{k} - m + \ii 0^+} (-\ii e \gamma^\nu) \frac{- \ii \eta_{\mu \nu}}{(p-k)^2 + \ii 0^+} \\
-        &= - e^2 \int \frac{\dd[4]{k}}{(2\pi)^4} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
-    \end{aligned}
-\end{equation}
-图中所有的动量都不必在壳。
-
-仿照先前做光子自能计算时的步骤，首先做维数正规化，并引入因子$\mu$，得到
-\begin{equation}
-    \Sigma(\slashed{p}) = - \ii \mu^{4-d}  e^2 \int \frac{\dd[d]{k}}{(2\pi)^d} \gamma^\mu \frac{\slashed{k} + m}{k^2 - m^2 + \ii 0^+} \gamma_\mu \frac{1}{(p-k)^2 + \ii 0^+}.
-\end{equation}
-首先处理分子，根据$\gamma$矩阵的代数公式得到
-\[
-    \gamma^\mu (\slashed{k} + m) \gamma_\mu = md - (d-2) \slashed{k}.
-\]
-对分母，做费曼参数化，得到
-\[
-    \begin{aligned}
-        \frac{1}{(k^2 - m^2)(p - k)^2} &= \int_0^1 \dd{x} \frac{1}{(x (p-k)^2 + (1-x) (k^2 - m^2))^2} \\
-        &= \int_0^1 \dd{x} \frac{1}{(k^2 - 2 x p \cdot k + x p^2 + (x-1) m^2)^2}.
-    \end{aligned}
-\]
-容易观察出正确的配方方式是做变量替换
-\[
-    k \longrightarrow k + xp,
-\]
-此时分母变成$(k^2 - \Delta)^2$，其中
-\[
-    \Delta = (1 - x)(m^2 - p^2 x),
-\]
-而分子成为
-\[
-    md - (d-2)(\slashed{k} + x \slashed{p}).
-\]
-此时分母是$k$的偶函数，从而分子中是$k$的奇函数的项积分之后都是零，可以略去，因此最终得到
-\begin{equation}
-    \begin{aligned}
-        \Sigma(\slashed{p}) &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} \int \frac{\dd[d]{k}}{(2\pi)^d} \frac{md - x (d-2) \slashed{p}}{(k^2 - \Delta)^2} \\
-        &= - \ii \mu^{4-d} e^2 \int_0^1 \dd{x} (md - x (d-2) \slashed{p}) \frac{\ii}{(4\pi)^{d/2}} \Gamma\left(2 - \frac{d}{2} \right) \left(\frac{1}{\Delta}\right)^{2-\frac{d}{2}}. 
-    \end{aligned}
-\end{equation}
-做$d = 4 - \epsilon$展开，得到
-
 
 \subsection{红外发散}
 
