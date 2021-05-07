@@ -155,7 +155,9 @@
 
 \subsection{自由电子气}
 
-现在我们讨论最为简单的电子气，也就是$V(\vb*{r})$在物体内部为常数（可以看成零）的情况。此时可以将价电子一个个分开处理，既然它们之间没有相互作用。
+现在我们讨论最为简单的近独立电子气，也就是$V(\vb*{r})$在物体内部为常数（可以看成零）的情况。
+
+\subsubsection{能谱}
 
 我们在坐标表象下处理问题。计算单个电子的波函数：
 \[
@@ -181,23 +183,38 @@
 % 真的是这个名字吗？这些波函数称为\concept{布洛赫波函数}。
 $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大，具体取什么样的边界条件对物体内部的过程毫无影响。
 
-自由电子气的费米面是球状的（即\concept{费米球}）。对三维系统，态密度为
+\subsubsection{零温状态}
+
+自由电子气的费米面是球状的（即\concept{费米球}）。对三维系统，动量空间中大小为$\dd[3]{\vb*{k}}$的区域内的状态数为
+\begin{equation}
+    \dd{N} = 2 \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}},
+\end{equation}
+因子$2$是因为电子有两个自旋。积掉无用的动量分布角自由度就得到
+\begin{equation}
+    \dd{N} = \frac{V k^2 \dd{k}}{\pi^2}.
+\end{equation}
+在本问题中，使用“相空间仍然由动量和坐标确定，只不过被划分为相格”的假设也可以推导出正确的$\dd{N}$：我们有
 \[
     \dd{N} = 2 \frac{\dd[3]{\vb*{r}} \dd[3]{\vb*{k}}}{(2\pi)^3},
 \]
-因子$2$是因为电子有两个自旋。积掉无用的坐标自由度和动量角自由度之后得到
+而积掉无用的坐标自由度和动量角自由度之后得到
 \[
     \dd{N} = \frac{V k^2 \dd{k}}{\pi^2}.
 \]
-由于
+
+我们根据能谱计算态密度。由于
 \[
     \epsilon = \frac{k^2}{2m},
 \]
 可以推导出
 \[
-    \dd{N} = \frac{V (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon}}{2 \pi^2}.
+    \dd{N} = \frac{V (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon}}{2 \pi^2},
 \]
-这样就可以计算出总粒子数和费米能（即零温化学势）之间的关系：
+即单位能量间隔中的态有
+\begin{equation}
+    D(\epsilon) = \frac{V (2m)^{3/2} \sqrt{\epsilon} }{2 \pi^2}
+\end{equation}
+这么多。这样就可以计算出总粒子数和费米能（即零温化学势）之间的关系：
 \begin{equation}
     N = \int_{\epsilon=0}^{\epsilon_{\text{F}}} \dd{N} = \frac{V (2m)^{3/2}}{3 \pi^2} \epsilon_\text{F}^{3/2},
 \end{equation}
@@ -207,6 +224,9 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \end{equation}
 对二维或者一维的自由电子气也可以使用类似的方法得到系数不同的结论。
 
+\subsubsection{热力学性质}
+
+我们现在计算有限温下自由电子气的一些最基本的性质。
 设$Q(\epsilon)$为$\epsilon$下方的所有状态数，即
 \begin{equation}
     Q(\epsilon) = \int_0^\epsilon \dd{\epsilon'} D(\epsilon'),
@@ -215,12 +235,68 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \[
     N = \int_0^\infty \dd{\epsilon} D(\epsilon) f(\epsilon) = \int_0^\infty \dd{\epsilon} Q(\epsilon) \left( - \pdv{f}{\epsilon} \right).
 \]
-因此在温度不太大时我们有
+我们有
+\[
+    - \pdv{f}{\epsilon} = \frac{\beta}{(\ee^{\beta (\epsilon - \mu)} + 1) (\ee^{- \beta (\epsilon - \mu)} + 1)},
+\]
+它在温度不高时是$\epsilon = \mu$附近的一个尖峰，并且相对于$\epsilon - \mu$是偶函数，从而可以当成一个经过某些修正的$\delta$函数。
+这样，我们可以将$N$中的积分下限拓展到$-\infty$而对结果没有太大影响。这样我们有
+\[
+    \begin{aligned}
+        N &= \int_{-\infty}^\infty \dd{\epsilon} Q(\epsilon) \left(-\pdv{f}{\epsilon}\right) \\
+        &= \int_{-\infty}^\infty \dd{\epsilon} \left( Q(\mu) + Q'(\mu) (\epsilon - \mu) + \frac{1}{2} Q''(\mu) (\epsilon - \mu)^2 + \cdots \right) \left(-\pdv{f}{\epsilon}\right) .
+    \end{aligned}
+\]
+这其中，第二项一定是零，因为它关于$\epsilon - \mu$是奇函数。
+第一项就是
+\[
+    - \int_{-\infty}^\infty \dd{\epsilon} Q(\mu) \pdv{f}{\epsilon} = Q(\mu) (f(-\infty) - f(\infty)) = Q(\mu), 
+\]
+而第三项是
+\[
+    \begin{aligned}
+        &\quad \frac{1}{2} Q''(\mu) \int_{-\infty}^\infty \dd{\epsilon} (\epsilon - \mu)^2 \frac{\beta}{(\ee^{\beta (\epsilon - \mu)} + 1) (\ee^{- \beta (\epsilon - \mu)} + 1)} \\
+        &= \frac{1}{2 \beta^2} Q''(\mu) \int_{-\infty}^\infty \dd{\xi} \frac{\xi^2}{(\ee^{-\xi} + 1) (\ee^{\xi} + 1)} \\
+        &= \frac{\pi^2}{6} Q''(\mu) T^2.
+    \end{aligned}
+\]
+因此在$T^2$精度下我们有
 \begin{equation}
-    \mu = \epsilon_\text{F} \left( 1 - \frac{\pi^2}{12} \left( \frac{T}{\epsilon_\text{F}} \right)^2 \right)
+    N = Q(\mu) + \frac{\pi^6}{6} Q''(\mu) T^2.
+\end{equation}
+我们现在尝试写出$\mu$的一个显式表达式。首先$Q(\mu)$和$N$其实是很接近的，可以做展开
+\[
+    \begin{aligned}
+        Q(\mu) - N &= Q(\epsilon_\text{F}) + Q'(\epsilon_\text{F}) (\mu - \epsilon_\text{F}) - N \\
+        &= D(\epsilon_\text{F}) (\mu - \epsilon_\text{F}),
+    \end{aligned}
+\]
+因此我们有
+\[
+    \mu - \epsilon_\text{F} \sim \frac{Q''(\mu)}{D(\epsilon_\text{F})} T^2.
+\]
+这又意味着展开式
+\[
+    \frac{\pi^6}{6} Q''(\mu) T^2 = \frac{\pi^6}{6} \left( Q''(\epsilon_\text{F}) + Q'''(\epsilon_\text{F}) (\epsilon_\text{F} - \mu) + \cdots \right) T^2
+\]
+中的第一项就达到了$T^2$的精度，从而如果我们只需要计算到$T^2$精度，只需要求解
+\[
+    D(\epsilon_\text{F}) (\mu - \epsilon_\text{F}) + \frac{\pi^2}{6} Q''(\epsilon_\text{F}) T^2 = 0
+\]
+即可，最终计算得到
+\begin{equation}
+    \mu = \epsilon_\text{F} \left( 1 - \frac{\pi^2}{12} \left( \frac{T}{\epsilon_\text{F}} \right)^2 + \cdots \right).
 \end{equation}
 
-对三维自由电子气
+类似地计算热容，电子贡献的内能为
+\[
+    U = \int_0^\infty \dd{\epsilon} \epsilon f(\epsilon) D(\epsilon),
+\]
+类似地引入
+\[
+    R(\epsilon) = \int_0^\infty \dd{\epsilon} \epsilon D(\epsilon),
+\]
+做分部积分，泰勒展开，
 \begin{equation}
     C_V = \frac{n \pi^2}{2} \frac{T}{T_\text{F}},
 \end{equation}
@@ -703,11 +779,12 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 
 实际的原子内部的洪特规则应该就是在这里能够拿到
 
-\subsection{能带和对称性}
-
-% TODO：能带和群表示
-
 \subsection{能带理论何时失效？}
 
 简而言之：态密度反比于群速度，从而能带越窄，态密度越大，
 平带是最容易出强关联系统的。
+
+
+\subsection{能带和对称性}
+
+% TODO：能带和群表示
