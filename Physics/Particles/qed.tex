@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{mathtools}
 \usepackage{slashed}
 \usepackage{centernot}
 \usepackage{tikz}
@@ -895,7 +896,8 @@ $N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，�
 
 \subsubsection{真空极化}
 
-真空极化实际上就是光子自能。对称性分析表明光子自能的表达式一定是某个关于光子动能$p$的标量乘以某个正比于$p$的二次项的二阶张量。
+极化指的是介质中光子的传播偏离经典电动力学中真空的情况，在QED中真空极化实际上就是光子自能，是光子传播子的圈图修正。
+对称性分析表明光子自能的表达式一定是某个关于光子动能$p$的标量乘以某个正比于$p$的二次项的二阶张量。
 关于$p$的标量当然一定是$p^2$的函数，而用$p$能够构造出来的二阶张量无非是$p^\mu p^\nu$和$p^2 \eta^{\mu \nu}$，因此光子自能的一般形式是
 \begin{equation}
     \Pi^{\mu \nu}(p) = \Delta_1(p^2, m^2) p^2 \eta^{\mu \nu} + \Delta_2(p^2, m^2) p^\mu p^\nu.
@@ -1141,21 +1143,195 @@ $N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，�
 \]
 即
 \begin{equation}
-    \Gamma^\mu(p^2) = \gamma^\mu \left( 1 + \frac{e^2}{8\pi^2 \epsilon} \right) + \text{finite}.
+    \Gamma^\mu(p^2) = \gamma^\mu \left( 1 + \frac{e^2}{8\pi^2 \epsilon} \right) + \text{finite} = \gamma^\mu + \gamma^\mu \frac{\alpha}{2\pi \epsilon} + \text{finite}.
+    \label{eq:vertex-one-loop-divergence}
 \end{equation}
 
 \subsection{重整化方案}
 
-QED中可以有三个抵消项，它们是
+\subsubsection{抵消项}
+
+到目前为止，我们发现树图中需要修正的组件——电子传播子，光子传播子，相互作用顶角——的圈图修正均存在发散，并且已经通过维数正规化提取出了这些发散。
+然后就需要通过引入抵消项来消除这些发散。
+
+本节采用一种比较简单的做法。我们要计算散射振幅，而LSZ约化公式为
 \begin{equation}
-    \var{\mathcal{L}} = 
+    \braket*{p_1, p_2, \ldots, p_m}{k_1, k_2, \ldots, k_n} \stackrel{p_i^0 \to \omega_{\vb*{p}_i}, \; k_j^0 \to \omega_{\vb*{k}_j}}{\sim} (\sqrt{Z})^{m+n} \times \text{amputated diagrams}.
+    \label{eq:lsz-formula-copied}
 \end{equation}
+其中
+\begin{equation}
+    Z = \abs{\mel*{\Omega}{\phi(0)}{p=0}}^2.
+\end{equation}
+\eqref{eq:lsz-formula-copied}右边的amputated diagram是使用裸的场和（会发散的）裸的参数计算出来的，左边则是关于（有限的）物理参数的散射振幅，它就是重整化后的场的关联函数扣除了入射、出射线的传播子得到的结果。
+右边的$Z$因子将右边的场强重整化前的场和左边的场强重整化后的场联系起来。
+将\eqref{eq:lsz-formula-copied}右边的$Z$因子和amputated diagram合并起来，就相当于在计算外线是重整化后的场，但是费曼规则还是裸的的amputated diagram。
+
+下面我们将拉氏量中的所有裸的东西都加上下标0，即将拉氏量写成
+\begin{equation}
+    \mathcal{L} = - \frac{1}{4} (F_0^{\mu \nu})^2 + \bar{\psi}_0 (\ii \gamma_\mu \partial^\mu - m_0) \psi_0  - e_0 A^\mu_0 \bar{\psi}_0 \gamma_\mu \psi_0 \eqqcolon \mathcal{L}_\text{bare}.
+\end{equation}
+我们用下标R表示重整化之后的量，为了和\eqref{eq:lsz-formula-copied}保持一致，我们设
+\begin{equation}
+    \psi_0 = \sqrt{Z_2} \psi_\text{R}, \quad A^\mu_0 = \sqrt{Z_3} A^\mu_\text{R}, \quad m_0 = Z_m m_\text{R}, \quad e_0 = Z_e e_\text{R}, 
+\end{equation}
+这样裸拉氏量就是
+\begin{equation}
+    \begin{aligned}
+        \mathcal{L}_\text{bare} &= - \frac{1}{4} Z_3 (F_\text{R}^{\mu \nu})^2 + Z_2 \bar{\psi}_\text{R} (\ii \gamma_\mu \partial^\mu - Z_m m_\text{R}) \psi_\text{R}  - \sqrt{Z_3} Z_e Z_2 e_\text{R} A^\mu_\text{R} \bar{\psi}_\text{R} \gamma_\mu \psi_\text{R} \\
+        &= - \frac{1}{4} Z_3 (F_\text{R}^{\mu \nu})^2 + Z_2 \bar{\psi}_\text{R} (\ii \gamma_\mu \partial^\mu - Z_m m_\text{R}) \psi_\text{R}  - Z_1 e_\text{R} A^\mu_\text{R} \bar{\psi}_\text{R} \gamma_\mu \psi_\text{R},
+    \end{aligned}
+    \label{eq:renormalized-qed-lagrangian}
+\end{equation}
+其中我们定义
+\begin{equation}
+    Z_1 = \sqrt{Z_3} Z_e Z_2 .
+\end{equation}
+我们把\eqref{eq:renormalized-qed-lagrangian}分离成物理部分$\mathcal{L}_\text{phys}$和抵消项$\var{\mathcal{L}}$，就有
+\begin{equation}
+    \begin{aligned}
+        \mathcal{L} &= \underbrace{- \frac{1}{4} (F_\text{R}^{\mu \nu})^2 + \bar{\psi}_\text{R} (\ii \gamma_\mu \partial^\mu - m_\text{R}) \psi_\text{R}  - e_\text{R} A^\mu_\text{R} \bar{\psi}_\text{R} \gamma_\mu \psi_\text{R}}_{\mathcal{L}_\text{phys}} \\
+        & - \underbrace{\frac{1}{4} \var{Z_3} (F_\text{R}^{\mu \nu})^2 + \var{Z_2} \bar{\psi}_\text{R} \ii \gamma_\mu \partial^\mu - (\var{Z}_2 + \var{Z}_m) m_\text{R} \bar{\psi}_\text{R} \psi_\text{R}  - \var{Z_1} e_\text{R} A^\mu_\text{R} \bar{\psi}_\text{R} \gamma_\mu \psi_\text{R}}_{\var{\mathcal{L}}},
+    \end{aligned}
+    \label{eq:separated-qed-lagrangian}
+\end{equation}
+其中
+\begin{equation}
+    Z_1 = 1 + \var{Z_1}, \quad Z_2 = 1 + \var{Z_2}, \quad Z_3 = 1 + \var{Z_3}.
+\end{equation}
+严格来说按照\eqref{eq:separated-qed-lagrangian}，应该有
+\begin{equation}
+    \var{Z_m} = Z_2 (Z_m - 1),
+\end{equation}
+但是在本节讨论的一圈图的重整化中$\var{Z_i}$和$\var{Z_m}$都被用于消去\eqref{eq:photon-one-loop-divergence}，\eqref{eq:electron-one-loop-divergence}和\eqref{eq:vertex-one-loop-divergence}这三个发散，而它们都正比于$e^2$，从而可以认为
+\begin{equation}
+    \var{Z_m} = Z_m - 1.
+\end{equation}
+
+我们计算\eqref{eq:photon-one-loop-divergence}，\eqref{eq:electron-one-loop-divergence}和\eqref{eq:vertex-one-loop-divergence}这三个发散时可以认为是在使用裸的拉氏量$\mathcal{L}_\text{bare}$，也可以认为是在使用物理的拉氏量$\mathcal{L}_\text{phys}$，既然这两个拉氏量的形式完全相同。
+本文采取的方法是，认为\eqref{eq:photon-one-loop-divergence}，\eqref{eq:electron-one-loop-divergence}和\eqref{eq:vertex-one-loop-divergence}这三个发散是在$\mathcal{L}_\text{phys}$下计算的。
+在\eqref{eq:separated-qed-lagrangian}中，$\mathcal{L}_\text{phys}$是关于物理参数的，但是会产生发散，而$\var{\mathcal{L}}$对应着裸的拉氏量中无法观测到的发散部分，正好能够消去用$\mathcal{L}_\text{phys}$计算的图的发散。
+
+切换到动量空间下，抵消项给出了三个可以用来抵消发散的相互作用顶角：
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex[crossdot] (b) at (0, 0) {};
+                \vertex (c) at (1, 0);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \ii (\slashed{p} \var{Z_2} - (\var{Z_2} + \var{Z_m}) m_\text{R}),
+\end{equation}
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex[crossdot] (b) at (0, 0) {};
+                \vertex (c) at (1, 0);
+                \propag[photon] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = - \ii \var{Z_3} (p^2 \eta^{\mu \nu} - p^\mu p^\nu),
+\end{equation}
+或者拉氏量做了Faddeev–Popov量子化，那么费曼规范$\frac{1}{2} (\partial_\mu A_\mu)^2$也会有一个$Z_3$因子，从而会消掉上式中第二项，给出
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex[crossdot] (b) at (0, 0) {};
+                \vertex (c) at (1, 0);
+                \propag[photon] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = - \ii \var{Z_3} p^2 \eta^{\mu \nu} .
+\end{equation}
+还有一个顶角的抵消项
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-0.86, 0);
+                \vertex[crossdot] (b) at (0, 0.5) {};
+                \vertex (c) at (0.86, 0);
+                \vertex (d) at (0, 1.5);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (b) to (c);
+                \propag[photon] (b) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = - \ii \var{Z_1} e_\text{R} \gamma^\mu .
+\end{equation}
+
+不言而喻，物理参数必须要能够通过一个实验过程提取出来，即它必须要和某个散射振幅建立联系，即我们需要指定“什么样的过程给出物理参数”。
+物理参数的具体定义、减除方案、抵消项这三者知道了一个就知道了剩下两个。
+指定这三者中的其中一个就称为指定了一个\concept{重整化方案}。
+
+我们现在有四个抵消项。但是，后面我们将看到，由于Ward恒等式，实际上只有三个——而且也只需要三个。
 
 \subsubsection{最小减除和修正的最小减除}
 
-所谓\concept{最小减除}或者说\concept{MS}指的是通过适当调整抵消项，让所有的
+所谓\concept{最小减除}或者说\concept{MS}指的是通过适当调整抵消项，让\eqref{eq:photon-one-loop-divergence}，\eqref{eq:electron-one-loop-divergence}和\eqref{eq:vertex-one-loop-divergence}这三个发散中的$1/\epsilon$项全部被减除。
+此时考虑了抵消项的电子自能是
+\[
+    - \ii \Sigma = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0);
+                \vertex (b) at (-0.5, 0);
+                \vertex (c) at (0.5, 0);
+                \vertex (d) at (1.5, 0);
+                \propag[fermion] (a) to[edge label={$p$}] (b);
+                \propag[fermion] (b) to[edge label'={$k$}] (c);
+                \propag[fermion] (c) to[edge label={$p$}] (d);
+                \propag[photon, mom={$p - k$}] (b) to[half left, looseness=1.5] (c); 
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex[crossdot] (b) at (0, 0) {};
+                \vertex (c) at (1, 0);
+                \propag[fermion] (a) to[edge label={$p$}] (b);
+                \propag[fermion] (b) to[edge label={$p$}] (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} ,
+\]
+即
+\[
+    \Sigma = \frac{\alpha (4m_\text{R} - \slashed{p})}{2 \pi \epsilon} - (\slashed{p} \var{Z_2} - (\var{Z_2} + \var{Z_m}) m_\text{R}) + \text{finite},
+\]
+即
+\begin{equation}
+    \var{Z_2} = - \frac{\alpha}{2 \pi \epsilon}, \quad \var{Z_m} = - \frac{3\alpha}{2 \pi \epsilon}.
+\end{equation}
+光子自能的做法类似，可以得到
+\begin{equation}
+    \var{Z_3} = - \frac{2\alpha}{3\pi \epsilon}.
+\end{equation}
+而顶角函数的最小减除则要求
+\begin{equation}
+    \var{Z_1} = - \frac{\alpha}{2\pi \epsilon}.
+\end{equation}
+因此MS方案要求的剪除项可以归结为：
+\begin{equation}
+    \var{Z_1} = \var{Z_2} = - \frac{\alpha}{2\pi \epsilon} = - \frac{e_\text{R}^2}{8 \pi^2 \epsilon}, \quad \var{Z_3} = - \frac{e_\text{R}^2}{6 \pi^2 \epsilon}, \quad \var{Z_m} = - \frac{3 e_\text{R}^2}{8 \pi^2 \epsilon}.
+\end{equation}
+
+\concept{修正的最小减除}或者说
 
 \subsubsection{在壳重整化}
+
+\concept{在壳重整化}通过
 
 \subsection{重整化群}
 
