@@ -1175,6 +1175,11 @@ $N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，�
 \begin{equation}
     \psi_0 = \sqrt{Z_2} \psi_\text{R}, \quad A^\mu_0 = \sqrt{Z_3} A^\mu_\text{R}, \quad m_0 = Z_m m_\text{R}, \quad e_0 = Z_e e_\text{R}, 
 \end{equation}
+实际上我们应该设
+\begin{equation}
+    e_\text{R} = \mu^{\frac{4-d}{2}} \frac{e_0}{Z_e}
+\end{equation}
+以引入动量标度，但是我们在做重整化计算时暂时将$\mu$吸收进$e_\text{R}$，而在做重整化群计算时再把它拿出来。
 这样裸拉氏量就是
 \begin{equation}
     \begin{aligned}
@@ -1337,7 +1342,7 @@ $N^\mu$中的三项会让\eqref{eq:vertex-one-loop-integral}中出现三项，�
 \end{equation}
 从而
 \begin{equation}
-    \var{Z_e} = \frac{e_\text{R}^2}{12 \pi \epsilon}.
+    \var{Z_e} = \frac{e_\text{R}^2}{12 \pi^2 \epsilon}.
 \end{equation}
 
 \concept{修正的最小减除}或者说$\overline{\mathrm{MS}}$不仅减除$1/\epsilon$项，还将$\gamma_\text{E}$和$\ln 4\pi$项也减去，从而让所有的$\tilde{\mu}$都变成$\mu$。
@@ -1357,14 +1362,49 @@ $\mu$经常被选取为$0$，表示物理电荷是通过光子动量为零的过
 
 有多种方式可以用来确定物理参数随能量标度的变化方式。
 
-\subsubsection{通过抵消项计算重整化群流}
+\subsubsection{通过MS方案的抵消项计算重整化群流}
 
-% TODO：拉氏量中多出来的部分
+本节通过抵消项计算重整化群流，具体来说是对$\mu$求导。首先使用MS方案的抵消项。
+我们把之前消除发散时吸收进$e_\text{R}$的$\mu$再拿出来，即
 \begin{equation}
-    e_\text{R} = \frac{1}{Z_e} \mu^{\frac{4-d}{2}} e_0,
+    e_\text{R} = \frac{1}{Z_e} \mu^{\frac{4-d}{2}} e_0.
 \end{equation}
+我们要写出一个含有$e_\text{R}$和$\pdv*{e_\text{R}}{\mu}$的方程。裸参数和$\mu$是一点关系都没有的，即
 \[
-    0 = \mu \dv{e_0}{\mu} = \mu \dv{\mu} (Z_e \mu^{\epsilon / 2} e_\text{R}) = 
+    0 = \mu \dv{e_0}{\mu} = \mu \dv{\mu} (Z_e \mu^{\epsilon / 2} e_\text{R}) = \mu^{\epsilon/2} e_\text{R} Z_e \left( \frac{\epsilon}{2} + \frac{\mu}{e_\text{R}} \dv{e_\text{R}}{\mu} + \frac{\mu}{Z_e} \dv{Z_e}{\mu} \right),
 \]
+这其中的第一项最后会趋于零，第二项是我们需要的，于是可以拼凑出
+\[
+    \beta(e_\text{R}) = \mu \dv{e_\text{R}}{\mu} = - \frac{\epsilon}{2} e_\text{R} - \frac{e_\text{R}}{Z_e} \mu \dv{Z_e}{\mu},
+\]
+其中
+\[
+    \begin{aligned}
+        \frac{\mu}{Z_e} \dv{Z_e}{\mu} &= \frac{\mu}{1 + \frac{e_\text{R}^2}{12 \pi^2 \epsilon}} \frac{1}{12\pi^2 \epsilon} 2 e_\text{R} \dv{e_\text{R}}{\mu} \\
+        &= \left( 1 - \frac{e_\text{R}^2}{12 \pi^2 \epsilon} + \cdots \right) \frac{1}{12 \pi^2 \epsilon} 2 e_\text{R} \mu \dv{e_\text{R}}{\mu} \\
+        &= \left( 1 - \frac{e_\text{R}^2}{12 \pi^2 \epsilon} + \cdots \right) \frac{1}{12 \pi^2 \epsilon} 2 e_\text{R} \left( - \frac{\epsilon}{2} e_\text{R} - \frac{e_\text{R}}{Z_e} \mu \dv{Z_e}{\mu} \right) \\
+        &= - \frac{e_\text{R}^2}{12 \pi^2} + \bigO(e_\text{R}^4).
+    \end{aligned}
+\]
+因此我们就得到精确到$e_\text{R}^3$阶的$\beta$函数：
+\begin{equation}
+    \beta(e_\text{R}) = \mu \dv{e_\text{R}}{\mu} = - \frac{\epsilon}{2} e_\text{R} + \frac{e_\text{R}^3}{12 \pi^2} + \bigO(e_\text{R}^4).
+\end{equation}
+于是随着$\mu$上升，我们就有如下参数跑动：
+\[
+    C - \frac{1}{2 e_\text{R}^2} = \frac{\ln \mu}{12 \pi^2},
+\]
+或者，使用精细结构常数表示，有
+\begin{equation}
+    e_\text{R}(\mu) = - \frac{3 \pi}{2} \frac{1}{\ln \frac{\mu}{\Lambda_\text{QED}}},
+\end{equation}
+其中$\Lambda_\text{QED}$是一个能量标度。我们可以从中看到QED实际上不是一个紫外完备的理论：能标高到一定程度时，等效电荷将会发散。这个发散称为\concept{朗道极点}。
+
+在以上计算过程中可以看到几件事：首先，将原本吸收入$\mu_\text{R}$中的$\mu^\epsilon$恢复出来是非常重要的，我们用它消去了一个发散；其次，我们可以用$\mu$标记重整化群流，也可以用$e_\text{R}$标记重整化群流。
+实际上，我们可以用$\mu$标记各个参数的跑动，这在参数空间中绘制出一条轨迹，可以通过实验探测获得这条轨迹，从而精密测定QED的准确性。
+最后一个应当注意的地方是，实际上影响$e_\text{R}$的只有$Z_3$，因此使用真空极化的强度定义$e_\text{R}$其实也是可以的。
+% TODO
+
+我们下面计算质量的重整化群流。
 
 \end{document}
