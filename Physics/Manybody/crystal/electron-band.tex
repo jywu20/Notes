@@ -306,7 +306,7 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 
 金属热导率
 
-\subsection{周期势场和能带形成}
+\subsection{周期势场下的Bloch波函数和能带形成}
 
 本节给出自由电子放在周期势场中而形成能带这一事实的具体计算。
 
@@ -359,7 +359,8 @@ $\vb*{k}$是坐标系无关的真正的矢量。\eqref{eq:periodic-wavefunction}
 \begin{equation}
     \left( - \frac{(\grad+\vb*{k})^2}{2m_\text{e}} + V(\vb*{r}) \right) u_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} u_{n \vb*{k}}(\vb*{r}).
 \end{equation}
-显然，$n$是另一个（离散的）好量子数。一旦$\vb*{k}$和$n$给定，布洛赫波函数及其时间演化就完全求解出来了，从而$\vb*{k}$和$n$是坐标空间中的布洛赫波函数的全部好量子数。我们称取不同$n$值的电子处于不同的\concept{能带}上，$n$为能带标记。%
+显然，$n$是另一个（离散的）好量子数。通过数自由度我们可以看出$n$对应着什么：$\vb*{k}$对应着晶格，从而$n$对应着一个原胞中不同的原子以及每个原子周围的电子轨道。
+一旦$\vb*{k}$和$n$给定，布洛赫波函数及其时间演化就完全求解出来了，从而$\vb*{k}$和$n$是坐标空间中的布洛赫波函数的全部好量子数。我们称取不同$n$值的电子处于不同的\concept{能带}上，$n$为能带标记。%
 \footnote{注意到，能带的导出实际上并未用到太多晶体的性质（空间周期性等），因此非晶体很多时候也有能带。}%
 能带中的电子在空间上非常不定域，它们实际上是一系列格点上的定域态叠加而成的结果。也可以这么理解这一点：写出一个格点上的哈密顿量之后为了计算能带能量肯定要做对角化，对角化得到的本征向量肯定是把一系列格点上的定域态都线性组合起来了。
 总之，能带中的布洛赫电子常常称为\concept{巡游电子}。
@@ -538,10 +539,248 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 \end{equation}
 从这个势出发做计算能够得到正确的能谱。
 
+\subsection{紧束缚模型}
+
+\subsubsection{Wannier波函数}
+
+前面看到，我们使用了两个标签来标记一个电子模式：一个是“晶格动量”$\vb*{k}$，一个是能带编号。
+前者的可能取值的数量有多少？晶格动量加上一个倒格矢之后与之前等价，因此晶格动量的取值数目为
+\[
+    \frac{2\pi / V}{2\pi / V_\text{u.c.}} = N,
+\]
+$N$为晶胞数目。当然这就是第一布里渊区中的动量数目。
+一个晶格内可以有多种原子，但是这个信息已经被能带编号考虑在内了，因为电子“看到”原子种类的方式就是原子施加的势场，而周期势导致能带出现。
+任何一种非布洛赫波函数的电子波函数基底也应该有同样的数目，例如，它们可以用一个“坐标”和一个能带编号标记。
+
+本节讨论一种非常局域的电子基底。
+一些时候，电子被强烈地束缚在原子周围，以至于除此之外的所有轨道都无需讨论。这种电子状态称为\concept{Wannier波函数}。
+我们使用$i, j, \ldots$表示格点坐标，$m, n, \ldots$用于区分定域在$i$号晶胞附近的电子的电子云的形状（例如定域在某个格点附近的电子可以非常定域，也可以比较定域，有两种模式），$\vb*{r}_i$表示$i$处的格点的位矢，则定域在$i$号晶胞附近的Wannier电子的波函数可以用$w_{ni}(\vb*{r})$表示。
+$i$的取值个数也是$N$，因此我们可以猜测，$i$与布洛赫电子的晶格动量对应，而$n$与能带编号对应。
+
+定义在晶格格点上的函数以第一布里渊区为动量空间。
+\[
+    w_{ni}(\vb*{r}) \propto \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{- \ii \vb*{k} \cdot \vb*{r}_i},
+\]
+上式前面的归一化系数尚未选定。在归一化布洛赫波函数时我们使用了积分测度
+\[
+    \frac{1}{V} \int \dd[3]{\vb*{r}},
+\]
+从而导致归一化条件中出现了关于整块晶体的参数$V$。对布洛赫波函数这是合理的，因为它的好量子数是动量，因此是非常不定域的波函数，但Wannier波函数使用格点坐标标记，因此是非常定域的波包，因此我们希望Wannier波函数的归一化因子应该是一个常数而不包含任何关于系统大小的信息。
+容易计算出
+\[
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \frac{1}{N} \left( \sum_{\vb*{k}} \psi^*_{n\vb*{k}}(\vb*{r}) \ee^{\ii \vb*{k} \cdot \vb*{r}_i} \right) \left( \sum_{\vb*{k}} \psi_{m\vb*{k}}(\vb*{r}) \ee^{- \ii \vb*{k} \cdot \vb*{r}_j} \right) = \delta_{mn} \delta_{ij},
+\]
+取
+\begin{equation}
+    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{-\ii \vb*{k} \cdot \vb*{r}_i}, \quad \psi_{n\vb*{k}} = \sum_{\vb*{r}_i} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} w_{ni}(\vb*{r}),
+\end{equation}
+这样归一化条件就是
+\begin{equation}
+    \frac{1}{V_\text{u.c.}} \int \dd[3]{\vb*{r}} \abs{w_{ni}(\vb*{r})}^2 = 1.
+\end{equation}
+归一化常数是一个局域的晶胞体积，符合我们的要求。
+
+现在来分析Wannier波函数在实空间中的具体形状。考虑到$u_{n\vb*{k}}$的周期性，我们有
+\[
+    u_{n\vb*{k}} (\vb*{r}) = u_{n\vb*{k}} (\vb*{r} - \vb*{r}_i),
+\]
+于是
+\begin{equation}
+    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} u_{n\vb*{k}} (\vb*{r} - \vb*{r}_i) \ee^{\ii \vb*{k} (\vb*{r} - \vb*{r}_i)},
+\end{equation}
+这表明Wannier波函数实际上是$\vb*{r} - \vb*{r}_i$的函数，可以写成
+\begin{equation}
+    w_{ni}(\vb*{r}) = w_{n}(\vb*{r} - \vb*{r}_i),
+\end{equation}
+这当然是正确的，因为晶格中绝对位置$\vb*{r}$并无意义。
+在$\vb*{r}$远离$\vb*{r}_i$时，指数因子快速振荡，导致整个求和基本上为零，因此Wannier函数只在$\vb*{r}_i$附加有较明显的值，因此它定域在格点$\vb*{r}_i$附近。
+
+同样，Wannier波函数既然是一组正交归一化基底，就可以定义对应的二次量子化算符，即
+\begin{equation}
+    {c}^\dagger_{ni} = \frac{1}{\sqrt{V_\text{u.c.}}} \int \dd[3]{\vb*{r}} w_{ni}^*(\vb*{r}) {\psi}^\dagger(\vb*{r}).
+\end{equation}
+
+总之，晶格中的电子的波函数可以以高度定域在格点附近的一组波函数为基底，并且以对应的格点为一个量子数。
+
+之前我们用\eqref{eq:bloch-band-hamiltonian}给出了布洛赫基下的能带理论哈密顿量。现在来看同样的理论在Wannier基下会呈现什么形式。
+设能带理论下单电子哈密顿量为${h}$，则可以做表象变换
+\[
+    {H} = \sum_{mi, nj} {c}^\dagger_{mi} \mel{mi}{{h}}{nj} {c}_{nj},
+\]
+其中我们令
+\begin{equation}
+    - t_{mi, nj} = \mel{mi}{{h}}{nj} = \frac{1}{V_\text{u.c.}} \int \dd[3]{\vb*{r}} w_m^*(\vb*{r} - \vb*{r}_i + \vb*{r}_j) {h} w_n(\vb*{r}),
+\end{equation}
+则
+\[
+    {H} = - \sum_{mi, nj} t_{mi, nj} {c}^\dagger_{mi} {c}_{nj}.
+\]
+记号$\{mi, nj\}$表示对一组顺序不限的$\{mi, nj\}$组合只求和一次，就得到
+\begin{equation}
+    {H} = - \sum_{\{mi, nj\}} (t_{mi, nj} {c}_{mi}^\dagger {c}_{nj} + \text{h.c.}).
+    \label{eq:hamiltonian-in-wannier}
+\end{equation}
+我们得到了一个非对角化的哈密顿量，这当然是正确的，因为系统显然应该在动量基——即布洛赫基——下对角化。
+但\eqref{eq:hamiltonian-in-wannier}提供了非常清晰的物理图像：电子会从一个格点跃迁到另一个格点。
+将电子的产生湮灭算符做傅里叶变换，立刻可以看出有能带产生。因此Wannier电子经过一个线性变换，也会变成能带电子。
+
+最后考虑一个极限情况。假定晶格的吸引作用是如此之强，以至于电子是高度定域的，这样只有最近邻的格点之间才会跃迁。
+进一步，考虑一个单能带的低能有效理论，就得到
+\begin{equation}
+    {H} = - \sum_{\pair{i, j}} (t_{ij} {c}^\dagger_i {c}_j + \text{h.c.}).
+\end{equation}
+这称为\concept{紧束缚模型}。如果满足平移不变性，就有
+\begin{equation}
+    {H} = - \sum_{\pair{i, j}} (t {c}^\dagger_i {c}_j + \text{h.c.}).
+\end{equation}
+
+本节只是从对称性的角度出发分析了哈密顿量的可能形式。哈密顿量的系数的具体计算需要专门的对电子能带结构的分析。
+
+\subsubsection{单能带系统}
+
+对单带模型，在Wannier表象下，库仑相互作用可以表示成如下矩阵元形式：
+\begin{equation}
+    \begin{aligned}
+        H_{i i' j' j} &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \braket{i}{\vb*{r}} \braket{i'}{\vb*{r}'} V(\vb*{r} - \vb*{r}') \braket{\vb*{r}'}{j'} \braket{\vb*{r}}{j} \\
+        &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} w_i^*(\vb*{r}) w_{i'}^*(\vb*{r}') V(\vb*{r} - \vb*{r}') w_{j'}^*(\vb*{r}') w_j^*(\vb*{r}),
+    \end{aligned}
+    \label{eq:wannier-basis-interaction}
+\end{equation}
+于是总的哈密顿量为
+\begin{equation}
+    H = \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} + \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma}.
+\end{equation}
+
+上面的哈密顿量是最为一般的，原则上可以描述一切晶体中的电子系统。
+例如，原则上，自由电子气可以通过引入非常远的跃迁矩阵元来实现。
+在我们假定电子真的只存在最近邻跃迁时，我们有
+\begin{equation}
+    \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} = \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma}.
+\end{equation}
+我们称满足这个条件的自由电子模型为\concept{紧束缚模型}。我们当然还可以引入次近邻跃迁等来修正紧束缚模型。
+
+如果只有最近邻或是次近邻的跃迁，那么我们就有一个非常直观的物理图像：似乎可以用“某个电子正在某个格点附近”来标记一个电子，即电子似乎被紧紧地束缚在晶格上，无法长距离移动，这就是“紧束缚”一词的来历。
+或者，也有可能电子并不是特别局域，但是原子间距很大，以至于在系统中电子通常具有的动能下，非常远距离的跃迁似乎无法一次完成。
+这就是说，紧束缚模型中，电子的动能不应该能够到达特别大，从而不应该有太大的能带带宽。
+
+与自由电子气模型或凝胶模型不同，紧束缚模型对相互作用是非常敏感的，不能保证加入（即使比较弱的）相互作用后，系统能够用费米液体理论描述，也不能保证能带论仍然有效。
+这是出于一个非常直观的原因：紧束缚模型的能带通常更窄，从而态密度更大，从而库伦散射更明显，从而也更加容易在相互作用加入之后变成强关联系统。
+或者，我们也可以如此理解紧束缚模型对相互作用的敏感性：由于电子动能不能取特别大的值，相比之下相互作用能量应该占据主导，从而系统具有强关联效应。
+
+总之，以下几个说法基本上是等价的：
+\begin{enumerate}
+    \item 系统可以用紧束缚模型或者考虑了次近邻、再次近邻的紧束缚模型加上一个相互作用项描述；
+    \item 系统中的电子跃迁能力不大；
+    \item 系统能带不宽；
+    \item 系统中电子动能有较低的上限。
+\end{enumerate}
+满足这些条件的模型通常对相互作用更加敏感，也更加容易出现强关联效应。
+这就导致了一个非常有趣的现象：一些数值计算方法，如DMRG，需要将所有自由度都定义在晶格上，从而，它们可以毫无困难地用于模拟很大一类强关联系统，但是却无法用于有效地模拟普通的费米液体系统。
+
+需要注意，并非所有强关联系统都出现在紧束缚模型中。费米液体系统加入了适当的相互作用之后也可以出现强关联效应，此时使用基于格点的计算方法就不能获得很好的效果了。
+
+原则上$U_{i i' j' j}$对很多不同的$i, i', j', j$组合都有非零值。物理上这是很好理解的，因为库伦相互作用可以将任意原子附近的两个电子散射到任意的其它地方，由于高度定域的电子动量不确定，这里无所谓动量守恒的约束。
+然而，由于只有原子间距很大时，紧束缚模型才成立，实际上，足够大的矩阵元的$i, i', j', j$中，$j$和$j'$不是最近邻，就是完全一样（即所谓on-site repulsion）。
+由于Wannier波函数高度定域，从\eqref{eq:wannier-basis-interaction}中可以看出，仅有的可能是$i=i'=j=j'$，或是$i=j \neq i'=j'$，或是$i=j' \neq i' = j$。
+于是就有
+\[
+    \begin{aligned}
+        &\quad \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma} \\
+        &= \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} 
+        + \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma}
+        + \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma},
+    \end{aligned}
+\]
+第一项为
+\[
+    \begin{aligned}
+        \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} &= 2 \sum_{i} V_{iiii} n_{i \uparrow} n_{i \downarrow} + \sum_{i} U_{iiii} n_i \\
+        &= \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \frac{1}{2} \sum_{i} U_{i} n_i,
+    \end{aligned}
+\]
+这里我们重新定义
+\begin{equation}
+    U_i = 2 V_{iiii}.
+\end{equation}
+第二项实际上是密度-密度相互作用，即为
+\[
+    \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma} = \sum_{\pair{i, j}} V_{ij} n_i n_j,
+\]
+其中我们重新定义了$V_{ij} = V_{ijji}$。使用公式
+\[
+    \vb*{\sigma}_{\alpha \beta} \cdot \vb*{\sigma}_{\alpha' \beta'} = 2 \delta_{\alpha \beta'} \delta_{\beta \alpha'} - \delta_{\alpha \beta} \delta_{\alpha' \beta'},
+\]
+可以验证
+\[
+    \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma} = - 2 \sum_{\pair{i, j}} V_{i j i j} \left( \vb*{S}_{i} \cdot \vb*{S}_j + \frac{1}{4} n_i n_j \right).
+\]
+我们把上式右边的第二项吸收进$V_{ij}$中，并且重新定义$2V_{ijij}=J_{ij}$，于是总的相互作用哈密顿量就是
+\[
+    \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j + \sum_{i} U_i n_i.
+\]
+由空间平移对称性，on-site repulsion肯定是均一的，这样我们可以将$\sum_i U_i n_i$丢进化学势中；而如果它不是均一的，就意味着系统实际上不具有完美的离散平移对称结构，即系统中存在无序，直观地看，就是散布的杂质对电子产生散射，这基本上是一个单体算符，于是我们就得到了紧束缚模型最一般的哈密顿量：
+\begin{equation}
+    H = - \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma} 
+    + \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} 
+    + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j 
+    - \mu \sum_i n_i + \sum_{i, j, \sigma, \sigma'} \epsilon_{ij\alpha \beta} c^\dagger_{i \alpha} c_{j \beta}.  
+\end{equation}
+这里的每一项都是有意义的，从左到右分别是：
+\begin{enumerate}
+    \item 动能项，衡量电子在格点之间跳跃的可能性；
+    \item on-site repulsion，仅考虑这个相互作用得到的模型是所谓\concept{Hubbard模型}；
+    \item 密度-密度相互作用项，可能导致系统中出现持续的、不能平息的电子密度涨落，即所谓电荷密度波；
+    \item 自旋-自旋相互作用项，可能导致出现自旋密度波，这一项意味着在有多个轨道的情况下，每个轨道上放置一个电子，且所有电子的自旋都平行时，系统能量最低，这就是所谓洪特规则；
+    \item 化学势，调节系统中电子个数；
+    \item 无序，可能来自杂质或是晶格的缺陷。
+\end{enumerate}
+
+\subsubsection{多能带的情况}
+
+以上的讨论集中在单能带模型中；多个能带的情况允许一些新的能带之间的相互作用通道。
+
+实际的原子内部的洪特规则应该就是在这里能够拿到
+
+\subsubsection{Wannier波函数和原子电子轨道}
+
+本节展示一个极端情况。我们假设原子周围的电子轨道是如此局域，以至于
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \varphi_i^*(\vb*{r}) \varphi_j(\vb*{r}) = \delta_{ij},
+\end{equation}
+则
+
+TODO：单带模型中轨道波函数就是Wannier波函数
+
+可以先假装轨道波函数真的是Wannier波函数，然后做杂化
+
+总之，在原子轨道波函数之间真的没有什么交叠的情况下，原子轨道波函数就是Wannier波函数。
+然而，在大多数情况下，原子轨道波函数还是比较不局域的，我们需要先从原子轨道波函数出发计算得到Bloch波函数，然后做傅里叶变换得到比原子轨道波函数更加局域的Wannier波函数。
+
+\subsection{$\vb*{k} \cdot \vb*{p}$模型和有效质量}
+
+设我们需要计算$\vb*{k}_0$附近电子的行为。定义
+\begin{equation}
+    \chi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}} ,
+\end{equation}
+能够验证正交性和完备性均成立，即$\chi_{n \vb*{k}}$构成晶体中电子的一组正交完备基底。
+
+\begin{equation}
+    H = \frac{\vb*{p}^2}{2m} + V(\vb*{r}) + \frac{\vb*{k}^2}{2m} + \frac{\vb*{k} \cdot \vb*{p}}{m},
+\end{equation}
+因此做微扰论能够得到
+
+\begin{equation}
+    \frac{1}{m_l} = \sum_m 
+\end{equation}
+
+能带越宽，有效质量越轻，能带越窄，有效质量越重。\concept{重费米子系统}指的是有效质量非常大的系统，从而这样的系统基本上是强关联系统。
+
+Luttinger模型：能带反转？
+
 \subsection{金属和朗道费米液体}
 
-金属中存在可以四处移动的巡游电子，这些电子之间存在库伦排斥，而又有晶格对电子施加周期势。
-先考虑周期势的影响，裸电子将会有能量修正而成为能带电子，自由能带电子组成费米气体，很容易处理。
+本节处理带有相互作用的系统。金属中存在可以四处移动的巡游电子，这些电子之间存在库伦排斥，而又有晶格对电子施加周期势。
+先考虑周期势的影响，裸电子将会有能量修正而成为能带电子，无相互作用的能带电子组成费米气体，很容易处理。
 库伦排斥和声子介导的吸引相互作用合并为电子-电子相互作用，非常难以处理——电子-电子相互作用可以导致各种奇特的现象，并且其量级通常与费米能的量级一致。
 然而，金属的行为在很多方面非常像费米气体，这意味着实际上描述金属的低能有效理论基本上就是一个费米气体加上一定的相互作用。
 \concept{朗道费米液体}是一个这样的低能有效理论，其基本假设为：
@@ -903,119 +1142,6 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 懒得写了，总之就是BCS相互作用和密度-密度相互作用是特别强的两种。
 
 % TODO：那Hubbard模型？
-
-\subsection{紧束缚模型}
-
-\subsubsection{单能带系统}
-
-对单带模型，在Wannier表象下，库仑相互作用可以表示成如下矩阵元形式：
-\begin{equation}
-    \begin{aligned}
-        H_{i i' j' j} &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \braket{i}{\vb*{r}} \braket{i'}{\vb*{r}'} V(\vb*{r} - \vb*{r}') \braket{\vb*{r}'}{j'} \braket{\vb*{r}}{j} \\
-        &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} w_i^*(\vb*{r}) w_{i'}^*(\vb*{r}') V(\vb*{r} - \vb*{r}') w_{j'}^*(\vb*{r}') w_j^*(\vb*{r}),
-    \end{aligned}
-    \label{eq:wannier-basis-interaction}
-\end{equation}
-于是总的哈密顿量为
-\begin{equation}
-    H = \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} + \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma}.
-\end{equation}
-
-上面的哈密顿量是最为一般的，原则上可以描述一切晶体中的电子系统。
-例如，原则上，自由电子气可以通过引入非常远的跃迁矩阵元来实现。
-在我们假定电子真的只存在最近邻跃迁时，我们有
-\begin{equation}
-    \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{j \sigma} = \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma}.
-\end{equation}
-我们称满足这个条件的自由电子模型为\concept{紧束缚模型}。我们当然还可以引入次近邻跃迁等来修正紧束缚模型。
-
-如果只有最近邻或是次近邻的跃迁，那么我们就有一个非常直观的物理图像：似乎可以用“某个电子正在某个格点附近”来标记一个电子，即电子似乎被紧紧地束缚在晶格上，无法长距离移动，这就是“紧束缚”一词的来历。
-或者，也有可能电子并不是特别局域，但是原子间距很大，以至于在系统中电子通常具有的动能下，非常远距离的跃迁似乎无法一次完成。
-这就是说，紧束缚模型中，电子的动能不应该能够到达特别大，从而不应该有太大的能带带宽。
-
-与自由电子气模型或凝胶模型不同，紧束缚模型对相互作用是非常敏感的，不能保证加入（即使比较弱的）相互作用后，系统能够用费米液体理论描述，也不能保证能带论仍然有效。
-这是出于一个非常直观的原因：紧束缚模型的能带通常更窄，从而态密度更大，从而库伦散射更明显，从而也更加容易在相互作用加入之后变成强关联系统。
-或者，我们也可以如此理解紧束缚模型对相互作用的敏感性：由于电子动能不能取特别大的值，相比之下相互作用能量应该占据主导，从而系统具有强关联效应。
-
-总之，以下几个说法基本上是等价的：
-\begin{enumerate}
-    \item 系统可以用紧束缚模型或者考虑了次近邻、再次近邻的紧束缚模型加上一个相互作用项描述；
-    \item 系统中的电子跃迁能力不大；
-    \item 系统能带不宽；
-    \item 系统中电子动能有较低的上限。
-\end{enumerate}
-满足这些条件的模型通常对相互作用更加敏感，也更加容易出现强关联效应。
-这就导致了一个非常有趣的现象：一些数值计算方法，如DMRG，需要将所有自由度都定义在晶格上，从而，它们可以毫无困难地用于模拟很大一类强关联系统，但是却无法用于有效地模拟普通的费米液体系统。
-
-需要注意，并非所有强关联系统都出现在紧束缚模型中。费米液体系统加入了适当的相互作用之后也可以出现强关联效应，此时使用基于格点的计算方法就不能获得很好的效果了。
-
-原则上$U_{i i' j' j}$对很多不同的$i, i', j', j$组合都有非零值。物理上这是很好理解的，因为库伦相互作用可以将任意原子附近的两个电子散射到任意的其它地方，由于高度定域的电子动量不确定，这里无所谓动量守恒的约束。
-然而，由于只有原子间距很大时，紧束缚模型才成立，实际上，足够大的矩阵元的$i, i', j', j$中，$j$和$j'$不是最近邻，就是完全一样（即所谓on-site repulsion）。
-由于Wannier波函数高度定域，从\eqref{eq:wannier-basis-interaction}中可以看出，仅有的可能是$i=i'=j=j'$，或是$i=j \neq i'=j'$，或是$i=j' \neq i' = j$。
-于是就有
-\[
-    \begin{aligned}
-        &\quad \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma} \\
-        &= \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} 
-        + \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma}
-        + \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma},
-    \end{aligned}
-\]
-第一项为
-\[
-    \begin{aligned}
-        \sum_{i, \sigma, \sigma'} V_{iiii} c^\dagger_{i \sigma} c^\dagger_{i \sigma} c_{i \sigma} c_{i \sigma} &= 2 \sum_{i} V_{iiii} n_{i \uparrow} n_{i \downarrow} + \sum_{i} U_{iiii} n_i \\
-        &= \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \frac{1}{2} \sum_{i} U_{i} n_i,
-    \end{aligned}
-\]
-这里我们重新定义
-\begin{equation}
-    U_i = 2 V_{iiii}.
-\end{equation}
-第二项实际上是密度-密度相互作用，即为
-\[
-    \sum_{i, j, \sigma, \sigma'} V_{i j j i} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{j \sigma'} c_{i \sigma} = \sum_{\pair{i, j}} V_{ij} n_i n_j,
-\]
-其中我们重新定义了$V_{ij} = V_{ijji}$。使用公式
-\[
-    \vb*{\sigma}_{\alpha \beta} \cdot \vb*{\sigma}_{\alpha' \beta'} = 2 \delta_{\alpha \beta'} \delta_{\beta \alpha'} - \delta_{\alpha \beta} \delta_{\alpha' \beta'},
-\]
-可以验证
-\[
-    \sum_{i, j, \sigma, \sigma'} V_{i j i j} c^\dagger_{i \sigma} c^\dagger_{j \sigma'} c_{i \sigma'} c_{j \sigma} = - 2 \sum_{\pair{i, j}} V_{i j i j} \left( \vb*{S}_{i} \cdot \vb*{S}_j + \frac{1}{4} n_i n_j \right).
-\]
-我们把上式右边的第二项吸收进$V_{ij}$中，并且重新定义$2V_{ijij}=J_{ij}$，于是总的相互作用哈密顿量就是
-\[
-    \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j + \sum_{i} U_i n_i.
-\]
-由空间平移对称性，on-site repulsion肯定是均一的，这样我们可以将$\sum_i U_i n_i$丢进化学势中；而如果它不是均一的，就意味着系统实际上不具有完美的离散平移对称结构，即系统中存在无序，直观地看，就是散布的杂质对电子产生散射，这基本上是一个单体算符，于是我们就得到了紧束缚模型最一般的哈密顿量：
-\begin{equation}
-    H = - \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma} 
-    + \sum_{i} U_i n_{i \uparrow} n_{i \downarrow} 
-    + \sum_{\pair{i, j}} V_{ij} n_i n_j - \sum_{\pair{i, j}} J_{i j} \vb*{S}_{i} \cdot \vb*{S}_j 
-    - \mu \sum_i n_i + \sum_{i, j, \sigma, \sigma'} \epsilon_{ij\alpha \beta} c^\dagger_{i \alpha} c_{j \beta}.  
-\end{equation}
-这里的每一项都是有意义的，从左到右分别是：
-\begin{enumerate}
-    \item 动能项，衡量电子在格点之间跳跃的可能性；
-    \item on-site repulsion，仅考虑这个相互作用得到的模型是所谓\concept{Hubbard模型}；
-    \item 密度-密度相互作用项，可能导致系统中出现持续的、不能平息的电子密度涨落，即所谓电荷密度波；
-    \item 自旋-自旋相互作用项，可能导致出现自旋密度波，这一项意味着在有多个轨道的情况下，每个轨道上放置一个电子，且所有电子的自旋都平行时，系统能量最低，这就是所谓洪特规则；
-    \item 化学势，调节系统中电子个数；
-    \item 无序，可能来自杂质或是晶格的缺陷。
-\end{enumerate}
-
-\subsubsection{多能带的情况}
-
-以上的讨论集中在单能带模型中；多个能带的情况允许一些新的能带之间的相互作用通道。
-
-实际的原子内部的洪特规则应该就是在这里能够拿到
-
-\subsubsection{能带和原子电子轨道}
-
-
-总之，在原子轨道波函数之间真的没有什么交叠的情况下，原子轨道波函数就是Wannier波函数。
-然而，在大多数情况下，原子轨道波函数还是比较不局域的，我们需要先从原子轨道波函数出发计算得到Bloch波函数，然后做傅里叶变换得到比原子轨道波函数更加局域的Wannier波函数。
 
 \subsection{能带理论何时失效？}
 
