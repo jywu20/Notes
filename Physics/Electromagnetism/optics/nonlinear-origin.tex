@@ -341,7 +341,11 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 
 \subsection{自由电子气的输运项}
 
-此时的非线性效应来自$(\vb*{v} \cdot \grad) \vb*{v}$
+此时的非线性效应来自$(\vb*{v} \cdot \grad) \vb*{v}$。
+我们写下电荷的运动方程：
+\begin{equation}
+    \pdv{\vb*{v}}{t} + (\vb*{v} \cdot \grad) \vb*{v} = q \vb*{E},
+\end{equation}
 
 金属表面也能够产生二次谐波
 
@@ -360,6 +364,8 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 电子与光场通过电偶极跃迁耦合，在耦合哈密顿量中电场是线性的，从而，电子电偶极矩的$n$次方就对应一个$n$光子顶角。
 
 \subsection{纯态单电子系统的高阶微扰论}
+
+\subsubsection{电子状态的含时微扰论}
 
 本节考虑一个受到经典电磁场扰动的单电子系统。设系统一开始位于某个态$\ket*{g}$上，电磁场扰动会让它在各个瞬时的状态变得不确定起来。
 我们用$m, n$等标记电子能级，用$p, q$等标记光子模式，并做傅里叶分解
@@ -461,6 +467,8 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 在经典理论中是画不出以上三个过程的，原因是显然的：有多个输出线。
 我们此处用实线表示电子而不是电子的振动模式，从而，虽然电场和电子的耦合中电场是线性的，电子线却有两条。
 二次量子化之后电场和电子的耦合实际上形如$A_\mu \bar{\psi} \psi$，因此的确有两条电子线。
+
+\subsubsection{极化矢量}
 
 耦合项$- \vb*{d} \cdot \vb*{E}$会导致电子受到电场影响，自然也会导致电场被电子激发出来。
 本节讨论经典电磁场，从而不能真的用光子入射散射等概念计算等效光子-光子顶角。
@@ -584,8 +592,96 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 \end{itemize}
 为了区分外场和$\mel*{\psi}{\vb*{d}}{\psi}$，我们用直线表示前者而用波浪线代表后者，虽然在凝聚态场论中我们通常用带有$\otimes$的波浪线代表前者。
 
+\subsubsection{双侧费曼图和凝聚态场论中的费曼图}
+
 以上费曼图的规则看起来非常奇特，但是实际上可以将它理解为凝聚态场论中的图。
-它和一般的凝聚态场论的不同指出在于$\mel{\psi}{\vb*{d}}{\psi}$和通常意义上的格林函数是不同的：后者是做了编时乘积的，各个算符所在的时间从$-\infty$演化到$\infty$，而前者中，各个算符从右往左位于的时间先从$-\infty$演化到我们要计算的时间点，然后再演化回$-\infty$，这导致一个重要的结果：从我们要计算的时间点演化回$-\infty$时，由于做了时间反演变换，弛豫参量需要加上一个负号，因此如果我们将$-\infty$演化到我们要计算的时间点的算符序列画在左边的电子线上，而将从我们要计算的时间点演化到$-\infty$的算符序列画在右边的电子线上，那么右边的传播子中的弛豫参量要差一个负号。
+它和一般的凝聚态场论的不同之处在于，本节讨论的带有弛豫的模型破缺时间反演不变性，从而传播子的书写有一些需要注意的地方。
+大体上说我们是要计算
+\[
+    \expval*{{c}^\dagger_m(t) \vb*{\mu}_{mn} c_n(t) }, \quad \ket*{\Omega} = c^\dagger_g(-\infty) \ket*{0}.
+\]
+我们有两种做法，其中之一是直接计算$\mel*{0}{c_g(-\infty) {c}^\dagger_m(t) \vb*{\mu}_{mn} c_n(t) c^\dagger_g(-\infty)}{0}$，对应的费曼图形如
+\begin{equation}
+    \sum_{m, n} \vb*{\mu}_{mn} \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [grayblob] (o) at (0, 0) {};
+                \vertex (a) at (-1, 1) {$g, -\infty$};
+                \vertex (b) at (-1, -1) {$g, -\infty$};
+                \vertex (c) at (1, 1) {$m, t$};
+                \vertex (d) at (1, -1) {$n, t$};
+    
+                \propag[fermion] (a) to (o);
+                \propag[fermion] (o) to (b);
+                \propag[fermion] (o) to (c);
+                \propag[fermion] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered},
+    \label{eq:double-sided-feynman-diagram-in-condensed}
+\end{equation}
+如果电磁场也是量子化的，上图实际上就是
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex [grayblob] (o) at (0, 0) {};
+                \vertex (a) at (-1, 1) {$g, -\infty$};
+                \vertex (b) at (-1, -1) {$g, -\infty$};
+                \vertex (e) at (1.75, 0);
+                \vertex (f) at (2.75, 0);
+    
+                \propag[fermion] (a) to (o);
+                \propag[fermion] (o) to (b);
+                \propag[fermion] (o) to[out=45, in=135] (e);
+                \propag[fermion] (e) to[in=315, out=225] (o);
+                \propag[photon] (e) to (f);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}.
+\]
+在本节中我们无需计算上图最右边的产生光子的顶角，光子产生是在非线性麦克斯韦方程中通过极化矢量引入的。
+
+\eqref{eq:double-sided-feynman-diagram-in-condensed}中的$g$外线实际上是系统基态的一部分，因此我们不能将两个$g$外线连接起来，否则得到的实际上是真空气泡图。因此，我们只需要考虑下图
+\begin{equation}
+    \sum_{m, n} \vb*{\mu}_{mn} \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2, 1) {$g, -\infty$};
+                \vertex (b) at (-2, 0) {$g, -\infty$};
+                \vertex (c) at (2, 1) {$m, t$};
+                \vertex (d) at (2, 0) {$n, t$};
+                \vertex[grayblob] (o1) at (0, 1) {};
+                \vertex[grayblob] (o2) at (0, 0) {};
+                
+                \propag[fermion] (a) to (o1);
+                \propag[fermion] (o1) to (c);
+                \propag[fermion] (o2) to (b);
+                \propag[fermion] (d) to (o2);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}
+\end{equation}
+即可，其中圆圈内是一个或多个光子吸收或发射过程。由于本节的系统时间反演对称性破缺，因为存在弛豫项，图
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2, 1) {$g, -\infty$};
+                \vertex (c) at (2, 1) {$m, t$};
+                \vertex[grayblob] (o1) at (0, 1) {};
+                
+                \propag[fermion] (a) to (o1);
+                \propag[fermion] (o1) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}
+\]
+中的频域电子传播子是
+
+另一种理解方式是将系统看成一个多体系统，此时
+
+总之，$\mel{\psi}{\vb*{d}}{\psi}$和通常意义上的格林函数是不同的：后者是做了编时乘积的，各个算符所在的时间从$-\infty$演化到$\infty$，而前者中，各个算符从右往左位于的时间先从$-\infty$演化到我们要计算的时间点，然后再演化回$-\infty$，这导致一个重要的结果：从我们要计算的时间点演化回$-\infty$时，由于做了时间反演变换，弛豫参量需要加上一个负号，因此如果我们将$-\infty$演化到我们要计算的时间点的算符序列画在左边的电子线上，而将从我们要计算的时间点演化到$-\infty$的算符序列画在右边的电子线上，那么右边的传播子中的弛豫参量要差一个负号。
 从\eqref{eq:dipole-first-perturbation}，我们也将弛豫参量的负号理解为是$\bra{\psi}$相比于$\ket*{\psi}$取了复共轭而产生的。
 对弛豫参量的负号的两种理解是一致的，因为时间反演和复共轭紧密相关。
 基于以上考虑，把这些费曼图当成凝聚态场论的图理解，可以写出
@@ -650,8 +746,6 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 我们也可以将以上费曼图理解为关于密度矩阵的费曼图，在每个时间点，有\emph{两个}状态，分别对应密度矩阵的左矢和右矢，因此电子线包括左右两部分。
 我们将在\autoref{sec:electron-density-matrix}中显式地分析基于密度矩阵的计算。
 
-
-
 \subsection{密度矩阵}\label{sec:electron-density-matrix}
 
 \begin{equation}
@@ -660,6 +754,10 @@ $x$的量级具体有多大是不确定的，它包括没有外加电场时由$q
 \begin{equation}
     \rho^\text{eq}_{mn} = \rho^\text{eq}_{mm} \delta_{mn}.
 \end{equation}
+
+\subsection{空间相位}
+
+TODO：多个分子之间的间距如果恰到好处地让它们的辐射相位正好差了$\pi$，有可能在远处观察不到辐射
 
 \section{非线性极化的麦克斯韦方程}\label{sec:non-linear-maxwell}
 
