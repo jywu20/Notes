@@ -686,27 +686,82 @@ ${S}^+_\text{d}$和${S}^-_\text{d}$项分别表示$z$方向上的自旋角动量
     {H} = - t \sum_{\pair{i, j}} ({c}_i^\dagger {c}_j + \text{h.c.}) + \sum_i \epsilon_i {c}_i^\dagger {c}_i,
     \label{eq:tight-binding-with-disorder}
 \end{equation}
-其中$\epsilon_i$是一个随机变量。接下来考虑这样的特例：
+其中$\epsilon_i$是一个随机变量，它基本上就是一个在空间各点不一样的“化学势”，让一些地方比另一些地方更能够留住电子。
+接下来考虑这样的$\epsilon_i$的分布特例：
 \begin{equation}
-    \expval*{\epsilon_i} = 0, \quad \expval*{\epsilon_i^2} = W^2 \neq 0.
+    \overline{\epsilon_i} = 0, \quad \overline{\epsilon_i \epsilon_j} = \delta_{ij} W^2 , \quad W^2 \neq 0.
 \end{equation}
-这样，$W/t$就表征了无序的大小。在$W/t=0$时就得到一个普通的能带，而如果$W/t \gg 1$，即无序很强，则体系的哈密顿量近似为
+这样，$W/t$就表征了无序的大小。如果$\epsilon_i$的分布服从高斯分布，我们就有Wick定理成立。
+这里我们使用$\overline{\cdots}$表示对杂质的构型的平均，而用$\expval*{\cdots}$表示给定杂质的构型之后做量子力学的平均。
+
+在$W/t=0$时就得到一个普通的能带，而如果$W/t \gg 1$，即无序很强，则体系的哈密顿量近似为
 \[
     {H} = \sum_i \epsilon_i {c}_i^\dagger {c}_i,
 \]
 这个哈密顿量在以瓦尼尔波函数为基底的表象下是对角化的，这样电子倾向于固定在原地，即出现局域化。另一方面，完全没有随机扰动时，电子可以自由地移动，那么随着$W/t$的增大，一定发生了某些事情，让电子从高度非定域的状态转变为高度定域的状态。
 
-\eqref{eq:tight-binding-with-disorder}是自由理论，因此是严格可解的。通常我们会计算所谓的无序平均，即对每个可能的$\{\epsilon_i\}$构型，计算出某个物理量$O$（此处不是指可观察量算符，而是真的实行观测测得的量，如$\epsilon$给定后，某算符的期望值、方差，格林函数等），然后求出平均值$\expval*{O}$。
-对一个热力学系统，如果$O$是关于系统全局的，则$O$和无序平均$\expval*{O}$大概率是非常接近的，这是等概率原理的空间版本。
-例如如果我们要计算两点格林函数，就有
-\[
-    G^{-1}_{ij}(\omega) = \omega + t_{ij} - \epsilon_i \delta_{ij},
-\]
-做微扰展开（虽然是自由系统但微扰展开总是合法的），就有
-\[
-    G_{ij}(\omega) = \frac{1}{\omega + t_{ij}} + (- \epsilon_i \delta_{ij}) \frac{1}{\omega + t_{ij}} (- \epsilon_i \delta_{ij}) + \cdots,
-\]
+\subsubsection{格林函数的微扰计算}
+
+\eqref{eq:tight-binding-with-disorder}是自由理论，因此是严格可解的。通常我们会计算所谓的无序平均，即对每个可能的$\{\epsilon_i\}$构型，计算出某个物理量$O$（此处不是指可观察量算符，而是真的实行观测测得的量，如$\epsilon$给定后，某算符的期望值、方差，格林函数等），然后求出平均值$\overline{O}$。
+对一个热力学系统，如果$O$是关于系统全局的，则$O$和无序平均$\overline{O}$大概率是非常接近的，这是等概率原理的空间版本。
+
+我们要计算两点格林函数。显然
+\begin{equation}
+    G^{-1}_{ij}(\ii \omega_n) = \omega_n + t_{ij} - \epsilon_i \delta_{ij}.
+\end{equation}
+我们现在对$\epsilon_i$做微扰展开（虽然是自由系统但微扰展开总是合法的），就有
+\begin{equation}
+    \begin{aligned}
+        G_{ij}(\ii \omega_n) &= \frac{1}{\ii \omega_n + t_{ij}} + \frac{1}{\ii \omega_n + t_{ik}} (- \epsilon_k \delta_{kl}) \frac{1}{\ii \omega_n + t_{lj}} + \cdots \\
+        &= \frac{1}{\ii \omega_n - \hat{T}} + \frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}} + \cdots,
+    \end{aligned}
+    \label{eq:disorder-scattered-fermion-green}
+\end{equation}
+这里我们已经引入了动能算符$\hat{T}$和微扰$\hat{\epsilon}$。
+当然，这是非常直观的：电子和杂质散射了一次，两次，……
 用格林函数计算出各种可以观测的物理量，对$\{\epsilon_i\}$求平均即可。
+\eqref{eq:disorder-scattered-fermion-green}的第一项在杂质构型平均中保留，第二项消失，因为出现了奇数个$\hat{\epsilon}$，第三项保留，为
+\begin{equation}
+    \overline{\frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}}} = W^2 \frac{1}{\ii \omega_n - t_{ij}} \frac{1}{\ii \omega_n - t_{jj}} \frac{1}{\ii \omega_n - t_{jk} }.
+\end{equation}
+考虑更高阶项，会发现格林函数实际上可以通过费曼规则
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = 
+\end{equation}
+得到。直观地看，这是说电子运动路径如果经过它曾经经过的某一点，那么这个路径的权重就很大。
+我们也可以定义动量空间中的费曼规则。计算傅里叶变换，有
+\[
+    \begin{aligned}
+        G^{(2)}(\vb*{k}, \ii \omega_n) &= \sum_{i, j, l} G_{ij}^{0} G_{jj}^{0} G_{jl}^0 \ee^{- \ii \vb*{k} \cdot (\vb*{r}_i - \vb*{r}_l)} \\
+        &= \sum_{\vb*{k}'} G_{\vb*{k}}^0 G_{\vb*{k}'}^0 G_{\vb*{k}}^0,
+    \end{aligned}
+\]
+其结果是
+% TODO：费曼规则
+这是意料之中的，因为坐标空间中的费曼规则要求某两次散射发生在同一个地点，这个地点上的动量守恒条件实际上就是
+\[
+    \vb*{k} + \vb*{k}' = \vb*{k} + \vb*{k}'.
+\]
+
+将无穷多个图加在一起实际上给出的就是自能修正。“一圈图”（虽然实际上是树图，因为虚线不提供传播子，也就没有圈图积分）的自能修正是
+\begin{equation}
+    \overline{G(\vb*{k}, \ii \omega_n)} = \frac{1}{\ii \omega_n - \xi_{\vb*{k}} - \Sigma} , \quad \Sigma = W^2 \sum_{\vb*{k}'} \frac{1}{\ii \omega_n - \xi_{\vb*{k}'}} ,
+\end{equation}
+或者换成推迟格林函数中的自能，是
+\begin{equation}
+    \overline{G^\text{ret}(\vb*{k}, \omega)} = \frac{1}{\omega - \xi_{\vb*{k}} - \Sigma + \ii 0^+} , \quad \Sigma^\text{ret} = W^2 \sum_{\vb*{k}'} \frac{1}{\omega - \xi_{\vb*{k}'}  + \ii 0^+}.
+\end{equation}
+这个自能修正的实部是非常平凡的，除了平移了一下化学势以外什么也没有做，而其虚部
+\begin{equation}
+    \Im \Sigma^\text{ret} = - \pi W^2 \sum_{\vb*{k}'} \delta(\omega - \xi_{\vb*{k}'}) = - \pi W^2 N(0).
+\end{equation}
+则给出了电子的寿命，实际上最好说是电子的动量模式的寿命，即电子运动着运动着就被散射到别的动量模式上了。通过计算电子寿命可以得到体系的电阻。
 
 \subsubsection{弱局域化}
 
@@ -792,7 +847,7 @@ $d=3$时随着温度降低，电导降至零。
 \end{equation}
 实际的$\beta$函数应该在\eqref{eq:disorder-rg-large-g}和\eqref{eq:disorder-rg-small-g}之间。
 绘图可知，对$d=1, 2$的情况，$\beta$函数始终小于零，因此在$L$增大时$g$会衰减到零。换而言之，这两个情况下含有无序的固体只有一个地能有效理论，就是完全的局域化。
-三维系统的$\beta$函数有一个零点$g_\text{c}$，如果一开始$g < g_\text{c}$，那么$\beta$函数始终是负的，于是重整化之后$g=0$，得到一个绝缘体相；如果一开始$g > g_\text{c}$，那么$\beta$函数始终使正的，重整化之后得到一个导体相。
+三维系统的$\beta$函数有一个零点$g_\text{c}$，如果一开始$g < g_\text{c}$，那么$\beta$函数始终是负的，于是重整化之后$g=0$，得到一个绝缘体相；如果一开始$g > g_\text{c}$，那么$\beta$函数始终是正的，重整化之后得到一个导体相。
 换而言之$g_\text{c}$是一个相变点。
 
 对三维情况，在相变点附加将$\beta$函数线性化，有
