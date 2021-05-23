@@ -1,16 +1,21 @@
 \section{密度泛函理论计算方法}
 
 \autoref{sec:electron-band-structure}和\autoref{sec:phonon}分别分析了能带电子和声子这两种固体中最为常见的准粒子。
-本节讨论如何从最基本的原理——如库仑相互作用——出发，对它们的性质做数值计算。
-这样的计算出于显而易见的原因，称为\concept{第一性原理计算}。
-% TODO：强关联，DFT+U
+本节讨论一种常用的求解这些准粒子的方法：\concept{密度泛函理论（DFT）}。
+直接求解介质中的所有电子在库仑相互作用下的状态是极为困难的，但是我们将看到，原则上总是可以找到一个不依赖于具体系统的泛函，使得任何一个哈密顿量为\eqref{eq:electron-gas-hamiltonian}的系统的任何性质都可以通过最小化这个泛函得到。
+这样的计算原则上不需要引入任何经验参数，因此称为\concept{第一性原理计算}。
+虽然这么说，在实际的第一性原理计算中还是需要一些经验性的东西，如泛函的选取；并且，很多时候难以通过适当选取泛函来捕捉到一些特别近距离而强烈的相互作用（如Hubbard相互作用），从而需要使用所谓的DFT+$U$方法等。
 
-\subsection{Hohenberg-Kohn定理}
+\subsection{理论基础}
 
-\textbf{Hohenberg-Kohn第一定理}：基态非简并、动能项和相互作用势能项固定、外加势能项是只和位置有关的单粒子算符的哈密顿量\eqref{eq:bo-second-hamiltonian}的基态电子密度可以唯一确定哈密顿量，即基态电子密度和这类哈密顿量有一一对应的关系。
+\subsubsection{Hohenberg-Kohn定理}
+
+我们首先说明前述泛函的存在性。本节将通过两个定理，说明的确可以找到一个关于基态电子密度的泛函，使得我们只要最小化这个泛函即可原则上获得关于系统的所有性质。
+
+我们有\concept{Hohenberg-Kohn第一定理}：基态非简并、动能项和相互作用势能项固定、外加势能项是只和位置有关的单粒子算符的哈密顿量\eqref{eq:electron-gas-hamiltonian-sq}的基态电子密度可以唯一确定哈密顿量，即基态电子密度和这类哈密顿量有一一对应的关系。（或者，说得更加明确一些，基态电子密度和\eqref{eq:electron-gas-hamiltonian}中的$V(\vb*{r})$是一一对应的）
 其中，电子密度为
 \begin{equation}
-    \rho(\vb*{r}) = \mel{\psi}{{\psi}^\dagger(\vb*{r}) {\psi}(\vb*{r})}{\psi}.
+    \rho(\vb*{r}) = \mel{\Psi}{{\psi}^\dagger(\vb*{r}) {\psi}(\vb*{r})}{\Psi}.
 \end{equation}
 这个定理的证明如下。如果两个哈密顿量是相同的那么它们当然会给出一样的基态电子密度。
 而如果两个哈密顿量不相同却给出了一样的基态电子密度，设这两个哈密顿量是
@@ -21,33 +26,34 @@
 \[
     {H}_2 = {T} + {V}_\text{int} + {V}_2,
 \]
-且记每个粒子的外加势能分别是$V_1(\vb*{r})$和$V_2(\vb*{r})$，它们的基态分别是$\ket{\psi_1}$和$\ket{\psi_2}$，基态能量为$E_1$和$E_2$，则
+且记每个粒子的外加势能分别是$V_1(\vb*{r})$和$V_2(\vb*{r})$，它们的基态分别是$\ket{\Psi_1}$和$\ket{\Psi_2}$，基态能量为$E_1$和$E_2$，则
 \[
-    \mel{\psi_1}{{T} + {V}_1}{\psi_1} = E_1, \quad \mel{\psi_2}{{T} + {V}_2}{\psi_2} = E_2,
+    \mel{\Psi_1}{{T} + {V}_1}{\Psi_1} = E_1, \quad \mel{\Psi_2}{{T} + {V}_2}{\Psi_2} = E_2,
 \]
 且由基态唯一性有
 \[
-    \mel{\psi_2}{{T} + {V}_1}{\psi_2} > E_1, \quad \mel{\psi_1}{{T} + {V}_2}{\psi_1} > E_2,
+    \mel{\Psi_2}{{T} + {V}_1}{\Psi_2} > E_1, \quad \mel{\Psi_1}{{T} + {V}_2}{\Psi_1} > E_2,
 \]
 两式相减就得到
 \[
-    \mel{\psi_1}{{V}_2 - {V}_1}{\psi_1} > E_2 - E_1, \quad \mel{\psi_2}{{V}_1 - {V}_2}{\psi_2} > E_1 - E_2,
+    \mel{\Psi_1}{{V}_2 - {V}_1}{\Psi_1} > E_2 - E_1, \quad \mel{\Psi_2}{{V}_1 - {V}_2}{\Psi_2} > E_1 - E_2,
 \]
 而
 \[
-    \mel{\psi}{{V}}{\psi} = \int \dd[3]{\vb*{r}} \mel{\psi}{{\psi}^\dagger(\vb*{r}) V(\vb*{r}) {\psi}(\vb*{r})}{\psi} = \int \dd[3]{\vb*{r}} = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V(\vb*{r}),
+    \mel{\Psi}{{V}}{\Psi} = \int \dd[3]{\vb*{r}} \mel{\Psi}{{\psi}^\dagger(\vb*{r}) V(\vb*{r}) {\Psi}(\vb*{r})}{\psi} = \int \dd[3]{\vb*{r}} = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V(\vb*{r}),
 \]
 于是上式等价于
 \[
     \int \dd[3]{\vb*{r}} \rho_1(\vb*{r}) (V_2(\vb*{r}) - V_1(\vb*{r})) > E_2 - E_1, \quad \int \dd[3]{\vb*{r}} \rho_2(\vb*{r}) (V_1(\vb*{r}) - V_2(\vb*{r})) > E_1 - E_2.
 \]
 既然$\rho_1(\vb*{r}) = \rho_2(\vb*{r})$，以上两个不等式意味着$0 > 0$，而这当然是不正确的，因此如果基态电子密度一样，那么哈密顿量就不可能不同。
+这就证明了Hohenberg-Kohn第一定理。
 
-Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定一个\eqref{eq:bo-second-hamiltonian}型体系，因为\eqref{eq:bo-hamiltonian}中的动能项都是一样的。
+Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定一个\eqref{eq:electron-gas-hamiltonian-sq}型体系，因为\eqref{eq:electron-gas-hamiltonian}中的动能项都是一样的。
 因此这样一个体系的所有性质都可以写成基态电子密度的泛函。
-这个看起来不可思议的结论来自电子-原子核体系\eqref{eq:bo-hamiltonian}只是所有可能的体系中的很小一部分这一事实。
+这个看起来不可思议的结论来自电子-原子核体系\eqref{eq:electron-gas-hamiltonian}只是所有可能的体系中的很小一部分这一事实。
 
-实际上，还可以将Hohenberg-Kohn第一定理推广到可能具有简并基态的哈密顿量上。定义\textbf{Levy-Lieb泛函}：
+实际上，还可以将Hohenberg-Kohn第一定理推广到可能具有简并基态的哈密顿量上。定义\concept{Levy-Lieb泛函}：
 \begin{equation}
     \begin{aligned}
         E_\text{LL} [V_\text{ext}(\vb*{r}), \rho(\vb*{r})]  &= \underbrace{\min_{\rho[\psi]=\rho(\vb*{r})} \mel{\psi}{{T} + {V}_\text{int}}{\psi}}_{F_\text{LL}} + \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ext} (\vb*{r}) \\
@@ -70,74 +76,120 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \eval{\fdv{F_\text{LL}}{\rho(\vb*{r})}}_{\rho(\vb*{r}) = \rho_0(\vb*{r})} + V_\text{ext} = \lambda,
 \]
 而可以通过别的优化方程计算出$\lambda$，这样实际上我们已经写出了$V_\text{ext}$关于$\rho_0(\vb*{r})$的表达式（可以差一个常数），因此可以从$\rho_0(\vb*{r})$把$V_\text{ext}$恢复出来，也即所有$V_\text{ext}$和所有可能的基态电子密度是一一对应的。
-因此Hohenberg-Kohn第一定理对具有简并基态的\eqref{eq:bo-second-hamiltonian}型系统也使用。
+因此Hohenberg-Kohn第一定理对具有简并基态的\eqref{eq:electron-gas-hamiltonian-sq}型系统也使用。
 总之，求解出了基态电子密度，我们就获得了一个系统的所有信息，关于这个系统的所有物理量都可以通过基态电子密度的某个泛函计算出来。
-一旦有了以上结论，就得到\textbf{Hohenberg-Kohn第二定理}，也即，基态电子密度是固定了$V_\text{ext}$之后的Levy-Lieb泛函（此时称为\textbf{能量泛函}）的极小值，可以使用变分原理求出。
+
+一旦有了以上结论，就得到\concept{Hohenberg-Kohn第二定理}，也即，基态电子密度是固定了$V_\text{ext}$之后的Levy-Lieb泛函（此时称为\concept{能量泛函}）的极小值，可以使用变分原理求出。
 这个定理的证明只不过是把上面的论述倒过来使用而已：上面的论述表明给定$\rho_0(\vb*{r})$，通过泛函变分可以计算出$V_\text{ext}$，给定了$V_\text{ext}$通过泛函变分也可以计算出$\rho_0(\vb*{r})$，既然基态电子密度让能量泛函最小。
 实际上，记外加势能为$V(\vb*{r})$的能量泛函为$E[\cdots]$，用于求解基态电子密度的变分问题就是
 \begin{equation}
-    \var \left( E[\rho(\vb*{r})] - \mu \left( \int \dd[3]{\vb*{r}} \rho(\vb*{r}) - N \right) \right) = 0,
+    \var \left( E[\rho(\vb*{r})] - \mu \left( \int \dd[3]{\vb*{r}} \rho(\vb*{r}) - N \right) \right) = 0.
     \label{eq:dft-variation-principle}
 \end{equation}
-这里的$\mu$实际上就是化学势。TODO：为什么？
+这个$\mu$的形式看起来很眼熟，似乎就是化学势。实际上如果近独立电子近似成立，它真的就是零温化学势，即费米能。这一点我们在\autoref{sec:single-electron-in-dft}中可以看到。
 
-\subsection{Kohn-Sham方法}
+\subsubsection{Kohn-Sham方法}
 
 现在的问题是，给定一个$V_\text{ext}$，怎么写出$E[\rho]$？
 为了让我们能够写下一个明确的能量泛函，需要引入一些辅助手段。
 对一个给定的电子数密度$\rho(\vb*{r})$，构造一个乘积态
 \begin{equation}
-    \ket{\psi} = \prod_{i=1}^N {\psi}^\dagger_i \ket{0},
+    \ket{\Psi} = \prod_{i=1}^N {\psi}^\dagger_i \ket{0},
+    \label{eq:dft-state}
 \end{equation}
-使得这个乘积态对应的电子数密度就是$\rho(\vb*{r})$，且它正好是\eqref{eq:levy-lieb}中的让$F_\text{LL}$取最小值的那个$\ket{\psi}$。
+使得这个乘积态对应的电子数密度就是$\rho(\vb*{r})$，且它正好是\eqref{eq:levy-lieb}中的让$F_\text{LL}$取最小值的那个$\ket{\Psi}$，或者至少与之非常接近。
+如果我们最后需要计算的物理量和$\rho(\vb*{r})$之间的关系是足够平滑的，用拟设\eqref{eq:dft-state}就能够得到很好的结果。
+需注意$\ket{\psi}$是乘积态并不意味着密度泛函理论是一个单粒子理论，密度泛函理论并不断言$\ket{\psi}$是系统实际的状态，它只是用来辅助计算的一个数学技巧而已。
 这样，就有%
-\footnote{需注意$\ket{\psi}$是乘积态并不意味着密度泛函理论是一个单粒子理论，密度泛函理论并不断言$\ket{\psi}$是系统实际的状态，它只是用来辅助计算的一个数学技巧而已。}%
 \begin{equation}
-    E[\rho] = \mel{\psi}{{H}}{\psi} = \mel{\psi}{{T} + {V}_\text{ext} + {V}_\text{int}}{\psi}.
+    E[\rho] = \mel{\Psi}{{H}}{\psi} = \mel{\psi}{{T} + {V}_\text{ext} + {V}_\text{int}}{\Psi}.
 \end{equation}
 记${\psi}_i^\dagger$产生的单粒子波函数为$\phi(\vb*{r})$，则
 \begin{equation}
-    \rho(\vb*{r}) = \sum_i \abs{\phi_i(\vb*{r})}^2,
+    \rho(\vb*{r}) = \sum_{i=1}^N \abs{\phi_i(\vb*{r})}^2,
     \label{eq:kohn-sham-density}
 \end{equation}
-动能和外加势能都是单体算符，因此以$\ket{\psi}$为本征态之一。动能项应为
+或者，为了避免占据数突变造成计算上的困难，我们可以设
 \begin{equation}
-    T_s = \mel{\psi}{{T}}{\psi} = - \frac{1}{2m_\text{e}} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r}),
+    \rho(\vb*{r}) = \sum_i f_i \abs{\phi_i(\vb*{r})}^2,
 \end{equation}
+其中$f_i$通常就是费米分布函数，总之是一个在费米面以下基本上处处为$1$而在费米面以上（在这里就是$i > N$）基本上处处为$0$的函数。
+动能和外加势能都是单体算符，因此以$\ket{\Psi}$为本征态之一。动能项应为
+\begin{equation}
+    T_\text{s} = \mel{\Psi}{{T}}{\Psi} = - \frac{1}{2m} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r}),
+\end{equation}
+这里下标s表示这个动能项实际上是假定$\ket{\Psi}$是自由理论中的多粒子态而计算出来的；如果$\ket{\Psi}$实际上具有强关联效应，那么用它计算动能就会不对头。
+但是，$\ket{\Psi}$和系统实际的波函数也没有什么直接关系，$T_\text{s}$和真实的$\mel*{\Psi}{T}{\Psi}$有差别这件事不会有什么影响，因为反正它们的差最后会在$E_\text{XC}$中得到补偿。
 单粒子外加势能项为
 \begin{equation}
-    V = \mel{\psi}{{V}_\text{ext}}{\psi} = \sum_i \int \dd[3]{\vb*{r}} V_{\text{ext}}(\vb*{r}) \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ext}(\vb*{r}),
+    V = \mel{\Psi}{{V}_\text{ext}}{\Psi} = \sum_i \int \dd[3]{\vb*{r}} V_{\text{ext}}(\vb*{r}) \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ext}(\vb*{r}),
 \end{equation}
 而二体的库伦势却会带来很大麻烦。当然，如果采用托马斯-费米近似，即认为不同电子的电子云几乎没有交叠，则唯一剩下的一项就是
 \[
-    \mel{\psi}{{V}_\text{int}}{\psi} \approx V_H = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
+    \mel{\Psi}{{V}_\text{int}}{\Psi} \approx V_H = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
 \]
-但是正如我们在Hartree-Fock近似中看到的那样，在电子云存在交叠的情况下会有一个交换能，而且Hartree-Fock近似与真实能量还存在偏差（称为\textbf{关联能}，这种误差肯定会有因为Hartree-Fock近似是一个平均场理论）。既然$\mel{\psi}{{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
-因此实际工作中必须猜测一个\textbf{交换-关联能}$E_\text{XC}$，从而写出能量泛函
+但是正如我们在Hartree-Fock近似中看到的那样，在电子云存在交叠的情况下会有一个交换能，而且Hartree-Fock近似与真实能量还存在偏差（称为\concept{关联能}，这种误差肯定会有因为Hartree-Fock近似是一个平均场理论）。既然$\mel{\psi}{{V}_\text{int}}{\psi}$和上式都是$\rho(\vb*{r})$的泛函，交换能也应该是$\rho(\vb*{r})$的泛函，但我们根本写不出它的解析表达式。
+因此实际工作中必须猜测一个\concept{交换-关联能}$E_\text{XC}$，从而写出能量泛函
 \begin{equation}
     \begin{aligned}
-        E[\rho(\vb*{r})] &= T_s[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})] \\
-        &= - \frac{1}{2m_\text{e}} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r})
+        E[\rho(\vb*{r})] &= T_\text{s}[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})] \\
+        &= - \frac{1}{2m} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r})
         + \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ext}(\vb*{r}) \\
         &+ \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + E_\text{XC} [\rho(\vb*{r})].
     \end{aligned}
     \label{eq:kohn-sham-functional}
 \end{equation}
 将\eqref{eq:kohn-sham-functional}对$\phi_i^*(\vb*{r})$做优化，即求解
-\[
-    \var \left( E[\rho(\vb*{r})] - \epsilon_i \left( \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) \right) \right) = 0,
-\]
+\begin{equation}
+    \var \left( E[\rho(\vb*{r})] - \sum_i \epsilon_i \left( \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) - 1 \right) \right) = 0,
+    \label{eq:dft-variation-principle-shem}
+\end{equation}
 得到
 \begin{equation}
-    \left( - \frac{1}{2 m_\text{e}} \laplacian + \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + V_\text{ext}(\vb*{r}) + V_\text{XC}(\vb*{r}) \right) \phi_i(\vb*{r}) = \epsilon_i \phi_i(\vb*{r}),
+    \left( - \frac{1}{2 m} \laplacian + \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + V_\text{ext}(\vb*{r}) + V_\text{XC}(\vb*{r}) \right) \phi_i(\vb*{r}) = \epsilon_i \phi_i(\vb*{r}),
     \label{eq:kohn-sham-eq}
 \end{equation}
 其中
 \begin{equation}
     V_\text{XC}(\vb*{r}) \phi_i(\vb*{r}) = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\phi^*_i(\vb*{r})} = \fdv{E_\text{XC}[\rho(\vb*{r})]}{\rho(\vb*{r})} \phi_i(\vb*{r}).
 \end{equation}
-\eqref{eq:kohn-sham-eq}是一个有$N$个显含$\rho(\vb*{r})$的方程的方程组，称为\textbf{Kohn-Sham方程}。
+\eqref{eq:kohn-sham-eq}是一个有$N$个显含$\rho(\vb*{r})$的方程的方程组，称为\concept{Kohn-Sham方程}。
 它们与\eqref{eq:kohn-sham-density}联立就给出了所有的$\psi_i(\vb*{r})$，并立即可以求出$\rho(\vb*{r})$，从而完全解出了系统的一切性质。
+基本上数值求解\eqref{eq:kohn-sham-eq}的过程可以概括为\autoref{alg:basic-kohn-sham}。
+
+\begin{algorithm}
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+
+    \KwData{初始}
+    \KwResult{序列$\{\mathcal{C}_t\}$}
+    
+    % TODO
+    \Return{序列$\{\mathcal{C}_i\}$}\;
+
+    \caption{Kohn-Sham算法}
+    \label{alg:basic-kohn-sham}
+\end{algorithm}
+
+我们又一次看到，Kohn-Sham方程的形式基本上就是“一个电荷背景中的单电子”，只不过电子-电子库伦相互作用不仅包括平方反比律（实际上就是Hartree项），还包括一个（形式难以一般地写出的）$V_\text{XC}$，即我们需要求解有效势能
+\begin{equation}
+    V_\text{eff}(\vb*{r}) = V_\text{ext}(\vb*{r}) + V_\text{XC}(\vb*{r}) + \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}}
+\end{equation}
+如果近独立电子近似成立，$\epsilon_i$可能就是电子能级。我们将在\autoref{sec:single-electron-in-dft}中看到这一点。
+需注意Kohn-Sham方程的解唯一确凿无疑的物理意义就是电荷密度；$\epsilon_i$和$\phi_i$有什么意义是不完全确定的。
+
+\subsubsection{单电子诠释}\label{sec:single-electron-in-dft}
+
+在待计算的系统确实适用单电子诠释时，我们将\eqref{eq:kohn-sham-eq}和\eqref{eq:dyson-wave-eq}对比，很容易看出两者的相似之处。
+如果Hartree项加上$V_\text{XC}$构成对自能$\Sigma$的一个良好模拟，那么\eqref{eq:kohn-sham-eq}解出的$\epsilon_i$\emph{就是}能带电子的能量。
+
+如果实际情况确实如此，那么\eqref{eq:dft-variation-principle}中的$\mu$实际上就是费米能，因为对比\eqref{eq:dft-variation-principle}和\eqref{eq:dft-variation-principle-shem}会发现
+\begin{equation}
+    \mu = \sum_{i=1}^N \epsilon_i.
+\end{equation}
+
+
 
 \subsection{泛函选择}
 
@@ -165,11 +217,11 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 
 常用的交换-关联泛函的形式包括以下几种：
 \begin{itemize}
-    \item \textbf{局域密度近似（LDA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}))$；
-    \item \textbf{广义梯度近似（GGA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
-    \item \textbf{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
-    \item \textbf{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
-    \item \textbf{经验泛函}：有一大堆参数，根据实际数据微调参数。
+    \item \concept{局域密度近似（LDA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}))$；
+    \item \concept{广义梯度近似（GGA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
+    \item \concept{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
+    \item \concept{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
+    \item \concept{经验泛函}：有一大堆参数，根据实际数据微调参数。
 \end{itemize}
 不同泛函的分类如\autoref{fig:excahnge-correlation-functional}所示。
 
@@ -249,31 +301,24 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
         &= - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
     \end{aligned}
 \]
-这就得到了\textbf{托马斯-费米-狄拉克泛函}：
+这就得到了\concept{托马斯-费米-狄拉克泛函}：
 \begin{equation}
     E_\text{X}[\rho] = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}
 \end{equation}
 对均匀或不均匀但缓变的电子气这个泛函适用。
 
-\subsection{自洽计算}
+\subsubsection{GGA近似}
 
+\subsection{计算步骤}
 
-\subsection{基态}
-
-基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
 
 \subsection{晶体}
 
 对晶体的计算可以分成这么几个步骤：
 \begin{enumerate}
-    \item 定义晶体的几何结构，通常是通过指定一个晶胞形状，并且在晶胞内给出各个原子核的位置，这些信息——晶格矢量和晶胞内各个原子核的位置——称为\textbf{超晶胞（supercell）}，通常要求超晶胞取最简单的形式，即为原胞；
+    \item 定义晶体的几何结构，通常是通过指定一个晶胞形状，并且在晶胞内给出各个原子核的位置，这些信息——晶格矢量和晶胞内各个原子核的位置——称为\concept{超晶胞（supercell）}，通常要求超晶胞取最简单的形式，即为原胞；
     \item 
 \end{enumerate}
-
-
-\subsection{密度泛函理论}
-
-\subsubsection{计算步骤}
 
 \begin{enumerate}
     \item 选择经验赝势；
@@ -283,3 +328,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \item 使用交换关联泛函；
     \item 
 \end{enumerate}
+
+\subsection{后处理}
+
+基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
