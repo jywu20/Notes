@@ -162,13 +162,20 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \DontPrintSemicolon
     \SetAlgoLined
 
-    \KwData{初始}
-    \KwResult{序列$\{\mathcal{C}_t\}$}
+    \KwData{初始电子密度$\rho_0(\vb*{r})$，容差$\epsilon$，交换关联泛函选取$E_\text{XC}[\rho(\vb*{r})]$}
+    \KwResult{Kohn-Sham波函数$\phi_i(\vb*{r})$和对应的本征值$\epsilon_i$}
     
-    % TODO
-    \Return{序列$\{\mathcal{C}_i\}$}\;
+    $i = 1$ \;
+    将$\rho_0(\vb*{r})$代入\eqref{eq:kohn-sham-eq}求解得到$\phi_n^{(1)}$和$\epsilon_n^{(1)}$ \;
+    将$\phi_n^{(1)}$代入\eqref{eq:kohn-sham-density}计算得到$\rho_1(\vb*{r})$ \;
+    \While{$\rho_i(\vb*{r})$和$\rho_{i-1}(\vb*{r})$的差别大于容差$\epsilon$}{
+        将$\rho_i$代入\eqref{eq:kohn-sham-eq}求解得到$\phi_n^{(i+1)}$和$\epsilon_n^{(i+1)}$ \;
+        $i = i + 1$ \;
+    }
+    
+    \Return{波函数$\phi^{(i)}_n$和本征值$\epsilon^{(i)}_n$}\;
 
-    \caption{Kohn-Sham算法}
+    \caption{Kohn-Sham方程的自洽求解}
     \label{alg:basic-kohn-sham}
 \end{algorithm}
 
@@ -179,7 +186,15 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 如果近独立电子近似成立，$\epsilon_i$可能就是电子能级。我们将在\autoref{sec:single-electron-in-dft}中看到这一点。
 需注意Kohn-Sham方程的解唯一确凿无疑的物理意义就是电荷密度；$\epsilon_i$和$\phi_i$有什么意义是不完全确定的。
 
-\subsubsection{单电子诠释}\label{sec:single-electron-in-dft}
+\subsection{后处理和物理量测量}
+
+本节讨论Kohn-Sham方程求解完成后怎样从计算结果解读出我们需要的各个物理量。
+
+\subsubsection{和基态电子密度有解析形式关系的量}
+
+基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
+
+\subsubsection{单电子诠释和能带}\label{sec:single-electron-in-dft}
 
 在待计算的系统确实适用单电子诠释时，我们将\eqref{eq:kohn-sham-eq}和\eqref{eq:dyson-wave-eq}对比，很容易看出两者的相似之处。
 如果Hartree项加上$V_\text{XC}$构成对自能$\Sigma$的一个良好模拟，那么\eqref{eq:kohn-sham-eq}解出的$\epsilon_i$\emph{就是}能带电子的能量。
@@ -189,7 +204,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     \mu = \sum_{i=1}^N \epsilon_i.
 \end{equation}
 
-
+\subsubsection{受力}
 
 \subsection{泛函选择}
 
@@ -311,24 +326,39 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 
 \subsection{计算步骤}
 
+\autoref{alg:basic-kohn-sham}给出的只是求解\eqref{eq:kohn-sham-eq}的方法，而实际的凝聚态计算还需要考虑原子核的位置、携带的电荷（从而确定材料中的电子总量）等信息。
+本节给出几种常见的DFT计算任务。
 
-\subsection{晶体}
+\subsubsection{基于超胞的平面波DFT计算}
 
-对晶体的计算可以分成这么几个步骤：
-\begin{enumerate}
-    \item 定义晶体的几何结构，通常是通过指定一个晶胞形状，并且在晶胞内给出各个原子核的位置，这些信息——晶格矢量和晶胞内各个原子核的位置——称为\concept{超晶胞（supercell）}，通常要求超晶胞取最简单的形式，即为原胞；
-    \item 
-\end{enumerate}
+\eqref{eq:kohn-sham-eq}中涉及的单电子波函数的个数要和系统中电子的数目一样多，否则$\rho(\vb*{r})$的总量不正确。
+介质中的电子数目是非常多的，从而直接求解\eqref{eq:kohn-sham-eq}并不现实。
+晶体有周期性结构，这就大大简化了计算。实际上，由于相互作用衰减得很快，我们完全可以假定液体等也有周期性边界条件，只不过此时的晶胞要取得非常大。
 
-\begin{enumerate}
-    \item 选择经验赝势；
-    \item 求解单电子薛定谔方程；
-    \item 计算电荷密度；
-    \item 求解出Hartree项；
-    \item 使用交换关联泛函；
-    \item 
-\end{enumerate}
+于是以下我们将DFT计算中被认为是周期性的单元称为\concept{超胞（supercell）}，对固体通常要求超胞取最简单的形式，即原胞，对单分子、液体或是有杂质的系统等则需要取一个较大的超胞。
+对杂质，超胞应该包括杂质周围足够大的体态。
+对单分子，当超胞足够大时第一布里渊区足够小，从而计算出的所谓“能带”实际上和单独的一个个能级毫无区别。
+我们需要指定超胞的几何形状，并且在超胞内给出各个原子核的位置。
 
-\subsection{后处理}
+由于\eqref{eq:kohn-sham-eq}此时就是周期性的，它的解——也就是$\phi_i(\vb*{r})$——可以看成某个以我们设定的超胞为原胞的晶体中的单电子波函数，从而Bloch定理\eqref{eq:bloch-wavefunction}成立，且$\phi_i(\vb*{r})$中的$i$应该替换成Bloch波矢$\vb*{k}$和能带标记$n$。
+由于\eqref{eq:bloch-wavefunction}中的$u(\vb*{r})$具有周期性，它可以被展开成用倒格矢标记的一系列傅里叶分量，因此我们有
+\begin{equation}
+    \phi_{n \vb*{k}}(\vb*{r}) = \sum_{\vb*{G}} c_{n, \vb*{k}, \vb*{G}} \ee^{\ii (\vb*{k} + \vb*{G}) \cdot \vb*{r}},
+\end{equation}
+或者，考虑到$\vb*{k}$局限在第一布里渊区中而$\vb*{G}$是倒格矢，从$\vb*{k} + \vb*{G}$可以唯一确定$\vb*{k}$和$\vb*{G}$，有
+\begin{equation}
+    \phi_{n \vb*{k}}(\vb*{r}) = \sum_{\vb*{G}} c_{n, \vb*{k} + \vb*{G}} \ee^{\ii (\vb*{k} + \vb*{G}) \cdot \vb*{r}}.
+\end{equation}
+上式的$\vb*{G}$分量在\eqref{eq:kohn-sham-eq}的动能项部分为$(\vb*{k} + \vb*{G})^2 / 2m$，由于实际能够存储的傅里叶分量的个数是有限的，通常会引入一个\concept{截断能}，对每个$\vb*{k}$，我们只保留对动能的贡献小于截断能的那些$\vb*{G}$。
+这意味着我们忽略了空间尺度特别小的现象，并且忽略了一部分能量，但是如果对应的$c_{n, \vb*{k} + \vb*{G}}$不大就没有什么问题。
 
-基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
+实际能够处理的晶体都是有限大小的，或者说实际的$\vb*{k}$的取值是第一布里渊区中离散的一些点。
+这就是说，我们需要给出一种“第一布里渊区中的动量采样”。
+显然，采样越密越好；可以使用$\vb*{k} \cdot \vb*{p}$来简化计算。
+
+最后我们处理至今尚未提及的$V_\text{ext}$。如\autoref{sec:pseudopotential}所述，外层电子感受到的势场可以用赝势取代。
+这里我们有好几种可能的做法：可以只计算外层电子，完全不计算内层电子，从而自始至终$V_\text{ext}$都是用赝势组合而成的。此时截断能可以设置得比较小，因为$\phi_{n \vb*{k}}(\vb*{r})$在靠近原子核的位置也不会发生剧烈振荡。
+也可以用赝势计算出初步的电子密度，然后改用库伦势做进一步计算。
+
+总之，只要交换关联泛函的质量足够好，我们就得到了外层电子或是全电子的模拟结果：这其中没有引入任何经验参数，并且每一条可能的能带都纳入了考虑。
+虽然如此，截断能、$\vb*{k}$点采样、赝势的选择仍然会显著影响计算精度。
