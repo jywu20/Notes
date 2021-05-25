@@ -349,6 +349,8 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \begin{equation}
     \phi_{n \vb*{k}}(\vb*{r}) = \sum_{\vb*{G}} c_{n, \vb*{k} + \vb*{G}} \ee^{\ii (\vb*{k} + \vb*{G}) \cdot \vb*{r}}.
 \end{equation}
+这种选取$\phi_i$的方法称为\concept{平面波DFT（PWDFT）}。
+
 上式的$\vb*{G}$分量在\eqref{eq:kohn-sham-eq}的动能项部分为$(\vb*{k} + \vb*{G})^2 / 2m$，由于实际能够存储的傅里叶分量的个数是有限的，通常会引入一个\concept{截断能}，对每个$\vb*{k}$，我们只保留对动能的贡献小于截断能的那些$\vb*{G}$。
 这意味着我们忽略了空间尺度特别小的现象，并且忽略了一部分能量，但是如果对应的$c_{n, \vb*{k} + \vb*{G}}$不大就没有什么问题。
 
@@ -360,5 +362,35 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 这里我们有好几种可能的做法：可以只计算外层电子，完全不计算内层电子，从而自始至终$V_\text{ext}$都是用赝势组合而成的。此时截断能可以设置得比较小，因为$\phi_{n \vb*{k}}(\vb*{r})$在靠近原子核的位置也不会发生剧烈振荡。
 也可以用赝势计算出初步的电子密度，然后改用库伦势做进一步计算。
 
-总之，只要交换关联泛函的质量足够好，我们就得到了外层电子或是全电子的模拟结果：这其中没有引入任何经验参数，并且每一条可能的能带都纳入了考虑。
+\begin{algorithm}
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+
+    \KwData{初始电子密度$\rho_0(\vb*{r})$，交换关联泛函选取$E_\text{XC}[\rho(\vb*{r})]$，不同原子的赝势，$\vb*{k}$点采样$K = \{\vb*{k}\}$，截断能$E_\text{cut}$，最大迭代次数$N_\text{max}$，容差$\epsilon$}
+    \KwResult{Kohn-Sham波函数$\phi_{n \vb*{k}}(\vb*{r})$和对应的本征值$\epsilon_{n \vb*{k}}$}
+    
+    \For{$\vb*{k} \in K$}{
+        根据$\frac{(\vb*{k} + \vb*{G})^2}{2m} < E_\text{cut}$确定 \;
+    } % TODO：
+
+    $i = 1$ \;
+    使用不同原子的赝势构造\eqref{eq:kohn-sham-eq}中的$V_\text{ext}$ \;
+    将$\rho_0(\vb*{r})$代入\eqref{eq:kohn-sham-eq}求解得到$\phi_n^{(1)}$和$\epsilon_n^{(1)}$ \;
+    将$\phi_n^{(1)}$代入\eqref{eq:kohn-sham-density}计算得到$\rho_1(\vb*{r})$ \;
+    \While{$\rho_i(\vb*{r})$和$\rho_{i-1}(\vb*{r})$的差别大于容差$\epsilon$且$i < N_\text{max}$}{
+        将$\rho_i$代入\eqref{eq:kohn-sham-eq}求解得到$\phi_n^{(i+1)}$和$\epsilon_n^{(i+1)}$ \;
+        $i = i + 1$ \;
+    }
+    
+    \Return{波函数$\phi^{(i)}_n$和本征值$\epsilon^{(i)}_n$}\;
+
+    \caption{给定晶格和原子赝势的PWDFT计算}
+    \label{alg:static-pwdft}
+\end{algorithm}
+
+将以上考虑放进\autoref{alg:basic-kohn-sham}中，我们得到\autoref{alg:static-pwdft}，即所谓\concept{静态自洽计算}。
+只要输入的晶体结构是准确的，交换关联泛函的质量足够好，我们就得到了外层电子或是全电子（一般来说用不到，因为化学反应的能级不足以激发内层电子，倒是从头计算赝势时需要全电子计算）的模拟结果：这其中没有引入任何经验参数，并且每一条可能的能带都纳入了考虑。
 虽然如此，截断能、$\vb*{k}$点采样、赝势的选择仍然会显著影响计算精度。
+
+有时候我们对晶体结构只有一个大概的猜测，此时需要做结构优化，即所谓\concept{结构优化自洽计算}。
