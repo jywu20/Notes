@@ -263,9 +263,32 @@ $n$是另一个（离散的）好量子数。通过数自由度我们可以看�
 
 两条不同的能带之间的间隙提供了一个自然的能量截断，因此在我们已经知道了系统的能带之后，如果需要一个低能有效理论，可以只考虑能量较低的能带，而将粒子跃迁到能量较高的能带再跃迁回来作为微扰，进行能量修正，即可以很自然地将高能能带积掉。
 
-最后我们指定波函数的归一化方式。可以在积分号前面加上一个系数，即
+最后我们指定波函数的归一化方式。我们这里做的内积操作是\autoref{sec:momentum-space-inner-product}中的第一种情况，即对全空间积分。
+可以使用约定\eqref{eq:integrate-ouver-whole-space}。
+此时由
 \begin{equation}
-    \frac{1}{V} \int \dd[3]{\vb*{r}} \psi_{n\vb*{k}}^*(\vb*{r}) \psi_{m\vb*{k}'}(\vb*{r}) = \delta_{mn} \delta(\vb*{k}-\vb*{k}'),
+    \int \dd[3]{\vb*{r}} \psi_{n \vb*{k}}^*(\vb*{r}) \psi_{m \vb*{k}'}(\vb*{r}) = \delta_{mn} \delta_{\vb*{k} \vb*{k}'}
+\end{equation}
+可以得出
+\[
+    \begin{aligned}
+        \delta_{mn} \delta_{\vb*{k} \vb*{k}'} &= \sum_{i} \int_\text{u.c.} \dd[3]{\vb*{r}} \ee^{- \ii (\vb*{R}_i + \vb*{r}) \cdot \vb*{k}} u_{n \vb*{k}}^*(\vb*{r}) \ee^{\ii (\vb*{R}_i + \vb*{r}) \cdot \vb*{k}'} u_{m \vb*{k}'}(\vb*{r}) \\
+        &= N \delta_{\vb*{k} \vb*{k}'} \int_\text{u.c.} \dd[3]{\vb*{r}} \ee^{- \ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} u_{n \vb*{k}}^*(\vb*{r}) u_{m \vb*{k}'}(\vb*{r}) \\
+        &= N \delta_{\vb*{k} \vb*{k}'} \int_\text{u.c.} \dd[3]{\vb*{r}} u_{n \vb*{k}}^*(\vb*{r}) u_{m \vb*{k}'}(\vb*{r}),
+    \end{aligned}
+\]
+于是
+\[
+    \int_\text{u.c.} \dd[3]{\vb*{r}} u^*_{n \vb*{k}}(\vb*{r}) u_{m \vb*{k}}(\vb*{r}) = \frac{1}{N},
+\]
+或者考虑$u_{n \vb*{k}}$的周期性，有
+\begin{equation}
+    \int \dd[3]{\vb*{r}} u^*_{n \vb*{k}}(\vb*{r}) u_{m \vb*{k}}(\vb*{r}) = \delta_{mn}. 
+\end{equation}
+
+如果使用\eqref{eq:integrate-ouver-whole-space-divided}，则
+\begin{equation}
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \psi_{n\vb*{k}}^*(\vb*{r}) \psi_{m\vb*{k}'}(\vb*{r}) = \delta_{mn} \delta_{\vb*{k} - \vb*{k}'},
     \label{eq:bloch-is-basis}
 \end{equation}
 从而让简单的平面波$\exp(\ii \vb*{k} \cdot \vb*{r})$不需要乘上归一化因子就能够成为归一化本征态。
@@ -573,27 +596,48 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 本节开始给出自由电子放在周期势场中而形成能带这一事实的具体计算。
 
 设周期势场为$V(\vb*{r})$，它导致的一阶能量修正为
-
 \begin{equation}
-    E =  \mel{\vb*{k}'}{V}{\vb*{k}} = 
+    \epsilon_{\vb*{k}}^{(1)} = \mel{\vb*{k}}{V}{\vb*{k}} = \bar{V},
 \end{equation}
-
-在
+就是周期势的空间平均。因此如下我们将$\bar{V}$归入$\epsilon_{\vb*{k}}^{(0)}$中，或者也可以归入化学势中，而认为周期势场的空间平均是零。
+二阶非简并微扰论给出
 \begin{equation}
-    \abs{\vb*{k}}^2 = \abs*{\vb*{k} + \vb*{G}}^2
+    \epsilon_{\vb*{k}}^{(2)} = \sum_{\vb*{k} \neq \vb*{k}'} \frac{\abs{\mel*{\vb*{k}'}{V}{\vb*{k}}}^2}{\epsilon_{\vb*{k}}^{(0)} - \epsilon_{\vb*{k}'}^{(0)}},
 \end{equation}
-时，真正的波矢$\vb*{k}$（我们称它为\concept{广延波矢}，和约束在某个倒空间原胞中的晶格波矢相区分）和$\vb*{k} + \vb*{G}$不仅被映射到同一个晶格波矢上，而且它们有能量简并。
-此时使用非简并微扰论计算结果发散。
+由于周期性，有（我们其实是在使用\eqref{eq:sqrt-v-rep}，但是由于是在展开算符，归一化常数为$(1/\sqrt{V})^2 = 1 / V$）
+\begin{equation}
+    \begin{aligned}
+        \mel*{\vb*{k}'}{V}{\vb*{k}} &= \frac{1}{V} \int \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} \\
+        &= \frac{1}{V_\text{u.c.}} \int_\text{u.c.} \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} \frac{1}{N} \sum_m \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{R}_m} \\
+        &= \frac{1}{V_\text{u.c.}} \sum_n \delta_{\vb*{k} - \vb*{k}' - \vb*{G}_n} \int_\text{u.c.} \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii \vb*{G}_n \cdot \vb*{r}} = \sum_n \delta_{\vb*{k} - \vb*{k}' - \vb*{G}_n} V_n,
+    \end{aligned}
+\end{equation}
+于是计算得到
+\begin{equation}
+    \epsilon_{\vb*{k}}^{(2)} = \sum_{n} \delta_{\vb*{k} - \vb*{k}' - \vb*{G}_n} \frac{2m \abs{V_n}^2}{\vb*{k}^2 - \vb*{k}'^2} .
+\end{equation}
+因此，只要非简并微扰论适用，周期势场做的就是修正一下单电子能级。
+
+然而，在
+\begin{equation}
+    \abs{\vb*{k}}^2 = \abs*{\vb*{k} + \vb*{G}_n}^2
+    \label{eq:brillouin-condition}
+\end{equation}
+时，非简并微扰论发散。此时应当使用简并微扰。% TODO
+\eqref{eq:brillouin-condition}的几何意义是$\vb*{k}$在起点位于原点的$-\vb*{G}_n$的垂直平分面上。
+回顾布里渊区的概念，我们发现此时$\vb*{k}$一定在某两个布里渊区的交界面上。
 
 因此，布里渊区的概念在能带论中是一定会出现的：只有在布里渊区边界上，会出现必须使用简并微扰论、在自由电子情况下简并的能级打开能隙（从而连续的能谱断开）等现象。
 在远离布里渊区边界的地方，周期势场只会修正能级能量，不会改变能带的连续性。
-于是我们也很容易发现，第一布里渊区正好是\autoref{sec:bloch-electron}结尾要求的那种倒格子原胞：
-
+于是我们也很容易发现，第一布里渊区正好是\autoref{sec:bloch-electron}结尾要求的那种倒格子原胞。
 自由电子的能谱是抛物线，既然是在晶体内，动量加上一个倒格矢之后描述的物理状态没变，于是可以通过将任意一个动量平移一个倒格矢，使所有动量约束在第一布里渊区内部。
 这个过程等价于将单电子能谱平移任意一个倒格矢，然后将第一布里渊区以外的部分全部抹除掉。
-单电子能谱$\epsilon_{\vb*{k}}$穿过第一布里渊区边界而折返回来，这样在布里渊区边界反复和自我交叉。
-现在加上周期势，使用微扰论计算其影响，会发现周期势会抹去奇异性，交叉点退开，自我交叉的单一能带分离成一系列不相交的波浪线，这就得到了一系列不同的能带。
+单电子能谱$\epsilon_{\vb*{k}}$穿过第一布里渊区边界而折返回来，这样在第一布里渊区边界反复和自我交叉。
+现在加上周期势，在第一布里渊区内部，能级只是发生小的修正，在边界处，简并微扰导致交叉点“退开”，自我交叉的单一能带分离成一系列不相交的波浪线，这就得到了一系列不同的能带。
 此时我们说，能带之间\concept{打开了能隙}或者说\concept{回避交叉}，让原本交叉的能带之间出现了间隙。
+
+以上使用的$\vb*{k}$都对应着某个平面波的真正的波矢（我们称它为\concept{广延波矢}，和约束在某个倒空间原胞中的晶格波矢相区分）。它和$\vb*{k} + \vb*{G}$不仅被映射到同一个晶格波矢上，而且它们有能量简并。
+此时使用非简并微扰论计算结果发散。
 
 \begin{figure}
     \centering
@@ -753,17 +797,51 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 
 设我们需要计算$\vb*{k}_0$附近电子的行为。定义
 \begin{equation}
-    \chi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}} ,
+    \chi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}_0} = \ee^{\ii \vb*{k} \cdot \vb*{r}} u_{n \vb*{k}_0} (\vb*{r}),
 \end{equation}
-能够验证正交性和完备性均成立，即$\chi_{n \vb*{k}}$构成晶体中电子的一组正交完备基底。
+我们来验证正交性和完备性均成立。首先
+\[
+    \begin{aligned}
+        \int \dd[3]{\vb*{r}} \chi^*_{n \vb*{k}}(\vb*{r}) \chi_{m \vb*{k}'}(\vb*{r}) &= \sum_{i} \int_\text{u.c.} \dd[3]{\vb*{r}} \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot (\vb*{r} + \vb*{R}_i)} u^*_{n \vb*{k}_0}(\vb*{r}) u_{m \vb*{k}_0}(\vb*{r}) \\
+        &= N \delta_{\vb*{k} \vb*{k}'} \int_\text{u.c.} \dd[3]{\vb*{r}} \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{r}} u^*_{n \vb*{k}_0}(\vb*{r}) u_{m \vb*{k}_0}(\vb*{r}) \\
+        &= N \delta_{\vb*{k} \vb*{k}'} \int_\text{u.c.} \dd[3]{\vb*{r}} u^*_{n \vb*{k}_0}(\vb*{r}) u_{m \vb*{k}_0}(\vb*{r}) \\
+        &= \delta_{\vb*{k} \vb*{k}'} \delta_{mn},
+    \end{aligned}
+\]
+即正交性成立。另一方面通过数自由度也可以发现完备性应该成立。
+因此，$\chi_{n \vb*{k}}$构成晶体中电子的一组正交完备基底。
+
+于是我们可以以$\chi_{n \vb*{k}}$为基底尝试对角化哈密顿量。
+我们有
+\[
+    \begin{aligned}
+        H \psi_{n \vb*{k}} &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V \right) \chi_{j \vb*{k}} \\
+        &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V \right) \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{j \vb*{k}_0} \\
+        &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \left( \frac{(\vb*{p} + \vb*{k} - \vb*{k}_0)^2}{2m} + V \right) \psi_{j \vb*{k}_0} \\
+        &= \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V + \frac{(\vb*{k} - \vb*{k}_0) \cdot \vb*{p}}{m} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \psi_{j \vb*{k}_0} \\
+        &= \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \epsilon_{j \vb*{k}_0} + \frac{(\vb*{k} - \vb*{k}_0) \cdot \vb*{p}}{m} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \psi_{j \vb*{k}_0},
+    \end{aligned}
+\]
+而另一方面
+\[
+    H \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \chi_{j \vb*{k}} =  \epsilon_{n \vb*{k}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}_0},
+\]
+于是
+\begin{equation}
+    \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \left( \epsilon_{n \vb*{k}_0} - \epsilon_{n \vb*{k}} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \delta_{nj} + \frac{(\vb*{k} - \vb*{k}_0) \cdot \mel{\psi_{n \vb*{k}_0}}{\vb*{p}}{\psi_{j \vb*{k}_0}}}{m} \right)  = 0.
+    \label{eq:k-p-model}
+\end{equation}
+我们还可以将以上所有推导中的$\psi_{n \vb*{k}_0}$换成$u_{n \vb*{k}_0}$，此时$\vb*{k} - \vb*{k}_0$被$\vb*{k}$取代，我们有
+
+既然我们已经知道了$\vb*{k}_0$点的电子的情况——它的能级，波函数等等——上式中的仅有的未知数就是$\braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}}$和$\epsilon_{n \vb*{k}}$，于是可以通过求解本征值问题得到它们。
+这就是所谓的\concept{$\vb*{k} \cdot \vb*{p}$理论}。
+
+原则上以上做法能够给出所有能带信息，但是，\eqref{eq:k-p-model}可以很容易地近似求解。
+例如，
+
 
 \begin{equation}
-    H = \frac{\vb*{p}^2}{2m} + V(\vb*{r}) + \frac{\vb*{k}^2}{2m} + \frac{\vb*{k} \cdot \vb*{p}}{m},
-\end{equation}
-因此做微扰论能够得到
-
-\begin{equation}
-    \frac{1}{m_l} = \sum_m 
+    \left(\frac{1}{m^*}\right)_{\alpha \beta} = \pdv[2]{\epsilon_{\vb*{k}}}{k_\alpha}{k_\beta},
 \end{equation}
 
 能带越宽，有效质量越轻，能带越窄，有效质量越重。\concept{重费米子系统}指的是有效质量非常大的系统，从而这样的系统基本上是强关联系统。
