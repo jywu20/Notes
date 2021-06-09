@@ -269,7 +269,7 @@ $N$为晶胞数目。当然这就是第一布里渊区中的动量数目。
 本节讨论一种非常局域的电子基底。
 一些时候，电子被强烈地束缚在原子周围，以至于除此之外的所有轨道都无需讨论。这种电子状态称为\concept{Wannier波函数}。
 我们使用$i, j, \ldots$表示格点坐标，$m, n, \ldots$用于区分定域在$i$号晶胞附近的电子的电子云的形状（例如定域在某个格点附近的电子可以非常定域，也可以比较定域，有两种模式），$\vb*{r}_i$表示$i$处的格点的位矢，则定域在$i$号晶胞附近的Wannier电子的波函数可以用$w_{ni}(\vb*{r})$表示。
-$i$的取值个数也是$N$，因此我们可以猜测，$i$与Bloch电子的晶格动量对应，而$n$与能带编号对应。
+$i$的取值个数也是$N$，因此我们可以猜测，$i$与Bloch电子的晶格动量标记了同样的自由度，而$n$与能带编号标记了同样的自由度。
 
 定义在晶格格点上的函数以第一布里渊区为动量空间。
 \[
@@ -523,7 +523,7 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \begin{equation}
     \begin{aligned}
         \mel*{\vb*{k}'}{V}{\vb*{k}} &= \frac{1}{V} \int \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} \\
-        &= \frac{1}{V_\text{u.c.}} \int_\text{u.c.} \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} \frac{1}{N} \sum_m \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{R}_m} \\
+        &= \frac{1}{V_\text{u.c.}} \int_\text{u.c.} \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} \frac{1}{N} \sum_m \ee^{\ii (\vb*{k} - \vb*{k}') \cdot \vb*{R}_i} \\
         &= \frac{1}{V_\text{u.c.}} \sum_n \delta_{\vb*{k} - \vb*{k}' - \vb*{G}_n} \int_\text{u.c.} \dd[3]{\vb*{r}} V(\vb*{r}) \ee^{\ii \vb*{G}_n \cdot \vb*{r}} = \sum_n \delta_{\vb*{k} - \vb*{k}' - \vb*{G}_n} V_n,
     \end{aligned}
 \end{equation}
@@ -794,6 +794,87 @@ Luttinger模型：能带反转？
 
 \subsection{从紧束缚模型出发得到的模型}
 
+\subsubsection{紧束缚模型的跃迁系数}\label{sec:tight-binding-hopping}
+
+我们来分析\eqref{eq:hamiltonian-in-wannier}中的跃迁系数$t_{mi, nj}$具体是什么。
+实际上是没有一种唯一的诠释方式的，因为\eqref{eq:hamiltonian-in-wannier}中的$i, j$等只需要取值范围正好是$1$到$N$就可以。
+
+\paragraph{能带内的跃迁} 我们可以不失一般性地取$m = n$，即将哈密顿量在这个标签上做对角化，此时有
+\begin{equation}
+    {H} = - \sum_{n, \{i, j\}} (t_{n, ij} {c}_{ni}^\dagger {c}_{nj} + \text{h.c.}),
+    \label{eq:multi-band-tight-binding}
+\end{equation}
+显然我们对格点坐标$i, j$做了傅里叶变换之后得到的就是以$n$为能带编号的能带，即$n$是能带编号，不同能带之间没有跃迁。
+
+既然不同能带之间没有跃迁，我们暂时略去能带标签$n$。\eqref{eq:multi-band-tight-binding}是最为一般的，原则上可以描述一切晶体中的电子能带。
+例如，原则上，自由电子气可以通过引入非常远的跃迁矩阵元来实现。
+如果晶格的吸引作用是如此之强，以至于电子是高度定域的，这样只有最近邻的格点之间才会跃迁，即
+\[
+    \sum_{i, j, \sigma} c^\dagger_{i \sigma} t_{i j} c_{j \sigma} = \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma},
+\]
+从而
+\begin{equation}
+    {H} = - \sum_{\pair{i, j}} (t_{ij} {c}^\dagger_i {c}_j + \text{h.c.}).
+\end{equation}
+这称为\concept{紧束缚模型}。如果满足平移不变性，就有
+\begin{equation}
+    {H} = - \sum_{\pair{i, j}} (t {c}^\dagger_i {c}_j + \text{h.c.}).
+\end{equation}
+我们当然还可以引入次近邻跃迁等来修正紧束缚模型。实际上，如果引入得足够多，就能够得到自由电子的能谱，因为Wannier波函数组成一组正交完备基底。
+
+如果只有最近邻或是次近邻的跃迁，那么我们就有一个非常直观的物理图像：似乎可以用“某个电子正在某个格点附近”来标记一个电子，即电子似乎被紧紧地束缚在晶格上，无法长距离移动，这就是“紧束缚”一词的来历。
+或者，也有可能电子并不是特别局域，但是原子间距很大，以至于在系统中电子通常具有的动能下，非常远距离的跃迁似乎无法一次完成。
+这就是说，紧束缚模型中，电子的动能不应该能够到达特别大，从而也不应该有太大的能带带宽（的确应该考虑带宽而不是能量的绝对大小，因为总是可以通过化学势来任意增减能量，而上面的物理图像和化学势毫无关系）。
+
+在空间平移对称性成立，但是紧束缚近似未必成立时，我们用$t(\vb*{R}_l)$表示从格点$\vb*{R}_i$到$\vb*{R}_i + \vb*{R}_l$的跃迁系数。
+我们可以使用\eqref{eq:lattice-fourier}将动能项写成对角化的，根据\autoref{sec:momentum-space-inner-product}中的论证，动能项不会有$1/N$或是$1/V$之类的因子出现。
+因此实际上\eqref{eq:lattice-fourier}给出的$\vb*{k}$表象和从自由电子出发得到的限制在第一布里渊区中的简约波矢标记的Bloch电子是同样的表象。
+对角化结果是
+\begin{equation}
+    H = \sum_{\vb*{k}} \epsilon_{\vb*{k}} c^\dagger_{\vb*{k}} c_{\vb*{k}}, \quad \epsilon_{\vb*{k}} = - \sum_{\vb*{R}_l} t(\vb*{R}_l) \ee^{\ii \vb*{k} \cdot \vb*{R}_l} .
+\end{equation}
+显然，这意味着，如果我们\emph{已经}有了一个单电子能谱，可以通过傅里叶变换
+\begin{equation}
+    t(\vb*{R}_l) = - \frac{1}{N} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{R}_l} \epsilon_{\vb*{k}} = - V_\text{u.c.} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{- \ii \vb*{k} \cdot \vb*{R}_l} \epsilon_{\vb*{k}}
+\end{equation}
+得到对应的跃迁系数。因此，给定一个能带之后，我们其实总是可以写出一个修正后的紧束缚模型来复刻这个能带。
+
+请注意上面的推导完全没有用到一个晶胞里面有几种原子之类的条件：$i, j$等都是\emph{晶格格点}，而不是具体的原子的位置。
+对简单晶格，这是非常合理的，而对复式晶格，我们的推导给出了一种把它近似地看成简单晶格的方法。
+
+\paragraph{简单晶格的原子轨道线性组合（LCAO）} 在简单晶格中，如果不同原子的轨道基本上没有重叠，那实际上单原子轨道波函数就是Wannier波函数。
+设不同原子的轨道没有什么重叠，则有
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \varphi_n^*(\vb*{r} - \vb*{R}_i) \varphi_n(\vb*{r} - \vb*{R}_j) = \delta_{ij},
+    \label{eq:no-overlap-atom-orbital}
+\end{equation}
+$i=j$时上式显然是$1$，$i \neq j$时由于两个波函数没有重叠，就是零，因此上式的确是成立的。
+$\varphi_n(\vb*{r} - \vb*{R}_i)$满足
+\begin{equation}
+    \left( - \frac{\laplacian}{2m} + V_\text{atom} (\vb*{r} - \vb*{R}_i) \right) \varphi_n(\vb*{r} - \vb*{R}_i) = \epsilon_n \varphi_n(\vb*{r} - \vb*{R}_i),
+\end{equation}
+而能带电子的波函数满足
+\begin{equation}
+    \left( - \frac{\laplacian}{2m} + V (\vb*{r}) \right) \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \psi_{n \vb*{k}},
+\end{equation}
+我们现在做展开
+\begin{equation}
+    \psi_{n \vb*{k}}(\vb*{r}) = \sum_i a_i \varphi_n(\vb*{r} - \vb*{R}_i),
+\end{equation}
+就得到
+\[
+    \sum_i a_i (\epsilon_n + V(\vb*{r}) - V_\text{atom}(\vb*{r} - \vb*{R}_i)) \varphi_n(\vb*{r} - \vb*{R}_i) = \epsilon_{n \vb*{k}} \sum_i a_i \varphi_i(\vb*{r} - \vb*{R}_i),
+\]
+两边作用\eqref{eq:no-overlap-atom-orbital}，就得到
+\begin{equation}
+    (\epsilon_{n \vb*{k}} - \epsilon_n) a_i = \sum_{j} a_j \int \dd[3]{\vb*{r}} \varphi_n(\vb*{r} - \vb*{R}_i)^* ( V(\vb*{r}) - V_\text{atom}(\vb*{r} - \vb*{R}_i)) \varphi_n(\vb*{r} - \vb*{R}_j).
+\end{equation}
+
+总之，在原子轨道波函数之间真的没有什么交叠的情况下，原子轨道波函数就是Wannier波函数。
+然而，在大多数情况下，原子轨道波函数还是比较不局域的，我们需要先从原子轨道波函数出发计算得到Bloch波函数，然后做傅里叶变换得到比原子轨道波函数更加局域的Wannier波函数。
+
+\paragraph{复式晶格的LCAO} 可以先假装轨道波函数真的是Wannier波函数，然后做杂化
+
 \subsubsection{单能带系统的哈密顿量}
 
 对单带模型，在Wannier表象下，库仑相互作用可以表示成如下矩阵元形式：
@@ -809,29 +890,9 @@ Luttinger模型：能带反转？
     H = \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{i' \sigma} + \sum_{i, i', j, j', \sigma, \sigma'} V_{i i' j' j} c^\dagger_{i \sigma} c^\dagger_{i' \sigma'} c_{j' \sigma'} c_{j \sigma}.
 \end{equation}
 
-上面的哈密顿量是最为一般的，原则上可以描述一切晶体中的电子系统。
-例如，原则上，自由电子气可以通过引入非常远的跃迁矩阵元来实现。
-如果晶格的吸引作用是如此之强，以至于电子是高度定域的，这样只有最近邻的格点之间才会跃迁，即
-\begin{equation}
-    \sum_{i, i', \sigma} c^\dagger_{i \sigma} t_{i i'} c_{i' \sigma} = \sum_{\pair{i, j}, \sigma} t_{ij} c^\dagger_{i \sigma} c_{j \sigma}.
-\end{equation}
-从而
-\begin{equation}
-    {H} = - \sum_{\pair{i, j}} (t_{ij} {c}^\dagger_i {c}_j + \text{h.c.}).
-\end{equation}
-这称为\concept{紧束缚模型}。如果满足平移不变性，就有
-\begin{equation}
-    {H} = - \sum_{\pair{i, j}} (t {c}^\dagger_i {c}_j + \text{h.c.}).
-\end{equation}
-我们当然还可以引入次近邻跃迁等来修正紧束缚模型。
-
-我们可以使用\eqref{eq:lattice-fourier}将动能项写成对角化的，根据\autoref{sec:momentum-space-inner-product}中的论证，动能项不会有$1/N$或是$1/V$之类的因子出现。
-因此实际上\eqref{eq:lattice-fourier}给出的$\vb*{k}$表象和从自由电子出发得到的限制在第一布里渊区中的简约波矢标记的Bloch电子是同样的表象。
-\autoref{sec:momentum-space-inner-product}中的二体相互作用项会有$1/2V$的因子，使用\eqref{eq:lattice-fourier}则会有$1/2N$的因子，两者没有矛盾，因为\autoref{sec:momentum-space-inner-product}中的二体相互作用的耦合常数直接就是$V_{\vb*{q}}$，但是本节中的二体相互作用的耦合常数是$V_{i i' j j'}$傅里叶变换而来，根据\eqref{eq:wannier-and-free}，两者的确应该差一个$V_\text{u.c.}$因子。
-
-如果只有最近邻或是次近邻的跃迁，那么我们就有一个非常直观的物理图像：似乎可以用“某个电子正在某个格点附近”来标记一个电子，即电子似乎被紧紧地束缚在晶格上，无法长距离移动，这就是“紧束缚”一词的来历。
-或者，也有可能电子并不是特别局域，但是原子间距很大，以至于在系统中电子通常具有的动能下，非常远距离的跃迁似乎无法一次完成。
-这就是说，紧束缚模型中，电子的动能不应该能够到达特别大，从而不应该有太大的能带带宽。
+对上式做傅里叶变换，使用\eqref{eq:lattice-fourier}会有$1/2N$的因子，然而\autoref{sec:momentum-space-inner-product}也论证了，从$\vb*{r}$表象切换到动量表象后，二体相互作用项会有$1/2V$的因子。
+\autoref{sec:tight-binding-hopping}中已经论证了，无论是自由电子气模型加入周期势扰动，然后做傅里叶变换得到的$\vb*{k}$表象和对上式做傅里叶变换得到的$\vb*{k}$表象就是一个东西，所以看起来似乎有矛盾。
+实际上两者没有矛盾，因为\autoref{sec:momentum-space-inner-product}中的二体相互作用的耦合常数直接就是$V_{\vb*{q}}$，但是本节中的二体相互作用的耦合常数是$V_{i i' j j'}$傅里叶变换而来，根据\eqref{eq:wannier-and-free}，两者的确应该差一个$V_\text{u.c.}$因子。
 
 与自由电子气模型或凝胶模型不同，紧束缚模型对相互作用是非常敏感的，不能保证加入（即使比较弱的）相互作用后，系统能够用费米液体理论描述，也不能保证能带论仍然有效。
 这是出于一个非常直观的原因：紧束缚模型的能带通常更窄，从而态密度更大，从而库伦散射更明显，从而也更加容易在相互作用加入之后变成强关联系统。
@@ -918,21 +979,6 @@ Luttinger模型：能带反转？
 \]
 
 实际的原子内部的洪特规则应该就是在这里能够拿到
-
-\subsubsection{原子轨道线性组合方法}
-
-本节讨论一种不同原子的轨道基本上没有重叠时得到Wannier波函数的方法。
-\begin{equation}
-    \int \dd[3]{\vb*{r}} \varphi_i^*(\vb*{r}) \varphi_j(\vb*{r}) = \delta_{ij},
-\end{equation}
-则
-
-TODO：单带模型中轨道波函数就是Wannier波函数
-
-可以先假装轨道波函数真的是Wannier波函数，然后做杂化
-
-总之，在原子轨道波函数之间真的没有什么交叠的情况下，原子轨道波函数就是Wannier波函数。
-然而，在大多数情况下，原子轨道波函数还是比较不局域的，我们需要先从原子轨道波函数出发计算得到Bloch波函数，然后做傅里叶变换得到比原子轨道波函数更加局域的Wannier波函数。
 
 \subsection{金属和朗道费米液体}
 
