@@ -250,8 +250,10 @@ $n$是另一个（离散的）好量子数，我们现在看到它是单个晶�
 换句话说，在归一化\emph{波函数}$\psi_{n \vb*{k}}$时我们使用了约定\eqref{eq:v-rep}，而归一化\emph{场算符}时我们使用了约定\eqref{eq:sqrt-v-rep}。
 }%
 \begin{equation}
-    {c}_{n \vb*{k}}^\dagger = \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \psi_{n \vb*{k}}(\vb*{r}) {\psi}^\dagger(\vb*{r}),
+    {c}_{n \vb*{k}}^\dagger = \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \psi_{n \vb*{k}}(\vb*{r}) {\psi}^\dagger(\vb*{r}), \quad \psi^\dagger(\vb*{r}) = \frac{1}{\sqrt{V}} \sum_{\vb*{k}} \psi_{n \vb*{k}}(\vb*{r})^* c_{n \vb*{k}}.
+    \label{eq:bloch-transformation}
 \end{equation}
+这和\eqref{eq:sqrt-v-rep}非常类似，不同之处在于此时的积分变换核中多了一个周期性的$u_{n \vb*{k}}$，并且除了$\vb*{k}$以外还有离散的标签$n$。
 哈密顿量在这一组基下是对角化的，于是写出二次量子化哈密顿量（已经加入化学势项）
 \begin{equation}
     {H} = \sum_{n, \vb*{k}} (\epsilon_{n\vb*{k}} - \mu) {c}^\dagger_{n\vb*{k}} {c}_{n\vb*{k}}.
@@ -296,7 +298,7 @@ $i$的取值个数也是$N$，因此我们可以猜测，$i$与Bloch电子的晶
 \]
 取
 \begin{equation}
-    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{-\ii \vb*{k} \cdot \vb*{r}_i}, \quad \psi_{n\vb*{k}} = \sum_{\vb*{r}_i} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} w_{ni}(\vb*{r}),
+    w_{ni}(\vb*{r}) = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \psi_{n\vb*{k}}(\vb*{r}) \ee^{-\ii \vb*{k} \cdot \vb*{r}_i}, \quad \psi_{n\vb*{k}} = \frac{1}{\sqrt{N}} \sum_{\vb*{r}_i} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} w_{ni}(\vb*{r}),
 \end{equation}
 这样归一化条件就是
 \begin{equation}
@@ -310,7 +312,7 @@ $i$的取值个数也是$N$，因此我们可以猜测，$i$与Bloch电子的晶
 \]
 于是
 \begin{equation}
-    w_{ni}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} u_{n\vb*{k}} (\vb*{r} - \vb*{r}_i) \ee^{\ii \vb*{k} (\vb*{r} - \vb*{r}_i)},
+    w_{ni}(\vb*{r}) = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} u_{n\vb*{k}} (\vb*{r} - \vb*{r}_i) \ee^{\ii \vb*{k} (\vb*{r} - \vb*{r}_i)},
 \end{equation}
 这表明Wannier波函数实际上是$\vb*{r} - \vb*{r}_i$的函数，可以写成
 \begin{equation}
@@ -496,10 +498,6 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
     C_V = \frac{n \pi^2}{2} \frac{T}{T_\text{F}},
 \end{equation}
 与经典Drude模型非常不一样。直观地看，这是因为只有费米面附近的电子才会被激发。
-
-在极低温下晶体的比热主要由电子贡献，因为此时$T$相比$T^3$要明显。
-
-金属热导率
 
 \subsubsection{周期势}
 
@@ -778,12 +776,12 @@ Luttinger模型：能带反转？
 
 \subsection{从紧束缚模型出发得到的模型}
 
-\subsubsection{紧束缚模型的跃迁系数}\label{sec:tight-binding-hopping}
+\subsubsection{单电子模型及其跃迁系数}\label{sec:tight-binding-hopping}
 
 我们来分析\eqref{eq:hamiltonian-in-wannier}中的跃迁系数$t_{mi, nj}$具体是什么。
-实际上是没有一种唯一的诠释方式的，因为\eqref{eq:hamiltonian-in-wannier}中的$i, j$等只需要取值范围正好是$1$到$N$就可以。
+实际上是没有一种唯一的诠释方式的，因为\eqref{eq:hamiltonian-in-wannier}中的$i, j$等只需要取值范围正好是$1$到$N$，并且满足空间平移不变性就可以。
 
-\paragraph{能带内的跃迁} 我们可以不失一般性地取$m = n$，即将哈密顿量在这个标签上做对角化，此时有
+\paragraph{能带内跃迁} 我们可以不失一般性地取$m = n$，即将哈密顿量在这个标签上做对角化，此时有
 \begin{equation}
     {H} = - \sum_{n, \{i, j\}} (t_{n, ij} {c}_{ni}^\dagger {c}_{nj} + \text{h.c.}),
     \label{eq:multi-band-tight-binding}
@@ -813,6 +811,12 @@ Luttinger模型：能带反转？
 在空间平移对称性成立，但是紧束缚近似未必成立时，我们用$t(\vb*{R}_l)$表示从格点$\vb*{R}_i$到$\vb*{R}_i + \vb*{R}_l$的跃迁系数。
 我们可以使用\eqref{eq:lattice-fourier}将动能项写成对角化的，根据\autoref{sec:momentum-space-inner-product}中的论证，动能项不会有$1/N$或是$1/V$之类的因子出现。
 因此实际上\eqref{eq:lattice-fourier}给出的$\vb*{k}$表象和从自由电子出发得到的限制在第一布里渊区中的简约波矢标记的Bloch电子是同样的表象。
+从坐标表象到晶格动量表象的变换是\eqref{eq:sqrt-v-rep}，而\eqref{eq:multi-band-tight-binding}相当于是\eqref{eq:sqrt-v-rep}的一个中间结果：\eqref{eq:sqrt-v-rep}中从$\vb*{r}$到$\vb*{k}$的积分可以写成
+\[
+    \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} = \frac{1}{\sqrt{N}} \sum_i \ee^{- \ii \vb*{k} \cdot \vb*{r}_i} \frac{1}{\sqrt{V_\text{u.c.}}} \int_\text{u.c.} \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot (\vb*{r} - \vb*{r}_i)} ,
+\]
+从坐标表象切换到Wannier波函数相当于首先完成了在原胞内的积分，然后从Wannier波函数的表象（即\eqref{eq:multi-band-tight-binding}）计算能带就是完成了剩下的对$i$的求和，即\eqref{eq:lattice-fourier}。
+从坐标表象切换到$i$表象相当于对哈密顿量做了一点对角化但没有完成，从$i$表象切换到$\vb*{k}$表象则完成了对角化。
 对角化结果是
 \begin{equation}
     H = \sum_{\vb*{k}} \epsilon_{\vb*{k}} c^\dagger_{\vb*{k}} c_{\vb*{k}}, \quad \epsilon_{\vb*{k}} = - \sum_{\vb*{R}_l} t(\vb*{R}_l) \ee^{\ii \vb*{k} \cdot \vb*{R}_l} .
@@ -820,11 +824,18 @@ Luttinger模型：能带反转？
 显然，这意味着，如果我们\emph{已经}有了一个单电子能谱，可以通过傅里叶变换
 \begin{equation}
     t(\vb*{R}_l) = - \frac{1}{N} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{R}_l} \epsilon_{\vb*{k}} = - V_\text{u.c.} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{- \ii \vb*{k} \cdot \vb*{R}_l} \epsilon_{\vb*{k}}
+    \label{eq:from-spectrum-to-tight-binding}
 \end{equation}
 得到对应的跃迁系数。因此，给定一个能带之后，我们其实总是可以写出一个修正后的紧束缚模型来复刻这个能带。
 
 请注意上面的推导完全没有用到一个晶胞里面有几种原子之类的条件：$i, j$等都是\emph{晶格格点}，而不是具体的原子的位置。
 对简单晶格，这是非常合理的，而对复式晶格，我们的推导给出了一种把它近似地看成简单晶格的方法。
+
+\paragraph{含能带间跃迁的模型} 实际上，我们甚至可以胡乱指派一个其实并非我们的体系的能量本征态的Bloch波函数$\psi_{n \vb*{k}}$及其对应的Wannier波函数，然后根据\eqref{eq:sqrt-v-rep}写出一个修正后的紧束缚模型，不过这样就会有带间跃迁了。
+由于此时的Wannier波函数其实不正确，写出这种含有带间跃迁的紧束缚模型之后做的对角化将会重新设置能带标签。
+
+这种稍微劣质一些的Wannier波函数可以通过线性组合单原子轨道波函数得到（对复式晶格，还可以组合同一晶胞内不同原子的轨道），下面是一些例子。
+这和坐标表象、$i$表象和晶格动量表象之间的关系很像：从坐标表象到单原子轨道相当于稍稍对哈密顿量做了对角化，从单原子轨道到有杂化的轨道相当于又做了一些对角化，到最后得到正确的能带编号，就是完成了能带标签部分的对角化。
 
 \paragraph{简单晶格的原子轨道线性组合（LCAO）} 在简单晶格中，如果不同原子的轨道基本上没有重叠，那实际上单原子轨道波函数就是Wannier波函数。
 设不同原子的轨道没有什么重叠，则有
@@ -859,7 +870,25 @@ $\varphi_n(\vb*{r} - \vb*{R}_i)$满足
 
 \paragraph{复式晶格的LCAO} 可以先假装轨道波函数真的是Wannier波函数，然后做杂化
 
-\subsubsection{单能带系统的哈密顿量}
+\paragraph{表象变换} 总结一下，形如\eqref{eq:hamiltonian-in-wannier}的近独立电子模型最大的好处在于提供了介于哈密顿量完全对角化的Bloch波函数表象（或者说晶格动量表象）和完全没有做过任何处理的坐标表象之间的许多表象。
+我们上面提到过的表象从坐标表象到晶格动量表象形成如下序列：
+\begin{enumerate}
+    \item \eqref{eq:electron-gas-hamiltonian}，完全就是“自由电子气动能加势能”，没有做任何处理。最容易写下哈密顿量，最难以理解其物理。这种表象下的波函数清楚地展示了电子在空间各点的概率振幅分布，但是没有提供关于$\vb*{k}$和$n$的任何信息。
+    \item 以单原子轨道为表象。相对容易写下来哈密顿量。这种表象下的波函数无法展示每个轨道具体长什么样的信息（因为轨道编号只是一个抽象的量子数），但电子出现在不同原子附近的概率振幅的信息保留了。第一次出现了和能带编号有关的标签（轨道编号）。
+    \item 以单原子内部的杂化轨道为表象。电子出现在不同原子附近的概率振幅的信息保留了。杂化轨道的编号是能带编号的更好的近似，即能带编号开始清晰起来。
+    \item 以原子间的成键和反键轨道为表象。电子出现在不同原子附近的概率振幅的信息被模糊化了，但是能带编号变得清晰了。
+    \item 以自行设定的用不同电子轨道线性组合得到的Wannier波函数为表象。这个表象下的波函数只能够展示电子在不同晶胞上的概率振幅分布。保留了一些“一个电子是哪些轨道的混合”的信息，能带编号比较清晰。
+    \item \eqref{eq:multi-band-tight-binding}，离完全对角化的$\epsilon = \epsilon_{\vb*{k}}$只有一步之遥。这个表象下的波函数只能够展示电子在不同晶胞上的概率振幅分布，能带编号非常清晰，而原来的单原子轨道完全模糊了。
+    \item 以自行设定的用不同电子轨道线性组合得到的Bloch波函数为表象。波函数不显示任何电子的空间分布信息，但是保留了一些“一个电子是哪些轨道的混合”的信息。
+    \item 能带$\epsilon = \epsilon_{n\vb*{k}}$。波函数不展示任何电子的空间分布信息，也没有任何关于单原子轨道的信息，只有确定的晶格动量和能带编号。
+\end{enumerate}
+
+从上到下，坐标变得模糊而动量变得清晰：先是单原子波函数的细节模糊了，然后是电子在晶格内的哪个原子附近（或者说，复式晶格中在哪套子格子附近）变得模糊了，最后电子在哪个原胞附近也模糊了，而$\vb*{k}$变得清晰了。
+单电子轨道标签先是出现（作为单原子波函数的细节模糊的补偿），然后变得模糊了：先是杂化，然后是成键、反键，单原子轨道的信息逐步丢失，而越来越像正确的能带标签。
+凝聚态理论研究中通常不会采取这个序列两端的表象，因为它们过于复杂而难以做近似。
+这就是紧束缚模型的重要之处，虽然当代已经没人用它做任何第一性原理计算了。
+
+\subsubsection{单能带系统的相互作用哈密顿量}
 
 对单带模型，在Wannier表象下，库仑相互作用可以表示成如下矩阵元形式：
 \begin{equation}
@@ -966,7 +995,7 @@ $\varphi_n(\vb*{r} - \vb*{R}_i)$满足
 
 \subsection{能带理论何时失效？}
 
-虽然能带理论非常成功，它仍然可能在一些时候失效。此时的系统通常称为\concept{强关联系统}，因为电子和电子之间的关系是如此剧烈，以至于单电子图像根本就是不可靠的。
+基本自由度\emph{不能}写成经过相互作用修饰的能带电子的系统通常称为\concept{强关联系统}，因为电子和电子之间的关系是如此剧烈，以至于单电子图像根本就是不可靠的。
 本节给出一些能够暗示能带理论失效的判据，并且列举强关联系统通常会有什么性质。
 
 如果能带计算出现平带，即非常窄的能带，则容易出现强关联系统。
