@@ -175,6 +175,7 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 设周期势场为$V(\vb*{r})$，它导致的一阶能量修正为
 \begin{equation}
     \epsilon_{\vb*{k}}^{(1)} = \mel{\vb*{k}}{V}{\vb*{k}} = \bar{V},
+    \label{eq:first-order-energy-perturbation}
 \end{equation}
 就是周期势的空间平均。因此如下我们将$\bar{V}$归入$\epsilon_{\vb*{k}}^{(0)}$中，或者也可以归入化学势中，而认为周期势场的空间平均是零。
 二阶非简并微扰论给出
@@ -640,16 +641,19 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 
 \subsubsection{格林函数} 
 
-近独立电子气的格林函数和它的谱函数是可以比较容易地算出的。
-谱函数为
+近独立电子气的格林函数和它的谱函数是可以比较容易地算出的。松原格林函数为
 \begin{equation}
-    A(\vb*{k}, \omega) = \delta(\omega - \epsilon_{\vb*{k}}),
+    G(\vb*{k}, \ii \omega_n) = - \int_0^\beta \dd{\tau} \ee^{\ii \omega_n \tau} \timeorder \expval*{c_{\vb*{k}}(\tau) c_{\vb*{k}}^\dagger(0)} = \frac{1}{\ii \omega_n - \epsilon_{\vb*{k}}},
 \end{equation}
 推迟格林函数为
 \begin{equation}
-    G^\text{ret}(\vb*{k}, \omega) = \frac{1}{\omega - \epsilon_{\vb*{k}} + \ii 0^+}.
+    G^\text{ret}(\vb*{k}, \omega) = \frac{1}{\omega - \epsilon_{\vb*{k}} + \ii 0^+},
 \end{equation}
-这些都和单电子计算出来的结果完全一样，当然也毫不意外。
+谱函数为
+\begin{equation}
+    A(\vb*{k}, \omega) = \delta(\omega - \epsilon_{\vb*{k}}).
+\end{equation}
+这些都和单电子计算出来的结果完全一样。
 
 \subsubsection{空穴} 
 
@@ -880,7 +884,7 @@ Bloch波函数下的哈密顿量为\eqref{eq:bloch-band-hamiltonian}，不同能
 请注意上面的推导完全没有用到一个晶胞里面有几种原子之类的条件：$i, j$等都是\emph{晶格格点}，而不是具体的原子的位置。
 对简单晶格，这是非常合理的，而对复式晶格，我们的推导给出了一种把它近似地看成简单晶格的方法。
 
-\subsection{一般的Wannier表象下的哈密顿量及其对角化} 
+\subsection{一般的Wannier波函数}
 
 在\eqref{eq:multi-band-tight-binding}中我们让$n=m$，现在则讨论一般的不同的$m$和$n$之间存在跃迁的模型。
 在这样的模型中我们指派了一个其实并非我们的体系的能量本征态的Wannier波函数，然后以此为表象写出一个修正后的紧束缚模型，这样就会有带间跃迁了。
@@ -890,14 +894,12 @@ Bloch波函数下的哈密顿量为\eqref{eq:bloch-band-hamiltonian}，不同能
 甚至还可以计算单个晶胞内的成键轨道和反键轨道，然后把成键轨道和反键轨道当作Wannier波函数。
 这和坐标表象、$i$表象和晶格动量表象之间的关系很像：从坐标表象到单原子轨道相当于稍稍对哈密顿量做了对角化，从单原子轨道到有杂化的轨道相当于又做了一些对角化，到最后得到正确的能带编号，就是完成了能带标签部分的对角化。
 
-\subsection{原子轨道线性组合和紧束缚模型}\label{sec:tight-binding-hopping}
-
 \begin{figure}
     \centering
-    \subfigure[同类型的Wannier波函数定域在不同格点附近（用不同颜色区分），彼此之间存在非零的跃迁矩阵元，由于它们均不是系统的能量本征态，它们之间存在相互跃迁]{
+    \subfigure[对简单晶格给定一组波函数$v(\vb*{r} - \vb*{R}_i)$，彼此有很强的交叠，即并不正交]{
         \includegraphics[width=0.4\textwidth]{band/hopping/overlap.png}
     }
-    \subfigure[在我们使用Wannier波函数作为表象后，波函数本身的空间分布的细节消失，只留下“电子在哪个格点附近”的粗略信息；交叠较大的两个Wannier态之间容易发生跃迁（用较深的颜色表示），交叠较小的两个Wannier态之间的跃迁不容易发生（用较浅的颜色表示）]{
+    \subfigure[根据$v(\vb*{r} - \vb*{R}_i)$做正交化，得到一组Wannier波函数，以此为基底时，波函数本身的空间分布的细节部分被抹去，只留下“电子在哪个格点附近”的粗略信息；一些Wannier态之间容易发生跃迁（用较深的颜色表示），另一些Wannier态之间的跃迁不容易发生（用较浅的颜色表示）]{
         \input{band/hopping/hopping.tex}
     }
     \subfigure[晶格中可以有不止一种原子（此图中有两种），每种原子周围可以不止一种轨道]{
@@ -906,8 +908,37 @@ Bloch波函数下的哈密顿量为\eqref{eq:bloch-band-hamiltonian}，不同能
     \subfigure[最终的模型形如\eqref{eq:hamiltonian-in-wannier}，其中的电子可以用两个标签标记，一个表示Wannier波函数，不同状态的电子之间的跃迁有强有弱，用颜色深浅表示]{
         \input{band/hopping/multiple-hopping.tex}
     }
-    \caption{\eqref{eq:hamiltonian-in-wannier}的直观展示}
+    \caption{从给定的局域波函数获得Wannier波函数并在此表象下计算哈密顿量}
 \end{figure}
+
+\subsubsection{从任意的局域波函数获得Wannier波函数}
+
+\begin{equation}
+    \phi_{\vb*{k}}(\vb*{r}) = \frac{A_{\vb*{k}}}{\sqrt{N}} \sum_i \ee^{\ii \vb*{k} \cdot \vb*{R}_i} v(\vb*{r} - \vb*{R}_i),
+\end{equation}
+根据归一化条件
+\[
+    1 = \int \dd[3]{\vb*{r}} \abs{\phi_{\vb*{k}}(\vb*{r})}^2,
+\]
+可以计算得到
+\begin{equation}
+    \frac{1}{\abs*{A_{\vb*{k}}}^2} = \sum_i \ee^{\ii \vb*{k} \cdot \vb*{R}_i} \int \dd[3]{\vb*{r}} v(\vb*{r})^* v(\vb*{r} - \vb*{R}_i).
+\end{equation}
+我们会发现$\{\phi_{\vb*{k}}(\vb*{r})\}$是正交归一化的，因此对它们做反向的傅里叶变换得到的
+\begin{equation}
+    w_{i}(\vb*{r}) = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{R}_i} \phi_{\vb*{k}}(\vb*{r}) 
+\end{equation}
+也是正交归一化的。% TODO：检查归一化常数
+
+由于$A_{\vb*{k}}$存在动量依赖，$w_i(\vb*{r})$和$v(\vb*{r} - \vb*{R}_i)$未必是一样的。
+在$v(\vb*{r})$已经足够局域的时候，
+
+\subsubsection{一般的Wannier表象下的哈密顿量及其对角化} 
+
+
+
+\subsection{原子轨道线性组合和紧束缚模型}\label{sec:tight-binding-hopping}
+
 
 \subsubsection{简单晶格的原子轨道线性组合（LCAO）} 
 
@@ -989,7 +1020,7 @@ $\varphi_n(\vb*{r} - \vb*{R}_i)$满足
 
 \section{相互作用通道}
 
-\subsection{相互作用通道}\label{sec:interaction-bloch}
+\subsection{Bloch表象下的相互作用通道}\label{sec:interaction-bloch}
 
 本节讨论从自由电子模型出发如何加入相互作用。对库伦相互作用，有
 \[
@@ -1015,6 +1046,10 @@ $\varphi_n(\vb*{r} - \vb*{R}_i)$满足
 如果考虑自旋，就有
 \begin{equation}
     H_\text{int} = \frac{1}{2V} \sum_{\alpha, \beta} \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{q}} V_{\vb*{q}} c^\dagger_{\vb*{k}_1 + \vb*{q}, \alpha} c^\dagger_{\vb*{k}_2 - \vb*{q}, \beta} c_{\vb*{k}_2 \beta} c_{\vb*{k}_1 \alpha}.
+\end{equation}
+
+\begin{equation}
+    V(\vb*{q}) = \frac{4\pi e^2}{\abs*{\vb*{q}}^2}.
 \end{equation}
 
 \subsection{单能带系统的相互作用哈密顿量}
