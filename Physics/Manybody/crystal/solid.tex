@@ -18,6 +18,7 @@
 \usepackage{tikz-feynhand}
 \usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage[most]{tcolorbox}
 \usepackage{caption}
 \usepackage{prettyref}
 
@@ -47,6 +48,8 @@
 \newrefformat{note}{注\ref{#1}}
 \newrefformat{fig}{图\ref{#1}}
 \newrefformat{alg}{算法\ref{#1}}
+\newrefformat{info}{资料框\ref{#1}}
+\newrefformat{warning}{注意事项\ref{#1}}
 \renewcommand{\autoref}{\prettyref}
 
 \usetikzlibrary{arrows,shapes,positioning}
@@ -67,6 +70,13 @@
 \SetKwInput{KwData}{输入}
 \SetKwInput{KwResult}{输出}
 \SetArgSty{textnormal}
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{info}{资料框}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+\newtcbtheorem[number within=chapter]{warning}{注意事项}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warning}
 
 \renewcommand{\emph}[1]{\textbf{#1}}
 \newcommand*{\concept}[1]{\underline{\textbf{#1}}}
@@ -102,6 +112,53 @@
 \input{convention.tex}
 
 \part{凝聚态系统的组成}
+
+这一部分是关于凝聚态系统的组成的。我们将讨论晶体如何形成，理想晶体的几何结构和对称性，它的点群、空间群中有什么操作，如何据此分析可能的晶格形式，以及如何根据纯粹的几何性质分类晶体。
+
+我们将讨论准粒子是晶体的几何结构的对称群的表示，这导致很多非常物理的结果，如准粒子应该使用晶格动量标记这一事实。
+基本上，凝聚态系统的基本自由度都可以使用准粒子的观点讨论，将自旋自由度称为准粒子可能有些牵强，但是它们无疑是产生准粒子的场。
+很多人用准粒子一词表示电子、空穴等和电子结构有关的集体模式而用元激发表示声子等经典极限为波动的集体模式，虽然这个区分并不是很重要——例如，Luttinger液体中的玻色子算是什么呢？
+还有一种区分方式是将元激发限定为和系统的激发态相关的准粒子。有些准粒子在基态中也会出现，不将它们称为元激发。
+
+我们将讨论能带电子、声子、自旋的基质和性质。固体中固有的成分包括电子和晶格。电子之间存在库伦相互作用，同时受到晶格提供的周期性势场作用。
+在静止晶格的周期性势场作用下，原本能量简并的电子状态的能量会发生偏移，从而，一系列能量完全相同的电子态经过周期势场的扰动，其能量将成为一系列相差非常小的能级。
+当简并电子态的数目足够多——正如晶体中通常是的那样——就会形成在能谱中连续的\concept{能带}，对应的电子状态即为\concept{能带电子}。
+周期势的全部影响就是裸电子将会有能量修正而成为能带电子，无相互作用的能带电子组成费米气体，很容易处理。
+库伦排斥和声子介导的吸引相互作用合并为电子-电子相互作用，非常难以处理——电子-电子相互作用可以导致各种奇特的现象，并且其量级通常与费米能的量级一致。
+
+固体中，晶格可以起到两种作用：一种是提供一个周期性势场，一个是晶格的畸变；前者属于电子的单体哈密顿量，可以通过求解自由模型被考虑在内；后者则导致声子。
+这样，解出电子的近独立理论（如紧束缚模型）、声子的自由理论之后再加入电子、声子间的相互作用，我们就可以用电子和声子组成的相互作用气体完整描述晶体的行为，而不需要再显式考虑晶格的存在。
+例如，在计算热容等变量时，完全可以认为热容是声子和电子提供的，而不是（裸的）电子和晶格提供的。
+
+离子实的运动让我们得到一个定义在正格子上的场，这个场的激发就是\concept{声子}。晶体中一定会出现这样的激发，且这是一个Goldstone模式，因为晶体的形成实际上破缺了连续平移对称性，那么必然有一种零质量激发产生。
+离子实的哈密顿量大致如下：（使用大写字母以和电子区分）
+\[
+    {H} = \sum_n \frac{{P}_n^2}{2M_n} + \frac{1}{2} \sum_{\pair{m, n}} \omega_{mn}^2 ({X}_{m} - {X}_{n})^2 + \cdots, 
+\]
+其中$n$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$，
+\[
+    \vb*{X} = \vb*{R} - \vb*{R}_0
+\]
+为某个离子实的位移。
+正则量子化之后，哈密顿量中的前两项给出一个自由场，而离子实之间的非线性相互作用则给出声子-声子散射过程。
+由于坐标-动量关系是对易关系而不是反对易关系，声子是玻色子。
+
+离子实和电子的相互作用通常取这样的形式：
+\[
+    H_\text{ei} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n, i} (\vb*{R}_n - \vb*{R}_{n}^0) \cdot \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}_i) + \cdots,
+\]
+其中$R^0_n$指的是离子实$n$未发生移动时的位置，即$n$号正格子的位置。
+对位移场$\vb*{X}$做正则量子化，并将关于电子的部分做二次量子化，得到
+\[
+    {H}_{\text{ei}} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n} \int \dd[3]{\vb*{r}} {\vb*{X}} \cdot {\psi}^\dagger(\vb*{r}) \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}) {\psi}(\vb*{r}) + \cdots,
+\]
+这就是电子-声子相互作用。可以看出以上哈密顿量对${\vb*{X}}$不具有$U(1)$对称性，因此声子一般来说不是守恒的。
+
+声子和电子的量子化过程很不一样。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
+换而言之，没有声子的一次量子化：定义声子时我们的理论就是二次量子化的。
+
+原则上通过分析电子和声子组成的凝聚态场论可以得到一些信息。
+但是，相互作用和特殊的势场会导致各种眼花缭乱的现象。
 
 \input{first-principles.tex}
 
