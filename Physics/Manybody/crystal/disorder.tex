@@ -1,0 +1,210 @@
+\chapter{局域化}
+
+\section{Anderson局域化}
+
+\subsection{固体中的无序}
+
+理想晶体是高度有序的，但是实际的固体多少具有一些无序性。
+本节将介绍一种现象：当固体中出现无序，即平移对称性破缺时，电子会倾向于留在原地而不发生长距离跃迁。
+这种现象称为\concept{Anderson局域化}。无序可以来自掺杂，也可以来自离子实实际上并没有构成晶体这一事实。
+
+例如可以写出这样的一个带有格点无序的紧束缚模型：
+\begin{equation}
+    {H} = - t \sum_{\pair{\vb*{i}, \vb*{j}}} ({c}_{\vb*{i}}^\dagger {c}_{\vb*{j}} + \text{h.c.}) + \sum_{\vb*{i}} \epsilon_{\vb*{i}} {c}_{\vb*{i}}^\dagger {c}_{\vb*{i}},
+    \label{eq:tight-binding-with-disorder}
+\end{equation}
+其中$\epsilon_{\vb*{i}}$是一个随机变量，它基本上就是一个在空间各点不一样的“化学势”，让一些地方比另一些地方更能够留住电子。
+接下来考虑这样的$\epsilon_{\vb*{i}}$的分布特例：
+\begin{equation}
+    \overline{\epsilon_{\vb*{i}}} = 0, \quad \overline{\epsilon_{\vb*{i}} \epsilon_{\vb*{j}}} = \delta_{\vb*{i} \vb*{j}} W^2 , \quad W^2 \neq 0.
+\end{equation}
+这样，$W/t$就表征了无序的大小。如果$\epsilon_{\vb*{i}}$的分布服从高斯分布，我们就有Wick定理成立。
+这里我们使用$\overline{\cdots}$表示对杂质的构型的平均，而用$\expval*{\cdots}$表示给定杂质的构型之后做量子力学的平均。
+
+在$W/t=0$时就得到一个普通的能带，而如果$W/t \gg 1$，即无序很强，则体系的哈密顿量近似为
+\[
+    {H} = \sum_{\vb*{i}} \epsilon_{\vb*{i}} {c}_{\vb*{i}}^\dagger {c}_{\vb*{i}},
+\]
+这个哈密顿量在以瓦尼尔波函数为基底的表象下是对角化的，这样电子倾向于固定在原地，即出现局域化。另一方面，完全没有随机扰动时，电子可以自由地移动。
+这意味着随着$W/t$的增大，或是会出现一个金属-绝缘体相变，或是会出现一个crossover。
+
+\begin{figure}
+    \centering
+    \input{insulator-transition-figs/localization/band.tex}
+    \caption{一个无序系统的能带结构，延展态电子和局域态电子分别使用绿色和红色表示，两者的界限即为迁移率边}
+    \label{fig:disorder-band}
+\end{figure}
+
+一些简单的论证可以说明这种模型的电子结构。
+局域态和（能够长距离移动，从而能够导电的）延展态应该不共享能量。否则，设一个局域态和一个延展态具有一样的能量，那么将这个局域态和延展态做线性组合，得到另一个延展态，也能具有一样的能量，因此最终我们会发现，同一个能量上有一个被大量延展态环绕着的局域态，这种情况下我们其实可以直接忽略这个局域态。
+$W=0$时我们有一个连续的延展态能带。通过微扰论可以发现，在这个能带两端的波函数将转化为局域态。% TODO
+因此含有无序的金属的电子能带结构包括一个延展态能带和位于延展态能带两边的所谓的\concept{带尾局域态}（见\autoref{fig:disorder-band}）。随着$W/t$的增大，会有越来越多的延展态转化为局域态。
+
+现在费米面的位置将决定系统的导电性。如果费米面的位置位于较低的局域态能带中，虽然此时有能带半填充，但是由于是局域态，系统是绝缘体。
+在实空间中，这等价于电子都被束缚在杂质周围。
+费米面进入延展态能带后，所有能够被占据的杂质轨道都被占据了，电子别无他法，必须有一部分是延展态的。
+在实空间中，这就好像大水漫灌将小水坑都灌满而仍然有不少剩余的可以四处流动。
+当费米面进入较高的局域态能带时，延展态能带被占满，系统又一次变成绝缘体。
+在实空间中，这就好像水缸被填满了，只留下几个气泡，然而气泡被定域在一些点附近无法移动。
+改变费米面高度，或者更加容易的，改变$W/t$，因而能够产生一个延展-局域相变，或者说是金属-绝缘体相变。
+这个相变通常称为\concept{Anderson转变}。
+$W/t$增大只会让带尾局域态越来越多，最后延展态完全消失，因此无论费米面一开始在哪里，$W/t$足够大时都会发现金属-绝缘体相变，这正是前面通过分析$W/t=0$和$W/t \to \infty$而得出的结论。
+
+\subsection{格林函数的微扰计算}
+
+\eqref{eq:tight-binding-with-disorder}是自由理论，因此是严格可解的。通常我们会计算所谓的无序平均，即对每个可能的$\{\epsilon_{\vb*{i}}\}$构型，计算出某个物理量$O$（此处不是指可观察量算符，而是真的实行观测测得的量，如$\epsilon$给定后，某算符的期望值、方差，格林函数等），然后求出平均值$\overline{O}$。
+对一个热力学系统，如果$O$是关于系统全局的，则$O$和无序平均$\overline{O}$大概率是非常接近的，这是等概率原理的空间版本。
+
+我们要计算两点格林函数。显然
+\begin{equation}
+    G^{-1}_{\vb*{i} \vb*{j}}(\ii \omega_n) = \omega_n + t_{\vb*{i} \vb*{j}} - \epsilon_{\vb*{i}} \delta_{\vb*{i} \vb*{j}}.
+\end{equation}
+我们现在对$\epsilon_{\vb*{i}}$做微扰展开（虽然是自由系统但微扰展开总是合法的），就有
+\begin{equation}
+    \begin{aligned}
+        G_{\vb*{i} \vb*{j}}(\ii \omega_n) &= \frac{1}{\ii \omega_n + t_{\vb*{i} \vb*{j}}} + \frac{1}{\ii \omega_n + t_{\vb*{i} \vb*{k}}} (- \epsilon_{\vb*{k}} \delta_{\vb*{k} \vb*{l}}) \frac{1}{\ii \omega_n + t_{\vb*{l} \vb*{j}}} + \cdots \\
+        &= \frac{1}{\ii \omega_n - \hat{T}} + \frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}} + \cdots,
+    \end{aligned}
+    \label{eq:disorder-scattered-fermion-green}
+\end{equation}
+这里我们已经引入了动能算符$\hat{T}$和微扰$\hat{\epsilon}$。
+当然，这是非常直观的：电子和杂质散射了一次，两次，……
+用格林函数计算出各种可以观测的物理量，对$\{\epsilon_{\vb*{i}}\}$求平均即可。
+\eqref{eq:disorder-scattered-fermion-green}的第一项在杂质构型平均中保留，第二项消失，因为出现了奇数个$\hat{\epsilon}$，第三项保留，为
+\begin{equation}
+    \overline{\frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}} \hat{\epsilon} \frac{1}{\ii \omega_n - \hat{T}}} = W^2 \frac{1}{\ii \omega_n - t_{\vb*{i} \vb*{j}}} \frac{1}{\ii \omega_n - t_{\vb*{j} \vb*{j}}} \frac{1}{\ii \omega_n - t_{\vb*{j} \vb*{k}} }.
+\end{equation}
+考虑更高阶项，会发现格林函数实际上可以通过费曼规则
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = 
+\end{equation}
+得到。直观地看，这是说电子运动路径如果经过它曾经经过的某一点，那么这个路径的权重就很大。
+我们也可以定义动量空间中的费曼规则。计算傅里叶变换，有
+\[
+    \begin{aligned}
+        G^{(2)}(\vb*{k}, \ii \omega_n) &= \sum_{\vb*{i}, \vb*{j}, \vb*{l}} G_{\vb*{i} \vb*{j}}^{0} G_{\vb*{j} \vb*{j}}^{0} G_{\vb*{j} \vb*{l}}^0 \ee^{- \ii \vb*{k} \cdot (\vb*{R}_{\vb*{i}} - \vb*{R}_{\vb*{l}})} \\
+        &= \sum_{\vb*{k}'} G_{\vb*{k}}^0 G_{\vb*{k}'}^0 G_{\vb*{k}}^0,
+    \end{aligned}
+\]
+其结果是
+% TODO：费曼规则
+这是意料之中的，因为坐标空间中的费曼规则要求某两次散射发生在同一个地点，这个地点上的动量守恒条件实际上就是
+\[
+    \vb*{k} + \vb*{k}' = \vb*{k} + \vb*{k}'.
+\]
+
+将无穷多个图加在一起实际上给出的就是自能修正。“一圈图”（虽然实际上是树图，因为虚线不提供传播子，也就没有圈图积分）的自能修正是
+\begin{equation}
+    \overline{G(\vb*{k}, \ii \omega_n)} = \frac{1}{\ii \omega_n - \xi_{\vb*{k}} - \Sigma} , \quad \Sigma = W^2 \sum_{\vb*{k}'} \frac{1}{\ii \omega_n - \xi_{\vb*{k}'}} ,
+\end{equation}
+或者换成推迟格林函数中的自能，是
+\begin{equation}
+    \overline{G^\text{ret}(\vb*{k}, \omega)} = \frac{1}{\omega - \xi_{\vb*{k}} - \Sigma + \ii 0^+} , \quad \Sigma^\text{ret} = W^2 \sum_{\vb*{k}'} \frac{1}{\omega - \xi_{\vb*{k}'}  + \ii 0^+}.
+\end{equation}
+这个自能修正的实部是非常平凡的，除了平移了一下化学势以外什么也没有做，而其虚部
+\begin{equation}
+    \Im \Sigma^\text{ret} = - \pi W^2 \sum_{\vb*{k}'} \delta(\omega - \xi_{\vb*{k}'}) = - \pi W^2 N(0).
+\end{equation}
+则给出了电子的寿命，实际上最好说是电子的动量模式的寿命，即电子运动着运动着就被散射到别的动量模式上了。通过计算电子寿命可以得到体系的电阻。
+
+\subsection{弱局域化}
+
+上一节并没有解释为何当无序越来越强时到底发生了什么才导致局域化。本节将提供一些物理图像。
+
+系统中总是有大量热涨落，因此电子在长距离运动时会出现退相干。
+设$l$为电子的相干长度，则参数
+\begin{equation}
+    \gamma = \frac{1}{\pi k_\text{F} l}
+\end{equation}
+表征了长距离相干性。在$\gamma$非常小时，两个杂质的间距远大于电子相关长度，因此可以使用经典模型处理问题。
+这样，我们认为电子以费米速度运动，并与杂质发生弹性碰撞。于是可以认为电子在做一个随机行走，两步之间没有任何关联。
+这样，两条路径之间不可能
+
+现在假定虽然$\gamma$很小，但相干的散射还是可能的。这样两点之间的跃迁概率就会出现超越经典模型的修正。
+从一个点出发经过一系列点然后又回来的路径会因为相干叠加而获得很大概率（经典概率的两倍）。
+
+电子运动情况的空间系综平均等价于一个随机行走
+% TODO
+\[
+    \expval*{r^2}(t) = D_0 t = \frac{l^2}{\tau} t = v_\text{F}^2 \tau t.
+\]
+在时间$t$内，电子经典情况下可以到达的体积为
+\[
+    V(t) \sim (\sqrt{D_0 t})^d = (D_0 t)^{d/2},
+\]
+如果其体积在一个大小为
+\[
+    \sim \lambda_\text{F}^{d-1} v_\text{F} \dd{t}
+\]
+的圆柱体中，那么在$t$到$t+\dd{t}$时间内它就可以回到原点。这样
+\[
+    P_{a \to a} \sim \int \frac{\lambda_\text{F}^{d-1} v_\text{F} \dd{t}}{(D_0 t)^{d/2}} 
+\]
+积分下限的数量级为$\tau$，因为在比这更小的时间尺度上，电子的运动只是布朗运动，不是较连续的扩散。
+积分上限为退相干时间$\tau_\phi$，它也许来自电子和热化的声子的相互作用或是电子电子相互作用，无论如何都涉及一些有限温的机制。
+\[
+    \frac{\var{\sigma}}{\sigma_0} = - \lambda_\text{d} \begin{cases}
+        \sqrt{\frac{\tau_\phi}{\tau}}, \quad &d = 1, \\
+        \ln(\frac{\tau_\phi}{\tau}) , \quad &d = 2, \\
+        \sqrt{\frac{\tau}{\tau_\phi}} , \quad &d = 3.
+    \end{cases}
+\]
+当$T\to 0$时，$d=1, 2$的情况给出了缺乏物理意义的结果：电导率趋向负无穷。这意味着此时出现了局域化，并且不能使用微扰论讨论。
+$d=3$时随着温度降低，电导降至零。
+
+\subsection{Thouless论证和重整化群}
+
+由于$d=1, 2$的情况是超越微扰论的，需要使用重整化群的理论来分析问题。
+记归一化无量纲电导为
+\begin{equation}
+    g = \frac{G}{e^2 / \hbar},
+\end{equation}
+其中$G$为电导，它和材料的长度尺度$L$有关。将$L$看成重整化群参数，$L$增大表示往宏观性质方向移动。
+这样$\beta$函数定义为
+\begin{equation}
+    \beta(g(L)) = \dv{\ln g}{\ln L}.    
+\end{equation}
+
+对$g \gg 1$的情况，即良导体极限，由电阻定律
+\[
+    g = \sigma / (e^2 / \hbar) L^{d-2},
+\]
+则
+\[
+    \beta(g) = d - 2.
+\]
+实际上，无序的存在会让电阻变大，电导变小，即会让$\ln g$增长得没有那么快，于是对$g$比较大的情况，我们做一阶展开：
+\begin{equation}
+    \beta(g) = d - 2 - c \frac{1}{g},
+    \label{eq:disorder-rg-large-g}
+\end{equation}
+其中$c$是一个大于零的常数。
+
+对$g \ll 1$的情况即绝缘体的情况，电导会随着系统尺度快速衰减，通常是指数衰减：
+\[
+    g = g_0 \ee^{- L / \xi},
+\]
+于是
+\begin{equation}
+    \beta(g) = \ln(\frac{g}{g_0}).
+    \label{eq:disorder-rg-small-g}
+\end{equation}
+实际的$\beta$函数应该在\eqref{eq:disorder-rg-large-g}和\eqref{eq:disorder-rg-small-g}之间。
+绘图可知，对$d=1, 2$的情况，$\beta$函数始终小于零，因此在$L$增大时$g$会衰减到零。换而言之，这两个情况下含有无序的固体只有一个地能有效理论，就是完全的局域化。
+三维系统的$\beta$函数有一个零点$g_\text{c}$，如果一开始$g < g_\text{c}$，那么$\beta$函数始终是负的，于是重整化之后$g=0$，得到一个绝缘体相；如果一开始$g > g_\text{c}$，那么$\beta$函数始终是正的，重整化之后得到一个导体相。
+换而言之$g_\text{c}$是一个相变点。
+
+对三维情况，在相变点附加将$\beta$函数线性化，有
+\begin{equation}
+    \beta(g) = s \left( \frac{g - g_\text{c}}{g_\text{c}} \right),
+\end{equation}
+计算得到
+\begin{equation}
+    \frac{g(L) - g_\text{c}}{g_\text{c}} = \left( \frac{L}{} \right)
+\end{equation}
