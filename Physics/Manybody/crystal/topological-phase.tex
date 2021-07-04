@@ -5,7 +5,7 @@
 
 \section{拓扑绝缘体}
 
-\begin{back}{绝热演化}{adiabatic}
+\begin{back}{哈密顿量的拓扑分类}{hamiltonian-topological-calssification}
     哈密顿量变化，系统的基态和激发态也会随之变化。哈密顿量的局域、连续的变化\emph{不能}让基态和激发态遍历所有的可能。
     例如，基态和激发态之间是否存在能隙这件事在哈密顿量的连续局域变化下是不会变的。
     这些诸如能隙有无之类的东西可以看成拓扑不变量，据此我们可以对哈密顿量做拓扑分类。
@@ -18,6 +18,48 @@
 既然连续地、局域地调节哈密顿量不会改变能隙的有无，我们可以据此定义一个拓扑等价类。
 % TODO：平庸芯能带
 所有的传统绝缘体（就是\autoref{chap:conventional-metal}中出现的那些）都可以归入一类，这个类别中也包括真空，因为真空中的电子同样可以认为有一个价带（电子）和一个满带（正电子），两者之间存在能隙。
+
+\begin{back}{Berry相位}{berry-phase}
+    设含时哈密顿量$H$依赖一系列连续参数$\vb{R}(t) = (R_1(t), \ldots, R_n(t))$，用$\ket{n(\vb{R}(t))}$标记该哈密顿量的本征态。
+    假定$\vb{R}(t)$变化得（相比于$H$的能谱的最小能隙）充分缓慢，以至于如果系统以$\ket{n(\vb{R}(t))}$为初态，那么经过一段时间的演化之后不会跃迁到其他本征态上（\concept{绝热演化}）。
+    
+    设系统初态为$\ket{n(\vb{R}(t))}$，经过一段时间后系统状态为
+    \begin{equation}
+        \ket{\psi_n(t)} = \ee^{\ii \gamma_n(t)} \exp(-\frac{\ii}{\hbar} \int_0^t \dd{t'} E_n(\vb{R}(t'))) \ket{n(\vb{R}(t))},
+    \end{equation}
+    将上式代入
+    \[
+        \ii \hbar \dv{t} \ket{\psi_n(t)} = H(\vb{R}(t)) \ket{\psi_n(t)},
+    \]
+    得到
+    \begin{equation}
+        \gamma_n(t) = \ii \int_0^t \dd{t'} \mel*{\psi_n(t)}{\dv{t}}{\psi_n(t)} = \ii \int_{\vb{R}(0)}^{\vb{R}(t)} \dd{\vb{R}} \cdot \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} .
+    \end{equation}
+    $\gamma_n(t)$不含有任何$\hbar$，因此实际上这\emph{不是}一个动力学相位，而是所谓的几何相位。
+    定义
+    \begin{equation}
+        \vb{A} = \ii \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} 
+    \end{equation}
+    为\concept{Berry联络}。
+    
+    Berry联络是规范可变的，因为容易验证，如果做变换
+    \begin{equation}
+        \ket{n(\vb{R})} \longrightarrow \ee^{\ii \zeta(\vb{R})} \ket{n(\vb{R})}, 
+    \end{equation}
+    就有
+    \begin{equation}
+        \vb{A}(\vb{R}) \longrightarrow \vb{A}(\vb{R}) - \grad_{\vb{R}} \zeta(\vb{R}).
+    \end{equation}
+    在时间从$0$演化到$T$的闭合的$\vb{R}(t)$回路上，由于单值性，有
+    \[
+        \zeta(\vb{R}(T)) - \zeta(\vb{R}(0)) = 2 \pi n, \quad n \in \mathbb{Z},
+    \]
+    从而积分
+    \begin{equation}
+        \oint \dd{\vb{R}} \cdot \vb{A}
+    \end{equation}
+    在模$2\pi$的意义下是规范不变的。
+\end{back}
 
 \section{整数量子霍尔效应}
 
@@ -252,6 +294,20 @@ $s$和$p$均有$N$个，于是所有可能的$\{A_s\}$和$\{B_p\}$的组合总�
 通过弦算符可以检查e粒子和m粒子绕对方转一圈（实际上就是使用一个闭合的弦算符作用在一个有e粒子或者m粒子的格点上），都会多出来一个$\pi$的相位，这是因为如果一个m粒子闭弦和一个e粒子开弦有单个交点，那么它们反对易（因为同一个边上的${\sigma}^x$和${\sigma}^z$反对易）。
 换而言之，e粒子和m粒子均为任意子激发：这是二维的特殊现象，因为二维的环路在二维平面上它围绕的区域被挖掉一个点之后就不可缩了，因此一个粒子转一圈之后可以有一个非零相位变化。
 本节涉及的激发尚为阿贝尔统计，即转一圈之后得到的量子态和转之前只差一个$U(1)$变换；还有非阿贝尔统计，即转一圈可以转移到别的量子态上。
+
+\begin{back}{任意子激发}{anyons}
+    费米子和玻色子的概念可以通过自由场的量子化直接得到。
+    不过我们也不妨稍稍推广一下“点粒子”的定义：如果一个格点系统（连续空间可以先离散化）满足如下条件：
+    \begin{itemize}
+        \item 希尔伯特空间的某一组基矢量可以通过在每个格点上放置一个自然数$n_{\vb*{i}}$（所谓\concept{粒子数}）标记。
+        \item % TODO：相位 对相邻格点$\vb*{i}$和$\vb*{j}$，系统的哈密顿量允许让$\vb*{i}$点的$n_{\vb*{i}}$减一和让$\vb*{j}$点的$n_{\vb*{j}}$加一（能够做到这点的算符称为\concept{跃迁算符}，用$t_{\vb*{i} \vb*{j}}$表示）的过程发生（几率暂且不论）。
+        \item 如果$\vb*{i}, \vb*{j}, \vb*{k}, \vb*{l}$彼此不相同，则
+        \begin{equation}
+            \comm*{t_{\vb*{i} \vb*{j}}}{t_{\vb*{k} \vb*{l}}} = 0.
+        \end{equation}
+    \end{itemize}
+    那么就可以说这个系统是一个粒子系统。这几条假设捕捉了“粒子”的直觉概念的大部分。
+\end{back}
 
 \subsection{任意子表}
 
