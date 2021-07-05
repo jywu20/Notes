@@ -1,0 +1,186 @@
+\chapter{拓扑能带论}
+
+本节要讨论的系统和\autoref{chap:conventional-metal}的哈密顿量基本上是差不多的：系统的基本自由度是某种电子，可以完全使用能带理论刻画它，相互作用可以忽略。
+然而，特殊的拓扑性质会让这些系统展现出和普通的金属、绝缘体非常不同的行为。
+
+\section{拓扑绝缘体}
+
+\begin{back}{哈密顿量的拓扑分类}{hamiltonian-topological-calssification}
+    哈密顿量变化，系统的基态和激发态也会随之变化。哈密顿量的局域、连续的变化\emph{不能}让基态和激发态遍历所有的可能。
+    例如，基态和激发态之间是否存在能隙这件事在哈密顿量的连续局域变化下是不会变的。
+    这些诸如能隙有无之类的东西可以看成拓扑不变量，据此我们可以对哈密顿量做拓扑分类。
+\end{back}
+
+绝缘体中化学势位于两条能带中间，因此有明确的、彼此之间不连续的价带和导带，换而言之，载流子存在能隙（见\autoref{sec:conductor-classification}）。
+另一方面，导体中载流子不存在能隙。
+单电子能谱是否存在能隙也决定了\emph{电子态}具有或者不具有能隙，因为多电子态能够发生的最小偏移就是多一个或者少一个电子。
+
+既然连续地、局域地调节哈密顿量不会改变能隙的有无，我们可以据此定义一个拓扑等价类。
+% TODO：平庸芯能带
+所有的传统绝缘体（就是\autoref{chap:conventional-metal}中出现的那些）都可以归入一类，这个类别中也包括真空，因为真空中的电子同样可以认为有一个价带（电子）和一个满带（正电子），两者之间存在能隙。
+
+\begin{back}{Berry相位}{berry-phase}
+    设含时哈密顿量$H$依赖一系列连续参数$\vb{R}(t) = (R_1(t), \ldots, R_n(t))$，用$\ket{n(\vb{R}(t))}$标记该哈密顿量的本征态。
+    假定$\vb{R}(t)$变化得（相比于$H$的能谱的最小能隙）充分缓慢，以至于如果系统以$\ket{n(\vb{R}(t))}$为初态，那么经过一段时间的演化之后不会跃迁到其他本征态上（\concept{绝热演化}）。
+    
+    设系统初态为$\ket{n(\vb{R}(t))}$，经过一段时间后系统状态为
+    \begin{equation}
+        \ket{\psi_n(t)} = \ee^{\ii \gamma_n(t)} \exp(-\frac{\ii}{\hbar} \int_0^t \dd{t'} E_n(\vb{R}(t'))) \ket{n(\vb{R}(t))},
+    \end{equation}
+    将上式代入
+    \[
+        \ii \hbar \dv{t} \ket{\psi_n(t)} = H(\vb{R}(t)) \ket{\psi_n(t)},
+    \]
+    得到
+    \begin{equation}
+        \gamma_n(t) = \ii \int_0^t \dd{t'} \mel*{\psi_n(t)}{\dv{t}}{\psi_n(t)} = \ii \int_{\vb{R}(0)}^{\vb{R}(t)} \dd{\vb{R}} \cdot \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} .
+    \end{equation}
+    $\gamma_n(t)$不含有任何$\hbar$，因此实际上这\emph{不是}一个动力学相位，而是所谓的几何相位。
+    定义
+    \begin{equation}
+        \vb{A} = \ii \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} 
+    \end{equation}
+    为\concept{Berry联络}。
+    
+    Berry联络是规范可变的，因为容易验证，如果做变换
+    \begin{equation}
+        \ket{n(\vb{R})} \longrightarrow \ee^{\ii \zeta(\vb{R})} \ket{n(\vb{R})}, 
+    \end{equation}
+    就有
+    \begin{equation}
+        \vb{A}(\vb{R}) \longrightarrow \vb{A}(\vb{R}) - \grad_{\vb{R}} \zeta(\vb{R}).
+    \end{equation}
+    在时间从$0$演化到$T$的闭合的$\vb{R}(t)$回路上，由于单值性，有
+    \[
+        \zeta(\vb{R}(T)) - \zeta(\vb{R}(0)) = 2 \pi n, \quad n \in \mathbb{Z},
+    \]
+    从而积分
+    \begin{equation}
+        \oint \dd{\vb{R}} \cdot \vb{A}
+    \end{equation}
+    在模$2\pi$的意义下是规范不变的。
+\end{back}
+
+\section{整数量子霍尔效应}
+
+具有能隙的电子态同样可以因为拓扑而有非平凡的行为，典型的例子是\concept{整数量子霍尔效应}。
+
+\subsection{整数电导平台}
+
+实际的体系中有杂质，因此朗道能级会出现展宽，并且两个朗道能级之间的态基本上是局域化态（朗道能级中的态则比较舒展）。
+换而言之，朗道能级附近的电子可以自由移动，贡献电导，而两个朗道能级之间的电子高度定域，并不贡献电导。
+因此，随着电子数上升，在填充延展态时电导线性上升，而在填充定域态时电导没有变化。这就形成了\concept{电导平台}。
+相应的，平台处的霍尔电导为
+\[
+    \sigma_\text{H} = n \frac{e^2}{h}, \quad n = 0, 1, 2, \ldots,
+\]
+称为\concept{整数霍尔效应}。
+总之，要形成量子霍尔效应，对电导有贡献的能级必须有能隙。
+
+这就造成了一个非常矛盾的情况：要观察到电导平台，体系必须比较“脏”，这样才能够有明确的定域态，从而形成平台；但实际上，在体系很脏时朗道能级附近的延展态也被破坏了，因此太脏的体系展现不出太多平台。
+因此明显的量子霍尔效应需要体系有些脏但又不太脏。
+
+“对电导有贡献的能级必须有能隙”还产生了一个问题：既然有能隙，那么在化学势位于能隙之中时如何形成显著的电流？
+唯一的可能是，体态有能隙，但边界态没有能隙，从而边界态导电。（这还意味着一件事：体态有能隙说明体态内部的关联长度有限，因此边界态和体态相对独立）
+可以从一个经典图像看到这一点：在体态中电子可以不停做圆周运动，而在边界附近电子做完半个圆周运动后被反弹，而又往前做半个圆周运动。
+因此，可以形成绕着整个边界运行的（手性的）电流。边界态上如果有杂质，电子可以潜到体态中，绕过杂质，形成一个新的边界态。因此边界态上的电流是无损耗的。
+
+关于为什么霍尔电导取非常简洁的形式（通常的电导涉及关于材料的复杂性质），\concept{Laughlin论证}给出了一个解释。
+设有一个半径为$L$的圆柱体，其体态有能隙而边界态导电。
+沿着它的轴向加入一个磁场，总磁通量为$\Phi$。让$\Phi$缓慢地发生变化，从零变化到$\frac{h c}{e}$，则$\Phi$变化前后圆柱体均处于同样的状态，因为绕着大小为$\frac{h c}{e}$的磁通量转一圈什么也不会发生。
+磁通量的变化会导致一个电场，在边界上，我们有
+\[
+    2 \pi L E = - \frac{1}{c} \dv{\Phi}{t},
+\]
+从而
+\[
+    E(t) = \frac{1}{2\pi L c} \dv{\Phi}{t}.
+\]
+边界上的电场方向垂直轴向，从而产生一个平行于轴向的霍尔电流
+\[
+    I = 2 \pi L j = 2 \pi L \sigma_\text{H} E = \frac{\sigma_\text{H}}{c} \dv{\Phi}{t}.
+\]
+这个电流造成的电荷量变化为
+\[
+    \Delta Q = \int \dd{t} I = \frac{\sigma_\text{H}}{c} \Delta \Phi = \sigma_\text{H} \frac{h}{e},
+\]
+而由于电荷由电子携带，有
+\[
+    \Delta Q = me, \quad m = 0, 1, 2, \ldots,
+\]
+于是
+\[
+    \sigma_\text{H} = m \frac{e^2}{h}, \quad m = 0, 1, 2, \ldots.
+\]
+这就是整数阶量子霍尔效应的来源：它和体系的结构完全无关，只要体系体态有能隙，就能够得出存在整数霍尔效应的结论。
+
+\subsection{$1/m$型分数量子霍尔效应}
+
+既然Laughlin论证只能够得到整数量子霍尔效应，我们要问，分数量子霍尔效应是怎么产生的。
+显然，唯一的可能是，电子之间的相互作用产生了分数阶能级。
+本节讨论
+\[
+    \nu = \frac{1}{m}, \quad m = 1, 3, 5, \ldots
+\]
+型的分数量子霍尔效应，这是最简单的情况。
+
+Laughlin通过其天才的创造，一步到位地给出了能产生分数霍尔效应的波函数：
+\begin{equation}
+    \Phi(z_1, \ldots, z_N) = \prod_{i < j} (z_{\vb*{i}} - z_j)^{m} \ee^{- \sum_{\vb*{i}} \abs*{z_{\vb*{i}}}^2 / 4 l_0^2}, \quad m = 1, 3, 5, \ldots.
+\end{equation}
+容易验证以上波函数满足交换反对称性；当$z_{\vb*{i}}$趋于$z_j$时波函数趋于零，这是库伦排斥的结果。
+
+\section{一维Kitaev链拓扑超导体}
+
+\subsection{Kitaev链及其解析解}
+
+以下一维模型称为\concept{Kitaev链}：
+\begin{equation}
+    {H} = - t \sum_{\vb*{i}} ({c}_{\vb*{i}}^\dagger {c}_{i+1} + \text{h.c.}) - \mu \sum_{\vb*{i}} {c}_{\vb*{i}}^\dagger {c}_{\vb*{i}} + \sum_{\vb*{i}} (\Delta {c}_{\vb*{i}} {c}_{i+1} + \text{h.c.} ).
+    \label{eq:kitaev-chain-hamiltonian}
+\end{equation}
+\eqref{eq:kitaev-chain-hamiltonian}是一个p波超导模型，这个模型通常是这么来的：一个一维纳米线被放置在一个超导体上，两者的相互作用诱导前者也发生$U(1)$对称性破缺，然后我们使用平均场理论分析问题而引入一个$\Delta$参量。
+\eqref{eq:kitaev-chain-hamiltonian}是一个紧束缚模型，
+对\eqref{eq:kitaev-chain-hamiltonian}做傅里叶变换，可以得到
+\begin{equation}
+    {H} = \frac{1}{2} \sum_{\vb*{k}} \underbrace{\pmqty{{c}^\dagger_{\vb*{k}} & {c}_{-\vb*{k}}}}_{{\Psi}^\dagger} \pmqty{\epsilon_{\vb*{k}} - \mu & -2 \ii \Delta^* \sin k \\ 2 \ii \Delta \sin k & - \epsilon_{\vb*{k}} + \mu} \underbrace{\pmqty{{c}_{\vb*{k}} \\ {c}^\dagger_{-\vb*{k}}}}_{{\Psi}},
+\end{equation}
+然后再做Bogoliubov变换，计算出以下能谱：
+\begin{equation}
+    E_{\vb*{k}} = \pm \sqrt{(2t \cos k - \mu)^2 + 4 \abs{\Delta}^2 \sin^2 k}.
+\end{equation}
+
+\eqref{eq:kitaev-chain-hamiltonian}具有粒子-空穴对称性。% TODO
+总之就有一个约束就是设$P$为粒子空穴变换，我们有
+\[
+    P {\Psi}_{\vb*{k}} P^{-1} = \tau^* {\Psi}_{-\vb*{k}}^*
+\]
+
+Kitaev链不存在对称性自发破缺，但能隙可开可闭。当
+\begin{equation}
+    \mu = \pm 2t
+    \label{eq:kitaev-gap-point}
+\end{equation}
+时，能隙会关闭。除此之外任何参数的变动都只会引起连续的变化。
+因此，如果体系发生相变，那么只能是在\eqref{eq:kitaev-gap-point}处发生一个和对称性无关的相变。在化学势很低时，即$\mu$趋于负无穷时，根本就没有电子，因此从$-\infty$到$-2t$的部分肯定是平庸的。
+化学势非常高时（大于$2t$时）电子全满，同样是平庸的。
+因此有趣的行为集中在$-2t$到$2t$之间。下面会看到，当$\mu$越过\eqref{eq:kitaev-gap-point}这两个点时，会发生一个拓扑相变。
+
+$W = \pm 1$，这是一个定义在立体中的量？
+
+\subsection{Kitaev链中的拓扑不变量}
+
+下面定义一个能带的拓扑不变量。
+
+总之，当$\mu$扫过$\mu=-2t$时，我们有
+\[
+    {c}_{\vb*{i}} = \frac{1}{2} ({\gamma}_{i\text{A}} + \ii {\gamma}_{i \text{B}}),
+\]
+容易验证均为
+\begin{equation}
+    \acomm*{{\gamma}_\alpha}{{\gamma}_\beta^\dagger} = 2 \delta_{\alpha \beta},
+\end{equation}
+
+\subsection{时间反演对称性保护的拓扑超导}
+
+刚才描述的拓扑超导和对称性没有特别明确的对称性。当然可以说它有粒子-空穴对称性，但是这完全是一个数学上的处理。
