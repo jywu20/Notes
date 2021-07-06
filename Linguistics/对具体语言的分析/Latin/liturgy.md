@@ -1,0 +1,1 @@
+Misereatur vestri omnipotens Deus
