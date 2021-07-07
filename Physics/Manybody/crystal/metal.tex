@@ -2,7 +2,7 @@
 
 在几个冗长的、本质上是在回顾单粒子量子力学和群表示论的章节之后，我们开始分析一些实际的系统。
 本章讨论那些电子重整化后形成可以辨认的电子型准粒子的系统，基本上就是传统意义上的“金属”、“绝缘体”、“半导体”等。
-本章的内容将足够解释常见的这些材料的行为——实际上，“有费米面的导电体”几乎可以成为金属的一个定义。
+本章的内容将足够解释常见的这些材料的行为——实际上，“有费米面的导电体”几乎可以成为金属的一个定义，而绝缘体因为只含有满带，其费米海的形状和第一布里渊区完全一样，谈不上有费米面。
 
 仔细想一下，金属中能够有可以辨认的电子型准粒子这件事是非常奇怪的：金属中的电子的库仑相互作用的量级通常和电子动能一样，似乎没有什么理由认为在如此强的相互作用下单电子模型能够适用。
 然而实验的确告诉我们金属的行为在很多方面非常像费米气体，即实际上描述金属的低能有效理论基本上就是一个费米气体加上一定的相互作用修饰。
@@ -768,19 +768,19 @@ $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任�
     \begin{equation}
         \xi_{\vb*{k}} = \frac{\vb*{k}^2}{2m} - \mu
     \end{equation}
-    \item 相互作用顶角为（为了节约符号，有时候我们会将$(\vb*{q}, \omega_n)$这样的四元组简写为$q$，其中$\omega_n = p^0$。）\input{metal/jellium/vertex.tex}
-    其中$\vb*{q}$可以随意取值（见\autoref{sec:interaction-bloch}）。
+    \item 相互作用使用（为了节约符号，有时候我们会将$(\vb*{q}, \omega_n)$这样的四元组简写为$q$，其中$\omega_n = p^0$。）\input{metal/jellium/vertex.tex}
+    表示，其中$\vb*{q}$可以随意取值（见\autoref{sec:interaction-bloch}）。
     需要对$\vb*{q}$做求和，并注意由于库仑相互作用被假定为瞬时发生的，光子频率$\ii q^0$始终是零。
+    光子由于已经被积掉了，不贡献传播子。可以将\eqref{eq:jellium-vertex}整体看成一个给出库仑相互作用势能的顶角，不过更常见的做法是将光子线称为\concept{相互作用线}，将相互作用线和电子线的连接点称为顶角。
+    两个顶角被一条相互作用线连接则贡献一个库伦相互作用势能。
     通常系统均足够大，此时有\input{metal/jellium/vertex2.tex}
     \item 闭合电子回线需要乘上$-1$。
 \end{itemize}
 不要忘记按照松原格林函数的定义，将需要计算的所有图求和后需要加上负号才能够得到松原格林函数。
 
-\subsection{Hartree-Fock近似}
+我们仍然使用波浪线表示库仑相互作用，表示这是光子介导的。在之后的模型中，相互作用势会被多次修正，得到一个形式复杂的，\eqref{eq:general-electron-electron-interaction}形式的理论，那时将使用虚线表示电子间排斥。
 
-
-
-\subsection{RPA近似}
+\subsection{正规自能计算和Hartree-Fock近似}
 
 \begin{back}{单粒子格林函数的自能修正}{self-energy}
     做自能计算时我们有
@@ -863,7 +863,45 @@ $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任�
                 \end{tikzpicture}
         \end{gathered}.
     \end{equation}
+
+    1PI图的计算常常采用骨架图的做法，即画出1PI图中最低阶的那些图，然后将其中的粒子线和相互作用顶角替换成相互作用修饰后的，这样可以覆盖全部1PI图。
 \end{back}
+
+\begin{back}{平均场近似}{scf-method}
+    一种常用的近似是，在1PI图中只将我们想要计算的那部分单粒子格林函数对应的粒子线替换成相互作用粒子线，于是得到一个形如“我们想要计算的单粒子格林函数=一系列包含我们想要计算的单粒子格林函数的费曼图的和”这样的方法，即可解出我们想要计算的单粒子格林函数。
+    形式上，这等价于将相互作用哈密顿量做类似于这样的分解：
+    \[
+        c^\dagger c^\dagger c c \approx \expval{c^\dagger c} c^\dagger c,
+    \]
+    其中$\expval{c^\dagger c}$是我们要计算的格林函数，然后用这个“单电子哈密顿量”形式地求解$\expval{c^\dagger c}$，就得到了一个自洽方程，解之就得到想要的格林函数。
+    形式上看，这相当于将相互作用看成了系统中其它粒子形成的大小为$\expval{c^\dagger c}$的一个外场，所以也可以叫做平均场近似。
+
+    以上介绍的是需要求解自洽方程的平均场近似，当然作为最粗糙的估计，这个自洽方程的右边可以代入自由情况下我们要计算的格林函数，这就是非自洽的平均场方法，通常效果不好。
+\end{back}
+
+计算单电子格林函数实际上就是要计算自能。本节考虑库伦相互作用的平均场理论，即将一阶自能图中的所有电子线修正为相互作用电子线，不对相互作用线和顶角做修正。
+这样会得到
+
+\subsubsection{零温下的HF自洽方程组}
+
+\subsubsection{有限温度情况}
+
+\subsubsection{Hartree-Fock近似的用处以及它何时失效}
+
+\begin{figure}
+    \centering
+    \input{metal/jellium/generalized-hartree-fock.tex}
+    \caption{一般的电子-电子散射也有Hartree项和Fock项}
+    \label{fig:generalized-hartree-fock}
+\end{figure}
+
+以上推导都是针对库仑相互作用的，但是显然对\eqref{eq:general-electron-electron-interaction}中一般的电子-电子相互作用，由于存在动量转移，从高能物理的角度说，由于有光子交换，电子-电子相互作用顶角仍然需要包含相互作用线（此时绘制为虚线，因为没有特别良定义的“光子”概念），为
+\input{metal/jellium/generalized-vertex.tex}
+因此\eqref{eq:general-electron-electron-interaction}关于单电子格林函数的平均场近似同样包含Hartree项和Fock项（见\autoref{fig:generalized-hartree-fock}），同样可以称为Hartree-Fock近似。
+
+Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以略去，在这些说法不适用的情况下，自然就不正确了。
+
+\subsection{RPA近似}
 
 实际上从\eqref{eq:ext-electron-ret-nn}就可以看出RPA近似的实质。将\eqref{eq:ext-electron-ret-nn}做级数展开，我们有
 \[
@@ -882,6 +920,8 @@ $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任�
 环形图近似的成立条件是粒子数密度很高，从而主要的相互作用形式是电子通过库仑相互作用，激发出一些电子-空穴对（即环形图中的环），即主要的相互作用是环形图。
 也可以从另一个角度理解这件事：粒子数密度较高意味着屏蔽作用很强，所以$1/k^n$发散得不那么厉害的那些项没有什么贡献。
 RPA近似下没有出现这样的图：一个电子回线内部有一条光子线，即在单电子回线的图中没有出现Fock项，这和托马斯-费米屏蔽的假设是一致的，因此确实可以预期，当$\omega \to 0$时RPA近似退化到托马斯-费米屏蔽上。
+
+\subsection{梯形图近似}
 
 \section{金属和朗道费米液体}\label{sec:landau-fermi-liquid}
 
@@ -1546,11 +1586,28 @@ $\omega$和$\vb*{q}$分别是零声的频率和波矢，$\hat{\nu}$不依赖于$
 和
 \input{metal/flt/self-energy-2.tex}
 它们均没有$\omega$依赖，即重整化因子$Z=1$。
-
-因此对一个做单圈自能修正就够了的费米子系统，我们有
+因此对一个做单圈自能修正就够了的费米子系统，等效单粒子能量为
 \begin{equation}
-    f_{\vb*{k}}
+    \xi_{\vb*{k} \alpha} = \xi^0_{\vb*{k} \alpha} + \sum_{\vb*{k}', \beta} (V_0 - V_{\vb*{k} - \vb*{k}'} \delta_{\alpha \beta}) n_{\vb*{k}' \beta}^0,
 \end{equation}
+且单电子格林函数的形式和自由电子格林函数完全一致，区别在于要将$\xi^0_{\vb*{k} \alpha}$替换成$\xi_{\vb*{k} \alpha}$。
+这就意味着，首先，重整化后电子仍然是有费米面的；其次，如果近似认为$n^0$就是$n$，\eqref{eq:fermi-liquid-energy}可以看成重整化后电子的等效哈密顿量。
+这就说明相互作用电子气的低能理论就是费米液体，并且费米液体中的准粒子就是相互作用修饰后的电子。
+
+上面的推导中没有体现出一件事：如果$n$变了，那么$\epsilon$会跟着发生变化，这在我们推导朗道方程\eqref{eq:landau-fermi-liquid-equation}并且分析其行为时体现得尤其重要。
+这是因为\eqref{eq:lowerest-self-energy-hartree-fermi-liquid}和\eqref{eq:lowerest-self-energy-fock-fermi-liquid}都是最低阶的图，其中的电子线自己没有经过相互作用修饰。
+完整的图——做了正确的电子自能、真空极化、相互作用顶角修饰——中的电子线给出$n_{\vb*{k} \alpha}$，因此的确如果$n$变了，那么$\epsilon$会跟着发生变化；由于真空极化、相互作用顶角修饰也依赖于$n$，此时的系统总能量实际上相比\eqref{eq:fermi-liquid-energy}还要多出来一些项。
+容易看出，直接导致\eqref{eq:fermi-liquid-energy}的是自洽Hartree-Fock近似，其中自由电子线被修正为相互作用电子线（见\autoref{fig:scf-fermi-liquid}），从而$n^0$被替换成$n$。
+因此费米液体理论实际上可以看成一种平均场理论。当然，从\eqref{eq:fermi-liquid-single-energy}的形式其实就可以看到这一点了。
+它和凝胶模型中的自洽Hartree-Fock近似的不同之处在于$V_{\vb*{q}}$可以不是库伦排斥能，例如，可以做RPA近似得到等效屏蔽势，然后再做自洽Hartree-Fock近似。
+因此费米液体理论在给定了合适的$\epsilon^0$和$f$之后能够非常精确地描述电子气的行为。
+
+\begin{figure}
+    \centering
+    \input{metal/flt/scf.tex}
+    \caption{自洽Hartree-Fock近似下的两个自能图}
+    \label{fig:scf-fermi-liquid}
+\end{figure}
 
 \subsection{费米液体理论的意义，以及它何时失效}
 
