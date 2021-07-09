@@ -2,10 +2,12 @@
 
 本章讨论一种常用的求解固体电子结构的方法：\concept{密度泛函理论（DFT）}。
 直接求解介质中的所有电子在库仑相互作用下的状态是极为困难的，但是我们将看到，原则上总是可以找到一个不依赖于具体系统的泛函，使得任何一个哈密顿量为\eqref{eq:electron-gas-hamiltonian}的系统的任何性质都可以通过最小化这个泛函得到。
-这样的计算原则上不需要引入任何经验参数，因此称为\concept{第一性原理计算}。
+这样的计算原则上不需要引入任何经验参数，因此属于\concept{第一性原理计算}。（还有很多其它属于第一性原理计算的方法）
 虽然这么说，在实际的第一性原理计算中还是需要一些经验性的东西，如泛函的选取；并且，很多时候难以通过适当选取泛函来捕捉到一些特别近距离而强烈的相互作用（如Hubbard相互作用），从而需要使用所谓的DFT+$U$方法等。
 
-\section{理论基础}
+具体来说我们将主要介绍\concept{KSDFT}，即基于Kohn-Sham方程的DFT方法，因为它一方面是基于能量泛函的，一方面能够直接给出一些关于单电子波函数的信息。
+
+\section{KSDFT的理论基础}
 
 \subsection{Hohenberg-Kohn定理}
 
@@ -185,6 +187,9 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 如果近独立电子近似成立，$\epsilon_i$可能就是电子能级。我们将在\autoref{sec:single-electron-in-dft}中看到这一点。
 需注意Kohn-Sham方程的解唯一确凿无疑的物理意义就是电荷密度；$\epsilon_i$和$\phi_i$有什么意义是不完全确定的。
 
+Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbital-free DFT，这是一种完全不使用任何波函数的DFT方法，需要写下交换关联泛函$E_\text{XC}$以及一个用电子密度表示动能的泛函，即\concept{动能泛函}，然后做最优化。
+动能泛函通常比交换关联泛函还要难以写出，因此OFDFT长期以来不受重视，但近年由于找到了一些可靠的动能泛函，OFDFT的高效率让它再次受到量子化学界的关注。
+
 \section{后处理和物理量测量}
 
 本节讨论Kohn-Sham方程求解完成后怎样从计算结果解读出我们需要的各个物理量。
@@ -326,9 +331,9 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 
 \subsection{GGA近似}
 
-\section{计算步骤}
+\section{Kohn-Sham方程的求解}
 
-\autoref{alg:basic-kohn-sham}给出的只是求解\eqref{eq:kohn-sham-eq}的方法，而实际的凝聚态计算还需要考虑原子核的位置、携带的电荷（从而确定材料中的电子总量）等信息。
+\autoref{alg:basic-kohn-sham}给出的只是求解\eqref{eq:kohn-sham-eq}的方法，而实际的凝聚态计算还需要考虑原子核的位置、携带的电荷（从而确定材料中的电子总量）等信息，即需要适当地将$V_\text{ext}$和$\mu$引入；此外\eqref{eq:kohn-sham-eq}本身是微分方程，求解它需要做适当的离散化，例如，我们可以将$\phi_i(\vb*{r})$函数在适当的基底（量子化学中通常称为\concept{基组}）下展开。
 本节给出几种常见的DFT计算任务。
 
 \subsection{基于超胞的平面波DFT计算}\label{sec:supercell-pwdft}
@@ -400,3 +405,5 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \begin{info}{VASP软件包}{vasp}
     在
 \end{info}
+
+% TODO：类似于确定每一条带上的电子磁矩如何，电荷密度等等
