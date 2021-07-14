@@ -173,7 +173,7 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
 此时$\Delta(\vb*{k})$是一系列反对称球谐函数的线性组合。
 容易看出单态或者三重态的出现和费米面对称性的关系，比如如果费米面不对称，那么s波配对就不能产生。
 
-\subsection{平均场近似和Bogoliubov变换}
+\subsection{s波BCS超导的平均场近似和Bogoliubov变换}
 
 \subsubsection{平均场序参量哈密顿量}
 
@@ -203,6 +203,7 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     {H}_\text{MF} = \sum_{\vb*{k}, \alpha} (\epsilon_{\vb*{k}} - \mu) {c}_{\vb*{k} \alpha}^\dagger {c}_{\vb*{k} \alpha} - \frac{V_0}{2} \sum_{\vb*{k}, \vb*{k}', \alpha, \beta} \left(
         \expval*{{c}_{-\vb*{k} \beta} {c}_{\vb*{k} \alpha}} {c}^\dagger_{\vb*{k}' \alpha} {c}^\dagger_{- \vb*{k}' \beta} + \text{h.c.} 
     \right).
+    \label{eq:superconductivity-mf-original}
 \end{equation}
 的确，电荷守恒对称性被破缺了，原因是电子形成库伯对之后看起来就像被“冻结”了一样，因此不再被计入${c}^\dagger$自由度中，而是被计入序参量$\expval*{{c}_{-\vb*{k} \beta} {c}_{\vb*{k} \alpha}}$中。
 
@@ -213,28 +214,61 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     ) = -V_0 \sum_{\vb*{k}} \expval*{{c}_{-\vb*{k}\uparrow} {c}_{\vb*{k} \downarrow}} ,
     \label{eq:superconductive-order-parameter}
 \end{equation}
-则计算表明
+则\eqref{eq:superconductivity-mf-original}中只有尖括号内满足$\alpha = -\beta$的项才能够保留下来，计算得到
 \begin{equation}
     {H}_\text{MF} = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} {c}_{\vb*{k} \alpha}^\dagger {c}_{\vb*{k} \alpha} 
     + \Delta \sum_{\vb*{k}} {c}_{-\vb*{k} \downarrow}^\dagger {c}^\dagger_{\vb*{k} \uparrow}
     + \Delta^* \sum_{\vb*{k}} {c}_{\vb*{k} \uparrow} {c}_{-\vb*{k} \downarrow}.
     \label{eq:s-wave-superconductive-hamiltonian}
 \end{equation}
+我们在这里相当于做了两步近似，首先是假定只有相互作用通道
+\begin{equation}
+    H_\text{int} = - V_0 \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{- \vb*{k}' \downarrow} c^\dagger_{\vb*{k}' \uparrow} c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow}
+\end{equation}
+才是重要的，即实际上是在研究模型
+\begin{equation}
+    H = \sum_{\vb*{k}} \xi_{\vb*{k}} (c^\dagger_{\vb*{k} \uparrow} c_{\vb*{k} \uparrow} + c^\dagger_{\vb*{k} \downarrow} c_{\vb*{k} \downarrow}) - V_0 \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{- \vb*{k}' \downarrow} c^\dagger_{\vb*{k}' \uparrow} c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow},
+    \label{eq:superconductivity-opposite-mom}
+\end{equation}
+然后对这个哈密顿量做平均场分解。
+% TODO：合理性
 
 \subsubsection{平均场近似下的系统的费米型激发}
 
-在\eqref{eq:s-wave-superconductive-hamiltonian}中总是可以对${c}$和${c}^\dagger$做一个幺正变换，让$\Delta$为实数，因此以下假定$\Delta$为实数。
-用一个幺正变换重新定义一组准粒子（这就称为\concept{Bogoliubov变换}），使这组准粒子本身是费米子，并且能够让\eqref{eq:s-wave-superconductive-hamiltonian}对角化（从而这组准粒子的能谱就是\eqref{eq:s-wave-energy-band}）。
-首先我们有费米子的对易关系
-\[
-    \acomm*{{\gamma}_{\vb*{k}_1 \alpha}}{{\gamma}^\dagger_{\vb*{k}_2 \beta}} = \delta_{\vb*{k}_1 \vb*{k}_2} \delta_{\alpha \beta}, \quad \acomm*{{\gamma}_{\vb*{k}_1 \alpha}}{{\gamma}_{\vb*{k}_2 \beta}} = 0,
-\]
-并且可以看到，以下正交变换
-\[
+下面我们用一个幺正变换重新定义一组准粒子（这就称为\concept{Bogoliubov变换}），使这组准粒子本身是费米子，并且能够让\eqref{eq:s-wave-superconductive-hamiltonian}对角化（从而这组准粒子的能谱就是\eqref{eq:s-wave-energy-band}）。
+设这组Bogoliubov准粒子为$\gamma^\dagger_{\vb*{k} \alpha}$，我们要求费米子的对易关系
+\begin{equation}
+    \acomm*{{\gamma}_{\vb*{k}_1 \alpha}}{{\gamma}^\dagger_{\vb*{k}_2 \beta}} = \delta_{\vb*{k}_1 \vb*{k}_2} \delta_{\alpha \beta}, \quad \acomm*{{\gamma}_{\vb*{k}_1 \alpha}}{{\gamma}_{\vb*{k}_2 \beta}} = 0
+\end{equation}
+成立。可以看到，以下正交变换
+\begin{equation}
     \pmqty{{\gamma}_{\vb*{k} \uparrow} \\ {\gamma}^\dagger_{-\vb*{k} \downarrow}} = \pmqty{u_{\vb*{k}} & -v_{\vb*{k}} \\ v_{\vb*{k}} & u_{\vb*{k}}} \pmqty{{c}_{\vb*{k} \uparrow} \\ {c}^\dagger_{-\vb*{k} \downarrow}},
     \quad u_{\vb*{k}}^2 + v_{\vb*{k}}^2 = 1
+\end{equation}
+能够给出正确的对易关系。于是我们将\eqref{eq:s-wave-superconductive-hamiltonian}改写成
+\begin{equation}
+    H_\text{MF} = \sum_{\vb*{k}} \pmqty{c^\dagger_{\vb*{k} \uparrow} & c_{- \vb*{k} \downarrow}} \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{\vb*{k}} } \pmqty{c_{\vb*{k} \uparrow} \\ c^\dagger_{- \vb*{k} \downarrow}}.
+    \label{eq:superconductivity-mf-matrix}
+\end{equation}
+将其中的矩阵分解成$U^\dagger \diag(E_1, E_2) U$的形式，其中$U$是正交矩阵，就能够得到Bogoliubov准粒子。%
+\footnote{从电子到Bogoliubov准粒子的变换未必是正交变换，有时候真的要用一个非正交变换；关键在于对易关系必须正确，不是所有的线性变换形式都能够给出正确的对易关系。}%
+
+然而\eqref{eq:superconductivity-mf-matrix}中的矩阵做特征分解得到的$U$是否是正交矩阵是存疑的。
+我们能够确定$U$是幺正的，但是是否有$u_{\vb*{k}}^2 + v_{\vb*{k}}^2 = 1$成立呢？
+我们做一个大胆的假设，假定$\Delta$为实数。
+实际情况如何，需要通过系统地分析序参量的场论和对称性自发破缺之后的基态和其上的涨落才能够得到，我们将在\autoref{sec:superconductivity-gl}中验证这一点。
+这里我们姑且假定$\Delta$为实数，计算所有能够计算的东西，如果一切都符合得很好，那么这个假设是有道理的。
+$\Delta$为实数时\eqref{eq:superconductivity-mf-matrix}中的矩阵是实对称矩阵，一定能够做特征分解，且特征向量是实的，彼此正交。
+此时计算本征值得到
+\begin{equation}
+    E_{\vb*{k}} = \pm \sqrt{ \xi_{\vb*{k}}^2 + \abs{\Delta}^2 }.
+    \label{eq:s-wave-energy-band}
+\end{equation}
+取$E_{\vb*{k}}$为正值，特征分解得到
+\[
+    \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta & - \xi_{\vb*{k}} } = \pmqty{u_{\vb*{k}} & v_{\vb*{k}} \\ - v_{\vb*{k}} & u_{\vb*{k}}} \pmqty{\dmat{E_{\vb*{k}}, - E_{\vb*{k}}}} \pmqty{u_{\vb*{k}} & -v_{\vb*{k}} \\ v_{\vb*{k}} & u_{\vb*{k}}},
 \]
-能够给出正确的对易关系，则可以解出
+其中
 \begin{equation}
     u_{\vb*{k}} = \sqrt{\frac{E_{\vb*{k}} + \xi_{\vb*{k}}}{2 E_{\vb*{k}}}}, \quad v_{\vb*{k}} = \sqrt{\frac{E_{\vb*{k}} - \xi_{\vb*{k}}}{2 E_{\vb*{k}}}}.
 \end{equation}
@@ -246,7 +280,8 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     \end{cases}
     \label{eq:bogoliubov-transform}
 \end{equation}
-还有它的逆变换
+$\gamma_{\vb*{k} \uparrow}^\dagger$粒子的能量是$E_{\vb*{k}}$，$\gamma_{\vb*{k} \downarrow}^\dagger$粒子的能量是$- E_{\vb*{k}}$。
+逆变换为
 \begin{equation}
     \begin{cases}
         {c}_{\vb*{k} \uparrow} = u_{\vb*{k}} {\gamma}_{\vb*{k} \uparrow} + v_{\vb*{k}} {\gamma}_{-\vb*{k} \downarrow}^\dagger, \\
@@ -254,21 +289,31 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     \end{cases}
     \label{eq:inverse-bogoliubov-transform}
 \end{equation}
-由于从${c}$到${\gamma}$的线性变换是一个正交变换%
-\footnote{这件事不是一般成立的，有时候真的要用一个非正交变换；关键在于对易关系必须正确，不是所有的线性变换形式都能够给出正确的对易关系。}%
-，\eqref{eq:s-wave-superconductive-hamiltonian}的能谱可以通过对角化矩阵的方式求出。
-求解之后会发现能带为
-\begin{equation}
-    E_{\vb*{k}} = \pm \sqrt{ \xi_{\vb*{k}}^2 + \abs{\Delta}^2 }.
-    \label{eq:s-wave-energy-band}
-\end{equation}
+
+\begin{figure}
+    \centering
+    \subfigure[蓝色曲线是未配对电子的能谱，同时包含两种自旋；红色曲线是将一种电子当成空穴以后的能谱]{
+        \input{low-temperature-figs/bcs/pre-bogoliubov.tex}
+    }
+    \subfigure[Bogoliubov准粒子的能谱，相当于是将一种自旋的电子视为电子，一种自旋的电子视为空穴，然后打开能隙]{
+        \input{low-temperature-figs/bcs/bolgoliubov-energy.tex}
+    }
+    \caption{Bogoliubov准粒子的能谱}
+    \label{fig:superconductivity-bogoliubov}
+\end{figure}
+
 这个结果具有粒子-空穴对称性，但是这并不具有太多物理意义，因为它实际上是对角化时交换了一对产生湮灭算符，从而把一部分粒子自由度写成了空穴而已。
-\eqref{eq:s-wave-energy-band}中，序参量$\Delta$把原本发生交叉的两条能带$E=\pm \xi_{\vb*{k}}$的交叉点分开了，即打开了一个能隙。
+
+没有$\Delta$时只考虑轨道波函数的话有一条能带，就是$E = \xi_{\vb*{k}}$，考虑有一上一下两种自旋那就有两条能带。
+对金属$\xi_{\vb*{k}}$是无能隙的，即$\xi_{\vb*{k}}$存在零点。%
+\eqref{eq:s-wave-energy-band}中，序参量$\Delta$的存在让我们得到了两条彼此存在能隙的能带。
+由费米分布，$E = - E_{\vb*{k}}$那一条带，即$\gamma_{\vb*{k} \downarrow}$那一条带完全被占据（我们已经将化学势算在$\xi_{\vb*{k}}$中了，无需重复考虑化学势）。
+因此基态附近的费米型激发就是$\gamma_{\vb*{k} \uparrow}$准粒子和$\gamma_{\vb*{k} \downarrow}$准空穴，它们的能谱都是$E = E_{\vb*{k}}$，并且有一个大小为$\Delta$的能隙。（见\autoref{fig:superconductivity-bogoliubov}）
 
 系统的费米型激发存在能隙这件事是值得注意的。我们这里以$\xi_{\vb*{k}}$为电子能量，即已经扣除了化学势，如果系统是普通意义上的导体，那么不应该有能隙，因为化学势在某一条能带内部，费米面附近的电子可以被任意小的能量激发。
 但是\eqref{eq:simple-super-conductive-hamiltonian}的费米型激发是有能隙的，这意味着在零温处根本不存在普通的能带电子，所有的电子都被“封印”在库伯对里面了，并且小的扰动只会让库伯对“海”发生小的扭曲，不会让费米型激发出现，因为费米型激发是有能隙的。
 此时也不存在费米面，因为有费米面则费米面附近的费米型载流子是无能隙的，而这并非这里的情况。
-略微考虑一下我们就会发现，$\abs{\Delta}$正是拆开一个库伯对，从中释放出电子需要的能量，可以说就是库伯对的结合能，系统的费米型激发有能隙即$\Delta \neq 0$意味着库伯对是稳定的，不会被任意小的扰动拆散。
+略微考虑一下我们就会发现，${\Delta}$正是拆开一个库伯对，从中释放出电子需要的能量，可以说就是库伯对的结合能，系统的费米型激发有能隙即$\Delta \neq 0$意味着库伯对是稳定的，不会被任意小的扰动拆散。
 
 % TODO：系统基态：Bogoliubov准粒子真空态
 
@@ -341,7 +386,43 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
 \end{equation}
 如果实验测量出来的比值远离3.5，那就可以确定这个超导现象不来自BCS机制。
 
-\subsection{朗道-金斯堡理论}
+\subsection{s波超导的金斯堡-朗道理论}\label{sec:superconductivity-gl}
+
+\subsubsection{对称性分析}
+
+现在我们采取另一条路，尝试直接从$U(1)$对称性被破缺这件事来获得关于超导的一些解释。
+设$\Phi$为库伯对序参量，我们知道它是一个复标量场。有时称它为超导波函数，虽然它并不是任何粒子的波函数，但它服从的方程和薛定谔方程形式一致。
+我们假定超导相中仅有的重要的自由度是这个序参量，其他量（比如单个电子）全部不重要。
+这个假设是整个理论中最需要物理直觉的部分，因为并非对全部体系都有这个结论，例如做一维电子的玻色化时就不能只用一个标量场，在分析二维正方晶格的自旋波时也需要同时考虑序参量和电子。
+在讨论BCS系统时能用这个假设是因为如前所述，破缺的是$U(1)$对称性，而$U(1)$对称性被破缺是因为电子在低温下配对为库伯对，电子的全部行为都被库伯对反映了，因此只需要考虑库伯对序参量即可。
+
+设外加一个大小为$\vb*{A}$的磁矢势，按照规范不变性我们写下一个理论
+\begin{equation}
+    F = \int \dd[3]{\vb*{r}} \left( \abs*{(\grad - \ii 2 e \vb*{A}) \Phi}^2 + r \abs{\Phi}^2 + u\abs{\Phi}^4 \right).
+    \label{eq:gl-theory}
+\end{equation}
+这里我们已经使用协变导数代替了原有的导数；系数为$2e$是因为一个库伯对带有两个负电荷，或者更加数学地说，一个库伯对包含两个湮灭算符，因此做$U(1)$变换时会有两个复数因子而不只是一个。
+\eqref{eq:gl-theory}在相变点附近保证成立，一方面，相变点附近库伯对序参量不大，可以级数展开取前几项，另一方面，通过量纲分析可以发现
+\[
+    [\Phi] \sim [L]^{-1/2},
+\]
+容易验证没有提到的项在重整化不动点附近全部是不相关的，在重整化群作用下会被压低。
+我们遵从做朗道-金斯堡理论时的惯例，适当调节单位制（或者说把无关的常数融合进$\Phi$中）来让梯度平方项前面的系数为1。
+
+计算\eqref{eq:gl-theory}的极小值点，可以得到
+\begin{equation}
+    - \frac{(\grad - \ii e \vb*{A})^2}{4 m^*} \Phi + \alpha \Phi + \beta \abs{\Phi}^2 \Phi = 0.
+\end{equation}
+这个方程的形式和薛定谔方程非常接近，当然这更多是对称性带来的结果，即薛定谔场也具有$U(1)$对称性。
+
+$U(1)$对称性给出的守恒流为
+\begin{equation}
+    \vb*{j} \propto \Phi^* \grad{\Phi} - \Phi \grad{\Phi^*},
+\end{equation}
+当然这就是电流。当然，由于我们只是在做对称性分析，并不能明确地得出式子右边的系数。
+上式说明超导的电流来自序参量的梯度，这和通常导电的机制（电场下费米面发生移动）不同。由于序参量是复的，即使不存在振幅的空间变化，仅仅靠不同点相位不同就足够产生持续电流。这是一个稳态解，所以不存在能量消耗。这也就是超导体唯象地看起来似乎有某种运动全然不会受到阻碍的“反常电子”的原因。
+
+\subsubsection{有效哈密顿量\eqref{eq:superconductivity-opposite-mom}的Hubbard-Stratonovich变换}
 
 \begin{back}{金斯堡-朗道理论和Hubbard-Stratonovich变换}{gl-hubbard-stratonovich}
     很多集体行为和相变均可以通过经典的金斯堡-朗道理论加以描述：相变的出现是因为某个对称性（由于一些特殊的相互作用）被破缺了，然后我们可以使用某个序参量来描述相变，而序参量的涨落就给出了相变之后系统的低能自由度。
@@ -370,39 +451,15 @@ $\vb*{k}$和$\vb*{k}+\vb*{q}$都在费米面附近。
     使用我们这里的办法则可以很好地考虑平均场之上的涨落。
 \end{back}
 
-\subsubsection{对称性分析}
-
-现在我们采取另一条路，尝试直接从$U(1)$对称性被破缺这件事来获得关于超导的一些解释。
-设$\Phi$为库伯对序参量，我们知道它是一个复标量场。有时称它为超导波函数，虽然它并不是任何粒子的波函数，但它服从的方程和薛定谔方程形式一致。
-我们假定超导相中仅有的重要的自由度是这个序参量，其他量（比如单个电子）全部不重要。
-这个假设是整个理论中最需要物理直觉的部分，因为并非对全部体系都有这个结论，例如做一维电子的玻色化时就不能只用一个标量场，在分析二维正方晶格的自旋波时也需要同时考虑序参量和电子。
-在讨论BCS系统时能用这个假设是因为如前所述，破缺的是$U(1)$对称性，而$U(1)$对称性被破缺是因为电子在低温下配对为库伯对，电子的全部行为都被库伯对反映了，因此只需要考虑库伯对序参量即可。
-
-设外加一个大小为$\vb*{A}$的磁矢势，按照规范不变性我们写下一个理论
+模型\eqref{eq:superconductivity-opposite-mom}的路径积分形式是
 \begin{equation}
-    F = \int \dd[3]{\vb*{r}} \left( \abs*{(\grad - \ii 2 e \vb*{A}) \Phi}^2 + r \abs{\Phi}^2 + u\abs{\Phi}^4 \right).
-    \label{eq:gl-theory}
+    S = \int_0^\beta \dd{\tau} \left( \sum_{\vb*{k}, \alpha} \bar{c}_{\vb*{k} \alpha} \partial_\tau c_{\vb*{k} \alpha} - \frac{g}{2V} \sum_{\vb*{k}, \vb*{k}'} \bar{c}_{- \vb*{k}' \downarrow} \bar{c}_{\vb*{k}' \uparrow} c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow} \right), \quad Z = \int \fd{[c, \bar{c}]} \ee^{-S},
 \end{equation}
-这里我们已经使用协变导数代替了原有的导数；系数为$2e$是因为一个库伯对带有两个负电荷，或者更加数学地说，一个库伯对包含两个湮灭算符，因此做$U(1)$变换时会有两个复数因子而不只是一个。
-\eqref{eq:gl-theory}在相变点附近保证成立，一方面，相变点附近库伯对序参量不大，可以级数展开取前几项，另一方面，通过量纲分析可以发现
-\[
-    [\Phi] \sim [L]^{-1/2},
-\]
-容易验证没有提到的项在重整化不动点附近全部是不相关的，在重整化群作用下会被压低。
-我们遵从做朗道-金斯堡理论时的惯例，适当调节单位制来让梯度平方项前面的系数为1。
-
-计算\eqref{eq:gl-theory}的极小值点，可以得到
+这里我们设
 \begin{equation}
-    - \frac{(\grad - \ii e \vb*{A})^2}{4 m^*} \Phi + \alpha \Phi + \beta \abs{\Phi}^2 \Phi = 0.
+    V_0 = \frac{g}{2V},
 \end{equation}
-这个方程的形式和薛定谔方程非常接近，当然这更多是对称性带来的结果，即薛定谔场也具有$U(1)$对称性。
-
-$U(1)$对称性给出的守恒流为
-\begin{equation}
-    \vb*{j} \propto \Phi^* \grad{\Phi} - \Phi \grad{\Phi^*},
-\end{equation}
-当然这就是电流。当然，由于我们只是在做对称性分析，并不能明确地得出式子右边的系数。
-上式说明超导的电流来自序参量的梯度，这和通常导电的机制（电场下费米面发生移动）不同。由于序参量是复的，即使不存在振幅的空间变化，仅仅靠不同点相位不同就足够产生持续电流。这是一个稳态解，所以不存在能量消耗。这也就是超导体唯象地看起来似乎有某种运动全然不会受到阻碍的“反常电子”的原因。
+其中$g$是一个和系统体积无关的因子。
 
 \section{二维正方晶格的反铁磁长程序}
 

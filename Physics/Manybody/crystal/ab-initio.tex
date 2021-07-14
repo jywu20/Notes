@@ -254,8 +254,6 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 赝势类型本身也非常多样，详细情况见\autoref{sec:dft-pseudo-pot}。
 我们也可以将平面波方法称为赝势方法，既然直接用它做全电子计算并不现实。
 
-% TODO：也可以用赝势计算出初步的电子密度，然后改用库伦势做进一步计算？
-
 综上，PWDFT计算需要的输入信息有：
 \begin{itemize}
     \item 晶体结构，这包括超胞以及各个原子在超胞内部的位置以及各个原子的类型；
@@ -333,7 +331,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 \subsection{全电子计算的APW方法和LAPW方法}\label{sec:dft-lapw}
 
-
+% TODO：也可以用赝势计算出初步的电子密度，然后改用库伦势做进一步计算？
 
 \subsection{PAW方法}\label{sec:dft-paw}
 
@@ -352,7 +350,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 \section{泛函选择}
 
-本节讨论如何构造和选择合适的交换关联泛函$E_\text{XC}[\rho(\vb*{r})]$、
+本节讨论如何构造和选择合适的交换关联泛函$E_\text{XC}[\rho(\vb*{r})]$；在DFT的语境下，交换关联泛函经常就简称“泛函”。
 库仑定律的形式告诉我们，交换关联泛函的形式肯定是不局域的，因为有$\abs{\vb*{r} - \vb*{r}'}$这样的因子，并且同时要对$\vb*{r}$和$\vb*{r}'$两个变量求积分。
 但实际上由于屏蔽作用等这种空间上的非局域性衰减得很快，于是密度关联泛函总是可以写成以下的局域表达式：%
 \footnote{
@@ -409,10 +407,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 \subsubsection{均匀自由电子气的托马斯-费米-狄拉克泛函}
 
-首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。我们取它为均匀自由电子气的基态的交换能加关联能就可以，即
-\begin{equation}
-    E_\text{XC}[\rho(\vb*{r})] = E_\text{X}[\rho(\vb*{r})] + E_\text{C}[\rho(\vb*{r})].
-\end{equation}
+首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。
 自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道。设这些轨道为$\{\phi_i(\vb*{r})\}$。
 仅考虑库伦相互作用引入的一阶微扰，则有
 \[
@@ -432,7 +427,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 于是最后能量修正为
 \[
     E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
-        \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
+        \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy, Hartree term} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
     \bigg).
 \]
 交换能项前面的因子是$2$而不是$4$是因为自旋不同的电子之间的交换能全部抵消了。这样交换能就是
@@ -472,9 +467,21 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 \]
 这就得到了\concept{托马斯-费米-狄拉克泛函}：
 \begin{equation}
-    E_\text{X}[\rho(\vb*{r})] = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}
+    E_\text{X}[\rho(\vb*{r})] = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+    \label{eq:thomas-fermi-dirac-functional}
 \end{equation}
-对均匀或不均匀但缓变的电子气这个泛函适用。
+对均匀或不均匀但缓变的电子气这个泛函确定适用。
+
+对一般的系统，托马斯-费米-狄拉克泛函当然是不那么精确的，但是我们可以以它为更精确的泛函的起点。
+\eqref{eq:thomas-fermi-dirac-functional}本质上是Hartree-Fock近似中的Fock项，那么要修正它，加入关联能就可以，即我们需要尝试寻找一个$E_\text{C}$使得
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = E_\text{X}[\rho(\vb*{r})] + E_\text{C}[\rho(\vb*{r})].
+\end{equation}
+这个$E_\text{C}$就称为\concept{关联泛函}。
+
+\subsubsection{关联泛函的量子蒙特卡洛计算}
+
+
 
 \subsection{GGA近似}
 
