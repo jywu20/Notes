@@ -3,7 +3,14 @@
 本节要讨论的系统和\autoref{chap:conventional-metal}的哈密顿量基本上是差不多的：系统的基本自由度是某种电子，可以完全使用能带理论刻画它，相互作用可以忽略。
 然而，特殊的拓扑性质会让这些系统展现出和普通的金属、绝缘体非常不同的行为。
 
-\section{拓扑绝缘体}
+一个典型的例子是所谓\concept{拓扑绝缘体}。
+能带绝缘体中化学势位于两条能带中间，因此有明确的、彼此之间不连续的价带和导带，换而言之，载流子存在能隙（见\autoref{sec:conductor-classification}）。另一方面，导体中载流子不存在能隙。
+单电子能谱是否存在能隙也决定了\emph{电子态}具有或者不具有能隙，因为多电子态能够发生的最小偏移就是多一个或者少一个电子。
+
+既然连续地、局域地调节哈密顿量不会改变能隙的有无，我们可以据此定义一个拓扑等价类。
+一种比较粗糙的
+% TODO：平庸芯能带
+所有的传统绝缘体（就是\autoref{chap:conventional-metal}中出现的那些）都可以归入一类，这个类别中也包括真空，因为真空中的电子同样可以认为有一个价带（电子）和一个满带（正电子），两者之间存在能隙。
 
 \begin{back}{哈密顿量的拓扑分类}{hamiltonian-topological-calssification}
     哈密顿量变化，系统的基态和激发态也会随之变化。哈密顿量的局域、连续的变化\emph{不能}让基态和激发态遍历所有的可能。
@@ -11,55 +18,51 @@
     这些诸如能隙有无之类的东西可以看成拓扑不变量，据此我们可以对哈密顿量做拓扑分类。
 \end{back}
 
-绝缘体中化学势位于两条能带中间，因此有明确的、彼此之间不连续的价带和导带，换而言之，载流子存在能隙（见\autoref{sec:conductor-classification}）。
-另一方面，导体中载流子不存在能隙。
-单电子能谱是否存在能隙也决定了\emph{电子态}具有或者不具有能隙，因为多电子态能够发生的最小偏移就是多一个或者少一个电子。
+\section{Su-Schrieffer-Heeger模型}
 
-既然连续地、局域地调节哈密顿量不会改变能隙的有无，我们可以据此定义一个拓扑等价类。
-% TODO：平庸芯能带
-所有的传统绝缘体（就是\autoref{chap:conventional-metal}中出现的那些）都可以归入一类，这个类别中也包括真空，因为真空中的电子同样可以认为有一个价带（电子）和一个满带（正电子），两者之间存在能隙。
+\concept{Su-Schrieffer-Heeger（SSH）模型}是一个定义在一维格子上的紧束缚模型，在这个一维格子中有A和B两套子格。
+与之前不同，我们取开放边界条件，SSH模型为
+\begin{equation}
+    H = v \sum_{m=1}^N (c^\dagger_{m \text{A}} c_{m \text{B}} + \text{h.c.}) + w \sum_{m=1}^{N-1} (c^\dagger_{m+1, \text{A}} c_{m \text{B}} +  \text{h.c.}).
+    \label{eq:ssh-hamiltonian}
+\end{equation}
+我们忽略了自旋指标，即只考虑一种自旋的电子，忽略自旋翻转的可能性；使用实际的分子实现SSH模型时，会得到两份SSH模型，我们只考虑其中一份。
 
-\begin{back}{Berry相位}{berry-phase}
-    设含时哈密顿量$H$依赖一系列连续参数$\vb{R}(t) = (R_1(t), \ldots, R_n(t))$，用$\ket{n(\vb{R}(t))}$标记该哈密顿量的本征态。
-    假定$\vb{R}(t)$变化得（相比于$H$的能谱的最小能隙）充分缓慢，以至于如果系统以$\ket{n(\vb{R}(t))}$为初态，那么经过一段时间的演化之后不会跃迁到其他本征态上（\concept{绝热演化}）。
-    
-    设系统初态为$\ket{n(\vb{R}(t))}$，经过一段时间后系统状态为
-    \begin{equation}
-        \ket{\psi_n(t)} = \ee^{\ii \gamma_n(t)} \exp(-\frac{\ii}{\hbar} \int_0^t \dd{t'} E_n(\vb{R}(t'))) \ket{n(\vb{R}(t))},
-    \end{equation}
-    将上式代入
-    \[
-        \ii \hbar \dv{t} \ket{\psi_n(t)} = H(\vb{R}(t)) \ket{\psi_n(t)},
-    \]
-    得到
-    \begin{equation}
-        \gamma_n(t) = \ii \int_0^t \dd{t'} \mel*{\psi_n(t)}{\dv{t}}{\psi_n(t)} = \ii \int_{\vb{R}(0)}^{\vb{R}(t)} \dd{\vb{R}} \cdot \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} .
-    \end{equation}
-    $\gamma_n(t)$不含有任何$\hbar$，因此实际上这\emph{不是}一个动力学相位，而是所谓的几何相位。
-    定义
-    \begin{equation}
-        \vb{A} = \ii \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} 
-    \end{equation}
-    为\concept{Berry联络}。
-    
-    Berry联络是规范可变的，因为容易验证，如果做变换
-    \begin{equation}
-        \ket{n(\vb{R})} \longrightarrow \ee^{\ii \zeta(\vb{R})} \ket{n(\vb{R})}, 
-    \end{equation}
-    就有
-    \begin{equation}
-        \vb{A}(\vb{R}) \longrightarrow \vb{A}(\vb{R}) - \grad_{\vb{R}} \zeta(\vb{R}).
-    \end{equation}
-    在时间从$0$演化到$T$的闭合的$\vb{R}(t)$回路上，由于单值性，有
-    \[
-        \zeta(\vb{R}(T)) - \zeta(\vb{R}(0)) = 2 \pi n, \quad n \in \mathbb{Z},
-    \]
-    从而积分
-    \begin{equation}
-        \oint \dd{\vb{R}} \cdot \vb{A}
-    \end{equation}
-    在模$2\pi$的意义下是规范不变的。
-\end{back}
+在分析SSH模型时通常将电子在A、B子格上的哪一个看成内禀自由度而非坐标自由度或者说外部自由度，这实际上就是紧束缚模型中把能带标签当成抽象的一个指标而忽略它对电子空间分布的影响，而将$\vb*{i}$看成完全代表了电子空间位置的标签的做法。
+在这种约定下，\eqref{eq:ssh-hamiltonian}可以写成
+\begin{equation}
+    H = v \sum_{m=1}^N \dyad{m} \otimes \sigma^x + w \sum_{m=1}^{N-1} \dyad{m+1}{m} \otimes \frac{\sigma^x + \ii \sigma^y}{2} + \text{h.c.}. 
+\end{equation}
+
+\begin{figure}
+    \centering
+    \input{topological-band/ssh/lattice.tex}
+    \caption{SSH模型所在的格点，红色和蓝色圆圈分别代表A子格和B子格，只有相邻格点之间有跃迁}
+\end{figure}
+
+\subsection{体态}
+
+一个有限大小的一维格子的体态是其内部，而边界则是两个点。本节分析SSH模型的体态。取热力学极限$N \to \infty$并施加周期性边界条件，可以求解得到普通的能带。
+做傅里叶变换
+\begin{equation}
+    c_{m \alpha}^\dagger = \frac{1}{\sqrt{N}} \sum_k \ee^{- \ii k m a} c_{k \alpha}^\dagger, \quad \alpha = \text{A}, \text{B},
+\end{equation}
+得到
+\begin{equation}
+    H = \sum_k \pmqty{c^\dagger_{k \text{A}} & c^\dagger_{k \text{B}}} \pmqty{ 0 & v + w \ee^{- \ii k a} \\ v + w \ee^{\ii k a} & 0 } \pmqty{ c_{k \text{A}} \\ c_{k \text{B}} },
+\end{equation}
+对角化给出
+\begin{equation}
+    \epsilon_{k} = \pm \sqrt{ v^2 + w^2 + 2 wv \cos(ka) }.
+\end{equation}
+两条能带之间的间距为
+\begin{equation}
+    2 \Delta = \abs{u - v}.
+\end{equation}
+容易看出在化学势为零时电子半填充，且电子和空穴的能隙（相对于费米面的距离）均为$\Delta$。
+
+在$u=v$时我们得到通常的最为简单的紧束缚模型，系统是导体，因为载流子能隙为零；其余情况下，系统为绝缘体。
+换而言之，跃迁系数的交错排列（staggering）让SSH模型是绝缘体。
 
 \section{整数量子霍尔效应}
 
@@ -174,3 +177,45 @@ $W = \pm 1$，这是一个定义在立体中的量？
 \subsection{时间反演对称性保护的拓扑超导}
 
 刚才描述的拓扑超导和对称性没有特别明确的对称性。当然可以说它有粒子-空穴对称性，但是这完全是一个数学上的处理。
+
+\begin{back}{Berry相位}{berry-phase}
+    设含时哈密顿量$H$依赖一系列连续参数$\vb{R}(t) = (R_1(t), \ldots, R_n(t))$，用$\ket{n(\vb{R}(t))}$标记该哈密顿量的本征态。
+    假定$\vb{R}(t)$变化得（相比于$H$的能谱的最小能隙）充分缓慢，以至于如果系统以$\ket{n(\vb{R}(t))}$为初态，那么经过一段时间的演化之后不会跃迁到其他本征态上（\concept{绝热演化}）。
+    
+    设系统初态为$\ket{n(\vb{R}(t))}$，经过一段时间后系统状态为
+    \begin{equation}
+        \ket{\psi_n(t)} = \ee^{\ii \gamma_n(t)} \exp(-\frac{\ii}{\hbar} \int_0^t \dd{t'} E_n(\vb{R}(t'))) \ket{n(\vb{R}(t))},
+    \end{equation}
+    将上式代入
+    \[
+        \ii \hbar \dv{t} \ket{\psi_n(t)} = H(\vb{R}(t)) \ket{\psi_n(t)},
+    \]
+    得到
+    \begin{equation}
+        \gamma_n(t) = \ii \int_0^t \dd{t'} \mel*{\psi_n(t)}{\dv{t}}{\psi_n(t)} = \ii \int_{\vb{R}(0)}^{\vb{R}(t)} \dd{\vb{R}} \cdot \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} .
+    \end{equation}
+    $\gamma_n(t)$不含有任何$\hbar$，因此实际上这\emph{不是}一个动力学相位，而是所谓的几何相位。
+    定义
+    \begin{equation}
+        \vb{A} = \ii \mel*{\psi_n(t)}{\grad_{\vb{R}}}{\psi_n(t)} 
+    \end{equation}
+    为\concept{Berry联络}。
+    
+    Berry联络是规范可变的，因为容易验证，如果做变换
+    \begin{equation}
+        \ket{n(\vb{R})} \longrightarrow \ee^{\ii \zeta(\vb{R})} \ket{n(\vb{R})}, 
+    \end{equation}
+    就有
+    \begin{equation}
+        \vb{A}(\vb{R}) \longrightarrow \vb{A}(\vb{R}) - \grad_{\vb{R}} \zeta(\vb{R}).
+    \end{equation}
+    在时间从$0$演化到$T$的闭合的$\vb{R}(t)$回路上，由于单值性，有
+    \[
+        \zeta(\vb{R}(T)) - \zeta(\vb{R}(0)) = 2 \pi n, \quad n \in \mathbb{Z},
+    \]
+    从而积分
+    \begin{equation}
+        \oint \dd{\vb{R}} \cdot \vb{A}
+    \end{equation}
+    在模$2\pi$的意义下是规范不变的。
+\end{back}

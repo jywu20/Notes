@@ -373,8 +373,8 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 常用的交换-关联泛函的形式包括以下几种：
 \begin{itemize}
-    \item \concept{局域密度近似（LDA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}))$；
-    \item \concept{广义梯度近似（GGA）}：$\epsilon[\rho(\vb*{r})] = \epsilon(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
+    \item \concept{局域密度近似（LDA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}))$；
+    \item \concept{广义梯度近似（GGA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
     \item \concept{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
     \item \concept{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
     \item \concept{经验泛函}：有一大堆参数，根据实际数据微调参数。
@@ -405,14 +405,16 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 \end{equation}
 这就是所谓的\concept{局域密度近似（LDA）}：每单位的交换关联能只和该地点的电子密度有关。
 
-\subsubsection{均匀自由电子气的托马斯-费米-狄拉克泛函}
+我们主要将尝试寻找一个适用于均匀电子气的交换关联泛函。均匀电子气指的是没有晶格、也没有外场时的库伦相互作用电子气，其电荷密度是处处均匀的。
+由于无论是均匀电子气还是电子密度较平缓但是的确有晶格周期势的电子气理论上均共享一种$E_\text{XC}$，而对它们LDA近似均适用，如果我们找到了一个$E_\text{XC}[\rho(\vb*{r})]$可以精确地预言均匀电子气的行为，那么这个泛函也应该能够比较精确地预言一般的、电子密度较平缓的电子气的行为。
 
-首先我们尝试找一个适用于均匀自由电子气的交换关联泛函。
+\subsubsection{Hartree-Fock近似和托马斯-费米-狄拉克泛函}
+
 自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道。设这些轨道为$\{\phi_i(\vb*{r})\}$。
 仅考虑库伦相互作用引入的一阶微扰，则有
 \[
     E = \sum_{\sigma, \sigma'} \mel{\Psi}{
-        \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} {\psi}^\dagger_{\sigma}(\vb*{r}) {\psi}^\dagger_{\sigma'}(\vb*{r}') \frac{1}{\abs{\vb*{r} - \vb*{r}'}} {\psi}_{\sigma'}(\vb*{r}') {\psi}_\sigma(\vb*{r})
+        \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} {\psi}^\dagger_{\sigma}(\vb*{r}) {\psi}^\dagger_{\sigma'}(\vb*{r}') \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} {\psi}_{\sigma'}(\vb*{r}') {\psi}_\sigma(\vb*{r})
     }{\Psi}.
 \]
 这里必须完整地考虑自旋自由度的作用。可以使用Wick定理把上式展开，这就是在做Hartree-Fock近似。
@@ -426,13 +428,13 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 \]
 于是最后能量修正为
 \[
-    E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
+    E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
         \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy, Hartree term} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
     \bigg).
 \]
 交换能项前面的因子是$2$而不是$4$是因为自旋不同的电子之间的交换能全部抵消了。这样交换能就是
 \begin{equation}
-    E_\text{X} = - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{1}{\abs{\vb*{r} - \vb*{r}'}} \abs{\sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}')}^2 . 
+    E_\text{X} = - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \abs{\sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}')}^2 . 
     \label{eq:exchange-energy-homogeneous-gas}
 \end{equation}
 对箱归一化的均匀电子气，有
@@ -459,15 +461,15 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 则
 \[
     \begin{aligned}
-        E_\text{X} &= - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{s}} \right)^2 \\
-        &= - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{3}{2} \frac{\sin t - t \cos t}{t^3} n(\vb*{r}) \right)^2 \quad (t= k_\text{F}(\vb*{r}) s) \\
-        &= - 9 \pi \int \dd[3]{\vb*{r}} \int \dd{t} \frac{t}{k_\text{F}(\vb*{r})^2} n(\vb*{r})^2 \left( \frac{\sin t - t \cos t}{t^3} \right)^2 \\
-        &= - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+        E_\text{X} &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{s}} \right)^2 \\
+        &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{3}{2} \frac{\sin t - t \cos t}{t^3} n(\vb*{r}) \right)^2 \quad (t= k_\text{F}(\vb*{r}) s) \\
+        &= - 9 e^2 \pi \int \dd[3]{\vb*{r}} \int \dd{t} \frac{t}{k_\text{F}(\vb*{r})^2} n(\vb*{r})^2 \left( \frac{\sin t - t \cos t}{t^3} \right)^2 \\
+        &= - e^2 \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
     \end{aligned}
 \]
 这就得到了\concept{托马斯-费米-狄拉克泛函}：
 \begin{equation}
-    E_\text{X}[\rho(\vb*{r})] = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+    E_\text{X}[\rho(\vb*{r})] / e^2 = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
     \label{eq:thomas-fermi-dirac-functional}
 \end{equation}
 对均匀或不均匀但缓变的电子气这个泛函确定适用。
@@ -481,9 +483,12 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 \subsubsection{关联泛函的量子蒙特卡洛计算}
 
-
+关联泛函就是正确的$E_\text{XC}$减去\eqref{eq:thomas-fermi-dirac-functional}。
 
 \subsection{GGA近似}
+
+从LDA近似的推导中可以清楚地看到，一旦离开了均匀电子气模型，LDA近似的可靠性就不好说了。
+对那些电子密度确定会有比较大的空间起伏的系统——比如说在我们需要精确计算分子结构时——LDA近似的精度不是特别好，此时有必要引入GGA近似。
 
 \subsection{杂化泛函：将Hartree-Fock近似结合进DFT}
 
@@ -496,13 +501,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 本节讨论赝势如何生成。\autoref{sec:pseudopotential}中的做法不考虑任何电子-电子相互作用而计算内层电子的轨道，即把介质中的原子当成类氢原子，但是这样无疑精度非常糟糕。
 不过做DFT计算实际上就是求解\eqref{eq:kohn-sham-eq-pw-minimal}，这形式上仍然是一个单电子方程，因此“计算波函数，然后把高频振荡抹平”的做法仍然是适用的。
 
-
-
-\section{晶体结构}
-
-有时候我们对晶体结构只有一个大概的猜测，此时需要做结构优化，即所谓\concept{结构优化自洽计算}。
-
-\section{物理量测量}
+\section{物理量测量和后处理}
 
 本节讨论Kohn-Sham方程求解完成后怎样从计算结果解读出我们需要的各个物理量，在第一性原理计算的语境下也可以称为“非自洽计算”，因为就是拿到了电荷密度，然后算各种东西，无需迭代求解Kohn-Sham方程。
 这件事是没那么容易的，基本上和基态电子密度有解析形式关系的量就是基态能量，基态能量实际上就是能量泛函作用在基态电子密度$\rho(\vb*{r})$之后的结果。
@@ -512,6 +511,8 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 \subsection{单电子诠释和能带}\label{sec:single-electron-in-dft}
 
+\subsubsection{Kohn-Sham方程的解的物理意义}
+
 在待计算的系统确实适用单电子诠释时，我们将\eqref{eq:kohn-sham-eq}和\eqref{eq:dyson-wave-eq}对比，很容易看出两者的相似之处。
 如果Hartree项加上$V_\text{XC}$构成对自能$\Sigma$的一个良好模拟，那么\eqref{eq:kohn-sham-eq}解出的$\epsilon_i$\emph{就是}能带电子的能量。
 
@@ -520,7 +521,13 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
     \mu = \sum_{i=1}^N \epsilon_i.
 \end{equation}
 
-\subsection{受力}
+\subsubsection{GW计算}
+
+GW计算实际上是一种独立的数值计算方法，但是因为它要求一个比较接近实际情况的单电子波函数作为起点，我们仍然可以将它视为DFT的后处理的一部分，即将DFT计算出来的Kohn-Sham波函数作为GW计算的初始值。
+
+\subsection{原子受力}
 
 在计算单原子受力时我们最好把晶胞扩张得大一些。如果使用原胞做计算，那么将某个原子移动一小段得同时，其它原胞中与它地位一致的原子也发生了移动，因此通过这种方式计算原子移动前后的能量变化并进一步计算力是不准确的。
 相反，如果晶胞被扩张了，那么移动一个原子之后，与之最为接近的那些原胞中与之地位一致的原子并没有发生移动，会给出相对可靠的结果。
+
+有时候我们对晶体结构只有一个大概的猜测，此时需要做结构优化，即所谓\concept{结构优化自洽计算}。
