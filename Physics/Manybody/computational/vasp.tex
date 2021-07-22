@@ -1,4 +1,4 @@
-\documentclass[hyperref, UTF8, a4paper]{ctexart}
+\documentclass[hyperref, a4paper]{article}
 
 \usepackage{geometry}
 \usepackage{titling}
@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
+\usepackage{siunitx}
 \usepackage{tikz}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
@@ -35,7 +36,6 @@
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
-\newcommand*{\comment}{\paragraph{注记}}
 \newcommand*{\suchthat}{\quad \text{s.t.} \quad}
 \newcommand*{\argmin}{\arg\min}
 \newcommand*{\argmax}{\arg\max}
@@ -43,13 +43,6 @@
 \newcommand*{\pair}[1]{\langle #1 \rangle}
 \newcommand*{\fd}[1]{\mathcal{D} #1}
 \DeclareMathOperator{\bigO}{\mathcal{O}}
-
-% prettyref setting
-\newrefformat{sec}{第\ref{#1}节}
-\newrefformat{note}{注\ref{#1}}
-\newrefformat{fig}{图\ref{#1}}
-\newrefformat{alg}{算法\ref{#1}}
-\renewcommand{\autoref}{\prettyref}
 
 % TikZ setting
 \usetikzlibrary{arrows,shapes,positioning}
@@ -62,37 +55,42 @@
 \tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
 
 % Algorithm setting
-\renewcommand{\algorithmcfname}{算法}
 % Python-style code
 \SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
 \SetKwFor{For}{for}{:}{}
 \SetKwFor{While}{while}{:}{}
-\SetKwInput{KwData}{输入}
-\SetKwInput{KwResult}{输出}
 \SetArgSty{textnormal}
 
 \renewcommand{\emph}[1]{\textbf{#1}}
 \newcommand*{\concept}[1]{{\textbf{#1}}}
 
-\title{VASP计算}
-\author{吴晋渊}
+\title{A VASP cookbook}
+\author{Jinyuan Wu}
 
 \begin{document}
 
 \maketitle
 
-\section{VASP简介}
+\section{Ab-initio calculation using VASP}
 
-\section{静态自洽计算}
+\section{Static self-consistent calculation}
 
-LAECGH会在vasp.out里面输出soft electron, augmentation electron这些内容
+With \texttt{LAECGH} turned on, you will find lines starting with \texttt{soft electron} or \texttt{augmentation electron} in \texttt{vasp.out}.
 
-\section{速查}
+\section{Relaxation}
 
-\subsection{常见计算任务}
+Suggested setting: \texttt{EDIFF} = \num{1e-8}, \texttt{EDIFFG} = \num{-0.0001} for better accuracy
 
-\subsection{加快收敛的方法}
+\section{Post operations}
 
-\subsection{常见错误}
+\subsection{Speeding up convergence}
+
+\subsection{Errors}
+
+It seems \texttt{ISYM=3} is less tolerant than \texttt{ISYM=2}.
+
+\subsection{Unexpected outputs}
+
+these 'total charges' and magnetizations are obtained form a summation over the local quantities (integration of the charge and spin densities in the 'atomic spheres' of radii r=RWIGS. As the volumes of the spheres do not sum up to the volume of the unit cell, these charges also do not sum up to the total number of valence electrons (the contribution of the "interstitial" space is missing)
 
 \end{document}
