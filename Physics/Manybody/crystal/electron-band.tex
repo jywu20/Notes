@@ -18,32 +18,39 @@
 但也有可能会得到强关联系统，此时将系统看成近独立电子气并无意义。
 例如在一维情况下能带结构是不稳定的，此时可以做\concept{玻色化}而得到一类非常不同的准粒子。
 
-\begin{back}{电子自能}{electron-self-energy}
+\begin{back}{电子自能和多体系统中的“单电子波函数”}{electron-self-energy}
     对电子-电子两点松原格林函数，我们有如下Dyson方程
     \begin{equation}
         G  = G^{0} + G^0 \Sigma G,
     \end{equation}
-    其中$-\Sigma$是1PI自能图之和，或者说是正规自能图之和。假定我们已经计算出了$\Sigma$，即有
+    其中$-\Sigma$是1PI自能图之和，或者说是正规自能图之和。通过求和我们认为有必要考虑的那些正规自能图，可以计算出了$\Sigma$，然后即可计算出两点格林函数
     \[
-        G(\ii \omega_n) = \frac{1}{\ii \omega_n - \Sigma(\ii \omega_n) - H_0},
+        G(\omega) = \frac{1}{\omega - \Sigma(\omega) - H_0},
     \]
     其中$H_0$表示单粒子哈密顿量，同时包括电子动能和周期势场。
-    这个格林函数的极点的位置显然可以通过以下方程（这里我们为了和单电子非相对论性量子力学的记号保持一致，用$E$代替了$\ii \omega_n$，但是没有对格林函数乘上$\ii$）
-    \[
-        (E - \Sigma(E) - H_0) \ket{\psi} = 0 
-    \]
-    得到，或者写成坐标空间的形式，通过求解
+    这里我们为了和单电子非相对论性量子力学的记号保持一致，使用实时理论，用$\omega$而非$\ii \omega_n$；这样的定义和$- \ii \timeorder \expval*{\psi \psi^\dagger}$是一致的。
+
+    一个一般的费米子两点格林函数具有如下谱结构：
     \begin{equation}
-        \left( - \frac{\laplacian}{2m} + V_\text{ion}(\vb*{r}) \right) \psi(\vb*{r}) + \int \dd[3]{\vb*{r}'} \Sigma(\vb*{r}, \vb*{r}', E) \psi(\vb*{r}') = E \psi(\vb*{r})
+        G(\vb*{r}, \vb*{r}', E) = \sum_{j} \varphi_j(\vb*{r}) \varphi_j^*(\vb*{r}') \left( \frac{\theta(\epsilon_j - \mu)}{\omega - \epsilon_j + \ii 0^+} + \frac{\theta(\mu - \epsilon_j)}{\omega - \epsilon_j - \ii 0^+} \right),
+        \label{eq:two-point-fermion-green-function-spectrum}
+    \end{equation}
+    对自由系统，$\varphi_j(\vb*{r})$就是哈密顿量对角化之后给出的单电子波函数，而$\epsilon_j$是单电子能量，而即使对相互作用系统，把$\varphi_j(\vb*{r})$当成单电子波函数计算单体算符的期望值是不会出错的。
+    在极点附近，有
+    \[
+        (\epsilon_j - \Sigma(E) - H_0) \ket{\varphi_j} = 0, 
+    \]
+    于是通过求解
+    \begin{equation}
+        \left( - \frac{\laplacian}{2m} + V_\text{ion}(\vb*{r}) \right) \varphi(\vb*{r}) + \int \dd[3]{\vb*{r}'} \Sigma(\vb*{r}, \vb*{r}', \epsilon) \varphi(\vb*{r}') = \epsilon \varphi(\vb*{r})
         \label{eq:dyson-wave-eq}
     \end{equation}
-    得到。这个改头换面的Dyson方程看起来和普通的薛定谔方程非常类似，不同之处在于$\Sigma(\vb*{r}', \vb*{r}, E)$可以是非常复杂的，并且由于它显含$E$，且和诸如系统中的电子总数等量有关，以上方程求解起来可能非常困难。$E$给出了重整化后的电子能谱。
-    解出\eqref{eq:dyson-wave-eq}之后就得到
-    \begin{equation}
-        G(\vb*{r}, \vb*{r}', E) = \sum_m \frac{1}{E - E_m} \psi_m(\vb*{r})^* \psi_m(\vb*{r}'),
-    \end{equation}
-    从而把$\psi(\vb*{r})$当成单电子波函数计算单体算符的期望值是不会出错的。
-    同样我们也可以在选定一个自能之后通过格林函数的时间演化方程求解格林函数，或者将格林函数约化到一些近似的动理学方程上。
+    能够得到各个$\varphi_j$和对应的$\epsilon_j$。
+    这个改头换面的Dyson方程看起来和普通的薛定谔方程非常类似，不同之处在于$\Sigma(\vb*{r}', \vb*{r}, E)$可以是非常复杂的，并且由于它显含$E$，且和诸如系统中的电子总数等量有关，需要自洽求解\eqref{eq:dyson-wave-eq}和\eqref{eq:two-point-fermion-green-function-spectrum}。
+    对单电子近似适用的系统，以上步骤给出了重整化后的单电子能谱。
+
+    这种写出电子自能然后自洽求解的方法不仅仅适用于单电子波函数和能谱的求解。
+    我们也可以在选定一个自能之后通过格林函数的时间演化方程求解格林函数，或者将格林函数约化到一些近似的动理学方程上。
 \end{back}
 
 \section{周期势场中的自由电子气模型}
@@ -1168,7 +1175,11 @@ $\varphi_n(\vb*{r} - \vb*{R}_{\vb*{i}})$满足
 
 \subsection{Bloch表象下的相互作用通道}\label{sec:interaction-bloch}
 
-本节讨论从自由电子模型出发如何加入相互作用。对库伦相互作用，有
+本节讨论从自由电子模型出发如何加入相互作用。在自由电子模型中
+\begin{equation}
+    c^\dagger_{\vb*{k}} = \frac{1}{\sqrt{V}} \int \dd[3]{\vb*{r}} \ee^{\ii \vb*{k} \cdot \vb*{r}} \psi^\dagger(\vb*{r}).
+\end{equation}
+对库伦相互作用，有
 \[
     \begin{aligned}
         H_{\vb*{k}_4 \vb*{k}_3 \vb*{k}_2 \vb*{k}_1} &= \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \braket*{\vb*{k}_4}{\vb*{r}} \braket*{\vb*{k}_3}{\vb*{r}'} V(\vb*{r} - \vb*{r}') \braket*{\vb*{r}'}{\vb*{k}_2} \braket*{\vb*{r}}{\vb*{k}_1}  \\

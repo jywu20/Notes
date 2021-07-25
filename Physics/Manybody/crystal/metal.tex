@@ -661,17 +661,6 @@ Hartree-Fock近似又可以分成两种，一种是\concept{自洽Hartree-Fock�
 虽然我们这里是从Hartree-Fock推导出这个结论的，但是这个结论的适用范围显然很广，因为只要系统中电子-电子格林函数的自能能够微扰计算，系统的低能自由度都是一些费米型激发。
 \autoref{sec:landau-fermi-liquid}中仔细分析了这类系统的性质。
 
-\begin{figure}
-    \centering
-    \input{metal/jellium/generalized-hartree-fock.tex}
-    \caption{一般的电子-电子散射也有Hartree项和Fock项}
-    \label{fig:generalized-hartree-fock}
-\end{figure}
-
-以上定义都是针对库仑相互作用的，但是显然对\eqref{eq:general-electron-electron-interaction}中一般的电子-电子相互作用，由于存在动量转移，从高能物理的角度说，由于有光子交换，电子-电子相互作用顶角仍然需要包含相互作用线（此时绘制为虚线，因为没有特别良定义的“光子”概念），为
-\input{metal/jellium/generalized-vertex.tex}
-因此\eqref{eq:general-electron-electron-interaction}关于单电子格林函数的平均场近似同样包含Hartree项和Fock项（见\autoref{fig:generalized-hartree-fock}），同样可以称为Hartree-Fock近似。
-
 \subsubsection{零温下的HF自洽方程组}
 
 % TODO:格林函数和单粒子波函数
@@ -683,6 +672,7 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
 根据零温场论的费曼规则可以写出
 \input{metal/jellium/hf-scf-eq-zerot.tex}
 这里的负号来自格林函数中湮灭算符在前产生算符在后，和粒子数密度算符正好差一个负号。
+所谓单粒子波函数或者能量云云都是在\autoref{back:electron-self-energy}的意义下说的。
 代入\eqref{eq:dyson-wave-eq}，有
 \begin{equation}
     \begin{aligned}
@@ -694,6 +684,9 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
 \end{equation}
 求解出上式就求解出了自洽Hartree-Fock近似下的费米型激发的能谱。
 \eqref{eq:hartree-fock-scf-with-spin}的推导是非常一般的，因此可以将$V_\text{ion}(\vb*{r})$用赝势代替，或是引入自旋-轨道耦合等等。
+方程右边的第三、四项来自电子-电子库伦相互作用，第三项就是将电子数密度当成一个外场写出的库伦势，称为\concept{经典库伦能}或者\concept{Hartree项}，而第四项没有特别明确的意义，通常称为\concept{交换能}或者\concept{Fock项}，我们会发现只有自旋相同的电子之间才有交换能，而且交换能是负的，即电子自旋平行会让系统能量下降。
+Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而后者来自。% TODO：这个叫做什么图啊
+
 在确定没有自旋-轨道耦合时，只需要求解轨道部分的波函数$\varphi_{n \vb*{k}}(\vb*{r})$，且状态$\ket{n \vb*{k} \uparrow}$和$\ket{n \vb*{k} \downarrow}$要么都有电子，要么都没有电子，从而\eqref{eq:hartree-fock-scf-with-spin}化简为
 \begin{equation}
     \begin{aligned}
@@ -703,11 +696,10 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
     \end{aligned}
     \label{eq:hartree-fock-scf-spinless}
 \end{equation}
-
-% TODO: \mu是电子的还是费米液体准粒子的，或者说两者是否一样；写一下“格林函数和单粒子波函数”
+这里应当注意，相互作用电子气的电子-电子格林函数中的化学势和关闭相互作用时计算出来的化学势通常是不一样的（前者实际上是费米液体中的化学势，见\autoref{sec:landau-fermi-liquid}），但是在做自洽Hartree-Fock计算时其实根本不需要显式使用化学势，因为只需要根据本轮计算得到的$\epsilon_{n \vb*{k}}$自下而上填充$N_\text{e}$个电子即可。
 
 实际上也可以从另一个角度获得\eqref{eq:hartree-fock-scf-with-spin}。
-我们尝试严格对角化
+我们可以写下一个自由电子气的波函数，计算库伦相互作用在这个波函数下的期望值，并且将这个期望值当成系统能量（可见Hartree-Fock近似确实是一种平均场近似方法），同样能够得到\eqref{eq:hartree-fock-scf-with-spin}。
 
 % TODO：Roothaan方程
 
@@ -719,6 +711,18 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
 求解它得到的单电子波函数称为\concept{分子轨道}。
 Hartree-Fock近似得到的能量和实际能量偏差不大，但由于化学反应中的能量变化也不大，通常单独依靠Hartree-Fock近似无法非常精确地预言化学反应行为。
 然而，由于Hartree-Fock近似本身有清楚的场论意义，很容易以其为基础进一步开发更加精确的算法，因此它堪称量子化学的基石。
+
+\begin{figure}
+    \centering
+    \input{metal/jellium/generalized-hartree-fock.tex}
+    \caption{一般的电子-电子散射也有Hartree项和Fock项}
+    \label{fig:generalized-hartree-fock}
+\end{figure}
+
+Hartree-Fock近似的用处其实不只是处理库仑相互作用的。
+显然对\eqref{eq:general-electron-electron-interaction}中一般的电子-电子相互作用，由于存在动量转移，从高能物理的角度说，由于有光子交换，电子-电子相互作用顶角仍然需要包含相互作用线（此时绘制为虚线，因为没有特别良定义的“光子”概念），为
+\input{metal/jellium/generalized-vertex.tex}
+因此\eqref{eq:general-electron-electron-interaction}关于单电子格林函数的平均场近似同样包含Hartree项和Fock项（见\autoref{fig:generalized-hartree-fock}），同样可以称为Hartree-Fock近似。
 
 Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以略去，在这些说法不适用的情况下，自然就不正确了。
 
@@ -748,7 +752,7 @@ Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以�
     \label{note:smooth-electron-distribution}
 }%
 ，且相互作用能可以完全认为是来自密度-密度相互作用即Hartree项，而忽略交换作用等除此以外的效应。
-由于可以忽略交换作用，可以完全照搬经典静电学，即认为一个电子的全部能量是其动能加上电势能，而不考虑任何交换能或者关联能。
+由于可以忽略交换作用，可以完全照搬经典静电学，即认为一个电子的全部能量是其动能加上电势能，而不考虑任何交换能或者关联能，因为直观地看，交换能或者说Fock项真的对应一个两个电子交换位置的费曼图，但是既然电子如此稠密，这样的过程大概是不太能够发生的。
 想象我们在一个满足托马斯-费米近似的近独立电子气当中放入一个电荷。显然，异号电荷会移动到前者附近而产生一个屏蔽效应。
 在电子气规模很大时（我们所研究的固体总是在热力学极限之下，因此这是成立的），屏蔽效应很强，这让外加电荷对电子气的扰动实际上局限在外加电荷的一个小邻域内。
 于是求解外加电荷的影响就是求解以下自洽问题：
@@ -1008,7 +1012,9 @@ $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任�
 也可以从另一个角度理解这件事：粒子数密度较高意味着屏蔽作用很强，所以$1/k^n$发散得不那么厉害的那些项没有什么贡献。
 RPA近似下没有出现这样的图：一个电子回线内部有一条光子线，即在单电子回线的图中没有出现Fock项，这和托马斯-费米屏蔽的假设是一致的，因此确实可以预期，当$\omega \to 0$时RPA近似退化到托马斯-费米屏蔽上。
 
-\subsection{梯形图近似}
+% TODO：系统基态能量计算
+
+\section{梯形图近似}
 
 \section{金属和朗道费米液体}\label{sec:landau-fermi-liquid}
 
@@ -1074,9 +1080,9 @@ RPA近似下没有出现这样的图：一个电子回线内部有一条光子�
     %Straight Lines [id:da36238650054186783] 
     \draw    (428,157) ;
     %Straight Lines [id:da7864189605567815] 
-    \draw    (228.67,128.33) -- (249.31,184.79) ;
-    \draw [shift={(250,186.67)}, rotate = 249.91] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-    \draw [shift={(228.67,128.33)}, rotate = 69.91] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (0,5.59) -- (0,-5.59)(10.93,-4.9) .. controls (6.95,-2.3) and (3.31,-0.67) .. (0,0) .. controls (3.31,0.67) and (6.95,2.3) .. (10.93,4.9)   ;
+    \draw    (229.35,130.21) -- (249.31,184.79) ;
+    \draw [shift={(250,186.67)}, rotate = 249.91] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+    \draw [shift={(228.67,128.33)}, rotate = 69.91] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
     %Straight Lines [id:da9264496937896287] 
     \draw    (287,45) ;
     \draw [shift={(287,45)}, rotate = 0] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]      (0, 0) circle [x radius= 3.35, y radius= 3.35]   ;
@@ -1663,7 +1669,6 @@ $\omega$和$\vb*{q}$分别是零声的频率和波矢，$\hat{\nu}$不依赖于$
 在重整化群计算中，一个二体散射项的强弱主要由这个散射项中允许的的粒子动量的取值多少确定，可能的动量占据的空间体积越大，对应的相互作用通道就越强。
 
 懒得写了，总之就是BCS相互作用和密度-密度相互作用是特别强的两种。
-% TODO：那Hubbard模型？
 
 \subsubsection{格林函数计算}
 

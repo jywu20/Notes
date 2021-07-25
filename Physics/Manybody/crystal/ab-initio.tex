@@ -19,7 +19,7 @@ DFT的出现让凝聚态体系的无经验参数模拟成为可能。直接求�
 如果果真如此，我们可以首先将能量表示成电子数密度的泛函，然后最小化这个泛函，就得到了关于该相互作用电子气的一切信息。
 电子数密度满足的方程中只有$3$个坐标，这样做，如果可行的话，将大大降低计算量。
 
-\subsection{Hohenberg-Kohn定理}
+\subsection{Hohenberg-Kohn定理}\label{sec:hohenberg-kohn-theorem-spinless}
 
 我们首先说明前述泛函的存在性。本节将通过两个定理，说明的确可以找到一个关于基态电子密度的泛函，使得我们只要最小化这个泛函即可原则上获得关于系统的所有性质。
 
@@ -51,7 +51,7 @@ DFT的出现让凝聚态体系的无经验参数模拟成为可能。直接求�
 \]
 而
 \[
-    \mel{\Psi}{{V}}{\Psi} = \int \dd[3]{\vb*{r}} \mel{\Psi}{{\psi}^\dagger(\vb*{r}) V(\vb*{r}) {\Psi}(\vb*{r})}{\psi} = \int \dd[3]{\vb*{r}} = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V(\vb*{r}),
+    \mel{\Psi}{{V}}{\Psi} = \int \dd[3]{\vb*{r}} \mel{\Psi}{{\psi}^\dagger(\vb*{r}) V(\vb*{r}) {\Psi}(\vb*{r})}{\psi} = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V(\vb*{r}),
 \]
 于是上式等价于
 \[
@@ -99,6 +99,10 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 \end{equation}
 这个$\mu$的形式看起来很眼熟，似乎就是化学势。实际上如果近独立电子近似成立，它真的就是零温化学势，即费米能。这一点我们在\autoref{sec:single-electron-in-dft}中可以看到。
 
+可以看到上面的推导实际上根本没有用到多少关于$T$和$V_\text{int}$的信息。
+对$T$并非$\vb*{p}^2 / 2m$，$V_\text{int}$也并非库仑相互作用的系统，实际上同样有密度泛函理论，只不过由于外加势场未必具有$V_\text{ion}(\vb*{r})$这样的形式，可能并不使用电子数密度来标记一个系统，而可能使用诸如粒子流密度等等。
+例如，我们就能够将$V_\text{int}$仍然是库伦相互作用，但$T$对应\emph{狄拉克方程}的问题也用密度泛函理论描述——这个理论对应的是重原子的非常内层的电子。
+
 \subsection{Kohn-Sham方法}
 
 现在的问题是，给定一个$V_\text{ion}$，怎么写出$E[\rho(\vb*{r})]$？
@@ -131,7 +135,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
     T_\text{s} = \mel{\Psi}{{T}}{\Psi} = - \frac{1}{2m} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r}),
 \end{equation}
 这里下标s表示这个动能项实际上是假定$\ket{\Psi}$是自由理论中的多粒子态而计算出来的；如果$\ket{\Psi}$实际上具有强关联效应，那么用它计算动能就会不对头。
-但是，$\ket{\Psi}$和系统实际的波函数也没有什么直接关系，$T_\text{s}$和真实的$\mel*{\Psi}{T}{\Psi}$有差别这件事不会有什么影响，因为反正它们的差最后会在$E_\text{XC}$中得到补偿。
+但是，$\ket{\Psi}$和系统实际的波函数也没有什么直接关系，$T_\text{s}$和真实的$\mel*{\Psi}{T}{\Psi}$有差别这件事不会有什么影响，因为反正它们的差最后会在$E_\text{XC}$中得到补偿。（因此我们应当记住，$E_\text{XC}$中是\emph{包含一部分实际电子的动能}的！）
 单粒子外加势能项为
 \begin{equation}
     V = \mel{\Psi}{{V}_\text{ion}}{\Psi} = \sum_i \int \dd[3]{\vb*{r}} V_{\text{ion}}(\vb*{r}) \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ion}(\vb*{r}),
@@ -144,7 +148,7 @@ Hohenberg-Kohn第一定理意味着，只需要基态电子密度就足够确定
 因此实际工作中必须猜测一个\concept{交换-关联能}$E_\text{XC}$，从而写出能量泛函
 \begin{equation}
     \begin{aligned}
-        E[\rho(\vb*{r})] &= T_\text{s}[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_H[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})] \\
+        E[\rho(\vb*{r})] &= T_\text{s}[\rho(\vb*{r})] + V[\rho(\vb*{r})] + V_\text{H}[\rho(\vb*{r})] + E_\text{XC} [\rho(\vb*{r})] \\
         &= - \frac{1}{2m} \sum_i \int \dd[3]{\vb*{r}} \phi_i^*(\vb*{r}) \laplacian \phi_i(\vb*{r})
         + \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ion}(\vb*{r}) \\
         &+ \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} + E_\text{XC} [\rho(\vb*{r})].
@@ -204,6 +208,224 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 以上算法也可以体现出DFT方法的一个重大缺陷，就是在不和实验对比时很难评估计算精度，也很难系统地提升计算精度。
 求解Kohn-Sham方程是一个完全确定性的算法，我们无法使用量子蒙特卡洛中模拟中观察计算结果方差的方法估计本次计算是不是“对头“；另一方面，$E_\text{XC}[\rho(\vb*{r})]$中各项的物理意义不是非常明晰，因此也很难评估如何改进计算精度。
 
+\subsection{自旋和相对论效应}
+
+以上讨论完全没有涉及自旋。很多凝聚态系统中电子自旋并不重要，从而，自旋指标除了让电子多了一倍出来以外什么也没有做，将这样的系统看成无自旋的和把它看成有自旋的是完全一样的；但是也有自旋很重要的系统，如诸如电子-电子交换相互作用导致的磁性，以及自旋-轨道耦合（相对论效应）都将自旋牵扯进来。
+对这两种情况，哈密顿量里面都要出现自旋指标，磁性是来自库仑相互作用中的交换相互作用，如Hartree-Fock近似中的\eqref{eq:hartree-fock-scf-with-spin}，而相对论效应会导致$\vb*{L} \cdot \vb*{S}$项。
+
+含有自旋的系统的外加势场可以不是仅仅和坐标有关的$V_\text{ion}(\vb*{r})$，而可以和自旋有关，于是\autoref{sec:hohenberg-kohn-theorem-spinless}中的推理不再适用了，不过我们会发现，只需要把\autoref{sec:hohenberg-kohn-theorem-spinless}中的Hohenberg-Kohn定理中的“$\rho(\vb*{r})$”替换成四个密度：电子数密度，$x, y, z$方向的自旋密度，就能够建立含自旋系统的密度泛函理论。
+或者等价的，我们也可以考虑带有自旋指标的密度
+\begin{equation}
+    \rho_{\alpha \beta}(\vb*{r}) = \expval{\psi^\dagger_\alpha(\vb*{r}) \psi_\beta(\vb*{r})}{\Psi},
+\end{equation}
+它也有四个独立自由度。
+此时的Kohn-Sham方程中的$V_\text{XC}$也是带有两个自旋指标的。
+自旋-轨道耦合其实可以归入$T$中，其它相对论修正也可以归入$T$中。
+实际上，库仑相互作用的狄拉克方程也有密度泛函理论，因此这种把相对论修正归入$T$的做法是合理的。
+综上，含自旋DFT的Kohn-Sham方程可以写成
+\begin{equation}
+    - \frac{\laplacian}{2m} \phi_i(\vb*{r} \sigma) + (V_\text{ion}(\vb*{r}) + V_\text{H}(\vb*{r}) + V_\text{XC}) \phi_i(\vb*{r} \sigma) - \vb*{\mu}_{\sigma \sigma'} \cdot (\vb*{B}(\vb*{r}) + \vb*{B}_\text{XC}) \phi_i(\vb*{r} \sigma') = \epsilon_i \phi_i(\vb*{r} \sigma).
+\end{equation}
+
+在系统中大部分电子的自旋可以视为指向相同或相反的方向（或者说自旋没有量子涨落）时，可以将四个自由度的$\rho_{\alpha \beta}(\vb*{r})$用简单的$\rho_\uparrow(\vb*{r})$和$\rho_\downarrow(\vb*{r})$代替。
+
+\section{泛函选择}
+
+本节讨论如何构造和选择合适的交换关联泛函$E_\text{XC}[\rho(\vb*{r})]$；在DFT的语境下，交换关联泛函经常就简称“泛函”。
+库仑定律的形式告诉我们，交换关联泛函的形式肯定是不局域的，因为有$\abs{\vb*{r} - \vb*{r}'}$这样的因子，并且同时要对$\vb*{r}$和$\vb*{r}'$两个变量求积分。
+但实际上由于屏蔽作用等这种空间上的非局域性衰减得很快，于是密度关联泛函总是可以写成以下的局域表达式：%
+\footnote{
+    如果非局域性衰减得很快，那么可以做多级展开
+    \[
+        f(\vb*{r} - \vb*{r}') = f(\vb*{r}) + (\vb*{r} - \vb*{r}') \cdot \grad{f} + \cdots,
+    \]
+    这样就可以先积掉$\vb*{r}'$这个变量，得到
+    \[
+        \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} f(\vb*{r} - \vb*{r}') = \int \dd[3]{\vb*{r}} g(f(\vb*{r}), \grad{f(\vb*{r})}, \ldots).
+    \]
+}%
+\[
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} f(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots),
+\]
+而由于交换能与$\rho(\vb*{r})$的平方同阶，通常会设
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots).
+\end{equation}
+这里的$\rho(\vb*{r})$在不考虑自旋时就是单纯的电子数密度，在考虑自旋时就是$[\rho_{\alpha \beta}(\vb*{r})]_{\alpha \beta}$。
+
+常用的交换-关联泛函的形式包括以下几种：
+\begin{itemize}
+    \item \concept{局域密度近似（LDA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}))$；
+    \item \concept{广义梯度近似（GGA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
+    \item \concept{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
+    \item \concept{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
+    \item \concept{经验泛函}：有一大堆参数，根据实际数据微调参数。
+\end{itemize}
+不同泛函的分类如\autoref{fig:excahnge-correlation-functional}所示。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{functional-classification.png}
+    \caption{交换-关联泛函的分类}
+    \label{fig:excahnge-correlation-functional}
+\end{figure}
+
+目前并没有能够准确计算一切体系的$E_\text{XC}$，没有也是很正常的，因为很明显，这个泛函需要的复杂程度和“看着库仑相互作用想出一切可能的凝聚态现象”是一样的，后者不可能做到，前者当然不可能做到。
+但是对特定的体系，一些相互作用通道可以忽略，一些误差可以互相抵消，找到一个复杂程度适中的泛函描述它们是可以做到的。
+适当地构造和选择泛函非常需要技术含量和经验。
+
+最后，虽然原则上一切库仑相互作用导致的物理效应都可以通过$E_\text{XC}[\rho(\vb*{r})]$得到，这件事实际上做起来并不那么容易。
+如果一个泛函被证明能够模拟一些相互作用通道导致的物理而无法模拟另一些，我们就需要手动向一个没有可调参数的$E_\text{XC}[\rho(\vb*{r})]$引入一些修正项。
+这些修正项的大小往往无法固定下来，因为不同情况下$E_\text{XC}[\rho(\vb*{r})]$对对应的相互作用通道的忽略可能也是不一样的。
+请注意交换关联泛函是通过计算\emph{电子数密度}具有某种特点的系统获得的，而不是通过分析哪些费曼图要保留哪些可以忽略获得的，一个泛函\emph{不能}良好地对应到一种通常意义上的保留一些相互作用而忽略另一些的有效模型上，交换关联泛函到底把什么纳入了考虑是缺乏直观的物理意义的，这也是DFT难以系统地提升精度的原因；在使用更加接近微扰场论方法的那些算法（如各种post-HF方法）时我们是清楚地知道自己忽略了什么的，在DFT中我们并不知道自己忽略了什么。
+手动引入Hubbard排斥（所谓LDA+$U$，涉及非常短程的相互作用，不容易被比较光滑的泛函模拟）、范德瓦尔斯力（长程，不容易被比较局域的泛函模拟）就是例子。
+
+\subsection{LDA近似}
+
+本节考虑自旋不重要的系统，即无需考虑自旋-轨道耦合，无磁序等等的系统。
+当电子密度变化非常平缓时，$\grad{\rho},\laplacian{\rho}$等全部可以看成是零，此时交换关联泛函的形式是
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r})).
+\end{equation}
+这就是所谓的\concept{局域密度近似（LDA）}：每单位的交换关联能只和该地点的电子密度有关。
+注意$\epsilon_\text{XC}$和$V_\text{XC}$不是一回事，两者的关系是
+\begin{equation}
+    V_\text{XC}(\vb*{r}) = \epsilon_{\text{XC}}(\rho(\vb*{r})) + \rho(\vb*{r}) \dv{\epsilon_\text{XC}}{\rho}.
+\end{equation}
+
+我们主要将尝试寻找一个适用于均匀电子气的交换关联泛函。均匀电子气指的是没有晶格、也没有外场时的库伦相互作用电子气，其电荷密度是处处均匀的。
+由于无论是均匀电子气还是电子密度较平缓但是的确有晶格周期势的电子气理论上均共享一种$E_\text{XC}$，而对它们LDA近似均适用，如果我们找到了一个$E_\text{XC}[\rho(\vb*{r})]$可以精确地预言均匀电子气的行为，那么这个泛函也应该能够比较精确地预言一般的、电子密度较平缓的电子气的行为。
+
+\subsubsection{Hartree-Fock近似和托马斯-费米-狄拉克泛函}
+
+自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道。设这些轨道为$\{\phi_i(\vb*{r})\}$。
+仅考虑库伦相互作用引入的一阶微扰，则有
+\[
+    E = \sum_{\sigma, \sigma'} \mel{\Psi}{
+        \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} {\psi}^\dagger_{\sigma}(\vb*{r}) {\psi}^\dagger_{\sigma'}(\vb*{r}') \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} {\psi}_{\sigma'}(\vb*{r}') {\psi}_\sigma(\vb*{r})
+    }{\Psi}.
+\]
+这里必须完整地考虑自旋自由度的作用。可以使用Wick定理把上式展开，这就是在做Hartree-Fock近似。
+请注意由于均匀电子气中没有自旋翻转，任何形如
+\[
+    \mel{\Psi}{{\psi}_\sigma^\dagger {\psi}_{\sigma'}}{\Psi}, \quad \sigma \neq \sigma'
+\]
+的项都是零，而
+\[
+    \mel{\Psi}{{\psi}^\dagger_\sigma(\vb*{r}) {\psi}_{\sigma}(\vb*{r}')}{\Psi} = \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}'),
+\]
+于是最后能量修正为
+\[
+    E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
+        \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy, Hartree term} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
+    \bigg).
+\]
+交换能项前面的因子是$2$而不是$4$是因为自旋不同的电子之间的交换能全部抵消了。这样交换能或者说Fock项就是
+\begin{equation}
+    E_\text{X} = - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \abs{\sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}')}^2 . 
+    \label{eq:exchange-energy-homogeneous-gas}
+\end{equation}
+对箱归一化的均匀电子气，有
+\[
+    \phi_i(\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{- \ii \vb*{k}_i \cdot \vb*{r}},
+\]
+于是就有
+\begin{equation}
+    \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') = \sum_{\text{occupied $\vb*{k}$}} \frac{1}{V} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')} = \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')},
+    \label{eq:homogeneous-density}
+\end{equation}
+而电子密度的一半（因为只考虑了轨道自由度）为
+\[
+    n(\vb*{r}) / 2 = \frac{k_\text{F}^3}{6 \pi^2}.
+\]
+于是我们通过$k_\text{F}$引入了电子数密度。
+将\eqref{eq:homogeneous-density}代入\eqref{eq:exchange-energy-homogeneous-gas}就得到交换能的形式。
+由于我们做了LDA近似，如果一个量在完全均匀的电子气中是$V \rho$，在LDA下它就是$\int \dd[3]{\vb*{r}} \rho(\vb*{r})$，直观地说，就是将每一个体积元看成一个箱子，这个箱子里面是均匀电子气，而忽略箱子和箱子之间的衔接，只有$\vb*{r} - \vb*{r}'$不超出一个箱子时\eqref{eq:homogeneous-density}才有明显的非零值。
+每个箱子都有自己的费米动量，记作$k_\text{F}(\vb*{r})$（具体是关于$\vb*{r}$还是$\vb*{r}'$无关紧要因为两者总是在同一个箱子内；它们本质上都是$\rho(\vb*{r})$的函数）。
+令
+\[
+    \vb*{s} = \vb*{r} - \vb*{r}', 
+\]
+则
+\[
+    \begin{aligned}
+        E_\text{X} &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{s}} \right)^2 \\
+        &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{3}{2} \frac{\sin t - t \cos t}{t^3} n(\vb*{r}) \right)^2 \quad (t= k_\text{F}(\vb*{r}) s) \\
+        &= - 9 e^2 \pi \int \dd[3]{\vb*{r}} \int \dd{t} \frac{t}{k_\text{F}(\vb*{r})^2} n(\vb*{r})^2 \left( \frac{\sin t - t \cos t}{t^3} \right)^2 \\
+        &= - e^2 \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+    \end{aligned}
+\]
+这就得到了\concept{托马斯-费米-狄拉克泛函}：
+\begin{equation}
+    E_\text{X}[\rho(\vb*{r})] / e^2 = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
+    \label{eq:thomas-fermi-dirac-functional}
+\end{equation}
+对均匀或不均匀但缓变的电子气这个泛函确定适用。
+等价地说，我们有
+\begin{equation}
+    \epsilon_\text{X}(\rho(\vb*{r})) = - \frac{3}{4} \left(\frac{3}{\pi}\right)^{1/3} \rho(\vb*{r})^{1/3}.
+\end{equation}
+在LDA近似中更加常用的记号是设
+\begin{equation}
+    \frac{4\pi}{3} r_\text{s}^3 = \frac{1}{\rho},
+\end{equation}
+这样就有
+\begin{equation}
+    \epsilon_\text{X} = % TODO
+\end{equation}
+
+对一般的系统，托马斯-费米-狄拉克泛函当然是不那么精确的，但是我们可以以它为更精确的泛函的起点。
+\eqref{eq:thomas-fermi-dirac-functional}本质上是Hartree-Fock近似中的Fock项，那么要修正它，加入关联能就可以，即我们需要尝试寻找一个$E_\text{C}$使得
+\begin{equation}
+    E_\text{XC}[\rho(\vb*{r})] = E_\text{X}[\rho(\vb*{r})] + E_\text{C}[\rho(\vb*{r})].
+\end{equation}
+这个$E_\text{C}$就称为\concept{关联泛函}。
+
+还应该提醒一点：实际上\eqref{eq:thomas-fermi-dirac-functional}甚至没有完整地考虑Fock项，因为它是在假定电子气是均匀的前提下计算出来的。
+一般的自旋不重要的系统的Fock项，也就是\eqref{eq:hartree-fock-scf-spinless}，是不能够写成电子数密度的泛函的，因为它依赖于多电子波函数的细节。
+从这里也可以看出来密度泛函理论中交换关联泛函非物理的特点，因为物理量的解析表达式通常都是依赖于多电子波函数的细节的，将一切都使用电子数密度表示，实际上是不太容易做解析计算的。
+
+\subsubsection{关联泛函的量子蒙特卡洛计算}
+
+关联泛函就是正确的$E_\text{XC}$减去\eqref{eq:thomas-fermi-dirac-functional}。
+
+通常使用量子蒙卡方法计算均匀电子气的基态能量，将它表示成$r_\text{s}$的函数做曲线拟合，就能够得到$\epsilon_\text{C}$。
+
+因此LDA近似实际上是比较唯一的，不同的LDA泛函的区别仅仅在于拟合函数的形式不同。
+常见的形式包括Perdew-Zunger，VWN等等。
+
+\subsubsection{LDA近似的局限性}
+
+
+
+\subsection{LSDA近似}
+
+现在转而考虑自旋系统的LDA近似。含自旋版本的托马斯-费米-狄拉克泛函需要将两种自旋分开计算，因为它们在\eqref{eq:hartree-fock-scf-with-spin}中就是分开的（不然也就不会导致等效的自旋-自旋相互作用了）。
+回顾$E_\text{X}$的推导过程，我们先计算了轨道波函数的电子数密度，将它乘以2得到总的电子数密度，然后将\eqref{sec:hohenberg-kohn-theorem-spinless}中的Fock项（是用轨道波函数计算出Fock项以后乘以2得到的）表示成总的电子数密度的泛函。
+对向上自旋重复以上步骤，则单独的向上自旋的电子贡献的交换能应该是$E_\text{X}[2 \rho_\uparrow(\vb*{r})] / 2$，因此含自旋的交换能是
+\begin{equation}
+    E_\text{X,spin}[\rho_\uparrow, \rho_\downarrow] = \frac{1}{2} (E_\text{X}[2 \rho_\uparrow(\vb*{r})] + E_\text{X}[2 \rho_\downarrow(\vb*{r})]).
+\end{equation}
+
+\subsection{GGA近似}
+
+从LDA近似的推导中可以清楚地看到，一旦离开了均匀电子气模型，LDA近似的可靠性就不好说了。
+对那些电子密度确定会有比较大的空间起伏的系统——比如说在我们需要精确计算分子结构时——LDA近似的精度不是特别好，此时有必要引入GGA近似。
+
+\subsection{杂化泛函：将Hartree-Fock近似结合进DFT}
+
+LDA近似和GGA近似都是所谓的“显式密度泛函”，即它们和电子数密度之间真的能够写下一个解析式。
+但是我们也注意到，Kohn-Sham波函数$\phi_{n \vb*{k}}(\vb*{r} \sigma)$本身其实是电子数密度和$V_\text{ion}$的泛函，因此，如果$E_\text{XC}$依赖于Kohn-Sham波函数，其实是无伤大雅的：因为这这不过是说，$E_\text{XC}$同时依赖于$\rho(\vb*{r})$和$V_\text{ion}(\vb*{r})$，或者说我们隐式地针对不同的晶体，从\emph{一族}泛函中找出来了一个而已，而根据不同的系统选择不同的泛函当然是可以并且常用的（如对电子数密度有很大空间起伏的系统最好不要用LDA）。
+因此其实我们可以不拘泥于写下显式的$E_\text{C}[\rho(\vb*{r})]$，完全可以让它依赖于Kohn-Sham波函数，这种做法\emph{仍然在}密度泛函理论的框架中。
+
+一个立刻可以注意到的结论就是，自洽Hartree-Fock近似实际上可以看成DFT的一种特例。我们称它对应的泛函为\emph{Hartree-Fock泛函}，记作$E_\text{HF}$（这里不写出$\rho(\vb*{r})$，因为它和$\rho(\vb*{r})$的依赖关系是隐式的）。
+
+% TODO：对自相互作用的评估
+
+\subsection{DFT+$U$}
+
+\subsection{范德瓦尔斯力}
+
 \section{Kohn-Sham方程的建立和求解}
 
 \autoref{alg:basic-kohn-sham}没有给出如下具体内容：如何引入凝聚态系统中原子核的位置、携带的电荷（从而确定材料中的电子总量）等信息，即如何适当地将$V_\text{ion}$和$\mu$引入以列写Kohn-Sham方程；\eqref{eq:kohn-sham-eq}本身是微分方程，它需要做适当的离散化才能被计算机求解，由于它是本征值问题，我们可以将$\phi_i(\vb*{r})$函数在适当的基底（量子化学中通常称为\concept{基组}）下展开，这样只需要求解矩阵的本征值问题。
@@ -219,12 +441,12 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 
 凝聚态研究中，由于系统的离散平移对称性，\eqref{eq:kohn-sham-eq}此时也具有离散平移对称性，它的解——也就是$\phi_i(\vb*{r})$——可以看成某个以我们设定的超胞为原胞的晶体中的单电子波函数，从而Bloch定理\eqref{eq:bloch-wavefunction}成立，且$\phi_i(\vb*{r})$中的$i$应该替换成Bloch波矢$\vb*{k}$，能带编号$n$和自旋$\sigma$。（同样，到这里，所谓“能带编号”也未必对应着实际的系统中的能带电子的能带编号；如何诠释它还是不确定的）
 
-\subsection{基于赝势和平面波的Kohn-Sham方程求解}\label{sec:supercell-pwdft}
+\subsection{基于超胞和平面波的Kohn-Sham方程朴素求解方法}\label{sec:supercell-pwdft}
 
-\subsubsection{平面波基组和赝势}
+\subsubsection{平面波基组下的Kohn-Sham方程}
 
 求解$\phi_{n \vb*{k}}(\vb*{r})$就是要求解$u_{n \vb*{k}}(\vb*{r})$。
-由于\eqref{eq:bloch-wavefunction}中的$u(\vb*{r})$具有周期性，它可以被展开成用倒格矢标记的一系列傅里叶分量，因此我们有（为书写方便暂时略去自旋指标）
+由于\eqref{eq:bloch-wavefunction}中的$u(\vb*{r})$具有周期性，它可以被展开成用倒格矢标记的一系列傅里叶分量，因此我们有（为书写方便暂时略去自旋指标，即$\phi$和$c$都是二分量对象；需注意由于可能有自旋-轨道耦合，自旋\emph{不能}被认为是附加在能带指标上的标签）
 \begin{equation}
     \phi_{n \vb*{k}}(\vb*{r}) = \frac{1}{\sqrt{V_\text{u.c.}}} \sum_{\vb*{G}} c_{n, \vb*{k}, \vb*{G}} \ee^{\ii (\vb*{k} + \vb*{G}) \cdot \vb*{r}},
 \end{equation}
@@ -247,29 +469,29 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 这就是说，我们需要给出一种“第一布里渊区中的动量采样”。
 显然，采样越密越好；可以使用$\vb*{k} \cdot \vb*{p}$来简化计算。
 
-最后我们处理至今尚未提及的$V_\text{ion}$。如\autoref{sec:pseudopotential}所述，外层电子感受到的势场可以用赝势取代。
-这里我们有好几种可能的做法：可以只计算外层电子，完全不计算内层电子，从而自始至终$V_\text{ion}$都是用赝势组合而成的，此时截断能可以设置得比较小，因为$\phi_{n \vb*{k}}(\vb*{r})$在靠近原子核的位置也不会发生剧烈振荡；原则上也可以将$V_\text{ion}$取成不同位置的原子的原子核的库伦势场的叠加，这相当于将材料中的所有电子都做了计算，即做了\concept{全电子计算}，当然，这样在原子核附近会有非常剧烈的波函数变化，并且高度局域的内层电子都会出现，从而截断能必须取得非常高，基本上是不现实的。
-一般来说用不到全电子计算，因为化学反应的能级不足以激发内层电子，倒是从头计算赝势时需要全电子计算。
-做全电子计算另有它法，如\autoref{sec:dft-paw}，实际上，这给出了系统性地生成赝势的一种方法。
-赝势类型本身也非常多样，详细情况见\autoref{sec:dft-pseudo-pot}。
-我们也可以将平面波方法称为赝势方法，既然直接用它做全电子计算并不现实。
+最后我们处理至今尚未提及的$V_\text{ion}$。
+原则上可以将$V_\text{ion}$取成不同位置的原子的原子核的库伦势场的叠加，这相当于将材料中的所有电子都做了计算，即做了\concept{全电子计算}，当然，这样在原子核附近会有非常剧烈的波函数变化，并且高度局域的内层电子都会出现，从而截断能必须取得非常高，基本上是不现实的。
+一般来说用不到全电子计算，因为化学反应的能级不足以激发内层电子，而如\autoref{sec:pseudopotential}所述，外层电子感受到的势场可以用赝势取代：可以只计算外层电子，完全不计算内层电子，从而自始至终$V_\text{ion}$都是用赝势组合而成的，此时截断能可以设置得比较小，因为$\phi_{n \vb*{k}}(\vb*{r})$在靠近原子核的位置也不会发生剧烈振荡。
+但这样就有一个问题：密度泛函理论需要\emph{全空间}的电子数密度，但是使用了赝势之后，原子核附近的电子数密度是不准确的。
+如果需要使用赝势，Kohn-Sham方程中能够直接组合得到电子数密度的$\phi_i(\vb*{r})$实际上\emph{不是}计算中实际求解出的\emph{赝Kohn-Sham波函数}，赝Kohn-Sham波函数服从的方程相比原本的Kohn-Sham方程是需要修改的。
+本节采用最为朴素的办法，直接将$V_\text{ion}$当成库伦势处理，因此本节的朴素的算法其实是不现实的：纯平面波方法基本上都是赝势方法。
 
-综上，PWDFT计算需要的输入信息有：
+综上，朴素的PWDFT计算需要的输入信息有：
 \begin{itemize}
     \item 晶体结构，这包括超胞以及各个原子在超胞内部的位置以及各个原子的类型；
-    \item 赝势信息，实际上等于是在描述各个原子都是什么原子；
+    \item 各个原子的原子序数，用以确定核电荷；
     \item 第一布里渊区采样，即\eqref{eq:dft-plane-wave}中$\vb*{k}$的密集程度；
     \item 和材料的结构、原子、$\vb*{k}$点采样都无关的东西，如截断能、泛函选取等。
 \end{itemize}
 
-\subsubsection{不考虑自旋的PWDFT算法}
+\subsubsection{不考虑自旋的朴素PWDFT算法}
 
 \begin{algorithm}
 
     \DontPrintSemicolon
     \SetAlgoLined
 
-    \KwData{初始电子密度$\rho_0(\vb*{r})$，交换关联泛函选取$E_\text{XC}[\rho(\vb*{r})]$，不同原子的赝势，原胞结构，$\vb*{k}$点采样$K = \{\vb*{k}\}$，原胞中电子总数$N_\text{e}$，截断能$E_\text{cut}$，最大迭代次数$N_\text{max}$，所考虑的最大能带数目$n_\text{max}$，容差$\epsilon$}
+    \KwData{初始电子密度$\rho_0(\vb*{r})$，交换关联泛函选取$E_\text{XC}[\rho(\vb*{r})]$，不同原子的原子序数$\{Z_i\}$，原胞结构，$\vb*{k}$点采样$K = \{\vb*{k}\}$，原胞中电子总数$N_\text{e}$，截断能$E_\text{cut}$，最大迭代次数$N_\text{max}$，所考虑的最大能带数目$n_\text{max}$，容差$\epsilon$}
     \KwResult{Kohn-Sham波函数$\phi_{n \vb*{k}}(\vb*{r})$和对应的本征值$\epsilon_{n \vb*{k}}$，迭代次数$i$}
     
     \For{$\vb*{k} \in K$}{
@@ -277,7 +499,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
     } 
 
     $i = 1$ \;
-    使用不同原子的赝势和原胞结构构造$V_\text{ion}(\vb*{r})$，并按照\eqref{eq:momentum-space-potential-dft}做傅里叶变换 \;
+    使用不同原子的原子序数和原胞结构构造$V_\text{ion}(\vb*{r})$，并按照\eqref{eq:momentum-space-potential-dft}做傅里叶变换 \;
     使用$\rho_0(\vb*{r})$计算$V_\text{H}$和$V_\text{XC}$，并按照\eqref{eq:momentum-space-potential-dft}做傅里叶变换 \;
     将$V_\text{ion}, V_\text{H}, V_\text{XC}$代入\eqref{eq:kohn-sham-eq-pw-minimal}求解，对每个$\vb*{k}$求前$n_\text{max}$个解，得到$\{c_{n, \vb*{k} + \vb*{G}}^{(1)}\}$和$\{\epsilon_{n, \vb*{k} + \vb*{G}}^{(1)}\}$ \;
     将$\{c_{n, \vb*{k} + \vb*{G}}^{(1)}\}$代入\eqref{eq:pw-minimal-expand}计算出$\{\phi_{n, \vb*{k} + \vb*{G}}^{(1)}\}$ \;
@@ -292,7 +514,7 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
     
     \Return{$i$，波函数$\{\phi^{(i)}_{n, \vb*{k} + \vb*{G}}\}$和本征值$\{\epsilon^{(i)}_{n, \vb*{k} + \vb*{G}}\}$}\;
 
-    \caption{给定晶格和原子赝势，不考虑自旋的PWDFT静态自洽计算}
+    \caption{给定晶格和原子赝势，不考虑自旋的最朴素的PWDFT静态自洽计算}
     \label{alg:static-pwdft-minimal}
 \end{algorithm}
 
@@ -324,18 +546,76 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 将以上细节填充进\autoref{alg:basic-kohn-sham}中，我们得到\autoref{alg:static-pwdft-minimal}，即所谓\concept{静态自洽计算}。（说是“静态”是因为有时候我们对晶体结构只有一个大概的猜测，此时需要做结构优化，即所谓\concept{结构优化自洽计算}，这个是要变动晶体结构的，而静态自洽计算不变动晶体结构）
 只要输入的晶体信息是准确的，交换关联泛函的质量足够好，我们就得到了外层电子的模拟结果。
 
-可以看到，虽然DFT没有任何经验参数，并且将每一条可能的能带都纳入考虑，截断能、$\vb*{k}$点采样、赝势的选择、泛函的选择会显著影响计算精度，对它们的选择是需要一些经验的；我们的确不需要根据实验数据拟合一些经验参数输入计算程序，但是很多时候是需要根据实验事实决定选择哪个赝势、哪个泛函的。
-
 \autoref{alg:static-pwdft-minimal}有不少可以扩充的地方。
 在实际的DFT软件包中，通常不会将各次迭代的波函数和本征值留到计算结束再输出，而是在每次循环中把计算结果写入一个输出文件中，这样如果某一步计算失败了，已经写入的数据还可以用；也可以不以$\rho_0(\vb*{r})$为初始值而是以一组波函数为初始值。
 
 \subsection{全电子计算的APW方法和LAPW方法}\label{sec:dft-lapw}
 
-% TODO：也可以用赝势计算出初步的电子密度，然后改用库伦势做进一步计算？
+\begin{figure}
+    \centering
+    \input{ab-initio/muffin-tin.tex}
+    \caption{蛋糕模具基组，蓝色的区域为平面波，红色的区域为角部分为球谐函数、径向部分为贝塞尔函数的一系列函数的线性组合}
+    \label{fig:muffin-tin}
+\end{figure}
+
+如前所述，使用平面波方法计算全电子问题有现实中难以克服的困难，即需要非常多的平面波来模拟原子核附近的电子行为。
+那么一种很自然的想法就是，可以构造\concept{蛋糕模具基组}：如\autoref{fig:muffin-tin}所示，我们每个原子核附近。
+
+\subsection{赝势方法}
+
+全电子计算常常是不必要的，因此现在我们转而考虑怎么将赝势引入DFT计算。
+做DFT计算实际上就是求解\eqref{eq:kohn-sham-eq-pw-minimal}，这形式上仍然是一个单电子方程，因此总的来说，“计算单原子波函数，然后把外层电子高频振荡抹平而拟合出等效势”的做法仍然是适用的。
+\autoref{sec:pseudopotential}中的做法不考虑任何电子-电子相互作用而计算内层电子的轨道，即把介质中的原子当成类氢原子，但是这样无疑精度非常糟糕。
+我们要做的是在Kohn-Sham方程求解中适当地引入赝势。
+主要的问题在于，由于密度泛函理论依赖全空间的电子数密度，使用赝势求解得到的赝波函数和$\rho(\vb*{r})$之间没有非常简单的\eqref{eq:kohn-sham-density}这样的关系，因为在原子核附近，用赝Kohn-Sham波函数根据\eqref{eq:kohn-sham-density}计算出来的电子数密度是不正确的，这也意味着赝Kohn-Sham波函数服从的方程中的$V_\text{XC}$不是简单的$\fdv*{E_\text{XC}}{\rho}$。
+因此，除了构造柔和的势能以外，我们还需要找到一种从赝Kohn-Sham波函数获得正确的电子数密度的方法。
+不同种类的赝势的从赝Kohn-Sham波函数获得正确的电子数密度的方法当然也是不一样的，或者说，不同种类的赝势对应的赝Kohn-Sham方程中$V_\text{XC}$的形式是不一样的。
+
+我们做\concept{核心电子冻结近似}，即认为晶体中其它原子的存在不会改变内层电子的行为（特别的，不会改变原子核附近的电子数密度），从而，使用单原子计算结果拟合出来的赝势在晶体中仍然是适用的。
+我们实际上也隐含地假定Kohn-Sham方程求解出来的本征值较低的Kohn-Sham波函数对应着内层电子；这件事倒是没有什么争议，因为这些本征值较低的Kohn-Sham波函数贡献的电子数密度确实集中在原子核附近，它们肯定对应着内层电子的电子数密度，而由核心电子冻结近似，把它们丢弃是没有问题的，因为反正内层电子的电子数密度不怎么变化。
+
+设我们对单原子已经求解出了如下的Kohn-Sham方程：
+\begin{equation}
+    - \frac{\laplacian}{2m} \phi_{nlm}(\vb*{r}) - \frac{Z e^2}{r} \phi_{nlm}(\vb*{r}) + V_\text{XC}[\rho(\vb*{r})] \phi_{nlm}(\vb*{r}) = \epsilon_{n} \phi_{nlm}(\vb*{r}), \quad \rho(\vb*{r}) = 2 \sum_{n, l, m} \abs*{\phi_{nlm}(\vb*{r})}^2.
+\end{equation}
+这里的$n, l, m$和原子物理中惯用的记号完全一致，由于系统具有旋转不变性，$\rho(\vb*{r})$也具有旋转不变性，因此$V_\text{XC}$也具有，因此Kohn-Sham本征值只和主量子数$n$有关。
+我们将电子分成内层电子和外层电子（或者说价电子），前者被认为固定不动的，可以计算出其数密度：
+\begin{equation}
+    \rho_\text{core}(\vb*{r}) = 2 \sum_{\text{core $n, l, m$}} \abs*{\phi_{nlm}(\vb*{r})}^2.
+\end{equation}
+完整的数密度就是用价电子Kohn-Sham波函数计算出来的数密度加上$\rho_\text{core}(\vb*{r})$。
+进一步，将$r_\text{C}$内的$\phi_{nlm}(\vb*{r})$“抹平”，得到$\tilde{\phi}_{nlm}(\vb*{r})$，然后根据$\phi_{nlm}(\vb*{r})$和$\tilde{\phi}_{nlm}(\vb*{r})$找到一种能够将赝Kohn-Sham波函数映射到原Kohn-Sham波函数并由此得到全空间的电子数密度的方法，并根据
+\begin{equation}
+    - \frac{\laplacian}{2m} \tilde{\phi}_{nlm}(\vb*{r}) + V_\text{PP} \tilde{\phi}_{nlm}(\vb*{r}) + V_\text{XC}[\rho(\vb*{r})] \tilde{\phi}_{nlm}(\vb*{r}) = \epsilon_{n} \tilde{\phi}_{nlm}(\vb*{r}), \quad \rho(\vb*{r}) = \rho_\text{core}(\vb*{r}) + \rho_\text{v}[\{\tilde{\phi}_{i}(\vb*{r})\}]
+\end{equation}
+计算出赝势$V_\text{PP}$（注意它可能不是局域的）。
+于是，求解晶体中的Kohn-Sham方程
+\begin{equation}
+    \begin{aligned}
+        &- \frac{\laplacian}{2m} \phi_{n \vb*{k}}(\vb*{r}) + V_\text{ion}(\vb*{r}) \phi_{n \vb*{k}}(\vb*{r}) + V_\text{XC}[\rho(\vb*{r})] \phi_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} \phi_{n \vb*{k}}, \\
+        &\rho(\vb*{r}) = 2 \sum_{\text{occupied $n, \vb*{k}$}} \abs*{\phi_{n \vb*{k}}(\vb*{r})}^2
+    \end{aligned}
+\end{equation}
+就转化为求解
+\begin{equation}
+    \begin{aligned}
+        &- \frac{\laplacian}{2m} \tilde{\phi}_{n \vb*{k}}(\vb*{r}) + V_\text{PP}(\vb*{r}) \tilde{\phi}_{n \vb*{k}}(\vb*{r}) + \fdv{V_\text{XC}[\rho(\vb*{r})]}{\rho(\vb*{r})} \fdv{\rho_\text{v}}{\tilde{\phi}^*_{n \vb*{k}}(\vb*{r})} = \epsilon_{n \vb*{k}} \tilde{\phi}_{n \vb*{k}}, \\
+        &\rho(\vb*{r}) = \rho_\text{v}[\{\tilde{\phi}_{n \vb*{k}}\}] + \sum_{\vb*{i}, \alpha} \rho_\text{core}(\vb*{r} - \vb*{R}_{\vb*{i} \alpha}),
+    \end{aligned}
+\end{equation}
+其中$\alpha$标记一个晶胞中不同的原子。
+只要核心电子冻结近似成立，求解以上赝Kohn-Sham方程组就充分地考虑了内层电子对价电子的排斥作用、充分地考虑了内层电子对原子核的库伦势场的屏蔽，等等，求解得到的在$r_\text{C}$外的Kohn-Sham波函数和全电子计算一致，并且可以使用比较少的平面波。
+
+\subsubsection{模守恒赝势}
+
+
 
 \subsection{PAW方法}\label{sec:dft-paw}
 
-如前所述，使用平面波方法计算全电子问题有现实中难以克服的困难，即需要非常多的平面波来模拟原子核附近的电子行为。
+赝势方法可以用很少的平面波非常快速地计算各种系统，但是无法做全电子计算；LAPW等方法可以做全电子计算，但是非常慢。
+\concept{投影缀加波法（projector augmented wave method, PAW）}是一种能够同时兼顾两种需求的方法，超软赝势和LAPW方法都是它的特例。
+实际上，PAW方法的推导是如此简单和清晰，以至于我们甚至可以反过来，用它作为对赝势方法的辩护。
+
 
 
 \begin{info}{VASP软件包}{vasp}
@@ -343,164 +623,11 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
     \begin{itemize}
         \item \texttt{POSCAR}，给出一个平行六面体超胞的三个初基格矢，以及各个原子的类型、数目，用笛卡尔坐标系或是晶体坐标系给出的坐标。
         \item \texttt{POTCAR}，赝势文件。
-        \item \texttt{KPOINTS}，动量采样，有多种方案。
+        \item \texttt{KPOINTS}，$\vb*{k}$动量采样（注意不是$\vb*{G}$采样，$\vb*{G}$采样由根据\texttt{PSCAR}计算出来的倒格矢和\texttt{INCAR}中给定的截断能规定），需要指定第一布里渊区中被纳入考虑的$\vb*{k}$。VASP提供多种自动生成这些$\vb*{k}$点的方法。
         \item \texttt{INCAR}，计算中的参数，截断能、泛函选择、最大计算步数、能带数目、容差等。
+        可以看到，虽然DFT没有任何经验参数，并且将每一条可能的能带都纳入考虑，截断能、$\vb*{k}$点采样、赝势的选择、泛函的选择会显著影响计算精度，对它们的选择是需要一些经验的，虽然我们的确不需要根据实验数据拟合一些经验参数输入计算程序。
     \end{itemize}
 \end{info}
-
-\section{泛函选择}
-
-本节讨论如何构造和选择合适的交换关联泛函$E_\text{XC}[\rho(\vb*{r})]$；在DFT的语境下，交换关联泛函经常就简称“泛函”。
-库仑定律的形式告诉我们，交换关联泛函的形式肯定是不局域的，因为有$\abs{\vb*{r} - \vb*{r}'}$这样的因子，并且同时要对$\vb*{r}$和$\vb*{r}'$两个变量求积分。
-但实际上由于屏蔽作用等这种空间上的非局域性衰减得很快，于是密度关联泛函总是可以写成以下的局域表达式：%
-\footnote{
-    如果非局域性衰减得很快，那么可以做多级展开
-    \[
-        f(\vb*{r} - \vb*{r}') = f(\vb*{r}) + (\vb*{r} - \vb*{r}') \cdot \grad{f} + \cdots,
-    \]
-    这样就可以先积掉$\vb*{r}'$这个变量，得到
-    \[
-        \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} f(\vb*{r} - \vb*{r}') = \int \dd[3]{\vb*{r}} g(f(\vb*{r}), \grad{f(\vb*{r})}, \ldots).
-    \]
-}%
-\[
-    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} f(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots),
-\]
-而由于交换能与$\rho(\vb*{r})$的平方同阶，通常会设
-\begin{equation}
-    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})}, \ldots).
-\end{equation}
-
-常用的交换-关联泛函的形式包括以下几种：
-\begin{itemize}
-    \item \concept{局域密度近似（LDA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}))$；
-    \item \concept{广义梯度近似（GGA）}：$\epsilon_\text{XC}[\rho(\vb*{r})] = \epsilon_\text{XC}(\rho(\vb*{r}), \grad{\rho(\vb*{r})})$；
-    \item \concept{Meta-GGA}：在GGA近似中加入一个动能密度修正（基本上是$\laplacian \rho(\vb*{r})$）；
-    \item \concept{混合泛函}：Hartree-Fock近似和别的一些东西的线性组合；
-    \item \concept{经验泛函}：有一大堆参数，根据实际数据微调参数。
-\end{itemize}
-不同泛函的分类如\autoref{fig:excahnge-correlation-functional}所示。
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{functional-classification.png}
-    \caption{交换-关联泛函的分类}
-    \label{fig:excahnge-correlation-functional}
-\end{figure}
-
-目前并没有能够准确计算一切体系的$E_\text{XC}$，没有也是很正常的，因为很明显，这个泛函需要的复杂程度和“看着库仑相互作用想出一切可能的凝聚态现象”是一样的，后者不可能做到，前者当然不可能做到。
-但是对特定的体系，一些相互作用通道可以忽略，一些误差可以互相抵消，找到一个复杂程度适中的泛函描述它们是可以做到的。
-适当地构造和选择泛函非常需要技术含量和经验。
-
-最后，虽然原则上一切库仑相互作用导致的物理效应都可以通过$E_\text{XC}[\rho(\vb*{r})]$得到，这件事实际上做起来并不那么容易。
-如果一个泛函被证明能够模拟一些相互作用通道导致的物理而无法模拟另一些，我们就需要手动向一个没有可调参数的$E_\text{XC}[\rho(\vb*{r})]$引入一些修正项。
-这些修正项的大小往往无法固定下来，因为不同情况下$E_\text{XC}[\rho(\vb*{r})]$对对应的相互作用通道的忽略可能也是不一样的。
-请注意交换关联泛函是通过计算\emph{电子数密度}具有某种特点的系统获得的，而不是通过分析哪些费曼图要保留哪些可以忽略获得的，一个泛函\emph{不能}良好地对应到一种通常意义上的保留一些相互作用而忽略另一些的有效模型上，交换关联泛函到底把什么纳入了考虑是缺乏直观的物理意义的，这也是DFT难以系统地提升精度的原因；在使用更加接近微扰场论方法的那些算法（如各种post-HF方法）时我们是清楚地知道自己忽略了什么的，在DFT中我们并不知道自己忽略了什么。
-手动引入Hubbard排斥（所谓LDA+$U$，涉及非常短程的相互作用，不容易被比较光滑的泛函模拟）、范德瓦尔斯力（长程，不容易被比较局域的泛函模拟）就是例子。
-
-\subsection{LDA近似}
-
-当电子密度变化非常平缓时，$\grad{\rho},\laplacian{\rho}$等全部可以看成是零，此时交换关联泛函的形式是
-\begin{equation}
-    E_\text{XC}[\rho(\vb*{r})] = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) \epsilon_\text{XC}(\rho(\vb*{r})).
-\end{equation}
-这就是所谓的\concept{局域密度近似（LDA）}：每单位的交换关联能只和该地点的电子密度有关。
-
-我们主要将尝试寻找一个适用于均匀电子气的交换关联泛函。均匀电子气指的是没有晶格、也没有外场时的库伦相互作用电子气，其电荷密度是处处均匀的。
-由于无论是均匀电子气还是电子密度较平缓但是的确有晶格周期势的电子气理论上均共享一种$E_\text{XC}$，而对它们LDA近似均适用，如果我们找到了一个$E_\text{XC}[\rho(\vb*{r})]$可以精确地预言均匀电子气的行为，那么这个泛函也应该能够比较精确地预言一般的、电子密度较平缓的电子气的行为。
-
-\subsubsection{Hartree-Fock近似和托马斯-费米-狄拉克泛函}
-
-自由电子气的基态就是费米面以内的每个轨道都占据了一上一下两个电子的状态，我们设共有$N$个电子，那么这些电子占据了$N/2$个不同的轨道。设这些轨道为$\{\phi_i(\vb*{r})\}$。
-仅考虑库伦相互作用引入的一阶微扰，则有
-\[
-    E = \sum_{\sigma, \sigma'} \mel{\Psi}{
-        \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} {\psi}^\dagger_{\sigma}(\vb*{r}) {\psi}^\dagger_{\sigma'}(\vb*{r}') \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} {\psi}_{\sigma'}(\vb*{r}') {\psi}_\sigma(\vb*{r})
-    }{\Psi}.
-\]
-这里必须完整地考虑自旋自由度的作用。可以使用Wick定理把上式展开，这就是在做Hartree-Fock近似。
-请注意由于均匀电子气中没有自旋翻转，任何形如
-\[
-    \mel{\Psi}{{\psi}_\sigma^\dagger {\psi}_{\sigma'}}{\Psi}, \quad \sigma \neq \sigma'
-\]
-的项都是零，而
-\[
-    \mel{\Psi}{{\psi}^\dagger_\sigma(\vb*{r}) {\psi}_{\sigma}(\vb*{r}')}{\Psi} = \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}'),
-\]
-于是最后能量修正为
-\[
-    E = \frac{1}{2} \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \bigg(
-        \underbrace{4 \sum_{i} \abs{\phi_i(\vb*{r})}^2 \sum_{i} \abs{\phi_i(\vb*{r}')}^2}_\text{classical coulomb energy, Hartree term} - \underbrace{2 \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') \sum_i \phi_i^*(\vb*{r}') \phi_i(\vb*{r})}_\text{exchange energy}
-    \bigg).
-\]
-交换能项前面的因子是$2$而不是$4$是因为自旋不同的电子之间的交换能全部抵消了。这样交换能就是
-\begin{equation}
-    E_\text{X} = - \int \dd[3]{\vb*{r}} \dd[3]{\vb*{r}'} \frac{e^2}{\abs{\vb*{r} - \vb*{r}'}} \abs{\sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}')}^2 . 
-    \label{eq:exchange-energy-homogeneous-gas}
-\end{equation}
-对箱归一化的均匀电子气，有
-\[
-    \phi_i(\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{- \ii \vb*{k}_i \cdot \vb*{r}},
-\]
-于是就有
-\begin{equation}
-    \sum_i \phi_i^*(\vb*{r}) \phi_i(\vb*{r}') = \sum_{\text{occupied $\vb*{k}$}} \frac{1}{V} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')} = \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')},
-    \label{eq:homogeneous-density}
-\end{equation}
-特别的，电子密度的一半（因为只考虑了轨道自由度）为
-\[
-    n(\vb*{r}) / 2 = \frac{k_\text{F}^3}{6 \pi^2}.
-\]
-上式代入\eqref{eq:exchange-energy-homogeneous-gas}就得到交换能的形式。
-在这里我们稍微做一些推广。考虑一个非均匀的自由电子气，其非均匀性可能来自一些杂质或者特殊的相互作用，总之，每一个宏观小微观大的体积元可以看成一个用于归一化波函数的箱子，波函数定域在这个箱子里面（杂质会导致局域化）。
-这样只有$\vb*{r} - \vb*{r}'$不超出一个箱子时\eqref{eq:homogeneous-density}才有明显的非零值。
-每个箱子都有自己的费米动量，记作$k_\text{F}(\vb*{r})$（具体是关于$\vb*{r}$还是$\vb*{r}'$无关紧要因为两者总是在同一个箱子内）。
-令
-\[
-    \vb*{s} = \vb*{r} - \vb*{r}', 
-\]
-则
-\[
-    \begin{aligned}
-        E_\text{X} &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{1}{(2\pi)^3} \int_{\abs{\vb*{k}} < k_\text{F}} \dd[3]{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{s}} \right)^2 \\
-        &= - e^2 \int \dd[3]{\vb*{r}} \dd[3]{\vb*{s}} \frac{1}{s} \left( \frac{3}{2} \frac{\sin t - t \cos t}{t^3} n(\vb*{r}) \right)^2 \quad (t= k_\text{F}(\vb*{r}) s) \\
-        &= - 9 e^2 \pi \int \dd[3]{\vb*{r}} \int \dd{t} \frac{t}{k_\text{F}(\vb*{r})^2} n(\vb*{r})^2 \left( \frac{\sin t - t \cos t}{t^3} \right)^2 \\
-        &= - e^2 \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
-    \end{aligned}
-\]
-这就得到了\concept{托马斯-费米-狄拉克泛函}：
-\begin{equation}
-    E_\text{X}[\rho(\vb*{r})] / e^2 = - \frac{3}{4} \left( \frac{3}{\pi} \right)^{1/3} \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3} = - 0.7386 \int \dd[3]{\vb*{r}} \rho(\vb*{r})^{4/3}.
-    \label{eq:thomas-fermi-dirac-functional}
-\end{equation}
-对均匀或不均匀但缓变的电子气这个泛函确定适用。
-
-对一般的系统，托马斯-费米-狄拉克泛函当然是不那么精确的，但是我们可以以它为更精确的泛函的起点。
-\eqref{eq:thomas-fermi-dirac-functional}本质上是Hartree-Fock近似中的Fock项，那么要修正它，加入关联能就可以，即我们需要尝试寻找一个$E_\text{C}$使得
-\begin{equation}
-    E_\text{XC}[\rho(\vb*{r})] = E_\text{X}[\rho(\vb*{r})] + E_\text{C}[\rho(\vb*{r})].
-\end{equation}
-这个$E_\text{C}$就称为\concept{关联泛函}。
-
-\subsubsection{关联泛函的量子蒙特卡洛计算}
-
-关联泛函就是正确的$E_\text{XC}$减去\eqref{eq:thomas-fermi-dirac-functional}。
-
-\subsection{GGA近似}
-
-从LDA近似的推导中可以清楚地看到，一旦离开了均匀电子气模型，LDA近似的可靠性就不好说了。
-对那些电子密度确定会有比较大的空间起伏的系统——比如说在我们需要精确计算分子结构时——LDA近似的精度不是特别好，此时有必要引入GGA近似。
-
-\subsection{杂化泛函：将Hartree-Fock近似结合进DFT}
-
-\subsection{DFT+$U$}
-
-\subsection{范德瓦尔斯力}
-
-\section{赝势}\label{sec:dft-pseudo-pot}
-
-本节讨论赝势如何生成。\autoref{sec:pseudopotential}中的做法不考虑任何电子-电子相互作用而计算内层电子的轨道，即把介质中的原子当成类氢原子，但是这样无疑精度非常糟糕。
-不过做DFT计算实际上就是求解\eqref{eq:kohn-sham-eq-pw-minimal}，这形式上仍然是一个单电子方程，因此“计算波函数，然后把高频振荡抹平”的做法仍然是适用的。
 
 \section{物理量测量和后处理}
 
@@ -515,21 +642,29 @@ Kohn-Sham方程并非做DFT计算的唯一方法。例如，我们可以有Orbit
 \subsubsection{Kohn-Sham方程的解的物理意义}
 
 在待计算的系统确实适用单电子诠释时，我们将\eqref{eq:kohn-sham-eq}和\eqref{eq:dyson-wave-eq}对比，很容易看出两者的相似之处。
-如果Hartree项加上$V_\text{XC}$构成对自能$\Sigma$的一个良好模拟，那么\eqref{eq:kohn-sham-eq}解出的$\epsilon_i$\emph{就是}能带电子的能量。
+如果Hartree项加上$V_\text{XC}$构成对自能$\Sigma$的一个良好模拟，那么\eqref{eq:kohn-sham-eq}解出的$\epsilon_i$\emph{就是}经过相互作用修饰的能带电子的能量，或者说是费米液体中的$\epsilon_{\vb*{k}}$。
 
 如果实际情况确实如此，那么\eqref{eq:dft-variation-principle}中的$\mu$实际上就是费米能，因为对比\eqref{eq:dft-variation-principle}和\eqref{eq:dft-variation-principle-shem}会发现
 \begin{equation}
     \mu = \sum_{i=1}^N \epsilon_i.
 \end{equation}
 
+Kohn-Sham方程解得的本征值和本征函数到底是什么实际上是仍然有疑问的。
+这其中最为著名的就是\emph{半导体能隙问题}，即DFT会倾向于系统地低估半导体的能隙，从而实验上明确确定是半导体的体系用DFT计算出来的能带结构看起来似乎是金属的。
+关于这一误差到底在哪里没有特别明确的结论，因为DFT中不确定的、物理意义不清楚的东西非常多，首先我们不知道LDA和GGA这些非常局域的方法以及它们的推广是否足够精确，其次我们也不知道Kohn-Sham方程的解的物理意义是什么。
+如果需要非常可靠的能谱，需要做诸如GW这样的进一步计算。
+
 \subsubsection{GW计算}
 
 GW计算实际上是一种独立的数值计算方法，但是因为它要求一个比较接近实际情况的单电子波函数作为起点，我们仍然可以将它视为DFT的后处理的一部分，即将DFT计算出来的Kohn-Sham波函数作为GW计算的初始值。
+GW计算也是一种基于自能的计算方法，其中，它
 
 \subsection{原子受力}
 
 在计算单原子受力时我们最好把晶胞扩张得大一些。如果使用原胞做计算，那么将某个原子移动一小段得同时，其它原胞中与它地位一致的原子也发生了移动，因此通过这种方式计算原子移动前后的能量变化并进一步计算力是不准确的。
 相反，如果晶胞被扩张了，那么移动一个原子之后，与之最为接近的那些原胞中与之地位一致的原子并没有发生移动，会给出相对可靠的结果。
+
+\subsubsection{声子谱计算}
 
 \section{结构优化和分子动力学模拟}
 
