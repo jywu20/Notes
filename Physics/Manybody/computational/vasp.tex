@@ -71,26 +71,75 @@
 
 \maketitle
 
+This article briefly introduces VASP, its features, its frequently used functions, frequently observed errors and unexpected results, and some tricks to speed up calculation.
+
 \section{Ab-initio calculation using VASP}
+
+The most frequently used algorithm of VASP is plain-wave based Kohn-Sham DFT, with three kinds of pseudopotentials supported,
+namely norm-conserving pseudopotentials, ultrasoft pseudopotentials and PAW pseudopotentials.
+VASP also support other self consistent algorithms that are not DFT, for example RPA approximation, but usually a DFT calculation must be performed ahead to generate necessary auxiliary data like wavefunctions.
+
+\subsection{What VASP doesn't do}
+
+Here is a list of things not yet supported - and highly unlikely to be in the future - by VASP:
+\begin{itemize}
+    \item Thermal DFT
+    \item KSDFT with Gaussian basis or other non-plain-wave basis
+    \item 
+\end{itemize}
 
 \section{Static self-consistent calculation}
 
 With \texttt{LAECGH} turned on, you will find lines starting with \texttt{soft electron} or \texttt{augmentation electron} in \texttt{vasp.out}.
 
-\section{Relaxation}
+\section{Relaxation and molecular dynamics}
 
-Suggested setting: \texttt{EDIFF} = \num{1e-8}, \texttt{EDIFFG} = \num{-0.0001} for better accuracy
+\subsection{Structural relaxation}
+
+Suggested setting: \texttt{EDIFF = 1e-8}, \texttt{EDIFFG = -0.0001} for better accuracy
 
 \section{Post operations}
 
-\subsection{Speeding up convergence}
+\section{Frequent mistakes in input files}
 
-\subsection{Errors}
+Before anything else, do the following checklist:
+\begin{itemize}
+    \item Are these really the input files used in your last job?
+    People often make stupid mistakes such as modifying some configurations and using the unmodified version to submit another job, so the errors in the last run remain there, leaving themselves confused about why the new settings don't work.
+    Always check:
+    \begin{itemize}
+        \item The \texttt{SYSTEM} tag in \texttt{INCAR}. It's quite often when people copy the \texttt{INCAR} for one material to calculate another system, and forget to change \texttt{SYSTEM}.
+        \item The last modified date of every file.
+    \end{itemize} 
+    \item 
+\end{itemize}
 
-It seems \texttt{ISYM=3} is less tolerant than \texttt{ISYM=2}.
+\section{Errors during calculation}
 
-\subsection{Unexpected outputs}
+It seems \texttt{ISYM = 3} is less tolerant than \texttt{ISYM = 2}.
 
-these 'total charges' and magnetizations are obtained form a summation over the local quantities (integration of the charge and spin densities in the 'atomic spheres' of radii r=RWIGS. As the volumes of the spheres do not sum up to the volume of the unit cell, these charges also do not sum up to the total number of valence electrons (the contribution of the "interstitial" space is missing)
+\section{Unexpected outputs}
+
+Whenever something weird happens, check these terms:
+\begin{itemize}
+    \item Are there too few or too many $k$ points? Check \texttt{IBZKPT}. If there are, say, only 2 $k$ points, you won't expect the result to make sense.
+    \item Does the calculation really converges? Check \texttt{vasp.out}. 
+    \item Maybe the optimization algorithm doesn't work well for the given task. \texttt{ALGO = Normal} is always a safe choice, though it may not be that efficient. But when other algorithms actually fail, \texttt{ALGO = Normal} at least will finish with a reasonable time duration and give an acceptable result.
+\end{itemize}
+
+\subsection{Strange \texttt{OUTCAR} outputs}
+
+\subsubsection{Charges and magnetizations}
+
+\paragraph{The total charges and magnetization doesn't match the numbers in \texttt{vasp.out}!}
+
+These 'total charges' and magnetizations are obtained form a summation over the local quantities (integration of the charge and spin densities in the 'atomic spheres' of radii $r$=\texttt{RWIGS}. 
+As the volumes of the spheres do not sum up to the volume of the unit cell, these charges also do not sum up to the total number of valence electrons (the contribution of the "interstitial" space is missing).
+
+\subsubsection{Energy}
+
+\section{Speeding up}
+
+\subsection{Convergence}
 
 \end{document}

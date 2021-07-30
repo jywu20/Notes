@@ -205,6 +205,8 @@ Bloch振荡的周期的量级和能带结构关系不大，而主要取决于晶
 
 \subsection{电子运动和碰撞的玻尔兹曼方程描述}
 
+\input{boltzmann.tex}
+
 现在将电子-电子相互作用纳入考虑。
 
 由于填满的能带中同时具有Bloch波矢为$\vb*{k}$和$-\vb*{k}$的电子，外加电场时它们运动方向相反，无导电性。
@@ -661,9 +663,7 @@ Hartree-Fock近似又可以分成两种，一种是\concept{自洽Hartree-Fock�
 虽然我们这里是从Hartree-Fock推导出这个结论的，但是这个结论的适用范围显然很广，因为只要系统中电子-电子格林函数的自能能够微扰计算，系统的低能自由度都是一些费米型激发。
 \autoref{sec:landau-fermi-liquid}中仔细分析了这类系统的性质。
 
-\subsubsection{零温下的HF自洽方程组}
-
-% TODO:格林函数和单粒子波函数
+\subsection{零温下的自洽Hartree-Fock方程组}
 
 Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种激发就是\autoref{sec:landau-fermi-liquid}中的费米型准粒子，是经过相互作用修饰的能带电子。
 根据Bloch定理，我们将这些经过相互作用修饰的能带电子用$n \vb*{k}$标记。
@@ -682,7 +682,7 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
     \end{aligned}
     \label{eq:hartree-fock-scf-with-spin}
 \end{equation}
-求解出上式就求解出了自洽Hartree-Fock近似下的费米型激发的能谱。
+求解出上式（上式，或者其离散化版本，称为\concept{Roothaan方程}）就求解出了自洽Hartree-Fock近似下的费米型激发的能谱。
 \eqref{eq:hartree-fock-scf-with-spin}的推导是非常一般的，因此可以将$V_\text{ion}(\vb*{r})$用赝势代替，或是引入自旋-轨道耦合等等。
 方程右边的第三、四项来自电子-电子库伦相互作用，第三项就是将电子数密度当成一个外场写出的库伦势，称为\concept{经典库伦能}或者\concept{Hartree项}，而第四项没有特别明确的意义，通常称为\concept{交换能}或者\concept{Fock项}，我们会发现只有自旋相同的电子之间才有交换能，而且交换能是负的，即电子自旋平行会让系统能量下降。
 Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而后者来自。% TODO：这个叫做什么图啊
@@ -700,10 +700,54 @@ Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而
 
 实际上也可以从另一个角度获得\eqref{eq:hartree-fock-scf-with-spin}。
 我们可以写下一个自由电子气的波函数，计算库伦相互作用在这个波函数下的期望值，并且将这个期望值当成系统能量（可见Hartree-Fock近似确实是一种平均场近似方法），同样能够得到\eqref{eq:hartree-fock-scf-with-spin}。
+系统实际的能量减去通过以上方法计算出来的Hartree-Fock近似下的能量通常称为\concept{关联能}，因为这部分能量的计算无法通过将基态拟设为无相互作用波函数计算得到。
+这个说法其实并不是非常严谨，因为Hartree-Fock近似下的能量显然也考虑了一些电子关联效应。
 
-% TODO：Roothaan方程
+\subsection{均匀电子气的Hartree-Fock近似}
 
-\subsubsection{有限温度情况}
+% TODO：适用范围
+自洽Hartree-Fock方程的求解一般来说不能解析进行。不过，如果没有$V_\text{ion}(\vb*{r})$，或者说如果我们讨论一个自由电子气加上库伦相互作用之后的Hartree-Fock近似，解析计算是可以做到的。
+
+对蝌蚪图，我们有（由于没有任何$p^0$交换，我们略去它不写）
+\input{metal/hf/self-energy-1.tex}
+其中期望值是相互作用修正后的。虽然$\vb*{q} \to 0$时这一项发散，但那是因为相互作用线的修正没有做，或者说屏蔽效应没有考虑。
+$1 / \abs*{\vb*{q}}^2$因为屏蔽修正而“柔化”之后，我们发现它是一个常数，而系统中总电子数目不变，因此，上式是一个常数：它没有任何$\vb*{k}$或是$\sigma$的依赖，可以归入化学势中。%
+\footnote{
+    化学势是可以第一性原理计算的而不便于手算。
+    由于实验中能够测量的都是经过各种修正的化学势，无相互作用哈密顿量中裸的化学势并无用处。
+    因此，场论计算中正比于系统中总电子数的项可以直接归入化学势，一方面简化了问题，一方面，实际上这样做才是正确的。
+    我们今后将不断做同样的事。
+}%
+因此蝌蚪图实际上没有什么有趣的效应。
+另一张图
+\input{metal/hf/self-energy-2.tex}
+自能由两张图之和给出，但是既然我们将蝌蚪图的贡献归入化学势，可以取
+\[
+    - \ii \Sigma_{\vb*{k} \alpha} = \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} (- \expval{n_{\vb*{q} \sigma}}) \frac{- \ii 4 \pi e^2}{\abs*{\vb*{k} - \vb*{q}}^2},
+\]
+即
+\begin{equation}
+    \Sigma_{\vb*{k} \alpha} = - \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \expval{n_{\vb*{q} \sigma}} \frac{4 \pi e^2}{\abs*{\vb*{k} - \vb*{q}}^2}.
+\end{equation}
+
+如果我们做非自洽Hartree-Fock近似，上式可以解析计算。此时$\expval{n_{\vb*{q} \sigma}}$只有在$\abs*{\vb*{q}} < k_\text{F}$时为$1$，其它时候为$0$，从而
+\[
+    \begin{aligned}
+        \Sigma_{\vb*{k} \sigma} &= - \frac{4\pi e^2}{(2\pi)^3} \int_0^{k_\text{F}} q^2 \dd{q} \times 2 \pi \times \int_{0}^{\pi} \sin \theta \dd{\theta} \frac{1}{\abs*{\vb*{k}}^2 + q^2 - 2 \abs*{\vb*{k}} q \cos \theta} \\
+        &= - \frac{e^2}{k \pi} \int_0^{k_\text{F}} q \dd{q} \ln\abs{\frac{k+q}{k-q}},
+    \end{aligned}
+\]
+完成此积分就得到
+\begin{equation}
+    \Sigma_{\vb*{k} \alpha} = - \frac{e^2 k_\text{F}}{\pi} \left( 1 + \frac{1 - y^2}{2y} \ln\abs{\frac{1+y}{1-y}} \right), \quad y = \frac{k}{k_\text{F}}.
+\end{equation}
+
+我们马上会发现一个不妙的事实，就是$k \to k_\text{F}$时电子等效群速度
+\begin{equation}
+    v^*_k = v_k + \pdv{\Sigma_{\vb*{k} \alpha}}{k}
+\end{equation}
+对数发散。实验中当然没有观察到这种现象——别忘了，对金属，单纯的能带理论就足够解释大部分现象了，而能带理论中当然没有什么发散的费米速度。
+因此我们发现，接近费米面处，非自洽Hartree-Fock近似失效。
 
 \subsection{Hartree-Fock近似的用处以及它何时失效}
 
@@ -725,8 +769,8 @@ Hartree-Fock近似的用处其实不只是处理库仑相互作用的。
 因此\eqref{eq:general-electron-electron-interaction}关于单电子格林函数的平均场近似同样包含Hartree项和Fock项（见\autoref{fig:generalized-hartree-fock}），同样可以称为Hartree-Fock近似。
 
 Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以略去，在这些说法不适用的情况下，自然就不正确了。
-
-% TODO：屏蔽
+例如，Hartree-Fock近似——无论是自洽的还是非自洽的——都没有考虑任何屏蔽效应。
+在均匀电子气的例子中，非自洽Hartree-Fock近似会导致费米面附近的电子群速度发散，这是可以预料到的，因为费米面附近电子很多，小的外加电荷会快速被屏蔽，屏蔽效应不能忽略。
 
 \section{凝胶模型，高密度电子气的静电屏蔽和RPA近似}
 

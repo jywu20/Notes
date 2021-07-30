@@ -1,0 +1,89 @@
+\begin{back}{玻尔兹曼方程}{boltzmann}
+    考虑一个一般的仅包含二粒子相互作用的系统，系统中共有$N$个粒子（注意此处的$N$不是晶胞个数），且相互作用力场具有各向同性：
+    \begin{equation}
+        H = \sum_i \frac{p_i^2}{2m} + \sum_{i \neq j} U(\abs*{\vb*{r}_i - \vb*{r}_j}).
+        \label{eq:general-gas-hamiltonian}
+    \end{equation}
+    \eqref{eq:general-gas-hamiltonian}会导致如下的刘维尔方程：
+    \[
+        \dv{P_N}{t} + \sum_i \left( \vb*{v}_i \cdot \pdv{P_N}{\vb*{r}_i} + \frac{\vb*{F}_i}{m} \cdot \pdv{P_N}{\vb*{v}_i} \right), \quad \vb*{F}_i = - \sum_{j \neq i} \pdv{U_{ij}}{\vb*{r}_i}, 
+    \]
+    其中$P_N$是$\{\vb*{q}_i, \vb*{p}_i\}$的函数，且随意交换两个粒子，$P_N$不变。考虑如下的$s$粒子边缘分布：
+    \begin{equation}
+        P_N^{(s)} = \int \prod_{i \geq s+1} \dd{\vb*{r}_i} \dd{\vb*{v}_i} P_N,
+    \end{equation}
+    使用$P_N$的对称性以及积分边界项为零的事实，可以推导出
+    \begin{equation}
+        \pdv{P_N^{(1)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(1)}}{\vb*{r}_1} = \frac{N-1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1},  
+        \label{eq:from-p2-to-p1}
+    \end{equation}
+    以及类似的从$P^{(3)}_N$推导出$P^{(2)}_N$的方程
+    \begin{align}
+        \begin{autobreak}
+            \pdv{P_N^{(2)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+            + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+            - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+            - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} 
+            = \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \left( \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} + \pdv{P_N^{(3)}}{\vb*{v}_2} \cdot \pdv{U_{23}}{\vb*{r}_2} \right),
+        \end{autobreak}
+        \label{eq:from-p3-to-p2}
+    \end{align}
+    还有从$P_N^{(4)}$推导出$P_N^{(3)}$等等的方程。这就是\concept{BBGKY序列}。
+    将某个高阶$P_N^{(s)}$取为零，就可以做一个截断，从而得到一组自洽方程，可以从$P_N^{(s)}$计算$P_N^{(s-1)}$，最后计算出$P_N^{(1)}$。
+
+    在只关心单粒子边缘分布，假定系统近平衡（或者说充分热化了），且气体比较稀薄，以至于气体分子间距常常在相互作用力程之外时，我们可以推导出所谓\concept{玻尔兹曼方程}。
+    \eqref{eq:from-p3-to-p2}右边的空间积分只有在两个粒子间距在相互作用力程$d$中，即满足$\abs*{\vb*{r}_i - \vb*{r}_j} \lesssim d$时才有非零值，因此该积分应该和$d^3$同阶。另一方面，设分子间距的数量级为$\delta$，则系统体积满足
+    \[
+        V \sim N \delta^3.
+    \]
+    最后，注意到对整个系统体积和动量空间积分，有
+    \[
+        \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1},
+    \]
+    于是合起来就有
+    \[
+        \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \frac{1}{m} \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \frac{d^3}{\delta^3}.
+    \]
+    如果气体非常稀薄，那么$d/\delta$就是小量，于是\eqref{eq:from-p3-to-p2}右边可以略去，得到
+    \begin{equation}
+        \pdv{P_N^{(2)}}{t} 
+        + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+        + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} = 0.
+        \label{eq:effective-2-particle}
+    \end{equation}
+    上式实际上可以写成一个全微分的形式：
+    \begin{equation}
+        \dv{P_N^{(2)}}{t}=0,
+        \label{eq:pn2-constant}
+    \end{equation}
+    这个全微分沿着哈密顿量
+    \begin{equation}
+        H_\text{eff} = \frac{p_1^2}{2m} + \frac{p_2^2}{2m} + U(\abs*{\vb*{r}_1 - \vb*{r}_2})
+        \label{eq:2-particle-hamiltonian}
+    \end{equation}
+    描写的相轨道。这当然是正确的，因为近似\eqref{eq:effective-2-particle}只使用了两对坐标-动量对，因此描述了一个近似只有两个粒子的系统，那么它显然应该服从二粒子系统的刘维尔定律。
+
+    既然系统已经充分热化，不应该有除了单粒子分布函数以外更多的信息，我们做\concept{分子混沌性假设}
+    \begin{equation}
+        P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_1, \vb*{v}_1, t) P^{(1)}_N(\vb*{r}_2, \vb*{v}_2, t).
+    \end{equation}
+    设$t_0$是某个固定的“计时起点”，并用下标0表示两个粒子在$t_0$时的各种物理量，由于\eqref{eq:pn2-constant}，我们有
+    \[
+        P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_{10}, \vb*{v}_{10}, t_0) P^{(1)}_N(\vb*{r}_{20}, \vb*{v}_{20}, t_0).
+    \]
+    注意这里的$\vb*{r}_{10}, \vb*{r}_{20}$是$t-t_0,\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数，而$\vb*{v}_{10}, \vb*{v}_{20}$是$\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数。（这是时间反演不变性的结果，因为我们总是可以把时间倒着演化回去，从$t$演化到$t_0$）
+    将上式代入\eqref{eq:from-p2-to-p1}，并将$N-1$近似为$N$，定义（当然这里的记号和费米子分布函数又冲突了）
+    \begin{equation}
+        f=NP_N^{(1)},
+    \end{equation}
+    得到
+    \[
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \frac{1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{v}_1}.
+    \]
+    % TODO
+
+    虽然玻尔兹曼方程是通过经典方式推导出来的，量子多体理论中也有BBGKY序列，在这里，边缘$s$粒子分布被“等效$s$粒子密度矩阵”取代，或者说被特定的格林函数取代。
+    玻尔兹曼方程中的$f$实际上在量子多体理论中就是单粒子密度矩阵（的Wigner函数）。
+\end{back}
