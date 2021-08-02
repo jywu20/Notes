@@ -17,7 +17,7 @@
 \usepackage{tikz}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
-\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \usepackage{prettyref}
 
 % Page style
@@ -61,7 +61,6 @@
 \SetKwFor{While}{while}{:}{}
 \SetArgSty{textnormal}
 
-\renewcommand{\emph}[1]{\textbf{#1}}
 \newcommand*{\concept}[1]{{\textbf{#1}}}
 
 \title{A VASP cookbook}
@@ -75,9 +74,53 @@ This article briefly introduces VASP, its features, its frequently used function
 
 \section{Ab-initio calculation using VASP}
 
+VASP, or Vienna Ab initio Simulation Package, is a popular commercial \emph{ab initio} package written in Fortran, supporting plain-wave Kohn-Sham DFT and related approaches for electronic structure and molecular structure investigation.
 The most frequently used algorithm of VASP is plain-wave based Kohn-Sham DFT, with three kinds of pseudopotentials supported,
 namely norm-conserving pseudopotentials, ultrasoft pseudopotentials and PAW pseudopotentials.
-VASP also support other self consistent algorithms that are not DFT, for example RPA approximation, but usually a DFT calculation must be performed ahead to generate necessary auxiliary data like wavefunctions.
+VASP also support other self consistent algorithms that are not DFT, for example GW or RPA calculation, but usually a DFT calculation must be performed ahead to generate necessary auxiliary data like wavefunctions.
+By employing forces on atoms calculated from DFT outputs, VASP supports crystal structural relaxation as well as \emph{ab initio} molecular dynamics.
+
+The best way to learn VASP is to read its own manual and examples, which are available on \url{https://www.vasp.at/wiki/index.php/The_VASP_Manual}.
+It is, nonetheless, also the worst way to lean VASP, as a beginner will be crushed by the flood of configuration tags and strange terms.
+This article serves as an introduction which 
+
+\subsection{plain-wave KSDFT}
+
+We are not going to introduce the formalism of \concept{plain-wave based Kohn-Sham DFT} or KSDFT, and just present what it is: in a word,  in a crystal system, it is solving the following equations: the eigenvalue problem \concept{Kohn-Sham equation}
+\begin{equation}
+    - \frac{\laplacian}{2m} \phi_{n \vb*{k}} + \underbrace{\left( \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}} + \int \dd[3]{\vb*{r}'} V_\text{PP}(\vb*{r}', \vb*{r}) + V_\text{XC}(\vb*{r}) \right)}_{V_\text{eff}} \phi_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} \phi_{n \vb*{k}}
+\end{equation}
+and
+\begin{equation}
+    \rho(\vb*{r}) = 2 \sum_{n, \vb*{k}} f_{n \vb*{k}} \abs*{\phi_{n \vb*{k}}}^2,
+\end{equation}
+where $\vb*{k}$ is the Bloch wave vector, $n$ labels different solutions with the same $\vb*{k}$,
+\begin{equation}
+    V_\text{XC}(\vb*{r}) = 2 \fdv{E_\text{XC}[\rho(\vb*{r})]}{\rho(\vb*{r})},
+\end{equation}
+$E_\text{XC}[\rho(\vb*{r})]$ is a functional of electron density named \concept{exchange-correlation functional}, 
+$V_\text{PP}$ is the \concept{pseudopotential} which is a smoothened version of atomic potentials in the crystal,
+and $f_{n \vb*{k}}$ is a given function of $\epsilon_{n \vb*{k}}$s, which may be Fermi distribution or Gaussian smearing.
+Above is the version of spinless KSDFT. We also have version of KSDFT in which electrons can have parallel spins or non-parallel spins, or relativistic effects like spin-orbital coupling play a role, all with similar formalisms.
+
+When the calculation is done, $\rho(\vb*{r})$ (or spin density matrix when spins are involved) gives the correct electron density, and the \concept{energy functional}
+\begin{equation}
+    E[\rho(\vb*{r})] = \sum_{n, \vb*{k}} f_{n \vb*{k}} \int \dd[3]{\vb*{r}} \phi_{n \vb*{k}}^*(\vb*{r}) \left( - \frac{\laplacian}{2m  } + \int \dd[3]{\vb*{r}'} V_\text{eff}(\vb*{r}, \vb*{r}') \right) \phi_{n \vb*{k}}(\vb*{r}) 
+\end{equation}
+gives the ground state energy.
+For a Fermi-liquid system $\phi_{n \vb*{k}}(\vb*{r})$s (named \concept{Kohn-Sham orbitals}) and $\epsilon_{n \vb*{k}}$s are \emph{roughly} single electron wavefunctions and energies, but their exact meaning is not clear and sometimes may not be a good approximation.
+For tasks requiring high accuracy of electronic structures it is recommended to use GW or RPA methods with Kohn-Sham orbitals and eigenvalues as the input.
+
+The Kohn-Sham orbitals are represented using a group of plain-waves as a basis.
+The free particle kinetic energy corresponding to the highest $\vb*{G}$ is called the \concept{cutoff energy}
+\begin{equation}
+    E_\text{cutoff} = \frac{\vb*{G}^2}{2m}.
+\end{equation}
+The higher the cutoff energy is, the finer spacial details of Kohn-Sham orbitals can be.
+
+To quicken the solving process, modern DFT algorithms first 
+
+
 
 \subsection{What VASP doesn't do}
 
@@ -88,31 +131,62 @@ Here is a list of things not yet supported - and highly unlikely to be in the fu
     \item 
 \end{itemize}
 
-\section{Static self-consistent calculation}
+\section{Input files}
 
-With \texttt{LAECGH} turned on, you will find lines starting with \texttt{soft electron} or \texttt{augmentation electron} in \texttt{vasp.out}.
+Four files \emph{must} be in the directory where \texttt{vasp} command is run. They are \texttt{INCAR}, \texttt{POSCAR}, \texttt{POTCAR} and \texttt{KPOINTS}.
 
-\section{Relaxation and molecular dynamics}
+\subsection{\texttt{INCAR}}
+
+\subsubsection{Tags that work well with default values}
+
+Usually you \emph{don't} need to specify what functional is used because it can be read from \texttt{POTCAR}.
+Every \texttt{POTCAR} contains the name of the functional with which it is generated, and since a pseudopotential generated with one functional should not be used with another functional, VASP uses the functional recommended by the \texttt{POTCAR} file.
+
+\subsubsection{Confusing tag names in \texttt{INCAR}}
+
+Due to some historical reasons, some tags in \texttt{INCAR} have misguiding names.
+To name a few:
+\begin{itemize}
+    \item The \texttt{GGA} tag can be used to set an \emph{LDA} functional. For example you can set \texttt{GGA = CA} or \texttt{GGA = PZ}.
+    \item The \texttt{LDAU} tags - \texttt{LDAUU}, \texttt{LDAUJ} and \texttt{LDAUL} - \emph{don't} require an LDA functional. 
+\end{itemize}
+
+\subsection{\texttt{POSCAR}}
+
+\subsection{\texttt{POTCAR}}
+
+
+
+\subsection{Frequent mistakes in input files}
+
+Before anything else, do the following checklist:
+\begin{itemize}
+    \item Are these really the input files used in your last job?
+    People often make stupid mistakes such as modifying some settings but using the unmodified version of input files to submit another job, so the errors in the last run remain there, leaving themselves confused about why the new settings don't work.
+    Always check:
+    \begin{itemize}
+        \item The \texttt{SYSTEM} tag in \texttt{INCAR}. It's quite often when people copy the \texttt{INCAR} for one material to calculate another system, and forget to change \texttt{SYSTEM}.
+        \item The last modified date of every file.
+        \item Whether there is some technical mistakes in, for example, SLURM scripts, so the jobs with the new settings never run.
+    \end{itemize} 
+    \item Make sure 
+\end{itemize}
+
+\section{Frequent tasks}
+
+\subsection{Calculating the ground state energy}
+
+\subsection{Calculating the band structure}
+
+Static self-consistent calculation
 
 \subsection{Structural relaxation}
 
 Suggested setting: \texttt{EDIFF = 1e-8}, \texttt{EDIFFG = -0.0001} for better accuracy
 
-\section{Post operations}
+\subsection{Phonon spectrum}
 
-\section{Frequent mistakes in input files}
-
-Before anything else, do the following checklist:
-\begin{itemize}
-    \item Are these really the input files used in your last job?
-    People often make stupid mistakes such as modifying some configurations and using the unmodified version to submit another job, so the errors in the last run remain there, leaving themselves confused about why the new settings don't work.
-    Always check:
-    \begin{itemize}
-        \item The \texttt{SYSTEM} tag in \texttt{INCAR}. It's quite often when people copy the \texttt{INCAR} for one material to calculate another system, and forget to change \texttt{SYSTEM}.
-        \item The last modified date of every file.
-    \end{itemize} 
-    \item 
-\end{itemize}
+\subsection{Molecular dynamics}
 
 \section{Errors during calculation}
 
@@ -126,6 +200,12 @@ Whenever something weird happens, check these terms:
     \item Does the calculation really converges? Check \texttt{vasp.out}. 
     \item Maybe the optimization algorithm doesn't work well for the given task. \texttt{ALGO = Normal} is always a safe choice, though it may not be that efficient. But when other algorithms actually fail, \texttt{ALGO = Normal} at least will finish with a reasonable time duration and give an acceptable result.
 \end{itemize}
+
+\subsection{Strange \texttt{vasp.out} outputs}
+
+\paragraph{Why are there so many lines beginning with ``soft electron'' or ``augmentation electron''?}
+
+With \texttt{LAECGH} turned on, you will find lines starting with \texttt{soft electron} or \texttt{augmentation electron} in \texttt{vasp.out}.
 
 \subsection{Strange \texttt{OUTCAR} outputs}
 
