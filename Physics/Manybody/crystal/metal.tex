@@ -151,6 +151,10 @@ Bloch振荡的周期的量级和能带结构关系不大，而主要取决于晶
     \omega \sim e E a.
 \end{equation}
 
+Bloch振荡实际上指出了一件事：超高纯度的金属外加恒定电场实际上是无法远距离导电的，因为这样的金属中的载流子——电子和空穴——由于Bloch振荡，会在一个小范围内打转。
+通常的服从欧姆定律的导电性\emph{必须}要求一定的对载流子的散射。
+实际上，在宏观电动力学中就是如此：欧姆定律的存在本身就意味着有能量持续不断地从电磁场能量和介质中电子能量里耗散出去。
+
 \subsection{外加磁场下的电子振荡}
 
 现在我们转而考虑有外加磁场时电子的响应，同样使用准经典的波包理论，并且忽略碰撞。
@@ -472,11 +476,7 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
 % TODO：绘图
 当费米球和某个圆柱面相切时系统能量增量最大。
 
-\subsection{格林函数计算导电性}
-
-
-
-\section{Hartree-Fock近似}
+\subsection{能带电子的线性响应和格林函数}
 
 \begin{back}{线性响应理论中的格林函数}{linear-response-green-function}
     凝聚态理论中计算最多的是线性响应理论中的格林函数。所谓线性响应理论是说，设时间平移不变的系统受到外加哈密顿量
@@ -520,7 +520,7 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
     \end{equation}
     % TODO：含有二阶求导的情况
 
-    近独立电子气的格林函数和它的谱函数是可以比较容易地算出的。松原格林函数为
+    近独立电子气的格林函数和它的谱函数是可以比较容易地算出的。如果基态为真空，松原格林函数为
     \begin{equation}
         G(\vb*{k}, \ii \omega_n) = - \int_0^\beta \dd{\tau} \ee^{\ii \omega_n \tau} \timeorder \expval*{c_{\vb*{k}}(\tau) c_{\vb*{k}}^\dagger(0)} = \frac{1}{\ii \omega_n - \epsilon_{\vb*{k}}},
     \end{equation}
@@ -533,9 +533,160 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
         A(\vb*{k}, \omega) = \delta(\omega - \epsilon_{\vb*{k}}).
     \end{equation}
     这些都和单电子计算出来的结果完全一样。
+    如果基态中填充了一个费米球，化学势为$\mu$，那么就有
+    \begin{equation}
+        G(\vb*{k}, \ii \omega_n) = \frac{1}{\ii \omega_n - \xi_{\vb*{k}}}.
+        \label{eq:filled-ground-state-electron-green-function}
+    \end{equation}
+    可以这么考虑这个表达式的含义：如果以费米面上方的粒子和费米面下方的空穴为表象，则粒子能谱为$\xi_{\vb*{k}}$，空穴能谱为$- \xi_{\vb*{k}}$。
+    对粒子，格林函数就是\eqref{eq:filled-ground-state-electron-green-function}，对空穴，空穴的格林函数是$1 / (\ii \omega_n - (- \xi_{\vb*{k}}))$，现在切换回费米面上下的模式都是粒子的表象，则$\omega_n$作为四维动量的一部分变号，由于粒子、空穴算符都是费米子算符，整个格林函数也变号，则得到$- 1 / (- \ii \omega_n - (- \xi_{\vb*{k}}))$，正好就是\eqref{eq:filled-ground-state-electron-green-function}。
 \end{back}
 
-以上所有的处理相互作用的做法都有浓重的半经典色彩，从本节开始我们在场论框架下比较系统地做计算。
+\subsubsection{密度-密度格林函数}\label{sec:density-density-green-function}
+
+\begin{figure}
+    \centering
+    \input{metal/jellium/analytical-two-e.tex}
+    \caption{$f(z) \frac{1}{z - \zeta_{\vb*{k}}} \frac{1}{z + \ii \omega_n - \xi_{\vb*{k} + \vb*{q}}}$在复平面上的解析结构}
+    \label{fig:rpa-pole}
+\end{figure}
+
+电子的密度-密度格林函数在线性响应理论中的作用是指出外加电势下电子气的密度会如何变化。
+外加电势导致如下的哈密顿量：
+\[
+    {H}_\text{ext} = \int \dd[3]{\vb*{r}} {n}(\vb*{r}, t) V_\text{ext} (\vb*{r}, t),
+\]
+而由于
+\[
+    \int \dd[3]{\vb*{r}} n_0(\vb*{r}, t) V_\text{ext}(\vb*{r}, t)
+\]
+虽然随着时间发生变化，但是和其它任何算符都对易，它不能够产生任何动力学效果，所以也可以认为外加电势引入的哈密顿量是
+\[
+    {H}_\text{ext} = \int \dd[3]{\vb*{r}} \var{n}(\vb*{r}, t) V_\text{ext} (\vb*{r}, t),
+\]
+则它对电子数密度的影响可以使用（各向同性不含时体系的）推迟格林函数
+\[
+    G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') = - \ii \theta(t-t') \expval*{\comm{\var{{n}}(\vb*{r}, t)}{\var{{n}}(\vb*{r}', t')}}
+\]
+描述，而响应就是%
+\footnote{我们没有将$V_\text{ext}$写进${H}$中而是把它看成了外界扰动，这样电子气本身的哈密顿量仍然是空间平移不变的。}%
+\begin{equation}
+    \expval*{\var{{n}}(\vb*{r}, t)} = \int \dd{t'} G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') V_\text{ext}(\vb*{r}', t'),
+\end{equation}
+在频域中就是
+\begin{equation}
+    \expval*{\var{{n}}(\vb*{k}, \omega)} = G^\text{ret}_{nn}(\vb*{k}, \omega) V_\text{ext}(\vb*{k}, \omega).
+    \label{eq:green-function-electro-shielding}
+\end{equation}
+于是我们计算密度-密度松原格林函数即可。这里我们用$G^\text{0, ret}_{nn} (\vb*{k}, \omega)$作为$G^\text{0, ret}_{\var{n}\var{n}} (\vb*{k}, \omega)$的简写
+
+依照定义，近独立电子的密度-密度松原格林函数为
+\[
+    \begin{aligned}
+        G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') &= - T_\tau \expval*{\var{{n}}(\vb*{r}, \tau) \var{{n}}(\vb*{r}', \tau')} \\
+        &= - T_\tau \expval*{{{n}}(\vb*{r}, \tau) {{n}}(\vb*{r}', \tau')} + \expval*{{n}(\vb*{r}, \tau)} \expval*{{n}(\vb*{r}', \tau')} \\
+        &= \sum_{\sigma, \sigma'} T_\tau \expval*{{\psi}_{\sigma'}(\vb*{r}', \tau') {\psi}^\dagger_\sigma(\vb*{r}, \tau)} T_\tau \expval*{ {\psi}_\sigma(\vb*{r}, \tau) {\psi}^\dagger_{\sigma'}(\vb*{r}', \tau') } ,
+    \end{aligned}
+\]
+其中最后一个等号用到了Wick定理。
+由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，我们得到
+\begin{equation}
+    G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') = \sum_\sigma G_\sigma(\vb*{r}' - \vb*{r}, \tau' - \tau) G_\sigma(\vb*{r} - \vb*{r}', \tau - \tau').
+    \label{eq:relation-density-density-green-function-free-electron}
+\end{equation}
+上式具有卷积的形式，切换到频谱，就是
+\[
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = \sum_{\sigma} \frac{1}{V} \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} G_\sigma(\vb*{q}, \ii \nu_n) G_\sigma(\vb*{k} + \vb*{q}, \ii (\omega_n + \nu_n)),
+\]
+其中
+\[
+    \nu_n = \frac{\pi(2n+1)}{\beta}, \quad \omega_n = \frac{2\pi n}{\beta},
+\]
+前者是费米子的松原频率，后者则是玻色子的，因为电子配对形成玻色子。近独立电子的谱函数为
+\[
+    A(\vb*{k}, \omega) = \delta(\omega - \xi_{\vb*{k}}), 
+\]
+格林函数为
+\[
+    G_\sigma(\vb*{r}, \ii \omega_n) = \frac{1}{\ii \omega_n - \xi_{\vb*{k}}}.
+\]
+于是，有
+\[
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = \frac{2}{V} \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} \frac{1}{\ii \nu_n - \xi_{\vb*{k}}} \frac{1}{\ii \omega_n + \ii \nu_n - \xi_{\vb*{k}+\vb*{q}}}.
+\]
+要计算上式，常用的一个技巧是将求和转化为围道积分。注意到$\{\ii \nu_n\}$正是$f(z)$的全部极点，而且这些极点都是一阶极点。
+容易看出这些极点的留数都是$-1/\beta$，于是对一个在虚轴上解析的函数$F(z)$，有
+\[
+    \frac{1}{\beta} \sum_{\nu_n} F(\ii \nu_n) = - \oint \frac{\dd{z}}{2\pi \ii} f(z) F(z),
+\]
+于是设围绕虚轴的环路为$C$，它实际上就是从$-\ii \infty + 0^+$到$\ii \infty + 0^+$，再从$\ii \infty - 0^+$到$-\ii \infty - 0^+$，
+有
+\[
+    \begin{aligned}
+        G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) &= - \frac{2}{V} \sum_{\vb*{k}} \oint_C \frac{\dd{z}}{2\pi \ii} f(z) \frac{1}{z - \xi_{\vb*{k}}} \frac{1}{z +  \ii \omega_n - \xi_{\vb*{k}+\vb*{q}}} \\
+        &= \frac{2}{V} \sum_{\vb*{k}} \left( \frac{f(\xi_{\vb*{k}})}{\xi_{\vb*{k}} + \ii \omega_n - \xi_{\vb*{k} + \vb*{q}}} + \frac{f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)}{\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n - \xi_{\vb*{k}}} \right).
+    \end{aligned}
+\]
+负号消失了是因为绕极点$z=\xi_{\vb*{k}}$和$z = \xi_{\vb*{k} + \vb*{q}} - \ii \omega_n$是顺时针而不是留数定理通常是的逆时针（见\autoref{fig:rpa-pole}）。
+由$\{\omega_n\}$的定义，$f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)$就是$f(\xi_{\vb*{k} + \vb*{q}})$，于是得到松原格林函数
+\begin{equation}
+    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = \frac{2}{V} \sum_{\vb*{k}} \frac{f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})}{\ii \omega_n + \xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}}}.
+\end{equation}
+做解析延拓就得到推迟格林函数
+\begin{equation}
+    G_{nn}^\text{ret, 0}(\vb*{q}, \omega) = \frac{2}{V} \sum_{\vb*{k}} \frac{f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})}{\omega + \xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}} + \ii 0^+}.
+    \label{eq:ext-electron-retarded-green-function}
+\end{equation}
+这就给出了能谱为$\xi_{\vb*{k}}$的（有自旋的）近独立电子气对外加势场的响应，傅里叶变换回到实空间即可。
+
+我们马上可以注意到在
+\begin{equation}
+    \omega = \xi_{\vb*{k} + \vb*{q}} - \xi_{\vb*{k}}
+    \label{eq:electron-hole-freq}
+\end{equation}
+处密度-密度推迟格林函数发散，表明存在频率为上式的集体模式。考虑密度-密度格林函数的意义，这种集体模式应该是：$\vb*{k}$点的电子数密度下降而$\vb*{k}+\vb*{q}$的电子数密度上升，或者直观地说，一个动量为$\vb*{k}$的电子被激发到$\vb*{k}+\vb*{q}$处。
+因此这个集体模式实际上是\concept{电子-空穴对}，它产生后系统能量的变化是$\xi_{\vb*{k} + \vb*{q}} - \xi_{\vb*{k}}$，正好是\eqref{eq:electron-hole-freq}。
+
+\begin{figure}
+    \centering
+    \input{metal/green/electron-hole-pair.tex}
+    \caption{电子-空穴对}
+\end{figure}
+
+一个电子-空穴对需要两个动量来标记：一个是$\vb*{q}$，为整体的动量，一个是$\vb*{k}$，指出空穴的动量。
+\eqref{eq:ext-electron-retarded-green-function}左边只有一个动量$\vb*{q}$，因此电子-空穴对的能谱在\eqref{eq:ext-electron-retarded-green-function}的解析结构上留下的不是一个极点，而是一个割线。
+同样，如果绘制能谱，$\omega$-$\vb*{q}$关系不是一条曲线，而是一块区域。
+
+对自由电子，有
+\[
+    \xi_{\vb*{k}} = \frac{\vb*{k}^2}{2m} - \mu,
+\]
+我们可以做一些更加具体的计算。此时电子-空穴对的能量为
+\begin{equation}
+    \omega = \frac{2 \vb*{k} \cdot \vb*{q} + \vb*{q}^2}{2m},
+\end{equation}
+在$\vb*{q}$给定的情况下，$\omega$最大值和最小值分别为
+\begin{equation}
+    \omega_\text{$q$,max} = \frac{2 k_\text{F} q + q^2}{2m}, \quad \omega_\text{$q$,min} = \max(\frac{- 2 k_\text{F} q + q^2}{2m}, 0).
+\end{equation}
+在$q < 2 k_\text{F}$时$\omega_\text{min}$是$0$，相当于是说存在这样的$\vb*{k}$使得$\xi_{\vb*{k} + \vb*{q}} = \xi_{\vb*{k}}$，等于是说存在一个与费米球同心，并且在费米球内的球，使得矢量$\vb*{q}$是这个球的弦，这又等价于，费米球平移$\vb*{q}$后和原来的费米球重合。
+反之，如果$q > 2 k_\text{F}$，费米球平移后和原来的费米球不重合。
+
+对费米海并非球形的情况，从\eqref{eq:ext-electron-retarded-green-function}的形式中我们能够读取出一个可能的密度波长程序。
+我们考虑一种特殊情况：如果存在一片连续的费米面区域，它们平移某个矢量$\vb*{Q}$后得到了另一片连续的费米面区域，我们就说存在\concept{费米面嵌套（nesting）}，$\vb*{Q}$为嵌套矢量。
+零频、在费米面嵌套矢量附近处的密度-密度松原格林函数为
+\[
+    G_{nn}^\text{ret, 0}(\vb*{Q}, 0) = \frac{2}{v} \sum_{\vb*{k}} \frac{0}{0} = ???
+\]
+简单的尝试无法计算出推迟格林函数，这暗示$\vb*{q} = \vb*{Q}, \omega = 0$处很可能存在一定奇异性。
+
+% TODO:文书171页附近
+
+这意味着，存在费米面嵌套的系统
+
+\section{Hartree-Fock近似}
+
+我们先前处理过电子间相互作用，但是使用的是玻尔兹曼方程，有浓重的半经典色彩，从本节开始我们在场论框架下比较系统地分析相互作用对能带的修正。
 
 \subsection{费曼规则}
 
@@ -553,7 +704,7 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
     表示，其中$\vb*{q}$可以随意取值（见\autoref{sec:interaction-bloch}）。
     需要对$\vb*{q}$做求和，并注意由于库仑相互作用被假定为瞬时发生的，光子频率$\ii q^0$始终是零。
     光子由于已经被积掉了，不贡献传播子。可以将\eqref{eq:jellium-vertex}整体看成一个给出库仑相互作用势能的顶角，不过更常见的做法是将光子线称为\concept{相互作用线}，将相互作用线和电子线的连接点称为顶角。
-    两个顶角被一条相互作用线连接则贡献一个库伦相互作用势能。
+    两个顶角被一条相互作用线连接则贡献一个库伦相互作用势能和一个$-1$因子。
     通常系统均足够大，此时有\input{metal/jellium/vertex2.tex}
     \item 闭合电子回线需要乘上$-1$。
 \end{itemize}
@@ -778,6 +929,7 @@ Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以�
 与大部分平均场近似方法类似，自洽Hartree-Fock近似何时失效并不是特别清楚的，只有当计算结果出现了明显不对头的地方时我们才能够确定某些地方出问题了。
 例如，Hartree-Fock近似——无论是自洽的还是非自洽的——都没有考虑任何屏蔽效应。
 在均匀电子气的例子中，非自洽Hartree-Fock近似会导致费米面附近的电子群速度发散，这是可以预料到的，因为费米面附近电子很多，小的外加电荷会快速被屏蔽，屏蔽效应不能忽略。
+高密度电子气中无疑有很强的屏蔽效应，因此Hartree-Fock近似确定不能对高密度电子气使用。
 
 \section{凝胶模型，高密度电子气的静电屏蔽和RPA近似}
 
@@ -787,11 +939,11 @@ Hartree-Fock近似成立的条件是相互作用线修正和顶角修正可以�
     \caption{凝胶模型：原子实带来均一的、实际上不会对约束在晶体中的电子产生任何影响的正电荷背景，主要的物理是电子以及它们的电磁相互作用}
 \end{figure}
 
-本节讨论\concept{凝胶模型}，这是一种将库伦散射不做任何处理地当成微扰，并且将金属中的原子当成均匀的正电荷凝胶的金属模型。
-前一个假设——微扰论适用——实际上冒了很大风险，但是的确有一定实验证据支持它，因为实验上金属和近独立电子气的行为确实很相似；对这件事的进一步利用见\autoref{sec:landau-fermi-liquid}。
+本节讨论高密度电子气的行为。对这一类系统Hartree-Fock近似失效。
+\concept{凝胶模型}，这是一种将库伦散射不做任何处理地当成微扰，并且将金属中的原子当成均匀的正电荷凝胶的金属模型。
+前一个假设——微扰论适用——实际上是不正确的，因为库仑相互作用能的量级和电子动能是一样的，但是实验上，金属和近独立电子气的行为确实很相似（对这件事的解释和讨论见\autoref{sec:landau-fermi-liquid}），因此至少非微扰效应不会让系统基态相比于近独立电子气面目全非，做适当的费曼图重求和修正电子能带应该能够有足够好的精度。
 后一个假设对那些在其中的电子很像自由电子的金属系统是确实成立的，因为这样的系统中晶格对电子的作用比较小，从而能量微扰可以只考虑最低阶的\eqref{eq:first-order-energy-perturbation}，其物理直观就是均匀的正电荷凝胶，它让所有电子的能量整体上升或是下降了一定量。
 我们把这部分能量变化整体归入化学势。
-
 因此，到最后，所谓凝胶模型实际上就是在讨论自由电子加上可以微扰处理的库仑相互作用之后会发生什么。
 
 \subsection{托马斯-费米静态屏蔽势}\label{sec:ext-e}
@@ -868,27 +1020,9 @@ $V_\text{eff}$改变粒子排布的方式是这样的：单电子的能量$\epsi
 
 \subsection{RPA近似下的动态屏蔽响应}\label{sec:rpa-semi-classical-dynamical}
 
-托马斯-费米屏蔽是静态的。现在考虑一般的近独立电子气的线性响应。
-外加电势导致如下的相互作用哈密顿量：
-\[
-    {H}_\text{ext} = \int \dd[3]{\vb*{r}} {n}(\vb*{r}, t) V_\text{ext} (\vb*{r}, t),
-\]
-则它对电子数密度的影响可以使用（各向同性不含时体系的）推迟格林函数
-\[
-    G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') = - \ii \theta(t-t') \expval*{\comm{\var{{n}}(\vb*{r}, t)}{\var{{n}}(\vb*{r}', t')}}
-\]
-描述，而响应就是%
-\footnote{我们没有将$V_\text{ext}$写进${H}$中而是把它看成了外界扰动，这样电子气本身的哈密顿量仍然是空间平移不变的。}%
-\begin{equation}
-    \expval*{\var{{n}}(\vb*{r}, t)} = \int \dd{t'} G^\text{ret}_{nn}(\vb*{r}-\vb*{r}', t-t') V_\text{ext}(\vb*{r}', t'),
-\end{equation}
-在频域中就是
-\begin{equation}
-    \expval*{\var{{n}}(\vb*{k}, \omega)} = G^\text{ret}_{nn}(\vb*{k}, \omega) V_\text{ext}(\vb*{k}, \omega).
-    \label{eq:green-function-electro-shielding}
-\end{equation}
-当然，在系统的构成已知的情况下，可以直接用费曼图计算出格林函数$G^\text{ret}_{nn}$，但是本节不这么处理问题。
-但如果真的这么做很快就会遇到数学上的困难：费曼图求和需要经过一些特殊的重求和步骤才能够给出有意义的结果。
+托马斯-费米屏蔽是静态的。本节分析更加一般的动态屏蔽响应。
+回顾\autoref{sec:density-density-green-function}开头的说法，计算密度-密度松原格林函数即得到最为一般的电子气对外加电势的响应。
+可以直接用费曼图计算出格林函数$G^\text{ret}_{nn}$，但是本节不这么处理问题，因为如果真的这么做很快就会遇到数学上的困难：费曼图求和需要经过一些特殊的重求和步骤才能够给出有意义的结果。
 因此本节只是做一个近似，将最为奇异的那部分费曼图做一个求和，然后发现它确实能够给出有意义的结果。
 
 为简化问题我们做\concept{RPA（Random Phase Approximation）近似}%
@@ -916,7 +1050,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上把最为�
 \end{equation}
 于是第二步完成了。
 
-第三步通过RPA近似的基本假设得到。这里我们用$G^\text{0, ret}_{nn} (\vb*{k}, \omega)$作为$G^\text{0, ret}_{\var{n}\var{n}} (\vb*{k}, \omega)$的简写：
+第三步通过RPA近似的基本假设得到：
 \begin{equation}
     \expval*{\var{{n}}(\vb*{k}, \omega)} = G^\text{0, ret}_{nn} (\vb*{k}, \omega) V_\text{eff} (\vb*{k}, \omega).
     \label{eq:rpa-approximation}
@@ -930,67 +1064,12 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上把最为�
     G^\text{ret}_{nn}(\vb*{k}, \omega) = \frac{G^\text{0, ret}_{nn}(\vb*{k}, \omega)}{1 - \frac{4\pi e^2}{k^2} G^\text{0, ret}_{nn}(\vb*{k}, \omega)} = \frac{G^\text{0, ret}_{nn}(\vb*{k}, \omega)}{\epsilon(\vb*{k}, \omega)},
     \label{eq:ext-electron-ret-nn}
 \end{equation}
-其中$\epsilon(\vb*{k}, \omega)$是介电常数。
-这样，计算出自由电子的密度-密度格林函数之后问题就完全解决了。
-
-由于自旋守恒性，只有$\sigma = \sigma'$的项才非零，我们得到
-\[
-    G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') = \sum_\sigma G_\sigma(\vb*{r}' - \vb*{r}, \tau' - \tau) G_\sigma(\vb*{r} - \vb*{r}', \tau - \tau').
-\]
-上式具有卷积的形式，切换到频谱，就是
-\[
-    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = \sum_{\sigma} \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} G_\sigma(\vb*{q}, \ii \nu_n) G_\sigma(\vb*{k} + \vb*{q}, \ii (\omega_n + \nu_n)),
-\]
-其中
-\[
-    \nu_n = \frac{\pi(2n+1)}{\beta}, \quad \omega_n = \frac{2\pi n}{\beta},
-\]
-前者是费米子的松原频率，后者则是玻色子的，因为电子配对形成玻色子。自由费米子的谱函数为
-\[
-    A(\vb*{k}, \omega) = \delta(\omega - \xi_{\vb*{k}}), \quad \xi_{\vb*{k}} = \frac{\vb*{k}^2}{2m} - \mu,
-\]
-格林函数为
-\[
-    G_\sigma(\vb*{r}, \ii \omega_n) = \frac{1}{\ii \omega_n - \xi_{\vb*{k}}}.
-\]
-于是，有
-\[
-    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \frac{1}{\beta} \sum_{\nu_n} \frac{1}{\ii \nu_n - \xi_{\vb*{k}}} \frac{1}{\ii \omega_n + \ii \nu_n - \xi_{\vb*{k}+\vb*{q}}}.
-\]
-要计算上式，常用的一个技巧是将求和转化为围道积分。注意到$\{\ii \nu_n\}$正是$f(z)$的全部极点，而且这些极点都是一阶极点。
-容易看出这些极点的留数都是$-1/\beta$，于是对一个在虚轴上解析的函数$F(z)$，有
-\[
-    \frac{1}{\beta} \sum_{\nu_n} F(\ii \nu_n) = - \oint \frac{\dd{z}}{2\pi \ii} f(z) F(z),
-\]
-于是设围绕虚轴的环路为$C$，它实际上就是从$-\ii \infty + 0^+$到$\ii \infty + 0^+$，再从$\ii \infty - 0^+$到$-\ii \infty - 0^+$，
-有
-\[
-    \begin{aligned}
-        G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) &= - 2 \sum_{\vb*{k}} \oint_C \frac{\dd{z}}{2\pi \ii} f(z) \frac{1}{z - \xi_{\vb*{k}}} \frac{1}{z +  \ii \omega_n - \xi_{\vb*{k}+\vb*{q}}} \\
-        &= 2 \sum_{\vb*{k}} \left( \frac{f(\xi_{\vb*{k}})}{\xi_{\vb*{k}} + \ii \omega_n - \xi_{\vb*{k} + \vb*{q}}} + \frac{f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)}{\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n - \xi_{\vb*{k}}} \right).
-    \end{aligned}
-\]
-负号消失了是因为绕极点$z=\xi_{\vb*{k}}$和$z = \xi_{\vb*{k} + \vb*{q}} - \ii \omega_n$是顺时针而不是留数定理通常是的逆时针（见\autoref{fig:rpa-pole}）。
-由$\{\omega_n\}$的定义，$f(\xi_{\vb*{k} + \vb*{q}} - \ii \omega_n)$就是$f(\xi_{\vb*{k} + \vb*{q}})$，于是得到松原格林函数
+其中$\epsilon(\vb*{k}, \omega)$是介电常数，为
 \begin{equation}
-    G_{nn}^\text{0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \frac{f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})}{\ii \omega_n + \xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}}}.
+    \epsilon(\vb*{k}, \omega) = \frac{V_\text{ext}}{V_\text{eff}} = 1 - \frac{4 \pi e^2}{k^2} G^\text{ret, 0}_{nn}(\vb*{k}, \omega).
 \end{equation}
-做解析延拓就得到推迟格林函数
-\begin{equation}
-    G_{nn}^\text{ret, 0}(\vb*{q}, \ii \omega_n) = 2 \sum_{\vb*{k}} \frac{f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})}{\omega + \xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}} + \ii 0^+}.
-    \label{eq:ext-electron-retarded-green-function}
-\end{equation}
-介电常数为
-\begin{equation}
-    \epsilon(\vb*{k}, \omega) = \frac{V_\text{ext}}{V_\text{eff}} = 1 - \frac{4 \pi e^2}{k^2} G^\text{ret, 0}_{nn}(\vb*{k}, \omega)
-\end{equation}
-
-\begin{figure}
-    \centering
-    \input{metal/jellium/analytical-two-e.tex}
-    \caption{$f(z) \frac{1}{z - \zeta_{\vb*{k}}} \frac{1}{z + \ii \omega_n - \xi_{\vb*{k} + \vb*{q}}}$在复平面上的解析结构}
-    \label{fig:rpa-pole}
-\end{figure}
+这样，计算出近独立电子的密度-密度格林函数之后问题就完全解决了。
+而近独立电子的密度-密度格林函数是已经计算出来的\eqref{eq:ext-electron-retarded-green-function}，因此问题完全解决了。
 
 \eqref{eq:ext-electron-retarded-green-function}可以推导出托马斯-费米屏蔽。
 在$V_\text{eff}$在时间和空间上都变化非常缓慢时，只需要考虑$\vb*{q}$接近零的那部分傅里叶分量。
@@ -1009,7 +1088,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上把最为�
 展开到前两阶，代入\eqref{eq:ext-electron-retarded-green-function}，得到
 \[
     \begin{aligned}
-        G_{nn}^\text{ret, 0}(\vb*{q}, \ii \omega_n) &= - \frac{2}{\omega^2} \sum_{\vb*{k}} (f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})) (\xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}}) \\
+        G_{nn}^\text{ret, 0}(\vb*{q}, \omega) &= - \frac{2}{\omega^2} \sum_{\vb*{k}} (f(\xi_{\vb*{k}}) - f(\xi_{\vb*{k} + \vb*{q}})) (\xi_{\vb*{k}} - \xi_{\vb*{k} + \vb*{q}}) \\
         &= \frac{2 q^2}{m \omega^2} \sum_{\vb*{k}} f(\xi_{\vb*{k}}), 
     \end{aligned}
 \]
@@ -1032,7 +1111,7 @@ RPA近似看起来似乎没有什么明确的意义，但它实际上把最为�
 考虑到\eqref{eq:ext-electron-ret-nn}，当$\omega = \omega_\text{p}$时格林函数出现奇点，即此处有集体激发。
 $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任意的动量，在$\omega = \omega_\text{p}$处都有一个密度波的集体激发模式。
 我们此处的计算是在频率非常大，以至于介质几乎是等离子体时得到的，因此这种集体激发实际上正是\concept{等离激元}。
-物理地看，等离激元是密度波这件事实际上说明了等离子体中的电子运动方式，即一个电子和一个空穴成对地振荡。
+物理地看，等离激元是密度波这件事实际上说明了等离子体中的电子运动方式，即所有电子和空穴共同集体振荡。
 这个集体激发的频谱是平的，这当然是因为我们假定光速无穷大，完全使用库伦相互作用。如果考虑到光速有限，使用麦克斯韦方程可以推出
 \begin{equation}
     \omega_{\vb*{k}}^2 = \omega_\text{p}^2 + c^2 k^2 / \epsilon(\infty),
@@ -1043,25 +1122,44 @@ $G^\text{ret}_{nn}(\vb*{k}, \omega)$是一个密度-密度格林函数，对任�
 \]
 即我们算出的结果。
 
+\begin{figure}
+    \centering
+    \input{metal/jellium/spectrum.tex}
+    \caption{RPA近似下金属中的密度波模式}
+    \label{fig:rpa-density-modes}
+\end{figure}
+
+等离激元是密度波集体模式，它的出现是库伦相互作用引入的结果（这点可以从其频率有$e$的依赖看出）。
+观察\eqref{eq:ext-electron-ret-nn}的形式，会发现近独立电子气中有的电子-空穴对在引入库仑相互作用之后仍然存在，且能谱没有发生变化。
+因此和密度-密度关联有关的模式如\autoref{fig:rpa-density-modes}所示。
+灰色区域是电子-空穴对的能谱，从$\omega_\text{p}$出发的那一支能谱是等离激元的能谱。
+等离激元的能谱画到和$\omega_\text{max}$相交处就不再画了，因为等离激元和电子-空穴对都是密度波模式，等离激元如果具有和电子-空穴对相同的$\omega$和$\vb*{q}$，它就立刻可以分散成许多$\vb*{k}$不同，$\vb*{q}$相同的电子-空穴对，因此此时等离激元不稳定。
+
 \subsection{RPA近似的场论表述}
 
-实际上从\eqref{eq:ext-electron-ret-nn}就可以看出RPA近似的实质。将\eqref{eq:ext-electron-ret-nn}做级数展开，我们有
+实际上从\eqref{eq:ext-electron-ret-nn}就可以看出RPA近似的实质。
+我们考虑环形图近似，即在电子自能、真空极化（即相互作用线的修正）和顶角修正之中，只考虑相互作用线的修正，则有
+\input{metal/jellium/ring.tex}
+而环形图近似下的密度-密度格林函数在扣除了无涨落的$\expval*{n_{\vb*{k} \sigma}} \expval*{n_{\vb*{k}' \sigma'}}$并乘以$-1$之后，是
+\input{metal/jellium/density-diagram.tex}
+注意到根据\eqref{eq:relation-density-density-green-function-free-electron}，$G^\text{0, ret}_{nn}(\vb*{k}, \omega)$就是电子-空穴组成的环中两个传播子的乘积（没有加闭合费米子回线导致的$-1$因子），环形图近似下的密度-密度格林函数在扣除了无涨落的$\expval*{n_{\vb*{k} \sigma}} \expval*{n_{\vb*{k}' \sigma'}}$之后由
 \[
-    G^\text{ret}_{nn}(\vb*{k}, \omega) = G^\text{0, ret}_{nn}(\vb*{k}, \omega) + G^\text{0, ret}_{nn}(\vb*{k}, \omega) \frac{4\pi e^2}{k^2} G^\text{0, ret}_{nn}(\vb*{k}, \omega) + \cdots,
+    - G_{nn}(\vb*{q}, \ii \omega_n) = - G_{nn}^0(\vb*{q}, \ii \omega_n) + G_{nn}^0(\vb*{q}, \ii \omega_n) \left( - \frac{4 \pi e^2}{\abs*{\vb*{q}}^2} \right) G_{nn}^0(\vb*{q}, \ii \omega_n) + \cdots
 \]
-上式两边加上电子数密度平方，并注意到$G^\text{0, ret}_{nn}(\vb*{k}, \omega)$就是电子-空穴组成的环的贡献——依照定义，自由电子的密度-密度格林函数为
+确定。
+另一方面，将\eqref{eq:ext-electron-ret-nn}做级数展开，我们有
 \[
-    \begin{aligned}
-        G_{nn}^\text{0}(\vb*{r}-\vb*{r}', \tau-\tau') &= - T_\tau \expval*{\var{{n}}(\vb*{r}, \tau) \var{{n}}(\vb*{r}', \tau')} \\
-        &= - T_\tau \expval*{{{n}}(\vb*{r}, \tau) {{n}}(\vb*{r}', \tau')} + \expval*{{n}(\vb*{r}, \tau)} \expval*{{n}(\vb*{r}', \tau')} \\
-        &= \sum_{\sigma, \sigma'} T_\tau \expval*{{\psi}_{\sigma'}(\vb*{r}', \tau') {\psi}^\dagger_\sigma(\vb*{r}, \tau)} T_\tau \expval*{ {\psi}_\sigma(\vb*{r}, \tau) {\psi}^\dagger_{\sigma'}(\vb*{r}', \tau') } ,
-    \end{aligned}
+    G^\text{ret}_{nn}(\vb*{q}, \omega) = G^\text{0, ret}_{nn}(\vb*{q}, \omega) + G^\text{0, ret}_{nn}(\vb*{q}, \omega) \frac{4\pi e^2}{\abs*{\vb*{q}}^2} G^\text{0, ret}_{nn}(\vb*{q}, \omega) + \cdots,
 \]
-其中最后一个等号用到了Wick定理——我们就发现\eqref{eq:ext-electron-ret-nn}实际上就是环形图近似。
+和前一式只相差一个Wick转动。
+因此我们就发现\eqref{eq:ext-electron-ret-nn}实际上就是环形图近似或者说项链图近似。
+
 \eqref{eq:ext-electron-ret-nn}实际上给出了$G^\text{ret}_{nn}$中最为奇异的部分，因为环形图会产生次数非常高的$1/k^n$型的项，从而发散得最厉害；但是将所有这些发散的图求和起来却能够得到一个收敛的结果。
-环形图近似的成立条件是粒子数密度很高，从而主要的相互作用形式是电子通过库仑相互作用，激发出一些电子-空穴对（即环形图中的环），即主要的相互作用是环形图。
+环形图近似足够精确的条件是粒子数密度很高，从而主要的相互作用形式是电子通过库仑相互作用，激发出一些电子-空穴对（即环形图中的环），即主要的相互作用是环形图。
 也可以从另一个角度理解这件事：粒子数密度较高意味着屏蔽作用很强，所以$1/k^n$发散得不那么厉害的那些项没有什么贡献。
 RPA近似下没有出现这样的图：一个电子回线内部有一条光子线，即在单电子回线的图中没有出现Fock项，这和托马斯-费米屏蔽的假设是一致的，因此确实可以预期，当$\omega \to 0$时RPA近似退化到托马斯-费米屏蔽上。
+
+我们还可以进一步，根据环形图近似把高密度电子气的基态能量计算出来。
 
 % TODO：系统基态能量计算
 
@@ -1088,6 +1186,8 @@ RPA近似下没有出现这样的图：一个电子回线内部有一条光子�
     即使相互作用大一些，也可以理解成“能带被拉歪了”。
 }%
 ，我们可以绝热地将相互作用加入，如果没有出现诸如费米子配对之类让系统能谱结构发生很大变化的情况，那么第二个假设就已经满足了。
+
+% TODO：此处需要修改：见文书228页
 相互作用会导致电子出现自能修正，由于库仑相互作用的顶角是保持粒子数守恒的，不存在一个电子衰变成多个其它粒子的过程，因此自能修正是实数，即单电子态的确是本征态。%
 \footnote{
     虽然如此，如果我们将高于费米面的电子称为电子而将低于费米面的电子称为空穴，那么的确可以出现一个电子和费米球中的空穴发生相互作用，而衰变成电子和空穴的过程。
@@ -1104,7 +1204,7 @@ RPA近似下没有出现这样的图：一个电子回线内部有一条光子�
 这也意味着无法保证费米液体的准粒子的费米面和产生费米液体的含有库伦散射的多电子系统在不考虑库伦散射时的费米面高度是一样的。
 
 在什么情况下费米液体理论失效？如果相互作用是吸引的，那么低温下可能出现费米子配对，此时总是会出现相变。
-还有一些情况下相互作用会导致电子在空间上排列成一定的模式，此时也会出现相变，因为出现了新的序。
+还有一些情况下相互作用会导致电子在空间上排列成一定的模式（这样的模式可以看成“电子晶体”，即“费米液体结晶了”），此时也会出现相变，因为出现了新的序。
 我们将在\autoref{chap:low-and-super}中讨论这些情况。
 如果相互作用较强，能带的图像甚至可能就完全不适用了，此时系统的元激发可能都不是经过修正的电子，也无所谓费米液体。
 令人震惊的是，虽然大部分实际体系中库仑相互作用的确很强，并且显然不只有密度-密度相互作用通道，费米液体图像仍然是适用的。
@@ -1499,7 +1599,7 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 由于是前向散射，入射出射准粒子动量不变，虚线上没有三维动量交换，松原频率交换由于是瞬时相互作用也为零。
 它给出的全部正规自能图可以概括为
 \input{metal/flt/self-energy.tex}
-其中闭合电子回线意味着$\ii \omega_n = 0$，$-1$因子是相互作用顶角上的，闭合费米子回线由于给出了$\expval*{c^\dagger c}$，不贡献$-1$因子；
+其中闭合电子回线意味着$\ii \omega_n = 0$，$-1$因子来自相互作用线，闭合费米子回线由于给出了$\expval*{c^\dagger c}$，不贡献$-1$因子；
 因此加入了自能修正的单粒子能量就是
 \begin{equation}
     \epsilon_{\vb*{k} \alpha} = \epsilon_{\vb*{k}}^0 + \frac{1}{V} \sum_{\beta, \vb*{k}'} f_{\alpha \beta \vb*{k} \vb*{k}'} \expval*{\var{n_{\vb*{k}' \beta}}}.
