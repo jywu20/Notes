@@ -134,8 +134,11 @@ Here is a list of things not yet supported - and highly unlikely to be in the fu
 \section{Input files}
 
 Four files \emph{must} be in the directory where \texttt{vasp} command is run. They are \texttt{INCAR}, \texttt{POSCAR}, \texttt{POTCAR} and \texttt{KPOINTS}.
+\texttt{INCAR} controls the simulation: it specifies parameters in the calculation, including the cutoff energy, the 
 
 \subsection{\texttt{INCAR}}
+
+All tags in \texttt{INCAR} can be found in \url{https://www.vasp.at/wiki/index.php/Category:INCAR}.
 
 \subsubsection{Tags that work well with default values}
 
@@ -169,8 +172,25 @@ Before anything else, do the following checklist:
         \item The last modified date of every file.
         \item Whether there is some technical mistakes in, for example, SLURM scripts, so the jobs with the new settings never run.
     \end{itemize} 
-    \item Make sure 
+    \item Make sure all the four necessary files are in the working directory. 
+    \item Make sure that atoms are in the correct order. This includes:
+    \begin{itemize}
+        \item Make sure POTCAR is correct
+    \end{itemize}
 \end{itemize}
+Most of the items in the list are apparently stupid mistakes, but people do make such mistakes from time to time.
+So whenever something goes wrong, \emph{always} check \emph{everything} in this list.
+
+\section{Output files}
+
+\subsection{\texttt{OUTCAR}}
+
+The static configuration has the point symmetry
+
+\subsection{Criteria of whether something goes wrong}\label{sec:outfile-bugs}
+
+If everything goes smoothly, usually the calculation converges in 40 or 50 electronic steps.
+It is, therefore, a good idea to keep \texttt{NELM} in its default value or a slightly larger value.
 
 \section{Frequent tasks}
 
@@ -182,13 +202,22 @@ Static self-consistent calculation
 
 \subsection{Structural relaxation}
 
-Suggested setting: \texttt{EDIFF = 1e-8}, \texttt{EDIFFG = -0.0001} for better accuracy
+Suggested \texttt{INCAR} setting: 
+\begin{itemize}
+    \item \texttt{EDIFF = 1e-8}, \texttt{EDIFFG = -0.0001} for better accuracy.
+    \item \texttt{ISMEAR = }
+\end{itemize}
 
 \subsection{Phonon spectrum}
 
+Phonon spectrums can be calculated in a number of ways:
+\begin{itemize}
+    \item \concept{Frozen phonon method}, 
+\end{itemize}
+
 \subsection{Molecular dynamics}
 
-\section{Errors during calculation}
+\section{Errors during calculation and how to fix them}
 
 It seems \texttt{ISYM = 3} is less tolerant than \texttt{ISYM = 2}.
 
@@ -199,6 +228,7 @@ Whenever something weird happens, check these terms:
     \item Are there too few or too many $k$ points? Check \texttt{IBZKPT}. If there are, say, only 2 $k$ points, you won't expect the result to make sense.
     \item Does the calculation really converges? Check \texttt{vasp.out}. 
     \item Maybe the optimization algorithm doesn't work well for the given task. \texttt{ALGO = Normal} is always a safe choice, though it may not be that efficient. But when other algorithms actually fail, \texttt{ALGO = Normal} at least will finish with a reasonable time duration and give an acceptable result.
+    \item If \texttt{POSCAR} is modified manually (for example, to symmetrize the structure), always do a double check to ensure you didn't accidentally introduce a wrong structure.
 \end{itemize}
 
 \subsection{Strange \texttt{vasp.out} outputs}
@@ -218,8 +248,12 @@ As the volumes of the spheres do not sum up to the volume of the unit cell, thes
 
 \subsubsection{Energy}
 
-\section{Speeding up}
+\section{Why the calculation is slow and how to speed up}
 
-\subsection{Convergence}
+\subsection{Electronic convergence}
+
+It should be noted that though \texttt{ISPIN = 2} seems to be more expansive than \texttt{ISPIN = 1}, for a system in which spins play an important role in relaxation, using \texttt{ISPIN = 1} \emph{won't} speed up calculation.
+So if you are struggling with \texttt{ISPIN = 1} on a specific system, maybe the system has a magnetic order or something so that its lattice structure is designed to induce an electronic order with magnetization.
+In this case, \texttt{ISPIN = 1} usually takes longer time to converge.
 
 \end{document}
