@@ -170,8 +170,9 @@
 \begin{equation}
     \omega_{\vb*{k}} = JS \left( n_\text{bond} - \sum_{\vb*{\delta}} \cos(\vb*{k} \cdot \vb*{\delta}) \right).
 \end{equation}
+在$n_\text{bond}$较大时自旋波是有能隙的。
 
-
+铁磁序可以看成自旋系统的一种“固态”，因为其中出现了对称性破缺序，该序的涨落即为自旋波，正如原子系统的固态中晶格序的涨落为声子一样。
 
 \subsection{反铁磁序}
 
@@ -182,9 +183,9 @@
 \subsubsection{DMRG模拟}
 
 \begin{back}{格点模型的一种数值计算方法——张量网络}{tensor-network}
-    所谓\concept{张量网络}是指通过缩并一些张量得到的格点系统波函数的试探形式。
+    所谓\concept{张量网络}是指通过缩并一些张量得到的格点系统波函数（称为\concept{张量网络态}）的试探形式。
     使用张量网络拟设的好处包括能够自然地引入对称性，能够很容易地从最终计算结果中获得诸如纠缠熵等信息。
-    张量网络方法的不足之处则在于难以估计计算质量好坏。
+    张量网络方法的不足之处则在于难以估计计算质量好坏。此外，需要保证使用的张量网络态真的是足够好的拟设，在高维空间中这通常是比较有挑战性的。
 
     可能最有名的张量网络方法就是\concept{密度矩阵重整化群（DMRG）}了。
 \end{back}
@@ -218,5 +219,107 @@
 \begin{equation}
     H = - J \sum_{\pair{\vb*{i}, \vb*{j}}} \sigma^z_{\vb*{i}} \sigma^x_{\vb*{j}} + h \sum_{\vb*{i}} \sigma^z_{\vb*{i}}.
 \end{equation}
+
+\chapter{自旋链}
+
+一维的自旋模型——所谓\concept{自旋链}——经常表现出一些独特的性质，因此值得单独拿出来讨论。
+
+\section{自旋$1/2$海森堡自旋链}
+
+\subsection{Jordon-Wigner变换}
+
+自旋$1/2$的海森堡自旋链中实际上有费米型激发。当然，海森堡模型可以从Hubbard模型中推导出来而Hubbard模型是关于费米子的，但是海森堡自旋链中的费米型激发和电子并没有什么关系——例如，这些费米型激发并不携带电荷（当然，这是因为海森堡模型中根本就没有电荷）。
+
+\begin{back}{Jordan–Wigner变换}{jordan-wigner-transformation}
+    一维自旋$1/2$自由度可以使用一种比较容易的方法转化为费米子自由度。
+    回顾\autoref{back:spin-degree-of-freedom}，自旋有升降算符，且对自旋$1/2$自由度，每个点上的自旋不是向上就是向下，因此暗示我们可以将每个点上的自旋大小当成这一点的某种费米子的个数。
+    这样我们尝试定义
+    我们尝试指定
+    \begin{equation}
+        \begin{aligned}
+            {\sigma}^z_{\vb*{i}} &= 2 {f}^\dagger_{\vb*{i}} {f}_{\vb*{i}} - 1, \\
+            {\sigma}^x_{\vb*{i}} &= {f}^\dagger_{\vb*{i}} + {f}_{\vb*{i}}, \\
+            {\sigma}^y_{\vb*{i}} &= \ii ({f}_{\vb*{i}} - {f}^\dagger_{\vb*{i}}),
+        \end{aligned}
+    \end{equation}
+    则能够验证算符$f_{\vb*{i}}^\dagger$和$f_{\vb*{i}}$分别让$z$方向自旋加$1/2$和减$1/2$，或者说让$\sigma^z_{\vb*{i}}$加减1，或者说让取值范围是$0$和$1$的$f^\dagger_{\vb*{i}} f_{\vb*{i}}$加减1。
+    此外还可以验证
+    \begin{equation}
+        \acomm*{f_{\vb*{i}}}{f^\dagger_{\vb*{i}}} = 0, 
+    \end{equation}
+    但不同格点的$f_{\vb*{i}}$和$f^\dagger_{\vb*{i}}$均对易。
+
+    为了将$f$转化成真正的费米子算符，我们做一个Klein变换，通过一串$f$算符的乘积来让$f$被交换时相位正确。
+    定义
+    \begin{equation}
+        {c}^\dagger_i = \ee^{\ii \pi \sum_{k < i} {f}_k^\dagger {f}_k} {f}^\dagger_i, \quad {c}_i = \ee^{- \ii \pi \sum_{k < i} {f}_k^\dagger {f}_k} {f}_i,
+    \end{equation}
+    则可以验证$c_{\vb*{i}}$算符给出正确的费米子对易关系。
+    这样我们就把自旋$1/2$自由度完全转化为了费米子自由度，具体的变换方式为
+    \begin{equation}
+        \begin{aligned}
+            \sigma^-_i &= (\sigma^x_i - \ii \sigma_i^y) / 2 = \ee^{\ii \pi \sum_{k < i} c^\dagger_k c_k} c_i, \\
+            \sigma^+_i &= (\sigma^x_i + \ii \sigma_i^y) / 2 = \ee^{- \ii \pi \sum_{k < i} c^\dagger_k c_k} c^\dagger_i, \\
+            \sigma_i^z &= 2 c^\dagger_i c_i - 1.
+        \end{aligned}
+    \end{equation}
+
+    Jordan-Wigner变换在更高维的空间中\cite{Shaofeng1995}和自旋模长更高的自旋模型中\cite{Batista_2001}均可以定义。
+    由于自旋系统是“局域地玻色”的（即不同格点上的自旋自由度总是对易的，虽然单个格点上会有非平庸的对易关系），这实际上暗示费米子自由度某种意义上是一种非常不局域的东西，产生或是湮灭一个费米子需要弦算符而不是局域的算符。   
+\end{back}
+
+\subsubsection{费米子哈密顿量}
+
+现在对自旋$1/2$反铁磁海森堡模型
+\begin{equation}
+    H = J \sum_i \vb*{S}_i \cdot \vb*{S}_{i+1} = \frac{J}{4} \sum_i \vb*{\sigma}_i \cdot \vb*{\sigma}_{i+1} = \frac{J}{4} \sum_i (\sigma^z_{i} \sigma^z_{i+1} + 2 \sigma^+_i \sigma^-_{i+1} + 2 \sigma^-_i \sigma^+_{i+1})
+\end{equation}
+做Jordan-Wigner变换，其中
+\[
+    \sigma^z_i \sigma^z_{i+1} = (2 c^\dagger_i c_i - 1) (2 c^\dagger_{i+1} c_{i+1} - 1),
+\]
+而
+\[
+    \sigma^+{i} \sigma^-_{i+1} = c^\dagger_i \ee^{\ii \pi c^\dagger_i c_i} c_{i+1} = c^\dagger_i (1 - 2 c^\dagger_i c_i) c_{i+1} = c^\dagger_i c_{i+1},
+\]
+以及
+\[
+    \sigma^-_i \sigma^+_{i+1} = c_i (1 - 2 c^\dagger_i c_i) c^\dagger_{i+1} = c_i c_{i+1}^\dagger - 2 (1 - c_i^\dagger c_i) c_i c_{i+1}^\dagger = - c_i c_{i+1}^\dagger = c_{i+1}^\dagger c_i,
+\]
+于是就得到
+\begin{equation}
+    H = \frac{J}{2} \sum_i (c_i^\dagger c_{i+1} + \text{h.c.}) + J \sum_{i} (n_i - 1/2) (n_{i+1} - 1/2).
+\end{equation}
+
+对XXZ模型可以做同样的操作，模型
+\begin{equation}
+    H = \gamma J \sum_{i} S^z_{i} S^z_{i+1} + J \sum_{i} (S^x_{i} S^x_{i+1} + S^y_i S^y_{i+1})
+\end{equation}
+会转化为
+\begin{equation}
+    H = \frac{J}{2} \sum_i (c_i^\dagger c_{i+1} + \text{h.c.}) + \gamma J \sum_{i} (n_i - 1/2) (n_{i+1} - 1/2).
+\end{equation}
+
+\subsubsection{边界条件}
+
+
+\subsection{自旋$1/2$的XY自旋链}
+
+作为一个简单的例子，考虑$\gamma = 0$的情况，此时不存在$z$方向上自旋的耦合，即我们实际上是在处理XY模型。
+此时的费米子哈密顿量为
+\begin{equation}
+    H = \frac{J}{2} \sum_i (c_i^\dagger c_{i+1} + \text{h.c.}) ,
+\end{equation}
+是一个典型的紧束缚模型，解之得到能谱
+\begin{equation}
+    \epsilon_k = J \cos (ka).
+\end{equation}
+费米点位于$k = \pm \pi / 2$处。
+
+可以看到一维XY自旋链中存在无能隙的费米型激发，这和较高维德自旋波模式完全不同。
+
+\subsubsection{玻色化}
+
+海森堡模型是自旋模型而不是电子模型，然而通过Jordon-Wigner变换 % TODO
 
 \chapter{自旋玻璃}

@@ -72,6 +72,9 @@
 
 This article briefly introduces VASP, its features, its frequently used functions, frequently observed errors and unexpected results, and some tricks to speed up calculation.
 
+Golden rule: \emph{always} keep record of a file that you will probably use in the future. 
+Take down under which settings is it obtained. Take down the date. Take down remarkable obstacles you face trying to get it.
+
 \section{Ab-initio calculation using VASP}
 
 VASP, or Vienna Ab initio Simulation Package, is a popular commercial \emph{ab initio} package written in Fortran, supporting plain-wave Kohn-Sham DFT and related approaches for electronic structure and molecular structure investigation.
@@ -144,6 +147,12 @@ All tags in \texttt{INCAR} can be found in \url{https://www.vasp.at/wiki/index.p
 
 Usually you \emph{don't} need to specify what functional is used because it can be read from \texttt{POTCAR}.
 Every \texttt{POTCAR} contains the name of the functional with which it is generated, and since a pseudopotential generated with one functional should not be used with another functional, VASP uses the functional recommended by the \texttt{POTCAR} file.
+
+\subsubsection{Tags that must be treated with care}
+
+Some tags \emph{need} to be set with caution or otherwise problem will keep popping up.
+
+\texttt{LMAXMIX} must be set according to the orbital with highest $l$ when doing DFT+$U$.
 
 \subsubsection{Confusing tag names in \texttt{INCAR}}
 
@@ -255,5 +264,12 @@ As the volumes of the spheres do not sum up to the volume of the unit cell, thes
 It should be noted that though \texttt{ISPIN = 2} seems to be more expansive than \texttt{ISPIN = 1}, for a system in which spins play an important role in relaxation, using \texttt{ISPIN = 1} \emph{won't} speed up calculation.
 So if you are struggling with \texttt{ISPIN = 1} on a specific system, maybe the system has a magnetic order or something so that its lattice structure is designed to induce an electronic order with magnetization.
 In this case, \texttt{ISPIN = 1} usually takes longer time to converge.
+
+\section{Auxiliary tools}
+
+\subsection{Phonopy}
+
+Phonopy can also be used to symmetrize a certain supercell.
+First use a command like \texttt{phonopy -c POSCAR --symmetry --tolerance=1e-3} to obtain the (symmetrized) unit cell, and then find the correct \texttt{DIM} matrix that expand the unit cell into the expected supercell.
 
 \end{document}
