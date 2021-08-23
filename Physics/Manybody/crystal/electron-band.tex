@@ -432,7 +432,55 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 
 \subsection{$\vb*{k} \cdot \vb*{p}$模型和有效质量}
 
-设我们需要计算$\vb*{k}_0$附近电子的行为。定义
+设$\vb*{k}_0$是某一条能带$\epsilon_{n \vb*{k}}$的极值点。我们总是可以在它附近做泰勒展开，以有效质量张量（显然它是对称的实张量）
+\begin{equation}
+    \left(\frac{1}{m^*}\right)_{\alpha \beta} = \pdv[2]{\epsilon_{n \vb*{k}}}{k_\alpha}{k_\beta}
+    \label{eq:effective-mass}
+\end{equation}
+的主轴为坐标轴，有
+\begin{equation}
+    \epsilon_{n \vb*{k}} = \epsilon_{n \vb*{k}_0} + \frac{(k_x - k_{0x})^2}{2 m^*_x} + \frac{(k_y - k_{0y})^2}{2 m^*_y} + \frac{(k_z - k_{0z})^2}{2 m^*_z},
+\end{equation}
+我们将在\autoref{sec:bloch-wave-pocket}中看到有效质量的应用。将Bloch波函数的形式\eqref{eq:bloch-wavefunction}代入单电子薛定谔方程
+\[
+    \left( - \frac{\laplacian}{2m} + V_\text{ion}(\vb*{r}) \right) \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \psi_{n \vb*{k}},
+\]
+就得到
+\begin{equation}
+    \left( - \frac{\laplacian}{2m} + V_\text{ion}(\vb*{r}) \right) u_{n \vb*{k}} - \frac{\ii \vb*{k} \cdot \grad}{m} u_{n \vb*{k}} = \left( \epsilon_{n \vb*{k}} - \frac{{\vb*{k}}^2}{2m}  \right) u_{n \vb*{k}},
+    \label{eq:k-p-u-eq}
+\end{equation}
+其边界条件为
+\begin{equation}
+    u(\vb*{r}) = u(\vb*{r} + \vb*{R}),
+    \label{eq:k-p-boundary-u}
+\end{equation}
+其中$\vb*{R}$是任意一个正格矢。
+注意到同一个$\vb*{k}$不同的$n$的电子模式是彼此正交的，从而
+\[
+    \int \dd[3]{\vb*{r}} \psi^*_{n 0}(\vb*{r}) \psi_{m 0} = \delta_{mn},
+\]
+即
+\[
+    \int \dd[3]{\vb*{r}} u^*_{n 0}(\vb*{r}) u_{m 0} = \delta_{mn}.
+\]
+因此$\{u_{n 0}\}$构成了边界条件\eqref{eq:k-p-boundary-u}下的一组正交归一化基底。
+虽然$u_{n \vb*{k}}$不是真正的电子波函数，\eqref{eq:k-p-u-eq}意味着，实际上可以通过微扰论来从$u_{n0}$出发计算$\vb*{k}$不是很大的电子模式，只要$\vb*{k} = 0$是能带的一个极值点。
+例如由于$\vb*{k}=0$是能量极值点，能量无一阶微扰，我们有
+\[
+    \epsilon_{n \vb*{k}} - \frac{\vb*{k}^2}{2m} = \sum_{n'} \frac{\mel{n 0}{\vb*{k} \cdot \vb*{p} / m}{n' 0} \mel{n' 0}{\vb*{k} \cdot \vb*{p} / m}{n 0}}{\epsilon_{n0} - \epsilon_{n' 0}},
+\]
+从而
+\begin{equation}
+    \epsilon_{n \vb*{k}} = \frac{\vb*{k}^2}{2m} + \frac{1}{m^2} \sum_{n'} \frac{\mel{n0}{p_i}{n'0} \mel{n'0}{p_j}{n0}}{\epsilon_{n0} - \epsilon_{n' 0}} k^i k^j,
+\end{equation}
+将$i, j$取到有效质量张量的主轴上，就有
+\begin{equation}
+    \frac{1}{m^*_i} = \frac{1}{m} + \frac{2}{m^2} \sum_{n', i} \frac{1}{m^2} \sum_{n'} \frac{\mel{n0}{p_i}{n'0} \mel{n'0}{p_i}{n0}}{\epsilon_{n0} - \epsilon_{n' 0}} .
+\end{equation}
+$u_{n \vb*{k}}$也可以类似地计算。
+
+更一般的，对任意的一个能带极值点$\vb*{k}_0$，我们定义
 \begin{equation}
     \chi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}_0} = \ee^{\ii \vb*{k} \cdot \vb*{r}} u_{n \vb*{k}_0} (\vb*{r}),
 \end{equation}
@@ -447,48 +495,29 @@ $\vb*{k}$能够取什么值取决于边界条件。由于物体通常比较大�
 \]
 即正交性成立。另一方面通过数自由度也可以发现完备性应该成立。
 因此，$\chi_{n \vb*{k}}$构成晶体中电子的一组正交完备基底。
-
-于是我们可以以$\chi_{n \vb*{k}}$为基底尝试对角化哈密顿量。
-我们有
-\[
-    \begin{aligned}
-        H \psi_{n \vb*{k}} &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V \right) \chi_{j \vb*{k}} \\
-        &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V \right) \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{j \vb*{k}_0} \\
-        &= \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \left( \frac{(\vb*{p} + \vb*{k} - \vb*{k}_0)^2}{2m} + V \right) \psi_{j \vb*{k}_0} \\
-        &= \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \frac{\vb*{p}^2}{2m} + V + \frac{(\vb*{k} - \vb*{k}_0) \cdot \vb*{p}}{m} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \psi_{j \vb*{k}_0} \\
-        &= \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \epsilon_{j \vb*{k}_0} + \frac{(\vb*{k} - \vb*{k}_0) \cdot \vb*{p}}{m} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \psi_{j \vb*{k}_0},
-    \end{aligned}
-\]
-而另一方面
-\[
-    H \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \psi_{n \vb*{k}} = \epsilon_{n \vb*{k}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \chi_{j \vb*{k}} =  \epsilon_{n \vb*{k}} \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \psi_{n \vb*{k}_0},
-\]
-于是
+现在设
 \begin{equation}
-    \sum_j \braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}} \left( \left( \epsilon_{n \vb*{k}_0} - \epsilon_{n \vb*{k}} + \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \delta_{nj} + \frac{(\vb*{k} - \vb*{k}_0) \cdot \mel{\psi_{n \vb*{k}_0}}{\vb*{p}}{\psi_{j \vb*{k}_0}}}{m} \right)  = 0.
-    \label{eq:k-p-model}
+    \psi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii (\vb*{k} - \vb*{k}_0) \cdot \vb*{r}} \varphi_{n \vb*{k}}(\vb*{r}),
 \end{equation}
-我们还可以将以上所有推导中的$\psi_{n \vb*{k}_0}$换成$u_{n \vb*{k}_0}$，此时$\vb*{k} - \vb*{k}_0$被$\vb*{k}$取代，我们有
-
-既然我们已经知道了$\vb*{k}_0$点的电子的情况——它的能级，波函数等等——上式中的仅有的未知数就是$\braket*{\chi_{j \vb*{k}}}{\psi_{n \vb*{k}}}$和$\epsilon_{n \vb*{k}}$，于是可以通过求解本征值问题得到它们。
-这就是所谓的\concept{$\vb*{k} \cdot \vb*{p}$理论}。
-
-原则上以上做法能够给出所有能带信息，但是，\eqref{eq:k-p-model}可以很容易地近似求解。
-例如，
-
+则薛定谔方程会转化为
 \begin{equation}
-    \left(\frac{1}{m^*}\right)_{\alpha \beta} = \pdv[2]{\epsilon_{\vb*{k}}}{k_\alpha}{k_\beta},
-    \label{eq:effective-mass}
+    \left( - \frac{\laplacian}{2m} + V_\text{ion}(\vb*{r}) \right) \varphi_{n \vb*{k}} - \frac{\ii (\vb*{k} - \vb*{k}_0) \cdot \grad}{m} \varphi_{n \vb*{k}} = \left( \epsilon_{n \vb*{k}} - \frac{(\vb*{k} - \vb*{k}_0)^2}{2m} \right) \varphi_{n \vb*{k}},
 \end{equation}
-我们将在\autoref{sec:bloch-wave-pocket}中看到有效质量的应用。
+边界条件为
+\begin{equation}
+    \varphi_{n \vb*{k}}(\vb*{r} + \vb*{R}) = \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} \varphi_{n \vb*{k}}(\vb*{r}).
+\end{equation}
+因此，可以将$\varphi_{n \vb*{k}}$用$\{\chi_{n \vb*{k}_0}\}_n$做基底展开，然后后面微扰论的步骤是类似的。
 
-能带越宽，有效质量越轻，能带越窄，有效质量越重。\concept{重费米子系统}指的是有效质量非常大的系统，从而这样的系统基本上是强关联系统。
+以上做的微扰都是非简并微扰，有简并微扰时对$u_{n0}$或是$\varphi_{n \vb*{k}}$做简并微扰即可。
 
-Luttinger模型：能带反转？
+以上方法就称为\concept{$\vb*{k} \cdot \vb*{p}$模型}，这个名字的来源是显然的。
+它可以在已经求出了某一晶格动量点的全套Bloch波函数之后用于计算相邻点的Bloch波函数，也可以用于获得有效质量张量，这有助于在不计算特别多的动量点的情况下就对体系的能带结构获得一个比较精确的估计。
+能带越宽，有效质量越轻，能带越窄，有效质量越重。\concept{重费米子系统}指的是有效质量非常大的系统。这样的系统常常是强关联系统。
 
 \section{Bloch波函数和Wannier波函数}
 
-本节给出周期性势场中的近独立电子气的一些一般性质。
+本节给出周期性势场中的近独立电子气的一些一般性质。我们将从对称性出发得到Bloch电子，并且展示一种“部分定域”的表象：Wannier波函数。
 
 \subsection{Bloch电子}\label{sec:bloch-electron}
 
@@ -767,13 +796,13 @@ $\vb*{k}$的取值局限在第一布里渊区内部，作为对比，不考虑�
 $N$为晶胞数目。当然这就是第一布里渊区中的动量数目。
 一个晶格内可以有多种原子，但是这个信息已经被能带编号考虑在内了，因为电子“看到”原子种类的方式就是原子施加的势场，而周期势导致能带出现。
 
-% TODO:自旋
 任何一种非Bloch波函数的电子波函数基底也应该有同样的数目，例如，它们可以用一个“坐标”和一个类似于能带编号的离散标签标记。
 在正交归一化条件成立时这种电子状态称为\concept{Wannier波函数}。
 我们使用$\vb*{i}, \vb*{j}, \ldots$表示电子位置，$m, n, \ldots$用于区分定域在$\vb*{i}$号晶胞附近的电子的电子云的“形状”。
 这是一个比较模糊的说法，例如定域在某个格点附近的电子可以非常定域，也可以比较定域，有两种模式。
 在没有自旋-轨道耦合时，自旋取向也可以计入$m, n, \ldots$中，此时自旋起到的唯一作用就是让系统中的电子模式的数目是轨道模式的数目的两倍。
-而有自旋-轨道耦合时自旋取向肯定会计入$m, n, \ldots$中）。
+而有自旋-轨道耦合时自旋取向肯定会计入$m, n, \ldots$中），且此时波函数的形式不再是$\psi(\vb*{r})$而是$\psi(\vb*{r} \sigma)$了。
+下面为了书写方便我们还是将波函数记作$\psi(\vb*{r})$，或者说把波函数表示成由$\psi(\vb*{r}, \uparrow)$和$\psi(\vb*{r}, \downarrow)$排成的列向量。
 $\vb*{R}_{\vb*{i}}$表示$\vb*{i}$处的格点的位矢，则定域在$\vb*{i}$号晶胞附近的Wannier电子的波函数可以用$w_{n\vb*{i}}(\vb*{r})$表示，可以写成如下形式：
 \begin{equation}
     w_{n \vb*{i}}(\vb*{r}) = w_{n}(\vb*{r} - \vb*{R}_{\vb*{i}}), \quad \int \dd[3]{\vb*{r}} w_n(\vb*{r})^* w_m(\vb*{r}) \propto \delta_{mn}.
@@ -1095,11 +1124,12 @@ Bloch波函数下的哈密顿量为\eqref{eq:bloch-band-hamiltonian}，不同能
     \item 系统中的电子跃迁能力不大；
     \item 系统中电子动能有较低的上限。
 \end{enumerate}
+满足以上等价条件的电子系统具有较窄的能带。
+然而并非窄的能带一定意味着较差的跃迁能力，因为\eqref{eq:from-spectrum-to-tight-binding}中的各个$l$分量可以特意设计成具有特定的相位，使得它们的峰值总是互相错开。
 
+应注意窄带电子未必一定形成强关联系统。
 这方面的一个例子是原子的内层电子，它们基本上不跃迁，因此能带也非常窄。
 然而原子的内层电子是离子实的一部分，并无有趣的强关联效应。
-
-然而并非窄的能带一定意味着较差的跃迁能力，因为\eqref{eq:from-spectrum-to-tight-binding}中的各个$l$分量可以特意设计成具有特定的相位，使得它们的峰值总是互相错开。
 
 \subsection{原子轨道线性组合和紧束缚模型}\label{sec:tight-binding-hopping}
 
