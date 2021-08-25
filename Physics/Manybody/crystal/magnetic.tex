@@ -180,16 +180,6 @@
 然而，在反铁磁的情况下，$E_\text{FM}$是非常大的能量，因此和模型的低能行为完全无关，这让我们无法利用$\ket{\text{FM}}$是能量本征态这一事实。
 一些人猜测，海森堡模型中的量子涨落甚至可能在特定的晶格上完全破坏铁磁序！有关的情况见\autoref{chap:spin-liquid}。
 
-\subsubsection{DMRG模拟}
-
-\begin{back}{格点模型的一种数值计算方法——张量网络}{tensor-network}
-    所谓\concept{张量网络}是指通过缩并一些张量得到的格点系统波函数（称为\concept{张量网络态}）的试探形式。
-    使用张量网络拟设的好处包括能够自然地引入对称性，能够很容易地从最终计算结果中获得诸如纠缠熵等信息。
-    张量网络方法的不足之处则在于难以估计计算质量好坏。此外，需要保证使用的张量网络态真的是足够好的拟设，在高维空间中这通常是比较有挑战性的。
-
-    可能最有名的张量网络方法就是\concept{密度矩阵重整化群（DMRG）}了。
-\end{back}
-
 \section{各向异性海森堡模型}
 
 % TODO：XXZ模型等
@@ -321,5 +311,64 @@
 \subsubsection{玻色化}
 
 海森堡模型是自旋模型而不是电子模型，然而通过Jordon-Wigner变换 % TODO
+
+\subsection{张量网络模拟}
+
+\input{tensor-network.tex}
+
+\subsubsection{旧式DMRG}
+
+
+
+\subsubsection{MPS方法}
+
+现在我们转而使用更加现代的方式理解海森堡模型的DMRG。
+
+\begin{figure}
+    \centering
+    \input{spin-magnetic/heisenberg/automata.tex}
+    \caption{海森堡模型的哈密顿量对应的自动机}
+    \label{fig:heisenberg-automata}
+\end{figure}
+
+我们还需要将哈密顿量也写成张量网络的形式。一维的足够局域的系统的哈密顿量总是可以写成矩阵乘积算符的形式。
+海森堡模型的哈密顿量可以看成一系列形如
+\[
+    \cdots \otimes I \otimes S^z \otimes S^z \otimes I \otimes \cdots
+\]
+或
+\[
+    \cdots \otimes I \otimes S^+ \otimes S^- \otimes I \otimes \cdots
+\]
+或
+\[
+    \cdots \otimes I \otimes S^- \otimes S^+ \otimes I \otimes \cdots
+\]
+的项的和。这种连乘的序列可以使用\autoref{fig:heisenberg-automata}所示的自动机描述。
+这个自动机的状态有五种，依次是$f, -, +, z, i$（排列顺序和转移矩阵\eqref{eq:heisenberg-mpo-transition-matrix}的矩阵元对应的基底的顺序一致）。
+海森堡模型中的任意一个直积序列都可以由这个自动机产生，而它也只产生海森堡模型哈密顿量中的直积序列。
+转移矩阵为
+\begin{equation}
+    \pmqty{
+        I_{2 \times 2} & 0 & 0 & 0 & 0 \\
+        S^+ & 0 & 0 & 0 & 0 \\
+        S^- & 0 & 0 & 0 & 0 \\
+        S^z & 0 & 0 & 0 & 0 \\
+        0 & S^- & S^+ & S^z & I_{2 \times 2}
+    }
+    \label{eq:heisenberg-mpo-transition-matrix}
+\end{equation}
+的自动机产生。
+。
+将\eqref{eq:heisenberg-mpo-transition-matrix}连乘$N$次，其矩阵元的乘法视为直积，则最终得到的转移矩阵中对应$i \to f$的矩阵元就是海森堡模型的哈密顿量。
+注意\eqref{eq:heisenberg-mpo-transition-matrix}实际上有四个指标，将两个\eqref{eq:heisenberg-mpo-transition-matrix}相乘无非是将不涉及$I_{2 \times 2}, S^+, S^-, S^z$内部结构的两个指标缩并，于是以\eqref{eq:heisenberg-mpo-transition-matrix}为四阶张量构造如下张量网络
+\input{math/tn/mpo.tex}
+就得到了哈密顿量，或者说得准确一些，哈密顿量在$\{S^z_i\}$表象下的矩阵元。
+
+iTensor库（见\cite{itensor}）可用于快速编写张量网络程序。
+
+\section{横场伊辛模型}
+
+\subsection{张量网络模拟}
 
 \chapter{自旋玻璃}
