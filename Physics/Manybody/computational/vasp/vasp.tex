@@ -1,0 +1,343 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{A VASP cookbook}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article briefly introduces VASP, its features, its frequently used functions, frequently observed errors and unexpected results, and some tricks to speed up calculation.
+
+\section{Ab-initio calculation using VASP}
+
+VASP \cite{vamp-article,vasp-article}, or Vienna Ab initio Simulation Package, is a popular commercial \emph{ab initio} package written in Fortran, supporting plain-wave Kohn-Sham DFT and related approaches for electronic structure and molecular structure investigation.
+The most frequently used function of VASP is plain-wave based Kohn-Sham DFT, with three kinds of pseudopotentials supported,
+namely norm-conserving pseudopotentials, ultrasoft pseudopotentials and PAW pseudopotentials.
+VASP also support other self consistent algorithms that are not DFT, for example GW or RPA calculation, but usually a DFT calculation must be performed ahead to generate necessary auxiliary data like wavefunctions.
+By employing forces on atoms calculated from DFT outputs, VASP supports crystal structural relaxation as well as \emph{ab initio} molecular dynamics.
+
+The best way to learn VASP is to read its own manual and examples, which are available on \cite{vasp-manual}.
+It is, nonetheless, also the worst way to lean VASP, because a beginner will be crushed by the flood of configuration tags and strange terms.
+This article serves as an introduction as well as a quick reference for VASP, in which we present an integrated discussion concerning the underlying theories, input and output files, common tasks, frequent mistakes and tricks.
+
+\subsection{Plain-wave KSDFT}
+
+We are not going to introduce the formalism of \concept{plain-wave based Kohn-Sham DFT} or KSDFT, and just present what it is: in a word, in a crystal system, KSDFT means solving the following equations: the eigenvalue problem \concept{Kohn-Sham equation}
+\begin{equation}
+    - \frac{\laplacian}{2m} \phi_{n \vb*{k}} + \underbrace{\left( \int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}')}{\abs*{\vb*{r} - \vb*{r}'}} + \int \dd[3]{\vb*{r}'} V_\text{PP}(\vb*{r}', \vb*{r}) + V_\text{XC}(\vb*{r}) \right)}_{V_\text{eff}} \phi_{n \vb*{k}}(\vb*{r}) = \epsilon_{n \vb*{k}} \phi_{n \vb*{k}}
+\end{equation}
+and
+\begin{equation}
+    \rho(\vb*{r}) = 2 \sum_{n, \vb*{k}} f_{n \vb*{k}} \abs*{\phi_{n \vb*{k}}}^2,
+\end{equation}
+where $\vb*{k}$ is the Bloch wave vector, $n$ labels different solutions with the same $\vb*{k}$,
+\begin{equation}
+    V_\text{XC}(\vb*{r}) = 2 \fdv{E_\text{XC}[\rho(\vb*{r})]}{\rho(\vb*{r})},
+\end{equation}
+$E_\text{XC}[\rho(\vb*{r})]$ is a functional of electron density named \concept{exchange-correlation functional}, 
+$V_\text{PP}$ is the \concept{pseudopotential} which is a smoothened version of atomic potentials in the crystal,
+and $f_{n \vb*{k}}$ is a given function of $\epsilon_{n \vb*{k}}$s, which may be Fermi distribution or Gaussian smearing.
+Note that in the original Kohn-Sham formalism, $f_{n \vb*{k}}$ is a step function, but usually we will introduce \emph{smearing} to make it smooth for better convergence.
+Although VASP works at $T=0$, introduction of fractional occupation causes an \emph{imaginary} temperature and the corresponding $TS$ term (a natural result for additional constraints on the optimization problem), and when smearing is introduced, what is minimized is \emph{not} the total energy but the free energy, so \emph{always double check which ``energy'' are you using}.
+It should also be noticed that the ``free energy'' here has nothing to do with the free energy in a real thermal system, say, in a molecular dynamics simulation.
+
+Above is the version of spinless KSDFT. We also have version of KSDFT in which electrons can have parallel spins or non-parallel spins, or relativistic effects like spin-orbital coupling play a role, all with similar formalisms.
+
+When the calculation is done, $\rho(\vb*{r})$ (or spin density matrix when spins are involved) gives the correct electron density, and the \concept{energy functional}
+\begin{equation}
+    E[\rho(\vb*{r})] = \sum_{n, \vb*{k}} f_{n \vb*{k}} \int \dd[3]{\vb*{r}} \phi_{n \vb*{k}}^*(\vb*{r}) \left( - \frac{\laplacian}{2m  } + \int \dd[3]{\vb*{r}'} V_\text{eff}(\vb*{r}, \vb*{r}') \right) \phi_{n \vb*{k}}(\vb*{r}) 
+\end{equation}
+gives the ground state energy, which can also be obtained by
+\begin{equation}
+    E = \sum_\text{occupied $n, \vb*{k}$} \epsilon_{n \vb*{k}},
+\end{equation}
+or by 
+\begin{equation}
+    E = F + TS,
+\end{equation}
+where $F$ is the free energy, and $T$ measures the strength of smearing.
+For a Fermi-liquid system $\phi_{n \vb*{k}}(\vb*{r})$s (named \concept{Kohn-Sham orbitals}) and $\epsilon_{n \vb*{k}}$s are \emph{roughly} single electron wavefunctions and energies, but their exact meaning is not clear and sometimes may not be a good approximation.
+For tasks requiring high accuracy of electronic structures it is recommended to use GW or RPA methods with Kohn-Sham orbitals and eigenvalues as the input.
+
+The Kohn-Sham orbitals are represented using a group of plain-waves as a basis.
+The free particle kinetic energy corresponding to the highest $\vb*{G}$ is called the \concept{cutoff energy}
+\begin{equation}
+    E_\text{cutoff} = \frac{\vb*{G}^2}{2m}.
+\end{equation}
+The higher the cutoff energy is, the finer spacial details of Kohn-Sham orbitals can be.
+
+To quicken the solving process, VASP uses an iterative diagonalization scheme, the details of which can be found in \cite{groundstate}.
+
+\subsection{What VASP doesn't do}
+
+Here is a list of things not yet supported - and highly unlikely to be in the future - by VASP:
+\begin{itemize}
+    \item Thermal DFT;
+    \item KSDFT with Gaussian basis or other non-plain-wave basis;
+    \item Orbital-free DFT;
+    \item Post Hartree-Fock methods.
+\end{itemize}
+The role 
+
+\section{Input files}
+
+Four files \emph{must} be in the directory where \texttt{vasp} command is run. They are \texttt{INCAR}, \texttt{POSCAR}, \texttt{POTCAR} and \texttt{KPOINTS}.
+\texttt{INCAR} controls the simulation: it specifies parameters in the calculation, including the cutoff energy, the 
+
+\subsection{\texttt{INCAR}}
+
+All tags in \texttt{INCAR} can be found in \cite{incar}.
+
+\subsubsection{Tags that work well with default values}
+
+Usually you \emph{don't} need to specify what functional is used because it can be read from \texttt{POTCAR}.
+Every \texttt{POTCAR} contains the name of the functional with which it is generated, and since a pseudopotential generated with one functional should not be used with another functional, VASP uses the functional recommended by the \texttt{POTCAR} file.
+
+\subsubsection{Tags that must be treated with care}
+
+Some tags \emph{need} to be set with caution or otherwise problem will keep popping up.
+
+\texttt{LMAXMIX} must be set according to the orbital with highest $l$ when doing DFT+$U$.
+
+\subsubsection{Confusing tag names in \texttt{INCAR}}
+
+Due to some historical reasons, some tags in \texttt{INCAR} have misguiding names.
+To name a few:
+\begin{itemize}
+    \item The \texttt{GGA} tag can be used to apply an \emph{LDA} functional. For example you can set \texttt{GGA = CA} or \texttt{GGA = PZ}.
+    \item The \texttt{LDAU} tags - \texttt{LDAUU}, \texttt{LDAUJ} and \texttt{LDAUL} - \emph{don't} require an LDA functional. 
+\end{itemize}
+
+\subsection{\texttt{POSCAR}}
+
+\subsection{\texttt{POTCAR}}
+
+For example, to create a \texttt{POTCAR} for \ce{BaFe2As2}, use the following command:
+\begin{lstlisting}[language=bash]
+    cd the/place/where/you/store/pseudopotentials
+    cat POTCAR_Ba POTCAR_Fe POTCAR_As > POTCAR
+    mv POTCAR the/place/where/you/run/VASP 
+\end{lstlisting}
+
+Make sure all pseudopotentials you use to simulate one material are of the same type and the same functional.
+
+\subsection{Frequent mistakes in input files}
+
+Fatal mistakes in input files usually kill a VASP process in several seconds, and for some reason, the error message is sometimes hard to understand, and sometimes it is even hard to notice that the calculation \emph{already ends}.
+Whenever something strange happens, before anything else, do the following checklist:
+\begin{itemize}
+    \item Are these really the input files used in your last job?
+    People often make stupid mistakes such as modifying some settings but using the unmodified version of input files to submit another job, so the errors in the last run remain there, leaving themselves confused about why the new settings don't work.
+    Always check:
+    \begin{itemize}
+        \item The \texttt{SYSTEM} tag in \texttt{INCAR}. It's quite often when people copy the \texttt{INCAR} for one material to calculate another system, and forget to change \texttt{SYSTEM}.
+        So you are assuming that you have edited the \texttt{INCAR} for one material while you are actually editing another one.
+        \item The last modified date of every file. If you get unexpected results it may be the remaining of the last calculation, and this round of calculation ends because of a mistake in input files.
+        \item Whether there is some technical mistakes in, for example, SLURM scripts, so the jobs with the new settings never run. 
+    \end{itemize} 
+    \item Make sure all the four necessary files are in the working directory. Unconsciously deleting important files is not rare.
+    \item Make sure that atoms are in the correct order. Make sure the orders of atomic species in \texttt{POTCAR} and \texttt{POSCAR} are the same.
+\end{itemize}
+
+Most of the items in the list are apparently stupid mistakes, but people do make such mistakes from time to time.
+So whenever something goes wrong, \emph{always} check \emph{everything} in this list.
+
+\section{Output files}
+
+\subsection{\texttt{OUTCAR}}
+
+The static configuration has the point symmetry
+
+\subsection{\texttt{vasp.out}}
+
+Note that the \texttt{E} column in \texttt{vasp.out} is \emph{not} the expectation of energy.
+Instead, it is the \emph{free energy}.
+
+An example of electronic steps are listed here:
+\begin{verbatim}
+       N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1    -0.156969645813E+02   -0.15697E+02   -0.27531E+00 33936   0.335E+00
+DAV:   2    -0.156982451091E+02   -0.12805E-02   -0.12805E-02 52360   0.317E-01
+DAV:   3    -0.156982452245E+02   -0.11543E-06   -0.11559E-06 37800   0.167E-03
+   1 F= -.15698245E+02 E0= -.15693289E+02  d E =-.991302E-02
+\end{verbatim}
+You may notice that 
+
+\subsection{Criteria of whether something goes wrong}\label{sec:outfile-bugs}
+
+If everything goes smoothly, usually the calculation converges in 40 or 50 electronic steps.
+It is, therefore, a good idea to keep \texttt{NELM} in its default value or a slightly larger value.
+
+\section{Frequent tasks}
+
+\subsection{Calculating the ground state energy}
+
+\subsection{Calculating the band structure}
+
+Static self-consistent calculation
+
+\subsection{Structural relaxation}
+
+Suggested \texttt{INCAR} setting: 
+\begin{itemize}
+    \item \texttt{EDIFF = 1e-8}, \texttt{EDIFFG = -0.0001} for better accuracy.
+    \item \texttt{ISMEAR = }
+\end{itemize}
+
+\subsection{Phonon spectrum}
+
+Phonon spectrums can be calculated in a number of ways:
+\begin{itemize}
+    \item \concept{Frozen phonon method}, 
+\end{itemize}
+
+\subsection{Molecular dynamics}
+
+\section{Fixing errors}
+
+\subsection{Errors during calculation and how to fix them}
+
+Here is a list of errors that may be encountered during a calculation with a mostly proper \texttt{INCAR}:
+\begin{itemize}
+    \item \texttt{ZBRENT: fatal error in bracketing}: copy \texttt{CONTCAR} to \texttt{POSCAR} and try again with smaller \texttt{EDIFF}, and, if it does not work, use \texttt{ADDGRID}.
+\end{itemize}
+
+It seems \texttt{ISYM = 3} is less tolerant than \texttt{ISYM = 2}.
+
+\subsection{Unexpected outputs}
+
+Whenever something weird happens, check these terms:
+\begin{itemize}
+    \item Are there too few or too many $k$ points? Check \texttt{IBZKPT}. If there are, say, only 2 $k$ points, you won't expect the result to make sense.
+    \item Does the calculation really converges? Check \texttt{vasp.out}. 
+    \item Maybe the optimization algorithm doesn't work well for the given task. \texttt{ALGO = Normal} is always a safe choice, though it may not be that efficient. But when other algorithms actually fail, \texttt{ALGO = Normal} at least will finish with a reasonable time duration and give an acceptable result.
+    \item If \texttt{POSCAR} is modified manually (for example, to symmetrize the structure), always do a double check to ensure you didn't accidentally introduce a wrong structure.
+    \item There are tags which assign one value for each atom. If the number of assigned values are fewer than the number of atoms in POSCAR, VASP will terminate and report an error, but if the number of assigned values are \emph{more} than needed, often there is \emph{no} error but the calculation is completely wrong.
+    Such tags include:
+    \begin{itemize}
+        \item \texttt{MAGMOM}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Strange \texttt{vasp.out} outputs}
+
+\paragraph{Why are there so many lines beginning with ``soft electron'' or ``augmentation electron''?}
+
+With \texttt{LAECGH} turned on, you will find lines starting with \texttt{soft electron} or \texttt{augmentation electron} in \texttt{vasp.out}.
+
+\subsubsection{Charges and magnetizations in \texttt{OUTCAR}}
+
+\paragraph{The total charges and magnetization doesn't match the numbers in \texttt{vasp.out}!}
+
+These 'total charges' and magnetizations are obtained form a summation over the local quantities (integration of the charge and spin densities in the 'atomic spheres' of radii $r$=\texttt{RWIGS}. 
+As the volumes of the spheres do not sum up to the volume of the unit cell, these charges also do not sum up to the total number of valence electrons (the contribution of the "interstitial" space is missing).
+
+\subsubsection{Energy}
+
+\subsection{Unreasonable results}
+
+Systems containing Fe are usually hard to deal with.
+
+\section{Why the calculation is slow and how to speed up}
+
+\subsection{Electronic convergence}
+
+\subsubsection{Lattice structure}
+
+A insufficiently relaxed lattice structure usually comes with poor convergence performance.
+
+\subsubsection{Magnetic orders}
+
+It should be noted that though \texttt{ISPIN = 2} seems to be more expansive than \texttt{ISPIN = 1}, for a system in which spins play an important role in relaxation, using \texttt{ISPIN = 1} \emph{won't} speed up calculation.
+So if you are struggling with \texttt{ISPIN = 1} on a specific system, maybe the system has a magnetic order or something so that its lattice structure is designed to induce an electronic order with magnetization.
+In this case, \texttt{ISPIN = 1} usually takes longer time to converge.
+
+\section{Auxiliary tools}
+
+\subsection{Phonopy}
+
+Phonopy can also be used to symmetrize a certain supercell.
+First use a command like \texttt{phonopy -c POSCAR --symmetry --tolerance=1e-3} to obtain the (symmetrized) unit cell, and then find the correct \texttt{DIM} matrix that expand the unit cell into the expected supercell.
+
+\section{Scaling up}
+
+Golden rule: \emph{always} keep record of a file that you will probably use in the future. 
+Take down under which settings is it obtained. Take down the date. Take down remarkable obstacles you face trying to get it.
+
+\bibliographystyle{plain}
+\bibliography{vasp} 
+
+\end{document}
