@@ -854,6 +854,10 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
     形式上看，这相当于将相互作用看成了系统中其它粒子形成的大小为$\expval{c^\dagger c}$的一个外场，所以也可以叫做平均场近似。
 
     以上介绍的是需要求解自洽方程的平均场近似，当然作为最粗糙的估计，这个自洽方程的右边可以代入自由情况下我们要计算的格林函数，这就是非自洽的平均场方法，通常效果不好。
+
+    平均场近似可以用于分析各种各样的问题。它可以用于处理某种粒子的相互作用修饰（正如我们马上要做的那样），可以用于分析对称性自发破缺（见\autoref{back:mean-field-method-symmetry-broken}），还可以用于分析部分子构造产生的准粒子的动力学。
+    所有这些应用中“平均场”一词都指的是同一个意思：从费曼图的角度，重求和一类图形而丢弃其它图形，从哈密顿量的角度，将一个相互作用哈密顿量中的几个算符的乘积替换为某种期望值（“平均场”）。
+    平均场近似总是低估系统的量子涨落，但是如果做得适当，仍然是一种重要的工具。
 \end{back}
 
 计算单电子格林函数实际上就是要计算自能。本节考虑仅仅保留一阶自能图的近似，这个近似通常称为\concept{Hartree-Fock近似}。
@@ -880,14 +884,14 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
     \begin{aligned}
         \epsilon_{n \vb*{k}} \varphi_{n \vb*{k}}(\vb*{r} \sigma) &= - \frac{\laplacian}{2m} \varphi_{n \vb*{k}}(\vb*{r} \sigma) + V_\text{ion}(\vb*{r}) \varphi_{n \vb*{k}}(\vb*{r} \sigma) \\
         &\quad +  \sum_{n', \vb*{k}'} \sum_{\sigma''} \int \dd[3]{\vb*{r}''} \theta(\mu - \epsilon_{n' \vb*{k}'}) \abs*{\varphi_{n' \vb*{k}'}(\vb*{r}'' \sigma'')}^2 \frac{e^2}{\abs*{\vb*{r} - \vb*{r}''}} \varphi_{n \vb*{k}}(\vb*{r} \sigma) \\
-        &\quad - \int \dd[3]{\vb*{r}'} \sum_{n', \vb*{k}'} \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \theta(\mu - \epsilon_{n' \vb*{k}'}) \varphi_{n' \vb*{k}'}(\vb*{r}' \sigma) \varphi^*_{n' \vb*{k}'}(\vb*{r} \sigma) \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \varphi_{n \vb*{k}}(\vb*{r}' \sigma) .
+        &\quad - \int \dd[3]{\vb*{r}'} \sum_{n', \vb*{k}'} \theta(\mu - \epsilon_{n' \vb*{k}'}) \varphi_{n' \vb*{k}'}(\vb*{r} \sigma) \varphi^*_{n' \vb*{k}'}(\vb*{r}' \sigma) \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \varphi_{n \vb*{k}}(\vb*{r}' \sigma) .
     \end{aligned}
     \label{eq:hartree-fock-scf-with-spin}
 \end{equation}
 求解出上式（上式，或者其离散化版本，称为\concept{Roothaan方程}）就求解出了自洽Hartree-Fock近似下的费米型激发的能谱。
 \eqref{eq:hartree-fock-scf-with-spin}的推导是非常一般的，因此可以将$V_\text{ion}(\vb*{r})$用赝势代替，或是引入自旋-轨道耦合等等。
 方程右边的第三、四项来自电子-电子库伦相互作用，第三项就是将电子数密度当成一个外场写出的库伦势，称为\concept{经典库伦能}或者\concept{Hartree项}，而第四项没有特别明确的意义，通常称为\concept{交换能}或者\concept{Fock项}，我们会发现只有自旋相同的电子之间才有交换能，而且交换能是负的，即电子自旋平行会让系统能量下降。
-Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而后者来自。% TODO：这个叫做什么图啊
+可以看到Hartree项和Fock项显然分别来自两种自能图，前者有时也称为\concept{蝌蚪图}。
 
 在确定没有自旋-轨道耦合时，只需要求解轨道部分的波函数$\varphi_{n \vb*{k}}(\vb*{r})$，且状态$\ket{n \vb*{k} \uparrow}$和$\ket{n \vb*{k} \downarrow}$要么都有电子，要么都没有电子，从而\eqref{eq:hartree-fock-scf-with-spin}化简为
 \begin{equation}
@@ -908,7 +912,7 @@ Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而
 “电子关联”的概念其实带有一些模糊性。如果我们将电子关联视为“一个电子的引入会影响其它电子”，那么Hartree-Fock近似当然也考虑了一些电子关联效应：例如，自能修正就和所有电子均有关系，因为它依赖于$k_\text{F}$（见\eqref{eq:example-electron-hf-self-energy}）。
 然而，虽然上述Hartree-Fock考虑到了一定“电子关联”，但由于Hartree-Fock近似下，基态波函数仍然是近独立电子气的基态波函数的形式（虽然其中的一些\emph{参数}和全体电子均有关），它无法捕捉诸如Wick定理失效这样超越近独立电子气图景的现象。
 Hartree-Fock近似中，所有物理量仍然可以使用单电子格林函数计算，虽然单电子格林函数依赖于全体电子，然而实际的库伦排斥电子气中则不是这样。
-从这个意义上讲，实际的库伦排斥电子气中的电子关联不仅仅包括Hartree-Fock近似能够覆盖的“单电子状态取决于其它电子”，也包括“并非所有物理量都能够使用单电子格林函数计算”。
+从这个意义上讲，实际的库伦排斥电子气中的电子关联不仅仅包括Hartree-Fock近似能够覆盖的“单电子状态取决于其它电子”，也包括“并非所有物理量都能够使用单电子格林函数计算”，或者说“需要高阶矩来完整地描述系统的概率分布”。
 “关联能”一次中的“关联”指的是后者：在任何只考虑前者的模型中，这部分能量都不能够被正确地计算。
 
 \subsection{均匀电子气的Hartree-Fock近似}
@@ -1196,7 +1200,7 @@ RPA近似能够计算基态关联能，它需要叠加在Hartree项和Fock项上
 
 \subsubsection{运动方程}
 
-\subsubsection{能谱}
+\subsubsection{等离激元的能谱}
 
 考虑$\omega$非常高的极限，此时做展开
 \[
