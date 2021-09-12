@@ -1,3 +1,425 @@
+\chapter{标量理论，几何光学和其它简化处理}
+
+\section{几何光学}
+
+在已经知道了光的物理机制的时候，我们希望分析它作为波的性质，如传递方式等，并且严格处理直觉上看起来合理的“光线”、“波前”等概念。
+
+\subsection{各向同性标量理论}\label{sec:isotropic-scalar}
+
+\subsubsection{各向同性标量理论的微分方程}
+
+实际的波动方程都是矢量方程。然而，由于其线性性，我们总是可以将我们要研究的光分解成三个方向上的偏振光，然后将标量理论使用在其中每一个方向上，然后将结果再综合起来。因此以下讨论标量波动方程
+\[
+    c^2 \laplacian u - \pdv[2]{u}{t} = - \rho(\vb*{r}, t),
+\]
+并且通常讨论远离源的区域。这种明确求解波动方程的做法称为\concept{波动光学}，而后面关于光线等的讨论则是\concept{几何光学}。
+设波源集中在某一个空间区域内，则此空间区域外成立有齐次波动方程。
+考虑圆频率为$\omega$的单色波，指定$k = \omega / c$，则在无波源区域有
+\[
+    \laplacian u + k^2 u = 0
+\]
+它的解满足
+\[
+    u(\vb*{r}) = 
+    \frac{1}{4\pi} \int_{\Sigma} u(\vb*{r}_0) \grad_0{\frac{\ee^{\ii k R}}{R}} \cdot \dd \vb*{S}_0 
+    - \frac{1}{4\pi} \int_{\Sigma} \frac{\ee^{\ii k R}}{R} \grad_0{u(\vb*{r}_0)} \cdot \dd{\vb*{S}_0}
+\]
+其中$\Sigma$是能够包围所有波源的一个曲面，其中$R$为$\abs{\vb*{r} - \vb*{r}'}$，$\vb*{R}$为$\vb*{r} - \vb*{r}'$。
+若讨论的问题的尺度远大于$1/k$%
+\footnote{这意味着，比如说，我们感兴趣的区域到波源的距离远大于波长，两种介质的界面远大于波长且在波长的尺度上没有很大的起伏，障碍物相对波长很大，等等。}
+，且$\Sigma$为等相位面（见后一节），那么就有
+\begin{equation}
+    E(\vb*{r}) = - \frac{\ii k}{4\pi} \int_\Sigma E(\vb*{r}_0) \frac{\ee^{\ii k R}}{R} \left( \vu*{R} \cdot \vb*{n}_0 + 1 \right) \dd{S_0}
+    \label{eq:kirchhoff-formula}
+\end{equation}
+
+\subsubsection{空间中的相位和光程}\label{sec:phrase-and-l}
+
+空间中每一点都在某一个等相位面上，各点对应的等相位面的法向量$\vb*{n}$就构成了一个矢量场，并且可以证明$\vb*{n}$和$\grad{E}$平行。
+相位为
+\[
+    \phi = \frac{1}{\ii} \int \dd{\vb*{r}} \cdot \frac{\grad{E}}{E},
+\]
+
+很多时候，$E(\vb*{r})$可以写成
+\begin{equation}
+    E(\vb*{r}) = E_0(\vb*{r})\ee^{\ii \omega L(\vb*{r}) / c_0}
+    \label{eq:generalized-plain-wave}
+\end{equation}
+这样的形式，其中$E_0(\vb*{r})$和$L(\vb*{r})$都是实数。此时
+\[
+    \grad{E} = E \left(\frac{\ii \omega}{c_0} \grad{L} + \frac{\grad{E_0}}{E_0}\right)
+\]
+\[
+    \phi = \int \dd{\vb*{r}} \cdot \left( \frac{\omega}{c_0} \grad{L} + \frac{1}{\ii} \frac{\grad{E_0}}{E_0} \right) 
+\]
+表面上看这会引起矛盾，因为相位应该是一个实数。但是在我们讨论的问题的尺度远大于波长（指介质中平面波的波长，这是一个介质性质）时（大部分光学问题都满足这个条件，不满足这个条件的场景很少被称为光学），我们有$k \gg 1/R$%
+\footnote{注意此处的$k$是一个介质性质，它和解\eqref{eq:generalized-plain-wave}没有直接联系——解\eqref{eq:generalized-plain-wave}，到现在为止i，尚不能定义一个波矢。以下在不能定义一个确定无疑的波矢时所谓的$k$、$\lambda$等量，均指在同样的介质中通入平面波得到的值，它们由介质本身的性质，也就是$\epsilon$和$\mu$确定。}
+，此时上式中第二项相比于第一项很小，于是
+\begin{equation}
+    \phi = \frac{\omega}{c_0} \int \dd{\vb*{r}} \cdot \grad{L}
+    \label{eq:phrase-change}
+\end{equation}
+注意到被积函数是一个函数的梯度，因此能够在空间中每一点单值地定义$\phi$。
+于是将$L$称为\concept{光程}，它度量了变化给定的相位，光需要在真空中走过的距离。
+从这个方程也可以得到
+\[
+    \grad{\phi} = \frac{\omega}{c_0} \grad{L}
+\]
+因此相位变化最快的方向——从而波阵面传播的方向——就沿着$\grad{L}$。并且我们也看到了光程和相位的换算关系
+\begin{equation}
+    \phi = \frac{\omega}{c_0} L
+\end{equation}
+实际上两者本来应该差一个常数因子，但是因为两者加上或者减去一个常数都不会影响实际的物理量，我们就附加一个条件，认为两者同时取到零值。
+
+顺带我们也获得了一个结论：在$k \gg 1/R$时，或者说波长相对于空间尺度很短时，我们有
+\begin{equation}
+    \grad{E} = \frac{\ii \omega}{c_0} E \grad{L}
+    \label{eq:e-change-l}
+\end{equation}
+也就是说，$E$的变化主要来自$L(\vb*{r})$的快速周期性变化，而和它前面的系数$E_0$的变化关系不大。需要注意的是这个公式实际上比\eqref{eq:kirchhoff-formula}更加粗糙，因此实际计算光强时通常使用\eqref{eq:kirchhoff-formula}而不是\eqref{eq:e-change-l}。
+
+总之，本节内容意味着，可以将形如\eqref{eq:generalized-plain-wave}的解看成平面波，并且可以做替换
+\begin{equation}
+    \frac{\omega}{c_0} \grad{L} \longrightarrow \vb*{k}
+    \label{eq:generalized-k}
+\end{equation}
+只要
+% TODO：证明介质中的k和$\omega \grad{L} / c_0$同一量级
+
+\subsubsection{边界对光程和相位的影响}
+
+接下来我们转而观察边界上的现象，也就是说，讨论反射和折射中的相位变化。
+在本节中我们同样假定空间尺度远大于波长，也就是$kr \gg 1$，这样做的一个好处就是，如果介质界面不是平面，我们总可以将其上每一点处的反射和折射都看成无穷大平面的反射和折射，并用这一点处的切平面作为这个假想的无穷大平面。
+反射和折射的规律由\ref{sec:two-isotrophy-surface}节给出，但需要注意这一节中讨论的都是平面波的反射和折射，而我们却要讨论任意一种能够良好定义相位的波的反射和折射。
+因此现在需要探讨\ref{sec:two-isotrophy-surface}节中的公式能不能适用。
+
+\ref{sec:two-isotrophy-surface}节实际上是在一个无限大水平面上应用了边界条件\eqref{eq:e-bound-condition}。在本节中也可以把边界当成水平的。
+
+同样还是只考虑方向$\vu*{E}$方向上的线偏光$\vb*{E} = E \vu*{E}$。
+两侧介质中的电场分别设为
+\[
+    E_1 = E_{i0}(\vb*{r}) \ee^{\ii L_i(\vb*{r}) \omega / c_0} + E_{r0}(\vb*{r}) \ee^{\ii L_r(\vb*{r}) \omega / c_0}, \quad E_2 = E_{t0} \ee^{\ii L_t(\vb*{r}) \omega / c_0}
+\]
+并假设两侧介质中电场振动方向一致。同样由解的唯一性，如果做了以上假设之后有解，那么它们就是正确的假设。（要注意指数上都是$c_0$，因为光程是假定光束在真空中运行而得出的，它实际上是相位的一个代表，和具体介质无关）
+
+由于假设波长远小于空间尺度，有
+\[
+    \begin{aligned}
+        \curl{\vb*{E}_1} &= \curl{(E_1 \vu*{E})} = \grad{E_1} \times \vb*{E} \\
+        &= \frac{\ii \omega}{c_0} (E_{i} \grad{L_i} + E_{r} \grad{L_r}) \times \vu*{E}, \\
+        \curl{\vb*{E}_2} &= \curl{(E_2 \vu*{E})} = \grad{E_2} \times \vb*{E} \\
+        &= \frac{\ii \omega}{c_0} E_{t} \grad{L_t} \times \vu*{E}
+    \end{aligned}
+\]
+代入\eqref{eq:e-bound-condition}得到
+\[
+    \begin{aligned}
+        \epsilon_1 E_{10} \vb*{n} \cdot \vu*{E} = \epsilon_2 E_{20} \vb*{n} \cdot \vu*{E}, \\
+        E_{10} \vb*{n} \times \vu*{E} = E_{20} \vb*{n} \times \vu*{E}, \\
+        \frac{1}{\mu_1} E_i \vb*{n} \times (\grad{L_i}) + \frac{1}{\mu_1} E_r \vb*{n} \times (\grad{L_r}) = \frac{1}{\mu_2} E_t \vb*{n} \times (\grad{L_t})
+    \end{aligned}
+\]
+如果做替换\eqref{eq:generalized-k}，以上三个方程的形式就和平面波反射完全一致。因此只需要在菲涅尔公式\eqref{eq:fresnel-formulas}中做这样的替换，就得到了形式和平面波折反射公式完全一致的公式。%
+\footnote{一个更加物理的观点：我们可以在界面上找到这样一小块面积，在其上$E_0$也没有明显变化，因此在这块面积上可以将入射波看成一个平面波；另一方面由于假定$kR \gg 1$，把尺度拉到波长水平，这块面积看起来就是一个无限大的平面。于是在这块宏观小微观大的面积上就可以使用标准的平面波反射、折射理论。}
+因此\eqref{eq:generalized-k}提供了波矢定义的推广。
+于是公式\eqref{eq:phrase-change}可以简单地写成
+\begin{equation}
+    \phi = \int \vb*{k} \cdot \dd{\vb*{r}}
+    \label{eq:phrase-change-k}
+\end{equation}
+
+要注意一个地方：正如入射波往往伴随着一个反射波一样，一块均匀介质中可能有多个形如\eqref{eq:generalized-plain-wave}的波，使用\eqref{eq:phrase-change}（从而\eqref{eq:phrase-change-k}）可以给它们中的每一个都确定一个相位，但是却未必能够给它们的和确定一个相位。例如，似乎很难给一个驻波（可以看成传播方向相反的两路波的叠加）
+
+由于\eqref{eq:phrase-change}是在没有介质性质突然改变的均匀空间中推导出来的，我们要问：当积分路径通过介质界面时，是不是还能够良定义一个相位，并且有\eqref{eq:phrase-change-k}成立？
+也就是说我们要写出相位满足的边界条件。我们有
+\[
+    E_{t0} \ee^{\ii \omega L_t / c_0} = t E_{i0} \ee^{\ii \omega L_i / c_0}, \quad E_{r0} \ee^{\ii \omega L_r / c_0} = r E_{i0} \ee^{\ii \omega L_i / c_0}
+\]
+因此在边界上有
+\begin{equation}
+    \phi_t = \arg t + \phi_i, \quad \phi_r = \arg r + \phi_i
+    \label{eq:phrase-on-surface}
+\end{equation}
+在通常情况下$t$是实数，因此在边界上透射波的相位和入射波保持一致；但是在入射介质的折射率大于出射介质时，$r$可能有复数部分，此时反射波的相位会发生一个突变。垂直入射或者掠入射会导致$r$近似有一个$\pi$的辐角，这就是所谓的半波损失。
+
+当入射和出射介质都是各向同性的透明介质时，透射波的相位和和入射波的相位在边界上完全一样，因此习惯上将透射波当成入射波的延续，因为可以将透射波和入射波的相位拼接成一个没有突变的单值的标量场。
+
+\subsubsection{几何光学与光线}
+
+考虑介质中$\epsilon, \mu$变化得不是非常剧烈的情况，此时\eqref{eq:halmholtz-eq}成立。
+需注意此处的$c=c(\vb*{r})$。
+取形如$\vb*{E} = \vb*{A}(\vb*{r}) \exp (\ii \omega L(\vb*{r}) / c_0)$的解形式，其中$L$为实函数；我们将尽可能多的相位变化归入$\exp(\ii \omega L / c_0)$中，即认为$\vb*{A}(\vb*{r})$基本上是实的。
+容易看出改变$L$的形式可以使用上面的解的形式叠加出任何函数。
+代入\eqref{eq:halmholtz-eq}中，得到
+\begin{equation}
+    \ee^{\ii \frac{\omega}{c_0} L} \laplacian \vb*{A} 
+    + 2 \frac{\ii \omega}{c_0} \ee^{\ii \frac{\omega}{c_0} L} \grad{\vb*{A}} \cdot \grad{L} 
+    + \frac{\ii \omega}{c_0} \ee^{\ii \frac{\omega}{c_0} L} \vb*{A} 
+    - \frac{\omega^2}{c_0^2} \ee^{\ii \frac{\omega}{c_0} L} \vb*{A} (\grad{L})^2 
+    + \frac{\omega^2}{c^2} \ee^{\ii \frac{\omega}{c_0} L} \vb*{A} = 0.
+    \label{eq:expanded-wave-eq}
+\end{equation}
+当$\omega$相对于我们讨论的空间尺度非常大时（或者说，波长充分短，直观地看就是不容易发生衍射等现象），就有
+\begin{equation}
+    (\grad{L})^2 = n^2 = \frac{c_0^2}{c^2}
+    \label{eq:optical-distance}
+\end{equation}
+或者如果$n>0$，可以写成
+\[
+    \abs{\grad{L}} = n
+\]
+称其中的$n$为\concept{折射率}。\eqref{eq:light-ray}称为\concept{程函方程}，$L$就是光程。
+
+实际上，在已知$1/k \ll r$的时候，可以直接使用$\omega\grad{L}/c_0$在关于平面波的方程中代替$k$，因为此时$L$的变化是场强变化的主要因素。也就是说，我们把形如$\vb*{E}_0 \ee^{\ii L(r)}$的波在一个小区域内近似看成了平面波。
+
+从这个方程我们还可以得到一个结论。注意到
+\[
+    \dd{\phi} = \dd{\vb*{r}} \cdot \vb*{\phi} = \frac{\omega}{c_0} \dd{\vb*{r}} \cdot \grad{L},
+\]
+因此如果取$\dd{\vb*{r}}$的方向和$\grad{L}$一致，方程右边就变成$\omega / c = k$，因此从一个相位为$\phi$的等相位面出发做位移
+\begin{equation}
+    \dd{\vb*{r}} = \frac{\dd{\phi}}{k}\vu*{k}
+    \label{eq:phrase-movement}
+\end{equation}
+就得到相位为$\phi + \dd{\phi}$的等相位面。
+
+从$\exp (\ii \omega L(\vb*{r}) / c_0)$的形式可以看出波动的前进方向正是沿着$\grad{L}$，也就是沿着$\vb*{k}$。
+因此我们尝试计算$\grad{L}$的向量线，它指明了光大致的传播路径。设$\vb*{r}(s)$（$s$是弧长）为一条这样路径（称为\concept{光线}）。
+考虑到它沿着$\grad{L}$，且
+\[
+    \abs{\dv{\vb*{r}}{s}} = 1
+\]，
+有
+\[
+    \dv{\vb*{r}}{s} = \frac{\grad{L}}{\abs{\grad{L}}} = \frac{\grad{L}}{n},
+\]
+从而
+\[
+    \begin{aligned}
+        \dv{s}\left(n \dv{\vb*{r}}{s}\right) &= \dv{\grad{L}}{s} \\
+        &= \frac{\grad{L}(\vb*{r} + \dd \vb*{r}) - \grad{L}}{\dd s} \\
+        &= \frac{\grad{(\dd \vb*{r} \cdot \grad{L})}}{\dd s} \\
+        &= \grad{\left( \dv{\vb*{r}}{s} \cdot n \dv{\vb*{r}}{s} \right)}
+    \end{aligned}
+\]
+于是得到\concept{光线方程}
+\begin{equation}
+    \dv{s} \left( n \dv{\vb*{r}}{s} \right) = \grad{n}
+    \label{eq:light-ray}
+\end{equation}
+
+在求出光线方程之后，可以写出各点光程和相位。注意到
+\[
+    \abs{\vb*{k}} = \frac{\omega}{c_0} \abs{\grad{L}} = \frac{\omega}{c_0} n = \frac{\omega}{c}
+\]
+也就是说，即使波不是平面波，其波矢大小仍然和相同的介质中的平面波一样。而$\vb*{k}$的方向和$\dd{\vb*{r}} / \dd s$一致，因此我们发现
+\begin{equation}
+    \begin{aligned}
+        \Delta \phi = \int \vb*{k} \cdot \dd{\vb*{r}} = \int_\text{light ray} k \dd{s}, \\
+        \Delta L = \int_\text{light ray} n \dd s
+    \end{aligned}
+    \label{eq:light-ray-and-phrase}
+\end{equation}
+
+以上都是在讨论介质内部，现在考虑边界。由于光线的定义依赖于光程——从而依赖于相位——实际上也要分别给入射波、反射波、透射波定义一套光线。但是既然入射波和透射波共享相位，实际上只需要求出反射波的光线和入射波-透射波的光线即可。
+反射波的光线的初始条件可以使用反射定律
+\[
+    \theta_i = \theta_t,
+\]
+透射波的光线的初始条件可以使用折射定律
+\[
+    \frac{\sin \theta_i}{\sin \theta_t} = \frac{n_t}{n_i}.
+\]
+描述。
+
+\subsubsection{费马原理，以及它的量子化和波动光学}
+
+一个有趣的事实是，\eqref{eq:light-ray}正是变分原理
+\begin{equation}
+    \var \int n \dd s = 0
+    \label{eq:fermet-principle}
+\end{equation}
+的解。这个变分原理称为\concept{费马原理}，它表明，光线在折射率变化不太大的区域内总是让光程取极值——通常是最小值，但也有例外。
+从\eqref{eq:fermet-principle}求微分方程时不建议使用弧长$s$为参数，因为做变分时微分测度会发生变化。比较好的方法是采用时间为参数，即根据
+\[
+    \var \int \dd{t} n \sqrt{\dot{\vb*{r}}^2} = 0,
+\]
+写出欧拉-拉格朗日方程
+\[
+    \dv{t}\left( n \frac{\dot{\vb*{r}}}{\abs*{\dot{\vb*{r}}}} \right) = \abs*{\dot{\vb*{r}}} \grad{n},
+\]
+注意到
+\[
+    \dd{s} = \abs*{\dot{\vb*{r}}} \dd{t},
+\]
+就推导出了\eqref{eq:light-ray}。
+
+实际上，计算可以发现，正是将费马原理\eqref{eq:fermet-principle}应用在边界上得到的结果。
+这就意味着空间中所有的光线都可以使用费马原理描述。
+
+\eqref{eq:fermet-principle}的这种广泛适用性显得很有意思。
+\eqref{eq:fermet-principle}看起来似乎是一个“最小作用量”式的理论，并且能够导出几何光学，那么我们无疑要问，将它路径积分量子化之后能够得到什么。
+我们自始至终没有做光场的量子化，因此肯定是拿不到“光是一份一份的”之类的物理的，自然也拿不到纠缠光之类的需要直积结构才能有的物理；然而，本文也不关心这些现象，因为我们一直在解麦克斯韦方程，相当于是在处理“单光子波函数”。
+\eqref{eq:fermet-principle}是几何光学的代表，几何光学可以看成光子作为粒子的经典理论。因此我们推测\eqref{eq:fermet-principle}做量子化之后得到波动光学。
+如果确实如此，那么这就解释了为什么\eqref{eq:fermet-principle}是如此普适，因为波动光学直接能够推导出\eqref{eq:fermet-principle}，从而，的确，任何几何光学适用的地方\eqref{eq:fermet-principle}也适用。
+
+不过，在开始尝试对\eqref{eq:fermet-principle}做路径积分量子化之前，需要先弄清楚我们是在做什么。
+本文在做的实际上就是一件事：求解非时变的、无源（从而横场条件成立）的电动力学系统中的电磁波模式。
+因此，所有的时间演化都是时谐的，从而都是平凡的；在实际的计算中从来没有出现真正的时间演化，也没有时间变量。
+的确，$\grad{L}$大体上指出了光的前进方向，如果我们制备一个波包，其运动方向的确会由$\grad{L}$指导，因此似乎可以说几何光学可以看成光子作为粒子的经典理论。
+但是，几何光学在处理的实际上仍然是电磁场的频率本征态，因此其中仍然没有“时间”的概念；我们是利用几何光学求解出光线轨迹之后，才手动再次引入时间的概念，让光的波包动起来的。
+这里的情况和拉格朗日力学与莫陪都原理之间的关系很像：前者给出完整的时间演化，而后者只是给出轨迹。
+几何光学更像后者而不是前者。实际上，根据简约作用量的定义，我们能够直接得到费马原理：
+\begin{equation}
+    S = \int \vb*{k} \cdot \dd{\vb*{r}} = \frac{\omega}{c} \int n \dd{s}.
+    \label{eq:abbr-action-ray}
+\end{equation}
+上式中出现了$\omega$，这在拉格朗日力学中是匪夷所思的。
+莫陪都原理没有什么用，因为它不能给出有意义的量子理论。直接将\eqref{eq:fermet-principle}当作作用量而定义路径积分是毫无意义的。
+
+不过我们其实还有另一个思路。\eqref{eq:fermet-principle}在某种意义上\emph{可以}当成拉格朗日动力学中的作用量，只要我们把$(x, y, z)$中的其中一个坐标——通常是$z$——当成“时间”即可。
+此时按照\eqref{eq:abbr-action-ray}，设
+\begin{equation}
+    L = \sqrt{1 + \left(\pdv{x}{z}\right)^2 + \left(\pdv{y}{z}\right)^2},
+\end{equation}
+做勒让德变换，得到光线的经典哈密顿动力学：正则动量为
+\begin{equation}
+    p_x = \pdv{L}{x'} = \frac{n x'}{\sqrt{1 + x'^2 + y'^2}}, \quad p_y = \pdv{L}{y'} = \frac{n y'}{\sqrt{1 + x'^2 + y'^2}},
+\end{equation}
+哈密顿量为
+\begin{equation}
+    H = x' p_x + y' p_y - L = - \sqrt{n^2 - p_x^2 - p_y^2} ,
+\end{equation}
+这里我们已经用$f'$表示$\partial_z f$了。
+再次提醒，这个哈密顿动力学并没有直接描述波包的运动情况。我们自始至终都是在分析频域的麦克斯韦方程，或者说在分析麦克斯韦方程的本征态。这段分析结束\emph{之后}我们才根据计算结果去讨论波包的动力学；波包的动力学中的时间不会出现在任何实际的光学计算中。
+实际上，这个哈密顿动力学的时空是$2+1$维的。
+然后我们做正则量子化。我们还需要指定一个和$\hbar$地位相同的量。
+在波长很长，光的波动性很强时几何光学失效，正如$\hbar$的大小相对于系统作用量很大时经典力学失效一样，因此我们尝试取
+\begin{equation}
+    \hbar \longrightarrow \frac{\lambda}{2 \pi} = \frac{c}{\omega},
+\end{equation}
+则在坐标表象下（由于是$2+1$维时空，只有$x, y$两个坐标）有
+\begin{equation}
+    p_x \longrightarrow - \ii \frac{c}{\omega} \pdv{x}, \quad p_y \longrightarrow - \ii \frac{c}{\omega} \pdv{y},
+\end{equation}
+就得到坐标表象下的演化方程
+\[
+    \ii \frac{c}{\omega} \pdv{z} \psi = - \sqrt{n^2 + \frac{c^2}{\omega^2} \pdv[2]{x} + \frac{c^2}{\omega^2} \pdv[2]{y}},
+\]
+平方就得到正确的亥姆霍兹方程
+\[
+    \left( \pdv[2]{x} + \pdv[2]{y} + \pdv[2]{z} + \frac{n^2 \omega^2}{c^2} \right) \psi = 0.
+\]
+因此，的确，把$z$当成$t$，把$c/\omega$当成$\hbar$而做正则量子化，确实能够得到波动光学，不过这里的波动光学是亥姆霍兹方程，其中没有真正的时间演化，$\omega$已经确定，时间由$z$充当的，且“波函数”$\psi$实际上是我们关系的那个偏振方向上的电场分量$u$。
+
+相应的，做路径积分量子化，则传播子由
+\begin{equation}
+    \mel{\vb*{r}(z_2)}{S}{\vb*{r}(z_1)} = \frac{1}{Z} \int \mathcal{D} {\vb*{r}(z)} \exp(\ii \frac{\omega}{c} \int_1^2 n \dd{s})
+\end{equation}
+给出。或者，用在波动力学中更加常见的写法，我们有
+\begin{equation}
+    u(\vb*{r}) = \int \dd{S'} u(\vb*{r}') \alpha(\vb*{r}, \vb*{r}') \int \mathcal{D} {\vb*{r}(t)} \exp(\ii \frac{\omega}{c} \int_{\vb*{r}'}^{\vb*{r}} n \dd{s})
+    \label{eq:field-propagating}
+\end{equation}
+上式中出现的$t$是一个任意的参数，并非实际时间（虽然完全可以将它取为光运动的时间，但是这个时间的地位和拉格朗日力学或是哈密顿力学中的时间是不同的）；$\vb*{r}$和$\vb*{r}'$是曲线$\vb*{r}(t)$的末端和初端，$\vb*{r}'$遍及所有按照光线指向在$\vb*{r}$“之前”的。
+\eqref{eq:field-propagating}给人强烈的感觉，似乎振幅沿着光线从前往后传播一样，不过其中还是没有显式出现时间：我们还是只是在分析亥姆霍兹方程的本征态而已。
+一些书（如费曼的科普书QED: The Strange Theory of Light and Matter）会说“随着时间演进，光的相位如何如何变化”，但是这里的“时间演进”实际上只是用时间充当了$t$而已。
+$\alpha$因子给出适当的归一化。我们在此不计算其具体形式，\cite{Gitin_2013}详细计算了它。
+
+虽然我们前面将“光线”作为波阵面的切矢量的矢量线，但前面的推导告诉我们，光线实际上是作为2+1维“量子理论”的亥姆霍兹方程对应的“经典理论”，那么它可以看成“二维空间上的波包”随着“时间”（也就是$z$坐标）运动的轨迹。
+稍微想一想就会发现这说的就是光束：“二维空间上的波包”就是光束的横截面。
+换句话说，几何光学实际上不仅给出了介质中平面波或是类似于平面波的波的波阵面的形状，还给出了介质中的稳定光束的轨迹。
+
+到目前为止我们都是在分析亥姆霍兹方程的解，即分析光场的稳定模式。使用几何光学计算光场模式和单粒子量子力学中的WKB近似非常类似。
+但是实际上，得到了亥姆霍兹方程的解也就得到了时域波动方程的解，并且一些物理图像可以直接使用：一个亥姆霍兹方程乘上一个平凡的时间演化因子$\ee^{-\ii \omega t}$之后可以当成一个波动方程的解，而其中的光束可以当成一系列波包的线性叠加；由于目前我们在讨论自由理论，这些波包彼此没有相互作用，因此每个波包的运动轨迹一定是在光束内部的，从而，单独一个波包的运行轨迹也一定是沿着光线的。（但是要注意，光线是可以不止一条的，例如如果介质中折射率在变化，那么会有反射）
+
+色散会导致波包展宽等，这些又是几何光学无法描述的现象了。
+
+\subsubsection{不求解麦克斯韦方程的波动光学}
+
+至此我们已经获得了一套在几何尺度远大于波长的情况下不求解麦克斯韦方程而能够获得相当精确的结果的方法。总结如下：
+\begin{enumerate}
+    \item 将电场分解成三个方向上的线偏光；
+    \item 找到波源，在波源外找到一个等相位面，通常可以使用对称性分析或者渐进性质确定，例如很远处的星光可以看成是平面波，柱状灯管外的光看成柱面波，等等；如果波源形状复杂，也可以将它分解成许多简单的小波源，然后观察其中一个产生的光的等相位面；
+    \item 计算这个等相位面上各点光强；在光源对称性好的时候可以直接通过能量守恒和对称性算出来；
+    \item 计算出空间中各点的相位，这可以通过下面几种方式完成：
+    \begin{itemize}
+        \item 求解程函方程\eqref{eq:light-ray}，然后计算积分\eqref{eq:light-ray-and-phrase}；
+        \item 通过费马原理\eqref{eq:fermet-principle}求出光线然后计算积分\eqref{eq:light-ray-and-phrase}；
+        \item 首先求出一族波阵面或者说等相位面，按照\eqref{eq:phrase-movement}获得一系列相位标定好的等相位面，然后据此在空间中各点作出$\vb*{k}$，画出光线；
+    \end{itemize}
+    这一步说明了为什么即使是在求解波动光学的问题时，仍然可以使用几何光学中“光路”、“光线”的概念%
+    \footnote{有人可能会说几何光学解释不了小孔衍射之类的现象；
+    实际上，如果将障碍物中的折射率视为无限大，那么通过费马原理可以很明确地导出“光直线射向小孔，拐了个弯射向目标点”，同样可以导出衍射。
+    几何光学解释不了衍射指的是不能明确地写出不同位置的场强，从而不能写出衍射条带，但这并没有什么奇怪的，因为几何光学根本就不涉及场强！}
+    ；
+    \item 在划分好等相位面之后使用\eqref{eq:kirchhoff-formula}式求出各点场强
+    （注意这样计算出来的就是带有相位信息的$\vb*{E}$，而不是\eqref{eq:generalized-plain-wave}中的$\vb*{E}_0$）；
+    \item 将所有分解之后的场叠加回去。
+\end{enumerate}
+
+还留有一个尚未解决的问题：遮挡物。所谓遮挡物就是完全吸收射到其上的光，不留下
+TODO：例如金属表面/粗糙表面
+
+\subsection{各向异性理论}
+
+各向异性介质中的光学完全由\eqref{eq:anisotropy}确定。但是这个方程过于复杂了，很难直接分析，而且我们通常更愿意处理标量理论。
+
+同样还是考虑形如\eqref{eq:generalized-plain-wave}的解。
+由于\ref{sec:phrase-and-l}节实际上并不依赖经典的标量波动方程，在各向异性理论中它对形如\eqref{eq:generalized-plain-wave}的解还是适用的。
+
+\subsubsection{单光轴晶体的标量理论}
+
+首先从比较简单的单光轴晶体出发。
+由于同一个$\vu*{k}$对应着两个不同振动方向的平面波，它当然也对应两个不同振动方向的\eqref{eq:generalized-plain-wave}形式的波。
+我们尝试分析每一个振动方向上的波。由于振动方向是已经确定的，可以将矢量理论化归为标量理论。
+也就是说我们有
+\[
+    \vb*{E} = E \vu*{E} = E_0(\vb*{r}) \ee^{\ii \omega L(\vb*{r}) / c_0} \vu*{E}
+\]
+为了简明起见我们尽可能尝试消去$\grad{L}$。
+
+首先考虑o光。在\eqref{eq:o-light}中做替换\eqref{eq:generalized-k}，就得到
+\[
+    \vu*{E} \cdot \grad{L} = 0, \quad \vu*{E} \cdot \vb*{e}_z = 0, \quad \abs{\grad{L}} = n_0,
+\]
+另一方面，各向异性波动方程\eqref{eq:anisotropy}在主轴系下为
+\[
+    \grad{(\vu*{E} \cdot \grad{E})} - \laplacian E \vu*{E} = \omega^2 E \mu \vb*{\epsilon} \cdot \vu*{E}
+\]
+考虑到\eqref{eq:one-axis-matrix}，我们有
+\[
+    \mu \vb*{\epsilon} \cdot \vu*{E} = \frac{1}{c_0} n_o^2 \vu*{E},
+\]
+而
+\[
+    \grad{E} = \frac{\ii \omega}{c_0} E \grad{L}
+\]
+综合以上各式，得到
+\begin{equation}
+    \laplacian E + \frac{\omega^2 n_o^2}{c_0^2} E = 0.
+    \label{eq:o-light-wave-eq}
+\end{equation}
+因此o光的行为就好像一个以$n_o$为折射率的介质中的波。因此\ref{sec:isotropic-scalar}节中的所有结论都适用于o光。
+相应的，我们知道o光的波阵面为球形，其方程就是\eqref{eq:o-light}中做变量代换\eqref{eq:generalized-k}之后得到的
+\begin{equation}
+    \abs{\grad{L}} = n_0.
+\end{equation}
+
+下面再看e光。实际上由于我们有\eqref{eq:e-light}，可以直接写出e光的波阵面方程为
+\begin{equation}
+    \frac{1}{n_e^2} \left( \pdv{L}{x} \right)^2 + \frac{1}{n_e^2} \left( \pdv{L}{y} \right)^2 + \frac{1}{n_o^2} \left( \pdv{L}{z} \right)^2 = 1
+\end{equation}
+也就是说e光的波阵面是一个椭球（当然，它的退化情况就是普通的平面波，正如\eqref{eq:e-light}所示）。
+
+e光中能量传播的速度满足
+\begin{equation}
+    \frac{v_x^2}{v_e^2} + \frac{v_y^2}{v_e^2} + \frac{v_z^2}{v_o^2} = 1
+\end{equation}
+
+TODO：e光的惠更斯原理：椭球面的切点对应着$\vb*{S}$，从而光线，的方向。
+
 \section{光强，成像和相干性}
 
 \subsection{几何光学中的光强传输}
@@ -41,9 +463,5 @@
 
 由于几何光学成立时光线实际上就是光功率的流线，如果在一个闭合表面上光功率通量正比于光线条数，那么做光线追踪后会发现任何一个面上的光通量也都正比于这个面上的光线条数。
 
-何时衍射不明显：波长非常短的时候肯定不明显；相干性差的时候也是；这和“量子效应什么时候不明显”是类似的：
-
-\section{光学谐振腔}
-
-\subsection{立方体大盒子}
+何时衍射不明显：波长非常短的时候肯定不明显；相干性差的时候也是；这和“量子效应什么时候不明显”是类似的
 
