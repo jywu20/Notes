@@ -713,15 +713,106 @@ ${S}^+_\text{d}$和${S}^-_\text{d}$项分别表示$z$方向上的自旋角动量
 
 \subsection{Hubbard模型}
 
+\subsubsection{哈密顿量定义}
+
 我们注意到Hubbard相互作用是on-site repulsion，从而，如下\concept{Hubbard模型}
 \begin{equation}
     H = - t \sum_{\pair{\vb*{i}, \vb*{j}}, \alpha} c^\dagger_{\vb*{i} \alpha} c_{\vb*{j} \alpha} - \mu N + U \sum_{\vb*{i}} n_{\vb*{i} \uparrow} n_{\vb*{i} \downarrow}
 \end{equation}
 很可能是Mott绝缘体的一个例子。
 
+\subsection{Hubbard模型的行列式量子蒙特卡洛（DQMC）模拟}
 
+\input{fermion-dqmc.tex}
 
-\subsection{海森堡模型和t-J模型}
+\subsection{Hubbard模型的严格对角化}
+
+严格对角化是少数能够非常精确地处理Hubbard模型在任意的$U$和电子数下行为的数值方法。
+\cite{jafari2008introduction}介绍了Hubbard模型的严格对角化。
+Hubbard模型保持电子数目守恒，因此我们只需要分析电子数目给定的系统即可——这也是严格对角化加速运行的常用手段，即尽可能利用守恒量来减小需要对角化的矩阵的大小。
+此外，总自旋
+\begin{equation}
+    S_z = \sum_{\vb*{i}} \frac{1}{2} (n_{\vb*{i} \uparrow} - n_{\vb*{i} \downarrow})
+\end{equation}
+同样是一个守恒量——相互作用项$n_{\vb*{i} \uparrow} n_{\vb*{i} \downarrow}$不改变格点$\vb*{i}$上的电子自旋，而跃迁项虽然能够让携带某种自旋的电子从一个地方移动到另一个地方，但是不翻转自旋。
+
+\subsubsection{希尔伯特空间的建立}
+
+下面我们尝试构建粒子数、总自旋均给定的希尔伯特空间上的一组基。
+为了避免重复和遗漏，我们采用坐标和$S^z$标记的粒子数表象，即将所有的格点排成一排：
+\[
+    \bmqty{\vb*{i}_1 & \vb*{i}_2 & \cdots & \vb*{i}_N},
+\]
+然后将以上序列复制一遍以引入自旋：
+\[
+    \bmqty{\vb*{i}_1 & \vb*{i}_2 & \cdots & \vb*{i}_N}_\uparrow \ \bmqty{\vb*{i}_1 & \vb*{i}_2 & \cdots & \vb*{i}_N}_\downarrow,
+\]
+最后，在每个格点-自旋位置上放置或为0或为1的粒子数。
+这样就得到了粒子数表象中的全部系统构型，从而得到了一组基底。
+由于费米子产生算符反对易，需要指定这些粒子被加入的顺序。我们采纳如下顺序：
+\[
+    c^\dagger_{\vb*{i}_1 \uparrow} c^\dagger_{\vb*{i}_{2} \uparrow} \cdots c^\dagger_{\vb*{i}_N \uparrow} c^\dagger_{\vb*{i}_1 \downarrow} c^\dagger_{\vb*{i}_{2} \downarrow} \cdots c^\dagger_{\vb*{i}_N \downarrow} \ket{0},
+\]
+即将同种自旋的产生算符放在一起，并且让自旋向下的产生算符出现在右边，自旋向上的产生算符出现在左边，格点编号从左往右依次增大。
+例如，我们有
+\begin{equation}
+    \ket{\bmqty{1 & 1 & 0 & \cdots & 0}_\uparrow \ \bmqty{0 & 1 & 0 & \cdots & 0 & 1 & 1}_\downarrow} = c^\dagger_{\vb*{i}_1 \uparrow} c^\dagger_{\vb*{i}_2 \uparrow} c^\dagger_{\vb*{i}_2 \downarrow} c^\dagger_{\vb*{i}_{N-1} \downarrow} c^\dagger_{\vb*{i}_N \downarrow} \ket{0}.
+\end{equation}
+
+我们还需要将这些态编号，以便于构建Hubbard模型有关的算符的矩阵表示。
+通常使用的方法就是将态
+\[
+    \bmqty{\vb*{i}_1 & \vb*{i}_2 & \cdots & \vb*{i}_N}
+\]
+的编号取为$\vb*{i}_1, \vb*{i}_2, \ldots, \vb*{i}_N$的希尔伯特空间的基的编号的Kronecker积。
+我们将$n=0$编号为0而将$n=1$编号为1，那么
+\[
+    \bmqty{n_{\vb*{i}_1} \cdots n_{\vb*{i}_N}}
+\]
+应当编号为
+\[
+    n_{\vb*{i}_N} + 2 n_{\vb*{i}_{N-1}} + \cdots + 2^{N-1} n_{\vb*{i}_1},
+\]
+实际上就是将数字串$n_{\vb*{i}_1} n_{\vb*{i}_2} \cdots n_{\vb*{i}_N}$当成二进制得到的数字。
+我们记一个坐标和$S^z$标记的粒子数表象下的基矢量的自旋朝上的部分按照这种方式得到的编号为$I_\uparrow$，自旋朝下的部分按照这种方式得到的编号为$I_\downarrow$，则按照同样的思路，整个态应该编号为
+\begin{equation}
+    I = 2^N I_\uparrow + I_\downarrow.
+\end{equation}
+我们记编号为$I$的态为$\ket{\phi_I}$。通过模算数可以立刻从$I$中读取出$I_\uparrow$和$I_\downarrow$，而通过统计$I_\uparrow$和$I_\downarrow$的二进制表示中的1的个数（有现成的位运算方法可以快速做到这件事）即可得到$n_\uparrow$和$n_\downarrow$。
+
+\subsubsection{构建哈密顿量}
+
+哈密顿量中的on-site repulsion项是很容易构造的：它在$\{\ket{\phi_I}\}$表象下是对角的，其矩阵元可以通过计算矢量点乘
+\[
+    \bmqty{n_{\vb*{i}_1 \uparrow} & \cdots & n_{\vb*{i}_N \uparrow}} \bmqty{n_{\vb*{i}_1 \downarrow} \\ \vdots \\ n_{\vb*{i}_N \downarrow}}
+\]
+得到。同样，有高效的二进制位运算方法能够做到这件事。
+
+下面需要计算出算符$c_{\vb*{i} \sigma}^\dagger c_{\vb*{j} \sigma}$在$\{\ket{\phi_I}\}$下的矩阵元以构建哈密顿量中的跃迁项。
+用$\vb*{j}_1$我们有
+\[
+    c_{\vb*{i} \uparrow}^\dagger c_{\vb*{j} \uparrow} \ket{\phi_I} = c_{\vb*{i} \uparrow}^\dagger c_{\vb*{j} \uparrow} (c^\dagger_{\vb*{i}_1 \uparrow} \cdots c^\dagger_{\vb*{i}_N \uparrow}) (c^\dagger_{\vb*{i}_1 \downarrow} \cdots c^\dagger_{\vb*{i}_N \downarrow}) \ket{0},
+\]
+显然计算结果和自旋向下的部分毫无关系；$c_{\vb*{j} \uparrow}$作用在右边的态上的结果无非这么两种：
+\begin{itemize}
+    \item 如果原来$\vb*{j}$位置上有自旋向上的电子，那么将这个电子移除；此时$c_{\vb*{j} \uparrow}$需要和位置$\vb*{j}$之前的所有产生算符交换，从而产生相应的因子；
+    \item 如果原来$\vb*{j}$位置上没有自旋向上的电子，则得到$0$。
+\end{itemize}
+$c^\dagger_{\vb*{i} \uparrow}$的作用是类似的。于是我们发现，$c^\dagger_{\vb*{i} \uparrow} c_{\vb*{j} \uparrow}$作用在$\ket{\phi_I}$上的结果是：
+\begin{itemize}
+    \item 如果$\vb*{j}$上没有自旋向上的电子，给出0；
+    \item 如果$\vb*{i}$上已有自旋向上的电子，给出0；
+    \item 否则，设格点序列$\bmqty{\vb*{i}_1 & \vb*{i}_2 & \cdots & \vb*{i}_N}$中$\vb*{i}$格点和$\vb*{j}$格点之间有$n_{\vb*{i} \vb*{j} \uparrow}$个自旋向上的电子，则
+    \begin{equation}
+        c^\dagger_{\vb*{i} \uparrow} c_{\vb*{j} \uparrow} \ket{\phi_I} = (-1)^{n_{\vb*{i} \vb*{j} \uparrow}} \ket{\phi_{I'}},
+    \end{equation}
+    其中$\ket{\phi_{I'}}$为将$\ket{\phi_I}$中格点$\vb*{j}$上自旋向上的电子移动到格点$\vb*{i}$上后得到的态。
+\end{itemize}
+$c^\dagger_{\vb*{i} \downarrow} c_{\vb*{j} \downarrow}$的作用是完全一样的，只需要将$\uparrow$换成$\downarrow$即可。。
+
+\subsubsection{利用空间对称性寻找哈密顿量中的不变子空间}
+
+\subsection{演生海森堡模型和t-J模型}
 
 我们尚没有讨论Hubbard模型的Mott绝缘体基态附近的理论是什么样的。基本的自由度肯定不是能带导体中的载流子——实际上我们将看到，半满Hubbard模型（即$\mu=0$的情况）的Mott态附近的模型是海森堡模型，稍微偏离半满的情况对应t-J模型。
 
