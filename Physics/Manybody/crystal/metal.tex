@@ -548,6 +548,9 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
     \end{equation}
     可以这么考虑这个表达式的含义：如果以费米面上方的粒子和费米面下方的空穴为表象，则粒子能谱为$\xi_{\vb*{k}}$，空穴能谱为$- \xi_{\vb*{k}}$。
     对粒子，格林函数就是\eqref{eq:filled-ground-state-electron-green-function}，对空穴，空穴的格林函数是$1 / (\ii \omega_n - (- \xi_{\vb*{k}}))$，现在切换回费米面上下的模式都是粒子的表象，则$\omega_n$作为四维动量的一部分变号，由于粒子、空穴算符都是费米子算符，整个格林函数也变号，则得到$- 1 / (- \ii \omega_n - (- \xi_{\vb*{k}}))$，正好就是\eqref{eq:filled-ground-state-electron-green-function}。
+
+    格林函数实际上就是一个概率系统（无论是经典概率还是量子的密度矩阵）中重要的量的各阶矩。实际上完全可以通过格林函数来完全描述一个系统，而不需要知道哈密顿量或者拉格朗日量。
+    这就好比观察一个赌场：要知道赌场中最后哪些人能够赚钱，你只需要让一个人带着一大笔钱去赌博，看最后大家手头的钱怎么变化就可以了；赌场规则的文本会决定大家手头的钱怎么变化，不过要直观地看到赌场的“行为”，盯着规则看可能并没有什么帮助。
 \end{back}
 
 \subsubsection{密度-密度格林函数}\label{sec:density-density-green-function}
@@ -854,6 +857,10 @@ $xy$平面上没有良定义的Bloch波矢，但是还是可以根据二维情�
     形式上看，这相当于将相互作用看成了系统中其它粒子形成的大小为$\expval{c^\dagger c}$的一个外场，所以也可以叫做平均场近似。
 
     以上介绍的是需要求解自洽方程的平均场近似，当然作为最粗糙的估计，这个自洽方程的右边可以代入自由情况下我们要计算的格林函数，这就是非自洽的平均场方法，通常效果不好。
+
+    平均场近似可以用于分析各种各样的问题。它可以用于处理某种粒子的相互作用修饰（正如我们马上要做的那样），可以用于分析对称性自发破缺（见\autoref{back:mean-field-method-symmetry-broken}），还可以用于分析部分子构造产生的准粒子的动力学。
+    所有这些应用中“平均场”一词都指的是同一个意思：从费曼图的角度，重求和一类图形而丢弃其它图形，从哈密顿量的角度，将一个相互作用哈密顿量中的几个算符的乘积替换为某种期望值（“平均场”）。
+    平均场近似总是低估系统的量子涨落，但是如果做得适当，仍然是一种重要的工具。
 \end{back}
 
 计算单电子格林函数实际上就是要计算自能。本节考虑仅仅保留一阶自能图的近似，这个近似通常称为\concept{Hartree-Fock近似}。
@@ -880,14 +887,14 @@ Hartree-Fock近似为数值计算系统中的电子型激发。实际上这种�
     \begin{aligned}
         \epsilon_{n \vb*{k}} \varphi_{n \vb*{k}}(\vb*{r} \sigma) &= - \frac{\laplacian}{2m} \varphi_{n \vb*{k}}(\vb*{r} \sigma) + V_\text{ion}(\vb*{r}) \varphi_{n \vb*{k}}(\vb*{r} \sigma) \\
         &\quad +  \sum_{n', \vb*{k}'} \sum_{\sigma''} \int \dd[3]{\vb*{r}''} \theta(\mu - \epsilon_{n' \vb*{k}'}) \abs*{\varphi_{n' \vb*{k}'}(\vb*{r}'' \sigma'')}^2 \frac{e^2}{\abs*{\vb*{r} - \vb*{r}''}} \varphi_{n \vb*{k}}(\vb*{r} \sigma) \\
-        &\quad - \int \dd[3]{\vb*{r}'} \sum_{n', \vb*{k}'} \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \theta(\mu - \epsilon_{n' \vb*{k}'}) \varphi_{n' \vb*{k}'}(\vb*{r}' \sigma) \varphi^*_{n' \vb*{k}'}(\vb*{r} \sigma) \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \varphi_{n \vb*{k}}(\vb*{r}' \sigma) .
+        &\quad - \int \dd[3]{\vb*{r}'} \sum_{n', \vb*{k}'} \theta(\mu - \epsilon_{n' \vb*{k}'}) \varphi_{n' \vb*{k}'}(\vb*{r} \sigma) \varphi^*_{n' \vb*{k}'}(\vb*{r}' \sigma) \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \varphi_{n \vb*{k}}(\vb*{r}' \sigma) .
     \end{aligned}
     \label{eq:hartree-fock-scf-with-spin}
 \end{equation}
 求解出上式（上式，或者其离散化版本，称为\concept{Roothaan方程}）就求解出了自洽Hartree-Fock近似下的费米型激发的能谱。
 \eqref{eq:hartree-fock-scf-with-spin}的推导是非常一般的，因此可以将$V_\text{ion}(\vb*{r})$用赝势代替，或是引入自旋-轨道耦合等等。
 方程右边的第三、四项来自电子-电子库伦相互作用，第三项就是将电子数密度当成一个外场写出的库伦势，称为\concept{经典库伦能}或者\concept{Hartree项}，而第四项没有特别明确的意义，通常称为\concept{交换能}或者\concept{Fock项}，我们会发现只有自旋相同的电子之间才有交换能，而且交换能是负的，即电子自旋平行会让系统能量下降。
-Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而后者来自。% TODO：这个叫做什么图啊
+可以看到Hartree项和Fock项显然分别来自两种自能图，前者有时也称为\concept{蝌蚪图}。
 
 在确定没有自旋-轨道耦合时，只需要求解轨道部分的波函数$\varphi_{n \vb*{k}}(\vb*{r})$，且状态$\ket{n \vb*{k} \uparrow}$和$\ket{n \vb*{k} \downarrow}$要么都有电子，要么都没有电子，从而\eqref{eq:hartree-fock-scf-with-spin}化简为
 \begin{equation}
@@ -908,7 +915,7 @@ Hartree项和Fock项显然分别来自两种自能图，前者来自蝌蚪图而
 “电子关联”的概念其实带有一些模糊性。如果我们将电子关联视为“一个电子的引入会影响其它电子”，那么Hartree-Fock近似当然也考虑了一些电子关联效应：例如，自能修正就和所有电子均有关系，因为它依赖于$k_\text{F}$（见\eqref{eq:example-electron-hf-self-energy}）。
 然而，虽然上述Hartree-Fock考虑到了一定“电子关联”，但由于Hartree-Fock近似下，基态波函数仍然是近独立电子气的基态波函数的形式（虽然其中的一些\emph{参数}和全体电子均有关），它无法捕捉诸如Wick定理失效这样超越近独立电子气图景的现象。
 Hartree-Fock近似中，所有物理量仍然可以使用单电子格林函数计算，虽然单电子格林函数依赖于全体电子，然而实际的库伦排斥电子气中则不是这样。
-从这个意义上讲，实际的库伦排斥电子气中的电子关联不仅仅包括Hartree-Fock近似能够覆盖的“单电子状态取决于其它电子”，也包括“并非所有物理量都能够使用单电子格林函数计算”。
+从这个意义上讲，实际的库伦排斥电子气中的电子关联不仅仅包括Hartree-Fock近似能够覆盖的“单电子状态取决于其它电子”，也包括“并非所有物理量都能够使用单电子格林函数计算”，或者说“需要高阶矩来完整地描述系统的概率分布”。
 “关联能”一次中的“关联”指的是后者：在任何只考虑前者的模型中，这部分能量都不能够被正确地计算。
 
 \subsection{均匀电子气的Hartree-Fock近似}
@@ -963,6 +970,7 @@ $1 / \abs*{\vb*{q}}^2$因为屏蔽修正而“柔化”之后，我们发现它�
 经典电动力学中不存在“电子场”自由度，电子数密度是一个独立的变量。
 费曼图中电子数密度体现为闭合电子回线，Hartree项包含两个闭合电子回线，因此是经典电动力学就能够捕捉到的。
 相反，Fock项的闭合电子回线含有内部结构（一条库伦相互作用线或者说虚光子线），是经典电动力学捕捉不到的，只有有电子场自由度，并且不要求“粒子线的指向和时间顺序一致”的理论才能够捕捉到，在经典电动力学中是没有的。
+换一个角度，我们也可以说，只有Hartree项的理论的主要的涨落都是粒子数，在宏观下对应流体动力学所研究的那种涨落，从而是非常经典的。
 
 \subsection{Hartree-Fock近似的用处以及它何时失效}\label{sec:hf-success-failure}
 
@@ -1196,7 +1204,7 @@ RPA近似能够计算基态关联能，它需要叠加在Hartree项和Fock项上
 
 \subsubsection{运动方程}
 
-\subsubsection{能谱}
+\subsubsection{等离激元的能谱}
 
 考虑$\omega$非常高的极限，此时做展开
 \[
@@ -1682,6 +1690,10 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 
 现在我们开始分析费米液体的动态响应。应当注意\eqref{eq:fermi-liquid-energy}在稍微远离费米面的地方就失效了，因为此时真的能够改变准粒子动量的碰撞是需要考虑的。
 在碰撞有物理效应时，\emph{不能}使用\eqref{eq:fermi-liquid-energy}作为哈密顿量而计算格林函数。
+实际上，这也体现了“纯净的”费米液体哈密顿量\eqref{eq:fermi-liquid-energy}虽然表面上看非常合乎直觉（例如它可以通过实际的库伦相互作用电子气的Hartree-Fock近似得到辩护，见\autoref{sec:why-fermi-liquid-works}），但是有非常反直觉的地方：我们知道碰撞会导致液体的粘滞（见\autoref{back:n-s}），而库仑相互作用电子气中库仑相互作用能的量级和电子动能是同阶的，那么似乎库仑相互作用电子气演生出的液体态（是否相互作用电子气的低能有效理论真的和通常意义上的液体一样是需要辩护的，不过后面我们会看到对费米液体来说的确如此）应该是极为粘稠的。
+然而，从前面的推导过程可以看出，实际上费米液体中准粒子之间的碰撞并没有那么强烈，正是在这个假设下我们导出了\eqref{eq:fermi-liquid-energy}。
+这也产生了一个问题：是否存在这样的电子态，它大体上仍然是一种费米液体，但是有明显的粘滞，从而其行为和普通的分子液体非常类似，遵从带有粘滞项的纳维-斯托克斯方程（例如，在狭窄的管道中的层流中速度场分布为抛物线）？
+文献\cite{Chandra_2019}中讨论了二维电子气中电子的流体态。
 
 一种替代的方式是使用玻尔兹曼方程。需要注意玻尔兹曼方程需要\emph{单粒子能量}。\eqref{eq:fermi-liquid-energy}中的两项的量级是一样的，从而单粒子能量\emph{不能}取为$\epsilon_{\vb*{k}}^0$；但\eqref{eq:fermi-liquid-energy}中的第二项也不能纳入碰撞项。
 玻尔兹曼方程（以及很多其它动理学方程）是格林函数运动方程的近似，玻尔兹曼方程中的单粒子分布函数实际上是单粒子格林函数（“单粒子密度矩阵”）的一种简化，因此\eqref{eq:fermi-liquid-energy}中的第二项应该通过计算电子自能加以考虑。
@@ -1690,7 +1702,8 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 由于是前向散射，入射出射准粒子动量不变，虚线上没有三维动量交换，松原频率交换由于是瞬时相互作用也为零。
 它给出的全部正规自能图可以概括为
 \input{metal/flt/self-energy.tex}
-其中闭合电子回线意味着$\ii \omega_n = 0$，$-1$因子来自相互作用线，闭合费米子回线由于给出了$\expval*{c^\dagger c}$，不贡献$-1$因子；
+其中闭合电子回线意味着$\ii \omega_n = 0$，$-1$因子来自相互作用线，闭合费米子回线由于给出了$\expval*{c^\dagger c}$，不贡献$-1$因子。
+Fock项仅仅在$\vb*{k} = \vb*{k}'$时有非零值，可以略去。
 因此加入了自能修正的单粒子能量就是
 \begin{equation}
     \epsilon_{\vb*{k} \alpha} = \epsilon_{\vb*{k}}^0 + \frac{1}{V} \sum_{\beta, \vb*{k}'} f_{\alpha \beta \vb*{k} \vb*{k}'} \expval*{\var{n_{\vb*{k}' \beta}}}.
@@ -1698,6 +1711,10 @@ $n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k
 \end{equation}
 期望值$\expval*{n_{\vb*{k}' \beta}}$是考虑了\eqref{eq:fermi-liquid-energy}中第二项\emph{之后}的，本身不容易直接算出，它将被用于做自洽计算。
 实际上也可以更加直观地得到\eqref{eq:fermi-liquid-single-energy}：$\epsilon_{\vb*{k} \alpha}$大体上是向费米液体基态打入一个新准粒子后的能量，那让$E$对$n_{\vb*{k} \alpha}$求导就是了。
+
+以上费米液体的Hartree-Fock近似当然也可以通过对\eqref{eq:fermi-liquid-energy}做关于粒子数的平均场近似更加直观地得到。
+Fock项不重要这个事实意味着费米液体实际上是一个比较经典的模型，这也为我们用动理学方程分析它提供了一定的辩护。
+只有Hartree项也意味着费米液体主要的涨落应该是粒子数密度的涨落（因为显然此时我们可以将费曼图中的全部闭合粒子回线替换成电子数密度场），即它的宏观行为可以使用某种流体动力学来描述。
 
 现在列写玻尔兹曼方程。设单粒子分布函数为$n_{\vb*{k} \alpha}(\vb*{r}, t)$%
 \footnote{
@@ -1812,7 +1829,8 @@ $\omega$和$\vb*{q}$分别是零声的频率和波矢，$\hat{\nu}$不依赖于$
 注意\eqref{eq:original-nu-equation-fermi-liquid}中$\vb*{r}$具有空间各向同性而$\vb*{k}$未必具有（$f$可以破坏动量空间的各向同性）。
 
 \eqref{eq:original-nu-equation-fermi-liquid}的形式看起来很奇怪，不过实际上这说明费米液体中如果有波矢为$\vb*{q}$，频率为$\omega$的零声存在，那么仍然有一个费米面，只不过费米面的形状发生了扭曲。
-我们反过来论证这件事。$T=0$时的分布函数满足
+我们反过来，通过指出费米面形状扭曲以后的分布函数真的是\eqref{eq:original-nu-equation-fermi-liquid}的解来论证这件事。%
+$T=0$时的分布函数满足
 \[
     \var{\hat{n}} \propto \theta(\epsilon_{\vb*{k}} - \epsilon_\text{F}) \approx \theta\left( \frac{k_\text{F}}{m^*} (k(\vu*{n}) - k_\text{F}) \right),
 \]
@@ -1892,7 +1910,7 @@ $\omega$和$\vb*{q}$分别是零声的频率和波矢，$\hat{\nu}$不依赖于$
 \end{equation}
 因此$F^\text{S}_0$给定后$s$是常数，因此零声是线性色散的。
 
-\subsubsection{流体动力学化}
+\subsection{费米液体的玻色化和流体动力学化}
 
 请注意$n_{\vb*{k} \sigma}$本身是粒子数的期望的某种经典化，而粒子数期望的严格运动方程是所谓Schwinger-Dyson方程。
 因此，朗道方程\eqref{eq:landau-fermi-liquid-equation}——实际上就是粒子数的经典运动方程——和粒子数期望的严格运动方程之间实际上只相差一些由于交换算符而产生的$\delta$函数项，通常这意味着粒子数\emph{算符}满足的海森堡绘景运动方程的形式和零温朗道方程是一样的。
@@ -1900,9 +1918,16 @@ $\omega$和$\vb*{q}$分别是零声的频率和波矢，$\hat{\nu}$不依赖于$
 对那些只有密度涨落才是重要的的系统，实际上我们确实只需要密度涨落的等效哈密顿量。
 因此通过观察\eqref{eq:landau-fermi-liquid-equation}，我们实际上可以将费米液体玻色化。
 
+\subsubsection{费米液体的流体动力学}
+
+% https://www.ima.umn.edu/materials/2017-2018.3/W3.26-30.18/26815/minnesota2018talk1.pdf
+
+\subsubsection{费米液体的玻色化}
+
+费米液体的玻色化在文献\cite{haldane-boson, Castro_Neto_1994}中讨论过。
 由于严格满足费米液体的第二条假设的系统只要求系统不偏离基态太远，\eqref{eq:landau-equation-damping}费米液体
 
-\subsection{费米液体理论的合理性}
+\subsection{费米液体理论的合理性}\label{sec:why-fermi-liquid-works}
 
 费米液体的合理性实际上仍然不是特别明确，主要是因为我们还无法确定什么时候费米液体理论就不适用了，自然也无法确定何时费米液体确实适用。
 确定一个系统是否适用费米液体理论首先需要我们确定系统的低能激发是否真的与电子的行为类似，因为原则上完全可以出现诸如电子配对等现象，或者自旋电荷分离，等等。
