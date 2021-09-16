@@ -210,4 +210,163 @@ $\vb*{r}_\text{s}$是一个不随时间变化的构型；它的作用仅仅是�
 
 \chapter{动理学}
 
-\section{玻尔兹曼方程}
+\section{二粒子相互作用和BBGKY序列}
+
+\subsection{BBGKY序列}\label{sec:bbgky}
+
+考虑一个一般的仅包含二粒子相互作用的系统，系统中共有$N$个粒子（注意此处的$N$不是晶胞个数），且相互作用力场具有各向同性：
+\begin{equation}
+    H = \sum_i \frac{p_i^2}{2m} + \sum_{i \neq j} U(\abs*{\vb*{r}_i - \vb*{r}_j}).
+    \label{eq:general-gas-hamiltonian}
+\end{equation}
+\eqref{eq:general-gas-hamiltonian}会导致如下的刘维尔方程：
+\[
+    \dv{P_N}{t} + \sum_i \left( \vb*{v}_i \cdot \pdv{P_N}{\vb*{r}_i} + \frac{\vb*{F}_i}{m} \cdot \pdv{P_N}{\vb*{v}_i} \right), \quad \vb*{F}_i = - \sum_{j \neq i} \pdv{U_{ij}}{\vb*{r}_i}, 
+\]
+其中$P_N$是$\{\vb*{q}_i, \vb*{p}_i\}$的函数，且随意交换两个粒子，$P_N$不变。考虑如下的$s$粒子边缘分布：
+\begin{equation}
+    P_N^{(s)} = \int \prod_{i \geq s+1} \dd{\vb*{r}_i} \dd{\vb*{v}_i} P_N,
+\end{equation}
+使用$P_N$的对称性以及积分边界项为零的事实，可以推导出
+\begin{equation}
+    \pdv{P_N^{(1)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(1)}}{\vb*{r}_1} = \frac{N-1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1},  
+    \label{eq:from-p2-to-p1}
+\end{equation}
+以及类似的从$P^{(3)}_N$推导出$P^{(2)}_N$的方程
+\begin{align}
+    \begin{autobreak}
+        \pdv{P_N^{(2)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+        + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} 
+        = \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \left( \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} + \pdv{P_N^{(3)}}{\vb*{v}_2} \cdot \pdv{U_{23}}{\vb*{r}_2} \right),
+    \end{autobreak}
+    \label{eq:from-p3-to-p2}
+\end{align}
+还有从$P_N^{(4)}$推导出$P_N^{(3)}$等等的方程。这就是\concept{BBGKY序列}。
+将某个高阶$P_N^{(s)}$取为零，就可以做一个截断，从而得到一组自洽方程，可以从$P_N^{(s)}$计算$P_N^{(s-1)}$，最后计算出$P_N^{(1)}$。
+
+\subsubsection{一阶近似：玻尔兹曼方程}
+
+在只关心单粒子边缘分布，假定系统近平衡（或者说充分热化了），且比较稀薄（从而基本上是一种\emph{气体}），以至于气体分子间距常常在相互作用力程之外时，我们可以推导出所谓\concept{玻尔兹曼方程}。
+\eqref{eq:from-p3-to-p2}右边的空间积分只有在两个粒子间距在相互作用力程$d$中，即满足$\abs*{\vb*{r}_i - \vb*{r}_j} \lesssim d$时才有非零值，因此该积分应该和$d^3$同阶。另一方面，设分子间距的数量级为$\delta$，则系统体积满足
+\[
+    V \sim N \delta^3.
+\]
+最后，注意到对整个系统体积和动量空间积分，有
+\[
+    \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1},
+\]
+于是合起来就有
+\[
+    \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \frac{1}{m} \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \frac{d^3}{\delta^3}.
+\]
+如果气体非常稀薄，那么$d/\delta$就是小量，于是\eqref{eq:from-p3-to-p2}右边可以略去，得到
+\begin{equation}
+    \pdv{P_N^{(2)}}{t} 
+    + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+    + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} = 0.
+    \label{eq:effective-2-particle}
+\end{equation}
+上式实际上可以写成一个全微分的形式：
+\begin{equation}
+    \dv{P_N^{(2)}}{t}=0,
+    \label{eq:pn2-constant}
+\end{equation}
+这个全微分沿着哈密顿量
+\begin{equation}
+    H_\text{eff} = \frac{p_1^2}{2m} + \frac{p_2^2}{2m} + U(\abs*{\vb*{r}_1 - \vb*{r}_2})
+    \label{eq:2-particle-hamiltonian}
+\end{equation}
+描写的相轨道。这当然是正确的，因为近似\eqref{eq:effective-2-particle}只使用了两对坐标-动量对，因此描述了一个近似只有两个粒子的系统，那么它显然应该服从二粒子系统的刘维尔定律。
+
+既然系统已经充分热化，不应该有除了单粒子分布函数以外更多的信息，我们做\concept{分子混沌性假设}
+\begin{equation}
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_1, \vb*{v}_1, t) P^{(1)}_N(\vb*{r}_2, \vb*{v}_2, t).
+\end{equation}
+设$t_0$是某个固定的“计时起点”，并用下标0表示两个粒子在$t_0$时的各种物理量，由于\eqref{eq:pn2-constant}，我们有
+\[
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_{10}, \vb*{v}_{10}, t_0) P^{(1)}_N(\vb*{r}_{20}, \vb*{v}_{20}, t_0).
+\]
+注意这里的$\vb*{r}_{10}, \vb*{r}_{20}$是$t-t_0,\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数，而$\vb*{v}_{10}, \vb*{v}_{20}$是$\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数。（这是时间反演不变性的结果，因为我们总是可以把时间倒着演化回去，从$t$演化到$t_0$）
+将上式代入\eqref{eq:from-p2-to-p1}，并将$N-1$近似为$N$，定义（当然这里的记号和费米子分布函数又冲突了）
+\begin{equation}
+    f=NP_N^{(1)},
+\end{equation}
+得到
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \frac{1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{v}_1}.
+\]
+由于$f$要出现显著的变化需要在平均自由程的尺度上，而上式所述的积分在该尺度上是高度定域的（$d$远小于平均自由程），我们有
+\[
+    \pdv{\vb*{r}}{t} \cdot \pdv{f}{\vb*{r}} \ll \pdv{U}{\vb*{r}} \cdot \pdv{f}{\vb*{v}},
+\]
+这样可以将\eqref{eq:effective-2-particle}中的时间偏导数项去掉，而对$\vb*{r}_2$的偏导数对$\dd{\vb*{r}_2}$积分之后得到表面项，为零，于是
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \left( \vb*{v}_1 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_1} + \vb*{v}_2 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_2} \right) \\
+        &= \int \dd{\vb*{r}} \dd{\vb*{v}_2} \vb*{u} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}},
+    \end{aligned}
+\]
+其中$\vb*{r}$和$\vb*{u}$分别定义为
+\begin{equation}
+    \vb*{r} = \vb*{r}_1 - \vb*{r}_2, \quad \vb*{u} = \vb*{v}_1 - \vb*{v}_2.
+\end{equation}
+以$\vb*{u}$的方向为$z$轴建立柱坐标系，设$\vb*{r}$的三个坐标是$\rho, \varphi, z$，并注意到可以将$\vb*{r}_{10}, \vb*{r}_{20}, \vb*{v}_{10}, \vb*{v}_{20}$表示成$\vb*{r}$的函数（因为$\vb*{r}$和$t-t_0$一一对应），有
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0))\big|_{z=-\infty}^\infty.
+\]
+请注意$\vb*{r}$是两个发生碰撞的粒子的相对位移，$\vb*{u}$指向碰撞发生的方向，则$z$趋于$\infty$意味着碰撞结束，而$z$趋于$-\infty$意味着碰撞开始。
+我们假定碰撞在时间和空间上都是高度定域的，从而，碰撞所需时间忽略不计，将$f$中出现的所有$t_0$替换为$t$不会造成什么影响，碰撞前后粒子移动可忽略不计，从而碰撞前后$f$中出现的位矢可认为基本不变，均位于$\vb*{r}_1$附近。
+于是就得到
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{2}, \vb*{v}_{2}, t))\big|_{z=-\infty}^\infty \\
+        &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}'_{1}, t) f(\vb*{r}_{1}, \vb*{v}'_{2}, t) - f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{1}, \vb*{v}_{2}, t)),
+    \end{aligned}
+\]
+$\vb*{r}(t)$曲线组成一束束流管，微分形式$\rho \dd{\rho} \dd{\varphi}$实际上就是散射截面：
+\begin{equation}
+    \rho \dd{\rho} \dd{\varphi} = \sigma \dd{\Omega},
+\end{equation}
+其中$\dd{\Omega}$可以取为矢量$\vb*{r}_{10} - \vb*{r}_{20}$在$z \to \infty$时的方向对应的立体角元，实际上就是$\vb*{v}' - \vb*{v}'_2$的方向对应的立体角元。
+于是把$\vb*{v}_1$和$\vb*{r}_1$的下标去掉，最终得到
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{v}-\vb*{v}_2} (f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t) - f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)),
+\end{equation}
+其中$\vb*{v}'$和$\vb*{v}_2'$是以$\vb*{v}$和$\vb*{v}_2$为入射速度而得到的出射速度，$\dd{\Omega}$是$\vb*{v}' - \vb*{v}_2'$的指向对应的立体角元。
+仅仅通过$\vb*{v}$和$\vb*{v}_2$是无法确定$\vb*{v}'$和$\vb*{v}_2'$的，必须知道$\vb*{v}' - \vb*{v}_2'$的指向才行。
+虽然我们是从经典牛顿力学出发推导出的这个结果，但是量子力学中的散射理论同样是这样的，这是靠数自由度可以得到的结论，和理论的细节无关。
+
+我们这就得到了无外力时的玻尔兹曼方程，它要求系统中粒子数密度稀薄、分子混沌性假设成立、碰撞在时间和空间上是局域的（前者要求分子平均自由时间相对于碰撞的时间尺度很大，后者要求分子之间的间距相对于碰撞的空间尺度很大）。
+此外\eqref{eq:general-gas-hamiltonian}是对系统足够好的描述也意味着粒子除了整体的坐标自由度以外的自由度是不重要的，且没有非弹性过程（比如说化学反应）。
+有外场作用时可以重复以上推导，不过在外场的空间尺度和时间尺度都很大时（通常的情况，比如说外加电场磁场，都是这样的），基本上任何一小块空间中的粒子都可以认为只是受到了一个恒定外力作用，于是就有一般的玻尔兹曼方程
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} + \frac{\vb*{F}}{m} \cdot \pdv{f}{\vb*{v}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{v}-\vb*{v}_2} (f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t) - f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)).
+    \label{eq:boltzmann-eq-with-force}
+\end{equation}
+通常将等号右边的部分称为\concept{碰撞项}或者说\concept{碰撞积分}，记作$C[f]$。
+
+\subsubsection{BBGKY序列和玻尔兹曼方程的量子版本}
+
+虽然玻尔兹曼方程是通过经典方式推导出来的，量子多体理论中也有BBGKY序列，在这里，边缘$s$粒子分布被“等效$s$粒子密度矩阵”取代，或者说被特定的格林函数取代。
+玻尔兹曼方程中的$f$实际上在量子多体理论中就是单粒子密度矩阵（的Wigner函数）。
+严格来说，通过非平衡量子场论得到的玻尔兹曼方程中，应当做替换
+\begin{equation}
+    f_1 f_2 \longrightarrow f_1 f_2 (1 \pm f_1') (1 \pm f_2'), \quad f_1' f_2' \longrightarrow f_1' f_2' (1 \pm f_1) (1 \pm f_2),
+\end{equation}
+玻色子取正，费米子取负。
+
+在凝聚态物理中通常不会涉及特别偏离平衡的状态，因此$f$偏离基态$f_0$的幅度是并不大的，即$f - f_0$比较小。
+由于基态不会出现任何时间演化，$C[f_0] = 0$，因此可以做展开
+\begin{equation}
+    C[f] = \frac{f - f_0}{\tau}.
+    \label{eq:relaxation-approx}
+\end{equation}
+我们将比例系数命名为$1 / \tau$，这不是偶然的，因为马上可以看出$\tau$实际上给出了$f$弛豫回到$f_0$的时间尺度。
+我们将\eqref{eq:relaxation-approx}称为\concept{弛豫时间近似}。
+在系统中存在多种散射机理时。% TODO，以及非弹性散射？
+
+\section{分子动力学模拟}
