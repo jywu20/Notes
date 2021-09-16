@@ -1,0 +1,852 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\title{蒙特卡罗方法}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\section{经典蒙特卡洛方法}
+
+\subsection{马尔科夫链蒙特卡洛方法}\label{sec:mcmc-method}
+
+平衡态统计物理的核心问题就是计算配分函数
+\begin{equation}
+    Z = \sum_\mathcal{C} \ee^{-\beta H[\mathcal{C}]} = \sum_\mathcal{C} W(\mathcal{C}).
+    \label{eq:partition-function}
+\end{equation}
+这里我们用$\mathcal{C}$表示一个任意的系统能量本征态，经典情况下这就是一个系统构型，量子情况下还需要对哈密顿量做一个对角化。
+本节将主要讨论经典系统，因为它不涉及通常难以计算的算符对角化，并且实际上很多时候量子系统可以化归为经典系统。
+如果能够将每个$\mathcal{C}$对应的$W[\mathcal{C}]$算出来那还可以大大简化期望值的计算。
+
+显然，涉及系统构型的路径积分\eqref{eq:partition-function}是非常难以计算的。这是因为实际的系统中的构型数目可以非常大，例如设一个格点系统每个格点的状态有$s$个取值，那么总的状态数就是$s^N$。
+最关键的是，我们实际上也不需要将所有系统构型的概率都算出来，因为大部分构型的概率都不大，我们只需要一系列出现次数大致正比于其出现概率的“代表性构型”就可以了。
+这种思路导致了\concept{马尔科夫链蒙特卡洛法（MCMC）}，即构造一个各态遍历、不可约的马尔可夫链
+\[
+    \cdots \longrightarrow \mathcal{C}_{i-1} \longrightarrow \mathcal{C}_i \longrightarrow \mathcal{C}_{i+1} \longrightarrow \cdots,
+\]
+使得
+\begin{equation}
+    \frac{p(\mathcal{C} \rightarrow \mathcal{D})}{p(\mathcal{D} \rightarrow \mathcal{C})} = \frac{W(\mathcal{D})}{W(\mathcal{C})} = \ee^{-\beta(H[\mathcal{D}]-H[\mathcal{C}])},
+    \label{eq:markov-mcmc}
+\end{equation}
+则达到平衡时有平衡条件
+\[
+    \sum_{\mathcal{C}} p(\mathcal{C}) p(\mathcal{C} \rightarrow \mathcal{D}) = \sum_{\mathcal{D}} p(\mathcal{D}) p(\mathcal{D} \rightarrow \mathcal{C}).
+\]
+以上条件是普遍适用的，但是非常弱，所以通常我们取一个足够复杂的马尔可夫链，它满足以下\concept{细致平衡条件}
+\[
+    p(\mathcal{C}) p(\mathcal{C} \rightarrow \mathcal{D}) = p(\mathcal{D}) p(\mathcal{D} \rightarrow \mathcal{C}),
+\]
+就有
+\[
+    \frac{W(\mathcal{D})}{W(\mathcal{C})} = \frac{p(\mathcal{D})}{p(\mathcal{C})}.
+\]
+专门使用$\pi(\mathcal{C})$来表示平衡态概率，即有
+\begin{equation}
+    \frac{W(\mathcal{D})}{W(\mathcal{C})} = \frac{\pi(\mathcal{D})}{\pi(\mathcal{C})}.
+\end{equation}
+各态历经、细致平衡的马尔可夫链如果收敛，一定收敛到一个唯一的结果上，这样我们只需要让这个马尔可夫链计算到收敛（有限、时不变、不可约、非循环的马尔科夫链肯定可以收敛，而如果可以找到一个$p(\mathcal{C})$的安排让细致平衡条件成立，总是可以收敛到$W(\mathcal{C})/Z$），此时按照系综平均等于时间平均的原理，任何一个物理量的期望值就是
+\begin{equation}
+    \expval{O} = \sum_{\mathcal{C}} \frac{W(\mathcal{C})}{Z} O[\mathcal{C}] = \frac{1}{N} \sum_i O[\mathcal{C}_i].
+    \label{eq:classical-expectation}
+\end{equation}
+也即过程收敛之后（收敛之前的过程称为\concept{热化}，这一段数据并不是特别有用），只需要在时间序列$\{\mathcal{C}_i\}$上分别计算$O$的值，做时间平均，就得到了$O$的期望值。
+需要注意的是实际上$N$不能取无穷大，因此我们希望平衡之后$\{\mathcal{C}_i\}$尽可能随机，即自相关要足够小。
+马尔科夫链普遍具有这样的性质：由于每一时刻的状态只和前一时刻有关，后一时刻和前一时刻的分布不是独立的，但是随着时间推移，自相关会指数衰减，即
+\begin{equation}
+    A(\Delta t) = \frac{\expval*{O(t+\Delta t) Q(t)} - \expval*{O(t)}^2}{\expval*{O(t)^2} - \expval*{O(t)}^2} \sim \ee^{- \Delta t / \tau}.
+\end{equation}
+如果我们需要抽取$N$个彼此统计无关的平衡态构型作为样本计算期望值，那么计算一个期望值的时间复杂度就是
+\begin{equation}
+    \bigO(t) \sim \bigO(\text{one step}) \cdot \tau \cdot N,
+\end{equation}
+因为两个不相关的样本之间大约有$\tau$的时间。
+
+因此问题的核心就是如何设计一个满足\eqref{eq:markov-mcmc}的不可约各态历经马尔可夫链。
+这个过程未必要和实际的动力学过程完全一样，只要满足\eqref{eq:markov-mcmc}当然都可以。从物理上看，这是因为在讨论平衡态统计系统时我们故意将系统的动力学扔掉了，只留下统计性质，而现在要做模拟计算时要设法将动力学“找回来”。
+不可约性相对来说是容易做到的，因此需要巧妙地设计$p(\mathcal{C} \rightarrow \mathcal{D})$，并且确认平衡后的$\{\mathcal{C}_i\}$在长时间上没有自相关。
+
+最后注意一点：实际上在以上推导中我们根本就没有使用过$W(\mathcal{C})$构成一个玻尔兹曼分布这一条件。
+因此，经典蒙特卡洛法实际上可以用于任何抽样问题。
+虽然给定一个马尔可夫链，判断它是否收敛是非常困难的，但多次数值实验足以判断它是否收敛。
+
+\subsection{Metropolis-Hastings算法}
+
+本节讨论一个能够达到\autoref{sec:mcmc-method}中要求的算法：Metropolis-Hastings算法，即\autoref{alg:metro-hast}。
+
+\begin{algorithm}[H]
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+
+    \KwData{不同构型$\mathcal{C}$对应的$W[\mathcal{C}]$，计算步数$N$，一个容易抽样的分布$Q(\mathcal{C}' | \mathcal{C}_0)$}
+    \KwResult{序列$\{\mathcal{C}_t\}$}
+    
+    选定一个初始状态$\mathcal{C}_0$\;
+    $t=0$\;
+    \While{$t<N$}{
+        从分布$Q(\mathcal{C}' | \mathcal{C}_t)$中抽样出$\mathcal{C}'$，这个过程称为\concept{提议} \;
+        $A(\mathcal{C}' | \mathcal{C}_t) = \min(1, \frac{W(\mathcal{C}') Q(\mathcal{C}_t | \mathcal{C}')}{W(\mathcal{C}_t) Q(\mathcal{C}' | \mathcal{C}_t)})$\;
+        从$[0,1]$的均匀分布抽样出$u$\;
+        \eIf{$u \leq A(\mathcal{C}' | \mathcal{C}_t)$}{
+            $\mathcal{C}_{t+1} = \mathcal{C}'$，这称为\concept{接受}提议 \;
+        }{
+            $\mathcal{C}_{t+1} = \mathcal{C}_t$，这称为\concept{拒绝}提议 \; 
+        }
+    }
+    \Return{序列$\{\mathcal{C}_i\}$}\;
+
+    \caption{Metropolis-Hastings算法}
+    \label{alg:metro-hast}
+\end{algorithm}
+
+从\autoref{alg:metro-hast}中很容易看出，提议$\mathcal{C}'$被接受的概率为
+\begin{equation}
+    p(\mathcal{C} \to \mathcal{C}') = Q(\mathcal{C}' | \mathcal{C}) A(\mathcal{C}' | \mathcal{C}) = Q(\mathcal{C}' | \mathcal{C}) \min \left(1, \frac{W(\mathcal{C}') Q(\mathcal{C} | \mathcal{C}')}{W(\mathcal{C}) Q(\mathcal{C}' | \mathcal{C})} \right).
+    \label{eq:prob-metro-hast}
+\end{equation}
+上式中的
+\begin{equation}
+    R = \frac{W(\mathcal{C}') Q(\mathcal{C} | \mathcal{C}')}{W(\mathcal{C}) Q(\mathcal{C}' | \mathcal{C})}
+\end{equation}
+就是所谓的\concept{接受率}。
+分类讨论可以发现\eqref{eq:markov-mcmc}的确是成立的。
+只要我们保证$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链是不可约的，那么\eqref{eq:prob-metro-hast}描述的马尔可夫链就是不可约的，因为随意两个构型之间都能够跃迁。
+因此，只要$Q(\mathcal{C} | \mathcal{C}')$描述的马尔可夫链不可约，Metropolis-Hastings算法一定是一个好的马尔可夫链蒙特卡洛方法。
+
+虽然原则上$Q(\mathcal{C}' | \mathcal{C})$的选取不影响结果，但实际计算中不同的选择可以非常大地改变模拟的效率和质量。
+例如，如果让$Q$比较大的$\mathcal{C}'$和$\mathcal{C}$几乎完全无关，那么$\mathcal{C}_t$很可能几乎总是在能量很大的构型附近徘徊，而不发生更新，从而算法需要特别长的时间才能真正收敛；甚至这可能让人误以为那些能量较高的构型已经收敛了。
+因此通常采用局部更新的策略，即每次提议只尝试更动少数几个格点。
+
+不过，局部更新的策略并不总是适用的。在临界点附近，有大量长程关联，局部更新是非常缓慢的，这称为\concept{临界慢化}。
+此时需要别的策略来做更新。
+
+\subsection{混合蒙特卡洛}
+
+Metropolis-Hastings算法适用于离散格点系统，它的动力学也是完全离散的，即通过翻转每个格点上的信息来更新系统状态。
+我们当然也可以使用更加“连续”的方法，即给$H[\mathcal{C}]$加上一个动力学项，手动引入一些广义动量，然后通过求解哈密顿方程来做更新。
+这样不会引入系统性偏差，因为
+\begin{equation}
+    Z = \int \prod_i \dd{q_i} \ee^{- S[q_i]} \propto \int \prod_i \dd{p}_i \dd{q}_i \ee^{-\sum_i \frac{p_i^2}{2m} - S[q_i]}.
+    \label{eq:molecular-dynamics}
+\end{equation}
+于是我们可以根据
+\[
+    S' = \sum_i \frac{p_i^2}{2m} + S[q_i]
+\]
+以及一些随机的初态，数值求解对应的哈密顿方程，然后做采样。
+在软物质凝聚态物理中这可以称为\concept{分子动力学模拟}。分子动力学模拟的主要问题在于，自动生成的哈密顿方程的数值格式通常没法保证能量守恒，从而出现“模拟溶液系统，计算着计算着水自己开了”的荒诞结果。
+但如果我们只是做统计系统模拟，其实能量守恒也不那么重要，因此只需要控制模拟步数不过多就可以得到可以接受的结果。
+
+实际上，通过一个技巧可以避免求解长时间的哈密顿方程。注意到\eqref{eq:molecular-dynamics}对$p$是高斯分布的，而已有成熟的高斯分布采样器，则我们可以采用下面的方法从一个构型$\{q_i\}$更新到$\{q_i'\}$：
+\begin{enumerate}
+    \item 已知$\{q_i\}$，根据\eqref{eq:molecular-dynamics}，直接采样得到一组$(p_i, q_i)$；
+    \item 以$(p_i, q_i)$为初始状态，数值求解哈密顿方程，时间演化$t_0$之后得到$(p_i', q_i')$；
+    \item 将$(p_i', q_i')$作为提议，像Metropolis-Hastings算法一样计算接受率，并概率性地决定是否接受；
+    \item $\{q_i'\}$就是更新后的构型。
+\end{enumerate}
+以上过程相当于认为系统每按照分子动力学模拟运行$t_0$时间，就和环境发生一次碰撞，然后完全忘记原本的动量。这就是\concept{混合蒙特卡洛}一说的来源。
+为了保证细致平衡原理，我们应当要求：
+\begin{itemize}
+    \item $t_0$不能过长，否则数值不稳定；但是也不能太短，否则不足以搜索足够广的场构型。
+    \item 数值微分方程格式应当严格具有时间反演不变性，因为哈密顿方程本身具有时间反演不变性。
+    \item 尽可能保持能量守恒。
+\end{itemize}
+一种比较好的数值格式是所谓\concept{蛙跳算法}：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            p_i(t + \Delta t / 2) &= p_i(t) - \frac{\Delta t}{2} \pdv{U}{q_i} (t), \\
+            q_i(t + \Delta t) &= q_i(t) + \Delta t \frac{p_i(t + \Delta t / 2)}{m}, \\
+            p_i(t + \Delta t) &= p_i(t / 2) - \frac{\Delta t}{2} \pdv{U}{q_i} (t + \Delta t).
+        \end{aligned}
+    \right.
+\end{equation}
+蛙跳算法是前向差分和后向差分的混合，前者倾向于增大能量而后者倾向于减小能量，因此就达成了某种平衡；蛙跳算法也能够保持相空间体积不变。
+
+\subsection{结果评估}
+
+结果评估通常需要两个因素：一个是关联时间（用来评价采样是否足够均匀），一个是标准差（用来评价由于数据波动导致的误差有多大）。
+
+为了方便起见，会使用binning技术来评估这两个因素，即把计算历史分割成一系列共计$M$个等长的连续区段，计算每一段的平均值，（用$O_i^{(M)}$表示），然后计算所有bin的平均值的标准差
+\begin{equation}
+    \Delta_M = \sqrt{\frac{1}{M(M-1)} \sum_{i=1}^M (O_i^{(M)} - \overline{O^{(M)}})^2},
+\end{equation}
+如果$M$非常接近$N$，那么$\Delta_M$就是直接使用计算历史$\{O_i\}$计算出来的标准差。反之，如果$M=1$，那么就根本没有标准差，因为只有非常少的数据点。
+随着$M$的增大，标准差会不断增大，然后趋于平缓。标准差开始趋于平缓时，不同的区段之间就应该基本上不相关了，因为这说明一个区段携带的信息实际上基本上就是这个区段的平均值提供的信息。
+这就给了我们一种非常便捷的估算数据标准差（从而可以给计算结果标上误差棒）的方法：从比较小的$M$开始不断增加，直至标准差上升平缓，此时的$\Delta_M$就近似为实际的标准差，且$\Delta \tau$约等于此时的$N/M$。
+
+\subsection{相变}
+
+在相变点附近蒙特卡洛方法经常遇到一些特殊的困难。本节讨论这些困难和如何解决这些困难。
+
+\subsubsection{临界慢化}
+
+在一个真实的系统中会出现关联长度发散，但是扰动从一点传递到另外一点当然需要时间，因此在临界点附近关联时间——扰动从一点传递到另一点的时间——也会越来越长。
+关联时间和关联长度之间通常会有一个幂律，为$\tau \sim \xi^{z}$，$z$称为\concept{动力学指数}。（由于系统没有洛伦兹不变性，没有什么能够保证$z$一定是$1$）。
+设$\xi \sim t^{-\nu}$，在临界点附近关联长度发散，但是被系统尺度截断，于是$\xi \sim L$，有$L \sim t^{-\nu}$，$\tau \sim t^{- z \nu}$。
+\concept{临界慢化}就是指由这个幂律所描述的，在临界点附近随着温度接近临界温度，系统关联时间幂律增大的现象。
+临界慢化还会导致另外一个问题，就是自关联时间变得很大，由于有效的采样的间隔必须为关联时间的量级，时间复杂度就有一个$L^{z}$的因子。%
+\footnote{这个问题在实际的物理系统中不会碰到，因为真实世界中的统计系统的涨落是并行的；临界慢化本身则是实际的统计系统中也会出现的。}%
+
+为了解决临界慢化的问题，我们需要将Metropolis算法的局部更新更改为\concept{集团更新}。具体来说，我们需要加入一些非局域的更新。
+直觉上看，临界状态下系统具有自相似性，会出现“磁畴”，那么可以在场构型中搜索磁畴，然后将整个磁畴一次性翻转。
+一种常见的算法是\concept{Wolff算法}\footnote{PRL.62,361(1989)}，以伊辛模型为例，其步骤如下：
+
+\begin{algorithm}[H]
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+
+    \KwData{不同构型$\mathcal{C}$对应的$W[\mathcal{C}]$，计算步数$N$，一个容易抽样的分布$Q(\mathcal{C}' | \mathcal{C}_0)$}
+    \KwResult{序列$\{\mathcal{C}_t\}$}
+    
+    选定一个初始状态$\mathcal{C}_0$\;
+
+    \For{$t$=$1..N$}{
+        $\mathtt{cluster} = \{\}$ \;
+        $\mathtt{rejected} = \{\}$ \;
+        随机选取格点$i_0$加入$\mathtt{cluster}$ \;
+        \While{$\mathtt{cluster}$中还有格点有近邻没有被加入$\mathtt{rejected}$}{
+            \For{格点的边$\pair{i, j}$}{
+                \eIf{$\sigma_i \neq \sigma_j$}{
+                    将$\pair{i, j}$加入$\mathtt{rejected}$ \;
+                }{
+                    % $\ee^{-2 \beta J \sigma_i \sigma_j}$不加入，$1 - \ee^{-2 \beta J \sigma_i \sigma_j$加入 \;
+                }
+            }
+        }
+        将$\mathtt{cluster}$中的全部格点翻转 \;
+    }
+    \Return{序列$\{\mathcal{C}_i\}$}\;
+
+    \caption{Wolff算法}
+    \label{alg:wolff-alg}
+\end{algorithm}
+
+细致平衡原理成立，因为
+
+可以看到集团更新是非常高效的，因为即使更新率非常小，仅有的后果也只是集团长得比较小而已——算法总是在做一些事情。
+实际上，当$\xi$发散时集团大小也是发散的，这就克服了临界慢化问题。
+
+在高温下集团更新退化为Metropolis算法；但是低温下，集团更新会将很多自旋锁在一起，只留下少数几个自旋没有翻转，这虽然等价于Metropolis算法，但带来了很多没用的操作。
+比较好的策略是做一个切换，在临界点附近做集团更新而在其它地方用Metropolis算法；如果并不知道临界点在哪里，可以交替执行Metropolis算法和Wolff算法，然后观察两者的收敛性来决定选用哪个给出的结果。
+这样会浪费一半时间，但是节省了很多精力。
+
+\subsubsection{相变点位置}
+
+我们经常需要判断相变点的位置，从而在接近相变点时使用适当的集团更新算法。
+一种可能的判据是，在无序相中宏观上有Wick定理成立，而有序项中序参量的涨落不强，于是可以构造一个量，在无序相中和有序相中区别很大，从而这个量发生突变的地方就是相变点。
+例如如果场构型是伊辛场，那么在顺磁相中，温度极高时自旋的分布基本上是高斯分布，从而
+\[
+    \expval*{mmmm} = 3 \expval*{mm} \expval*{mm},
+\]
+而温度很低时
+\[
+    \expval*{mmmm} = \expval*{mm} = 1,
+\]
+于是
+\begin{equation}
+    U = \frac{3}{2} \left( 1 - \frac{\expval*{m^4}}{3 \expval*{m^2}^2} \right) = \left\{
+        \begin{aligned}
+            &0, \quad T \to \infty, \\
+            &1, \quad T \to 0.
+        \end{aligned}
+    \right.
+\end{equation}
+由此可以判断相变点的位置。
+
+由于实际能够计算的体系都是有限的，由此判断出的相变点位置是不准的，但是相变点附近肯定有一个标度律，即
+\[
+    x' = \frac{x}{b}, \quad m' = b^{[m]} m,
+\]
+据此有一个称为\concept{data collapsing}的方法可以近似确定相变点位置。
+设我们在临界点附近以不同的$L$和$t$计算了一些$\expval*{m}$的值，通过量纲分析有 % TODO：为什么是正常量纲？
+\begin{equation}
+    \expval*{m} L^{[m]} = f (t L^{1/\nu}),
+\end{equation}
+这样通过拟合就可以得到
+
+\subsection{量子蒙特卡洛概述}
+
+最后我们转而分析量子平衡态统计系统。在本文中，如果我们要讨论空间坐标，一律默认为格点系统，设其维数为$d$。
+特别讨论格点上的系统是因为这是固体物理中最为常见的模型，并且原则上，连续空间中的物理总是可以离散化为格点上的物理。
+在计算配分函数时，量子的平衡态统计系统和经典的不同之处在于：
+\begin{itemize}
+    \item 配分函数的$\ee$指数上并不是简单的$\beta$乘以哈密顿量，而是哈密顿量加上一个$\pi \partial_\tau \phi$项以后对虚时间做积分，积分限为$0$到$\beta$。（在$\beta$很小——也即，在高温极限下——这个积分当然就等于哈密顿量乘以$\beta$）
+    \item “每个格点上的粒子具有确定的状态”未必是能量本征态，换句话说偏好基未必是能量本征态。
+    \item 由于系统状态是态矢量，难以定义“随机更新系统的状态”；
+    \item 计算任务的多样化：可能要计算系综平均值\eqref{eq:classical-expectation}，实际上就是要计算
+    \begin{equation}
+        \expval{O} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}})}{\trace \ee^{-\beta \hat{H}}},
+        \label{eq:quantum-expectation}
+    \end{equation}
+    也可能要计算基态能量，由于基态能量最低，如果基态不简并则很容易验证它就是
+    \begin{equation}
+        \ket{\Psi_0} = \lim_{\tau \to \infty} \ee^{-\tau \hat{H}} \ket{\Psi},
+        \label{eq:ground-state-infty}
+    \end{equation}
+    其中$\ket{\Psi}$是任意一个态矢量，从而期望值为
+    \begin{equation}
+        \expval{O} = \lim_{\tau \to \infty} \frac{\mel{\Psi}{\ee^{-\tau \hat{H}} \hat{O} \ee^{-\tau \hat{H}}}{\Psi}}{\mel{\Psi}{\ee^{-2\tau \hat{H}}}{\Psi}}.
+    \end{equation}
+\end{itemize}
+由于前两个原因，计算每个系统构型（在这里以“每个格点上有某种状态的粒子”为表象）对应的未归一化概率$W(\mathcal{C})$是非常困难的。
+例如，如果要计算系综期望值，使用\eqref{eq:classical-expectation}依照定义计算上式计算量非常大；当然，可以首先将哈密顿量对角化，但对复杂的系统这基本上不可能完成。
+归根到底，量子力学允许态做线性叠加的特点意味着系统可以取的状态相比于经典力学不成比例得多，因此不能够简单地将经典蒙特卡洛的方法推广到量子蒙特卡洛，而只能尝试将量子问题化归到一个经典蒙特卡洛采样问题上。
+通常，这意味着需要将一个$d$维量子系统通过Trotter分解之类的方法转化为一个$d+1$维经典系统。%
+\footnote{
+    表面看，将热力学作用量当成权重即可，但实际上相干态路径积分经常有符号问题。
+}%
+
+不同的计算任务还要求不同的算法。例如\eqref{eq:quantum-expectation}对应的问题称为\concept{有限温度量子蒙特卡洛（Finite Temperature Quantum Monte Carlo, FTQMC）}，\eqref{eq:ground-state-infty}对应的问题称为\concept{投影量子蒙特卡洛（Projector Quantum Monte Carlo, PQMC）}。
+从\eqref{eq:quantum-expectation}和\eqref{eq:ground-state-infty}中可以看出，无论哪种量子蒙特卡洛，很大一部分工作是要计算$\ee^{-\beta \hat{H}}$，实际上就是计算虚时间路径积分。
+我们将在\autoref{sec:worldline-mc}中显式地写出这个路径积分的表达式，但是它的用处不局限在\autoref{sec:worldline-mc}中。
+
+\section{世界线蒙特卡洛方法}\label{sec:worldline-mc}
+
+设哈密顿量可以被分解成
+\begin{equation}
+    \hat{H} = \hat{H}_1 + \hat{H}_2,
+\end{equation}
+其中$\hat{H}_1$和$\hat{H}_2$分别对应两个比较容易求解的问题。当然也可以把$\hat{H}$分解成更多哈密顿量之和，处理起来是类似的。
+考虑到以下公式（\concept{Trotter-Suzuki近似}）：
+\begin{equation}
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}} + \frac{\Delta \tau}{2} \underbrace{\int_0^\beta \dd{\tau} \ee^{-(\beta-\tau) \hat{H}} \comm*{\hat{H}_1}{\hat{H}_2} \ee^{-\tau \hat{H}}}_{\hat{A}} + \bigO(\Delta \tau^2), \quad m \Delta \tau = \beta,
+\end{equation}
+我们有
+\[
+    \frac{\trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}{\trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}} = \frac{\trace(\hat{O} \ee^{-\beta \hat{H}}) + \frac{\Delta \tau}{2} \trace(\hat{O} \hat{A})}{\trace(\ee^{-\beta \hat{H}}) + \frac{\Delta \tau}{2} \trace\hat{A}} + \bigO(\Delta \tau^2),
+\]
+容易验证
+\[
+    \trace(\hat{A})^* = - \trace \hat{A}, \quad \trace(\hat{O} \hat{A})^* = - \trace(\hat{O} \hat{A}),
+\]
+于是如果可观察量都是实数，% TODO
+就能够有小到$\bigO(\Delta \tau^2)$的误差。
+代入\eqref{eq:quantum-expectation}，就得到
+\[
+    \expval{O} = \frac{\trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}{\trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)}}.
+\]
+使用标准的插入完备性条件的方法，并假定我们使用的表象是$\hat{O}$的本征态（由于$\hat{O}$的定义通常不会很复杂，它的本征态是可以计算出来的），那么
+\[
+    \trace{(( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)} = \sum_{n_1, n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1},
+\]
+而
+\[
+    \trace{(\hat{O} ( \ee^{-\Delta \tau \hat{H}_1} \ee^{- \Delta \tau \hat{H}_2} )^m)} = \sum_{n_1, n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1} O_{n_1},
+\]
+其中$O_{n_1}$指的是$\hat{O}$在本征态$\ket*{n_1}$上的本征值。
+于是只要指定
+\begin{equation}
+    W(n_1) = \sum_{n_2, \ldots, n_{2m}} \mel{n_1}{\ee^{-\Delta \tau \hat{H}_1}}{n_{2m}} \cdots \mel{n_3}{\ee^{-\Delta \tau \hat{H}_1}}{n_2} \mel{n_2}{\ee^{-\Delta \tau \hat{H}_2}}{n_1},
+    \label{eq:worldline-weight}
+\end{equation}
+套用\eqref{eq:classical-expectation}就计算出了$\expval{O}$。
+\eqref{eq:worldline-weight}中的一系列矩阵元连乘实际上就是离散化的路径积分，一组这样的连乘对应着一条$\tau=i \Delta \tau$时状态为$\ket{n_i}$的虚时间世界线，因此这种方法称为\concept{世界线蒙特卡洛}。
+
+% TODO:PQMC
+
+比较糟糕的是，\eqref{eq:worldline-weight}中的诸矩阵元并不能够保证是正数，甚至不能够保证是实数，因此计算出来的路径积分权重\eqref{eq:worldline-weight}也不能够保证是正数甚至是实数。
+因此，实际上我们并不能够得到一个真正的概率分布。
+这可能导致蒙特卡洛算法不收敛，或者虽然收敛但由于分母非常小（正负抵消）而精度很差。
+这就是所谓的\concept{符号问题}——$W(n)$的正负号不定导致模拟困难。
+
+% TODO:
+设哈密顿量是正定的，如果在一组基底下所有非对角元或者等于零或者小于零，那么能够保证没有符号问题。直观地看这很合理，因为根据Forbidens（？）定理，此时基态波函数在不同基态上的投影的权重都是一样的，因此系统在我们选定的基态下非常“经典”。
+当然，原则上，在哈密顿量的本征态下非对角元都是零，从而原则上只要恰当选取基底就不会有符号问题，但是如果这组基底高度非局域（从而难以构造），那么基本上没有可能使用世界线蒙特卡罗方法模拟这个系统。
+从这个意义上，世界线蒙特卡洛方法能够解决的都是比较经典的问题，而真正能够展示量子力学奇特特性的模型则难以处理。
+
+\subsection{XXZ模型}
+
+本节讨论一个例子：\concept{一维XXZ自旋链}，其哈密顿量为
+\begin{equation}
+    \hat{H} = \sum_{i} \underbrace{(J_x (\hat{S}_i^x \hat{S}_{i+1}^x + \hat{S}^y_i \hat{S}^y_{i+1}) + J_z \hat{S}_i^z \hat{S}^z_{i+1})}_{\hat{H}^{(i)}}.
+\end{equation}
+在伊辛基底（也就是所有格点都取$z$方向自旋本征态）下做Trotter分解，
+\[
+    Z = \sum_{\{\sigma_{j}\}} \mel*{\sigma_{0}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{m-1}} \mel*{\sigma_{m-1}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{m-2}} \cdots \mel*{\sigma_{1}}{\ee^{-\Delta \tau \hat{H}}}{\sigma_{0}},
+\]
+其中脚标$j$表示虚时间。为了减小Trotter分解误差，做哈密顿量分解
+\[
+    \hat{H} = \hat{H}_1 + \hat{H}_2, 
+\]
+其中
+\[
+    \hat{H}_1 = \sum_{i} \hat{H}^{(2i)}, \quad \hat{H}_2 = \sum_i \hat{H}^{(2i+1)},
+\]
+则容易验证$\hat{H}_1$和$\hat{H}_2$的各个项之间都是对易的，但是$\hat{H}_1$和$\hat{H}_2$不对易。这样就有
+\[
+    \ee^{-\Delta \tau \hat{H}_1} = \prod_i \ee^{-\Delta \tau \hat{H}^{(2i)}}, \quad \ee^{-\Delta \tau \hat{H}_2} = \prod_i \ee^{-\Delta \tau \hat{H}^{(2i+1)}}.
+\]
+我们尝试做近似
+\begin{equation}
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}}, \quad \beta = m \Delta \tau,
+\end{equation}
+这个近似的效果好到什么程度？做展开并分析最重要的几项，可以发现
+\[
+    \left( \ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2} \right)^m = \ee^{-\beta \hat{H}} 
+\]
+因此误差是$\Delta \tau$的一阶项，差一个反厄米算符。如果所有可观察量都是实数——通常都是这样——反厄米算符不会影响期望值的计算，于是计算期望值时就只有$\Delta \tau^2$级的误差。这和之前一般性的分析一致。
+
+现在只需要计算$\mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2}}{\sigma_j}$，有
+\begin{equation}
+    \mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1}}{\sigma_j} = \mel*{\sigma_{j+1}}{\ee^{-\Delta \tau \hat{H}_1} \ee^{-\Delta \tau \hat{H}_2}}{\sigma_{j+\frac{1}{2}}} \mel*{\sigma_{j+\frac{1}{2}}}{\ee^{-\Delta \tau \hat{H}_2}}{\sigma_j},
+\end{equation}
+因此
+
+这里还有一些比较棘手的地方。首先，对称性意味着有一些跃迁矩阵元始终是零，因此无论如何涨落，这些态在实际的系统中都不应该出现。
+当然，朴素的Metropolis算法也确实不会接受这样的构型，但是由于不会接受的构型数目远大于会接受的构型，这会导致更新严重不及时。
+因此最好还是重新表示构型来直接去掉所有不正确的构型。
+
+\section{辅助场蒙特卡洛方法}
+
+\subsection{辅助场蒙特卡洛方法的一般理论}
+
+\subsubsection{H-S变换引入辅助场}
+
+辅助场蒙特卡洛方法通常用于解决费米子问题；所谓“辅助场”是指，由于费米子自由度难以直接在计算机中表示（格拉斯曼变量本质上是算符），我们需要使用一个玻色场来等效处理它。
+一般来说费米子的哈密顿量可以写成自由哈密顿量（通常是某个动能项）加上相互作用哈密顿量。本节仅讨论相互作用哈密顿量为四次型（即只有二体相互作用，这是合理的，因为基本上固体理论中的相互作用几乎总是来自库伦相互作用）的情况。
+
+虚时间路径积分实际上就是要计算一个$\ee$指数矩阵的迹。使用Trotter-Suzuki近似%
+\footnote{为了和时间演化算符的通常写法保持一致，本文默认
+\[
+    \prod_{i=1}^n a_i = a_n a_{n-1} \cdots a_1.
+\]
+}%
+，我们如下将虚时间路径积分写成自由部分和相互作用部分分离的形式：
+\[
+    \ee^{-\beta \hat{H}} = \prod_{n=1}^{m} \ee^{-\Delta \tau \hat{H}_\text{I}} \ee^{-\Delta \tau \hat{H}_0}.
+\]
+这里用到了Trotter-Suzuki近似，这个近似的误差控制在$\Delta \tau^2$量级。% TODO
+实际上也可以使用不同的Trotter分解顺序，比如说把自由哈密顿量写在前面，而把相互作用哈密顿量写在后面。
+如果没有相互作用哈密顿量，则能够将上式写成
+\[
+    \hat{H} = \hat{H}_0 = \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j
+\]
+的形式，那么这就比较容易，因为
+\begin{equation}
+    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j}) = \det(1 + \ee^{- \vb{A}}).
+\end{equation}
+很容易通过对角化验证上式。实际上，更加一般的，我们有
+\begin{equation}
+    \trace(\ee^{- \sum_{i, j} \hat{c}_i^\dagger A_{ij} \hat{c}_j} \ee^{- \sum_{i, j} \hat{c}_i^\dagger B_{ij} \hat{c}_j} \cdots) = \det(1 + \ee^{- \vb{A}}\ee^{- \vb{B}} \cdots),
+    \label{eq:trace-to-det}
+\end{equation}
+甚至更一般的情况。
+总之，自由费米子哈密顿量的路径积分可以很容易地将费米子算符积掉，留下一个（可以使用标准的线性代数方法计算的）行列式。
+
+实际的哈密顿量为
+\[
+    \hat{H} = \hat{H}_0 + \hat{H}_\text{I}, 
+\]
+我们就需要设法将$\hat{H}_\text{I}$转化为单粒子算符的形式，也就是说要引入一个辅助场，让费米子之间的相互作用等效为费米子和这个辅助场的相互作用。
+由于我们只讨论二费米子过程\eqref{eq:two-fermions-hamiltonian}，可以使用离散H-S变换引入这个辅助场，然后积掉费米子自由度而剩下辅助场自由度。辅助场自由度是一整个辅助场世界线，也就是说如果有$d$个空间维度，那么辅助场世界线就有$d+1$个维度。
+这是量子统计的普遍特征：$d$维的量子系统等价于$d+1$维的经典系统，多出来的一个维度是（有限大小的）虚时间。最后就使用关于一系列辅助场构型的行列式之和写出了虚时间路径积分。
+由于辅助场的形式往往需要按照相互作用哈密顿量的形式确定，本节只是指出辅助场的存在性，而不具体讨论怎么做H-S变换。
+
+由于本文基本上只考虑单电子量子力学问题，我们引入以下记号：如无特殊说明，使用$\tau$表示虚时间，$n, m$等表示离散的虚时间点的编号；使用$i, j$表示格点坐标，使用$\sigma$表示自旋，使用$x, y$等表示电子在坐标表象下的量子数，即$x=(i, \sigma)$。
+设$\hat{c}^\dagger$表示适当表象下的费米子产生算符排成的行向量，$\vb{s}_n$和$\vb{s}_\tau$表示第$n$个虚时间采样点（也即，$\tau=n\Delta \tau$）处的辅助场构型，如无特殊说明$\vb{s}$就表示整个辅助场时间线。
+
+\subsubsection{虚时间路径积分的行列式表示}
+
+虚时间路径积分可以写成
+\begin{equation}
+    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{H_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \hat{H}_0}, 
+    \label{eq:imaginary-time-path-integral-with-aux-field}
+\end{equation}
+应注意其中$H_\text{I}(\vb{s}_n)$和之前定义的$\hat{H}_\text{I}$未必相等，它现在是积掉了费米子自由度之后的哈密顿量。
+由于$\hat{H}_0$是二次型，而由H-S变换的性质，$\hat{H}_\text{I}$也是二次型，则可以设
+\begin{equation}
+    \hat{H}_0 = \hat{c}^\dagger \vb{h}_0 \hat{c}, \quad \hat{H}_\text{I} = \hat{c}^\dagger \vb{h}_\text{I} \hat{c},
+\end{equation}
+其中$\vb{h}_\text{I}$和$\vb{h}_0$是系数矩阵。
+为了简写我们显式地引入虚时间演化算符（由于虚时间演化算符含有全部动力学，我们这里采取的是虚时间的薛定谔绘景：不需要考虑算符的变动）
+\begin{equation}
+    \hat{U}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \ee^{ \hat{H}_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \hat{H}_0}, \quad \vb{B}_{\vb{s}}(\tau_2, \tau_1) = \prod_{n=n_1+1}^{n_2} \underbrace{\ee^{\vb{h}_\text{I}(\vb{s}_n)} \ee^{-\Delta \tau \vb{h}_0}}_{\vb{B}_{\vb{s}}(\tau_1+\Delta \tau, \tau_1)},
+\end{equation}
+使用这些记号并考虑到\eqref{eq:imaginary-time-path-integral-with-aux-field}，
+\[
+    \trace(\ee^{-\beta \hat{H}}) = \sum_{\vb{s}} C(\vb{s}) \trace \hat{U}_{\vb{s}}(\beta, 0) = \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)),
+\]
+而
+\[
+    \begin{aligned}
+        \trace(\ee^{-\beta \hat{H}} \hat{O}) &= \sum_{\vb{s}} C(\vb{s}) \trace(\hat{O} \ee^{-\beta \hat{H}}) \\
+        &= \sum_{\vb{s}} C(\vb{s}) \trace\hat{U}_{\vb{s}}(\beta, 0) \frac{\trace(\hat{O} \hat{U}_{\vb{s}}(\beta, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)},
+    \end{aligned} 
+\]
+于是我们就得到
+\begin{equation}
+    \expval*{\hat{O}} = \sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0)) \frac{\trace(\hat{O} \hat{U}_{\vb{s}}(\beta, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)}.
+\end{equation}
+为了略微增大一般性，例如，为了计算响应函数之类的东西，我们引入完整的虚时间轴上各点的期望值：
+\begin{equation}
+    \expval*{\hat{O}}(\tau) = \frac{\trace(\hat{U}_{\vb{s}}(\beta, \tau) \hat{O} \hat{U}_{\vb{s}}(\tau, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)}.
+\end{equation}
+
+\subsubsection{物理量的期望}
+
+原则上，我们可以直接使用以上方法现在构造一个经典的随机现象，使得
+\begin{equation}
+    p(\vb{s}) = \frac{ C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}{\sum_{\vb{s}} C(\vb{s}) \det(1 + \vb{B}_{\vb{s}}(\beta, 0))}, \quad \expval{O}_{\vb{s}} = \frac{\trace(\hat{O} \hat{U}_{\vb{s}}(\beta, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)},
+    \label{eq:ftqmc-prob}
+\end{equation}
+并且使用标准的有限温度平衡态场论的方法，也就是
+\begin{equation}
+    \expval{O}_{\vb{s}} = \eval{\pdv{\ln \trace(\ee^{\eta \hat{O}} \hat{U}_{\vb{s}}(\beta, 0))}{\eta}}_{\eta=0},
+\end{equation}
+计算出$\expval{O}_{\vb{s}}$（由于此时费米子相互作用已经积掉了，而$\vb{s}$又固定死了，仅有的自由度就是费米子自由度，而且只有二次型是，则Wick定理适用），我们就可以使用\eqref{eq:classical-expectation}得到各种物理量的期望值了。
+
+例如在$\hat{O}$是单体算符时，设
+\begin{equation}
+    \hat{O} = \hat{c}^\dagger \vb{A} \hat{c},
+\end{equation}
+则容易看出
+\begin{equation}
+    \expval{O}_{\vb{s}}(\tau) = \trace((1 - (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}) \vb{A}).
+\end{equation}
+一旦单体算符的期望确定了，多体算符的期望可以使用单体算符的期望算出来。
+
+从计算单体算符的期望的方式可以马上看出，格点坐标表象下的等时格林函数就是
+\begin{equation}
+    \expval*{\hat{c}_x(\tau) \hat{c}^\dagger_y(\tau)}_{\vb{s}} = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}_{xy},
+\end{equation}
+相应的记其系数矩阵为$\vb{G}(\tau, \tau)$，或者简写为$\vb{G}(\tau)$，则有
+\begin{equation}
+    \vb{G}(\tau, \tau) = \vb{G}(\tau) = (1+ \vb{B}_{\vb{s}}(\tau, 0) \vb{B}_{\vb{s}}(\beta, \tau))^{-1}.
+\end{equation}
+需要说明的是这里其实没有用到任何关于标签$x, y$的特殊性质——它们可以是$(i, \sigma)$，即格点坐标和自旋的组合，或者，如果能够保证自旋旋转不变性，那么不同的自旋实际上是解耦的，则可以取$x, y$为格点坐标，而单独附加标注自旋。
+容易看出等时格林函数满足以下递推关系：
+\begin{equation}
+    \vb{G}_{\vb{s}}(\tau + 1) = \vb{B}_{\vb{s}}(\tau+1, \tau) \vb{G}_{\vb{s}}(\tau) \vb{B}_{\vb{s}}(\tau+1, \tau)^{-1}.
+    \label{eq:eq-time-green-function-iter}
+\end{equation}
+
+进一步，我们考虑不等时格林函数。这些格林函数实际上对蒙特卡洛更新非常重要（见下一节）。
+设$\tau_1 > \tau_2$，则
+\[
+    \begin{aligned}
+        G_{\vb{s}}(x, \tau_1; y, \tau_2) &= \expval*{\hat{c}_x(\tau_1) \hat{c}^\dagger_y(\tau_2)} \\
+        &= \frac{\trace (\hat{U}_{\vb{s}}(\beta, \tau_2) \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}_x \hat{U}_{\vb{s}}(\tau_1, \tau_2) \hat{c}_y^\dagger \hat{U}_{\vb{s}}(\tau_2, 0))}{\trace \hat{U}_{\vb{s}}(\beta, 0)},
+    \end{aligned}
+\]
+因此问题的核心就是要计算$\hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}_x \hat{U}_{\vb{s}}(\tau_1, \tau_2)$。
+我们首先容易证明恒等式
+\[
+    \ee^{\Delta \tau \hat{c}^\dagger \vb{A} \hat{c}} \hat{c} \ee^{- \Delta \tau \hat{c}^\dagger \vb{A} \hat{c}} = \ee^{- \Delta \tau \vb{A}} \hat{c},
+\]
+从而容易看出
+\[
+    \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c} \hat{U}_{\vb{s}}(\tau_1, \tau_2) = \vb{B}_{\vb{s}}(\tau_1, \tau_2) \hat{c},
+\]
+对上式取共轭转置，并重新定义$\hat{U}$，就得到
+\[
+    \hat{U}_{\vb{s}}^{-1}(\tau_1, \tau_2) \hat{c}^\dagger \hat{U}_{\vb{s}}(\tau_1, \tau_2) = \hat{c}^\dagger \vb{B}^{-1}(\tau_1, \tau_2).
+\]
+而$\vb{B}$矩阵中不显含任何电子自由度，于是可以把它提到迹运算的外面，并且使用矩阵形式，就得到
+\[
+    \vb{G}_{\vb{s}}(\tau_1, \tau_2) = \vb{B}_{\vb{s}}(\tau_1, \tau_2) \vb{G}_{\vb{s}}(\tau_2), \quad \tau_1 > \tau_2.
+\]
+在$\tau_2 > \tau_1$时可以得到类似的结果，最后
+\begin{equation}
+    \vb{G}_{\vb{s}}(\tau_1, \tau_2) = \begin{cases}
+        \vb{B}_{\vb{s}}(\tau_1, \tau_2) \vb{G}_{\vb{s}}(\tau_2), \quad &\tau_1 > \tau_2, \\
+        - (1 - \vb{G}_{\vb{s}}(\tau_1)) \vb{B}^{-1}_{\vb{s}}(\tau_1, \tau_2) , \quad &\tau_1 < \tau_2.
+    \end{cases}
+\end{equation}
+
+\subsubsection{更新}
+
+原则上\eqref{eq:ftqmc-prob}就足够计算接受率了，从而可以直接用于蒙特卡洛模拟，但是这样在计算上是非常不经济的，因为需要真的计算一系列矩阵的$\ee$指数的积，计算上非常耗时，并且由于每个矩阵都不大，乘起来会造成很大的误差。
+下面我们将讨论怎么高效、精确地计算更新率。
+
+设我们一次只更新$(i, n)$位置的$\vb{s}$格点，也就是，一次只更新一个固定虚时间点上的辅助场的一个格点。
+显然这只会影响一个$\vb{B}$帧，于是设
+% TODO：是一般结果吗？
+更新之后的$\vb{B}$矩阵是
+\begin{equation}
+    \vb{B}_{\vb{s}'}(\beta, 0) = \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0), \quad \tau = n \Delta \tau.
+    \label{eq:updated-b-matrix}
+\end{equation}
+这样更新前后的$\vb{B}$矩阵只需要动一帧就够了，大大简化了计算。
+同时可以计算出接受率为
+\begin{equation}
+    \begin{aligned}
+        R &= \frac{\det(1 + \vb{B}_{\vb{s}}(\beta, \tau) (1 + \vb{\Delta}^{(i)}) \vb{B}_{\vb{s}}(\tau, 0))}{\det(1 + \vb{B}_{\vb{s}}(\beta, 0))} \\
+        &= \det \left( 1 + \vb{\Delta}^{(i)} (1 - \vb{G}_{\vb{s}}(\tau)) \right).
+    \end{aligned}
+\end{equation}
+可以看出，接受率实际上完全由$(i, n)$的位置以及等时格林函数确定。
+
+实际上，我们还可以一并把更新之后的格林函数使用更新之前的格林函数计算出来，这样就避免了在更新后重新计算格林函数而需要连乘$\vb{B}$矩阵。
+我们需要用到公式
+\[
+    (\vb{A} + \vb{u} \vb{v}^\top)^{-1} = \vb{A}^{-1} - \frac{\vb{A}^{-1} \vb{u} \vb{v}^\top \vb{A}^{-1}}{1 + \vb{v}^\top \vb{A}^{-1} \vb{u}}.
+\]
+按照\eqref{eq:updated-b-matrix}，我们有
+
+然后再应用\eqref{eq:eq-time-green-function-iter}。% TODO
+
+然而，即使等时格林函数也不容易计算，因为它还是涉及$\vb{B}$矩阵的连续相乘和取逆。
+为了保证精度，我们必须分析什么地方可能出现数值不稳定性，并使用适当的矩阵算法规避这些不稳定性。
+请注意系统的能谱一般来说是比较宽的，即$\hat{H}$最大的本征值和最小的本征值可以差很多，从而每一个$\exp(-\Delta \tau \vb{h}_0) \exp(\vb{h}_\text{I})$的最大和最小的特征值可以相差很多，它们连乘会产生一个条件数特别大的、几乎是奇异的矩阵，因此$\vb{B}$矩阵是非常病态的，稍有误差就会产生很大影响。
+考虑到计算机的精度不可能无限制提高，我们应该尽可能避免计算真的显式计算$\vb{B}$矩阵，而应该使用一些不那么病态的对象代替它。
+至少我们应该把不同的能量尺度分开来考虑，来避免条件数没完没了地增大。
+
+于是我们先来看一看怎么把“不同的能量尺度”（或者说不同的本征值）分开。
+设$\vb*{M}$是这样一个非常病态的矩阵，记其维数为$N_p \times N_p$，设
+\begin{equation}
+    \vb{M} = \pmqty{\vb{v}_1 & \vb{v}_2 & \cdots & \vb{v}_{N_p}},
+\end{equation}
+对它们做Gram-Schimidt正交化，得到$\{\vb{v}_i'\}$，并设两者之间的转换矩阵由下式给出：
+\begin{equation}
+    \pmqty{\vb{v}'_1 & \vb{v}'_2 & \cdots & \vb{v}'_{N_p}} = \pmqty{\vb{v}_1 & \vb{v}_2 & \cdots & \vb{v}_{N_p}} \vb{V}_R^{-1}.
+\end{equation}
+容易验证，存在对角矩阵$\vb{D}_R$，使得
+\begin{equation}
+    \vb{M} = \underbrace{\pmqty{\vb{v}_1 / \abs*{\vb{v}_1} & \vb{v}_2 / \abs*{\vb{v}_2} & \cdots & \vb{v}_{N_p} / \abs*{\vb{v}_{N_p}}}}_{\vb{U}_R} \vb{D}_R \vb{V}_R,
+\end{equation}
+可以估计，$\vb{U}_R$和$\vb{V}_R$都不非常病态，则$\vb{D}_R$是比较病态的——这就是说，其对角线上的元素大小相差很大。
+于是我们就将$\vb{M}$中病态的部分收集到了一个对角矩阵中，以便妥善处理（例如要尽可能少用它们做任何计算，特别是矩阵连乘）。
+
+总之，在行列式蒙特卡洛模拟中等时格林函数是核心。一方面它可以用于计算我们想要的所有物理量，一方面它决定了蒙特卡洛模拟的更新：更新前后的等时格林函数有闭形式的关系，并且接受率由等时格林函数确定。
+
+\subsubsection{有限尺度效应}
+
+计算复杂度大约是点阵规模的三次方。虽然这是多项式关系，但无论如何很大的点阵（足够让我们得到热力学性质的大小）直接拿来模拟是不现实的。
+为了在并不非常大的系统中获得还算可以的效果，我们必须系统考虑点阵边界带来的效应，即\concept{有限尺度效应}或者\concept{边界效应}。
+实际上这是数值模拟中总是要碰到的难题，求解无限大空间中的偏微分方程也常常要定义一个模拟上的“无限远”而避免边界引入一些非平凡的、在实际的无限大系统中看不到的物理。
+
+如果一个系统中的过程在实空间中是非常局域化的，那么毫无疑问边界效应不会很明显；反之，边界效应就会很明显。
+因此就格点理论而言，受边界效应影响最大的可能就是紧束缚模型一类的自由模型。
+一般来说相互作用会减弱边界效应的影响，因此使用自由理论可以有效地估计边界效应什么时候会大到不可接受。
+
+考虑紧束缚模型
+\begin{equation}
+    \hat{H} = - t \sum_{\pair{i, j}} \hat{c}_i^\dagger \hat{c}_j + \text{h.c.},
+\end{equation}
+设点阵边长为$L$，则为了减轻边界效应的影响，我们应当使用以下模型
+\begin{equation}
+    \hat{H}_\text{finite size} = - \sum_{\pair{i, j}}  \hat{c}_i^\dagger \hat{c}_j + \text{h.c.},
+\end{equation}
+其中
+\begin{equation}
+    \lim_{L \to \infty} t_{ij}(L) = t.
+\end{equation}
+这可以看成实空间的重整化，在动量空间中，是积掉了红外部分（而不是通常的紫外部分）。
+
+\subsection{Hubbard型相互作用}
+
+\subsubsection{H-S变换}
+
+考虑如下相互作用：
+\begin{equation}
+    \hat{H}_\text{I} = U \sum_i \left(\hat{n}_{i, \uparrow} - \frac{1}{2} \right) \left(\hat{n}_{i, \downarrow} - \frac{1}{2} \right),
+\end{equation}
+我们特意在标准的Hubbard相互作用的粒子数中减去了$1/2$，不过这无关紧要，无非是改变了化学势的零点而已。
+这是Hubbard模型的相互作用。
+我们如下引入离散H-S变换：
+\begin{equation}
+    \exp(-\Delta \tau U \sum_i (\hat{n}_{i, \uparrow} - 1/2) (\hat{n}_{i, \downarrow} - 1/2)) = C \sum_{s_1, \ldots, s_N = \pm 1} \exp(\alpha \sum_i s_i (\hat{n}_{i, \uparrow} - \hat{n}_{i, \downarrow})),
+\end{equation}
+其中
+\begin{equation}
+    \cos \alpha = \exp(-\Delta \tau U / 2), \quad C = \exp(\Delta \tau U N / 4) / 2^N.
+\end{equation}
+辅助场是一个只有$\pm 1$的场，因此实际上它是一个所谓的“伊辛场”，当然，Hubbard模型和经典伊辛模型的这种对应关系只有数值模拟上的意义。
+这样就有
+\begin{equation}
+    \vb{h}_{\text{I}}(\vb{s}_n) = \alpha \pmqty{\dmat{\diag \vb{s}_n, - \diag \vb{s}_n}},
+\end{equation}
+而$C(\vb{s})$实际上和$\vb{s}$的构型无关，只和点阵的大小有关，那么我们可以直接略去它。
+
+\subsubsection{更新策略}
+
+% TODO:实际的h_s是包含自旋自由度的，这里没有写；而且自旋向上和向下正负号还不一样。
+设
+\begin{equation}
+    A_{x, y}^{(i)} = \delta_{x, y} \delta_{x, (i, \sigma)}, \quad \sigma = \pm 1,
+\end{equation}
+那么就有
+\[
+    \ee^{\vb{h}_\text{I}(\vb{s}_n)} = \exp(\alpha \sum_j s_{j, n} \vb{A}^{(j)}).
+\]
+这样，设$(i, n)$处的$\vb{s}$被翻转了，那么
+\begin{equation}
+    \ee^{\vb{h}_\text{I}(\vb{s}_n')} = \exp(-\alpha s_{i, n} \vb{A}^{(i)}) \exp(\alpha \sum_{j \neq i} s_{j, n} \vb{A}^{(j)}) = ( 1 + \underbrace{( \ee^{-2 \alpha s_{i, n} \vb{A}^{(i)}} - 1)}_{\vb{\Delta}^{(i)}} ) \ee^{\vb{h}_\text{I}(\vb{s}_n)} .
+\end{equation}
+$\vb{A}$是一个非常稀疏的矩阵，只有两个非零元素，从而$\vb{\Delta}^{(i)}$也是一个非常稀疏的矩阵，只有两个非零元素，它们位于$x=y=(i, \sigma)$，$\sigma$可以取$\pm 1$。
+这样
+
+\subsection{完全平方型相互作用哈密顿量}
+
+\subsubsection{H-S变换}
+
+设我们有
+\begin{equation}
+    \hat{H}_\text{I} = - W \sum_{i} \left( \hat{O}^{(i)} \right)^2.
+    \label{eq:two-fermions-hamiltonian}
+\end{equation}
+这里我们假定已经将$\hat{H}_\text{I}$做了对角化，即在单粒子表象$\{\ket*{i}\}$（具体它是什么，和$\hat{H}_\text{I}$的形式有关，比如很多时候是动量，也可能就是格点坐标，等等）下将它分解成一系列单粒子可观察量的平方之和。
+
+我们以“每个格点上的粒子状态”为表象，那么系统哈密顿量可以写成矩阵形式，至少原则上\eqref{eq:quantum-expectation}是可以用的。
+和\autoref{sec:worldline-mc}中一样，我们做$\ee$指数的离散化，使用$n$标记离散的虚时间，使用$i$表示\eqref{eq:two-fermions-hamiltonian}中标记相互作用部分中单粒子算符的量子数。
+我们使用离散H-S变换
+\begin{equation}
+    \ee^{\Delta \tau W O^2} = \sum_{l = \pm 1, \pm 2} \gamma(l) \ee^{\sqrt{\Delta \tau W} \eta(l) O} + \bigO(\Delta \tau^3),
+\end{equation}
+其中
+\begin{equation}
+    \begin{aligned}
+        \eta(\pm 1) &= \pm \sqrt{2(3-\sqrt{6})}, \quad \eta(\pm 2) = \pm \sqrt{2(3+\sqrt{6})}, \\
+        \gamma(\pm 1) &= 1 + \sqrt{6}/3, \quad \gamma(\pm 2) = 1 - \sqrt{6}/3.
+    \end{aligned}
+\end{equation}
+引入$l$为辅助场，用$l_i$表示对$\ee^{\Delta \tau W (\hat{O}^{(i)})^2}$做H-S变换二引入的那个$l$，这样，$\{l_i\}$在每个$i$上都可以取$\pm 1, \pm 2$的值。
+这样我们就有
+\[
+    \begin{aligned}
+        \ee^{-\beta \hat{H}} &= \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \prod_{i=1}^N \sum_{l_i = \pm 1, \pm 2} \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}} \\
+        &= \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \sum_{\{l_i\}} \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}} \\
+        &= \sum_{{l_{i, n}}} \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}}.
+    \end{aligned}
+\]
+其中$\{l_{i,n}\}$指的是将$n$个任意的$\{l_i\}$放在一起而得到的列表，实际上就是离散的辅助场$\{l_i\}$的虚时间世界线——这是正确的，我们当然应该得到辅助场的虚时间世界线。
+总之，我们得到了
+\begin{equation}
+    \ee^{-\beta \hat{H}} = \sum_{{l_{i, n}}} \underbrace{\prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}}}_{\sim \ee^{-\beta \sum_n \hat{H}_\text{eff}}},
+    \label{eq:imaginary-time-path-integral}
+\end{equation}
+请注意上式所有$\ee$指数中的算符都是二次型，因此可以套用\eqref{eq:trace-to-det}。
+
+\subsubsection{物理量期望值}
+
+接下来我们引入一些简便记号。设$\hat{c}^\dagger$表示适当表象下的费米子产生算符排成的行向量，$\vb{s}_n$和$\vb{s}_\tau$表示第$n$个虚时间采样点（也即，$\tau=n\Delta \tau$）处的辅助场构型，如无特殊说明$\vb{s}$就表示整个辅助场时间线，并将\eqref{eq:imaginary-time-path-integral}写成
+\begin{equation}
+    \ee^{-\beta \hat{H}} = \sum_{\vb{s}} C(\vb{s}) \prod_{n=1}^m \ee^{-\Delta \tau \hat{H}_0} \ee^{-H_\text{I}(\vb{s}_n)}, \quad C(\vb{s}) \ee^{-H_\text{I}(\vb{s}_n)} = \prod_{i=1}^N \gamma(l_i) \ee^{\sqrt{\Delta \tau W} \eta(l_i) O^{(i)}},
+    \label{eq:o2-path-integral}
+\end{equation}
+
+\section{SSE方法}
+
+\concept{SSE方法}，或者说\concept{随机级数展开方法}，是一个奇特但有用的蒙特卡洛方法。
+这个方法的想法最早来自高温展开。在低温下，相互作用变得重要起来，高温展开级数不收敛。但是可以观察到，如果随机地在这个级数中胡乱抽取一些项求和，确实能够收敛。
+
+考虑一个哈密顿量
+\begin{equation}
+    \hat{H} = \sum_l \hat{H}_l.
+\end{equation}
+高温展开为
+\[
+    \begin{aligned}
+        Z &= \trace \sum_n \frac{1}{n!} (-\beta \hat{H})^n \\
+        &= \sum_\sigma \sum_n \sum_{\{l\}} \frac{1}{n!} (-\beta)^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma}.
+    \end{aligned}
+\]
+原则上我们可以现在就开始对每个求和指标都抽样。一个比较麻烦的细节是，不同的$n$对应不同长度的$\hat{H}_{l_1} \cdots \hat{H}_{l_n}$算符串，可以固定实际抽样的$n$的上限为$L$%
+\footnote{
+    当然，的确有这样的可能：$n$的分布有长尾，从而不能取一个截断。但是我们会看到实际情况并非如此，$\expval*{n}$和$\expval*{\Delta n^2}$都是有限的，从而做截断是安全的。
+}%
+，使用单位矩阵填满$L-n$个多余的位置。
+这样，所有可能的算符串$\hat{H}_{l_1} \cdots \hat{H}_{l_n}$就是$\{1, \hat{H}_1, \hat{H}_2, \ldots\}^L$。
+由于$L-n$个单位矩阵会产生$C_L^n$个实际上相同的算符串，应有
+\begin{equation}
+    \begin{aligned}
+        Z &= \sum_\sigma \sum_{\{l\}} \frac{1}{n!} (-\beta)^n C_L^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma} \\
+        &= \sum_\sigma \sum_{\{l\}} \frac{(L-n)!}{L!} (-\beta)^n \mel*{\sigma}{\hat{H}_{l_1} \cdots \hat{H}_{l_n}}{\sigma}.
+    \end{aligned}
+\end{equation}
+
+以海森堡模型为例，我们设$l=(a, b)$，规定$\hat{H}_{0, 0} = 1$，而
+$b$用于表示算符是不是对角的。
+
+在抽样时可以遵循先做对角更新再做非对角更新
+
+\begin{equation}
+    \frac{p(\hat{H}_{0,0} \to \hat{H}_{1, i})}{p(\hat{H}_{1, i} \to \hat{H}_{0, 0})} = \frac{1}{N_b} \frac{N_b \beta (J/2)}{}
+\end{equation}
+
+物理量的计算：
+能量就正比于nontrivial的项数$n$的平均值，能量的涨落正比于$\expval*{\Delta n^2}$。
+由于能量和能量的涨落都是有限的，确实可以对$n$的取值范围做一个简单的截断。
+
+非对角矩阵的平均值：
+
+\end{document}
