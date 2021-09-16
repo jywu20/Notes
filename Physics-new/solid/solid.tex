@@ -1,0 +1,354 @@
+\documentclass[hyperref, UTF8, a4paper, oneside]{ctexbook}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{autobreak}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{tikz-feynhand}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black]{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{prettyref}
+
+\externaldocument[vasp-]{../computational/vasp/vasp}[vasp.pdf]
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newrefformat{chap}{第\ref{#1}章}
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\newrefformat{back}{背景知识\ref{#1}}
+\newrefformat{info}{资料框\ref{#1}}
+\newrefformat{warn}{注意事项\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{back}{背景知识}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{back}
+\newtcbtheorem[number within=chapter]{info}{资料框}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+\newtcbtheorem[number within=chapter]{warning}{注意事项}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\numberwithin{equation}{chapter}
+
+\newcommand{\hmn}[1]{% Hermann-Maguin notation
+  \ensuremath{\begingroup\setupHMN #1\endgroup}%
+}
+
+\newcommand{\setupHMN}{%
+  \doHMN{-}{\HMNoverline}%
+  \doHMN{*}{\HMNminverse}%
+  \doHMN{i}{\infty}
+}
+
+\newcommand{\doHMN}[2]{%
+  \begingroup\lccode`~=`#1
+  \lowercase{\endgroup\let~}#2%
+  \mathcode`#1="8000
+}
+
+\newcommand{\HMNminverse}[1]{\frac{#1}{m}}
+\newcommand{\HMNoverline}[1]{\mkern1mu\overline{\mkern-1mu#1\mkern-1mu}\mkern1mu}
+
+\newcommand{\Ztwo}{$\mathbb{Z}_2$}
+
+\newcommand{\bigO}[1]{\mathcal{O}(#1)}
+
+\newcommand{\vaspdoc}{\href{../computational/vasp/vasp.pdf}{VASP笔记}}
+
+\title{固体物理}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\input{convention.tex}
+
+\part{晶体系统的组成}
+
+这一部分是关于晶体系统的组成的。我们将讨论晶体如何形成（\autoref{chap:components}），理想晶体的几何结构和对称性，它的点群、空间群中有什么操作，如何据此分析可能的晶格形式，以及如何根据纯粹的几何性质分类晶体，以及准粒子是晶体的几何结构的对称群的表示，这导致很多非常物理的结果，如准粒子应该使用晶格动量标记这一事实（\autoref{chap:lattice-structure}）。
+基本上，凝聚态系统的基本自由度都可以使用准粒子的观点讨论，将自旋自由度称为准粒子可能有些牵强，但是它们无疑是产生准粒子的场。
+很多人用准粒子一词表示电子、空穴等和电子结构有关的集体模式而用元激发表示声子等经典极限为波动的集体模式，虽然这个区分并不是很重要——例如，Luttinger液体中的玻色子算是什么呢？
+还有一种区分方式是将元激发限定为和系统的激发态相关的准粒子。有些准粒子在基态中也会出现，不将它们称为元激发。
+
+我们将讨论能带电子、声子的基质和性质。固体中固有的成分包括电子和晶格。电子之间存在库伦相互作用，同时受到晶格提供的周期性势场作用。
+在静止晶格的周期性势场作用下，原本能量简并的电子状态的能量会发生偏移，从而，一系列能量完全相同的电子态经过周期势场的扰动，其能量将成为一系列相差非常小的能级。
+当简并电子态的数目足够多——正如晶体中通常是的那样——就会形成在能谱中连续的\concept{能带}，对应的电子状态即为\concept{能带电子}。
+周期势的全部影响就是裸电子将会有能量修正而成为能带电子，无相互作用的能带电子组成费米气体，很容易处理。
+库伦排斥和声子介导的吸引相互作用合并为电子-电子相互作用，非常难以处理——电子-电子相互作用可以导致各种奇特的现象，并且其量级通常与费米能的量级一致。
+
+固体中，晶格可以起到两种作用：一种是提供一个周期性势场，一个是晶格的畸变；前者属于电子的单体哈密顿量，可以通过求解自由模型被考虑在内；后者则导致声子。
+这样，解出电子的近独立理论（如紧束缚模型）、声子的自由理论之后再加入电子、声子间的相互作用，我们就可以用电子和声子组成的相互作用气体完整描述晶体的行为，而不需要再显式考虑晶格的存在。
+例如，在计算热容等变量时，完全可以认为热容是声子和电子提供的，而不是（裸的）电子和晶格提供的。
+
+离子实的运动让我们得到一个定义在正格子上的场，这个场的激发就是\concept{声子}。晶体中一定会出现这样的激发，且这是一个Goldstone模式，因为晶体的形成实际上破缺了连续平移对称性，那么必然有一种零质量激发产生。
+离子实的哈密顿量大致如下：（使用大写字母以和电子区分）
+\[
+    {H} = \sum_n \frac{{P}_n^2}{2M_n} + \frac{1}{2} \sum_{\pair{m, n}} \omega_{mn}^2 ({X}_{m} - {X}_{n})^2 + \cdots, 
+\]
+其中$n$指的是晶格坐标，也就是三元组$(n_1, n_2, n_3)$，
+\[
+    \vb*{X} = \vb*{R} - \vb*{R}_0
+\]
+为某个离子实的位移。
+正则量子化之后，哈密顿量中的前两项给出一个自由场，而离子实之间的非线性相互作用则给出声子-声子散射过程。
+由于坐标-动量关系是对易关系而不是反对易关系，声子是玻色子。
+
+离子实和电子的相互作用通常取这样的形式：
+\[
+    H_\text{ei} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n, i} (\vb*{R}_n - \vb*{R}_{n}^0) \cdot \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}_i) + \cdots,
+\]
+其中$R^0_n$指的是离子实$n$未发生移动时的位置，即$n$号正格子的位置。
+对位移场$\vb*{X}$做正则量子化，并将关于电子的部分做二次量子化，得到
+\[
+    {H}_{\text{ei}} = \sum_{n, i} V_\text{ei}(\vb*{r}_i - \vb*{R}_n) = \sum_{n} \int \dd[3]{\vb*{r}} {\vb*{X}} \cdot {\psi}^\dagger(\vb*{r}) \grad{V_\text{ei}}(\vb*{R}_n^0 - \vb*{r}) {\psi}(\vb*{r}) + \cdots,
+\]
+这就是电子-声子相互作用。可以看出以上哈密顿量对${\vb*{X}}$不具有$U(1)$对称性，因此声子一般来说不是守恒的。
+
+声子和电子的量子化过程很不一样。对电子，我们首先写出一个多体一次量子化哈密顿量，然后做二次量子化；而对声子，我们实际上把使用格点坐标标记的离子实位移和动量当成了场算符（离散的场），然后直接对这两个场算符做正则量子化。
+换而言之，没有声子的一次量子化：定义声子时我们的理论就是二次量子化的。
+
+原则上通过分析电子和声子组成的凝聚态场论可以得到一些信息。
+但是，相互作用和特殊的势场会导致各种眼花缭乱的现象。
+例如，考虑一个被较强的势场或是库伦排斥固定在空间某一点的电子，它提供一个轨道编号的自由度和一个自旋自由度。
+相邻的这种电子的自旋自由度之间可能通过交换相互作用等产生等效相互作用，这样的电子周期排列，就形成了一个能够产生一些新的元激发的场。
+
+\input{first-principles.tex}
+
+\input{lattice-structure.tex}
+
+\input{phonon.tex}
+
+\input{electron-band.tex}
+
+\part{普通导体和绝缘体}
+
+这一部分讨论那些重要的基本自由度是电子或某种重整化后的电子（即，\concept{近独立电子近似}成立）的系统，这样的系统中的电子的行为仍然比较像单电子。
+我们将在\autoref{chap:conventional-metal}讨论能带论基础上关于金属和绝缘体的理论。
+各种来自对称性自发破缺的相变，在\autoref{chap:low-and-super}中讨论。
+这些话题构成了所谓的\concept{传统凝聚态物理}的很大一部分。所谓传统凝聚态物理包括三个部分：
+\begin{itemize}
+    \item 能带理论，即系统中的电子基本上是某种受到相互作用一定修饰的能带电子。
+    \item 费米液体理论，给出前述相互作用修饰的主要影响。费米液体理论适用于，不过不仅仅适用于能带电子系统，因此我们将它和能带理论分开说；但是应该注意，如果费米液体理论不适用，系统的基本自由度不是电子型自由度，那么此时关于电子的能带论不能直接拿来分析系统行为，实际上失去了意义，当然，如果系统的基本自由度仍然是点状粒子，那么这些粒子还是有能带结构。
+    \item 对称性自发破缺，这是一种相对平凡的费米液体理论失效的情况，即在低温下由于特殊的相互作用通道，电子发生凝聚，产生比费米液体态更加稳定的，但是对称性低于费米液体态的状态，即从而出现对称性自发破缺。
+    对称性自发破缺相内部的基本自由度是电子凝聚体的涨落，而电子型激发通常是有能隙的（因为需要拆开一部分凝聚体才能够产生单独的电子）。
+\end{itemize}
+
+我们还将在\autoref{chap:dft}中讨论固体电子结构的密度泛函理论（DFT）计算。
+虽然原则上DFT可以计算一切电子系统，实际上还是主要还是用于处理能带理论成立的系统。
+
+\input{metal.tex}
+
+\input{ab-initio.tex}
+
+\input{low-temperature.tex}
+
+\input{disorder.tex}
+
+\part{强关联电子系统}
+
+在传统凝聚态物理的框架以外的系统是\concept{强关联}的。这包括：费米液体理论仍然在某种意义上成立，然而单粒子能谱和普通的金属或绝缘体已经非常不同，如强烈的相互作用导致能带劈裂；费米液体理论自身彻底失效，系统的基本自由度不再是电子型的激发；出现费米液体或是对称性自发破缺无法解释的相和相变。
+需注意强烈的库伦相互作用未必导致强关联系统（例如，库伦相互作用下系统中可能仍然有稳定的“电子占据数”，而只是能量有所修正，当然，这就是费米液体），而较弱的库伦相互作用也可能导致强关联系统（如Hubbard模型在能带很窄时的情况）。
+
+这一部分主要讨论前两种情况，即强关联系统导致系统的基本自由度和费米液体不同。
+
+\input{insulator-transition.tex}
+
+\input{bosonization.tex}
+
+\part{自旋系统和磁性}
+
+这一部分我们讨论自旋系统和定域磁性。\concept{自旋模型}是指那些每个格点上放置了一个自旋自由度的模型（当然，这取决于格点的定义；自旋自由度当然可以定义在边上）。
+自旋是电子的内禀性质，似乎不应该被固定在格点上，然而在一些情况下，电子几乎总是定域在某些格点附近而不发生移动，此时系统中不存在电子位置的变化，主要的自由度就是各个格点上的自旋。
+自旋模型是非常常见的，例如它可以通过Hubbard模型演生出来：Hubbard模型在$U$非常大时，以动能项为微扰就能够得到一个海森堡模型。
+因此，自旋模型可以看成上一部分的一种特殊情况，即相互作用让系统的自由度不再是某种准电子。
+
+对称性说明自旋-自旋相互作用通常可以取$\vb*{S}_{\vb*{i}} \cdot \vb*{S}_{\vb*{j}}$的形式，或者也许是各向异性的$\vb*{S}_{\vb*{i}} \cdot \vb*{T} \cdot \vb*{S}_{\vb*{j}}$。
+
+\input{magnetic.tex}
+
+\part{短程纠缠的拓扑物态}
+
+在\autoref{chap:lattice-structure}中我们曾经问过：晶体的对称性确定了凝聚态系统的绝大多数性质，那么凝聚态系统的状态是否会有一些标签不是由通常意义上的对称性提供的？
+答案当然是肯定的，拓扑就是一个来源。
+
+\input{topological-band.tex}
+
+\input{spin-topological-term.tex}
+
+\part{（内蕴）拓扑序和量子序}
+
+前面几章中的拓扑物态中不存在特别超出能带电子、自旋这些东西的“纯物理”。这些系统中均只存在短程纠缠，或者说总是可以作用一些局域的扰动，让系统基态回到没什么纠缠的状态。 
+本节讨论的是一些由于强关联效应有长程纠缠的系统。具体来说，我们希望研究那些在零温下存在一个具有长程纠缠的量子相，其低能自由度仍然是点状激发的系统。
+长程纠缠意味着点状激发的产生、移动、湮灭可以以某种方式记录在系统状态中，且虽然低能自由度是点状激发，但是它们未必能够使用局域的算符单独地产生和消灭。
+% TODO：弦网模型一定是长程纠缠的吗？
+
+一般的金斯堡-朗道理论中演生出来的激发就是序参量的涨落，基本上是无能隙、玻色型、无自旋的激发，而构成凝聚态系统的是巡游电子和离子实。
+这提示我们一些有序态中能够演生出来与组成它的成分非常不同的激发。
+但是金斯堡-朗道理论中这种演生粒子的类型是很有限的：基本上都是电子配对或是自旋序的涨落形成的玻色子。
+然而我们会发现拓扑序中的演生粒子是非常丰富多样的。
+
+\input{fqhe.tex}
+
+\input{spin-liquid.tex}
+
+\input{string-net.tex}
+
+\chapter{速查}
+
+\section{晶格}
+
+\subsection{电子自由度计数} 
+
+见\eqref{eq:eigen-function-bloch-u}前后的论述。
+概述如下：
+\begin{itemize}
+    \item 电子波函数的轨道部分的数目等于晶胞个数乘以每个晶胞内的电子轨道个数，每个晶胞内的电子轨道个数等于晶胞内每个原子的电子轨道个数之和。
+    这里也可以看出改变晶胞的定义不会影响自由度计数。
+    紧束缚模型中的$i, j$对应晶胞的自由度，$m, n$对应每个晶胞内的电子轨道自由度。
+    \item 或者也可以用$i, j$对应原子的自由度（同时囊括晶胞位置和晶胞内的原子选取），$m, n$对应原子周围电子轨道自由度。
+    \item 如果用简约动量和能带编号标记电子，则简约动量对应晶胞的自由度，能带编号对应每个晶胞内的不同原子的自由度和每个原子周围的电子轨道的自由度。
+    因此第一布里渊区内简约动量的个数就是晶体中晶胞的个数。
+    \item 当然也可以用自由电子动量和每个原子周围的电子轨道来标记电子。
+\end{itemize}
+不要忘了还有自旋标签。
+
+\subsection{晶体中的元激发}
+
+晶体中的准粒子波函数是空间群的幺正表示。空间群的平移部分导致Bloch定理（见）% TODO
+
+准粒子能谱需要满足的一般性质、为何第一布里渊区如此重要等内容见\autoref{sec:quasi-particle-spectrum}。
+
+\section{归一化常数}
+
+\section{电子结构和物态}
+
+固体中的电子，经过电子-电子库伦相互作用和晶格作用，可能形成以下电子结构：
+\begin{itemize}
+    \item 产生看起来像是电子的激发：
+    \begin{itemize}
+        \item 布洛赫电子和Wannier电子，紧束缚模型，各向同性电子气模型（凝胶模型）
+        \item 这些可以归结为费米液体中的准粒子
+    \end{itemize}
+    这样的材料是寻常的金属、绝缘体、半导体等，总之就是可以使用能带论解释。
+    \item 低温下的配对：
+    \begin{itemize}
+        \item 超导
+        \item SDW，CDW
+    \end{itemize}
+    \item 分数化激发
+\end{itemize}
+
+\section{电动力学相关}
+
+\subsection{导电性}
+
+会导致电阻的因素：
+\begin{itemize}
+    \item 电子-电子散射，和温度关系不大。
+    \item 电子-声子散射，在高温下由于能量均分定理正比于$T$，低温下正比于$T^5$。
+    \item 与杂质、缺陷的散射。
+    \item Kondo效应，见\autoref{sec:kondo-effect}。
+\end{itemize}
+在比较纯的晶体中电子-声子散射是主要的电阻原因。
+
+电阻随着温度的变化大体上可以分成这么几种：
+\begin{itemize}
+    \item 随着温度降低，电阻先大体上线性下降然后平缓，“饱和”了。前面线性下降段是因为这是高温下，后面饱和是因为杂质散射导致的电阻和温度关系不大。
+    \item 随着温度降低，电阻先大体上线性下降然后平缓，然后快速降到零，因为发生了超导。最常见的超导机制是\autoref{sec:bcs-theory}给出的BCS理论。
+    \item 随着温度降低，电阻先大体上线性下降然后平缓，然后反常地增大，因为Kondo效应，见\autoref{sec:kondo-effect}。
+\end{itemize}
+
+\subsection{光学性质}
+
+\begin{itemize}
+    \item 晶格衍射，由静态晶格导致
+    \item 光子与固体中的非局域玻色子模式耦合：
+    \begin{itemize}
+        \item 光子和光学声子耦合，见\autoref{sec:huang-eq}。
+    \end{itemize}
+    \item 等离子激元，由电子导致
+\end{itemize}
+
+\section{力学和热学性质}
+
+热容：
+\begin{itemize}
+    \item 晶格振动，随着温度降低，依次是无温度依赖的经典值，正比于$\ee^{- \omega / T} / T^2$的爱因斯坦模型和正比于$T^3$的德拜模型。
+    \item 电子的贡献，正比于$T$。
+\end{itemize}
+
+传热：
+\begin{itemize}
+    \item 电子气传热。
+\end{itemize}
+金属的热传导主要来自电子气。声子气同样会导致传导。
+
+\section{著名的模型}
+
+Hubbard模型，海森堡模型，% TODO：彼此之间的关系
+
+\bibliographystyle{plain}
+\bibliography{solid} 
+
+\end{document}

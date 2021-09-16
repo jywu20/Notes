@@ -1,0 +1,1580 @@
+\chapter{均匀介质中的经典非线性光学过程}
+
+\section{非线性极化的麦克斯韦方程}\label{sec:non-linear-maxwell}
+
+本节将从一个比较唯象的角度描述经典非线性光学——我们忽略所有微观细节，只是去解麦克斯韦方程组，不过在这里，$\vb*{P}$和$\vb*{E}$之间的关系不再是线性的。
+一般来说$E \sim \SI{1}{kV/cm}$时非线性效应变得重要起来。
+
+\subsection{非线性波动方程的建立和微扰求解}
+
+\subsubsection{均匀介质中的传播}
+
+本节讨论均匀非线性介质中的光的传播。在大部分情况下介质对电磁波中的磁场的响应都是可以忽略的，因此介质对光的影响可以概括为极化。
+以下我们用短直线代表极化$P$，用波浪线代表电场；后者的意义一目了然，前者和前面几节的意义其实也是一样的，因为无非有
+\[
+    \vb*{P} = N q \vb*{x},
+\]
+其中$N$为单位体积的谐振子数目。我们知道极化强度矢量可以产生一个电场。我们有波动方程
+\[
+    \curl{(\curl{\vb*{E}})} + \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{D}}{t} = 0,
+\]
+代入$\vb*{D}$的定义，就得到
+\begin{equation}
+    \curl{(\curl{\vb*{E}})} + \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} = - \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t}.
+\end{equation}
+实际上，这就是“电流作为一个天线，发出电磁波”，只不过此时天线是由总电场驱动的，从而上式左边和右边都有$\vb*{E}$，并且由于$\vb*{P}$和$\vb*{E}$之间的关心是非线性的，上式关于$\vb*{E}$也是非线性的。
+不过，从$\vb*{P}$到$\vb*{E}$的关系的确是完全线性的，因此可以使用
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = - \left( \curl{\curl{}} + \frac{1}{c^2} \pdv[2]{t} \right)^{-1} \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t}
+\end{equation}
+表示。这是$\vb*{P}$消灭而光子产生的过程，看起来非常直观：一个天线上的激发态消失了，取而代之的是天线发出来的光。
+本节讨论的是均匀介质，我们可以认为$\grad{\rho_\text{p}}=0$，从而$\grad{\div{\vb*{P}}}=0$，从而就得到$\div{\vb*{E}} = 0$。这样一来我们要求解的就是
+\begin{equation}
+    - \laplacian \vb*{E} + \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} = -\frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t},
+\end{equation}
+而
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right)^{-1} \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t}.
+\end{equation}
+
+此外我们还有任意的形如
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-0.8, 0.25) ;
+                \vertex (b) at (-0.8, -0.25) ;
+                \vertex (d) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (e) at (1, 0);
+
+                \propag[photon] (a) to (c);
+                \propag[photon] (b) to (c);
+                \propag[photon] (d) to (c);
+                \propag[plain] (c) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \epsilon_0 \chi^{(n)}_{i_1 i_2 \ldots i_n}
+\end{equation}
+的产生$\vb*{P}$的顶角，代表$n$阶非线性极化（一阶极化是线性的），使得
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (-0.8, 0.25) {};
+                \vertex[crossdot] (b) at (-0.8, -0.25) {};
+                \vertex (d) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (e) at (1, 0);
+
+                \propag[photon] (a) to (c);
+                \propag[photon] (b) to (c);
+                \propag[photon] (d) to (c);
+                \propag[plain] (c) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \epsilon_0 \vb*{\chi}^{(n)} : \vb*{E} \vb*{E} \cdots \vb*{E}.
+\]
+线性光学中只有一条入射线，非线性光学中可以有多条。
+
+这就是非线性波动方程中的所有顶角了。我们马上可以发现一件事，就是虽然看起来$\vb*{P}$场能够有自能修正
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \propag[double] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \propag[plain] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (3, 0);
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+                \propag[plain] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + \cdots,
+\]
+但是，因为我们讨论的所有过程都以光子开始以光子结束，加上入射和出射线之后上式实际上是光的自能修正。因此实际上$\vb*{P}$只是一个辅助量，我们可以将
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \vertex (d) at (3, 0);
+                \propag[photon] (a) to (b);
+                \propag[plain] (b) to (c);
+                \propag[photon] (c) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}
+\]
+看成一个整体。当然，本该如此。
+
+我们要求解外加电场下的总场。这就是说，要计算
+\[
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} + 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \vertex (d) at (3, 0);
+                    \propag[photon] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} + \cdots \\
+        &+ \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (-0.8, 0.25) {};
+                    \vertex[crossdot] (b) at (-0.8, -0.25) {};
+                    \vertex (d) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (e) at (1, 0);
+                    \vertex (f) at (2, 0);
+    
+                    \propag[photon] (a) to (c);
+                    \propag[photon] (b) to (c);
+                    \propag[photon] (d) to (c);
+                    \propag[plain] (c) to (e);
+                    \propag[photon] (e) to (f);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered}
+    \end{aligned}
+\]
+请注意上式左边的源不是$\otimes$而是一个灰色圆圈，因为非线性效应的存在让我们不知道外源被用到了多少次。
+上式直接计算当然是非常复杂的，我们做重求和，根据最后一个顶角是什么，可以将上式写成
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ .
+    \end{aligned}
+\end{equation}
+当然，这就是
+\[
+    \vb*{E} = \vb*{E}_\text{ext} + \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right)^{-1} \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t} ,
+\]
+稍加变形就会发现实际上这就是
+\[
+    \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right) (\vb*{E} - \vb*{E}_\text{ext}) = \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}}{t}.
+\]
+求解出上式中的$\vb*{E}$就完全确定了外加电场下的总场。“外加电场”当然是一个不良定义的概念，但这是因为我们将$\otimes$的来源省去了；它可能来自介质中的电荷或是介质两边的极板（归根到底，也是一些电荷），无论如何不来自$\vb*{P}$，即它是“没有经过相互作用修正的”，从而
+\[
+    \left( \laplacian - \frac{1}{c^2} \pdv[2]{t} \right) \vb*{E}_\text{ext} = 0.
+\]
+如果将理论量子化，它就是入射的近乎自由的粒子。我们经常称外加电场为\concept{泵浦光}，因为它将材料中的电子激发。%
+\footnote{
+    只要满足这个形式的电场分量都有机会被称为泵浦光。因此这个概念的确有定义模糊的地方。它可以指代从空气射向介质的入射光，可以指代将空气-介质界面当成线性介质界面而获得的折射光，甚至我们不能排除它指代经过局域场修正之后的折射光。
+    本节讨论均匀介质内部的宏观问题，因此泵浦光不是从空气到介质的入射光也不需要做局域场修正。
+}%
+
+不过，具体什么是“相互作用修正”仍然有选择的余地，如我们可以将线性极化（即$\vb*{P}$关于$\vb*{E}$是线性的那部分；从$\vb*{P}$到$\vb*{E}$的转换则完全是线性的）部分作为自能修正重求和，然后将经过线性极化修正的光束（也就是服从关于不等于$\epsilon_0$的$\epsilon$的线性麦克斯韦方程组的光束）重新定义为\begin{tikzpicture}
+    \begin{feynhand}
+        \vertex (a) at (0, 0);
+        \vertex (b) at (1, 0);
+        \propag[photon] (a) to (b);
+    \end{feynhand}
+\end{tikzpicture}，此时\begin{tikzpicture}
+    \begin{feynhand}
+        \vertex (a) at (0, 0);
+        \vertex (b) at (1, 0);
+        \vertex (c) at (2, 0);
+
+        \propag[plain] (a) to (b);
+        \propag[photon] (b) to (c);
+    \end{feynhand}
+\end{tikzpicture}也需要调整（原本的意思是总的$\vb*{P}$产生真空中电场的响应函数，现在的意思是（非线性的）$\vb*{P}$产生线性介质中电场的响应函数），引入$\epsilon_{ij}$张量，然后顶角只剩下一种，就有
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \propag[photon] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture} 
+    \end{gathered} +
+    \sum \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                \vertex (f) at (0, -1) {$\ldots$};
+                \vertex (c) at (0, 0);
+                \vertex (d) at (0.75, 0);
+                \vertex (e) at (1.5, 0);
+
+                \propag[boldphoton] (a) to (c);
+                \propag[boldphoton] (b) to (c);
+                \propag[boldphoton] (f) to (c);
+                \propag[plain] (c) to (d);
+                \propag[photon] (d) to (e);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} \ ,
+\end{equation}
+即
+\begin{equation}
+    \left( \laplacian - \frac{\vb*{\epsilon}_\text{r} \cdot}{c^2} \pdv[2]{t} \right) (\vb*{E} - \vb*{E}_\text{ext}) = \left( \laplacian - \frac{\vb*{\epsilon}_\text{r} \cdot}{c^2} \pdv[2]{t} \right) \vb*{E} = \frac{1}{\epsilon_0 c^2} \pdv[2]{\vb*{P}_\text{NL}}{t},
+    \label{eq:nonlinear-maxwell-eq}
+\end{equation}
+其中NL表示非线性。这样做的好处一目了然：线性极化相当于对光速做了一个修正，是可以严格处理的，从而可以将主要精力集中在非线性极化上。
+
+一个在线性光学中也会出现的现象是\concept{局域场强化}。这个现象来自于，从$\vb*{P}$产生的电场在空间上可能有比较大的变化，我们关心的是空间平均过之后的电场，即只是从$\vb*{P}$产生的电场的低频傅里叶分量。
+因此我们做分解
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{low $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered},
+\end{equation}
+那么就有
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon, mom={$\text{low $k$}$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon, mom={$\text{low $k$}$}] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{low $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ .
+    \end{aligned}
+    \label{eq:non-linear-smooth-p-e}
+\end{equation}
+然而，在上式中与$\vb*{P}$有关的图中的入射电场却没有做这个动量截断。
+其结果是我们无法单纯从上式计算经过动量截断的出射电场，即我们需要手动提供没做动量截断的入射电场。
+由于入射电场通常只具有低频分量，即
+\[
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \propag[photon, mom={$\text{low $k$}$}] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture} 
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[crossdot] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \propag[photon] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture} 
+    \end{gathered},
+\]
+我们有
+\[
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{high $k$}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.5, 0);
+                    \propag[boldphoton] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon, mom={$\text{high $k$}$}] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton] (a) to (c);
+                    \propag[boldphoton] (b) to (c);
+                    \propag[boldphoton] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon, mom={$\text{high $k$}$}] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \ ,
+    \end{aligned}
+\]
+于是就有
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} = \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1.25, 0);
+                \propag[boldphoton, mom={$\text{low $k$}$}] (a) to (b);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered} + 
+    \begin{gathered}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex[grayblob] (a) at (0, 0) {};
+                \vertex (b) at (1, 0);
+                \vertex (c) at (2, 0);
+                \propag[plain] (a) to (b);
+                \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+            \end{feynhand}
+        \end{tikzpicture}
+    \end{gathered}.
+    \label{eq:local-field-enhancement-diagram}
+\end{equation}
+联立计算\eqref{eq:non-linear-smooth-p-e}和\eqref{eq:local-field-enhancement-diagram}（求解过程中很容易看到，虽然$\vb*{P}$是辅助量但是确实能够简化书写），就得到外场作用下的做了动量截断的$\vb*{E}$——实际上，由于宏观下我们讨论的“介质中电场”一般都是均一化的电场，我们将做了动量截断的$\vb*{E}$就称为$\vb*{E}$。%
+\footnote{
+    电动力学教科书上通常会泛泛地说这是“做了宏观平均的电场”，实际上这就是动量截断。
+    要看出这是为什么，注意到“做了宏观平均的电场”总是可以通过一个体积为$V$的移动平均给出：
+    \[
+        \bar{\vb*{E}}(\vb*{r}) = \frac{1}{V} \int \dd[3]{\vb*{r}'} \vb*{E}(\vb*{r}'),
+    \]
+    做傅里叶展开，有
+    \[
+        \begin{aligned}
+            \bar{\vb*{E}}(\vb*{r}) &= \frac{1}{V} \int \dd[3]{\vb*{r}'} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{E}(\vb*{k}) \ee^{\ii \vb*{k} \cdot \vb*{r}'} \\
+            &= \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{E}(\vb*{k}) \frac{1}{V} \int \dd[3]{\vb*{r}'} \ee^{\ii \vb*{k} \cdot \vb*{r}'},
+        \end{aligned}
+    \]
+    显然对那些较大的$\vb*{k}$，对$\vb*{r}'$的积分会由于快速振荡而变成零，于是我们就得到了一个动量截断。
+}%
+此时\eqref{eq:local-field-enhancement-diagram}应当理解为“靠近介质粒子时电场的局域增强”。
+在这种视角下，有
+\begin{equation}
+    \begin{aligned}
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (1.6, 0);
+                    \vertex (d) at (2.2, 0);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (b);
+                    \propag[plain] (b) to (c);
+                    \propag[photon] (c) to (d);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} +
+        \sum \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (-1.2, 0.5) {};
+                    \vertex[grayblob] (b) at (-1.2, -0.5) {};
+                    \vertex (f) at (0, -1) {$\ldots$};
+                    \vertex (c) at (0, 0);
+                    \vertex (d) at (0.75, 0);
+                    \vertex (e) at (1.5, 0);
+    
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (c);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (b) to (c);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (f) to (c);
+                    \propag[plain] (c) to (d);
+                    \propag[photon] (d) to (e);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} \\
+        &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[crossdot] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag[photon] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture} 
+        \end{gathered} +
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} , \\
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton, mom={$\text{enhanced}$}] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} &= \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1.25, 0);
+                    \propag[boldphoton] (a) to (b);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered} + 
+        \begin{gathered}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex[grayblob] (a) at (0, 0) {};
+                    \vertex (b) at (1, 0);
+                    \vertex (c) at (2, 0);
+                    \propag[plain] (a) to (b);
+                    \propag[photon, mom={$\text{high $k$}$}] (b) to (c);
+                \end{feynhand}
+            \end{tikzpicture}
+        \end{gathered}.
+    \end{aligned}
+\end{equation}
+
+\subsubsection{边界条件}
+
+边界，反射，折射：在线性的折射、反射上引入三个相互作用，一个是介质内部的光子-光子和频和差频，一个是入射端，介质内部两个光子打在边界上然后返回形成一个光子，一个是出射端，两个光子打在边界上然后一起出射。
+
+\subsubsection{哪些解是重要的？}
+
+非线性光学和线性光学非常不同的地方是，在线性光学中，给定一个时谐的（并且通常是平面波的，因为介质一般都很大，近似空间平移不变）泵浦光，计算入射导致的响应以及总电场，我们就得到了一个\emph{稳定的}模式；一个任意的入射波传入介质后的行为可以直接根据入射波在各个模式上的分量计算出来。
+这意味着在线性光学中我们无需为任意的泵浦光求解麦克斯韦方程：只需要得到线性波动方程的所有振动模式就可以，各个振动模式的形状决定了这个光学系统的全部信息；场论上，这是自由场的情况。
+线性性也意味着一个光束可以被分割成许多波包，计算每个波包的时间演化，加起来就得到光束的时间演化——实际上，我们经常反过来用线性性，即先求解一个系统中的电磁波模式（其时间演化是平凡的）然后诠释说“这意味着光先走到这里再走到那里”。
+非线性光学则不同，输出和激励并没有简单的线性关系。不过实际上，这并不意味着我们真的需要为所有的泵浦场独立地从头求解非线性波动方程。
+
+首先，我们看到\eqref{eq:nonlinear-maxwell-eq}相对于时间是线性的。这意味着我们可以在时间的频域求解\eqref{eq:nonlinear-maxwell-eq}。
+也就是说，\eqref{eq:nonlinear-maxwell-eq}的全体时谐解已经包含了诸如“两个略有错开的波包打进介质将会如何反应”之类的瞬态问题的答案——只要入射波包不过于极端，以至于非线性麦克斯韦方程不再适用（如非常快导致介质来不及弛豫或是过强导致介质损坏等）。
+在线性光学中这是常用的手段：例如，我们求解了时谐场在金属中的衰减，就可以不重新求解麦克斯韦方程就知道一个波包在金属中如何衰减，做一个傅里叶变换就行了：稳态问题提供了瞬态问题的答案，而前者往往更加容易做具体计算。
+非线性光学中这个手段也是适用的。
+因此，我们会在频域求解\eqref{eq:nonlinear-maxwell-eq}，然后看着光强随着光束前进的\emph{距离}发生的变化，评论说“波包随着传播\emph{时间}发生的变化”，因为两者是可以互相转化的。
+
+其次，似乎存在这样一个疑难：在后文中我们将会求解诸如“泵浦光含有两个频率成分，它们都是平面波”这样的问题，但是实际上我们能够制备的光都是含有很多混杂的成分的，那么有什么理由保证后者发生的现象和前者一致？
+例如，设泵浦光为
+\[
+    \vb*{E}^\text{ext} = \vb*{E}_1 \ee^{-\ii \omega_1 t} + \vb*{E}_2 \ee^{-\ii \omega_2 t} + \text{c.c.},
+\]
+微扰求解得到输出光为
+\[
+    \vb*{E} = \alpha^{(1)}(\omega_1) \vb*{E}_1 \ee^{-\ii \omega_1 t} + \alpha^{(1)}(\omega_2) \vb*{E}_2 \ee^{-\ii \omega_2 t} + \alpha^{(2)}(\omega_3 = \omega_1 + \omega_2) : \vb*{E}_1 \vb*{E}_2 \ee^{-\ii (\omega_1 + \omega_2) t} + \cdots + \text{c.c.}.
+\]
+现在如果我们要将泵浦光取为
+\[
+    \vb*{E}^\text{ext}(t) = \int \dd{\omega} \ee^{-\ii \omega t} \vb*{E}^\text{ext}(\omega),
+\]
+那么输出光$E(t)$不能通过简单地做一个傅里叶变换获得。
+但其实我们可以效仿量子场论中的做法来解决这个问题。
+我们要做的事情是通过计算\eqref{eq:nonlinear-maxwell-eq}的一些特解来获得通用的“看到泵浦光-写出输出光”的方法，这相当于我们在积掉整个光学系统，直接得到泵浦光的各个频率分量和输出的非线性谐波之间的关系。
+所以其实可以采用量子场论中计算等效相互作用顶角的标准方法，即只计算连通图：设泵浦光包含$n$个（频率不同的）单频成分，微扰求解\eqref{eq:nonlinear-maxwell-eq}，只计算那些完全连通且正好包含$n$个\begin{tikzpicture}
+    \begin{feynhand}
+        \vertex[crossdot] (a) at (0, 0) {};
+        \vertex (b) at (1, 0);
+        \propag[photon] (a) to (b);
+    \end{feynhand}
+\end{tikzpicture}的图（后一个条件是为了保证我们计算的是$n$阶非线性过程，前一个条件是为了保证低于$n$阶的非线性过程没有被重复计数），这样可以得到形如$\alpha^{(n)} \vb*{E} \vb*{E} \cdots \vb*{E}$的响应，输出光就是
+\[
+    \vb*{E} = \int \dd{\omega} \alpha^{(1)}(\omega) \vb*{E}^\text{ext}(\omega) \ee^{-\ii \omega t} + \int \dd{\omega_1} \int \dd{\omega_2} \alpha^{(2)}(\omega_1 + \omega_2) : \vb*{E}^\text{ext}(\omega_1) \vb*{E}^\text{ext}(\omega_2) \ee^{-\ii (\omega_1 + \omega_2) t} + \cdots.
+\]
+请注意由于不存在圈图，每个$\alpha^{(n)}$中的图的数目是有限的，从而可以精确计算而不需要对圈数做截断等。
+
+总之，虽然非线性光学问题比线性光学复杂上不少，我们仍然可以只计算泵浦光为若干个单频光叠加的情况，并且计算到给定的微扰阶数，这样足够提取到足够多的关于非线性光学体系的信息。
+
+\subsection{近似求解方法}
+
+由前述讨论，我们只要拿到非线性极化$\vb*{P}_\text{NL}$，就能够完全确定一个介质的非线性光学性能，只需要计算向介质中输入若干束单频光得到的输出就够了。
+此时对\eqref{eq:nonlinear-maxwell-eq}做时域傅里叶变换，就得到不同频率的电场的空间分布方程，$\vb*{P}_\text{NL}$中如果有电场的$n-1$次方，这就是\concept{$n$波混频方程}。
+
+求解$n$波混频方程时会用到一系列近似，列举如下：
+\begin{itemize}
+    \item \concept{泵浦光无衰减近似}，在非线性介质非常厚，或者转换效率非常高以至于泵浦光衰减很明显时失效。
+    \item \concept{平面波近似}，即认为介质中电磁波的所有频率分量都可以看成（振幅可能会变化的）平面波。
+    \item \concept{慢变振幅近似}，和几何光学中的那种类似。在分析超短脉冲时失效。
+\end{itemize}
+
+我们仍然可以定义折射率的概念。
+TODO:$n^2 = 1 + \chi$
+
+\subsection{非线性极化率和对称性}
+
+通过对称性可以减少非线性极化率的独立分量个数。
+
+\subsubsection{置换对称性}
+
+
+\section{二阶非线性极化的波动光学}\label{sec:chi-2-wave}
+
+之前已经讨论过一个问题：具有两个频率分量的泵浦光被打入具有二阶非线性极化的材料中，计算和频光的强度。本节用非线性波动方程重新计算它。
+二阶非线性极化意味着材料的中心反演对称性破缺。
+
+本节中如无说明，$\omega>0$，能量守恒条件形如$\omega_3 = \omega_1 + \omega_2$，我们总是使用$\omega_3$表示频率最大的模式。
+
+\subsection{SFG过程的一阶微扰}
+
+\subsubsection{输入光为两束泵浦光}
+
+我们考虑一个最为简单的情况：各向同性介质，泵浦光足够强，以至于在介质中泵浦光几乎没有衰减，即做了\concept{泵浦波无衰减近似}。
+假定泵浦光中有两个频率分量的光，它们的偏振方向均相同。取其波矢指向为$z$轴。
+我们用$E_i$指代第$i$种傅里叶分量，用$A_i$表示其大小，即
+\[
+    E_i = \ee^{\ii k_i z - \ii \omega_i t} A_i + \ee^{- \ii k_i z + \ii \omega_i t} A_i^*.
+\]
+在线性光学中只取正频率或是负频率的分量不会造成任何问题，并且通常会让问题更加容易，但是我们现在在讨论非线性过程，因此$E$必须是实际的入射光，显然必须是实数。
+这样，非线性极化导致的一阶微扰中%
+\footnote{
+    “阶”在本文中有两个意思，一个是非线性光学过程的阶数，$n$阶非线性光学过程就是$n$束光变成一束光；还有一个意思是微扰计算的阶数。
+    前者描述单个顶角的粒子线数目，后者描述一张图中顶角的总数。
+}%
+，SFG过程给出修正（我们为何只考虑SFG过程，而且只考虑$\omega_2$和$\omega_3$指定的SFG过程马上就可以看到；相位匹配条件决定了SFG过程和DFG过程等不太可能同时很重要）
+\[
+    \left( \pdv[2]{z} - \frac{\epsilon_\text{r}}{c^2} \pdv[2]{t} \right) E_3 = \frac{1}{\epsilon_0 c^2} \pdv[2]{t} \left( 2 \epsilon_0  \chi^{(2)} A_1 A_2 \ee^{\ii (k_1 + k_2) z} \ee^{-\ii \omega_3 t} \right) + \text{h.c.},
+\]
+其中我们设$\omega_3 = \omega_1 + \omega_2$，$\chi^{(2)}$指的是$\chi^{(2)}(\omega_3=\omega_1+\omega_2)$。
+上式右边的因子$2$来自$\chi^{(2)} \vb*{E} \vb*{E}$展开之后——实际上，也可以用一种更绕的办法得出这个因子：设拉氏量中产生了$\chi^{(2)} \vb*{E} \vb*{E}$项的项的耦合常数为$\alpha$，则大体上
+\[
+    \dv{\vb*{E}} (\alpha \vb*{E} \vb*{E} \vb*{E}) = \chi^{(2)} \vb*{E} \vb*{E},
+\]
+有
+\[
+    \alpha = \frac{1}{3} \chi^{(2)},
+\]
+由于$\alpha$对应一个三条粒子线的顶角，它需要乘上对称性因子$3!$，于是最后就有因子$3! / 3 = 2$。
+请注意没有什么能够保证线性极化是频率无关的——没有理由认为$\omega=\omega(k)$是线性的。
+$E_3$的频率当然还是$\omega_3$。我们假定$E_3$大体上仍然是一个平面波（即做了\concept{平面波近似}），但是随着$z$增大，$A_3$会有变化。这样就有
+\[
+    \ee^{\ii k_3 z - \ii \omega_3 t} \left( \pdv[2]{z} + 2 \ii k_3 \pdv{z} - k_3^2 + \frac{\epsilon_\text{r}}{c^2} \omega^2 \right) A_3 = - \frac{\omega_3^2}{\epsilon_0 c^2} 2 \epsilon_0  \chi^{(2)} A_1 A_2 \ee^{\ii (k_1 + k_2) z} \ee^{-\ii \omega_3 t} .
+\]
+由于色散关系可以不是线性的，从而$k_3$和$k_1 + k_2$完全可以不同。
+上式左边括号中最后两项抵消了。再做\emph{慢变振幅近似}（几何光学中就做了这一近似，也可以称为旁轴近似），就有
+\[
+    \pdv{z} A_3 = \frac{\ii \omega_3^2}{k_3 c^2} \chi^{(2)} A_1 A_2 \ee^{\ii (k_1 + k_2 - k_3) z}.
+\]
+求解这一方程，考虑到泵浦光中没有$E_3$分量，从而$z=0$处$A_3=0$，以及晶体厚度为$L$，就得到
+\begin{equation}
+    A_3(L) = \frac{\ii \chi^{(2)} \omega_3^2 A_1 A_2}{k_3 c^2} \left( \frac{\ee^{\ii \Delta k L} - 1}{\ii \Delta k} \right),
+    \label{eq:two-pump-a3}
+\end{equation}
+其中
+\begin{equation}
+    \Delta k = k_1 + k_2 - k_3.
+\end{equation}
+$E_3$分量的强度是
+\[
+    I_3 = \expval*{\epsilon_0 n_3 c E_3^2} = 2 \epsilon_0 n_3 c \abs*{A_3}^2,
+\]
+于是就得到
+\begin{equation}
+    I_3 = \frac{8 \epsilon_0 (\chi^{(2)})^2 \abs*{A_1}^2 \abs*{A_2}^2 \omega_3^2}{n_3 c} \frac{\sin^2(\Delta k L / 2)}{(\Delta k)^2} = \frac{(\chi^{(2)})^2 \omega_3^2 I_1 I_2}{2 \epsilon_0 c^3 n_1 n_2 n_3} \mathrm{sinc}^2 \left( \frac{\Delta k L}{2} \right) L^2.
+    \label{eq:sfg-intensity}
+\end{equation}
+
+如果\concept{相位匹配条件}——即$k_3 = k_1 + k_2$——的确成立，那么$I_3$就稳定地随着$L^2$增大而线性增大，此时的SFG转换效率是非常高的。
+当然，$L$大到一定程度时，$I_1$和$I_2$就开始随着$L$增大而下降，并且吸收也开始明显了。
+大部分情况下相位匹配条件是没法成立的，因为色散非线性。此时随着$L$的增大，能量先是从$E_1$和$E_2$移向$E_3$模式，然后再从$E_3$模式移向$E_1$和$E_2$模式。
+大约需要
+\begin{equation}
+    L_\text{coh} = \frac{1}{\Delta k}
+\end{equation}
+的距离可以看到明显的能量转移，这个长度称为\concept{相干长度}。
+
+相位匹配条件叫做这个名字并非没有原因。在某个位置$z$处新产生的$E_3$光大体上形如
+\[
+    E_3 \sim E_1 E_2 \sim A_1 A_2 \ee^{\ii (k_1 + k_2) z - \ii (\omega_1 + \omega_2) t},
+\]
+如果$\Delta k \neq 0$，那么新产生的$E_3$光的波矢并不是$k_3$，从而它和原来已有的$E_3$光就会有一个随着$z$增大不断变化的相位差，在一些地方它们会发生相消干涉。
+这就是$\Delta k \neq 0$时$E_3$光强度发生振荡的原因。
+
+这里要说明一点：表面上相位匹配条件似乎应该总是成立，因为波矢实际上就是动量而我们讨论的系统动量守恒。
+然而，我们并没有真的在动量空间下工作：$A_i$是可以有空间起伏的，而在动量空间中它们只能是定值。
+不确定性原理告诉我们，此时无法严格定义$k$，或者等价地说用慢变振幅近似定义出来的$k$并不是真正的动量，从而也不必严格遵循动量守恒定律。
+只有相位匹配时才有较高的转换效率这件事实际上就是一个弱化版本的动量守恒条件。
+实际上，在分析SFG以外的过程时，不必做任何计算，只要系统具有空间平移对称性，我们就知道，相位匹配条件成立时转换效率最高，因为这是弱化版本的动量守恒条件。
+
+相位匹配时才有较高效的能量转换这一事实实际上大大简化了我们的分析。
+原则上，我们将频率为$\omega_1$和$\omega_2$的光输入一个非线性晶体，所有过程——和频，差频，倍频，光学整流——都会发生，因此我们\emph{不能}只取一个过程并按照它写出振幅分布方程。
+例如，种子光可以因为DFG过程而指数上升，也可以因为SFG过程而振荡，这两个效应按理说应该叠加，然后反过来影响SFG和DFG产生的光的强度。
+然而，很多时候，入射光给定之后SFG和DFG过程或者其它一些过程不能同时满足相位匹配条件，从而\eqref{eq:sfg-intensity}分母中的$\Delta k$会压低$I_3$能够达到的最大值。
+因此，其实可以分开计算每个过程。
+在有广谱的输入光——如制作光谱仪时——这个近似可能不再适用，此时需要做完整的三波混频方程求解。
+
+\subsubsection{输入光为泵浦光和种子光}
+
+本节考虑一个有些不同的情况：输入光还是有两个频率分量，但是其中一个频率分量是很弱的，从而SFG过程产生的光的幅度振荡的同时，那个比较弱的光的幅度也会振荡。
+用1表示泵浦光，2表示那个频率分量较弱的输入光（即所谓种子光），3表示SFG过程产生的光。
+此时的非线性麦克斯韦方程为
+\[
+    \begin{aligned}
+        \left( \pdv[2]{z} - \frac{\epsilon_\text{r}}{c^2} \pdv[2]{t} \right) E_3 &= \frac{1}{\epsilon_0 c^2} \pdv[2]{t} \left( 2 \epsilon_0  \chi^{(2)} A_1 A_2 \ee^{\ii (k_1 + k_2) z} \ee^{-\ii \omega_3 t} \right) + \text{h.c.}, \\
+        \left( \pdv[2]{z} - \frac{\epsilon_\text{r}}{c^2} \pdv[2]{t} \right) E_2 &= \frac{1}{\epsilon_0 c^2} \pdv[2]{t} \left( 2 \epsilon_0  \chi^{(2)} A_1^* A_3 \ee^{\ii (- k_1 + k_3) z} \ee^{-\ii \omega_2 t} \right) + \text{h.c.}.
+    \end{aligned}
+\]
+使用和上一节类似的慢变振幅近似，我们有
+\begin{equation}
+    \begin{aligned}
+        \pdv{A_3}{z} &= \frac{\ii \omega_3^2}{k_3 c^2} \chi^{(2)} A_1 A_2 \ee^{\ii \Delta k z}, \\
+        \pdv{A_2}{z} &= \frac{\ii \omega_2^2}{k_2 c^2} \chi^{(2)} A_1^* A_3 \ee^{- \ii \Delta k z}.
+    \end{aligned}
+    \label{eq:pump-and-seed-sfg}
+\end{equation}
+我们需要尝试将$A_2$和$A_3$的方程解耦。在相位匹配条件成立的情况下，只需要让以上两个方程两边各自对$z$再求一次导数，即可得到分别关于$A_2$和$A_3$的两个二阶微分方程
+\[
+    \pdv[2]{A_3}{z} = - \frac{\omega_3^2 \omega_2^2}{k_2 k_3 c^4} \abs*{A_1}^2 (\chi^{(2)})^2 A_3, \quad \pdv[2]{A_2}{z} = - \frac{\omega_3^2 \omega_2^2}{k_2 k_3 c^4} \abs*{A_1}^2 (\chi^{(2)})^2 A_2.
+\]
+在相位匹配条件不成立的时候，对\eqref{eq:pump-and-seed-sfg}中每个方程求导时等式右边会多出来一个$A_2$或$A_3$项，让求解变得困难。
+然而，根据之前“相位不匹配会导致新产生的光和已有的光在一些地方发生相消干涉”的物理图像，我们仍然可以确信，相位不匹配会导致能量转化效率下降。
+
+在相位匹配条件成立时，代入边界条件$A_3(0) = 0$，解得
+\begin{equation}
+    A_2(z) = A_2(0) \cos(k z), \quad A_3(z) = \ii \sqrt{\frac{\omega_3 n_2}{\omega_2 n_3}} \frac{A_1}{\abs*{A_1}} A_2(0) \sin(k z),
+\end{equation}
+其中
+\begin{equation}
+    k^2 = \frac{\omega_3^2 \omega_2^2}{k_2 k_3 c^4} \abs*{A_1}^2 (\chi^{(2)})^2. 
+\end{equation}
+我们发现一开始，能量从$\omega_2$模式转向$\omega_3$模式，但是一段时间之后能量又从$\omega_3$模式转向$\omega_2$模式。
+两个耦合的模式如此来回振荡。存在能量从$E_3$模式流向$E_2$模式的过程意味着在完全经典的计算中，SFG过程的逆过程也是可行的，虽然由于没有量子涨落，必须有种子光这个过程才能发生。
+在本节计算的例子中，泵浦光$E_1$起到了$\omega_3$转化为$\omega_1$和$\omega_2$的种子光的作用。
+
+\subsubsection{三束光均很强的情况}
+
+
+
+\subsection{DFG过程的一阶微扰}
+
+我们现在转而考虑DFG过程。前面提到过，经典理论中DFG过程不能从一束光凭空产生两束光。
+于是我们考虑一个这样的过程：$E_3$是基本上不衰减的泵浦光，它将要产生$E_1$和$E_2$两束光；$E_1$光也是输入光，即$E_1$模式上有种子光；$E_2$在$z=0$处为零。
+使用慢变振幅近似，有以下方程：
+\begin{equation}
+    \begin{aligned}
+        \pdv{A_1}{z} &= \frac{\ii \chi^{(2)}(\omega_1 = \omega_3 - \omega_2) \omega_1^2}{k_1 c^2} A_3 A_2^* \ee^{-\ii \Delta k z}, \\
+        \pdv{A_2}{z} &= \frac{\ii \chi^{(2)}(\omega_2 = \omega_3 - \omega_1) \omega_2^2}{k_2 c^2} A_3 A_1^* \ee^{-\ii \Delta k z}.
+    \end{aligned}
+    \label{eq:dfg-amplitude-eq}
+\end{equation}
+显然我们可以指定
+\begin{equation}
+    \chi^{(2)}(\omega_1 = \omega_3 - \omega_2) = \chi^{(2)}(\omega_2 = \omega_3 - \omega_1) = \chi^{(2)}.
+\end{equation}
+求解以上方程，得到
+\begin{equation}
+    A_1(z) = A_1(0) \cosh(\kappa z), \quad A_2(z) = \ii \sqrt{\frac{n_1 \omega_2}{n_2 \omega_1}} \frac{A_3}{\abs*{A_3}} A_1^*(0) \sinh(\kappa z),
+    \label{eq:dfg-amplitude}
+\end{equation}
+其中
+\begin{equation}
+    \kappa^2 = \frac{\omega_1^2 \omega_2^2}{k_1 k_2 c^4} \abs*{A_3}^2 (\chi^{(2)})^2 .
+\end{equation}
+这里，$\omega_1$和$\omega_2$光都指数增长。这里的关键点在于关于$A_1$的方程右边的$A_2$取了复共轭。
+物理图像上，单泵浦光的DFG过程中，$\omega_1$光子的出现能够刺激$\omega_2$光子的出现，反之亦然（请注意虽然在经典情况下需要有种子光$\omega_1$，但是生成$\omega_2$时\emph{不会}湮灭$\omega_1$光子——这可以从\eqref{eq:dfg-amplitude-eq}中看出，关于$A_2$的方程右边是表示产生的$A_1^*$而不是表示湮灭的$A_1$；$\omega_1$光只需要在那里即可，并不会被消耗），因此一旦有$\omega_1$光和泵浦光同时出现，$\omega_1$光和$\omega_2$光就会不断扩增，从而指数增长。
+反之，在单泵浦光输入的SFG过程中，产生$\omega_3$光子会消耗$\omega_2$光子，但是$\omega_3$光子不能诱发更多$\omega_1$光子转化为$\omega_2$光子，从而$\omega_2$光子和$\omega_3$光子存在竞争关系。
+
+从以上解可以看到一个有趣的现象，就是种子光$\omega_1$的相位其实是自行决定的，而$\omega_2$光的相位同时由泵浦光$\omega_3$和和种子光$\omega_1$的相位决定。
+这意味着非线性晶体不仅可以用来从一个频率的光源产生另一个频率的光源，还可以用于产生相位特定的新光源。
+
+\subsection{相位匹配条件的实现}
+
+如前所述，只有相位匹配时SFG过程或是DFG过程才足够明显。本节讨论给定三个任意频率的光，如何让它们能够满足相位匹配条件。
+由于介质色散的存在，相位匹配条件不总是能够完成的，因为联立方程
+\[
+    \omega_3 = \omega_1 + \omega_2, \quad \omega_3 n(\omega_3) = \omega_2 n(\omega_2) + \omega_1 n(\omega_1)
+\]
+未必有解。实际上，在所谓的正常折射率的情况下——即在$n$随着$\omega$增大而增大的情况下——这个方程就是无解的，因为显然
+\[
+    \omega_3 > \omega_1, \quad \omega_3 > \omega_2,
+\]
+从而
+\[
+    \omega_3 n(\omega_3) > \omega_1 n(\omega_3) + \omega_2 n(\omega_3) > \omega_1 n(\omega_1) + \omega_2 n(\omega_2).
+\]
+
+\subsubsection{双折射}
+
+一种获得相位匹配的方式是使用双折射晶体或者说单轴晶体。设我们有一块同时展现非线性光学效应和双折射的晶体——这样的晶体并不难找，因为大部分晶体的折射率都具有各向异性。
+大体上，我们有两种方法可以得到较强的二阶非线性过程：一种是所谓的Type I相位匹配，其中$\omega_1$光和$\omega_2$光的偏振方向一致。对负单光轴晶体我们要设法让
+\begin{equation}
+    n^\text{e}_3 \omega_3 = n^\text{o}_1 \omega_1 + n^\text{o}_2 \omega_2
+\end{equation}
+成立，而对正光轴晶体我们则设法让
+\begin{equation}
+    n^\text{o}_3 \omega_3 = n^\text{e}_1 \omega_1 + n^\text{e}_2 \omega_2
+\end{equation}
+成立。
+还有一种是所谓的Type II相位匹配，其中$\omega_1$光和$\omega_2$光的偏振方向不同。对负光轴晶体我们要设法让
+\begin{equation}
+    n^\text{e}_3 \omega_3 = n^\text{o}_1 \omega_1 + n^\text{e}_2 \omega_2
+\end{equation}
+成立，对正光轴晶体我们要设法让
+\begin{equation}
+    n^\text{o}_3 \omega_3 = n^\text{o}_1 \omega_1 + n^\text{e}_2 \omega_2
+\end{equation}
+成立。
+如果二阶非线性过程的产出在o光偏振方向或是e光偏振方向上有足够大的分量（既然晶体已经确定是各向异性的，输入o光大抵是能够产生e光的，反之亦然），我们就可以获得高效率的二阶非线性转化了。
+
+让这些式子之一成立似乎还是很难，但应注意到这里所谓的“$n^\text{e}$”\emph{可以不是}\eqref{eq:one-axis-matrix}中定义的那个——以任何一个方向为波矢方向的模式都可以是o光模式也可以是e光模式，如果它是e光模式，它的等效折射率由\eqref{eq:e-light-effective-index}给出。
+因此我们可以通过调整入射光波矢和晶体光轴方向之间的夹角来调整以上相位匹配条件中的$n^\text{e}$。
+为了避免讨厌的反射，我们可以让入射光垂直入射，此时所谓“调整入射光波矢和晶体光轴方向之间的夹角”就是调整光轴和非线性晶体表面的夹角。
+这就是所谓的\concept{角度调节}。
+
+使用二阶非线性双折射晶体有一个好处：可以通过偏振滤除输出光中的一些我们不需要的成分。
+例如，设我们要用两束泵浦光产生和频光子，并且使用Type I相位匹配，那就可以通过适当放置偏振片，滤掉未发生转化的泵浦光。
+无需使用不同频率的滤光片——偏振片就够了。
+
+角度调节的问题是，这样的光路中一般会存在走移角，这是宏观的一个量，从而可能会让我们希望能够重叠的光束无法重叠。
+例如，如果使用Type II相位匹配做SFG，那么$\omega_1$光和$\omega_2$光很快会因为走移角而分开，从而无法发生非线性相互作用。
+在Type I相位匹配中非线性相互作用可以持续发生，但是最终产生的光束在空间上会被展宽很多（从而单点强度就弱了）。
+作为替代，我们可以选择一些光学性能和温度关系很大的非线性晶体，固定$\theta = \SI{90}{\degree}$，此时没有走移角，并使用温度来调节$n^\text{o}$和$n^\text{e}$的相对关系，即所谓\concept{温度调节}。
+
+温度调节的好处是，这种方案中晶体可以做得比较厚，而不必担心走移角。
+温度调节也存在自己的不足：温度变化是很缓慢的，而此时晶体又通常比较厚，于是有可能晶体内外性变不一致，晶体内部会产生应力，甚至可能爆裂。
+
+\subsubsection{准相位匹配}
+
+在$\Delta k$非零但不大——即所谓\concept{准相位匹配}——时，可以通过这样的方法获得高效率的SFG转换：将一系列$\chi^{(2)}$指向周期性倒转的二阶非线性晶体贴在一起，让第一块晶体的厚度是$\pi L_\text{coh} / 2$，后面所有的晶体的厚度都是$\pi L_\text{coh}$。
+这样，根据\eqref{eq:sfg-intensity}，走过第一块晶体时，$I_3$强度打到最大值，此时能和$E_3$光发生相长干涉的光的相位是$\pi$；随后进入第二块晶体，$\chi^{(2)}$倒转，根据\eqref{eq:two-pump-a3}，这意味着新产生的$E_3$光获得一个$\pi$的相位，于是第二块晶体内仍然发生了相长干涉；在第二块晶体和第三块晶体的交界处，能和$E_3$发生相长干涉的光的相位是$0$，$\chi^{(2)}$再次倒转，根据\eqref{eq:two-pump-a3}，在第三块晶体中产生的$E_3$光的相位是$0$，于是还是相长干涉……
+如此重复即可获得持续增加的$\omega_3$光，虽然其增速不如相位完全匹配时的情况。
+
+准相位匹配已经是成熟的技术。PPLN装置等铁电体阵列是实现准相位匹配的常用装置。
+
+准相位匹配实际上说明了一点，就是晶体的性质有空间起伏时，之前的诸如相位匹配条件的东西都是不能直接适用的。
+这就提示我们，晶体内部的元激发——声子或者别的什么——可以借此和光耦合。
+我们将在\autoref{sec:general-four-wave}中讨论一些这样的过程。
+
+\subsubsection{反常折射}
+
+还有一种最容易想到的办法：为了实现相位匹配，我们可以去寻找一种特殊的材料，它在$\omega_3$附近有反常折射率，从而让相位匹配条件能够成立。
+如果我们可以调控非线性材料中的每个原子，做到这点其实是相对容易的，但是对任意的频率找对应的现成晶体还是比较难的。
+
+使用这种方法需要小心避开强吸收的频段（谐振子模型告诉我们，通常反常折射率就在这样的频段附近）。
+
+\subsection{高阶过程}
+
+SFG过程和DFG过程可以连续地发生，从而产生含有多个顶角的图，也产生大量频率不同的出射光，它们相对于一阶SFG和DFG过程当然很弱，但是是可以观测到的。
+在测量样品的光学响应时常有疏忽大意的实验者用一块二阶非线性晶体产生一束特定频率的光，结果发现用这束光通入样品之后出现了意料之外的一些频率的出射光，而实际上这些“有趣的新现象”只不过是二阶非线性晶体中的高阶过程产生的光而已。
+
+高阶过程产生的光并非全然无用。一些时候我们需要极高能量的光子（如ARPES需要紫外光），此时可以使用二阶非线性晶体的二阶谐波产生，三阶谐波产生甚至四阶谐波产生。
+
+\subsection{二阶非线性效应的各种应用}
+
+\subsubsection{应力测量}
+
+应力导致空间反演对称性破缺，从而可以产生二阶非线性光学过程。
+
+\subsubsection{波长调节}
+
+设我们手头上只有一个频率的光——比如说\SI{800}{nm}的光——而需要得到一束频率低一些的光——比如说\SI{1500}{nm}的光。没有别的光源可用。
+在光纤通信中经常会遇到这样的任务，如需要做这样的转换来避开容易受到干扰或是吸收的频段。
+这时候可以这么做：首先将\SI{800}{nm}光尽可能聚焦到一个材料中，让supercontinuum generation发生，从而得到一个非常宽的频谱（并且很弱），然后将纯净的\SI{800}{nm}光和这个宽谱光入射到一个二阶非线性晶体当中，这样这两者就分别起到了泵浦光和种子光的作用。
+当然，DFG过程产生的光的频率也是宽谱的，但是请注意只有满足相位匹配条件的过程才是最可能发生的。
+因此我们可以通过选用适当的非线性晶体，调整温度、入射角度等，让\SI{800}{nm}光变成\SI{1500}{nm}光的过程正好符合相位匹配条件，于是就得到了相当纯净的\SI{1500}{nm}输出光。
+
+\subsubsection{光学参数共振器（OPO）}\label{sec:opo}
+
+\concept{光学参数共振器（OPO）}是一个内部放置了一块二阶非线性晶体的光学共振腔。
+一束强泵浦光$\vb*{E}_3$始终穿过这块非线性晶体，其强度衰减不明显。
+如果在一定条件下只有DFG过程$\omega_3 = \omega_1 + \omega_2$发生，由于泵浦光恒定不变，$\omega_1$光和$\omega_2$光之间实际上只有线性耦合。
+如果从两个不同的方向向非线性晶体输入光，则方向1的$\omega_2$光不会和方向2的$\omega_2$光耦合，$\omega_3$光同理。
+方向1的$\omega_2$光和方向2的$\omega_3$光也不会有相互作用，因为此时相位匹配条件无法满足。
+因此，只有方向1上的$\omega_2$光和$\omega_3$光会有耦合，方向2上的$\omega_2$光和$\omega_3$光会有耦合，并且都是线性耦合。
+这种线性耦合服从\eqref{eq:dfg-amplitude}，即这两束光会指数增长，能够定义一个增益$g$。
+
+现在假定泵浦光已经输入了腔体。腔体本身有确定的、非常密集的离散谱，其量子涨落会让这些模式上的光子随机地产生，这就是DFG过程需要的种子光。
+相位匹配条件决定了只有频率在特定的$\omega_1$和$\omega_2$频率附近的光能够放大。
+设一个频率大体上是$\omega_1$的光子产生，它来回穿过非线性晶体，从而被一次次指数放大。
+这个过程当然不会永远持续下去，稳定时，在腔体内来回走一趟的增益和损耗（包括吸收和溢出腔体）彼此抵消。
+能够建立这样一个平衡，那么泵浦光就能够持续、高效率地转化为频率大体上是$\omega_1$和$\omega_2$、是腔体的某个本征频率的光。
+否则，这样的光传播几次就衰减到零，不能形成稳定的输出。
+
+形成稳定模式的条件的一个粗糙估计是
+\begin{equation}
+    \ee^{2 g L} = 1 - R^2,
+\end{equation}
+等式左边给出光在晶体中走两次得到的增益（如前所述，前一次穿过晶体的光和反射回来的光之间不存在耦合，因为相位匹配条件不满足），等式右边给出光的反射损失。
+由于增益很小而$R$很接近1，在上式两边做泰勒展开，我们有
+\begin{equation}
+    g L = 1 - R.
+\end{equation}
+
+
+\subsubsection{荧光信号的时间分辨}
+
+荧光持续的时间很长，但是很弱，我们可以在需要仔细分析的时间段制备一个脉冲，将荧光和这个脉冲同时输入一个非线性晶体，就可以把我们需要仔细观察的那一段分离出来。
+
+\subsubsection{光谱学}
+
+\section{三阶非线性极化的波动光学}\label{sec:chi-3-wave}
+
+受激拉曼效应，受激光栅（让光自己产生干涉，然后非线性效应让折射率发生周期性变化，再来一束光，就发生了衍射），CARS
+
+将一个波包压缩成一个阿秒级别的脉冲
+
+三阶非线性极化允许这样的过程发生：$\omega = \omega - \omega + \omega$，即一束光可以同时提供三个光子，产生同一频率的一个光子。
+也即，三阶非线性极化允许单频光自相互作用，或者说允许只涉及一个频率的简并混频。在二阶非线性极化中没有这种现象。
+仅仅这个过程就足够导致很多新奇的现象出现。
+
+\subsection{Kerr效应和相关的自相互作用}
+
+\subsubsection{Kerr效应和自聚焦}
+
+波列很长的波进入一个各向同性的、中心反演对称的非线性晶体，我们会发现它的折射率大体上是
+\begin{equation}
+    n = n_0 + \bar{n}_2 \expval*{\vb*{E}(t)^2} = n_0 + 2 \bar{n}_2(\omega) \abs*{\vb*{E}(\omega)}^2,
+    \label{eq:ref-index-change}
+\end{equation}
+其中$n_0$是弱光的折射率而$n_2$是一个二阶折射系数。这种折射率因为入射光而发生变化的效应称为\concept{Kerr效应}。
+
+Kerr效应可能是三阶非线性极化的结果。如果我们只考虑三阶非线性极化，就有
+\[
+    \vb*{P}_\text{NL} = 3 \epsilon_0 \chi^{(3)}(\omega=\omega + \omega - \omega) : \vb*{E}(\omega) \vb*{E}(\omega) \vb*{E}(\omega)^*,
+\]
+因子$3$可以直接通过展开$\chi^{(3)} \vb*{E} \vb*{E} \vb*{E}$获得，也可以再一次通过费曼图对称性因子获得：设拉氏量中产生了$\chi^{(3)} \vb*{E} \vb*{E} \vb*{E}$的那一项的耦合常数为$\alpha$，则
+\[
+    \dv{\vb*{E}} (\alpha \vb*{E} \vb*{E} \vb*{E} \vb*{E}) = \chi^{(2)} \vb*{E} \vb*{E} \vb*{E},
+\]
+于是
+\[
+    \alpha = \frac{1}{4} \chi^{(2)},
+\]
+而由于$\alpha \vb*{E} \vb*{E} \vb*{E} \vb*{E}$项有四条外线，含有它的图需要乘以一个对称性因子$4!$。
+在本节的自相互作用的情况下，由于有两条输入线的频率相同，需要除以一个因子$2$。（频率为$-\omega$的输入线和频率为$\omega$的输出线不等价，因为前者是外场线而后者不是）
+于是最终的因子是$4! / (4 \cdot 2) = 3$。
+在介质各向同性的情况下可以将$\chi^{(3)}$用一个标量代替，它后面的三个电场的乘积和单位张量缩并，于是
+\[
+    \begin{aligned}
+        \vb*{P} &= \epsilon_0 \chi^{(1)}(\omega) \vb*{E}(\omega) +  3 \chi^{(3)}(\omega=\omega + \omega - \omega) : \vb*{E}(\omega) \vb*{E}(\omega) \vb*{E}(\omega)^* \\
+        &= \epsilon_0 (\chi^{(1)}(\omega) + 3 \chi^{(3)}(\omega=\omega+\omega-\omega) \abs*{\vb*{E}(\omega)}^2) \vb*{E}(\omega).
+    \end{aligned}
+\]
+折射率的定义为
+\[
+    n^2 = 1 + \chi,
+\]
+取小量近似，就得到
+\begin{equation}
+    n_0(\omega)^2 = 1 + \chi^{(1)}(\omega), \quad \bar{n}_2(\omega) = \frac{3}{4n_0} \chi^{(3)}(\omega=\omega-\omega+\omega).
+\end{equation}
+
+我们还可以将折射率写成光的强度
+\begin{equation}
+    I = \frac{\epsilon_0 c n_0}{2} \abs*{\vb*{E}(\omega)}^2
+\end{equation}
+的函数，即
+\begin{equation}
+    n = n_0 + n_2 I,
+    \label{eq:reflective-index-indensity-dependence}
+\end{equation}
+其中
+\begin{equation}
+    n_2 = \frac{4}{\epsilon_0 c n_0} \bar{n}_2.
+\end{equation}
+
+折射率会随着入射光强而变化这件事意味着进入三阶非线性晶体的光会\concept{自聚焦}。
+如果$\bar{n}_2 > 0$，那么光束中心的光被偏折得更厉害，光束相当于经过了一个凸面镜；反之光束相当于经过了一个凹面镜。
+这个等效“透镜”的行为和频率相关，因此自聚焦可以用来设计一个频率筛选装置，即可以用于锁频。
+例如，可以在一个谐振腔内部放置两个自聚焦晶体，则只有频率适当的光能够在谐振腔中稳定地来回传播，频率不适当的光经过多次成像，会散得越来越开。
+
+\subsubsection{自相位调节}
+
+光波经过介质之后（相比另一束没有经过介质的光）会有相位变化，而由于$\bar{n}_2$的存在，光波经过一个三阶非线性晶体之后会有一个额外的相位变化
+\begin{equation}
+    \phi_\text{NL}(t) = \frac{\omega}{c} L n_2 I(t).
+    \label{eq:self-phase-adjustement}
+\end{equation}
+仪器把一束光大体上当成单频光而测它的频率（即所谓\concept{即时频率}，对单色光它就是光的频率，对有多频率光它大概是波包的中心频率），就得到
+\[
+    \omega_\text{temp} = - \pdv{\phi}{t},
+\]
+于是从三阶非线性晶体出来的光的即时频率会因为非线性效应而变化
+\begin{equation}
+    \Delta \omega_\text{temp} = - \frac{n_2 \omega L}{c} \pdv{I}{t},
+    \label{eq:temp-phase-change}
+\end{equation}
+即一束多频率的光经过时前面的会看起来更红，后面的会看起来更蓝。
+把这束光做频谱分析当然会发现频谱变宽了。频谱变宽了，时域的波包尺度就会变窄——因此可以用三阶非线性晶体做一个超快激光。
+例如可以用三阶非线性晶体做一系列薄片，波包每经过一个薄片，在时域的展宽就窄一些。
+我们这里不用一个非常厚的晶体，这是为了避免光强增强过快，导致光丝出现而损坏材料。
+如果使用多个薄片，光束被聚焦之后出射后又会散焦，从而可以比较容易地调控聚焦程度。
+同样，表面上，虽然弱光的$I$并不大，但我们可以增大$L$去调节它的相位，但其实这是不现实的。
+通过这种方式可以不需要什么苛刻的条件就产生超快脉冲。相比之下，使用固体激光器直接产生脉冲需要苛刻的温度条件。
+
+设脉冲在时间上持续了$\tau$，则频谱宽度为
+\[
+    \Delta \omega \sim \frac{2\pi}{\tau},
+\]
+而即时频率的变化为$\Delta \phi_\text{NL} / \tau$，因此为了让频率展宽足够明显，应当有
+\begin{equation}
+    \Delta \phi_\text{NL} \sim 2\pi.
+\end{equation}
+
+\subsubsection{光学孤子}
+
+自相位调节其实提醒我们一点：可能可以使用一些特殊的非线性效应反过来补偿色散导致的不同频率的光的相位差，从而让介质中能够产生孤子，这是一个波包，它能够稳定地在介质中传播，而不发生波包展宽。
+在光纤中这已经有了应用，一些时候可以制造一个展宽为微米级的孤子。
+
+我们设有一个波包
+\begin{equation}
+    E(z, t) = A(z, t) \ee^{\ii (k_0 - \omega_0 t)},
+    \label{eq:wave-package}
+\end{equation}
+其中$k_0$和$\omega_0$是中心波矢和频率，$A(z, t)$的时间和频率依赖给出波包的（随时间变化的）包络线。我们通常认为中心波矢和频率之间的关系是遵从线性折射率的，即
+\begin{equation}
+    k_0 = n_0(\omega) \frac{\omega_0}{c}.
+\end{equation}
+我们不区分线性和非线性效应，统一地求解非线性波动方程
+\[
+    \pdv[2]{E}{z} - \frac{1}{\epsilon_0 c^2} \pdv[2]{D}{t} = 0.
+\]
+做傅里叶变换
+\[
+    E(z, t) = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} E(z, \omega), \quad D(z, t) = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} D(z, \omega),
+\]
+并且
+\[
+    D(z, \omega) = \epsilon(\omega) E(z, \omega),
+\]
+其中$\epsilon(\omega)$是（带有非线性效应，依赖于$E$的）介电常数。
+我们于是得到非线性版本的亥姆霍兹方程
+\begin{equation}
+    \pdv[2]{E(z, \omega)}{z} + \epsilon(\omega) \frac{\omega^2}{c^2} E(z, \omega) = 0.
+    \label{eq:nonlinear-freq-domain-eq}
+\end{equation}
+我们能有幸得到形式这么好的方程当然归功于材料本身没有时间演化，否则在频域中$D$和$E$之间的关系就不是简单的“乘以一个系数”了。
+我们根据\eqref{eq:wave-package}以及$k_0$和$\omega_0$之间的关系是线性色散关系，得到
+\begin{equation}
+    E(z, \omega) = A(z, \omega - \omega_0) \ee^{\ii k_0 z } + \text{c.c.}.
+\end{equation}
+
+我们考虑慢变振幅近似。需要注意的是，此时这个近似是可能会失效的，几百飞秒的波包仍然满足这个近似，再小一些可能就失效了。
+我们进一步假定波包的频谱展宽相比于$\omega_0$是很小的。
+这样，\eqref{eq:nonlinear-freq-domain-eq}就变成
+\begin{equation}
+    2 k_0 \pdv{A(z, \omega - \omega_0)}{z} + (k^2 - k_0^2) A(z, \omega - \omega_0) = 0.
+    \label{eq:wave-package-amplitude}
+\end{equation}
+做泰勒展开
+\[
+    k = k_0 + \Delta k_\text{NL} + k_1 (\omega - \omega_0) + \frac{1}{2} k_2 (\omega - \omega_0)^2 + \cdots,
+\]
+其中$k_\text{NL}$为非线性效应导致的自相位调节。这样，\eqref{eq:wave-package-amplitude}就成为
+\begin{equation}
+    \pdv{A}{z} - \ii \Delta k_\text{NL} A - \ii k_1 (\omega - \omega_0) A - \frac{1}{2} \ii k_2 (\omega - \omega_0)^2 A = 0.
+\end{equation}
+做傅里叶反变换
+\[
+    A(z, t) = \int \frac{\dd{\omega}}{2\pi} A(z, \omega - \omega_0) \ee^{- \ii (\omega - \omega_0) t},
+\]
+得到
+\begin{equation}
+    \pdv{A}{z} + k_1 \pdv{A}{t} + \frac{1}{2} \ii k_2 \pdv[2]{A}{t} = \ii \Delta k_\text{NL} A.
+    \label{eq:wave-package-evolve}
+\end{equation}
+这其中，$k_1$和$k_2$是线性色散的一阶和二阶泰勒展开系数，它们是
+\begin{equation}
+    k_1 = \left(\pdv{k}{\omega}\right)_{\omega = \omega_0} = \left( \frac{1}{v_\text{g}} \right)_{\omega = \omega_0},
+\end{equation}
+以及
+\begin{equation}
+    k_2 = \left( \pdv[2]{k}{\omega} \right)_{\omega = \omega_0} = - \left( \frac{1}{v_\text{g}} \dv{v_\text{g}}{\omega} \right)_{\omega = \omega_0}.
+\end{equation}
+自相位调节为（把\eqref{eq:self-phase-adjustement}右边除以$L$就得到）
+\begin{equation}
+    \Delta k_\text{NL} = n_2 I \frac{\omega_0}{c}.
+\end{equation}
+
+如果\eqref{eq:wave-package-evolve}中完全没有非线性光学效应，并且$k$和$\omega$之间的关系不是线性的，那么就会出现波包展宽，因为此时$k_2 \neq 0$，做代换
+\[
+    \tau = t - \frac{z}{v_\text{g}},
+\]
+得到% TODO:衰减
+同理，自相位调节也会导致波包展宽。如果我们要求
+\begin{equation}
+    \frac{1}{2} k_2 \pdv[2]{A}{t} = \Delta k_\text{NL} A,
+\end{equation}
+那么就不会有任何波包展宽。一个例子是
+\begin{equation}
+    A(z, \tau) = A_0 \sech(\tau / \tau_0) \ee^{\ii k z},
+\end{equation}
+虽然以上求解过程似乎要求波包要具有特定的形状，这样才能形成孤子，但是实际上，一些形状不那么好的波包输入材料之后其实也能形成孤子，因为不符合波包形状要求的那些频率成分由于色散都各自跑远了，只留下一个孤子波包。
+
+\subsubsection{自陷}
+
+想象一束已经被聚焦过了，然后被输入一个三阶非线性晶体。例如，可以将三阶非线性晶体放在一个高斯光的光腰上。
+自聚焦现象如期发生，让光变得更强，然后自聚焦进一步增强……如果几何光学总是适用，那么最终光束将终结到一个点上。
+当然，在此之前衍射已经变得明显了。
+这里发生的事情就好像“外压和量子涨落的竞争”（我们会看到“量子涨落”并不只是比喻），最终形成一个光束尺寸相对稳定的\concept{光丝}。这就是所谓的\concept{自陷}。
+
+光丝并不是一个非常稳定的状态，因为如果介质中有什么东西散射了一下光丝，它的直径就会增大，光强变小，于是自聚焦的逆过程开始发生，最后光束又四散开去。
+但如果光丝足够强，它可能已经将介质内部打出一个等离子体通道了，这个时候支配光丝所在区域的光学性质的不是三阶非线性极化，而是等离子体的光学，光丝也就这样一直传播下去了。
+
+我们来估算什么时候自聚焦会发生。假定自聚焦区域内的折射率大体上是均一的（从而自聚焦区域内的$I$是常数，一旦出了自聚焦区域，就快速衰减为零），则自聚焦区域的边界上的临界角为
+\[
+    \cos \theta_0 = \frac{n_0}{n_0 + \var{n}}, \quad \var{n} = n_2 I,
+\]
+射向边界而入射角大于这个角的光将被反射回去，即不会溢出光丝。
+另一方面，光丝会有衍射，即在偏离入射光的波矢的地方仍然有光传播，本质上这是因为长得像平面波的光束不可能具有有限直径——光丝内部类似于平面波，但是它有有限大小的直径，我们在偏离入射光的波矢的方向上计算总电场，是能够得到非零结果的。
+我们也可以说这是位置和动量的不确定性：光丝的位置是比较确定的，从而“传播方向”是不完全确定的。
+我们借用孔径衍射的公式（因为这可以算是一个孔径衍射），衍射角为
+\[
+    \theta_d = \frac{0.61 \lambda_0}{n_0 d}.
+\]
+如果很多衍射光的衍射角小于全反射临界角，那么衍射会破坏光丝，而反之光丝可以进一步聚焦。
+因此，平衡时，$\theta_0 \sim \theta_d$。做近似
+\[
+    \cos\theta = 1 - \frac{\theta^2}{2},
+\]
+并且注意到$n_2 I$无论如何相比$n_0$都是非常小的，我们能够得到
+\begin{equation}
+    d \sim \frac{0.61 \lambda_0}{\sqrt{2 n_0 n_2 I}} .
+\end{equation}
+这给出了指定波长、线性折射率和自聚焦效应之后，形成稳定光丝的直径。
+我们马上可以，这对应一个功率
+\begin{equation}
+    P_\text{cr} = \frac{\pi d^2}{4} I = \frac{\pi 0.61^2 \lambda_0^2}{8 n_0 n_2}.
+\end{equation}
+这是一个完全确定的功率值，不多也不少。如果入射光束的总功率大于$P_\text{cr}$，那么光丝实际上只使用了入射光束的一部分，而如果入射光束的总功率小于$P_\text{cr}$则无法形成光丝。
+
+入射光仍然需要走过一段距离才能够形成光丝。
+
+\subsection{频率相同的多束光}
+
+\subsubsection{光学相位共轭}
+
+四波混频还能够导致另一个神奇的现象：\concept{光学相位共轭}，即在被一束入射光激励之后能够产生另一束波矢方向和入射光完全相反而频率不变的的出射光。
+设想我们向一块三阶非线性晶体输入两束波矢完全相反的泵浦光，用1和2标记它们，然后再输入一束随便什么光$\vb*{E}_3$。这样我们就有
+\begin{equation}
+    \begin{aligned}
+        \left( \laplacian - \frac{\epsilon_\text{r}}{c^2} \pdv[2]{t} \right) E_4 &= \frac{1}{\epsilon_0 c^2} \pdv[2]{t} (6 \epsilon_0 \chi^{(3)} A_1 A_2 A_3^* \ee^{\ii (\vb*{k}_1 + \vb*{k}_2 - \vb*{k}_3)} \cdot \vb*{r}) \ee^{- \ii \omega_4 t} + \text{h.c.} \\
+        &= \frac{1}{\epsilon_0 c^2} \pdv[2]{t} (6 \epsilon_0 \chi^{(3)} A_1 A_2 A_3^* \ee^{- \ii \vb*{k}_3} \cdot \vb*{r}) \ee^{- \ii \omega_4 t} + \text{h.c.} ,
+    \end{aligned}
+    \label{eq:four-wave-omega-4}
+\end{equation}
+其中
+\begin{equation}
+    \omega_4 = \omega_1 + \omega_2 - \omega_3.
+\end{equation}
+因此我们已经得到了一个波矢刚好反过来的$\omega_4$光。为了让$\omega_4$光和$\omega_3$光光学共轭，我们需要让
+\[
+    \omega_4 = \omega_1 + \omega_2 - \omega_3 = \omega_3,
+\]
+于是
+\begin{equation}
+    \omega_1 = \omega_2 = \omega_3 = \omega_4 = \omega.
+\end{equation}
+此时我们实际上还是在处理单频光；但是这不再是自相互作用了，因为$\vb*{k}_1$和$\vb*{k}_3$可以不平行和不相反：我们只需要
+\begin{equation}
+    \vb*{k}_1 = - \vb*{k}_2, \quad \vb*{k}_3 = - \vb*{k}_4,
+\end{equation}
+而$\vb*{k}_1$和$\vb*{k}_3$之间可以没有任何关系。上式满足之后相位匹配条件自然成立，因此转化效率是非常高的。
+这个系统在输入一束$\vb*{E}_3$光之后，会产生一束相位完全相反（虽然振幅未必一样的）的$\vb*{E}_4$光。
+% TODO：三阶晶体的相位匹配
+由于是单频光，\eqref{eq:four-wave-omega-4}中的因子$6$有时候也需要调整。
+
+% TODO：解方程
+
+干涉条纹的空间频率是波矢差；干涉条纹因为自相位调节导致折射率光栅
+
+\subsubsection{光学双稳}
+
+设我们在一个法布里-波洛腔中放置了一个三阶非线性晶体。本节考虑一个最简单的情况，即三阶非线性晶体完全充满整个谐振腔。
+设外界入射光振幅为$A_1$，晶体内的折射光振幅为$A_2$，从谐振腔的另一侧透出去的光的振幅为$A_3$，从谐振腔的另一侧反射回来的光的振幅为$A_3'$，与入射光方向相反，从入射侧返回的光的振幅为$A_1'$。
+暂时忽略介质吸收，则
+\begin{equation}
+    A_2' = r A_2 \ee^{2 \ii k L}, \quad A_2 = t A_1 + r A_2'
+\end{equation}
+其中$r$和$t$是谐振腔壁的反射和透射系数。从以上方程我们解出
+\begin{equation}
+    A_2 = \frac{\tau A_1}{1 - \rho^2 \ee^{2 \ii k L}} = \frac{\tau A_1}{1 - R \ee^{2 \ii \phi + 2 \ii k L}} = \frac{\tau A_1}{1 - R \ee^{\ii \delta}},
+    \label{eq:a2-from-a1-cavity}
+\end{equation}
+其中$\phi$是$r$的辐角（需要考虑这一点，因为腔壁可能有金属镀层）。
+需要注意$k$由于三阶非线性极化会导致折射率依赖于$I$。
+这里不能直接用\eqref{eq:reflective-index-indensity-dependence}，因为\eqref{eq:reflective-index-indensity-dependence}给出的是单束光的自相互作用，而在本节中谐振腔中有方向相反的两束光$A_2$和$A_2'$。
+正比于$A_2 A_2^*$的那部分非线性极化和正比于$A_2' (A_2')^*$的那部分非线性极化都会修正折射率，但是正比于$A_2 A_2'$的那部分非线性极化给出的电场的频率是$3 \omega$，而正比于$A_2^* A_2'$的那部分非线性极化不满足相位匹配条件，因此实际上我们有
+\begin{equation}
+    \delta = 2 \phi + 2 n_0 \frac{\omega}{c} L + 2 n_2 I_2 \frac{\omega}{c} L + 2 n_2 I_{2}' \frac{\omega}{c} L = 2 \phi + 2 \frac{\omega}{c} L (n_0 + \underbrace{(1+R) I_2}_{\approx 2 I_2}),
+    \label{eq:phase-cavity}
+\end{equation}
+而不是简单地将$\abs*{A_2}^2 + \abs*{A_2'}^2$代入\eqref{eq:reflective-index-indensity-dependence}。
+将\eqref{eq:a2-from-a1-cavity}取模长，就得到
+\begin{equation}
+    \begin{aligned}
+        I_2 &= \frac{T I_1}{(1 - R \ee^{\ii \delta}) (1 - R \ee^{- \ii \delta})} = \frac{T I_1}{(1 - R)^2 + 4 R \sin^2 \frac{\delta}{2}} \\
+        &= \frac{T I_1}{T^2 + 4 R \sin^2 \frac{\delta}{2}} = \frac{I_1 / T}{1 + (4 R / T^2) \sin^2 \frac{\delta}{2}}.
+    \end{aligned}
+    \label{eq:relation-i1-i2-cavity}
+\end{equation}
+联立\eqref{eq:phase-cavity}和\eqref{eq:relation-i1-i2-cavity}，即求解
+\begin{equation}
+    I_1 = T I_2 \left( 1 + \frac{4R}{T^2} \sin^2\left( \phi + \frac{\omega}{c} L (n_0 + (1+R) n_2 I_2) \right) \right),
+    \label{eq:cavity-bistability}
+\end{equation}
+即可得到谐振腔中的光强分布情况。
+
+显然，\eqref{eq:cavity-bistability}给出的$I_2$有可能不止一个。这意味着给定$I_1$实际上是\emph{不能}唯一确定$I_2$的：$I_2$和过去的$I_1$是有关系的。
+在存在两个$I_2$时我们说腔体存在\concept{光学双稳}，存在更多$I_2$时称为光学多稳。
+
+光开关：见Boyd 7.3.3，大体上说就是光强可以调控折射率从而可以调控光的干涉，从而控制不同方向上的光强。
+
+无损光强测量
+
+\chapter{均匀介质中的非参数过程}
+
+\section{拉曼散射和布里渊散射}\label{sec:general-four-wave}
+
+\autoref{sec:chi-2-wave}和\autoref{sec:chi-3-wave}给出了纯粹的光子-光子等效相互作用。
+介质中能被称为“波”的东西当然不只有光。本节讨论光和介质中的各种模式（或者说元激发）的耦合，即广义的、不局限于电磁波的多波混频。
+我们将介质初末态一样的过程称为\concept{参数过程}，如前面所说的三波混频和四波混频；本节要讨论的光和介质中模式的耦合则是\concept{非参数过程}，因为介质初末态是不同的。
+最为常见的两种广义多波混频是\concept{布里渊散射}和\concept{拉曼散射}。
+前者指的是光和晶体中的通常能够使用某种动量$\vb*{k}$标记的长距离集体模式——通常是声学声子——之间的散射，后者指的是光和介质中可以比较局域的模式——包括单个分子内部化学键的伸缩模式和光学声子——之间的散射。
+拉曼散射涉及的光子的频率变化显然要明显高于布里渊散射。
+
+\autoref{sec:chi-2-wave}和\autoref{sec:chi-3-wave}给出的可以说是光子的弹性散射，而本节讨论的则是光子的非弹性散射，因为有能量被放进了介质中的元激发，或是介质中的元激发将能量转移给了光子。
+我们将前者称为\concept{斯托克斯散射}，而将后者称为\concept{反斯托克斯散射}。
+
+\subsection{自发Raman效应的经典描述}
+
+\subsubsection{介质性能的涨落}
+
+自发Raman效应指的是光子在介质中吸收和放出某种元激发（以下我们为了叙述方便，统一称为“声子”，虽然这个激发完全可以是介质中分子的化学键的伸缩等无法定义波矢的激发），导致频率变化的现象。
+本节用一些经典图景分析此过程。
+设介质中出现了声子，这当然会导致介质性能出现振荡，于是将$\alpha$泰勒展开到一阶，得到
+\begin{equation}
+    \vb*{P} = \alpha \vb*{E}, \quad \alpha(t) = \alpha_0 + \pdv{\alpha}{Q} Q(t).
+\end{equation}
+由于我们在分析Raman散射，介质中的模式未必有良定义的波矢，因此以下我们只将时间切换到频域。
+设介质中谐振子正在以$\omega_q$振荡，泵浦光频率为$\omega_l$，则
+\begin{equation}
+    \vb*{P}(t) = \alpha_0 \vb*{E}_0 \cos(\omega_l t) + \frac{1}{2} \pdv{\alpha}{Q} \vb*{E}_0 Q_0 (\cos(\omega_l + \omega_q) t + \cos(\omega_l - \omega_q)t).
+\end{equation}
+可以看到我们有三个过程：一个是普通的$\omega_l$光的传播，对应\concept{瑞利散射}，一个是\concept{Stokes过程}，即输出光频率为$\omega_l - \omega_q$，散射光子的能量低于入射光子，还有一个是\concept{反Stokes过程}，即输出频率为$\omega_l + \omega_q$，散射光子的能量高于入射光子。
+Stokes过程和反Stokes过程各自给出一个有两条光子线和一条介质中元激发线的相互作用顶角，构成广义的三波混频。
+
+\subsubsection{能级}
+
+以上经典图景无法给出一些需要“能级布居数”才能解释的东西。例如，基本上低能级上的电子数目要远大于高能级，因此Stokes过程总是比反Stokes过程容易发生。
+实际上这个原理可以用来测定一个已知能谱的系统的温度，因为通过比较Stokes过程和反Stokes过程的发生几率来确定能级布居数，从而推算出温度。
+例如，通过声子和光子的耦合，我们可以测量出固体晶格的温度。
+分析Raman过程中的$\omega_q$也可以用于确定系统中的各个能级的相对能量差。
+
+\subsection{受激Raman效应}
+
+自发Raman效应在实验上价值不大。它首先过于弱了，其次由于Stokes过程占据主导而它会产生长波光子，这有可能会淹没在荧光信号中。
+此外，由于自发Raman效应要和已有的、在热态中的声子散射，它产生的出射光必然是非相干的。
+\concept{受激Raman效应}在实验中有着更多的用途。所谓受激Raman效应发生在入射光中存在Stokes光子和反Stokes光子的模式上的种子光的情况下。
+
+我们使用量子力学计算Raman效应的发生几率。由于并没有对光场做量子化，只需要做含时微扰即可。
+\[
+    \dv{W}{\omega} = \frac{2\pi}{\hbar} g(\omega) \abs{\sum_n \left(
+        \frac{\mel*{f}{e \vb*{r} \cdot \vb*{E}}{n} \mel*{n}{e \vb*{r} \cdot \vb*{E}}{g}}{\omega_l - }
+    \right)}^2
+\]
+我们在这里遇到了之前遇到过的类似的问题：如果没有频率为$\omega_l + \omega_q$的种子光，似乎Stokes光不能产生。
+换而言之，将光场当成经典场，将
+当然，这是因为我们没有考虑电磁场的量子涨落。
+
+\subsection{量子化光场的非参数过程}
+
+我们现在考虑一个量子化的光场和一个束缚态单电子系统的相互作用。系统状态包括两部分：光子占据数和电子能级。
+分别用希腊字母表示一个多光子态，用拉丁字母表示一个电子状态。
+
+我们考虑如下过程：电子从初态$\ket*{i}$吸收一个频率为$\omega_1$的光子，放出一个频率为$\omega_2$的光子，到达末态$\ket*{f}$。
+首先电子可以先放出$\omega_2$光子再吸收$\omega_1$光子，也可以先吸收$\omega_1$光子再放出$\omega_2$光子，并且吸收光子或者放出光子后会先到达一个虚能级。
+我们积掉虚能级就能够得到一个关于$\ket*{i}, \ket*{f}$和光子的有效哈密顿量。
+积掉虚能级给出的最低阶修正为
+\begin{equation}
+    \begin{aligned}
+        \mel*{\alpha_f, f}{H_\text{eff}}{\alpha_i, i} = &\mel*{\alpha_f}{\mel{f}{e \vb*{r} \cdot \vb*{E}_2^\dagger}{n} \frac{1}{\omega_1 + \omega_i - \omega_n} \mel*{n}{e \vb*{r} \cdot \vb*{E}_1}{i}}{\alpha_i} \\
+        + &\mel*{\alpha_f}{\mel{f}{e \vb*{r} \cdot \vb*{E}_1}{n} \frac{1}{- \omega_2 + \omega_i - \omega_n} \mel*{n}{e \vb*{r} \cdot \vb*{E}_2^\dagger}{i}}{\alpha_i},
+    \end{aligned}
+\end{equation}
+其中$\vb*{E}_1$代表正比于$a_1$的那个电场傅里叶分量，$\vb*{E}_2^\dagger$代表正比于$a_2^\dagger$的那个电场傅里叶分量。注意此时电场是算符。
+在体积为$V$的腔体中，有
+\begin{equation}
+    \vb*{E}_1 = \sqrt{\frac{\hbar \omega_1}{2 \epsilon_1 V}} \vu*{e}_1 \ee^{\ii \vb*{k}_1 \cdot \vb*{r} - \ii \omega_1 t} a_1, \quad \vb*{E}_2^\dagger = \sqrt{\frac{\hbar \omega_2}{2 \epsilon_2 V}} \vu*{e}_2^* \ee^{- \ii \vb*{k}_2 \cdot \vb*{r} + \ii \omega_2 t} a^\dagger_2,
+\end{equation}
+费米黄金法则为
+\[
+    \dv{W}{\omega} = 
+\]
+因此这个过程的跃迁率为
+\begin{equation}
+    \dv{W}{\omega} = \frac{8\pi^3 N \omega_1 \omega_2}{\epsilon_1 \epsilon_2 V} \abs*{\mel{f}{M}{i}}^2 g(\omega) \abs*{\mel*{\alpha_f}{a_2^\dagger a_1}{\alpha_i}}^2
+\end{equation}
+
+如果$\alpha_i$中没有$\omega_2$光子，那么
+\begin{equation}
+    \mel*{n_1 = m_1 - 1, n_2 = 1, \cdots}{a_2^\dagger a_1}{n_1 = m_1, n_2 = 0, \cdots} = \sqrt{m_{1}},
+\end{equation}
+从而$\omega_1$光子被吸收而产生$\omega_2$光子的概率正比于$\omega_1$光的强度。
+换而言之，自发Raman效应的发生几率正比于泵浦光的强度。
+另一方面，如果$\omega_2$光存在，则
+\begin{equation}
+    \mel*{n_1 = m_1 - 1, n_2 = m_2 + 1, \cdots}{a^\dagger_2 a_1}{n_1 = m_1, n_2 = m_2, \cdots} = \sqrt{m_1} \sqrt{m_2 + 1},
+\end{equation}
+因此在经典极限下，受激Raman效应发生的几率同时正比于泵浦光和种子光的强度。
+
+Raman效应可以看成是泵浦光、介质中元激发和Stokes/反Stokes光三个模式之间的耦合，即可以看成一个等效三波混频过程。
+由于介质中的元激发和Stokes（或是反Stokes）光都是泵浦光转化而来的，这个过程是\emph{自动相位匹配}的。这里的情况和\autoref{sec:opo}很像，虽然我们可以想象出一些相位匹配条件不满足的情况，但是最终的产出一定是相位匹配的。
+
+% 好像SRS指的又不是这个
+\subsection{（非相干的）受激Raman效应}
+
+全量子理论描述了一个双光子过程，看起来似乎对电磁波是线性的。然而，它涉及介质中原激发的产生，而我们并不希望讨论光学问题时显式处理介质中的元激发。
+因此从本节开始我们讨论它导致的等效光子-光子过程。
+
+最为简单的等效光子-光子过程均要求一定的非幺正过程。
+Stokes过程将产生一个声子，我们需要这个声子被弛豫掉；而反Stokes过程需要介质的热涨落提供一个声子。
+之后所谓“受激拉曼散射”——或者简写为\concept{SRS过程}——指的就是这两个过程。
+因此，即使泵浦光是高度相干的，通过SRS过程得到的Stokes光子之间也不相干，同样的，反Stokes光子之间也不相干，因为产生Stokes光子和反Stokes光子时均有环境扰动。
+
+按照全量子的理论，受激Raman散射发生的几率同时正比于泵浦光和种子光的强度，而我们知道受激Raman散射产生的光的功率又正比于受激Raman散射发生的几率。
+如果我们假定介质中元激发的寿命足够短，就能够写下这样一个（完全关于电磁波的）方程：
+\begin{equation}
+    \dv{I_2}{z} \propto I_1 I_2,
+\end{equation}
+或者如果用电场表示，$\omega_2$光会受到一个等效三阶非线性极化（涉及两个$\omega_1$光子和一个$\omega_2$光子）的补充。
+
+SRS过程无需考虑相位匹配条件，因为我们对介质中的元激发没有任何要求。
+
+在计算完单次光子-材料中模式的Raman散射之后，我们可以把有关计算结果用于确定宏观参数。我们有
+\begin{equation}
+    \abs{\vb*{E}_s}^2 = \ee^{G_R z - \alpha_s z} \abs{\vb*{E}_s(0)}^2,
+\end{equation}
+其中
+\begin{equation}
+    G_R = \gamma m_l \propto \frac{N}{V} \dv{\sigma}{\Omega} \frac{m_l}{\Gamma},
+\end{equation}
+其中
+\[
+    \frac{N}{V} \dv{\sigma}{\Omega} \sim \SI{10^{-8}}{cm^{-1}}, \quad \Gamma \sim \SI{1}{cm^{-1}}, \quad \gamma \sim \SI{10^{-3}}{cm/MW}.
+\]
+
+\subsection{CARS过程和等效四波混频}\label{sec:stimulated-raman-effective-four-wave}
+
+现在我们转而考虑另一个情况，即系统中基本上没有非幺正过程，从而可以使用零温场论积掉介质中的元激发。
+最简单的过程显然是将一个Stokes过程和一个反Stokes过程结合起来，让它们共用一个声子。
+这就给出了一个等效四波混频过程，% TODO
+这就是\concept{相干反Stokes拉曼散射（CARS）}。
+
+\subsubsection{光谱展宽}
+
+受激Raman效应可以用于展宽光谱：$\omega_1$光转化为频率为$\omega_2 = \omega_1 - \omega_{fi}$的Stokes光和频率为$\omega_2' = \omega_1 + \omega_{fi}$的反Stokes光，这个过程可以不断重复，而产生频率间隔为$\omega_{fi}$的梳子状的频谱。
+
+\subsubsection{Raman激光}
+
+既然受激Raman效应的发生几率正比于种子光，受激Raman效应中Stokes光似乎可以以$\ee$指数增加。这个机制称为\concept{Stokes激光}，是一种产生激光的机制。
+
+\subsection{受激Raman效应的光-物质波耦合描述}
+
+下面我们讨论什么时候“积掉介质中的元激发”不可行。在\autoref{sec:stimulated-raman-effective-four-wave}中我们相当于近似认为介质中的元激发在被一个二光子过程产生之后立刻被另一个二光子过程消耗。
+在介质中元激发产生不多，或者说光子频率和元激发频率相距很大时，这个近似是合理的。
+直观地看，光跑得比介质中的元激发快得多，所以在一个二光子过程中产生的元激发如果不马上被另一个二光子过程消耗，那很快它和产生它的光脉冲就已经离得很远了；
+
+然而，在光子频率和元激发频率非常接近时，泵浦光会持续不断地产生介质中的元激发，从而材料中会有大片的相干的元激发。因此，介质中的元激发（光学声子、自旋波等）、泵浦光和Stokes光能够持续耦合，“滚着往前跑”。
+此时
+
+\subsubsection{探测和灵敏度估计}
+
+强度变强了，荧光变弱了，灵敏度提高了
+
+使用拉曼散射还可以做高精度测量。其测定精度
+
+拉曼散射
+
+
+传播相位和天线相位不同导致相位差。
+
+\subsection{应用}
+
+\subsubsection{生物成像}
+
+生物体中不同组分的吸收波长的重合不大。
+自发拉曼散射足够用于做静态成像。如果要做动态成像，自发拉曼散射发生的速率就太慢了，必须要通过受激拉曼散射完成测定。
+
+设介质中有声波，则介质性能出现空间起伏，有
+\begin{equation}
+    \chi(\vb*{r}) = \chi_0 \cos(\vb*{G} \cdot (\vb*{r} - \vb*{v}_{\vb*{G}} t)), \quad \omega_\text{S} = \vb*{G} \cdot \vb*{v}_{\vb*{G}}.
+\end{equation}
+毫无疑问这会导致一定的光学效应：我们想象一系列折射率不同的介质被贴在一起，一束光被打入其中，则每一层界面都会有微弱的反射，在条件适当的情况下这些反射光相长干涉，产生明显的总的反射。%
+\footnote{
+    实际上，这样可以获得非常好的反射镜，比镀银的好得多。通过这种方法可以获得5到6个9的反射率。
+}%
+$\chi$出现周期性起伏的介质就是这样一种系统。
+另一个值得注意的地方是反射光会有小的频率变化，因为反射面在动，会有多普勒效应。
+
+在有了以上直觉性的考虑之后我们开始解方程。做通常的拟设
+
+\subsubsection{光纤通信的噪声及其消除方式}
+
+受激布里渊散射会限制光线通信的激光功率。光纤存在热涨落，时不时就会自发出现声子，
+
+\subsubsection{激光冷却}
+
+由于斯托克斯过程和反斯托克斯过程完全是等价的，可以设想，既然能够将激光照在介质上向介质提供能量，当然也可以设法将介质的能量转移到激光中。
+实际上，我们可以制备一个腔共振线正好落在反斯托克斯过程上的谐振腔，然后将一些分子放在腔中，并入射激光。
+其结果是反斯托克斯过程受到激励，分子不仅没有从激光吸收能量，反而被冷却了。

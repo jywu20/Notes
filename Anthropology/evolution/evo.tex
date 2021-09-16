@@ -1,0 +1,131 @@
+\documentclass[hyperref, UTF8, a4paper, oneside]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{autobreak}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{tikz-feynhand}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newrefformat{chap}{第\ref{#1}章}
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\newrefformat{back}{背景知识\ref{#1}}
+\newrefformat{info}{资料框\ref{#1}}
+\newrefformat{warn}{注意事项\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=section]{back}{背景知识}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{back}
+\newtcbtheorem[number within=section]{info}{资料框}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+\newtcbtheorem[number within=section]{warning}{注意事项}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\numberwithin{equation}{section}
+
+\newcommand{\hmn}[1]{% Hermann-Maguin notation
+  \ensuremath{\begingroup\setupHMN #1\endgroup}%
+}
+
+\newcommand{\setupHMN}{%
+  \doHMN{-}{\HMNoverline}%
+  \doHMN{*}{\HMNminverse}%
+  \doHMN{i}{\infty}
+}
+
+\newcommand{\doHMN}[2]{%
+  \begingroup\lccode`~=`#1
+  \lowercase{\endgroup\let~}#2%
+  \mathcode`#1="8000
+}
+
+\newcommand{\HMNminverse}[1]{\frac{#1}{m}}
+\newcommand{\HMNoverline}[1]{\mkern1mu\overline{\mkern-1mu#1\mkern-1mu}\mkern1mu}
+
+\newcommand{\Ztwo}{$\mathbb{Z}_2$}
+
+\newcommand{\bigO}[1]{\mathcal{O}(#1)}
+
+\title{进化论}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\section{基本观点}
+
+“物种是在变化的”这个说法最早可以追溯到古希腊的一些思想家，他们假定生命来自于某种海边的淤泥。
+基督宗教对“七天创世”的字面解释导致这一类说法几乎完全被遗忘。启蒙运动之后的一些思想家——比如布丰——也提出过进化思想，不过由于避免触怒宗教人士等原因，往往对此不再深究。
+生物分类学先驱林奈——双名法的创始人——就将他的双名法当成对永恒不变的“自然的体系”的一种描述。
+拉马克的进化论可能是第一个认真的、并且获得广泛传播的进化理论，他认为生物同时受到两种力量的驱动：一种是“适应力”，即用进废退，一种则是“复杂性力”，即生物有从简单到复杂的倾向。
+这两个机制在后世都受到批判：仅仅依靠多使用不能改变基因，因此用进废退的说法是错误的，的确，表观遗传是一种将后天获得的特性传递给后代的机制，但是且不说它并不能用“表观遗传”概括；至于复杂性力，这基本上就是神创论的一种翻版了。
+
+如今进化的概念不仅仅适用于物种；作为一个典型的复杂适应系统，它还能用于描述社会行为、文化、商业模式、流行病学，以及其它现象。
+进化论不再是生物学的一个分支，甚至也不是它的一个框架，而是一个覆盖广泛的“进化科学”。
+
+\end{document}

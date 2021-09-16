@@ -1,0 +1,163 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexbook}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{simplewick}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{slashed}
+\usepackage{centernot}
+\usepackage{tikz}
+\usepackage{tikz-feynhand}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand{\fsl}[1]{{\centernot{#1}}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\bigO}[1]{\mathcal{O}{#1}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\newcommand{\concept}[1]{\underline{\textbf{#1}}}
+\renewcommand{\emph}{\textbf}
+
+\newcommand{\normord}[1]{\vcentcolon\mathrel{#1}\vcentcolon}
+\providecommand{\vcentcolon}{\mathrel{\mathop{:}}}
+
+\tikzfeynhandset{
+    every boldfermion@@/.style={
+    /tikz/draw=none,
+    /tikz/decoration={name=none},
+    /tikz/postaction={
+            /tikz/draw,
+            /tikz/double,
+            /tikz/line width = \feynhandlinesize,
+            /tikzfeynhand/with arrow=0.5,
+        },
+    },
+    every boldfermion/.style={/tikzfeynhand/every boldfermion@@/.append style={#1}},
+    boldfermion/.style={
+    /tikzfeynhand/every boldfermion@@,
+    }
+}
+
+\allowdisplaybreaks[4]
+
+\title{相对论性量子场论}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\vspace{2em}
+
+如无特殊说明，本文所谓的本征态指的都是归一化。
+希腊字母的指标跑遍所有时空维度，而拉丁字母的指标仅仅跑遍空间维度，也就是$\mu, \nu, \ldots = 0, 1, 2, 3$而$i, j, \ldots = 1, 2, 3$。
+常规斜体字母$x, y, p$等若经说明为多分量对象，默认为四维矢量，相应的，$\vb*{x}, \vb*{y}, \vb*{p}$等为它们的空间部分。
+常规斜体字母的点乘表示四维矢量乘法，如
+\[
+    p^2 = \omega^2 - \abs{\vb*{p}}^2, \quad x \cdot y = x^0 y^0 - \vb*{x} \cdot \vb*{y} = t_x t_y - \vb*{x} \cdot \vb*{y}.
+\]
+指标$a,b,\ldots$也有可能指各种多分量对象的指标，未必正好取$1, 2, 3$。
+$T$表示编时算符，$N$表示正规序算符。
+
+张量的分量矩阵默认以排在前面的指标为行指标，以排在后面的指标为列指标。
+
+本文将略去所有最为基础的formalism：量子力学的基本框架——包括路径积分和正则形式，无论是关于单粒子的还是关于场的；如何将多粒子态写成场的激发态（即所谓二次量子化）；微扰论的形式理论等等。
+这些东西可以在任何好的量子场论教科书中找到。
+
+\part{相对论性量子场论}
+
+物理实验表明存在一个时间轴，且存在\concept{粒子}，它的自由度在不考虑引力导致的空间翘曲时包括一个三维欧氏空间，可能还有一些内禀自由度。
+狭义相对论还告诉我们，移动参考系，时间和空间的变换是洛伦兹变换，这对应一个$3+1$维闵可夫斯基时空，即度规可以化为
+\[
+    \eta_{\mu\nu} = \diag (1, -1, -1, -1)
+\]
+的四维几何。通常使用$t, x, y, z$或者$x^0, x^1, x^2, x^3$来依次标记这4个坐标。
+容易看出$x, y, z$或者说$x^1, x^2, x^3$就构成一个三维欧氏几何，它们是\concept{空间维}。%
+$x^0$则是\concept{时间维}。
+
+在狭义相对论中难以使用哈密顿动力学，因为此时“时间”的概念是不清楚的：应该使用固有时还是坐标时？
+因此，简单地将单粒子量子力学移植到相对论时空中不是好的选择。
+除此之外单粒子量子力学还存在一个很大的问题。为了让粒子有非平凡的运动，通常会往粒子的哈密顿量中引入一个势能，然而势能必须由另一些东西提供。
+如果这个“东西”的参数发生了变化，似乎应该认为势能发生了瞬时的变化，但这样就有信号的瞬时传递了。这和狭义相对论当然是矛盾的。
+
+场论是解决这个问题的一种方案。就刚才势场的问题，我们知道，实际上能够看到的大部分势场都是电磁相互作用产生的，的确，通过推迟势能够解决信号瞬时传输的问题，但是更加自然的做法是引入\emph{电磁场}的概念：物质激发出电磁场，电磁场反作用于物质。
+大量的场论能够很自然地服从狭义相对论——例如，电动力学在洛伦兹变换下不变。
+因此需要想出一种办法将已知在相对论情况下运作良好的场论移植到量子力学中。
+
+进一步的分析展示出，实际上场算符的线性叠加自然给出了一组产生湮灭算符，它们作用在理论的基态上可以覆盖整个希尔伯特空间，而这些产生湮灭算符的标签——如动量、自旋等——正好也是单粒子的标签。
+也即，场的希尔伯特空间实际上是多粒子态的Fock空间。这就是\concept{量子场论}的思想。
+“量子场论”这个说法实际上会引起一些可能的误解。最广泛地说，它指的是场的量子力学，但是实际上量子场论一般表示“认为场的哈密顿量是谐振子哈密顿量加上相互作用项之后得到的，场是粒子的产生湮灭算符，从而多粒子态可以看成场的激发态”的理论框架。
+经典场论中谐振子可以连续变化，而量子的谐振子的能级则是分立的；当有无限多个自由度时，这些分立的能级实际上就给出了多粒子态。
+实际上，通常所说的“量子场论”的意义更加局限，指的是满足相对论协变性的量子场论，即高能物理的量子场论；物理中如果需要分析非相对论协变性的量子场论，一般都是在分析凝聚态系统，此时基本的场就是电子场、声子场而相互作用是库仑相互作用，称为\concept{凝聚态场论}。
+
+凝聚态场论实际上已经足够复杂；在高能物理的量子场论中我们通常只分析少数几个粒子的散射过程，基态为真空态，而凝聚态场论中讨论含有大量粒子的基态、讨论束缚态问题都是非常常见的。
+另一方面，凝聚态场论不受到相对论协变性约束，因此其中有更多可能性。
+很多时候高能物理的量子场论实际上反而更加简单，虽然凝聚态场论背后的基本物理机制实际上只有库仑相互作用。
+
+\input{symmetry.tex}
+
+\input{fields.tex}
+
+\input{observe.tex}
+
+\part{规范场论}
+
+在单粒子量子力学和前面作为例子计算过的一些场论中，哈密顿量或是拉格朗日量中出现了一些动力学变量，我们从这些动力学变量中挑选出一些来，它们不多也不少地可以标记希尔伯特空间的一组基矢量。
+略微推广一下，我们其实可以研究这样的理论：从其中的彼此对易的动力学变量中挑选出一组，它们标记的基矢量张成的空间要\emph{大于}我们要研究的希尔伯特空间。
+这允许在理论中引入更加丰富的行为，而与此同时保持物理的自由度数目正确。
+
+一种获得这样的理论的构造方式是通过所谓的“规范对称性”。
+物理学中的对称性通常包括时空对称性（即将物理事件的时空坐标做一个变换，一般来说，是洛伦兹变换）和内部对称性（即某个参数空间中的变换，通常是各点上场的变换）。
+\concept{规范对称性}指的则是变换参数依赖局域时空坐标的对称性，即与定域的变换相关的对称性；通常我们在\emph{每一个}空间点都放置某个群$G$的副本，即在每个空间点都放置一个$G$的群元$g(x)$，我们要求理论在任何一个$g(x)$场的变换下都保持不变。
+如果一个理论具有
+因此我们可以看出规范对称性实际上并不是真正的对称性。
+如果算符$U$是一个真正的对称性操作，那么$\ket{\psi}$和$U \ket{\psi}$是\emph{不同的}波函数，而如果$U$是一个规范对称性，那么如果$\ket{\psi}$在希尔伯特空间中，$U \ket{\psi}$就\emph{不在}希尔伯特空间中；或者，我们可以要求$\ket{\psi}$和$U \ket{\psi}$认同。
+
+出于某些原因，大自然为基本粒子赋予的物理是非常节俭的。
+我们将看到，规范对称性的要求足够确定系统中各个场的相互作用方式。
+这一事实——即所谓\concept{规范原理}——是量子场论历史上所谓“改变人心的转换”，它被系统应用之前，各个场的相互作用基本上只能唯象确定，它被系统应用之后，只需要写出规范群（即局域对称性的对称群）就能够确定相互作用。
+
+本文将首先介绍电动力学，分析其性质，然后通过考虑其自然推广而得到杨-米尔斯理论。
+
+\input{qed.tex}
+
+\input{gauge.tex}
+
+\input{qcd.tex}
+
+\input{exact.tex}
+
+\end{document}
