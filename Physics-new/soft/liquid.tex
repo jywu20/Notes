@@ -1,205 +1,182 @@
 \part{简单流体}
 
-\cite{eft-fluid-rel}中非常狡猾地没有提我们如何量子化流体力学。
+本节讨论简单流体，基本上就是在讨论牛顿流体。不过，仅仅是简单流体也已经足够复杂了，因为输运项$\vb*{v} \cdot (\div{\vb*{v}})$在一定条件下会产生比较明显的效应，其非线性性让模拟流体运动变得十分困难。
 
-\chapter{牛顿流体的纳维-斯托克斯方程}
+\chapter{牛顿流体的一般理论}
 
-\section{唯象描述}
+牛顿流体指的是粘滞力与应变有线性关系的流体。
+我们已经有了方程\eqref{eq:continue-newton}和\eqref{eq:continue-internal-energy}了，牛顿流体当然服从它们，现在需要的就是根据牛顿流体的定义给出正确的应力$\sigma_{ij}$的形式和热流$\vb*{J}$的形式。
+由于牛顿流体的概念本身是唯象的，本章将主要通过宏观的对称性分析等来得到支配牛顿流体的方程。
 
-设距离为$y$，相对速度为$v$，平行移动的两块板之间充斥着流体，如果流体对移动的板的作用力满足
+常见的单组分流体一般都是牛顿流体。非牛顿流体常常是软物质的特征，见\autoref{chap:non-newtonian}。
+
+\section{纳维-斯托克斯方程（的力学部分）的宏观推导}
+
+\subsection{应力形式的初步确定}
+
+首先确定应力形式。设
 \begin{equation}
-    F = A \eta \frac{u}{y},
+    \sigma_{ij} = \sigma_{ij}^{(0)} + \sigma_{ij}',
+\end{equation}
+分别为和流速无关的项和只有有流速时才有的项。
+
+\subsubsection{静止流体不受剪切以及压强的概念}
+
+处在静止状态下的流体中不可能存在剪切力，实际上这可以看成流体的一种\emph{定义}。
+这意味着一个表面上的应力不可能有切向分量，即$\vu*{n} \cdot \vb*{\sigma} \propto \vu*{n}$，从而我们设
+\begin{equation}
+    \sigma^{(0)}_{ij} = - P \delta_{ij}.
+\end{equation}
+这就引入了压强的概念，因为显然
+\begin{equation}
+    P = \dv{F}{S}, \quad \vb*{F} = \vu*{n} \cdot \vb*{\sigma}.
+\end{equation}
+
+\subsubsection{线性粘滞}
+
+我们将$\sigma_{ij}'$设为$\vb*{u}$的泛函，即
+\[
+    \sigma_{ij}' = \sigma_{ij}'(\vb*{u}, \grad{\vb*{u}}, \ldots),
+\]
+在伽利略变换下理论应该保持不变，则在流体中各点$\vb*{u}$一致的情况应该和静止流体完全一样，从而$\sigma'_{ij}$和$\vb*{u}$无关。%
+\footnote{
+    需注意对一些系统——如介质中的电器——伽利略不变性破缺是可能的。
+    背景中完全可以存在某些具有确定的速度（一般就是静止）而能够让动量流失的东西——比如说杂质——从而流体可以受到直接正比于速度的粘滞力。
+    类似的，流体中运动的固体也可以直接受到正比于速度的粘滞力，此时流体充当了这个静止的、让动量流失的背景。
+}%
+假定流体中各点之间的关联足够局域，则$\sigma_{ij}'$只和$\grad{\vb*{u}}$有关，再假定速度梯度不大，则我们有
+\[
+    \sigma_{ij}' \propto \grad{\vb*{u}}.
+\]
+
+现在我们需要用$\grad{\vb*{u}}$做一系列线性运算，用它产生一个二阶张量。
+仅有的可能是
+\[
+    \sigma_{ij}' = a \pdv{u_i}{x_j} + b \pdv{u_j}{x_i} + c \pdv{u_l}{x_l} \delta_{ij}.
+\]
+做对称化和反对称化，重新定义$a, b$，将$\sigma_{ij}'$写成应变和扭转的函数：
+\[
+    \sigma_{ij}' = a \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} \right) + b \left( \pdv{u_i}{x_j} - \pdv{u_j}{x_i} \right) + c \pdv{u_l}{x_l} \delta_{ij}.
+\]
+由于流体均匀旋转时也没有粘滞力，而此时
+\[
+    \vb*{u} = \vb*{\Omega} \times (\vb*{r} - \vb*{r}_0),
+\]
+由于保度规性，应变和膨胀率$\pdv{u_l}{x_l}$均为零，因此$\sigma_{ij}'$和扭转无关，即
+\[
+    \sigma_{ij}' = a \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} \right) + c \pdv{u_l}{x_l} \delta_{ij},
+\]
+这意味着它仅仅是应变的函数。
+我们通常会将上式改写为
+\begin{equation}
+    \sigma_{ij}' = \eta \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} - \frac{2}{3} \pdv{u_l}{x_l} \delta_{ij} \right) + \zeta \pdv{u_l}{x_l} \delta_{ij},
+    \label{eq:stress-and-deform-linear}
+\end{equation}
+这样就有
+\begin{equation}
+    \sigma'_{ii} = 3 \zeta \pdv{u_l}{x_l}.
+\end{equation}
+非常合理地，我们命名$\eta$为\concept{剪切粘度}，而$\zeta$为\concept{体积粘度}。
+完整的应力公式为
+\begin{equation}
+    \sigma_{ij} = - P \delta_{ij} + \eta \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} - \frac{2}{3} \pdv{u_l}{x_l} \delta_{ij} \right) + \zeta \pdv{u_l}{x_l} \delta_{ij}.
+    \label{eq:newtonian-stress-general}
+\end{equation}
+
+只有剪切粘度时$\sigma_{ij}'$这部分应力直接正比于应变，即它们之间只相差一个标量。
+否则，两者之间的关系虽然是线性的，但是并不只相差一个标量。
+
+\subsection{纳维-斯托克斯方程}
+
+\subsubsection{假定粘度与温度无关}
+
+假定流体中各点温度变化不很大，以至于$\eta$和$\zeta$可以看成是各点都一样的，将\eqref{eq:newtonian-stress-general}代入\eqref{eq:continue-newton}，得到
+\begin{equation}
+    \rho \left( \pdv{\vb*{u}}{t} + \vb*{u} \cdot \grad \vb*{u} \right) = - \grad{P} + \eta \laplacian \vb*{u} + \left( \zeta + \frac{1}{3} \eta \right) \grad{(\div{\vb*{u}})} + \rho \vb*{f}.
+    \label{eq:ns-eq}
+\end{equation}
+这就是\concept{纳维-斯托克斯方程}。
+总结之前的推导，纳维-斯托克斯方程适用于满足以下条件的流体：
+\begin{itemize}
+    \item 单组分；
+    \item 不能稳定受剪切（几乎就是流体的定义）；
+    \item 伽利略变换下不变，均匀旋转下不变；
+    \item 各点关联足够局域，且没有特别大的速度梯度；
+    \item 各点物性均一。
+\end{itemize}
+这里的每个条件受到破坏都会产生新的物理：悬浊液等往往是复杂流体（见\autoref{chap:non-newtonian}）；液晶等物态兼有固体和流体的性质；材料中的电子“流体”的输运往往遵从欧姆定律，从而并非伽利略不变；大速度梯度的流体通常需要完整的动理学描述，例如激波；融化或是相变行为会导致显著的各点物性不均一。
+
+\subsubsection{狭义的牛顿流体}
+
+狭义的牛顿流体指的是粘滞力正比于应变，从而只有剪切粘度$\eta$的流体（见\eqref{eq:newtonian-stress-general}）。
+广义的牛顿流体则是指所有服从\eqref{eq:ns-eq}的流体。
+对狭义的牛顿流体，\eqref{eq:ns-eq}成为
+\begin{equation}
+    \rho \left( \pdv{\vb*{u}}{t} + \vb*{u} \cdot \grad \vb*{u} \right) = - \grad{P} + \eta \laplacian \vb*{u} + \frac{1}{3} \eta \grad{(\div{\vb*{u}})} + \rho \vb*{f}.
+\end{equation}
+
+剪切粘度可以通过以下方式实验测定。
+设距离为$y$，相对速度为$v$，平行移动的两块板之间充斥着流体，根据
+\begin{equation}
+    F = A \eta \frac{u}{y}
     \label{eq:shear-force-experiment}
 \end{equation}
-其中$\eta$是常数，就说这是\concept{牛顿流体}。$\eta$称为粘度；我们也可以将\eqref{eq:shear-force-experiment}作为粘度的定义，粘度是常数的流体称为牛顿流体。
-非牛顿流体常常是软物质的特征，见\autoref{chap:non-newtonian}。
+即可计算粘度$\eta$。
+我们也可以将\eqref{eq:shear-force-experiment}作为粘度的定义，这样，非牛顿流体就是那些粘度和应变有关的流体。
 
-对流体，我们有\concept{纳维-斯托克斯方程}
-\begin{equation}
-    \rho \left( \pdv{\vb*{v}}{t} + \vb*{v} \cdot \grad{\vb*{v}} \right) = - \grad{P} + \vb*{f}.
-\end{equation}
+不可压缩流体由于没有体膨胀，如果是广义的牛顿流体，那么也是狭义的牛顿流体。因此大部分单组分液体都是狭义的牛顿流体。
+一些低密度气体没有体积粘度，也是牛顿流体。
 
 \section{纳维-斯托克斯方程作为有效理论}
 
+\subsection{从对称性出发和基本自由度出发推导纳维-斯托克斯方程}\label{sec:ns-from-sym}
+
+\cite{eft-fluid-rel}
+大概套路：基本自由度可以是位移场，即comoving coordinates相对于实际的坐标和时间的分布。
+先根据不可压缩流体的性质，将“自由场拉氏量”写成一个保度规坐标变换下的不变量。
+然后可以求出能量动量张量
+\begin{equation}
+    T_{\mu \nu} = (\rho + p) u_\mu u_\nu + p \eta_{\mu \nu}
+\end{equation}
+正好是正确的能动张量。
+
+计算偏离基态的小的振动，可以得到声波和涡旋，后者是退化的，这意味着流体中不存在横波。
+
+那么耗散来自哪儿呢？我们对位移场做一个小的偏移（由于位移场的物理意义，这等价于坐标变换），位移场部分的作用量不变。此外，可以确信，整个理论的作用量——同时包括位移场部分的作用量、不考虑的微观自由度的作用量和耦合项——也是不变的。
+理论中那些微观自由度也是连通着流体一起动的，我们据此确定，耦合项随着坐标变换发生的变分和仅仅关于微观自由度的作用量随着坐标变换发生的变分正好抵消。
+这意味着耦合项相对于位移场的一阶展开的形式就是微观自由度自己的能动张量乘上位移场的导数。
+
+后面使用文小刚书上那种“积掉热浴”的方法就会发现位移场的格林函数存在有限大的一个虚部，因此存在耗散，并且通过计算格林函数的运动方程可以看出这个耗散就是$-k v$。
+
+这就得到了不可压缩流体的纳维-斯托克斯方程。
+
+但是这种场论语言并没有什么特殊的用处。耗散项是$-kv$这件事本身可以通过与前述分析等价的，基于微分方程形式的对称性分析得到。
+微扰论提供不了太多信息因为常见的流体问题都涉及很大的位移场，实际上是非微扰的。
+
+其实即使能够做微扰论，场论语言也没太大意义，因为基于微分方程的计算实际上就能够画费曼图。
+
+\subsection{纳维-斯托克斯方程和重整化群不动点}
+
+纳维-斯托克斯方程实际上是一个重整化群不动点，它可以通过对称性分析和一些别的直观的条件直接推导出来\cite{Visscher_1985}。
+
 \subsection{从玻尔兹曼方程到纳维-斯托克斯方程}\label{sec:from-boltmann-to-ns}
 
-完全经典的体系似乎无法“积掉”变量，但是正如\cite{reall2021effective}所示，在满足一定的条件之后，对完全经典的系统也可以定义低能有效理论，并且通过向系统中引入小幅的随机扰动能够扩大可以定义低能有效理论的经典体系的范围。
-按照这种思路，玻尔兹曼方程应该也可以有低能有效理论。
+实际上，从玻尔兹曼方程出发，施加一定条件，也可以推导出纳维-斯托克斯方程。
+在工程学科的资料中它通常是通过宏观的牛顿三定律推导出来的（见\autoref{sec:ns-from-sym}），但是我们看到，其中的各种参数是可以微观地计算的（正如\autoref{sec:boltmann-to-continuum}所示）。
 
-实际上，从玻尔兹曼方程出发可以推导出纳维-斯托克斯方程。
-纳维-斯托克斯方程实际上是一个重整化群不动点，它可以通过对称性分析和一些别的直观的条件直接推导出来\cite{Visscher_1985}。
-在工程学科的资料中它通常是通过宏观的牛顿三定律推导出来的，但是我们看到，其中的各种参数是可以微观地计算的。
-此外，对玻尔兹曼方程不适用的系统——比如说稠密系统——纳维-斯托克斯方程可能仍然成立。
+应注意一个系统的宏观自由度服从纳维-斯托克斯方程不意味着这个系统一定就服从玻尔兹曼方程。
+对玻尔兹曼方程不适用的系统——比如说稠密系统——纳维-斯托克斯方程可能仍然成立。
 另一方面，玻尔兹曼方程的低能有效理论也不止纳维-斯托克斯方程一个。
 通过将碰撞项的强度的量级记作$1/\epsilon$，根据$\epsilon$做一种称为Chapman–Enskog级数的微扰展开\cite{chapman_mathematical_1990}，我们能够从玻尔兹曼方程得到越来越精确的一系列近似解，纳维-斯托克斯方程仅仅是其中的一个低阶项而已。
 在Chapman-Enskog级数之外同样存在玻尔兹曼方程的解，如$\ee^{- 1 / \epsilon}$形式的解，出现在冲击波中。    
 与玻尔兹曼方程的宏观极限有关的问题如今是偏微分方程领域的话题。
-我们现在仅仅讨论如何从玻尔兹曼方程得到纳维-斯托克斯方程，不讨论能够从玻尔兹曼方程得到的纳维-斯托克斯方程以外的流体力学方程。
-
-我们需要首先指定在玻尔兹曼方程的低能有效理论中被保留的变量。一个非常合理的粗粒化定义是
-\begin{equation}
-    \expval{Q} = \frac{1}{\rho} \int \dd[3]{\vb*{v}} m Q(\vb*{r}, \vb*{v}) f(\vb*{r}, \vb*{v}, t),
-    \label{eq:corse-grain-in-boltzman}
-\end{equation}
-其中$\rho$定义为
-\begin{equation}
-    \rho = \int \dd[3]{\vb*{v}} m f(\vb*{r}, \vb*{v}, t).
-\end{equation}
-这里期望值只是将$\vb*{v}$平均了，保留了$\vb*{r}$。
-粒子数、动量、能量是任何情况下都能够保证有的守恒量，玻尔兹曼方程的宏观理论的基本自由度中应该是有它们的。
-于是我们尝试列写它们做了\eqref{eq:corse-grain-in-boltzman}粗粒化之后的运动方程，如果能够得到封闭的方程组，那么就得到了一个玻尔兹曼方程的低能有效理论。
-这里的具体计算可以在著名的朗道物理学教程的第十卷\cite{lifsic_physical_2008}的第一章中找到。
-
-先证明一个有用的结论。我们可以通过加入适当的$\delta$函数因子，将\eqref{eq:boltzmann-eq-with-force}右边的碰撞积分写成
-\begin{equation}
-    C[f] = \int \dd[3]{\vb*{v}_2} \int \dd[3]{\vb*{v}'} \int \dd[3]{\vb*{v}_2'} w(\vb*{p}, \vb*{p}_2, \vb*{p}', \vb*{p}_2') (f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t) - f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)),
-\end{equation}
-其中$w$是$\sigma \abs{\vb*{v} - \vb*{v}_2}$乘以适当的保证能量守恒和动量守恒的$\delta$函数因子。
-可以验证，由于时间反演不变性，交换$(\vb*{p}, \vb*{p}_2)$并且同时交换$(\vb*{p}', \vb*{p}_2')$之后$w$不变。
-将\eqref{eq:boltzmann-eq-with-force}右边的碰撞积分中关于入射速度$\vb*{v}$的一个任意的函数为$\varphi(\vb*{p})$，简记为$\varphi$，则
-\[
-    \int \dd[3]{\vb*{v}} \varphi(\vb*{p}) C[f] = \int \dd[3]{\vb*{v}} \int \dd[3]{\vb*{v}_2} \int \dd[3]{\vb*{v}'} \int \dd[3]{\vb*{v}_2'} \varphi(\vb*{p}) w(\vb*{p}, \vb*{p}_2, \vb*{p}', \vb*{p}_2') (f' f_2' - f f_2).
-\]
-上式的积分测度现在是高度对称的，不妨记作$\dd{\Gamma}$。
-在上式的第二项中交换$(\vb*{p}, \vb*{p}_2)$并且同时交换$(\vb*{p}', \vb*{p}_2')$之后，得到
-\[
-    \int \dd[3]{\vb*{v}} \varphi(\vb*{p}) C[f] = \int \dd{\Gamma} (\varphi - \varphi') w f' f_2'.
-\]
-上式在交换$(\vb*{p}, \vb*{p}_2)$同时交换$(\vb*{p}', \vb*{p}_2')$的变换下不变，则
-\[
-    \begin{aligned}
-        \int \dd[3]{\vb*{v}} \varphi(\vb*{p}) C[f] &= \int \dd{\Gamma} ((\varphi - \varphi') w f' f_2' + (\varphi_2 - \varphi_2') w f'_2 f') / 2 \\
-        &= \int \dd{\Gamma} (\varphi + \varphi_2 - \varphi' - \varphi'_2) w f'_2 f' / 2.
-    \end{aligned}
-\]
-因此，如果$\varphi(\vb*{p})$对$\vb*{p}$求和是某种守恒量，那么相应的就有
-\begin{equation}
-    \int \dd[3]{\vb*{v}} \varphi(\vb*{p}) C[f] = 0.
-    \label{eq:collision-conservation}
-\end{equation}
-
-将\eqref{eq:boltzmann-eq-with-force}写成简约形式
-\begin{equation}
-    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} + \frac{\vb*{F}}{m} \cdot \pdv{f}{\vb*{v}} = C[f],
-    \label{eq:boltmann-eq-simple-form}
-\end{equation}
-设单粒子质量为$m$，在上式两边乘上$m$并对$\vb*{v}$积分。
-第一项显然就是$\pdv*{\rho}{t}$。第二项根据\eqref{eq:corse-grain-in-boltzman}，是
-\[
-    \int \dd[3]{\vb*{v}} m \vb*{v} \cdot \pdv{f}{\vb*{r}} = \pdv{\vb*{r}} (\rho \expval{\vb*{v}}),
-\]
-第三项是典型的对散度积分的项，由于无穷远处粒子分布为零而为零。
-方程右边根据\eqref{eq:collision-conservation}为零。
-于是我们有
-\begin{equation}
-    \pdv{\rho}{t} + \div{(\rho \vb*{u})} = 0,
-    \label{eq:ns-particle}
-\end{equation}
-即粒子数守恒方程；这里我们定义
-\begin{equation}
-    \vb*{u} = \expval{\vb*{v}}, \quad \vb*{w} = \vb*{v} - \vb*{u}.
-    \label{eq:v-decomposite-u-w}
-\end{equation}
-
-类似的，我们在玻尔兹曼方程\eqref{eq:boltmann-eq-simple-form}两边乘上$m v_i$，并对$\vb*{v}$积分，由于动量守恒，根据\eqref{eq:collision-conservation}，方程右边为零，方程左边则是
-\[
-    \pdv{t} \int \dd[3]{\vb*{v}} m v_i f + \int \dd[3]{\vb*{v}} m v_i v_j \pdv{f}{r_j} + \int \dd[3]{\vb*{v}} v_i F_j \pdv{f}{v_j} = 0.
-\]
-第一项是$\pdv*{(\rho u_i)}{t}$，第二项是
-\[
-    \pdv{r_j} \int \dd[3]{\vb*{v}} mf v_j v_i = \pdv{r_j} (\rho \expval{v_j v_i}) = \pdv{r_j} (\rho u_j u_i + \rho \expval{w_j w_i}).
-\]
-第三项通过分部积分法可以化简为
-\[
-    \int \dd[3]{\vb*{v}} v_i F_j \pdv{f}{v_j} = - \int \dd[3]{\vb*{v}} \pdv*{v_i}{v_j} F_j f = - \int \dd[3]{\vb*{v}} m f \frac{F_j}{m} = - \rho f_j,
-\]
-其中我们定义
-\begin{equation}
-    \vb*{f} = \expval{\frac{\vb*{F}}{m}}.
-\end{equation}
-这样就有
-\begin{equation}
-    \pdv{(\rho u_i)}{t} + \pdv{(\rho u_j u_i)}{r_j} + \pdv{\rho \expval*{w_j w_i}}{r_j} = \rho f_i.
-    \label{eq:ns-momentum-in-components}
-\end{equation}
-定义
-\begin{equation}
-    \pi_{ij} = - \rho \expval*{w_i w_j},
-\end{equation}
-\eqref{eq:ns-momentum-in-components}就成为
-\begin{equation}
-    \pdv{(\rho \vb*{u})}{t} + \div{(\rho \vb*{u} \vb*{u})} = \div{\vb*{\pi}} + \rho \vb*{f}.
-    \label{eq:ns-momentum}
-\end{equation}
-我们由于没有计算$\vb*{\pi}$是什么，似乎得到了\eqref{eq:ns-momentum}也没有什么用，但是无论如何，$\vb*{\pi}$一定是$\vb*{r}, \vb*{v}, \rho, e$的函数，
-
-同样，在\eqref{eq:boltmann-eq-simple-form}两边乘上$m \vb*{v}^2 / 2$，根据\eqref{eq:collision-conservation}，方程右边为零，方程左边则是
-\[
-    \pdv{t} \int \dd[3]{\vb*{v}} \frac{1}{2} m \vb*{v}^2 f + \pdv{r_i} \int \dd[3]{\vb*{v}} \frac{1}{2} m \vb*{v}^2 v_i f - \int \dd[3]{\vb*{v}} \pdv{v_i} \left( \frac{F_i}{m} \frac{1}{2} m \vb*{v}^2 \right) f = 0.
-\]
-将分解\eqref{eq:v-decomposite-u-w}代入上式，并注意到
-\[
-    \pdv{v_i} (\rho f_i \vb*{v}^2 / 2) = \rho f_i v_i,
-\]
-得到
-\[
-    0 = \pdv{t} (\rho (\vb*{u}^2 + \expval*{\vb*{w}^2}) / 2) + \pdv{r_i} (\rho (\vb*{u}^2 u_i / 2 + u_i \expval*{\vb*{w}^2} /2 + \expval*{\vb*{w}^2 w_i} + \expval*{(\vb*{u} \cdot \vb*{w}) w_i})) - \rho \vb*{u} \cdot \vb*{f}. 
-\]
-引入内能的质量密度
-\begin{equation}
-    e = \dv{E_\text{internal}}{m} = \frac{1}{\rho} \dv{E_\text{internal}}{V} = \frac{1}{2} \expval*{\vb*{w}^2},
-\end{equation}
-以及
-\begin{equation}
-    J_i = \rho \expval*{\vb*{w}^2 w_i},
-\end{equation}
-得到
-\begin{equation}
-    \pdv{t} (\rho e + \rho \vb*{u}^2 / 2) + \div{((\rho e + \rho \vb*{u}^2 / 2) \vb*{u})} + \div{(\rho \vb*{J})} = \div{(\vb*{\pi} \cdot \vb*{u})} + \rho \vb*{u} \cdot \vb*{f}.
-    \label{eq:ns-energy}
-\end{equation}
-
-以上含有$w$的量或是待求解变量，或是可以通过状态方程写成待求解变量的函数，从而实际上方程\eqref{eq:ns-particle}，\eqref{eq:ns-momentum}和\eqref{eq:ns-energy}联立，并给定$\vb*{\pi}$和$\vb*{u}, \rho, \vb*{r}, e$的关系（当然，这就是流体的\concept{状态方程}，它的导出涉及流体的微观细节）就给出了封闭求解$\rho, \vb*{u}, e$需要的全部方程。
-这里的过程和常规的场论计算中计算被积掉的变量的关联函数而得到低能有效理论中的系数的步骤是完全一样的。
-将\eqref{eq:ns-particle}代入\eqref{eq:ns-momentum}，可以将\eqref{eq:ns-momentum}转化为
-\begin{equation}
-    \rho \pdv{\vb*{u}}{t} + \rho \vb*{u} \cdot \grad{\vb*{u}} = \div{\vb*{\pi}} + \rho \vb*{f},
-    \label{eq:ns-newton}
-\end{equation}
-上式实际上就是牛顿定律作用于流体微团上得到的纳维-斯托克斯方程，将它和\eqref{eq:ns-particle}以及状态方程联立求解同样能够封闭求解$\rho, \vb*{u}, e$。
-类似的能量方程也可以被修改，让流体的动能消失掉。在\eqref{eq:ns-newton}两边点乘上$\vb*{u}$并做矢量不定积分，得到
-\[
-    \rho \pdv{t}(\vb*{u}^2 / 2) + \rho \vb*{u} \cdot (\grad{\vb*{u}}) \cdot \vb*{u} = \vb*{u} \cdot (\div{\vb*{\pi}}) + \rho \vb*{u} \cdot \vb*{f}.
-\]
-另一方面我们有
-\[
-    \begin{aligned}
-        &\quad \pdv{t} (\rho \vb*{u}^2 / 2) + \div{(\rho \vb*{u}^2 \vb*{u} / 2)} \\
-        &= \rho \pdv{t}(\vb*{u}^2 / 2) + \frac{\vb*{u}^2}{2} \pdv{\rho}{t} + \rho \vb*{u} \cdot \grad \frac{\vb*{u}^2}{2} + \frac{\vb*{u}^2}{2} \div{(\rho \vb*{u})} \\
-        &= \rho \pdv{t}(\vb*{u}^2 / 2) + \rho \vb*{u} \cdot (\vb*{u} \cdot \grad \vb*{u}),
-    \end{aligned}
-\]
-于是就得到
-\begin{equation}
-    \quad \pdv{t} (\rho \vb*{u}^2 / 2) + \div{(\rho \vb*{u}^2 \vb*{u} / 2)} = \vb*{u} \cdot (\div{\vb*{\pi}}) + \rho \vb*{u} \cdot \vb*{f}.
-\end{equation}
-这就是动能的运动方程，将它代入\eqref{eq:ns-energy}就得到
-\begin{equation}
-    \pdv{(\rho e)}{t} + \div{(\rho e \vb*{u})} = - \div((\rho \vb*{J})) + \pi_{ij} \partial_i u_j.
-\end{equation}
-这就是内能的体积密度的运动方程。上式左边也等于
-\[
-    \rho \pdv{e}{t} + \rho \vb*{u} \cdot \grad e,
-\]
-于是得到
-\begin{equation}
-    \rho \pdv{\rho}{t} + \rho \vb*{u} \cdot \grad e = - \div((\rho \vb*{J})) + \pi_{ij} \partial_i u_j.
-\end{equation}
-这就是体积的质量密度的运动方程。
+我们现在讨论的仅仅是如何从玻尔兹曼方程得到纳维-斯托克斯方程，不讨论能够从玻尔兹曼方程得到的纳维-斯托克斯方程以外的流体力学方程。
 
 在更加工程的资料中，可能基本的变量不是$\rho, \vb*{u}, e$，而是更加容易测量的$p, \vb*{u}, T$，即我们将状态方程反过来用，用$p, T$表示$\rho, e$，这当然也是可以的，不过并没有揭示问题的物理实质，并且，在一些比较特殊的系统中可能并没有良定义的压强和温度，此时我们必须回到$\rho, \vb*{u}, e$的组合上来。
 
-\section{声波}
+\section{微扰行为}
+
+\subsection{声波}
 
 当速度的时间变化相比于空间输运非常大时，即
 \[
