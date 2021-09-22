@@ -1,0 +1,178 @@
+\chapter{辐射}\label{chap:radiation}
+
+我们已经讨论了电磁波的传播，本节则讨论电磁波是怎么产生的。
+
+\section{单粒子的辐射}
+
+\subsection{李纳-维谢尔势}
+
+本节求解空间中有单个运动电荷时的电势和矢势分布情况，所得结果称为\concept{李纳-维谢尔势}。
+实际上这就是在求解真空中电磁场的格林函数，但是只有在讨论辐射时这才有意义，因为只有此时我们需要确切地知道“电荷运动方式给定后电磁场的分布”。
+其它时候，或是根本不需要让电荷动起来（静电学），或是电荷运动恒稳，磁场可以直接计算出来（静磁学），或是电荷的存在根本可以归入有效介电常数中（电磁波的传播）。
+当然由于李纳-维谢尔势就是麦克斯韦方程的通解，对它做近似和多麦克斯韦方程做近似是一样的，所以我们其实也可以通过将李纳-维谢尔势做不同的近似，恢复出电磁波传播、似稳场近似、静电学等。
+
+在取洛伦兹规范之后，我们需要求解
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} - \frac{1}{c^2} \pdv[2]{\varphi}{t} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}).
+    \end{bigcase}
+\end{equation}
+使用格林函数法，有（暂时先不引入无穷小虚部）
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{- \vb*{k}^2 + \omega^2/c^2} \left( - \frac{\rho(\vb*{k}, \omega)}{\epsilon_0} \right) \\
+        &= \frac{1}{\epsilon_0} \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)}}{\vb*{k}^2 - \omega^2/c^2} \int \dd[3]{\vb*{r}'} \int \dd{t'} \ee^{\ii (\omega t' - \vb*{k} \cdot \vb*{r}')} \rho(\vb*{r}', t') \\
+        &= \frac{1}{\epsilon_0} \int \dd[3]{\vb*{r}'} \int \dd{t'} \rho(\vb*{r}', t') \int \frac{\dd{\omega}}{2\pi} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{\ee^{\ii (\vb*{k} \cdot (\vb*{r} - \vb*{r}') - \omega (t - t'))}}{\vb*{k}^2 - \omega^2/c^2}.
+    \end{aligned}
+\]
+首先计算$\vb*{k}$部分的积分，有
+\[
+    \begin{aligned}
+        \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} &= \int k^2 \sin \theta \dd{k} \dd{\theta} \dd{\varphi} \frac{\ee^{\ii k R \cos \theta}}{k^2 - \omega^2 / c^2} \\
+        &= 2\pi \int_0^\infty \frac{k^2 \dd{k}}{k^2 - \omega^2 / c^2} \frac{1}{\ii k R} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
+        &= \frac{\pi}{\ii R} \int_{-\infty}^\infty \frac{k \dd{k}}{k^2 - \omega^2 / c^2} (\ee^{\ii k R} - \ee^{-\ii k R}) \\
+        &= \frac{\pi}{2 \ii R} \int_{-\infty}^\infty \dd{k} \left( \frac{1}{k + \omega / c} + \frac{1}{k - \omega / c} \right) (\ee^{\ii k R} - \ee^{-\ii k R}).
+    \end{aligned}
+\]
+此时必须在分母上加入无穷小虚部。按照关于$\omega$的零点必须在下半平面以保证因果性的原则，我们将$\omega$替换为$\omega + \ii 0^+$，并使用留数定理（注意$\ee^{\ii k R}$项应取上半平面极点而$\ee^{- \ii k R}$项应取下半平面极点）就得到
+\[
+    \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{R}}}{\vb*{k}^2 - \omega^2/c^2} = \frac{2 \pi^2}{R} \ee^{\ii \omega R / c}, 
+\]
+于是
+\begin{equation}
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
+        &= \int \dd[3]{\vb*{r}'} \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} \rho(\vb*{r}', \omega) \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R}.
+    \end{aligned}
+\end{equation}
+这个结果展示了一个出射波：从$\rho(\vb*{r}', t')$出发的向外传播的球面波，而不是向内聚集的波。
+现在我们再做关于$\omega$的积分，会直接得到一个$\delta$函数：
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \int \frac{\dd{\omega}}{2\pi} \ee^{-\ii \omega (t-t')} \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0} \frac{\ee^{\ii \omega R / c}}{R} \\
+        &= \int \dd[3]{\vb*{r}'} \int \dd{t'} \delta(R/c + t' - t) \rho(\vb*{r}', t') \frac{1}{4\pi \epsilon_0 R} \\
+        &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}.
+    \end{aligned}
+\]
+同样的操作也可以对$\vb*{A}$和$\vb*{j}$做，最终得到
+\begin{equation}
+    \begin{bigcase}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{\rho(\vb*{r}', t - R / c)}{R}, \\
+        \vb*{A}(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{\mu_0}{4\pi} \frac{\vb*{j}(\vb*{r}', t - R / c)}{R}.
+    \end{bigcase}
+    \label{eq:general-solution-wave}
+\end{equation}
+标势的形式和静电场一致，矢势的形式和静磁场一致，只不过出现了一个时间推迟。
+我们经常把这样有时间推迟的量放在中括号里，即
+\[
+    \rho(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{[\rho]}{R},
+\]
+等等。
+
+当空间中只有一个电荷时，有
+\[
+    \rho(\vb*{r}, t) = q \delta(\vb*{r} - \vb*{r}_0(t)), \quad \vb*{j}(\vb*{r}, t) = q \dot{\vb*{r}}_0(t) \delta(\vb*{r} - \vb*{r}_0(t)),
+\]
+其中$\vb*{r}_0 = \vb*{r}_0(t)$是该电荷的运动轨迹。代入\eqref{eq:general-solution-wave}，有
+\[
+    \varphi(\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R},
+\]
+因此只有满足
+\begin{equation}
+    \vb*{r}' = \vb*{r}_0(t - R/c)
+    \label{eq:retarded-position-original}
+\end{equation}
+的部分才有贡献。但是要注意，$\vb*{r}'$同时也出现在$R$中，因此积分时不能仅仅将$\vb*{r}'$替换为$\vb*{r}_0(t-R/c)$，还需要做一个积分测度的变换。
+我们有
+\[
+    \grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))} = \vb*{I} - \frac{\vb*{R}}{cR} \dot{\vb*{r}_0}(t-R/c) ,
+\]
+于是
+\[
+    \det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))}) = 1 - \frac{\vb*{R}}{cR} \cdot \dot{\vb*{r}}_0(t-R/c),
+\]
+从而
+\[
+    \begin{aligned}
+        \varphi(\vb*{r}, t) &= \int \dd[3]{\vb*{r}'} \frac{1}{4\pi \epsilon_0} \frac{q \delta(\vb*{r}' - \vb*{r}_0(t - R / c))}{R} \\
+        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{1}{\det(\grad_{\vb*{r}'} {(\vb*{r}' - \vb*{r}_0(t - R/c))})} \frac{q}{R}}_{\vb*{r}' = \vb*{r}_0(t - R/c)} \\
+        &= \frac{1}{4\pi \epsilon_0} \eval{\frac{q}{R - \frac{\vb*{R} \cdot \dot{\vb*{r}}_0(t-R/c)}{c}}}_{\vb*{r}' = \vb*{r}_0(t - R/c)}.
+    \end{aligned}
+\]
+用$\vb*{v}$表示粒子的运动速度，就有
+\begin{equation}
+    \varphi(\vb*{r}, t) = \frac{1}{4\pi \epsilon_0} \frac{q}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
+    \label{eq:retarded-phi}
+\end{equation}
+类似的
+\begin{equation}
+    \vb*{A}(\vb*{r}, t) = \frac{\mu_0}{4\pi} \frac{q \vb*{v}'}{R' - \frac{\vb*{R}' \cdot \vb*{v}'}{c}},
+    \label{eq:retarded-a}
+\end{equation}
+其中$R'$和$\vb*{v}'$均为$t'$时刻的$R$和$\vb*{v}$而$t'$由
+\begin{equation}
+    R(t') = \abs*{\vb*{r} - \vb*{r}_0(t')} = c(t-t')
+    \label{eq:retarded-time}
+\end{equation}
+确定。这个方程看起来非常合理，我们将$\rho$有速度地出现在某个地方当成一个事件，它传递到$\vb*{r}$必然存在时间延迟，事件传播的速度就是光速，在$t$时刻，$\vb*{r}$点看到的$\vb*{r}_0$处的情况是$t'$时刻的，两者之差为
+\[
+    t - t' = \frac{\abs*{\vb*{r} - \vb*{r}_0(t')}}{c},
+\]
+就得到\eqref{eq:retarded-time}。
+
+前面$\delta$函数的积分改变了积分测度，让它比通常的要大一些。这看起来似乎有些奇怪，因为狭义相对论中似乎应该有尺缩效应，积分测度应该缩小。
+这里的关键在于运动电荷对某一点的电场的贡献涉及的空间积分应该体现的是“在这一点看到的运动物体的长度”（在静止参考系看到的物体两端传来的信号可能来自不同时刻）而不是“试图在静止参考系中测量得到的运动物体的长度”（测量时物体两端到达观察点的用时是一样的）。
+
+\subsection{辐射的多极展开}
+
+\eqref{eq:general-solution-wave}可以做多极展开，所得结果和静电场、静磁场完全一致，仅有的区别在于$\varphi$和$\vb*{j}$是推迟的。
+
+\subsubsection{电偶极辐射}
+
+设系统中的电荷分布主要体现为偶极子，对$\varphi$，零阶项为
+\[
+    \varphi^{(0)}(\vb*{r}, t) = \frac{1}{4\pi \epsilon_0} \frac{1}{\abs*{\vb*{r}}} \int \dd[3]{\vb*{r}'} \rho(\vb*{r}', t - R / c) = \frac{1}{4\pi \epsilon_0} \frac{Q}{r},
+\]
+不随时间变化，没有辐射。一阶项
+\[
+    \begin{aligned}
+        \varphi^{(1)}(\vb*{r}, t) &= - \frac{1}{4\pi \epsilon_0} \grad{\frac{1}{\abs*{\vb*{r}}}} \cdot \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}' \\
+        &= - \frac{1}{4\pi \epsilon_0} \div{\int \dd[3]{\vb*{r}'} \frac{\rho(\vb*{r}', t-R/c) \vb*{r}'}{\abs*{\vb*{r}}}},
+    \end{aligned}
+\]
+设$\vb*{p}$为总偶极矩，则
+\begin{equation}
+    \varphi^{(1)}(\vb*{r}, t) = - \div{\frac{[\vb*{p}]}{4\pi \epsilon_0 r}}. 
+\end{equation}
+对磁矢势，有
+\[
+    \begin{aligned}
+        \vb*{A}^{(1)}(\vb*{r}, t) &= \frac{\mu_0}{4\pi} \int \dd[3]{\vb*{r}'} \frac{\vb*{j}(\vb*{r}', t - R/c)}{\abs*{\vb*{r}}} \\
+        &= \frac{\mu_0}{4\pi} \int \dd[3]{\vb*{r}'} \frac{[\rho][\vb*{v}]}{\abs*{\vb*{r}}} \\
+        &= \frac{\mu_0}{4\pi} \dv{(t-R/c)} \int \dd[3]{\vb*{r}'} \frac{[\rho][\vb*{r}']}{\abs*{\vb*{r}}}.
+    \end{aligned}
+\]
+最后一个等号需要解释一下。我们可以将电荷分布离散化，从而
+\[
+    \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{v}(\vb*{r}') = \sum_i e \vb*{v}_i = \dv{t} \sum_i e \vb*{r}_i = \dv{t} \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') \vb*{r}',
+\]
+然后将$t$换成$t-R/c$即可。实际上，设$\phi$为某个守恒量的密度，那么一定有
+\[
+    \dv{t} \int \dd[3]{\vb*{r}} \phi \psi = \int \dd[3]{\vb*{r}} \phi \dv{\psi}{t},
+\]
+这个方程可以直接从连续性方程推得。于是我们有
+\begin{equation}
+    \vb*{A}^{(1)}(\vb*{r}, t) = \frac{\mu_0}{4\pi} \frac{[\dot{\vb*{p}}]}{r}.
+\end{equation}
+这里$[\dot{f}]$表示先让$f$对$t$求导，然后用$t-R/c$代替$t$，或者说让$f(t-R/c)$对$t-R/c$求导。
+
+现在我们还是可以一如既往地开始讨论时谐场，此时只需要认为电偶极子在做周期性振动即可。
+这种振动当然会消耗能量，但是我们暂时先假定有某些外加能量输入让电偶极子持续振荡。
+
+先计算出磁场，然后计算出电场比较方便。
+\begin{equation}
+    \vb*{B} = \frac{\mu_0 \omega^2}{4\pi c r} \vb*{e}_r \times [\vb*{p}].
+\end{equation}
+
+\section{电路的辐射}
