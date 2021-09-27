@@ -3,7 +3,40 @@
 前几章的电磁波传播都是没有任何边界条件约束的，此时如果介质均匀，那么电磁波可以以平面波的形式稳定传播。
 本章则讨论束缚在有限区域内的电磁波模式。
 
-\section{波导}
+原则上当然可以通过求解关于标势和矢势的方程来分析谐振腔的行为，例如解\eqref{eq:wave-eq}即可。
+通常谐振腔内部没有源，于是\eqref{eq:wave-eq}中的各个方程都是齐次的，且各个矢势分量之间没有关系，从而似乎求解标量亥姆霍兹方程即可获知谐振腔的行为。
+然而，边界条件实际上还是会让各个矢势分量和标势等都产生关系。
+因此使用标势和矢势并不能简化问题。于是，本章还是直接求解\eqref{eq:e-in-tensor-material}。
+特别的，各向同性体态中有
+\begin{equation}
+    \laplacian \vb*{E} + k_0^2 \vb*{E} = 0, \quad \div{\vb*{E}} = 0, \quad k_0 = \frac{\omega}{c},
+    \label{eq:isotropic-cavity-problem-origin}
+\end{equation}
+这里$\vb*{E} = \vb*{E}(\vb*{r}, \omega)$。
+通常我们会定义
+\begin{equation}
+    \tilde{\vb*{E}} = \sqrt{\epsilon} \vb*{E}(\vb*{r}, \omega), \quad \tilde{\vb*{B}} = \frac{\ii}{\sqrt{\mu}} \vb*{B}(\vb*{r}, \omega)
+\end{equation}
+来让$\vb*{E}$和$\vb*{B}$相差不要太大，此时
+\begin{equation}
+    \tilde{\vb*{B}} = \frac{1}{k_0} \curl{\tilde{\vb*{E}}}.
+    \label{eq:tilde-b-tilde-e-cavity}
+\end{equation}
+将\eqref{eq:isotropic-cavity-problem-origin}用$\tilde{\vb*{E}}$和$\tilde{\vb*{B}}$写出来，就是
+\begin{equation}
+    \begin{bigcase}
+        &\laplacian \tilde{\vb*{E}} + k_0^2 \tilde{\vb*{E}} = 0, \quad \laplacian \tilde{\vb*{B}} + k_0^2 \tilde{\vb*{B}} = 0, \\
+        &\tilde{\vb*{B}} = \frac{1}{k_0} \curl{\tilde{\vb*{E}}}, \quad \tilde{\vb*{E}} = \frac{1}{k_0} \curl{\tilde{\vb*{B}}}.
+    \end{bigcase}
+    \label{eq:isotropic-cavity-problem}
+\end{equation}
+最后一个方程只需要在倒数第二个方程两边作用散度，通过一些计算即可看出。
+
+\section{方形谐振腔}
+
+\subsection{立方体谐振腔}
+
+\subsection{方形波导}
 
 \concept{波导}是指一个长条状的、电磁波可以在其中传递的装置。我们讨论一个柱状的波导，它是一个形状任意的闭合曲线沿着垂直于截面的方向平移而形成的直导管，其壁为导体，内部填充了某种均匀介质。
 基本上，能够称为电磁波的电磁场构型都有很强的趋肤效应，因此接下来如无特殊说明我们认为波导的壁是理想导体，即认为导体内部没有任何场分布，即认为边界条件为
@@ -58,12 +91,79 @@ $\vb*{n} \times (\vb*{H}_2 - \vb*{H}_1) = \vb*{j}$同理。
 \end{equation}
 的电磁波入射波导之后会快速衰减。
 
-\section{立方体谐振腔}
+\section{导引矢量法}
 
-\section{球形谐振腔}
+注意到问题\eqref{eq:isotropic-cavity-problem}中$\tilde{\vb*{E}}$和$\tilde{\vb*{B}}$的形式高度对称，我们可以尝试通过一个特殊的构造产生它的一些解。
 
+设某个矢量$\vb*{M}$满足
 \begin{equation}
-    \tilde{\vb*{E}} = \sqrt{\epsilon} \vb*{E}(\vb*{r}, \omega), \quad \tilde{\vb*{B}} = \frac{\ii}{\sqrt{\mu}} \vb*{B}(\vb*{r}, \omega).
+    {\vb*{M}} = \curl{(\psi \vb*{c})},
 \end{equation}
+这样关于$\vb*{M}$的亥姆霍兹方程就变为
+\[
+    0 = \laplacian {\vb*{M}} + k_0^2 {\vb*{M}} = \curl{((\laplacian \psi + k_0^2 \psi) \vb*{c} + \psi \laplacian \vb*{c})}.
+\]
+注意此处$\vb*{c}$和$\psi$的定义不唯一。如果我们能够找到（一般都不容易找到）一个$\vb*{c}$满足
+\begin{equation}
+    \div{\vb*{c}} = \text{const}, \quad \curl{\vb*{c}} = 0,
+\end{equation}
+那么就有
+\[
+    \laplacian \vb*{c} = \grad(\div{\vb*{c}}) - \curl{(\curl{\vb*{c}})} = 0,
+\]
+于是
+\begin{equation}
+    \vb*{M} = \grad{\psi} \times \vb*{c}, \quad \vb*{M} \bot \vb*{c},
+\end{equation}
+关于$\vb*{M}$的亥姆霍兹方程等价于
+\begin{equation}
+    \laplacian \psi + k_0^2 \psi = 0.
+\end{equation}
+在解出$\vb*{M}$之后我们会注意到矢量场
+\begin{equation}
+    \vb*{N} = \frac{1}{k_0} \curl{\vb*{M}}
+\end{equation}
+满足
+\begin{equation}
+    \vb*{M} = \frac{1}{k_0} \curl{\vb*{N}}, 
+\end{equation}
+并且它也满足
+
+因此我们可以将$\vb*{M}$看成$\tilde{\vb*{E}}$，将$\vb*{N}$看成$\tilde{\vb*{B}}$，也可以反过来将$\vb*{M}$看成$\tilde{\vb*{B}}$，将$\vb*{N}$看成$\tilde{\vb*{E}}$。
+
+\subsection{平凡的例子：平面波}
+
+平面波的经验给出了一种挑选$\vb*{c}$的方法：尽可能让$\vb*{c}$垂直于主要的界面方向。
+
+\subsection{圆柱波导中的柱面波}
+
+将$\vb*{c}$选择为
+\begin{equation}
+    \vb*{c} = \vb*{e}_\rho,
+\end{equation}
+需要求解
+\begin{equation}
+    \frac{1}{\rho} \pdv{\rho} \left( \rho \pdv{\psi}{\rho} \right) + \frac{1}{\rho^2} \pdv[2]{\psi}{\phi} + \pdv[2]{\psi}{z} + k_0^2 \psi = 0.
+\end{equation}
+这个方程的求解是已知的：它最终转化为柱贝塞尔方程的求解。
+
+我们分析几种极限情况。$k \rho \to 0$的情况对应于在我们关心的距离尺度内电磁波的传播速度可以忽略的情况（或者$\rho$很小，或者$c$很大以至于$k$很小），而$x \to 0$时 % TODO:贝塞尔函数的渐近行为
+此时的解就是静电势的通解。
+
+圆柱波导中的电磁波模式本质上还是标量的。
+
+\subsection{球面波}
+
+选取
+\begin{equation}
+    \vb*{c} = r \vb*{e}_r.
+\end{equation}
+关于$\psi$的亥姆霍兹方程为
+\begin{equation}
+    \frac{1}{r^2} \pdv{r}\left( r^2 \pdv{\psi}{r} \right) + \frac{1}{r^2 \sin \theta} \pdv{\theta} \left( \sin \theta \pdv{\psi}{\theta} \right) + \frac{1}{r^2 \sin \theta} \pdv[2]{\psi}{\phi} + k_0^2 \psi = 0.
+\end{equation}
+
+以上求解过程说明三维球腔中不存在s波。
+从数学上看这来自所谓\emph{毛球定理}：$S^1$上可以有一个连续而处处不为零的切向量场，但是$S^2$上不可能有这样的切向量场。
 
 \chapter{非均匀折射率导致的散射}
