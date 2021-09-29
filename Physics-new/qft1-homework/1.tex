@@ -1,0 +1,226 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{QFT I, Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{1. Lorentz invariance} This is problem $2.6$ on p. 28 of Schwartz.
+(a) Show that
+\begin{equation}
+    \int_{-\infty}^{\infty} \dd k^{0} \delta\left(k^{2}-m^{2}\right) \theta\left(k^{0}\right)=\frac{1}{2 \omega_{k}}.
+    \label{eq:sch-2.6-1}
+\end{equation}
+where $\omega_{k}=\sqrt{|\vb*{k}|^{2}+m^{2}}$
+(b) Show the integration measure $\dd^{4} k$ is Lorentz invariant.
+(c) Show that
+\[
+\int \frac{\dd^{3} \vb*{k}}{2 \omega_{k}}
+\]
+is Lorentz invariant.
+
+\paragraph{Solution} 
+\begin{itemize}
+    \item[(a)] \[
+        \begin{aligned}
+        \int_{-\infty}^{\infty} \dd k^{0} \delta\left(k^{2}-m^{2}\right) \theta\left(k^{0}\right) &= \int_{0}^{\infty} \dd k^{0} \delta\left((k^0)^2 - \omega_k^2 \right)  \\
+        &= \int_{-\infty}^\infty \dd{((k^0)^2 - \omega_k^2)} \dv{k^0}{((k^0)^2 - \omega_k^2)} \delta((k^0)^2 - \omega_k^2) \\
+        &= \int_{-\infty}^\infty \dd{((k^0)^2 - \omega_k^2)} \frac{1}{2 k^0} \delta((k^0)^2 - \omega_k^2) \\
+        &= \int_{-\omega_k^2}^\infty \dd{x} \frac{1}{2 \sqrt{x + \omega_k^2}} \delta(x) \\
+        &= \frac{1}{2 \omega_k},
+        \end{aligned}
+    \]
+    which is exactly \eqref{eq:sch-2.6-1}.
+    \item[(b)] Consider a Lorentz transformation
+    \[
+        x^\mu \longrightarrow {x'}^{\mu} = \Lambda\indices{^{\mu}_\nu} x^\nu,
+    \] 
+    under which we have
+    \[
+        \begin{aligned}
+            \dd[4]{x'} &= \dd{{x'}^0} \wedge \dd{{x'}^1} \wedge \dd{{x'}^2} \wedge \dd{{x'}^3} \\
+            &= \left( \Lambda\indices{^0_\mu} \dd{x^\mu} \right) \wedge \left( \Lambda\indices{^1_\nu} \dd{x^\nu} \right) \wedge \left( \Lambda\indices{^2_\rho} \dd{x^\rho} \right) \wedge \left( \Lambda\indices{^3_\sigma} \dd{x^\sigma} \right).
+        \end{aligned}
+    \]
+    Since $\dd{x^\mu} \wedge \dd{x^\mu} = 0$, only when $\mu, \nu, \rho, \sigma$ all take different values can the second line have a non-zero value, so we can assume that $\mu, \nu, \rho, \sigma$ is a permutation of $0, 1, 2, 3$.
+    Also, by the definition of wedging, if $\mu, \nu, \rho, \sigma$ is an even permutation of $0, 1, 2, 3$, then
+    \[
+        \dd{x^\mu} \wedge \dd{x^\nu} \wedge \dd{x^\rho} \wedge \dd{x^\sigma} = \dd{x^0} \wedge \dd{x^1} \wedge \dd{x^2} \wedge \dd{x^3},
+    \]
+    and if $\mu, \nu, \rho, \sigma$ is an odd permutation of $0, 1, 2, 3$, then
+    \[
+        \dd{x^\mu} \wedge \dd{x^\nu} \wedge \dd{x^\rho} \wedge \dd{x^\sigma} = - \dd{x^0} \wedge \dd{x^1} \wedge \dd{x^2} \wedge \dd{x^3},
+    \]
+    So $\dd[4]{x'}$ can be rewritten as 
+    \[
+        \begin{aligned}
+            \dd[4]{x'} &= \Lambda\indices{^0_\mu} \Lambda\indices{^1_\nu} \Lambda\indices{^2_\rho} \Lambda\indices{^3_\sigma} \epsilon^{\mu \nu \rho \sigma} \dd{x^0} \wedge \dd{x^1} \wedge \dd{x^2} \wedge \dd{x^3} \\
+            &= \Lambda\indices{^0_\mu} \Lambda\indices{^1_\nu} \Lambda\indices{^2_\rho} \Lambda\indices{^3_\sigma} \epsilon^{\mu \nu \rho \sigma} \dd[4]{x}.
+        \end{aligned}
+    \]
+    We immediately find that $\Lambda\indices{^0_\mu} \Lambda\indices{^1_\nu} \Lambda\indices{^2_\rho} \Lambda\indices{^3_\sigma} \epsilon^{\mu \nu \rho \sigma}$ is the determinant of $\Lambda\indices{^\mu_\nu}$, and hence is $1$, so we have
+    \[
+        \dd[4]{x'} = \dd[4]{x},
+    \]
+    and therefore $\dd[4]{x}$ is Lorentz invariant.
+
+    Actually $\Lambda\indices{^0_\mu} \Lambda\indices{^1_\nu} \Lambda\indices{^2_\rho} \Lambda\indices{^3_\sigma} \epsilon^{\mu \nu \rho \sigma}$ is just the Jacobian determinant of the Lorentz transformation.
+    We have
+    \[
+        \dd[4]{x'} = \abs{\pdv{x'^\mu}{x^\nu}} \dd[4]{x},
+    \]
+    and by definition 
+    \[
+        \pdv{x'^\mu}{x^\nu} = \Lambda\indices{^\mu_\nu}.    
+    \]
+    Since the determinant of any Lorentz transformation matrix is $1$, we have $\dd[4]{x} = \dd[4]{x'}$.
+    Also, differential geometry guarantees that 
+    \[
+        \epsilon = \sqrt{\abs*{g}} \dd{x^1} \wedge \cdots \dd{x^n}
+    \]
+    is a (pseudo) tensor and so is its Hodge star, and in Minkowski spacetime $g = 1$, so $\dd[4]{x}$ indeed is a scalar. 
+    \item[(c)] 
+\end{itemize}
+
+\paragraph{2. Yukawa potential} This is problem $3.6$ on p.~43 of Schwartz.
+(a) Calculate the equation of motion for a massive vector $A_{\mu}$ from the Lagrangian
+\[
+\mathcal{L}=-\frac{1}{4} F_{\mu \nu}^{2}+\frac{1}{2} m^{2} A_{\mu}^{2}-A_{\mu} J^{\mu}
+\]
+where $F_{\mu \nu}=\partial_{\mu} A_{\nu}-\partial_{\nu} A_{\mu}$. Assuming $\partial_{\mu} J^{\mu}=0$, use the equations to find a constraint on $A_{\mu}$.
+(b) For $J_{\mu}$ the current of a point charge, show that the equations of motion for $A_{0}$ reduces to
+\[
+A_{0}(r)=\frac{e}{4 \pi^{2} \ii r} \int_{-\infty}^{\infty} \frac{k \dd k}{k^{2}+m^{2}} \ee^{\ii k \cdot r}.
+\]
+(c) Evaluate this integral with contour integration to get an explicit form for $A_{0}(r)$
+(d) Show that as $m \rightarrow 0$ you reproduce the Coulomb potential.
+
+\paragraph{Solution} \begin{itemize}
+    \item[(a)] By the Euler-Lagrangian equation we have
+    \[
+        \pdv{\mathcal{L}}{A_\mu} - \partial_\nu \pdv{\mathcal{L}}{\partial_\nu A_\mu} = 0.
+    \] 
+    The first term is 
+    \[
+        \pdv{\mathcal{L}}{A_\mu} = m^2 A^\mu - J^\mu.
+    \]
+    As for the second term, we have
+    \[
+        \begin{aligned}
+            \pdv{\mathcal{L}}{\partial_\nu A_\mu} &= - \frac{1}{2} F^{\rho \sigma} \pdv{(\partial_\rho F_\sigma - \partial_\sigma F_\rho)}{\partial_\nu A_\mu} \\
+            &= - \frac{1}{2} F^{\rho \sigma} (\delta_{\rho \nu} \delta_{\sigma \mu} - \delta_{\sigma \nu} \delta_{\rho \mu}) \\
+            &= - \frac{1}{2} (F^{\nu \mu} - F^{\mu \nu}) \\
+            &= F^{\mu \nu},
+        \end{aligned}
+    \]
+    and therefore
+    \[
+        \partial_\nu \pdv{\mathcal{L}}{\partial_\nu A_\mu} = \partial_\nu F^{\mu \nu} = - \partial_\nu \partial^\nu A^\mu + \partial_\nu \partial^\mu A^\nu.
+    \]
+    So the equation of motion is
+    \[
+        m^2 A^\mu - J^\mu + \partial_\nu \partial^\nu A^\mu - \partial^\mu \partial_\nu A^\nu = 0,
+    \]
+    or 
+    \begin{equation}
+        \partial_\nu \partial^\nu A^\mu - \partial^\mu \partial_\nu A^\nu + m^2 A^\mu = J^\mu.
+    \end{equation}
+
+    Under the assumption that $\partial_\mu J^\mu = 0$, we have
+    \[
+        \partial_\mu \partial_\nu \partial^\nu A^\mu - \partial_\mu \partial^\mu \partial_\nu A^\nu + m^2 \partial_\mu A^\mu = \partial_\mu J^\mu = 0,
+    \]
+    where the first two terms cancels, and we arrive at a constraint on $A^\mu$ that
+    \begin{equation}
+        \partial_\mu A^\mu = 0.
+    \end{equation}
+    This, in turn, simplifies the equation of motion into 
+    \begin{equation}
+        \partial_\nu \partial^\nu A^\mu = J^\mu.
+        \label{eq:yukawa-simplified-motion}
+    \end{equation}
+    \item[(b)] Note that vector components in \eqref{eq:yukawa-simplified-motion} are decoupled and for $A^0$ we have
+    \[
+        \partial_\nu \partial^\nu A^0 = J^0,
+    \] 
+    \item[(c)]
+\end{itemize}
+
+\end{document}

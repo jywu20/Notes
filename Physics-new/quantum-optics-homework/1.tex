@@ -1,0 +1,409 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+\newcommand{\mathscr}{\mathcal}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Quantum Optics, Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Scully 1.1} The radiation field in an empty cubic cavity of side $L$ satisfies the wave equation
+\begin{equation}
+    \nabla^{2} \mathbf{A}-\frac{1}{c^{2}} \frac{\partial^{2} \mathbf{A}}{\partial t^{2}}=0
+    \label{eq:scully-1-1-1}
+\end{equation}
+together with the Coulomb gauge condition $\nabla \cdot \mathbf{A}=0$. Show that the solution that satisfies the boundary conditions has components
+\begin{equation}
+    \begin{aligned}
+        &A_{x}(\mathbf{r}, t)=A_{x}(t) \cos \left(k_{x} x\right) \sin \left(k_{y} y\right) \sin \left(k_{z} z\right) \\
+        &A_{y}(\mathbf{r}, t)=A_{y}(t) \sin \left(k_{x} x\right) \cos \left(k_{y} y\right) \sin \left(k_{z} z\right) \\
+        &A_{z}(\mathbf{r}, t)=A_{z}(t) \sin \left(k_{x} x\right) \sin \left(k_{y} y\right) \cos \left(k_{z} z\right)
+        \end{aligned}
+    \label{eq:scully-1-1-2}
+\end{equation}
+where $\mathbf{A}(t)$ is independent of position and the wave vector $\mathbf{k}$ has components given by Eq. (1.1.21). Hence show that the integers $n_{x}, n_{y}, n_{z}$ in Eq. (1.1.21) are restricted in that only one of them can be zero at a time.
+
+\paragraph{Solution} The boundary condition concerning the vector potential is
+\[
+    \vb*{n} \times (\vb*{A}_1 - \vb*{A}_2) = 0, \quad \vb*{n} \cdot (\curl{\vb*{A}_1} - \curl{\vb*{A}_2}) = 0.
+\]
+Since under the Coulomb gage condition
+\[
+    \vb*{E} = - \pdv{\vb*{A}}{t}, \quad \vb*{B} = \curl{\vb*{A}}
+\]
+and both of them vanish outside the cavity, the vector potential is a spacial and temporal constant outside the cavity.
+We are free to add a global constant to $\vb*{A}$, and the most convenient choice is to let $\vb*{A} = 0$ outside the cavity, so the boundary condition is just
+\[
+    \vb*{n} \times \vb*{A} = 0, \quad \vb*{n} \cdot (\curl{\vb*{A}}) = 0
+\]
+inside the cavity.
+
+The first condition reads $A_x = A_y = 0$ on the $z=0$ plane and $z=L$ plane, $A_x = A_z = 0$ on the $y=0$ plane and the $y=L$ plane, and $A_y = A_z = 0$ on the $x=0$ plane and $x=L$ plane, which \emph{do not} mix the three components of $\vb*{A}$ together, so solving \eqref{eq:scully-1-1-1} with the boundary condition $\vb*{n} \times \vb*{A} = 0$ is just solving
+\begin{equation}
+    \laplacian A_i - \frac{1}{c^2} \pdv[2]{A_i}{t} = 0, \quad i = x, y, z
+    \label{eq:scully-1-1-components-sep}
+\end{equation}
+separately for all the three components.
+The problem for $A_x$ is 
+\begin{equation}
+    \left( \pdv[2]{x} + \pdv[2]{y} + \pdv[2]{z} \right) A_x - \frac{1}{c^2} \pdv[2]{A_x}{t} = 0, \quad A_x|_{y=0} = A_x|_{y=L} = A_x|_{z=0} = A_x|_{z=L} = 0.
+    \label{eq:scully-1-1-x-problem}
+\end{equation}
+By separation of variables we seek a solution in the form of
+\[
+    A_x(\vb*{r}, t) = A_{x,xt}(x, t) A_{xy}(y) A_{xz}(z),
+\]
+and the equations for $A_{x, xt}, A_{xy}, A_{xz}$ are
+\[
+    \left( \pdv[2]{x} - k_y^2 - k_z^2 \right) A_{x, xt} - \frac{1}{c^2} \pdv[2]{A_{x, xt}}{t} = 0, \quad \pdv[2]{A_{xy}}{y} + k_y^2 = 0, \quad \pdv[2]{A_{xz}}{z} + k_z^2 = 0,
+\]
+respectively. Imposing boundary conditions to \eqref{eq:scully-1-1-x-problem} to $A_{xy}$ and $A_{xz}$ we obtain
+\[
+    A_{xy}(y) = \text{const} \times \sin(k_y y) , \quad A_{xz}(z) = \text{const} \times \sin(k_z z),
+\]
+where
+\begin{equation}
+    k_y = \frac{2\pi n_y}{L}, \quad k_z = \frac{2\pi n_z}{L}, \quad n_y, n_z \in \mathbb{Z},
+    \label{eq:scully-1-1-ky-kz-conds}
+\end{equation}
+and we find $A_{x}$ has the form
+\begin{equation}
+    A_{x}(\vb*{r}, t) = A_{x, xt}(x, t) \sin(k_{xy} y) \sin(k_{xz} z), \quad k_{xy} = \frac{2\pi n_{xy}}{L}, k_{xz} = \frac{2\pi n_{xz}}{L}, \quad n_{xy}, n_{xz} \in \mathbb{Z}.
+    \label{eq:scully-1-1-ax-form}
+\end{equation}
+Similarly we solve \eqref{eq:scully-1-1-components-sep} for $A_y$ and the result is
+\begin{equation}
+    A_{y}(\vb*{r}, t) = A_{y, yt}(y, t) \sin(k_{yx} x) \sin(k_{yz} z), \quad k_{yx} = \frac{2\pi n_{yx}}{L}, k_{yz} = \frac{2\pi n_{yz}}{L}, \quad n_{yx}, n_{yz} \in \mathbb{Z},
+    \label{eq:scully-1-1-ay-form}
+\end{equation}
+and for $A_z$ the result is
+\begin{equation}
+    A_{z}(\vb*{r}, t) = A_{z, zt}(z, t) \sin(k_{zx} x) \sin(k_{zy} y), \quad k_{zx} = \frac{2\pi n_{zx}}{L}, k_{zy} = \frac{2\pi n_{zy}}{L}, \quad n_{zx}, n_{zy} \in \mathbb{Z},
+    \label{eq:scully-1-1-az-form}
+\end{equation}
+
+Now the Coulomb gauge condition is just
+\[
+    \pdv{A_{x, xt}}{x} \sin(k_{xy} y) \sin(k_{xz} z) + \pdv{A_{y, yt}}{y} \sin(k_{yx} x) \sin(k_{yz} z) + \pdv{A_{z, zt}}{z} \sin(k_{zx} x) \sin(k_{zy} y) = 0.
+\]
+This equation holds only when
+\[
+    k_{xy} = k_{zy}, \quad k_{xz} = k_{yz}, \quad k_{yx} = k_{zx},
+\]
+and
+\[
+    \pdv{A_{x, xt}}{x} \propto \sin(k_{yx} x), \quad \pdv{A_{y, yt}}{y} \propto \sin(k_{xy} y) , \quad \pdv{A_{z, zt}}{z} \propto \sin(k_{yz} z).
+\]
+We therefore rename $k_{yx}$ as $k_x$, $k_{xz}$ as $k_z$, and $k_{xy}$ as $k_y$, and we have
+\[
+    A_{x, xt} \propto \cos(k_x x), \quad A_{y, yt} \propto \cos(k_y y), \quad A_{z, zt} \propto \cos(k_x z),
+\]
+so finally, we have 
+\[
+    A_x(\vb*{r}, t) = \text{some function of $t$} \times \cos \left(k_{x} x\right) \sin \left(k_{y} y\right) \sin \left(k_{z} z\right)
+\]
+and similar equations for $A_y$ and $A_z$,where $k_x, k_y, k_z$ all satisfy Eq.~(1.1.21), and thus we prove \eqref{eq:scully-1-1-2}.
+
+Now if $n_x = n_y = n_z$, then $\vb*{k} = 0$. Hence $\sin(k_i r_i), i = x, y, z$ are constantly zero, and \eqref{eq:scully-1-1-2} is an all-zero trivial solution.
+If two of the integers $n_x, n_y, n_z$ are zero, say, $n_x = n_y = 0$, that still makes \eqref{eq:scully-1-1-2} an all-zero solution.
+That explains why only one of them can be zero at a time.
+
+\paragraph{Scully 1.2} If $A$ and $B$ are two noncommuting operators that satisfy the conditions
+\begin{equation}
+    [[A, B], A]=[[A, B], B]=0,
+    \label{eq:scully-1-2-1}
+\end{equation}
+then show that
+\begin{equation}
+    \begin{aligned}
+        \ee^{A+B} &= \ee^{-\frac{1}{2}[A, B]} \ee^{A} \ee^{B} \\
+        &= \ee^{+\frac{1}{2}[A, B]} \ee^{B} \ee^{A}.
+    \end{aligned}
+    \label{eq:scully-1-2-2}    
+\end{equation}
+This is a special case of the so-called Baker-Hausdorff theorem of group theory.
+
+\paragraph{Solution} To show \eqref{eq:scully-1-2-2} it is sufficient to prove 
+\begin{equation}
+    \ee^{A} \ee^{B} = \ee^{A + B + \frac{1}{2} \comm*{A}{B}},
+    \label{eq:scully-1-2-2-origin}
+\end{equation}
+as $\comm*{A}{B}$ commutes with both $A$ and $B$ and therefore commute with $\ee^A$ and $e^B$.
+To prove \eqref{eq:scully-1-2-2-origin}, we define an operator function $G(x)$ by 
+\begin{equation}
+    \ee^{x A} \ee^{x B} = \ee^{G(x)}.
+\end{equation}
+When $x=0$, $\ee^{G(x)} = 1$, so $G(x) = 0$, and we have Taylor series of $G(x)$ at $x=0$:
+\[
+    G(x) = x G_1 + x^2 G_2 + \cdots.
+\]
+Now consider the trivial equation
+\[
+    \ee^{- xB} \ee^{- xA} \dv{x} \left( \ee^{x A} \ee^{x B} \right) = \ee^{-G(x)} \dv{x} \ee^{G(x)},
+\]
+where LHS is 
+\[
+    \begin{aligned}
+        \ee^{- xB} \ee^{- xA} \dv{x} \left( \ee^{x A} \ee^{x B} \right) &=  \ee^{- xB} \ee^{- xA} (A \ee^{x A} \ee^{x B} + \ee^{x A} B \ee^{x B}) \\
+        &= \ee^{-xB} A \ee^{xB} + B.
+    \end{aligned}
+\]
+Obviously 
+\[
+    \begin{aligned}
+        \ee^{-xB} A \ee^{xB} &= \comm*{\ee^{-xB}}{A} \ee^{xB} + A \ee^{-xB} \ee^{xB} \\
+        &= \sum_{n=0}^\infty \frac{1}{n!} (-x)^n \comm*{B^n}{A} \ee^{xB} + A \\
+        &= \sum_{n=1}^\infty \frac{1}{n!} (-x)^n \comm*{B^n}{A} \ee^{xB} + A.
+    \end{aligned}
+\]
+Since we have \eqref{eq:scully-1-2-1}, or in other words,
+
+\[
+    G'(x) = G_1 + 2x G_2 + \cdots.
+\]
+
+\paragraph{Scully 1.4} If $f\left(a, a^{\dagger}\right)$ is a function which can be expanded in a power series of $a$ and $a^{\dagger}$, then show that
+(a) $\left[a, f\left(a, a^{\dagger}\right)\right]=\frac{\partial f}{\partial a^{\dagger}}$,
+(b) $\left[a^{\dagger}, f\left(a, a^{\dagger}\right)\right]=-\frac{\partial f}{\partial a}$,
+(c) $\ee^{-\alpha a^{\dagger} a} f\left(a, a^{\dagger}\right) \ee^{\alpha a^{\dagger} a}=f\left(a \ee^{\alpha}, a^{\dagger} \ee^{-\alpha}\right)$
+where $\alpha$ is a parameter.
+
+\paragraph{Solution} Suppose
+\begin{equation}
+    f(a, a^\dagger) = \sum_{m, n \geq 0} f_{mn} a^m (a^\dagger)^n.
+\end{equation}
+We do not include terms that start with $a^\dagger$, because by $\comm*{a}{a^\dagger} = 1$ we can move all $a$ operators to the left.
+We can also move all $a$ operators to the right, and write down a similar expansion
+\begin{equation}
+    f(a, a^\dagger) = \sum_{m, n \geq 0} g_{mn} (a^\dagger)^m a^n.
+    \label{eq:normal-ordered-general-form}
+\end{equation}
+\begin{itemize}
+\item[(a)] We have \[
+    \begin{aligned}
+        \comm*{a}{f(a, a^\dagger)} &= \sum_{m, n \geq 0} f_{mn} a^m \comm*{a}{(a^\dagger)^m} \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( [a, a^\dagger] (a^\dagger)^{m-1} + a^\dagger [a, (a^\dagger)^{m-1}] \right) \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( (a^\dagger)^{m-1} + a^\dagger [a, (a^\dagger)^{m-1}] \right) \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( (a^\dagger)^{m-1} + a^\dagger \left( a^\dagger [a, (a^\dagger)^{m-2}] + \comm*{a}{a^\dagger} (a^\dagger)^{m-2} \right) \right) \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( (a^\dagger)^{m-1} + a^\dagger \left( a^\dagger [a, (a^\dagger)^{m-2}] + (a^\dagger)^{m-2} \right) \right) \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( 2 (a^\dagger)^{m-1} + (a^\dagger)^2 \comm*{a}{(a^\dagger)^{m-2}} \right) \\
+        & = \cdots.
+    \end{aligned}
+\]
+As the expansion of $\comm*{a}{(a^\dagger)^{m}}$ goes, we get a sequence of equations in the form of 
+\[
+    \begin{aligned}
+        [a, f(a, a^\dagger)] &= \sum_{m, n \geq 0} f_{mn} a^m \left( (a^\dagger)^{m-1} + a^\dagger [a, (a^\dagger)^{m-1}] \right) \\
+        &= \sum_{m, n \geq 0} f_{mn} a^m \left( 2(a^\dagger)^{m-1} + a^\dagger [a, (a^\dagger)^{m-2}] \right) \\
+        &= \cdots,
+    \end{aligned}
+\]
+and the sequence stops at 
+\[
+    \sum_{m, n \geq 0} f_{mn} a^m \left( m (a^\dagger)^{m-1} + a^\dagger \comm*{a}{(a^\dagger)^{m-m}} \right),
+\] 
+so we have 
+\[
+    \comm*{a}{f(a, a^\dagger)} = \sum_{m, n \geq 0} f_{mn} a^m m (a^\dagger)^{m-1} ,
+\] 
+and since 
+\[
+    \pdv{f}{a^\dagger} = \sum_{m, n \geq 0} f_{mn} a^m \pdv{(a^\dagger)^m}{a^\dagger},
+\]
+we arrive at the conclusion that
+\begin{equation}
+    \comm*{a}{f(a, a^\dagger)} = \pdv{f}{a^\dagger}.
+\end{equation}
+\item[(b)] The logic is similar to (a) but this time the expansion is
+\[
+    \begin{aligned}
+        \comm*{a^\dagger}{f(a, a^\dagger)} &= \sum_{m, n \geq 0} \comm*{a^\dagger}{a^m} (a^\dagger)^n \\
+        &= \sum_{m, n \geq 0} \left( \comm*{a^\dagger}{a} a^{m-1} + a \comm*{a^\dagger}{a^{m-1}} \right) \\
+        &= \sum_{m, n \geq 0} \left( - a^{m-1} + a \comm*{a^\dagger}{a^{m-1}} \right) \\
+        &= \sum_{m, n \geq 0} \left( - a^{m-1} + a \left( a \comm*{a^\dagger}{a^{m-2}} \right) + \comm*{a^\dagger}{a} a^{m-2} \right) \\
+        &= \sum_{m, n \geq 0} \left( - a^{m-1} + a \left( \left( a \comm*{a^\dagger}{a^{m-2}} \right) - a^{m-2} \right) \right) \\
+        &= \sum_{m, n \geq 0} \left( - 2 a^{m-1} + a^2 \comm*{a^\dagger}{a^{m-2}} \right) \\
+        &= \cdots,
+    \end{aligned}
+\]
+or to be concise, 
+\[
+    \begin{aligned}
+        \comm*{a^\dagger}{f(a, a^\dagger)} &= \sum_{m, n \geq 0} \left( - a^{m-1} + a \comm*{a^\dagger}{a^{m-1}} \right) \\
+        &= \sum_{m, n \geq 0} \left( - 2 a^{m-1} + a^2 \comm*{a^\dagger}{a^{m-2}} \right) \\
+        &= \cdots,
+    \end{aligned}
+\]
+and this time the sequence stops at
+\[
+    \comm*{a^\dagger}{f(a, a^\dagger)} = \sum_{m, n \geq 0} \left( - m a^{m-1} + a^2 \comm*{a^\dagger}{a^{m-m}} \right),
+\]
+and since 
+\[
+    - m a^{m-1} = - \pdv{a^m}{a}
+\]
+we have
+\begin{equation}
+    \comm*{a^\dagger}{f(a, a^\dagger)} = - \pdv{f}{a}.
+\end{equation}
+\item[(c)] We need to use results proved in Problem 1.5. By \eqref{eq:scully-1-5-1}, we have
+\begin{equation}
+    a \ee^{- \alpha a^\dagger a} = \ee^{- \alpha} \ee^{- \alpha a^\dagger a}, 
+    \label{eq:scully-1-5-lemma-1}
+\end{equation}
+and by taking its conjugate transpose we have
+\[
+    \ee^{- \alpha^* a^\dagger a} \ee^{- \alpha^*} = \ee^{- \alpha^* a^\dagger a} a^\dagger,
+\]
+and since $\alpha$ is an arbitrary parameter we can redefine it and get
+\begin{equation}
+    \ee^{- \alpha a^\dagger a} \ee^{- \alpha} = \ee^{- \alpha a^\dagger a} a^\dagger.
+    \label{eq:scully-1-5-lemma-2}
+\end{equation}
+Substituting \eqref{eq:normal-ordered-general-form} into $\ee^{-\alpha a^\dagger a} f(a, a^\dagger) \ee^{\alpha a^\dagger a}$, and applying \eqref{eq:scully-1-5-lemma-1} and \eqref{eq:scully-1-5-lemma-2} iteratively, we have
+\[
+    \begin{aligned}
+        \ee^{-\alpha a^\dagger a} f(a, a^\dagger) \ee^{\alpha a^\dagger a} &= \sum_{n, m \geq 0} g_{mn} \ee^{-\alpha a^\dagger a} (a^\dagger)^m a^n \ee^{\alpha a^\dagger a} \\
+        &= \sum_{n, m \geq 0} g_{mn} \ee^{-\alpha} \ee^{-\alpha a^\dagger a} (a^\dagger)^{m-1} a^{n-1} \ee^{\alpha a^\dagger a} \ee^{\alpha} \\
+        &= \sum_{n, m \geq 0} g_{mn} \ee^{-\alpha} \ee^{-\alpha} \ee^{-\alpha a^\dagger a} (a^\dagger)^{m-2} a^{n-2} \ee^{\alpha a^\dagger a} \ee^{\alpha} \ee^{\alpha} \\
+        &= \cdots \\
+        &= \sum_{m, n \geq 0} g_{mn} \ee^{-m \alpha} \ee^{}
+    \end{aligned}
+\]
+\end{itemize}
+
+\paragraph{Scully 1.5} Show that
+\begin{equation}
+    \begin{gathered}
+        {\left[a, e^{-\alpha a^{\dagger} a}\right]=\left(e^{-\alpha}-1\right) e^{-\alpha a^{\dagger} a} a}, \\
+        {\left[a^{\dagger}, e^{-\alpha a^{\dagger} a}\right]=\left(e^{\alpha}-1\right) e^{-\alpha a^{\dagger} a} a^{\dagger}},
+        \end{gathered}
+    \label{eq:scully-1-5-1}
+\end{equation}
+where $\alpha$ is a parameter.
+
+\paragraph{Solution} TODO
+
+\paragraph{Scully 1.6} Show that the free-field Hamiltonian
+\begin{equation}
+    \mathscr{H}=\hbar v\left(a^{\dagger} a+\frac{1}{2}\right)
+    \label{eq:scully-1-6-free-field-ham}
+\end{equation}
+can be written in terms of the number states as
+\[
+\mathscr{H}=\sum_{n} E_{n}|n\rangle\langle n|,
+\]
+and hence
+\begin{equation}
+    e^{\ii \mathscr{H} t / \hbar}=\sum_{n} e^{\ii E_{n} t / \hbar}|n\rangle\langle n|.
+    \label{eq:scully-1-6-3}
+\end{equation}
+
+\paragraph{Solution} An $n$-photon state
+\begin{equation}
+    \ket*{n} = \frac{1}{\sqrt{n!}} (a^\dagger)^n \ket*{0}
+    \label{eq:scully-1-6-n-photon}
+\end{equation}
+is an eigenstate of \eqref{eq:scully-1-6-free-field-ham}, since by applying \eqref{eq:scully-1-6-free-field-ham} on \eqref{eq:scully-1-6-n-photon} we have
+\[
+    \begin{aligned}
+        \mathcal{H} \ket*{n} &= \hbar \nu a^\dagger a \ket*{n} + \frac{1}{2} \hbar \nu \ket*{n} \\
+        &= \hbar \nu a^\dagger \sqrt{n} \ket*{n-1} + \frac{1}{2} \hbar \nu \ket*{n} \\
+        &= \hbar \nu \sqrt{n} \sqrt{n-1+1} \ket*{n} + \frac{1}{2} \hbar \nu \ket*{n} \\
+        &= \hbar \nu \left( n + \frac{1}{2} \right) \ket*{n} \\
+        &= E_n \ket*{n},
+    \end{aligned}
+\]
+so $\ket*{n}$ is an eigenstate of $\mathcal{H}$ with energy $E_n$.
+Since $\ket*{n}$s are orthogonal to each other and are uniform, we have
+\begin{equation}
+    \mathcal{H} = \sum_n E_n \dyad*{n}.
+\end{equation}
+Since $\mathcal{H}$ is diagonal under the $\{\ket*{n}\}$ basis, so is $\ee^{\ii \mathcal{H} t / \hbar}$ and hence we have \eqref{eq:scully-1-6-3}.
+
+\paragraph{Scully 2.1} Show that
+\[
+a^{\dagger}|\alpha\rangle\left\langle\alpha\left|=\left(\alpha^{*}+\frac{\partial}{\partial \alpha}\right)\right| \alpha\right\rangle\langle\alpha|,
+\]
+and
+\[
+|\alpha\rangle\left\langle\alpha\left|a=\left(\alpha+\frac{\partial}{\partial \alpha^{*}}\right)\right| \alpha\right\rangle\langle\alpha|.
+\]
+
+\end{document}
