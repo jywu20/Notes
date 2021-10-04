@@ -1,0 +1,936 @@
+\chapter{牛顿力学的量子化}
+
+\section{薛定谔方程}
+
+实验表明，电子的自由度包括轨道自由度和自旋自由度，自旋$1/2$。
+轨道部分在坐标表象下，坐标和动理动量分别是
+\begin{equation}
+    {\vb*{r}} = \vb*{r}, \quad {\vb*{p}} = -\ii \hbar \grad.
+    \label{eq:single-electron-schodinger}
+\end{equation}
+轨道部分的动力学由单电子薛定谔方程描述。在没有磁场时，单电子的薛定谔方程是
+\begin{equation}
+    \ii \hbar \pdv{\psi}{t} = - \frac{\hbar^2 \laplacian}{2m} \psi + V \psi,
+\end{equation}
+从中可以得到概率密度为
+\begin{equation}
+    \rho = \abs*{\psi}^2,
+\end{equation}
+概率流密度为
+\begin{equation}
+    \vb*{j} = \frac{\ii \hbar}{2m} (\psi \grad{\psi^*} - \psi^* \grad{\psi}).
+\end{equation}
+
+\subsection{波列}
+
+在$V$为常数时，\eqref{eq:single-electron-schodinger}的平面波解和色散关系如下：
+\begin{equation}
+    \psi = \ee^{\ii(\vb*{k} \cdot \vb*{r} - \omega t)}, \quad \hbar \omega = \frac{\hbar^2 k^2}{2m} + V.
+    \label{eq:plain-wave-solution}
+\end{equation}
+可以看到，波矢$\vb*{k}$和动量$\vb*{p}$只差了一个因子$\hbar$。
+这当然是正确的，实际上从一个局域近似为平面波的波形（如球面波、柱面波）中提取波矢的方式就是作用算符$-\grad$然后除以原波形。
+\eqref{eq:plain-wave-solution}是一个定态解，其能量就是$\hbar \omega$。
+\eqref{eq:plain-wave-solution}的波长称为\concept{德布罗意波长}，为
+\begin{equation}
+    \lambda = \frac{2\pi}{k} = \frac{h}{p} = \frac{h}{\sqrt{2m(E-V)}}.
+\end{equation}
+在我们讨论的问题的尺度远大于德布罗意波长时，\eqref{eq:plain-wave-solution}的波动性实际上并不明显，此时可以使用经典理论处理问题，否则必须使用量子力学。
+
+位置和动量的对易关系意味着在一次测量中不可能同时确定地得到它们的值，因为这两个算符没有共同本征态，从而
+\begin{equation}
+    \Delta x \Delta p_x \geq \frac{\hbar}{2}.
+    \label{eq:position-momentum-uncertainty}
+\end{equation}
+虽然时间不是算符，但如果由于相互作用等原因，能级发生展宽，那么相应的，系统停留在这个能级上的时间也不会是无限大的，当然也不会是无限小的，由傅里叶变换关于函数定域性的理论可以推导出
+\begin{equation}
+    \Delta t \Delta E \geq \frac{\hbar}{2}.
+    \label{eq:time-energy-uncertainty}
+\end{equation}
+实际上，也可以从傅里叶变换的观点推导出\eqref{eq:position-momentum-uncertainty}，但是要注意它和\eqref{eq:time-energy-uncertainty}的物理意义是不同的，因为没有对应于时间的算符。
+
+\subsection{常用常数}
+
+普朗克常数
+\[
+    h = \SI{6.62607004e-34}{J.s}, \quad \hbar = \SI{1.05457266e-34}{J.s},
+\]
+元电荷
+\[
+    e = \SI{1.602176634e-19}{C},
+\]
+电子质量
+\[
+    m_\text{e} = \SI{9.10938356e-31}{kg},
+\]
+质子质量
+\[
+    m_\text{p} = \SI{1.6726219e-27}{kg},
+\]
+中子质量
+\[
+    m_\text{n} = \SI{1.674927471e-27}{kg}
+\]
+
+\subsection{斯特恩-盖拉赫实验}
+
+考虑一束带有磁矩的粒子穿过一个基本上只在$z$方向有梯度的磁场（这样的一个装置称为一个\concept{SG仪器}），显然，由于磁矩的存在，在经典图景下会引入这样一个磁场力：
+\begin{equation}
+    \vb*{F} = \pdv{(\vb*{\mu} \cdot \vb*{B})}{z} \vb*{e}_z = \mu_z \pdv{B_z}{z} \vb*{e}_z.
+\end{equation}
+如果粒子束的生成装置当中不存在特殊的磁矩方向（通常会用一个炉子加热原子，然后产生一个射流，因此的确不存在特殊的磁矩方向），那么，预期的结果应该是经过磁场之后的粒子束弥散为一个连续的竖条。
+但实际情况并非如此：束流劈裂成了两束，一束向上，一束向下，即似乎$z$方向磁矩只有两个离散的取值。
+由于磁矩正比于自旋，显然$z$方向自旋也应该只有两个离散的取值。
+
+现在只取一束束流，不妨认为其自旋向上，那么，将它通过一个有$z$方向磁场的SG仪器，束流按理来说不会进一步劈裂——实际上也的确如此。
+但如果将它通过一个有$x$方向磁场的SG仪器，在经典图像下由于束流不存在$x$方向的磁矩，应该什么也不会发生，但实际上实验结果是，束流在$x$方向发生了劈裂。
+显然，$z$方向自旋全部指向一个方向的束流的$x$方向自旋还是可以有两个取值。
+
+也许有这样的可能，就是自旋在三个方向上都有两种取值，这样，$z$方向自旋全部指向一个方向的束流在$x$方向上的自旋可以同时有两个取值。
+那么，将一个粒子束依次通过$z$方向的SG装置和$x$方向的SG装置应该能够得到$x$方向和$z$方向自旋都完全确定的束流。
+实际情况并非如此：一个粒子束依次通过$z$方向的SG装置和$x$方向的SG装置之后得到的束流再次通过一个$z$方向的SG装置，照样出现了劈裂。
+
+在量子力学的框架下解释这样的现象就非常容易。SG装置实际上造成了自旋和轨道的耦合，它是一个使用粒子的轨道去测量粒子自己的自旋的装置。
+因此，当一个粒子经过一个某一方向SG装置后，它的自旋角动量塌缩到这一方向的自旋角动量分量的本征态上。
+自旋算符的本征值是分立的，自然造成分立的测量结果，也就是粒子束流劈裂。
+由于不同方向的自旋算符不对易，$z$方向的自旋算符的本征态不是$x$方向的自旋算符的本征态，从而造成之前看到的$z$方向自旋确定的束流经过$x$方向的SG装置之后再次发生劈裂的情况。
+先经过$z$方向的SG装置再经过$x$方向的SG装置的束流的每个粒子都塌缩到了$x$方向自旋算符的本征态上，于是经过$z$方向的SG装置之后再次发生劈裂。
+
+\subsection{电子-光子过程}
+
+能标从低到高有三种过程：光电效应、康普顿散射和电子对产生。
+
+经典电动力学不能够解释为什么一些情况下向自由电子入射光会得到频率不同的反射光——在镜子里，蓝色的衣服当然不可能是红色的。但使用X射线照射一些物质后，确实能够得到频率发生变化的散射光。这个效应就是\concept{康普顿效应}。
+如果认为电磁波实际上是粒子，并且使用经典狭义相对论的动量和动能公式，设入射光子和出射光子的动量分别是$\vb*{p}_0$和$\vb*{p}$，两者夹角为$\theta$，碰撞之后电子的速度为$\vb*{v}$，则
+\[
+    \vb*{p}_0 = \vb*{p} + \frac{m \vb*{v}}{\sqrt{1 - v^2/c^2}}, \quad \abs{\vb*{p}_0} c + m c^2 = \abs{\vb*{p}} c + \frac{m c^2}{\sqrt{1 - v^2/c^2}},
+\]
+考虑到波长为
+\[
+    \lambda = \frac{h}{p},
+\]
+得到
+\begin{equation}
+    \lambda - \lambda_0 = \frac{h}{mc} (1 - \cos \theta),
+    \label{eq:compton-movement}
+\end{equation}
+设散射强的光子能量为$\epsilon_0$，则散射之后的光子能量为
+\begin{equation}
+    \epsilon = \frac{\epsilon_0}{1 + \frac{\epsilon_0}{m c^2} (1 - \cos \theta)} \geq \frac{\epsilon_0}{1 + \frac{2\epsilon_0}{m c^2}},
+\end{equation}
+反冲电子动能为
+\begin{equation}
+    T = \epsilon_0 - \epsilon = \epsilon_0 \frac{\frac{\epsilon_0}{mc^2}(1-\cos \theta)}{1+\frac{\epsilon_0}{mc^2}(1-\cos \theta)} \leq \epsilon_0 \frac{\frac{2 \epsilon_0}{mc^2}}{1+\frac{2 \epsilon_0}{mc^2}}.
+\end{equation}
+显然，只有在狭义相对论需要被完整地考虑的时候，才会出现康普顿效应\eqref{eq:compton-movement}，在牛顿时空观已经够用的时候，取$c \to \infty$，康普顿效应就消失了。
+\eqref{eq:compton-movement}给出了一个自然的长度尺度，即\concept{康普顿波长}：
+\begin{equation}
+    \lambda = \frac{h}{mc},
+\end{equation}
+它是粒子之间的物理过程中相对论效应需要被完整考虑的长度尺度，低于这个长度，相对论效应非常明显，从而实际上需要使用量子电动力学分析问题。
+德布罗意波长给出了实物粒子的量子效应开始变得明显的长度尺度，而康普顿波长给出了相对论效应开始变得明显的长度尺度。
+
+我们会注意到我们假设电子和入射光子发生相互作用之后一定会产生一个出射光子。实际上，不可能发生没有出射光子的过程，因为一个入射光子完全被电子吸收的过程需要满足
+\[
+    \vb*{p}_0 = \frac{m \vb*{v}}{\sqrt{1 - v^2/c^2}}, \quad p_0 c = \frac{m c^2}{\sqrt{1 - v^2 / c^2}},
+\]
+这个方程组意味着$v=c$，而这是不可能的——电子不可能被加速到光速。
+
+需要注意的是光电效应和上述结论没有矛盾，因为发生光电效应时电子处于束缚态，因此电子吸收不了的能量可以用于挣脱束缚态。
+“自由”和“束缚”的概念在这里并不是绝对的：如果入射光的单个光子的能量足够强，那么即使一开始电子处于束缚态，束缚能也是可以忽略的。
+这也就是如果使用普通的晶体做靶标，通常要发生康普顿效应需要X射线的原因。
+实际上，用X射线做的康普顿效应实验通常也会得到波长没有发生变化，只是传播方向发生了变化的波，因为X射线不能电离内层电子，因此光子和内层电子发生弹性散射。
+相反，康普顿效应改变了光子的能量，因此对光子而言它是\concept{非相干散射}，也是\concept{非弹性散射}。
+
+\chapter{束缚态单电子系统}
+
+\section{一维势阱中的电子}
+
+首先考虑如下一维无限高，无限厚的方势阱：
+\begin{equation}
+    V(x) = \begin{cases}
+        0, \quad &0 < x < a, \\
+        \infty, \quad &\text{otherwise}.
+    \end{cases}
+\end{equation}
+代入薛定谔方程可以发现在势能无限大的地方要让方程成立只能够让$\psi=0$。
+于是一维方势阱中的定态电子的波函数由以下定解问题确定：
+\[
+    - \hbar^2 \dv[2]{\psi}{x} = E \psi, \quad \psi\big|_{x=0} = \psi\big|_{x=a} = 0.
+\]
+解之，即得到
+\begin{equation}
+    \psi_n(x) = \begin{cases}
+        \sqrt{\frac{2}{a}} \sin(\frac{n \pi x}{a}), \quad &0 < x < a, \\
+        0, \quad &\text{otherwise},
+    \end{cases}
+\end{equation}
+能量为
+\begin{equation}
+    E_n = \frac{n^2 h^2}{8 m a^2}.
+\end{equation}
+这个系统没有散射态解，因为势阱以外的地方波函数全部都是零，不可能出现无穷远处还有非零波函数值的情况。
+
+有限高，无限厚的势阱：粒子可以有隧穿，但是在无穷远处衰减为零。
+
+\subsection{有心力场中的单电子}
+
+\subsubsection{哈密顿量和薛定谔方程}
+
+有心力场中的单个电子的哈密顿量为
+\begin{equation}
+    {H} \psi = \frac{{p}^2}{2m} \psi + V(r) \psi.
+\end{equation}
+求解此问题等价于求解坐标表象下的定态方程
+\begin{equation}
+    \frac{{p}^2}{2m} \psi + V(r) \psi = - \frac{\hbar^2}{2m} \laplacian \psi + V(r) \psi = E \psi,
+    \label{eq:centered-force-eq}
+\end{equation}
+使用球坐标系，以$\theta$为和$z$轴的夹角，$\varphi$为$x$-$y$平面上的转角，则
+\[
+    {p}^2 = -\hbar^2 \laplacian = - \hbar^2 \left( \frac{1}{r^2} \pdv{r} r^2 \pdv{r} + \frac{1}{r^2 \sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{r^2 \sin^2 \theta} \pdv[2]{\varphi} \right) .
+\]
+可以直接分离变量，但让我们首先采取一种物理意义比较明显的变形。注意到轨道角动量算符的平方为
+\[
+    {L}^2 = {\vb*{r}}^2 {\vb*{p}}^2 - ({\vb*{r}} \cdot {\vb*{p}}) ({\vb*{p}} \cdot {\vb*{r}}),
+\]
+在球坐标系下$\vb*{r}$只在$r$方向上有分量，于是上式变成
+\[
+    {L}^2 = r^2 {p}^2 - r \left( - \hbar^2 \pdv[2]{r} \right) r,
+\]
+注意到（实际上这是动量-坐标对易关系的自然推论）
+\[
+    r \pdv[2]{r} r = \pdv{r} r^2 \pdv{r},
+\]
+% 此处有误
+这就给出了角动量长度平方的一个简洁的表达式：
+\begin{equation}
+    {L}^2 = - \hbar^2 \left( \frac{1}{\sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{\sin^2 \theta} \pdv[2]{\varphi} \right),
+\end{equation}
+当然也可以按照定义直接计算出这个表达式。相应的，哈密顿量在球坐标系下就是
+\[
+    {H} = - \frac{\hbar^2}{2 m r} \pdv[2]{r} r + \frac{{L}^2}{2 m r^2} + V(r).
+\]
+以上对哈密顿量的改写和经典情况可以类比。经典情况下，径向运动是有效势阱中的一维运动，且满足
+\[
+    \frac{p_r^2}{2m} + \frac{L^2}{2mr^2} - \frac{Ze^2}{4\pi \epsilon_0 r} = E,
+\]
+正好是将所有算符替换成实数之后的结果——本该如此。
+
+现在，定态薛定谔方程成为
+\[
+    - \frac{\hbar^2}{2 m r} \pdv[2]{r} (r \psi) + \frac{{L}^2}{2 m r^2} \psi + V(r) \psi = E \psi,
+\]
+算符${L}^2$仅仅和$\varphi$和$\theta$有关，因此我们可以将径向部分和角向部分做分离变量。
+设
+\[
+    \psi = R(r) Y(\theta, \varphi),
+\]
+则径向部分的方程是
+\begin{equation}
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} \alpha + V(r) \right) R = E R,
+    \label{eq:original-r-equation}
+\end{equation}
+角向部分的方程为
+\begin{equation}
+    {L}^2 Y = \alpha \hbar^2 Y.
+    \label{eq:angle-equation}
+\end{equation}
+其中$\alpha$为常数。
+
+\subsubsection{角向部分的方程的求解}
+
+径向部分的方程包含一个可变的$V(r)$项，而角向部分的方程可以直接解出。
+请注意角向部分实际上是一个拉普拉斯方程的角向部分，因此其解为球谐函数。
+下面简单地展示其求解过程。设
+\[
+    Y(\theta, \varphi) = \Theta(\theta) \Phi(\varphi),
+\]
+代入
+\[
+    - \left( \frac{1}{\sin \theta} \pdv{\theta} \sin \theta \pdv{\theta} + \frac{1}{\sin^2 \theta} \pdv[2]{\varphi} \right) Y = \alpha Y,
+\]
+得到两个方程
+\[
+    \frac{1}{\Phi} \dv[2]{\Phi}{\varphi} = c,
+\]
+以及
+\[
+    - \left( \frac{1}{\sin \theta} \dv{\theta} \sin \theta \dv{\theta} + \frac{1}{\sin^2 \theta} c \right) \Theta = \alpha \Theta.
+\]
+$\Phi$必须是单值的，因为波函数应该是单值的，于是
+\[
+    c = m^2, \quad m = 0, 1, 2, \ldots,
+\]
+而
+\[
+    - \left( \dv{\cos \theta} (1 - \cos^2 \theta) \dv{\cos \theta} + \frac{1}{1 - \cos^2 \theta} m^2 \right) \Theta = \alpha \Theta.
+\]
+这是一个连带勒让德方程，为了保证$\Theta(\theta)$单值且有界，应有
+\[
+    \alpha = l(l+1), \quad l \geq \abs{m}, \quad l = 0, 1, 2, \ldots,
+\]
+于是\eqref{eq:angle-equation}的一组正交解为
+\[
+    Y(\theta, \varphi) = \ee^{\ii m \varphi} \legpoly_l^m(\cos \theta),
+\]
+其中$\legpoly_l^m$表示缔合勒让德多项式。归一化使用球坐标系的角向积分
+\[
+    \int \sin \theta \dd{\theta} \dd{\varphi},
+\]
+最后得到正交归一化的球谐函数
+% TODO:(-1)^m因子？
+\begin{equation}
+    \begin{split}
+        Y_{lm}(\theta, \varphi) = (-1)^m \sqrt{\frac{(2l+1)(l-\abs{m})!}{4\pi (l+\abs{m})!}} \legpoly_l^\abs{m} (\cos \theta) \ee^{\ii m \varphi}, \\
+        l = 0, 1, \ldots, \quad m = \pm l, \pm (l-1), \ldots, 0 .
+    \end{split}
+\end{equation}
+
+球谐函数是${L}^2$的本征函数，但它带有两个量子数$l$和$m$，这意味着${L}^2$的本征函数存在简并；$l,m$分别标记了${L}^2$的本征值和某个不确定的可观察量的本征值。
+注意到球坐标系中
+\[
+    {L}_z = - \ii \hbar \pdv{\varphi},
+\]
+它正是$\Phi(\varphi)$满足的本征方程中的那个算符，因此$m$标记的是${L}_z$的本征值，$l$标记的是${L}^2$的本征值。
+这是正确的，因为
+\[
+    m = \pm l, \pm (l-1), \ldots, 0
+\]
+正是角动量代数的重要性质。我们下面记此处的$m$为$m_l$，与自旋角动量在$z$方向上的取值$m_s = \pm \frac{1}{2}$相区分。
+球谐函数$Y_{lm}(\theta, \varphi)$同时是${L}^2$和$L_z$的本征函数，相应的本征值为
+\begin{equation}
+    {L}^2 Y_{lm} = l(l+1) \hbar^2 Y_{lm}, \quad {L}_z Y_{lm} = m \hbar Y_{lm}.
+    \label{eq:orbital-angular-momentum}
+\end{equation}
+
+\subsubsection{量子数}\label{sec:quantum-number}
+
+现在径向方程\eqref{eq:original-r-equation}成为了
+\begin{equation}
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} l(l+1) + V(r) \right) R = E R.
+    \label{eq:r-equation}
+\end{equation}
+这是一个单变量的本征值问题，它还会产生一个（而且也只有一个，因为一旦$E$确定了，$R$就确定了，不存在简并）量子数$n$，它标记不同的能量。
+请注意由于角动量部分被分离变量出去了，实际上多出来了一个有效势$l(l+1)$项。
+更加变于求解的一种形式是设$u=rR$，则有
+\begin{equation}
+    - \frac{\hbar^2}{2m} \dv[2]{u}{r} + \frac{\hbar^2}{2m r^2} l(l+1) u + V(r) u = Eu, \quad R = \frac{u}{r}.
+\end{equation}
+
+这样，\eqref{eq:centered-force-eq}有一组由$n, l, m_l$标记的正交归一化解，再考虑到自旋自由度，电子的状态就完全确定了。
+通过求解过程可以看出前三个量子数标记了${H}, {L}^2, {L}_z$的本征值；
+它们是通过分离变量求解坐标空间中的薛定谔方程得到的，因此随着时间变化，它们对应的物理量是守恒的且彼此对易，能够找到这样三个守恒且彼此对易的物理量当然是因为有心力系统的对称性。
+目前尚未引入任何涉及自旋的机制，因此自旋也是恒定不变的。
+于是我们找到了四个标记电子的好量子数：
+\begin{enumerate}
+    \item 主量子数$n$，它标记不同的能量，它是分立的，因为电子陷在一个势阱中，从而是离散谱；
+    \item 角量子数$l$，它标记不同的角动量大小，对一部分势场形式，也参与标记不同的能量，它是分立的，因为波函数在角方向上是单值的；
+    \item 磁量子数$m_l = 0, \pm 1, \ldots, \pm l$，它标记$z$轴上的角动量分量，同样也是分立的；
+    \item 自旋量子数$m_s = \pm \frac{1}{2}$，它来自电子的内禀旋转自由度；自旋量子数和我们刚才讨论的轨道空间无关。
+\end{enumerate}
+
+这四个量子数直接决定了波函数的形状。主量子数决定了径向概率分布，角量子数和磁量子数决定了波函数的角向概率分布。
+这四个量子数还可以确定其它一些量子数。例如，做宇称变换
+\[
+    (r, \theta, \varphi) \longrightarrow (r, \pi - \theta, \pi + \varphi),
+\]
+径向部分始终不变，若$l$为奇数则球谐函数会差一个负号，从而波函数为奇宇称，若$l$为偶数则球谐函数不变，从而波函数为偶宇称。
+
+纯量子的理论展现出了和经典理论很不同的一些特性。请注意量子理论中电子可以完全没有角动量，这在经典理论下是不可能的——电子会直接落入有心力的力心，比如说原子核。
+然而，哈密顿量\eqref{eq:columb-electron-hamiltonian}中各项不对易从而有量子涨落，因此如果角动量确定为零，那么电子的位置就不能够确定，因此电子并不会落入原子核。
+
+\subsubsection{角动量代数}\label{sec:algebra-of-angular}
+
+本节从对称性的角度来分析有心力场中的电子的角量子数。
+有心力场各向同性的性质意味着系统具有$SO(3)$对称性，从而$SO(3)$的李代数中的每个生成元都是守恒量，当然这就是大名鼎鼎的角动量守恒。使用${J}$表示这些生成元。
+$SO(3)$的李代数的对易关系就是角动量算符的对易关系，即
+\begin{equation}
+    {\vb*{J}} \times {\vb*{J}} = \ii \hbar {\vb*{J}},
+\end{equation}
+或者也可以写成显式的李括号的形式：
+\begin{equation}
+    \comm*{{J}_i}{{J}_j} = \ii \hbar \epsilon_{ijk} {J}_k.
+\end{equation}
+从这个李代数可以马上发现${\vb*{J}}^2$是卡西米尔元。
+对每个不可约表示，三个方向的角动量互不对易，因此只需要取一个角动量，列出其本征态即可完整地描述角动量空间。
+这样就可以使用${\vb*{J}}^2$和${J}_z$的共同本征态作为角动量空间的基底，无论是不是不可约表示。
+
+对$SO(3)$的不可约表示，设$j$是角量子数，有
+\begin{equation}
+    {\vb*{J}}^2 \ket{j,m_j} = j(j+1)\hbar^2 \ket{j,m_j}, \quad {J}_z \ket{j,m_j} = m_j \hbar \ket{j,m_j},
+    \label{eq:eigenvalue-of-angular}
+\end{equation}
+其中$j$和$m_j$都是整数或者半整数。我们知道$j$唯一地标记了每个有限维不可约表示，而
+\begin{equation}
+    m_j = -j, -j+1, \ldots, j.
+\end{equation}
+要证明\eqref{eq:eigenvalue-of-angular}（并做一些别的计算），通常需要定义产生湮灭算符，具体来说，定义
+\begin{equation}
+    {J}_\pm = \frac{1}{\sqrt{2}} ({J}_x \pm \ii {J}_y),
+\end{equation}
+可以计算得到对易关系
+\begin{equation}
+    \comm*{{J}_z}{{J}_\pm} = \hbar {J}_\pm,
+\end{equation}
+因此${J}_+$和${J}_-$就是$\hbar m_j$的升降算符，每作用一次增加或者减少$\hbar$的$z$方向角动量。
+如果是有限维表示，必定有
+\begin{equation}
+    {J}_\pm \ket{j, m_j} = \sqrt{\frac{(j \mp m_j)(j \pm m_j + 1)}{2}} \hbar \ket{j, m_j \pm 1}.
+\end{equation}
+从上式也可以推导出
+\begin{equation}
+    \begin{aligned}
+        {J}_x \ket{j, m_j} &= \frac{1}{2} \sqrt{(j-m_j)(j+m_j+1)} \hbar \ket{j, m_j+1} \\
+        &+ \frac{1}{2} \sqrt{(j+m_j)(j-m_j+1)} \hbar \ket{j, m_j-1} , \\
+        {J}_y \ket{j, m_j} &= \frac{1}{2} \ii \sqrt{(j+m_j)(j-m_j+1)} \hbar \ket{j, m_j-1} \\
+        &- \frac{1}{2} \ii \sqrt{(j-m_j)(j+m_j+1)} \hbar \ket{j, m_j+1}.
+    \end{aligned}
+    \label{eq:apply-jx-jy-to-angular-state}
+\end{equation}
+
+现在回过头和\eqref{eq:orbital-angular-momentum}中求解出来的轨道角动量做对比，会发现中心场下的束缚态电子的轨道角动量的确是一个$SO(3)$的有限维表示。
+电子对应的量子场是一个有质量的旋量场，它的内禀自由度是$SO(3)$的一个二维不可约表示，因此也就有两个自旋量子数：$1/2$和$-1/2$。
+实际上，如果依次取自旋空间的基底为$\ket{1/2}$和$\ket{-1/2}$，则${S}_z$的矩阵形式为
+\[
+    {S}_z = \pmqty{\frac{1}{2} \hbar & 0 \\ 0 & -\frac{1}{2} \hbar}.
+\]
+定义泡利矩阵为
+\begin{equation}
+    \sigma_x = \pmqty{0 & 1 \\ 1 & 0}, \quad \sigma_y = \pmqty{0 & -\ii \\ \ii & 0}, \quad \sigma_z = \pmqty{1 & 0 \\ 0 & -1},
+\end{equation}
+使用\eqref{eq:apply-jx-jy-to-angular-state}可以计算出
+\begin{equation}
+    {S}_i = \frac{\hbar}{2} \sigma_i.
+\end{equation}
+
+\subsubsection{库伦势场和类氢原子}
+
+本节讨论库伦势场中的电子运动情况。首先我们表明，原子的的确确是某个带正电荷而非常重的核约束了一些电子而得到的体系。
+通过阴极射线实验可以证实原子中确确实实有电子，但是正电荷的分布是不清楚的。
+采用半经典模型，设一个$\alpha$粒子与原子发生散射，则势能为
+\begin{equation}
+    V(r) = \frac{1}{4\pi \epsilon_0} \frac{Z_1 Z_2 e^2}{r}, 
+\end{equation}
+散射角为
+\[
+    \theta = \pi - 2 \int_{r_\text{min}}^\infty \frac{b \dd{r}}{r^2 \sqrt{1 - V(r)/E - b^2/r^2}},  
+\]
+而散射截面为
+\[
+    \dd{\sigma} = \frac{b(\theta)}{\sin \theta} \abs{\dv{b}{\theta}} \dd{\Omega},
+\]
+最终可以计算出
+\begin{equation}
+    \dd{\sigma} = \left(\frac{a}{4}\right)^2 \sin^{-4}\frac{\theta}{2} \dd{\Omega}, \quad a = \frac{Z_1 Z_2 e^2}{4\pi \epsilon_0 E}.    
+\end{equation}
+如果我们使用非常薄的金属箔作为靶标，并假定不同原子核分布非常稀疏（由于原子核非常小，这是正确的），从而不同层的原子核都是错开的，没有互相遮挡，设金属箔数密度为$n$，厚度为$t$，则被散射到立体角$\dd{\Omega}$中的$\alpha$粒子数满足
+\[
+    \frac{\dd{N}}{N} = \frac{n A t \dd{\sigma}}{A} = nt \dd{\sigma},
+\]
+于是
+\begin{equation}
+    \frac{\dd{N}}{N \dd{\Omega}} = n t \left(\frac{a}{4}\right)^2 \sin^{-4}\frac{\theta}{2}.
+\end{equation}
+此即\concept{卢瑟福散射公式}。卢瑟福散射公式成立的条件包括：
+\begin{enumerate}
+    \item 非相对论近似，因为使用了牛顿力学的动能公式；
+    \item 大角度散射，也就是说瞄准距离$b$比较小，因为只有这样入射的$\alpha$粒子才能够充分接近原子核，从而可以像我们做的那样，忽略外层电子的屏蔽效应；
+    \item $r_\text{min}$要大于原子核半径，从而不会发生核反应，且可以将原子核看成点电荷；
+    \item 在满足第一个和第三个条件的前提下，入射$\alpha$粒子动能尽可能大，从而外层电子的屏蔽作用可以忽略。
+\end{enumerate}
+这个公式和实验结果一致，说明原子结构中确实有原子核。
+再往下，经典理论就会造成著名的疑难，就是既然电子绕着原子核运动，那么必然会发出辐射而损失能量。
+因此我们接下来使用量子力学来分析原子内部电子的运动情况。
+
+库伦势场中的单个电子的哈密顿量为
+\begin{equation}
+    {H} \psi = \frac{{p}^2}{2m} \psi - \frac{Z}{4\pi \epsilon_0} \frac{e^2}{\abs{\vb*{r}}} \psi.
+    \label{eq:columb-electron-hamiltonian}
+\end{equation}
+我们常常将这样的体系称为类氢原子，因为它和氢原子的结构除了$Z$可能不一样以外完全一致。
+此时\eqref{eq:r-equation}为
+\[
+    \left( - \frac{\hbar^2}{2m r^2} \dv{r} r^2 \dv{r} + \frac{\hbar^2}{2m r^2} l(l+1) - \frac{1}{4\pi \epsilon_0} \frac{e^2}{r} \right) R = E R,
+\]
+显然这是一个束缚在势阱中的电子的方程，它必定有束缚态解，从而可以提供我们需要的主量子数。
+
+为了获取一些灵感，首先考虑$r\to \infty$的极限，得到渐进解
+\[
+    R = \exp(- \sqrt{- \frac{2 m E}{\hbar^2}} r).
+\]
+设
+\[
+    k^2 = - \frac{2 m E}{\hbar^2},
+\]
+并令
+\[
+    \rho = 2 k r, \quad \gamma = \frac{m Z e^2}{4\pi \epsilon_0 k \hbar^2}, 
+\]
+取试探解
+\[
+    R(\rho) = \ee^{- \rho / 2} F(\rho),
+\]
+得到
+\[
+    \dv[2]{F}{\rho} + \left( \frac{2}{\rho} - 1 \right) \dv{F}{\rho} + \left( \frac{\gamma - 1}{\rho} - \frac{l(l+1)}{\rho^2} \right) F = 0.
+\]
+这仍然是一个本征值问题，本征值由$\gamma$标记。通过广义幂级数展开可以知道$\gamma$应当为整数，这样就得到了本征值
+\begin{equation}
+    E_n = - \frac{1}{2} m Z^2 \left( \frac{e^2}{4\pi \epsilon_0 \hbar} \right)^2 \frac{1}{n^2} = - \frac{1}{2} m Z^2 (\alpha c)^2 \frac{1}{n^2}.
+\end{equation}
+通过广义幂级数展开还可以发现广义幂级数形如
+\[
+    F(\rho) = \rho^l \sum_j a_j \rho^j.
+\]
+我们会发现除了$\rho^l$以外的$F(\rho)$的因子实际上服从合流拉盖尔方程，于是得到
+\[
+    R(\rho) = \ee^{-\rho/2} \rho^l \laguerre_{n+l}^{2l+1}(\rho).
+\]
+定义\concept{第一波尔半径}
+\begin{equation}
+    a_1 = \frac{4\pi \epsilon_0 \hbar^2}{m e^2},
+\end{equation}
+我们下面会看到它是经典原子模型（电子绕着正电荷匀速圆周运动）给出的轨道半径，则能量可以写成
+\begin{equation}
+    E_n = - \frac{Z^2 e^2}{4 \pi \epsilon_0 } \frac{1}{2 a_1} \frac{1}{n^2} = \frac{E_1}{n^2}, \quad E_1 = - \frac{1}{4\pi \epsilon_0} \frac{e^2}{2 a_1}.
+    \label{eq:hydrogen-energy}
+\end{equation}
+将各个常数放回上式并归一化就得到
+\begin{equation}
+    R_{n, l} = - \sqrt{\left( \frac{2 Z}{n a_1} \right)^3 \frac{(n-(l+1))!}{2n ((n + l)!)^3}} \exp(- \frac{Z r}{n a_1}) \left( \frac{2 Z r}{n a_1} \right)^l \laguerre_{n+l}^{2l+1}\left(\frac{2 Z r}{n a_1}\right),
+\end{equation}
+其中$\laguerre_{n+l}^{2l+1}$是合流拉盖尔多项式。
+$n-l$决定了径向峰值的数目。为了让合流拉盖尔多项式有良定义，我们有
+\begin{equation}
+    l = 0, 1, 2, \ldots, n-1.
+\end{equation}
+至此，库伦中心势下的电子运动情况完全确定。
+
+可以依稀从量子力学中的氢原子看出一些经典的图像。在经典的原子模型中，粒子可以做椭圆运动，但是运动的能量仅仅关乎一个参数即椭圆的半长轴$a$，而和半短轴$b$无关；半短轴$b$则决定角动量等。
+因此能量和角动量是分开的。角动量可以有不同的指向，因此角动量长度和它在$z$轴上的投影也没有必然的关系（当然，角动量在$z$轴上的投影不可能超过总的角动量长度）
+实际上，如果我们假定：
+\begin{enumerate}
+    \item 核外电子绕着原子核运动遵循牛顿定律；
+    \item 在稳定的轨道上运动的电子不会发射或者吸收电磁波；
+    \item 角动量量子化，即
+    \begin{equation}
+        L = m v r = n \hbar,
+        \label{eq:quantum-angular-momentum}
+    \end{equation}
+\end{enumerate}
+我们也可以得到类氢原子能级（这称为\concept{波尔模型}）。
+做受力分析
+\[
+    m \frac{v^2}{r} = \frac{1}{4\pi \epsilon_0} \frac{Z e^2}{r^2},
+\]
+并结合\eqref{eq:quantum-angular-momentum}，可以得到
+\begin{equation}
+    r_n = \frac{4\pi \epsilon_0 \hbar^2}{Zme^2} n^2.
+\end{equation}
+
+求解出氢原子的薛定谔方程的完整解之后，可以发现主量子数为$n$的能级上有$n$个可能的角量子数，每个角量子数又允许$2l+1$个磁量子数，而最后还有两个自旋量子数，因此主量子数为$n$的能级上有
+\[
+    \frac{1}{2} (1 + (2(n-1)+1)) n = n^2
+\]
+个轨道，有$2n^2$个电子。
+
+我们注意到，一般来说，能量和$n, l$都有关系（和$m$确定没有关系，因为自旋旋转不变性），但在库伦势场中能量和$l$实际上并没有关系。
+这意味着库伦势场中其实还有一个隐藏的对称性。从半经典模型的考虑，角动量由半短轴决定，但是能量只和半长轴有关，因此这并不出乎意料。
+当然，电子的轨道可以不垂直于我们选取的$xOy$平面，从而角动量的$z$轴投影可能变动，但能量和坐标轴选取无关。
+
+\subsection{跃迁和偶极辐射}\label{sec:electro-dipole}
+
+电子和电磁场耦合，因此可以在不同能级之间跃迁而发射或吸收光子。
+跃迁包括受激跃迁（电子首先吸收光子，然后发生跃迁）以及自发跃迁（电子直接发生跃迁）。
+对这一过程的完整计算涉及量子电动力学的束缚态，但通常对能标不是非常高的过程，使用量子化的原子和经典电动力学就足够计算一些问题。
+受激跃迁只需要量子化原子加上经典电动力学即可完全解释，而自发跃迁不能使用经典电动力学解释而必须将光场量子化，因为“自发”意味着光场的真空涨落，这要使用量子理论处理。
+
+\subsubsection{光子}
+
+我们首先从经典电动力学中的平面波来探讨问题，这是可以的，因为实际上光子的产生湮灭算符对应着量子化的电磁场的傅里叶分量的振幅，于是单个光子的经典对应就是一个平面波。
+考虑以下单色平面波
+\begin{equation}
+    \vb*{E} = \vb*{E}_0 \ee^{\ii(\vb*{k} \cdot \vb*{r} - \omega t)}, \quad \vb*{E}_0 = \sum_{m_s} E_{m_s} \vb*{e}_{m_s}, \quad m_s = -1, 0, 1,
+\end{equation}
+这里的$m_s$指的就是自旋。光场是矢量场，因此自旋为1，这样其内禀旋转自由度有三个方向，正好和矢量有$x, y, z$三个方向对应。
+定义
+\begin{equation}
+    \vb*{e}_{\pm 1} = \mp \frac{1}{\sqrt{2}} (\vb*{e}_x \pm \ii \vb*{e}_y), \quad \vb*{e}_0 = \vb*{e}_z,
+\end{equation}
+容易看出它们正交，且$\vb*{e}_1$对应着电场垂直于$z$轴，且绕$z$轴逆时针旋转，$\vb*{e}_{-1}$对应着电场垂直于$z$轴，且绕$z$轴顺时针旋转，因此$\vb*{e}_{\pm 1}$是垂直于$z$轴的圆偏振基，称它们为$\sigma^\pm$基，而$\vb*{e}_0$是平行于$z$轴的线偏振基，称为$\pi$基。
+
+照惯例，取$\vb*{k}$的方向为$z$轴，电磁波只有横波模式没有纵波模式（这是$U(1)$规范场的性质：总是可以选取一个规范让纵波消失），因此$\pi$基没有复振幅，光从来不在$\pi$基上有偏振，或者等价地说，光子在其传播方向上的自旋只有$\pm 1$，没有$0$。纵光子是观测不到的。
+
+原子发射光子时，由对称性分析，如果能够良定义一个光子位置$\vb*{r}$，且将位矢零点放在原子中心，那么有
+\[
+    \vb*{r} \times \vb*{k} = 0,
+\]
+因此将位矢放在原子中心时由原子发射的光子没有轨道角动量。于是光子的角动量仅含有自旋角动量。
+
+\subsubsection{爱因斯坦的唯象理论}\label{sec:einstein-phonomenon}
+
+考虑温度为$T$的空腔中有大量相同的原子，显然处于定态$i$和$j$的原子需要满足玻尔兹曼分布率
+\[
+    N_i \propto \ee^{-\frac{E_i}{k_\text{B} T}},
+\]
+或者写成
+\[
+    \frac{N_j}{N_i} = \ee^{-\hbar \omega_{ji} / kT}.
+\]
+能够达到热力学平衡意味着电子需要在不同能级之间跃迁。
+电子和电磁场有耦合，因此电子在不同能级上跃迁确实是可以的。跃迁发生的机制可能有这么几种：
+\begin{enumerate}
+    \item 自发发射，也就是电子放出一个光子，跃迁到较低的能级；
+    \item 受激发射，即电子先吸收一个光子再放出一个光子，然后发生跃迁；
+    \item 吸收，即电子吸收一个光子然后跃迁到较高的轨道上。
+\end{enumerate}
+
+当然，在经典电动力学的框架下，只应该出现后两种情况。但是这样一来系统实际上不能够达到玻尔兹曼分布。
+
+受激发射和吸收可以使用量子化的原子和一个经典电磁场耦合来计算，但是自发发射在这个框架下是很难解释的，因为一个激发态的原子放在完全没有电磁场的空间内照样会有自发发射。
+对这一现象的完整解释显然涉及真空涨落，因此需要量子电动力学。
+
+设温度为$T$的光场中频率为$\omega$附近的能量密度为$u(\omega, T)$。设有两个能级$i$和$j$，且$E_j > E_i$。
+我们假定（之后会通过量子力学严格证明）自发发射的跃迁率和$u$无关，而受激发射和吸收的跃迁率正比于$u(\omega_{ji}, T)$，其中
+\begin{equation}
+    \hbar \omega_{ji} = E_j - E_i,
+    \label{eq:photon-energy}
+\end{equation}
+这样在这两个能级之间的自发发射、受激发射、吸收的跃迁率分别是
+\[
+    A_{ji} N_j, \quad B_{ji} N_j u(\omega_{ji}, T), \quad C_{ij} N_i u(\omega_{ji}, T).
+\]
+能级$i$向上跃迁到$j$的跃迁率为
+\[
+    \lambda_{ij} = C_{ij} u(\omega_{ji}, T),
+\]
+能级$j$向下跃迁到$i$的跃迁率为
+\[
+    \lambda_{ji} = B_{ji} u(\omega_{ji}, T) + A_{ji}.
+\]
+平衡时两者相等，即有
+\[
+    N_i C_{ij} u(\omega_{ji}, T) = N_j (B_{ji} u(\omega_{ji}, T) + A_{ji})
+\]
+$T \to \infty$，不同能级上原子分布的个数差别变得很小，$u \to \infty$，而上式仍然成立，因此$C_{ij} = B_{ji}$%
+\footnote{请注意对温度的依赖被完全归入$u(\omega, T)$中，系数$C$和$B$由电子和光场耦合的方式决定，因此不依赖温度。}%
+，这样就有
+\[
+    u(\omega_{ji}) = \frac{A_{ji} / B_{ji}}{\ee^{\omega_{ji} \hbar / k T} - 1}.
+\]
+由于原子能级可以随意调整，我们有
+\[
+    u(\omega) = \frac{A_{ji} / B_{ji}}{\ee^{\omega \hbar / k T} - 1}.
+\]
+而由于空腔内的辐射能量密度为
+\[
+    u = \frac{\hbar \omega^3}{\pi^2 c^3} \frac{1}{\ee^{\hbar \omega / kT} - 1}
+\]
+自发发射跃迁率为
+\[
+    A_{ji} = \frac{\omega_{ji}^3}{3\pi \epsilon_0 \hbar c^3}
+\]
+
+\subsubsection{跃迁系数的推导}\label{sec:electro-dipole-hopping}
+
+现在尝试从头计算跃迁率。如前所述，热平衡（实际上不仅仅是热平衡）时受激发射和吸收的跃迁率相等，这是由细致平衡条件以及高温下辐射密度趋于无限大这两个事实保证的，没有用到任何关于辐射机制的细节。
+这样就只需要计算自发发射和受激发射的跃迁率。
+在上一节中我们用到了空腔内的辐射能量密度，通过经典电动力学推导出的辐射能量密度公式是错误的（红外灾难和紫外灾难），这意味着完整地讨论跃迁需要量子电动力学。
+不过，受激发射还是可以使用经典电动力学得到。
+
+仅考虑电偶极辐射，则哈密顿量中需要加入这样一项：
+\begin{equation}
+    {H}_\text{DE} = - {\vb*{d}} \cdot \vb*{E}, \quad {\vb*{d}} = -e {\vb*{r}}.
+\end{equation}
+由于是偶极辐射，电场近似认为不存在空间变动，即可以展开成以下仅显含时间的傅里叶分量：
+\[
+    \vb*{E} = \int \dd{\omega} \vb*{E}(\omega) \ee^{- \ii \omega t}.
+\]
+实际上，由于电子的运动会释放光子，终究不能够将电场$\vb*{E}$看成一个外部给定的场，而必须把它的值看成是系统状态的一部分，电场的状态和电子的状态直积得到系统状态。
+我们接下来将只考虑电子的状态，换而言之，将电场的状态迹掉了，因此电子和不同频率的电场的相互作用得到的概率振幅应当被非相干叠加，即使用经典概率的方法叠加。%
+\footnote{实际上，如果完整地使用cQED做计算，把光子和原子全部计入态矢量中，那么的确在计算过程中不会出现混合态，但是当我们开始略去光子的状态而只考虑原子的跃迁时，就已经隐含地迹掉了光子，从而原子的状态就成为混合态了。
+在推导原子的跃迁时必然要在某个阶段引入混合态，从而概率振幅非相干叠加，因为\autoref{sec:einstein-phonomenon}中的能量密度是光子的热系综的能量密度，因此必须能够保证我们的推导对热系综也适用。}%
+在经典极限下平面波的偏振方向可以取任何方向，因为光子一方面单个能量很弱，另一方面总数又很大，的确可以让电场振动方向指向任意方向。
+总之，相互作用哈密顿量为
+\[
+    {H}_\text{DE} = \int \dd{\omega} e {\vb*{r}} \cdot \vb*{E}(\omega),
+\]
+且每个$\vb*{E}(\omega)$又允许任意的偏振方向取向。换而言之电子能够和$\omega$、偏振方向随意取的平面波电场模式（实际上是光子模式的经典极限）发生相互作用。
+
+对每个电场模式，使用一阶微扰计算跃迁振幅。一阶含时微扰论的概率振幅为
+\[
+    \braket{n}{\psi(t)} = - \frac{\ii}{\hbar} \ee^{- \ii E_n t / \hbar} \sum_m \int_0^t \dd{t'} \mel{n}{{H}_\text{DE}}{m} \ee^{\ii \omega_{nm} t} \braket{m}{\psi(0)},
+\]
+其中
+\[
+    \hbar \omega_{nm} = E_n - E_m,
+\]
+$m, n$等表示一组正交基——在这里就是使用$(n, l, m_l, m_s)$表示出的原子态。
+这一组原子态是一组偏好基，它们之间的跃迁概率就是以上概率振幅的模长平方。
+考虑这样一个过程：一开始原子处于态$\ket{i}$上，然后和频率为$\omega$的电场发生相互作用，跃迁到态$\ket{j}$上。
+这个过程的振幅为
+\[
+    \begin{aligned}
+        \braket{j}{\psi(t)} &= - \frac{\ii}{\hbar} \ee^{- \ii E_n t / \hbar} \int_0^t \dd{t'} \mel{j}{e {\vb*{r}} \cdot \vb*{E}(\omega) \ee^{- \ii \omega t'}}{i} \ee^{\ii \omega_{ji} t'} \\
+        &= - \frac{\ii}{\hbar} \ee^{- \ii E_n t / \hbar} e \vb*{E}(\omega) \cdot \mel{j}{{\vb*{r}}}{i} \frac{\ee^{\ii (\omega_{ji} - \omega) t} - 1}{\ii (\omega_{ji} - \omega)} \\
+        &= - \frac{\ii}{\hbar} \ee^{- \ii E_n t / \hbar} e E(\omega) \mel{j}{{\vb*{r}}}{i} \cos \theta \frac{\ee^{\ii (\omega_{ji} - \omega) t} - 1}{\ii (\omega_{ji} - \omega)},
+    \end{aligned}
+\]
+其中$\theta$是电场偏振方向和$\mel{j}{{\vb*{r}}}{i}$的夹角。
+
+电子从$\ket{i}$到$\ket{j}$的过程可以通过和不同波长、不同偏振方向的电磁波相互作用而发生。由对称性分析，不同偏振方向的电磁波出现的可能性是一样的，也就是说偏振方向在立体角$\dd{\Omega}$中，频率出现在$\omega$到$\omega+\dd{\omega}$的电磁波出现的概率为
+\[
+    P \dd{\Omega} = p(\omega) \frac{\dd{\Omega}}{4\pi} \dd{\omega},
+\]
+于是
+\[
+    \begin{aligned}
+        P_{i \to j} &= \int p(\omega) \dd{\omega} \int \frac{\dd{\Omega}}{4\pi} \abs*{\braket{j}{\psi(t)}}^2 \\
+        &= \frac{e^2}{\hbar^2} \int \frac{\dd{\Omega}}{4\pi} \cos^2 \theta \int \dd{\omega} p(\omega) E(\omega)^2 \abs*{\mel{j}{{\vb*{r}}}{i}}^2 \frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2} \\
+        &= \frac{e^2}{3 \hbar^2} \abs*{\mel{j}{{\vb*{r}}}{i}}^2 \int \dd{\omega} p(\omega) E(\omega)^2 \frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2}.
+    \end{aligned}
+\]
+我们关心的时间尺度通常比较大，而随着$t$增大，$\frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2}$会变得越来越尖锐，只在$\omega = \omega_{ji}$附近有比较明显的非零值，于是近似有（这个近似表明跃迁几乎总是发出频率就是$\omega_{ji}$的电磁波，这当然是正确的）
+\[
+    \begin{aligned}
+        P_{i \to j} &= \frac{e^2}{3 \hbar^2} \abs*{\mel{j}{{\vb*{r}}}{i}}^2 p(\omega_{ji}) E(\omega_{ji})^2 \int_{-\infty}^\infty \dd{\omega} \frac{\sin^2((\omega_{ji} - \omega) t / 2)}{(\omega_{ji}-\omega)^2} \\
+        &= \frac{e^2}{3 \hbar^2} \abs*{\mel{j}{{\vb*{r}}}{i}}^2 p(\omega_{ji}) E(\omega_{ji})^2 \pi t.
+    \end{aligned}
+\]
+可见跃迁几率随着时间增大而线性增大。单位时间的跃迁几率为
+\[
+    \Gamma_{i \to j} = \dv{P_{i \to j}}{t} = \frac{\pi e^2}{3 \hbar^2} \abs*{\mel{j}{{\vb*{r}}}{i}}^2 p(\omega_{ji}) E(\omega_{ji})^2.
+\]
+考虑到频段$\omega$到$\omega+\dd{\omega}$上的电磁场能量（它是电场能量的两倍）为
+\begin{equation}
+    u(\omega) = \epsilon_0 p(\omega) E(\omega)^2,
+\end{equation}
+最后得到
+\begin{equation}
+    \Gamma_{i \to j} = \frac{\pi e^2 \expval*{\vb*{r}_{ji}}^2}{3 \epsilon_0 \hbar^2} u(\omega_{ji}), \quad B_{ji} = \frac{\pi e^2}{3 \epsilon_0 \hbar^2},
+\end{equation}
+其中
+\begin{equation}
+    e \expval*{\vb*{r}_{ji}} = e \int \dd[3]{\vb*{r}} \psi_i^*(\vb*{r}) \vb*{r} \psi_j(\vb*{r})
+    \label{eq:electro-dipole}
+\end{equation}
+为电偶极矩的期望值。
+
+以上是国际单位制的推导，如果改用高斯单位制，由于电磁能量的形式会发生变化，将得到
+\begin{equation}
+    B_{ji} = \frac{4\pi^2 e^2}{3 \hbar^2} \abs{\expval*{\vb*{r}_{ji}}}^2.
+\end{equation}
+
+\subsubsection{选择定则}
+
+\eqref{eq:electro-dipole}中的波函数对$(r, \theta, \varphi)$是分离变量的，而
+\[
+    \begin{aligned}
+        r_x &= r \sin \theta \cos \varphi, \\
+        r_y &= r \sin \theta \sin \varphi, \\
+        r_z &= r \cos \theta 
+    \end{aligned}
+\]
+也是分离变量的。
+记$\psi_1$和$\psi_2$的量子数分别是$n_1, l_1, m_1$和$n_2, l_2, m_2$。
+\eqref{eq:electro-dipole}给出非零结果的必要条件是其角部分均不为零。
+在$\varphi$方向上，积分是
+\[
+    \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \cos \varphi \ee^{\ii m_2 \varphi} \vb*{e}_x + \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \sin \varphi \ee^{\ii m_2 \varphi} \vb*{e}_y + \int_0^{2\pi} \dd{\varphi} \ee^{ - \ii m_1 \varphi} \ee^{\ii m_2 \varphi} \vb*{e}_z,
+\]
+让三个分量不全为零的可能取值是：
+\[
+    m_2 - m_1 = \pm 1, 0.
+\]
+在$\theta$方向上，积分是
+\[
+    \int_0^\pi \dd{\theta} \sin \theta \legpoly_{l_1}^{m_1} (\cos \theta) \legpoly_{l_2}^{m_2} (\cos \theta) (\vb*{e}_x + \vb*{e}_y) + \int_0^\pi \dd{\theta} \cos \theta \legpoly_{l_1}^{m_1} (\cos \theta) \legpoly_{l_2}^{m_2} (\cos \theta) \vb*{e}_z,
+\]
+使用勒让德多项式的性质，可以证明让三个分量不全为零的可能取值为
+\[
+    l_2 - l_1 = \pm 1.
+\]
+总之，要让受激发射系数不为零，需要
+\begin{equation}
+    \Delta m = 0, \pm 1, \quad \Delta l = \pm 1.
+\end{equation}
+这就是\concept{单电子原子跃迁的选择定则}。
+实际上，也可以通过守恒量分析得到这个结论。
+由于光子为自旋1的粒子，%
+\footnote{这里可能会遇到一个疑难：光子的自旋角动量只在其前进方向上有投影，且只有$\pm 1$两种取值，那么似乎$z$方向角动量守恒意味着只能有$\Delta m = \pm 1$。
+然而，光子的前进方向和我们选取的电子$z$方向未必相同，因此光子的自旋角动量投影在$z$方向上还是会有$0, \pm 1$三种取值。
+}%
+
+不满足选择定则的跃迁称为\concept{禁戒跃迁}。通过磁偶极跃迁、电四极子跃迁、双光子跃迁甚至原子和原子之间的碰撞等方法，禁戒跃迁也是可以发生的，但是相对来说发生概率不大，从而对应的能级为亚稳态——在电偶极跃迁比较频繁的时间尺度上它不会发生，但是在更长的时间尺度上它的确会发生。
+
+我们通常会讨论的和原子相互作用的电磁场都是比较弱的，因此原子对光子的吸收和发射和其它过程——如原子在外加电场、磁场下的变化——都没有耦合。
+这意味着原子光谱提供了一种非常好的、不受其它实验手段影响的检查原子内部能级发生了什么变动的方式。
+将原子置于外场中而产生的各种效应基本上都可以通过光谱体现出来。
+
+\subsection{磁矩和磁场作用}
+
+到目前为止的讨论，磁量子数$m_l$都是能量简并的，而如果加入一个磁场，那么就会有一个特定的空间方向，从而破缺$m_l$简并，导致能级进一步分裂。
+
+\subsubsection{磁矩}
+
+一些系统在外加静磁场时能量会增加一项
+\[
+    E_\text{M} = - \vb*{\mu} \cdot \vb*{B},
+\]
+其中的矢量$\vb*{\mu}$就称为磁矩。
+磁矩和电荷的周期性运动具有非常密切的关系。一个没有内部结构的电荷做周期性运动相当于产生了一个环状电流，因此会产生一个磁矩，称为\concept{轨道磁矩}。
+首先采用经典理论分析轨道磁矩。电子轨道角动量的公式为
+\[
+    \vb*{L} = m_\text{e} \vb*{r} \times \dv{\vb*{r}}{t} = 2 m_\text{e} \dv{\vb*{S}}{t},
+\]
+电子被束缚在原子核周围时做平面周期性运动，这样它就产生了一个大小为
+\[
+    I = - \frac{e}{\tau}
+\]
+的电流，其中$\tau$是运动周期。
+在电磁学中，一个电流为$I$，围绕的面积为$\vb*{S}$的平面线圈的磁矩为
+\[
+    \vb*{\mu} = I \vb*{S} = - \frac{e \vb*{S}}{\tau},
+\]
+而由于电子做周期性运动，由角动量守恒我们有
+\[
+    \dv{\vb*{S}}{t} = \frac{\vb*{S}}{\tau},
+\]
+这样轨道磁矩就是
+\[
+    \vb*{\mu} = - \frac{e}{2m_\text{e}} \vb*{L}.
+\]
+负号的出现是因为电子携带负电荷，后面推导核子的磁矩时就没有这个负号。
+为了与原子物理的背景保持一致，引入下标$l$表示这是来自轨道角动量的磁矩，并且设
+\begin{equation}
+    \mu_\text{B} = \frac{e\hbar}{2m_\text{e}}
+\end{equation}
+称为\concept{玻尔磁子}，于是
+\begin{equation}
+    \vb*{\mu}_l = - \frac{\mu_\text{B}}{\hbar} \vb*{L}.
+    \label{eq:orbit-magnetic-moment}
+\end{equation}
+虽然\eqref{eq:orbit-magnetic-moment}是在经典力学中导出的，但它也适用于量子理论。
+
+量子理论中还有自旋角动量，这是不是会引入自旋磁矩？确实会，不过自旋磁矩的值和把电子当成带电小球计算出来的值并不相同。实际上，自旋磁矩是
+\begin{equation}
+    \vb*{\mu}_s = - \frac{e}{m_\text{e}} \vb*{S}.
+\end{equation}
+当然这也不奇怪，因为自旋在粒子图像中并没有经典对应。实际上自旋磁矩的严格计算直接来自QED。
+
+总之，原子的总磁矩为
+\begin{equation}
+    {\vb*{\mu}} = - \frac{\mu_\text{B}}{\hbar} (\vb*{L} + 2\vb*{S}),
+\end{equation}
+而对应的哈密顿量为
+\begin{equation}
+    {H}_\text{mag} = - {\vb*{\mu}} \cdot \vb*{B}.
+    \label{eq:magnetic-hamiltonian}
+\end{equation}
+
+\subsubsection{半经典图像}
+
+轨道角动量有明确的经典意义，可以使用半经典理论描述它。例如如果角动量的长度和$z$轴分量保持不变，那么就会发生\concept{拉莫尔进动}，即角动量矢量在一个对称轴就是$z$轴的锥面上运动，长度保持不变。
+
+磁矩对电子运动的影响无非是让电子受力（即破缺平移不变性）或是受力矩（即破缺旋转不变性）。
+如果磁场是均匀的，那么电子肯定不会受力，但会受到一个力矩，因为磁矩的方向的变动会让$\vb*{\mu} \cdot \vb*{B}$发生变化，即
+\[
+    \pdv{(\vb*{\mu} \cdot \vb*{B})}{\vb*{\varphi}} \neq 0,
+\]
+但是电子位置的变动当然不会让$\vb*{\mu}$发生任何变化。
+如果磁场是不均匀的，那么磁矩不仅受到力矩还受力，因为空间平移不变性被破缺了，或者说
+\[
+    \pdv{(\vb*{\mu} \cdot \vb*{B})}{\vb*{r}} \neq 0.
+\]
+
+\subsection{相对论修正}
+
+本节讨论相对论修正导致的能级的小幅变化。这会导致环绕原子核的库伦势场中的电子的能级发生小的分裂。
+
+\subsubsection{精细结构}
+
+本节讨论\concept{精细结构}，即相对论修正中最大的两个项。它们分别来自相对论动能和自旋-轨道耦合。
+分裂出的两个能级很难发生彼此之间的跃迁，因为两者的角量子数和磁量子数都一样，因此两者之间的跃迁违背选择定则。
+
+首先，我们知道，相对论情况下动能为
+\[
+    E_\text{k} = \frac{m c^2}{\sqrt{1 - v^2 / c^2}},
+\]
+用动量表示出来，展开到第二阶，得到
+\begin{equation}
+    E_\text{k} = \frac{p^2}{2m} - \frac{p^4}{8 m^3 c^2} + \cdots.
+\end{equation}
+第一项当然就是经典动能，第二项给出了一个微扰。注意到这个微扰仍然具有全部的旋转不变性，因此角动量平方和$z$方向角动量在它之下仍然守恒。
+这样虽然类氢原子的波函数有简并，在$\psi_{nlm}$下仍然可以把它们当成非简并的。
+一阶微扰为
+\begin{equation}
+    E^{\text{kin},(1)}_{n, l} = - \frac{(E^{(0)}_n)^2}{2 m c^2} \left( \frac{4 n}{l + 1/2} - 3 \right).
+    \label{eq:kinetic-energy-relativity-correction}
+\end{equation}
+$l$的简并解除了——本该如此，实际上$l$会有简并单纯是库伦场的额外对称性的结果。这大约是$E_n^{(0)}$的$10^{-5}$量级。
+$m$仍然有简并，从而对不同的$m$对应的波函数做线性组合，得到的仍然是能量本征态。这件事很重要，因为我们马上要引入一个不能保持$m$守恒的修正。
+
+即使没有外加磁场，电子的自旋和轨道角动量仍然会出现小的耦合。这是相对论效应的结果。本节将给出对这一现象的一个半经典讨论。
+为方便起见，以下称相对于原子实静止的参考系为$O$系，相对于某一时刻的电子静止的参考系（这仍然是一个惯性系，因为它并不是每一时刻都和电子保持静止）为$e$系。
+设电子在$O$系中运行速度为$\vb*{v}$，$O$系中原子实施加给电子一个静电场$\vb*{E}_0$，则$e$系中$\vb*{E}_0$将变换成如下磁场：
+\[
+    \vb*{B}' = \frac{\vb*{E}_0 \times \vb*{v}}{\sqrt{c^2 - v^2}},
+\]
+由于$\vb*{v}$相对于光速很小，有
+\begin{equation}
+    \vb*{B}' = \frac{1}{c^2} \vb*{E}_0 \times \vb*{v}.
+\end{equation}
+$e$系中任何一个角动量的进动都是% TODO：经典力学
+\[
+    \vb*{\omega}' = \frac{e}{m_\text{e}} \vb*{B}',
+\]
+而在$O$系中$e$系的坐标轴以
+\[
+    \vb*{\omega}_T = - \frac{e}{2 m_\text{e}} \vb*{B}'
+\]
+的角速度进动，因此最后$O$系中任何一个角动量都在以
+\begin{equation}
+    \vb*{\omega} = \frac{e}{2 m_\text{e}} \vb*{B}'
+\end{equation}
+的角速度进动。这等价于$O$系中多出来了一个磁场，% 这也太扯了。。我觉得比较好的推导是，证明$e$系中哈密顿量会多出来一项，然后这一项和$O$系是相同的，当然哈密顿量未必是洛伦兹标量，所以也很麻烦。。。
+因此需要在哈密顿量中引入一项
+\begin{equation}
+    {H}_{LS} = - \vb*{\mu} \cdot \vb*{B}_\text{eff} = \frac{1}{2c^2} \frac{e}{m} \vb*{S} \cdot (\vb*{E}_0 \times \vb*{v}).
+\end{equation}
+如果是类氢原子，有
+\begin{equation}
+    {H}_{LS} = \frac{Ze^2}{8 \pi \epsilon_0 c^2 m^2} \frac{\vb*{S} \cdot \vb*{L}}{r^3}.
+    \label{eq:spin-ortibal-coupling}
+\end{equation}
+因此轨道角动量和自旋角动量是有耦合的，即所谓\concept{自旋-轨道耦合}，两者同向时能量较高，两者反向时能量较低。
+这同样会带来一个能级分裂。由于
+\[
+    \vb*{S} \cdot \vb*{L} = \frac{1}{2} (J^2 - L^2 - S^2),
+\]
+应该使用做了L-S耦合（详情见多电子系统的一般讨论\autoref{sec:ls-coupling}，这里就是将轨道角动量和自旋角动量做了一个复合）的波函数$\psi_{njl m_j}$，请注意这族波函数也是相对论性动能修正下的能量本征态。
+计算得到
+\begin{equation}
+    E^{\text{LS}, (1)}_{njl} = \frac{(E^{(0)}_n)^2}{mc^2} \frac{2n (j(j+1) - l(l+1) - 3/4)}{l(l+1)(2l+1)}.
+\end{equation}
+于是最后能级修正为
+\begin{equation}
+    E^{(1)}_{nj} = \frac{(E^{(0)}_n)^2}{mc^2} \left( \frac{3}{2} - \frac{4 n}{2 j + 1} \right).
+\end{equation}
+引入无量纲的\concept{精细结构常数}
+\begin{equation}
+    \alpha = \frac{e^2}{4\pi \epsilon_0 \hbar c} \approx \frac{1}{137},
+\end{equation}
+做了一阶修正之后的能级为
+\begin{equation}
+    E_{n j} = \frac{E_1^{(0)}}{n^2} \left( 1 + \left( \frac{Z \alpha}{n} \right)^2 \left(  \frac{2 n}{2 j + 1} - \frac{3}{4} \right) \right).
+\end{equation}
+
+\subsubsection{更精细的物理}
+
+% TODO
+
+实际上，以上讨论还是不能够覆盖所有的物理现象。核磁矩的存在、电四极辐射以及其它一些机制会导致能级进一步分裂，产生\concept{超精细结构}。
+这些效应都远远小于精细结构，如核磁矩相比电子磁矩是很小的，
+
+使用狄拉克方程，因为兰姆位移。
