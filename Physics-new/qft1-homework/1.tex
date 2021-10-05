@@ -3,7 +3,9 @@
 \usepackage{geometry}
 \usepackage{titling}
 \usepackage{titlesec}
-\usepackage{paralist}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
@@ -31,6 +33,9 @@
 \setlength{\droptitle}{-5em}
 \preauthor{\vspace{-10pt}\begin{center}}
 \postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
 
 % Math operators
 \DeclareMathOperator{\timeorder}{T}
@@ -69,6 +74,7 @@
 
 \newcommand*{\concept}[1]{{\textbf{#1}}}
 
+% Embedded codes
 \lstset{basicstyle=\ttfamily,
   showstringspaces=false,
   commentstyle=\color{gray},
@@ -284,8 +290,61 @@ is a good choice, and $\omega^{ij}$s are parameters for rotation and $\omega^{0i
 
 \begin{itemize}
     \item[(a)] We are going to investigate a theory $\mathcal{L}$ invariant under this transformation.
-    The Noether current can be labeled as $K^{\alpha \mu \nu}$, and $\partial_\alpha K^{\alpha \mu \nu} = 0$. By Noether's theorem we have 
-    
+    The Noether current can be labeled as $K^{\alpha \mu \nu}$, and $\partial_\alpha K^{\alpha \mu \nu} = 0$.
+    Under a Lorentz transformation there is no substantial change on the field $\phi$, i.e.
+    \[
+        \phi(x) \longrightarrow \phi'(x') = \phi(x), 
+    \]
+    which means
+    \[
+        \var{\phi} + \partial_\mu \phi \var{x^\mu} = 0,
+    \]
+    where
+    \[
+        \var{x^\mu} = \ii J\indices{^\mu_\nu_\alpha_\beta} \var{\omega^{\alpha \beta}} x^\nu.
+    \]
+    By Noether's theorem we have 
+    \[
+        \begin{aligned}
+            0 &= \partial_\mu \left( \pdv{\mathcal{L}}{\partial_\mu \phi} \var{\phi} + \mathcal{L} \var{x^\mu} \right) \\
+            &= \partial_\mu \left( \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi  + \mathcal{L} \delta^{\mu}_\nu \right) \var{x^\nu} \right) \\
+            &= - \partial_\mu \left( T\indices{^\mu_\nu} \var{x^\nu} \right) = - \ii \partial_\mu \left( T\indices{^\mu_\nu} J\indices{^\nu_\sigma_\alpha_\beta} \var{\omega^{\alpha \beta}} x^\sigma \right) \\
+            &= - \ii \partial_\mu \left( T\indices{^\mu_\nu} (\delta^\nu_\alpha \eta_{\sigma \beta} - \delta^\nu_\beta \eta_{\sigma \alpha}) \var{\omega^{\alpha \beta}} x^\sigma \right) \\
+            &= - \ii \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) \var{\omega^{\alpha \beta}}.
+        \end{aligned}
+    \]
+    Note that $\var{\omega^{\alpha \beta}}$ is antisymmetric, so only six Noether current can be obtained, each of which has the form of 
+    \[
+        \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) \var{\omega^{\alpha \beta}} + \partial_\mu (T\indices{^\mu_\beta} x^\alpha - T\indices{^\mu_\alpha} x^\beta) \var{\omega^{\beta \alpha}} = 0,
+    \]
+    where $\alpha \neq \beta$. Due to the antisymmetric natural of $T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha$, we obtain
+    \[
+        \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) = 0.
+    \]
+    Therefore we have 
+    \begin{equation}
+        K^{\alpha \mu \nu} = T^{\alpha \mu} x^\nu - T^{\alpha \nu} x^\mu,
+    \end{equation}
+    which are the currents of Lorentz transformations in terms of the energy-momentum tensor.
+    Note that the derivation presented here only works for scalar fields. For a field with non-zero spin, as the coordinates change under the Lorentz transformation, the components of the field will also mix together, creating more terms in $\var{\phi}$.
+    \item[(b)] An equivalent Lagrangian containing only first order derivatives is 
+    \begin{equation}
+        \mathcal{L} = - \frac{1}{2} \partial_\mu \phi \partial^\mu \phi + \frac{1}{2} m^2 \phi^2,
+    \end{equation} 
+    from which we have 
+    \[
+        \begin{aligned}
+            T\indices{^\mu_\nu} &= \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi - \mathcal{L} \delta^{\mu}_\nu \\
+            &= - \partial^\mu \phi \partial_\nu \phi + \frac{1}{2} \delta^\mu_\nu \partial_\sigma \phi \partial^\sigma \phi - \frac{1}{2} \delta^\mu_\nu m^2 \phi^2.    
+        \end{aligned}
+    \]
+    Therefore 
+    \begin{equation}
+        \begin{aligned}
+            K^{\alpha \mu \nu} &= (x^\mu \partial^\nu \phi - x^\nu \partial^\mu \phi) \partial^\alpha \phi + \frac{1}{2} (\eta^{\alpha \mu} x^\nu - \eta^{\alpha \nu} x^\mu) (\partial_\sigma \phi)^2 + \frac{1}{2} (x^\mu \eta^{\alpha \nu} - x^\nu \eta^{\alpha \mu}) m^2 \phi^2 \\
+            &= (x^\mu \partial^\nu \phi - x^\nu \partial^\mu \phi) \partial^\alpha \phi + \frac{1}{2} (\eta^{\alpha \mu} x^\nu - \eta^{\alpha \nu} x^\mu) ((\partial_\sigma \phi)^2 - m^2 \phi^2).
+        \end{aligned}
+    \end{equation}
 \end{itemize}
 
 \paragraph{4. Classical electromagnetism} This is problem $2.1$ on p. 33 of Peskin.
@@ -393,7 +452,7 @@ where $E^{i}=-F^{0 i}$ and $\epsilon^{i j k} B^{k}=-F^{i j}$.
             S^i &= \hat{T}^{i 0} = F^{i \sigma} \eta_{\sigma \rho} F^{\rho 0} \\
             &= F^{i \sigma} \eta_{\sigma j} F^{j 0} = - F^{i j} F^{j 0} \\
             &= - (- \epsilon^{ijk} B^k) E^j \\
-            &= \epsilon_{ijk} E^j B^k = \vb*{E} \times \vb*{B},
+            &= \epsilon_{ijk} E^j B^k = (\vb*{E} \times \vb*{B})^i,
         \end{aligned}
     \]
     which is the second equation in \eqref{eq:peskin-2-1-5}.
