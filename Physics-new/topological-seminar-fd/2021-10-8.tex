@@ -1,0 +1,261 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{SPT by Prof. Yang Qi}
+\author{Jinyuan Wu}
+\date{2021.10.8}
+
+\begin{document}
+
+\maketitle
+
+\section{One Dimensional AKLT Chain}
+
+\subsection{The AKLT State and the AKLT model}
+
+The 1D AKLT chain is first proposed by Affleck, Kennedy, Lieb and Tasaki in \cite{Affleck_1987}.
+The Haldane conjecture states that an integer spin chain is gapped while a half-integer spin chain is gapless.
+Since symmetry breaking is impossible in an integer spin chain, it was traditionally regarded as a trivial ferromagnetic system with gapped excitations (magnon).
+This is definitely true in the bulk - but the possibility that exotic boundary modes exist cannot be ruled out.
+
+Consider a chain, each site of which has a spin-1 degree of freedom on it. 
+The \concept{AKLT state} is a wave function of the spin chain defined on the following way.
+To make things more understandable we decompose one spin-1 degree of freedom into two spin-$1/2$ degrees of freedom, i.e. to put two spin-$1/2$ degrees of freedom on one site, and then use a projector to eliminate redundant Hilbert subspaces. 
+We know that 
+\[
+    \frac{1}{2} \otimes \frac{1}{2} = 0 \otimes 1,
+\]
+so we need to project the state into \emph{spin triplet subspaces} and throw away the spin singlet states.
+Suppose we decompose the spin-1 degree of freedom on site $i$ into two spin-$1/2$ degrees of freedom labeled as A and B, and the projector is visualized as 
+\input{2021-10-8-diagram/projector-aklt.tex}
+Now we let $i \text{B}$ and $i+1, \text{A}$ get entangled in the following ``valence bond''%
+\footnote{
+    When two spins are in a singlet state, we call it \emph{valence bond state} because the spin part of the two-electron wavefunction in a valence bond is just a singlet state.
+    The two electrons come close in the orbital space, so the spin part of the wave function have to be a singlet to make the whole wave function antisymmetric. 
+    If two spins in a singlet states can be directly traced back to two electrons, then it is highly likely that the two electrons are indeed in a valence bond.
+}%
+way:
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+            %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+            
+            %Straight Lines [id:da008217126970560651] 
+            \draw    (182.85,125) -- (225.65,125) ;
+            \draw [shift={(228,125)}, rotate = 0] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]      (0, 0) circle [x radius= 3.35, y radius= 3.35]   ;
+            \draw [shift={(180.5,125)}, rotate = 0] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]      (0, 0) circle [x radius= 3.35, y radius= 3.35]   ;
+            
+            % Text Node
+            \draw (176.5,125) node [anchor=east] [inner sep=0.75pt]    {$i,\text{B}$};
+            % Text Node
+            \draw (232,125) node [anchor=west] [inner sep=0.75pt]    {$i+1,\text{A}$};
+            \end{tikzpicture}
+    \end{gathered}
+     = \frac{1}{\sqrt{2}} (\ket*{\uparrow \downarrow} - \ket*{\downarrow \uparrow} ),
+\end{equation}
+and then apply the projector \eqref{eq:aklt-projector}, and now we get an explicit definition of the AKLT state as  
+\begin{equation}
+    \ket*{\Psi} \coloneqq \prod_{i} P_i \ket*{\Psi_0}, \quad \ket*{\Psi_0} \coloneqq \prod_i \frac{1}{\sqrt{2}} (\ket*{\uparrow}_{i \text{B}} \ket*{\downarrow}_{i+1, \text{A}} - \ket*{\downarrow}_{i \text{B}} \ket*{\uparrow}_{i+1, \text{A}}),
+    \label{eq:aklt-state}
+\end{equation}
+or in a visualized way as 
+\input{2021-10-8-diagram/aklt-state-visual.tex}
+Though \eqref{eq:aklt-state} is constructed with $2N$ $1/2$-spins, after the projection it is already a wave function of a spin-1 model with $N$ sites.
+
+Now we try to find a Hamiltonian with \eqref{eq:aklt-state} as its ground state. %
+\footnote{
+    As is often the case when we investigate topological states of matter,  we often write down a wave function \emph{first} and then try to find a model with the wave function as the ground state, or even forget about the model.
+}%
+Note that the sum of two nearest spin-1 degrees of freedom cannot be 2, because in doing so, we require $S^z_i = S^z_{i+1} = 1$, which, in turn, require that the two $1/2$-spins in $S_i$ are all upward and so are the two $1/2$-spins in $S_{i+1}$, which is not possible since the $1/2$-spin on $i, \text{B}$ and the $1/2$-spin on $i+1, \text{A}$ form a spin singlet. 
+Due to the spin rotational symmetry, suppose 
+\[
+    \vb*{S} = \vb*{S}_i + \vb*{S}_{i+1},
+\]
+then $S \neq 2$.
+So we can give a state where $S = 2$ an energy penalty, in an attempt to make \eqref{eq:aklt-state} a ground state.
+We may consider a Hamiltonian in the following form: 
+\begin{equation}
+    H = \sum_{i} P_2 (\vb*{S}_i + \vb*{S}_{i+1}) , 
+    \label{eq:aklt-model-original}
+\end{equation}
+where $P_2$ is an \emph{operator function} which returns $1$ when $S = 2$ and returns $0$ otherwise.
+Note that all spins are spin-$1$ - or otherwise the $(\vb*{S}_i \cdot \vb*{S}_{i+1})^2$ terms in the following discussion make no sense.
+
+\begin{table}[H]
+    \caption{The eigenstates and eigenvalues of $(\vb*{S}_i + \vb*{S}_{i+1})^2$ and $P_2$}
+    \label{tab:s-2-eigs}
+    \centering
+    \label{table1}
+    \begin{tabular}[c]{ccc}
+        \toprule
+        $s$ & $(\vb*{S}_i + \vb*{S}_{i+1})^2 \eqqcolon X$ & $P_2$ \\ 
+        \midrule
+        0 & 1 & 0 \\
+        1 & 2 & 0 \\
+        2 & 6 & 1 \\
+        \bottomrule
+    \end{tabular}
+\end{table} 
+
+We should evaluate the explicit form of $P_2$. Note that the spectrum of $\vb*{S}_i + \vb*{S}_{i+1}$ carries three irreducible representation of $SU(2)$, namely $s = 0, 1, 2$, and since 
+\[
+    (\vb*{S}_i + \vb*{S}_{i+1})^2 = s(s+1)
+\]
+we have \prettyref{tab:s-2-eigs}, and by curve fitting we find 
+\[
+    P_2 = \frac{1}{24} X (X-2).
+\]
+So the Hamiltonian \eqref{eq:aklt-model-original} is 
+\begin{equation}
+    H = \sum_i \frac{1}{24} (\vb*{S}_i + \vb*{S}_{i+1})^2 ((\vb*{S}_i + \vb*{S}_{i+1})^2 -2).
+\end{equation}
+Using the formula
+\[
+    (\vb*{S}_i + \vb*{S}_{i+1})^2 = 4 + 2 \vb*{S}_i \cdot \vb*{S}_{i+1},
+\]
+we have 
+\[
+    \begin{aligned}
+        H &= \sum_i \frac{1}{24} (\vb*{S}_i + \vb*{S}_{i+1})^2 ((\vb*{S}_i + \vb*{S}_{i+1})^2 -2) \\
+        &= \sum_i \frac{1}{24} (4 + 2 \vb*{S}_i \cdot \vb*{S}_{i+1}) (2 + 2 \vb*{S}_i \cdot \vb*{S}_{i+1}) \\
+        &= \sum_i \left( \frac{1}{2} \vb*{S}_i \cdot \vb*{S}_{i+1} + \frac{1}{6} (\vb*{S}_i \cdot \vb*{S}_{i+1})^2 + \frac{1}{3} \right),
+    \end{aligned}
+\]
+and since \eqref{eq:aklt-model-original} is just a penalty function we are free to multiply a coefficient onto it and hence we have a much prettier Hamiltonian
+\begin{equation}
+    H = \sum_i \left( \vb*{S}_{i} \cdot \vb*{S}_{i+1} + \frac{1}{3} (\vb*{S}_i \cdot \vb*{S}_{i+1})^2 \right),
+    \label{eq:aklt-model}
+\end{equation}
+where we ignore the constant term. 
+
+We can see that \eqref{eq:aklt-state} is an eigenstate of \eqref{eq:aklt-model}, because the projector \eqref{eq:aklt-projector} commutes with $(\vb*{S}_i + \vb*{S}_{i+1})^2$, 
+
+\subsection{The Edge State}
+
+The spin-$1/2$ degrees of freedom can be viewed as fractionalized degrees of freedom in \eqref{eq:aklt-model}, since they do not appear in the basic degrees of freedom in \eqref{eq:aklt-model} but they do help to understand what is going on in its ground state.
+
+Note that \eqref{eq:aklt-model} differs with the Heisenberg model with only one $\sum_i (\vb*{S}_i \cdot \vb*{S}_{i+1})^2$ term. 
+It has been numerically demonstrated that the model
+\begin{equation}
+    H = \sum_i (\vb*{S}_{i} \cdot \vb*{S}_{i+1} + \lambda (\vb*{S}_i \cdot \vb*{S}_{i+1})^2)
+\end{equation}
+has no quantum phase transition as $\lambda$ goes from $1/3$ to $0$, and therefore the Heisenberg model is somehow in one quantum phase with \eqref{eq:aklt-model}. 
+
+\subsection{Symmetry of the AKLT Model and SPT}
+
+The AKLT state is actually an example of \concept{symmetry protected topological phases} - or one may call them symmetry protected \emph{trivial} phases, since there are no anyons in them as is the case in \emph{intrinsic} topological phases. 
+The occurrence of gapless boundary states is quite similar to the Kramers degeneracy.
+In the case of the AKLT model, the symmetry involved is $SO(3)$ (not $SU(2)$ - since we are talking about an integer spin system) and the time reversal symmetry $\mathbb{Z}_2^T$.
+
+We consider a subgroup of $SO(3)$:
+\begin{equation}
+    D_2 \simeq \mathbb{Z}_2 \times \mathbb{Z}_2.
+\end{equation}
+The group can be generated by two elements satisfying
+\begin{equation}
+    x^2 = 1, \quad y^2 = 1, \quad xy = yx,
+\end{equation}
+where $x$ and $y$ correspond to \SI{180}{\degree} rotations around the $x$ and $y$ axises, respectively.
+The spin-$1/2$ spins do not carry an ordinary (or \emph{linear}) representation of $D_2$, but rather a \emph{projective} one: for a spin-$1/2$ degree of freedom we have 
+\begin{equation}
+    x^2 = y^2 = -1, \quad xy = - yx.
+\end{equation}
+
+\section{Classification of Projective Representations}
+
+We consider the general theory of projective representations.
+\begin{equation}
+    \omega_2(g, h) \omega_2(gh, k) = \prescript{g}{}{\omega_2(h, k)} \omega_2(g, hk)
+\end{equation}
+\begin{equation}
+    H^2(\mathbb{Z}_2 \times \mathbb{Z}_2, U(1)) = \mathbb{Z}_2
+\end{equation}
+
+\section{Group Cohomology}
+
+\bibliographystyle{plain}
+\bibliography{spin-chain} 
+
+\end{document}
