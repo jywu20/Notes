@@ -9,11 +9,11 @@ using SphericalHarmonics
 # Defining the mesh
 # The order of coordinates: r, θ, ϕ
 
-r_points = 20
-θ_points = 60
+r_points = 40
+θ_points = 80
 ϕ_points = 20
 
-r_max = 10
+r_max = 20
 
 r_range = LinRange(0.01, r_max, r_points) 
 θ_range = LinRange(0.01, π, θ_points)
@@ -110,11 +110,28 @@ Plmcosθ_storage = map(x -> computePlmcostheta(x, lmax = n_max), θ)
 Pcosθ(m, n) = map(v -> v[(n, m)], Plmcosθ_storage)
 ∂θPcosθ(m, n) = (- (n + 1) * cos.(θ) .* Pcosθ(m, n) + (1 - m + n) * Pcosθ(m, n+1)) ./ sin.(θ)
 
+##
+plot(r_range, jr(2)[:, 1, 1])
+
+##
+plot(θ_range, Pcosθ(0, 3)[1, :, 1])
+
+##
+
+p = plot()
+plot!(p, ∂θPcosθ(1, 4)[1, :, 1][2:end-2], label = "formula")
+plot!(p, ∂θ(Pcosθ(1, 4))[1, :, 1][2:end-2], label = "numerical")
+
+# The figure is weird. The two curves don't match ?!
+# TODO
+
+##
+
 electric_spherical_wave(m, n) = - m .* sin.(m * ϕ) .* Pcosθ(m, n) .* jr(n) .* e_θ ./ sin.(θ) - cos.(m * ϕ) .* jr(n) .* ∂θPcosθ(m, n) .* e_ϕ
 electric_spherical_wave_conj(m, n) = - m .* sin.(m * ϕ) .* Pcosθ(m, n) .* jr(n) .* e_θ_conj ./ sin.(θ) - cos.(m * ϕ) .* jr(n) .* ∂θPcosθ(m, n) .* e_ϕ_conj
 
 for np in 1 : n_max - 2
     for mp in 0 : np
-        println(sum(electric_spherical_wave_conj(0, 4) .* electric_spherical_wave(mp, np) .* dV))
+        println(sum(electric_spherical_wave_conj(1, 4) .* electric_spherical_wave(mp, np) .* dV))
     end
 end
