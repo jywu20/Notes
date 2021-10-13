@@ -1,0 +1,101 @@
+\begin{back}{量子力学中的相空间和准概率分布函数}{phase-wigner}
+    虽然在量子力学中坐标和动量不能同时确定，从而看起来似乎不能够有良定义的相空间，不过注意到，算符$O$的矩阵元一般来说形如$\mel{x}{O}{x'}$，即需要两个标签——$x$和$x'$——标记一个矩阵元，那么我们将$x$和$x'$线性组合一下，将其中一个坐标做傅里叶变换切换到动量空间，似乎还是能够写出$O(x, p)$这样的式子，从而有一个等效的相空间。
+    当然，这样得到的“相空间中的分布函数”，即满足下述条件的函数$f(x, p)$：
+    \[
+        \expval*{O} = \int \dd{x} \dd{p} O(x, p) f(x, p)
+    \]
+    未必能够赋予概率的意义，因为它可以取负值甚至虚数值。
+
+    我们现在考虑几种$f(x, p)$的定义。最为知名的可能是Wigner函数，它基本上是经典力学中的粒子分布函数的量子推广。
+    设$\rho$是一个密度矩阵，\concept{Wigner函数}定义为
+    \begin{equation}
+        W(x, p) = \frac{1}{2\pi \hbar} \int \dd{y} \mel{x - \frac{y}{2}}{\rho}{x + \frac{y}{2}} \ee^{\ii p y / \hbar}.
+    \end{equation}
+    当然也可以用$\alpha$和$\alpha^*$——或者说，用二维相平面上的复数$\alpha$——做Wigner函数的宗量。
+    将算符$O$写成关于$a$和$a^\dagger$的\emph{对称排序}$O_\text{S}$之后，我们有
+    \begin{equation}
+        \expval*{O} = \int \dd[2]{\alpha} W(\alpha, \alpha^*) O_\text{S}(\alpha, \alpha^*).
+    \end{equation}
+    例如，
+    \begin{equation}
+        \frac{1}{2} \expval*{a a^\dagger + a^\dagger a} = \int \dd[2]{\alpha} W(\alpha, \alpha^*) \alpha \alpha^*.
+    \end{equation}
+    
+    Wigner分布函数可以验证是实数，不过有正有负。能够证明Wigner函数取负值的区域不会太大——在几个$\hbar$以内——这直观地展示了从量子过渡到经典的过程。
+    与路径积分类似，Wigner函数也并非只能在坐标-动量构成的相空间中定义——任何有广义坐标和广义动量的能够用哈密顿动力学描述的系统中的密度矩阵都能够用Wigner函数等价地给出。
+    因此，Wigner函数实际上可以构成量子力学的另一种形式理论：所谓量子力学，就是将普通的概率分布拓展为Wigner函数的物理理论。
+
+    我们当然也可以寻找一种函数$P(\alpha, \alpha^*)$使得
+    \begin{equation}
+        \expval*{O} = \int \dd[2]{\alpha} P(\alpha, \alpha^*) O_\text{N}(\alpha, \alpha^*),
+    \end{equation}
+    这里$O_\text{N}$表示算符$O$的\emph{正则排序}，即将湮灭算符排在右边，产生算符排在左边。
+    我们有
+    \[
+        \begin{aligned}
+            \expval*{O} &= \sum_{m, n} c_{mn} \trace((a^\dagger)^m a^n \rho) \\
+            &= \sum_{m, n} c_{mn} \int \dd[2]{\alpha} \trace((\alpha^*)^m \alpha^n \rho \delta(\alpha^* - a^\dagger) \delta(\alpha - a)) \\
+            &= \int \dd[2]{\alpha} \sum_{m,n} c_{mn} (\alpha^*)^m \alpha^n \trace(\rho \delta(\alpha^* - a^\dagger) \delta(\alpha - a)),
+        \end{aligned}
+    \]
+    上式最后一行的形式正是$O_\text{N}$乘以某个分布函数，于是我们得到
+    \begin{equation}
+        P(\alpha, \alpha^*) = \trace(\rho \delta(\alpha^* - a^\dagger) \delta(\alpha - a)).
+    \end{equation}
+    简单地验证会发现
+    \begin{equation}
+        \rho=\int \dd^{2} \alpha P\left(\alpha, \alpha^{*}\right)|\alpha\rangle\langle\alpha| .
+    \end{equation}
+
+    我们当然还可以让寻找一种函数$Q(\alpha, \alpha^*)$使得
+    \begin{equation}
+        \expval*{O} = \int \dd[2]{\alpha} Q(\alpha, \alpha^*) O_\text{A}(\alpha, \alpha^*),
+    \end{equation}
+    这里$O_\text{A}$表示算符$O$的\emph{反正则排序}，即湮灭算符排在左边而产生算符排在右边。和$P$函数一样如法炮制，能够得到
+    \begin{equation}
+        Q\left(\alpha, \alpha^{*}\right)=\operatorname{tr}\left[\rho \delta(\alpha-a) \delta\left(\alpha^{*}-a^{\dagger}\right)\right].
+    \end{equation}
+    由于
+    \[
+        \begin{aligned}
+            Q\left(\alpha, \alpha^{*}\right) &=\frac{1}{\pi} \operatorname{tr} \int d^{2} \alpha^{\prime}\left[\rho \delta(\alpha-a)\left|\alpha^{\prime}\right\rangle\left\langle\alpha^{\prime}\right| \delta\left(\alpha^{*}-a^{\dagger}\right)\right] \\
+            &=\frac{1}{\pi} \operatorname{tr} \int d^{2} \alpha^{\prime}\left\{\rho \delta\left(\alpha-\alpha^{\prime}\right)\left|\alpha^{\prime}\right\rangle\left\langle\alpha^{\prime}\right| \delta\left[\alpha^{*}-\left(\alpha^{\prime}\right)^{*}\right]\right\} \\
+            &=\frac{1}{\pi} \operatorname{tr}(\rho|\alpha\rangle\langle\alpha|) \\
+            &=\frac{1}{\pi}\langle\alpha|\rho| \alpha\rangle,
+            \end{aligned}
+    \]
+    我们有
+    \begin{equation}
+        Q(\alpha, \alpha^*) = \frac{1}{\pi} \mel{\alpha}{\rho}{\alpha},
+    \end{equation}
+
+    $P$函数，$W$函数，$Q$函数都能够写成某些算符的期望值的某种积分变换。
+    我们有
+    \begin{equation}
+        \delta\left(\alpha^{*}-a^{\dagger}\right) \delta(\alpha-a) =\frac{1}{\pi^{2}} \int \dd^{2} \beta \exp \left[-\beta\left(\alpha^{*}-a^{\dagger}\right)\right] \exp \left[\beta^{*}(\alpha-a)\right],
+    \end{equation}
+    于是
+    \begin{equation}
+        P\left(\alpha, \alpha^{*}\right)=\frac{1}{\pi^{2}} \int \dd^{2} \beta \ee^{- \ii \beta \alpha^{*}- \ii \beta^{*} \alpha} C_\text{N}\left(\beta, \beta^{*}\right),
+    \end{equation}
+    其中
+    \begin{equation}
+        C_\text{N}\left(\beta, \beta^{*}\right)=\operatorname{tr}\left(\ee^{\ii \beta a^{\dagger}} \ee^{\ii \beta^{*} a} \rho\right).
+    \end{equation}
+    类似的
+    \begin{equation}
+        Q\left(\alpha, \alpha^{*}\right)=\frac{1}{\pi^{2}} \int \dd^{2} \beta \ee^{- \ii \beta \alpha^{*}- \ii \beta^{\cdot} \alpha} C_\text{A}\left(\beta, \beta^{*}\right),
+    \end{equation}
+    其中
+    \begin{equation}
+        C_\text{A}\left(\beta, \beta^{*}\right)=\operatorname{tr}\left(\ee^{\ii \beta^{*} a} \ee^{\ii \beta a^{\dagger}} \rho\right).
+    \end{equation}
+    对Wigner函数也有类似的公式：
+    \begin{equation}
+        W\left(\alpha, \alpha^{*}\right)=\frac{1}{\pi^{2}} \int \dd^{2} \beta \ee^{-\ii \beta \alpha^{*}- \ii \beta^{*} \alpha} C_\text{S}\left(\beta, \beta^{*}\right),
+    \end{equation}
+    其中
+    \begin{equation}
+        C_\text{S}\left(\beta, \beta^{*}\right)=\operatorname{tr}\left(\ee^{\ii \beta a^{\dagger}+ \ii \beta^{*} a} \rho\right).
+    \end{equation}
+\end{back}

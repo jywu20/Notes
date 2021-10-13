@@ -1,0 +1,890 @@
+\chapter{QED的低能近似}
+
+关于QED的低能极限下物质是如何和电磁场耦合的，以及物质之间的等效库伦相互作用，\qftdoc中的第\ref{qft-sec:electron-photon-interaction}节和第\ref{qft-sec:qed-tree-level-channels-low-speed}节已有系统的介绍。
+这里我们稍微深入讨论一下凝聚态介质中常常用到的一些情况。
+
+\section{电磁场本身}
+
+\subsection{关于电场和磁场的麦克斯韦方程}
+
+\qftdoc中\eqref{qft-eq:four-maxwell}和\eqref{qft-eq:bianchi-identity}重述如下：
+\begin{equation}
+    \partial_\mu F^{\mu \nu} = J^\nu,
+    \label{eq:four-maxwell}
+\end{equation}
+\begin{equation}
+    \partial_\mu F_{\nu \rho} + \partial_\nu F_{\rho \mu} + \partial_\rho F_{\mu \nu} = 0,
+    \label{eq:bianchi-identity}
+\end{equation}
+
+我们可以直接选择将电磁张量的分量写下来。我们首先观察电磁张量在\emph{空间}坐标变换（不涉及时间）下的变换。
+首先电磁张量的对角元都是零，非对角元一共有$6$个独立变量，我们不妨设它们为
+\[
+    F^{\mu \nu} = \pmqty{
+        0 & -E_x & -E_y & -E_z \\
+        E_x & 0 & -B_z & B_y \\
+        E_y & B_z & 0 & -B_x \\
+        E_z & -B_y & B_x & 0
+    }.
+\]
+一个不涉及时间的坐标变换一定形如
+\[
+    \pmqty{\dmat{1, \xmat*{a}{3}{3} }},
+\]
+我们将它作用在$F^{\mu \nu}$上（注意二阶张量的两个指标都要作用一遍），会发现$(E_x, E_y, E_z)$在坐标变换矩阵$\{a_{ij}\}$下发生了坐标变换，而
+\[
+    \pmqty{
+        0 & -B_z & B_y \\
+        B_z & 0 & -B_x \\
+        -B_y & B_x & 0
+    }
+\]
+在坐标变换矩阵$\{a_{ij}\}$下作为张量发生了坐标变换。
+这就意味着$(E_x, E_y, E_z)$构成一个三维矢量的分量，而含有$B_i$的那部分矩阵构成一个三维二阶张量的分量。我们称前者为\concept{电场}，它是一个极矢量。
+至于后者，它是某个三元组和一个三指标反对称张量缩并而成的，反对称张量在连续的坐标变换下确实按照张量的方式变换，但是在反射下会变号，因此三元组$(B_x, B_y, B_z)$构成一个轴矢量的分量，称为\textbf{磁场}。
+
+电场和磁场满足什么样的动力学方程？首先我们考虑\eqref{eq:four-maxwell}，它给出两个方程（注意每一项的正负号，特别是梯度算符；$\partial_i$和$\partial^i$都是\emph{欧氏空间下的}，简单地表示对$x_i$（也就是$x^i$）求偏导）：
+\[
+    \div{\vb*{E}} = J^0, \quad - \partial_t E^i - \partial_j \epsilon_{jik} B^k = J^i.
+\]
+设$J^\mu$对应的守恒荷密度为$\rho$，对应的输运流为$\vb*{j}$，即
+\begin{equation}
+    J^\mu = (\rho, \vb*{j}), \quad \partial_\mu J^\mu = \pdv{\rho}{t} + \div{\vb*{j}} = 0,
+\end{equation}
+则这两个方程就是
+\begin{equation}
+    \div{\vb*{E}} = \rho, \quad \curl{\vb*{B}} = \pdv{\vb*{E}}{t} + \vb*{j}.
+    \label{eq:maxwell-first-pair}
+\end{equation}
+
+光靠\eqref{eq:maxwell-first-pair}显然不能定解，其原因在于$\vb*{E}$和$\vb*{B}$依照定义是$F^{\mu \nu}$的独立分量，但$F^{\mu \nu}$并不是一个任意的反对称张量，它是矢量场$A^\mu$的梯度反对称化之后的产物。
+例如，$F^{\mu \nu}$还需要满足\eqref{eq:bianchi-identity}。
+分别考虑\eqref{eq:bianchi-identity}中$\mu, \nu, \rho$完全取空间维度的情况以及三个指标有一个取时间维度另外两个取空间维度的情况，得到
+\begin{equation}
+    \div{\vb*{B}} = 0, \quad \pdv{\vb*{B}}{t} + \curl{\vb*{E}} = 0.
+    \label{eq:maxwell-second-pair}
+\end{equation}
+\eqref{eq:maxwell-first-pair}和\eqref{eq:maxwell-second-pair}放在一起就给出了著名的\concept{麦克斯韦方程组}：有电场、有磁场，有\concept{电荷密度}$\rho$，有\concept{电流密度}$\vb*{j}$。
+整个麦克斯韦方程写出来就是
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \div{\vb*{E}} &= \rho, \\
+            \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+            \div{\vb*{B}} &= 0, \\
+            \curl{\vb*{B}} &= \pdv{\vb*{E}}{t} + \vb*{j}.
+        \end{aligned}
+    \right.
+    \label{eq:maxwell-eq}
+\end{equation}
+可以看到，\eqref{eq:maxwell-eq}在时间上是一阶的，且电场和磁场的一阶导数都已经确定了，则给定适当的初始条件和边界条件应当能够定解。
+
+在推导\eqref{eq:maxwell-eq}时我们还用到了一个条件，就是$J^\mu$是一个四维守恒流。但实际上这个条件也可以从\eqref{eq:maxwell-eq}中推导出来，只需要分别对第一式做对时间的偏导数，对第四式做散度即可得到连续性条件
+\begin{equation}
+    \pdv{\rho}{t} + \div{\vb*{j}} = 0.
+    \label{eq:charge-transportation}
+\end{equation}
+这当然完全是预期之中的，因为正如我们在\qftdoc中的第\ref{qft-sec:four-eqs}节中看到的那样，电荷守恒可以从$A^\mu$的运动方程推导出来，而既然麦克斯韦方程完全描述了电磁场，自然也可以推导出电荷连续性方程。%
+\footnote{一个可能的疑难是，\qftdoc中的\eqref{qft-eq:four-current}要求$(\rho, \vb*{j})$构成四维矢量的分量，而以上推导并未证明这一点。
+但注意到$(\partial_t, \grad)$是四维梯度算符，而$0$是标量，那么坐标变化时必须保证$(\rho, \vb*{j})$是四维矢量才能够让连续性方程恒成立，因此$(\rho, \vb*{j})$确确实实构成四维矢量的分量，这是张量的商法则的一个例子。
+}%
+
+麦克斯韦方程本身没有给出电荷的动力学，但是它确实给出了一个守恒荷：如果电磁场中出现了让$\div{\vb*{E}}$非零的模式，那么这个模式一定和电荷一起出现；或者说，拉氏量或者哈密顿量中电荷-电磁场耦合项是将电荷和某种特殊的电场模式——让$\div{\vb*{E}}$非零的模式——粘在了一起。
+在我们不关心携带电荷的物质场的细节时，所谓分析电荷实际上是在分析这种电场模式如何和其它模式耦合在一起。%
+\footnote{
+    这种将电荷视为规范场的特殊模式的思维方式在凝聚态物理中有应用。二维规范场会给其中的电荷赋予交换相位，从而产生任意子，我们要分析电荷的一般性质就需要引入一动不动的“测试电荷”，实际上就是在讨论规范场的局域的特殊构型的性质。
+    \soliddoc的第\ref{solid-sec:gauge-charge-flux-z2}节是一个例子。
+}%
+然后我们可以利用这种分析结果，把携带电荷的物质场的动力学加回去：
+\begin{enumerate}
+    \item 给定边界条件和初始条件；
+    \item 暂时将$\rho$和$\vb*{j}$看成已经给定的量；
+    \item 依照以下三种方案中的其中一种前进，这三种方案都是等价的，提供了同样多的信息，在一个方案中增加别的方案的方程不会提供新的信息：
+    \begin{itemize}
+        \item 将$(\rho, \vb*{j})$代入麦克斯韦方程\eqref{eq:maxwell-eq}求解，解出$\vb*{E}, \vb*{B}$；
+        \item 选定一个规范\footnote{可以看到，规范实际上就是让我们能够从电场、磁场唯一反推出电势和磁矢势的约束条件。}，求解出$(\rho, \vb*{A})$，如在洛伦兹规范下求解\eqref{eq:wave-eq}，然后根据\eqref{eq:e-b-from-a-phi}计算出$\vb*{E}, \vb*{B}$；
+        \item 直接求解协变的\eqref{eq:four-maxwell}，或是使用最小作用量原理等，然后根据\eqref{eq:e-b-from-a-phi}计算出$\vb*{E}, \vb*{B}$；
+    \end{itemize}
+    \item 如果必要的话，根据\qftdoc中的第\ref{qft-sec:gauge-def}节中提到的办法计算$A^\mu$，即$(\varphi, \vb*{A})$；
+    \item 如果实际上$(\rho, \vb*{j})$没有给定，则将用$\rho, \vb*{j}$表示的$\vb*{E}, \vb*{B}$和物质的运动方程（见\autoref{sec:em-field-coupling-particle}）联立求解。
+\end{enumerate}
+
+求解\eqref{eq:maxwell-eq}得到的只是$\vb*{E}$和$\vb*{B}$，或者说电磁张量，但正如\qftdoc中的第\ref{qft-sec:gauge-def}节中所说的那样，知道了电磁张量，就可以确定所有规范不变量，那么求解出$\vb*{E}$和$\vb*{B}$也就够了。
+需要注意的是这\emph{不代表}电场和磁场就是本质上更基本的自由度，例如在一些情况下（如A-B效应等）直接使用$\vb*{A}$构造规范不变量（可以是一些非局域的量）更加方便。
+
+总之，\eqref{eq:maxwell-eq}是一切经典电动力学现象关于电磁场的部分背后的机制，补充上电磁场以外的物质的定律就构成封闭方程组。
+；实际上，在\qftdoc中我们没有解释为什么那里的\eqref{qft-eq:qed-lagrangian}能够被称为电动力学，但是既然它能够推导出\eqref{eq:maxwell-eq}，说明这个拉氏量描写的确实是电动力学。
+基于电场和磁场的表述和基于电磁张量的表述之间的转换关系就是
+\begin{equation}
+    F^{\mu \nu} = \pmqty{
+        0 & -E_x & -E_y & -E_z \\
+        E_x & 0 & -B_z & B_y \\
+        E_y & B_z & 0 & -B_x \\
+        E_z & -B_y & B_x & 0
+    }, \quad F_{\mu \nu} = \pmqty{
+        0 & E_x & E_y & E_z \\
+        -E_x & 0 & -B_z & B_y \\
+        -E_y & B_z & 0 & -B_x \\
+        -E_z & -B_y & B_x & 0
+    }.
+\end{equation}
+
+自然单位制下的关于电场和磁场的麦克斯韦方程已经导出。
+在\concept{国际单位制}下，我们有
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \div{\vb*{E}} &= \frac{\rho}{\epsilon_0}, \\
+            \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+            \div{\vb*{B}} &= 0, \\
+            \curl{\vb*{B}} &= \mu_0 \epsilon_0 \pdv{\vb*{E}}{t} + \mu_0 \vb*{j}.
+        \end{aligned}
+    \right.
+    \label{eq:maxwell-eq-si}
+\end{equation}
+以下如无特殊说明，均使用国际单位制。
+
+从以上方程可以推导出场满足的波动方程
+\begin{equation}
+    \frac{1}{c^2} \pdv[2]{\vb*{E}}{t} - \laplacian{\vb*{E}} = - \frac{1}{\epsilon_0} \grad{\rho} - \mu_0 \pdv{\vb*{j}}{t} , \quad \frac{1}{c^2} \pdv[2]{\vb*{B}}{t} - \laplacian{\vb*{B}} = \mu_0 \curl{\vb*{j}},
+    \label{eq:wave-eq-general}
+\end{equation}
+其中
+\begin{equation}
+    \frac{1}{c^2} = \epsilon_0 \mu_0
+\end{equation}
+为\concept{光速}，实际上就是电磁波传播的速度。
+
+看起来，麦克斯韦方程并不难求解。可以将它化成外加载荷为电流和电荷密度的二阶线性波动方程，我们马上可以在不同的边界条件下求解其本征函数，写出其格林函数（从而得到“通解”），等等。
+但是事实证明，这样并不能提供太多有用的信息。例如，在介质存在的情况下，从头求解真空中的麦克斯韦方程\eqref{eq:maxwell-eq-si}基本上是不现实的，讨论材料引入的边界条件、响应等是必要的。
+在讨论静电学和静磁学问题时，我们并不关心一个一般的体系如何收敛到静止情况，从而也无需求解完整的时间相关的麦克斯韦方程。
+在讨论电磁场和电流的相互作用时，仅仅根据格林函数写出“电荷如何影响电磁场”是不够的，因为还需要考虑电荷受到的反作用；并且\eqref{eq:wave-eq-general}的格林函数实际上非常复杂，基本上没法直接使用。
+对每一种情形——静电学，静磁学，电磁波传播，辐射——我们都需要采取不同的方法（可能还有适当的近似）求解麦克斯韦方程，而不能指望可以从一个通解出发从头计算出一切。
+
+\subsection{亥姆霍兹分解与常见的电磁场形态}
+
+在电动力学中我们基本上只需要使用散度和旋度。关于这件事有著名的\concept{亥姆霍兹分解}：任意一个矢量场$\vb*{X}$只要在无穷远处衰减得足够快（至少比$1 / r$快），则可以做如下分解：
+\begin{equation}
+    \vb*{X} = - \grad{U} + \curl{\vb*{W}},
+    \label{eq:ht-decomp}
+\end{equation}
+其中$U$和$\vb*{X}$可以分别表示为
+\begin{equation}
+    U = \frac{1}{4\pi} \int \dd[3]{\vb*{r}'} \frac{\grad' \cdot \vb*{X}(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} - \frac{1}{4\pi} \oint_S \dd{S} \vu*{n} \cdot \frac{\vb*{X}(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
+    \label{eq:ht-decomp-u-def}
+\end{equation}
+以及
+\begin{equation}
+    \vb*{W} = \frac{1}{4\pi} \int \dd[3]{\vb*{r}'} \frac{\grad' \times \vb*{X}(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}} - \frac{1}{4\pi} \oint_S \dd{S} \vu*{n} \times \frac{\vb*{X}(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}}.
+    \label{eq:ht-decomp-w-def}
+\end{equation}
+证明是相对简单的，因为\eqref{eq:ht-decomp-u-def}和\eqref{eq:ht-decomp-w-def}是完全构造性的，我们只需要验证它们的确满足\eqref{eq:ht-decomp}即可，这就证明了分解\eqref{eq:ht-decomp}总是可行的。
+应注意场的衰减条件还是重要的，因为在一些情况中（如静电学问题中）我们的确会在无穷远处放置一些源（比如说一块其上有感应电荷的金属板），那么场可能衰减得没有那么快。
+
+对电场和磁场作用亥姆霍兹分解，能够得到
+\begin{equation}
+    \begin{aligned}
+        \vb*{E} &= - 
+    \end{aligned}
+\end{equation}
+从这个分解中能够看到常见的几种电磁波模式。如果磁场不重要，那么我们就得到静电学，其中
+静磁学
+将$c \to \infty$，得到准静态近似
+最后是电磁波
+
+直观地看，准静态近似实际上是在描写一个天线：
+
+亥姆霍兹分解本身无助于求解麦克斯韦方程，它更多用于在已知结果后诠释它。
+
+\subsection{能量和动量}
+
+电磁场中的粒子的运动方程为
+\begin{equation}
+    \dv{\vb*{p}}{t} = q \vb*{E} + q \vb*{v} \times \vb*{B},
+\end{equation}
+
+一个区域内部所有粒子的能量由于电磁场而发生的变化为
+\begin{equation}
+    \dv{E}{t} = \sum q \vb*{v} \cdot \vb*{E} = \int \dd[3]{\vb*{r}} \vb*{j} \cdot \vb*{E},
+\end{equation}
+而
+\[
+    \begin{aligned}
+        \vb*{j} \cdot \vb*{E} &= \left( \frac{1}{\mu_0} \curl{\vb*{B}} - \epsilon_0 \pdv{\vb*{E}}{t} \right) \cdot \vb*{E} \\
+        &= \frac{1}{\mu_0} \div{(\vb*{B} \times \vb*{E})} - \frac{\epsilon_0}{2} \pdv{\vb*{E}^2}{t} + \frac{1}{\mu_0} (\curl{\vb*{E}}) \cdot \vb*{B} \\
+        &= \frac{1}{\mu_0} \div{(\vb*{B} \times \vb*{E})} - \frac{\epsilon_0}{2} \pdv{\vb*{E}^2}{t} - \frac{1}{\mu_0} \pdv{\vb*{B}}{t} \cdot \vb*{B} \\
+        &= \frac{1}{\mu_0} \div{(\vb*{B} \times \vb*{E})} - \pdv{t} \left( \frac{\epsilon_0}{2} \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2 \right),
+    \end{aligned}
+\]
+因此
+\[
+    \dv{E}{t} = - \int \dd[3]{\vb*{r}} \left( \frac{\epsilon_0}{2} \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2 \right) - \frac{1}{\mu_0} \int \dd{\vb*{S}} \cdot (\vb*{E} \times \vb*{B}).
+\]
+设电磁场能量密度为$u$，能流密度为$\vb*{S}$，则
+\[
+    \dv{E}{t} + \int \dd[3]{\vb*{r}} u = - \int \dd{\vb*{S}} \cdot \vb*{S},
+\]
+于是
+\begin{equation}
+    \int \dd[3]{\vb*{r}} u + \int \dd{\vb*{S}} \cdot \vb*{S} = \int \dd[3]{\vb*{r}} \left( \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2\mu_0} \vb*{B}^2 \right) + \int \dd{\vb*{S}} \cdot \frac{1}{\mu_0} \vb*{E} \times \vb*{B},
+    \label{eq:energy-flow-original}
+\end{equation}
+从而可以取
+\begin{equation}
+    u = \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2\mu_0} \vb*{B}^2, \quad \vb*{S} = \frac{1}{\mu_0} \vb*{E} \times \vb*{B}.
+    \label{eq:energy-flow}
+\end{equation}
+当然，实际上从\eqref{eq:energy-flow-original}不能唯一地确定能量密度和能流，因为在变换
+\[
+    \rho' = \rho + \div{\vb*{c}}, \quad \vb*{j}' = \vb*{j} - \pdv{\vb*{c}}{t}
+\]
+下输运方程保持成立。这也是可以预期的，因为可以看出\eqref{eq:energy-flow-original}是麦克斯韦方程能够给出的关于能量的全部结论，而通常从运动学方程出发并不能唯一地定义能量。
+使用\eqref{eq:energy-flow}定义的$\vb*{S}$称为\concept{坡印廷矢量}。
+
+使用类似的方法，设$\vb*{P}$为一个区域内的粒子总动量（不包括电磁场的动量），则
+\[
+    \dv{\vb*{P}}{t} = \sum (q \vb*{E} + q \vb*{v} \times \vb*{B}) = \int \dd[3]{\vb*{r}} \left( \rho \vb*{E} + \vb*{j} \times \vb*{B} \right),
+\]
+代入$\rho$和$\vb*{j}$，得到
+\[
+    \begin{aligned}
+        \dv{\vb*{P}}{t} &= \int \dd[3]{\vb*{r}} \left(\epsilon_0 (\div{\vb*{E}}) \vb*{E} + \left( \frac{1}{\mu_0} \curl{\vb*{B}} - \epsilon_0 \pdv{\vb*{E}}{t} \right) \times \vb*{B} \right) \\
+        &= \int \dd[3]{\vb*{r}} \epsilon_0 (\div{\vb*{E}}) \vb*{E} + \int \dd[3]{\vb*{r}} \frac{1}{\mu_0} (\curl{\vb*{B}}) \times \vb*{B} - \epsilon_0 \int \dd[3]{\vb*{r}} \pdv{t} (\vb*{E} \times \vb*{B}) + \epsilon_0 \int \dd[3]{\vb*{r}} \vb*{E} \times \pdv{\vb*{B}}{t} \\
+        &= \epsilon_0 \int \dd[3]{\vb*{r}} ((\div{\vb*{E}}) \vb*{E} + (\curl{\vb*{E}}) \times \vb*{E}) + \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} (\curl{\vb*{B}}) \times \vb*{B} - \epsilon_0 \int \dd[3]{\vb*{r}} \pdv{t} (\vb*{E} \times \vb*{B}),
+    \end{aligned}
+\]
+而注意到
+\[
+    \begin{aligned}
+        (\div{\vb*{E}}) \vb*{E} + (\curl{\vb*{E}}) \times \vb*{E}) &= \div{(\vb*{E} \vb*{E})} - (\vb*{E} \cdot \grad) \vb*{E} - \vb*{E} \times (\curl{\vb*{E}}) \\
+        &= \div{(\vb*{E} \vb*{E})} - \frac{1}{2} \grad{\vb*{E}^2} \\
+        &= \div{(\vb*{E} \vb*{E})} - \frac{1}{2} \div{(\vb*{E}^2 \vb*{I})},
+    \end{aligned}
+\]
+且类似的可以得到
+\[
+    \begin{aligned}
+        \underbrace{(\div{\vb*{B}}) \vb*{B}}_{=0} + (\curl{\vb*{B}}) \times \vb*{B}) &= \div{(\vb*{B} \vb*{B})} - (\vb*{B} \cdot \grad) \vb*{B} - \vb*{B} \times (\curl{\vb*{B}}) \\
+        &= \div{(\vb*{B} \vb*{B})} - \frac{1}{2} \grad{\vb*{B}^2} \\
+        &= \div{(\vb*{B} \vb*{B})} - \frac{1}{2} \div{(\vb*{B}^2 \vb*{I})},
+    \end{aligned}
+\]
+于是就有
+\[
+    \begin{aligned}
+        \dv{\vb*{P}}{t} &= - \epsilon_0 \int \dd[3]{\vb*{r}} \pdv{t} (\vb*{E} \times \vb*{B}) - \int \dd{\vb*{S}} \cdot \left( \frac{1}{2} \left( \epsilon_0 \vb*{E}^2 + \frac{1}{\mu_0} \vb*{B}^2 \right) \vb*{I} - \epsilon_0 \vb*{E} \vb*{E} - \frac{1}{\mu_0} \vb*{B} \vb*{B} \right) \\
+        &= - \int \dd[3]{\vb*{r}} \vb*{g} - \int \dd{S_i} T_{ij},
+    \end{aligned}
+\]
+其中$\vb*{g}$是动量密度而$T_{ij}$是动量流密度（一个二阶张量）。同样，只是知道上式不能够唯一确定动量密度和动量流密度，但是以下的选择是最简单的：
+\begin{equation}
+    T_{ij} = u \delta_{ij} - \epsilon_0 E_i E_j - \frac{1}{\mu_0} B_i B_j, \quad \vb*{g} = \frac{1}{c^2} \vb*{S}.
+\end{equation}
+张量$T_{ij}$称为\concept{麦克斯韦张量}，它可以看成电磁场提供的应力。
+电磁场对实物粒子的动量转移速率，也即力，就是
+\begin{equation}
+    \vb*{F} = - \int \dd[3]{\vb*{r}} \vb*{g} - \int \dd{S_i} T_{ij}.
+\end{equation}
+
+\subsection{电磁场的变换性质}\label{sec:e-m-field-transformation-feature-vacuum}
+
+\eqref{eq:maxwell-eq}中出现的各个量——$\vb*{E}, \rho, \vb*{B}, \vb*{j}$——在不同的变换下的性质由\autoref{tbl:sym-eb}给出。
+实际上据此我们会发现麦克斯韦方程组\eqref{eq:maxwell-eq}可以通过这些性质启发式地“推导”出来。
+
+\begin{table}
+    \centering
+    \caption{各个物理量在不同的变换下的性质}
+    \label{tbl:sym-eb}
+    \begin{tabular}[c]{ccc}
+        \toprule
+        电磁场中的物理量 & 张量分析 & 时间反演 \\
+        \midrule
+        $\rho$ & 标量 & 偶 \\
+        $\vb*{E}$ & 矢量 & 偶 \\
+        $\vb*{j}$ & 矢量 & 奇 \\
+        $\vb*{B}$ & 赝矢量 & 奇 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+首先，$\div{\vb*{E}}$是一个普通标量，它只能够是$\rho, \abs{\vb*{E}}^2, \abs{\vb*{j}}^2, \abs{\vb*{B}}^2$的标量函数。
+如果我们要求外源对电磁场的激励是线性的，只能有
+\[
+    \div{\vb*{E}} = a_1 \rho.
+\]
+$\pdv*{\vb*{E}}{t}$是一个普通矢量。\autoref{tbl:sym-eb}中最低阶的普通矢量是$\vb*{j}, \vb*{E}, \curl{\vb*{B}}$。
+我们不希望电场自行衰减，所以只能
+\[
+    \pdv{\vb*{E}}{t} = a_2 \vb*{j} + a_3 \curl{\vb*{B}}.
+\]
+$\pdv*{\vb*{B}}{t}$是一个赝矢量。\autoref{tbl:sym-eb}中最低阶的赝矢量就是$\curl{\vb*{E}}$一个，于是
+\[
+    \pdv{\vb*{B}}{t} = a_4 \curl{\vb*{E}}.
+\]
+$\div{\vb*{B}}$是一个赝标量，因为它是普通矢量$\grad$和赝矢量$\vb*{B}$的点乘，然而\autoref{tbl:sym-eb}中的物理量没有一个赝标量；要产生赝标量，只能够通过诸如$\vb*{B}$和$\vb*{E}$或是$\vb*{j}$点乘，均会引入非线性效应。
+所以我们只能让
+\[
+    \div{\vb*{B}} = 0.
+\]
+因此我们就形式上得到了麦克斯韦方程；四个参数都可以通过适当的方法吸收进空间、时间、电场、磁场的单位中。
+
+\section{非相对论性粒子和光场的耦合}\label{sec:em-field-coupling-particle}
+
+\subsection{非相对论性粒子的哈密顿量}\label{sec:particle-hamiltonian}
+
+考虑与电磁场发生相互作用的粒子，我们通常将这些粒子称为物质而将电磁场称为光场或是辐射，虽然严格说起来辐射也算是一种物质。
+我们假定粒子做低速运动，从而不需要使用相对论性的理论描述粒子。
+粒子轨道部分的哈密顿量是以下保证局部$U(1)$规范对称性的极小耦合：
+\begin{equation}
+    {H}_\text{orbit} = \frac{1}{2m} ({\vb*{p}} - q \vb*{A})^2 + q \phi,
+    \label{eq:minimal-coupling}
+\end{equation}
+自旋-磁场相互作用还会引入以下哈密顿量：
+\begin{equation}
+    {H}_\text{spin} = - \frac{q}{m} {\vb*{S}} \cdot \vb*{B} = - \vb*{\mu} \cdot \vb*{B},
+\end{equation}
+而场的哈密顿量是
+\begin{equation}
+    {H}_\text{field} = \frac{\epsilon_0}{2} \int \dd[3]{\vb*{r}} (\vb*{E}^2 + c^2 \vb*{B}^2),
+\end{equation}
+则体系的总哈密顿量
+\begin{equation}
+    {H} = \sum_i \left( \frac{1}{2m_i} ({\vb*{p}_i} - q_i \vb*{A})^2 + q_i \varphi - \frac{q_i}{m_i} \vb*{S}_i \cdot \vb*{B} \right) + {H}_\text{field} + {H}_\text{int} + {H}_\text{ext},
+    \label{eq:whole-system-hamiltonian}
+\end{equation}
+其中${H}_\text{int}$和${H}_\text{ext}$分别表示粒子间相互作用和外加势场。
+粒子部分——包括轨道和自旋——的拉氏量也可以写成
+\begin{equation}
+    L = \sum_i \left( \frac{1}{2} m_i \vb*{v}_i^2 - q_i \varphi + q_i \vb*{v}_i \cdot \vb*{A} + \vb*{\mu}_i \cdot \vb*{B} \right).
+\end{equation}
+具体什么是粒子-粒子相互作用其实有一定人为因素，比如说凝聚态场论中默认电子之间的相互作用是库伦相互作用，但是库伦相互作用其实也是交换光子导致的，实际上是近场辐射的一个无时间延迟近似。
+同样，“外加势场”也有人为因素。
+不过，由于本文将要讨论光学，实际上可以以一种比较前后一致的方式确定哪些电磁场模式被粒子-粒子等效相互作用替代，哪些被纳入考虑。
+我们总是可以将电磁波模式分解成无源有旋的和无旋有源的。通过简单的QED计算可以发现，全体电磁波模式造成的粒子间散射几乎压倒性地来自一个电子发射、一个电子接受的纵波$\varphi$模式，切换到电场中基本上就是库伦场，这是有源无旋的；另一方面，介质中的电磁波宏观地看都满足横波条件$\div{\vb*{E}}=0$。%
+\footnote{
+    我们称它为横波条件是因为在无穷大空间中这等价于$\vb*{k} \cdot \vb*{E} = 0$，但是这\emph{并不}意味着任何能够称为波矢的$\vb*{k}$都满足$\vb*{k} \cdot \vb*{E} = 0$。
+    波导就是一个典型的例子。
+}%
+因此我们可以只在$\varphi$和$\vb*{A}$中保留满足横波条件、看起来就像真空中电磁波的电磁波模式，这些模式本身就不易被积掉；剩下的不满足横波条件，同时的确很容易积掉的模式，或者说“虚光子”（如库伦场）就归入粒子-粒子等效相互作用。
+至于外加势场，它或者就是库伦场，或者是外加磁场，后者同样是一个容易被积掉，并且和电磁波非常不相似的模式。
+这也解释了为什么在\eqref{eq:whole-system-hamiltonian}中我们将电子间的库伦排斥能和辐射场引入的能量简单相加，因为这的确是两种不同的过程：库伦排斥涉及的光子实际上是不满足横场条件的虚光子，而辐射场中的光子都是可以出现在实际的物理态中的光子。
+
+\eqref{eq:minimal-coupling}中的$\vb*{p}$是正则动量，而不是机械动量。
+然而，这反倒有好处：我们要讨论的是“向一个物理系统入射光会得到怎样的出射光”，根本不需要去测量机械动量。
+这种情况下我们完全没有必要关注$\vb*{p}$是正则动量这回事：完全可以打开括号$(\vb*{p} - q \vb*{A})^2$，然后求解束缚态问题
+\begin{equation}
+    H = \sum_i \frac{\vb*{p}_i^2}{2m_i} + H_\text{ext} + H_\text{int},
+    \label{eq:levels-ham}
+\end{equation}
+具体求解时可以直接援引将$\vb*{p}$当成机械动量而得到的现成的解，得到能谱之后引入电子-电磁波耦合项
+\begin{equation}
+    H_\text{couple} = q \varphi - \frac{q}{2m} (\vb*{p} \cdot \vb*{A} + \vb*{A} \cdot \vb*{p}) + \frac{q^2}{2m} \vb*{A}^2,
+    \label{eq:couple-ham}
+\end{equation}
+计算物质和光场的耦合。（$\vb*{A}^2$项中含有粒子的位置，因此也是耦合项）
+
+总之，关于普通的凝聚态系统中的电磁场，\eqref{eq:couple-ham}原则上给出了所有值得关注的信息。
+
+\subsection{非相对论性粒子的运动方程}
+
+\section{规范选取}
+
+\subsection{标势、矢势和常见规范}
+
+电场、磁场是直接可观测的量，实际上在相对论协变的场论中标势和矢势才是基本的场自由度，但是它们是不唯一确定的。
+这一节我们演示如何在一开始\emph{不知道}标势和矢势才是场论中的自由度时，从麦克斯韦方程中得到标势和矢势。
+
+实际上，我们也可以从\eqref{eq:maxwell-eq}出发，重构出一个关于$A^\mu$的理论。
+\eqref{eq:maxwell-eq}的第三式告诉我们，存在一个矢量场$\vb*{A}$使得
+\[
+    \vb*{B} = \curl{\vb*{A}}.
+\]
+上式代入\eqref{eq:maxwell-eq}第二式，得到
+\[
+    \curl{\vb*{E} + \pdv{\vb*{A}}{t}} = 0,
+\]
+于是存在标量场$\varphi$使得
+\[
+    \vb*{E} = - \pdv{\vb*{A}}{t} - \grad{\varphi}.
+\]
+于是我们可以用$(\varphi, \vb*{A})$完全将电场和磁场表示出来，具体说就是
+\begin{equation}
+    \vb*{B} = \curl{\vb*{A}}, \quad \vb*{E} = - \pdv{\vb*{A}}{t} - \grad{\varphi}.
+    \label{eq:e-b-from-a-phi}
+\end{equation}
+当然，$\varphi$就是我们熟悉的\concept{电势}而$\vb*{A}$就是\concept{磁矢势}。
+这样一来\eqref{eq:maxwell-eq}的第一、四式就是
+\[
+    - \pdv{t} \div{\vb*{A}} - \laplacian \varphi = \rho, \quad \pdv[2]{\vb*{A}}{t} - \laplacian \vb*{A} + \grad(\div{\vb*{A}}) + \pdv{t} \grad{\varphi} = \vb*{j}.
+\]
+这两个式子看起来毫无规律，但是如果我们假定$(\rho, \vb*{A})$是某个四维矢量$A^\mu$的分量%
+\footnote{这里可能会有一个问题：为什么我们确定$(\rho, \vb*{A})$能够构成四维矢量的分量？实际上，正确的思路是先设$(\rho, \vb*{A})$能够构成某个四分量对象的分量，推导出\qftdoc中的\eqref{qft-eq:movement-eq-2}，然后注意到\qftdoc中的\eqref{qft-eq:movement-eq-2}如果总是成立，那么$A^\mu$一定要是矢量分量。
+\label{note:vector-component}}%
+，那么立刻可以发现这两个式子就是\qftdoc中的\eqref{qft-eq:movement-eq-2}。
+因此实际上麦克斯韦方程和\qftdoc中的\eqref{qft-eq:movement-eq-2}是等价的。
+如果使用洛伦兹规范，还可以将以上两个方程写得形式漂亮一些，也就是
+\begin{equation}
+    \pdv[2]{\varphi}{t} - \laplacian \varphi = \rho, \quad \pdv[2]{\vb*{A}}{t} - \laplacian \vb*{A} = \vb*{j}.
+    \label{eq:wave-eq}
+\end{equation}
+
+回顾从拉氏量推导\qftdoc中的\eqref{qft-eq:movement-eq-2}的过程，我们会发现它只用到了\qftdoc中的\eqref{qft-eq:vec-lagrangian}以及$A^\mu$和$\psi$的耦合项中$A^\mu$是线性的这一事实，因此我们得出结论：\eqref{eq:maxwell-eq}描述了四维闵可夫斯基时空中一个单一无质量矢量场受到线性策动后的动力学——这个矢量场其实可以不是电动力学中的电磁场的。
+如果需要将电动力学中的经验移植到比如说QCD中，那么求解\eqref{eq:maxwell-eq}是可以原封不动地搬运到其它无质量矢量场上的！
+
+我们有
+\begin{equation}
+    \vb*{B} = \curl{\vb*{A}}, \quad \vb*{E} = - \pdv{\vb*{A}}{t} - \grad{\varphi},
+\end{equation}
+并且可以证明，不失一般性地，总是可以取以下规范：
+\begin{equation}
+    \div{\vb*{A}} + \frac{1}{c^2} \pdv{\varphi}{t} = 0,
+\end{equation}
+称为\concept{洛伦兹规范}。在洛伦兹规范下麦克斯韦方程成为
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} - \frac{1}{c^2} \pdv[2]{\varphi}{t} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}),
+    \end{bigcase}
+\end{equation}
+此时标势和矢势非常清晰地组成一个四维矢量，它们遵从四维的波动方程，因此也是“洛伦兹”一词的来源。
+
+另一种常见的规范选择是\concept{库伦规范}，为
+\begin{equation}
+    \div{\vb*{A}} = 0.
+\end{equation}
+在库伦规范之下麦克斯韦方程成为
+\begin{equation}
+    \begin{bigcase}
+        \laplacian{\varphi} &= - \frac{\rho(\vb*{r})}{\epsilon_0}, \\
+        \laplacian{\vb*{A}} - \frac{1}{c^2} \pdv[2]{\vb*{A}}{t} &= - \mu_0 \vb*{j}(\vb*{r}) + \frac{1}{c^2} \pdv{t} \grad{\varphi}.
+    \end{bigcase}
+\end{equation}
+换而言之，标势的行为和静电场下完全一样，但是标势会对矢势有影响。
+在电场和磁场随时间不变时库伦规范和麦克斯韦方程是一样的。
+库伦规范有时也称为\concept{辐射规范}，因为一种处理辐射的方法是以$\vb*{A}$为基本自由度，此时库伦规范就是横波条件。
+
+\subsection{辐射场中的辐射规范}
+
+，并且在远离介质粒子（场源）的地方，即在辐射场中，我们可以取横波条件$\div{\vb*{E}}=0$。
+这可以让我们施加一个比一般的情况更加严格的规范。根据$\div{\vb*{E}}=0$我们有
+\[
+    \laplacian{\varphi} + \pdv{t} \div{\vb*{A}} = 0,
+\]
+此时我们没有加入任何限制。我们总是可以取$\varphi=0$，此时
+\[
+    \pdv{t} \div{\vb*{A}} = 0,
+\]
+即$\div{\vb*{A}}$是不随时间变化的。那么，总是可以找到一个不随着时间变化的标量场$\chi$，使得
+\[
+    \div{(\vb*{A} + \grad{\chi})} = 0,
+\]
+因为这个条件等价于调和方程
+\[
+    \laplacian{\chi} = - \div{\vb*{A}}.
+\]
+因此，我们可以做规范变换
+\[
+    \varphi' = \varphi - \pdv{\chi}{t} = \varphi, \quad \vb*{A}' = \vb*{A} + \grad{\chi},
+\]
+变换后就有$\varphi=0$和$\div{\vb*{A}}=0$同时成立。
+因此，对辐射场可以同时施加以下两个规范：
+\begin{equation}
+    \varphi = 0, \quad \div{\vb*{A}} = 0,
+\end{equation}
+而不用担心产生冲突。这也可以称为\concept{辐射规范}。辐射规范下$\div{\vb*{A}}=0$这一条件保证了$\vb*{p}$和$\vb*{A}$是可交换的。
+
+\section{偶极辐射近似}\label{sec:dipole-radiation}
+
+\subsection{束缚态系统，微扰论和多极矩展开}\label{sec:multipole}
+
+将\eqref{eq:couple-ham}当成微扰做微扰论的适用条件是$H_\text{couple}$相对于\eqref{eq:levels-ham}来说很小。
+如果微扰论适用，那么显然$q \vb*{A} \ll \vb*{p}$，从而$\vb*{A}^2$项相较于$\vb*{p} \cdot \vb*{A}$项总是非常小的。%
+\footnote{
+    一个可以抬杠的地方是$\vb*{p}$很小时，似乎$\vb*{p} \cdot \vb*{A}$项远小于$\vb*{A}^2$项。
+    然而，由能量守恒，$\vb*{A}^2$项相比于动能加上势能的\eqref{eq:levels-ham}总是很小的。
+    如果我们只要求$\vb*{A}^2$级别的精度，那么在$\vb*{p}$大时显然$\vb*{p} \cdot \vb*{A}$项比$\vb*{A}^2$项重要，而$\vb*{p}$小时$\vb*{A}^2$项小于我们的精度要求。
+    无论如何，$\vb*{A}^2$项都不如$\vb*{p} \cdot \vb*{A}$重要——后者重要时前者不重要，后者不重要时前者也没有重要到哪儿去。
+}%
+$q \vb*{A} \ll \vb*{p}$的条件实际上是不那么平凡的。
+对散射态系统，机械动量估计为
+\[
+    m v \sim m \omega x,
+\]
+而
+\[
+    q E = m \ddot{x} \sim m \omega^2 x,
+\]
+最后有
+\[
+    E \sim - \pdv{A}{t} \sim \omega A,
+\]
+于是我们会发现$mv$和$eA$实际上是同个量级的。反之，对束缚态系统，$\vb*{p}$的最大值或者说振幅可以估计为
+\[
+    m \omega^2 x \sim q \grad{V_\text{ext}},
+\]
+而
+\[
+    mv \sim m \omega x,
+\]
+于是$p \gg eA$，等价于$mv \ll eA$，就等价于
+\[
+    mv \sim \frac{q}{\omega} \grad{V_\text{ext}} \gg q A,
+\]
+即等价于
+\begin{equation}
+    \grad{V_\text{ext}} \gg \omega A \sim E_\text{light},
+\end{equation}
+即束缚电场远大于光场。这应该是能够保证的，否则就不是束缚态了，此时介质就被打穿为等离子体了，并且，这种情况下，将光场撤去，介质也未必会恢复为原状，即出现了光学损伤。
+
+在知道了能将\eqref{eq:couple-ham}当成微扰的系统中的带电粒子高度定域之后，我们立刻想到，由于这些带电粒子的位置高度有界，可以做多极矩展开。
+实际上我们看到，多极矩展开合法、带电粒子位置高度定域（这意味着带电粒子）、$e \vb*{A} \ll \vb*{p}$这几个条件是等价的。
+应该说\eqref{eq:couple-ham}是很不直观的，因为它是关于$\vb*{A}$的而不是$\vb*{E}$和$\vb*{B}$的，做完多极矩展开之后我们就可以讨论“某个过程在电偶极矩跃迁下可以发生，另一个过程需要电四极矩跃迁，从而很弱”，等等。
+以下我们用$0$作为带点粒子位置的“原点”，$\vb*{r}$不会偏离$0$太远。
+
+下面我们尝试使用多种近似手段。我们很快会发现，这些方法都指向同一个事实：对普通凝聚态介质中的电磁场，基本上只有电偶极子相互作用是重要的。
+
+直接丢弃$\vb*{A}^2$项。此时如果采取辐射规范，根据$\vb*{p}$和$\vb*{A}$的可交换性，我们就有
+\begin{equation}
+    H_\text{couple} = - \frac{q}{m} \vb*{A} \cdot \vb*{p}.
+    \label{eq:velocity-gauge}
+\end{equation}
+这称为\concept{速度规范}下的哈密顿量。如果我们进一步，假定$\vb*{A}$在电子运动的区域内没有明显的空间变化，则在一个规范变换之下我们可以得到
+\begin{equation}
+    H_\text{couple} = - q \vb*{r} \cdot \vb*{E} = - \vb*{d} \cdot \vb*{E}.
+    \label{eq:electric-dipole}
+\end{equation}
+或者，由于$\vb*{A}$在电子运动的区域内没有明显的空间变化，我们根据\eqref{eq:velocity-gauge}可以写出（这里我们假装$\vb*{p}$就是机械动量，但是因为$\vb*{p}$的实际物理意义在做了近似\eqref{eq:velocity-gauge}不再影响哈密顿量的形式，这是可以的）
+\[
+    \begin{aligned}
+        S &= \int \dd{t} \left( \frac{1}{2} m \vb*{v}^2 + \frac{q}{m} \vb*{A} \cdot (m \vb*{v}) \right) \\
+        &= \int \dd{t} \left( \frac{1}{2} m \vb*{v}^2 - q \dv{\vb*{A}}{t} \cdot \vb*{r} \right) \\
+        &= \int \dd{t} \left( \frac{1}{2} m \vb*{v}^2 + q \vb*{r} \cdot \vb*{E} \right),
+    \end{aligned} 
+\]
+第二个等号用到了分部积分法。再做勒让德变换，就得到\eqref{eq:electric-dipole}。
+实际上，我们会注意到以上构造拉氏量以后用分布积分法的方法只用到了一个条件，就是$\vb*{A}$的空间变化不大（从而它对时间的全导数就是它对时间的偏导数，就是电场的相反数），因此只需要“$\vb*{A}$的空间变化不大”就足够推导出\eqref{eq:electric-dipole}。
+我们称\eqref{eq:electric-dipole}为\concept{长度规范}下的哈密顿量。
+
+我们现在考虑$\vb*{A}^2$项能够丢弃，但是$\vb*{A}$尚有比较大的空间变化的情况；当然，这是为了将磁场和轨道自由度做耦合。
+乍一看，我们可以使用磁标势方法来得到磁场，但是这是行不通的：我们在处理的并非静磁学问题，位移电流项是到处都在的，从而如果要用磁标势方法，磁壳必须取在我们讨论的电子的周围，从而让磁标势毫无用处。
+我们会发现取
+\begin{equation}
+    \vb*{A} = \frac{1}{2} \vb*{B} \times \vb*{r} - \int_0^t \dd{t'} \grad(\vb*{r} \cdot \vb*{E}(\vb*{r}, t'))
+    \label{eq:a-containing-e-and-b}
+\end{equation}
+能够提供足够好的近似。直接计算就会发现
+\[
+    \curl{\vb*{A}} = \vb*{B},
+\]
+而
+\[
+    \begin{aligned}
+        \pdv{\vb*{A}}{t} &= \frac{1}{2} \pdv{\vb*{B}}{t} \times \vb*{r} - \grad{(\vb*{r} \cdot \vb*{E})} = \frac{1}{2} \vb*{r} \times (\curl{\vb*{E}}) - \grad{(\vb*{r} \cdot \vb*{E})} \\
+        &= \frac{1}{2} \left( \grad{(\vb*{r} \cdot \vb*{E})} - (\vb*{r} \cdot \grad) \vb*{E} - (\vb*{E} \cdot \grad) \vb*{r} - \vb*{E} \times (\curl{\vb*{r}}) \right) - \grad{(\vb*{r} \cdot \vb*{E})} \\
+        &= \frac{1}{2} \left( \grad{(\vb*{r} \cdot \vb*{E})} - (\vb*{r} \cdot \grad) \vb*{E} - \vb*{E} \right)- \grad{(\vb*{r} \cdot \vb*{E})} .
+    \end{aligned}
+\]
+如果假定$\vb*{E}$和$\vb*{B}$在空间上没有什么变化，那么就有
+\[
+    \pdv{\vb*{A}}{t} = \frac{1}{2} (\vb*{E} - \vb*{E}) - \vb*{E} = - \vb*{E}.
+\]
+因此，在电场和磁场在我们关心的区域基本均匀的情况下，\eqref{eq:a-containing-e-and-b}近似是辐射规范下的矢势。
+现在我们再做一个规范变换：
+\[
+    \vb*{A} \longrightarrow \vb*{A} + \grad{\chi}, \quad \varphi \longrightarrow \varphi - \pdv{\chi}{t}, \quad \chi = \int_0^t \dd{t'} \vb*{r} \cdot \vb*{E}(\vb*{r}, t'),
+\]
+就有
+\[
+    \begin{aligned}
+        H_\text{couple} &= q \varphi - \frac{q}{m} \vb*{A} \cdot \vb*{p} \\
+        &= - q \vb*{r} \cdot \vb*{E} - \frac{q}{m} \frac{1}{2} (\vb*{B} \times \vb*{r}) \cdot \vb*{p} \\
+        &= - \vb*{d} \cdot \vb*{E} - \frac{q}{2m} \vb*{B} \cdot (\vb*{r} \times \vb*{p}),
+    \end{aligned}
+\]
+从而
+\begin{equation}
+    H_\text{couple} = - \vb*{d} \cdot \vb*{E} - \frac{q}{2m} \vb*{L} \cdot \vb*{B}.
+\end{equation}
+这里多出来了一项，即磁场和轨道角动量的耦合。
+% TODO:但是此时电四极矩也开始变得重要了
+
+现在我们有了三种相互作用通道，有电偶极跃迁
+\begin{equation}
+    H_1 = - \vb*{d} \cdot \vb*{E},
+\end{equation}
+有自旋取向作用
+\begin{equation}
+    H_2 = - \frac{q}{m} \vb*{S} \cdot \vb*{B},
+\end{equation}
+还有轨道角动量取向作用
+\begin{equation}
+    H_3 = - \frac{q}{2m} \vb*{L} \cdot \vb*{B}.
+\end{equation}
+实际上，磁场对自旋的取向作用${H}_2$是很弱的。设电磁波波长的尺度为$\lambda$，则
+\[
+    \vb*{B} = \curl{\vb*{A}} \sim \frac{A}{\lambda},
+\]
+电子的活动范围的尺度和原子半径$a_0$同阶，由不确定性关系，
+\[
+    p a_0 \sim \hbar.
+\]
+于是
+\[
+    \frac{H_2}{H_1} \sim \frac{\hbar \frac{A}{\lambda}}{\frac{\hbar}{a_0} A} = \frac{a_0}{\lambda}.
+\]
+波长通常在几百纳米级别，而原子半径在纳米级别以下，从而${H}_1$远大于${H}_2$。
+
+\chapter{连续介质概述}
+
+虽然介质对电磁波的行为的修正原则上只是电子-光子散射，但是由于介质本身的物态是繁多的，电磁波的行为的修正也是非常复杂的。
+介质会引入对麦克斯韦方程的线性修正——此时介质中的电磁波遵循的方程仍然是经过某种修正的线性麦克斯韦方程，相应的介质就是\concept{线性介质}——也可能是非线性修正。
+微扰量子场论中总是先讨论自由理论再加入相互作用，因此对电磁波，首先考虑线性介质中的电磁波，然后再考虑非线性效应——它给出光子的散射——也是通常的做法。
+
+\section{连续介质中的电磁波}
+
+\subsection{连续介质中的麦克斯韦方程的一个经典推导}\label{sec:classical-continuum}
+
+在\autoref{sec:long-wavelength-photon-maxwell-general}中我们将要从对称性的角度说明，介质对麦克斯韦方程的修正可以归结为极化、磁化以及电流本构关系，并且这种修正在量子光学中同样适用。
+本节则将介质暂且看成完全经典的东西，即将物质场抽象为电荷和电流，试图建立一套和真空中的麦克斯韦方程足够相似的介质中的麦克斯韦方程，并为其中各项提供直观的、经典的意义。
+
+真空中的麦克斯韦方程组为我们熟知的形式：
+\begin{equation}
+    \begin{bigcase}
+        \div{\vb*{E}} &= \frac{\rho}{\epsilon_0} \\
+        \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t} \\
+        \div{\vb*{B}} &= 0 \\
+        \curl{\vb*{B}} &= \mu_0 \vb*{j} + \mu_0 \epsilon_0 \pdv{\vb*{E}}{t}
+    \end{bigcase}
+    \label{eq:original-maxwell}
+\end{equation}
+介质的存在事实上在微观层面不会改变\eqref{eq:original-maxwell}的形式。
+介质起作用的方式是，其内部已经有一个电荷分布，当外加电场的时候电荷重新排列、发生运动，在此过程中产生额外的电流、电场、磁场。
+于是假定电荷和电流可以做以下分解：
+\[
+    \begin{bigcase}
+        &\vb*{j} = \vb*{j}_\text{f} + \vb*{j}_\text{r}, \quad \rho = \rho_\text{f} + \rho_\text{r}, \\
+        &\pdv{\rho_\text{f}}{t} + \div{\vb*{j}_\text{f}} = 0, \\
+        &\pdv{\rho_\text{r}}{t} + \div{\vb*{j}_\text{r}} = 0
+    \end{bigcase}
+\]
+其中$\vb*{j}_\text{f}$是所谓的自由电流，而$\vb*{j}_\text{r}$是介质的响应，如果它不能自由流动，就称为束缚电流。但是这种二分法实际上很大程度上是任意的。
+例如，金属能导电，因为其内部含有大量几乎是自由的电子——那么，外加电场产生的金属中的电流就应该是自由电流了；
+但是分析金属的光学属性的时候，这些由于外加电场产生的电流又无疑是介质的响应。
+因此$\vb*{j}_\text{f}$和$\vb*{j}_\text{r}$只是辅助量，没有特殊的物理含义。
+不过，我们通常要求$\vb*{j}_\text{r}$\emph{不能}被除了（我们关系的那部分——因为操纵电荷的几乎总是电磁波）电磁波以外的手段操纵，否则不能保证它们的状态可以完全被$\vb*{E}$和$\vb*{B}$确定。
+使用费曼图的语言，就是我们希望$\vb*{j}_\text{r}$总是出现在内线而不能出现在外线。（经典理论中是可以有费曼图的，见\cite{hellingsolving}）
+
+为了能够将$\vb*{j}_\text{f}$和$\vb*{j}_\text{r}$整合进两个形式上和电场和磁感应强度很像的辅助量，
+从而在形式上让\eqref{eq:original-maxwell}变成一个只和自由电荷和自由电流有关的方程组，我们进一步做下面的分解：
+\[
+    \vb*{j}_\text{r} = \vb*{j}_\text{s} + \vb*{j}_\text{c}
+\]
+且$\vb*{j}_\text{c}$是一个有旋无源场。光有这个条件不足以在给定$\vb*{j}_\text{r}$时唯一地确定下$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$，
+因此还可以引入一个假设而不至于让$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$无解。
+为了让\eqref{eq:original-maxwell}中第一式的右边只剩下自由电荷，假定
+\begin{equation}
+    \rho_\text{r} = - \div{\vb*{P}}.
+    \label{eq:polarization-vector-def}
+\end{equation}
+这个假设\concept{没有}缩小$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$的选择范围，因为任意给定性质足够良好的$\rho_\text{r}$，相对应的$\vb*{P}$总是存在的（而且显然不唯一）。
+同时由于$\vb*{j}_\text{c}$是一个有旋无源场，可以再引进一个辅助量$\vb*{M}$使
+\[
+    \vb*{j}_\text{c} = \curl{\vb*{M}}
+\]
+此时$\rho_\text{r}$的输运方程成为
+\[
+    \pdv{\rho_\text{r}}{t} + \div{\vb*{j}_\text{s}} = 0
+\]
+因为$\curl{\vb*{j}_\text{c}}$的散度为零。这个式子又可以写成
+\[
+    \div{\left(\vb*{j}_\text{s}-\pdv{\vb*{P}}{t}\right)} = 0
+\]
+受到这个式子的启发，我们\concept{假设}（不是推出，因为光有上式不能定解，而先前我们只对$\vb*{j}_\text{c}$做过假设而没有对$\vb*{j}_\text{s}$做过假设，因此后者的取值仍然是任意的）有
+\[
+    \vb*{j}_\text{s} = \pdv{\vb*{P}}{t}
+\]
+这个假设不会让$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$无解。
+
+将以上引入的所有物理量代入\eqref{eq:original-maxwell}，得到
+\[
+    \begin{bigcase}
+        \epsilon_0 \div{\vb*{E}} &= \rho_\text{f} - \div{\vb*{P}}, \\
+        \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\frac{\vb*{B}}{\mu_0}} &= \vb*{j}_\text{f} + \curl{\vb*{M}} + \pdv{\vb*{P}}{t} + \epsilon_0 \pdv{\vb*{E}}{t}
+    \end{bigcase}
+\]
+引入辅助量
+\[
+    \vb*{D} = \epsilon_0 \vb*{E} + \vb*{P}, \quad \vb*{H} = \frac{\vb*{B}}{\mu_0} - \vb*{M}
+\]
+就得到了
+\begin{equation}
+    \begin{bigcase}
+        \div{\vb*{D}} &= \rho_\text{f}, \\
+        \curl{\vb*{E}} &= - \pdv{\vb*{B}}{t}, \\
+        \div{\vb*{B}} &= 0, \\
+        \curl{\vb*{H}} &= \vb*{j}_\text{f} + \pdv{\vb*{D}}{t}
+    \end{bigcase}
+    \label{eq:maxwell-material}
+\end{equation}
+
+方程组\eqref{eq:maxwell-material}除去了\eqref{eq:original-maxwell}中由于介质产生的电荷密度和电流密度，形式上更加简洁，
+但是即使在自由电荷密度和电流密度已经给定的情况下，只靠\eqref{eq:maxwell-material}本身也没有办法定解，因为未知数太多了。
+考虑到从$\vb*{E}, \vb*{B}$到$\vb*{D}, \vb*{H}$的变换是线性的，
+这就意味着\eqref{eq:original-maxwell}在自由电荷密度和电流密度已经给定的情况下其实也不能定解。
+这是理所当然的。
+
+下面的问题是，在自由电荷密度和电流密度已经给定的情况下，增加什么方程能够让\eqref{eq:maxwell-material}定解？
+当然，只要知道了从$\vb*{E}, \vb*{B}$到$\vb*{D}, \vb*{H}$的变换的具体计算式（而不是显含$\vb*{j}_\text{r}$的定义式）
+就能够定解。
+更进一步，在什么都不知道，只有初始条件和边界条件的情况下，怎样能够让\eqref{eq:maxwell-material}定解？
+只需要增补$\vb*{j}_\text{f}$和$\vb*{E}$的显式关系，以及输运方程
+\begin{equation}
+    \pdv{\rho_\text{f}}{t} + \div{\vb*{j}_\text{f}} = 0
+    \label{eq:transportation}
+\end{equation}
+就能够定解。
+
+因此要求解出介质中的电磁场变化情况，首先需要\concept{物理方程}\eqref{eq:maxwell-material}，
+然后是\concept{本构关系}也就是$\vb*{D}$，$\vb*{H}$，$\vb*{j}_\text{f}$关于其他量的表达式，最后是\concept{几何关系}\eqref{eq:transportation}，
+再加上适当的\concept{边界条件}和\concept{初始条件}，就能够定解。
+
+关于本构关系实际上有一个问题，就是从$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$到$\vb*{D}$和$\vb*{H}$是不是真的有一个函数关系。
+如果相同的$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$实际上对应着不同的系统状态，那就糟糕了。
+但是在经典电动力学中$\vb*{E}$，$\vb*{B}$是仅有的场，它们完全标记了系统状态，
+而如果对$\vb*{j}_\text{s}$和$\vb*{j}_\text{c}$加上足够的限制，总是可以使用$\vb*{j}_\text{f}$确定下整个$\vb*{j}$的分布，从而$\rho$的分布，
+因此$\vb*{E}$，$\vb*{B}$，$\vb*{j}_\text{f}$能够完全确定系统状态，从而本构关系总是可以写出来的。
+然而如果$\vb*{D}$和$\vb*{E}$之间的关系非常复杂——实际上，考虑到介质微观来看是非常\emph{不均匀}的，两者的关系就是应该非常复杂——那么写下它们的本构关系是完全不现实的。
+在我们能够找到比较简单的、特征尺度远大于介质的微观结构（原子间距$\sim \SI{1}{\angstrom}$）的本构关系时，我们说，\emph{连续介质近似}适用。
+之后，要讨论介质性能，就只需要考虑$\vb*{D}$和$\vb*{H}$——或者说$\vb*{P}$和$\vb*{M}$——即可。
+我们将$\vb*{P}$称为\concept{极化矢量}，将$\vb*{M}$称为\concept{磁化矢量}，因为直观地看，$\vb*{P}$看起来和磁场没有直接关系，$\vb*{P}$的出现可以理解为来自外加电场让介质中出现电荷的重新分布，实际上就是让原本电中性的介质分子变成电偶极子乃至其它电多极子，而$\vb*{P}$就体现了这种“极化”的宏观效应；同理，$\vb*{M}$看起来主要和磁场有关，其出现可以理解为外加磁场让电介质中出现环状（“有旋”）电流，从而产生磁场，于是$\vb*{M}$体现了“磁化”的宏观效应。
+我们将在\autoref{sec:continuous-epsilon-mu-calc}中更加详细地讨论这一点。
+
+连续介质近似成立的线性介质的本构关系总是可以写成
+\begin{equation}
+    \vb*{D} = \vb*{\epsilon} \cdot \vb*{E}, \quad \vb*{B} = \vb*{\mu} \cdot \vb*{H},
+\end{equation}
+其中$\vb*{\epsilon}$和$\vb*{\mu}$是张量算符。非线性连续介质的$\vb*{P}$就不再简单地能够写成电磁场的线性函数了。
+
+\subsection{连续介质的电磁性能的一些计算}\label{sec:continuous-epsilon-mu-calc}
+
+以上论证——\autoref{sec:classical-continuum}和\autoref{sec:quantum-continuum}——都是非常唯象的。
+它们根本没有告诉我们要怎么获得$\vb*{\epsilon}$和$\vb*{\mu}$。
+例如说它们没有告诉我们为什么$\vb*{P}$一般来说就是各个分子的电偶极矩加起来除以体积；只是看着\eqref{eq:polarization-vector-def}是什么也看不出来的。
+本节做一些半经典的计算，来直观地展示连续介质近似忽略了什么。
+
+设有一个“过滤器”$\mathcal{F}[\cdot]$滤除一个场的高动量成分，即，滤除其微观细节。
+我们在\eqref{eq:maxwell-material}的四个方程两边作用$\mathcal{F}$，就能够得到一个“平均化”的介质中麦克斯韦方程，其中所有的场都没有特征长度特别小的起伏，从而表现得和理想的连续介质中的场完全一样。
+我们为了简便起见将$\mathcal{F}[\cdot]$记作$\overline{\cdots}$。
+
+我们将全体束缚电荷选为$\rho_\text{r}$，完整考虑所有微观细节的束缚电荷密度为
+\[
+    \rho_\text{r}(\vb*{r}) = \sum_i q_i \delta(\vb*{r} - \vb*{r}_i).
+\]
+我们对它做傅里叶变换，有
+\[
+    \begin{aligned}
+        \rho_\text{r}(\vb*{k}) &= \sum_i q_i \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \delta(\vb*{r} - \vb*{r}_i) \\
+        &= \sum_i q_i \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_i} \\
+        &= \sum_i q_i \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \ee^{- \ii \vb*{k} \cdot (\vb*{r}_i - \vb*{r})} \\
+        &= \sum_i q_i \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} (1 - \ii \vb*{k} \cdot (\vb*{r}_i - \vb*{r}) + \cdots).
+    \end{aligned}
+\]
+由于电介质整体上是电中性的，并且我们正在研究束缚电荷，总是可以找到几个$\vb*{r}_i$接近于$\vb*{r}$的$q_i$使得它们的代数和为零，我们将这些电荷的集合记作$C$。
+进一步，由于只考虑小的$\vb*{k}$，略去上式中的高阶项，则有
+\[
+    \begin{aligned}
+        \overline{\rho_\text{r}(\vb*{k})} &= \sum_i q_i \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} (1 - \ii \vb*{k} \cdot (\vb*{r}_i - \vb*{r}) ) \\
+        &= \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \sum_{\text{cluster $C$}} \sum_{i \in C} q_i (1 - \ii \vb*{k} \cdot (\vb*{r}_i - \vb*{r})) \\
+        &= \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \sum_{\text{cluster $C$}} \sum_{i \in C} q_i (- \ii \vb*{k} \cdot \vb*{r}_i) \\
+        &= \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \sum_{\text{$C$ near $\vb*{r}$}} (- \ii \vb*{k}) \cdot \vb*{p}_C,
+    \end{aligned}
+\]
+其中$\vb*{p}$是$C$的电偶极矩。做傅里叶逆变换，有
+\[
+    \begin{aligned}
+        \overline{\rho_\text{r}(\vb*{r})} &= \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{\ii \vb*{k} \cdot \vb*{r}} \int \dd[3]{\vb*{r}'} \ee^{- \ii \vb*{k} \cdot \vb*{r}'} \sum_{\text{$C$ near $\vb*{r}'$}} (- \ii \vb*{k}) \cdot \vb*{p}_C \\
+        &= - \div \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{\ii \vb*{k} \cdot \vb*{r}} \int \dd[3]{\vb*{r}'} \ee^{- \ii \vb*{k} \cdot \vb*{r}'} \sum_{\text{$C$ near $\vb*{r}'$}} \vb*{p}_C \\
+        &= - \div{\sum_{\text{$C$ near $\vb*{r}$}} \vb*{p}_C}.
+    \end{aligned}
+\]
+如果我们只关心介质中长波电磁波的行为，则可以将所有物理量都替换成它们经过$\mathcal{F}$滤波之后的值，从而可以取
+\begin{equation}
+    \vb*{P} = \sum_{\text{$C$ near $\vb*{r}$}} \vb*{p}_C.
+\end{equation}
+
+电流的计算要复杂一些，思路是类似的。电流密度为
+\[
+    \vb*{j}_\text{r}(\vb*{r}) = \sum_i q_i \vb*{v}_i \delta(\vb*{r} - \vb*{r}_i),
+\]
+于是
+磁偶极矩都是反对称化来的。
+
+\subsection{连续介质模型在量子光学中的适用性}\label{sec:quantum-continuum}
+
+一个直接的问题是前一节中给出的连续介质近似是不是适用于电磁场的量子特性显示出来的情形。
+直接将QED和介质耦合起来并在零温场论中积掉介质虽然的确是正确的，在实际计算时却会产生一些理论上的问题。
+例如，我们知道，介质通常出于热态，因此，一个光子和介质发生相互作用之后就处于混合态了，似乎不能写出一个场论来描述介质中光子；从介质吸收光子到发射光子会有时间延迟；介质微观上是非常不均匀的，从而平面波进入介质后波阵面将面目全非。
+总之，完全在零温场论中从头计算介质影响实际上意味着我们要“积掉剩下的宇宙”。
+退一步，也需要用到非平衡态场论才能够严格解决以上疑难。
+
+一种比较粗略，但是现实中确实有用的做法是形式上认为我们\emph{已经}将介质积掉了，并根据对称性等修正真空中麦克斯韦方程，而用介质中的电磁场-电磁场关联函数体现介质的存在。
+我们随后通过第一性原理或者别的什么办法计算一些情景，和用连续介质模型计算出的情形做比较，从而拟合出介质中麦克斯韦方程中的参数。
+介质的线性效应体现为电磁场的作用量的二次型部分出现一个修正，非线性效应体现为电磁场的自相互作用，非幺正的部分体现为以上修正中的虚部。
+后两个问题可以采用和经典电动力学类似的方法解决，即我们只处理“经过空间平均”的电磁场，这相当于做了一个动量截断，只讨论波长足够长的那部分电磁波模式，则介质中发生的过程相比于我们讨论的过程来说是非常快、且空间细节不甚清楚的，从而，介质导致的电磁场关联函数的修正可以认为没有时间上的延迟效应或是空间上的非局域效应。
+
+在确实只需要考虑波长远大于介质的微观不均匀性的空间尺度的光子时，形式上，我们可以直接将介质中的麦克斯韦方程做正则量子化。要看出这是为什么，首先考虑线性部分，描述光场的宏观的线性介质中的麦克斯韦方程是
+\[
+    \begin{aligned}
+        &\div{\vb*{D}} = 0, \quad \curl{\vb*{E}} = - \pdv{\vb*{B}}{t}, \\
+        &\div{\vb*{B}} = 0, \quad \curl{\vb*{H}} = \pdv{\vb*{D}}{t} + \vb*{j},
+    \end{aligned}
+\]
+这里我们保留了传导电流，这是为了提示系统哈密顿量中外加激励项$\vb*{j} \cdot \vb*{A}$的存在。取规范$\varphi=0$，并切换到频域，我们会发现以上方程等价于辐射规范加上
+\begin{equation}
+    \curl{(\mu^{-1} \cdot \curl{\vb*{A}})} - \omega^2 \epsilon \cdot \vb*{A} = \vb*{j}.
+    \label{eq:photon-in-material}
+\end{equation}
+如果介质修正后的电磁场关联函数实际上就是上式的格林函数，我们就可以直接将线性介质中的麦克斯韦方程中的电场和磁场提升为算符，完成正则量子化。
+
+对称性分析告诉我们，在长波光子条件成立时，破缺空间平移对称性和空间各向同性，但保留局域性，则\eqref{eq:photon-in-material}是最一般的方程。
+可以在整个方程左边再乘上一个张量，但是我们随即可以将这个张量吸收到$\vb*{j}$的定义中；$\curl{\vb*{A}}$的形式不能改变，因为无论如何，从$\vb*{A}$出发能够得到的局域的规范不变矢量除了$\pdv*{\vb*{A}}{t}$——在频域下就正比于$\vb*{A}$——以外就只有它了。
+因此，的确，对波长远大于介质微观不均匀性（晶格常数等）的光子（大部分能够称为“光学”的问题都是这样的，因为晶格常数差不多几百皮米，已经对应X射线的波长了），至少线性介质中的麦克斯韦方程可以被理解为海森堡绘景下的方程，虽然我们导出它用的似乎是完全经典的论证。
+
+非线性项可以如法炮制。我们就是需要用赝矢量$\curl{\vb*{A}}$和矢量$\pdv*{\vb*{A}}{t}$构造出一个方程（见\autoref{sec:e-m-field-transformation-feature-vacuum}）。
+由于$\curl{\vb*{A}}$整体上是一个规范不变量，我们不能将它修正为$\curl{\vb*{T} \cdot \vb*{A}}$之类的东西；然而它是一个赝矢量，而$\pdv*{\vb*{A}}{t}$和$\vb*{j}$都是普通矢量，于是我们必须将$\curl{\vb*{A}}$乘上某个张量以后得到的赝矢量再乘上一个赝矢量，才能够得到普通矢量。
+于是，最后我们能有的方程的形式还是\eqref{eq:photon-in-material}。
+于是，光子相互作用就通过显含$\vb*{E}$的$\vb*{\epsilon}$引入了，实际上我们就是依靠\emph{量子化的极化矢量和磁化矢量}引入了光子相互作用。
+
+从哈密顿量的角度出发可以更加容易地看出为什么线性麦克斯韦方程\eqref{eq:photon-in-material}可以直接量子化。
+破缺空间平移对称性和空间各向同性之后，\eqref{eq:e-and-b-hamiltonian}能够有的修正方式是非常有限的：如果保持哈密顿量为二次型，我们只能够让$\vb*{E}^2$项和$\vb*{B}^2$项变得各向异性，即让它变成
+\begin{equation}
+    H = \int \dd[3]{\vb*{r}} \left( \frac{1}{2} \vb*{E} \cdot \vb*{\epsilon} \cdot \vb*{E} + \frac{1}{2} \vb*{B} \cdot (\vb*{\mu}^{-1}) \cdot \vb*{B} \right) = \frac{1}{2} \int \dd[3]{\vb*{r}} (\vb*{D} \cdot \vb*{E} + \vb*{B} \cdot \vb*{H}).
+    \label{eq:material-hamiltonian}
+\end{equation}
+它和\eqref{eq:photon-in-material}是等价的。哈密顿量被修正在物理上对应着积掉介质，如果只考虑长波光子，那么这个过程应该给出在时间上和空间上都是局域的等效光子相互作用。
+原则上可以产生$\vb*{E}$和$\vb*{B}$的任意次方项，只保留两项就得到\eqref{eq:material-hamiltonian}，保留更多项就得到非线性光学效应（例如见\cite{Drummond2009}中对非线性光学的哈密顿量的讨论）。
+
+最后，注意到\autoref{sec:continuous-epsilon-mu-calc}中的讨论实际上并没有用到多少物理量可交换之类的条件，也没有同时需要确定坐标和动量，而只是用到了傅里叶变换，因此实际上那里的讨论是可以直接搬到量子情况下的。
+因此在连续介质中连续介质那一套的确是可以直接移植到量子情况下的。
+
+总之，最为精确的计算需要在理论中同时保留光场和介质，并且显式地根据光场和介质的电偶极子耦合做微扰计算；而在连续介质近似中，我们首先计算介质中的电磁场关联函数，然后根据\eqref{eq:photon-in-material}得到$\epsilon$和$\mu$，代入算符版本的介质中麦克斯韦方程，得到一个只关于光场的理论。
+后一种近似实际上是非常粗糙的，但是波长明显长于介质微观结构尺度（如晶格常数）的光子确定适用，因此适用范围还是很大的。
+本文仅仅说明介质的光学性质可以使用什么样的量表征，而并不具体计算这些量；对这些物理量的计算在\soliddoc中进行。
+
+\subsection{连续介质近似的失效}
+
+最后我们讨论连续介质近似何时失效。如前所述，对长波光子才有连续介质近似，那么如果光子波长到了介质的微观结构的尺度，连续介质近似就失效了。此时必须使用完整的第一性原理做计算。
+硬X射线波长在\SI{100}{pm}量级，因此全体硬X射线乃至$\gamma$射线和普通的晶体的互动都肯定不能使用连续介质近似：它们甚至能够看到原子内部结构了。
+波长在\SI{1}{\angstrom}量级的软X射线当然也不行，它们虽然看不到原子结构，但能够精确地看到晶格结构。
+波长在\SI{1}{nm}附加的软X射线的行为则非常有趣：实验上它们根本看不到介质微观结构的细节，但是使用更长波的电磁波测出的$\epsilon$和$\mu$描述它们肯定会出错的。
+这个波段的光需要使用一些连续介质近似的修正理论来描述。
+波长再长的光就可以完美使用连续介质近似描述了。可以看到，连续介质近似在非常宽的频谱上都是非常有用的。
+
+连续介质近似还要求有一部分电荷能够被划分为“束缚电荷”，它们不是系统的低能自由度，从而可以积掉。
+如果实际上所有的电荷都能够自由移动、被外场操纵，总之，“出现在费曼图的外线中”，那么“束缚电荷”的概念本身就是缺乏意义的。
+在强场下就会出现这种情况：此时单光子能量未必很大（光子波长未必很短），然而有如此多的光子，以至于场强很强，介质内的电子可以短时间内积累很大能量然后挣脱束缚。
+这种场景的典型的单位面积功率是$\sim\SI{e13}{W/cm^2}$。作为对比，激光笔的单位面积功率是$\sim \SI{e5}{W/cm^2}$。
+
+\section{介质电磁性能的计算}

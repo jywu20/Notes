@@ -1,6 +1,6 @@
 # 包冲突
 
-hyperref之类的包最好放在最后
+hyperref之类的包最好放在最后，xr-hyper包应该放在hyperref前面
 
 # 蜜汁实现方式导致的错误
 
@@ -15,6 +15,11 @@ hyperref之类的包最好放在最后
 ```TeX
 \lb{\alpha}\lb{\alpha} $\alpha$ $\beta$ ]\lb{\beta} example]]
 ```
+
+## xr-hyper
+
+使用xr-hyper进行跨文档引用时最好不要在caption或是section中插入自定义命令或是长的数学公式，否则很可能出错。
+有一些标点符号也会出错，比如说破折号`——`。
 
 # 编码支持
 

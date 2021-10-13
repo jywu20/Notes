@@ -1,4 +1,4 @@
-\documentclass[UTF8, a4paper]{ctexbook}
+\documentclass[hyperref, UTF8, a4paper, oneside]{ctexbook}
 
 \usepackage{geometry}
 \usepackage{titling}
@@ -9,16 +9,21 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{cite}
+\usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
 \usepackage{siunitx}
-\usepackage{tikz-feynhand}
+\usepackage[compat=1.1.0]{tikz-feynhand}
 \usepackage{xr-hyper}
 \usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black]{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
 \usepackage{prettyref}
 
 \externaldocument[qft-]{../relativistic-qft/relativistic-qft}[relativistic-qft.pdf]
+\externaldocument[solid-]{../solid/solid}[solid.pdf]
 
 \geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
 \titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
@@ -41,12 +46,15 @@
 \newrefformat{note}{注\ref{#1}}
 \newrefformat{fig}{图\ref{#1}}
 \newrefformat{part}{第\ref{#1}部分}
+\newrefformat{chap}{第\ref{#1}章}
+\newrefformat{tbl}{表\ref{#1}}
+\newrefformat{back}{背景知识\ref{#1}}
+\newrefformat{info}{资料框\ref{#1}}
+\newrefformat{warn}{注意事项\ref{#1}}
 \renewcommand{\autoref}{\prettyref}
 
 \newcommand{\concept}[1]{\underline{#1}}
 \renewcommand{\emph}{\textbf}
-
-\sisetup{parse-numbers = false}
 
 \usetikzlibrary{arrows,shapes,positioning}
 \usetikzlibrary{arrows.meta}
@@ -114,6 +122,15 @@
     },
 }
 
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{back}{背景知识}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{back}
+\newtcbtheorem[number within=chapter]{info}{资料框}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+\newtcbtheorem[number within=chapter]{warning}{注意事项}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+
 \newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
 
 \numberwithin{equation}{chapter}
@@ -121,18 +138,24 @@
 \newcommand{\qftdoc}{\href{../relativistic-qft/relativistic-qft.pdf}{相对论性量子场论笔记}}
 \newcommand{\soliddoc}{\href{../solid/solid.pdf}{固体物理笔记}}
 
-\title{光学}
+\title{电磁场，电磁波，光学}
 \author{吴晋渊}
 
 \begin{document}
 
 \maketitle
 
-\part{电动力学的基本原理}
+\part{介质的电动力学性能}
 
-关于QED的低能极限下物质是如何和电磁场耦合的，以及物质之间的等效库伦相互作用，\qftdoc中的第\ref{qft-sec:electron-photon-interaction}节和第\ref{qft-sec:qed-tree-level-channels-low-speed}节已有系统的介绍。
+\input{first-principles.tex}
 
-\input{first_principles.tex}
+\part{静态和准静态情况}
+
+\input{static.tex}
+
+\input{circulate.tex}
+
+\input{radiation.tex}
 
 \part{线性介质中光的传播}
 
@@ -154,7 +177,11 @@
 
 \input{fast.tex}
 
+\part{光的量子性质}
+
+\input{quantum.tex}
+
 \bibliographystyle{plain}
-\bibliography{optics} 
+\bibliography{optics,../formalism/classical-feyn,quantum-state} 
 
 \end{document}

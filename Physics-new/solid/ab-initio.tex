@@ -8,7 +8,7 @@ DFT计算如今也经常和Hartree-Fock近似、PRA近似等方法联合使用�
 
 具体来说我们将主要介绍\concept{KSDFT}，即基于Kohn-Sham方程的DFT方法，因为它一方面是基于能量泛函的，一方面能够直接给出一些关于单电子波函数的信息。
 
-\section{KSDFT的理论基础与基本方程}
+\section{KSDFT的理论基础与基本方程}\label{sec:ksdft-basic-theory}
 
 \subsection{为什么需要密度泛函理论}
 
@@ -156,7 +156,7 @@ KSDFT的计算过程中存在“单粒子波函数$\phi_i(\vb*{r})$”并\emph{�
 \begin{equation}
     V = \mel{\Psi}{{V}_\text{ion}}{\Psi} = \sum_i f_i \int \dd[3]{\vb*{r}} V_{\text{ion}}(\vb*{r}) \phi_i^*(\vb*{r}) \phi_i(\vb*{r}) = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) V_\text{ion}(\vb*{r}).
 \end{equation}
-而二体的库伦势却会带来很大麻烦。当然，如果采用托马斯-费米近似，则唯一剩下的一项就是Hartree项
+而二粒子的库伦势却会带来很大麻烦。当然，如果采用托马斯-费米近似，则唯一剩下的一项就是Hartree项
 \begin{equation}
     \mel{\Psi}{{V}_\text{int}}{\Psi} \approx V_{\text{H}} = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} \frac{e^2 \rho(\vb*{r}) \rho(\vb*{r}')}{\abs{\vb*{r} - \vb*{r}'}},
     \label{eq:dft-hartree-term}
@@ -932,7 +932,12 @@ APW方法的主要不足在于除了电子数密度以外，$E$也需要自洽�
 
 当然，如前所述，Kohn-Sham方程的推导的每一步都没有给出足够的条件让我们知道Kohn-Sham波函数到底是什么东西。
 Kohn-Sham方程解得的本征值和本征函数到底是什么实际上是仍然有疑问的。
-有一点是确定的，就是它们\emph{不严格是}单电子能量和波函数，因为已经证实，把它们当成单电子能量和波函数会产生系统的误差。
+的确，如果待模拟的系统实际上是一个费米液体，其低能激发适用能带理论，那么其基态的确大体上可以看成某种费米子算符——经过相互作用修正的能带电子——的Fock波函数，和Kohn-Sham拟设形式相同。
+因此，Kohn-Sham波函数大体上就是“单电子波函数”。
+但我们不知道这个近似的精度如何。如果Kohn-Sham波函数和单电子波函数只是大体上相似，而在一些细节上有差异呢？在量子化学中，这样的差异可能就是关键的。
+如果能带理论会带来一个方向的误差，而将计算得到的Kohn-Sham波函数当成单电子波函数会产生\emph{相反方向的}误差呢？
+
+有一点是确定的，就是一般来说，Kohn-Sham波函数和本征值\emph{不严格是}单电子能量和波函数，因为已经证实，把它们当成单电子能量和波函数会产生系统的误差。
 这其中最为著名的就是\emph{半导体能隙问题}，即将DFT计算出来的Kohn-Sham本征值当作电子能量的话会倾向于系统地低估半导体的能隙，从而实验上明确确定是半导体的体系用DFT计算出来的能带结构看起来似乎是金属的。
 关于这一误差到底在哪里没有特别明确的结论，因为DFT中不确定的、物理意义不清楚的东西非常多，首先我们不知道LDA和GGA这些非常局域的方法以及它们的推广是否足够精确，其次我们也不知道Kohn-Sham方程的解的物理意义是什么。
 
@@ -949,27 +954,15 @@ Kohn-Sham方程解得的本征值和本征函数到底是什么实际上是仍�
 GW计算实际上是一种独立的数值计算方法，但是因为它要求一个比较接近实际情况的单电子波函数作为起点，我们仍然可以将它视为DFT的后处理的一部分，即将DFT计算出来的Kohn-Sham波函数作为GW计算的初始值。
 GW计算也是一种基于自能的计算方法，其中，它
 
-通过constraint RPA方法可以得到等效Hubbard模型之类的东西。
-见
-Calculations of Hubbard U from first-principles
-F. Aryasetiawan, K. Karlsson, O. Jepsen, and U. Schönberger
-Phys. Rev. B 74, 125106 
-
-https://www.cond-mat.de/events/correl11/manuscripts/aryasetiawan.pdf
-
-
-
 \subsection{原子受力}
-
-
 
 在计算单原子受力时我们最好把晶胞扩张得大一些。如果使用原胞做计算，那么将某个原子移动一小段得同时，其它原胞中与它地位一致的原子也发生了移动，因此通过这种方式计算原子移动前后的能量变化并进一步计算力是不准确的。
 相反，如果晶胞被扩张了，那么移动一个原子之后，与之最为接近的那些原胞中与之地位一致的原子并没有发生移动，会给出相对可靠的结果。
 
 \subsubsection{声子谱计算}
 
-\section{结构优化和分子动力学模拟}
+\section{结构优化和分子动力学模拟}\label{sec:structural-relaxation-md}
 
 有时候我们对晶体结构只有一个大概的猜测，此时需要做结构优化，即所谓\concept{结构优化自洽计算}。
 
-\concept{ab initio MD}
+\concept{ab initio MD}指的是不使用半经验的分子力场，直接使用密度泛函理论计算各个原子受力的分子动力学模拟。

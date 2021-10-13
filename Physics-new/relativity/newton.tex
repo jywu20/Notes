@@ -1,0 +1,933 @@
+\documentclass[UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+\geometry{left=3.28cm,right=3.28cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\ii}{\mathrm{i}}
+\renewcommand*{\dd}{\mathop{}\!\mathrm{d}}
+\newcommand*{\st}{\quad \text{s.t.} \quad}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\natnums}{\mathbb{N}}
+\newcommand*{\reals}{\mathbb{R}}
+\newcommand*{\complexes}{\mathbb{C}}
+\DeclareMathOperator{\timeorder}{T}
+\newcommand*{\ogroup}[1]{\mathrm{O}(#1)}
+\newcommand*{\sogroup}[1]{\mathrm{SO}(#1)}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{牛顿力学}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    从基本的时空对称性导出整个牛顿力学。
+\end{abstract}
+
+还需要做的事：
+\begin{enumerate}
+    \item 欧拉方程的导出
+    \item 欧拉角
+    \item 广义本征值法
+\end{enumerate}
+
+\section{导出牛顿力学}
+
+\subsection{牛顿力学的拉氏量}
+
+假定在牛顿力学中时间是底流形的坐标——也就是说，没有必要一开始就把它看成一个广义坐标
+（当然，总是可以使用扩展拉格朗日量的方法把它当成广义坐标）。
+再假设单个粒子的位置可以使用一个$\reals^3$中的矢量表示。
+因此，单个粒子的广义坐标可以是三个直角坐标（当然也可以是等价的极坐标等）。
+这样一来它的拉氏量就可以写成
+\[
+    L = L(\vb*{r}, \vb*{v}, t)
+\]
+其中$\vb*{v}$就是$\vb*{r}$对$t$的导数。
+
+$\vb*{r}$和$\vb*{v}$显然需要通过和某个“参考点”的比较确定，也就是说我们需要一个\textbf{参照物}才能够写下$L$的形式。我们还需要一些具体的坐标将$\vb*{r}$写出来，因此还需要一个坐标系。坐标系与参照物合称为\textbf{参考系}。
+显然，不同的参考系中$\vb*{r}$的形式可以很不一样。
+
+关于参考系要额外提一句：因为参考系中定义了基矢量，在计算矢量导数的时候就产生了一个问题：这些基矢量会不会随时间变化？实际上根本不可能判断这一点。因此，实际上每个参考系都有它自己的“对时间求导”的算符。当然我们可以明确地判断两个参考系的基矢量是不是相对静止的。
+在实际计算中，通常取一个参考系而假定其基矢量不变，称为\textbf{实验室参考系}。
+
+这导致了另一个微妙的地方：在列写欧拉-拉格朗日方程的时候我们有
+\begin{equation}
+    \pdv{L}{q} - \dv{t} \pdv{L}{\dot{q}} = 0,
+    \label{eq:el-eq}
+\end{equation}
+从而有
+\begin{equation}
+    \pdv{L}{\vb*{r}} - \dv{t} \pdv{L}{\dot{\vb*{r}}} = 0.
+    \label{eq:vector-el-eq}
+\end{equation}
+无论我们选取的参考系基矢量相对实验室参考系的基矢量有没有发生运动，\eqref{eq:vector-el-eq}中的时间导数都\textbf{不能}考虑基矢量的变化，因为向量形式的\eqref{eq:vector-el-eq}只不过是将向量各分量当成独立坐标代入\eqref{eq:el-eq}之后拼起来的结果。%
+\footnote{一个可能的疑惑：向量各分量不是要满足升降指标关系和坐标变换关系？为什么我们把它们当成了标量处理？要注意在处理欧拉-拉格朗日方程的时候我们实际上只关心“某些量在底流形上怎么分布”，而底流形只有一个维度就是时间。空间坐标之间的指标变换等关系相当于一个额外附加给“场量”的约束。由于牛顿力学中假定可以找到欧氏空间的惯性系，只要在欧氏空间中使用笛卡尔坐标系写出各坐标并构造合适的拉氏量，切换到其它坐标系中就不会有困难。}
+
+首先考虑粒子自由运动或者说“不受到任何相互作用时”的运动情况。应当指出“不受相互作用”实际上没有良好定义——怎样确定一个物体有没有受到相互作用呢？
+比如说，一个弹簧振子应该算是受到了相互作用吗？一方面似乎是的，因为有一个线性回复力作用在了振子上；
+但另一方面似乎不是，因为弹簧振子可以就这样一直振动下去而不对外界产生影响，也不受外界影响。
+因此实际上“不受相互作用”只是“最简单的系统”的一种直观说法。当然，通常要求“不受相互作用”的诸系统的拉氏量具有可加性。
+
+\textbf{假定}总是有一个参考系，在其中不受相互作用的粒子具有空间平移和时间平移不变性，以及空间的各向同性。
+这个参考系就是一个\textbf{惯性系}。
+从空间和时间的平移不变性得到
+\[
+    L = L(\vb*{v})
+\]
+由于空间是各向同性的，则$L$不应该依赖于$\vb*{v}$的方向，这样就有
+\[
+    L = L(v^2)
+\]
+这样还是不能确定$L$的具体形式。
+通过经验结果，\textbf{假定}在一个惯性系中匀速运动的某个点构成了另一个惯性系，且不同惯性系中的拉氏量关于此惯性系中的速度的形式相同。
+现在设$\vb*{v}_1$和$\vb*{v}_2$分别是两个惯性系中的速度，则一定可以找到一个常数$\vb*{v}_0$使
+\[
+    \vb*{v}_1 = \vb*{v}_2 + \vb*{v}_0
+\]
+并且$L(v_1^2)$和$L(v_2^2)$分别是两个恰当地描写了系统的拉氏量，则$L((\vb*{v}_1 - \vb*{v}_0)^2)$也恰当地描写了系统。
+也就是说$L(v^2)$在对$\vb*{v}$做平移变换前后等价，从而
+\[
+    L((\vb*{v} + \delta \vb*{v})^2) - L(v^2) = \dv{f}{t},
+\]
+也就是
+\[
+    2 \pdv{L}{v^2} \vb*{v} \cdot \delta v = \dv{f}{t}
+\]
+注意到$\vb*{v} \cdot \delta v$本身已经是某个函数对时间的全导数了，则必须有
+\[
+    \pdv{L}{v^2} = \const
+\]
+因此$L$形如
+\begin{equation}
+    L = \frac{1}{2} m v^2.
+    \label{eq:free-newton}
+\end{equation}
+如果我们认为作用量有极小值，那么一定有$m>0$。$m$就是\textbf{质量}。
+
+\eqref{eq:free-newton}给出了牛顿力学中自由粒子的拉氏量。当系统中有多个粒子且彼此间有相互作用时拉氏量成为
+\begin{equation}
+    L = \sum_i \frac{1}{2} m_i v_i^2 - U(\vb*{r}, \vb*{v}, t)
+    \label{eq:interaction}
+\end{equation}
+
+\subsection{基本的运动常数}
+
+\subsubsection{平移不变性和动量守恒}
+
+假定系统在方向$\vb*{n}$上具有平移不变性，也就是做变换
+\[
+    \vb*{r}^{(i)} \longrightarrow \vb*{r}^{(i)} + \epsilon \vb*{n}
+\]
+之后，拉氏量和原来的拉氏量等价。
+
+引入力
+\begin{equation}
+    \vb*{F} = \dv{t} \pdv{U}{\dot{\vb*{r}}} - \pdv{U}{\vb*{r}}
+\end{equation}
+
+\subsection{达朗贝尔原理}
+
+设$\vb*{F}$为
+\begin{equation}
+    \vb*{F}^{(i)} = \dv{t} \pdv{U}{\vb*{v}^{(i)}} - \pdv{U}{\vb*{r}^{(i)}} + F^\text{(nc)} + F^\text{(cons)}
+\end{equation}
+虚位移$\var{\vb*{r}^{(i)}}$满足约束方程，且为理想约束，则
+\begin{equation}
+    \sum_i (\vb*{F}^{(i)} - m_i \ddot{\vb*{r}}^{(i)}) \cdot \var{\vb*{r}^{(i)}} = 0
+\end{equation}
+即达朗贝尔原理。由于变分的任意性，只需要它就可以推导出所有的运动方程。
+
+\section{两体中心势}\label{sec:two-body}
+
+\subsection{运动分析}
+
+两体中心势在讨论天体力学问题时非常常用。相对而言天体力学是比较“干净”的系统，因为其中的各种相互作用可以比较明确地写出来，且没有复杂而混乱的粘滞、摩擦等现象。
+
+设系统中有两质点质量为$m_1,m_2$，其位置矢量为$\vb*{r}_1, \vb*{r}_2$。假定系统的拉氏量形如
+\begin{equation}
+    L = \frac{1}{2} m_1 v_1^2 + \frac{1}{2} m_2 v_2^2 - U(r), \quad \vb*{r} = \vb*{r}_1 - \vb*{r}_2.
+    \label{eq:two-body-original}
+\end{equation}
+这个拉氏量的形式等价于下面的断言：每一个质点都受到一个大小只依赖于两质点间距、方向与两质点连线共线的力，且这两个力大小相等方向相反。
+
+引入质心
+\begin{equation}
+    \vb*{R} = \frac{m_1 \vb*{r}_1 + m_2 \vb*{r}_2}{m_1 + m_2}
+\end{equation}
+可以将拉氏量约化为
+\[
+    L = \frac{1}{2} M V^2 + \frac{1}{2} \mu v^2 - U(r), 
+\]
+其中$\mu$定义为
+\begin{equation}
+    \quad \frac{1}{\mu} = \frac{1}{m_1} + \frac{1}{m_2}
+\end{equation}
+称为\textbf{约化质量}。
+容易注意到$\vb*{V}$各分量为循环坐标，也即$\vb*{V}$始终不变，于是得出结论：二体中心势问题中质心速度不变。
+那么拉氏量可以等价地改写为
+\[
+    L = \frac{1}{2} \mu v^2 - U(r)
+\]
+取球坐标$(r, \theta, \phi)$来描述$\vb*{r}$，拉氏量成为
+\[
+    L = \frac{1}{2} \mu \dot{r}^2 + \frac{1}{2} \mu r^2 \sin^2 \theta \dot{\phi}^2 + \frac{1}{2} \mu r^2 \dot{\theta}^2 - U(r)
+\]
+考虑关于$\theta$的欧拉-拉格朗日方程，有
+\[
+    2 r \dot{r} \dot{\theta} + r^2 \ddot{\theta} - r^2 \sin \theta \cos \theta \dot{\phi}^2 = 0,
+\]
+将$\theta=\pi/2, \dot{\theta}=0$代入上式得到$\ddot{\theta}=0$。
+因此，$\theta=\pi/2$是一个解。
+考虑初始条件就是$\theta|_{t=0}=\pi/2, \dot{\theta}|_{t=0}=0$，我们发现在此初始条件之下恒有$\theta=\pi/2$。
+于是关于$r, \theta, \phi$拉氏量转化为关于$r, \phi$的拉氏量
+\[
+    L = \frac{1}{2} \mu (\dot{r}^2 + r^2 \dot{\phi}^2) - U(r)
+\]
+然后讨论关于$\dot{\phi}$的欧拉-拉格朗日方程
+\[
+    \dv{t} (\mu r^2 \dot{\phi}) = 0
+\]
+于是引入\textbf{角动量}
+\begin{equation}
+    l_0 = \mu r^2 \dot{\phi} = \const
+\end{equation}
+这个运动积分包含了一个坐标的时间导数，因此不能直接用它在拉氏量中消去$\dot{\phi}$。于是我们讨论关于$r, \phi$的哈密顿量。计算广义动量
+\[
+    p_r = \pdv{L}{\dot{r}} = \mu \dot{r}, \quad p_\phi = \pdv{L}{\dot{\theta}} = \mu r^2 \dot{\phi}
+\]
+于是写出哈密顿量
+\[
+    H = p_r \dot{r} + p_\phi \dot{\phi} - L = \frac{p_r^2}{2\mu} + \frac{p_\phi^2}{2\mu r^2} + U(r)
+\]
+$p_\phi$就是$l_0$，因此
+\begin{equation}
+    H = \frac{p_r^2}{2\mu} + U_\text{eff} (r),
+    \label{eq:hamiltionian-about-r}
+\end{equation}
+其中
+\begin{equation}
+    U_\text{eff} (r) = U(r) + \frac{l_0^2}{2\mu r^2}.
+\end{equation}
+这样就获得了仅仅关于$r$的动力学方程。按照\eqref{eq:hamiltionian-about-r}写出正则方程，有
+\[
+    \dot{r} = \pdv{H}{p_r} = \frac{p_r}{\mu}, \quad \dot{p_r} = - \pdv{H}{r} = - \pdv{U_\text{eff}}{r},
+\]
+也就是
+\[
+    \mu \ddot{r} = - \pdv{U_\text{eff}}{r}.
+\]
+这个方程就是直接使用牛顿力学列出的方程。此方程两边对$r$积分，或者，更加直截了当的，注意到\eqref{eq:hamiltionian-about-r}不显含时间因此$H$守恒，有
+\[
+    \frac{1}{2 \mu} p_r^2 + U_\text{eff}(r) = \frac{1}{2} \mu \dot{r}^2 + U_\text{eff}(r) = E_0 = \const
+\]
+从而
+\begin{equation}
+    \dot{r} = \pm \sqrt{\frac{2}{\mu} (E_0 - U_\text{eff}(r))}
+    \label{eq:two-body-movement}
+\end{equation}
+因此一定有$E_0 \geq U_\text{eff}$。
+并且，如果$r$有极大值或是极小值，那么此时一定有$E_0 = U_\text{eff}(r)$，因为$r$取极值时$\dot{r}$应为零。
+上面的推导不能确定\eqref{eq:two-body-movement}中的正负号，而实际上也不应该确定——$r$会在轨道的一些地方增大、另一些地方减小。
+\eqref{eq:two-body-movement}有形式解
+\begin{equation}
+    t = \sqrt{\frac{\mu}{2}} \int \frac{\pm \dd r}{\sqrt{E_0 - U_\text{eff}(r)}} + \const.
+\end{equation}
+
+\subsection{轨道方程}
+
+很多时候我们并不关心具体的$r(t)$关系，而希望知道关于轨道的信息。使用
+\[
+    \dot{\phi} = \frac{l_0}{\mu r^2}
+\]
+以及\eqref{eq:two-body-movement}，立即得到
+\begin{equation}
+    \dv{\phi}{r} = \pm \sqrt{\frac{l_0^2}{2\mu}} \frac{1}{r^2 \sqrt{E_0 - U_\text{eff}(r)}}
+    \label{eq:two-body-orbit}
+\end{equation}
+这里的正负号也没有确定下来。这也是合理的，因为轨道在$r-\phi$平面上是一个闭合的曲线，不能使用一个单一的函数描述，而至少需要两条首尾相连的函数曲线。分别取正号和负号，正好得到这两条函数曲线。
+
+以上推导只是确定了有一个大小有限的轨道，却不能说明轨道是否闭合。
+轨道闭合意味着当$r$回到$r_\text{min}$时$\phi$的增量和$2\pi$之比必须为有理数。
+通过变量代换
+\begin{equation}
+    r = \frac{1}{u}
+\end{equation}
+可以得到
+\[
+    \Delta \phi = - 2 \mp \int_{1/r_\text{max}}^{1/r_\text{min}} \frac{l_0 \dd u}{\sqrt{2\mu (E_0 - U_\text{eff}(1/u))}}
+\]
+Bertrand定理：
+当且仅当$U \propto 1/r^2$和$U \propto r$时轨道封闭。
+
+以上所有的论述都使用了有心势，但是也可以使用有心力，此时会产生二阶微分方程。
+
+Binet方程：
+\begin{equation}
+    \dv[2]{u}{\phi} + u = - \frac{\mu}{l_0^2 u^2} f(1/u)
+\end{equation}
+
+\section{弹性散射}
+
+所谓弹性散射指的是下面的一个场景：
+\begin{enumerate}
+    \item 一开始，一个粒子$m_1$从无穷远处以速度$\vb*{v}_i$入射，粒子$m_2$保持静止（不静止也没有关系，因为可以把参考系设在一开始的$m_2$上）；
+    \item 粒子$m_1$与$m_2$按照\eqref{eq:two-body-original}发生相互作用；
+    \item 粒子$m_1$的运动方向发生偏转，粒子$m_2$开始运动，两个粒子再次相距无穷远。
+\end{enumerate}
+我们并不关心散射过程中相互作用的细节，而只关心终态，也就是两个粒子散射后的速度。
+也就是说，要求出速度的大小和方向。
+
+\subsection{单粒子散射}
+
+讨论两个粒子的运动会带来数学处理上的麻烦。
+因此我们首先在质心系中讨论问题，然后再切换回实验室坐标系。
+
+实验室坐标系中质心速度为
+\[
+    \vb*{V} = \frac{m_1}{m_1 + m_2} \vb*{v}_\text{i}
+\]
+这个式子可以用来做速度转化。
+在质心系中有
+\[
+    \vb*{r}_1' = \vb*{r}_1 - \vb*{R} = \frac{m_2}{m_1 + m_2} \vb*{r}, 
+    \quad \vb*{r}_2' = \vb*{r}_2 - \vb*{R} = - \frac{m_1}{m_1 + m_2} \vb*{r}
+\]
+于是写出系统初态
+\[
+    \begin{split}
+        \vb*{v}_{1\text{i}}' = \vb*{v}_\text{i} - \vb*{V} = \frac{m_2}{m_1 + m_2} \vb*{v}_\text{i}, \\
+        \vb*{v}_{2\text{i}}' = 0 - \vb*{V} = - \vb*{V}.
+    \end{split}
+\]
+由于系统不受外力，质心系中能量、动量守恒，于是
+\[
+    \begin{split}
+        m_1 \vb*{v}'_{1\text{i}} + m_2 \vb*{v}'_{2\text{i}} = m_1 \vb*{v}'_{1\text{f}} + m_2 \vb*{v}'_{2\text{f}}, \\
+        \frac{1}{2} m_1 v_\text{i}'^2 + \frac{1}{2} m_2 v_{2\text{i}}'^2 = \frac{1}{2} m_1 v_{1\text{f}}'^2 + \frac{1}{2} m_2 v_{2\text{f}}'^2
+    \end{split}
+\]
+这两个方程是完整的相互作用\eqref{eq:two-body-original}的推论，而它们本身不能推出\eqref{eq:two-body-original}，
+因此必然有一些运动的细节不能够使用这两个方程得出。
+它们的作用在于让我们对相互作用后粒子的运动状态有一个初步的了解。
+我们不知道碰撞之后$\vb*{v}_1'$的方向转向了哪里，于是设
+\[
+    \vb*{v}_{1\text{f}}' = v_{1\text{f}}' \vb*{n},
+\]
+其中$\vb*{n}$为一个方向未定的单位矢量。
+可以证明
+\[
+    v_{1\text{i}}' = v_{1\text{f}}', \quad v_{2\text{i}} = v_{2\text{f}}
+\]
+也就是散射结束后$m_1$和$m_2$的速度大小均不变，速度方向相反。
+因此两个粒子散射后速度和散射前速度的夹角相等，设为$\theta$。
+
+以上推导已经使用了能量、动量守恒方程提供的所有信息。因此可以看到，这两个方程没有提供的关于运动细节的信息就是$\theta$。
+
+最后我们切换回实验室参考系。设$\Theta_1, \Theta_2$分别为实验室参考系中两个粒子速度方向的改变。
+可以计算得到
+\begin{equation}
+    \tan \Theta_1 = \frac{\sin \theta}{m_1 / m_2 + \cos \theta}, \quad \Theta_2 = \frac{\pi - \theta}{2}
+\end{equation}
+
+因此只需要计算质心系中的散射角$\theta$，就能够完全确定实验室参考系中的散射情况。
+而$\theta$是$\vb*{v}_{1}'$的偏转角，从而是$m_2 \dot{\vb*{r}} / (m_1 + m_2)$的偏转角，所以就是$\dot{\vb*{r}}$的偏转角。
+在$t=-\infty$时$\vb*{r}$在无穷远处，此时$\phi=-\pi$，而散射结束，即$t=+\infty$时$\vb*{r}$再次到达无穷远处，此时设$\phi = \phi_\text{m}$。
+TODO：画图
+这个角度的公式是现成的——由\eqref{eq:two-body-orbit}可以直接写出
+\[
+    \begin{aligned}
+        \pi - \theta &= \int_\text{whole orbit} \abs{ \frac{l_0}{r^2} \frac{\dd r}{\sqrt{2\mu (E_0 - U_\text{eff})}}} \\
+        &= \left( - \int_{-\infty}^{r_\text{min}} + \int_{r_\text{min}}^\infty \right) \frac{l_0}{r^2} \frac{\dd r}{\sqrt{2\mu (E_0 - U_\text{eff})}} \\
+        &= 2 \int_{r_\text{min}}^\infty \frac{l_0}{r^2} \frac{\dd r}{\sqrt{2\mu(E_0 - U(r)) - l_0^2 / r^2}}
+    \end{aligned}
+\]
+其中$r_\text{min}$就是分母根号中的表达式的根。正负号是因为粒子从无穷远处到达$r_\text{min}$时$r$减小而$\phi$增大，粒子从$r_\text{min}$处到达无穷远处时$r$增大而$\phi$增大。
+在无穷远处分析得到
+\[
+    \begin{split}
+        l_0 = m v_\text{i} b, \\
+        E_0 = \frac{1}{2} m v_\text{i}^2 + U(\infty)
+    \end{split},
+\]
+总之，只需要计算积分
+\begin{equation}
+    \begin{bigcase}
+        \pi - \theta = 2 \int_{r_\text{min}}^\infty \frac{l_0}{r^2} \frac{\dd r}{\sqrt{2\mu(E_0 - U(r)) - l_0^2 / r^2}}, \\
+        l_0 = m v_\text{i} b, \\
+        E_0 = \frac{1}{2} m v_\text{i}^2 + U(\infty)
+    \end{bigcase}
+    \label{eq:scattering-angle}
+\end{equation}
+就能够得到$\theta$和$b$之间的关系。至此两个粒子相互散射的问题已经完全解决。
+
+
+\subsection{散射截面}
+
+散射截面：入射粒子没有相互作用；靶粒子固定。
+设在某个参考系当中一束截面为$A$的粒子入射之后被散射到了$\Omega$的立体角中。入射粒子相对靶粒子的纵向距离为$b$，相应的偏转角为$\theta$。
+这里的$\theta$可以是质心系中的$\theta$，也可以是实验室参考系中的$\Theta$，又或者是别的什么参考系中的偏转角——只要这个参考系是惯性系并且相对实验室坐标系的运动速度和粒子入射速度同向，轴也同向（TODO）。
+微分散射截面定义为这两者之间的线性关联函数，也就是
+\[
+    A = \int b \dd b \dd \chi = \int b \abs{\pdv{(b, \chi)}{(\theta, \chi)}} \dd \theta \dd \chi = \int \frac{b}{\sin \theta} \abs{\pdv{b}{\theta}} \sin \theta \dd \theta \dd \chi = \int \frac{b}{\sin \theta} \abs{\pdv{b}{\theta}} \dd \Omega
+\]
+$\theta$可以写成$b$的函数，于是$b$也可以写成$\theta$的函数，于是可以将偏导数写成全导数，得到
+微分散射截面
+\begin{equation}
+    \sigma = \dv{A}{\Omega} = \frac{b(\theta)}{\sin \theta} \abs{\dv{b}{\theta}}.
+    \label{eq:cross-section}
+\end{equation}
+当更换参考系导致偏转角的形式发生变化时，注意到
+\[
+    \dv{\Omega}{\Omega'} = \frac{\sin \theta \dd \theta}{\sin \theta' \dd \theta'}
+\]
+于是得到散射截面换算公式
+\begin{equation}
+    \frac{\sigma(\theta')}{\sigma(\theta)} = \frac{\sin \theta \dd \theta}{\sin \theta' \dd \theta'}
+\end{equation}
+例如实验室参考系中的散射截面为
+\begin{equation}
+    \sigma(\Theta) = \sigma(\theta) \frac{\sin \theta \dd \theta}{\sin \Theta \dd \Theta}
+\end{equation}
+
+现在考虑总截面，也就是
+\begin{equation}
+    S = \int_{\text{all}} \sigma \dd \Omega = 2\pi \int_0^{\pi} \sigma(\theta) \dd \theta
+    \label{eq:total-crosssection}
+\end{equation}
+表面上看，由于入射面积可以任意大，\eqref{eq:total-crosssection}必然是发散的。
+但实际上对很多相互作用而言\eqref{eq:total-crosssection}收敛。例如硬球散射
+\[
+    \sigma = \frac{1}{4} a^2
+\]
+的总截面就是$\pi a^2$。这是为什么？实际上，在\eqref{eq:scattering-angle}中会发现，随着$b$增大，$l_0$增大，$\theta$会减小。如果$\theta$减小得足够快，以至于在$b$较大的区域$\theta$的微小变动就会导致$b$的巨大变动（也就是说：很大一块入射区域上的入射粒子都被散射到了非常小的立体角中），那么对应的$\sigma(\theta)$就会变得很大。
+将以上情况推至极端，让同一个$\theta$对应连续的一段$b$，此时$\sigma$发散，产生类似于$\delta$函数的结果。
+由于我们计算散射截面时使用的都是完全连续的微积分工具，这些让$\sigma(\theta)$没有良定义的$\theta - b$值实际上全部被弃去了。容易看出这些被弃去的$\theta$只构成一个零测集。
+这样一来，
+\[
+    \int \sigma \dd {\Omega}
+\]
+就给出“能够让$\sigma$有良定义的入射区域的面积”，也就是“入射粒子不会全部被挤压到同一个$\theta$的入射区域的面积”。
+例如，在计算硬球散射时，大于球半径$a$的$b$全部被映射到$\theta=0$上，此时$\sigma(\theta)$无良定义，我们直接不考虑这些点。注意到$\theta=0$对应的立体角区域是一个零测集，因此我们有
+\[
+    \int \sigma \dd{\Omega} = \frac{1}{4} a^2 \cdot 4\pi = \pi a^2,
+\]
+这正是硬球的截面积。没有打到硬球上的入射粒子全部对应$\theta=0$，打到硬球上的入射粒子则必定被散射，因此硬球的截面积确实是入射粒子不会全部被挤压到同一个$\theta$的入射区域的面积。
+
+如果总截面是发散的，说明它描述的相互作用即使对非常远处的物体也具有非常明显的作用，即这种相互作用是长程力。反之，它描述的相互作用是短程力。
+
+\section{微振动}
+
+许多力学体系具有一个或多个平衡位形。当体系略微偏离平衡位形时，体系可能在平衡位形附近微振动。
+
+本节的研究局限于这样的系统：
+\begin{enumerate}
+    \item 不需要任何显含时间的广义坐标变换；
+    \item 质点受力全保守，因此只需要一个拉氏量就能够描写系统，而不需要引入$Q_i$，并且拉氏量不显含时间；
+    \item 体系不受约束或者只收到完整约束，从而，可以将受限坐标从拉氏量中消去，得到约化拉氏量。
+\end{enumerate}
+
+在直角坐标之下系统的拉氏量写成
+\[
+    L = \frac{1}{2} \sum_i M_i s_i^2 - U(s)
+\]
+但是我们使用的坐标$q$却未必使用直角坐标表示。由于假定了坐标变换$q\longrightarrow s$不显含时间，本节接下来讨论下面的拉氏量：
+\begin{equation}
+    L = \frac{1}{2} \sum_{k,l} m_{kl} \dot{q}_k \dot{q}_l - U(q) 
+\end{equation}
+其中
+\begin{equation}
+    m = \left(\pdv{s}{q}\right)^\top M \left(\pdv{s}{q}\right)  
+\end{equation}
+$m$显然是对称的、正定的，因为$M$是对称、正定的。
+
+\[
+    \dv{t} \sum_{i} m_{ij}(q) \dot{q}_j - \frac{1}{2} \sum_{j, k} \pdv{m_{jk}}{q_i} \dot{q}_j \dot{q}_k - \pdv{U}{q_i} = 0
+\]
+
+系统平衡意味着下面的解
+\[
+    q_i(t) = q_{i0}, \quad \dot{q}_i(t) = 0
+\]
+是一个解，也就是说
+平衡的充要条件为
+\begin{equation}
+    \pdv{U}{q} = 0
+\end{equation}
+
+定义$r = q - q^{(0)}$，则从$s$到$r$的变换是非奇异的。
+
+\[
+    \begin{aligned}
+        L &= \frac{1}{2} \sum_{i,j} m_{ij} (q^{(0)}+r) \dot{r}_i \dot{r}_j - U(q^{(0)}+r) \\
+        &= \frac{1}{2} \sum_{i,j} m_{ij}(q^{(0)}) \dot{r}_i \dot{r}_j - U(q^{(0)}) - \sum_{i} \eval{\pdv{U}{q_i}}_{q=q_0} r_i 
+    \end{aligned}
+\]
+
+\begin{equation}
+    \sum_{j} (T_{ij} \ddot{r}_j + V_{ij} r_j) = 0
+    \label{eq:viberating-equation}
+\end{equation}
+
+\[
+    T \ddot{r} + V r = 0
+\]
+要将$T,V$同时做对角化。
+
+具体的方法是广义本征值法，
+\begin{equation}
+    V z^{(k)} = \theta_k T z^{(k)}
+\end{equation}
+
+在能够确定系统的每一个自由度都在做振动时，其实直接对\eqref{eq:viberating-equation}做傅里叶变换就可以了。设
+\begin{equation}
+    r_i = A_i \ee^{\ii \omega t}
+\end{equation}
+
+那么就有
+\begin{equation}
+    (-\omega^2 T + V) A = 0
+    \label{eq:amplitude}
+\end{equation}
+求解
+\begin{equation}
+    \det (-\omega^2 T + V) A = 0
+\end{equation}
+
+A是振动模式，$\omega$是圆频率。
+
+要求系统的每一个自由度都在做振动是为了确保傅里叶变换的合法性，
+否则某个自由度在时间趋于正负无穷时发散，则傅里叶变换不存在。
+然而，此时仍然可以假定$\omega$有虚部而做拉普拉斯变换，其结果的形式完全一样。
+
+初始条件决定了什么样的频率被激发出来。
+
+\section{刚体}
+
+\subsection{刚体的运动}
+
+刚体指的是这样的一个系统：其中任何两个粒子之间的距离都保持不变。设我们已经有一个惯性系，称为实验室坐标系，其中各点由矢量$\vb*{x}$标记，则其中的刚体需要且只需要满足
+\begin{equation}
+    \dv{t} \abs{\vb*{x}^{(i)} - \vb*{x}^{(j)}} = 0
+    \label{eq:rigid-body-def}
+\end{equation}
+这当然就等价于
+\[
+    \dv{t} (\vb*{x}^{(i)} - \vb*{x}^{(j)})^2 = 0,
+\]
+也就是
+\begin{equation}
+    (\vb*{x}^{(i)} - \vb*{x}^{(j)}) \cdot (\dot{\vb*{x}}^{(i)} - \dot{\vb*{x}}^{(j)}) = 0.
+    \label{eq:rigid-body-motion-constraint}
+\end{equation}
+方程\eqref{eq:rigid-body-motion-constraint}的导出每一步都是等价的，因此它实际上是刚体的一个等价定义。
+
+下面我们要讨论刚体如何运动。所谓运动，就是从一个初始态到终末态的可微的变换。刚体就是定义在三维欧氏空间中、满足\eqref{eq:rigid-body-def}的质点系，因此刚体所有可能的运动就是满足\eqref{eq:rigid-body-def}的可微变换。
+直觉上看刚体的运动可以分成两部分：远距离看也能够看到的“平动”，以及需要走近追踪每一个点运动过程才能测定的转动。
+基于这样的直觉，我们首先分析“转动”，也就是刚体中不同点之间的相对位置的变化情况。
+我们在刚体中选择一个点$\vb*{x}^{(0)}$，称其为\textbf{基点}，然后将参考系选择在它上面但不改变基矢量的方向，
+也就是做代换$\vb*{x} - \vb*{x}^{(0)} \longrightarrow \vb*{r}$，
+那么就有
+\begin{equation}
+    \vb*{r}^{(i)} \cdot {\dot{\vb*{r}}}^{(i)} = 0, \quad (\vb*{r}^{(i)} - \vb*{r}^{(j)}) \cdot (\dot{\vb*{r}}^{(i)} - \dot{\vb*{r}}^{(j)}) = 0
+    \label{eq:around-a-point}
+\end{equation}
+这样的运动我们称其为\textbf{定点转动}。为什么这是“转动”接下来马上介绍。
+
+首先指出一个事实：对整个刚体有一个线性变换$A$，使得刚体上任意一点相对基点的位矢$\vb*{r}$转动前后的值由$A$联系。
+要看出这是为什么，不失一般性地假定刚体中的质点数目大于等于3（为什么不失一般性在本节的结尾可以看到），设我们从刚体中选取了三个各不相同且不共线的点，记它们相对基点的位矢为$\vb*{r}_1, \vb*{r}_2, \vb*{r}_3$。
+现在设变换前某一个点的位矢为$\vb*{r}$，变换之后为$\vb*{r}'$，那么就有
+\[
+    \begin{aligned}
+        (\vb*{r} - \vb*{r}_1)^2 &= (\vb*{r}' - \vb*{r}_1')^2, \\
+        (\vb*{r} - \vb*{r}_2)^2 &= (\vb*{r}' - \vb*{r}_2')^2, \\
+        (\vb*{r} - \vb*{r}_3)^2 &= (\vb*{r}' - \vb*{r}_3')^2.
+    \end{aligned}
+\]
+由\eqref{eq:around-a-point}得到
+\[
+    \vb*{r}_1^2 = \vb*{r}_1'^2, \quad \vb*{r}_2^2 = \vb*{r}_2'^2, \quad \vb*{r}_3^2 = \vb*{r}_3'^2, \quad \vb*{r}^2 = \vb*{r}'^2
+\]
+于是得到
+\[
+    \begin{aligned}
+        \vb*{r}' \cdot \vb*{r}_1' &= \vb*{r} \cdot \vb*{r}_1, \\
+        \vb*{r}' \cdot \vb*{r}_2' &= \vb*{r} \cdot \vb*{r}_2, \\
+        \vb*{r}' \cdot \vb*{r}_3' &= \vb*{r} \cdot \vb*{r}_3
+    \end{aligned} 
+\]
+由于$\vb*{r}_1, \vb*{r}_2, \vb*{r}_3$不共线，我们可以知道$\vb*{r}'_1, \vb*{r}'_2, \vb*{r}'_3$也不共线，不然就不能保证变换前后所有点的距离相等。那么，我们就得到了三个关于$\vb*{r}'$的彼此无关的线性方程，它们也关于$\vb*{r}$线性。
+因此可以将$\vb*{r}'$写成$\vb*{r}$的一个线性变换：
+\[
+    \vb*{r}' = A \vb*{r}
+\]
+注意到我们只需要从刚体中的所有点中取出不共线的三个，就能够使用完全一样的方程算出所有点变换之后的位置，因此刚体上每一点的运动都可以用这个线性变换描述。
+
+现在的问题是，怎样的$A$是被允许的？
+由于
+\[
+    \abs{\vb*{r}'} = \abs{A \vb*{r}} = \abs{\vb*{r}},
+\]
+$A$应该是一个正交矩阵。
+也就是说，刚体的定点转动是$\ogroup{3}$群的成员。
+然而，并非所有$\ogroup{3}$群中的变换都是可能的转动。实际上，行列式为$-1$的正交矩阵都不是合法的转动，因为可以做分解
+\[
+    A = (-I) (-A), \quad \det (-I) = -1, \; \det (-A) > 0
+\]
+而$-I$是一个反射变换，它不可微——我们不可能在一瞬间将所有的粒子对着基点做反射变换！
+这件事的深层根源在于$\ogroup{3}$并不是一个李群——我们不能寻找一个“很小的”反射变换。
+在要求了所有变换都可微的前提下，我们注意到\eqref{eq:around-a-point}等价于$A$是正交矩阵，
+因此\eqref{eq:around-a-point}——从而\eqref{eq:rigid-body-motion-constraint}——等价于$A$是一个正交矩阵并且可微，
+也就是说，$A$是$\sogroup{3}$的成员。
+于是我们就得到了结论：所有可能的刚体定点转动就是$\sogroup{3}$。
+因此定点转动确实是转动——它就是转动群$\sogroup{3}$。
+
+在定点转动中有一类特殊的转动称为\textbf{定轴转动}。所谓定轴转动指的是能够找到一个空间方向$\vb*{n}$使得沿着这个方向的$\vb*{r}$不会被改变，也就是说，
+\[
+    A \vb*{n} = \vb*{n}
+\]
+我们称这样的$\vb*{n}$指示了这个转动的\textbf{轴}。
+这是一个本征值问题，它有非零解意味着
+\[
+    \det (A - I) = 0
+\]
+从而
+\[
+    \begin{aligned}
+        \det (A - I) &= \det A(I - A^{-1}) \\
+        &= \det A \det (I - A^{-1}) \\
+        &= \det (I - A^{-1}) \\
+        &= \det (I - A^\top) \\
+        &= \det (I - A)
+    \end{aligned}
+\]
+我们在三维空间下，因此
+\[
+    \det (A - I) = \det (I - A) = (-1)^3 \det (A - I)
+\]
+因此$(A-I)$行列式确实是零，因此一定能够找到一个方向$\vb*{n}$使得$A$是以它为转轴的定轴转动。可以看出这个结论对空间的维度是由要求的。
+
+不过需要指出的是，设转动$A=BC$，那么$B$、$C$对应的轴未必相同，它们的轴和$A$的轴也没有特别必然的关系。
+因此我们只能够对着一段有限时间内的转动说“它可以看成沿着某根轴$\vb*{n}$的转动”，却不能保证这一段转动内部的每一小段转动都沿着$\vb*{n}$。
+
+现在已经知道了刚体在有限一段时间内运动的方式。在实际求解刚体运动时往往需要使用微分方程，因此有必要讨论无穷小转动的形式。所有允许的无穷小转动就是$\sogroup{3}$的无穷小生成元，也就是所有的反对称矩阵，形如
+\[
+    \bmqty{0 & a & b \\ -a & 0 & c \\ -b & -c & 0}
+\]
+我们会发现将这样一个矩阵作用在一个矢量上面就相当于找了三个量$a_1, a_2, a_3$然后计算$\epsilon_{ijk} a_i r_j \vb*{e}_k$，
+并且能够证明，当对坐标系做转动时$a_1, a_2, a_3$的变换合于矢量的坐标变换关系（在坐标系做反演变换时这三个量的正负号会改变），
+因此它们构成一个轴矢量。
+因此无穷小转动形如$\epsilon \vb*{\omega} \times \vb*{r}$，其中$\vb*{\omega}$是一个轴矢量。
+由于转动矩阵$A$在刚体上任何一点都是一样的，$\vb*{\omega}$在刚体上任何一点也都是一样的。因此我们有
+\begin{equation}
+    \dot{\vb*{r}}^{(i)} = \vb*{\omega} \times \vb*{r}^{(i)}
+    \label{eq:body-frame-motion}
+\end{equation}
+其中$\vb*{\omega}$在整个刚体上都是一样的。
+这样一来就能够写出
+\begin{equation}
+    \dot{\vb*{x}}^{(i)} - \dot{\vb*{x}}^{(j)} = \vb*{\omega} \times (\vb*{x}^{(i)} - \vb*{x}^{(j)})
+\end{equation}
+现在可以注意到另一个非常有趣的地方。设$\vb*{\omega}_1$和$\vb*{\omega}_2$分别是两个基点对应的$\vb*{\omega}$，那么同时有
+\[
+    \dot{\vb*{x}}^{(i)} - \dot{\vb*{x}}^{(j)} = \vb*{\omega}_1 \times (\vb*{x}^{(i)} - \vb*{x}^{(j)}) = \vb*{\omega}_2 \times (\vb*{x}^{(i)} - \vb*{x}^{(j)})
+\]
+\[
+    (\vb*{x}^{(i)} - \vb*{x}^{(j)}) \times (\vb*{\omega}_1 - \vb*{\omega}_2) = 0
+\]
+由于刚体中的质点数多于两个，以上方程等价于数目在3以上的独立方程，但它确实有解，因此唯一的可能就是$\vb*{\omega}_1 = \vb*{\omega}_2$。
+因此角速度和基点的选择没有关系。
+
+注意到虽然$\sogroup{3}$并不是一个交换群，它的李代数却（按照李群一般的性质）对加法交换，也就是说虽然转动不可交换，但是无穷小转动确实可以交换。
+作为对比，无穷小平动可以交换（李代数的性质），而有限小的平动也可以交换。
+另一个值得注意的点是，通过合适的坐标变换，$\vb*{\omega} \times \vb*{r}$实际上对应着一个定轴转动。
+如果$\vb*{r}$的方式和$\vb*{\omega}$一致，那么就有$\vb*{\omega}\times \vb*{r} \dd t =0$，因此$\vb*{r}$在变换之后不会产生任何变化。
+于是称$\vb*{\omega}$的方向为\textbf{瞬时轴}，
+无穷小转动$\vb*{\omega} \dd t = \omega_1 \vb*{e}_1 + \omega_2 \vb*{e}_2 + \omega_3 \vb*{e}_3$
+相当于分别在在$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$方向上转动$\omega_1 \dd t, \omega_2 \dd t, \omega_3 \dd t$。
+原本这三个转动操作的复合和次序有关，但在无穷小转动的情况下，它们的复合和顺序就没有关系。
+
+然后我们讨论两个质点的情况，此时只需要将基点选择在其中一个上面，自然可以证明以上所有的结论都适用。至此刚体的运动方式完全确定。
+
+最后再提一个有用的技巧：实际上，完全不需要把基点选择在刚体系统内部。随意寻找一个空间点，设它在实验室坐标系中的位置为$\vb*{x}_0$，则下面的方程组
+\begin{equation}
+    \begin{split}
+        \vb*{x}|_{t=0} = \vb*{x}_0, \\
+        \dot{\vb*{x}} = \dot{\vb*{r}} + \vb*{\omega} \times (\vb*{x} - \vb*{r})
+    \end{split}
+    \label{eq:extended-part}
+\end{equation}
+必定有解，其中$\vb*{r}$是刚体中的一个质点。
+现在将$\vb*{x}$加入刚体质点系内，则容易验证加入之后的质点系还是一个刚体，
+而由于它的坐标不会出现在系统的拉氏量内，系统的动力学不会发生丝毫改变，因此将$\vb*{x}(t)$加入质点系中不改变其行为。
+因此永远可以将一系列虚设的、位置随着时间变化使得它离其余质点的距离始终不变的点加入刚体质点系中而不改变系统的行为，
+而我们自然可以将基点选取在这些点上，而仍然保持\eqref{eq:around-a-point}成立，从而从它推导出来的一切结论成立。
+特别的，基点常常被选择在刚体的质心$\vb*{R}$上——不难检验质心满足\eqref{eq:extended-part}。
+
+\subsection{刚体姿态与欧拉角}\label{sec:euler-angle}
+
+我们选择一个“固着”在刚体上面的坐标系，称为\textbf{本体系}，在其中刚体完全静止。
+这个坐标系是不是存在姑且还需要讨论。
+设它的基点在实验室坐标系中为$\vb*{x}_B$，并且我们就令$\vb*{r}$为以它为基点的位矢。
+本体系的三个基矢量为$\vb*{e}'_1, \vb*{e}'_2, \vb*{e}'_3$，组成一个正交右手系。刚体上各点到此基点的位矢为$\vb*{r}^{(i)}$。
+显然，参考系是本体系的充要条件是
+\begin{equation}
+    \vb*{r}^{(i)} = 
+    \eval{r^{(i)}_1}_{t=0} \vb*{e}'_1 + \eval{r^{(i)}_2}_{t=0} \vb*{e}'_2 + \eval{r^{(i)}_3}_{t=0} \vb*{e}'_3
+    \label{eq:position-vector-in-body-frame}
+\end{equation}
+在计算此矢量的导数时有两种方法，一种是考虑各个基矢量$\vb*{e}'_1, \vb*{e}'_2, \vb*{e}'_3$在实验室参考系中的变化，
+另一种是将各个基矢量看成不变的，也就是说在本体系中计算导数。
+此时\eqref{eq:body-frame-motion}应当写成
+\[
+    \left( \dv{\vb*{r}^{(i)}}{t} \right)_\text{lab} = \vb*{\omega} \times \vb*{r}^{(i)}
+\]
+考虑到\eqref{eq:position-vector-in-body-frame}中的分量均不会发生变化，\eqref{eq:position-vector-in-body-frame}等价于
+\begin{equation}
+    \left( \dv{\vb*{e}_i'}{t} \right)_\text{lab} = \vb*{\omega} \times \vb*{e}'_i, \quad i = 1, 2, 3
+    \label{eq:basis-of-body-frame}
+\end{equation}
+给定初始条件——通常就将$t=0$时的$\vb*{e}$规定为$\vb*{e}$也就是实验室坐标系中的基矢量，以上方程一定有解，并且正交归一性能够保持。
+因此本体系总是存在的。同样方程组\eqref{eq:basis-of-body-frame}和基点规定无关，因此本体系的坐标轴方向和基点选择无关。\footnote{到现在为止我们已经有了三种参考系：首先是实验室坐标系，其中的位矢为$\vb*{x}$，基矢量为$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$；其次是平动系，也就是基点选在刚体上或者刚体的延拓部分上的参考系，其中的位矢为$\vb*{r}$，基矢量为$\vb*{e}_1, \vb*{e}_2, \vb*{e}_3$；最后是本体系，位矢也是$\vb*{r}$，但是基矢量为“固着”在刚体上的$\vb*{e}'_1, \vb*{e}'_2, \vb*{e}'_3$。}
+
+我们会注意到，一旦选定了一个基点，而又知道了$\vb*{e}'$的表达式，
+那么根据\eqref{eq:position-vector-in-body-frame}就能够写出每一时刻的刚体中所有质点的位置。
+$\vb*{e}'$和基点选择无关，
+而基点只需要选择在刚体上任意一点（或者根据\eqref{eq:extended-part}确定的刚体想象中的附带部分）就可以了，同样和$\vb*{e}'$无关。
+进一步的，$\vb*{e}'$可以写成$\vb*{e}$通过一个$\sogroup{3}$的元素变换之后的结果
+（\eqref{eq:basis-of-body-frame}给出了$\vb*{e}'$的无穷小变化，而这个无穷小变化由叉乘给出，正是$\sogroup{3}$的无穷小生成元），
+而一个$\sogroup{3}$元素总可以使用三个参数表示。
+因此在刚体的几何构型完全确定，从而$\vb*{r}$完全确定的情况下，需要三个参数（基点在实验室坐标系中的位置）来描述基点的位置，
+三个参数来描述$\vb*{e}'$，所以我们说：刚体运动的自由度最多为六个。
+
+我们会怎样选择这三个描述$\vb*{e}'$的参数呢？通常的方法是写出三个绕着不同的轴做旋转的矩阵，
+
+\subsection{刚体的拉氏量}
+
+现在尝试导出刚体的拉氏量。这个拉氏量本身形如\eqref{eq:interaction}，在实验室参考系中就是
+\[
+    L = \sum_i \frac{1}{2} m_i (\dot{\vb*{x}}^{(i)})^2 - U
+\]
+但是它并没有什么用，因为还有约束\eqref{eq:rigid-body-def}。注意到这个约束实际上是一个理想约束：它可以写成
+\[
+    \abs{\vb*{r}^{(i)} - \vb*{r}^{(j)}} = \eval{r_{ij}}_{t=0}
+\]
+这样的形式，因而不显含时间和速度。
+因此必定可以将\eqref{eq:interaction}和\eqref{eq:rigid-body-def}结合起来来获得一个约化拉氏量。
+我们知道刚体有6个自由度，因此这个约化拉氏量一定只显含6个独立的坐标。
+
+现在选择一个合适的基点，就可以有
+\[
+    \dot{\vb*{x}}^{(i)} = \vb*{V} + \vb*{\omega} \times \vb*{r}^{(i)}
+\]
+从而
+\[
+    \sum_i \frac{1}{2} m_i (\dot{\vb*{x}}^{(i)})^2 = 
+    \frac{1}{2} \sum_i m_i V^2 + \vb*{V} \cdot \sum_i m_i \vb*{\omega} \times \vb*{r}^{(i)} 
+    + \frac{1}{2} \sum_i m_i (\vb*{\omega} \times \vb*{r}^{(i)})^2
+\]
+现在如果将基点选在质心，就有
+\[
+    \sum_i m_i \vb*{r}^{(i)} = 0
+\]
+从而
+\[
+    \sum_i \frac{1}{2} m_i (\dot{\vb*{x}}^{(i)})^2 = \frac{1}{2} \sum_i m_i V^2 
+    + \frac{1}{2} \sum_i m_i (\vb*{\omega} \times \vb*{r}^{(i)})^2
+\]
+这就可以看出刚体动力学中质心的作用——它大大简化了问题。另一种选择基点的方式是将它选在实验室坐标系中某个静止不动的东西上面，此时$\vb*{V}=0$，同样可以消去交叉项。
+\[
+    \begin{aligned}
+        \sum_i m_i (\vb*{\omega} \times \vb*{r}^{(i)})^2 
+        &= \sum_i m_i ((r^{(i)})^2 \omega^2 - (\vb*{\omega} \cdot \vb*{r}^{(i)})) \\
+        &= \vb*{\omega} \cdot \left( \sum_i m_i ((r^{(i)})^2 \vb*{\delta} - \vb*{r}^{(i)} \vb*{r}^{(i)} ) \right)
+    \end{aligned}
+\]
+其中$\vb*{\delta}$为单位张量。于是定义\textbf{惯性张量}
+\begin{equation}
+    \vb*{I} = \sum_i m_i {(r^{(i)}}^2 \vb*{\delta} - \vb*{r}^{(i)} \vb*{r}^{(i)} ) 
+    \label{eq:ineria-tensor}
+\end{equation}
+它确实是一个张量——它的定义完全是坐标系无关的。
+使用惯性张量，刚体在实验室坐标系中的动能就是
+\begin{equation}
+    T = \frac{1}{2} M V^2 + \frac{1}{2} \vb*{\omega} \cdot \vb*{I} \cdot \vb*{\omega}
+    \label{eq:kinetic-energy-rigid-body}
+\end{equation}
+动能已经写成了关于刚体质心速度$\vb*{V}$和角速度$\vb*{\omega}$的二次型。很容易可以验证，在约束\eqref{eq:rigid-body-def}下这两个矢量的各个分量可以独立变化，也就是说$\vb*{V}$和$\vb*{\omega}$对应着6个自由度。
+$\vb*{V}$对应的坐标是$\vb*{R}$，也就是质心位置，$\vb*{\omega}$对应的坐标则为$\int \vb*{\omega} \dd t$的各分量——注意它们并不是欧拉角，虽然它们与欧拉角之间很容易相互转换。
+
+改用质心位置和$\int \vb*{\omega} \dd t$表示$U$，此时拉氏量成为
+\begin{equation}
+    L = \frac{1}{2} M v^2 + \frac{1}{2} \vb*{\omega} \cdot \vb*{I} \cdot \vb*{\omega} - U
+    \label{eq:rigid-body-lagrangian}
+\end{equation}
+这个拉氏量已经是约化拉氏量了，因为它只含有自由坐标。$M, \vb*{I}$由于不随时间变化，可以当成是给定量。
+
+\subsection{惯性张量的性质与刚体主轴}
+
+惯性张量在任意一个坐标系下的表示就是\textbf{惯量矩阵}。现在我们需要讨论怎样能够让惯量矩阵对角化，也就是要求\eqref{eq:ineria-tensor}的某个对角矩阵。
+注意到惯性张量是一个正定、对称的张量，那么就可以做特征分解，得到一组单位正交基，在这组基下惯量矩阵是对角化的；
+
+\begin{equation}
+    \vb*{I} = I_1 \vb*{e}_1 \vb*{e}_1 + I_2 \vb*{e}_2 \vb*{e}_2 + I_3 \vb*{e}_3 \vb*{e}_3
+\end{equation}
+
+$\vb*{r}' = \vb*{A} \cdot \vb*{r}$其中$\vb*{A}$为正交张量。
+也就是，惯性张量的主轴就构成了本体系的一组基。当然也可以把它固着在其它参照物上，形成非本体系的参考系。
+
+当本体系以惯性张量的主轴为基时，惯性张量的各个分量不会发生变化。这是因为
+\[
+    I_{jk} = \sum_i m_i \vb*{e}_j \cdot ({r^{(i)}}^2 \vb*{\delta} - \vb*{r}^{(i)}\vb*{r}^{i}) \cdot \vb*{e}_k = \sum_i m_i ({r^{(i)}}^2 \delta_{ij} - \eval{r^{(i)}_j r^{(i)}_k}_{t=0}),
+\]
+其中的所有量都不随时间变化。
+
+\begin{equation}
+    \vb*{I}' = \vb*{A} \cdot \vb*{I} \cdot \vb*{A}^\top
+\end{equation}
+
+平行轴、垂直轴等
+
+如果刚体有对称面，那么一定有一根主轴垂直于对称面；如果刚体有对称轴，那么对称轴是一根主轴，并且在垂直于对称轴的平面内，任何两条相互垂直的轴都构成主轴，且对应的主惯量相等。
+
+\subsection{欧拉方程}
+
+设角速度对应的坐标为$\vb*{\varphi}$，即
+\[
+    \vb*{\varphi} = \int \vb*{\omega} \dd t
+\]
+回顾$\vb*{R}$和$\vb*{\omega}$的表达式，
+% \[
+%     \vb*{x}^{(i)} = \underbrace{\vb*{R}}_\text{与$\vb*{R}$有关} + 
+%     \underbrace{\timeorder \exp (\int \Omega \dd t) \vb*{x}^{(i)}_0}_\text{与$\vb*{\varphi}$有关}
+% \]
+\[
+    \dot{\vb*{x}}^{(i)} = \vb*{\omega} \times (\vb*{x}^{(i)} - \vb*{R}) + \vb*{V}
+\]
+\[
+    \dd{\vb*{x}^{(i)}} = \vb*{\varphi} \times (\vb*{x}^{(i)} - \vb*{R}) + \dd{\vb*{R}}
+\]
+这是一个可溯约束但不是完整约束，因此不能直接使用欧拉拉格朗日方程，而要使用达朗贝尔原理。
+
+从拉氏量\eqref{eq:rigid-body-lagrangian}得到运动方程
+\[
+    \pdv{L}{\vb*{R}} = \sum_i \pdv{\vb*{x}^{(i)}}{\vb*{R}} \cdot \dv{t} \pdv{L}{\dot{\vb*{x}}^{(i)}}, \quad \pdv{L}{\vb*{\varphi}} = \sum_i \pdv{\vb*{x}^{(i)}}{\vb*{\varphi}} \cdot \dv{t} \pdv{L}{\dot{\vb*{x}}^{(i)}}
+\]
+\[
+    \pdv{\vb*{R}} \left( \frac{1}{2} M V^2 - U \right) = \dv{t} \left(M \vb*{V} - \pdv{U}{\vb*{V}}\right), \quad \pdv{\vb*{\varphi}} \left( \frac{1}{2} \vb*{\omega} \cdot \vb*{I} \cdot \vb*{\omega} - U \right) = \dv{t} \left( \vb*{I} \cdot \vb*{\omega} - \pdv{U}{\vb*{\omega}} \right)
+\]
+我们实际上只知道$U$和$\vb*{x}$之间的关系，所以需要使用链式法则。
+
+由于$M$是常量，直接得到关于$\vb*{V}$的方程为
+\[
+    M \dv{t} \vb*{V} = \dv{t} \pdv{U}{\vb*{V}} - \pdv{U}{\vb*{R}}
+\]
+计算$U$的导数项得到
+\[
+    \begin{aligned}
+        \dv{t} \pdv{U}{\vb*{V}} - \pdv{U}{\vb*{R}} &=
+        \dv{t} \sum_i \pdv{\dot{\vb*{x}}^{(i)}}{\vb*{V}} \cdot \pdv{U}{\dot{\vb*{x}}^{(i)}} 
+        - \sum_i \pdv{\vb*{x}^{(i)}}{\vb*{R}} \cdot \pdv{U}{\vb*{x}^{(i)}}  \\
+        &= \dv{t} \sum_i \pdv{U}{\dot{\vb*{x}}^{(i)}} - \sum_i \pdv{U}{\vb*{x}^{(i)}} \\
+        &= \sum_i \vb*{F}^{(i)}
+    \end{aligned}
+\]
+于是得到质心运动方程
+\begin{equation}
+    M \dv{t} \vb*{V} = \sum_i \vb*{F}^{(i)}.
+    \label{eq:mass-center-motion}
+\end{equation}
+
+关于$\vb*{\omega}$的方程要略微复杂一些，因为$\vb*{I}$在实验室坐标系中会发生变化。
+\[
+    \dv{t} \left( \vb*{I} \cdot \vb*{\omega} \right) - \frac{1}{2} \pdv{\vb*{\varphi}} (\vb*{\omega} \cdot \vb*{I} \cdot \vb*{\omega}) = \vb*{I} \cdot \dot{\vb*{\omega}} + \dot{\vb*{I}} \cdot \vb*{\omega} = \dv{t} \pdv{U}{\vb*{\omega}} - \pdv{U}{\vb*{\varphi}}
+\]
+考虑无穷小转动
+\[
+    \vb*{A} = \vb*{\delta} + \epsilon_{ijk} \omega_i \vb*{e}_k \vb*{e}_j
+\]
+可以得到$\vb*{I}$的无穷小变化
+\[
+    \begin{aligned}
+        \vb*{I} + \dd \vb*{I} &= \vb*{A} \cdot \vb*{I} \cdot \vb*{A}^\top - \vb*{I} \\
+        &= \vb*{I} + \epsilon_{ijk} \omega_i I_{jl} \vb*{e}_k \vb*{e}_l \dd t + \epsilon_{ijk} \omega_i I_{lk} \vb*{e}_l \vb*{e}_j \dd t
+    \end{aligned}
+\]
+从而计算出其导数和$\vb*{\omega}$点乘之后的结果
+\[
+    \begin{aligned}
+        \dv{\vb*{I}}{t} \cdot \vb*{\omega} &= (\epsilon_{ijk} \omega_i I_{jl} \vb*{e}_k \vb*{e}_l + \epsilon_{ijk} \omega_i I_{lk} \vb*{e}_l \vb*{e}_j) \cdot \omega_m \vb*{e}_m \\
+        &= \epsilon_{ijk} \omega_i (I_{jl} \omega_l) \vb*{e}_k \\
+        &= \vb*{\omega} \times (\vb*{I} \cdot \vb*{\omega})
+    \end{aligned}
+\]
+同样
+\[
+    \pdv{\vb*{\varphi}} (\vb*{\omega} \cdot \vb*{I} \cdot \vb*{\omega}) = \vb*{\omega} \cdot \pdv{\vb*{I}}{\vb*{\varphi}} \cdot \vb*{\omega},
+\]
+而
+\[
+    \pdv{\vb*{I}}{\varphi_i} = \epsilon_{ijk} (I_{jl} \vb*{e}_k \vb*{e}_l + I_{lk} \vb*{e}_l \vb*{e}_j),
+\]
+\[
+    \pdv{\vb*{I}}{\vb*{\varphi}} = \epsilon_{ijk} \vb*{e}_i (I_{jl} \vb*{e}_k \vb*{e}_l + I_{lk} \vb*{e}_l \vb*{e}_j) 
+\]
+可以验证
+\[
+    \vb*{\omega} \cdot \pdv{\vb*{I}}{\vb*{\varphi}} \cdot \vb*{\omega} = 0.
+\]
+实际上可以直接通过$\vb*{I}$在主轴本体系下的展开来导出以上两式。
+
+于是得到关于$\vb*{\omega}$的方程
+\begin{equation}
+    \vb*{I} \cdot \dot{\vb*{\omega}} + \vb*{\omega} \times (\vb*{I} \cdot \vb*{\omega}) = \dv{t} \pdv{U}{\vb*{\omega}} - \pdv{U}{\vb*{\varphi}}
+    \label{eq:origin-omega-motion}
+\end{equation}
+
+由于难以从编时算符中恢复出$\vb*{\varphi}$，取下面形式的微分，保持$\vb*{R},\vb*{V}, \vb*{\omega}$不变：
+$\dd \vb*{x}^{(i)} = \dd \vb*{\varphi} \times (\vb*{x}^{(i)} - \vb*{R})$
+则
+\[
+    \begin{aligned}
+        \dd U &= \sum_i \pdv{U}{\vb*{x}^{(i)}} \cdot \dd \vb*{x}^{(i)} = \sum_i  \pdv{U}{\vb*{x}^{(i)}} \cdot (\dd \vb*{\varphi} \times (\vb*{x}^{(i)} - \vb*{R})) \\
+        &= \sum_i \dd \vb*{\varphi} \cdot \left( (\vb*{x}^{(i)} - \vb*{R}) \times \pdv{U}{\vb*{x}^{(i)}} \right)
+    \end{aligned}
+\]
+
+\[
+    \begin{aligned}
+        \dv{t} \pdv{U}{\vb*{\omega}} - \pdv{U}{\vb*{\varphi}} &= \sum_i \left(\dv{t} \left(\pdv{\dot{\vb*{x}}^{(i)}}{\vb*{\omega}} \cdot \pdv{U}{\dot{\vb*{x}}^{(i)}}\right) - (\vb*{x}^{(i)} - \vb*{R}) \times \pdv{U}{\vb*{x}^{(i)}}\right) \\
+        &= \sum_i \left(\dv{t} \left((\vb*{x}^{(i)} - \vb*{R}) \times \pdv{U}{\dot{\vb*{x}}^{(i)}}\right) - (\vb*{x}^{(i)} - \vb*{R}) \times \pdv{U}{\vb*{x}^{(i)}}\right) \\
+        &= 
+    \end{aligned}
+\]
+
+稳定性
+\begin{equation}
+    \begin{bigcase}
+        I_1 \dot{\omega}_1 &= \omega_2 \omega_3 (I_2 - I_3), \\
+        I_2 \dot{\omega}_2 &= \omega_3 \omega_1 (I_3 - I_1), \\
+        I_3 \dot{\omega}_2 &= \omega_1 \omega_2 (I_1 - I_2)
+    \end{bigcase}
+\end{equation}
+
+\end{document}

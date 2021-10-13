@@ -1,0 +1,904 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[compat=1.1.0]{tikz-feynhand}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$}
+
+\title{三角晶格反铁磁序的相变}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{(a)} 设晶格被往右移动了一个晶格常数的距离，这相当于标有$(a, b, c)$的三角形观察窗被向左移动了一个晶格常数的距离，从\prettyref{fig:lattice-trans}可以看出，设晶格移动后的$a, b, c$点为$a', b', c'$，则
+\[
+    a' = c, \quad b' = a, \quad c' = b,
+\]
+即
+\[
+    m_1' = m_3, \quad m_2' = m_1, \quad m_3' = m_2.
+\]
+于是
+\[
+    \begin{aligned}
+        \psi' &= m_1' + m_2' \ee^{\ii 4 \pi / 3} + m_3' \ee^{- \ii 4 \pi / 3} \\
+        &= m_3 + m_1 \ee^{\ii 4 \pi / 3} + m_2 \ee^{- \ii 4 \pi / 3} \\
+        &= \ee^{\ii 4 \pi / 3} \psi,
+    \end{aligned}
+\]
+则对应的用$m$和$\theta$表示的变换是
+\begin{equation}
+    m' = m, \quad \theta' = \theta + \frac{4\pi}{3}.
+    \label{eq:cyc1}
+\end{equation}
+类似的，设晶格被往斜上方\SI{60}{\degree}的方向移动，此时发生的变换为
+\[
+    c' = a, \quad b' = c, \quad a' = b,
+\]
+然后
+\[
+    \begin{aligned}
+        \psi' &= m_1' + m_2' \ee^{\ii 4 \pi / 3} + m_3' \ee^{- \ii 4 \pi / 3} \\
+        &= m_2 + m_3 \ee^{\ii 4 \pi / 3} + m_1 \ee^{- \ii 4 \pi / 3} \\
+        &= \ee^{- \ii 4 \pi / 3} \psi,
+    \end{aligned} 
+\] 
+即
+\begin{equation}
+    m' = m, \quad \theta' = \theta - \frac{4\pi}{3}.
+    \label{eq:cyc2}
+\end{equation}
+一个一般的晶格平移变换是以上两种平移变换的组合，设平移矢量为
+\begin{equation}
+    \vb*{l} = n_1 \vb*{e}_1 + n_2 \vb*{e}_2, \quad n_1, n_2 \in \mathbb{Z},
+\end{equation}
+则$\psi$的变换为
+\begin{equation}
+    m' = m, \quad \theta' = \theta + n_1 \frac{4 \pi}{3} - n_2 \frac{4\pi}{3}.
+    \label{eq:transition}
+\end{equation}
+
+本模型允许三种类型的旋转。旋转中心可以设置在格点上，可以设置在三角形的中心，也可以设置在边的中点上。
+如果旋转中心设置在格点上，可能的旋转角度为\SI{60}{\degree}的倍数。为简便起见下面仅考虑晶格被顺时针旋转\SI{60}{\degree}的情况，其它角度的情况只需要重复若干次\SI{60}{\degree}的旋转即可。
+如果旋转中心在$a$点上，晶格被顺时针旋转\SI{60}{\degree}即相当于观察窗被逆时针旋转了\SI{60}{\degree}，即相当于交换了$b$和$c$，于是$\psi$的变换为
+\[
+    \psi' = m_1 + m_3 \ee^{\ii 4 \pi / 3} + m_2 \ee^{- \ii 4 \pi /3},
+\]
+即
+\begin{equation}
+    \psi' = \psi^*.
+    \label{eq:change-bc}
+\end{equation}
+类似的如果旋转中心设置在$b$点上，变换为交换$a$和$c$，即
+\begin{equation}
+    \psi' = \ee^{- \ii 4 \pi / 3} \psi^*,
+    \label{eq:change-ca}
+\end{equation}
+而如果旋转中心设置在$c$点上则
+\begin{equation}
+    \psi' = \ee^{\ii 4 \pi / 3} \psi^*.
+    \label{eq:change-ab}
+\end{equation}
+
+如果旋转中心设置在三角形中心，旋转就是$a, b, c$的轮换，因此此时$\psi$的变换和平移完全相同。
+此时只有顺时针旋转\SI{120}{\degree}和逆时针旋转\SI{120}{\degree}两种可能，晶格被逆时针旋转\SI{120}{\degree}时有\eqref{eq:cyc1}，晶格被顺时针旋转\SI{120}{\degree}时有\eqref{eq:cyc2}。
+
+如果旋转中心设置在边的中心上，那么旋转角度只有\SI{180}{\degree}，因此相当于交换$ab$，$bc$，$ca$中的任意两个，从而如果旋转中心在$ab$边上$\psi$的变换就是\eqref{eq:change-ab}，如果旋转中心在$bc$边上那么$\psi$的变换就是\eqref{eq:change-bc}，如果旋转中心在$ca$边上那么$\psi$的变换就是\eqref{eq:change-ca}。
+
+在变换$\sigma \to - \sigma$下$\psi$的变换就是简单的$\psi' = - \psi$，即
+\begin{equation}
+    m' = m, \quad \theta' = \theta + \pi.
+    \label{eq:z2}
+\end{equation}
+
+综上，本模型在$xy$平面上的对称性是\eqref{eq:transition}和\eqref{eq:change-bc}的任意复合，完整的对称性是$xy$平面上的对称性、$z$方向平移和自旋翻转\eqref{eq:z2}的任意复合。
+
+\begin{figure}
+    \centering
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt    
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+        %uncomment if require: \path (0,235); %set diagram left start at 0, and has height of 235
+        
+        %Shape: Triangle [id:dp8748753639518245] 
+        \draw   (323.25,113.67) -- (357,172) -- (289.5,172) -- cycle ;
+        %Shape: Triangle [id:dp4663705272068355] 
+        \draw   (255.75,113.67) -- (289.5,172) -- (222,172) -- cycle ;
+        %Shape: Triangle [id:dp8849769619211774] 
+        \draw   (289.5,55.33) -- (323.25,113.67) -- (255.75,113.67) -- cycle ;
+        %Shape: Triangle [id:dp5240106325187708] 
+        \draw   (459.25,113.67) -- (493,172) -- (425.5,172) -- cycle ;
+        %Shape: Triangle [id:dp6098007350668448] 
+        \draw   (391.75,113.67) -- (425.5,172) -- (358,172) -- cycle ;
+        %Shape: Triangle [id:dp579965896101847] 
+        \draw   (425.5,55.33) -- (459.25,113.67) -- (391.75,113.67) -- cycle ;
+        %Straight Lines [id:da48488062655384634] 
+        \draw    (323.25,113.67) -- (391.75,113.67) ;
+        %Shape: Triangle [id:dp9032926223600755] 
+        \draw   (358,55.33) -- (391.75,113.67) -- (324.25,113.67) -- cycle ;
+        %Straight Lines [id:da3541365346986354] 
+        \draw    (289.5,55.33) -- (425.5,55.33) ;
+        
+        %Straight Lines [id:da11061956849946131] 
+        \draw    (147.5,172.33) -- (182.5,172.33) ;
+        \draw [shift={(184.5,172.33)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        %Straight Lines [id:da21963418761371867] 
+        \draw    (147.5,172.33) -- (165.5,141.07) ;
+        \draw [shift={(166.5,139.33)}, rotate = 479.93] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+        % Text Node
+        \draw (386,122.4) node [anchor=north west][inner sep=0.75pt]  {$a$};
+        % Text Node
+        \draw (353,153.4) node [anchor=north west][inner sep=0.75pt]  {$b$};
+        % Text Node
+        \draw (405,157) node [anchor=north west][inner sep=0.75pt]    {$c$};
+        % Text Node
+        \draw (298,156) node [anchor=north west][inner sep=0.75pt]    {$a$};
+        % Text Node
+        \draw (317,122.4) node [anchor=north west][inner sep=0.75pt]    {$c$};
+
+        % Text Node
+        \draw (169,135) node [anchor=north west][inner sep=0.75pt]    {$\vb*{e}_{2}$};
+        % Text Node
+        \draw (187,161.4) node [anchor=north west][inner sep=0.75pt]    {$\vb*{e}_{1}$};
+        
+        \end{tikzpicture}
+    \caption{晶格平移示意}
+    \label{fig:lattice-trans}
+\end{figure}
+
+\paragraph{(b)} 由于自旋翻转对称性，有效自由能中只能出现$\psi$的偶数阶项。显然$\abs*{\grad{\psi}}^2$是一个允许出现的项，因为它在$\psi$的任何相位变化、取共轭、正负号变化之下都不变。
+由于系统中的相互作用高度局域，有效自由能中导数算符的阶数应该较低，于是以下始终假定含有导数算符的项只有$\abs*{\grad{\psi}}^2$。在不含导数算符的项中：
+\begin{enumerate}
+    \item $\psi^2$阶满足对称性要求的只有$\abs*{\psi}^2$；
+    \item $\psi^4$阶满足对称性要求的只有$\abs*{\psi}^4$；
+    \item 由于$6$含有因子$3$，而对称性并不要求有效自由能在任意的相位变化下都不变，只需要在$4 \pi / 3$的倍数的相位变化下不变即可，$\psi^6$阶项可以不是$\abs*{\psi}$的函数，只需要所有$\psi^6$阶项之和的虚部为零即可。
+    满足条件的项包括$\abs*{\psi}^6$和$\psi^6 + (\psi^*)^6$。
+\end{enumerate}
+取到$\psi$的六阶项，并照惯例做适当的单位变换使$\abs*{\grad{\psi}}^2$项系数为$1$，有
+\begin{equation}
+    F = \int \dd[d]{\vb*{r}} (\abs*{\grad{\psi}}^2 + r \abs*{\psi}^2 + u \abs*{\psi}^4 + v \abs*{\psi}^6 + \frac{1}{2} v' (\psi^6 + (\psi^*)^6)).
+    \label{eq:gl-with-psi}
+\end{equation}
+换用$m$和$\theta$为场变量，就是
+\begin{equation}
+    F = \int \dd[d]{\vb*{r}} (\underbrace{(\grad{m})^2 + m^2 (\grad{\theta})^2}_{\abs*{\grad{\psi}}^2} + r m^2 + u m^4 + v m^6 + v' m^6 \cos(6 \theta)).
+\end{equation}
+
+\paragraph{(c)} \eqref{eq:gl-with-psi}中有四种相互作用顶角。为了方便起见切换到动量表象下，场的变换为
+\[
+    \bar{\psi}(\vb*{k}) = \int \dd[3]{\vb*{r}} \ee^{\ii \vb*{k} \cdot \vb*{r}} \bar{\psi}(\vb*{r}), \quad \psi(\vb*{k}) = \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \psi(\vb*{r}),
+\]
+费曼规则为：
+\begin{itemize}
+    \item 粒子线带有箭头。
+    \item 有三种相互作用顶角，一种是二进二出，一种是三进三出，一种是六个粒子一起湮灭，一种是六个粒子一起创生。
+    第一种顶角对应因子$-4u$，第二种顶角对应因子$-(3!)^2 v$，后两种顶角分别对应因子$-6! v'/2$；多出来的数值因子来自入射粒子线和出射粒子线和外线之间的对应方式数目。
+    \item 传播子对应$1/(k^2+r)$。
+    \item 对所有不确定的动量应该做积分$\int \dd[d]{\vb*{k}} / (2\pi)^d$，动量上下限由需要积掉的动量区间确定；对每个顶角应该施加动量守恒因子$(2\pi)^d \delta(\sum \vb*{k})$。
+    \item 闭合粒子线不贡献对称性因子，图形的整体对称贡献对称性因子。
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \subfigure[$\abs{\psi}^4$顶角，入射粒子线可交换，出射粒子线可交换]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, -1.5) {$\vb*{k}_1$};
+                \vertex (b) at (-1.5, 1.5) {$\vb*{k}_2$};
+                \vertex (c) at (1.5, -1.5) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 1.5) {$\vb*{k}_4$};
+                \vertex (o) at (0, 0) ;
+                \propag [fermion] (a) to (o);
+                \propag [fermion] (b) to (o);
+                \propag [fermion] (o) to (c);
+                \propag [fermion] (o) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[$\abs*{\psi}^6$顶角，入射粒子线可交换，出射粒子线可交换]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2.1, 0) {$\vb*{k}_2$};
+                \vertex (e) at (-1.2, 1.8) {$\vb*{k}_1$};
+                \vertex (f) at (-1.2, -1.8) {$\vb*{k}_3$};
+                \vertex (b) at (1.2, 1.8) {$\vb*{k}_4$};
+                \vertex (c) at (1.2, -1.8) {$\vb*{k}_6$};
+                \vertex (d) at (2.1, 0) {$\vb*{k}_5$};
+                \vertex (o) at (0, 0) ;
+                \propag [fermion] (a) to (o);
+                \propag [fermion] (e) to (o);
+                \propag [fermion] (f) to (o);
+                \propag [antfer] (b) to (o);
+                \propag [antfer] (c) to (o);
+                \propag [antfer] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \vfill
+    \subfigure[$\psi^6$顶角，六条粒子线可交换]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2.1, 0) {$\vb*{k}_2$};
+                \vertex (e) at (-1.2, 1.8) {$\vb*{k}_1$};
+                \vertex (f) at (-1.2, -1.8) {$\vb*{k}_3$};
+                \vertex (b) at (1.2, 1.8) {$\vb*{k}_4$};
+                \vertex (c) at (1.2, -1.8) {$\vb*{k}_6$};
+                \vertex (d) at (2.1, 0) {$\vb*{k}_5$};
+                \vertex (o) at (0, 0) ;
+                \propag [fermion] (a) to (o);
+                \propag [fermion] (e) to (o);
+                \propag [fermion] (f) to (o);
+                \propag [fermion] (b) to (o);
+                \propag [fermion] (c) to (o);
+                \propag [fermion] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[$\bar{\psi}^6$顶角，六条粒子线可交换]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2.1, 0) {$\vb*{k}_2$};
+                \vertex (e) at (-1.2, 1.8) {$\vb*{k}_1$};
+                \vertex (f) at (-1.2, -1.8) {$\vb*{k}_3$};
+                \vertex (b) at (1.2, 1.8) {$\vb*{k}_4$};
+                \vertex (c) at (1.2, -1.8) {$\vb*{k}_6$};
+                \vertex (d) at (2.1, 0) {$\vb*{k}_5$};
+                \vertex (o) at (0, 0) ;
+                \propag [antfer] (a) to (o);
+                \propag [antfer] (e) to (o);
+                \propag [antfer] (f) to (o);
+                \propag [antfer] (b) to (o);
+                \propag [antfer] (c) to (o);
+                \propag [antfer] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{\eqref{eq:gl-with-psi}中的相互作用顶角}
+    \label{fig:vertex-intepretation}
+\end{figure}
+
+仅计算顶角个数小于等于$2$的树图和一圈图。对单顶角图，有
+\begin{equation}
+    \begin{aligned}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0);
+                \vertex (b) at (-0.0001, 0);
+                \propag [fermion, style=thick] (a) to [edge label={$\vb*{k}$}] (b) ;
+                \vertex (c) at (0.0001, 0);
+                \vertex (d) at (1.5, 0);
+                \propag [fermion] (c) to [edge label={$\vb*{k}$}] (d) ;
+                \propag [fermion] (b) to [in=45, out=135, looseness=20000, edge label={$\vb*{q}$}] (c);
+            \end{feynhand}
+        \end{tikzpicture} &= - 4 u \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \bar{\psi}(\vb*{k}) \psi(\vb*{k}) \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r},
+    \end{aligned}
+    \label{eq:correction-r}
+\end{equation}
+这是对$r$的修正。同样
+\begin{equation}
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) {$\vb*{k}_1$};
+                \vertex (f) at (-1, -1.4) {$\vb*{k}_2$};
+                \vertex (c) at (1, -1.4) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 0) {$\vb*{k}_4$};
+                \vertex (o) at (0, 0) ;
+                \vertex (op) at (0.0001, 0) ;
+                \propag [fermion, line width=1mm] (a) to (o);
+                \propag [fermion] (f) to (o);
+                \propag [antfer] (c) to (o);
+                \propag [antfer] (d) to (o);
+                \propag [fermion] (o) to [in=50, out=130, looseness=40000, edge label={$\vb*{q}$}] (op);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= - \frac{1}{4} (3!)^2 v \prod_{i=1}^3 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_3) \bar{\psi}(\vb*{k}_1+\vb*{k}_2-\vb*{k}_3) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \int_{\Lambda/\zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2+r},
+    \end{aligned}
+    \label{eq:correction-u-1}
+\end{equation}
+因子$1/4$来自$\vb*{k}_1$外腿和$\vb*{k}_2$外腿可交换、$\vb*{k}_3$外腿和$\vb*{k}_4$外腿可交换。
+这是对$u$的修正。其余的单顶角图或者为二圈图或者对低能过程没有修正。
+
+二顶角树图可以通过任意画两个顶角，然后将一个入射粒子线和一个出射粒子线连接得到，圈图可以通过将两对入射粒子线和出射粒子线连接得到。
+因此，含有两个六条腿的顶角的树图会给出一个十条腿的等效顶角而含有两个六条腿的顶角的一圈图会给出一个八条腿的等效顶角。
+由于我们只考虑六阶及以下的项，有意义的二顶角树图中至少有一个顶角是$\abs*{\psi}^4$。
+
+\begin{figure}
+    \centering
+    
+    \subfigure[树图，修正$v$；由于动量守恒基本上对relevant的项没有贡献]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.7, 0) ;
+                \vertex (b) at (0.65, 1.8);
+                \vertex (c) at (0.65, -1.8);
+                \vertex (d) at (1.7, 0);
+                \vertex (e) at (0, 0) ;
+                \vertex (f) at (-2.6, 1.8);
+                \vertex (g) at (-2.6, -1.8);
+                \vertex (h) at (-3.4, 0);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [antfer] (d) to (e);
+                \propag [fermion] (f) to (a);
+                \propag [fermion] (g) to (a);
+                \propag [antfer] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:no-contribution-tree}
+    }
+    \subfigure[一圈图，修正$r$；不满足动量守恒关系]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (0.75, 1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (-1.5, 0);
+                \vertex (f) at (-1.499, 0);
+                \vertex (g) at (-3, 0);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (a) to (d);
+                \propag[fermion] (f) to (a);
+                \propag[fermion] (g) to (e);
+                \propag[fermion] (e) to [in=45, out=135, looseness=8000] (f);
+            \end{feynhand}
+        \end{tikzpicture}
+        \label{fig:one-loop-removed}
+    }
+    \subfigure[一圈图，修正$r$]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (1, 0);
+                \vertex (b) at (1.75, 1.8);
+                \vertex (c) at (1.75, -1.8);
+                \vertex (d) at (-1, 0);
+                \vertex (e) at (-1.75, 1.8);
+                \vertex (f) at (-1.75, -1.8);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (e) to (d);
+                \propag[fermion] (f) to (d);
+                \propag[fermion] (d) to [in=120, out=60, looseness=2] (a);
+                \propag[fermion] (d) to [in=240, out=300, looseness=2] (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一圈图，修正$r$]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (1, 0);
+                \vertex (b) at (1.75, 1.8);
+                \vertex (c) at (1.75, -1.8);
+                \vertex (d) at (-1, 0);
+                \vertex (e) at (-1.75, 1.8);
+                \vertex (f) at (-1.75, -1.8);
+                \propag[fermion] (b) to (a);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (e) to (d);
+                \propag[fermion] (d) to (f);
+                \propag[fermion] (d) to [in=120, out=60, looseness=2] (a);
+                \propag[antfer] (d) to [in=240, out=300, looseness=2] (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{由$\abs*{\psi}^4$项形成的二顶角图}
+    \label{fig:second-order-correction-psi4}
+\end{figure}
+
+两个$\abs*{\psi}^4$顶角形成的图为\autoref{fig:second-order-correction-psi4}，其中\autoref{fig:one-loop-removed}不满足动量守恒关系，因为一个低动量的粒子被第一个顶角散射为了一个高动量的粒子。（将\autoref{fig:one-loop-removed}中的所有粒子线调转方向可以得到一个不同的图，但是这个图同样没有贡献）
+对$v$的修正为
+\[
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0);
+                \vertex (b) at (0.5, 1.2) {$\vb*{k}_4$};
+                \vertex (c) at (0.5, -1.2) {$\vb*{k}_5$};
+                \vertex (d) at (1.5, 0) {$\vb*{k}_1$};
+                \vertex (e) at (0, 0) ;
+                \vertex (f) at (-2.1, 1.2) {$\vb*{k}_2$};
+                \vertex (g) at (-2.1, -1.2) {$\vb*{k}_3$};
+                \vertex (h) at (-3, 0) {$\vb*{k}_6$};
+                \propag [fermion] (a) to (e);
+                \propag [antfer] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [fermion] (d) to (e);
+                \propag [fermion] (f) to (a);
+                \propag [fermion] (g) to (a);
+                \propag [antfer] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= \frac{1}{4} (- 4 u)^2 \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        & \quad \quad \times \frac{1}{(\vb*{k}_4 + \vb*{k}_5 - \vb*{k}_1)^2+r} \\
+        &\approx \frac{1}{4} (-4u)^2 \frac{1}{r} \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3),
+    \end{aligned}
+\]
+其中$1/4$的因子来自$\vb*{k}_2$外腿和$\vb*{k}_3$外腿可交换、$\vb*{k}_4$外腿和$\vb*{k}_5$外腿可交换。
+第一个等号后面给出的项实际上有动量依赖，但是既然只有没有动量依赖的$\abs*{\psi}^6$项才是重要的，我们直接忽略这个动量依赖；但是这相当于假定了中间态粒子动量为$0$，而中间态应该在高能自由度上，因此这个图没有修正。
+图(c)给出的$u$的修正为
+\begin{equation}
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0.6, 0);
+                \vertex (b) at (1.3, 1.3) {$\vb*{k}_3$};
+                \vertex (c) at (1.3, -1.3) {$\vb*{k}_4$};
+                \vertex (d) at (-0.6, 0);
+                \vertex (e) at (-1.3, 1.3) {$\vb*{k}_1$};
+                \vertex (f) at (-1.3, -1.3) {$\vb*{k}_2$};
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (e) to (d);
+                \propag[fermion] (f) to (d);
+                \propag[fermion] (d) to [in=120, out=60, looseness=2, edge label={${\vb*{q}}$}] (a);
+                \propag[fermion] (d) to [in=240, out=300, looseness=2, edge label={$\vb*{p}$}] (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= \frac{1}{2^3} (-4 u)^2 \prod_{i=1}^3 \int_{\Lambda}^{0} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_3) \bar{\psi}(\sum \vb*{k} - \vb*{k}_3) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \int_{\Lambda / \zeta}^{\Lambda} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + r} \\
+        &\approx \frac{1}{2^3} (-4 u)^2 \prod_{i=1}^3 \int_{\Lambda}^{0} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_3) \bar{\psi}(\sum \vb*{k} - \vb*{k}_3) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \int_{\Lambda / \zeta}^{\Lambda} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2},
+    \end{aligned}
+    \label{eq:correction-u-2}
+\end{equation}
+这里略去了对$\vb*{k}_1$和$\vb*{k}_2$的全部依赖，因为只有没有动量依赖的$\abs*{\psi}^4$项才是重要的。
+图(d)给出的修正和图(c)基本一致，只是对称性因子不同：
+\begin{equation}
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0.6, 0);
+                \vertex (b) at (1.3, 1.3) {$\vb*{k}_2$};
+                \vertex (c) at (1.3, -1.3) {$\vb*{k}_4$};
+                \vertex (d) at (-0.6, 0);
+                \vertex (e) at (-1.3, 1.3) {$\vb*{k}_1$};
+                \vertex (f) at (-1.3, -1.3) {$\vb*{k}_3$};
+                \propag[fermion] (b) to (a);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (e) to (d);
+                \propag[fermion] (d) to (f);
+                \propag[fermion] (d) to [in=120, out=60, looseness=2, edge label={${\vb*{q}}$}] (a);
+                \propag[antfer] (d) to [in=240, out=300, looseness=2, edge label={$\vb*{p}$}] (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= (-4 u)^2 \prod_{i=1}^3 \int_{\Lambda}^{0} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_3) \bar{\psi}(\sum \vb*{k} - \vb*{k}_3) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \int_{\Lambda / \zeta}^{\Lambda} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + r} \\
+        &\approx (-4 u)^2 \prod_{i=1}^3 \int_{\Lambda}^{0} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\vb*{k}_3) \bar{\psi}(\sum \vb*{k} - \vb*{k}_3) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \int_{\Lambda / \zeta}^{\Lambda} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2}.
+    \end{aligned}
+    \label{eq:correction-u-3}
+\end{equation}
+
+\begin{figure}
+    \centering
+
+    \subfigure[一圈图，修正$v$；不满足动量守恒关系]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (0.75, 1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (-1.8, 0);
+                \vertex (f) at (-1.799, 0);
+                \vertex (g) at (-3, 0);
+                \vertex (h) at (-0.75, 1.8);
+                \vertex (i) at (-0.75, -1.8);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (h) to (a);
+                \propag[fermion] (i) to (a);
+                \propag[fermion] (a) to (d);
+                \propag[fermion] (f) to (a);
+                \propag[fermion] (g) to (e);
+                \propag[fermion] (e) to [in=45, out=135, looseness=8000] (f);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一圈图，修正$v$，作用粒子-空穴变换还可以得到一个独立的图]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.75, -1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (0, 0) ;
+                \vertex (ep) at (0.001, 0);
+                \vertex (f) at (-2.5, 1.8);
+                \vertex (g) at (-2.5, -1.8);
+                \vertex (h) at (-3, 0);
+                \propag [fermion] (e) to [in=45, out=135, looseness=10000] (ep);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [antfer] (d) to (e);
+                \propag [fermion] (f) to (a);
+                \propag [fermion] (g) to (a);
+                \propag [antfer] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一圈图，修正$v$，作用粒子-空穴变换还可以得到一个独立的图]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.75, -1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (i) at (0.75, 1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (0, 0) ;
+                \vertex (g) at (-2.5, -1.8);
+                \vertex (h) at (-3, 0);
+                \propag [antfer] (e) to [in=60, out=120, looseness=2] (a);
+                \propag [fermion] (e) to (i);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [antfer] (d) to (e);
+                \propag [fermion] (g) to (a);
+                \propag [fermion] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一圈图，修正$v$]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.75, -1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (i) at (0.75, 1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (0, 0) ;
+                \vertex (g) at (-2.5, -1.8);
+                \vertex (h) at (-3, 0);
+                \propag [fermion] (e) to [in=60, out=120, looseness=2] (a);
+                \propag [fermion] (e) to (i);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [fermion] (d) to (e);
+                \propag [fermion] (g) to (a);
+                \propag [antfer] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{由$\abs*{\psi}^4$项和$\abs*{\psi}^6$形成的二顶角图}
+    \label{fig:second-order-correction-psi4andpsi6}
+\end{figure}
+
+下面考虑$\abs*{\psi}^4$项和$\abs*{\psi}^6$形成的二顶角图。这些图如果是树图将会导致$\psi^8$阶的项，所以我们只考虑一圈图，展示如\autoref{fig:second-order-correction-psi4andpsi6}。
+实际上将\autoref{fig:second-order-correction-psi4andpsi6}中的图中的所有箭头都倒转可以得到另一些图，但是因为只需要做粒子-空穴变换就可以得到这些图，无需单独考虑它们。
+其中，图(a)是不满足动量守恒的，因为最左端的入射粒子是低动量的但是被第一个相互作用顶角散射到了一个高动量模式上。
+
+图(b)会给出$v$的修正的另一个贡献：
+\[
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.2, 0) ;
+                \vertex (b) at (-0.75, -1.3) {$\vb*{k}_3$};
+                \vertex (c) at (0.75, -1.3) {$\vb*{k}_6$};
+                \vertex (d) at (1.5, 0) {$\vb*{k}_4$};
+                \vertex (e) at (0, 0) ;
+                \vertex (ep) at (0.001, 0);
+                \vertex (f) at (-2.0, 1.3) {$\vb*{k}_2$};
+                \vertex (g) at (-2.0, -1.3) {$\vb*{k}_1$};
+                \vertex (h) at (-2.7, 0) {$\vb*{k}_5$};
+                \propag [fermion] (e) to [in=60, out=120, looseness=5000, edge label={$\vb*{q}$}] (ep);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [antfer] (d) to (e);
+                \propag [fermion] (f) to (a);
+                \propag [fermion] (g) to (a);
+                \propag [antfer] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= \frac{1}{4} (-4 u) (- (3!)^2 v) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{k}_5)^2 + r} \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \\
+        &\approx \frac{1}{4} (-4 u) (- (3!)^2 v) \frac{1}{r} \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r}.
+    \end{aligned}
+\]
+在最后的对$v$的修正中上式应该乘以$2$，因为将上式中所有箭头颠倒过来可以得到另一个图，它有一样的对$v$的修正。
+然而，实际上上式和\autoref{fig:no-contribution-tree}类似，由于我们仅保留对relevant的项的修正，我们要求$\vb*{k}_2+\vb*{k}_1-\vb*{k}_5$为零，但是这和中间态粒子应该是高能模式矛盾。因此上式实际上没有贡献。
+对图(c)，有
+\begin{equation}
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.6, -1.3) {$\vb*{k}_3$};
+                \vertex (c) at (0.6, -1.3) {$\vb*{k}_6$};
+                \vertex (i) at (0.6, 1.3) {$\vb*{k}_4$};
+                \vertex (d) at (1.6, 0) {$\vb*{k}_5$};
+                \vertex (e) at (0, 0) ;
+                \vertex (g) at (-1.8, -1.2) {$\vb*{k}_2$};
+                \vertex (h) at (-2.6, 0) {$\vb*{k}_1$};
+                \propag [antfer] (e) to [in=70, out=110, looseness=2, edge label={$\vb*{q}$}] (a);
+                \propag [fermion] (e) to (i);
+                \propag [fermion] (a) to [edge label={$\vb*{p}$}] (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (c) to (e);
+                \propag [antfer] (d) to (e);
+                \propag [fermion] (g) to (a);
+                \propag [fermion] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= \frac{1}{2 \times 2 \times 3!} (-4 u)(-(3!)^2 v) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + r} \\
+        &\approx \frac{1}{2 \times 2 \times 3!} (-4 u)(-(3!)^2 v) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2}.
+    \end{aligned}
+    \label{eq:correction-v-2}
+\end{equation}
+同样在最后的对$v$的修正中上式应该乘以$2$，因为将上式中所有箭头颠倒过来可以得到另一个图，它有一样的对$v$的修正。
+图(d)带来的修正和图(c)大体上是一样的，但是对称性因子有变化，为
+\begin{equation}
+    \begin{aligned}
+        &\quad \frac{1}{2 \times 2} (-4 u)(-(3!)^2 v) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + r} \\
+        &\approx \frac{1}{2 \times 2} (-4 u)(-(3!)^2 v) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \bar{\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) \bar{\psi}(\vb*{k}_4) \bar{\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2}.
+    \end{aligned}
+    \label{eq:correction-v-3}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \subfigure[一圈图，修正$v'$；不满足动量守恒关系]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (0.75, 1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (-1.8, 0);
+                \vertex (f) at (-1.799, 0);
+                \vertex (g) at (-3, 0);
+                \vertex (h) at (-0.75, 1.8);
+                \vertex (i) at (-0.75, -1.8);
+                \propag[fermion] (b) to (a);
+                \propag[fermion] (c) to (a);
+                \propag[fermion] (h) to (a);
+                \propag[fermion] (i) to (a);
+                \propag[fermion] (d) to (a);
+                \propag[fermion] (f) to (a);
+                \propag[fermion] (g) to (e);
+                \propag[fermion] (e) to [in=45, out=135, looseness=8000] (f);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一圈图，修正$v'$，作用粒子-空穴变换还可以得到一个独立的图]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.75, -1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (i) at (0.75, 1.8);
+                \vertex (d) at (2.1, 0);
+                \vertex (e) at (0, 0) ;
+                \vertex (g) at (-2.5, -1.8);
+                \vertex (h) at (-3, 0);
+                \propag [antfer] (e) to [in=60, out=120, looseness=2] (a);
+                \propag [fermion] (i) to (e);
+                \propag [fermion] (a) to (e);
+                \propag [fermion] (b) to (e);
+                \propag [fermion] (c) to (e);
+                \propag [fermion] (d) to (e);
+                \propag [fermion] (g) to (a);
+                \propag [fermion] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{由$\psi^6$项和$\abs*{\psi}^4$形成的二顶角图}
+    \label{fig:second-order-correction-psi4andvp}
+\end{figure}
+
+由于$\psi^6$项和$\bar{\psi}^6$项之间具有对称性，并且两者对对方的一圈重整化群流没有贡献，只需要算其中一个就可以得知另一个。\autoref{fig:second-order-correction-psi4andvp}给出了可能的图，其中(a)由于前述的低动量电子被散射到高动量模式上没有任何贡献，只需要计算(b)，它给出
+\begin{equation}
+    \begin{aligned}
+        &\quad \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0) ;
+                \vertex (b) at (-0.6, -1.3) {$\vb*{k}_3$};
+                \vertex (c) at (0.6, -1.3) {$\vb*{k}_6$};
+                \vertex (i) at (0.6, 1.3) {$\vb*{k}_4$};
+                \vertex (d) at (1.6, 0) {$\vb*{k}_5$};
+                \vertex (e) at (0, 0) ;
+                \vertex (g) at (-1.8, -1.2) {$\vb*{k}_2$};
+                \vertex (h) at (-2.6, 0) {$\vb*{k}_1$};
+                \propag [antfer] (e) to [in=70, out=110, looseness=2, edge label={$\vb*{q}$}] (a);
+                \propag [fermion] (i) to (e);
+                \propag [fermion] (a) to [edge label={$\vb*{p}$}] (e);
+                \propag [fermion] (b) to (e);
+                \propag [antfer] (e) to (c);
+                \propag [antfer] (e) to (d);
+                \propag [fermion] (g) to (a);
+                \propag [fermion] (h) to (a);
+            \end{feynhand}
+        \end{tikzpicture} \\
+        &= \frac{1}{2 \times 2 \times 4!} (-4 u)(-6! v'/ 2) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} {\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) {\psi}(\vb*{k}_4) {\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + r} \\
+        &\approx \frac{1}{2 \times 2 \times 4!} (-4 u)(-6! v'/2) \prod_{i=1}^5 \int^{\Lambda / \zeta} \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} {\psi}(\sum \vb*{k} - \vb*{k}_4 - \vb*{k}_5) {\psi}(\vb*{k}_4) {\psi}(\vb*{k}_5) \psi(\vb*{k}_1) \psi(\vb*{k}_2) \psi(\vb*{k}_3) \\
+        &\quad \quad \times \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2}.
+    \end{aligned}
+    \label{eq:correction-vp}
+\end{equation}
+在最后对$v'$的修正中上式应该乘以2，因为将所有箭头颠倒过来可以得到另一个图，它给出的修正是完全一样的。
+
+做量纲分析，取坐标的倒数为$1$，则有
+\[
+    \left[ \int \dd[d]{\vb*{r}} (\grad{\psi})^2 \right] = 1,
+\]
+即
+\begin{equation}
+    [\psi] = \frac{d-2}{2}.
+\end{equation}
+从而根据自由能的形式，有
+\begin{equation}
+    [r] = 2, \quad [u] = 4 - d, \quad [v] = [v'] = 6 - 2d.
+\end{equation}
+这样就可以写出参数跑动的方式。对$r$，根据\eqref{eq:correction-r}有
+\begin{equation}
+    r(\zeta) = \zeta^2 \left( r + 4 u \int_{\Lambda/\zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2+r} \right).
+\end{equation}
+对$u$，根据\eqref{eq:correction-u-1}，\eqref{eq:correction-u-2}和\eqref{eq:correction-u-3}有
+\begin{equation}
+    \begin{aligned}
+        u(\zeta) &= \zeta^{4-d} \Bigl( u + \frac{1}{4} (3!)^2 v \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} - \frac{1}{2^3} (-4u)^2 \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2} \\
+        &- (-4u)^2 \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2} \Bigl) \\
+        &= \zeta^{4-d} \left( u + 9 v \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + r} - 18 u^2 \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2} \right).
+    \end{aligned}
+\end{equation}
+对$v$的修正来自\eqref{eq:correction-v-2}，\eqref{eq:correction-v-3}，为
+\begin{equation}
+    \begin{aligned}
+        v(\zeta) &= \zeta^{6-2d} \Bigl( v - 2 \times \frac{1}{2^2 \times 3!} (-4 u)(-(3!)^2 v) \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2+r)^2} \\
+        &- \frac{1}{2^2} (-4 u)(-(3!)^2 v) \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2+r)^2} \Bigl) \\
+        &= \zeta^{6-2d} \left( v - 48 u v \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2+r)^2} \right).
+    \end{aligned}
+\end{equation}
+对$v'$的修正来自\eqref{eq:correction-vp}，为
+\begin{equation}
+    \begin{aligned}
+        v'(\zeta) &= \zeta^{6-2d} \left( v' - 2 \times \frac{1}{2 \times 2 \times 4!} (-4 u)(-6! v'/2) \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2} \right) \\
+        &= \zeta^{6-2d} \left( v' - 30 u v' \int_{\Lambda / \zeta}^\Lambda \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + r)^2} \right).
+    \end{aligned}
+\end{equation}
+
+以上方程都是在$\zeta$接近$1$的近似下成立的，根据它们计算$\beta$函数可以得到（下面已经做了适当的单位变换，使得$\Lambda=1$）
+\begin{equation}
+    \beta(r) = \dv{r}{\ln \zeta} = 2 r + 4u  \frac{S_{d-1}}{(2\pi)^d (1 + r)},
+\end{equation}
+\begin{equation}
+    \beta(u) = \dv{u}{\ln \zeta} = (4-d) u + 9v \frac{S_{d-1}}{(2\pi)^d (1+r)} - 18 u^2 \frac{S_{d-1}}{(2\pi)^d (1 + r)^2}, 
+\end{equation}
+\begin{equation}
+    \beta(v) = \dv{v}{\ln \zeta} = (6-2d) v - 48 uv \frac{S_{d-1}}{(2\pi)^d (1+r)^2}, 
+\end{equation}
+\begin{equation}
+    \beta(v') = \dv{v'}{\ln \zeta} = (6-2d) v' - 30 uv' \frac{S_{d-1}}{(2\pi)^d (1+r)^2}.
+\end{equation}
+以上四个方程给出了重整化群方程，其中$S_{d-1}$表示半径为$1$的$d-1$维球面的表面积。
+
+下面做$4-\epsilon$展开以求解不动点。令所有$\beta$函数为零，注意到$u=r=v=v'=0$是一个不动点，Wilson-Fisher不动点中各个参数的量级均应为$\epsilon$阶或者更高阶小量。
+计算可知在$d=4-\epsilon$时
+\[
+    \frac{S_{d-1}}{(2\pi)^d} = \frac{1}{(2\pi)^d} \frac{2 \pi^{d/2}}{\Gamma(d/2)} = \frac{1}{8 \pi^2} + \bigO(\epsilon),
+\]
+既然$S^{d-1}$因子在重整化群方程中都是和参数乘在一起的，而参数至少为$\epsilon$阶，可以直接略去上式中的小量部分，从而得到方程组
+\[
+    \begin{aligned}
+        &2 r + 4u \frac{1}{8\pi^2} \frac{1}{1+r} = 0, \\
+        &\epsilon u + 9 v \frac{1}{8\pi^2} \frac{1}{1+r} - 18 u^2 \frac{1}{8\pi^2} \frac{1}{(1+r)^2} = 0, \\
+        &(2\epsilon-2) v - 48 uv \frac{1}{8\pi^2} \frac{1}{(1+r)^2} = 0, \\
+        &(2\epsilon-2) v' - 30 u v' \frac{1}{8\pi^2} \frac{1}{(1+r)^2} = 0.
+    \end{aligned}
+\]
+解之，得到三组解，一组是所有参数都是零的解，这我们已经知道了，一组是有限大小的解，这组解应该舍去，因为这不是Wilson-Fisher不动点。
+Wilson-Fisher不动点，取到$\epsilon$的一阶项，为
+\begin{equation}
+    r^\star = - \frac{\epsilon}{9}, \quad u^\star = \frac{4}{9} \pi^2 \epsilon, \quad v = v' = 0.
+\end{equation}
+下面考虑此不动点附近的重整化群流，设$r = r^\star + \var{r}$，等等，取到$\epsilon$的一阶项，有
+\[
+    \begin{aligned}
+        \beta(r) &= \left( 2 - \frac{2\epsilon}{9} \right) \var{r} + \left( \frac{1}{2\pi^2} + \frac{\epsilon}{18 \pi^2} \right) \var{u}, \\
+        \beta(u) &= - \epsilon \var{u} + \frac{9 + \epsilon}{8 \pi^2} \var{v}, \\
+        \beta(v) &= - \left( 2 + \frac{2 \epsilon}{3} \right) \var{v}, \\
+        \beta(v') &= - \left( 2 - \frac{\epsilon}{3} \right) \var{v'},
+    \end{aligned}
+\]
+因此$v$和$v'$都是irrelevant的；但$v'$是重整化群的本征方向而$v$不是。对以上方程右边的系数矩阵计算本征值，得到以下本征方向：
+\[
+    \var{r} \sim \zeta^{2 - \frac{2}{9} \epsilon}, \quad - \frac{9 + \epsilon}{2\pi^2 (18 + 7 \epsilon)} \var{r} + \var{u} \sim \zeta^{-\epsilon}, \quad - \frac{3(9+\epsilon)}{64\pi^4(\epsilon-6)} \var{r} - \frac{3(9+\epsilon)}{8\pi^2(\epsilon-6)} \var{u} + \var{v} \sim \zeta^{-2-\frac{2}{3} \epsilon}.
+\]
+因此可以看出我们有
+\begin{equation}
+    \var{r} \sim \zeta^{2-\frac{2}{9}\epsilon}, \quad \var{u} \sim \zeta^{2 - \frac{2}{9}\epsilon}.
+\end{equation}
+因此，只要$\epsilon$充分小，使得$-\epsilon<0$，$-2-2\epsilon/3<0$，那么$u$和$r$是relevant的而其它项都不是relevant的。
+$\epsilon=1$显然满足这一条件，因此在三维情况下，红外不动点处的有效理论应该形如
+\begin{equation}
+    F = \abs*{\grad{\psi}}^2 + r \abs*{\psi}^2 + u \abs*{\psi}^4.
+\end{equation}
+由于$\psi$是一个复场，设其实部和虚部分别为$\psi_1$和$\psi_2$，代入上式，得到
+\begin{equation}
+    F = \int \dd[d]{\vb*{r}} ((\grad{\psi_1})^2 + (\grad{\psi_2})^2 + r (\psi_1^2 + \psi_2^2) + u (\psi_1^2 + \psi_2^2)^2),
+\end{equation}
+这是一个$O(2)$模型，因此本文分析的模型\eqref{eq:gl-with-psi}和经典XY模型的普适类是一样的。
+
+\end{document}

@@ -1,0 +1,463 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{QFT I, Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{1. Lorentz invariance} This is problem $2.6$ on p. 28 of Schwartz.
+(a) Show that
+\begin{equation}
+    \int_{-\infty}^{\infty} \dd k^{0} \delta\left(k^{2}-m^{2}\right) \theta\left(k^{0}\right)=\frac{1}{2 \omega_{k}}.
+    \label{eq:sch-2.6-1}
+\end{equation}
+where $\omega_{\vb*{k}}=\sqrt{|\vb*{k}|^{2}+m^{2}}$
+(b) Show the integration measure $\dd^{4} k$ is Lorentz invariant.
+(c) Show that
+\begin{equation}
+    \int \frac{\dd^{3} \vb*{k}}{2 \omega_{k}}
+    \label{eq:sch-2.6-2}
+\end{equation}
+is Lorentz invariant.
+
+\paragraph{Solution} 
+\begin{itemize}
+    \item[(a)] \[
+        \begin{aligned}
+        \int_{-\infty}^{\infty} \dd k^{0} \delta\left(k^{2}-m^{2}\right) \theta\left(k^{0}\right) &= \int_{0}^{\infty} \dd k^{0} \delta\left((k^0)^2 - \omega_k^2 \right)  \\
+        &= \int_{-\infty}^\infty \dd{((k^0)^2 - \omega_k^2)} \dv{k^0}{((k^0)^2 - \omega_k^2)} \delta((k^0)^2 - \omega_k^2) \\
+        &= \int_{-\infty}^\infty \dd{((k^0)^2 - \omega_k^2)} \frac{1}{2 k^0} \delta((k^0)^2 - \omega_k^2) \\
+        &= \int_{-\omega_k^2}^\infty \dd{x} \frac{1}{2 \sqrt{x + \omega_k^2}} \delta(x) \\
+        &= \frac{1}{2 \omega_{\vb*{k}}},
+        \end{aligned}
+    \]
+    which is exactly \eqref{eq:sch-2.6-1}.
+    \item[(b)] A Lorentz transformation changes the four-momentum in this way:
+    \[
+        k^\mu \longrightarrow k'^\mu = \Lambda\indices{^\mu_\nu} k^\mu.
+    \]
+    Under such a transformation, a differential form changes according to the Jacobian determinant in the way of
+    \[
+        \dd[4]{k} \longrightarrow \dd[4]{k'} = \abs{\pdv{k'^\mu}{k^\nu}} \dd[4]{k} = \abs*{\Lambda\indices{^\mu_\nu}} \dd[4]{k}.
+    \]
+    We know the determinant of any Lorentz transformation matrix is 1, and thus $\dd[4]{k} = \dd[4]{k'}$, so it is a Lorentz invariant.
+    \item[(c)] Since $\dd[4]{k}$ is Lorentz invariant, as well as $\delta(k^2 - m^2)$, if $\theta(k^0)$ is also Lorentz invariant then due to 
+    \[
+        \int_{k^0 = -\infty}^\infty \dd[4]{k} \delta(k^2 - m^2) \theta(k^0) = \int_{k^0 = -\infty}^\infty \dd{k^0} \delta(k^2 - m^2) \theta(k^0) \dd[3]{\vb*{k}} = \int \frac{\dd[3]{\vb*{k}}}{2 \omega_{\vb*{k}}},
+    \] 
+    we find that $\int \dd[3]{\vb*{k}} / 2 \omega_{\vb*{k}}$ is also Lorentz invariant.
+    So the key point is to verify the invariance of $\theta(k^0)$.
+    A rotational transformation definitely does not change the sign of $k^0$.
+    After a boost the time component of the four-momentum is
+    \begin{equation}
+        k'^0 = \gamma (k^0 - \vb*{v} \cdot \vb*{k}),
+    \end{equation}
+    where $c$ is set to $1$ and a timelike boost satisfies $\abs{\vb*{v}} < 1$.
+    A four-momentum that makes physical sense must be timelike, and therefore we have $k^0 > \abs{\vb*{k}}$ when $k^0 > 0$, and the Cauchy inequality tells us that 
+    \[
+        \abs{\vb*{k}} > \abs{\vb*{v}} \abs{\vb*{k}} \geq \vb*{v} \cdot \vb*{k},
+    \]
+    and therefore we have 
+    \[
+        k^0 - \vb*{v} \cdot \vb*{k} > 0
+    \]
+    when $k^0 > 0$.When $k^0 < 0$, the timelike condition for the four-momentum is $k^0 < - \abs{\vb*{k}}$, and again by the Cauchy inequality we have
+    \[
+        - \abs{\vb*{k}} < - \abs{\vb*{k}} \abs{\vb*{v}} \leq \vb*{k} \cdot \vb*{v},
+    \]
+    so 
+    \[
+        k^0 - \vb*{v} \cdot \vb*{k} < 0.
+    \]
+    Therefore we find that the sign of $k'^0$ always agrees with $k^0$, and therefore $\theta(k^0) = \theta(k'^0)$, so under a \emph{timelike} Lorentz invariant $\theta(k^0)$ is indeed invariant, completing the proof of the invariance of $\int \dd[3]{\vb*{k}} / 2 \omega_{\vb*{k}}$.
+\end{itemize}
+
+\paragraph{2. Yukawa potential} This is problem $3.6$ on p.~43 of Schwartz.
+(a) Calculate the equation of motion for a massive vector $A_{\mu}$ from the Lagrangian
+\[
+\mathcal{L}=-\frac{1}{4} F_{\mu \nu}^{2}+\frac{1}{2} m^{2} A_{\mu}^{2}-A_{\mu} J^{\mu}
+\]
+where $F_{\mu \nu}=\partial_{\mu} A_{\nu}-\partial_{\nu} A_{\mu}$. Assuming $\partial_{\mu} J^{\mu}=0$, use the equations to find a constraint on $A_{\mu}$.
+(b) For $J_{\mu}$ the current of a point charge, show that the equations of motion for $A_{0}$ reduces to
+\begin{equation}
+    A_{0}(r)=\frac{e}{4 \pi^{2} \ii r} \int_{-\infty}^{\infty} \frac{k \dd k}{k^{2}+m^{2}} \ee^{\ii k \cdot r}.
+    \label{eq:schwartz-3-6-2}
+\end{equation}
+(c) Evaluate this integral with contour integration to get an explicit form for $A_{0}(r)$
+(d) Show that as $m \rightarrow 0$ you reproduce the Coulomb potential.
+
+\paragraph{Solution} \begin{itemize}
+    \item[(a)] By the Euler-Lagrangian equation we have
+    \[
+        \pdv{\mathcal{L}}{A_\mu} - \partial_\nu \pdv{\mathcal{L}}{\partial_\nu A_\mu} = 0.
+    \] 
+    The first term is 
+    \[
+        \pdv{\mathcal{L}}{A_\mu} = m^2 A^\mu - J^\mu.
+    \]
+    As for the second term, we have
+    \[
+        \begin{aligned}
+            \pdv{\mathcal{L}}{\partial_\nu A_\mu} &= - \frac{1}{2} F^{\rho \sigma} \pdv{(\partial_\rho F_\sigma - \partial_\sigma F_\rho)}{\partial_\nu A_\mu} \\
+            &= - \frac{1}{2} F^{\rho \sigma} (\delta_{\rho \nu} \delta_{\sigma \mu} - \delta_{\sigma \nu} \delta_{\rho \mu}) \\
+            &= - \frac{1}{2} (F^{\nu \mu} - F^{\mu \nu}) \\
+            &= F^{\mu \nu},
+        \end{aligned}
+    \]
+    and therefore
+    \[
+        \partial_\nu \pdv{\mathcal{L}}{\partial_\nu A_\mu} = \partial_\nu F^{\mu \nu} = - \partial_\nu \partial^\nu A^\mu + \partial_\nu \partial^\mu A^\nu.
+    \]
+    So the equation of motion is
+    \[
+        m^2 A^\mu - J^\mu + \partial_\nu \partial^\nu A^\mu - \partial^\mu \partial_\nu A^\nu = 0,
+    \]
+    or 
+    \begin{equation}
+        \partial_\nu \partial^\nu A^\mu - \partial^\mu \partial_\nu A^\nu + m^2 A^\mu = J^\mu.
+    \end{equation}
+
+    Under the assumption that $\partial_\mu J^\mu = 0$, we have
+    \[
+        \partial_\mu \partial_\nu \partial^\nu A^\mu - \partial_\mu \partial^\mu \partial_\nu A^\nu + m^2 \partial_\mu A^\mu = \partial_\mu J^\mu = 0,
+    \]
+    where the first two terms cancels, and we arrive at a constraint on $A^\mu$ that
+    \begin{equation}
+        \partial_\mu A^\mu = 0.
+    \end{equation}
+    This, in turn, simplifies the equation of motion into 
+    \begin{equation}
+        \partial_\nu \partial^\nu A^\mu = J^\mu.
+        \label{eq:yukawa-simplified-motion}
+    \end{equation}
+    \item[(b)] Note that vector components in \eqref{eq:yukawa-simplified-motion} are decoupled and for $A^0$ we have
+    \begin{equation}
+        \partial_\nu \partial^\nu A^0 = J^0.
+        \label{eq:yukawa-a0-motion}
+    \end{equation}
+    The current of a point charge without dynamics is 
+    \[
+        J^0 = e \delta^{(3)}(\vb*{x} - \vb*{x}_0), \quad J^i = 0, 
+    \]
+    and under such a current $A^\mu$ has no time evolution, and therefore \eqref{eq:yukawa-a0-motion} can be further simplified into 
+    \begin{equation}
+        (- \laplacian + m^2) A^0 = e \delta^{(3)}(\vb*{x} - \vb*{x}_0).
+    \end{equation}
+    Denoting $\vb*{x} - \vb*{x}_0$ as $\vb*{r}$, by the Fourier transformation we have
+    \[
+        \begin{aligned}
+            A^0 &= \frac{1}{- \laplacian + m^2} e \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{\ii \vb*{k} \cdot \vb*{r}} \\
+            &= e \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \frac{1}{\abs{\vb*{k}}^2 + m^2} \ee^{\ii \vb*{k} \cdot \vb*{r}} \\
+            &= e \frac{1}{(2\pi)^3} \times (2\pi) \times \int_{0}^\pi \sin \theta \dd{\theta} \int_0^\infty k^2 \dd{k} \frac{1}{k^2 + m^2} \ee^{\ii k r \cos \theta} \\
+            &= e \frac{1}{(2\pi)^3} \times (2\pi) \times \int_0^\infty k^2 \dd{k} \frac{1}{k^2 + m^2} \frac{1}{\ii k r} \ee^{\ii k r} \\
+            &= \frac{e}{(2\pi)^2} \int_{-\infty}^\infty k^2 \dd{k} \frac{1}{k^2 + m^2} \frac{1}{\ii k r} \ee^{\ii k r} \\
+            &= \frac{e}{4\pi^2 \ii r} \int_0^\infty k \dd{k} \frac{1}{k^2 + m^2} \ee^{\ii k r} ,
+        \end{aligned}
+    \]
+    which is exactly \eqref{eq:schwartz-3-6-2}.
+    \item[(c)] There are two poles on the imaginary axis, i.e. $k = \pm \ii m$. 
+    Since $\ee^{\ii k r}$ decreases sufficiently fast only on the upper plane, we will use a contour plotted as \prettyref{fig:integral-cont-1}. That gives 
+    \[
+        \begin{aligned}
+            A^0 &= \frac{e}{4\pi^2 \ii r} \times 2 \pi \ii \lim_{k \to \ii m} k \frac{1}{k^2 + m^2} \ee^{\ii k r} \times (k - \ii m) \\
+            &= \frac{e}{4\pi^2 \ii r} \times 2\pi \ii \times \frac{\ii m}{2 \ii m} \ee^{- m r} \\
+            &= \frac{e}{4 \pi r} \ee^{- m r},
+        \end{aligned}
+    \] 
+    so we get the potential 
+    \begin{equation}
+        A^0 = \frac{e}{4 \pi r} \ee^{- m r}.
+        \label{eq:yukawa-potential}
+    \end{equation}
+    \item[(d)] Taking the limit $m \to 0$ in \eqref{eq:yukawa-potential} we immediately obtain
+    \begin{equation}
+        A^0 = \frac{e}{4 \pi r} \sim \frac{e}{r},
+    \end{equation} 
+    which is a Coulomb potential.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{1-fig-1.tex}
+    \caption{The integral contour}
+    \label{fig:integral-cont-1}
+\end{figure}
+
+\paragraph{3. Lorentz currents} This is problem $3.2$ on p. 42 of Schwartz.
+(a) Calculate the conserved currents associated with Lorentz transformations. Express the currents in terms of the energy momentum tensor.
+(b) Evaluate the currents for $\mathcal{L}=\frac{1}{2} \phi\left(\partial^{2}+m^{2}\right) \phi$.
+
+\paragraph{Solution} A Lorentz transformation can be expressed in the most general form
+\begin{equation}
+    x^\mu \longrightarrow x'^\mu = \Lambda\indices{^\mu_\nu} x^\nu,
+\end{equation}
+where $\Lambda$ preserves the metric. Suppose $J$ is a generator, then the metric-preserving requirement is just 
+\begin{equation}
+    J \eta + \eta J^\top = 0,
+\end{equation}
+which contains 10 independent equations, leaving $16-10=6$ degrees of freedom.
+We can, therefore, encode the 6-element parameter of a Lorentz transformation into an antisymmetric tensor $\omega^{\mu \nu}$, and an arbitrary Lorentz transformation reads
+\begin{equation}
+    \Lambda\indices{^\mu_\nu} = \ee^{\ii J\indices{^\mu_\nu_\alpha_\beta} \omega^{\alpha \beta}}.
+\end{equation}
+It can be verified that 
+\begin{equation}
+    J\indices{^\mu^\nu_\alpha_\beta} = \delta^\mu_\alpha \delta^\nu_\beta - \delta^\mu_\beta \delta^\nu_\alpha
+\end{equation}
+is a good choice, and $\omega^{ij}$s are parameters for rotation and $\omega^{0i}$s are parameters for boost. 
+
+\begin{itemize}
+    \item[(a)] We are going to investigate a theory $\mathcal{L}$ invariant under this transformation.
+    The Noether current can be labeled as $K^{\alpha \mu \nu}$, and $\partial_\alpha K^{\alpha \mu \nu} = 0$.
+    Under a Lorentz transformation there is no substantial change on the field $\phi$, i.e.
+    \[
+        \phi(x) \longrightarrow \phi'(x') = \phi(x), 
+    \]
+    which means
+    \[
+        \var{\phi} + \partial_\mu \phi \var{x^\mu} = 0,
+    \]
+    where
+    \[
+        \var{x^\mu} = \ii J\indices{^\mu_\nu_\alpha_\beta} \var{\omega^{\alpha \beta}} x^\nu.
+    \]
+    By Noether's theorem we have 
+    \[
+        \begin{aligned}
+            0 &= \partial_\mu \left( \pdv{\mathcal{L}}{\partial_\mu \phi} \var{\phi} + \mathcal{L} \var{x^\mu} \right) \\
+            &= \partial_\mu \left( \left( - \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi  + \mathcal{L} \delta^{\mu}_\nu \right) \var{x^\nu} \right) \\
+            &= - \partial_\mu \left( T\indices{^\mu_\nu} \var{x^\nu} \right) = - \ii \partial_\mu \left( T\indices{^\mu_\nu} J\indices{^\nu_\sigma_\alpha_\beta} \var{\omega^{\alpha \beta}} x^\sigma \right) \\
+            &= - \ii \partial_\mu \left( T\indices{^\mu_\nu} (\delta^\nu_\alpha \eta_{\sigma \beta} - \delta^\nu_\beta \eta_{\sigma \alpha}) \var{\omega^{\alpha \beta}} x^\sigma \right) \\
+            &= - \ii \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) \var{\omega^{\alpha \beta}}.
+        \end{aligned}
+    \]
+    Note that $\var{\omega^{\alpha \beta}}$ is antisymmetric, so only six Noether current can be obtained, each of which has the form of 
+    \[
+        \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) \var{\omega^{\alpha \beta}} + \partial_\mu (T\indices{^\mu_\beta} x^\alpha - T\indices{^\mu_\alpha} x^\beta) \var{\omega^{\beta \alpha}} = 0,
+    \]
+    where $\alpha \neq \beta$. Due to the antisymmetric natural of $T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha$, we obtain
+    \[
+        \partial_\mu (T\indices{^\mu_\alpha} x^\beta - T\indices{^\mu_\beta} x^\alpha) = 0.
+    \]
+    Therefore we have 
+    \begin{equation}
+        K^{\alpha \mu \nu} = T^{\alpha \mu} x^\nu - T^{\alpha \nu} x^\mu,
+    \end{equation}
+    which are the currents of Lorentz transformations in terms of the energy-momentum tensor.
+    Note that the derivation presented here only works for scalar fields. For a field with non-zero spin, as the coordinates change under the Lorentz transformation, the components of the field will also mix together, creating more terms in $\var{\phi}$.
+    \item[(b)] An equivalent Lagrangian containing only first order derivatives is 
+    \begin{equation}
+        \mathcal{L} = - \frac{1}{2} \partial_\mu \phi \partial^\mu \phi + \frac{1}{2} m^2 \phi^2,
+    \end{equation} 
+    from which we have 
+    \[
+        \begin{aligned}
+            T\indices{^\mu_\nu} &= \pdv{\mathcal{L}}{\partial_\mu \phi} \partial_\nu \phi - \mathcal{L} \delta^{\mu}_\nu \\
+            &= - \partial^\mu \phi \partial_\nu \phi + \frac{1}{2} \delta^\mu_\nu \partial_\sigma \phi \partial^\sigma \phi - \frac{1}{2} \delta^\mu_\nu m^2 \phi^2.    
+        \end{aligned}
+    \]
+    Therefore 
+    \begin{equation}
+        \begin{aligned}
+            K^{\alpha \mu \nu} &= (x^\mu \partial^\nu \phi - x^\nu \partial^\mu \phi) \partial^\alpha \phi + \frac{1}{2} (\eta^{\alpha \mu} x^\nu - \eta^{\alpha \nu} x^\mu) (\partial_\sigma \phi)^2 + \frac{1}{2} (x^\mu \eta^{\alpha \nu} - x^\nu \eta^{\alpha \mu}) m^2 \phi^2 \\
+            &= (x^\mu \partial^\nu \phi - x^\nu \partial^\mu \phi) \partial^\alpha \phi + \frac{1}{2} (\eta^{\alpha \mu} x^\nu - \eta^{\alpha \nu} x^\mu) ((\partial_\sigma \phi)^2 - m^2 \phi^2).
+        \end{aligned}
+    \end{equation}
+\end{itemize}
+
+\paragraph{4. Classical electromagnetism} This is problem $2.1$ on p. 33 of Peskin.
+Action: 
+\begin{equation}
+    S=\int \dd^{4} x\left(-\frac{1}{4} F_{\mu \nu} F^{\mu \nu}\right),
+\end{equation}
+with 
+\begin{equation}
+    F_{\mu \nu}=\partial_{\mu} A_{\nu}-\partial_{\nu} A_{\mu}.
+\end{equation}
+(a) Construct the energy-momentum tensor for this theory.
+(b) The usual procedure does not result in a symmetric tensor. To remedy that, one can add to $T^{\mu \nu}$ a term of the form $\partial_{\lambda} K^{\lambda \mu \nu}$, where $K^{\lambda \mu \nu}$ is antisymmetric in its first two indices. Such an object is automatically divergenceless, so
+\begin{equation}
+    \hat{T}^{\mu \nu}=T^{\mu \nu}+\partial_{\lambda} K^{\lambda \mu \nu}
+    \label{eq:peskin-2-1-3}
+\end{equation}
+is an equally good energy-momentum tensor with the same globally conserved energy and momentum. Show that this construction, with
+\begin{equation}
+    K^{\lambda \mu \nu}=F^{\mu \lambda} A^{\nu}
+    \label{eq:peskin-2-1-4}
+\end{equation}
+leads to an energy-momentum tensor $\hat{T}$ that is symmetric and yields the standard formulae for the electromagnetic energy and momentum densities:
+\begin{equation}
+    \mathcal{E}=\frac{1}{2}\left({\vb*{E}}^{2}+\vb*{B}^{2}\right) , \quad \vb*{S}=\vb*{E} \times \vb*{B},
+    \label{eq:peskin-2-1-5}
+\end{equation}
+where $E^{i}=-F^{0 i}$ and $\epsilon^{i j k} B^{k}=-F^{i j}$.
+
+\paragraph{Solution} 
+\begin{itemize}
+    \item[(a)] The Lagrangian is 
+    \begin{equation}
+        \mathcal{L} = -\frac{1}{4} F_{\mu \nu} F^{\mu \nu},
+    \end{equation} 
+    and therefore the energy-momentum tensor is 
+    \[
+        \begin{aligned}
+            T\indices{^\mu_\nu} &= \pdv{\mathcal{L}}{\partial_\mu A^\rho} \partial_\nu A^\rho - \mathcal{L} \delta^\mu_\nu \\
+            &= - \frac{1}{2} F_{\sigma \delta} \pdv{F^{\sigma \delta}}{\partial_\mu A^\rho} \partial_\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \delta^\mu_\nu \\
+            &= - \frac{1}{2} F_{\sigma \delta} (\eta^{\sigma \mu} \delta^\delta_\rho - \eta^{\mu \delta} \delta^\sigma_\rho) \partial_\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \delta^\mu_\nu  \\
+            &= - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial_\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \delta^\mu_\nu,
+        \end{aligned}
+    \] 
+    so now we have defined an energy-momentum tensor
+    \begin{equation}
+        T\indices{^\mu_\nu} = - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial_\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \delta^\mu_\nu
+    \end{equation}
+    or in other words,
+    \begin{equation}
+        T\indices{^\mu^\nu} = - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \eta^{\mu \nu}.
+    \end{equation}
+    \item[(b)] With \eqref{eq:peskin-2-1-3} and \eqref{eq:peskin-2-1-4} we have
+    \[
+        \hat{T}^{\mu \nu} = - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\nu A^\rho + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \eta^{\mu \nu} + F^{\mu \lambda} \partial_\lambda A^\nu + A^\nu \partial_\lambda F^{\mu \lambda},
+    \] 
+    where 
+    \[
+        \begin{aligned}
+            &\quad - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\nu A^\rho + F^{\mu \lambda} \partial_\lambda A^\nu \\
+            &= - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\nu A^\rho + (\partial^\mu A^\lambda - \partial^\lambda A^\mu) \partial_\lambda A^\nu \\
+            &= - (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\nu A^\rho + (\partial^\mu A_\rho - \partial_\rho A^\mu) \partial^\rho A^\nu \\
+            &= (\partial^\mu A_\rho - \partial_\rho A^\mu) (\partial^\rho A^\nu - \partial^\nu A^\rho) \\
+            &= F\indices{^\mu_\rho} F^{\rho \nu},
+        \end{aligned}
+    \]
+    and since the equation of motion is 
+    \[
+        \begin{aligned}
+            0 &= \partial_\mu \pdv{\mathcal{L}}{\partial_\mu A_\nu} - \pdv{\mathcal{L}}{A_\nu} \\
+            &= - \frac{1}{2} \partial_\mu (F^{\rho \sigma} (\delta^\mu_\rho \delta^\nu_\sigma - \delta^\mu_\sigma \delta^\sigma_\nu)) \\
+            &= - \frac{1}{2} \partial_\mu (F^{\mu \nu} - F^{\nu \mu}) \\
+            &= - \partial_\mu F^{\mu \nu},
+        \end{aligned}
+    \]
+    we have $A^\nu \partial_\lambda F^{\mu \lambda} = 0$.
+    So finally 
+    \begin{equation}
+        \hat{T}^{\mu \nu} = F\indices{^\mu_\rho} F^{\rho \nu} + \frac{1}{4} F_{\sigma \rho} F^{\sigma \rho} \eta^{\mu \nu}.
+    \end{equation}
+    The second term is obviously symmetric, and for the first term we have
+    \[
+        F\indices{^\nu_\rho} F^{\rho \mu} = F^{\nu \rho} F\indices{_\rho^\mu} = (- F^{\rho \nu}) (- F\indices{^\mu_\rho}) = F\indices{^\mu_\rho} F^{\rho \nu},
+    \]
+    so it is also symmetric. 
+    Therefore $\hat{T}^{\mu \nu}$ is a symmetric energy-momentum tensor.
+
+    Now we evaluate $\hat{T}^{\mu \nu}$ in terms of $\vb*{E}$ and $\vb*{B}$.
+    We have
+    \[
+        \begin{aligned}
+            \mathcal{E} &= \hat{T}^{00} = F^{0 \sigma} \eta_{\sigma \rho} F^{\rho 0} + \frac{1}{4} \eta_{\mu \sigma} \eta_{\nu \rho} F^{\mu \nu} F^{\sigma \rho} \\
+            &= - F^{0 i} F^{i 0} + \frac{1}{4} (\eta_{0 \sigma} \eta_{\nu \rho} F^{0 \nu} F^{\sigma \rho} + \eta_{i \sigma} \eta_{\nu \rho} F^{i \nu} F^{\sigma \rho}) \\
+            &= \vb*{E}^2 + \frac{1}{4} ( \eta_{\nu \rho} F^{0 \nu} F^{0 \rho} - \eta_{\nu \rho} F^{i \nu} F^{i \rho}) \\
+            &= \vb*{E}^2 + \frac{1}{4} ( - F^{0 i} F^{0 i} - F^{i 0} F^{i 0} + F^{i j} F^{i j}) \\
+            &= \frac{1}{2} \vb*{E}^2 + \frac{1}{4} F^{ij} F^{ij} = \frac{1}{2} \vb*{E}^2 + \frac{1}{4} \epsilon^{ijk} B^k \epsilon^{ijl} B^l \\
+            &= \frac{1}{2} \vb*{E}^2 + \frac{1}{4} (\delta^{jj} \delta^{lk} - \delta^{jk} \delta^{lj}) B^k B^l \\
+            &= \frac{1}{2} \vb*{E}^2 + \frac{1}{4} \times 2 \delta^{kl} B^k B^l = \frac{1}{2} \vb*{E}^2 + \frac{1}{2} \vb*{B}^2,
+        \end{aligned}
+    \]
+    which is the first equation in \eqref{eq:peskin-2-1-5}.
+    Also, 
+    \[
+        \begin{aligned}
+            S^i &= \hat{T}^{i 0} = F^{i \sigma} \eta_{\sigma \rho} F^{\rho 0} \\
+            &= F^{i \sigma} \eta_{\sigma j} F^{j 0} = - F^{i j} F^{j 0} \\
+            &= - (- \epsilon^{ijk} B^k) E^j \\
+            &= \epsilon_{ijk} E^j B^k = (\vb*{E} \times \vb*{B})^i,
+        \end{aligned}
+    \]
+    which is the second equation in \eqref{eq:peskin-2-1-5}.
+    So now \eqref{eq:peskin-2-1-5} has been proved.
+\end{itemize}
+
+\end{document}

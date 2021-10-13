@@ -74,6 +74,7 @@
     即粒子数守恒方程；这里我们定义
     \begin{equation}
         \vb*{u} = \expval{\vb*{v}}, \quad \vb*{w} = \vb*{v} - \vb*{u}.
+        \label{eq:v-decomposite-u-w}
     \end{equation}
     
     类似的，我们在玻尔兹曼方程\eqref{eq:boltmann-eq-simple-form}两边乘上$m v_i$，并对$\vb*{v}$积分，由于动量守恒，根据\eqref{eq:collision-conservation}，方程右边为零，方程左边则是
@@ -109,8 +110,28 @@
     我们由于没有计算$\vb*{\pi}$是什么，似乎得到了\eqref{eq:ns-momentum}也没有什么用，但是无论如何，$\vb*{\pi}$一定是$\vb*{r}, \vb*{v}, \rho, e$的函数，
 
     同样，在\eqref{eq:boltmann-eq-simple-form}两边乘上$m \vb*{v}^2 / 2$，根据\eqref{eq:collision-conservation}，方程右边为零，方程左边则是
+    \[
+        \pdv{t} \int \dd[3]{\vb*{v}} \frac{1}{2} m \vb*{v}^2 f + \pdv{r_i} \int \dd[3]{\vb*{v}} \frac{1}{2} m \vb*{v}^2 v_i f - \int \dd[3]{\vb*{v}} \pdv{v_i} \left( \frac{F_i}{m} \frac{1}{2} m \vb*{v}^2 \right) f = 0.
+    \]
+    将分解\eqref{eq:v-decomposite-u-w}代入上式，并注意到
+    \[
+        \pdv{v_i} (\rho f_i \vb*{v}^2 / 2) = \rho f_i v_i,
+    \]
+    得到
+    \[
+        0 = \pdv{t} (\rho (\vb*{u}^2 + \expval*{\vb*{w}^2}) / 2) + \pdv{r_i} (\rho (\vb*{u}^2 u_i / 2 + u_i \expval*{\vb*{w}^2} /2 + \expval*{\vb*{w}^2 w_i} + \expval*{(\vb*{u} \cdot \vb*{w}) w_i})) - \rho \vb*{u} \cdot \vb*{f}. 
+    \]
+    引入内能的质量密度
     \begin{equation}
-        \pdv{e}{t} % TODO
+        e = \dv{E_\text{internal}}{m} = \frac{1}{\rho} \dv{E_\text{internal}}{V} = \frac{1}{2} \expval*{\vb*{w}^2},
+    \end{equation}
+    以及
+    \begin{equation}
+        J_i = \rho \expval*{\vb*{w}^2 w_i},
+    \end{equation}
+    得到
+    \begin{equation}
+        \pdv{t} (\rho e + \rho \vb*{u}^2 / 2) + \div{((\rho e + \rho \vb*{u}^2 / 2) \vb*{u})} + \div{(\rho \vb*{J})} = \div{(\vb*{\pi} \cdot \vb*{u})} + \rho \vb*{u} \cdot \vb*{f}.
         \label{eq:ns-energy}
     \end{equation}
 
@@ -119,9 +140,38 @@
     将\eqref{eq:ns-particle}代入\eqref{eq:ns-momentum}，可以将\eqref{eq:ns-momentum}转化为
     \begin{equation}
         \rho \pdv{\vb*{u}}{t} + \rho \vb*{u} \cdot \grad{\vb*{u}} = \div{\vb*{\pi}} + \rho \vb*{f},
+        \label{eq:ns-newton}
     \end{equation}
     上式实际上就是牛顿定律作用于流体微团上得到的纳维-斯托克斯方程，将它和\eqref{eq:ns-particle}以及状态方程联立求解同样能够封闭求解$\rho, \vb*{u}, e$。
-    类似的能量方程也可以被修改来包括流体的动能，% TODO
+    类似的能量方程也可以被修改，让流体的动能消失掉。在\eqref{eq:ns-newton}两边点乘上$\vb*{u}$并做矢量不定积分，得到
+    \[
+        \rho \pdv{t}(\vb*{u}^2 / 2) + \rho \vb*{u} \cdot (\grad{\vb*{u}}) \cdot \vb*{u} = \vb*{u} \cdot (\div{\vb*{\pi}}) + \rho \vb*{u} \cdot \vb*{f}.
+    \]
+    另一方面我们有
+    \[
+        \begin{aligned}
+            &\quad \pdv{t} (\rho \vb*{u}^2 / 2) + \div{(\rho \vb*{u}^2 \vb*{u} / 2)} \\
+            &= \rho \pdv{t}(\vb*{u}^2 / 2) + \frac{\vb*{u}^2}{2} \pdv{\rho}{t} + \rho \vb*{u} \cdot \grad \frac{\vb*{u}^2}{2} + \frac{\vb*{u}^2}{2} \div{(\rho \vb*{u})} \\
+            &= \rho \pdv{t}(\vb*{u}^2 / 2) + \rho \vb*{u} \cdot (\vb*{u} \cdot \grad \vb*{u}),
+        \end{aligned}
+    \]
+    于是就得到
+    \begin{equation}
+        \quad \pdv{t} (\rho \vb*{u}^2 / 2) + \div{(\rho \vb*{u}^2 \vb*{u} / 2)} = \vb*{u} \cdot (\div{\vb*{\pi}}) + \rho \vb*{u} \cdot \vb*{f}.
+    \end{equation}
+    这就是动能的运动方程，将它代入\eqref{eq:ns-energy}就得到
+    \begin{equation}
+        \pdv{(\rho e)}{t} + \div{(\rho e \vb*{u})} = - \div((\rho \vb*{J})) + \pi_{ij} \partial_i u_j.
+    \end{equation}
+    这就是内能的体积密度的运动方程。上式左边也等于
+    \[
+        \rho \pdv{e}{t} + \rho \vb*{u} \cdot \grad e,
+    \]
+    于是得到
+    \begin{equation}
+        \rho \pdv{\rho}{t} + \rho \vb*{u} \cdot \grad e = - \div((\rho \vb*{J})) + \pi_{ij} \partial_i u_j.
+    \end{equation}
+    这就是体积的质量密度的运动方程。
 
     在更加工程的资料中，可能基本的变量不是$\rho, \vb*{u}, e$，而是更加容易测量的$p, \vb*{u}, T$，即我们将状态方程反过来用，用$p, T$表示$\rho, e$，这当然也是可以的，不过并没有揭示问题的物理实质，并且，在一些比较特殊的系统中可能并没有良定义的压强和温度，此时我们必须回到$\rho, \vb*{u}, e$的组合上来。
 \end{back}

@@ -125,7 +125,7 @@ Haskell也提供了`forall`关键字，如对`a -> b -> a`完整的类型签名�
 data Worker x y = Worker {buffer :: b, input :: x, output :: y}
 ```
 
-直觉上看，它希望表示类型变量`b`是extentially quantified的：对任何类型`x`和`y`，都能够定义类型`Worker x y`，另一方面，也许不是所有的类型`b`都对应某个`Worker`，但是一定可以找到一个类型`b`使得`Worker x y`有定义。
+直觉上看，它希望表示类型变量`b`是extentially quantified的：对任何类型`x`和`y`，都能够定义类型`Worker x y`，另一方面，也许不是所有的类型`b`都对应某个`Worker`，但是一定可以找到*一个*类型`b`使得`Worker x y`有定义。
 不加以修改的话这段代码会报错，因为`b`出现在了等号右边但没有出现在等号左边。
 把它修改成
 ```Haskell
@@ -316,6 +316,7 @@ do {let decls; stmts}	=	let decls in do {stmts}
 过程式编程需要的各个组成部分都在这里了：顺序执行语句就是monad的`>>`，其类型签名为`Monad m => m a -> m b -> m b`，也就是先执行可能返回类型`a`的一个monad（对应一个或者一组语句），然后执行可能返回类型`b`的一个monad。
 `let`用于简单地创建一个别名，而`<-`则运行一个语句并获得它的结果；后者是可能有副作用、可能产生错误等的，而前者不会。
 （这又意味着，如果某个值需要从一个monad获得，而我们需要将它传入一个函数中，那么必须使用
+
 ```Haskell
 x <- expr
 func(x)

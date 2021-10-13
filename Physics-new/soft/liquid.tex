@@ -1,15 +1,221 @@
-\part{流体}
+\part{简单流体}
 
-\cite{eft-fluid-rel}中非常狡猾地没有提我们如何量子化流体力学。
+本节讨论简单流体，基本上就是在讨论牛顿流体。不过，仅仅是简单流体也已经足够复杂了，因为输运项$\vb*{v} \cdot (\div{\vb*{v}})$在一定条件下会产生比较明显的效应，其非线性性让模拟流体运动变得十分困难。
 
-\chapter{牛顿流体的流体动力学}
+\chapter{牛顿流体的一般理论}
 
-对流体，我们有\concept{纳维-斯托克斯方程}
+牛顿流体指的是粘滞力与应变有线性关系的流体。
+我们已经有了方程\eqref{eq:continue-newton}和\eqref{eq:continue-internal-energy}了，牛顿流体当然服从它们，现在需要的就是根据牛顿流体的定义给出正确的应力$\sigma_{ij}$的形式和热流$\vb*{J}$的形式。
+由于牛顿流体的概念本身是唯象的，本章将主要通过宏观的对称性分析等来得到支配牛顿流体的方程。
+
+常见的单组分流体一般都是牛顿流体。非牛顿流体常常是软物质的特征，见\autoref{chap:non-newtonian}。
+
+\section{纳维-斯托克斯方程（的力学部分）的宏观推导}
+
+\subsection{应力形式的初步确定}
+
+首先确定应力形式。设
 \begin{equation}
-    \rho \left( \pdv{\vb*{v}}{t} + \vb*{v} \cdot \grad{\vb*{v}} \right) = - \grad{P} + \vb*{f}.
+    \sigma_{ij} = \sigma_{ij}^{(0)} + \sigma_{ij}',
+\end{equation}
+分别为和流速无关的项和只有有流速时才有的项。
+
+\subsubsection{静止流体不受剪切以及压强的概念}
+
+处在静止状态下的流体中不可能存在剪切力，实际上这可以看成流体的一种\emph{定义}。
+这意味着一个表面上的应力不可能有切向分量，即$\vu*{n} \cdot \vb*{\sigma} \propto \vu*{n}$，从而我们设
+\begin{equation}
+    \sigma^{(0)}_{ij} = - P \delta_{ij}.
+\end{equation}
+这就引入了压强的概念，因为显然
+\begin{equation}
+    P = \dv{F}{S}, \quad \vb*{F} = \vu*{n} \cdot \vb*{\sigma}.
 \end{equation}
 
+\subsubsection{线性粘滞}
+
+我们将$\sigma_{ij}'$设为$\vb*{u}$的泛函，即
+\[
+    \sigma_{ij}' = \sigma_{ij}'(\vb*{u}, \grad{\vb*{u}}, \ldots),
+\]
+在伽利略变换下理论应该保持不变，则在流体中各点$\vb*{u}$一致的情况应该和静止流体完全一样，从而$\sigma'_{ij}$和$\vb*{u}$无关。%
+\footnote{
+    需注意对一些系统——如介质中的电器——伽利略不变性破缺是可能的。
+    背景中完全可以存在某些具有确定的速度（一般就是静止）而能够让动量流失的东西——比如说杂质——从而流体可以受到直接正比于速度的粘滞力。
+    类似的，流体中运动的固体也可以直接受到正比于速度的粘滞力，此时流体充当了这个静止的、让动量流失的背景。
+}%
+假定流体中各点之间的关联足够局域，则$\sigma_{ij}'$只和$\grad{\vb*{u}}$有关，再假定速度梯度不大，则我们有
+\[
+    \sigma_{ij}' \propto \grad{\vb*{u}}.
+\]
+
+现在我们需要用$\grad{\vb*{u}}$做一系列线性运算，用它产生一个二阶张量。
+仅有的可能是
+\[
+    \sigma_{ij}' = a \pdv{u_i}{x_j} + b \pdv{u_j}{x_i} + c \pdv{u_l}{x_l} \delta_{ij}.
+\]
+做对称化和反对称化，重新定义$a, b$，将$\sigma_{ij}'$写成应变和扭转的函数：
+\[
+    \sigma_{ij}' = a \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} \right) + b \left( \pdv{u_i}{x_j} - \pdv{u_j}{x_i} \right) + c \pdv{u_l}{x_l} \delta_{ij}.
+\]
+由于流体均匀旋转时也没有粘滞力，而此时
+\[
+    \vb*{u} = \vb*{\Omega} \times (\vb*{r} - \vb*{r}_0),
+\]
+由于保度规性，应变和膨胀率$\pdv{u_l}{x_l}$均为零，因此$\sigma_{ij}'$和扭转无关，即
+\[
+    \sigma_{ij}' = a \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} \right) + c \pdv{u_l}{x_l} \delta_{ij},
+\]
+这意味着它仅仅是应变的函数。
+我们通常会将上式改写为
+\begin{equation}
+    \sigma_{ij}' = \eta \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} - \frac{2}{3} \pdv{u_l}{x_l} \delta_{ij} \right) + \zeta \pdv{u_l}{x_l} \delta_{ij},
+    \label{eq:stress-and-deform-linear}
+\end{equation}
+这样就有
+\begin{equation}
+    \sigma'_{ii} = 3 \zeta \pdv{u_l}{x_l}.
+\end{equation}
+非常合理地，我们命名$\eta$为\concept{剪切粘度}，而$\zeta$为\concept{体积粘度}。
+完整的应力公式为
+\begin{equation}
+    \sigma_{ij} = - P \delta_{ij} + \eta \left( \pdv{u_i}{x_j} + \pdv{u_j}{x_i} - \frac{2}{3} \pdv{u_l}{x_l} \delta_{ij} \right) + \zeta \pdv{u_l}{x_l} \delta_{ij}.
+    \label{eq:newtonian-stress-general}
+\end{equation}
+
+只有剪切粘度时$\sigma_{ij}'$这部分应力直接正比于应变，即它们之间只相差一个标量。
+否则，两者之间的关系虽然是线性的，但是并不只相差一个标量。
+
+\subsection{纳维-斯托克斯方程}
+
+\subsubsection{假定粘度与温度无关}
+
+假定流体中各点温度变化不很大，以至于$\eta$和$\zeta$可以看成是各点都一样的，将\eqref{eq:newtonian-stress-general}代入\eqref{eq:continue-newton}，得到
+\begin{equation}
+    \rho \left( \pdv{\vb*{u}}{t} + \vb*{u} \cdot \grad \vb*{u} \right) = - \grad{P} + \eta \laplacian \vb*{u} + \left( \zeta + \frac{1}{3} \eta \right) \grad{(\div{\vb*{u}})} + \rho \vb*{f}.
+    \label{eq:ns-eq}
+\end{equation}
+这就是\concept{纳维-斯托克斯方程}。
+总结之前的推导，纳维-斯托克斯方程适用于满足以下条件的流体：
+\begin{itemize}
+    \item 单组分；
+    \item 不能稳定受剪切（几乎就是流体的定义）；
+    \item 伽利略变换下不变，均匀旋转下不变；
+    \item 各点关联足够局域，且没有特别大的速度梯度；
+    \item 各点物性均一。
+\end{itemize}
+这里的每个条件受到破坏都会产生新的物理：悬浊液等往往是复杂流体（见\autoref{chap:non-newtonian}）；液晶等物态兼有固体和流体的性质；材料中的电子“流体”的输运往往遵从欧姆定律，从而并非伽利略不变；大速度梯度的流体通常需要完整的动理学描述，例如激波；融化或是相变行为会导致显著的各点物性不均一。
+
+顺便提一下：一些资料会将质量守恒方程、\eqref{eq:ns-eq}、能量守恒方程统称为纳维-斯托克斯方程。
+在这种定义下纳维-斯托克斯方程配合上状态方程就能够封闭求解。
+如果只是将\eqref{eq:ns-eq}称为纳维-斯托克斯方程，那就并非如此。
+
+\subsubsection{边界条件}
+
+通常我们采取所谓的\concept{边界无滑移假设}，即认为流固边界上由于强烈的分子间作用力，流体相对于固体边界没有任何相对运动，即
+\begin{equation}
+    \vb*{u}|_\text{edge} = \vb*{v}_\text{boundary}.
+\end{equation}
+相应的可以计算出固体边界受力为
+
+\subsubsection{狭义的牛顿流体}
+
+狭义的牛顿流体指的是粘滞力正比于应变，从而只有剪切粘度$\eta$的流体（见\eqref{eq:newtonian-stress-general}）。
+广义的牛顿流体则是指所有服从\eqref{eq:ns-eq}的流体。
+对狭义的牛顿流体，\eqref{eq:ns-eq}成为
+\begin{equation}
+    \rho \left( \pdv{\vb*{u}}{t} + \vb*{u} \cdot \grad \vb*{u} \right) = - \grad{P} + \eta \laplacian \vb*{u} + \frac{1}{3} \eta \grad{(\div{\vb*{u}})} + \rho \vb*{f}.
+\end{equation}
+
+剪切粘度可以通过以下方式实验测定。
+设距离为$d$，相对速度为$v$，平行移动的两块板之间充斥着流体。建立笛卡尔坐标系，将$x$轴和$z$轴放在静止的板上，根据无滑移边界条件，
+\begin{equation}
+    u|_{y=0} = 0, \quad u|_{y=d} = v.
+\end{equation}
+我们考虑如下试探解：
+\begin{equation}
+    u = \frac{v}{d} y,
+\end{equation}
+将它代入纳维-斯托克斯方程，发现只需要令
+\begin{equation}
+    - \grad{P} + \rho \vb*{f} = 0
+\end{equation}
+即可，这是完全做得到的，因此我们已经得到了解。计算得到仅有的$\sigma_{ij}'$分量为
+\begin{equation}
+    \sigma_{xy} = \sigma_{yx} = \eta \frac{v}{d},
+\end{equation}
+设$F$是一块受到的$x$方向的力，由于
+\[
+    \vu*{y} \cdot \vb*{\sigma} = - P \vu*{y} + \eta \frac{v}{d} \vu*{x},
+\]
+于是
+\begin{equation}
+    F = A \eta \frac{v}{d},
+    \label{eq:shear-force-experiment}
+\end{equation}
+于是即可计算粘度$\eta$。
+我们也可以将\eqref{eq:shear-force-experiment}作为粘度的定义，这样，非牛顿流体就是那些粘度和应变有关的流体。
+
+不可压缩流体由于没有体膨胀，如果是广义的牛顿流体，那么也是狭义的牛顿流体。因此大部分单组分液体都是狭义的牛顿流体。
+一些低密度气体没有体积粘度，也是牛顿流体。
+
+\section{纳维-斯托克斯方程作为有效理论}
+
+\subsection{从对称性出发和基本自由度出发推导纳维-斯托克斯方程}\label{sec:ns-from-sym}
+
+\cite{eft-fluid-rel}
+大概套路：基本自由度可以是位移场，即comoving coordinates相对于实际的坐标和时间的分布。
+先根据不可压缩流体的性质，将“自由场拉氏量”写成一个保度规坐标变换下的不变量。
+然后可以求出能量动量张量
+\begin{equation}
+    T_{\mu \nu} = (\rho + p) u_\mu u_\nu + p \eta_{\mu \nu}
+\end{equation}
+正好是正确的能动张量。
+
+计算偏离基态的小的振动，可以得到声波和涡旋，后者是退化的，这意味着流体中不存在横波。
+
+那么耗散来自哪儿呢？我们对位移场做一个小的偏移（由于位移场的物理意义，这等价于坐标变换），位移场部分的作用量不变。此外，可以确信，整个理论的作用量——同时包括位移场部分的作用量、不考虑的微观自由度的作用量和耦合项——也是不变的。
+理论中那些微观自由度也是连通着流体一起动的，我们据此确定，耦合项随着坐标变换发生的变分和仅仅关于微观自由度的作用量随着坐标变换发生的变分正好抵消。
+这意味着耦合项相对于位移场的一阶展开的形式就是微观自由度自己的能动张量乘上位移场的导数。
+
+后面使用文小刚书上那种“积掉热浴”的方法就会发现位移场的格林函数存在有限大的一个虚部，因此存在耗散，并且通过计算格林函数的运动方程可以看出这个耗散就是$-k v$。
+
+这就得到了不可压缩流体的纳维-斯托克斯方程。
+
+但是这种场论语言并没有什么特殊的用处。耗散项是$-kv$这件事本身可以通过与前述分析等价的，基于微分方程形式的对称性分析得到。
+微扰论提供不了太多信息因为常见的流体问题都涉及很大的位移场，实际上是非微扰的。
+
+其实即使能够做微扰论，场论语言也没太大意义，因为基于微分方程的计算实际上就能够画费曼图。
+
+\subsection{纳维-斯托克斯方程和重整化群不动点}
+
+纳维-斯托克斯方程实际上是一个重整化群不动点，它可以通过对称性分析和一些别的直观的条件直接推导出来\cite{Visscher_1985}。
+
+\subsection{从玻尔兹曼方程到纳维-斯托克斯方程}\label{sec:from-boltmann-to-ns}
+
+实际上，从玻尔兹曼方程出发，施加一定条件，也可以推导出纳维-斯托克斯方程。
+在工程学科的资料中它通常是通过宏观的牛顿三定律推导出来的（见\autoref{sec:ns-from-sym}），但是我们看到，其中的各种参数是可以微观地计算的（正如\autoref{sec:boltmann-to-continuum}所示）。
+
+应注意一个系统的宏观自由度服从纳维-斯托克斯方程不意味着这个系统一定就服从玻尔兹曼方程。
+对玻尔兹曼方程不适用的系统——比如说稠密系统——纳维-斯托克斯方程可能仍然成立。
+另一方面，玻尔兹曼方程的低能有效理论也不止纳维-斯托克斯方程一个。
+通过将碰撞项的强度的量级记作$1/\epsilon$，根据$\epsilon$做一种称为Chapman–Enskog级数的微扰展开\cite{chapman_mathematical_1990}，我们能够从玻尔兹曼方程得到越来越精确的一系列近似解，纳维-斯托克斯方程仅仅是其中的一个低阶项而已。
+在Chapman-Enskog级数之外同样存在玻尔兹曼方程的解，如$\ee^{- 1 / \epsilon}$形式的解，出现在激波中。    
+与玻尔兹曼方程的宏观极限有关的问题如今是偏微分方程领域的话题。
+我们现在讨论的仅仅是如何从玻尔兹曼方程得到纳维-斯托克斯方程，不讨论能够从玻尔兹曼方程得到的纳维-斯托克斯方程以外的流体力学方程。
+
+在更加工程的资料中，可能基本的变量不是$\rho, \vb*{u}, e$，而是更加容易测量的$p, \vb*{u}, T$，即我们将状态方程反过来用，用$p, T$表示$\rho, e$，这当然也是可以的，不过并没有揭示问题的物理实质，并且，在一些比较特殊的系统中可能并没有良定义的压强和温度，此时我们必须回到$\rho, \vb*{u}, e$的组合上来。
+
+\section{微扰行为}
+
 \subsection{声波}
+
+我们先考虑纳维-斯托克斯方程中$\vb*{u}$的一种微小振动。
+如果我们认为$\vb*{f}$是恒定不变的且无旋——此时将它记作$\vb*{g}$，因为通常它是重力场——那么流体静止时有
+\begin{equation}
+    - \grad{P} + \rho \vb*{g} = 0,
+\end{equation}
+这里$\rho$是$P$的函数。
 
 当速度的时间变化相比于空间输运非常大时，即
 \[
@@ -45,3 +251,60 @@
 \]
 即$\curl{\vb*{v}}$不随时间变化。由于\eqref{eq:sound-wave-fluid}是线性的，我们可以只取其小幅振动的解，即从一个一般的解中剥离整体平移运动的部分。这种小幅振动的解的基底不妨取为平面波，而对每个平面波，都有$\curl{\vb*{v}}=0$，于是我们就得出结论：声波是无旋的。
 实际上可以直接从压强的性质出发得到这个结论，因为横波要求剪力而压强不能提供剪力。
+
+\chapter{理想流体}
+
+\section{理想流体的欧拉方程}
+
+\subsection{体态中的欧拉方程}
+
+所谓\concept{理想流体}是指服从纳维-斯托克斯方程，并且不存在粘度的流体。
+显然，略去\eqref{eq:ns-eq}右边所有正比于$\vu*{u}$的项（它们都对应某种粘度），我们有理想流体的\concept{欧拉方程}
+\begin{equation}
+    \pdv{\vb*{u}}{t} + \vb*{u} \cdot \grad \vb*{u} = - \grad P + \rho \vb*{f}.
+\end{equation}
+
+\subsubsection{边界条件}
+
+\subsection{热力学和能量方程}
+
+\subsubsection{绝热流动}
+
+在理想流体热力学平衡时，由于没有粘度，不存在任何耗散，流体流动可以认为是热力学过程。
+进一步，很多流体流动的时间尺度远远小于热传导的时间尺度，从而可以认为是绝热的——于是很多地方会直接将理想流体定义为“没有粘滞\emph{并且}没有传热的流体”。
+
+绝热流动中一个流体微团运动时可以认为熵不变，于是设$s$为熵的质量密度，则在一条流线上有
+\begin{equation}
+    \dv{s}{t} = 0,
+\end{equation}
+或者说
+\begin{equation}
+    \pdv{\rho s}{t} + \div{(\rho s \vb*{u})} = 0.
+\end{equation}
+这就是\concept{绝热流动}。
+
+\subsubsection{等熵流动}
+
+特别的，如果流体运动中有某个时刻上各点质量熵完全一样，那么在任何空间点、任何时间点上，均有
+\begin{equation}
+    s = \text{const}.
+\end{equation}
+这种特殊情况称为\concept{等熵流动}。等熵流动中设$h$
+
+\section{流体静力学}
+
+\section{干水}\label{sec:dry-water}
+
+所谓的
+
+\chapter{不可压缩流体}
+
+现在将粘滞引入，但是认为整个流体中密度保持不变，这意味着流体流动是完全保度规的，从而
+\begin{equation}
+    \div{\vb*{u}} = 0.
+\end{equation}
+或者也可以通过质量守恒方程得到这件事：由于$\rho$是常量，$\pdv*{\rho}{t} = 0$，于是
+\[
+    0 = \div{\rho \vb*{u}} = \rho \div{\vb*{u}}.
+\]
+这样纳维-斯托克斯方程退化为
