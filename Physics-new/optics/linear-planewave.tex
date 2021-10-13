@@ -1,8 +1,10 @@
-\chapter{线性介质与经典麦克斯韦方程}
+\chapter{线性极化介质与经典麦克斯韦方程}
+
+本章考虑无源的、线性极化的介质中电磁波如何传播。
 
 \section{线性介质假设到光学方程}
 
-\subsection{单色波解}
+\subsection{线性本构关系的一般形式}
 
 现在我们认为不存在自由电流和自由电荷，从而\eqref{eq:maxwell-material}成为
 \begin{equation}
@@ -14,30 +16,110 @@
     \end{bigcase}
     \label{eq:no-free-charge}
 \end{equation}
-并且假定所有本构关系都是线性的（这里由于自由电荷被认为是零，不再需要考虑关于$\vb*{j}_\text{f}$的本构关系），
-且$\vb*{D}$只和$\vb*{E}$有关，$\vb*{H}$只和$\vb*{B}$有关。
-这样就可以写出一般的本构关系
+并且假定所有本构关系都是线性的（这里由于自由电荷被认为是零，不再需要考虑关于$\vb*{j}_\text{f}$的本构关系）。现在我们考虑一个比较一般的本构关系
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} = \pmqty{\epsilon & \xi \\ \eta & \mu} \pmqty{\vb*{E} \\ \vb*{H}} \eqqcolon K \pmqty{\vb*{E} \\ \vb*{H}}.
+\end{equation}
+其中的$K$矩阵的每个分量实际上都是张量——实际上是张量算符，作用在“单光子波函数”上的张量算符——它们没有时间演化但是可以有空间变化。
+我们总是把$K$表示成
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \int \dd{t'} K(\vb*{r}, t; \vb*{r}', t') \pmqty{\vb*{E} \\ \vb*{H}}(\vb*{r}' , t').
+\end{equation}
+很多体系中，电场和磁场不会通过本构关系耦合，即此时$\xi = \eta = 0$。
+
+大部分情况下我们可以要求本构关系是空间、时间平移不变的，即
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{r}, t) = \int \dd[3]{\vb*{r}'} \int \dd{t'} K(\vb*{r} - \vb*{r}', t - t') \pmqty{\vb*{E} \\ \vb*{H}} (\vb*{r}', t').
+\end{equation}
+此时做傅里叶变换切换到四维动量空间中，能够写出非常简洁的
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{k}, \omega) = K(\vb*{k}, \omega) \pmqty{\vb*{E} \\ \vb*{H}} (\vb*{k}, \omega).
+\end{equation}
+这是正确的，因为“单光子理论”具有空间平移不变性意味着单光子动量不变，“单光子理论”具有时间平移不变性意味着单光子能量不变，或者换句话说就是波数和频率都不变。
+空间平移不变性的破缺可能是因为介质本身就是不均匀的，而时间平移不变性无法被介质本身的性质破缺。
+不过也有一种可能，就是介质中存在非常强的、作为背景的泵浦光，它的周期性起伏可以同时破缺空间平移不变性和时间平移不变性。
+此时我们有
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{k}, \omega) = \int \dd[3]{\vb*{k}'} \int \dd{t} K(\vb*{k}, \omega; \vb*{k}', \omega') \pmqty{\vb*{E} \\ \vb*{H}} (\vb*{k}', \omega'),
+\end{equation}
+由于将泵浦光和我们正在观察的那部分电磁波作为一个整体，空间和时间平移不变性还是能够保持的，上式左边的非零分量满足
+\[
+    (\omega, \vb*{k}) = (\omega', \vb*{k}') \pm (\omega_\text{pump}, \vb*{k}_\text{pump}), 
+\]
+直观地说就是泵浦光向我们正在观察的电磁波注入了动量和能量，或是我们正在观察的电磁波向泵浦光注入了动量和能量。
+关于泵浦光具体是怎样和其它模式的光耦合的，\autoref{sec:input-pump-seed-2nd}是一个典型的例子。
+
+另一种常见的对本构关系的约束是，本构关系在空间或是时间上是\emph{局域的}，也即，我们有
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{r}, t) = K(\vb*{r}, t) \pmqty{\vb*{E} \\ \vb*{H}}(\vb*{r} , t).
+\end{equation}
+这个限制体现在四维动量空间上，就是
+\begin{equation}
+    \pmqty{\vb*{D} \\ \vb*{B}} (\vb*{k}, \omega) = \int \dd[3]{\vb*{k}'} \int \dd{\omega'} K(\vb*{k} - \vb*{k}', \omega - \omega') \pmqty{\vb*{E} \\ \vb*{H}}(\vb*{k}' , \omega').
+\end{equation}
+
+如果本构关系同时是平移不变的和局域的，那么它就只能够是一个在空间和时间上均不变动的常数。
+如果它在时间上平移不变且局域但是空间上未必，那么它就可以有空间依赖但是不能有时间依赖，也即，可以有动量依赖但是不能有频率依赖。
+因此，在已知本构关系在某个坐标上平移不变时，如果本构关系在这个坐标的频域上不是常数，那么该本构关系在这个坐标上就不是局域的。
+
+\subsection{对称性}
+
+设电场$\vb*{E}$的时间反演为$\vb*{E}'$，即
+\begin{equation}
+    \vb*{E}'(t) = \vb*{E}(-t),
+\end{equation}
+那么我们会发现
 \[
     \begin{aligned}
-        \vb*{D}(\vb*{r}, t) &= \int K_E(\vb*{r} - \vb*{r}', t - t') \vb*{E}(\vb*{r}', t') \dd^3 \vb*{r}' \dd t', \\
-        \vb*{H}(\vb*{r}, t) &= \int K_B(\vb*{r} - \vb*{r}', t - t') \vb*{B}(\vb*{r}', t') \dd^3 \vb*{r}' \dd t'
+        \vb*{E}'(\omega) &= \int \dd{t} \ee^{\ii \omega t} \vb*{E}'(t) = \int \dd{t} \ee^{\ii \omega t} \vb*{E}(-t) \\
+        &=  \int_{-\infty}^\infty \dd{t} \ee^{\ii \omega t} \vb*{E}(-t) \\
+        &= \int_{-\infty}^\infty \dd{t} \ee^{- \ii \omega t} \vb*{E}(t)  = \vb*{E}(- \omega) = \vb*{E}^*(\omega).
     \end{aligned}
 \]
-其中的$K_E$和$K_B$都是张量。我们再要求本构关系是局部的，则应有%
-\footnote{在本节中$K_E$和$K_B$代表不同的常（张）量，其值在不同地方可能不同}
+因此，在时间反演下，
+\begin{equation}
+    \vb*{E}(\omega) \longrightarrow T \vb*{E}(\omega) = \vb*{E}'(\omega) = \vb*{E}(- \omega) = \vb*{E}^*(\omega),
+\end{equation}
+即时间反演就是取复共轭。
+
+对磁场做时间反演是类似的，不过磁场在时间反演变换下会变号，% TODO
+因此我们有
+\begin{equation}
+    \vb*{B}(\omega) \longrightarrow T \vb*{B}(\omega) = - \vb*{B}'(\omega) = -\vb*{B}(- \omega) = - \vb*{B}^*(\omega),
+\end{equation}
+
+在时间反演变换下我们发现
+\begin{equation}
+    T \epsilon(\omega) = \exp^*(\omega), \quad T \mu(\omega) = \mu^*(\omega), \quad T \xi(\omega) = - \xi^*(\omega), \quad T \eta(\omega) = - \eta^*(\omega).
+\end{equation}
+
+在时间演化下$\epsilon$要取复共轭这件事实际上有很明显的物理意义：如\autoref{sec:light-propagate}中我们会看到的那样，$\epsilon$的虚部意味着光在介质中存在衰减；实际上在\eqref{eq:ohm-dissipation-maxwell}中我们看到对欧姆定律成立的介质，$\epsilon$的虚部和来自电场激发出的电流产生的发热耗散掉的能量。
+如果一个过程中光受到\emph{阻尼}，其时间反演中光应该受到\emph{增益}。
+这就是$\epsilon$取复共轭的意义。
+
+\subsection{频域方程}
+
+\begin{equation}
+    \begin{aligned}
+        \vb*{D}(\vb*{r}, t) &= \int K_E(\vb*{r} - \vb*{r}', t - t') \vb*{E}(\vb*{r}', t') \dd^3 \vb*{r}' \dd t', \\
+        \vb*{H}(\vb*{r}, t) &= \int K_B(\vb*{r} - \vb*{r}', t - t') \vb*{B}(\vb*{r}', t') \dd^3 \vb*{r}' \dd t'.
+    \end{aligned}
+\end{equation}
+
+大部分情况下我们可以要求本构关系是局部的，则应有
 \[
     \begin{aligned}
         \vb*{D}(\vb*{r}, t) &= \int K_E(\vb*{r}, t-t') \vb*{E}(\vb*{r}, t') \dd t', \\
-        \vb*{H}(\vb*{r}, t) &= \int K_B(\vb*{r}, t-t') \vb*{B}(\vb*{r}, t') \dd t'
+        \vb*{H}(\vb*{r}, t) &= \int K_B(\vb*{r}, t-t') \vb*{B}(\vb*{r}, t') \dd t',
     \end{aligned}
 \]
 这是一个时间上的卷积运算。由傅里叶变换，我们只需要讨论平面波的本构关系就可以了，因为其它所有形式的场都能够写成平面波的叠加，既然\eqref{eq:no-free-charge}是线性齐次的（这就是假定没有自由电荷的好处！）。于是，不失一般性的，假设所有的场都取
 \[
-    \vb*{A}(\vb*{r}) \ee^{-\ii \omega t}
+    \vb*{A}(\vb*{r}, \omega) \ee^{-\ii \omega t}
 \]
-的形式，其中$\vb*{A}(\vb*{r})$可以有虚部，但是一定能够写成某个实矢量乘以$\ee^{\ii \phi}$的形式%
-\footnote{在这个条件下，可能的$\vb*{A}$并不能覆盖整个$\complexes^3$，但附加这个条件并不会失去一般性，因为允许$\vb*{A}$有虚部是为了表示$\vb*{A}_0 \cos (\omega t + \phi)$这样的函数，而这一点在限制$\vb*{A}(\vb*{r})$取某个实矢量乘以$\ee^{\ii \phi}$的形式时足以满足。这是三维下的实函数的傅里叶变换的一个特点。}
-，则只需要形如
+的形式，其中$\vb*{A}(\vb*{r})$可以有虚部，但是一定能够写成某个实矢量乘以$\ee^{\ii \phi}$的形式。
+在这个条件下，可能的$\vb*{A}$并不能覆盖整个$\reals^3 \to \complexes^3$，但这是正确的，因为允许$\vb*{A}$有虚部是为了表示$\vb*{A}_0 \cos (\omega t + \phi)$这样的函数，而这一点在限制$\vb*{A}(\vb*{r})$取某个实矢量乘以$\ee^{\ii \phi}$的形式时足以满足。归根到底$\vb*{E}$等都是实场，其傅里叶分量相比一个复场肯定是高度受限的。（这件事我们在\qftdoc中会看到，在那里，这个事实体现为实场量子化后产生一种粒子，而复场量子化后产生两种互为反粒子的粒子）
+于是，本构关系就是
 \begin{equation}
     \vb*{D}(\vb*{r}) = K_E(\vb*{r}, \omega) \vb*{E}(\vb*{r}), \quad \vb*{H}(\vb*{r}) = K_B(\vb*{r}, \omega) \vb*{B}(\vb*{r})
     \label{eq:linear-constitutive}
@@ -54,7 +136,7 @@
     \label{eq:sin-wave-eqs}
 \end{equation}
 
-现在转而讨论有自由电流和自由电荷的情况。我们认为自由电流正比于电场，即服从\concept{欧姆定律}。
+如果有自由电流和自由电荷，但是自由电流正比于电场，即服从\concept{欧姆定律}，那么我们可以将它们吸收进$\vb*{D}$和$\vb*{H}$中；这件事在\autoref{sec:classical-continuum}中我们提到过，不过下面还是详细地展示具体怎么做计算。
 同样不失一般性地设所有的场都可以写成一个复振幅乘以$\ee^{- \ii \omega t}$的形式。
 使用导出$\vb*{D}$和$\vb*{E}$的关系、$\vb*{H}$和$\vb*{B}$的关系同样的方法，有
 \begin{equation}
@@ -80,13 +162,14 @@
     \end{bigcase}
 \]
 代入本构关系\eqref{eq:ohm-law-sin-wave}得到
-\[
+\begin{equation}
     \begin{bigcase}
         \div{\left( \vb*{D} - \frac{\sigma \vb*{E}}{\ii \omega} \right)   } &= 0, \\
         \curl{\vb*{E}} &= \ii \omega \vb*{B}, \\
         \curl{\vb*{H}} &=  - \ii \omega \left( \vb*{D} - \frac{\sigma \vb*{E}}{\ii \omega} \right)
     \end{bigcase}
-\]
+    \label{eq:ohm-dissipation-maxwell}
+\end{equation}
 注意到$\vb*{D}$和$\vb*{E}$、$\vb*{H}$和$\vb*{B}$之间的关系（见\eqref{eq:linear-constitutive}），做下面的替换
 \[
     \vb*{D} - \frac{\sigma \vb*{E}}{\ii \omega} \longrightarrow \vb*{D}, \quad K_E - \frac{\sigma}{\ii \omega} \longrightarrow K_E
@@ -94,7 +177,7 @@
 得到的方程和\eqref{eq:sin-wave-eqs}形式完全一致，本构关系的形式也还是\eqref{eq:linear-constitutive}。
 唯一的不同是，$K_E$和$K_B$都是复数，并且
 \begin{equation}
-    \Im K_E = \frac{\sigma}{\omega}
+    \Im K_E = \frac{\sigma}{\omega}.
 \end{equation}
 
 \subsection{各向同性介质中的亥姆霍兹方程}
