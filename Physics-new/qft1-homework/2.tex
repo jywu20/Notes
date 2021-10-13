@@ -81,6 +81,8 @@
   keywordstyle=\color{blue}
 }
 
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
 \title{QFT I, Homework 2}
 \author{Jinyuan Wu}
 
@@ -320,7 +322,18 @@ It is convenient to analyze this theory by considering $\phi$ and $\phi^{*}$, ra
     \] 
     where we have used a procedure similar to the one we use to derive the Hamiltonian.
     Again, by exchange $b_{\vb*{p}}$ and $b^\dagger_{\vb*{p}}$, we have 
-    
+    \begin{equation}
+        \begin{aligned}
+            Q &= \frac{1}{2} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} (a^\dagger_{\vb*{p}} a_{\vb*{p}} - b_{\vb*{p}}^\dagger b_{\vb*{p}} - \comm*{b_{\vb*{p}}}{b^\dagger_{\vb*{p}}} ) \\
+            &= \frac{1}{2} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} (a^\dagger_{\vb*{p}} a_{\vb*{p}} - b_{\vb*{p}}^\dagger b_{\vb*{p}} - (2\pi)^3 \delta^{(3)}(0) ) 
+        \end{aligned}.
+    \end{equation}
+    So this is how $Q$ can be recast in terms of creation and annihilation operators, and we can immediately see that $a$ particles carry a charge of $1/2$ while $b$ particles carry a charge of $-1/2$.
+    \item[(d)] Now the action is 
+    \begin{equation}
+        S = \int \dd[4]{x} (\partial_\mu \phi^*_a \partial^\mu \phi_a - m^2 \phi^*_a \phi_a).
+    \end{equation} 
+    There is no coupling between $a=1$ fields and $a=2$ fields, and therefore the two sets of fields can be quantized separately, and all conclusions we have drawn in (a), (b) and (c) still work, as long as we replace $\phi$ by $\phi_1$ or $\phi_2$.
 \end{itemize}
 
 \paragraph{}
@@ -330,5 +343,44 @@ It is convenient to analyze this theory by considering $\phi$ and $\phi^{*}$, ra
 \langle 0|\phi(x) \phi(y)| 0\rangle=D(x-y)=\int \frac{\dd^{3} p}{(2 \pi)^{3}} \frac{1}{2 E_{\vb*{p}}} e^{-\ii p \cdot (x-y)}
 \]
 for $(x-y)$ spacelike so that $(x-y)^{2}=-r^{2}$, explicitly in terms of Bessel functions.
+
+\paragraph{Solution} Since $D(x - y)$ is invariant under any Lorentz transformation, we can just assume that $x^0 = y^0$, so that 
+\begin{equation}
+    \abs*{\vb*{x} - \vb*{y}}^2 = r^2.
+\end{equation}
+Therefore we have 
+\[
+    \begin{aligned}
+        D(x - y) &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 E_{\vb*{p}}} \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{y})} = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 \sqrt{m^2 + \vb*{p}^2}} \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{y})} \\
+        &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 \sqrt{m^2 + p^2}} \ee^{\ii p r \cos \theta } \\
+        &= \int \frac{p^2 \dd{p} \sin \theta \dd{\theta} \dd{\varphi}}{(2\pi)^3} \frac{1}{2 \sqrt{p^2 + m^2}} \ee^{\ii p r \cos \theta} \\
+        &= \frac{2\pi}{(2\pi)^3} \int_0^\infty p^2 \dd{p} \frac{1}{2 \sqrt{p^2 + m^2}} \int_0^\pi \sin \theta \dd{\theta} \ee^{\ii p r \cos \theta} \\
+        &= \frac{1}{(2\pi)^2} \int_0^\infty p^2 \dd{p} \frac{1}{2 \sqrt{p^2 + m^2}} \frac{\ee^{\ii p r} - \ee^{- \ii p r}}{\ii p r} \\
+        &= - \frac{\ii}{2 (2\pi)^2 r} \int_{-\infty}^\infty p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}},
+    \end{aligned}
+\]
+where $p$ denotes $\abs*{\vb*{p}}$ instead of $p^\mu$.
+By changing the integral contour (shown in \prettyref{fig:the-integral-contour}) we have 
+\begin{equation}
+    \begin{aligned}
+        D(x-y) &= - \frac{\ii}{2 (2\pi)^2 r} \int^\infty_{-\infty} p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}} \\
+        &= - \frac{\ii}{2 (2\pi)^2 r} \times 2 \times \int_{\ii m}^{\ii \infty} p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}} \\
+        &= - \frac{\ii}{4 \pi^2 r} \int_m^\infty \ii \rho \times  \ii \dd{\rho} \frac{\ee^{\ii (\ii \rho) r}}{\sqrt{(\ii \rho)^2 + m^2}} \\
+        &= \frac{1}{4\pi^2 r} \int_m^\infty \dd{\rho} \frac{\rho \ee^{-\rho r}}{\sqrt{\rho^2 - m^2}},
+    \end{aligned}
+    \label{eq:deriving-d-xy}
+\end{equation}
+and by Mathematica we have 
+\begin{equation}
+    D(x-y) = \frac{m}{4\pi^2 r} K_1(mr),
+\end{equation}
+where $K_n(x)$ denotes the Bessel $K$ function, i.e. the modified Bessel function of the second kind.
+
+\begin{figure}
+    \centering
+    \input{2-fig-1.tex}
+    \caption{The integral contour. The blue line corresponds to the first line of \eqref{eq:deriving-d-xy}, the red line the second line of \eqref{eq:deriving-d-xy}. }
+    \label{fig:the-integral-contour}
+\end{figure}
 
 \end{document}
