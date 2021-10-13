@@ -385,7 +385,21 @@ $\div{\vb*{B}}$是一个赝标量，因为它是普通矢量$\grad$和赝矢量$
 
 总之，关于普通的凝聚态系统中的电磁场，\eqref{eq:couple-ham}原则上给出了所有值得关注的信息。
 
-\subsection{非相对论性粒子的运动方程}
+\subsection{非相对论性粒子的运动方程}\label{sec:non-relativity-particles-eom}
+
+在电子约束在原子势场中小幅运动时，可以认为
+\begin{equation}
+    m \ddot{\vb*{r}} = - m \omega_0^2 \vb*{r} - m \gamma \dot{\vb*{r}} + e \vb*{E},
+\end{equation}
+即回复力取线性近似。这就是\concept{洛伦兹模型}。
+
+需要注意的是洛伦兹模型中的$m$和$\vb*{E}$的定义有些微妙之处。我们可以将$m$理解成电子的“裸”质量，而$\vb*{E}$理解为$\vb*{r}$点的总电场。
+然而注意到运动电子自身会辐射出电场，$\vb*{E}$其实包括“外加场”和“自场”。
+将自场剥离出来并写成$\vb*{r}$的函数，我们就需要将$m$理解成电子的“辐射质量”而将$\vb*{E}$理解成外加场。
+
+这个微妙之处会实实在在带来可观察的效应，因为宏观上我们会测量的基本上是\autoref{sec:continuous-epsilon-mu-calc}中的那种移除了特征长度特别小或者说波数特别大的那部分傅里叶分量的电磁场，这部分电磁场是不包含电子的自场的；然而微观下，电子自场的的确确会带来一些效应。
+因此此时系统中其实存在两部分电磁场：一部分是宏观电磁场，一部分是宏观下不可观测，需要以某种方式积掉的电子自场。
+这个现象有时称为\concept{局域场增强}。这种效应的一种处理方式见\autoref{eq:local-electric-field-enhancement}。
 
 \section{规范选取}
 
@@ -767,13 +781,30 @@ $q \vb*{A} \ll \vb*{p}$的条件实际上是不那么平凡的。
 \end{equation}
 其中$\vb*{\epsilon}$和$\vb*{\mu}$是张量算符。非线性连续介质的$\vb*{P}$就不再简单地能够写成电磁场的线性函数了。
 
-\subsection{连续介质的电磁性能的一些计算}\label{sec:continuous-epsilon-mu-calc}
+\subsection{连续介质的电磁性能的粗粒化导出}\label{sec:continuous-epsilon-mu-calc}
 
 以上论证——\autoref{sec:classical-continuum}和\autoref{sec:quantum-continuum}——都是非常唯象的。
 它们根本没有告诉我们要怎么获得$\vb*{\epsilon}$和$\vb*{\mu}$。
 例如说它们没有告诉我们为什么$\vb*{P}$一般来说就是各个分子的电偶极矩加起来除以体积；只是看着\eqref{eq:polarization-vector-def}是什么也看不出来的。
 本节做一些半经典的计算，来直观地展示连续介质近似忽略了什么。
 
+在连续介质近似适用的问题中我们关心的“介质中电场”一般都是做了某种空间平均，抹去了非常小的空间尺度的变化的电场。
+电动力学教科书上通常会泛泛地说这是“做了宏观平均的电场”，实际上这就是动量截断。
+要看出这是为什么，注意到“做了宏观平均的电场”总是可以通过一个体积为$V$的移动平均给出：
+\[
+    \bar{\vb*{E}}(\vb*{r}) = \frac{1}{V} \int \dd[3]{\vb*{r}'} \vb*{E}(\vb*{r}'),
+\]
+做傅里叶展开，有
+\[
+    \begin{aligned}
+        \bar{\vb*{E}}(\vb*{r}) &= \frac{1}{V} \int \dd[3]{\vb*{r}'} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{E}(\vb*{k}) \ee^{\ii \vb*{k} \cdot \vb*{r}'} \\
+        &= \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{E}(\vb*{k}) \frac{1}{V} \int \dd[3]{\vb*{r}'} \ee^{\ii \vb*{k} \cdot \vb*{r}'},
+    \end{aligned}
+\]
+显然对那些较大的$\vb*{k}$，对$\vb*{r}'$的积分会由于快速振荡而变成零，于是我们就得到了一个动量截断。
+我们将做了动量截断的$\vb*{E}$还是记作$\vb*{E}$，只是要记住此时的$\vb*{E}$并没有涵盖电磁场能够有的全部模式；那些高波数、小特征长度的电场分量会有重要的物理效应，正如我们在\autoref{sec:non-relativity-particles-eom}中讨论的那样。
+
+既然对电磁场做了粗粒化我们也要对介质性能做粗粒化。
 设有一个“过滤器”$\mathcal{F}[\cdot]$滤除一个场的高动量成分，即，滤除其微观细节。
 我们在\eqref{eq:maxwell-material}的四个方程两边作用$\mathcal{F}$，就能够得到一个“平均化”的介质中麦克斯韦方程，其中所有的场都没有特征长度特别小的起伏，从而表现得和理想的连续介质中的场完全一样。
 我们为了简便起见将$\mathcal{F}[\cdot]$记作$\overline{\cdots}$。
@@ -831,6 +862,7 @@ $q \vb*{A} \ll \vb*{p}$的条件实际上是不那么平凡的。
 
 一种比较粗略，但是现实中确实有用的做法是形式上认为我们\emph{已经}将介质积掉了，并根据对称性等修正真空中麦克斯韦方程，而用介质中的电磁场-电磁场关联函数体现介质的存在。
 我们随后通过第一性原理或者别的什么办法计算一些情景，和用连续介质模型计算出的情形做比较，从而拟合出介质中麦克斯韦方程中的参数。
+如果介质不会让光热化，那么这么做就是正确的，通过介质中的电磁场-电磁场关联函数能够体现介质引入的等效过程；如果介质实际上会让光热化，这么做就失效了。
 介质的线性效应体现为电磁场的作用量的二次型部分出现一个修正，非线性效应体现为电磁场的自相互作用，非幺正的部分体现为以上修正中的虚部。
 后两个问题可以采用和经典电动力学类似的方法解决，即我们只处理“经过空间平均”的电磁场，这相当于做了一个动量截断，只讨论波长足够长的那部分电磁波模式，则介质中发生的过程相比于我们讨论的过程来说是非常快、且空间细节不甚清楚的，从而，介质导致的电磁场关联函数的修正可以认为没有时间上的延迟效应或是空间上的非局域效应。
 
@@ -888,3 +920,29 @@ $q \vb*{A} \ll \vb*{p}$的条件实际上是不那么平凡的。
 这种场景的典型的单位面积功率是$\sim\SI{e13}{W/cm^2}$。作为对比，激光笔的单位面积功率是$\sim \SI{e5}{W/cm^2}$。
 
 \section{介质电磁性能的计算}
+
+\subsection{谐振子模型}
+
+\subsubsection{Clausius-Mossotti关系}
+
+Clausius-Mossotti关系是局域场强增强的一个例子。在测定气体静态介电常数与浓度的关系时，人们发现并不能看到完美的$\epsilon_\text{r} \propto N$关系，而是
+\begin{equation}
+    \frac{\epsilon_\text{r} - 1}{\epsilon_\text{r} + 2} = \frac{N \alpha}{3 \epsilon_0}.
+    \label{eq:clausius-mossotti-relation}
+\end{equation}
+后来在测定介质中的非零频介电常数时也观察到了这个关系。
+
+这个关系的推导具有非常明显（并且惊人地粗糙）的经典意义。设一个原子位于球腔中，腔体外是极化矢量为$\vb*{P}$的连续介质，则原子会感受到的电场——就是介质的自场——为
+\[
+    E_\text{self} = - \frac{\vb*{P}}{3 \epsilon_0}.
+\]
+于是我们有
+\[
+    \vb*{P} = N e \vb*{r} = N \alpha \left( \vb*{E}_\text{ext} + \frac{\vb*{P}}{3 \epsilon_0} \right),
+\]
+
+根据\eqref{eq:clausius-mossotti-relation}我们会发现介质的共振频率为
+\begin{equation}
+    \tilde{\omega}_0^2 = \omega_0^2 - \frac{1}{3} \omega_\text{p}^2, \quad \omega_\text{p}^2 = \frac{N e^2}{m \epsilon_0}.
+\end{equation}
+因此自场带来的修正会让介质的共振频率红移。
