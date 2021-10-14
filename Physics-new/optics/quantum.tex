@@ -385,7 +385,7 @@ $X_1$和$X_2$当然是不对易的，因此即使是相干态下（当然也包�
 
 \section{光场的多光子概率分布和相干性}
 
-\subsection{关联函数}
+\subsection{关联函数}\label{sec:correlation-function-photon}
 
 实用的光探测器基本上都是根据偶极相互作用哈密顿量$- \vb*{d} \cdot \vb*{E}$工作的，即一个凝聚态系统——这里是光传感器——吸收了一个光子，将电子激发出来，然后探测由此产生的光电流。
 由于光传感器中电子的能量通常很低，不会激发出多少光子，实验中置于光场中的探测器探测到光信号的概率几乎完全由“光场中一个光子湮灭，光场掉落到一个能量更低的状态”这样的过程贡献。
@@ -509,7 +509,9 @@ $X_1$和$X_2$当然是不对易的，因此即使是相干态下（当然也包�
 
 \subsubsection{玻色-爱因斯坦凝聚态中的干涉}
 
-\chapter{线性过程}
+\chapter{线性量子光学过程}
+
+\section{线性过程}
 
 我们这一节要做的事情和\autoref{chap:linear-matter-no-scattering}中没有什么本质上的区别：我们讨论线性过程——或者说没有光子生灭的过程。
 对这样的一个过程，我们选择海森堡绘景，设$\{a_k\}$是某组模式，$\{b_l \}$是它经过一个线性过程演化之后的模式，即\begin{equation}
@@ -537,18 +539,24 @@ $X_1$和$X_2$当然是不对易的，因此即使是相干态下（当然也包�
 \end{equation}
 即相干态的标签$\alpha$的时间演化方式和$a$算符完全一样，正好是预期的结果。
 
-\section{分束器和反射镜}
-
-\subsubsection{单光子变换矩阵}
+\subsection{分束器}
 
 \begin{figure}
     \centering
-    \input{single-photon/beam-splitter.tex}
+    \subfigure[]{
+        \input{single-photon/beam-splitter-1.tex}
+        \label{fig:beam-splitter-1}
+    }
+    \subfigure[]{
+        \input{single-photon/beam-splitter-2.tex}
+        \label{fig:beam-splitter-2}
+    }
     \caption{分束器}
     \label{fig:beam-splitter}
 \end{figure}
 
-一个分束器是一个形如\autoref{fig:beam-splitter}的装置，它将两束光变换为另外两束光。分束器的变换矩阵为
+一个分束器是一个形如\autoref{fig:beam-splitter}的装置，最简单的分束器是一个有特殊镀膜的玻璃片（\autoref{fig:beam-splitter-1}），也可以是如今实验上更加常见的两个等腰直角三角形夹着特殊镀膜的结构（\autoref{fig:beam-splitter-2}）。
+它将两束光变换为另外两束光。分束器的变换矩阵为
 \begin{equation}
     \pmqty{\tilde{\mathcal{E}}_1 \\ \tilde{\mathcal{E}}_2} = \pmqty{t & r \\ - r^* & t} \pmqty{\mathcal{E}_1 \\ \mathcal{E}_2}.
 \end{equation}
@@ -557,6 +565,10 @@ $X_1$和$X_2$当然是不对易的，因此即使是相干态下（当然也包�
 \begin{equation}
     S = \frac{1}{\sqrt{2}} \pmqty{1 & 1 \\ -1 & 1}.
 \end{equation}
+
+\subsection{反射镜}
+
+\section{线性光路}
 
 \subsection{Aspect实验}
 
@@ -578,36 +590,115 @@ A.Zeilinger
 
 \subsection{Hong-Ou-Mondel效应}
 
+\section{线性单光子量子计算}
 
-
-\subsection{条件量子态}
+\subsection{单光子态产生和条件量子态}
 
 \begin{figure}
     \centering
     \input{quantum-nonlinear/conditional-state-generate.tex}
     \caption{产生条件量子态的装置}
+    \label{fig:condition-photon}
 \end{figure}
 
 考虑\autoref{sec:chi-2-wave}的量子版本，它会引入相互作用哈密顿量
 \begin{equation}
     V = \int \dd[3]{\vb*{r}} \chi^{(2)} : \vb*{E}_\text{p}^\dagger \vb*{E}_1 \vb*{E}_2 + \text{h.c.},
 \end{equation}
-其中$\vb*{E}_\text{p}$为泵浦光。
+其中$\vb*{E}_\text{p}$为泵浦光；通常泵浦光是强激光，从而可以认为处在相干态上。
+出射态可以相当好地被下式近似：% TODO
+\begin{equation}
+    \ket{\psi_\text{out}} = \exp(\beta a_1^\dagger a_2^\dagger - \text{h.c.}) \ket{0}.
+\end{equation}
 
-\subsection{光量子计算}
+现在我们制造一个非幺正的装置，展示如\autoref{fig:condition-photon}：它首先测量$E_2$模式上的光子数，如果发现光子数不是$1$，那么启动一个挡板，将$E_1$模式上的光子全部吸收掉；反之，如果发现光子数真的是$1$，那么让$E_1$模式上的光子通过。
+最终我们会得到一个混合态：它有一定的概率是$E_1$上的单光子态，而剩下的可能性则是什么也没有。
+并且，我们能够通过$E_2$处的探测器的探测结果，明确地知道我们是否成功制备了一个单光子态。
+我们得到的$E_1$态是\concept{条件量子态}的一个例子。
 
-条件量子态的产生让人产生一种想象：如果我们能够找到一个足够强的二阶非线性晶体，那么就能够实现\concept{单光子非线性性}：这意味着我们可以用一个光子控制另一个光子。
+\subsection{量子门}
+
+条件量子态的产生后我们需要做量子控制，即用一个光子控制另一个光子；这可以称为\concept{单光子非线性性}，因为对应的哈密顿量不再能够写成电磁场的二次型，而是必须含有非线性光学过程。
+因此，使用前面列出的纯粹线性的操作，是肯定不足以实现通用量子计算的。
+
+最为直接的想法是，我们能够找到一个足够强的二阶非线性晶体，那么就能够实现：这意味着我们可以。
 例如，就SHG过程而言，如果它足够强，使得两个不同模式的光子共同存在时就能够聚合为一个另一个模式的光子，那么这就是一个与门。
-
-可惜的是目前在普通的非线性晶体中无法实现这种过程。冷原子体系能够产生强烈的光子-光子耦合。
+可惜的是目前在普通的非线性晶体中无法实现这种过程：这些非线性光学过程都实在是太弱了。冷原子体系能够产生强烈的光子-光子耦合，这是一个可能的方向。
+我们这里则致力于通过一些巧妙的含有测量的构造来实现\emph{等效}的量子门。
 
 \begin{figure}
     \centering
     \input{quantum-nonlinear/controlled-phase.tex}
-    \caption{通过观察实现受控相位门}
+    \caption{通过观察实现受控$\pi$相位门（或者说受控符号门）}
+    \label{fig:controled-phase-gate-by-obs}
 \end{figure}
 
-受控相位门
+受控相位门可以通过观察以及条件量子态实现。光路见\autoref{fig:controled-phase-gate-by-obs}，计算发现末态为
 \begin{equation}
     \ket*{\psi_\text{c}'} = \alpha \ket*{0} + \beta \ket*{1} - \gamma \ket*{2}
+\end{equation}
+
+为了更加清楚地展示光路中的各种操作的时间顺序，我们通常会将\autoref{fig:controled-phase-gate-by-obs}这样的光路图进一步抽象，将它画成
+
+\chapter{量子光学测量}
+
+本章我们讨论怎样通过测量一个量子光学态来重建关于它的性质。大部分情况下我们只能够测量光子数期望，然而量子光学中的信息远不止光子数期望——例如，形如
+\[
+    \ket{n_1} + \ee^{\ii \theta} \ket{n_2}
+\]
+的态就含有有物理意义的相位信息，而通过测量光子数是测不出来这个相位的。
+
+\begin{figure}
+    \centering
+    \input{detection/phase-device-1.tex}
+    \caption{相位测量装置1}
+    \label{fig:phase-detection-1}
+\end{figure}
+
+\autoref{fig:phase-detection-1}是一种可能的探测方式。我们将待测量的光源的态记作
+\begin{equation}
+    \ket{\text{source}} = f(b_1^\dagger) \ket{0},
+\end{equation}
+我们将它和一个相干态$\ket{\beta_0}$通过一个分束器，该分束器的变换矩阵为
+\begin{equation}
+    S = \pmqty{ t & r \\ -r^* & t }.
+\end{equation}
+使用海森堡绘景，我们将分束器的入射态
+\[
+    \ket{\Psi} = \ee^{\beta_0 b_2^\dagger - \beta_0^* b_2} f(b_1^\dagger) \ket{0}
+\] 
+用时间演化之后的$a$算符重写，得到
+\begin{equation}
+    \begin{aligned}
+        \ket{\Psi} &= \\
+        &\eqqcolon \ee^{\beta_0 t a_2^\dagger - \beta_0^* a_2} \ee^{\beta a_1^\dagger - \beta^* a_1} f(b_1^\dagger) \ket{0},
+    \end{aligned}
+\end{equation}
+这里我们定义
+\begin{equation}
+    \beta = - \beta_0 r.
+\end{equation}
+如果分束器和$\beta_0$被适当选择，使得
+\begin{equation}
+    \abs*{\beta} \gg 1, \quad t \ll 1,
+\end{equation}
+就有
+\begin{equation}
+    \ket{\Psi} \approx \ee^{\beta a_1^\dagger - \beta^* a_1} f( a_1^\dagger) \ket{0} = D(\beta) f()
+\end{equation}
+
+\begin{figure}
+    \input{detection/phase-device-2.tex}
+    \caption{相位测量装置2}
+\end{figure}
+
+例如，如果入射态是一个相干态$\ket{\alpha}$，计算得到
+\begin{equation}
+    \bar{n}_{12} = \abs*{\alpha \alpha_0} \cos \Delta \varphi.
+\end{equation}
+
+我们现在分析误差、噪声等引入的不确定度。
+
+\begin{equation}
+    \var{\Delta\varphi} = \frac{\var{n_{12}}}{\abs{\pdv{n_{12}}{\Delta\varphi}}} = \frac{\abs*{\alpha}}{\abs*{\alpha} \abs*{\alpha_0} \sin \Delta \varphi} = \frac{1}{\abs*{\alpha_0} \sin \Delta \Delta \varphi}
 \end{equation}
