@@ -1,0 +1,264 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Topological order by Prof. Yidun Wan}
+\author{Jinyuan Wu}
+\date{2021.10.15}
+
+\begin{document}
+
+\maketitle
+
+\section{Basic Facts about (Intrinsic) Topological Orders}
+
+In \href{./2021-10-8}{this document} SPTs are discussed. 
+They show an order which cannot be described by Landau-Ginzburg paradigm, as all the phases share the same symmetry. 
+In this article we will discuss \emph{intrinsic} topological orders.
+
+We usually discuss topological orders in 2D where we have braiding structure. 
+This is not necessary as topological orders can also exist in higher dimensions, using concepts in category theories.
+Topological orders are gapped in the sense that the energy difference between ground states and first excited states is independent of the system size in the thermodynamic limit.
+The low energy states of a topological ordered system are usually \emph{anyons}, 
+and they have a ground state degeneracy depending only on the type of anyons and the topological features of the lattice.%
+\footnote{
+    Note that the lattice may not be a compact manifold. Topological orders with boundary conditions have been investigated.
+}%
+For examples, an Abelian topological ordered state has ground state degeneracy $K^g$, where $g$ is the genus of the lattice and $K$ the number of anyon types.
+
+An example of topological order is $\nu = 1 / m$ FQHE (fractional quantum Hall effect). There are $m$ anyon species which we label as $1, a_1, \ldots, a_{m-1}$, where 1 denotes the ``trivial'' anyon.
+The statistics of anyons are:
+\begin{itemize}
+    \item Exchange two $j$-type anyons and we get a phase factor $\ee^{\ii \pi \frac{j^2}{m}}$.
+    \item Exchange a $j$-type anyon and a $k$-type anyon and we get a phase factor $\ee^{\ii \pi \frac{jk}{m}}$.
+\end{itemize}
+The phase factors can be introduced in a topological quantum field theory (which is an effective theory for the anyons only, ignoring the details about how they are generated), via the A-B effect brought by the gauge field.
+
+\section{The Toric Code Model}
+
+A \concept{$\mathbb{Z}_2$ toric code} is defined by the following data:
+\begin{itemize}
+    \item A square lattice with opposite sides identified, or in other words the lattice is on a torus.
+    \item We put a spin-$1/2$ degree of freedom on each bond of the lattice.
+    \item The Hamiltonian is 
+    \begin{equation}
+        H = - \sum_{s} A_{s} - \sum_{p} B_p,
+        \label{eq:toric-code}
+    \end{equation}
+    where $s$ goes through all crosses (i.e. four bonds attached to the same site) in the lattice and $p$ goes through all plaquettes in the lattice, and 
+    \begin{equation}
+        A_s = \prod_{b \in s} \sigma^x_s, \quad B_p = \prod_{b \in p} \sigma^z_b.
+    \end{equation}
+\end{itemize}
+
+The $A_{\vb*{i}}$ operators and the $B_{p}$ operators can be verified to commute with each other, and we have 
+\begin{equation}
+    A_s = \pm 1, \quad B_p = \pm 1.
+\end{equation}
+Since the $A_s$ operators and $B_p$ operators commute with the Hamiltonian, 
+a ground state of the Hamiltonian is also an eigenstate of these operators, 
+and from the Hamiltonian it is clear that 
+\begin{equation}
+    A_s \ket*{\text{ground}} = \ket*{\text{ground}}, \quad B_p \ket*{\text{ground}} = \ket*{\text{ground}}.
+    \label{eq:ground-state-toric-code-condition}
+\end{equation}
+A state is a ground state if and only if it is in the subspace where \eqref{eq:ground-state-toric-code-condition} holds.
+
+We can project an arbitrary state into the ground subspace. 
+Note that $\ket*{\psi} = \ket*{\sigma^z = \uparrow}$ is a state where $B_p = 1$ holds, 
+and $(1 + A_s)/{2}$ is a projector operator to the subspace where $A_s = 1$, the state 
+\begin{equation}
+    \ket*{\psi_\text{loop}} = \prod_s \frac{1 + A_s}{2} \ket*{\sigma^z = \uparrow}
+    \label{eq:ground-state-1}
+\end{equation}
+is a ground state. \eqref{eq:ground-state-1} is a so-called string condensation state, 
+which is the superposition of a series states where $\sigma^z = \downarrow$ bonds form loops.
+\eqref{eq:ground-state-1} is definitely not the only ground state. 
+The state
+\begin{equation}
+    \ket*{\psi_\text{loop}'} = \prod_p \frac{1 + B_p}{2} \ket*{\sigma^x = \rightarrow},
+    \label{eq:ground-state-2}
+\end{equation}
+for example, is another ground state, 
+where $\ket*{\sigma^x = \rightarrow}$ is a eigenstate of $A_s$ operators and we project it into the $B_p = 1$ subspace.
+
+Now we try to determine the size of ground subspace. 
+Suppose there are $N$ sites, so there are $2N$ bonds, so we have $2N$ degrees of freedom.%
+\footnote{
+    Note that $\sigma^x$ and $\sigma^z$ are \emph{not} two degrees of freedom, as they do not commute.
+    In classical statistical mechanics sometimes we consider $x$ and $p$ to be two degrees of freedom, but in the quantum context we say that ``a 1D Newtonian particle has one degree of freedom, which is its position'', and view $p$ as something that provides dynamics for the particle.
+    The same rule applies here, where we may view $\sigma^z$ or $\sigma^x$ as \emph{the degree of freedom} on one bond, but not both.
+}
+The fact that there are $N$ sites also indicates that the numbers of $A_s$ operators and $B_p$ operators are both $N$.
+Therefore there seems to be $2N$ constraints given by \eqref{eq:ground-state-toric-code-condition}, 
+so the ground subspace has no degrees of freedom left and the dimension is $1$.
+However, on a torus we have 
+\[
+    \prod_s A_s = \prod_p B_p = 1,
+\]
+which is a consequence of the boundary periodic condition (or in other words, the definition of a torus).
+Therefore there are actually only $2N - 2$ constraints.
+There are, therefore, 2 degrees of freedom in the ground subspace, and the dimension is $2^2 = 4$.
+We have four independent ground states.
+
+What, then, are these degrees of freedom in the ground subspace? 
+They are not local loop operators, since a ground state is a string condensation state and applying one loop operator to a ground state just move one of its components into another, permuting these components and in the end everything stays the same.
+Note that, however, that loop components in \eqref{eq:ground-state-1} or \eqref{eq:ground-state-2} are all ``within'' the square.
+Or, in the language of the torus, these loops are all contractible: they are generated from nothing by ``local'' loop operators $A_s$ and $B_p$, and therefore they can be gradually shrunk back to nothing.
+
+The ground state degeneracy labeled by the non-contractible loops actually lead to \emph{long range entanglement} in the toric code. 
+The leading terms of entanglement entropy are
+\begin{equation}
+    S = - \ln 2 + \alpha L + \cdots,
+\end{equation}
+and we see that apart from the usual area law entanglement entropy, we have a $- \ln 2$ term, which is the \concept{topological entanglement entropy}.
+Generally, we have 
+\begin{equation}
+    S_\text{topo} = - \ln D,
+\end{equation}
+where $D$ is a parameter dubbed \concept{the quantum dimension}.
+
+Now we investigate what are excitations of the toric code. Note that $A_s$ is actually the generator of $\mathbb{Z}_2$ gauge transformation, so $A_s = -1$ means we have a $\mathbb{Z}_2$ charge on the site of $s$ - we say an \concept{$e$ particle} exists there.
+Also, in a $\mathbb{Z}_2$ gauge theory $\sigma^z$ serves as the hopping term of fermions coupled to the gauge field,
+and therefore $B_p$ is the $\mathbb{Z}_2$ flux of plaquette $p$, and $B_p = -1$ means there is a $\mathbb{Z}_2$ flux in the plaquette $p$ - we say an \concept{$m$ particle} resides there.
+
+We can soon use string operators to study the self statistics of $e$ and $m$ are the same as bosons, but they have nontrivial mutual exchange statistics, and therefore we have 
+\begin{equation}
+    \epsilon = e \times m
+\end{equation}
+as fermions.
+The particle species $e$ and $m$, therefore, are called \concept{semions} in that they are ``halves of a fermion'.'
+
+\section{Generalization: Quantum Double Models}
+
+In an ordinary $\mathbb{Z}_2$ gauge theory we only care about $\mathbb{Z}_2$ charges.
+In the toric code, however, both the charge the flux are important.
+We therefore say the toric code a $\mathbb{Z}_2 \times \mathbb{Z}_2$ theory, or in other words a $D[\mathbb{Z}_2]$ theory, where $D[G]$ is the \concept{quantum double} of $G$, defined as
+\begin{equation}
+    D[G] = C[G] \times F[G],
+\end{equation}
+where $C[G]$ is the group algebra of $G$ and $F[G]$ is the \emph{function space} on $G$, which is the space of functions from $G$ to $\mathbb{C}$ and consists of the matrices of irreducible representations of $G$.
+For Abelian models we have 
+\begin{equation}
+    D[G] = G \times G.
+\end{equation}
+% TODO: the math
+
+Like a toric code model, a \concept{quantum double model} is defined by the following data:
+\begin{itemize}
+    \item A square lattice 
+    \item A group $G$, the group members of which are operators defined on bonds of the lattice.
+    \item The Hamiltonian is 
+    \begin{equation}
+        H = - \sum_\nu A_\nu - \sum_p B_p,
+    \end{equation}
+    where 
+    \begin{equation}
+        A_\nu = \frac{1}{\abs*{G}} \sum_{g \in G} A_\nu^g,
+    \end{equation}
+\end{itemize}
+
+\section{Modular Matrices of the Toric Code}
+
+Now we consider how can a system transit from a ground state of \eqref{eq:toric-code} to another one.
+What we need is to turn one non-contractible loop on a torus to another.
+For a torus, $\mathrm{SL}(2, \mathbb{Z})$ can handle the job well.
+$S$ rotates the square lattice by \SI{90}{\degree}, and therefore change the direction of the loops.
+$T$ is the shear operation for the square lattice.
+Note that the ground subspace is four dimensional and we need to find a 4D representation of $\mathrm{SL}(2, \mathbb{Z})$.
+It turns out that 
+\begin{equation}
+    T = \diag(1, 1, 1, -1)
+\end{equation}
+and 
+\begin{equation}
+    S = \frac{1}{2} \pmqty{1 & 1 & 1 & 1 \\ 1 & 1 & -1 & -1 \\ 1 & -1 & 1 & -1 \\ }
+\end{equation}
+We find $T$ is the self statistics of the anyons and $S$ is the mutual statistics.
+This is not coincidence. The following argument % TODO
+
+We find that SPTs and group-based intrinsic topological orders can both be classified by Dijkgraaf-Witten TQFTs.
+This is not coincidence because there is indeed duality between SPTs and group-based intrinsic topological orders, and they can be both characterized by group cohomology.
+
+\end{document}
