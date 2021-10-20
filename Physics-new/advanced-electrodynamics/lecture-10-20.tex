@@ -1,0 +1,384 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Analytical Properties of Electrodynamics Response Functions by Prof. Kun Ding}
+\author{Jinyuan Wu}
+\date{October 20, 2021}
+
+\begin{document}
+
+\maketitle
+
+This article is a lecture note of Prof. Kun Ding's lecture on Advanced Electrodynamics on October 20, 2021.
+
+\section{Review of last lectures}
+
+The frequency domain Maxwell's equations are 
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \div{\vb*{D}}(\vb*{r}, \omega) &= \rho(\vb*{r}, \omega), \\
+            \curl{\vb*{E}}(\vb*{r}, \omega) &= \ii \omega \vb*{B}(\vb*{r}, \omega), \\
+            \div{\vb*{B}}(\vb*{r}, \omega) &= 0, \\
+            \curl{\vb*{H}}(\vb*{r}, \omega) &= \vb*{j}(\vb*{r}, \omega) - \ii \omega \vb*{D}(\vb*{r}, \omega),
+        \end{aligned}
+    \right.
+    \label{eq:maxwell-wave-eqs}
+\end{equation}
+the time reversal of which is 
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \div{\vb*{D}^*}(\vb*{r}, \omega) &= \rho^*(\vb*{r}, \omega), \\
+            \curl{\vb*{E}^*}(\vb*{r}, \omega) &= - \ii \omega \vb*{B}^*(\vb*{r}, \omega), \\
+            \div{\vb*{B}^*}(\vb*{r}, \omega) &= 0, \\
+            - \curl{\vb*{H}^*}(\vb*{r}, \omega) &= \vb*{j}^*(\vb*{r}, \omega) - \ii \omega \vb*{D}^*(\vb*{r}, \omega),
+        \end{aligned}
+    \right.
+    \label{eq:maxwell-wave-eqs-tr}
+\end{equation}
+
+\section{The Kramers–Kronig relations}\label{sec:kk-1}
+
+By the causality condition we have
+\begin{equation}
+    \chi_\text{e}(\tau) = \frac{1}{2} (1 + \sgn(\tau)) \chi_\text{e}(\tau),
+\end{equation}
+because $\chi_\text{e}(\tau) = 0$ for $\tau < 0$.
+So we have 
+\[
+    \begin{aligned}
+        \chi_\text{e}(\omega) &= \int \dd{\tau} \chi_\text{e}(\tau) \ee^{\ii \omega \tau} \\
+        &= \frac{1}{2} \int \dd{\tau} \ee^{\ii \omega \tau} (1 + \sgn(\tau)) \chi_\text{e}(\tau) \\
+        &= \frac{1}{2} \int \dd{\tau} \ee^{\ii \omega \tau} \chi_\text{e}(\tau) + \frac{1}{2} \int \dd{\tau} \sgn(\tau) \ee^{\ii \omega \tau} \times \int \frac{\dd{\nu}}{2\pi}\chi_\text{e}(\nu) \ee^{- \ii \nu \tau} \\
+        &= \frac{1}{2} \int \dd{\tau} \ee^{\ii \omega \tau} \chi_\text{e}(\tau) + \frac{1}{2} \int \frac{\dd{\nu}}{2\pi}\chi_\text{e}(\nu) \int \dd{\tau} \sgn(\tau) \ee^{\ii (\omega - \nu) \tau} ,
+    \end{aligned}
+\]
+or in other words
+\begin{equation}
+    \int \dd{\tau} \ee^{\ii \omega \tau} \chi_\text{e}(\tau) = \chi_\text{e}(\tau) = \int \frac{\dd{\nu}}{2\pi}\chi_\text{e}(\nu) \int \dd{\tau} \sgn(\tau) \ee^{\ii (\omega - \nu) \tau} .
+    \label{eq:proto-kk-relation}
+\end{equation}
+so we are going to evaluate the Fourier transformation of the sign function.
+
+We present a useful result ahead. Note that 
+\[
+    \lim_{\epsilon \to 0^+} \int_a^b \frac{f(x)}{x \pm \ii \epsilon} \dd{x} = \mp \ii \pi \lim_{\epsilon \to 0^+} \int_a^b \frac{\epsilon / \pi}{x^2 + \epsilon^2} f(x) \dd{x} + \lim_{\epsilon \to 0^+} \int_a^b \frac{x^2}{x^2 + \epsilon^2} \frac{f(x)}{x} \dd{x} ,
+\]
+where $a < 0 < b$, and we have the \concept{Plemedj formula}
+\begin{equation}
+    \lim_{\epsilon \to 0^+} \frac{1}{x \pm \ii \epsilon} = \mp \ii \pi \delta(x) + \primevalue \frac{1}{x}.
+\end{equation}
+This is a well known result in complex analysis, which has been widely used in QFT (expected, because it shows the analytic structure of the propagator of a particle).
+Now, formally, we have 
+\[
+    \int \dd{x} \ee^{\ii k x} \sgn(x) = \int_0^\infty \dd{x} \ee^{\ii k x} - \int^0_{-\infty} \dd{x} \ee^{\ii k x} .
+\]
+The two integrals on the RHS does not really make sense because they diverge.
+However, note that the sign function is usually multiplied to  function quickly decaying as $\abs*{x} \to \infty$, and we can ``spare'' a part of the decaying factor to the sign function, and we therefore introduce an imaginary part into the frequency, i.e.
+\[
+    \begin{aligned}
+        \int \dd{x} \ee^{\ii k x} \sgn(x) &= \lim_{\epsilon \to 0^+} \left(\int_0^\infty \dd{x} \ee^{\ii (k + \ii \epsilon) x} - \int^0_{-\infty} \dd{x} \ee^{\ii (k - \ii \epsilon) x}\right) \\
+        &= \lim_{\epsilon \to 0^+} \left( \frac{\ii}{k + \ii \epsilon} + \frac{\ii}{k - \ii \epsilon} \right) \\
+        &= \lim_{\epsilon \to 0^+} \left( \frac{k^2}{k^2 + \epsilon^2} \frac{2 \ii }{k} \right) = \frac{2\ii}{k}. 
+    \end{aligned}
+\]
+The last line gives the Fourier transformation of the sign function:
+\begin{equation}
+    \int \dd{x} \ee^{\ii k x} \sgn(x) = \frac{2\ii}{k}. 
+\end{equation}
+Substituting this equation into \eqref{eq:proto-kk-relation}, we have 
+\[
+    \chi_\text{e}(\tau) = \int \frac{\dd{\nu}}{2\pi}\chi_\text{e}(\nu) \times \frac{2\ii}{\omega - \nu},
+\]
+or in other words
+\begin{equation}
+    \Re \chi_\text{e}(\omega) = - \frac{1}{\pi} \primevalue \int_{-\infty}^\infty \frac{\Im \chi_\text{e}(\nu)}{\omega - \nu} \dd{\nu}, \quad \Im \chi_\text{e}(\omega) = \frac{1}{\pi} \primevalue \int_{-\infty}^\infty \frac{\Re \chi_\text{e}(\nu)}{\omega - \nu} \dd{\nu}.
+    \label{eq:kk-relation}
+\end{equation}
+These are called the \concept{Kramers–Kronig relations}.
+
+It is obvious that the proof of \eqref{eq:kk-relation} does not involve anything other than that $\chi_\text{e}(\tau)$ satisfies the law of causality, and that it is analytic enough.
+The Kramers–Kronig relations, therefore, hold for every reasonable definition of response functions.
+
+In optics people usually do not like negative frequencies. Note that for $\chi_\text{e}(\omega)$ we have 
+\begin{equation}
+    \chi_\text{e}(-\omega) = \chi_\text{e}^*(\omega),
+    \label{eq:negative-frequency-conjugate}
+\end{equation}
+or 
+\[
+    \Im \chi_\text{e}(\omega) = - \Im \chi_\text{e}(- \omega),
+\]
+and therefore we have 
+\[
+    \begin{aligned}
+        \Re \chi_\text{e}(\omega) &= \frac{1}{\pi} \primevalue \int_{-\infty}^\infty \left( \frac{ \nu \Im \chi_\text{e}(\nu)}{\nu^2 - \omega^2} + \frac{ \omega \Im \chi_\text{e}(\nu)}{\nu^2 - \omega^2} \right) \dd{\nu} \\
+        &= \frac{1}{\pi} \primevalue \int_{-\infty}^\infty \frac{ \nu \Im \chi_\text{e}(\nu)}{\nu^2 - \omega^2} \dd{\nu} ,
+    \end{aligned}
+\]
+so now we have a more widely used equation concerning only the positive frequencies: 
+\begin{equation}
+    \Re \chi_\text{e}(\omega) = \frac{2}{\pi} \primevalue \int_0^\infty \frac{\nu}{\nu^2 - \omega^2} \Im \chi_\text{e}(\nu) \dd{\nu}.
+    \label{eq:kk-relation-positive-freq}
+\end{equation}
+This equation holds if the conditions for the Kramers–Kronig relations hold and we have \eqref{eq:negative-frequency-conjugate}.
+The relation \eqref{eq:kk-relation-positive-freq} is used frequently in experiments, where the absorption spectrum can be measured easily, and from which we can get the real part of the response.
+Similarly we have 
+\begin{equation}
+    \Im \chi_\text{e}(\omega) = - \frac{2}{\pi} \primevalue \int_0^\infty \frac{\nu}{\nu^2 - \omega^2} \Re \chi_\text{e}(\nu) \dd{\nu}.
+    \label{eq:kk-relation-positive-freq-im}
+\end{equation}
+
+\section{The Kramers–Kronig relations from analyticity}
+
+It is a well known fact that a reasonable response function's frequency domain form has no singularities on the upper complex plane, because we have 
+\[
+    \chi(\tau) = \frac{1}{2\pi} \int \dd{\tau} \ee^{- \ii \omega \tau} \chi(\omega),
+\]
+and if $\chi(\omega)$ has a pole $\omega_0$ on the upper plane, the pole contributes a term into $\chi(\tau)$ which is like 
+\[
+    \chi(\tau) \sim \ee^{- \ii (\Re \omega_0 + \ii \Im \omega_0) \tau} \propto \ee^{\Im \omega_0 \tau},
+\]
+so the response \emph{increases} as time goes by, which is ridiculous.
+
+What we want to do in this section is to show that the Kramers–Kronig relations can also be derived from this analytic condition.
+This, actually, is much easier than the proof in \prettyref{sec:kk-1}.
+
+Since there is no singularity on the upper plane, we have 
+\[
+    \oint \dd{\nu} \frac{\chi(\nu)}{\omega - \nu} = 0,
+\]
+where we set the contour to be 
+
+\section{The analytic structure of electromagnetic response functions}
+
+It should be noticed that the Kramers–Kronig relations shown in the last two sections may \emph{fail} for some materials.
+We often include the ohmic currents into $\chi_\text{e}$, which introduces a divergent imaginary part when $\omega \to 0$.
+Eq.~\eqref{optics-eq:linear-conductor-imaginary-part} in \opticsdoc{} tells us that the current introduces a $\ii \sigma / \omega$ term in $\epsilon$, and since we have 
+\begin{equation}
+    1 + \chi_\text{e} = \frac{\epsilon}{\epsilon_0},
+\end{equation}
+a $\ii \sigma / \epsilon_0 \omega$ term is introduced in $\chi_\text{e}$.
+We see that $\chi_\text{e}(\omega)$ for metals have an additional pole at the origin, which is not considered when deriving the Kramers–Kronig, where we simply assume there is no singularity on the real axis.
+In this case, we have a modified version of \eqref{eq:kk-relation-positive-freq-im}:
+\begin{equation}
+    \Im \chi_\text{e}(\omega) = \frac{\sigma}{\epsilon_0 \omega} - \frac{2}{\pi} \primevalue \int_0^\infty \frac{\nu}{\nu^2 - \omega^2} \Re \chi_\text{e}(\nu) \dd{\nu}.
+    \label{eq:metal-kk-relation}
+\end{equation}
+This formula can be proved by design a contour walking around the origin.
+Another way to think of the problem is to consider $\chi_\text{e}$ \emph{without} conductivity, i.e. we analyze the structure of $\chi_\text{e} - \ii \sigma / \epsilon_0 \omega$.
+
+From the analytic properties of the electromagnetic response functions we can also have some insight about how much light can a material film absorbs.
+First we introduce the \concept{superconvergence theorem}. Suppose we have 
+\begin{equation}
+    g(y) = \primevalue \int_0^\infty \frac{f(x)}{y^2 - x^2} \dd{x}
+\end{equation}
+and $f(x)$ decays at least as fast as $(x \log x)^{-1}$, then we have
+\begin{equation}
+    \int_0^\infty f(x) \dd{x} = \lim_{y \to \infty} (y^2 g(y)).
+\end{equation}
+Applying this theorem to $\chi_\text{e}$. By \eqref{eq:kk-relation-positive-freq}, we can let 
+\[
+    f(\nu) = \nu \Im \chi_\text{e}(\nu)
+\]
+and 
+\[
+    g(\omega) = - \frac{\pi}{2} \Re \chi_\text{e}(\omega),
+\]
+so we have 
+\begin{equation}
+    \int_0^\infty \nu \Im \chi_\text{e}(\nu) = \lim_{\omega \to \infty} \left( - \frac{\pi}{2} \omega^2 \Re \chi_\text{e}(\omega) \right).
+    \label{eq:origin-superconverge-1}
+\end{equation}
+We have already shown in Eq.~\eqref{solid-eq:rpa-omega-infty-response} in \soliddoc{} that 
+\[
+    1 + \chi_\text{e} = \epsilon_\text{r} = 1 - \frac{\omega_\text{p}^2}{\omega^2} 
+\]
+when $\omega$ is large, where $\omega_\text{p} \propto n_\text{e}$ according to Eq.~\eqref{solid-eq:omega-p-def-rpa} in \soliddoc. 
+Therefore, from \eqref{eq:origin-superconverge-1} we have 
+\[
+    \int_0^\infty \nu \Im \chi_\text{e}(\nu) = \lim_{\omega \to \infty} \left( - \frac{\pi}{2} \omega^2 \Re \chi_\text{e}(\omega) \right) = \lim_{\omega \to \infty} \left( -\frac{\pi}{2} \omega^2 \times \frac{\omega_\text{p}^2}{\omega^2} \right) = \frac{\pi}{2} \omega_\text{p}^2,
+\]
+so thus we have 
+\begin{equation}
+    \omega_\text{p}^2 = \frac{2}{\pi} \int_0^\infty \nu \Im \epsilon_\text{r}(\nu) \dd{\nu}.
+    \label{eq:trk-sum-rule}
+\end{equation}
+This is called the \concept{Thomas-Reiche-Kuhn sum rule (TRK sum rule)}.
+It is the electrodynamics version of the f-sum rule.
+Since $\omega_\text{p}$ is proportion to the number of free electrons, and the RHS of \eqref{eq:trk-sum-rule} is proportion to the absorption in the material, we conclude that the absorption is bounded roughly by the free electron number.
+
+Repeating this procedure for \eqref{eq:kk-relation-positive-freq-im} or more generally for \eqref{eq:metal-kk-relation}, we have % TODO
+\[
+    \int_0^\infty \Re \chi_\text{e}(\nu) \dd{\nu} = \frac{\pi}{2} \lim_{\omega \to \infty} \left( \omega \Im \chi_\text{e}(\omega) - \frac{\sigma }{\epsilon_0 } \right) = - \frac{\pi \sigma}{2 \epsilon_0},
+\]
+\begin{equation}
+    \int_0^\infty \Re (\epsilon_\text{r}(\nu) - 1) \dd{\nu} = - \frac{\pi \sigma}{2\epsilon_0}.
+\end{equation}
+If the material is insulator, $\sigma = 0$, and therefore we have 
+\begin{equation}
+    \overline{\Re \epsilon_\text{r}} = 1.
+    \label{eq:average-epsilon-r-1}
+\end{equation}
+
+Sum rules \eqref{eq:trk-sum-rule} and \eqref{eq:average-epsilon-r-1} are both substantial constraints on electromagnetic responses.
+The Kramers–Kronig relations can be simply seen as the redundancy of the frequency domain response functions, but by just adding some information like ``$\omega_\text{p} \propto n_\text{e}$'' or ``$\chi_\text{e}$ for metals have additional poles at the origin'', the consequences of the Kramers–Kronig relations impose real and substantial constraints on the response functions.
+
+\section{Poor man's linear response theory}
+
+A thorough introduction of the linear response theory in condensed matters can be found in Section~\ref{solid-sec:linear-response-energy-band} in \soliddoc.
+Here to make things easier, we use a time-dependent orbital-free DFT approach (formulated in a fluid dynamics way) to demonstrate basic ideas of linear response, and how momentum dependence of electromagnetic response functions arises.
+
+Let $e = - \abs*{e}$ be the electric charge carried by one electron. The basic equations are 
+\begin{equation}
+    m_\text{e} n \dv{\vb*{v}}{t} = n e (\vb*{E} + \vb*{v} \times \vb*{B}) - n \grad \left(\fdv{G[n]}{n}\right),
+    \label{eq:newtonian-eq}
+\end{equation}
+and 
+\begin{equation}
+    \pdv{n}{t} + \div{(n \vb*{v})} = 0.
+    \label{eq:continuous-eq}
+\end{equation}
+Here $G[n]$ is the density functional of the electron gas with Coulomb interaction, and the total energy functional of the system is 
+\begin{equation}
+    H[n] = G[n] + \int \dd[3]{\vb*{r}} n \frac{(\vb*{p} - e \vb*{A})^2}{2m_\text{e}} + e \int \dd[3]{\vb*{r}} n \phi,
+\end{equation}
+and \eqref{eq:newtonian-eq} and \eqref{eq:continuous-eq} can be derived from the total energy.
+
+Theoretically \eqref{eq:continuous-eq} and \eqref{eq:newtonian-eq} can be exact for processes of which the length scales are significantly greater than, say, the lattice constant, where the two equations are actually fluid dynamics equations which work well for systems with well defined flowing densities, and the partial derivative of the density functional gives forces acting on a volume of the electronic fluid.
+This is, nonetheless, practically impossible, for two reasons.
+(a) The precision of energy functional for orbital-free DFT is unimaginably poor, much less accurate than Kohn-Sham DFT.
+(b) Some systems simply cannot be described in terms of electron density in a natural way. For example, consider a metal in a strong magnetic field. No one expect the Landau energy levels can be described in a satisfactory way in terms of electron density. Though in theory any expectation can be rewritten as a functional of the electron density, the form of the functional may be strange.
+
+This does not mean that \eqref{eq:newtonian-eq} and \eqref{eq:continuous-eq} are useless.
+At least they can be used to capture qualitatively some physics when the concept of ``flowing electronic liquid'' still works.
+Also, since more accurate \emph{ab initio} methods are much more time-consuming, \eqref{eq:newtonian-eq} and \eqref{eq:continuous-eq} can be an efficient way to get some first impression of the system under investigation.
+Another advantage of the time dependent orbital-free DFT method is that it can be used to check the \emph{dynamic} response of materials.
+Because KSDFT - not to mention field theoretic methods - is quite slow, the way mainstream \emph{ab initio} packages calculate the electromagnetic response functions is to observe the behavior of the material in a static background field.
+This, for example, is unable to detect ultrafast behaviors, where the time scale of the time evolution of the electrodynamics field is comparable with the time scale of the response of the material.
+Another example where the background field method is unacceptable is the force acting on a volume of matter.
+consider \prettyref{fig:em-wave-volume}. If both the matter and the light is simulated \emph{ab initio}, then the electromagnetic waves will give the matter volume a rightward force.
+If, however, the light is seen as a background, the volume can only feel an up-down force.
+When the characteristic scale of the problem is $\lesssim \SI{1}{nm}$, the background field method may be a good choice, but when the characteristic scale is between $\sim \SI{1}{nm}$ and $\sim \SI{10}{nm}$, where both the wave nature of the electromagnetic field and the details of the matter are important, the orbital-free DFT and the fluid dynamics formulation are still a useful tool.
+Standard KSDFT does not work well in this region, and coarse-graining of the matter does not work.
+
+\begin{figure}
+    \centering
+    \input{10-20-figures/volume.tex}
+    \caption{Matter volume in electromagnetic waves}
+    \label{fig:em-wave-volume}
+\end{figure}
+
+Now we make the linear response approximation, i.e. let 
+\begin{equation}
+    n = n_0 + n_1, \quad \vb*{E} = \vb*{E}_0 + \vb*{E}_1, \quad \vb*{B} = \vb*{B}_1,
+\end{equation}
+where $n_0$ is a stable solution for \eqref{eq:newtonian-eq} and \eqref{eq:newtonian-eq} and $n_1$ is the linear response, $\vb*{E}_0$ and $\vb*{B}_0$ the stable component of the electric field and the magnetic field, respectively.
+We ignore the static magnetic field because it creates Landau energy levels, destroying the fluid dynamics picture as we have just mentioned.
+The ground state density $n_0$ can be solved from 
+\begin{equation}
+    e \vb*{E}_0 = \grad\left(\fdv{G[n]}{n}\right),
+\end{equation}
+which is the stable version of \eqref{eq:newtonian-eq}.
+Once after $n_0$ is found, \eqref{eq:newtonian-eq} reads 
+\[
+    m_\text{e} (n_0 + n_1) \dv{\vb*{v}}{t} = e (n_0 + n_1) (\vb*{E}_1 + \vb*{v} \times \vb*{B}_1) - n_1 \left( \grad \left(\fdv{G[n]}{n_0}\right) + \grad \left(\fdv{G[n]}{n_1}\right) \right) - n_0 \grad \left(\fdv{G[n]}{n_1}\right).
+\]
+Since we only consider the linear response, 
+
+\end{document}
