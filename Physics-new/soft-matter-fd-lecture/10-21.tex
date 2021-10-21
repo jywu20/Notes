@@ -1,0 +1,197 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Soft Condensed Matter by Prof. Peng Tan}
+\author{Jinyuan Wu}
+\date{October 21, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Thermodynamics of phase transition}
+
+Thermodynamics can provide a phenomenology description of phase transition.
+Let $\Phi$ be the thermodynamic potential in a given condition.
+The equilibrium configuration can be find by extremize it, and its higher order derivatives can be used to determine whether the configuration is stable, meta-stable or unstable.
+
+\begin{equation}
+    F = - k_\text{B} T \ln Z = U - TS, 
+\end{equation}
+
+The free energy (or other thermodynamic potentials that are used under the circumstances of interest) is always continuous.
+A \concept{first order phase transition} is a phase transition in which the first order derivative (for example, the entropy) of the thermodynamic potential is not continuous.
+A \concept{second order phase transition} is a phase transition in which the first order derivative of the thermodynamic potential is continuous, but the second order derivative (for example, the special heat) is not.
+
+Hard core gases are often used as a physical picture of phase transitions.
+They have gas, liquid and crystal phases.
+The fact, actually, is not merely a toy model.
+We have what is called \concept{colloidal crystals}, where \emph{colloidal particles} - instead of atoms or molecules - form crystalline structures.
+The various interaction between these crystals make their behaviors much more complex.
+
+It should be noted that thermodynamic stability is \emph{not} the sole factor determining what phases we can observe.
+We know under the same temperature and pressure, graphite is stabler than diamond, but we can still have stable diamonds.
+\emph{Dynamic} factors are important in phase transitions.
+
+\section{Classical nucleation theory}
+
+Now we consider a good example demonstrating the importance of kinetics in first order phase transitions: nucleation, or how liquid drops come out of vapor.
+The free energy of a vapor system with a droplet with radius $R$ is 
+\begin{equation}
+    F(R) = \frac{4}{3} \pi R^3 \times \rho \Delta f + 4 \pi R^2 \times \sigma,
+\end{equation}
+where 
+\begin{equation}
+    \Delta f = f_\text{liquid} - f_\text{vapor} < 0.
+\end{equation}
+Intuitively, the surface tension wants to push the droplet ``back'' into vapor, while the fact that liquid has a smaller free energy mass density then the vapor.
+As $R$ goes larger, $F$ goes higher at first, and it reaches itx maximum 
+\begin{equation}
+    F_\text{c} = \frac{16\pi}{3} \frac{\sigma^3}{(\Delta f)^2}
+    \label{eq:max-freeenergy-drop}
+\end{equation}
+at 
+\begin{equation}
+    R_\text{c} = - \frac{2\sigma}{\Delta f}.
+\end{equation}
+When $R$ passes $R_\text{c}$ the free energy goes down.
+
+The problem, now, is whether a drop can really emerge from the vapor.
+Due to thermal fluctuation, droplets constantly emerge, grow, shrink and disappear, as if the system is ``trying'' different configurations to find a more stabler position.
+The nucleation rate, in quasi-equilibrium systems, is 
+\begin{equation}
+    P \simeq A \ee^{- \Delta F_\text{c} / k_\text{B} T}.
+\end{equation}
+If $\sigma$ is just too large, then despite the fact that a state with a large droplet actually has a lower free energy - and therefore, stabler - than a state in which there is only vapor, droplets are unlikely to exist since the energy barrier \eqref{eq:max-freeenergy-drop} is just too high, and the nucleation rate is just too small.
+If, on the other hand, $\sigma$ is very small compared to $T$, then the vapor is very unstable: with just a small perturbation it will turn into liquid.
+This is called \concept{spinodal decomposition}, where one thermodynamic phase spontaneously (i.e., without nucleation) separates into two phases.
+
+The above mechanism also explains why condensation nuclei can accelerate nucleation: because a liquid droplet attached to a condensation nuclei only has half surface area, and therefore the surface tension term is less important. 
+
+\section{Melting}
+
+Melting is another example of first order phase transition, where we must acknowledge that first order phase transitions are far from being well understood.
+We have dimensionality, defects, lattice vibrations and other rich behaviors .
+
+Colloidal particles, again, have \emph{crystallization}, \emph{melting}, \emph{sublimitation} and \emph{solid-solid transitions}, just like ordinary materials do.
+They are \emph{tunable particles} or \emph{designer's atoms}, whose size, number and interaction can be tuned manually, and unlike systems made of molecules or atoms, now we can keep an eye on every ``atom'' in the system.
+
+We take hard-core spheres as an example. We usually only change the volume fraction, because heating may make the colloid unstable.
+When $\phi < \SI{49.4}{\percent}$, the system freezes into liquid, and when $\phi > \SI{54.5}{\percent}$ the system melts.
+Between these two volume fractions we have \emph{supercooling}.
+Liquid and solid are both stable phases for hard spheres; they can also form a meta-stable \emph{glass} state.
+
+Some interesting results have already been observed in these systems. We already know that melting starts from the \emph{edge} of a finite size pure (i.e. no defects) crystal, where the liquid-crystal boundary sweeps through the system, and from the inner defects in an almost infinite system.
+This demonstrates the general concept of \concept{heterogenous melting and homogenous melting}.
+These behaviors are dynamic rather than thermodynamic.
+
+Spinodal decomposition also exists in hard sphere systems. When the system is \concept{superheated} (not by actually heat but by vibration), no nucleation is needed, and solid-liquid transition happens immediately.
+
+The transition kinetics can also be studied in hard sphere systems. There is a big question in crystallization:
+how does the system break translational symmetry and build the lattice symmetry?
+Actually the process is \emph{staged}. The liquid first transits into \concept{precursors}, which are still in the liquid phase but have already gain some features of solid.
+Then, some of the precursors turn into \concept{meta-stable solid}, which later become solid.
+
+\section{Glasses}
+
+A liquid cooling too fast for crystallization falls into a \concept{glass}. 
+It is hard to say what really is a glass. 
+In everyday language glass is definitely solid; it, though, has some features of liquid.
+It is also not correct to classify glass as a kind of liquid, because, for example, ``glasses'' as we know it in \emph{glass windows} are \emph{amorphous} silica, while quartz is \emph{crystalline} silica.
+The chemical bonds are exactly the same.
+
+\end{document}
