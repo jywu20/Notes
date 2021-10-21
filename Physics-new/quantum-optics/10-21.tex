@@ -1,0 +1,290 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Quantum Optics by Prof. Kun Ding}
+\author{Jinyuan Wu}
+\date{October 21, 2021}
+
+\begin{document}
+
+\maketitle
+
+This article is a lecture note of Prof. Saijun Wu's lecture on Quantum Optics on October 21, 2021.
+
+\section{Measurement with reference beams}
+
+Suppose we have a linear optics system with a few parameters, 
+and we want to measure them according to the measurement results of photon numbers
+- which is almost the only observable that is really observable use present tools.
+Let $\bar{n}_l$ be the average observed photon number at detector $l$. 
+If we do enough times of measurement, we have 
+\begin{equation}
+    \expval{n_l} = \bar{n}_l.
+\end{equation}
+Let $P$ be the collection of parameters, and $\bar{n}_l$ is a function of $P$.
+If we have an explicit expression $\bar{n}_l = \bar{n}_l(P)$, we must already have a computationally efficient model of the linear optics system, which is often hard to obtain.
+Anyway, if there are enough detectors, we have 
+\begin{equation}
+    P = n^{-1}(\bar{n}),
+\end{equation}
+where $\bar{n}$ is the collection of photon number operators at all detectors.
+The error can then be estimated using standard error propagation techniques.
+
+\begin{figure}
+    \centering
+    \input{10-21-figures/beam-splitter-1.tex}
+    \caption{Measuring the reflective coefficient of a beam splitter}
+    \label{fig:measure-mean-splitter}
+\end{figure}
+
+Consider a device like \prettyref{fig:measure-mean-splitter}, where we use two detectors to measure the reflective coefficient of a beam splitter.
+Suppose we give an input consisting a few pulses, and the wave function of the system, under Heisenberg picture, is
+\begin{equation}
+    \ket*{\psi} = \prod_{j=1}^N a_j^\dagger \ket*{0} = \prod_{j=1}^N \left( \cos\frac{\theta}{2} b_{j1}^\dagger + \sin\frac{\theta}{2} b_{j2}^\dagger \right) .
+\end{equation}
+We have 
+\begin{equation}
+    \expval*{n_1} = \sum_j \expval*{b_{j1}^\dagger b_{j1}} = N \cos^2\frac{\theta}{2}, \quad \expval*{n_2} = \sum_j \expval*{b_{j2}^\dagger b_{j2}} = N \sin^2\frac{\theta}{2}.
+\end{equation}
+In principle we know everything about the incident light; in practice we do not, so from the equations above we have 
+\begin{equation}
+    \tan^2 \frac{\theta}{2} = \frac{\expval*{n_1}}{\expval*{n_2}},
+\end{equation}
+where parameters that we may not know are not present.
+We can consider this as a tricky to get rid of ``classical'' errors, like the (non-coherent and usually thermal) fluctuation of $N$.
+We can then evaluate the standard error of the two quantities, which are 
+\begin{equation}
+    \var{n}_1 = \var{n_2} = \frac{1}{2} \sqrt{N} \sin \theta.
+\end{equation}
+Thus 
+\begin{equation}
+    \var{\theta} = \frac{\var{\bar{n}}_1}{\pdv*{\bar{n}_1}{\theta}} = \frac{1}{2 \sqrt{N}}.
+\end{equation}
+
+We can also use a coherent light input, and the wave function of the whole system, again in the Heisenberg picture, is 
+\begin{equation}
+    \ket*{\psi} = \prod_{i=1}^N \ee^{\alpha_i a^\dagger_i - \alpha_i^* a_i} \ket*{0},
+\end{equation}
+and we have 
+\begin{equation}
+    \expval*{n_1} = N \abs*{\alpha}^2 \cos^2 \frac{\theta}{2}, \quad \expval*{n_2} = N \abs*{\alpha}^2 \sin^2 \frac{\theta}{2},
+\end{equation}
+and again, we have 
+\begin{equation}
+    \tan^2 \frac{\theta}{2} \frac{\expval*{n_1}}{\expval*{n_2}}.
+\end{equation}
+The error of $\theta$ can be estimated as 
+\begin{equation}
+    \var{\theta} = \frac{\var{\bar{n}}_1}{\pdv*{\bar{n}_1}{\theta}} = \frac{1}{2 \sqrt{N} \abs*{\alpha} \cos \frac{\theta}{2}}.
+\end{equation}
+
+\begin{figure}
+    \centering
+    \input{10-21-figures/material-absorption.tex}
+    \caption{Measuring light absorption}
+    \label{fig:absorption-measure}
+\end{figure}
+
+The idea in \prettyref{fig:measure-mean-splitter} can be generated to some more realistic measurements.
+Consider we are analyzing light absorption in a certain kind of material, and we have an optical circuit depicted in \prettyref{fig:absorption-measure}.
+To make things easier we use a 50-50 beam splitter.
+Though the light absorption is a non-unitary process, we can view it as another beam splitter, where a part of the incident light is scattered to somewhere else.
+We can therefore derive 
+\begin{equation}
+    \expval*{n}_1 = \frac{N \abs*{\alpha}^2}{2} \cos^2 \frac{\theta}{2}, \quad \expval*{n}_2 = \frac{1}{2} N \abs*{\alpha}^2.
+\end{equation}
+Since 
+\begin{equation}
+    I = I_0 \ee^{- \rho \sigma L} \eqqcolon \ee^{- \mathrm{OD}},
+\end{equation}
+we have 
+\begin{equation}
+    \sigma = - \frac{1}{\rho L} \ln \frac{\expval*{n_1}}{\expval*{n_2}}.
+\end{equation}
+It should be noted that large absorption cannot be measured in an easy way.
+We have 
+\[
+    n = \frac{P \tau}{\hbar \omega},
+\]
+and we have 
+\begin{equation}
+    \expval*{c^\dagger_1 c_1} \simeq \frac{P \tau}{\hbar \omega} \ee^{- \text{OD}}.
+\end{equation}
+When the absorption rate is large, $\expval*{c_1^\dagger c_1}$ can be quite small compared to its error, and the measurement can be extremely unreliable.
+That is why absorption experiments are usually carried out with dilute solutions.
+But on the other hand, $\text{OD}$ must be large to make sure 
+\begin{equation}
+    \frac{\var{\sigma}}{\sigma} = \frac{\var{\text{OD}}}{\text{OD}}
+\end{equation}
+is small enough.
+
+\begin{figure}
+    \centering
+    \input{10-21-figures/phase-measure.tex}
+    \caption{A Mach–Zehnder interferometer used to measure absorption}
+    \label{fig:mach-zehnder}
+\end{figure}
+
+\section{Measurement with light interferometry}
+
+One way to eschew this problem is to measure the ``phase''. We construct a Mach-Zehnder interferometer shown in \prettyref{fig:mach-zehnder}.
+The two beam splitters are 50-50 ones, i.e. their transition matrix being 
+\begin{equation}
+    S_1 = S_2 = \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 }.
+\end{equation}
+The spacial propagating process can be described by 
+\begin{equation}
+    S_\text{F} = \pmqty{\dmat{\ee^{\ii k L_1 - \varphi_1}, \ee^{\ii k L_2 + \varphi_2}}} \eqqcolon \text{unitary const} \times \pmqty{\dmat{\ee^{\ii \varphi / 2}, \ee^{- \ii \varphi / 2}}}.
+\end{equation}
+Ignoring unimportant factors, we have 
+\begin{equation}
+    \begin{aligned}
+        n_1 &= \cos^2\frac{\varphi}{2} a_1^\dagger a_1 + \sin^2\frac{\varphi}{2} a_2^\dagger a_2 + \frac{1}{2} \sin \varphi (a_1^\dagger a_2 + a^\dagger_2 a_1), \\
+        n_2 &= \cos^2\frac{\varphi}{2} a_2^\dagger a_2 + \sin^2\frac{\varphi}{2} a_1^\dagger a_1 - \frac{1}{2} \sin \varphi (a_1^\dagger a_2 + a^\dagger_2 a_1).
+    \end{aligned}
+\end{equation}
+By measuring $n_1$ and $n_2$, we are able to measure $\varphi$, and hence the absorption.
+
+\begin{figure}
+    \centering
+    \input{10-21-figures/shot-noise.tex}
+    \caption{Measuring the position of a nanosphere with phase measurement}
+    \label{fig:nanosphere}
+\end{figure}
+
+The phase measure technique can also be used to measure an unknown position in the light circuit.
+For example, consider \prettyref{fig:nanosphere}, where a nanosphere is contained in a light trap and we want to use an light beam to determine where exactly it is.
+The equation of motion is 
+\begin{equation}
+    m \ddot{x} = - \omega_0^2 x_1 + F,
+    \label{eq:nanosphere-eom}
+\end{equation}
+where teh radiational force is roughly
+\begin{equation}
+    F = \frac{P}{c} \sim \frac{SA}{c} \sim a^\dagger a \abs*{\mathcal{E}_l}^2 A,
+\end{equation}
+where $P$ is the light power, $S$ the Poynting vector, and $A$ is some ``effective area'' of the nanosphere.
+To reflect the fact that light is made of photons, we replace the $F$ in \eqref{eq:nanosphere-eom} with its expectation plus a classical fluctuation, i.e.
+\begin{equation}
+    F(t) = \expval*{F} + \var{F} = \frac{\abs*{\mathcal{E}_l}^2 \abs*{\alpha}^2 A}{c} + \var{F},
+\end{equation}
+where 
+\begin{equation}
+    \expval*{\var{F(t)} \var{F(t')}} = \hbar k \expval*{F} \delta(t - t') \eqqcolon D \delta(t - t').
+\end{equation}
+The errors are
+\begin{equation}
+    (\var{x})_\text{shot noise} = \frac{1}{k} \var{\varphi} = \frac{1}{k} \frac{1}{2 \sqrt{\frac{P \tau}{\hbar \omega}}} , \quad (\var{x})_\text{radiation force} \sim \sqrt{\hbar k \frac{P \tau}{c}} \frac{\tau}{m}, 
+\end{equation}
+
+\begin{figure}
+    \centering
+    \input{10-21-figures/graivitational-wave.tex}
+    \caption{Gravitational wave measurement}
+\end{figure}
+
+Of course, the length measurement technique developed for nanospheres is definitely not limited to this usage, and actually this idea is key to \emph{gravitational wave measurement}.
+When gravitational waves in certain modes go by the interferometer, we have 
+\begin{equation}
+    x_1 = x_1(0) + h(t) L, \quad x_2 = x_2(0) - h(t) L.
+\end{equation}
+
+\section{Beyond the standard quantum limit}
+
+To go beyond the standard quantum limit we can make use of the 
+
+\end{document}
