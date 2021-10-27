@@ -1,0 +1,290 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Poor man's linear response theory by Prof. Kun Din}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+In \href{./lecture-10-20}{the previous lecture} we discussed the K-K relation and its generalization in metals, the analytic structure of electrodynamic response functions, and sum rules.
+We also introduced a poor man's linear response theory.
+
+\section{Poor man's linear response theory}
+
+The ground state is determined by
+\begin{equation}
+    \eval{\fdv{G}{n}}_{0} + e \phi_0 = \mu, \quad \laplacian \phi_0 = \frac{e}{\epsilon_0} (n_\text{lattice} - n_0).
+\end{equation}
+The excitation is determined by 
+\begin{equation}
+    \pdv{\rho_1}{t} + \div{\vb*{j}_1} = 0, \quad \pdv{\vb*{j}_1}{t} = - \frac{e n_0}{m} \grad \left( \fdv{G}{n} \right)_1 + \frac{e^2 n_0}{m} \vb*{E}_1.
+\end{equation}
+Note that since the system can be charged (for example in the case of capacitors), maybe 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} (n_\text{lattice} - n_0) \neq 0.
+\end{equation}
+
+By the Fourier transformation of $t$ we have 
+\begin{equation}
+    (- \ii \omega + \gamma) \vb*{j}_1 = - \frac{e n_0}{m} \grad \left( \fdv{G}{n} \right)_1 + \frac{e^2 n_0}{m} \vb*{E}(\omega), \quad \div{\vb*{j}_1} - \ii \omega \rho_1 = 0.
+\end{equation}
+Adding the wave function 
+\begin{equation}
+    \curl(\curl{\vb*{E}_1(\omega)}) - \left( \frac{\omega}{c} \right)^2 \vb*{E}_1(\omega) = \ii \omega \mu_0 \vb*{j}_1(\omega),
+\end{equation}
+the electrodynamic behavior can be found.
+
+A specific case can be immediately seen from these equations. If the $G[n]$ term is not important, we already find that 
+\begin{equation}
+    \epsilon_\text{r}(\infty) = 1 - \frac{\omega_0^2}{\omega^2},
+\end{equation}
+which is the prediction of Drude model.
+Let 
+\begin{equation}
+    G[n] = \int \dd[3]{\vb*{r}} g(n, \grad{n}, \ldots) .
+\end{equation}
+The leading term of $g$ is the famous \concept{Thomas-Fermi energy} 
+\begin{equation}
+    g(n, \grad{n}, \ldots) = \frac{3 \hbar^2}{10 m_\text{e}} (3\pi)^{2/3} n^{5/3} + \cdots,
+\end{equation}
+and we can add the \concept{von-Weizsäcker energy} and \concept{exchange-correlation terms} (the exact meaning of which can be found in Section~\ref{solid-sec:kohn-sham-no-spin} in \soliddoc), for example 
+\begin{equation}
+    g(n, \grad{n}, \ldots) = \frac{3 \hbar^2}{10 m_\text{e}} (3\pi)^{2/3} n^{5/3} + \underbrace{\frac{\lambda \hbar^2}{8 m_\text{e}} \frac{\abs*{\grad{n}}^2}{n}}_{E_\text{vW}} + E_\text{XC}.
+    \label{eq:simple-functional}
+\end{equation}
+The exact expression of $g$ does not matter, since if the wave function does not appear explicitly, phenomena that are purely quantum mechanical are hard to repeat in our model.
+For example, if somehow the \emph{phase} of the electron wave function influences the electric field, then the prediction of our fluid dynamic approach is \emph{qualitatively wrong}.
+
+\section{Thomas-Fermi screening}
+
+We consider a static example. The problem is 
+\begin{equation}
+    \div{\vb*{D}} = \rho_\text{ext}, \quad \laplacian \phi_1 = - \frac{\rho_\text{ext} + \rho_1}{\epsilon_0}, \quad \epsilon_0 \div{\vb*{E}} = \underbrace{\rho_\text{ext} + \rho_1}_{\rho_\text{total}}. 
+\end{equation}
+Switching to the momentum space, we have 
+\[
+    \ii \vb*{k} \cdot \vb*{\vb*{D}}(\vb*{k}) = \epsilon_0 \abs*{\vb*{k}}^2 \phi_\text{ext}(\vb*{k}) = \rho_\text{ext}(\vb*{k}), 
+\]
+and by definition we have 
+\begin{equation}
+    \epsilon_\text{r}(\vb*{k}, \omega = 0) = \frac{\phi_\text{ext}(\vb*{k})}{\phi_1(\vb*{k})} = \frac{\rho_\text{ext}}{\rho_\text{total}} = 1 - \frac{\rho_1(\vb*{k})}{\rho_\text{total}(\vb*{k})}.
+\end{equation}
+If we just consider the Thomas-Fermi term, we have 
+\[
+    \fdv{G}{n} = \pdv{g}{n} - \div{\pdv{g}{\grad{n}} } = \frac{\hbar^2}{2m_\text{e}} (3\pi^2 n)^{2/3} ,
+\]
+and therefore 
+\[
+    \left(\fdv{G}{n}\right)_1 = \frac{\hbar^2}{2m_\text{e}} (3\pi^2 )^{2/3} ((n_1 + n_0)^{3/2} - n_0^{3/2}) \approx \frac{\hbar^2}{m_\text{e}} (3\pi^2)^{2/3} \frac{n_1}{n_0} n_0^{2/3} = \frac{2 \epsilon_\text{F}^0}{3 n_0} n_1,
+\]
+where we define
+\begin{equation}
+    \epsilon_\text{F}^1 \coloneqq \frac{\hbar^2}{2m_\text{e}} (3\pi^2 n_0)^{2/3}.
+\end{equation}
+So finally we have 
+\begin{equation}
+    \epsilon(\vb*{k}, \omega=0) = 1 + \frac{k_\text{s}^2}{\abs*{\vb*{k}}^2},
+\end{equation}
+where 
+\begin{equation}
+    k_\text{s} = \frac{3 e^2 n_0}{ 2 \epsilon_\text{F}^0 \epsilon_0} 
+\end{equation}
+is called the \concept{Thomas-Fermi wave number}.
+
+Here is the magnitude of $k_\text{s}$: We have 
+\begin{equation}
+    \frac{k_\text{s}}{k_\text{F}} = \sqrt{r_\text{s} \left(\frac{16}{3\pi^2}\right)^{2/3}} = 0.814 \sqrt{r_\text{s}},
+\end{equation}
+where $r_\text{s}$ is usually between $2$ and $6$.
+Therefore $k_\text{S}$ is of the same magnitude of $k_\text{F}$, and is quite a large momentum compared to ordinary electromagnetic waves.
+
+Switching back to the real space, we have 
+\[
+    \begin{aligned}
+        \phi_1(\vb*{r}) &= \frac{q}{\epsilon_0 (2\pi)^3} \int \dd[3]{\vb*{k}} \frac{\ee^{\ii \vb*{k} \cdot \vb*{r}}}{\abs*{\vb*{k}}^2 + k_\text{S}^2} \\
+        &= \frac{q}{\epsilon_0 (2\pi)^2} \frac{1}{2 \ii r} \int_{-\infty}^\infty \dd{k} \frac{k (\ee^{\ii k r} - \ee^{- \ii k r})}{(k + \ii k_\text{s}) (k - \ii k_\text{s})} ,
+    \end{aligned}
+\]
+Note that there is no causality in the spacial dimensions, so there may be poles on the upper plane.
+Competing the contour integrals we have 
+\begin{equation}
+    \phi_1(\vb*{r}) = \frac{q}{4\pi \epsilon_0 r} \ee^{- k_\text{s} r},
+\end{equation}
+which is called the \concept{Yukawa potential}. Usually the screening length is $1 / k_\text{s} \sim \SI{1}{\angstrom}$, so the electric field in a metal is screened almost perfectly.
+
+\section{Dynamic screening}
+
+Now we consider a scenario where both the charge and the current are perturbed.
+We have 
+\begin{equation}
+    (- \ii \omega + \gamma) \vb*{j}_1 + \frac{v_\text{p}^2}{3} \grad{\rho_1} = \epsilon_0 \omega_\text{p}^2 \vb*{E}_1(\omega),
+\end{equation}
+or to eliminate the dependence on $\rho_1$, we take the time derivative and obtain
+\begin{equation}
+    \omega(\omega + \ii \gamma) \vb*{j}_1 + \beta^2 \grad(\div{\vb*{j}_1}) = \ii \omega \epsilon_0 \omega_\text{p}^2 \vb*{E}_1(\omega).
+\end{equation}
+Now we perform the Helmholtz decomposition. Let 
+\begin{equation}
+    \vb*{E}_1 = \vb*{E}_\text{l} + \vb*{E}_\text{t}, \quad \vb*{j}_1 = \vb*{j}_\text{l} + \vb*{j}_\text{t},
+\end{equation}
+where the subscript l means ``longitude'' and t means ``transverse''.
+The equations for the longitude modes are 
+\begin{equation}
+    \omega(\omega + \ii \gamma) \vb*{j}_\text{l} - \beta^2 \vb*{k} (\vb*{k} \cdot \vb*{j}_\text{l}) = \ii \omega \epsilon_0 \omega_\text{p}^2 \vb*{E}_\text{l},
+\end{equation}
+while the equations for the transverse modes are 
+\begin{equation}
+    \omega(\omega + \ii \gamma) \vb*{j}_\text{t} = \ii \omega \epsilon_0 \omega_\text{p}^2 \vb*{E}_\text{t}, \quad \vb*{k} \times (\vb*{k} \times \vb*{E}_\text{t}) + \left(\frac{\omega}{c}\right)^2 \vb*{E}_\text{t} = - \ii \omega \epsilon_0 \omega_\text{p}^2 \vb*{E}_\text{t}(\omega).
+\end{equation}
+By the routine mentioned in the last section we have 
+\begin{equation}
+    \epsilon_\text{l}(\vb*{k}, \omega) = 1 - \frac{\omega_\text{p}^2}{\omega(\omega + \ii \gamma) - \beta^2 \abs*{\vb*{k}}^2},
+\end{equation}
+and 
+\begin{equation}
+    \epsilon_\text{t}(\vb*{k}, \omega) = 1 - \frac{\omega_\text{p}^2}{\omega(\omega + \ii \gamma)}.
+\end{equation}
+
+The pole in $\epsilon_\text{l}$ is given by 
+\begin{equation}
+    \abs*{\vb*{k}}^2 = \left(\frac{\omega}{c}\right)^2 \left( 1 - \frac{\omega_\text{p}^2}{\omega(\omega + \ii \gamma)} \right),
+\end{equation}
+and when there is no dissipation we get 
+\begin{equation}
+    \omega^2 = \omega_\text{p}^2 + \vb*{k}^2 c^2,
+\end{equation}
+again the prediction of Drude model. 
+
+When $k / k_\text{s}$ is small, there is almost no propagating modes in metals: the longitude mode is gapped, and the frequency of the transverse mode is just too low to be noticed.
+Therefore, in the $k / k_\text{s} \ll 1$ limit, a metal essentially blocks any propagating modes, and screens any external sources.
+When $k / k_\text{s} \gg 1$, the frequency of the longitude mode is just too high to be relevant, and now we have propagating transverse modes in the metal.
+In this limit the metal looks ``transparent''.
+
+\section{Boundaries and other inhomogeneous systems}
+
+The Thomas-Fermi term is definitely not enough for inhomogeneous systems.
+An extreme case is a boundary, where on one side we have no electrons at all and therefore the electron density has a sharp decay with a big $\grad{n}$, which must be included into the energy functional $G[n]$.
+Actually in the \SI{10}{nm} to \SI{1}{nm} region, violations of continuum electromagnetism most frequently come from boundaries.
+Violations of the continuum theory appear usually in the $< \SI{1}{nm}$ region in bulks.
+
+With an energy functional $G[n]$ that is accurate enough, it can be found that the electron density has a peak near the boundary, and the electric field changes sharply.
+In the macroscopic electrodynamics, we do a coarse-graining of all fields around the boundary and approximate all high wave number components of the fields with $\delta$-functions. 
+\emph{Boundary conditions} are introduced to characterize the boundary, which is not necessary in the microscopic theory.
+
+\section{A summary of continuum electromagnetism}
+
+\begin{itemize}
+    \item Microscopic and macroscopic Maxwell equations; continuum of approximation.
+    \begin{itemize}
+        \item Spacial averaging; test functions.
+        \item Long wave length condition.
+    \end{itemize}
+    \item Constitutive relations.
+    \begin{itemize}
+        \item Macroscopic description of materials.
+        \item Weak field approximation: only linear susceptibility.
+        \item Low speed movement.
+        \item Multipole expansion.
+    \end{itemize}
+    \item Response functions in the frequency domain.
+    \begin{itemize}
+        \item The K-K relations.
+        \item Causality.
+    \end{itemize}
+    \item Poor man's linear response theory.
+\end{itemize}
+
+\end{document}
