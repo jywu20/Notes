@@ -1,0 +1,179 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Quantum Optics, Homework 2}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Details in the HBT experiment} 
+
+\paragraph{Solution}
+
+\paragraph{}
+
+\paragraph{Conditional generation of single photon pulses} Many research and applications in quantum optics needs single photon pulses, that is, a wave packet of light that contains exactly one single photon. Such a single photon pulse can be generated in two ways: The deterministic approach via single atom emission, and the so-called heralded approach. This problem discusses a simplified version of the later.
+Consider a bi-photon generation process described by the Hamiltonian  
+\begin{equation}
+    H=\beta a_{k}^\dagger b_{k^{\prime}}^\dagger+ \text{h.c.}.
+\end{equation}
+Here $a_{k}^\dagger, b_{k^{\prime}}^\dagger$ are creation operators of photons into the $k, k'$ propagation modes respectively. Such process can be realized for example in a frequency down conversion experiment, where a single photon is ``split'' into two in a nonlinear optical crystal, or a 4-wave mixing experiment where two incoming photons are converted into two output photons in an atomic gas.
+(a) Consider initially light is in vacuum state $|\psi(0)\rangle=|V\rangle$. Consider that the bi-photon generation process is switched on for time $\tau$ and then off, with $\xi=\beta \tau \ll 1$. Integrate the Schrodinger equation to obtain $|\psi(\tau)\rangle$, that is, the photon state after the interaction. (b) Consider a photon detector positioned $L$ meters away from the bi-photon generation device along the $k'$ propagation pathway. The time interval that the detector can detect a $b_{k'}$ photon is $[L / c, L / c+\tau]$ (we ignore any change of light speed within the experiment). For an ideal photon detector, what is the probability of detecting 1 photon, and detecting 2 photons during this time interval? If one photon is detected along $k'$, what is the photon state in the $k$ path? The strategy is the so called heralded single photon generation: a nearly perfect single photon pulse in the $k$ mode is heralded by the detection of a single photon in the $k'$-mode.
+
+\paragraph{Solution} \begin{itemize}
+    \item[(a)] In the interaction picture, the time evolution of the state is given by
+    \[
+        \ii \dv{t} \ket*{\psi(t)} = H \ket*{\psi(t)} = h(t) \left( \beta a^\dagger_{k} b_{k'}^\dagger + \text{h.c.} \right) \ket*{\psi(t)},
+    \] 
+    where $h(t)$ is one when $t \in [0, \tau]$ and zero otherwise.
+    Formally we have 
+    \[
+        \ket*{\psi(t)} = \timeorder \exp(- \ii \int_0^t \dd{t'} h(t') (\beta a^\dagger_k b^\dagger_{k'} + \text{h.c.})) \ket*{\psi(0)}.
+    \]
+    Since $\xi \ll 1$, the operators approximately do not have time evolution, and thus we have 
+    \begin{equation}
+        \begin{aligned}
+            \ket*{\psi(\tau)} &= \exp(- \ii \tau (\beta a^\dagger_k b^\dagger_{k'} + \text{h.c.})) \ket*{\psi(0)} \\
+            &= \ee^{- \ii \xi (a^\dagger_k b^\dagger_{k'} + a_k b_{k'})} \ket*{0} .
+        \end{aligned}
+        \label{eq:final-state-tau}
+    \end{equation}
+    \item[(b)] Since the time interval is very short, we can view the measurement as simply measuring the state \eqref{eq:final-state-tau} as the pulse comes across the detector.
+    Expanding \eqref{eq:final-state-tau} we have 
+    \[
+        \begin{aligned}
+            \ket*{\psi(\tau)} &= \ket*{0} - \ii \xi (a^\dagger_{k} b^\dagger_{k'} + \text{h.c.}) \ket*{0} + \frac{1}{2} (- \ii \xi)^2 (a^\dagger_{k} b^\dagger_{k'} + \text{h.c.})^2 \ket*{0} + \cdots \\
+            &= \left( 1 - \frac{\xi^2}{2} + \cdots \right) \ket*{0} - (\ii \xi + \cdots) \ket*{n_k = 1, n_{k'} = 1} - \left( \frac{1}{2} \xi^2 + \cdots \right) \ket*{n_k = 2, n_{k'} = 2} + \cdots.  
+        \end{aligned}
+    \] 
+    Taking only the leading order terms, we have 
+    \begin{equation}
+        P(n_k = 1) = \xi^2, \quad P(n_k = 2) = \frac{\xi^4}{4}.
+    \end{equation}
+
+    It can be seen that in $\ket*{\psi(\tau)}$ we always have $n_k = n_{k'}$, and therefore if one photon is detected along $k'$, the photon state in the $k$ path is $\ket*{n_k = 1}$.
+    Therefore if we placed a baffle in path $k$, which is removed when $n_{k'}$ is detected to be $1$, whenever a pulse is generated, it is a single-photon one.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{single-photon-pulse-circuit.tex}
+    \caption{Light circuit in the heralded approach}
+    \label{fig:heralded-circuit}
+\end{figure}
+
+\paragraph{}
+
+\paragraph{Details in the NLS process} Analyze the NLS process in detail. 
+The circuit is shown in \prettyref{fig:nls}, and the two beam splitters are represented as 
+\begin{equation}
+    S_1 = \pmqty{\cos \theta & \sin \theta \\
+    - \sin \theta & \cos \theta}, \quad S_2 = \pmqty{\cos \sigma & \sin \sigma \\
+    - \sin \sigma & \cos \sigma}
+\end{equation}
+(a) Derive the output quantum state before the measurement.
+(b) Find the conditional quantum state with the measurement results shown in \prettyref{fig:nls}.
+(c) Find when the NLS process works in terms of $\theta$ and $\sigma$, and the probability of a successful NLS.
+
+\paragraph{Solution} \begin{itemize}
+    \item[(a)] 
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{nls-circuit.tex}
+    \caption{The NLS circuit}
+    \label{fig:nls}
+\end{figure}
+
+\paragraph{}
+
+\end{document}
