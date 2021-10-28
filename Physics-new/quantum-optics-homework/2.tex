@@ -164,10 +164,101 @@ The circuit is shown in \prettyref{fig:nls}, and the two beam splitters are repr
 (c) Find when the NLS process works in terms of $\theta$ and $\sigma$, and the probability of a successful NLS.
 
 \paragraph{Solution} \begin{itemize}
-    \item[(a)] The optical circuit is a linear one and its transformation matrix is 
+    \item[(a)] The optical circuit is linear its transformation matrix is 
     \begin{equation}
-        S = \pmqty{ 1 & 0 & 0 \\ 0 & \cos \sigma & \sin \sigma \\ 0 & - \sin \sigma & \cos \sigma } \pmqty{ \cos \theta & \sin \theta & 0 \\ - \sin \theta & \cos \theta & 0 \\ 0 & 0 & 1  } = \pmqty{ \cos \theta & \sin \theta & 0 \\ - \cos \sigma \sin \theta & \cos \sigma \cos \theta \\ \sin \sigma }
+        S = \pmqty{ 1 & 0 & 0 \\ 0 & \cos \sigma & \sin \sigma \\ 0 & - \sin \sigma & \cos \sigma } \pmqty{ \cos \theta & \sin \theta & 0 \\ - \sin \theta & \cos \theta & 0 \\ 0 & 0 & 1  } = \pmqty{ \cos \theta & \sin \theta & 0 \\ - \cos \sigma \sin \theta & \cos \sigma \cos \theta & \sin \sigma \\ \sin \theta \sin \sigma & - \cos \theta \sin \sigma & \cos \sigma },
+        \label{eq:s-matrix-nls}
     \end{equation} 
+    and we have 
+    \begin{equation}
+        b^\dagger_j = S_{jk} a^\dagger_k.
+        \label{eq:b-a-nls}
+    \end{equation}
+    The quantum state is 
+    \[
+        \ket*{\psi} = \big( \alpha + \beta a_1^\dagger + \frac{\gamma}{\sqrt{2}} (a_1^\dagger)^2 \big) a_2^\dagger \ket*{0} .
+    \]
+    By \eqref{eq:s-matrix-nls} and \eqref{eq:b-a-nls} we have 
+    \[
+        [a_i]^\dagger = \pmqty{\cos \theta  & -\cos \sigma  \sin \theta  & \sin \theta  \sin \sigma  \\
+        \sin \theta  & \cos \theta  \cos \sigma  & -\cos \theta  \sin \sigma  \\
+        0 & \sin \sigma  & \cos \sigma  } [b_i^\dagger],
+    \]
+    and therefore we have 
+    \begin{equation}
+        \begin{aligned}
+            \ket*{\psi} &= \Big( \alpha + \beta ( b_1^\dagger \cos \theta - b_2^\dagger \sin \theta  \cos \sigma + b_3^\dagger \sin \theta  \sin \sigma ) \\
+            &\quad \quad + \frac{\gamma}{\sqrt{2}} ( b_1^\dagger \cos \theta - b_2^\dagger \sin \theta  \cos \sigma + b_3^\dagger \sin \theta  \sin \sigma )^2 \Big) \\
+            &\quad \times   (b_1^\dagger \sin \theta +b_2^\dagger \cos \theta  \cos \sigma -b_3^\dagger \cos \theta  \sin \sigma ) \ket*{0}.
+        \end{aligned}
+        \label{eq:nls-psi}
+    \end{equation}
+    \item[(b)] In \eqref{eq:nls-psi}, the $b_1^\dagger (b_2^\dagger)^0$ terms are
+    \[
+        \begin{aligned}
+            &\quad \alpha b_1^\dagger \sin \theta + \beta b_1^\dagger \cos \theta \times (-b_3^\dagger \cos \theta \sin \sigma) \\
+            &+ \beta b_3^\dagger \sin \theta \sin \sigma \times b_1^\dagger \sin \theta \\
+            &+ \frac{2 \gamma}{\sqrt{2}} b_1^\dagger \cos \theta \times b_3^\dagger \sin \theta \sin \sigma\times (- b_3^\dagger \cos \theta \sin \sigma) \\
+            &+ \frac{\gamma}{\sqrt{2}} (b_3^\dagger)^\dagger \sin^2\theta \sin^2\sigma \times b_1^\dagger \sin \theta,
+        \end{aligned}
+    \]  
+    which also reads 
+    \[
+        (\alpha \sin\theta + b_3^\dagger \beta \sin\sigma \cos 2 \theta + \frac{1}{\sqrt{2}} (b_3^\dagger)^2 \gamma (\sin^2\theta - 2\cos^2\theta) \sin \theta \sin^2 \sigma) b_1,
+    \]
+    and therefore the conditional quantum state is 
+    \begin{equation}
+        \ket*{\psi}_\text{cond-out} = \alpha \sin\theta \ket*{1, 0, 0} + \beta \sin\sigma \cos 2 \theta \ket*{1, 0, 1} + \gamma (\sin^2\theta - 2\cos^2\theta) \sin \theta \sin^2 \sigma \ket*{1, 0, 2}.
+        \label{eq:nls-conditional-state}
+    \end{equation}
+    Note that the state is \emph{not} normalized. Its norm gives the probability to obtain such a state.
+    \item[(c)] The output state of a NLS process is 
+    \[
+        \alpha \ket*{0} + \beta \ket*{1} - \gamma \ket*{2}.
+    \] 
+    \eqref{eq:nls-conditional-state} satisfied this condition if and only if 
+    \[
+        \sin \sigma \cos 2 \theta = \sin \theta, \quad (\sin^2\theta - 2\cos^2\theta) \sin \theta \sin^2 \sigma = - \sin \theta.
+    \]
+    Eliminating $\sigma$ we have 
+    \[
+        (2 \cos^2 \theta - \sin^2 \theta) \frac{\sin^2 \theta}{\cos^2 2 \theta} = 1,
+    \]
+    from which we find
+    \[
+        \sin^2 \theta = \frac{3 \pm \sqrt{2}}{7}.
+    \]
+    Since 
+    \[
+        2 \cos^2 \theta - \sin^2 \theta > 0,
+    \]
+    we throw away solution and only keep the solution $(3 - \sqrt{2}) / 7$. 
+    Note that $\cos 2 \theta >0$, so the sign of $\sin \theta$ and $\sigma$ is the same, and if we add a negative sign to both $\theta$ and $\sigma$ we just get another solution.
+    This is correct because the phase of \eqref{eq:nls-conditional-state} cannot be determined uniquely.
+    Without loss of generality we take 
+    \[
+        \sin \theta = \sqrt{\frac{3 - \sqrt{2}}{7}},
+    \]
+    and hence 
+    \[
+        \sin \sigma = \frac{\sin \theta}{\cos 2 \theta} = \frac{\sin \theta}{1 - 2 \sin^2 \theta} = \frac{\sqrt{21 - 7 \sqrt{2}}}{1 + 2 \sqrt{2}}.
+    \]
+    So 
+    \begin{equation}
+        \theta = \arcsin \sqrt{\frac{3 - \sqrt{2}}{7}} = \SI{28.42}{\degree}, \quad \sigma = \arcsin \frac{\sqrt{21 - 7 \sqrt{2}}}{1 + 2 \sqrt{2}} = \SI{60.49}{\degree}.
+    \end{equation}
+    Of course, 
+    \begin{equation}
+        \theta = \SI{180}{\degree} - \SI{28.42}{\degree} = \SI{151.58}{\degree}, \quad \sigma = \SI{180}{\degree} - \SI{60.49}{\degree} = \SI{119.51}{\degree}.
+    \end{equation}
+    When NLS is possible, we have 
+    \[
+        \ket*{\psi}_\text{cond-out} = \alpha \sin \theta \ket*{1, 0, 0} + \beta \sin \theta \ket*{1, 0, 1} - \gamma \sin \theta \ket*{1, 0, 2}.
+    \]
+    The successful probability is the square of the norm, which is 
+    \begin{equation}
+        P_\text{succ} = \sin^2 \theta = \frac{3 - \sqrt{2}}{7} = \SI{22.65}{\percent}.
+    \end{equation}
 \end{itemize}
 
 \begin{figure}
@@ -179,7 +270,7 @@ The circuit is shown in \prettyref{fig:nls}, and the two beam splitters are repr
 
 \paragraph{}
 
-\paragraph{The $1/f$ noise}
+\paragraph{The $1/f$ noise} 
 
 \paragraph{Laser phase-locking} 
 

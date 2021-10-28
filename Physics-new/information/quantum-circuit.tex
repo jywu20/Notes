@@ -1,0 +1,664 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$}
+
+\title{量子比特系统和量子逻辑电路}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\section{量子比特系统}
+
+\subsection{单量子比特}
+
+一个\concept{单量子比特系统}是一个只有$\ket{0}$和$\ket{1}$两种状态的系统。
+正如经典比特系统非常简单，但是可以编码一切经典信息，量子比特系统也是量子计算的基础。
+单个量子比特也可以看成一个$1/2$自旋自由度，虽然未必有对应的对称性。
+
+量子比特系统的密度矩阵是本征值之和为$1$、本征值大于等于零的全体$2 \times 2$复厄米矩阵，容易验证这样的矩阵一定具有形式
+\begin{equation}
+    \hat{\rho} = \frac{1 + \vb*{r} \cdot \hat{\vb*{\sigma}}}{2} = \frac{1 + x \hat{\sigma}_x + y \hat{\sigma}_y + z \hat{\sigma}_z}{2}, \quad r = \sqrt{x^2+y^2+z^2} \leq 1.
+    \label{eq:bloch-ball}
+\end{equation}
+这是因为泡利矩阵构成全体$2\times 2$厄米矩阵的一组基，于是一个$2\times 2$厄米矩阵一定可以写成
+\[
+    R(1 + x \hat{\sigma}_x + y \hat{\sigma}_y + z \hat{\sigma}_z)
+\]
+的形式。这样的矩阵的本征值为$R(1 \pm r)$，而为了保证本征值之和为$1$必须取$R=1/2$，由本征值大于等于零就有$r\leq 1$，于是就得到\eqref{eq:bloch-ball}。
+
+可以看出，$\vb*{r}$的取值范围构成了一个半径为$1$的球，称为\concept{Bloch球}。
+任何密度矩阵都可以表示成Block球上的一个点。
+当且仅当密度矩阵只有一个本征值非零时，它对应一个纯态，因此量子比特系统是纯态，当且仅当$r=1$，而$r<1$的情况都是混合态。
+实际上，通过计算冯诺依曼熵可以发现$r$越大熵越小，$r=0$时是完全混和态。
+于是Bloch球的球壳上是全部纯态，其内部为全部混合态。
+实际上，可以根据$r$计算纯度
+\begin{equation}
+    \trace \hat{\rho}^2 = \frac{1}{2} (1 + r^2).
+\end{equation}
+
+既然所有纯态都在Bloch球的球面，不失一般性地，以$z$轴和Bloch球的交点为$\ket{0}$，我们很快会发现$\ket{1}$对应的是$(x, y, z) = (0, 0, -1)$，因此$\ket{0}$在Bloch球的北极，而$\ket{1}$在Bloch球的南极。
+显然，$\ket{0}$和$\ket{1}$没有任何特殊地位，因此我们得出结论：Bloch球球面上相对的两个点表示一对正交态。
+
+在Bloch球上建立球坐标系，以$(r, \theta, \varphi)$为球坐标。对$r=1$的点，即纯态，代入\eqref{eq:bloch-ball}，做特征分解可以得到
+\begin{equation}
+    \ket{\psi(\vb*{r})} = \cos \frac{\theta}{2} \ket{0} + \sin \frac{\theta}{2} \ee^{\ii \varphi} \ket{1},
+    \label{eq:state-on-ball}
+\end{equation}
+而与它正交、位于Bloch球另一边的$\ket{\psi(-\vb*{r})}$是
+\begin{equation}
+    \ket{\psi(-\vb*{r})} = \sin \frac{\theta}{2} \ket{0} - \cos \frac{\theta}{2} \ee^{\ii \varphi} \ket{1}.
+\end{equation}
+
+Bloch球以一种直观的方式展现了量子比特系统和经典比特系统的区别：一个经典比特系统只能够存储\SI{1}{bit}的信息，但是一个量子比特系统需要两个实数来描述，因此包含不可数无穷多个比特的信息。
+但是这里有一个微妙的地方：态矢量的分量系数并不是直接可以实验观察的，但一旦做了观测，量子比特系统就坍缩了。
+因此我们并不能将$\theta$和$\varphi$直接读出来。
+
+\subsection{多量子比特}
+
+\subsubsection{二量子比特}
+
+两个量子比特形成的系统的密度矩阵具有如下的一般形式：
+\begin{equation}
+    \hat{\rho}_{AB} = \frac{1}{4} (1 + \vb*{a} \cdot \hat{\vb*{\sigma}} \otimes 1_B + 1_A \otimes \vb*{b} \cdot \hat{\vb*{\sigma}} + \sum_{jk} T_{jk} \hat{\sigma}_j \otimes \hat{\sigma}_k ).
+\end{equation}
+通过对这一密度矩阵做适当的求迹可以得到各个参数：
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \trace (\hat{\rho}_{AB} (\hat{\vb*{\sigma}} \otimes 1_B)) &= \vb*{a}, \\
+            \trace (\hat{\rho}_{AB} (1_A \otimes \hat{\vb*{\sigma}})) &= \vb*{b}, \\
+            \trace (\hat{\rho}_{AB} (\hat{\sigma}_i \otimes \hat{\sigma}_j) ) &= T_{ij}.
+        \end{aligned}
+    \right.
+\end{equation}
+$T_{jk}$称为\concept{关联矩阵}，因为它不能通过$A$或$B$的约化密度矩阵得到。
+直接计算可知，
+\begin{equation}
+    \hat{\rho}_A = \trace_B (\hat{\rho}_{AB}) = \frac{1}{2} (1 + \vb*{a} \cdot \hat{\vb*{\sigma}}), \quad \hat{\rho}_B = \trace_A (\hat{\rho}_{AB}) = \frac{1}{2} (1 + \vb*{b} \cdot \hat{\vb*{\sigma}}),
+\end{equation}
+即$\vb*{a}$和$\vb*{b}$为$A$和$B$对应的Bloch球矢量，而$T_{jk}$始终没有出现。
+因此，$T_{jk}$应该存储着描述两个比特之间的量子关联或者说量子纠缠的信息。（量子纠缠有可观测的实际效应，见\autoref{sec:correlation}）
+如果$\hat{\rho}_{AB}$是两个系统的状态的直积，那么
+\[
+    T_{jk} = a_j b_k, \quad \det T_{jk} = 0.
+\]
+
+对二系统组成的纯态，纠缠熵是好的度量纠缠大小的量。我们下面计算最大纠缠态。
+对二量子比特系统做Schmidt分解。每个量子比特的希尔伯特空间为二维的，因此Schmidt分解可以将一个任意的二量子比特系统的态矢量写成一个二维希尔伯特空间中的矢量。
+显然，这个二维希尔伯特空间的基底可以是$\{\ket{00}, \ket{11}\}$或是$\{\ket{01}, \ket{10}\}$。
+于是我们只需求解优化问题
+\[
+    \ket{\psi} = a \ket{00} + b \ket{11} \quad \text{or} \quad a \ket{01} + b \ket{10}, \quad \abs*{a}^2 + \abs*{b}^2 = 1.
+\]
+以上优化问题的一组解为所谓\concept{贝尔态}，它们是
+\begin{equation}
+    \begin{aligned}
+        \ket{\Phi^+} &= \frac{1}{\sqrt{2}} (\ket{00} + \ket{11}), \quad \ket{\Phi^-} = \frac{1}{\sqrt{2}} (\ket{00} - \ket{11}), \\
+        \ket{\Psi^+} &= \frac{1}{\sqrt{2}} (\ket{01} + \ket{10}), \quad \ket{\Psi^-} = \frac{1}{\sqrt{2}} (\ket{01} - \ket{10}).
+    \end{aligned}
+\end{equation}
+它们之间彼此线性无关，因此构成了二量子比特系统的一组基。
+
+最大纠缠态是很多量子关联问题中最优解的实现方式。例如，在量子关联中，最大纠缠态通常会带来最大的关联。
+
+\subsection{量子比特系统的制备}
+
+\section{量子关联}\label{sec:correlation}
+
+本节讨论量子比特系统展现出的一些纠缠特性。虽然态矢量本身并不是一个可以直接使用观测结果定义的量，但是一些现象强烈地表明，如果不引入可以直积、叠加——从而可以形成纠缠态的——态矢量，将很难描述一些现象。
+
+\subsection{CHSH游戏}
+
+\concept{CHSH游戏}指的是这样一个过程：一个真随机数发生器产生一对均匀分布、彼此无关的比特$x$和$y$，将它们分别提供给Alice和Bob，两人相距一段距离，彼此不能联系，然后Alice和Bob分别产生一个比特，记作$a$和$b$，如果
+\begin{equation}
+    x \land y = a \oplus b,
+\end{equation}
+游戏就成功了。
+
+当然，Alice和Bob可以采取不同的策略来增大游戏成功的概率，不过显然游戏成功的概率有一个小于$1$的上限。我们将指出，如果量子力学实际上是错误的，也即，可以用局域的隐变量模拟各种量子现象，那么游戏成功的概率的上限要小于量子力学实际上成立时的概率上限。
+这意味着量子力学的一部分不同诠释实际上有可观察的效应。
+
+由于$x$和$y$是均匀分布且彼此独立的，有
+\begin{equation}
+    \begin{aligned}
+        P_\text{win} &= \sum_{a, b, x, y} V(x, y, a, b) p_{AB|XY}(a, b | x, y) p_{XY}(x, y) \\
+        &= \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{AB|XY}(a, b | x, y).
+    \end{aligned}
+\end{equation}
+其中$V(x, y, a, b)$是指示函数，在游戏成功时为$1$，否则为$0$。现在要做的就是分析$p_{AB|XY}(a, b | x, y)$的形式。
+
+\subsubsection{隐变量理论的上限}
+
+Alice和Bob在分开之前可能有某种约定，从而导致它们在分开之后看起来还是有远距离关联，这是隐变量理论模拟量子纠缠的思路。
+我们取一个非常一般化的形式：设有隐变量为$\Lambda$，且
+\[
+    p_{AB|XY}(a, b | x, y) = \int \dd{\lambda} p_\Lambda(\lambda) p_{A|\Lambda X} (a | \lambda, x) p_{B|\Lambda Y}(b | \lambda, b).
+\]
+由于Alice和Bob分开之后才根据$x, y$决定$a, b$，$a$和$b$的产生是彼此独立的，因此我们有上式的形式。
+这样
+\[
+    \begin{aligned}
+        P_\text{win} &= \int \dd{\lambda} p_\Lambda(\lambda) \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{A|\Lambda X} (a | \lambda, x) p_{B|\Lambda Y}(b | \lambda, b) \\
+        &\leq \frac{1}{4} \sum_{a, b, x, y} V(x, y, a, b) p_{A|\Lambda X} (a | \lambda^*, x) p_{B|\Lambda Y}(b | \lambda^*, b),
+    \end{aligned}
+\]
+不等号是因为对$\lambda$的积分无非是一种平均值，因此只需要适当调节$\lambda^*$就可以让被积函数大于最后的积分值，且等号可以取到。
+这意味着隐变量其实在此处并没有什么意义——最有效的策略中隐变量是定死的。更进一步，我们可以发现让只有$x, y, a, b$能够胜利时概率取$1$其它情况取$0$能够获得最大胜率，因此胜率最大的策略中$a$是$x$的函数，而$b$是$y$的函数。
+这意味着我们需要让
+\[
+    0 = a_1 \oplus b_0, \quad 0 = a_0 \oplus b_1, \quad 0 = a_0 \oplus b_0, \quad 1 = a_1 \oplus b_1
+\]
+尽可能成立。这四个式子不能都成立，最多只能成立三个，否则会产生矛盾，于是我们会发现$P_\text{win}$最大为$3/4$。
+
+\subsubsection{量子关联的胜率上限}
+
+另一方面，如果标准的量子力学的纠缠态是可以实现的，我们将会获得比$3/4$更大的胜率上界。
+这里不再使用隐变量来编码Alice和Bob的关联，而是真的认为Alice和Bob组成的系统由一个密度矩阵$\hat{\rho}$描述。
+这覆盖了隐变量的机制，同时还允许真正的量子纠缠，即所谓密度矩阵的非对角部分。
+
+由于$x, y$是给定的，Alice和Bob可以根据他们得到的确定的$x, y$值来分别决定给出什么输出。
+唯一能够试图利用他们之间的关联的方法是通过测量$\hat{\rho}$，于是
+\[
+    p_{AB|XY}(a, b | x, y) = \trace (\hat{\rho} \hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}),
+\]
+其中诸$\hat{\Pi}$均为正定算符，是POVM成员，且满足归一化条件。（Alice和Bob的POVM成员可能是不一样的，使用指标$x$和$y$区分它们）
+最大值肯定是在$\hat{\rho}$为纯态时取到的，因为POVM成员都是正定的。因此接下来我们讨论纯态的情况，即
+\[
+    p_{AB|XY}(a, b | x, y) = \mel{\phi}{\hat{\Pi}_{a}^{(x)} \otimes \hat{\Pi}_{b}^{(y)}}{\phi}.
+\]
+在$(x, y)$为$01$，$10$或$00$时游戏成功意味着$a=b$，此时赢的概率为
+\[
+    \mel{\phi}{\hat{\Pi}^{(x)}_0 \otimes \hat{\Pi}^{(y)}_0}{\phi} + \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_1}{\phi},
+\]
+而输的概率为
+\[
+    \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_0}{\phi} + \mel{\phi}{\hat{\Pi}^{(x)}_1 \otimes \hat{\Pi}^{(y)}_0}{\phi},
+\]
+于是赢的概率减去输的概率为
+\[
+    \mel{\phi}{(\hat{\Pi}_0^{(x)} - \hat{\Pi}_1^{(x)}) \otimes (\hat{\Pi}_0^{(y)} - \hat{\Pi}_1^{(y)})}{\phi}.
+\]
+类似的，$(x, y)$为$11$时赢的概率减去输的概率为
+\[
+    - \mel{\phi}{(\hat{\Pi}_0^{(x)} - \hat{\Pi}_1^{(x)}) \otimes (\hat{\Pi}_0^{(y)} - \hat{\Pi}_1^{(y)})}{\phi}.
+\]
+设
+\[
+    \hat{A}^{(x)} = \hat{\Pi}^{(x)}_0 - \hat{\Pi}^{(x)}_1, \quad \hat{B}^{(y)} = \hat{\Pi}^{(y)}_0 - \hat{\Pi}^{(y)}_1,
+\]
+并定义
+\[
+    \hat{C}_{AB} = \hat{A}^{(0)} \otimes \hat{B}^{(0)} + \hat{A}^{(0)} \otimes \hat{B}^{(1)} + \hat{A}^{(1)} \otimes \hat{B}^{(0)} - \hat{A}^{(1)} \otimes \hat{B}^{(1)},
+\]
+通过贝叶斯公式可以得到
+\[
+    P_\text{win} - P_\text{lose} = \frac{1}{4} \mel{\phi}{\hat{C}_{AB}}{\phi}.
+\]
+通过一些代数计算可以得到
+\[
+    \hat{C}_{AB}^2 = 4 1_{AB} - \comm*{\hat{A}^{(0)}}{\hat{A}^{(1)}} \otimes \comm*{\hat{B}^{(0)}}{\hat{B}^{(1)}},
+\]
+使用无穷范数，有
+\[
+    \begin{aligned}
+        \|\hat{C}_{AB}^2\| &\leq 4 + \|\comm*{\hat{A}^{(0)}}{\hat{A}^{(1)}}\| \|\comm*{\hat{B}^{(0)}}{\hat{B}^{(1)}}\| \\
+        &\leq 4 + (\|\hat{A}^{(0)} \hat{A}^{(1)}\| + \|\hat{A}^{(1)} \hat{A}^{(0)}\|) (\|\hat{B}^{(0)} \hat{B}^{(1)}\| + \|\hat{B}^{(1)} \hat{B}^{(0)}\|) \\
+        &= 4 + 2 \cdot 2 = 8,
+    \end{aligned}
+\]
+考虑到无穷范数的定义我们就有
+\[
+    P_\text{win} - P_\text{lose} = \frac{1}{4} \mel{\phi}{\hat{C}_{AB}}{\phi} \leq \frac{\sqrt{2}}{2}.
+\]
+由于
+\[
+    P_\text{win} + P_\text{lose} = 1,
+\]
+我们得到
+\begin{equation}
+    P_\text{win} \leq \frac{2 + \sqrt{2}}{4},
+\end{equation}
+这个不等式的等号是可以取到的，为此我们尝试令$\ket{\phi}$取最大纠缠态。
+不失一般性地我们设
+\[
+    \ket{\phi} = \frac{1}{\sqrt{2}} (\ket{00} )
+\]
+取到等号。
+所谓的\concept{Tsirelson不等式}。
+
+因此，如果量子纠缠真的是物理可实现的，我们将会观察到胜率高于$3/4$的情况；如果观察到了$(2+\sqrt{2})/2$的胜率，那么量子理论也是不足够的，需要引入超越量子理论的关联。
+
+\subsection{贝尔实验}
+
+CHSH游戏可以一般化为这样一个场景：
+
+\subsection{混合态的量子关联}
+
+在总维数小于6时，使用部分转置可以判断一个态是不是可分离态。当且仅当将总密度算符对每个子空间做部分转置后得到半正定算符，总密度算符是可分离态。
+
+\section{量子电路模型}
+
+正如基于经典比特系统的经典逻辑电路可以实现经典计算机，基于量子比特系统的\concept{量子电路}也可以实现量子计算机。
+此处“电路”一词并不代表我们使用电子系统实现量子比特，而只是为了和经典构成对比。
+
+一个量子电路模型通常可以分为三步：
+\begin{enumerate}
+    \item 制备量子态，包括但不限于根据（可能是经典的）输入制备量子比特和引入辅助位；这些量子态称为\concept{量子寄存器}。
+    \item 幺正演化，即让量子比特经过一系列幺正矩阵（\concept{量子逻辑门}）的变换。
+    \item 测量。我们通常将测量放在最后，因为可以根据\concept{推迟测量原则}，受控门和测量算符对易，于是任何在计算过程中发生的测量都可以推迟到线路的最后。
+\end{enumerate}
+
+\subsection{量子逻辑门}
+
+\subsubsection{单量子比特门}
+
+单比特操作是非常容易实现的，但是显然是不够的，因为多量子比特系统经过单比特操作之后一定会得到直积态，而不能产生纠缠态。
+
+最容易想到的量子门包括泡利矩阵，我们分别用$X, Y, Z$指代三个方向上的泡利矩阵，这样就获得了三个门。很容易看出$X$实际上就是非门。
+除此以外还有更多的门，如\concept{Hadamard门}是指
+\begin{equation}
+    H = \frac{1}{\sqrt{2}} \pmqty{1 & 1 \\ 1 & -1},
+\end{equation}
+它可以用于实现态叠加。
+\concept{相位门}是指
+\begin{equation}
+    S = \pmqty{1 & 0 \\ 0 & \ii},
+\end{equation}
+它可以在单个量子比特的两种可能本征态之间产生一个$\pi/2$的相对相位。
+有了$\pi/2$相位当然还可以有别的相位，如\concept{T门}或者\concept{$\pi/8$门}
+\begin{equation}
+    T = \pmqty{1 & 0 \\ 0 & \exp(\ii \pi / 4)}.
+\end{equation}
+
+单量子比特逻辑门有通用的构造方法。我们有\concept{旋转}
+\begin{equation}
+    R_x(\theta) = \exp(-\frac{\ii \theta X}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \ii \sin \frac{\theta}{2} \\ - \ii \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
+\end{equation}
+\begin{equation}
+    R_y(\theta) = \exp(-\frac{\ii \theta Y}{2}) = \pmqty{ \cos \frac{\theta}{2} & - \sin \frac{\theta}{2} \\ \sin \frac{\theta}{2} & \cos \frac{\theta}{2} },
+\end{equation}
+\begin{equation}
+    R_z(\theta) = \exp(-\frac{\ii \theta Z}{2}) = \pmqty{\dmat{\ee^{- \frac{\ii \theta}{2}}, \ee^{\frac{\ii \theta}{2}}}}.
+\end{equation}
+这些操作被称为旋转是因为将它们作用在一个态上就相当于将这个态在Bloch球上做了对应的旋转。
+例如，我们有
+\[
+    R_y(\alpha) \pmqty{\cos\frac{\theta}{2} \\ \ee^{\ii \varphi} \sin\frac{\theta}{2} } = \ee^{- \frac{\ii \alpha}{2}} \pmqty{ \cos\frac{\theta}{2} \\ \ee^{\ii (\varphi + \alpha)} \sin\frac{\theta}{2} },
+\]
+正好就是绕着$z$轴转动了$\alpha$角度。
+实际上，更加一般的，绕着轴$\vb*{n}$的旋转门为
+\begin{equation}
+    R_{\vb*{n}}(\theta) = \cos \frac{\theta}{2} I - \ii \sin \frac{\theta}{2} \vb*{n} \cdot \hat{\vb*{\sigma}}.
+\end{equation}
+可以证明，任何一个单比特幺正变换均形如
+\begin{equation}
+    U = \ee^{\ii \alpha} R_z(\beta) R_y(\gamma) R_z(\delta) = \pmqty{ \ee^{\ii (\alpha - \beta/2 - \delta / 2)} \cos \frac{\gamma}{2} & - \ee^{\ii (\alpha - \beta/2 + \delta / 2)} \sin \frac{\gamma}{2} \\ \ee^{\ii (\alpha + \beta/2 - \delta / 2)} \sin \frac{\gamma}{2} & \ee^{\ii (\alpha + \beta/2 + \delta / 2)} \cos \frac{\gamma}{2} },
+\end{equation}
+因此写出了单量子比特变换之后可以用三个旋转门连同一个一般的相位门来实现它。
+这个一般形式没有用到$R_x$门，但是这并没有什么奇怪的——实际上它就是欧拉角。
+上式的分解有一个简单的变形。设
+\begin{equation}
+    A = R_z(\beta) R_y \left( \frac{\gamma}{2} \right), \quad B = R_y\left( - \frac{\gamma}{2} \right) R_z\left( - \frac{\delta + \beta}{2} \right), \quad C = R_z\left( \frac{\delta - \beta}{2} \right),
+    \label{eq:abc-decomposition}
+\end{equation}
+则
+\begin{equation}
+    U = \ee^{\ii \alpha} A X B X C, \quad ABC = I.
+\end{equation}
+这个结论在实现受控$U$门时可以用到。
+
+我们有以下简单的逻辑门恒等式：
+\begin{equation}
+    H = (X + Z) / \sqrt{2},
+\end{equation}
+\begin{equation}
+    H X H = Z, \quad H Z H = X, H Y H = - Y.
+\end{equation}
+
+\subsubsection{受控门}
+
+最为平凡的二量子比特门可能是两个单量子比特门直积得到的（注意张量积不可交换，虽然$A \otimes B \simeq B \otimes A$）。
+仅仅靠门的直积不能得到所有可能的量子逻辑门，因为这样不能产生纠缠态。
+因此我们需要横跨多个量子比特的量子门。
+
+稍微复杂一些的二量子比特门是所谓\concept{受控操作}，即只有在某个量子比特（称为\concept{控制位}）为$1$时才对另一个量子比特（称为\concept{目标位}）做操作。物理地说，受控门的作用是产生纠缠，原因是显然的——它对应量子比特之间的相互作用。
+CNOT是一个典型的受控门，它形如
+\begin{equation}
+    C = \mathrm{CNOT} = \pmqty{1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0}.
+\end{equation}
+CNOT门满足以下恒等式：
+\begin{equation}
+    C X_1 C = X_1 X_2, \quad C Y_1 C = Y_1 X_2, \quad C Z_1 C = Z_1,
+\end{equation}
+更加一般的，设$U$是任意一个操作，被单个量子比特控制的\concept{受控$U$门}可以验证为%
+\footnote{请注意分块对角矩阵并不是两个矩阵的直积！}%
+\begin{equation}
+    \pmqty{\dmat{1 & 0 \\ 0 & 1, U}},
+    \label{eq:controlled-u}
+\end{equation}
+进一步，多量子比特上，一个有$n$个控制位的受控$U$门可以定义为
+\begin{equation}
+    C^n(U) \ket{x_1, x_2, \ldots, x_n} \ket{\psi} = \ket{x_1, x_2, \ldots, x_n} U^{x_1 x_2 \ldots x_n} \ket{\psi}.
+\end{equation}
+特别的，Toffoli门就是CCNOT门。
+
+此外，没有什么要求我们一定要在控制位为$1$时对目标位做操作，例如完全可以在控制位为$0$时对目标位做操作。
+总之，“在一些量子比特满足某些条件时对另一些量子比特做操作”的量子门统称\concept{广义受控门}。
+不失一般性地设控制位排在目标位前面，受控位满足条件的状态的投影算符为$P_\text{cond}$，不满足条件的状态的投影算符为$P_\text{other}$，则广义受控门为
+\begin{equation}
+    U = P_\text{other} \otimes I + P_\text{cond} \otimes \tilde{U},
+\end{equation}
+其中$\tilde{U}$是目标位在满足条件时做的操作。从这个通式出发，\eqref{eq:controlled-u}就是显然的。
+
+广义受控门总是可以使用普通受控门配合一些单量子比特门实现，因为我们可以用一个单量子比特门将控制位在满足特定条件时转化为$1$，然后使用普通受控门，然后再使用之前那个单量子比特门的逆来恢复控制位。
+
+实际上，二量子比特的一切量子门都可以使用CNOT配合单量子比特门实现实现。
+任何一个二量子比特量子门都可以分解为\eqref{eq:abc-decomposition}，而我们有
+\begin{equation}
+    C(U) = 
+\end{equation}
+因为如果控制位为$0$，
+\[
+    C(U) = ABC = I,
+\]
+而如果控制位为$1$，
+\[
+    C(U) = \ee^{\ii \alpha} A X B X C = U,
+\]
+于是我们就实现了$C(U)$门。
+这个结论实际上和量子线路模型的通用性密切相关，我们将在\autoref{sec:universal}中系统地讨论这一点。
+
+\subsubsection{通用量子门}\label{sec:universal}
+
+下面的问题是，给定一个任意的$n$比特系统上的幺正操作$U$，怎样使用一组通用的量子门（允许直积上适当的恒等变换）的乘积构造它们？
+这种构造可以是完全准确的，也可以是近似的。
+
+\concept{two level unitary transformation}是指只对两个分量做非平凡操作的幺正变换。
+任何$d \times d$的幺正变换$U$可以写成$k$个two level unitary的乘积，其中$k \leq d(d-1)/2$。
+对这件事的证明是构造性的：设需要分解的幺正变换为$U$，则我们可以用一系列two level unitary transformation左乘到$U$上，这相当于对$U$施加某种特殊的高斯消元法，然后最后把$U$变换为最后两个量子比特上的变换直积上一个恒等变换，而由于$U$本身是幺正的，左乘到它上面的矩阵也是幺正的，最后的二量子比特变换也是幺正的，这就完成了分解。
+于是，全体two level unitary transformation构成通用量子门。
+
+实际上，CNOT配合单量子比特门也构成通用量子门。
+我们知道任何二量子比特门都可以用CNOT配合单量子比特门实现。two level unitary transformation并不是单量子比特门和恒等变换的直积，它能够使用CNOT配合单量子比特门实现吗？
+实际上是可以的。请注意一个two level unitary transformation实际上就是某个广义受控门的行和列打乱之后的结果。
+另一方面，注意到广义CNOT门可以交换两个仅仅在某一位有差别的态，而通过\concept{Gray编码}——即一系列相邻两个编码只差一位的编码串——可以使用广义CNOT门交换任意两个态，因此广义CNOT门配合一个单一的广义受控门就可以实现任意的two level unitary transformation。
+Gray编码不是唯一的，并且最后一位是$1$变成$0$还是$0$变成$1$都无关紧要。
+最后，任意的广义CNOT门都可以使用CNOT门和单量子比特门实现，这是因为
+% TODO：需要一些辅助比特
+
+使用这样的方法，使用单量子比特门和CNOT实现一个任意的$n$比特量子门最多需要量级为$\bigO(n^2 4^n)$的操作——一个任意的$n$比特量子门是一个$2^n$阶的方阵，
+
+上面提到的量子门的集合都是连续的，如单量子比特门可以连续地调节，这当然也是正确的，因为量子线路模型中可以有相位变换而这是一种连续的操作。
+还有一种思路是，不要求精确地构造任何可能的幺正变换，而要求可能任意精确地逼近一个幺正变换。这就是近似通用量子门，可以用一个离散的集合做近似通用量子门。例如，
+
+Hadamard, phase, CNOT, T gates (approximate)
+
+使用$\infty$-范数体现两个算符的差异。设
+
+\begin{equation}
+    E(R_{\vb*{n}}(\alpha), R_{\vb*{n}}(\theta)^k) < \frac{\epsilon}{3}
+\end{equation}
+
+实际上，这种逼近不仅是可能的，还是比较高效的。\concept{Solovay-Kitaev定理}说，通过Hadamard门和T门对任何一个单量子比特门做精度$\epsilon$的近似可以通过最多
+\begin{equation}
+    N \sim \bigO(\log^c(1/\epsilon))
+\end{equation}
+个量子门实现，其中$c$大约是$2$。
+
+通用量子门的存在意味着量子电路模型的表现力是非常强大的，可以覆盖任何实际的计算任务。
+
+\subsection{测量}\label{sec:measurement}
+
+用对单比特做测量得到的结果来做经典受控门，和用测量后的比特（塌缩到了$\ket{0}$或$\ket{1}$中的某一个上面）做控制位做量子受控门是等价的，因为它们产生一样的密度矩阵。
+
+\subsubsection{测量一个算符}
+
+设要用投影算符$M_0$和$M_1$做单比特测量，设
+\begin{equation}
+    M_0 = I + U, \quad M_1 = I - U,
+\end{equation}
+则
+
+\begin{equation}
+    V = (H \otimes I) C(U) (H \otimes I)
+\end{equation}
+
+principle of implicit measurement
+
+测量只依赖于子系统的约化密度矩阵，因此自始至终未被测量的量子比特可以当成已经测量的，原因也是显而易见的：
+\begin{equation}
+    \trace (\hat{\rho}(\hat{E} \otimes \hat{I})) = \trace (\hat{\rho}_A \hat{E}).
+\end{equation}
+这个结论当然应该是正确的，否则就有信息的超距传播了。
+
+principle pf deferred measurement
+
+\[
+    \sum_{i} \hat{M}_i \hat{C} \hat{\rho} \hat{C} \hat{M}_i^\dagger = \hat{C} 
+\]
+
+\section{量子算法}
+
+\subsection{量子傅里叶变换}
+
+量子傅里叶变换是指如下变换：
+\begin{equation}
+    \ket*{j} \longrightarrow \frac{1}{\sqrt{N}} \sum_k \ee^{2 \pi \ii j k / N} \ket*{k},
+\end{equation}
+其中$N$是$\ket*{i}$的个数。我们通常将数值编码为二进制，从而设数据位数为$n$，则$N=2^n$。
+通过直接展开可以发现上式可以在量子比特的框架下被写成
+\begin{equation}
+    \ket*{j_1 j_2 \cdots j_n} \longrightarrow 2^{n/2} (\ket*{0} + \ee^{2\pi \ii 0.j_n} \ket*{1}) \cdots (\ket*{0} + \ee^{2 \pi \ii 0.j_1 j_2 \cdots j_n} \ket*{1}),
+    \label{eq:bin-quantum-ft}
+\end{equation}
+其中$0.j_n j_{n-1} \cdots$表示二进制小数，$j_1 j_2 \cdots$表示二进制整数；在推导上式时要注意到$\ee^{2\pi \ii}$的整数倍是$1$。
+
+\eqref{eq:bin-quantum-ft}可以比较容易地使用量子线路实现，具体步骤为
+% TODO
+实现的关键在于意识到$j_1$只需要被使用一次，所以一开始就可以直接在它上面做操作，而$j_2$需要被使用两次，所以需要等$j_1$上的操作完成了才能在$j_2$上做操作，等等。
+其时间复杂度为$\bigO(n^2)$。作为对比，经典傅里叶变换的时间复杂度为
+量子傅里叶变换尚未有效实现的主要原因是难以制备那么多量子比特，并且也很难测量相位——如果要精确测量，需要制备大量同样的量子态，这本身需要指数次操作。
+
+\subsection{量子相位估计}
+
+设某个量子寄存器$\ket{u}$是某个幺正操作的本征态，有
+\begin{equation}
+    \hat{U} \ket{u} = \ee^{2\pi \ii \varphi} \ket{u}, \quad 0 < \varphi < 1.
+\end{equation}
+现在需要设计一种算法来估计$\varphi$的前$n$位。
+
+\begin{equation}
+    t = 
+\end{equation}
+
+\subsection{order finding}
+
+对任意给定的、和整数$N$互质的整数$x$，满足以下条件的最小$r$定义为$x$的\concept{order}：
+\begin{equation}
+    x^r = 1 \mod{N}.
+\end{equation}
+
+\subsection{量子搜索}
+
+设我们有一个黑盒子$f(x)$，它是某个问题的oracle，即如果$x$是这个问题的解那么$f(x)$为$1$，否则为零。
+显然，可以构造一个量子门来获得oracle：
+\begin{equation}
+    \ket{x} \ket{q} \stackrel{O}{\longrightarrow} \ket{x} \ket{q \oplus f(x)},
+\end{equation}
+其中$q$为oracle qubit。容易验证，
+\begin{equation}
+    \ket{x} \otimes \frac{\ket{0} - \ket{1}}{\sqrt{2}} \stackrel{O}{\longrightarrow} (-1)^{f(x)} \ket{x} \frac{\ket{0} - \ket{1}}{\sqrt{2}}.
+\end{equation}
+因此这是一个“相位的谕示”。
+
+\section{量子通信}
+
+
+
+\section{混合态和量子操作}
+
+实际的量子系统都是有噪声的，应用混合态表示，而时间演化也不总是幺正的。噪声可以有好几种形式。例如，我们有完全经典的0和1之间的跃迁：
+\begin{equation}
+    \pmqty{p_0(t+\Delta t) \\ p_1(t+\Delta t)} = \pmqty{ 1 - p & p \\ p & 1-p } \pmqty{p_0(t) \\ p_1(t)},
+\end{equation}
+这是一个马尔可夫过程，因为不同时间点的噪声是彼此独立的。作用在量子比特系统上的噪声可以写成“在一定的经典概率之下做某个操作”的形式，这称为\concept{量子操作}。
+Kraus分解定理告诉我们，一个量子操作可以写成
+\[
+    \hat{\rho}' = \sum_k \hat{E}_k \hat{\rho} \hat{E}_k^\dagger,
+\]
+如果环境的初态为纯态，那么
+\[
+    \hat{E}_k = \mel*{\text{env}_k}{\hat{U}}{\text{env}_i},
+\]
+其中$\hat{U}$为系统和环境共同的时间演化算符，$\ket{\text{env}_i}$为环境初始状态。
+
+密度矩阵的一般性时间演化都可以看成作用了一个量子操作。系统受到扰动是一个量子操作，对系统做观测是一个量子操作，对系统以一定的成功率做一个量子门也是一个量子操作。
+
+我们下面将要频繁地讨论两个态之间的“距离”。常用的判据包括\concept{迹距离}，定义为
+\[
+    D(\hat{\rho}, \hat{\varrho}) = \frac{1}{2} \abs*{\hat{\rho} - \hat{\varrho}},
+\]
+其中
+\[
+    \abs*{\hat{A}} = \sqrt{\hat{A} \hat{A}^\dagger}.
+\]
+可以证明在保持迹不变、完备的量子操作下迹距离不会增大。另一个常用的判据是\concept{fidelity}，定义为
+\[
+    F(\hat{\rho}, \hat{\varrho}) = \left( \trace \sqrt{\hat{\rho}^{\frac{1}{2}} \hat{\varrho} \hat{\rho}^{\frac{1}{2}}} \right)^2 = \left( \trace \sqrt{\hat{\varrho}^{\frac{1}{2}} \hat{\rho} \hat{\varrho}^{\frac{1}{2}}} \right)^2,
+\]
+如果其中一个是纯态，则
+\[
+    F(\dyad*{\psi}, \hat{\rho}) = \mel{\psi}{\hat{\rho}}{\psi}.
+\]
+Fidelity在保迹量子操作
+
+\subsection{Bloch球上的操作}
+
+本节讨论单量子比特上的量子操作。一般的幺正变换不会减少一个态的纯度，但是量子操作可以，因此一般的幺正变换只是对Bloch球做旋转，而量子操作还可以让它伸缩、平移，变成一个椭球。量子操作也可以破坏纠缠。
+
+例如我们有
+\begin{equation}
+    \frac{1}{4} (X \rho X + Y \rho Y + Z \rho Z + \rho) = \frac{1}{2} I,
+\end{equation}
+即我们将一个任意的混合态变换成一个经典$1/2-1/2$概率的态。
+
+如果两个态其中有一个是纯态，那么我们有
+\begin{equation}
+    F(\hat{\rho}, \hat{\varrho}) = 
+\end{equation}
+
+\subsubsection{比特翻转}
+
+\concept{比特翻转}是一种简单的量子操作，也是一种噪声的形式。
+
+\subsubsection{态的间距}
+
+
+
+\subsection{量子表征}
+
+% TODO，quantum state tomography
+
+\section{量子纠错}
+
+量子纠错的一个挑战在于不可克隆定理，从而，不可能通过朴素的冗余比特来做到纠错。测量还会不可避免地破坏量子态，因此需要想出一种办法来“诊断”什么样的错误发生了。最后，环境噪声会造成连续的变化（因为量子态的各个分量是连续变化的），因此错误本身就很难辨别。
+但这并不意味着量子纠错是不可能的。本节将指出，只要有足够多的量子比特，量子纠错理论上总是可行的。
+
+\subsection{比特翻转纠错}
+
+本节讨论一种能够纠正比特翻转的量子纠错编码。假定系统中的主要扰动是比特翻转，我们将用三个物理比特代表一个逻辑比特，即
+\begin{equation}
+    \ket{1_\text{L}} = \ket{111}, \quad \ket{0_\text{L}} = \ket{000}.
+\end{equation}
+我们假定凡不是$\ket{000}$和$\ket{111}$的态都是$\ket{000}$和$\ket{111}$经过单次比特翻转而产生的。（如果多次翻转非常常见，那么需要更多物理比特）
+因此，我们可以用下面的算符做一次投影测量：
+\begin{equation}
+    P_0 = \dyad*{000} + \dyad*{111}, % TODO
+\end{equation}
+测量并不会将逻辑比特的信息抹除，但是可以估计是否发生了比特翻转，以及发生在了哪里，因此被称为\concept{症状测量}。然后根据测量结果做纠正即可。
+症状测量还带来了一个额外的好处。例如，如果比特翻转为
+\[
+    \ket{0} \longrightarrow a \ket{0} + b \ket{1},
+\]
+则经过测量后它塌缩到$\ket{0}$上（此时无需进一步操作）或者塌缩到$\ket{1}$上（此时需要纠错，但是待纠正的错误是一个离散的错误，即$0$被翻转为$1$）。
+
+因此，通过症状测量，量子纠错的三个困难全部被克服了：我们无需真的复制任意的比特，只需要能够制备冗余的比特即可；症状测量可以避免破坏逻辑比特；症状测量可以将连续的错误转化为离散的。
+
+比特翻转纠错的一种
+
+\end{document}
