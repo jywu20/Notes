@@ -1,0 +1,154 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Green Function in Electrodynamics by Prof. Kun Din}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is a lecture note of Prof. Kun Ding's lecture on Advanced Electrodynamics on 3 November, 2021.
+
+\section{Green functions}
+
+After switching to the frequency domain in the temporal direction (maybe together with some spacial dimensions), 
+an linear equation with external stimulation is in the general form of 
+\begin{equation}
+    (\mathcal{L} - \lambda \rho(\vb*{r})) u(\vb*{r}) = f(\vb*{r}),
+    \label{eq:general-linear}
+\end{equation}
+where $\mathcal{L}$ is a linear operator. The normal modes can be obtained by the generalized eigenvalue problem
+\begin{equation}
+    (\mathcal{L} - \lambda \rho(\vb*{r})) u(\vb*{r}) = 0,
+\end{equation}
+which is \eqref{eq:general-linear} without the external field.
+
+We define the \concept{Green function} as 
+\begin{equation}
+    (\mathcal{L} - \lambda \rho(\vb*{r})) G(\vb*{r}, \vb*{r}') = \delta(\vb*{r} - \vb*{r}').
+    \label{eq:green-def}
+\end{equation} 
+When the system has spacial translational symmetry, we have $G(\vb*{r} - \vb*{r}') = G(\vb*{r} - \vb*{r}')$.
+Once the Green function is obtained, the result of the stimulation can, in principle, be obtained by convolution.
+The existence of Green function can be proved using normal modes or eigenstates of \eqref{eq:general-linear}, which is also a general way to actually calculate the Green function.
+
+If \eqref{eq:general-linear} is a vector equation, the Green function is a second-rank tensor. 
+\eqref{eq:green-def}, in this case, should be written as 
+\begin{equation}
+    (\mathcal{L} - \lambda \rho(\vb*{r})) \tensor{G}(\vb*{r}, \vb*{r}') = \tensor{I} \delta(\vb*{r} - \vb*{r}').
+\end{equation}
+
+There are a large variety interesting problems stemming from \eqref{eq:general-linear}.
+An important problem is the \concept{reverse problem}: how can we decide $\rho(\vb*{r})$ with known $u(\vb*{r})$ and $f(\vb*{r})$?
+The problem is involved in CT, seismology, material characterization (for example, determine the structure of a sample using scattering experiments).
+In physics the most important problem is how to accurately calculate the Green function.
+
+\section{Examples of Green functions in electrodynamics}
+
+In electrostatics the equation is 
+\begin{equation}
+    \laplacian \phi = - \frac{1}{\epsilon_0} \rho(\vb*{r}),
+\end{equation}
+and the Green function is just 
+\begin{equation}
+    G(\vb*{r} - \vb*{r}') = \frac{1}{4 \pi \epsilon_0} \frac{1}{\abs*{\vb*{r} - \vb*{r}'}},
+\end{equation}
+which is the potential around a test charge.
+The $1/r$ Green function corresponds to the Laplacian operator $\laplacian$.
+
+\end{document}
