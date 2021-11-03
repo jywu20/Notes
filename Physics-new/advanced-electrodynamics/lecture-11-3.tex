@@ -27,7 +27,7 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
-\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
+%\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage{prettyref}
@@ -95,6 +95,8 @@
   keywordstyle=\color{blue}
 }
 
+\allowdisplaybreaks
+
 \title{Green Function in Electrodynamics by Prof. Kun Din}
 \author{Jinyuan Wu}
 
@@ -126,6 +128,11 @@ We define the \concept{Green function} as
 When the system has spacial translational symmetry, we have $G(\vb*{r} - \vb*{r}') = G(\vb*{r} - \vb*{r}')$.
 Once the Green function is obtained, the result of the stimulation can, in principle, be obtained by convolution.
 The existence of Green function can be proved using normal modes or eigenstates of \eqref{eq:general-linear}, which is also a general way to actually calculate the Green function.
+Usually we impose the boundary condition that 
+\begin{equation}
+    \vb*{G}(\vb*{r}, \vb*{r}') \to 0 \quad \text{as $\abs*{\vb*{r} - \vb*{r}'} \to 0$}.
+\end{equation}
+Intuitively speaking, the boundary condition means we only consider waves that propagate away from the source, and ignore waves that propagate towards a point.
 
 If \eqref{eq:general-linear} is a vector equation, the Green function is a second-rank tensor. 
 \eqref{eq:green-def}, in this case, should be written as 
@@ -138,7 +145,7 @@ An important problem is the \concept{reverse problem}: how can we decide $\rho(\
 The problem is involved in CT, seismology, material characterization (for example, determine the structure of a sample using scattering experiments).
 In physics the most important problem is how to accurately calculate the Green function.
 
-\section{Examples of Green functions in electrodynamics}
+\section{Electrodynamic Green functions in homogeneous medium}
 
 In electrostatics the equation is 
 \begin{equation}
@@ -150,5 +157,137 @@ and the Green function is just
 \end{equation}
 which is the potential around a test charge.
 The $1/r$ Green function corresponds to the Laplacian operator $\laplacian$.
+
+Now we consider the function usually seen in optics, i.e.
+\begin{equation}
+    \left( \curl \curl - k^2 \right) \vb*{E}(\vb*{r}, \omega) = \ii \omega \mu_0 \vb*{J}(\vb*{r}, \omega).
+\end{equation}
+The Green function is defined by 
+\begin{equation}
+    \left( \curl \curl - k^2 \right) \tensor{G}(\vb*{r}, \vb*{r}', \omega) = \tensor{I} \delta(\vb*{r} - \vb*{r}'),
+    \label{eq:e-green-def}
+\end{equation}
+and we have 
+\begin{equation}
+    \vb*{E}(\vb*{r}, \omega) = \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \tensor{G}(\vb*{r}, \vb*{r}', \omega) \vb*{J}(\vb*{r}', \omega).
+    \label{eq:e-from-e-green}
+\end{equation}
+
+It is actually not that hard to solve \eqref{eq:e-green-def} when we are in a homogeneous medium.
+The main obstacle is the fact that it is a vector equation and different components may mingle together, but we can always solve the equivalent equation of 4-potential 
+\begin{equation}
+    (\laplacian + k^2) G_0(\vb*{r} - \vb*{r}') =- \delta(\vb*{r}- \vb*{r}'),
+    \label{eq:potential-green}
+\end{equation}
+and by 
+\[
+    \vb*{E} = - \grad{\phi} - \pdv{\vb*{A}}{t}
+\]
+obtain the solution of \eqref{eq:e-green-def}.
+In this way, \eqref{eq:e-from-e-green} reads 
+\[
+    \begin{aligned}
+        \vb*{E} &= - \grad{\phi} + \ii \omega \vb*{A} \\
+        &= - \frac{1}{\epsilon_0} \grad \int \dd[3]{\vb*{r}'} \rho(\vb*{r}') G_0(\vb*{r} - \vb*{r}') + \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') G_0(\vb*{r} - \vb*{r}') \\
+        &= - \frac{1}{\epsilon_0} \grad \int \dd[3]{\vb*{r}'} \frac{1}{\ii \omega} (\grad' \cdot {\vb*{J}(\vb*{r}')}) G_0(\vb*{r} - \vb*{r}') + \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') G_0(\vb*{r} - \vb*{r}') \\
+        &= \frac{1}{\ii \omega \epsilon_0} \grad \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') \cdot \grad' G_0(\vb*{r} - \vb*{r}') + \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') G_0(\vb*{r} - \vb*{r}') \\
+        &= - \frac{1}{\ii \omega \epsilon_0} \grad \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') \cdot \grad G_0(\vb*{r} - \vb*{r}') + \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') G_0(\vb*{r} - \vb*{r}') \\
+        &= \frac{\ii \omega \mu_0}{k^2} \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') \cdot \grad \grad G_0(\vb*{r} - \vb*{r}') + \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \vb*{J}(\vb*{r}') G_0(\vb*{r} - \vb*{r}')
+    \end{aligned}
+\]
+and thus we obtain an explicit solution of \eqref{eq:e-green-def} that 
+\begin{equation}
+    \tensor{G}(\vb*{r} - \vb*{r}', \omega) = \left( \tensor{I} + \frac{1}{k^2} \grad \grad \right) G_0(\vb*{r} - \vb*{r}', \omega).
+    \label{eq:free-space-e-green}
+\end{equation}
+
+The case of a homogeneous medium can be solved by replacing $\epsilon_0$ to $\epsilon$ and $\mu_0$ to $\mu$ in the above calculation.
+
+\eqref{eq:free-space-e-green} is the key point of \concept{boundary element method}, where the mesh is placed on boundaries where the electrodynamic properties of mediums change, and fields in the homogeneous bulks are obtained by \eqref{eq:free-space-e-green}.
+BEM is much faster than, say, the \concept{finite element method}, as a large portion of work is done analytically.
+
+Now we need to solve \eqref{eq:potential-green}. We put it in spherical coordinates, and the equation is now 
+\[
+    (\laplacian + k^2) G_0(\vb*{r} ) = - \frac{\delta(r ) \delta(\theta) \delta(\varphi )}{r^2 \sin\theta}.   
+\]
+Symmetry tells us there is no angular dependence, so we can separate the variables and set the angular part to be a normalizing factor $1 / 4\pi$, i.e. take the ansatz
+\[
+    G_0(\vb*{r}) = \frac{1}{4\pi} R(r).
+\]
+\eqref{eq:potential-green} is now 
+\[
+    \dv{r} \left( r^2 \dv{R}{r} \right) + k^2 r^2 R = - \delta(r).
+\]
+In the $r > 0$ region, from the properties of the spherical Bessel equation we have 
+\[
+    R = A \mathrm{h}^{(2)}_0(kr) + B \mathrm{h}^{(1)}_0(kr) = A \frac{\ee^{\ii k r}}{kr} + B \frac{\ee^{- \ii k r}}{kr}.
+\]
+% TODO
+and finally we have 
+\begin{equation}
+    G_0(\vb*{r} - \vb*{r}', \omega) = \frac{\ee^{\ii k \abs*{\vb*{r} - \vb*{r}'}}}{4 \pi \abs*{\vb*{r} - \vb*{r}'}},
+\end{equation}
+and therefore 
+\begin{equation}
+    G_0(\vb*{r} - \vb*{r}', t) = \frac{1}{2\pi} \int \dd{\omega} \ee^{- \ii \omega t}  \frac{\ee^{\ii k \abs*{\vb*{r} - \vb*{r}'}}}{4 \pi \abs*{\vb*{r} - \vb*{r}'}}.
+\end{equation}
+
+Now $\tensor{G}$ can be derived explicitly. Let $\vb*{R} = \vb*{r} - \vb*{r}'$, and we have 
+\[
+    \begin{aligned}
+        \tensor{G}(\vb*{r} - \vb*{r}', \omega) &= \left( \tensor{I} + \frac{1}{k^2} \grad \grad \right) G_0(\vb*{r} - \vb*{r}', \omega) \\
+        &= \frac{k}{4\pi} \left( \tensor{I} + \frac{1}{k^2} \grad \grad \right) \frac{\ee^{\ii k R}}{k R} \\
+        &= \frac{k}{4\pi} \left( \frac{\ee^{\ii k R}}{k R} \tensor{I} + \frac{1}{k^2} \grad \left( \ee^{\ii k R} \grad\left( \frac{1}{kR} \right) + \frac{\ii \vb*{R}}{R^2} \ee^{\ii k R} \right) \right) \\
+        &= \frac{k}{4\pi} \left( \frac{\ee^{\ii k R}}{k R} \tensor{I} + \frac{1}{k^2} \left( \ee^{\ii k R} \grad\grad\left( \frac{1}{kR} \right) - \frac{\ii \vb*{R} \vb*{R}}{R^3} \ee^{\ii k R} - \frac{3 \ii \vb*{R} \vb*{R}}{R^4} \ee^{\ii k R} + \frac{\ii}{R^2} \tensor{I} \ee^{\ii k R} \right) \right) .
+    \end{aligned}
+\]
+We have 
+\[
+    \grad \grad \frac{1}{r} = - \frac{4\pi}{3} \delta(\vb*{r}) \tensor{I} + \frac{1}{r^3} \left( \frac{3 \vb*{r} \vb*{r}}{r^2} - \tensor{I} \right),
+\]
+and finally we obtain
+\begin{align}
+    \begin{autobreak}
+        \tensor{G}(\vb*{R}, \omega) = \frac{k}{4\pi} \frac{\ee^{\ii k R}}{k R} \Biggl( \tensor{I} \left( 1 - \frac{4\pi R}{3k^2} \delta(\vb*{R}) - \frac{1}{k^2 R^2} + \frac{1}{k R} \right) 
+        + \frac{\vb*{R} \vb*{R}}{R^2} \left( \frac{3}{k^2 R^2} - 1 - \frac{3\ii}{kR} \right) \Biggr).
+    \end{autobreak}
+\end{align}
+After defining 
+\begin{equation}
+    A(x) = e^{\ii x} (x^{-1} + \ii x^{-2} - x^{-3}), \quad B(x) = \ee^{\ii x} (- x^{-1} - 3 \ii x^{-2} + 3 x^{-3}),
+\end{equation}
+we have 
+\begin{equation}
+    \tensor{G}(\vb*{R}, \omega) = - \frac{1}{3k^2} \delta(\vb*{R}) \tensor{I} + \frac{k}{4\pi} \left( \tensor{I} A(kR) + \frac{\vb*{R} \vb*{R}}{R^2} B(kR) \right).
+\end{equation}
+Examining the structure of this tensor Green function, we can simply it in different regions with regard to the distance $R$.
+The near field is given by 
+\begin{equation}
+    \tensor{G}_\text{near field} = \frac{\ee^{\ii k R}}{k R} \frac{1}{k^2 R^2} \left( - \tensor{I} + \frac{3 \vb*{R} \vb*{R}}{R^2} \right),
+\end{equation}
+the far field
+\begin{equation}
+    \tensor{G}_\text{far field} = \frac{\ee^{\ii k R}}{4 \pi R} \left( \tensor{I} - \frac{\vb*{R} \vb*{R}}{R^2} \right),
+\end{equation}
+and the intermediate field 
+\begin{equation}
+    \tensor{G}_\text{intermediate field} = \frac{\ee^{\ii k R}}{4 \pi R} \frac{1}{k R} \left( \tensor{I} - \frac{3 \vb*{R} \vb*{R}}{R^2} \right).
+\end{equation}
+
+For example, the charge density of an ideal electric dipole is 
+\begin{equation}
+    \rho(\vb*{r}) = - \vb*{p} \cdot \grad \delta(\vb*{r} - \vb*{r}'), \quad \vb*{j}(\vb*{r}) = - \ii \omega \vb*{p} \delta(\vb*{r} - \vb*{r}_0), \quad \div{\vb*{j}} = \ii \omega \rho(\vb*{r}),
+\end{equation}
+and we have 
+\[
+    \begin{aligned}
+        \vb*{E}(\vb*{r}, \omega) &= \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \tensor{G}(\vb*{r} - \vb*{r}') \cdot \vb*{J}(\vb*{r}') \\
+        &= \omega^2 \mu_0 \tensor{G}(\vb*{r} - \vb*{r}_0) \cdot \vb*{p},
+    \end{aligned}
+\]
+and we get the familiar equation
+\begin{equation}
+    \vb*{E} = - \frac{\vb*{p}}{3 \epsilon_0}.
+\end{equation}
 
 \end{document}
