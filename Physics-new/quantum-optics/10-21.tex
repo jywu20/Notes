@@ -105,7 +105,7 @@
 
 This article is a lecture note of Prof. Saijun Wu's lecture on Quantum Optics on October 21, 2021.
 
-\section{Measurement with reference beams}
+\section{Measurement of parameters in linear optics systems and the standard quantum error}
 
 Suppose we have a linear optics system with a few parameters, 
 and we want to measure them according to the measurement results of photon numbers
@@ -145,7 +145,7 @@ In principle we know everything about the incident light; in practice we do not,
     \tan^2 \frac{\theta}{2} = \frac{\expval*{n_1}}{\expval*{n_2}},
 \end{equation}
 where parameters that we may not know are not present.
-We can consider this as a tricky to get rid of classical errors, like the (non-coherent and usually thermal) fluctuation of $N$.
+We can consider this as a trick to get rid of classical errors, like the (non-coherent and usually thermal) fluctuation of $N$.
 We can then evaluate the standard error of the two quantities, which are 
 \begin{equation}
     \var{n}_1 = \var{n_2} = \frac{1}{2} \sqrt{N} \sin \theta.
@@ -153,6 +153,7 @@ We can then evaluate the standard error of the two quantities, which are
 Thus 
 \begin{equation}
     \var{\theta} = \frac{\var{\bar{n}}_1}{\pdv*{\bar{n}_1}{\theta}} = \frac{1}{2 \sqrt{N}}.
+    \label{eq:particle-input-theta-error}
 \end{equation}
 
 We can also use a coherent light input, and the wave function of the whole system, again in the Heisenberg picture, is 
@@ -170,7 +171,12 @@ and again, we have
 The error of $\theta$ can be estimated as 
 \begin{equation}
     \var{\theta} = \frac{\var{\bar{n}}_1}{\pdv*{\bar{n}_1}{\theta}} = \frac{1}{2 \sqrt{N} \abs*{\alpha} \cos \frac{\theta}{2}}.
+    \label{eq:coherent-input-theta-error}
 \end{equation}
+
+The errors in two cases, \eqref{eq:particle-input-theta-error} and \eqref{eq:coherent-input-theta-error}, have a shared factor: $1 / \sqrt{N}$, or in other words usually we have $\var{n} \sim \sqrt{N}$.
+This is called the \concept{shot-noise error}. It arises from the quantum natural of the optical field, rather than technical issues (as we see, the discuss above involves nothing about ``technical'' errors).
+Since the final state of the optical field is usually not an eigenstate of the particle number operator, there is absolutely a fluctuation of photon number measurement, no matter high precise the device is.
 
 \begin{figure}
     \centering
@@ -204,13 +210,15 @@ and we have
 \begin{equation}
     \expval*{c^\dagger_1 c_1} \simeq \frac{P \tau}{\hbar \omega} \ee^{- \text{OD}}.
 \end{equation}
-When the absorption rate is large, $\expval*{c_1^\dagger c_1}$ can be quite small compared to its error, and the measurement can be extremely unreliable.
+When the absorption rate is large, $\expval*{c_1^\dagger c_1}$ can be quite small compared to its shot-noise error, and the measurement can be extremely unreliable.
 That is why absorption experiments are usually carried out with dilute solutions.
 But on the other hand, $\text{OD}$ must be large to make sure 
 \begin{equation}
     \frac{\var{\sigma}}{\sigma} = \frac{\var{\text{OD}}}{\text{OD}}
 \end{equation}
-is small enough.
+is small enough, or otherwise technical errors - like some small vibration of the device - will add some fluctuation to $\sigma$ and OD and the result is not reliable again.
+
+So now we are in a dilemma:  
 
 \begin{figure}
     \centering
@@ -219,7 +227,9 @@ is small enough.
     \label{fig:mach-zehnder}
 \end{figure}
 
-\section{Measurement with light interferometry}
+
+
+\section{Measuring the position of a nanosphere with light interferometry}
 
 One way to eschew this problem is to measure the \emph{phase}. We construct a Mach-Zehnder interferometer shown in \prettyref{fig:mach-zehnder}.
 The two beam splitters are 50-50 ones, i.e. their transition matrix being 
@@ -268,8 +278,17 @@ where
 \end{equation}
 The errors are
 \begin{equation}
-    (\var{x})_\text{shot noise} = \frac{1}{k} \var{\varphi} = \frac{1}{k} \frac{1}{2 \sqrt{\frac{P \tau}{\hbar \omega}}} , \quad (\var{x})_\text{radiation force} \sim \sqrt{\hbar k \frac{P \tau}{c}} \frac{\tau}{m}, 
+    (\var{x})_\text{shot noise} = \frac{1}{k} \var{\varphi} = \frac{1}{k} \frac{1}{2 \sqrt{\frac{P \tau}{\hbar \omega}}} , \quad (\var{x})_\text{radiation force} \sim \sqrt{\hbar k \frac{P \tau}{c}} \frac{\tau}{m}.
 \end{equation}
+The total error is 
+\begin{equation}
+    \var{x} = \sqrt{ (\var{x})_\text{shot noise}^2 + (\var{x})_\text{radiation force}^2 }
+\end{equation}
+and we may find its minimum is 
+\begin{equation}
+    \var{x}_\text{min} \sim \sqrt{\frac{\hbar \tau}{m}}.
+\end{equation}
+So this is a quantitative estimation of the standard quantum error.
 
 \begin{figure}
     \centering
@@ -297,13 +316,13 @@ Some part of the measurement error arises from the quantum nature of light.
 
 To go beyond the standard quantum limit we can make use of the other input port, i.e. \emph{the dark port} of the beam splitter, for example we can use a device shown in \prettyref{fig:beyond-sql}, where 
 \begin{equation}
-    S(\zeta) = \ee^{\abs*{\zeta} (a^\dagger a^\dagger - a a)}.
+    S(\zeta) = \ee^{\abs*{\zeta} (a^\dagger a^\dagger - a a)}
 \end{equation}
-Defining
+is the squeezing operator. We define
 \begin{equation}
     X = \frac{1}{\sqrt{2}} (a + a^\dagger), \quad P = \frac{1}{\sqrt{2}} (a - a^\dagger),
 \end{equation}
-we find that 
+and we find that 
 \begin{equation}
     S^\dagger(\zeta) X S(\zeta) = X(\zeta) , \quad S^\dagger(\zeta) P S = P(\zeta), 
 \end{equation}
