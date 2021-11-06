@@ -1,0 +1,185 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Monte Carlo by Chuang Chen}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Strongly correlated systems}
+
+Lattice models are often used to capture the essential physics in strongly correlated systems.
+A model of correlated electrons is the \concept{Hubbard model}, i.e.
+\begin{equation}
+    H = - t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} c^\dagger_{\vb*{i} \sigma} c_{\vb*{j} \sigma} + U \sum_{\vb*{i}} n_{\vb*{i} \uparrow} n_{\vb*{i} \downarrow} + \mu \sum_{\vb*{i}, \sigma} n_{\vb*{i} \sigma}.
+\end{equation}
+
+It should be notice that a relative strong interaction does not necessarily cause strong correlation.
+Consider the following \concept{Holstein model} about electron-phonon interaction:
+\begin{equation}
+    H = H_\text{el} + H_\text{lat} + H_\text{int},
+\end{equation}
+where 
+\begin{equation}
+    H_\text{el} = - t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} c^\dagger_{\vb*{i} \sigma} c_{\vb*{j} \sigma} + \mu \sum_{\vb*{i}, \sigma} n_{\vb*{i} \sigma},
+\end{equation}
+\begin{equation}
+    H_\text{lat} = \sum_{\vb*{i}} \left( \frac{1}{2} M \Omega^2 {X}_{\vb*{i}}^2 + \frac{1}{2M} {P}_{\vb*{i}}^2 \right),
+\end{equation}
+and 
+\begin{equation}
+    H_\text{int} = g \sum_{\vb*{i}, \sigma} n_{\vb*{i} \sigma} {X}_{\vb*{i}}.
+\end{equation}
+
+See I. Esterlis et al. PRB 97.140501 2018
+
+It can be seen that before $\lambda_0 = 0.4$ the susceptibility perturbatively calculated and the susceptibility calculated with DQMC agree well, but when $\lambda_0$ is between 0.4 and 0.5, the DQMC results show a clear tendency of divergence, while the perturbation theory\footnote{The perturbation theory used in the paper is something like RPA, which works best when there are no competing interaction channels, for example the electronic structure of strongly correlated systems whose basic degrees of freedom are still electron-like and the only interaction channel is the screened Coulomb interaction, or a system with BCS pairing channel only, but not a system with competing BCS and CDW orders.} does not show the trend.
+When the temperature is high, the perturbation theory works again.
+
+\section{The principles of DQMC}
+
+We can always introduce a (discrete) Hubbard-Stratonovich transformation to decouple the fermion interaction terms in the Hamiltonian into fermion-bosonic field interaction terms, and then use the formula 
+\begin{equation}
+    \Trace \prod_\tau \ee^{- \Delta \tau \vb{c}^\dagger \vb{T}(\tau) \vb{c}} = \det\left( 1 + \prod_\tau \ee^{- \Delta \tau \vb{T}(\tau)} \right) ,
+\end{equation}
+where $\vb{T}(\tau)$ includes both the hopping matrix in the fermion kinetic energy term and the interaction between the fermions and the bosonic fields (which are also included into the discrete path integral and therefore $\vb{T}$ depends on $\tau$).
+So the partition function is finally 
+\begin{equation}
+    Z = \det \left( 1 + \prod_\tau \vb{B}_\tau \right) \prod_\tau \ee^{- \Delta \tau H_\text{bosonic part}}.
+    \label{eq:dqmc-partition}
+\end{equation}
+Monte Carlo simulation of this partition function is called \concept{determinantal quantum Monte Carlo (DQMC)}.
+
+World-line and determinantal quantum Monte Carlo Methods for spins, phonons and electrons F.F Assaad
+
+The error in DQMC is composed of the error introduced by the Trotter error and the statistical error when doing the simulation.
+
+The main obstacle of DQMC, however, is not the error but the \concept{sign problem}, i.e. a weight in \eqref{eq:dqmc-partition} may contains negative sign.
+The problem to identify and solve the sign problem has been argued to be \emph{NP-hard}, and it is not feasible to obtain a general solution of the problem.
+Certain symmetry (for example an anti-unitary symmetry) in the model may protect us from the sign problem, and when the 
+
+Identification: PRB 71.155115, 115.250601, 116.250601
+
+It is possible to simulate with the sign. A rule of thumb is that if the average sign is above 0.1, DQMC works well.
+
+\section{The update scheme}
+
+numerical stabilization
+
+\section{Tricks in implementation}
+
+Fortran is often used to implement DQMC. The most frequently used compiler is Intel Fortran because the binary code generated is so quick. 
+GCC and PCFortran are also used.
+Intel has its own math library MKL, and OpenBLAS is also a good choice.
+Usually we have two platforms:
+\begin{itemize}
+    \item Intel Xeon CPU, Intel Fortran Compiler, MKL.
+    \item ARM, gFortran, BLAS + LAPACK.
+\end{itemize}
+Parallelization can be done with:
+\begin{itemize}
+    \item MPI, for multiple Markov chains.
+    \item OpenMP, for very large system size, where the memory is not sufficient and as a result it is impossible to start many Markov chains, and many cores are just idle.
+    \item GPU.
+\end{itemize}
+
+GPU acceleration needs some further remark. Usually people write CUDA C, but there is a Fortran counterpart dubbed as CUDA Fortran.
+The compiler is an modified version of PGFortran with a highly incomplete cuBLAS library.
+A library called Magma should be used in place of LAPACK. 
+
+A CPU+GPU program does not necessarily perform better than a purely CPU one.
+GPU is not good at calculating the accept ratio, so the accept ratio is to be calculated by the CPU, but that means the Green functions must be passed from the video memory to the memory frequently, which is quite time-consuming.
+This additional amount of time often overweighs the time saved by the fast matrix multiplication done by the GPU when updating the Green function.
+The numerical stabilization and the Green function wrapping process involve both loops and matrix multiplication.
+The former should better be done on CPU while the latter should better be done on GPU.
+Therefore, if the number of loops in these two processes is not large enough, the CPU+GPU version performs \emph{worse} than the pure CPU version.
+
+\section{Some applications}
+
+Data collapsing 
+
+\end{document}
