@@ -128,7 +128,10 @@
         \expval{\Delta I_1 \Delta I_2} = \expval*{I_1 I_2} - \expval{I_1} \expval{I_2}
     \end{equation}
     reaches its peak when the optical path difference of the two beams is zero, and then drops away as the separation between the two beams increases. 
-    If the light source is laser, the relation between $g^{(2)}$ and the optical path difference is in the form of $1 + A \cos(k \Delta r)$, while if the light source is thermal - as is the case of a mercury arc - the relation between $g^{(2)}$ and the optical path separation is something like \prettyref{fig:thermal-hbt}.
+    If the light source is laser, the relation between $g^{(2)}$ and the optical path difference is in the form of $1 + \cos(k \Delta r)$, while if the light source is thermal - as is the case of a mercury arc - the relation between $g^{(2)}$ and the optical path separation is something like \prettyref{fig:thermal-hbt}.
+
+    The results of astronomical HBT experiment are qualitatively similar to the HBT experiment shown in \prettyref{fig:hbt-lab}, but since there are two beams, things like the max $g^{(2)}$ will change.
+
     \item[(b)] Suppose the electric field before the beam splitter is $E(t) \cos(\omega t)$, where the characteristic frequency of $E(t)$ is much smaller than $\omega$.
     The beam splitter introduces a phase difference of $\pi$ between the reflected beam and the transmitted beam, and the fact that $MO_1$ may be different with $MO_2$ introduces another phase difference.
     The electric fields at detecter 1 and detecter 2 are therefore 
@@ -159,16 +162,11 @@
     \]
     so $g^{(2)} > 1$.
     So we have something like \prettyref{fig:thermal-hbt}.
+
+
     \item[(c)] When the classical picture of the optical field fails, the classical explanation fails as well.
     For example, when the light source creates a sequence of single-photon pulses, what will be observed is \emph{photon antibunching} where $g^{(2)} = 0$ instead of bunching, because one photon cannot appear at two sites.
 \end{itemize}
-
-\begin{figure}
-    \centering
-    \input{hbt-astronomy.tex}
-    \caption{HBT in astronomical observation}
-    \label{fig:hbt-astronomy}
-\end{figure}
 
 \paragraph{}
 
@@ -203,12 +201,12 @@ Here $a_{k}^\dagger, b_{k^{\prime}}^\dagger$ are creation operators of photons i
     \[
         \begin{aligned}
             \ket*{\psi(\tau)} &= \ket*{0} - \ii \xi (a^\dagger_{k} b^\dagger_{k'} + \text{h.c.}) \ket*{0} + \frac{1}{2} (- \ii \xi)^2 (a^\dagger_{k} b^\dagger_{k'} + \text{h.c.})^2 \ket*{0} + \cdots \\
-            &= \left( 1 - \frac{\xi^2}{2} + \cdots \right) \ket*{0} - (\ii \xi + \cdots) \ket*{n_k = 1, n_{k'} = 1} - \left( \frac{1}{2} \xi^2 + \cdots \right) \ket*{n_k = 2, n_{k'} = 2} + \cdots.  
+            &= \left( 1 - \frac{\xi^2}{2} + \cdots \right) \ket*{0} - (\ii \xi + \cdots) \ket*{n_k = 1, n_{k'} = 1} - \left( \xi^2 + \cdots \right) \ket*{n_k = 2, n_{k'} = 2} + \cdots.  
         \end{aligned}
     \] 
     Taking only the leading order terms, we have 
     \begin{equation}
-        P(n_k = 1) = \xi^2, \quad P(n_k = 2) = \frac{\xi^4}{4}.
+        P(n_k = 1) = \xi^2, \quad P(n_k = 2) = \xi^4.
     \end{equation}
 
     It can be seen that in $\ket*{\psi(\tau)}$ we always have $n_k = n_{k'}$, and therefore if one photon is detected along $k'$, the photon state in the $k$ path is $\ket*{n_k = 1}$.
@@ -342,27 +340,93 @@ The circuit is shown in \prettyref{fig:nls}, and the two beam splitters are repr
 
 \paragraph{}
 
-\paragraph{The $1/f$ noise} 
+\paragraph{The $1/f$ noise} Search for the definition of the $1/f$ noise and analyze its effect on the optical homodyne detection and the optical heterodyne detection.
 
-\paragraph{Solution}
+\paragraph{Solution} The \concept{$1/f$ noise} or the so-called \concept{pink noise} is a kind of frequently observed noise of which the power spectrum is like
+\[
+    S(f) \lesssim \frac{1}{f^\alpha}, 
+\]
+where $\alpha$ is between $0$ and $2$ and is usually around $1$ \cite{PinknoiseWikipedia}.
+A main source of the pink noise is the low-frequency fluctuation in condensed matter systems.
+
+\begin{figure}
+    \centering
+    \input{hetero-homo-detection.tex}
+    \caption{The optical circuit for heterodyne detection and homodyne detection}
+    \label{fig:hom-hetero-device}
+\end{figure}
+
+Both the homodyne detection and the heterodyne detection can be done with the device shown in \prettyref{fig:hom-hetero-device}.
+We have 
+\[
+    \pmqty{b_1^\dagger \\ b_2^\dagger} = \frac{1}{\sqrt{2}} \pmqty{1 & -1 \\ 1 & 1 } \pmqty{a^\dagger_1 \\ a_2^\dagger}.
+\]
+The output is 
+\[
+    \begin{aligned}
+        \expval{n_2 - n_1} &= \frac{1}{2} \expval*{(a_1^\dagger + a_2^\dagger) (a_1 + a_2) - (a_1^\dagger - a_2^\dagger) (a_1 - a_2)} \\
+        &= \expval*{a^\dagger_1 a_2 + a^\dagger_2 a_1},
+    \end{aligned}
+\]
+so after taking the time evolution 
+\[
+    a_1(t) = \ee^{- \ii \omega_1 t} a_1(0), \quad a_2(t) = \ee^{- \ii \omega_2 t} a_2(0) 
+\] 
+into account, we have 
+\begin{equation}
+    \expval{n_2 - n_1} = \ee^{\ii (\omega_1 - \omega_2) t} \expval*{a_1^\dagger(0) a_2(0)} + \text{h.c.}.
+    \label{eq:homo-hetero-result}
+\end{equation}
+The $\ee^{\ii \Delta \omega t}$ factor is the only time dependence in \eqref{eq:homo-hetero-result}, and the peak of the actually output of \prettyref{fig:hom-hetero-device} is around $\omega_1 - \omega_2$ in the frequency domain.
+Therefore the homodyne detection is more affected by the $1/f$ noise because its output is in the low frequency region where the $1/f$ noise is strong, while the heterodyne detection is less affected.
 
 \paragraph{} 
 
-\paragraph{Laser phase-locking} 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{phase-locking.png}
+    \caption{A device for laser phase-locking}
+    \label{fig:phase-locking}
+\end{figure}
 
-\paragraph{Solution}
+\paragraph{Laser phase-locking} \prettyref{fig:phase-locking} is a device for laser-phase locking. 
+
+
+\paragraph{Solution} We label the port corresponding to $\ket{\alpha}$ as $a^\dagger_1$, the port corresponding to $\ket{\beta}$ as $a^\dagger_2$, the port corresponding to the detector $b^\dagger_2$, and the port corresponding to $S$ as $b^\dagger_1$.
+Then we have 
+\[
+    \pmqty{b^\dagger_1 \\ b^\dagger_2} = \frac{1}{\sqrt{2}} \pmqty{1 & -1 \\ 1 & 1} \pmqty{ a^\dagger_1 \\ a^\dagger_2 }.
+\]
+The expectation is 
+\[
+    \begin{aligned}
+        \expval*{n_2} &= \mel*{\alpha, \beta}{b_2^\dagger b_2}{\alpha, \beta} \\
+        &= \frac{1}{2} \mel*{\alpha, \beta}{ (a_1^\dagger + a_2^\dagger) (a_1 + a_2) }{\alpha, \beta} .
+    \end{aligned}
+\]
+We choose a picture where $a_1^\dagger$ has no time evolution and the time evolution factor of $a_2^\dagger$ is $\ee^{\ii 2 \pi f t + \ii \varphi(t)}$, and therefore
+\[
+    \begin{aligned}
+        \expval{n_2} &= \frac{1}{2} \mel*{\alpha, \beta}{ (a_1^\dagger(0) + a_2^\dagger(0) \ee^{\ii 2 \pi f t + \ii \varphi(t)}) (a_1(0) + a_2(0) \ee^{- \ii 2 \pi f t - \ii \varphi(t)}) }{\alpha, \beta} \\
+        &= \frac{1}{2} \mel*{\alpha, \beta}{ (\alpha^* + \beta^* \ee^{\ii 2 \pi f t + \ii \varphi(t)}) (\alpha + \beta \ee^{- \ii 2 \pi f t - \ii \varphi(t)}) }{\alpha, \beta} .
+    \end{aligned}
+\]
+Define the phase of $\alpha \beta^*$ as $\varphi_0$ and we have 
+\begin{equation}
+    \expval{n_2} = \frac{1}{2} (\abs*{\alpha}^2 + \abs*{\beta}^2 + 2 \abs*{\alpha} \abs*{\beta} \cos(2 \pi f t + \varphi(t) + \varphi_0)).
+\end{equation}
 
 \paragraph{}
 
 \paragraph{Measuring earth rotation with a Sagnac interferometer} In a Sagnac interferometer (see \prettyref{fig:sagnac-device}), input modes ${a}_{1}, {a}_{2}$ are mixed by a $50 \%$ - $50 \%$ beam splitter $S$, with its outputs follow ``time-reversal'' pathways of each other so as to be ``re-mixed'' by the same beam splitter $S$ into ${b}_{1}$ and ${b}_{2}$ modes.
 (a) Express the linear transformation matrix that couples the input $a_{1}, a_{2}$ and output ${b}_{1}, {b}_{2}$ modes. Try to argue that in absence of rotation, the $2 \times 2$ transformation matrix ${S}$ is diagonal, i.e., when the $a_1$ port is seeded with a laser and $a_2$ port is left in vacuum state, then the $b_2$ output port is a ``dark port''.
-(b) It turns out when the interferometer is placed in a rotating frame, such as on earth, the counter-propagating light paths around the loop with area A can pick up a ``Sagnac'' phase,
+(b) It turns out when the interferometer is placed in a rotating frame, such as on earth, the counter-propagating light paths around the loop with area $A$ can pick up a ``Sagnac'' phase,
 \[
 \varphi_{\text {sagnac }}=\frac{4 \pi \Omega \cdot A}{c \lambda}
 \]
 Here $\lambda$ is optical wavelength of the light. In presence of the Sagnac phase, derive the linear transformation matrix ${S}$ again.
 (c) Consider $a_{1}$ mode is associated with pulsed laser input with duration $\tau=\SI{1}{ms}$.
-The input states $\left|\psi_{\text{in}}\right\rangle=\ee^{\alpha a_{1}^{\dagger}-\alpha^{*} a_{1}}|V\rangle$ is a coherent state in the $a_{1}$ mode. For ${A}=\SI{1}{m^2}$, and let's consider the device is placed at the north pole. Suggest a detection scheme to measure the earth rotation rate (maybe quite difficult, if it is too difficult please allow yourself to be able to ``control'' the earth rotation). Assuming ideal detection, then how many photons are needed for the interferometer to measure earth rotation rate within $1 \%$ accuracy, using a single \SI{1}{nm} pulse?
+The input states $\left|\psi_{\text{in}}\right\rangle=\ee^{\alpha a_{1}^{\dagger}-\alpha^{*} a_{1}}|V\rangle$ is a coherent state in the $a_{1}$ mode. For ${A}=\SI{1}{m^2}$, and let's consider the device is placed at the north pole. Suggest a detection scheme to measure the earth rotation rate (maybe quite difficult, if it is too difficult please allow yourself to be able to ``control'' the earth rotation). Assuming ideal detection, then how many photons are needed for the interferometer to measure earth rotation rate within $1 \%$ accuracy, using a single \SI{1}{ms} pulse?
 (e) Provide a detailed argument that the $\Delta {n}_{2}$ shot noise for the ${n}_{2}=b_{2}^{\dagger} b_{2}$ measurement in this Sagnac interferometer is a result of vacuum fluctuation with $|V\rangle$ enters from the $a_{2}$ port to the $b_{2}$ port.
 (f) Provide a plausible experimental arrangement to inject a ``squeezed vacuum'' into $a_{2}$ port, so as to improve the rotation measurement accuracy by a $\mathrm{e}^{\xi}$ factor.
 
@@ -409,11 +473,124 @@ The input states $\left|\psi_{\text{in}}\right\rangle=\ee^{\alpha a_{1}^{\dagger
     \]
     into $\ket{\psi_\text{in}}$, we obtain 
     \begin{equation}
-        \ket{\psi_\text{out}} = \ee^{\alpha (\cos \varphi b_1^\dagger - \ii \sin \varphi b_2^\dagger) -\alpha^{*} (\cos \varphi b_1 + \ii \sin \varphi b_2)}|0\rangle.
+        \begin{aligned}
+            \ket{\psi_\text{out}} &= \ee^{\alpha (\cos \varphi b_1^\dagger - \ii \sin \varphi b_2^\dagger) -\alpha^{*} (\cos \varphi b_1 + \ii \sin \varphi b_2)}|0\rangle \\
+            &= \ket{\alpha \cos \varphi, - \ii \alpha \sin \varphi} .
+        \end{aligned}
         \label{eq:out-state-sagnac}
     \end{equation}
-    \item[(e)] We need to measure $n_2$ with \eqref{eq:out-state-sagnac}.
+    
+    We need to measure $n_2$ with \eqref{eq:out-state-sagnac}.
+    The expectation of $n_2$ is $\abs*{\alpha}^2 \sin^2 \varphi$, so the measure scheme may be measuring $n_2$ and calculating $\Omega$ using
+    \begin{equation}
+        \expval{n_2} = \abs*{\alpha}^2 \sin^2 \varphi , \quad \varphi = \frac{4 \pi \Omega \cdot A}{c \lambda}.
+    \end{equation}
+
+    From the properties of coherent states we also know that 
+    \begin{equation}
+        \Delta n_2 = \abs*{\alpha} \sin \varphi = \sqrt{\expval{n_2}}.
+    \end{equation}
+    Note that since $\varphi$ is small, we have 
+    \[
+        \expval*{n_2} \propto \varphi^2 \propto \Omega^2,
+    \]
+    so we have 
+    \[
+        \frac{2 \Delta \Omega}{\Omega} = \frac{\Delta n_2}{\expval*{n_2}} = \frac{1}{\sqrt{\expval{n_2}}},
+    \]
+    and therefore 
+    \begin{equation}
+        \expval{n_2} = \left( \frac{\Omega}{2 \Delta \Omega} \right)^2, \quad N_\text{in} = \abs*{\alpha}^2 = \left( \frac{c \lambda}{4 \pi \Omega A} \right)^2 \left( \frac{\Omega}{2 \Delta \Omega} \right)^2.
+    \end{equation}
+    Since the wavelength is not determined, the number of input photons cannot be determined.
+    With the precision requirement $\Delta \Omega / \Omega = \SI{1}{\percent}$ we need at least to detect 2500 photons at the $b_2^\dagger$ port.
 \end{itemize}
+
+\paragraph{}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{free-fall.png}
+    \caption{Measuring the position of a free-falling object}
+    \label{fig:free-fall}
+\end{figure}
+
+\paragraph{Interferometric measurement of a free falling object} An optical circuit is built to measure the position of a free-falling object, shown in \prettyref{fig:free-fall}.
+Analyze the accuracy of the equipment in terms of the wavelength and the power of the light beam.
+
+\paragraph{Solution} The structure of the optical circuit of \prettyref{fig:free-fall} is quite like \prettyref{fig:sagnac-device}.
+The main difference is that in \prettyref{fig:sagnac-device}, 
+
+\paragraph{}
+
+\begin{figure}
+    \input{mz-device.tex}
+    \caption{The M-Z interferometer}
+    \label{fig:mz-interferometer}    
+\end{figure}
+
+\paragraph{Measuring a phase shift with a double-photon interferometer} A double-photon interferometer shown in \prettyref{fig:mz-interferometer} can be used to measure the phase shift $\varphi$.
+Derive the output and the fluctuation.
+
+\paragraph{Solution} The transformation matrix of \prettyref{fig:mz-interferometer} is 
+\begin{equation}
+    \begin{aligned}
+        S &= \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 } \cdot \pmqty{\dmat{\ee^{\ii \varphi / 2}, \ee^{- \ii \varphi / 2}}} \cdot \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 } \\
+        &= \pmqty{ \ii \sin \varphi / 2 & - \cos \varphi / 2 \\ \cos \varphi / 2 & - \ii \sin \varphi / 2 }.
+    \end{aligned}
+\end{equation}
+We therefore have 
+\begin{equation}
+    \pmqty{a_1^\dagger \\ a_2^\dagger} = S^{-1} \pmqty{b_1^\dagger \\ b_2^\dagger} = \pmqty{ - \ii b_1^\dagger \sin \varphi / 2 + b_2^\dagger \cos \varphi / 2 \\ - b_1^\dagger \cos \varphi / 2 + \ii b_2^\dagger \sin \varphi / 2 }.
+\end{equation}
+The wave function of the optical field, therefore, is 
+\begin{equation}
+    \begin{aligned}
+        \ket{\psi} &= a_1^\dagger a_2^\dagger \ket{0} = (- \ii b_1^\dagger \sin \varphi / 2 + b_2^\dagger \cos \varphi / 2) (- b_1^\dagger \cos \varphi / 2 + \ii b_2^\dagger \sin \varphi / 2) \ket{0} \\
+        &= \frac{\ii}{\sqrt{2}} \sin \varphi \ket{2, 0} + \frac{\ii}{\sqrt{2}} \sin \varphi \ket{0, 2} - \cos \varphi \ket{1, 1}.
+    \end{aligned}
+\end{equation}
+
+The expectation of $:n_1 n_2:$ is 
+\begin{equation}
+    \mel*{\psi}{b_1^\dagger b_2^\dagger b_2 b_1}{\psi} = \cos^2 \varphi 
+\end{equation}
+because the operators $b_1 b_2$ destroys $\ket{0, 2}$ and $\ket{2, 0}$, and we have 
+\begin{equation}
+    P(\text{result = $1$}) = \cos^2 \varphi, \quad P(\text{result = $2$}) = \sin^2 \varphi.
+\end{equation}
+The standard deviation is therefore given by
+\[
+    \begin{aligned}
+        \Delta(: n_1 n_2 :)^2 &= P(\text{result = $1$}) (1 - \cos^2 \varphi)^2 + P(\text{result = $0$}) (0 - \cos^2 \varphi)^2 \\
+        &= \cos^2 \varphi \sin^4 \varphi + \sin^2 \varphi \cos^4 \varphi \\
+        &= \sin^2 \varphi \cos^2 \varphi,
+    \end{aligned}
+\]
+or 
+\begin{equation}
+    \Delta(: n_1 n_2 :) = \sin \varphi \cos \varphi.
+\end{equation}
+With $N$ independent experiments (assuming $N$ is large), we have 
+\[
+    \sum \expval{: n_1 n_2 :} = N \cos^2 \varphi,
+\]
+and 
+\[
+    \Delta(\sum :n_1 n_2:) = \sqrt{N} \sin\varphi \cos \varphi.
+\]
+Therefore, we have 
+\[
+    \begin{aligned}
+        \Delta\varphi &= \frac{\Delta(\sum :n_1 n_2:)}{\pdv*{\sum \expval{: n_1 n_2 :}}{\varphi}} \\
+        &= \frac{\sqrt{N} \sin \varphi \cos \varphi}{N \times 2 \cos \varphi \sin \varphi} \\
+        &= \frac{1}{2 \sqrt{N}},
+    \end{aligned}
+\]
+so the fluctuation of $\varphi$ caused by the shot-noise error of the optical field is 
+\begin{equation}
+    \Delta\varphi = \frac{1}{2 \sqrt{N}}.
+\end{equation}
 
 \bibliographystyle{plain}
 \bibliography{../optics/quantize,2} 
