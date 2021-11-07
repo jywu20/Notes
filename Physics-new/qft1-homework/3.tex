@@ -1,0 +1,160 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+\title{QFT I, Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Feynman propagator in position space} Calculate the Feynman propagator in position space. To get the pole structure correct, you may find it helpful to use Schwinger parameters (see Schwartz Appendix B). Take the $m \rightarrow 0$ limit of your result to find [This is problem $6.1$ on p. 77 of Schwartz.]
+\begin{equation}
+    \left\langle 0\left|\timeorder\left\{\phi_{0}\left(x_{1}\right) \phi_{0}\left(x_{2}\right)\right\}\right| 0\right\rangle=-\frac{1}{4 \pi^{2}} \frac{1}{\left(x_{1}-x_{2}\right)^{2}-i \varepsilon}.
+\end{equation}
+
+\paragraph{Solution} The Feynman propagator in the momentum space is $\ii / (p^2 - m^2 + \ii 0^+)$, and by Fourier transformation we have 
+\begin{equation}
+    \timeorder \expval*{\phi_0(x_1) \phi_0(x_2)}{0} = \int \frac{\dd[4]{p}}{(2\pi)^4} \ee^{- \ii p \cdot (x_1 - x_2)} \frac{\ii}{p^2 - m^2 + \ii 0^+} .
+\end{equation}
+By Schwinger parametrization 
+\[
+    \frac{\ii}{A} = \int_0^\infty \dd{u} \ee^{\ii u A}
+\]
+we have 
+\[
+    \begin{aligned}
+        \timeorder \expval*{\phi_0(x_1) \phi_0(x_2)}{0}& = \int \frac{\dd[4]{p}}{(2\pi)^4} \ee^{- \ii p \cdot (x_1 - x_2)} \int_0^\infty \dd{u} \ee^{\ii u (p^2 - m^2 + \ii 0^+)} \\
+        &= \int_0^\infty \dd{u} \ee^{\ii u (- m^2 + \ii 0^+)} \int \frac{\dd[4]{p}}{(2\pi)^4} \ee^{- \ii p \cdot (x_1 - x_2) + \ii u p^2}.
+    \end{aligned}
+\]
+
+\paragraph{}
+
+\paragraph{$\phi^3$ theory} Consider the Lagrangian for $\phi^{3}$ theory, [This is problem $7.1$ on p. 103 of Schwartz.]
+\[
+\mathcal{L}=-\frac{1}{2} \phi\left(\square+m^{2}\right) \phi+\frac{g}{3 !} \phi^{3}
+\]
+(a) Draw a tree-level Feynman diagram for the decay $\phi \rightarrow \phi \phi$. Write down the corresponding amplitude using the Feynman rules.
+(b) Now consider the one-loop correction, given by
+\input{phi-3-three-point.tex}
+Write down the corresponding amplitude using the Feynman rules.
+(c) Now start over and write down the diagram from part (b) in position space, in terms of integrals over the intermediate points and Wick contractions, represented with factors of $D_{F}$.
+(d) Show that after you apply LSZ, what you got in (c) reduces to what you got in (b), by integrating the phases into $\delta$-functions, and integrating over those $\delta$-functions.
+
+\paragraph{Solution}
+
+\paragraph{}
+
+\paragraph{Example of differential cross section} Use the Lagrangian [This is problem $7.6$ on p. 104 of Schwartz.]
+\[
+\mathcal{L}=-\frac{1}{2} \phi_{1} \square \phi_{1}-\frac{1}{2} \phi_{2} \square \phi_{2}+\frac{\lambda}{2} \phi_{1}\left(\partial_{\mu} \phi_{2}\right)\left(\partial_{\mu} \phi_{2}\right)+\frac{g}{2} \phi_{1}^{2} \phi_{2}
+\]
+to calculate the differential cross section
+\[
+\frac{d \sigma}{d \Omega}\left(\phi_{1} \phi_{2} \rightarrow \phi_{1} \phi_{2}\right)
+\]
+at tree level.
+
+\paragraph{Solution}
+
+\paragraph{}
+
+\paragraph{Decay of a scalar particle} This is problem $4.2$ on p. 127 of Peskin. Consider the following Lagrangian, involving two real scalar fields $\Phi$ and $\phi$:
+\[
+\mathcal{L}=\frac{1}{2}\left(\partial_{\mu} \Phi\right)^{2}-\frac{1}{2} M^{2} \Phi^{2}+\frac{1}{2}\left(\partial_{\mu} \phi\right)^{2}-\frac{1}{2} m^{2} \phi^{2}-\mu \Phi \phi \phi
+\]
+The last term is an interaction that allows a $\Phi$ particle to decay into two $\phi$ 's, provided that $M>2 m$. Assuming that this condition is met, calculate the lifetime of the $\Phi$ to lowest order in $\mu$.
+
+\paragraph{Solution}
+
+\paragraph{}
+
+\end{document}
