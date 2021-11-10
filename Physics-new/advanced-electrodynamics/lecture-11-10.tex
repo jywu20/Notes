@@ -1,0 +1,251 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+%\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[prev-]{./lecture-11-3}[lecture-11-3.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+\newcommand{\prevdoc}{\href{./lecture-11-3}{the previous lecture}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\allowdisplaybreaks
+
+\title{Green Function in Electrodynamics by Prof. Kun Din}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is a lecture note of Prof. Kun Ding's lecture on Advanced Electrodynamics on 10 November, 2021.
+
+\section{Scalar Green function's on-shell properties}
+
+We have already known that Green functions relate the differential form of a certain equation of motion to its
+integral form, that in electrodynamics the scalar Green function (i.e. the retarded potential) can be used to
+derive the vector Green function, and that many quantities like the $- \vb*{p} / 3\epsilon_0$ electric field 
+that are usually derived using heuristic way can be derived from the vector Green function directly.
+
+Here we show another way to derive the scalar Green function. We will derive the scalar Green function with its spacial variables in the position space and its temporal variable in the frequency domain.
+Suppose
+\begin{equation}
+    k = \frac{\omega}{c},
+\end{equation}
+we have 
+\[
+    \begin{aligned}
+        G(\vb*{R}) &= \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{\ee^{\ii \vb*{q} \cdot \vb*{R}}}{{\vb*{q}}^2 - k^2 \pm \ii 0^+} \\
+        &= \frac{1}{(2\pi)^3} \int_0^\infty q^2 \dd{q} \int_0^\pi \sin \theta \dd{\theta} \int_0^\pi \dd{\phi}
+        \frac{\ee^{\ii q R \cos \theta}}{q^2 - k^2 + \ii 0^+} \\
+        &= \frac{1}{4 \pi^2 \ii R} \int_0^\infty \frac{q (\ee^{\ii q R} - \ee^{- \ii q R})}{q^2 - k^2 + \ii 0^+} \\
+        &= \frac{\ee^{\mp \ii (k \mp \ii 0^+) R}}{4 \pi R}.
+    \end{aligned}
+\]
+The retarded wave is 
+\begin{equation}
+    G(\vb*{R}) = \frac{\ee^{\ii k R}}{4 \pi R}.
+    \label{eq:retarded-green}
+\end{equation}
+This is exactly \eqref{prev-eq:scalar-green} in \prevdoc.
+\eqref{eq:retarded-green} is an \emph{off-shell} propagator as $\vb*{q}$ may not satisfy the momentum-energy relation $\vb*{q}^2 - k^2 = 0$.
+
+We know (in quantum field theories) that 
+\[
+    \frac{1}{\vb*{q}^2 - k^2 - \ii 0^+} = \primevalue \frac{1}{\vb*{q}^2 - k^2} + \ii \pi \delta(\vb*{q}^2 - k^2),
+\]
+and we can connect \eqref{eq:retarded-green} with the density of states.
+The density of states of a 3D photon gas is 
+\begin{equation}
+    \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \delta({\vb*{q}}^2 - k^2) = \frac{k(\omega)}{4\pi}.
+\end{equation}
+
+\begin{equation}
+    \rho(\omega) = \dv{k(\omega)^2}{\omega} \frac{1}{\pi} \Im G(\vb*{R} = 0, \omega).
+    \label{eq:density-of-state-from-green}
+\end{equation}
+\eqref{eq:density-of-state-from-green} is actually more general than the case of homogeneous material we have just discussed.
+For a non-homogeneous, it can be generalized to connect \emph{local density of states} with the Green function.
+\eqref{eq:density-of-state-from-green} can be seen as the first example of the \emph{on-shell} theory since we are dealing with something that is proportional to $\delta(\vb*{q}^2 - p^2)$.
+
+We consider another example. We define 
+\begin{equation}
+    k_z = \sqrt{k^2 - q_x^2 - q_y^2},
+    \label{eq:kz-on-shell}
+\end{equation}
+and we have 
+\[
+    \begin{aligned}
+        \frac{\ee^{\ii k R}}{4 \pi R} = G(\vb*{r}) &= 
+        \int \frac{\dd{q_x} \dd{q_y} \dd{q_z}}{(2\pi)^3} \frac{\ee^{\ii q_x x + \ii q_y y} \ee^{\ii q_z z}}{(q_z - k_z) (q_z + k_z) - \ii 0^+} \\
+        &= \frac{1}{(2\pi)^3} \int \dd{q_x} \int \dd{q_y} 2 \pi \ii \frac{\ee^{\ii (q_x x + q_y y)} \ee^{\ii k_z z}}{2 k_z}
+    \end{aligned}
+\]
+when $z > 0$. The case when $z < 0$ can be checked to be 
+\[
+    \frac{\ee^{\ii k R}}{4 \pi R} = \frac{1}{(2\pi)^3} \int \dd{q_x} \int \dd{q_y} 2 \pi \ii \frac{\ee^{\ii (q_x x + q_y y)} \ee^{- \ii k_z z}}{2 k_z}.
+\]
+So in the end we have 
+\begin{equation}
+    \frac{\ee^{\ii k R}}{R} = \frac{\ii}{2\pi} \int \dd[2]{\vb*{q}_\bot} \frac{\ee^{\ii \vb*{q}_\bot \cdot \vb*{r}_\bot} \ee^{\ii k_z \abs*{z}}}{k_z},
+    \label{eq:angular-spectrum}
+\end{equation}
+where $\vb*{q}_\bot$ and $\vb*{r}_\bot$ are $\vb*{q}$ and $\vb*{r}$'s projection on the $xy$ plane.
+\eqref{eq:angular-spectrum} is the basis of the \concept{angular spectrum method}, % TODO
+
+\eqref{eq:angular-spectrum} can be further simplified. Suppose 
+\[
+    \vb*{q}_\bot = q_\bot (\cos \alpha, \sin \alpha), \quad \vb*{r}_\bot = r_\bot (\cos \phi, \sin \phi),
+\]
+we have 
+\[
+    \frac{\ee^{\ii k R}}{R} = \frac{\ii}{2\pi} \int q_\bot \dd{q_\bot} \int \dd{\alpha} \frac{\ee^{\ii q_\bot r_\bot \cos(\alpha - \phi)} \ee^{\ii k_z \abs*{z}}}{k_z},
+\]
+and since 
+\[
+    J_0(x) = \frac{1}{2\pi} \int_0^{2\pi} \dd{\alpha} \ee^{\ii x \cos(\alpha - \phi)},
+\]
+we have 
+\begin{equation}
+    \frac{\ee^{\ii k R}}{R} = \ii \int \dd{q_\bot} \frac{q_\bot}{k_z} J_0(q_\bot r_\bot) \ee^{\ii k_z \abs*{z}}.
+    \label{eq:sommerfield-id}
+\end{equation}
+This is called the \concept{Sommerfield identity}.
+
+\eqref{eq:angular-spectrum} and \eqref{eq:sommerfield-id} are all on-shell versions of the scalar Green function, as we have constraints like \eqref{eq:kz-on-shell} so that $k_z$ cannot vary freely.
+
+\section{On-shell properties of the vector Green function}
+
+Take the second order derivative of \eqref{eq:angular-spectrum}, we have 
+\[
+    \begin{aligned}
+        \pdv[2]{z} G(\vb*{r}) &= 
+        \left( - \frac{\ii}{4\pi} \int \dd[2]{\vb*{q}_\bot} \frac{k_z}{2} \ee^{\ii q_\bot r_\bot} \ee^{\ii k_z \abs*{z}} \right) \sgn(z)^2
+        + \left( - \frac{1}{4 \pi^2} \int \dd[2]{\vb*{q}_\bot} \ee^{\ii q_\bot r_\bot} \ee^{\ii k_z \abs*{z}} \right) \delta(z) \\
+        &= - \delta^{(3)}(\vb*{r}) - \frac{\ii}{4\pi^2} \int \dd[2]{\vb*{q}_\bot} \frac{k_z}{2} \ee^{\ii q_\bot r_\bot} \ee^{\ii k_z \abs*{z}}.
+    \end{aligned}
+\]
+Repeating this process we get 
+\begin{equation}
+    \grad \grad G(\vb*{r}) = - \frac{\vu*{z} \vu*{z}}{k^2} \delta(\vb*{r}) + \frac{1}{8 \pi^2} \int \frac{\dd[2]{\vb*{q}_\bot}}{k_z} 
+    \begin{cases}
+        \left( \tensor{\vb*{I}} - \frac{\vb*{k}_+ \vb*{k}_+}{k^2} \right) \ee^{\ii \vb*{k}_+ \cdot \vb*{r}}, \quad z > 0, \\
+        \left( \tensor{\vb*{I}} - \frac{\vb*{k}_- \vb*{k}_-}{k^2} \right) \ee^{\ii \vb*{k}_- \cdot \vb*{r}}, \quad z < 0,
+    \end{cases}
+\end{equation}
+where 
+\begin{equation}
+    \vb*{k}_+ = (q_x, q_y, k_z), \quad \vb*{k}_- = (q_x, q_y, - k_z).
+\end{equation}
+We define 
+\begin{equation}
+    \vu*{e} = \frac{\vb*{k} \times \vu*{z}}{\abs*{\vb*{k} \times \vu*{z}}}, 
+    \quad \vu*{h} = \frac{\vb*{k} \times (\vb*{k} \times \vu*{z})}{\abs*{\vb*{k} \times (\vb*{k} \times \vu*{z})}},
+    \quad \vu*{l} = \frac{\vb*{k}}{\abs*{\vb*{k}}},
+\end{equation}
+and it can be seen that they form a complete and orthogonal basis of $\mathbb{R}^3$. 
+We then find that 
+\begin{equation}
+    \tensor{\vb*{I}} - \frac{\vb*{k}_- \vb*{k}_-}{k^2} = \vu*{e} \vu*{e} + \vu*{h} \vu*{h},
+\end{equation}
+
+\section{Mode expansion of the Green function}
+
+From 
+\[
+    (\mathcal{L} - \lambda) G(\vb*{r} - \vb*{r}') = \delta(\vb*{r} - \vb*{r}')
+\]
+we have 
+\begin{equation}
+    G(\vb*{r} - \vb*{r}') = \sum_n \frac{u^*_n(\vb*{r}') u_n(\vb*{r})}{\lambda_n - \lambda}.
+\end{equation}
+
+\end{document}
