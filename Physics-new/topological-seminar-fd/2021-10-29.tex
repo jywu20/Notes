@@ -1,0 +1,257 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Braiding and Fusion in Topological Orders by Prof. Yidun Wan}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is a lecture note of Prof. Yidun Wang's lecture on the topological states of matter seminar on October 29, 2021.
+
+\section{Fusion algebra in topological orders and the quantum dimension}
+
+We know anyons in a topological order have fusion and braiding, which may be understood as two types of interaction channels of anyons.
+We, however, investigate only the \emph{algebraic} features of braiding and fusion, ignoring the dynamics.
+
+A \concept{fusion albegra} has the following data:
+\begin{itemize}
+    \item A set of anyon types $a, b, c, \ldots$.
+    \item A set of fusion rules in the form of 
+    \begin{equation}
+        a \times b = \sum_c N^c_{ab} c, \quad N^c_{ab} \in \mathbb{N}.
+    \end{equation}
+\end{itemize}
+
+Fusion is kind of like the ``fusion'' of spins, for example the famous singlet-triplet decomposition 
+\[
+    \frac{1}{2} \otimes \frac{1}{2} = 0 \oplus 1.
+\]
+The decomposition can be important with certain terms in the Hamiltonian. For example, if we have a $\sum_{\pair{\vb*{i}, \vb*{j}}} \vb*{S}_{\vb*{i}} \cdot \vb*{S}_{\vb*{j}}$ term in the Hamiltonian, then the ground state tends to contain spin singlets instead of spin triplets.
+The decomposition itself, however, has nothing to do with the dynamics; to make it ``activated'' we need certain Hamiltonians. 
+
+Another concept can be defined on anyons is the \concept{quantum dimension}.
+The quantum dimension $d_a$ of anyon species $a$ is defined as the \emph{asymptotic} dimension of the internal Hilbert space of a type-$a$ anyon.
+Suppose the Hilbert space $\mathcal{H}_{a}(N)$ containing all possible states of a system with $N$ type-$a$ anyons, then we have 
+\begin{equation}
+    d_a^N \simeq \dim \mathcal{H}_a(N) \quad \text{as $N \to \infty$}.
+\end{equation}
+It can be verified that $d_a \geq 1$, and for the vacuum we have $d = 1$. Note that $d_a$ may not be an integer.
+The fusion rules can be used to derive the quantum dimensions, because we have 
+\begin{equation}
+    d_a d_b = \sum_c N_{ab}^c d_c.
+\end{equation}
+
+In an Abelian topological order, for all $a$ and $b$ there exists an anyon species $c$ such that 
+\begin{equation}
+    a \times b = c,
+\end{equation}
+and thus all quantum dimensions are $1$. 
+We find that an anyon in an Abelian topological order is quite a ``local'' or ``simple'' object, the only labels of which are the position and the topological spin, without complicated inner states.
+
+The \concept{Ising topological order} is defined with the following data: there are three types of anyons, namely $1, \psi, \sigma$, and we have 
+\begin{equation}
+    1 \times \sigma = \sigma, \quad 1 \times \psi = \psi, \quad  \sigma \times \sigma = 1 + \psi, \quad \sigma \times \psi = \sigma, \quad \psi \times \psi = 1,
+\end{equation}
+from which we have 
+\begin{equation}
+    d_\sigma = \sqrt{2}.
+\end{equation}
+This is an example of non-rational quantum dimension in non-Abelian topological orders.
+
+We can also define the concept of \concept{fusion space}. Suppose $N_{ab}^c \geq 1$, additional labels are required to indicate \emph{how} $a$ and $b$ fuse into $c$.
+These labels are the labels of the fusion space, and the dimension of the fusion space $V_{ab}^c$ - the subspace of the Hilbert space spanned by $a \times b$ in which the fusion result is restricted to $c$ but the additional labels specifying the exact fusion channel may vary - is 
+\begin{equation}
+    \dim V_{ab}^c = N_{ab}^c.
+\end{equation}
+
+A good example where the fusion space occurs is a sphere with several anyons placed on it.
+We require the fusion of all anyons on a sphere to be the trivial one, or with a little jargons, that the total topological charges on a sphere is zero.
+Therefore, the Hilbert space of a spherical system with anyons $a_1, a_2, \ldots, a_N$ is the Hilbert space from $a_1 \times a_2 \times \cdots a_N$ to the trivial anyon $1$.
+
+Consider a \concept{3-punctured sphere}, which is a sphere with three anyons placed on it, namely $a, b$ and $c$.
+
+In this way we can predict that $1 \notin V_{ab}^c$, or otherwise we have 
+\[
+    a \times b \times c = c + \cdots,
+\]
+which is obviously not the trivial charge.
+
+Note that 
+\begin{equation}
+    V_{abc}^e = \bigoplus_{c} V_{ab}^c V_{cd}^e,
+\end{equation}
+A \concept{4-punctured sphere}, which is a sphere with four anyons placed on it, can always be constructed by two 3-punctured spheres.
+
+Anyon fusion algebra on a torus: 
+\begin{equation}
+    \otimes_a 
+\end{equation}
+
+Now we consider an \concept{$n$-punctured sphere}, which may also be understood as a $(n-1)$-punctured disk with one anyon placed on $\infty$.
+The Hilbert space is 
+\begin{equation}
+    \mathcal{H} = V_{a a \cdots a}^1 = \bigoplus_{\substack{\{b_i\}}} V_{aa}^{b_1} V_{a b_1}^{b_2} \cdots V_{a b_{n-3}}^a,
+\end{equation}
+and the dimension of the Hilbert space is 
+\[
+    \dim \mathcal{H} = \sum_{\{b_i\}} N_{aa}^{b_1} N_{a b_1}^{b_2} \cdots N_{a b_{n-3}}^a.
+\]
+We denote the matrix $[N_{ab}^c]_{bc}$ as $N_a$, and we have 
+\[
+    \dim \mathcal{H} = \Trace (N_a)^{n-2} \simeq \lambda^{n-2} \simeq \lambda^n \quad \text{as $n \to \infty$},
+\]
+where $\lambda$ is the largest eigenvalue of $N_a$.
+Now we see the hidden meaning of the quantum dimension: it is the largest eigenvalue of $N_a$.
+
+A non-integer quantum dimension means anyons are not local objects: it is \emph{impossible} to write down the Hilbert space of the whole system as the tensor product of the Hilbert space of each anyon.
+Indeed that is what we need for \emph{topological quantum computation}.
+Abelian topological orders cannot be used for topological quantum computation because any operation on one anyon only results in a change of the phase of that particular anyon without influencing other parts of the system.
+
+\section{The $F$-symbol and basis transformation in fusion spaces}
+
+What we have done are all based on the assumption that fusion is associative.
+The associative condition means
+\begin{equation}
+    a \times (b \times c) \simeq (a \times b) \times c.
+    \label{eq:fusion-assoc-cond}
+\end{equation}
+The letters $a, b$ and $c$ here are abstract notion of anyons.
+The \emph{basis} of $a \times (b \times c)$ and $(a \times b) \times c$ may be different, however, and in this way \eqref{eq:fusion-assoc-cond} induces a basis transformation.
+
+% TODO: fusion tree
+
+We sometimes call the $F$-symbol the \concept{6-$j$ symbol}. A representation transformation guided by the $F$-symbol is also called an \concept{$F$-move}.
+
+Here an issue on consistency occurs. If there are more than three anyons, do different fusion orders still give the same Hilbert space?
+The \concept{coherence theorem} assures that if the order of the fusion of four anyons do not affect the Hilbert space, than so does the fusion of arbitrary anyons.
+In other words, we just need to check the coherence of four anyons.
+
+We call this condition \concept{the pentagon identity}. 
+A set of fusion rules must satisfy this identity, or otherwise different orders of the fusion of four anyons result in different Hilbert spaces, which is ridiculous.
+
+The additional constraint on the fusion algebra makes it a \concept{fusion category}.
+
+As an example we consider a topological order where there are two anyons, namely 0 and 1.
+We may assign an Abelian fusion algebra
+\begin{equation}
+    1 \times 1 = 0, \quad 0 \times 1 = 1,
+\end{equation}
+and then by solving the pentagon identity we find two solutions, corresponding to two consistent topological orders.
+One is a chiral $\mathbb{Z}_2$ topological order, where the anyons are $1$ and $e$.
+This is half of the toric code topological order. Chiral topological orders currently cannot be realized in lattice models.
+Another solution has $1$ and $s$ where $s$ is a \concept{semion} or ``half of a fermion''.
+We may also assign a non-Abelian fusion algebra 
+\begin{equation}
+    0 \times 1 = 1, \quad 1 \times 1 = 0 + 1,
+\end{equation}
+which is called the \concept{Fibonacci topological order}, a highly non-trivial one that can be used to realize universal quantum computing.
+
+\section{Braiding}
+
+A braiding is in the form of 
+\input{./2021-10-29-diagrams/braiding.tex}
+After the introduction of braiding, with only three anyons we have a coherence issue. There is an additional coherence condition: \concept{the hexagon identity}.
+
+A fusion category equipped with an additional braiding structure, namely the $R$-matrix and the hexagon identity, is called a \concept{braided fusion category}.
+
+\end{document}

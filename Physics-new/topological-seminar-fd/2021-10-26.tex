@@ -1,0 +1,236 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Categories in the Toric Code Model by Dr. Zhihao Zhang}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This file is a record of the lecture given by Dr. Zhihao Zhang on October 26, 2021.
+
+\section{Basic concepts of topological orders}
+
+A strict definition of \concept{topological order} is yet to come. Usually we say a topological order is a gapped quantum liquid phase \emph{without} symmetry.
+The term \concept{quantum phase} is a universality class of many-body systems in the thermodynamic limit at zero temperature.
+
+Usually we investigate equivalence class of \emph{lattice models}. By a lattice model we mean a collection of a lattice, a Hilbert space defined on each site of the lattice, and a Hamiltonian.
+The Hilbert space of the whole lattice system is the tensor product of Hilbert spaces on all sites.
+
+Not all quantum phases are well-behaved. A crystal's macroscopic properties reflect the microscopic details of the lattice (for example, its optical properties reflect the space group of the lattice).
+Behaviors of fractons, as another example, are also dependent to the lattice.
+The microscopic geometry of the lattice, however, does not affect the long range behavior of a \concept{quantum liquid} - and that is why we call it a \emph{liquid}, since if we introduce a new site, it soon ``resolves'' into the rest of the system.
+
+A \emph{gapped} system is \emph{incompressible}, in that an infinitesimal perturbation of it do not have any response.
+Such a system seems quite trivial, but we will soon see that it is not the case.
+
+Microscopically, a \concept{defect} can be given by a local modification of the lattice, the Hamiltonian or the local Hilbert space. 
+They are ``points'' or ``lines'' in the macroscopic effective theory.
+Two defects are the ``same'' if they behave the same in the long wave length limit.
+The defects are often said to be \emph{topological}, the meaning of which will be discussed later.
+No defect is also a defect, i.e. the \concept{trivial topological defect}.
+
+A defect itself can be viewed as a lower-dimensional lattice model embedded into a higher-dimensional lattice model. 
+This claim may be kind of confusing. For example, a simple disorder introduced to the lattice itself is not a topological order.
+We should note, however, that the \emph{neighborhood} of the disorder is a topological order.
+
+The set of all topological defects in a topological order is called the \concept{topological skeleton}. 
+There are some structures on a topological skeleton. For example, intuitively, two defects may \emph{fuse} with each other, as is depicted in \prettyref{fig:fusion-example}.
+These structures actually introduce the category theory into the study of topological orders.
+
+\begin{figure}
+    \centering
+    \input{2021-10-26-diagram/fusion-example.tex}
+    \caption{Intuitive visualization of defects in a topological order}
+    \label{fig:fusion-example}
+\end{figure}
+
+\section{Defects in the toric code model}
+
+\begin{figure}
+    \centering
+    \input{2021-10-26-diagram/model-on-manifold.tex}
+    \caption{Placing a locally defined model on a closed surface}
+    \label{fig:local-model-manifold}
+\end{figure}
+
+The toric code model can be found in almost every introduction to topological order, for example \href{./2021-10-15}{here}.
+Note that the toric code model is \emph{locally} defined, in the sense that it is defined on an open disk.
+Though first defined on a torus, the model can be placed on any surface that can be discretized into a square lattice (see \prettyref{fig:local-model-manifold}).
+Suppose the lattice has $V$ vertices, $E$ edges and $F$ plaquettes.
+By Euler's formula we have 
+\begin{equation}
+    V - E + F = 2 - 2g,
+\end{equation}
+where $g$ is the genus of the closed surface.
+The dimension of the total hilbert space is $2^E$. Now we calculate the dimension of the ground subspace.
+The constraints defining the ground subspace are 
+\begin{equation}
+    A_v = B_p = 1,
+\end{equation}
+for every vertex $v$ and every bond $p$. There are $V+F$ constraints, but these constraints are not totally independent since by the fact that the surface is closed, we have 
+\begin{equation}
+    \prod_v A_v = \prod_p B_p = 1,
+\end{equation}
+so in the end, we have $V+F-2$ independent constraints.
+The ground state degeneracy, therefore, is 
+\begin{equation}
+    \mathrm{GSD} \coloneqq \dim \mathcal{H}_\text{ground} = 2^{E - (V+F-2)} = 2^{2g},
+\end{equation}
+which is a topological invariant. This is a well known phenomenon in topological order that a locally defined model somehow reflects some global features of the real space.
+
+Suppose we introduce a defect at site $\xi$. The most obvious way is to introduce a local modification of the Hamiltonian $\var{H}_\xi$.
+The ground state of $H+\var{H}_\xi$ is generally different from the ground state of $H$.
+We know $H$ has anyons $\mathbbm{1}$, $e$, $m$, and $\epsilon$, and therefore the ground state of a model with defects is a state in which some particles are ``trapped'' near $\xi$.
+
+For example, a state with an $e$ particle at the vertex $v$ is the ground state of the Hamiltonian
+\begin{eqnarray}
+    H' = H + 2 A_v = \sum_{v' \neq v} (1 - A_{v'}) + \sum_p (1 - B_p) + (1 + A_v),
+\end{eqnarray}
+and thus the corresponding defect is given by the local trap $\var{H}_v = 2 A_v$.
+Topological excitations $\mathbbm{1}$, $m$, $\epsilon$ can be trapped in a similar way around a topological defect.
+After one topological defect that trap $e$, $m$ or $\epsilon$ is introduced, the perturbed Hamiltonian has only one ground state.
+Direct sums of the fundamental topological excitations are trapped around a defect after the introduction of which the Hamiltonian has degenerate ground states. 
+For example, the Hamiltonian
+\begin{equation}
+    H' = H + B_p = \sum_v (1 - A_v) + \sum_{p \neq p'} (1 - B_{p'}) + 1
+\end{equation}
+has a two fold degeneracy, and its ground subspace is $\mathbbm{1} \oplus m$.
+
+We have just seen that all topological excitations can be generated or trapped by point-like topological defects.
+Inversely, we claim that \emph{all} point-like topological defects are given by topological excitations, though there is no proof.
+This claim is based on the following argument.
+The microscopic details about the defect cannot be discussed generally, but we do not care anyway, since what we can actually measure are \emph{renormalized} quantities, and since we are studying topological orders, we usually work near a fixed point of the wave function renormalization group, where anyons have no non-trivial dynamics and the only thing a defect does is to mix anyons into the ground state.
+Therefore, though the microscopic details of the defects are different, their macroscopic behaviors can be classified into a few classes, and it is reasonable to assume that these classes can be labeled by the trapped anyons since anyons or topological excitations are the only things that go through the wave function renormalization. 
+That justifies the word ``topological'' in ``topological defects'', as they are almost equivalent to topological excitations in a topological order, which cannot be created or annihilated by a local operator.
+
+The above argument also shows why we prefer gapped systems, as in these systems the perturbation introduced by a defect is always controlled.
+The ground state with defects reflects something about the excited states without defects, and that is all.
+Things are usually subtler in gapless systems.
+For example, in a metal if we introduce two ``defects'' which change the local electric potential - a much properer name for which is ``electrical node'' - we see currents between them, instead of excitations trapped around the defects.
+
+\section{Instantons and fusion categories}
+
+Now we go further and consider the dynamics of topological excitations. 
+In the (maybe discrete) path integral of the toric code model, the world lines of topological excitations, or in other words \emph{instantons}, can be easily verified to form a category.
+Given a topological order $C$, its point-like topological defects and the instantons are form a category $\mathcal{C}$:
+\begin{itemize}
+    \item The objects $\object(\mathcal{C})$ is the set of all topological defects.
+    \item The morphisms $\morphism_\mathcal{C}(x, y)$ is the instantons from $x$ to $y$.
+    \item The multiplication rule and the associative law can be naturally seen from the definition of instantons.
+    \item The identity morphism is the trivial instanton or in other words the trivial time evolution. 
+\end{itemize}
+
+The fact that the toric code is a quantum mechanic model requires $\mathcal{C}$ to be a $\mathbb{C}$-linear monoidal category.
+The $\mathcal{C}$-linearity comes from the superposition principle, and the monoidal structure comes from the tensor product.
+Moreover, we have already seen that defects can be fused and so do topological excitations, so $\mathcal{C}$ is a \concept{fusion category}.
+The fact that we are working on a 2D model - which allows anyons statistics - requires $\mathcal{C}$ to be a \concept{braided category}.
+The self-statistics of anyons further more means $\mathcal{C}$ has a \concept{ribbon structure}.
+Also, for each topological excitation there is an ``anti-particle'', and thus $\mathcal{C}$ is \concept{rigid} and equipped with a \concept{spherical structure}.
+We have only finitely many simple objects up to an isomorphism, or more physically, we have finite specifies of ``fundamental'' anyons and therefore $\mathcal{C}$ is \concept{finite semisimple}.
+Because the vacuum of the model is stable in that anyons cannot popping out from nowhere, the object $\mathbbm{1}$ representing the vacuum must be a simple object.
+There is yet a slightly tricky constraint that in order for the topological order be realizable on an actual lattice model, $\mathcal{C}$ must be \concept{non-degenerate}. % TODO
+So finally, as a consequence of describing a topological order, $\mathcal{C}$ is a \concept{unitary modular tensor category}.
+
+It should be noted that the map from a (2+1)D topological order to a unitary modular tensor category is surjective but not injective.
+
+\section{Toric code on 3D square lattice}
+
+On a three dimensional square lattice we can still define a toric code model. The Hamiltonian is 
+\begin{equation}
+    H = - \sum_v A_v - \sum_p B_p,
+\end{equation}
+but now $A_v$ is the product of the spins on \emph{six} bonds, while $B_p$ is still the product of the spins on a plaquette.
+
+What makes the 3D toric code model special is now we have topological defects that are not point-like.
+
+The result is a \concept{2-category} instead of a category.
+
+\end{document}

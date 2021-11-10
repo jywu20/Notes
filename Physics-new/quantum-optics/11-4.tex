@@ -1,0 +1,260 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[info-]{../information/quantum-circuit}[quantum-circuit.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+\newcommand{\infodoc}{\href{../information/quantum-circuit}{the quantum information note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+\date{November 4, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{The rotational wave approximation and the Bloch sphere}
+
+\begin{figure}
+    \centering
+    \input{11-4-figures/energy-level-1.tex}
+    \caption{The energy diagram of a two-level system in an external optical field}
+\end{figure}
+
+Under the rotational wave approximation and the corresponding RWA transformation, the Hamiltonian of a two-level system is 
+\begin{equation}
+    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma},
+    \label{eq:rwa-hamiltonian}
+\end{equation}
+where the norm of the \concept{Rabi vector} $\vb*{\Omega} = (\Omega_r, \Omega_i , \Delta)$ is
+\begin{equation}
+    \abs*{\vb*{\Omega}} = \sqrt{\Omega^2 + \Delta^2},
+\end{equation}
+\begin{equation}
+    \Omega = \frac{\vb*{E}_0 \cdot \vb*{d}_{eg}}{\hbar}
+    \label{eq:rabi-freq}
+\end{equation}
+is the \concept{Rabi frequency} and $\Delta$ the \concept{detuning}.
+The wave function is always in the form of 
+\begin{equation}
+    \ket*{\psi} = \cos \frac{\theta}{2} \ee^{\ii \varphi /2 } \ket*{g} + \sin \frac{\theta}{2} \ee^{- \ii \varphi / 2} \ket*{e}, 
+\end{equation}
+and the density matrix is 
+\begin{equation}
+    \rho = \frac{1}{2} (1 + \vb*{n} \cdot \vb*{\sigma}),
+\end{equation}
+where 
+\begin{equation}
+    \vb*{n} = (\sin \theta \cos \varphi, \sin \theta \sin \varphi, \cos \theta).
+\end{equation}
+It is natural to put $\vb*{n}$ on a sphere, which is known as \concept{Bloch sphere}.
+The constructions are standard for a qubit and can be found in Section~\ref{info-sec:single-qubit} in \infodoc.
+The equation of motion is 
+\[
+    \frac{\ii \hbar}{2} \vb*{n} \cdot \vb*{\sigma} = \ii \hbar \rho = \comm*{H}{\rho} = \comm*{\vb*{\Omega} \cdot \vb*{\sigma}}{\frac{1}{2} \vb*{n} \cdot \vb*{\sigma}} = \frac{1}{2} (\vb*{\Omega} \times \vb*{n}) \cdot \vb*{\sigma},
+\]
+and therefore we have 
+\begin{equation}
+    \dot{\vb*{n}} = \vb*{\Omega} \times \vb*{n}. 
+    \label{eq:n-eom}
+\end{equation}
+
+We review some properties about the Bloch sphere.
+First, an equation of motion of a c-number defined in terms of the wave function is likely to be an equation of motion of an operator, and this is indeed the case of \eqref{eq:n-eom}, where we may find $\vb*{n} = \expval{\vb*{\sigma}}$.
+Also, it can be verified that 
+\begin{equation}
+    \abs*{\braket*{\psi_1}{\psi_2}}^2 = \trace(\rho_1 \rho_2) = \frac{1}{2} (1 + \vb*{n}_1 \cdot \vb*{n}_2),
+\end{equation}
+and therefore we find that two wave functions are the same or differ with only a phase factor if and only if they have the same Bloch vector, and they are orthogonal if and only if their Bloch vectors are exactly the opposite of each other.
+
+Note that the direction of the Rabi vector is not determined.
+Usually we use the convention
+\begin{equation}
+    \vb*{\Omega} = (\Omega, 0, \Delta), 
+\end{equation} 
+and the two Bloch vectors
+\begin{equation}
+    \vb*{n}_{\pm \Omega} = \pm (\sin \theta, 0, \cos \theta)
+\end{equation}
+represents two eigenstates of \eqref{eq:rwa-hamiltonian}, namely $\ket*{\tilde{g}}$ (with eigenvalue $- \hbar \abs*{\vb*{\Omega}} / 2$) and $\ket*{\tilde{e}}$ (with eigenvalue $\hbar \abs*{\vb*{\Omega}} / 2$), where 
+\begin{equation}
+    \theta = \arctan \frac{\Omega}{\Delta}.
+\end{equation}
+
+\section{Control a two-level system with external fields}
+
+Note that since \eqref{eq:rabi-freq}, a two-level system's state can be controlled via changing the external field.
+
+\begin{figure}
+    \centering
+    \input{11-4-figures/pi-pulse-result.tex}
+    \caption{The consequence of a $\pi$-pulse illustrated with the Bloch sphere}
+    \label{fig:pi-pulse-result}
+\end{figure}
+
+Consider we start from $\ket*{g}$, i.e. $\vb*{n} = \vb*{e}_z$.
+We want to excite the atom to $\ket*{e}$, i.e. $\vb*{n} = - \vb*{e}_z$.
+When there is no external field $\vb*{\Omega}$ is along the $z$ axis, and therefore $\vb*{n}$ stays at $\vb*{e}_z$. 
+Now suppose we add an electric field $\vb*{E}_0$, the Bloch vector starts to rotate around the new Rabi vector (depicted as the red curve in \prettyref{fig:pi-pulse-result}).
+If, after $t = T/2 = \pi / \abs*{\vb*{\Omega}}$, we remove the external field, the Bloch vector will again rotate around the $z$ axis (depicted as the blue curve in \prettyref{fig:pi-pulse-result}).
+Therefore we successfully change the $\theta$ angle of $\vb*{n}$.
+This process is called a \concept{$\pi$-pulse}.
+With a series of $\pi$-pulse, we can make $\vb*{n}$ arbitrarily close to $- \vb*{e}_z$.
+
+This is quite an interesting result, because it shows that the atom can be excited even with the presence of detuning.
+This can also be seen as an example of the $E$-$t$ uncertainty principle, because what we are actually do is to use \emph{pulses} to create some uncertainty in the energy to make up for the gap between $\omega$ and $\omega_{eg}$.
+
+\section{Adiabatic states}
+
+When $\abs*{\vb*{\Omega}} \gg \abs*{\mel**{\tilde{e}}{\partial_t}{\tilde{g}}}$, or in other words the perturbation mix eigenstates very slowly, we can make the adiabatic approximation and we have 
+
+\section{Perturbative solution}
+
+Now we go back to 
+\begin{equation}
+    \ii \dot{c}_e = \Delta c_e + \frac{\Omega}{2} c_g, \quad \ii \dot{c}_g = \frac{\Omega^*}{2} c_e.
+\end{equation}
+In the first order perturbation, we can just ignore $c_e$ in the second equation if we start from the ground state.
+We, therefore, have 
+\begin{equation}
+    c^{(1)}_e(T) = - \ii \int_0^T \dd{t} \frac{\Omega}{2} \ee^{\ii \Delta t} \dd{t} = - \frac{\ii}{2} \bar{\Omega}(\omega)|_{\omega = \Delta},
+\end{equation}
+where 
+\begin{equation}
+    \bar{\Omega}(\omega) = \int_{-\infty}^\infty \bar{\Omega}(t) \ee^{\ii \omega t} \dd{t}, 
+\end{equation}
+and 
+\begin{equation}
+    \bar{\Omega}(t) = \begin{cases}
+        \Omega(t) , &\quad 0 < t < T, \\
+        0         , &\quad \text{otherwise}.
+    \end{cases}
+\end{equation}
+We see that the Fourier transformation of the windowed Rabi frequency is an approximation of how strongly the two-level system will be disturbed.
+
+\section{Atomic state detection}
+
+Detecting what quantum state is an atom on has similar mathematical structure with single photon interferometers.
+Suppose we have a two-level system, of which we can measure directly $\sigma^z$, and we want to estimate, say, the $\theta$ angle.
+We have
+\begin{equation}
+    \expval{\sigma^z} = \cos^2 \frac{\theta}{2} - \sin^2 \frac{\theta}{2} = \cos \theta,
+\end{equation}
+and the standard variation is 
+\begin{equation}
+    \Delta \sigma^z = \sqrt{\expval{(\sigma^z)^2} - \expval{\sigma^z}^2} = \sqrt{1 - \cos^2 \theta} = \sin \theta.
+\end{equation}
+The uncertainty of $\theta$ is therefore 
+\begin{equation}
+    \Delta\theta = \frac{\Delta \sigma^z}{\pdv*{\expval{\sigma^z}}{\theta}} = 1.
+\end{equation}
+Therefore the measurement of $\theta$ with a single atom is extremely imprecise.
+If we can generate lots of atoms in the same state, we can measure the sum of $\sigma^z$ of them, and we have 
+\begin{equation}
+    \expval{\Sigma^z} = N \cos \theta.
+\end{equation}
+On the other hand, 
+\begin{eqnarray}
+    \Delta \Sigma^z = \sqrt{N} \sin \theta,
+\end{eqnarray}
+and we have 
+\begin{equation}
+    \Delta \theta = \frac{1}{\sqrt{N}},
+\end{equation}
+which is the standard quantum error.
+
+\section{Atomic clock}
+
+\end{document}

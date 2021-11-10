@@ -1,0 +1,157 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+\title{Hubbard Model}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The Hubbard model}
+
+The \concept{Hubbard model} is a famous lattice model of strongly correlated electrons. In the following we denote the coordinates of the grid points by $\vb*{i}, \vb*{j}$, etc. as usual.
+The Hamiltonian without the chemical potential is
+\begin{equation}
+    {H} = \underbrace{-t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} {c}_{\vb*{i}\sigma}^\dagger {c}_{\vb*{j}\sigma} + \text{h.c.}}_{{H}_0} + \underbrace{U \sum_{\vb*{i}} {n}_{\vb*{i} \uparrow} {n}_{\vb*{i} \downarrow}}_{{H}_\text{I}}.
+\end{equation}
+Or, redefining the chemical potential for Monte Carlo simulations later, we also have
+\begin{equation}
+    {H} = -t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} {c}_{\vb*{i}\sigma}^\dagger {c}_{\vb*{j}\sigma} + \text{h.c.} 
+    + U \sum_{\vb*{i}} \left({n}_{\vb*{i} \uparrow} - \frac{1}{2}\right) \left({n}_{\vb*{i} \downarrow} - \frac{1}{2}\right).
+\end{equation}
+
+\section{Hubbard model for quantum Monte Carlo simulation}
+
+\subsection{Trotter decomposition and auxiliary field introduction}
+
+Now we perform a Trotter decomposition to the Hubbard model, and rewrite the partition function into a discrete path integral. 
+Let the imaginary time interval be $\Delta \tau$, and there are $m$ imaginary time points in total, $\tau=m\Delta \tau$.
+For the Hubbard model, there is a special decomposition of
+\begin{equation}
+    \ee^{-\Delta \tau {H}_\text{I}} = \gamma \sum_{s_1, s_2, \ldots, s_N = \pm 1} \ee^{\alpha \sum_{\vb*{i}} s_{\vb*{i}} ({n}_{\vb*{i} \uparrow} - {n}_{\vb*{i} \downarrow})}, 
+    \quad \gamma = \frac{1}{2^N} \ee^{\Delta \tau U N / 4}, \quad \cosh(\alpha) = \ee^{\Delta \tau U / 2},
+\end{equation}
+It can be seen that $\gamma$ is a quantity unrelated to the auxiliary field $\{s_{\vb*{i}}\}$ (as usual we note its timeline as $\vb{s}$ below), and considering that the constant factor of the partition function is irrelevant, omitting this factor, the partition function is
+\[
+    \begin{aligned}
+        Z &= \trace \prod_{n=1}^m \sum_{\vb{s}_{n}} \ee^{\alpha \sum_{\vb*{i}} s_{\vb*{i}} ({n}_{\vb*{i} \uparrow} - {n}_{\vb*{i} \downarrow})} \ee^{\Delta \tau t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} {c}_{\vb*{i}\sigma}^\dagger {c}_{\vb*{j}\sigma} + \text{h.c.}} \\
+        &= \sum_{\vb{s}} \prod_{n=1}^m \ee^{\alpha {c}^\dagger_{\uparrow} \diag{\vb{s}_n} {c}_{\uparrow}} \ee^{- \alpha {c}^\dagger_{\downarrow} \diag{\vb{s}_n} {c}_{\downarrow}} \ee^{- \Delta \tau {c}_\uparrow^\dagger \vb{T} {c}_\uparrow} \ee^{- \Delta \tau {c}_\downarrow^\dagger \vb{T} {c}_\downarrow},
+    \end{aligned}
+\]
+where we specify $\vb{T}$ as the coefficient matrix of the kinetic energy part ${H}_0$ in the single-particle sector, i.e.
+\begin{equation}
+    T_{\vb*{i} \vb*{j}} = \begin{cases}
+        -t, \quad & \pair{\vb*{i}, \vb*{j}}, \\
+        0, \quad & \text{otherwise}.
+    \end{cases}
+\end{equation}
+Applying the formula
+\begin{equation}
+    \trace(\ee^{- \sum_{i, j} {c}_i^\dagger A_{ij} {c}_j} \ee^{- \sum_{i, j} {c}_i^\dagger B_{ij} {c}_j} \cdots) = \det(1 + \ee^{- \vb{ A}} \ee^{- \vb{B}} \cdots),
+    \label{eq:trace-to-det}
+\end{equation}
+We integrate out the fermion degrees of freedom to obtain
+\[
+    Z = \sum_{\vb{s}} \det(1 + \prod_{n=1}^m \exp(\alpha \diag{\vb{s}_n \oplus (-\vb{s}_n)}) \exp( -\Delta \tau \pmqty{\dmat{\vb{T}, \vb{T}}})).
+\]
+Since the quantum number of electrons includes both position and spin, the operators involved in the partition function have to be represented by $2N \times 2N$ (in $2N$ dimensions, the first $N$ dimension corresponds to the spin-up state and the second $N$ dimension corresponds to the spin-down state) matrices.
+However, the spin rotational invariance implies that the above matrices are block diagonal.
+In the end, we have 
+\begin{equation}
+    Z = \det(1 + \prod_{\sigma=\uparrow, \downarrow} \prod_{n=1}^m \vb{B}_{\vb{s}}^\sigma(\tau) ),
+\end{equation}
+where
+\begin{equation}
+    \vb{B}^\uparrow_{\vb{s}}(\tau) = \ee^{\alpha \diag \vb{s}_n} \ee^{- \Delta \tau \vb{T}}, \quad \vb{B}^\downarrow_{\vb{s}}(\tau) = \ee^{- \alpha \diag \vb{s}_n} \ee^{- \Delta \tau \vb{T}}.
+\end{equation}
+All $\vb{B}_{\sigma}$ are $N \times N$ matrices, not $2N \times 2N$ ones.
+
+\end{document}

@@ -1,0 +1,163 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\title{Monte Carlo by Yuanda Liao}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is a note of Yuanda Liao's speech on Prof. Yang Qi's group meeting on October 16. 2021.
+
+\begin{itemize}
+    \item Basic principles of Monte Carlo simulations.
+    \item Metropolis algorithm.
+    \item Wolff algorithm and why it works; some details about how to expand a cluster.
+    \item Discrete path integral of quantum Ising models.
+\end{itemize}
+
+\section{Cluster Update Algorithms}
+
+Monte Carlo algorithms in physics are usually performed by \emph{importance sampling} and \emph{Markov chain}, i.e. we construct a Markov chain of which the stable probability of a configuration is 
+\begin{equation}
+    p(C) = \frac{1}{Z} \ee^{- F(C)}.
+\end{equation}
+The Markov chain should be ergodic, and detailed balance condition
+\begin{equation}
+    p(C) p(C \to C') = p(C') p(C' \to C).
+\end{equation}
+
+\begin{algorithm}
+
+    \DontPrintSemicolon
+    \SetAlgoLined
+  
+    \SetKwFunction{Kssolve}{kssolve}
+    \Function(\tcc*[h]{comment of functions}){\Kssolve{i}}{
+      \eIf{Condition}{Then}{else}
+  
+    \For(\tcc*[h]{for condition comment}){for condition}{
+      Do sth \tcc*[r]{asdf}
+    }
+  
+    \While{the condition}{
+        do something \;
+        $i = i + 1$ \;
+        
+    }
+    
+    \Return{return value}\;
+    \Begin{Mad}
+    }
+    
+    \caption{Wolff update for classical Ising model}
+    \label{alg:basic-kohn-sham}
+\end{algorithm}
+
+\section{Discrete Path Integral of Quantum Ising Models}
+
+The \concept{transverse field Ising model} is defined as 
+\begin{equation}
+    H = -J \sum_{\pair{\vb*{i}, \vb*{j}}} \sigma^z_{\vb*{i}} \sigma^z_{\vb*{j}} - h \sum_{\vb*{i}} \sigma^x_{\vb*{i}}.
+\end{equation}
+The (discrete) path integral in the $\sigma^z$ basis is 
+\begin{equation}
+    \begin{aligned}
+        Z &= \trace \ee^{-\beta H} \\
+        &= \sum_\tau \ee^{\Delta\tau J \sum_{\vb*{i}, \vb*{j}} \sigma^z_{\vb*{i}}(\tau) \sigma^z_{\vb*{j}}(\tau)} \mel{\sigma^z(\tau + \Delta\tau)}{\ee^{\Delta\tau h \sum_{\vb*{i}} \sigma^x_{\vb*{i}}}}{\sigma^z(\tau)}
+    \end{aligned}
+\end{equation}
+With an error introduced by Trotter decomposition, we rephrase a problem in terms of operators into a problem in terms of path integral which only involves plus and multiplication of only ordinary numbers.
+
+The temperature is introduced by the finite system effects in the temporal dimension. 
+We usually fix $\Delta \tau$ and change the imaginary time steps, for several reasons:
+\begin{itemize}
+    \item The Trotter error depends on $\Delta \tau$. Changing $\Delta \tau$ during calculation means the Trotter error differs significantly at different choices of $(h, J)$.
+    It is therefore very hard to systematically analyze the error.
+    \item In finite size scaling, we should scale \emph{both} space and time, so changing the number of imaginary time steps is not correct if we want to do finite size scaling.  
+\end{itemize}
+
+\end{document}

@@ -49,7 +49,7 @@
 
 Julia的编程范式让一件事变得不可能：给函数确定类型，因为这要求我们能够对任意一个指向函数的名称`func`确定类型，但是`func`名下可以有多个方法。
 
-`where`表达式实际上同时支持了generic type和existential type。
+`where`表达式实际上同时支持了generic type和existential type。这和通常的（涉及较多具体计算的那种）数学中的做法是一样的：A where B一方面给出了一个函数关系，一方面给出了全体满足B的变量取值下A构成的集合。
 
 ## 子类型的必要性
 

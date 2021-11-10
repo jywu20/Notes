@@ -35,7 +35,12 @@
 \postauthor{\par\end{center}}
 
 % More compact lists 
-\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
 
 % Math operators
 \DeclareMathOperator{\timeorder}{\mathcal{T}}
@@ -80,6 +85,8 @@
   commentstyle=\color{gray},
   keywordstyle=\color{blue}
 }
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
 
 \title{QFT I, Homework 2}
 \author{Jinyuan Wu}
@@ -234,7 +241,7 @@ It is convenient to analyze this theory by considering $\phi$ and $\phi^{*}$, ra
         \pi^*(x) = \dot{\phi}(x) = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \ii \sqrt{\frac{\omega_{\vb*{p}}}{2}} (- a_{\vb*{p}} \ee^{- \ii p \cdot x} + b^\dagger_{\vb*{p}} \ee^{\ii p \cdot x}).
     \end{equation}
 
-    Now we try to derive the commutation relations of $a_{\vb*{p}}$s and $b_{\vb*{p}}$s.
+    Now we try to derive the commutation relations of the operators $a_{\vb*{p}}$ and the operators $b_{\vb*{p}}$s.
     We will insert 
     \begin{equation}
         \begin{aligned}
@@ -320,7 +327,94 @@ It is convenient to analyze this theory by considering $\phi$ and $\phi^{*}$, ra
     \] 
     where we have used a procedure similar to the one we use to derive the Hamiltonian.
     Again, by exchange $b_{\vb*{p}}$ and $b^\dagger_{\vb*{p}}$, we have 
-    
+    \begin{equation}
+        \begin{aligned}
+            Q &= \frac{1}{2} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} (a^\dagger_{\vb*{p}} a_{\vb*{p}} - b_{\vb*{p}}^\dagger b_{\vb*{p}} - \comm*{b_{\vb*{p}}}{b^\dagger_{\vb*{p}}} ) \\
+            &= \frac{1}{2} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} (a^\dagger_{\vb*{p}} a_{\vb*{p}} - b_{\vb*{p}}^\dagger b_{\vb*{p}} - (2\pi)^3 \delta^{(3)}(0) ) 
+        \end{aligned}.
+    \end{equation}
+    So this is how $Q$ can be recast in terms of creation and annihilation operators, and we can immediately see that $a$ particles carry a charge of $1/2$ while $b$ particles carry a charge of $-1/2$.
+    \item[(d)] Now the action is 
+    \begin{equation}
+        S = \int \dd[4]{x} (\partial_\mu \phi^*_a \partial^\mu \phi_a - m^2 \phi^*_a \phi_a).
+    \end{equation} 
+    The theory has $U(2)$ symmetry, i.e. when $U_{ij} \in U(2)$, we have 
+    \[
+        \phi'_a = U_{ab} \phi_b, \quad \mathcal{L}(\phi', \partial_\mu \phi') = \mathcal{L}(\phi, \partial_\mu \phi),
+    \]
+    where there is no coordinate transformation.
+    The generators of $U(2)$ are just $\sigma^\mu, \mu = 0, 1, 2, 3$, therefore an infinitesimal transformation can be written as 
+    \[
+        \var{\phi_a} = - \frac{\ii}{2} \sigma\indices{^\mu_{ab}} \phi_b \var{a_\mu}, \quad \var{\phi^*_a} = \frac{\ii}{2} \sigma\indices{^\mu_{ab}} \phi^*_b \var{a_\mu}, \quad \var{x^\mu} = 0.
+    \]
+    Noether's theorem therefore tells us that 
+    \[
+        \begin{aligned}
+            0 &= \partial_\mu \left( \pdv{\mathcal{L}}{\partial_\mu \phi_a} \var{\phi_a} + \var{\phi^*_a} \pdv{\mathcal{L}}{\partial_\mu \phi^*_a} + \mathcal{L} \var{x^\mu} \right) \\
+            &= \partial_\mu \left( - \frac{\ii}{2} \partial^\mu \phi_a^* \sigma\indices{^\nu_{ab}} \phi_b \var{a_\nu} + \frac{\ii}{2} \sigma\indices{^\nu_{ab}} \phi^*_b \var{a_\nu}\partial^\mu \phi_a \right) \\
+            &= \var{a_\nu} \times \frac{\ii}{2} \partial_\mu \left( \phi^*_b \sigma\indices{^\nu_{ab}} \partial^\mu \phi_a - \partial^\mu \phi_a^* \sigma\indices{^\nu_{ab}} \phi_b \right),
+        \end{aligned}
+    \]
+    so now we have four Noether's currents, i.e.
+    \begin{equation}
+        j\indices{^\nu^\mu} = \frac{\ii}{2} (\phi^*_b \sigma\indices{^\nu_{ab}} \partial^\mu \phi_a - \partial^\mu \phi_a^* \sigma\indices{^\nu_{ab}} \phi_b), \quad \partial_\mu j\indices{^\nu^\mu} = 0.
+    \end{equation}
+    The conserved charges are 
+    \begin{equation}
+        \begin{aligned}
+            Q^\nu &= \int \dd[3]{\vb*{x}} j\indices{^\nu_0} = \int \dd[3]{\vb*{x}} \frac{\ii}{2} (\phi_b^* \sigma\indices{^\nu_{ab}} \dot{\phi}_a - \dot{\phi}^*_a \sigma\indices{^\nu_{ab}} \phi_b) \\
+            &= \int \dd[3]{\vb*{x}} \frac{\ii}{2} (\phi^*_b \sigma\indices{^\nu_{ab}} \pi^*_a - \pi_a \sigma\indices{^\nu_{ab}} \phi_b).
+        \end{aligned}
+        \label{eq:generalized-charge}
+    \end{equation}
+    Let $\nu = 0$, and we get 
+    \begin{equation}
+        Q^0 = \int \dd[3]{\vb*{x}} \frac{\ii}{2} (\pi^*_a \phi^*_a - \pi_a \phi_a),
+    \end{equation}
+    which is a generalization of \eqref{eq:prob-1-3}.
+
+    Since all the four $Q^\nu$ are quadratic forms of the field operators and the coefficient matrices are Pauli matrices, it is already sufficient to see that they satisfy the angular momentum algebra.
+    First note that 
+    \[
+        \begin{aligned}
+            &\quad \comm*{(\pi_a A_{ab} \phi_b)|_{t, \vb*{x}}}{(\pi_c B_{cd} \phi_d)_{t, \vb*{y}}} \\
+            &= \pi_a \comm*{A_{ab} \phi_b}{\pi_c B_{cd}} \phi_d + \pi_c \comm*{\pi_a A_{ab}}{B_{cd} \phi_d} \phi_b \\
+            &= A_{ab} B_{cd} \pi_a \phi_d \times \ii \delta^{(3)}(\vb*{x} - \vb*{y}) \delta_{bc} - A_{ab} B_{cd} \pi_c \phi_b \times \ii \delta^{(3)}(\vb*{x} - \vb*{y}) \delta_{ad} \\
+            &= \ii \delta^{(3)}(\vb*{x} - \vb*{y}) (\pi_a A_{ab} B_{bd} \phi_d - \pi_c B_{cd} A_{db} \phi_b) \\
+            &= \ii \delta^{(3)}(\vb*{x} - \vb*{y}) \pi_a \phi_b (A_{ac} B_{cb} - B_{ac} A_{cb}),
+        \end{aligned}
+    \]
+    so hence we have 
+    \begin{equation}
+        \comm*{(\pi_a A_{ab} \phi_b)|_{t, \vb*{x}}}{(\pi_c B_{cd} \phi_d)_{t, \vb*{y}}} = \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\pi_a]^\top(\vb*{x}) \comm*{A}{B} [\phi_b](\vb*{y}),
+    \end{equation}
+    and a similar equation holds for $\phi^*$ and $\pi^*$ that is 
+    \begin{equation}
+        \comm*{(\phi^*_b A_{ab} \pi^*_a)|_{t,\vb*{x}}}{(\phi^*_d B_{cd} \pi^*_c)|_{t, \vb*{y}}} = \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\phi^*_a]^\top \comm*{A^\top}{B^\top} [\pi^*_b].
+    \end{equation}
+    Thus we have 
+    \[
+        \begin{aligned}
+            \comm*{Q^0}{Q^i} &= - \frac{1}{4} \int \dd[3]{\vb*{x}} \int \dd[3]{\vb*{y}} \Big( \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\pi^*_a]^\top(\vb*{x}) \comm*{I}{(\sigma^i)^\top} [\phi^*_b](\vb*{y}) \\
+            &\quad \quad \quad + \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\pi_a]^\top(\vb*{x}) \comm*{I}{\sigma^i} [\phi_b](\vb*{y}) \Big) \\
+            &= 0 + 0 = 0,
+        \end{aligned}
+    \]
+    and 
+    \[
+        \begin{aligned}
+            \comm*{Q^i}{Q^j} &= - \frac{1}{4} \int \dd[3]{\vb*{x}} \int \dd[3]{\vb*{y}} \Big( \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\pi^*_a]^\top(\vb*{x}) \comm*{(\sigma^i)^\top}{(\sigma^j)^\top} [\phi^*_b](\vb*{y}) \\
+            &\quad \quad \quad + \ii \delta^{(3)}(\vb*{x} - \vb*{y}) [\pi_a]^\top(\vb*{x}) \comm*{\sigma^i}{\sigma^j} [\phi_b](\vb*{y}) \Big) \\
+            &= - \frac{\ii}{4} \int \dd[3]{\vb*{x}} \Big( [\pi^*_a]^\top \times (- 2 \ii \epsilon_{ijk} (\sigma^k)^\top) \times [\phi^*_b] \\
+            &\quad \quad \quad + [\pi_a]^\top \times 2 \ii \epsilon_{ijk} \sigma^k \times [\phi_b] \Big) \\
+            &= \frac{-1}{2} \epsilon_{ijk} \int \dd[3]{\vb*{x}} ( [\pi^*_a]^\top (\sigma^k)^\top [\phi^*_b] - [\pi_a]^\top \sigma^k [\phi_b]) \\
+            &= \ii \epsilon_{ijk} Q^k.
+        \end{aligned}
+    \]
+    So now we have verified that the charges $Q^a$ satisfy the momentum algebra.
+
+    Note that our derivation uses nothing special about $U(2)$. 
+    \eqref{eq:generalized-charge} still works when the theory is generalized to $n$ fields, as long as the matrices $\sigma\indices{^\nu_{ab}}$ are now generators of $U(N)$. 
 \end{itemize}
 
 \paragraph{}
@@ -330,5 +424,44 @@ It is convenient to analyze this theory by considering $\phi$ and $\phi^{*}$, ra
 \langle 0|\phi(x) \phi(y)| 0\rangle=D(x-y)=\int \frac{\dd^{3} p}{(2 \pi)^{3}} \frac{1}{2 E_{\vb*{p}}} e^{-\ii p \cdot (x-y)}
 \]
 for $(x-y)$ spacelike so that $(x-y)^{2}=-r^{2}$, explicitly in terms of Bessel functions.
+
+\paragraph{Solution} Since $D(x - y)$ is invariant under any Lorentz transformation, we can just assume that $x^0 = y^0$, so that 
+\begin{equation}
+    \abs*{\vb*{x} - \vb*{y}}^2 = r^2.
+\end{equation}
+Therefore we have 
+\[
+    \begin{aligned}
+        D(x - y) &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 E_{\vb*{p}}} \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{y})} = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 \sqrt{m^2 + \vb*{p}^2}} \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{y})} \\
+        &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{2 \sqrt{m^2 + p^2}} \ee^{\ii p r \cos \theta } \\
+        &= \int \frac{p^2 \dd{p} \sin \theta \dd{\theta} \dd{\varphi}}{(2\pi)^3} \frac{1}{2 \sqrt{p^2 + m^2}} \ee^{\ii p r \cos \theta} \\
+        &= \frac{2\pi}{(2\pi)^3} \int_0^\infty p^2 \dd{p} \frac{1}{2 \sqrt{p^2 + m^2}} \int_0^\pi \sin \theta \dd{\theta} \ee^{\ii p r \cos \theta} \\
+        &= \frac{1}{(2\pi)^2} \int_0^\infty p^2 \dd{p} \frac{1}{2 \sqrt{p^2 + m^2}} \frac{\ee^{\ii p r} - \ee^{- \ii p r}}{\ii p r} \\
+        &= - \frac{\ii}{2 (2\pi)^2 r} \int_{-\infty}^\infty p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}},
+    \end{aligned}
+\]
+where $p$ denotes $\abs*{\vb*{p}}$ instead of $p^\mu$.
+By changing the integral contour (shown in \prettyref{fig:the-integral-contour}) we have 
+\begin{equation}
+    \begin{aligned}
+        D(x-y) &= - \frac{\ii}{2 (2\pi)^2 r} \int^\infty_{-\infty} p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}} \\
+        &= - \frac{\ii}{2 (2\pi)^2 r} \times 2 \times \int_{\ii m}^{\ii \infty} p \dd{p} \frac{\ee^{\ii p r}}{\sqrt{p^2 + m^2}} \\
+        &= - \frac{\ii}{4 \pi^2 r} \int_m^\infty \ii \rho \times  \ii \dd{\rho} \frac{\ee^{\ii (\ii \rho) r}}{\sqrt{(\ii \rho)^2 + m^2}} \\
+        &= \frac{1}{4\pi^2 r} \int_m^\infty \dd{\rho} \frac{\rho \ee^{-\rho r}}{\sqrt{\rho^2 - m^2}},
+    \end{aligned}
+    \label{eq:deriving-d-xy}
+\end{equation}
+and by Mathematica we have 
+\begin{equation}
+    D(x-y) = \frac{m}{4\pi^2 r} K_1(mr),
+\end{equation}
+where $K_n(x)$ denotes the Bessel $K$ function, i.e. the modified Bessel function of the second kind.
+
+\begin{figure}
+    \centering
+    \input{2-fig-1.tex}
+    \caption{The integral contour. The blue line corresponds to the first line of \eqref{eq:deriving-d-xy}, the red line the second line of \eqref{eq:deriving-d-xy}. }
+    \label{fig:the-integral-contour}
+\end{figure}
 
 \end{document}

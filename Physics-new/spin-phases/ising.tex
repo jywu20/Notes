@@ -1,0 +1,1915 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{autobreak}
+\usepackage{tikz}
+\usepackage[compat=1.1.0]{tikz-feynhand}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathop{}\!\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\newcommand*{\cexpval}[1]{\langle \langle #1 \rangle \rangle}  
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{>}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\title{伊辛模型和统计场论}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+本文如无说明，采用自然单位制。由于伊辛模型是经典模型，本文基本上不需要讨论虚时间，因此使用$q$等不加黑的斜体字母表示动量大小。
+
+\section{伊辛模型的定义}\label{sec:ising-def}
+
+考虑一个$d$维空间中的晶格，共有$N$个格点。每个格点上有一个自旋。我们照惯例采用$z$方向的自旋来标记每个格点的状态，记之为$s_i$而省略$z$下标。
+在\concept{伊辛模型}中，假定：
+\begin{enumerate}
+    \item 格点$i$处的自选取值为$\pm 1$（具体值其实不重要，因为它们在尺度变换之下可以改变；关键是，自旋只有两个取值）；
+    \item 只有相邻格点会发生相互作用；
+    \item 自旋-自旋相互作用仅仅含有关于最近邻两格点的$\hat{s}_i \hat{s}_j$形式的项，也就是说，自旋的$x$和$y$分量不参与相互作用；\footnote{需要注意在实际的材料中这样的相互作用并不容易制备，但我们姑且假定相互作用是这样的形式。}
+    \item 外部磁场和自旋线性耦合；
+\end{enumerate}
+由于不同格点的自旋算符显然是对易的，$\{s_i\}$表象就是系统的能量本征态，且
+\begin{equation}
+    E = - B \sum_i s_i - J \sum_{\pair{i,j}} s_i s_j.
+    \label{eq:ising-energy}
+\end{equation}
+这里我们略去了第一项中的常数，把它们全部归入磁场中。
+
+显然，在$J>0$且绝对值很大时，自旋倾向于同向排列，即形成一个\concept{铁磁序}；而当$J<0$而绝对值很大时，自旋倾向于一上一下地排列，形成一个\concept{反铁磁序}。
+
+有限温下，我们写出\eqref{eq:ising-energy}对应的配分函数和热力学自由能：
+\[
+    Z(T, J, B) = \sum_{\{s_i\}} \ee^{- \beta E[s_i]}, \quad F_\text{thermo} = \expval{E} - TS  = - T \ln Z.
+\]
+原则上这就包含了关于系统的全部信息。
+
+带有相互作用的配分函数通常很难计算。如果我们关心的只是比较大尺度上的磁化情况，那么其实并不需要完整的$\{s_i\}$。
+定义$m(\vb*{x})$为在某个长度尺度$L$上平均化的$\{s_i\}$，$F[m(\vb*{x})]$是它对应的有效自由能。
+也即，我们将$\{s_i\}$做空间傅里叶变换，把特征尺度小于$L$的成分全部积掉，就得到
+\[
+    F[m(\vb*{x})] = \sum_{\{s_i\} | m} E[s_i], \quad Z = \sum_m \ee^{-\beta F[m(\vb*{x})]}.
+\]
+当然的确存在这样的可能性，就是尺度低于$L$的自由度是积不掉的；但是直觉上似乎不会出现这种情况，而实际上也可以证明，确实不会出现。（见\autoref{sec:ab-initio-effective-theory}）
+
+严格从\eqref{eq:ising-energy}出发计算$F[m(\vb*{x})]$一般是非常困难的。
+通常我们使用朗道-金斯堡方法，即根据\eqref{eq:ising-energy}的对称性写出$F[m(\vb*{x})]$的普遍形式。
+这样写出的$F[m(\vb*{x})]$中的各个常数都是没有确定的，要确定这些常数肯定需要从\eqref{eq:ising-energy}出发严格计算。
+这些使用统计场论处理问题的方式见\autoref{sec:ising-effective-field}和\autoref{sec:ising-rg}。
+
+最后，我们分析伊辛模型的对称性。容易看出它具有格点平移和旋转对称性，以及自旋翻转对称性$Z_2$。
+前两个对称性在$a \to 0$时变成连续对称性，但$Z_2$对称性始终是离散的。
+
+\section{平均场方法}\label{sec:mean-field-ing}
+
+\subsection{平均场分解}
+
+\subsubsection{均匀系统}
+
+本节讨论一个非常简单的情况：我们把截断尺度$L$选取到整个体系，从而使用一个单独的$m$描述整个体系。
+此时
+\begin{equation}
+    m = \frac{1}{N} \sum_i s_i,
+\end{equation}
+容易看出$-1 < m < 1$，它就是平均磁化强度。实际上它是一个序参量，因为如果系统处于顺磁相那么$m$应该接近$1$或者$-1$，而如果系统处于无序相那么$m$应该接近$0$。
+$m$本质上仍然是离散的，它能够发生的最小变化是一个$-1$格点变成$+1$，即它能够发生的最小变化是$2/N$。
+在大$N$极限下有
+\begin{equation}
+    Z = \frac{N}{2} \int_{-1}^1 \dd{m} \ee^{-\beta F(m)}.
+\end{equation}
+下面要做的是计算出$F(m)$。我们假定系统充分均匀，则将\eqref{eq:ising-energy}中的所有$s_i$和$s_j$都使用$m$代替，从而得到
+\begin{equation}
+    \frac{E}{N} = - B m - \frac{1}{2} J q m^2,
+    \label{eq:ising-energy-m-approx}
+\end{equation}
+其中$q$是每个格点周围最近邻格点的数目，和维数有关。请注意这一步近似\eqref{eq:ising-energy-m-approx}的可靠性完全没有保障：我们并不知道$\{s_i\}$的涨落情况，自然不可能知道将它们全部替换成$m$之后是不是能够得到足够精确的结果。
+正如通常的平均场理论一样，这只是一个近似的起步，需要在此基础上逐阶考虑涨落的影响。
+不过我们还是先姑且按照这个假设算下去，仅仅因为它方便处理。
+由定义可以得到
+\[
+    m = \frac{N_\uparrow - N_\downarrow}{N} = \frac{2N_\uparrow - N}{N}, \quad \Omega = \frac{N!}{N_\uparrow!(N-N_\uparrow)!},
+\]
+使用斯特林公式可以计算出以下近似值
+\begin{equation}
+    \ln\Omega(m) = - \frac{m+1}{2} N \ln\frac{m+1}{2} - \frac{1-m}{2} N \ln\frac{1-m}{2},
+    \label{eq:lattice-entropy}
+\end{equation}
+设$f(m)$为平均每个格点的有效自由能，则根据
+\[
+    \ee^{-\beta F(m)} = \Omega(m) \ee^{-\beta E},
+\]
+即
+\[
+    -\beta N f(m) = \ln \Omega(m) - \beta E,
+\]
+可以计算出
+\begin{equation}
+    f(m) = - Bm - \frac{1}{2} J q m^2 + T \left( \frac{m+1}{2} \ln(m+1) + \frac{1-m}{2} \ln(1-m) - \ln 2 \right).
+    \label{eq:free-energy-of-m}
+\end{equation}
+取鞍点近似，由于$F(m)$的极小值就是$f(m)$的极小值，我们有
+\[
+    \eval{\pdv{f}{m}}_{m=\expval*{m}} = 0,
+\]
+于是发现热平衡时的平均自旋$\expval*{m}$满足
+\begin{equation}
+    m = \tanh(\beta B + \beta J q m).
+    \label{eq:self-consistency-m-approx}
+\end{equation}
+我们得到了一个自洽方程。
+
+\subsubsection{平均场能量}
+
+实际上，也可以显式地将相互作用项做平均场分解来得到\eqref{eq:self-consistency-m-approx}：做分解
+\begin{equation}
+    \begin{aligned}
+        s_i s_j &\approx \expval*{s_i} s_j + s_i \expval*{s_j} - \expval*{s_i} \expval*{s_j} \\
+        &\approx \expval*{m} (s_i + s_j) - \expval*{m}^2,
+    \end{aligned}
+    \label{eq:mf-decomp}
+\end{equation}
+其中第二个约等号表示系统的均匀性，即每个点的自选取值都和$m$相差不大，并注意到
+\[
+    \sum_i s_i = N m,
+\]
+\[
+    \sum_{\pair{i,j}} \expval*{m} s_i = \frac{1}{2} \expval*{m} q \sum_i s_i = \frac{1}{2} \expval*{m} q N m,
+\]
+而
+\[
+    \sum_{\pair{i,j}} m^2 = \frac{1}{2} \expval*{m}^2 q N,
+\]
+则得到平均场哈密顿量
+\begin{equation}
+    E = - B N m - J q N \expval*{m} m + \frac{1}{2} J q N \expval*{m}^2.
+    \label{eq:ising-mean-field-energy}
+\end{equation}
+可以看到除了一个常数项以外，相当于有一个大小为
+\begin{equation}
+    B_\text{eff} = B + J q \expval*{m}
+\end{equation}
+的场被作用在了$m$上。使用\eqref{eq:ising-mean-field-energy}连同\eqref{eq:lattice-entropy}，根据热力学第一定律就可以推导出\eqref{eq:self-consistency-m-approx}。
+这也就是我们称它为平均场解的原因。
+
+据\eqref{eq:ising-mean-field-energy}，可以计算出
+\[
+    \expval*{s_i} = \tanh(\beta B + \beta J q m),
+\]
+这样就形成了自洽方程：要求$\expval*{s_i}=m$，我们就得到\eqref{eq:self-consistency-m-approx}。
+
+平均场解未必总是正确的；我们将在\autoref{sec:reliability-mf}中详细地讨论这一问题。
+使用平均场近似的主要原因是它很容易做，并且可以计算出来一些东西，从而可以提供一个粗糙的物理图像。
+
+\subsubsection{平均场自由能}
+
+本节从变分的角度出发推导伊辛模型的平均场理论。设
+\[
+    E_\text{MF} = - \sum_i B_\text{eff} s_i = - \sum_i (B + J q m) s_i,
+\]
+其中$m$是一个变分参数；从刚才的讨论中可以看到它实际上对应磁化强度，不过下面的计算其实也用不到这个性质。
+极值条件为
+\[
+    \min \expval*{E - E_\text{MF}}_\text{MF},
+\]
+从中可以确定$m$的值。
+计算可知
+\[
+    \begin{aligned}
+        \expval*{E - E_\text{MF}}_\text{MF} &= - J \sum_{\pair{i,j}} \expval*{s_i s_j - s_i m - s_j m}_\text{MF} \\
+        &= - \frac{J N q}{2} \left( \expval*{s_i}^2_\text{MF} - 2 m \expval*{s}_i \right),
+    \end{aligned}
+\]
+第二个等号用到了平均场哈密顿量中不同自旋之间没有相互作用这一事实。
+使用平均场哈密顿量可以计算出
+\[
+    \expval*{s_i}_\text{MF} = \tanh(\beta q J m),
+\]
+就得到
+\begin{equation}
+    F_\text{MF} = - \frac{N}{\beta} \ln(2\cosh(\beta q J m)) - J \frac{N q}{2} \tanh^2(\beta q J m) + J N q m \tanh(\beta q J m).
+\end{equation}
+要求自由能取极小值（忽略所有涨落），就得到\eqref{eq:self-consistency-m-approx}。
+
+\subsection{相变}
+
+我们只是知道\eqref{eq:self-consistency-m-approx}给出了所有解，但是并不知道这些解有几个，是不是稳定等。
+回顾\eqref{eq:free-energy-of-m}，做泰勒展开得到
+\begin{equation}
+    f(m) = - T \ln 2 - Bm + \frac{1}{2} (T-Jq) m^2 + \frac{1}{12} T m^4 + \cdots,
+    \label{eq:mf-free-energy-series-m}
+\end{equation}
+在$m$和$B$均不大时取开头四项已经足够确定自由能曲线的形状了。
+
+\subsubsection{无磁场情况下的二级相变}
+
+\begin{figure}
+    \centering
+    \subfigure[$T>T_\text{c}$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (0, 0) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-free-energy}
+    }
+    \subfigure[$T<T_\text{c}$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (1, -0.25) {};
+            \node[circle,fill,inner sep=1.5pt] at (-1, -0.25) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-free-energy}
+    }
+    \caption{不同形状的自由能曲线}
+    \label{fig:chemical-potential}
+\end{figure}
+
+在$B=0$时$m=0$肯定是一个极小值点，稳定不稳定暂时不论。
+略去自由能中无关紧要的常数项，$T-Jq$的正负决定了曲线在$m=0$附加是上凸还是下凹。
+如果它是正的，那么曲线下凹，而由于四次方项也是正的，整个曲线都是下凹的，也就是说只有$m=0$一个极小值点，而且这是稳定的极小值点，如\autoref{fig:small-t-free-energy}。
+如果它是负的那么曲线在$m=0$附近上凸，$m=0$不是稳定解，于是出现两个极小值点，如\autoref{fig:big-t-free-energy}。
+
+这意味着在$B=0$时，当$T$经过
+\begin{equation}
+    T_\text{c} = Jq
+\end{equation}
+时出现了一个相变，因为随着$T$的增大，不为零的序参量$m$变为零且一直停留在零。
+在\autoref{fig:big-t-free-energy}中出现了自发对称性破缺，原本具有的自旋翻转对称性被破缺了。
+因此$T<T_\text{c}$时出现了一个铁磁序，这个铁磁序破缺了自旋翻转对称性；$T>T_\text{c}$对应一个无序相。
+计算稳态时序参量$m$的值，可以得到
+\begin{equation}
+    m = \begin{cases}
+        \pm \sqrt{\frac{3(T_\text{c}-T)}{T}}, \quad T < T_\text{c}, \\
+        0, \quad T > T_\text{c},
+    \end{cases}
+    \label{eq:mf-stable-m}
+\end{equation}
+上式绘图如\autoref{fig:mf-m-and-t-relation}。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+            
+        % T横轴
+        \draw[->] (-1,0) -- (6,0) node[right] {$T$};
+        % 磁化强度纵轴
+        \draw[->] (0,-3) -- (0,3) node[above] {$m$};
+        
+        % 绘制铁磁相的曲线
+        \draw[samples=50, smooth, thick, domain=0:2.5] plot(\x, {sqrt(2.5-\x)});
+        \draw[samples=50, smooth, thick, domain=0:2.5] plot(\x, {-sqrt(2.5-\x)});
+
+        % 绘制无序相的曲线
+        \draw[thick] (2.5, 0) -- (5,0);
+
+        % 标出极小值点
+        \node[dot, label=above right:$T_\text{c}$] at (2.5, 0) {};
+
+    \end{tikzpicture}
+    \caption{稳态时磁化强度序参量和温度的关系}
+    \label{fig:mf-m-and-t-relation}
+\end{figure}
+\autoref{fig:mf-m-and-t-relation}中$x$轴和$y$轴的交点不是零；
+我们没有把$T$外推到$0$，因为显然此时\eqref{eq:mf-stable-m}是错误的——它没有能够保证$-1<m<1$，而是给出了发散的结果。
+
+在$T_\text{c}$附近的相变实际上是一个二级相变。这是因为$m$是连续的，而$F(m)$是$m$的函数，从而也是连续的；但是$F(m)$并不光滑，因为\eqref{eq:mf-stable-m}并不光滑，因此$F(m)$的导数不连续，从而是二级相变。
+
+\subsubsection{一级相变}
+
+上一节的结果都是假定了$B=0$，然后在这条等磁线上我们有一个二级相变。显然按照\eqref{eq:free-energy-of-m}，磁场变化会让自由能的极小值点发生偏移，如\autoref{fig:mf-b-and-free-energy}所示。
+当$T>T_\text{c}$时，只有一个偏离$m=0$的稳定极小值点；当$T<T_\text{c}$时，两个极小值点中的一个的自由能变高，变为亚稳态，或者甚至直接变成鞍点，而另一个则为全局最小值。
+$B>0$时和$B<0$时热力学稳态分别位于$m>0$和$m<0$位置，$m$本身就不连续，因此这是一个一级相变。
+当$T>T_\text{c}$时随着$B$的变化热力学稳态是连续变化的，即不存在相变。
+
+\begin{figure}
+    \centering
+    \subfigure[$T>T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-1.9:2.5] plot(\x,{-1*\x+0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (0.82, -0.43) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-positive-b-free-energy}
+    }
+    \subfigure[$T>T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-0.5) -- (0,5.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.5:1.9] plot(\x,{1*\x+0.5*(\x*\x)+0.11*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (-0.82, -0.43) {};
+    
+        \end{tikzpicture}
+        \label{fig:small-t-negative-b-free-energy}
+    }
+    \subfigure[$T<T_\text{c}, B>0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{-0.25*\x-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (1.11, -0.51) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-positive-b-free-energy}
+    }
+    \subfigure[$T<T_\text{c}, B<0$的自由能曲线]{
+        \begin{tikzpicture}
+            
+            % m横轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$m$};
+            % 自由能纵轴
+            \draw[->] (0,-1.5) -- (0,4.5) node[above] {$f(m)$};
+            
+            % 画出自由能
+            \draw[samples=50, smooth, domain=-2.2:2.2] plot(\x,{0.25*\x-0.5*(\x*\x)+0.25*(\x*\x*\x*\x)});
+    
+            % 标出极小值点
+            \node[circle,fill,inner sep=1.5pt] at (-1.11, -0.51) {};
+    
+        \end{tikzpicture}
+        \label{fig:big-t-negative-b-free-energy}
+    }
+    \caption{磁场变化导致自由能曲线变化}
+    \label{fig:mf-b-and-free-energy}
+\end{figure}
+
+这就意味着，我们可以得到如\autoref{fig:mf-phase-diagram}所示的相图：$T<T_\text{c}$时有明确区分的两相，$B=0$为两相共存曲线；而$T>T_\text{c}$时两相混合。$T=T_\text{c},B=0$为临界点。
+这和水的气液相变的相图非常相似：气液相变是一个一级相变，伊辛模型在$m>0$铁磁相和$m<0$铁磁相之间的相变也是一个一级相变；沿着气液相变曲线，经过一个临界点之后会发生一个二级相变，发生此二级相变之后就没有气液相变了，伊辛模型在两个铁磁相的一级相变曲线（即$B=0$曲线）上也有一个二级相变点，过了这个二级相变点之后也没有一级相变了。
+这意味着伊辛模型和气体模型，虽然看起来非常不同，实际上具有同样的普适类。
+
+实际上，可以使用伊辛模型来理解气液相变点的一些行为。既然气相和液相是某个$Z_2$对称性破缺的结果，我们可以预期，$s_i=1$的自旋团簇为气相，$s_i=-1$的自旋团簇为液相（或者正好相反）。
+实际上的确如此——我们将空间离散化为一个正方格子，如果格子$i$中是气相，我们设它的值为为$\sigma_i = 1$，反之为$\sigma_i = -1$，那么设气相能量密度为$\rho_\text{G}$而液相能量密度为$\rho_\text{L}$，则有
+\[
+    E = \sum_i \left( \sigma_i \frac{\rho_\text{G} - \rho_\text{L}}{2} + \frac{\rho_\text{G} + \rho_\text{L}}{2} \right),
+\]
+而气液相之间存在张力，所以还需要额外引入一个$-J \sum_{\pair{i, j}} \sigma_i \sigma_j$相。
+这样就得到了一个伊辛模型。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+            
+        % T横轴
+        \draw[->] (0,0) -- (5,0) node[right] {$T$};
+        % B纵轴
+        \draw[->] (0,-2) -- (0,2) node[above] {$B$};
+        
+        % 相变曲线
+        \draw[thick] (0, 0) -- (2,0);
+
+        % 标出二级相变点
+        \node[dot, label=above:$T_\text{c}$] at (2, 0) {};
+
+        % 标出两相
+        \node[] at (1, 1) {$m>0$};
+        \node[] at (1, -1) {$m<0$};
+        \node[] at (4, 0.5) {disordered};
+
+    \end{tikzpicture}
+    \caption{平均场理论下的相图}
+    \label{fig:mf-phase-diagram}
+\end{figure}
+
+\subsubsection{临界指数}
+
+现在分析临界点附近不同物理量的发散行为，即计算临界指数。
+
+磁化率定义为
+\[
+    \chi = \eval{\pdv{m}{B}}_{T},
+\]
+在$T>T_\text{c}$时稳定的$m$只有一个，因此可以直接对\eqref{eq:free-energy-of-m}求导取零点。
+在磁场不大时略去常数项，有
+\[
+    f(m) \approx - B m + \frac{1}{2} (T-T_\text{c})^2 m^2,
+\]
+得到
+\[
+    m = \frac{B}{T-T_\text{c}}.
+\]
+在$T<T_\text{c}$时稳定的$m$即使在$B=0$时也不为零。设$m_0$为\eqref{eq:mf-stable-m}预言的$m$，实际的$m$由于磁场的加入会有一个小的偏差，于是
+\[
+    \begin{aligned}
+        0 = \dv{f}{m} &\approx - B + (T - T_\text{c}) (m_0 + \var{m}) + \frac{1}{3} T (m_0 + \var{m})^3 \\
+        &\approx - B + (T-T_\text{c}) (m_0 + \var{m}) + \frac{1}{3} T (m_0^3 + 3 m_0^2 \var{m}) \\
+        &= - B + 2(T-T_\text{c}) \var{m},
+    \end{aligned}
+\]
+从而
+\[
+    m \approx m_0 + \frac{B}{2(T-T_\text{c})},
+\]
+于是在临界点附近固定$B=0$而变动$T$，可以得到
+\begin{equation}
+    \chi \sim \frac{1}{\abs{T-T_\text{c}}} = \frac{1}{\abs{T-T_\text{c}}^\gamma}, \quad \gamma = 1. 
+\end{equation}
+
+再来看$m$的临界情况。若$T=T_\text{c}$，则由\eqref{eq:mf-free-energy-series-m}，略去高阶项，得到
+\begin{equation}
+    m \sim \abs*{B}^{1/3} = \abs*{B}^{1/\delta}, \quad \delta = 3.
+\end{equation}
+此即固定$T=T_\text{c}$，让磁场接近零而得到的临界指数。
+若固定$B=0$，则可以直接套用\eqref{eq:mf-stable-m}，得到
+\begin{equation}
+    m \sim (T_\text{c}-T)^{1/2} = (T_\text{c}-T)^\beta, \quad \beta = \frac{1}{2}.
+\end{equation}
+
+最后是热容。单位粒子数的热容为
+\[
+    c = - T \pdv[2]{f}{T},
+\]
+在临界点附近有
+\[
+    f \approx \frac{1}{2} (T-T_\text{c}) m^2 + \frac{1}{12} T m^4 
+    = \begin{cases}
+        \frac{3}{4} \frac{(T_\text{c}-T)^2}{T}, &\quad T < T_\text{c}, \\
+        0, &\quad T > T_\text{c},
+    \end{cases},
+\]
+则
+\begin{equation}
+    c = \begin{cases}
+        3/2, &\quad T < T_\text{c}, \\
+        0, &\quad T > T_\text{c}, 
+    \end{cases}
+    \quad c \sim \abs*{T-T_\text{c}}^{-\alpha}, \quad \alpha = 0.
+    \label{eq:mf-c-divergence}
+\end{equation}
+
+\subsection{平均场理论的可靠性}\label{sec:reliability-mf}
+
+以上给出的平均场理论可能会因为以下几个原因而不精确：
+\begin{enumerate}
+    \item 平均场的假设本身就是错误的，也即，与一个格点发生相互作用的其它格点不能用平均的$m$代替；
+    \item 平均场的假设本身是正确的，但是采取了错误的平均场，例如不应该做分解\eqref{eq:mf-decomp}而应该使用别的方法；
+    \item 将整个系统用一个序参量$m$代替忽略了太多信息，可能不能得到一个良定义的有效理论。
+\end{enumerate}
+
+关于第一个原因，随着维数增大，每个格点周围的格点变多，因此相互作用也就越接近平均场理论的预言。
+在伊辛模型中，
+\begin{itemize}
+    \item $d=1$时平均场理论完全是错的，根本就没有相变；
+    \item $d=2,3$时平均场理论给出了定性大致正确的结果，但是临界指数之类的细节都是错的；
+    \item $d \geq 4$时平均场理论是对的。
+\end{itemize}
+
+% TODO:第二个原因
+
+消除第三个原因的尝试则要求我们更加精确地考虑怎么样对系统做粗粒化，这也就引出了\autoref{sec:ising-effective-field}。
+实际上，在一个允许空间上存在磁化强度的起伏的平均场理论（如\autoref{sec:free-theory}）中，我们可以很容易地分析本节所用的完全均匀的平均场理论何时失效（见\autoref{sec:when-mf-failed}）。
+
+\section{伊辛模型的有效场论}\label{sec:ising-effective-field}
+
+\subsection{金斯堡-朗道理论}
+
+\subsubsection{对称性和自由能的形式}
+
+在\autoref{sec:ising-def}中我们提到可以使用一个局域的平均磁化强度$m(\vb*{x})$来描述系统状态，它是更加精细的$m$。
+直接从定义出发得到关于$m(\vb*{x})$的有效理论的方法见\autoref{sec:ab-initio-effective-theory}，本节讨论怎样使用金斯堡-朗道方法，从对称性出发得到一个有效理论。
+
+临界点附近有尺度不变性，由于$m(\vb*{x})$是将$\{s_i\}$粗粒化之后得到的结果，在临界点附近可以放心地只保留$m(\vb*{x})$来描述系统状态，即只使用此局域序参量来描述系统状态。
+在晶格为正方晶格（晶格常数为$a$）时，一个$d=2, 3$维的有效理论应该满足：
+\begin{enumerate}
+    \item 首先伊辛模型是局域的，所以总是可以写出
+    \[
+        F[m(\vb*{x})] = \int \dd[d]{\vb*{x}} f(m(\vb*{x}), \grad{m}, \ldots).
+    \]
+    显然梯度项决定了每一个点如何影响附近的点。
+    \item 平移和旋转对称性。正方晶格具有离散的平移和旋转不变性，当$L$取得相对于晶格常数来说很大时，这两个对称性就是连续的。
+    \item 没有磁场时应有$\mathbb{Z}(2)$对称性，即自旋翻转不变，在这里就是在
+    \[
+        m(\vb*{x}) \longrightarrow -m(\vb*{x})
+    \]
+    下不变。当然磁场的加入会破坏这个对称性。
+    \item 最小耦合，即磁场的作用形如
+    \[
+        \int \dd[3]{\vb*{x}} B m(\vb*{x}).
+    \]
+    \item 解析性。$F[m]$显然关于$m$是解析的，因为每个格点的自旋可以随意翻转，对自由能产生有界的影响。假定$m(\vb*{x})$变化平缓，从而自由能关于$\grad{m}$也是解析的。
+\end{enumerate}
+
+$\mathbb{Z}_2$对称性意味着$f$的每一项都应该是偶数次项，从而我们做泰勒展开：
+\begin{equation}
+    f = Bm + \frac{1}{2} \alpha_2(T) m^2 + \frac{1}{4} \alpha_4(T) m^4 + \frac{1}{2} \gamma(T) (\grad{m})^2 + \cdots,
+    \label{eq:gl-free-energy}
+\end{equation}
+由于常数项只会让配分函数多一个常数因子，已经略去。
+没有出现形如$\vb*{a} \cdot \grad{m}$这样的项，因为这会引入一个特殊的空间方向。没有取太高阶的$m^n$项是因为$m$并不是很大，只需要前几项；没有取太高阶的导数项或者$(\grad{m})^n$项是因为这些项的量纲很快会大于$d$，从而这些项在重整化下是无关的。%
+\footnote{需要注意的是，即使比较高阶的$m^n$在多次重整化之后也可能变得很显著。
+关于重整化下各个项的相关性见\autoref{sec:dimension-relevance}。}%
+很容易发现\eqref{eq:gl-free-energy}实际上就是$\phi^4$理论，一个常见的玩具模型。
+
+需要强调只有在\emph{临界点附近}才有\eqref{eq:gl-free-energy}适用，因为只有在这里才能够只使用一个体系属于的普适类的信息就描述一个体系。
+我们将在\autoref{sec:ab-initio-effective-theory}中显式地证明这一点。
+
+\subsubsection{鞍点近似}
+
+首先使用和平均场理论类似的粗糙手段处理\eqref{eq:gl-free-energy}，而先不计算路径积分。
+
+先考虑无磁场的情况。使用欧拉-拉格朗日方程，我们有
+\begin{equation}
+    \alpha_2 m + \alpha_4 m^3 = \gamma \laplacian m.
+\end{equation}
+最简单的情况当然是$\phi$在空间上为常数的情况，此时如果$\alpha_2 < 0$，则稳定解为
+\[
+    m = \pm m_0 = \pm \sqrt{- \frac{\alpha_2}{\alpha_4}},
+\]
+否则$m=0$。这和平均场理论一致，只需要假定$T>T_\text{c}$时$\alpha_2>0$而$T<T_\text{c}$时$\alpha_2<0$即可。
+
+接着考虑格点中出现磁畴的情况。例如，不失一般性地假定磁畴壁垂直于$x$轴，则（由于磁畴通常比较大，局部的磁畴壁几乎总是平直的，无需使用曲面坐标系）
+\[
+    \alpha_2 m + \alpha_4 m^3 = \gamma \dv[2]{m}{x},
+\]
+边界条件为
+\[
+    m\big|_{-\infty} = -m_0, \quad m\big|_{\infty} = m_0,
+\]
+解得
+\begin{equation}
+    m = m_0 \tanh(\frac{x-X}{W}), \quad W = \sqrt{- \frac{\gamma}{\alpha_2}}, 
+\end{equation}
+其中$X$是磁畴壁的位置，而$W$给出了其厚度。
+现在我们要估算磁畴壁的存在对自由能的影响。
+显然自由能因为磁畴壁的存在而上升，且上升的量正比于磁畴壁的面积（而不是格点系统的体积），即
+\[
+    F_\text{wall} \sim L^{d-1},
+\]
+而\eqref{eq:gl-free-energy}中，
+\[
+    \int \dd[d]{\vb*{x}} \alpha_2 m^2 = \alpha_2 m_0^2 \int \dd[d]{\vb*{x}} \tanh^2\left(\frac{x}{W}\right) \sim \alpha_2 m_0^2 L^{d-1} W \sim L^{d-1} \sqrt{-\frac{\gamma \alpha_2^3}{\alpha_4^2}},
+\]
+另外两项也会给出类似的结果，于是磁畴壁引入的自由能变化为
+\begin{equation}
+    F_\text{wall} \sim L^{d-1} \sqrt{-\frac{\gamma \alpha_2^3}{\alpha_4^2}}.
+\end{equation}
+如果有多个磁畴，由于不同磁畴壁离得比较远，可以认为自由能变化就是$nF_\text{wall}$。
+
+当$T$接近$T_\text{c}$时，$\alpha_2$趋于零，于是$F_\text{wall}$接近零，即指向不同的磁畴有和没有区别不大了。
+换而言之，\autoref{fig:mf-phase-diagram}中的两相开始融合。我们就这样直观地说明了为什么会出现$T=T_\text{c}$处的二级相变。
+
+实际上，以上关于磁畴壁的论述还可以用于确定为什么$d=1$时没有相变。
+$d=1$时，设系统中有$n$个磁畴壁，如果$n$是奇数则长为$L$的一段系统两端的自旋指向相反，如果$n$是偶数则长为$L$的一段系统两端的自旋指向相同。
+我们有
+\[
+    \begin{aligned}
+        p(n) &\sim \frac{1}{Z} \ee^{-\beta n F_\text{wall}} \int_{-L/2<x_1<x_2<\cdots<x_n<L/2} \frac{\dd{x_i}}{W} \\
+        &= \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n,
+    \end{aligned}
+\]
+则
+\[
+    p(\text{$n$ even}) = \sum_{\text{$n$ even}} \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n = \frac{1}{Z} \cosh(\frac{\ee^{-\beta F_\text{wall}} L}{W}),
+\]
+\[
+    p(\text{$n$ odd}) = \sum_{\text{$n$ odd}} \frac{1}{Z} \frac{1}{n!} \left( \frac{\ee^{-\beta F_\text{wall}} L}{W} \right)^n = \frac{1}{Z} \cosh(\frac{\ee^{-\beta F_\text{wall}} L}{W}).
+\]
+由于$L$通常都很大，实际上$n$为奇数和为偶数的概率都差不多。
+会出现这种情况的原因是，虽然指数因子$\ee^{-\beta n F_\text{wall}}$随着$n$增大被快速压低，但是状态数因子（也即熵的指数）却快速增大。
+因此在一维伊辛模型中不可能出现任何序，也就不会有相变。
+$d=2$时$F_\text{wall}$正比于$L$，从而指数因子被压低得更快，此时涨落很重要，但是序还是可以形成的。
+
+\subsection{粗粒化}\label{sec:ab-initio-effective-theory}
+
+\subsubsection{Hubbard–
+Stratonovich变换}
+
+本节尝试直接从哈密顿量\eqref{eq:ising-energy}出发计算配分函数并得到一个有效场论。
+我们将\eqref{eq:ising-energy}写成如下矩阵形式：
+\begin{equation}
+    E = - \vb{B}^\top \vb{s} - \frac{1}{2} \vb{s}^\top \vb{J} \vb{s}, 
+\end{equation}
+其中$\vb{B}$的每个元素的值都是$B$，而$\vb{J}$是对称矩阵，只在$i$和$j$代表相邻格点时$J_{ij}$取值$J$，其余为零，即实际上
+\begin{equation}
+    J_{ij} = J(\vb{r}_i - \vb{r}_j) = \begin{cases}
+        J, \quad &\pair{i, j} \\
+        0, \quad &\text{otherwise},
+    \end{cases}
+\end{equation}
+则
+\[
+    Z = \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s}).
+\]
+使用高斯积分公式
+\[
+    \int \fd{\vb{x}} \exp(-\frac{1}{2} \vb{x}^\top \vb{A} \vb{x} + \vb{x}^\top \vb{s}) 
+    = \prod_{i=1}^N \int_{-\infty}^\infty \frac{\dd{x_i}}{\sqrt{2\pi}} \exp(-\frac{1}{2} \vb{x}^\top \vb{A} \vb{x} + \vb{x}^\top \vb{s}) = \frac{1}{\sqrt{\det \vb{A}}} \ee^{\frac{1}{2} \vb{s}^\top \vb{A}^{-1} \vb{s}},
+\]
+得到
+\[
+    \exp(\frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s}) = \frac{\int \fd{\vb{x}} \exp(- \frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x} + \vb{x}^\top \vb{s})}{\int \fd{\vb{x}} \exp(- \frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x} )}.
+\]
+我们完成了一个Hubbard–Stratonovich变换，引入了一个辅助场$\vb{x}$。将上式代入配分函数的表达式，就得到
+\[
+    Z = \frac{\int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x}) \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \vb{x}^\top \vb{s})}{\int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x})}.
+\]
+注意到
+\[
+    \int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x}) = \frac{1}{\sqrt{\det \vb{J}^{-1}}}
+\]
+是一个常数，不显含$\vb{x}$和$\vb{s}$，于是略去它，得到等效的（略去了一个无用常数的）配分函数
+\begin{equation}
+    Z = \int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x}) \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \vb{x}^\top \vb{s}).
+    \label{eq:partition-function-x-s}
+\end{equation}
+按照下面的方法积掉$\vb{s}$：
+\[
+    \begin{aligned}
+        \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \vb{x}^\top \vb{s}) &= \prod_{i=1}^N \sum_{s_i = \pm 1} \exp(\beta B s_i + x_i s_i) \\
+        &= \prod_{i=1}^N 2\cosh(\beta B + x_i) \\
+        &= \exp(\sum_{i=1}^N \ln(2\cosh(\beta B + x_i))),
+    \end{aligned}
+\]
+就得到
+\begin{equation}
+    Z = \int \fd{\vb{x}} \ee^{-\tilde{S}}, \quad \tilde{S} = \frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x} - \sum_{i=1}^N \ln(2\cosh(\beta B + x_i)),
+    \label{eq:action-of-x}
+\end{equation}
+上式中的$Z$是\eqref{eq:partition-function-x-s}中的$Z$，不是一开始定义的$Z$，因为略去了一个常数因子。
+这里的热力学作用量已经是约化过的，不是关于$\{s_i\}$而是关于$\vb{x}$的了。
+
+到现在为止我们对$\vb{x}$到底是什么还不得而知。所以我们改用\eqref{eq:partition-function-x-s}计算$\vb{x}$的期望值，这就是
+\[
+    \begin{aligned}
+        \expval*{\vb{x}} &= \lim_{\vb{y} \to 0} \pdv{\vb{y}} \frac{\int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x} + \vb{y}^\top \vb{x}) \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \vb{x}^\top \vb{s})}{\int \fd{\vb{x}} \exp(-\frac{1}{2} T \vb{x}^\top \vb{J}^{-1} \vb{x}) \sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \vb{x}^\top \vb{s})} \\
+        &= \lim_{\vb{y} \to 0} \pdv{\vb{y}} \frac{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta (\vb{s} + \vb{y})^\top \vb{J} (\vb{s} + \vb{y}))}{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s})} \\
+        &= \lim_{\vb{y} \to 0} \pdv{\vb{y}} \frac{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s} + \beta \vb{y}^\top \vb{J} \vb{s} + \frac{1}{2} \beta \vb{y}^\top \vb{J} \vb{y} )}{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s})} \\
+        &= \frac{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s}) \beta \vb{J} \vb{s}}{\sum_{\{s_i\}} \exp(\beta \vb{B}^\top \vb{s} + \frac{1}{2} \beta \vb{s}^\top \vb{J} \vb{s})} \\
+        &= \beta \vb{J} \expval*{\vb{s}}.
+    \end{aligned}
+\]
+第二个等号处我们把$\vb{x}$积掉了。上式说明$\expval*{\vb{x}}$实际上正比于$\vb{s}$的期望值。这样重新定义
+\begin{equation}
+    \vb{\phi} = T \vb{J}^{-1} \vb{x},
+\end{equation}
+则\eqref{eq:action-of-x}应改写为
+\begin{equation}
+    Z = \int \fd{\vb{\phi}} \ee^{-\tilde{S}}, \quad \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \sum_{i=1}^N \ln(2\cosh(\beta(B + \sum_{j=1}^N J_{ij} \phi_j))).
+    \label{eq:action-of-phi}
+\end{equation}
+这里的$\vb{\phi}$和$\vb{s}$是等效的，但是写成上式便于实施截断，从而得到一个有效场论。
+
+有一个比较微妙的地方：由于我们并不知道$\vb{\phi}$和$\vb{s}$的涨落的关系，一般来说总是有
+\[
+    \expval{\phi_{i_1} \phi_{i_2} \cdots \phi_{i_n}} \neq \expval{s_{i_1} s_{i_2} \cdots s_{i_n}}.
+\]
+但使用\eqref{eq:partition-function-x-s}可以发现，两者相差的所有项都正比于$J_{ij}$，而当$i_1, i_2, \ldots$基本上不相邻时这些项都是零。因此只要$i_1, i_2, \ldots$分布足够稀疏，我们都可以将$\vb{\phi}$和$\vb{s}$视为相同。
+实际上，$\vb{\phi}$服从的对称性和$\vb{s}$是一样的，而既然我们认为$m$是合适的序参量（从而$\vb{s}$也是），那么$\vb{\phi}$也是合适的序参量；因此在临界点附近，$\vb{\phi}$和（也许是粗粒化过的）磁化强度只差一个常数因子。
+而既然我们验证了两者的期望是一样的，就可以认为它们在临界点附近相同。（另一种理解这个问题的方式是，$\vb{\phi}$就好像一个磁场，于是它和$\vb{s}$共同增减，而两者的期望值一样则说明两者相同）
+
+\subsubsection{截断}
+
+将\eqref{eq:action-of-phi}做级数展开，保留前两阶，并略去常数项，有
+\[
+    \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^2 + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(B + \sum_{j=1}^N J_{ij} \phi_j\right)^4.
+\]
+我们只讨论弱磁场的情况（似乎也没有讨论特别强的磁场的必要，因为强磁场下肯定磁化了，基本上不会有太大涨落），并且，由于我们关心临界点附近的行为，假定$\phi$也不大，从而$\phi^3 B$项应当被略去，那么就有
+\[
+    \begin{split}
+        \tilde{S} = \frac{\beta}{2} \sum_{i,j} \phi_i J_{ij} \phi_j - \frac{1}{2} \beta^2 \sum_{i=1}^N \left( \sum_{j=1}^N J_{ij} \phi_j \right)^2 - \beta^2 B \sum_{i, j=1}^N J_{ij} \phi_j \\
+        + \frac{1}{12} \beta^4 \sum_{i=1}^N \left(\sum_{j=1}^N J_{ij} \phi_j\right)^4 + \bigO(B^2, \phi^3 B, \phi^6),
+    \end{split}
+\]
+对$\phi_i$做离散傅里叶变换，并照固体物理的惯例施加一个周期性边界条件，有
+\[
+    \phi_i = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}_i} \phi_{\vb*{k}}, \quad J_{\vb*{k}} = \frac{1}{\sqrt{N}} \sum_i \ee^{-\ii \vb*{k} \cdot \vb*{r}_i} J(\vb*{r}_i),
+\]
+由于它们均为实场，我们有
+\[
+    \phi_{\vb*{k}} = \phi_{-\vb*{k}}^*, \quad J_{\vb*{k}} = J_{-\vb*{k}}^* = J_{-\vb*{k}}.
+\]
+对各项做傅里叶变换可以得到
+\begin{align}
+    \begin{autobreak}
+        \tilde{S} = \frac{\beta}{2} \sqrt{N} \sum_{\vb*{k}} J_{\vb*{k}} \phi_{-\vb*{k}} \phi_{\vb*{k}} 
+        - \frac{1}{2} \beta^2 N \sum_{\vb*{k}} J_{\vb*{k}} J_{-\vb*{k}} \phi_{\vb*{k}} \phi_{-\vb*{k}} 
+        - \beta^2 B N \phi_{\vb*{k}=0} J_{\vb*{k}=0}
+        + \frac{1}{12}\beta^4 N \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} \delta_{\vb*{k}_1+\vb*{k}_2 + \vb*{k}_3 + \vb*{k}_4, 0} J_{\vb*{k}_1} J_{\vb*{k}_2} J_{\vb*{k}_3} J_{\vb*{k}_4} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} 
+        + \bigO(B^2, \phi^3 B, \phi^6).
+    \end{autobreak}
+    \label{eq:discrete-momentum-action}
+\end{align}
+
+下面我们做一个截断：将太大的动量（从而，太小的长度尺度）去掉，只留下长波行为。严格来说应该把高动量模式积掉，但我们暂且先直接丢弃高动量模式，获得一个一阶近似。
+依照$J_{\vb*{r}}$的定义，可以计算出%
+\footnote{
+    从这里可以看出，需要取的$k$的阶数和$a$是有关系的：$a$越大，需要取的$k$的阶数就越高。$k$的阶数高意味着实空间中导数算符的阶数变高，即系统不那么局域。
+    这是正确的，因为$a$越小意味着相互作用越局域，$a$大意味着相互作用不那么局域，从而高动量模式——即短波长、在较短的距离内快速涨落的模式——是物理的、非常重要的模式，从而$k$需要取较高阶。
+}%
+\[
+    J_{\vb*{k}} = \frac{1}{\sqrt{N}} 2 J \sum_{i=1}^d \cos(k_i a) = \frac{1}{\sqrt{N}} 2 J \left( d - \frac{a^2 \vb*{k}^2}{2} + \bigO(\vb*{k}^4) \right),
+\]
+代入\eqref{eq:discrete-momentum-action}，就得到
+\begin{align*}
+    \begin{autobreak}
+        \tilde{S} = - 2 \beta^2 B \sqrt{N} J d \phi_{\vb*{k}=0}
+        + \frac{\beta}{2} \sqrt{N} \sum_{\vb*{k}} J_{\vb*{k}} (1 - \sqrt{N} \beta J_{-\vb*{k}}) \phi_{-\vb*{k}} \phi_{\vb*{k}} 
+        + \frac{1}{12}\beta^4 N \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} \delta_{\vb*{k}_1+\vb*{k}_2 + \vb*{k}_3 + \vb*{k}_4, 0} J_{\vb*{k}_1} J_{\vb*{k}_2} J_{\vb*{k}_3} J_{\vb*{k}_4} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} 
+        + \bigO(B^2, \phi^3 B, \phi^6, \vb*{k}^2 \phi^2).
+    \end{autobreak}
+\end{align*}
+使用以下粗粒化方案
+\[
+    \frac{1}{V} \sum_{\vb*{k}} \longrightarrow \frac{1}{(2\pi)^3} \int \dd[3]{\vb*{k}},
+\]
+并注意到
+\[
+    V = N a^d,
+\]
+
+应当指出我们这里的操作——通过Hubbard-Stratonovich变换引入$\phi$场，并积掉原本的自旋自由度，然后丢弃$\phi$的高阶项，最后做粗粒化得到连续的场论——在最一般的情况下是非常危险的。
+例如，$\phi$可以有很大的平均值，从而其高阶项可能不能够简单地丢弃。
+例如，在铁磁相形成后，$\phi$就有很大的平均值，此时系统的基本自由度显然是自旋波而不是铁磁序参量。
+又或者，$\phi$可能虽然没有很大的平均值但是涨落非常大，这种情况下实际上我们不能够积掉自旋自由度而保留$\phi$。
+简单地对$\phi$做粗粒化是否合理也是可疑的，例如，含有分形子的系统的场论可能就不能通过这种方式得到。
+好在，在处理相变点附近的问题时，只要金斯堡-朗道范式适用，且我们找的序参量$\phi$是正确的，以上疑难一个也不会出现：系统关联长度发散从而只有长波行为重要，因此粗粒化没有问题；$\phi$的确是系统的基本自由度；$\phi$的绝对值大小受限，从而只保留其低阶项也是正确的。
+不过，一个相变是不是真是金斯堡-朗道式的相变，在没有实验或是数值证据的情况下其实是难以确定的。
+
+\section{路径积分和关联函数}\label{sec:path-integral}
+
+为了和场论中的记号更为接近，我们统一设
+\[
+    m(\vb*{x}) \longrightarrow \phi(\vb*{x}),
+\]
+并直接忽略自由能中可能的高阶项，即以
+\begin{equation}
+    F = \int \dd[d]{\vb*{x}} \left( \frac{1}{2} \alpha_2(T) \phi^2 + \frac{1}{4} \alpha_4(T) \phi^4 + \frac{1}{2} \gamma(T) (\grad{\phi})^2 + B \phi \right)
+    \label{eq:free-energy-phi-4}
+\end{equation}
+为自由能。
+这样做的原因一方面是表明我们正在处理一个场论问题，一方面是为了表明以上自由能实际上并不一定描述伊辛模型的物理，而是能够描写整整一个普适类的物理。
+
+\subsection{自由场论}\label{sec:free-theory}
+
+\subsubsection{自由场论的配分函数}\label{sec:free-field-theory-partition-function}
+
+本节处理只含有二次项的场论，也就是所谓的自由场论。我们暂时不讨论非零磁场存在的情况。
+
+我们将从伊辛模型的物理意义出发解释为什么要这么做。
+当$T>T_\text{c}$时，不会出现对称性自发破缺，因此只有一个基态，因此必须有$\alpha_2 > 0$，于是在场强较弱（由于\eqref{eq:free-energy-phi-4}仅仅在临界点附近适用，这个假设在接近极小值点但并不非常接近极小值点时适用），我们可以略去对极小值点的行为不重要的四次方项，而把自由能写成
+\begin{equation}
+    F[\phi(\vb*{x})] = \frac{1}{2} \int \dd[d]{\vb*{x}} (\gamma (\grad{\phi})^2 + \mu^2 \phi^2).
+    \label{eq:free-field}
+\end{equation}
+在更加接近临界点时，由于涨落变大，四次方项会变得重要起来。
+临界点处系统会呈现出一些比较奇异的行为，这些行为最好还是使用重整化群来分析。
+$T<T_\text{c}$时由于$\phi=0$不是稳定极小值点，四次方项总是重要的。
+然而，我们总是可以重新定义场：
+\[
+    \phi' = \phi - \expval{\phi},
+\]
+这样还是可以在一个稳定的极小值点附近展开自由能，并且合理地略去高阶项。
+总之，\eqref{eq:free-field}是合理的起点；我们可以先讨论这个理论，然后将$\phi^4$项作为微扰加入。
+
+我们采取标准的场论方法，考虑到\eqref{eq:free-field}具有平移不变性，我们使用傅里叶变换消去所有导数项。
+我们和之前一样施加一个周期边界条件，然后将周期性的场$\phi(\vb*{x})$切换到动量空间：
+\begin{equation}
+    \phi(\vb*{x}) = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \ee^{\ii \vb*{k} \cdot \vb*{x}} \phi_{\vb*{k}},
+\end{equation}
+则\eqref{eq:free-field}变成
+\begin{equation}
+    F[\phi_{\vb*{k}}] = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{-\vb*{k}} = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*.
+\end{equation}
+它对应的配分函数就是（我们略去了任何归一化常数，本文不计算熵，所以这不会有什么问题）
+\[
+    \begin{aligned}
+        Z &\sim \prod_{\vb*{k}} \int \dd{\phi_{\vb*{k}}} \dd{\phi_{\vb*{k}}^*} \exp(-\beta \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*) \\
+        &= \prod_{\vb*{k}} \int \dd{\phi_{\vb*{k}}} \dd{\phi_{\vb*{k}}^*} \exp(- \frac{\beta}{2V} \sum_{\vb*{k}} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*) ,
+    \end{aligned}
+\]
+需要注意的是在实空间中配分函数仅仅对$\phi$一个实场做积分，则动量空间中也只应该对一个场做积分，而不是两个场。
+这是正确的，因为$\phi_{\vb*{k}}$和$\phi_{\vb*{k}}^*$之间存在以下约束关系
+\[
+    \phi_{\vb*{k}} = \phi_{-\vb*{k}}^*,
+\]
+因此如果我们设定$\phi_{\vb*{k}}$自由变动，$\phi_{\vb*{k}}^*$就不能自由变动。显然，$\ee$指数是$\abs*{\phi_{\vb*{k}}}$的函数，而$(\phi_{\vb*{k}}, \phi_{\vb*{k}}^*)$的自由度也可以看成$\abs*{\phi_{\vb*{k}}}$和一个相角的自由度，我们选定前者为积分变量，那么后者就不能自由变动。
+因此我们有
+\[
+    Z \sim \prod_{\vb*{k}} \int \dd{\abs*{\phi_{\vb*{k}}}} \exp(- \frac{\beta}{2V} \sum_{\vb*{k}} (\gamma k^2 + \mu) \phi_{\vb*{k}} \phi_{\vb*{k}}^*).
+\]
+使用高斯积分，就得到（略去常数因子）
+\begin{equation}
+    Z = \prod_{\vb*{k}} \sqrt{\frac{2\pi T V}{\gamma k^2 + \mu^2}}.
+\end{equation}
+自由能为
+\begin{equation}
+    F = - T \ln Z = - \frac{T}{2} \sum_{\vb*{k}} \ln(\frac{2\pi V T}{\gamma k^2 + \mu}) = - \frac{V T}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \ln(\frac{2\pi V T}{\gamma k^2 + \mu}).
+\end{equation}
+这个自由能不具有可加性，这当然是因为我们计算配分函数时略去了必要的含有$V$的因子。
+但既然本文只关心单一的热力学系统，是不是具有可加性也无关紧要。
+
+\subsubsection{自由场论的热容}
+
+本节计算自由场论的热容。需要注意的是，仅仅靠对称性分析不能够确定可能随着温度变化的系数$\gamma$, $\mu$等具体有多大，所以我们只是计算热容的临界指数。
+首先在$T > T_\text{c}$下工作，我们设
+\begin{equation}
+    \mu^2 \sim T - T_\text{c}, \quad \gamma = \const.    
+    \label{eq:mf-parameter-assumption}
+\end{equation}
+将$\gamma$当成常数是因为我们将在做重整化群计算时发现，我们总是可以重新调整$\phi$的量纲，将$\gamma$吸收进$\phi$中，实际上，大部分时候我们会取$\gamma=1$。
+关于$\mu^2$，首先注意到由于$T$越过临界点时自由能的局部极小值消失，即$T=T_\text{c}$时$\mu^2$为零，在临界点附近做小量近似，就有$\mu^2$近似正比于$T-T_\text{c}$。（没有什么理由认为等温线会和$\mu^2$的重整化群流曲线相切，所以$T-T_\text{c}$始终是最重要的项）
+实际上，即使是加入相互作用之后，我们仍然可以认为$T$和$\mu^2$的标度律行为差不多。
+之所以不认为相互作用系数$g$和$T$的标度行为相同是因为在\autoref{sec:4-epsilon}中会发现$g$在Wilson-Fisher不动点附近是（非常接近临界地）不相关的，而我们可以确定温度变化肯定是相关的（因为相变有确定的相变温度），考虑到$\mu^2$和$T$都是相关方向，且参数空间中只有一个相关方向（总共就两个参数一个还是无关的），$\mu^2$应该主要受到$T$调控。
+然后重复上面的“没有理由认为等温线会和$\mu^2$的重整化群流曲线相切”的论证即可得到$\mu^2 \sim t$的结论。
+
+首先计算单位体积的等容热容，即
+\begin{equation}
+    c = - \frac{T}{V} \pdv[2]{F}{T} = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( 1 - \frac{2T}{\gamma k^2 + \mu^2} + \frac{T^2}{(\gamma k^2 + \mu^2)^2} \right).
+\end{equation}
+第一项是能量均分定理的结果：如果我们认为$\mu$也是常数，则能量均分定理适用，于是导致第一项；第二、三项是$\mu$随着温度可以发生变化的结果。
+我们来对这两项做尺度分析。首先
+\[
+    \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{T}{\gamma k^2 + \mu^2} \sim \int_0^\Lambda \dd{k} \frac{k^{d-1}}{\gamma k^2 + \mu^2} \sim \begin{cases}
+        \frac{1}{\mu}, \quad &d=1, \\
+        \ln \Lambda, \quad &d=2, \\
+        \Lambda^{d-2}, \quad &d>2,
+    \end{cases}
+\]
+这里我们引入了一个动量截断$\Lambda$，发现在$d=1$时热容不会出现任何发散；$d\geq 2$时热容会发散，这当然是合理的，因为$\Lambda$不能真的取到无穷大——$\phi^4$理论是伊辛模型粗粒化之后的结果，不能够简单地认为是在任意高的动量尺度上都适用的理论。（关于这件事的具体说明，以及怎样将无穷大扔掉而得到可靠的热容表达式，见\autoref{sec:ising-rg}）
+一个自然的选择是
+\[
+    \Lambda \sim \frac{1}{a}.
+\]
+类似地，分析第三项，有
+\[
+    \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{T^2}{2(\gamma k^2 + \mu^2)^2} \sim \int_0^\Lambda \dd{k} \frac{k^{d-1}}{(\gamma k^2 + \mu^2)^2} \sim \begin{cases}
+        \mu^{d-4}, \quad &d<4, \\
+        \ln \Lambda, \quad &d=4, \\
+        \Lambda^{d-4}, \quad &d>4,
+    \end{cases}
+\]
+它在$d \geq 4$时发散。于是我们发现在$d < 4$时，
+\begin{equation}
+    c \sim \frac{1}{\abs*{T - T_\text{c}}^{\alpha}}, \quad \alpha = \frac{d-4}{2}.
+    \label{eq:t-tc-c-divergence}
+\end{equation}
+这和\eqref{eq:mf-c-divergence}不一致，后者认为$\alpha = 0$。
+虽然\eqref{eq:t-tc-c-divergence}仍然是不可靠的（它建立在$\mu$和平均场理论中一致，而$\gamma$为常数的前提上），它还是展示了和平均场理论不同的行为。
+我们由此看到为什么平均场理论不可靠——对很多系统，仅仅考虑配分函数的鞍点是不够精确的。
+上面的结果也暗示，$d=4$和$d=2$是系统行为发生很大变化的两个维数。
+
+原则上，任何物理量都可以通过计算关联函数得到。本节只计算了热容是因为关联函数的计算实际上要求计算自由能对磁场的导数，而\autoref{sec:free-field-theory-partition-function}中只考虑了没有磁场的情况。
+因此，我们马上来讨论加入磁场之后的理论以及关联函数。
+
+\subsection{磁场和关联函数}
+
+\subsubsection{含有磁场的配分函数}
+
+磁场的作用是提供一个外界作用力，它相当于一个“激励”，可以产生一定响应。
+加入磁场之后可以类似地做傅里叶变换，得到
+\begin{equation}
+    F[\phi_{\vb*{k}}] = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( \frac{1}{2} (\gamma k^2 + \mu^2) \phi_{-\vb*{k}} \phi_{\vb*{k}} + B_{-\vb*{k}} \phi_{\vb*{k}} \right).
+\end{equation}
+做变量代换
+\begin{equation}
+    \tilde{\phi}_{\vb*{k}} = \phi_{\vb*{k}} + \frac{B_{\vb*{k}}}{\gamma k^2 + \mu^2},   
+\end{equation}
+就得到
+\begin{equation}
+    F[\tilde{\phi}_{\vb*{k}}] = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \left( \frac{1}{2} (\gamma k^2 + \mu^2) \tilde{\phi}_{\vb*{k}} \tilde{\phi}_{-\vb*{k}} - \frac{1}{2} \frac{B_{\vb*{k}} B_{-\vb*{k}}}{\gamma k^2 + \mu^2} \right).
+\end{equation}
+这样一来，设\autoref{sec:free-field-theory-partition-function}中的自由能和配分函数为$F_\text{free}$和$Z_\text{free}$，就有
+\[
+    Z = Z_\text{free} \exp(\frac{\beta}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{B_{\vb*{k}} B_{-\vb*{k}}}{\gamma k^2 + \mu^2}).
+\]
+这正是我们预期的形式——$B$与$\phi$的耦合方式是线性的，从而导致一个线性响应，即在配分函数的$\ee$指数上产生一个二次项，积分核（即格林函数）就是$B=0$的场的两点格林函数，而由于$B=0$时是自由场，此两点格林函数正是$F_\text{free}[\phi]$的鞍点满足的方程（即\eqref{eq:free-field}的欧拉-拉格朗日方程）
+\[
+    \gamma \laplacian \phi = \mu^2 \phi
+\]
+外加冲击之后的平面波解
+\[
+    G(\vb*{k}) = \frac{1}{\gamma k^2 + \mu^2}.
+\]
+写成实空间的形式，就是
+\begin{equation}
+    Z = Z_\text{free} \exp(\frac{\beta}{2} \int \dd[d]{\vb*{x}} \dd[d]{\vb*{y}} B(\vb*{x}) G(\vb*{x} - \vb*{y}) B(\vb*{y})), \quad G(\vb*{x}) = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{\gamma k^2 + \mu^2}.
+    \label{eq:path-integral-mag}
+\end{equation}
+这里我们不失一般性地指定$G(\vb*{x}, \vb*{y})$应当是对称的（二次型的普遍性质：积分核可以化成对称的），而由于$\phi^4$理论是空间平移不变的，我们有
+\[
+    G(\vb*{x}, \vb*{y}) = G(\vb*{x} - \vb*{y}).
+\]
+从\eqref{eq:path-integral-mag}也可以更加清楚地看到外加扰动的格林函数和自由场的两点关联函数的关系：
+\begin{equation}
+    \expval*{\phi(\vb*{x}_1) \phi(\vb*{x}_2)}_0 = \frac{1}{\beta} G(\vb*{x}_1 - \vb*{x}_2) = \frac{1}{\beta} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{\gamma k^2 + \mu^2}.
+    \label{eq:propagator}
+\end{equation}
+从今往后，我们用$\expval*{\cdot}_0$表示自由场期望，使用$\expval*{\cdot}_B$表示外加磁场后的期望。
+
+实际上，完全可以更加机械化地使用高斯积分导出以上所有结论，$G(\vb*{x}, \vb*{y})$就是格林算符
+\[
+    \hat{G} = (-\gamma \laplacian + \mu^2)^{-1}
+\]
+在坐标表象下的矩阵元，或者说坐标表象下的传播子（因为是自由场，传播子就是场的关联函数）。
+
+\subsubsection{关联函数的计算}
+
+本节尝试计算关联函数。由于系统具有旋转不变性，我们可以把格林函数写成
+\[
+    G(\vb*{r}) = G(r) = \frac{1}{\gamma} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{\ee^{-\ii \vb*{k} \cdot \vb*{x}}}{k^2 + \frac{1}{\xi^2}},
+\]
+其中
+\begin{equation}
+    \xi^2 = \frac{\gamma}{\mu^2}
+    \label{eq:correlation-length}
+\end{equation}
+是一个特征长度。我们后面还会频繁用符号$\xi$表示系统的关联长度，但\eqref{eq:correlation-length}未必适用，因为\eqref{eq:correlation-length}是在自由场论的情况下计算出来的，而一般的体系具有相互作用。
+考虑到
+\[
+    \frac{1}{k^2 + 1/\xi^2} = \int_0^\infty \dd{t} \ee^{-t(k^2 + 1/\xi^2)},
+\]
+我们可以得到
+\begin{equation}
+    G(r) = \frac{1}{\gamma (4\pi)^{d/2}} \int_0^\infty \dd{t} t^{-d/2} \ee^{-t/\xi^2} \ee^{-r^2/4t}.
+\end{equation}
+
+我们尝试使用鞍点近似估计上式，设
+\[
+    S(t) = \frac{t}{\xi^2} + \frac{r^2}{4 t} + \frac{d}{2} \ln t,
+\]
+则
+\[
+    G(r) \sim \ee^{-S(t_\star)} \sqrt{\frac{\pi}{2 S''(t_\star)}},
+\]
+其中$t_\star$是$S'(t)$的根
+\[
+    t_\star = \frac{\xi^2}{2} \left( - \frac{d}{2} + \sqrt{\frac{d^2}{4} + \frac{r^2}{\xi^2}} \right).
+\]
+做渐进分析，当$r \gg \xi$时，
+\[
+    t_\star = \frac{r \xi}{2},
+\]
+则
+\[
+    G(r) \sim \frac{\ee^{-r/\xi}}{\xi^{d/2-3/2} r^{d/2 - 1/2}}.
+\]
+另一方面，如果$r \ll \xi$，则
+\[
+    t_\star = \frac{r^2}{4d},
+\]
+则
+\[
+    G(r) \sim \frac{1}{r^{d-2}}.
+\]
+综上，我们有
+\begin{equation}
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim G(\vb*{x}) = G(r) \sim \begin{cases}
+        \ee^{-r/\xi} / r^{(d-1)/2}, \quad &r \gg \xi, \\
+        1/r^{d-2}, \quad &r \ll \xi.
+    \end{cases}
+\end{equation}
+此即\concept{Ornstein-Zernicke关联函数}。
+可以看到在$\xi$以内，关联函数随着$r$增大只是缓慢地衰减，而在$\xi$以外就指数衰减了。
+换句话说，场构型的“斑块”（即一块$\phi$的值变化不大的区域）的直径的尺度就是$\xi$。
+因此$\xi$就是系统的关联长度。
+
+按照$\xi$的定义，以及我们的假设\eqref{eq:mf-parameter-assumption}，可以发现在临界点附近有
+\begin{equation}
+    \xi \sim \frac{1}{\abs*{T - T_\text{c}}^{1/2}}. 
+\end{equation}
+当然，具体的指数可能也不正确（因为\eqref{eq:mf-parameter-assumption}取成和平均场一致，未必可靠），但是它的确说明临界点附近关联函数发散——本该如此。
+
+我们现在引入了两个关键的物理量——关联长度和（$r$很小时的）关联函数——它们引入了两个新的临界指数：
+\begin{equation}
+    \xi \sim \frac{1}{\abs*{T - T_\text{c}}^\nu}, 
+    \label{eq:xi-and-nu}
+\end{equation}
+以及
+\begin{equation}
+    G(r) \sim \frac{1}{r^{d-2+\eta}}, \quad r \ll \xi.
+\end{equation}
+本节采取的计算由于完全没有考虑$\phi^4$项，实际上还是一种平均场理论（虽然它给出的热容和把平均场当成完全均匀的平均场理论，也就是\autoref{sec:mean-field-ing}不同）。
+平均场理论预言，$\nu=1/2$而$\eta=0$。
+再一次，在四维及以上这两个结果是正确的，在二维和三维则不是（一维完全没有相变）。
+
+\subsubsection{何时平均场理论失效}\label{sec:when-mf-failed}
+
+实际上，从平均场理论出发就可以判断它自己什么时候失效。
+我们将这个判断留到这一节是因为接下来要做的计算需要用到关联函数，而在有磁场的情况下引入关联函数比较自然。
+
+假定系统均匀的平均场理论（即\autoref{sec:mean-field-ing}）成立，那么需要两个条件：
+\begin{enumerate}
+    \item 涨落$\expval*{(\phi-\expval*{\phi})^2}$相比于$\phi^2$要尽可能小（金斯堡判据）；
+    \item 在空间上的起伏也要尽可能小。
+\end{enumerate}
+要让这两个条件同时成立，就是要求
+\[
+    \frac{\int_{r<\xi} \dd[d]{\vb*{x}} \expval*{\phi(\vb*{x}) \phi(0)}}{\int_{r<\xi} \dd[d]{\vb*{x}} m_0^2} \ll 1.
+\]
+由于超过一定距离，关联函数会快速衰减，我们不失一般性地对积分范围做了一个截断；$m_0$指的是用\autoref{sec:mean-field-ing}中的均匀平均场计算出来的磁化强度，加平方单纯是为了保持整个式子没有量纲。
+这里有一个微妙的地方：由于发生了对称性自发破缺而$\expval*{\cdot}$还是将所有可能的态都考虑了进去，应该有
+\[
+    \expval*{\phi} = 0,
+\]
+但是对已经发生了对称性自发破缺的系统（例如，大部分自旋指向上方），一部分态是不可及的（例如，大部分自旋指向下方的态），因此我们应当使用$m_0$作为磁化强度期望值。
+代入$r \ll \xi$的关联函数表达式计算后得到
+\[
+    \frac{\xi^{2-d}}{m_0^2} \ll 1.
+\]
+代入临界指数关系，就得到
+\[
+    \frac{1}{\abs*{T-T_\text{c}}^{(4-d)/2}} \ll 1.
+\]
+上式成立，当且仅当$d \geq 4$，于是我们得出结论：$d < 4$时不能够保证均匀的平均场理论的正确性。
+我们从平均场理论出发，导出了它自己的局限性。严格来说，上式并不能够保证$d<4$时一定会出问题，但是实际结果表明，$d < 4$时确实平均场理论不再适用。
+
+为何$d=1$时相变会消失则需要从另一个角度看待。我们知道相变出现要求$F[\phi]$的极小值点之间彼此不可及，但实际上通过计算可以发现，$d=1$时$F[\phi]$的极小值点之前总是可以互相跃迁的。
+换句话说，$d=1$时相变温度在$T=0$——有限温下总是不会出现相变。
+实际上，这可以通过与$d=1$的$\phi^4$统计场论对应的$d=0$维量子力学的特征看出来，后者只有一个基态，它是两个$F[\phi]$的极小值点的线性叠加。
+
+\section{微扰论和费曼图}
+
+到目前为止我们都还没有考虑关键的$\phi^4$项带来的影响。本节讨论怎么微扰计算$\phi^4$的影响。
+% TODO：这些东西要放在这一节吗？
+我们重新定义$\phi^4$项前面的参数，将$\phi^4$理论写成
+\begin{equation}
+    F[\phi] = \int \dd[d]{\vb*{x}} \left( 
+        \frac{1}{2} (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + \frac{g}{4!} \phi^4 + B \phi
+    \right).
+    \label{eq:phi-4-g}
+\end{equation}
+也就是说，我们把温度和$\gamma$都整合到了场和其它参数中。
+为了方便起见我们将在动量空间讨论费曼规则。
+
+\subsection{费曼图及其规则}
+
+\subsubsection{顶角和基本过程}\label{sec:basic-steps}
+
+$\phi^4$理论只有一种顶角，就是\autoref{fig:vertex}所示的四条边连在一起的顶角。
+由于$\phi$是实场，无所谓$U(1)$对称性，则也没有粒子数守恒，无需标记边的方向，或者说可以任意地标记边的方向。
+例如\autoref{fig:vertex}可以理解成\autoref{fig:vertex-intepretation}中的任何一个过程，或是它们的逆过程，它们给出的图的值都是一样的。
+标记箭头的目的主要是为了写出正确的动量守恒表达式；在计算费曼图时应该忽视这些箭头，以得到正确的对称性因子（或者，也可以对每个图形，统计所有可能的箭头标法，但这样过于繁琐）。如\autoref{fig:vertex-intepretation}中，三个图的动量守恒表达式分别是
+\[
+    \delta^d(\vb*{k}_3+\vb*{k}_4-\vb*{k}_1-\vb*{k}_2), \quad \delta^d(\vb*{k}_1-\vb*{k}_2-\vb*{k}_3-\vb*{k}_4), \quad \delta^d(\vb*{k}_1+\vb*{k}_2+\vb*{k}_3+\vb*{k}_4).
+\]
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (-1.5, -1.5);
+            \vertex (b) at (-1.5, 1.5);
+            \vertex (c) at (1.5, -1.5);
+            \vertex (d) at (1.5, 1.5);
+            \vertex[dot] (o) at (0, 0) {};
+            \propag (a) to (o);
+            \propag (b) to (o);
+            \propag (c) to (o);
+            \propag (d) to (o);
+        \end{feynhand}
+    \end{tikzpicture}
+    \caption{$\phi^4$理论的顶角}
+    \label{fig:vertex}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[粒子数守恒]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, -1.5) {$\vb*{k}_1$};
+                \vertex (b) at (-1.5, 1.5) {$\vb*{k}_2$};
+                \vertex (c) at (1.5, -1.5) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 1.5) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (a) to (o);
+                \propag [fermion] (b) to (o);
+                \propag [fermion] (o) to (c);
+                \propag [fermion] (o) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[一进三出]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-2.1, 0) {$\vb*{k}_1$};
+                \vertex (b) at (0.75, 1.8) {$\vb*{k}_2$};
+                \vertex (c) at (0.75, -1.8) {$\vb*{k}_3$};
+                \vertex (d) at (2.1, 0) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (a) to (o);
+                \propag [antfer] (b) to (o);
+                \propag [antfer] (c) to (o);
+                \propag [antfer] (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[“爆炸”]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, -1.5) {$\vb*{k}_1$};
+                \vertex (b) at (-1.5, 1.5) {$\vb*{k}_2$};
+                \vertex (c) at (1.5, -1.5) {$\vb*{k}_3$};
+                \vertex (d) at (1.5, 1.5) {$\vb*{k}_4$};
+                \vertex[dot] (o) at (0, 0) {};
+                \propag [fermion] (o) to (a);
+                \propag [fermion] (o) to (b);
+                \propag [fermion] (o) to (c);
+                \propag [fermion] (o) to (d);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{$\phi^4$理论中的部分过程}
+    \label{fig:vertex-intepretation}
+\end{figure}
+
+\subsubsection{传播子和源}
+
+由于只有一种场，传播子也就只有一种，就是$\phi$的传播子，先前已经讨论过的。
+由于有效自由能中唯一的外场就是磁场，而它是线性的，源是显然的，每个源只连接一条传播子。
+
+\subsubsection{费曼规则}
+
+下面推导费曼规则，也就是，给定一个未知的期望表达式$\expval*{\phi_1 \cdots \phi_n}$，怎么用无相互作用的二体关联函数$\expval*{\phi_1 \phi_2}$算出它。
+传播子的表达式是已知的，就是\eqref{eq:propagator}，而顶角引入的系数就是$g$。$\phi^4$理论满足动量守恒，无其它值得注意的守恒律。于是我们有以下费曼规则：
+\begin{enumerate}
+    \item 对每个传播子，
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, 0);
+                \vertex (b) at (1, 0);
+                \propag [fermion] (a) to [edge label={$\vb*{k}$}] (b) ;
+            \end{feynhand}
+        \end{tikzpicture}
+        = \frac{1}{\beta} \frac{1}{\gamma k^2 + \mu^2}.
+    \]
+    \item 对每个顶角，
+    \[
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1, -1);
+                \vertex (b) at (-1, 1);
+                \vertex (c) at (1, -1);
+                \vertex (d) at (1, 1);
+                \vertex[dot] (o) at (0, 0) {};
+                \propag (a) to (o);
+                \propag (b) to (o);
+                \propag (c) to (o);
+                \propag (d) to (o);
+            \end{feynhand}
+        \end{tikzpicture}
+        = -\beta g.
+    \]
+    有$-\beta$因子是因为$\ee$指数上自由能要乘以$-\beta$。
+    \item 如果外线是指定坐标而不是动量的，那么要加上对应的傅里叶变换因子。粒子消灭的外线为
+    \[
+        \begin{aligned}
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a0) at (-1.3, 0) {$\vb*{x}$};
+                    \vertex [dot] (a) at (-1, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag [fermion] (a) to [edge label={$\vb*{k}$}] (b) ;
+                \end{feynhand}
+            \end{tikzpicture}
+            = \ee^{\ii \vb*{k} \cdot \vb*{x}} , \\
+            \begin{tikzpicture}
+                \begin{feynhand}
+                    \vertex (a0) at (-1.3, 0) {$\vb*{x}$};
+                    \vertex [dot] (a) at (-1, 0) {};
+                    \vertex (b) at (1, 0);
+                    \propag [antfer] (a) to [edge label={$\vb*{k}$}] (b) ;
+                \end{feynhand}
+            \end{tikzpicture}
+            = \ee^{- \ii \vb*{k} \cdot \vb*{x}}.
+        \end{aligned}
+    \]
+    \item 在每个顶角处加入保证动量守恒的$\delta$函数，如\autoref{sec:basic-steps}中那样。
+    \item 对所有图中没有给定的动量，做积分
+    \[
+        \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d}.
+    \]
+    \item 除以对称性因子%
+    \footnote{其实是乘以，但因为$\phi^4$项前面会乘以$1/4!$之类的因子（因为它是四体项），再乘上对称性因子，最后还是会得到“1除以某某”的因子。在图阶数较高时这样可以简化计算。}%
+    ，对称性因子取决于图中哪些元素可以看成是等价的，也就是说，交换了之后还是同一个过程。
+    需要注意的是计算不同的量的时候对称性因子可能不同。例如，计算关联函数时，不同外腿可以携带不同动量，不能随意交换它们；反之，计算积掉一部分自由度的自由能时，虽然使用的费曼图还是有外腿，但这些外腿最后会被积分，那么连在同一个顶角上的外腿就是等价的，可以交换；
+    因此，计算积掉一部分自由度的自由能时使用的费曼图和计算关联函数的费曼图，但是还要考虑外腿的对称性。
+\end{enumerate}
+
+\subsection{关联函数}
+
+\subsection{有效自由能}
+
+这一节实际上应该出现在\autoref{sec:ising-rg}中，因为除了重整化群中很少会有别的地方用到“积掉高能自由度”的操作。
+然而，重整化群还包括标度变换，这就不是微扰论处理的话题。所以我们还是在这里讨论怎么积掉高能自由度。
+
+只计算连通图
+
+% TODO
+
+\section{重整化群}\label{sec:ising-rg}
+
+\subsection{常数和量纲}
+
+\subsubsection{自由能归一化}
+
+本节讨论重整化群。\autoref{eq:phi-4-g}中出现了这些参数：
+\begin{itemize}
+    \item $(\grad{\phi})^2$项的系数$\gamma$；
+    \item $\phi^2$项的系数$\mu^2$；
+    \item $\phi^4$项的系数$g$。
+\end{itemize}
+此外，还有两个计算配分函数时需要的额外参数：
+\begin{itemize}
+    \item 温度倒数$\beta$；
+    \item 动量截断尺度$\Lambda$，或者其倒数——即晶格参数——$a$。
+\end{itemize}
+由于$\beta$是直接乘在自由能上的，可以将$\beta$吸收到$\gamma$, $\mu$和$g$中，从而将配分函数写成
+\[
+    Z = \int \fd{\phi} \ee^{-F[\phi]},
+\]
+其中
+\[
+    \ee^{-F[\phi]} = \exp(-\int \dd[d]{\vb*{x}} \left(
+        \frac{1}{2} \gamma (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + \frac{g}{4!} \phi^4
+    \right) ).
+\]
+
+到现在为止，从自由能表达式还不能够确定任何一个物理量的量纲，这说明仍有冗余的常数。
+具体来说，我们可以重新定义$\phi$，让$\gamma=1$，这样就有
+\begin{equation}
+    F[\phi] = \int \dd[d]{\vb*{x}} \left(
+        \frac{1}{2} (\grad{\phi})^2 + \frac{1}{2} \mu^2 \phi^2 + \frac{g}{4!} \phi^4
+    \right).
+    \label{eq:normalized-phi4}
+\end{equation}
+切换到动量空间，自由部分有效自由能为
+\begin{equation}
+    F_0[\phi] = \frac{1}{2} \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (k^2 + \mu^2) \phi_{\vb*{k}} \phi_{-\vb*{k}},
+\end{equation}
+相互作用部分为
+\begin{equation}
+    F_I[\phi] = \frac{g}{4!} \int \prod_{i=1}^4 \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} (2\pi)^d \delta^d(\sum_{i} \vb*{k}_i).
+    \label{eq:interactive-free-energy}
+\end{equation}
+
+任何一个温度下的理论都可以这样做归一化，最终得到一组不同的$(\mu, g)$。
+如果固定截断$a$不动，它们就是理论空间中不同理论的坐标。
+温度的改变会导致$(\mu, g)$的变动。
+
+原则上我们也可以将坐标无量纲化，从而消去对$a$的显式依赖，但由于我们需要分析计算结果对截断的依赖，通常不这样做。
+
+\subsubsection{临界指数之间的关系}
+
+临界点附近关联常数发散到无穷大，因此我们有
+\[
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2+\eta}}
+\]
+恒成立。由于临界点也是重整化群不动点，我们将尝试通过量纲分析来估计临界指数。
+
+首先，由于
+\[
+    [\dd[d]{\vb*{x}} (\grad{\phi})^2] = 0,
+\]
+我们有
+\[
+    [\phi] = \frac{d-2}{2},
+\]
+这里我们照惯例设长度的量纲为$-1$。这就意味着，
+\[
+    [\expval*{\phi(\vb*{x}) \phi(0)}] = d-2.
+\]
+乍一看这似乎意味着
+\[
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2}},
+\]
+这是平均场理论的结果，即认为$\eta=0$。然而，由于我们没有将长度无量纲化，$a$也会影响关联函数。因此，考虑到量纲要正确，且关联函数关于$a$也服从幂律，实际上应该有
+\begin{equation}
+    \expval*{\phi(\vb*{x}) \phi(0)} \sim \frac{1}{r^{d-2}} \left( \frac{a}{r} \right)^\eta \sim \frac{1}{r^{d-2+\eta}}.
+    \label{eq:correlation-scaling}
+\end{equation}
+我们看到，由于关联函数同时依赖于两个长度量纲的物理量，即$r$和隐式的$a$，仅仅知道关联函数的量纲是$d-2$不能够让我们明确地写出关联函数在临界点附近关于$r$的幂律的具体形式。
+这就是所谓的\concept{反常量纲}：将$a$定死，变动$r$而产生的尺度变换指数（也就是$a$定死之后$r$的量纲）和$a$和$r$以同样的方式发生尺度变换的量纲（称为\concept{工程量纲}）是不一样的。
+而如果我们将$a$吸收到长度中，那么无可避免地会出现$\phi$的量纲确定不下来的情况。
+加入相互作用之后事情更加糟糕：临界点对应的重整化群不动点很可能还是有相互作用的，此时反常量纲中还会掺入高能自由度造成的修正，从而重整化群流不是平凡的尺度变换。
+总之，在本文——以及很多其它的固体系统中——由于截断的存在，基本上不可能通过简单的量纲分析就得到幂律。
+
+为了区分，我们下面用$[\cdot]$表示工程量纲，用$\Delta_{\cdot}$表示反常量纲。
+
+接下来分析热力学自由能的尺度变换。我们令
+\begin{equation}
+    t = \frac{\abs*{T-T_\text{c}}}{T_\text{c}},
+\end{equation}
+并由于\eqref{eq:xi-and-nu}，我们有
+\begin{equation}
+    \xi \sim t^{-\nu}.
+\end{equation}
+在临界点附近，热力学自由能显然应该是不变量，也即
+\[
+    \int \dd[d]{\vb*{x}} f(\vb*{x}) \sim 1,
+\]
+而关联长度的存在意味着上式中的积分会给出一个大致以$\xi^d$的方式尺度变换的结果，从而
+\begin{equation}
+    f \sim \xi^{-d} \sim t^{d\nu}.
+\end{equation}
+这又意味着单位体积的热容的尺度变换为
+\[
+    c \sim \pdv[2]{f}{t} \sim t^{d\nu-2}.
+\]
+考虑到$c$关于温度的临界指数为$-\alpha$，我们有
+\begin{equation}
+    \alpha = 2 - d \nu.
+    \label{eq:josephson-relation}
+\end{equation}
+这就是\concept{Josephson关系}。
+
+接下来再看磁化强度的临界指数。依照定义
+\[
+    \phi \sim t^\beta, \quad t \sim \xi^{-1/\nu},
+\]
+而由关联函数的临界指数\eqref{eq:correlation-scaling}，根据反常量纲相同，得到
+\begin{equation}
+    \beta = \frac{d-2+\eta}{2}\nu.
+\end{equation}
+
+然后是磁化率的临界指数。依照定义我们有
+\[
+    \chi = \pdv{\phi}{B} \sim t^{-\gamma},
+\]
+通过比较两边的反常量纲（要用反常量纲的理由同上），就得到
+\[
+    \Delta_\phi - \Delta_B = - \frac{\gamma}{\nu}.
+\]
+另一方面，$\phi B$项是自由能的一项，即我们有
+\[
+    \Delta_\phi + \Delta_B = d,
+\]
+于是
+\begin{equation}
+    \gamma = \nu (2 - \eta).   
+\end{equation}
+这就是\concept{Fisher关系}。
+
+最后是磁化强度和磁场的关系。按照定义
+\[
+    \phi \sim B^{1/\delta},
+\]
+则使用反常量纲相等立刻得到
+\begin{equation}
+    \delta = \frac{d+2-\eta}{d-2+\eta}.
+\end{equation}
+
+等价形式：
+\concept{Rushbrook关系}
+\begin{equation}
+    \alpha + 2 \beta + \gamma = 2,
+\end{equation}
+\concept{Widom关系}
+\begin{equation}
+    \beta(\delta - 1) = \gamma
+\end{equation}
+
+总结一下到目前我们获得的结果。我们使用两个基本的临界指数——关联长度的临界指数$\nu$和关联函数相对于平均场理论的修正$\eta$——获得了四个其余的临界指数$\alpha, \beta, \gamma, \delta$。
+以上临界指数关系的推导只用到了系统处于临界点附近的假设，以及$\phi^4$理论的形式；我们没有做任何近似。
+这就意味着，这些关系实际上适用于任何一个临界点附近、对称性和伊辛模型相同的模型。
+更进一步，在临界点附近计算出模型参数的标度律之后可以直接得到临界指数。
+我们知道关联长度只应该和温度有关，依照定义有
+\[
+    \xi t^\nu \sim 1,
+\]
+于是
+\[
+    \Delta_{\xi} + \nu \Delta_t = 0,
+\]
+而由于$\xi$在不动点附近在重整化群下的变换就是长度单位变换（这是肯定的：$\xi$在临界点发散，系统有多大它就能有多大，因此能够修正它的只有长度单位变换，除此以外的细节是不重要的），我们有
+\[
+    \nu = \frac{1}{\Delta_t}.
+\]
+而$t \sim \mu^2$（见\eqref{eq:mf-parameter-assumption}相关的论述），于是
+\begin{equation}
+    \nu = \frac{1}{\Delta_t} = \frac{1}{\Delta_{\mu^2}}.
+\end{equation}
+同时，根据
+\[
+    \Delta_\phi - \Delta_B = - \frac{\gamma}{\nu}, \quad \Delta_{\phi} + \Delta_B = d,
+\]
+有
+\[
+    2\Delta_B = d + \frac{\gamma}{\nu} = d + 2 - \eta,
+\]
+于是
+\begin{equation}
+    \eta = 2 + d - 2 \Delta_B.
+\end{equation}
+于是可以直接从参数的反常量纲出发计算出$\eta$和$\nu$，进而得到所有临界指数。
+具体公式为
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &\alpha = 2 - \frac{d}{\Delta_t}, \quad \beta = \frac{d - \Delta_B}{\Delta_t}, \quad \gamma = \frac{2\Delta_B - d}{\Delta_t}, \\
+            &\delta = \frac{\Delta_B}{d-\Delta_B}, \quad \nu = \frac{1}{\Delta_t}, \quad \eta = 2 + d - 2\Delta_B.
+        \end{aligned}
+    \right.
+    \label{eq:from-scaling-to-dimension}
+\end{equation}
+
+数值计算得到的结果和这些关系式一致。不过，我们会发现平均场理论给出的临界指数只有在$d=4$时才真的严格服从这些关系式。
+具体来说，平均场临界指数服从关于$\gamma$的关系式，但是关于$\alpha, \beta, \delta$的关系式全部和$d$有关，只有$d=4$时平均场临界指数才服从它们。
+这件事的原因见\autoref{sec:can-we-hit-gaussian}。
+
+\subsubsection{有限大小系统的标度律}
+
+上面（以及下面）我们做的所有计算都是在热力学极限下进行的，但是实际系统都具有有限的长度尺度。
+如果某个方向上的长度尺度非常小，那么实际上经过重整化我们将得到一个$d-1$维理论；但如果某个方向上的长度尺度非常大，那么重整化群不动点可以认为是一个$d$维不动点加上了一些修正。
+衡量长度尺度$L$的最好标准是它和$\xi$之间的关系，因此所有标度律都需要乘上一个无量纲函数$F(L/\xi)$。
+% TODO
+
+\subsection{从自由理论出发做重整化}
+
+接下来我们来做更加系统的重整化计算，步骤是通常的：
+\begin{enumerate}
+    \item 积掉高能标自由度；
+    \item 缩放坐标，让$\Lambda$的数值保持不变；
+    \item 缩放场，让$(\grad{\phi})^2$项的系数保持不变。
+\end{enumerate}
+在这个步骤中“积掉高能自由度”这一步将$\Lambda$（从而$\alpha$）的值改变了，且容易验证$a$和$\vb*{x}$按照同样的方式做尺度变换，也即截断尺度并没有任何特殊地位，它和其它长度尺度的尺度变换关系都是一样的，因此分析重整化导致的尺度变换时应该使用工程量纲。
+
+\subsubsection{自由理论的不动点}
+
+首先我们讨论没有$\phi^4$的理论，即自由理论。此时实际上不同动量的过程是完全解耦的，因此只使用量纲分析就足够分析各个项的变化情况了，但是为了获得完整的重整化群方程我们还是做一下计算。
+
+我们从自由场论
+\[
+    F_0[\phi] = \int_{k<\Lambda} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{1}{2} (k^2 + \mu_0^2) \phi_{\vb*{k}} \phi_{-\vb*{k}}
+\]
+开始。这个自由场论中只有一个参数，就是$\mu$。选择$k<\Lambda/\zeta$的模式，有
+\[
+    \begin{aligned}
+        F[\phi^-] &= \int_{k < \Lambda / \zeta} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{1}{2} (k^2 + \mu_0^2) \phi_{\vb*{k}} \phi_{-\vb*{k}} \\
+        &= \int_{k' < \Lambda} \frac{\dd[d]{\vb*{k}'}}{\zeta^{d+2} (2\pi)^d} \frac{1}{2} (k^2 + \zeta^2 \mu_0^2) \phi_{\vb*{k}'/\zeta} \phi_{-\vb*{k}'/\zeta}.
+    \end{aligned}
+\]
+这里我们做了缩放
+\[
+    \vb*{k}' = \zeta \vb*{k}.
+\]
+然后，再对场做缩放，即
+\[
+    \phi'_{\vb*{k}'} = \zeta^{-\frac{d+2}{2}} \phi^-_{\vb*{k}'/\zeta} = \zeta^{-\frac{d+2}{2}} \phi^-_{\vb*{k}},
+\]
+就得到
+\[
+    F[\phi'] = \int_{k' < \Lambda} \frac{\dd[d]{\vb*{k}'}}{(2\pi)^d} \frac{1}{2} (k^2 + \zeta^2 \mu_0^2) \phi'_{\vb*{k}'} \phi'_{-\vb*{k}'}.
+\]
+于是我们得到重整化群下参数跑动的方程
+\begin{equation}
+    \mu^2 = \zeta^2 \mu_0^2.
+\end{equation}
+显然，不动点有两个，其一是$\mu^2=\infty$，这是所有的理论共同的结局：随着我们向红外端不停做重整化，$\phi^2$项会越来越大。这当然是正确的，因为根据量纲分析，我们有
+\[
+    [\phi^2] = d-2 < d,
+\]
+从而
+\begin{equation}
+    [\mu^2] = 2,
+\end{equation}
+因此这一项一定是相关的。其二是$\mu^2=0$。$\mu^2=0$是一个高斯不动点，因为它是有限的，并且在这个不动点处我们的理论是自由理论。
+显然$\mu^2=0$不会是一个稳定的不动点，这也很正常，既然$\phi^2$是相关的。
+
+\subsubsection{高斯不动点是否能够达到}\label{sec:can-we-hit-gaussian}
+
+现在我们在这个高斯不动点附近引入小的扰动：我们加入$g \phi^4$项。$\mu^2=0, g=0$在$g$方向上是否是稳定的？既然是在不动点附近，我们做量纲分析，有
+\[
+    [\phi^4] = 2d-4.
+\]
+则有
+\begin{equation}
+    [g] = 4-d.
+\end{equation}
+$d<4$时$\phi^4$项是相关的，$d>4$时$\phi^4$项是无关的，因此不动点$\mu^2=0, g=0$在$g$方向上的稳定性取决于维度：$d>4$时它是稳定的，$d<4$时它不稳定。这个情况如\autoref{fig:gaussian-stable}所示。
+
+\begin{figure}
+    \centering
+    \subfigure[$d<4$]{
+        \begin{tikzpicture}
+            
+            % g横轴
+            \draw[->] (0,0) -- (2,0) node[right] {$g$};
+            % \mu^2纵轴
+            \draw[->] (0,-2) -- (0,2) node[above] {$\mu^2$};
+            
+            % 不稳定
+            \draw[directed] (0, 0) -- (1.5, 0);
+            \draw[directed] (0, 0) -- (0, 1.5);
+            \draw[directed] (0, 0) -- (0, -1.5);
+    
+        \end{tikzpicture}
+    }
+    \subfigure[$d>4$]{
+        \begin{tikzpicture}
+            
+            % g横轴
+            \draw[->] (0,0) -- (2,0) node[right] {$g$};
+            % \mu^2纵轴
+            \draw[->] (0,-2) -- (0,2) node[above] {$\mu^2$};
+            
+            % 稳定
+            \draw[directed] (1.5, 0) -- (0, 0);
+            \draw[directed] (0, 0) -- (0, 1.5);
+            \draw[directed] (0, 0) -- (0, -1.5);
+    
+        \end{tikzpicture}
+    }
+    \caption{高斯不动点$\mu^2=0, g=0$的稳定性}
+    \label{fig:gaussian-stable}
+\end{figure}
+
+在$d>4$时只需要细调$\mu^2$即可让我们的理论停留在不动点$\mu^2=0, g=0$上，而细调$\mu^2$意味着细调温度（$g$和伊辛模型中各个自旋的耦合有关，难以细调），因此$d>4$时细调温度到$\mu(T)=0$处即可让$\phi^4$理论\eqref{eq:normalized-phi4}到达一个高斯不动点——我们很清楚只有温度调到某一特定位置才能够到达的不动点是什么，它就是临界点。
+另一方面，$d<4$时需要同时细调$\mu$和$g$，因此不动点$\mu^2=0, g=0$通常是达不到的。此时临界点由什么理论描述需要另行讨论。
+
+换句话说，只有$d \geq 4$时能够保证处于临界点的系统自然而然地被重整化群流带到一个高斯不动点附近，而更低维度下不会出现这样的情况。
+这就解释了为什么$d \geq 4$时平均场理论适用，因为只有这时理论的不动点才是自由场论，真的能够使用平均场。
+
+然而，只有$d=4$时平均场理论给出的临界指数是正确的。
+这是因为使用平均场理论做计算时，我们固定参数不动，让$T, B$等物理量跑动，但是实际上$T$跑动时参数也会跟着跑动，在平均场理论中我们仅仅考虑了$\mu^2$的跑动，没有考虑相互作用耦合系数$g$的跑动。
+量纲分析告诉我们，$d=4$时$g\phi^4$项的相关性是临界的，即不动点附近做重整化不会显著地让$g$发生尺度缩放，因此此时忽略$g$的跑动不会有问题。
+虽然$d>4$时平均场理论适用，且$\phi^4$项在重整化下是无关的，但是有些物理量的尺度变换的确会用到这个参量，因此不能简单地无视它。
+
+\subsubsection{维数和各项的相关性}\label{sec:dimension-relevance}
+
+我们已经看到了$d=4$对$\phi^4$项的特殊意义：$d>4$时它变得无关，$d=4$时在不考虑高能自由度和低能自由度的耦合时它是临界的（考虑这两者的耦合的计算见\autoref{sec:interaction-rg}），$d<4$时它是相关的。
+虽然我们是从一个$\phi^4$理论出发做重整化计算，但实际上，考虑到高能自由度和低能自由度的耦合，积掉一部分高能自由度后会得到其它一些项，比如说$\phi^6$等等，因此有必要讨论不同维度下各个项的行为。
+
+对称性决定了奇数次幂项不会出现。我们首先来看导数项。考虑到空间旋转不变性，梯度算符$\grad$只能出现偶数次，否则将会产生一个矢量，从而需要另一个常数矢量与之点乘，与空间旋转不变性矛盾。
+考虑到
+\[
+    [\phi^2] = d - 2, 
+\]
+我们有
+\[
+    [\phi^{2n}] = n (d - 2).
+\]
+设出现了$2m$个梯度算符，则这一项相关意味着
+\[
+    n(d-2) + 2m < d.
+\]
+
+当$d=2$时所有$\phi^{2n}$都是相关的。
+
+总之，$d=1, 2$时会有大量相关的项，而$d=4$及以上时有一个高斯型不动点。
+因此毫无意外的，$d=2$是下临界维数，而$d=4$是上临界维数。
+
+\subsection{相互作用修正}\label{sec:interaction-rg}
+
+现在我们考虑有相互作用时的动量空间重整化。设一开始的截断为$k<\Lambda$，有关常数为$\mu_0$和$g_0$。
+设我们要积掉$\Lambda/\zeta < k < \Lambda$范围内的模式，并采用通常的记号，用上标$+$表示要被积掉的模式，用上标$-$表示要保留的模式，用$\expval{\cdot}_+$表示只对要积掉的模式计算期望，而将要保留的模式当成给定的常数。
+容易验证，积掉$\phi^+$之后，得到的有效自由能为
+\[
+    \begin{aligned}
+        F'[\phi^-] &= F_0[\phi^-] - \ln \expval{\ee^{-F_I[\phi^+, \phi^-]}}_+ \\
+        &= F_0[\phi^-] + \cexpval{F_I}_+ - \frac{1}{2} \cexpval{F_I^2}_+ + \cdots,
+    \end{aligned}
+\]
+第二个等号是linked-cluster定理的典型例子。
+
+在下面的全部计算中我们形式地写出了高能自由度对低能自由度的耦合常数的修正，这些修正带有红外截断$\Lambda / \zeta$和紫外截断$\Lambda$。
+如果忽略这些截断真的去计算这些修正，很快会发现它们是发散的。
+
+\subsubsection{一阶修正}
+
+以一阶修正为例，即要计算$\cexpval{F_I}_+$。由\eqref{eq:interactive-free-energy}，我们有
+\[
+    \cexpval{F_I[\phi]}_+ = \frac{g}{4!} \int \prod_{i=1}^4 \frac{\dd[d]{\vb*{k}_i}}{(2\pi)^d} \cexpval{\phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4}}_+ (2\pi)^d \delta^d(\sum_{i} \vb*{k}_i).
+\]
+由于$\vb*{k}_i$可以超过$\Lambda/\zeta$也可以不超过，上式中关于$\phi$的部分实际上可以分成16项，其中有：
+\begin{itemize}
+    \item 1项是四个$\phi$都为$\phi^+$；
+    \item 4项是一个$\phi$为$\phi^+$，其余$\phi$为$\phi^-$；
+    \item 6项是两个$\phi$是$\phi^+$，两个是$\phi^-$；
+    \item 4项是一个$\phi$为$\phi^-$，其余$\phi$为$\phi^+$；
+    \item 1项是四个$\phi$都为$\phi^-$。
+\end{itemize}
+含有奇数个$\phi^+$的项是零，这是自由场论的性质决定的。第一项是一个真空气泡图，除了引入一个无关紧要的常数修正以外没有任何作用，可以直接忽略。
+最后一项的期望是平凡的，它无非表明$\phi^-$也可以通过$\phi^4$项发生（不涉及高能模式）的相互作用。
+第二、四项有奇数个
+第三项是一个单顶角（因为是一阶修正）二粒子进二粒子出的图，这个图对低能的有效自由能有贡献。
+
+实际上，我们还有另一种更加图形的方式来确定低能有效自由能会有怎么样的修正。
+既然考虑一阶修正，肯定是一个单顶角图，那么必定只有四条粒子线。
+高动量线是要积掉的，因此一定是内线，从而我们要处理一个圈图。
+显然这四条粒子线中高动量线不能有奇数条，否则必然有高动量线是外腿；高动量线如果有4条，那就是真空气泡图（高动量线两两配对）；高动量线如果完全没有，那就完全是低能过程，不是重整化群导致的修正。
+因此只能是高动量线两条，低动量线两条，从而得到下面展示的图：
+\begin{equation}
+    \begin{aligned}
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (-1.5, 0);
+                \vertex (b) at (-0.0001, 0);
+                \propag [fermion] (a) to [edge label={$\vb*{k}_1$}] (b) ;
+                \vertex (c) at (0.0001, 0);
+                \vertex (d) at (1.5, 0);
+                \propag [fermion] (c) to [edge label={$\vb*{k}_2$}] (d) ;
+                \propag [fermion] (b) to [in=45, out=135, looseness=20000, edge label={$\vb*{k}_3$}] (c);
+            \end{feynhand}
+        \end{tikzpicture} &= - \frac{1}{4} g_0 \int \frac{\dd[d]{\vb*{k}_1}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_2}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_3}}{(2\pi)^d} \phi^*_{\vb*{k}_2} \phi_{\vb*{k}_1} \frac{1}{k_3^2 + \mu_0^2} (2\pi)^d \delta^d(\vb*{k}_1 - \vb*{k}_2) \\
+        &= - \frac{1}{4} g_0 \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \phi_{-\vb*{k}} \phi_{\vb*{k}} \int \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2}.
+    \end{aligned}
+    \label{eq:one-loop-correction}
+\end{equation}
+这里我们对传播子的动量积分时将积分上下限取在$\Lambda/\zeta$和$\Lambda$之间，因为要积掉高能自由度。
+对称性因子是$2 \cdot 2 = 4$，两个$2$分别来自从顶角引出的两条内线融合成了一个圈，以及两条外腿实际上是等价的这一事实。
+也可以通过$6/4!=4$得到这一因子。（现在我们看到在$\phi^4$项前面除以$4!$的好处了）
+\eqref{eq:one-loop-correction}前面的$-1$的因子是因为配分函数的被积函数是$\ee^{- F}$，由于自由能正比于$- \ln F$，这个负号在自由能的修正中会被消掉。
+虽然动量表象下自由能中有$4$个$1/(2\pi)^d$因子，但是在第一个等号中我们只写出了三个，因为其中一个和动量为$\vb*{k}_3$的传播子隐含地携带的一个$(2\pi)^d$抵消了：自由理论形如
+\[
+    \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \frac{1}{2} (k^2 + \mu_0^2),
+\]
+则根据高斯积分公式，在上式中加入扰动并做泛函求导之后应该得到
+\[
+    \expval{\phi(\vb*{k}_1) \phi(\vb*{k}_2)} = \frac{(2\pi)^d \delta(\vb*{k}_1 + \vb*{k}_2)}{k^2 + \mu_0^2}.
+\]
+
+\eqref{eq:one-loop-correction}给出了$\phi^2$项的系数的修正：
+\[
+    \frac{1}{2} {\mu'}^2 = \frac{1}{2} \mu_0^2 + \frac{1}{4} g_0 \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2},
+\]
+这是唯一的一阶修正；$\phi^4$项没有任何修正。（$\phi^4$型相互作用的一阶作用竟然没有造成低能标下$\phi^4$项的常数跑动）
+考虑到动量应做尺度变换
+\[
+    \vb*{k} \longrightarrow \vb*{k}' = \zeta \vb*{k}
+\]
+来让截断保持不变（在此过程中场$\phi$也要做标度变换，），且$\mu^2$的量纲为$2$，我们有
+\begin{equation}
+    \mu^2(\zeta) = \zeta^2 \left( \mu_0^2 + \frac{1}{2} g_0 \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2} \right), \quad g(\zeta) = \zeta^{4-d} g_0.
+    \label{eq:first-order-rg}
+\end{equation}
+这给出了高斯不动点$\mu^2=0, g=0$附加的重整化群流的一阶修正。
+这说明，一阶修正下，$\mu^2$是相关的，而$g$在不同维度下有不同的行为。当$d=4$时它是临界的。这并不是真正的临界，因为实际上当我们取更高阶修正时它不再是临界的了。
+
+\subsubsection{二阶修正}
+
+二阶费曼图，按照内线的条数，可以分类如\autoref{fig:single-second-order-correction}和\autoref{fig:double-second-order-correction}。
+我们有意忽略了四条内线的费曼图，因为这给出真空气泡图，只是给自由能增加了一个不重要的修正；我们也忽略了三条内线的费曼图，因为它将给出$\phi^2$项的修正，但是$\phi^2$项的修正中起主导地位的显然是一阶修正。
+只有\autoref{fig:single-second-order-correction}和\autoref{fig:double-second-order-correction}给出的二阶修正是占主导地位的。
+但是，\autoref{fig:single-second-order-correction}导致一个$\phi^6$项，而讨论金斯堡-朗道理论时已经确定了$\phi^6$不是相关的项，所以其实只需要讨论\autoref{fig:double-second-order-correction}即可。
+\autoref{fig:double-second-order-correction}中，一进三处的图严格为零，因为它的输入线连接的那个顶角处相当于一个低能粒子转化为一个高能粒子，而这是不可能的，动量不守恒。
+因此二阶修正中我们只需要计算一个图就可以，那就是\autoref{fig:double-second-order-correction}的第二个图。
+
+这个图的对称性因子是$2 \cdot 2 \cdot 2 \cdot 2 = 16$，四个$2$分别来自两端外腿的可交换性、中间两条内线的可交换性以及图本身左右对称。
+它对应的积分式为
+\[
+    \frac{1}{16} \int \frac{\dd[d]{\vb*{k}_1}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_2}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_3}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_4}}{(2\pi)^d} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} \delta(\sum_{i} \vb*{k}_i) \int \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2} \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + \mu_0^2},
+\]
+看起来非常复杂，但注意到
+\[
+    \frac{1}{(\vb*{k}_1 + \vb*{k}_2 - \vb*{q})^2 + \mu_0^2} \sim \frac{1}{q^2 + \mu_0^2} + \bigO(\vb*{k}_1, \vb*{k}_2),
+\]
+而含有$\vb*{k}_1$，$\vb*{k}_2$的项在对动量积分之后会给出$\phi^n (\grad{\phi})^2$之类的项，而它们是无关的，从而可以直接略去这些项而得到
+\[
+    \frac{1}{16} \int \frac{\dd[d]{\vb*{k}_1}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_2}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_3}}{(2\pi)^d} \int \frac{\dd[d]{\vb*{k}_4}}{(2\pi)^d} \phi_{\vb*{k}_1} \phi_{\vb*{k}_2} \phi_{\vb*{k}_3} \phi_{\vb*{k}_4} \delta(\sum_{i} \vb*{k}_i) \int \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + \mu_0^2)^2}.
+\]
+这意味着有修正
+\[
+    \frac{1}{4!} g' = \frac{1}{4!} g_0 - \frac{1}{16} g_0^2 \int \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + \mu_0^2)^2},
+\]
+其中减号的来源是因为$F \propto - \ln Z$。于是得到做了二阶修正的参数跑动：
+\begin{equation}
+    \mu^2(\zeta) = \zeta^2 \left( \mu_0^2 + \frac{1}{2} g_0 \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2} \right), \quad g(\zeta) = \zeta^{4-d} \left( g_0 - \frac{3}{2} g_0^2 \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + \mu_0^2)^2} \right).
+    \label{eq:coupling-running-2}
+\end{equation}
+可以看到当考虑了二阶修正时，$d=4$时$g$不再是临界的，它会减小，因此是无关的，或者说是“临界无关的”。
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \begin{feynhand}
+            \vertex (a) at (-2.1, 0) ;
+            \vertex (b) at (0.75, 1.8);
+            \vertex (c) at (0.75, -1.8);
+            \vertex (d) at (2.1, 0);
+            \vertex (e) at (0, 0) ;
+            \vertex (f) at (-2.85, 1.8);
+            \vertex (g) at (-2.85, -1.8);
+            \vertex (h) at (-4.2, 0);
+            \propag [fermion] (a) to (e);
+            \propag [antfer] (b) to (e);
+            \propag [antfer] (c) to (e);
+            \propag [antfer] (d) to (e);
+            \propag [fermion] (f) to (a);
+            \propag [fermion] (g) to (a);
+            \propag [fermion] (h) to (a);
+        \end{feynhand}
+    \end{tikzpicture}
+    \caption{单内线的二顶角图}
+    \label{fig:single-second-order-correction}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfigure[一进三出]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (0, 0);
+                \vertex (b) at (0.75, 1.8);
+                \vertex (c) at (0.75, -1.8);
+                \vertex (e) at (-1.5, 0);
+                \vertex (f) at (-1.499, 0);
+                \vertex (g) at (-3, 0);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (a) to (d);
+                \propag[fermion] (f) to (a);
+                \propag[fermion] (g) to (e);
+                \propag[fermion] (e) to [in=45, out=135, looseness=8000] (f);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \subfigure[二进二出]{
+        \begin{tikzpicture}
+            \begin{feynhand}
+                \vertex (a) at (1, 0);
+                \vertex (b) at (1.75, 1.8);
+                \vertex (c) at (1.75, -1.8);
+                \vertex (d) at (-1, 0);
+                \vertex (e) at (-1.75, 1.8);
+                \vertex (f) at (-1.75, -1.8);
+                \propag[fermion] (a) to (b);
+                \propag[fermion] (a) to (c);
+                \propag[fermion] (e) to (d);
+                \propag[fermion] (f) to (d);
+                \propag[fermion] (d) to [in=120, out=60, looseness=2] (a);
+                \propag[fermion] (d) to [in=240, out=300, looseness=2] (a);
+            \end{feynhand}
+        \end{tikzpicture}
+    }
+    \caption{二内线的二顶角图}
+    \label{fig:double-second-order-correction}
+\end{figure}
+
+我们刚才直接忽略了所有不相关的项，从而躲过了一个看似会出现的疑难。
+如果我们在坐标空间中工作，由于积掉了高能场，$\phi^4$项会具有超距作用。
+不过这并不会造成很大困扰，因为超距作用可以展开成一系列带有导数的项的级数，但既然仅有的相关的含有导数的项就是$(\grad{\phi})^2$，可以在重整化结束后忽略所有的超距作用。
+
+\subsection{$4-\epsilon$展开与Wilson-Fisher不动点}\label{sec:4-epsilon}
+
+一些维数具有比另一些维数更好的性质。例如，对$\phi^4$理论，四维下$g$是无关的，从而我们会得到一个自由理论，且有一个有一个无关方向的高斯型不动点，即可以得到一个相变点。
+在维数更低时高斯型不动点变得不稳定了。另一方面，当维数高于四维时，$g$是相关的，从而不便处理。
+
+现在考虑一个看起来非常奇怪的做法。设$d=4 - \epsilon$，即我们把含有维数的所有物理量都做解析延拓（或者等价地，认为所有的相互作用常数都做了一个类似于$\Lambda^{-\epsilon}$这样的修正），并且在$d=4$附近做展开。
+我们主要讨论低于四维的系统，即$\epsilon>0$。
+我们尝试计算高斯不动点附近的$\beta$函数，即我们认为$\zeta$近似为$1$，且各个耦合常数都很小，并且计算到$\epsilon$的一阶近似。对$\mu^2$有
+\[
+    \begin{aligned}
+        \beta(\mu^2) &= \dv{\mu^2}{\ln \zeta} = 2 \mu^2 + \frac{\zeta^3 g_0}{2} \dv{\zeta}  \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{q^2 + \mu_0^2} \\
+        &\approx 2 \mu^2 + \frac{\zeta^3 g_0}{2} \frac{1}{(2\pi)^d} \frac{\Lambda}{\zeta^2}  \frac{S_{d-1}(\Lambda)}{\Lambda^2 + \mu_0^2} \\
+        &\approx 2 \mu^2 + \frac{g}{2} \frac{1}{(2\pi)^{(4-\epsilon)}} \frac{\Lambda S_{3-\epsilon}}{\Lambda^2 + \mu^2} \\
+        &= 2 \mu^2 + \frac{g}{16 \pi^2} \frac{\Lambda^4}{\Lambda^2 + \mu^2}.
+    \end{aligned}
+\]
+在这里$S_{d-1}(\Lambda)$是$d-1$维超球面的面积，它是
+\[
+    S_{n-1} = \frac{2 \pi^{n/2}}{\Gamma(n/2)} \Lambda^{n-1}, \quad S_{3} = 2 \pi^2.
+\]
+在第二行积分式求导之后得到的结果中我们将$\Lambda / \zeta$替换为了$\Lambda$。第三行中我们用$g$代替了$g_0$，用$\mu$代替了$\mu_0$，并取$\zeta \approx 1$，这些近似并没有引入实质性的误差（实质性的误差来自做重整化操作时仅仅计算了有限个费曼图），因为$\beta$函数给出的是某个理论$(\mu^2, g)$\emph{附近}的重整化群流行为，而如果需要长距离的重整化群流，只需要求解$\beta$函数对应的微分方程即可。
+对$g$类似地可以得到
+\[
+    \begin{aligned}
+        \beta(g) &= \dv{g}{\ln \zeta} = (4-d) g - \frac{3 g_0^2}{2} \zeta^{5-d} \dv{\zeta} \int^\Lambda_{\Lambda/\zeta} \frac{\dd[d]{\vb*{q}}}{(2\pi)^d} \frac{1}{(q^2 + \mu_0^2)^2} \\
+        &= (4-d) g - \frac{3 g_0^2}{2} \zeta^{5-d} \frac{\Lambda}{\zeta^2} \frac{S_{d-1}(\Lambda)}{(2\pi)^d} \frac{1}{(\Lambda^2 + \mu_0^2)^2} \\
+        &\approx \epsilon g - \frac{3 g^2}{16 \pi^2} \frac{\Lambda^4}{(\Lambda^2 + \mu^2)^2}.
+    \end{aligned}
+\]
+于是就有以下一圈图的重整化群流：
+\begin{equation}
+    \beta(\mu^2) = 2 \mu^2 + \frac{g}{16 \pi^2} \frac{\Lambda^4}{\Lambda^2 + \mu^2}, \quad \beta(g) = \epsilon g - \frac{3 g^2}{16 \pi^2} \frac{\Lambda^4}{(\Lambda^2 + \mu^2)^2}.
+    \label{eq:rg-flow-near-gaussian}
+\end{equation}
+重整化群流的第一项不出意外的就是量纲导致的，后面的项则来自相互作用。
+可以看到高斯不动点也是\eqref{eq:rg-flow-near-gaussian}的不动点，但是\eqref{eq:rg-flow-near-gaussian}还有更多的不动点。
+可以求解得到另一组不动点，仅保留$\epsilon$的一阶项，得到
+\begin{equation}
+    \mu^2 = - \frac{\Lambda^2 \epsilon}{6}, \quad g = \frac{16 \pi^2}{3} \epsilon.
+    \label{eq:wilson-fisher}
+\end{equation}
+当$d=4$时仅有的不动点是高斯不动点$\mu^2=0, g=0$，$d$略微偏离$4$时由连续性不应该出现和这个高斯不动点之间有有限距离的不动点，但是高斯不动点可以分裂（产生所谓的Wilson-Fisher不动点），于是就得到\eqref{eq:wilson-fisher}。
+
+我们来分析\eqref{eq:wilson-fisher}附近的各个方向的相关性。
+设$\mu^2 = \var{\mu^2} + \mu_\star^2$，$g = \var{g} + g_\star$，带有星号的量是\eqref{eq:wilson-fisher}中定义的，代入\eqref{eq:rg-flow-near-gaussian}中，取$\epsilon$的一阶项，得到
+\[
+    \dv{\ln \zeta} \pmqty{\var{\mu^2} \\ \var{g}} = \pmqty{ 2 - \frac{\epsilon}{3} & \frac{\Lambda^2}{16 \pi^2} \left( 1 + \frac{\epsilon}{6} \right) \\ 0 & - \epsilon } \pmqty{\var{\mu^2} \\ \var{g}}.
+\]
+做对角化，得到两个本征值$2-\epsilon/3$和$-\epsilon$，前者对应的方向是$\var{\mu^2}$和$\var{g}$的某个线性组合，后者对应的方向就是$\var{g}$。
+对维数小于四维的系统，$\epsilon>0$，则$\var{g}$是无关的而$\var{\mu^2}$和$\var{g}$的某个线性组合是相关的。
+在$d<4$时虽然高斯不动点不稳定，但是Wilson-Fisher不动点只有一个相关方向，因此$d<4$时的相变点应该就是Wilson-Fisher不动点。
+具体的标度律为
+\[
+    \var{g} \sim \zeta^{-\epsilon}, \quad \var{\mu^2} + \const \times \var{g} \sim \zeta^{2 - \epsilon/3},
+\]
+略去$\var{\mu^2}$的表达式中不重要的项，得到$\var{\mu^2}$和$\var{\mu^2}$的反常量纲：
+\begin{equation}
+    \Delta_{\mu^2} = 2 - \frac{\epsilon}{3}, \quad \Delta_g = - \epsilon.
+\end{equation}
+
+如果$4-\epsilon$展开是合理的，那么Wilson-Fisher不动点就体现了体系的相变点，于是$4-\epsilon$展开可以用于计算临界指数，因为在Wilson-Fisher不动点附近各个参数的变化遵循标度律，于是可以把有关的指数当成反常量纲。
+我们有\eqref{eq:mf-parameter-assumption}，所以
+\begin{equation}
+    t \sim \mu^2 \sim 2 - \frac{\epsilon}{3}.
+\end{equation}
+也可以这么看问题：温度肯定是相关的，而我们求解出了一个相关方向和一个无关方向，那么温度的反常量纲一定就是那个相关方向的反常量纲，于是直接得到上式。
+
+\eqref{eq:correlation-length}中的$\gamma$现在是$1$，所以
+
+到现在为止我们还完全没有考虑外加磁场。由于$B \phi$项不满足无磁场时的对称性，它不会受到任何修正。$B \phi$项对其它项的修正体现在传播子中，但是在弱场近似下它相对于$\mu^2$很小，于是略去。
+因此$B \phi$项在Wilson-Fisher不动点附近的重整化群变换完全是平凡的量纲分析，我们可以发现$B$的反常量纲为
+\begin{equation}
+    \Delta_B = \frac{d+2}{2} = \frac{6-\epsilon}{2},
+\end{equation}
+实际上就是正常量纲。代入\eqref{eq:from-scaling-to-dimension}，得到
+\begin{equation}
+    \alpha = \frac{\epsilon}{6}, \quad \beta = \frac{1}{2} - \frac{\epsilon}{6}, \quad \gamma = 1 + \frac{\epsilon}{6}, \quad \delta = 3 + \epsilon, \quad \nu = \frac{1}{2} + \frac{\epsilon}{12}, \quad \eta = 0.
+\end{equation}
+令人惊讶的是取$\epsilon=1$——并不真的非常小的一个值——得到的结果和实验符合得很好。
+实际上，$\epsilon$在整个计算中只出现在量纲分析中——$\beta$函数中的圈图修正被假定是非常小的，从而这些项中不会出现另一个小量$\epsilon$，$\epsilon$只出现在$\epsilon g$这样的（正常）量纲导致的项中。
+
+\end{document}

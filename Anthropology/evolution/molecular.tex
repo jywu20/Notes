@@ -1,0 +1,177 @@
+\documentclass[hyperref, UTF8, a4paper, oneside]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{autobreak}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[compat=1.1.0]{tikz-feynhand}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newrefformat{chap}{第\ref{#1}章}
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\newrefformat{back}{背景知识\ref{#1}}
+\newrefformat{info}{资料框\ref{#1}}
+\newrefformat{warn}{注意事项\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=section]{back}{背景知识}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{back}
+\newtcbtheorem[number within=section]{info}{资料框}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+\newtcbtheorem[number within=section]{warning}{注意事项}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+
+\numberwithin{equation}{section}
+
+\newcommand{\hmn}[1]{% Hermann-Maguin notation
+  \ensuremath{\begingroup\setupHMN #1\endgroup}%
+}
+
+\newcommand{\setupHMN}{%
+  \doHMN{-}{\HMNoverline}%
+  \doHMN{*}{\HMNminverse}%
+  \doHMN{i}{\infty}
+}
+
+\newcommand{\doHMN}[2]{%
+  \begingroup\lccode`~=`#1
+  \lowercase{\endgroup\let~}#2%
+  \mathcode`#1="8000
+}
+
+\newcommand{\HMNminverse}[1]{\frac{#1}{m}}
+\newcommand{\HMNoverline}[1]{\mkern1mu\overline{\mkern-1mu#1\mkern-1mu}\mkern1mu}
+
+\newcommand{\Ztwo}{$\mathbb{Z}_2$}
+
+\newcommand{\bigO}[1]{\mathcal{O}(#1)}
+
+\title{分子人类学笔记}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+\section{系统发育树和系统发育网}
+
+\begin{figure}
+    \centering
+    \input{generation.tex}
+    \caption{染色体的传代：我们用颜色深浅来代表一个个体的祖先的染色体对某个后代个体的贡献，可以看到随着我们往上追溯族谱，大部分祖先的染色体的颜色都是很淡的}
+    \label{fig:generation-passing}
+\end{figure}
+
+较高等的动物有减数分裂。一个个体携带的一对同源染色体中，有一条来自父亲而另一条来自母亲。
+父亲和母亲在产生精子和卵子的时候是通过减数分裂，即来自他们每个人的父母的两条染色体又只有一条进入了配子中。
+这样表面上看，似乎在遗传信息的代际传递中，实际上只有两条染色体是重要的：一个个体的两条同源染色体是从$N$代祖父母的该种染色体中取了两条，或者说对该个体的该种染色体有贡献的每一代祖父母中都只有两个个体。
+不过，应当注意，减数分裂中会出现同源区段重组，从而，实际上，每一代祖父母中，对一个个体的某种染色体有贡献的个体数目要多于$2$。
+虽然如此，由于同源区段重组发生几率是不大的，对某一个体的某种染色体的贡献超过某一阈值的祖父母的个数随着代际数目的增加只是线性增加。
+这件事在\prettyref{fig:generation-passing}中展示得很清楚。
+另一方面，祖先的数目随着代际数目上升是指数增长的。
+因此，一个家族中，大部分的祖先对某个后代都几乎没有遗传信息的贡献。
+一个直接的结果就是，使用系统发育方法得到的族谱和（往往是记录父系血统的）族谱会非常不同，因为显然没有什么规定了主要的遗传物质贡献都来自每一代人的父系。
+
+虽然每个个体继承的祖先的遗传信息都只是很少一部分，但是如果种群不断扩张，每一代的后代个体都足够多，每个祖先的遗传物质都应该被一部分现存后代继承了（当然，可能有各种突变）。
+实际上种群当然不可能不断扩张，总会有几支血脉灭绝的，于是一个种群的现存后代的遗传信息就只来自其祖先的一小部分。
+
+以上我们都只是在讨论个体，不过其实我们可以更加细粒度一点，由于一条染色体上不同的部分可以来自不同的祖先，实际上可以讨论一个\emph{区段}的祖先等等。
+
+如果不考虑基因突变，那么通过已知同源的区段的DNA序列比对，我们可以粗略地确定现存个体的祖先：一些个体肯定有一个共同的祖先，另一些个体肯定具有另一个祖先，等等。
+基因突变让辨认族谱的工作稍微麻烦了一些，但是它带来的好处远远大于坏处：它能够让我们确定族谱的具体结构甚至分支时间。
+这是因为基因突变的速率是可以确定的，那么我们就能够通过类似于版本学的方法辨认出哪两个序列的关系更加紧密——总的来说，两个序列越相似它们的关系就越紧密，并且通过一些统计模型我们可以定量（虽然仍然不是非常精确）地获知它们可以追溯到多早的一个祖先。
+
+\begin{figure}
+    \centering
+    \input{tree-example.tex}
+    \caption{进化树或者说系统发育树的例子：红色和蓝色表示两个不同的可能祖先的后代}
+    \label{sec:tree-example}
+\end{figure}
+
+我们会发现，现存个体的DNA序列只是反映了一小部分祖先的DNA序列这件事实际上大大简化了我们重构族谱的工作，因为反正信息就这么多，族谱是能够很清楚地展示出来的。
+一个\emph{区段}可以有明确的\concept{进化树}或\concept{系统发育树}：由于同源区段重组是以同源区段为基本单位的，我们可以暂时认为同源区段的变化都来自基因突变。
+这样，设我们有一些区段$\{S_{i}\}$，通过彼此比较，会发现它们大体上会来自几个不同的祖先（注意，一个现存个体的某个区段一定可以追溯到一个单一的祖先！），在\prettyref{sec:tree-example}中用不同的颜色标记；这些祖先称为\concept{最近共同祖先}，他们之前当然还有更加早的共同祖先，但是那些共同祖先的遗传信息显然原则上无法通过比对DNA序列来获知。
+然后我们根据一个通常是马尔可夫链的基因变异模型，会发现，比如说，\prettyref{sec:tree-example}中的$S_1$和$S_2$很可能还有一个时间比较晚近的共同祖先，这个共同祖先和$S_3$再有某个（标记成红色的）共同祖先。
+注意我们这里说的是区段而不是基因：Y染色体自己可以看成一个大的区段，而我们可以画出非常漂亮的Y染色体进化树，从而将现有的全部男人定位到一个\concept{Y染色体亚当}上面。
+注意，这不是说在Y染色体亚当的时代地球上只有他一个男人，而只是说当时地球上的其他男人都绝后了。
+类似的，通过研究线粒体DNA我们能够将全部人——无论是男人还是女人——定位到一个\concept{线粒体夏娃}上面。
+
+另一方面，关于个体，原则上树并不是足够好的描述方式，既然不同区段完全可以来自两个完全不相关的祖先，并且在常染色体上，一个个体携带同一个等位基因的两个变体，所以即使我们只测试常染色体的单一区段，原则上也不能够绘制出符合历史事实的进化树：我们必须使用\concept{系统发育网}来代替系统发育树。
+不过这并不是说树在这类情况中毫无用处，因为无论如何，我们可以绘制\emph{聚类树}而不是\emph{进化树}。
+并且，由于出现在树中的样本通常不会太多，系统发育网的精确结构常常是揭示不出来的，此时聚类树实际上已经是对系统发育过程的足够好的描述了：我们可以假定历史上实际的演化过程大体上是树形的，在此假设之下建立树，然后评估这个树是否足够“稳定”，如果历史上的系统发育过程是非常网状的，那么使用树将不能够很好地拟合它，会出现多次计算得到的树完全不一样、一些结点始终不收敛等等暗示。
+
+常染色体上有大量基因这件事虽然让绘制族谱变得困难，但是同样是有益的，因为这个事实让我们能够更清楚地看到历史上的种群瓶颈——如果一个群体中大量基因的最近共同祖先都能够追溯到同一个时间段，那么这个群体多半就是这个时间段的一小群个体产生的。
+我们可以据此分析人群的迁移。
+常染色体上的基因也可以用于说明自然选择在人类进化的历史上起了什么样的作用。如果建立进化树后，发现某个支系的祖先的\concept{替换率}（即该祖先的基因相比于更早的祖先的基因的碱基变化的数量）非常大，那么说明很可能在这个祖先的时代出现了强烈的自然选择，携带有某种变种基因的个体留了下来，而携带有其它基因——往往是变异不那么大的基因——的个体则绝后了。
+自然选择也可以通过统计两个群体中不同基因型的频率的差异来确定，如果差异大得很明显，那么多半在历史上某个时期，至少一个群体经历了明显的自然选择。
+
+如果我们确定一些全人类都有的基因的最近共同祖先全部都在某个时间段内，可能正是这个时间段上，一小群人类始祖获得了具有非常大的选择优势的基因突变，然后一路繁衍成了现在的我们；某种意义上，这帮助了我们技术性地回答“什么样的灵长目算是人”这个问题。
+目前的研究还没有找到这种基因：对语言能力非常重要的FOXP2的最近共同祖先在100万年前，其它各种基因的最近共同祖先都至少在32万年前，这和一些学者认为的“10万年前出现了少数几个基因驱动的认知革命”的说法显然是矛盾的。
+
+
+
+\end{document}

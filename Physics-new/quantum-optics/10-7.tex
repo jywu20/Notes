@@ -1,0 +1,197 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+\date{October 7, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Measurement in quantum optics}
+
+The only thing we are confident that we can measure from an optical field is the photon number at one point.
+It is just like particle physics. In particle physics all we can measure is the scattering cross section, 
+and most of our time will be spent on calculating $S$-matrices or amputated Feynman diagrams, 
+while in quantum optics the only thing we can measure is the photon number, and most of our attention will be 
+put on the correlation functions arising from the Fermi golden rule. 
+
+The details of photodetectors re of course beyond this course, and here we just introduce a sketch of a single photon detection process.
+
+What a photodetector does is amplification of the electrons excited by incident photons, 
+and therefore despite the fact that we know nothing about the whole Hamiltonian of the detector, we do know the part of the Hamiltonian involving photons is $- \vb*{d} \cdot \vb*{E}^+$, where 
+\begin{equation}
+    \vb*{E}^+ = \sum_k \mathcal{E}_k \vb*{f}_k a_k \ee^{- \ii \omega_k t},
+\end{equation}
+because the detector annihilates an photon instead of creating one.
+The probability that ``a photon is annihilated and the whole system's final state (the tensor product of the detector's state and the optical field's state) is not its initial state but rather the state $\ket*{f}$'' is 
+\[
+    P_f \propto \abs*{\mel**{f}{- \vb*{d} \cdot \vb*{E}^+}{i}}^2 \tau = \mel{i}{\vb*{d} \cdot \vb*{E}^-}{f} \mel**{f}{\vb*{d} \cdot \vb*{E}^+}{i} \tau,
+\]
+where $\tau$ is the detection time, or the time between we open the detector to let light come in and the detector temporarily stops to see whether something has happened.
+Summing all final states up, and note the completeness condition
+\[
+    \sum_f \dyad{f} = \mathbbm{1}_\text{detector}, 
+\]
+we find 
+\[
+    P(\text{one photon detected}) \propto \tau \mel**{i}{(\vb*{d} \cdot \vb*{E}^-) (\vb*{d} \cdot \vb*{E}^+)}{i}.
+\]
+It can be immediately see that we can factor the expression into the multiplication of something about the detector and something about the optical field, and by doing so we finally get 
+\begin{equation}
+    P(\text{one photon detected at $\vb*{r}, t$}) = \eta \expval{\vb*{E}^-(\vb*{r}, t) \vb*{E}^+(\vb*{r}, t)}, \quad \eta \propto \tau d^2,
+\end{equation}
+where $\eta$ can be a tensor and the expectation is taken only for the optical field.
+
+This measurement scheme can be easily generated, and we will find that 
+\begin{equation}
+    \begin{aligned}
+        &\quad P(\text{photon detected at ($\vb*{r}_1, t_1), \ldots, (\vb*{r}_n$}, t_n)) \\
+        &= \eta^n \expval{\vb*{E}^-(\vb*{r}_1, t_1) \cdots \vb*{E}^-(\vb*{r}_n, t_n) \vb*{E}^+(\vb*{r}_n, t_n) \cdots \vb*{E}^+(\vb*{r}_1, t_1)}.
+    \end{aligned}
+    \label{eq:joint-detection}
+\end{equation}
+Note that despite the detectors are independent to each other, since they are all immersed in the same optical field, we cannot just factor \eqref{eq:joint-detection} into several factors concerning each detector.
+
+The correlation function in \eqref{eq:joint-detection} is in \emph{normal ordering}.
+Despite being derived with an optical field in a pure state, it is easy to see \eqref{eq:joint-detection} can be simply generated into mixed states.
+In a word, we only need to calculate \emph{time ordered correlation function} in quantum optics.
+
+\section{The general notion of coherence}
+
+It is natural, then, to ask how far \eqref{eq:joint-detection} deviates from the product of several independent probabilities regarding each detector, or in other words how \concept{coherent} the optical field is.
+
+The most obvious coherence comes from the two-point correlation function. 
+Here for simplicity we treat the electric fields as scalar, or in other words just consider one component of them.
+Generally, 
+\begin{equation}
+    \expval{{E}^-(\vb*{r}_1, t_1) {E}^+(\vb*{r}_2, t_2)} \eqqcolon g^{(1)}(\vb*{r}_1, t_1, \vb*{r}_2, t_2) \sqrt{\expval{{E}^+(\vb*{r}_1, t_1) {E}^-(\vb*{r}_1, t_1)} \expval{{E}^+(\vb*{r}_2, t_2) {E}^-(\vb*{r}_2, t_2)}} , 
+    \label{eq:g-1-correlation}
+\end{equation}
+and the factor $g^{(1)}(\vb*{r}_1, t_1, \vb*{r}_2, t_2)$ is usually not unity.
+Note that though no photodetector can directly measure the LHS of \eqref{eq:g-1-correlation}, it can be easily achieved by interferometers like Young's double-slit experiment.
+
+We can then study the temporal and spacial coherence from $g^{(1)}(\vb*{r}_1, t_1, \vb*{r}_2, t_2)$.
+Fixing $\vb*{r}_1 = \vb*{r}_2$, we have a time sequence 
+\[
+    g^{(1)}(t + \Delta \tau, t) \sim \text{normalized } \expval{E^-(t + \Delta\tau) E^+(t) }.
+\]
+By Fourier transformation, we have 
+\[
+    \expval{E^-(t + \Delta\tau) E^+(t) } = \frac{1}{2\pi} \int \dd{\omega} \ee^{\ii \omega \tau} 
+\]
+
+\section{The HBT effect}
+
+The \concept{Hanbury-Brown and Twiss effect} or for short the \concept{HBT effect} is a once-controversial experiment that was used to measure the apparent angular diameter of distant stars, for example Sirius.
+The fact that the experiment measures \emph{incoherent} light from a star and shows interference was the origin of much skepticism.
+The result can be justified using classical electrodynamics, but when we consider the quantum nature of the electromagnetic field, 
+the discreteness of photons may break the phenomenon. 
+We will show it is not the case: the HBT experiment is actually an example of \emph{nonlinear} interferometer in that what it measures is actually $g^{(2)}$.
+The fact that the optical field is quantum, however, can indeed alter the behavior of the HBT experiment.
+
+\begin{figure}
+    \centering
+    \input{10-7-figures/hbt-1.tex}
+    \caption{The original HBT experiment}
+    \label{fig:original-hbt}
+\end{figure}
+
+\prettyref{fig:original-hbt} is the 
+
+\end{document}
