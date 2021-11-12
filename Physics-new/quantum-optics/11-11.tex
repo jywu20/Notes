@@ -1,0 +1,246 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[info-]{../information/quantum-circuit}[quantum-circuit.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+\newcommand{\infodoc}{\href{../information/quantum-circuit}{the quantum information note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+\date{November 11, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Review of the quantization of the optical field}
+
+The electric field is 
+\begin{equation}
+    \vb*{E}(\vb*{r}, t) = \vb*{E}^+(\vb*{r}, t) + \vb*{E}^-(\vb*{r}, t),
+\end{equation}
+and we make the mode expansion 
+\begin{equation}
+    \vb*{E}^+ = \sum_{k} \mathcal{E}_k \vb*{f}_k(\vb*{r}) \ee^{- \ii \omega_k t} a_k, 
+    \quad \vb*{E}^- = \sum_{k} \mathcal{E}_k \vb*{f}^*_k(\vb*{r}) \ee^{\ii \omega_k t} a^\dagger_k,
+\end{equation}
+where 
+\begin{equation}
+    \mathcal{E} = \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}}.
+\end{equation}
+It can be verified that the following quantization scheme 
+\begin{equation}
+    \comm*{a_k}{a^\dagger_{k'}} = \delta_{k k'}, \quad \text{other commutators of $a, a^\dagger$} = 0,
+\end{equation}
+agrees with QED. The normalization condition for $\vb*{f}_k$ is 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{f}^*_k \cdot \frac{\vb*{\epsilon}}{\epsilon_0} \cdot \vb*{f}_k = V \delta_{k k'}.
+\end{equation}
+
+It can then be verified that for a single-mode multi-photon state $\ket*{n}$, we have 
+\begin{equation}
+    \expval*{\vb*{E}} = 0, \quad \expval*{\vb*{E}(\vb*{r}, t)^2}
+\end{equation}
+A thermal state is given by
+\begin{equation}
+    \rho_\text{thermal} = \prod_k \rho^k_\text{thermal}, \quad 
+    \rho^k_\text{thermal} = Z(k) \ee^{- \beta \hbar \omega_k} a^\dagger_k a_k = \sum_n \frac{\bar{n}_k^n}{(1 + \bar{n}_k)^{n+1}}, 
+    \quad \bar{n}_k = \frac{1}{\ee^{\beta \hbar \omega_k} - 1}.
+\end{equation}
+
+Thermal states are hard to manipulate and what are often used in laboratories are the ``most classical'' state in quantum optics - coherent states.
+They also appear in path integrals, which is quite reasonable.
+The definition of a coherent state $\ket*{\alpha}$ is 
+\begin{equation}
+    \ket*{\alpha} = \ee^{\alpha a^\dagger - \alpha^* a} \ket*{0} .
+\end{equation}
+They can be verified to be eigenstates of the annihilation operator and 
+\begin{equation}
+    a \ket*{\alpha} = \alpha \ket*{\alpha}.
+\end{equation}
+We have 
+\begin{equation}
+    \ket*{\alpha} = \ee^{- \abs*{\alpha}^2 / 2} \frac{\alpha^n}{n!} (a^\dagger)^n \ket*{0} 
+    = \ee^{- \abs*{\alpha} / 2} \frac{\alpha^n}{\sqrt{n!}} \ket*{n},
+\end{equation}
+and therefore 
+\begin{equation}
+    \abs*{\braket*{n}{\alpha}}^2 = \ee^{- \abs*{\alpha}^2} \frac{\abs*{\alpha}^{2n}}{n!}.
+\end{equation}
+
+If we have a normal-ordered function $f(a, a^\dagger)$, i.e. all $a^\dagger$'s are placed left to all $a$'s, 
+we have 
+\begin{equation}
+    \expval*{f(a, a^\dagger)}{\alpha} = f(\alpha, \alpha^*),
+\end{equation}
+which seems quite classical. Note, however, that we still have 
+\[
+    \expval*{f^2} \neq \expval*{f}^2,
+\]
+and that to obtain a normal ordered function we still need to calculate all the commutators.
+
+Since coherent states are so intuitive we may want to connect it to every state of the optical field.
+We introduce 
+\begin{equation}
+    X = \frac{1}{\sqrt{2}} (a + a^\dagger), \quad P = \frac{1}{\sqrt{2} \ii} (a - a^\dagger)
+\end{equation}
+and define 
+\begin{equation}
+    W(X, P) = \int \frac{\dd{x'} \dd{p'}}{2\pi} \expval*{\ee^{\ii p' (\hat{X} - X) - \ii x'(\hat{P} - P)}}. 
+\end{equation}
+
+Now we discuss observation - or ``detection'' - in quantum optics. Ideally according to Fermi golden rule we have 
+\[
+    P^{(n)}(\vb*{r}_1 t_1, \vb*{r}_2 t_2, \ldots, \vb*{r}_n t_n) 
+    \sim \expval*{E^-(\vb*{r}_1, t_1) E^-(\vb*{r}_2, t_2) \cdots E^-(\vb*{r}_n, t_n) E^+(\vb*{r}_n, t_n) \cdots E^+(\vb*{r}_1, t_1)}.
+\]
+TODO: whether observation effects are taken into account 
+
+For a Fock state, we have 
+\begin{equation}
+    g^{(2)} = 1 - \frac{1}{N_\text{photon}},
+    \label{eq:fock-2-coherence}
+\end{equation}
+and for a coherent state, we have 
+\begin{equation}
+    g^{(2)} = 1,
+    \label{eq:coherent-2-coherence}
+\end{equation}
+while for a thermal state, we have 
+\begin{equation}
+    g^{(2)} = 2.
+    \label{eq:thermal-2-coherence}
+\end{equation}
+The last equation is quite confusing. It is understandable that photons are nonrenewable resource in a Fock state so we have \eqref{eq:fock-2-coherence}, and that the optical field is very ``classical'' so we have \eqref{eq:coherent-2-coherence}, 
+but it is weird that observing one photon at a place \emph{increases} the probability to obtain another photon at the same site.
+\eqref{eq:thermal-2-coherence} actually comes from the statistical properties of bosons: Bosons tend to bunch.
+
+We can also perform a time-dependent measurement. 
+
+\section{Linear quantum optical circuit}
+
+We usually use Heisenberg picture in linear quantum optics. A process can then be described by 
+\begin{equation}
+    b_l^\dagger = S_{lk} a^\dagger_k,
+    \label{eq:linear-transformation}
+\end{equation}
+where $a^\dagger_k$'s are creation operators of the input modes and $b^\dagger_l$'s are creation operators of the output modes.
+$S$ is called the transformation matrix.
+\eqref{eq:linear-transformation} can also be seen as the boundary condition around the optical component.
+Multiplication of transformation matrices can be seen as multiplication of two time evolution operators as well as obtaining an effective transformation matrix like the case in electric circuit analysis.
+
+\begin{figure}
+    \centering
+    \input{11-11-figures/move-state.tex}
+    \caption{Optical circuit transforming one coherent state into another}
+    \label{fig:coherent-move}
+\end{figure}
+
+Consider the linear optical circuit shown in \prettyref{fig:coherent-move}.
+The transformation matrix is 
+\begin{equation}
+    \pmqty{r}
+\end{equation}
+\[
+    \ket*{\psi} = D_2(\alpha) f(a_1^\dagger) \ket*{0},
+\]
+
+We define 
+\begin{equation}
+    X_\beta = \frac{1}{\abs*{\beta}} (\beta^* a + \beta a^\dagger),
+\end{equation}
+and a beam splitter with a very small reflective coefficient 
+
+\end{document}

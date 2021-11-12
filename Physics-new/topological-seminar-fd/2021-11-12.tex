@@ -1,0 +1,174 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Fibonacci Anyons and Topological Quantum Computation by Prof. Yidun Wan}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\href{./2021-10-29}{This lecture} covered fusion and braiding in an intuitive and non-mathematical way.
+Among topological orders, the \concept{Fibonacci anyons} are of specific significance because they can be 
+used to implement universal quantum computation.
+The fusion rules are 
+\begin{equation}
+    1 \times \tau = \tau, \quad \tau \times \tau = \mathbbm{1} + \tau,
+\end{equation}
+and the topological spin of $\tau$ is $\ee^{\ii 2 \pi \frac{2}{5}}$.
+Like the case in particle physics or in spin systems, $\tau$ may be treated as a Hilbert subspace.
+
+The dimension of the Hilbert space of a $n$-$\tau$ system can be visualize via the \concept{Bratelli diagram}.
+By counting the number of fusion paths we find that the dimension of a $n$-$\tau$ system is the $n$th term of 
+the Fibonacci sequence. 
+Note that a fusion path labels a state, as is the case in spin systems: we may label the spin singlet state $\ket*{0, 0}$ as $\ket{\frac{1}{2} \otimes \frac{1}{2} \to 0}$.
+The dynamics are not relevant here, provided that the Hamiltonian allows a stable state with multiple anyons.
+The quantum dimension is defined as 
+\begin{equation}
+    d_\tau^{N-2} \simeq \dim \mathcal{H}_{N \tau} \text{\quad as $N \to \infty$}
+\end{equation} 
+and we have 
+\begin{equation}
+    d_\tau = \frac{1 + \sqrt{5}}{2},
+\end{equation}
+which is not an integer and implies that $\tau$ is a highly non-local object.
+The fact can also be seen from that $\tau \times \tau$ is two-dimensional, where there is a hidden degree of freedom of the composite particle.
+
+Solving the pentagon identity we have 
+\begin{equation}
+    F^1_{\tau\tau\tau} = 1, \quad F^\tau_{\tau\tau\tau} = \pmqty{\phi^{-1} & \sqrt{\phi^{-1}} \\ \sqrt{\phi^{-1}} & \phi^{-1}}.
+\end{equation}
+
+We define 
+\input{tau-bit-0.tex}
+and 
+\input{tau-bit-1.tex}
+Other states are non-computational states.
+The generators of braiding operations that may be applied to these states include $\sigma_1$ and $\sigma_2$.
+The operations form the three-strand braiding group $B_3$.
+It can be proved that a representation of $B_3$ is % TODO
+
+We find that $\rho(\sigma_1)$ and $\rho(\sigma_2)$ are block-diagonal, where the non-computational 
+states are not coupled with $\ket*{0}$ and $\ket*{1}$, while the blocks of $\rho(\sigma_1)$ and $\rho(\sigma_2)$
+that apply on the subspace spanned by $\ket*{0}$ and $\ket*{1}$ cannot be diagonalized simultaneously.
+Therefore we can throw away the non-computational states and focus on the subspace spanned by $\ket*{0}$ and $\ket*{1}$
+and the representation of $B_3$ on this space has quantum fluctuation.
+It can then be found that the representation of $B_3$ on this subspace $\mathcal{H}_{0, 1}$ is a dense subset of the representation 
+of $SU(2)$ on $\mathbb{C}^{2 \times 2}$.
+Therefore, each operation on a qubit is either in the representation of $B_3$ on $\mathcal{H}_{0, 1}$ or is a limit point of a sequence 
+of operators in the representation of $B_3$ on $\mathcal{H}_{0, 1}$.
+So approximately by braiding we can implement any $SU(2)$ operations - or in other words single-qubit quantum gates - on $\mathcal{H}_{0, 1}$.
+
+We can extend the above procedure to the braiding of multiple qubits, so any multiple-qubit quantum gates can be implemented as 
+accurate as we want using braiding. 
+
+In conclusion, the Fibonacci anyon system is the simplest system that is universal for quantum computing, and it is truly 
+\emph{topological}: both the quantum states and the quantum gates are robust in that local perturbation cannot cause any error.
+
+It should be noted that when $\rho(\sigma_1)$ and $\rho(\sigma_2)$ are implemented, we are not sure whether we are performing the 
+version with $\mathcal{H}_{0, 1}$ and the non-computational states decoupled.
+If the non-computational states are involved, we say there is \concept{leakage}. Topological quantum computing on Fibonacci anyons
+are not robust against leakage. Quantum error correcting is one way to eliminate leakage. Another approach is to use long braiding
+sequences to lower the leakage, because we can make the leakage to the non-computational states bounded and after a long operation
+sequence the effective leakage is small. Anyway, since we have never experimentally see a Fibonacci anyon system, discussing how to 
+make the topological quantum computing on such systems may be too early.
+
+\end{document}
