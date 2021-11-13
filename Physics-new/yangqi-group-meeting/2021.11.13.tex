@@ -1,0 +1,205 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% This package causes conflict.
+% \usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Math operators used in this lecture
+\DeclareMathOperator{\cone}{C}
+\DeclareMathOperator{\suspension}{S}
+\DeclareMathOperator{\sigmasus}{\Sigma}
+\DeclareMathOperator{\loopspace}{\Omega}
+
+\title{$\omega$-spectrum and SPT by Tian Yuan}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+Suppose $X \in \mathsf{Top}$. We define the \concept{cone} of $X$ as 
+\begin{equation}
+    \cone X \coloneqq X \times I / X \times \{1\}.
+\end{equation}
+The meaning of ``cone'' is quite clear: we first make a cylinder with cross section $X$ and then make it into a cone.
+Similarly we define the \concept{suspension} of $X$ as 
+\begin{equation}
+    \suspension X = X \times I / (X \times \{1\} \cup X \times \{0\}).
+\end{equation}
+For pointed space $X \in \mathsf{Top}_*$ we have 
+\begin{equation}
+    \sigmasus X = \suspension X / x_0 \times I.
+\end{equation}
+
+Now suppose we have two topological spaces $A$ and $X$, and $A$ is included in $X$.
+We have the following sequence 
+\begin{equation}
+    A \hookrightarrow X \hookrightarrow \underbrace{X \cup \cone A}_{\simeq X / A} 
+    \hookrightarrow  \underbrace{(X \cup \cone A) \cup \cone X}_{\simeq \suspension A} 
+    \hookrightarrow \underbrace{((X \cup \cone A) \cup \cone X) \cup \cone (X \cup \cone A)}_{\simeq \suspension X} 
+    \hookrightarrow \cdots.
+\end{equation}
+Here the union operation is the ``geometric'' one and uses the natural identifications like 
+the one of $A$ and $A \times \{0\}$. Continuing this sequence we have 
+\begin{equation}
+    \suspension A \hookrightarrow \suspension X \hookrightarrow 
+    \underbrace{\suspension X / \suspension A}_{\suspension(X / A)}
+    \hookrightarrow \suspension^2 A \hookrightarrow \suspension^2 X \hookrightarrow \cdots.
+    \label{eq:seq-1}
+\end{equation}
+We also have a version of \eqref{eq:seq-1} for pointed spaces, which can be obtained by replacing $\suspension$ with $\sigmasus$.
+
+\eqref{eq:seq-1} and its pointed space version give us a strong sense of cohomology. 
+Here we define the \concept{generalized cohomology}. 
+This is defined by a functor $h^n : (\mathsf{hCW}_*)^\text{op} \to \mathsf{Ab}$ where $\mathsf{hSW}_*$ is the category of CW 
+complexes in which we have modded out homotopy equivalence, and the following conditions
+(called the \concept{axioms of generalized cohomology}) hold:
+\begin{enumerate}
+    \item We have the following exact sequence 
+    \begin{equation}
+        \cdots \to h^n(X / A) \stackrel{q^*}{\to} h^n(X) \stackrel{i^*}{\to} h^n(A) \stackrel{\delta}{\to} h^{n+1}(X / A) \to \cdots,
+    \end{equation}
+    where $\delta$ is a boundary operator (the choice of which is not specified by the axioms of generalized cohomology),
+    and we have the commutative diagram 
+    \begin{equation}
+        \begin{matrix}
+            h^n(A) & \stackrel{\delta}{\to} & h^{n+1}(X / A) \\
+            \downarrow & & \downarrow \\
+            h^n(B) & \stackrel{\delta}{\to} & h^{n+1}(Y / B).
+        \end{matrix}
+    \end{equation}
+    \item we have 
+    \begin{equation}
+        h^n(V_\alpha X_\alpha) \stackrel{\prod_\alpha i^*_\alpha}{\longrightarrow} \prod_\alpha h^n(X_\alpha). 
+    \end{equation}
+\end{enumerate}
+
+Condition 1 is equivalent to the condition that $h^n(X)$ is naturally equivalent to $h^{n+1}(\sigmasus X)$ and we have a 
+short exact sequence
+\begin{equation}
+    h^n(X / A) \to h^n(X) \to h^n(A).
+\end{equation}
+
+Define the \concept{loop space} $\loopspace X$ of $X$ as the set of all possible $I \to X$ with good enough properties.
+It can be verified that $\loopspace X$ has a topological structure.
+Define $\langle A, B \rangle$ to be homotopy classes of (basepoint preserving?) maps from $A$ to $B$.
+We have group structure on $\langle A, B \rangle$.
+We have 
+\begin{equation}
+    \langle \sigmasus X, Y \rangle \simeq \langle X, \loopspace Y \rangle,
+    \label{eq:iso-1}
+\end{equation}
+and we know that $x_0$ in $\sigmasus X$ is mapped to the trivial loop because it is contractable.
+Note that from \eqref{eq:iso-1} we have 
+\begin{equation}
+    \pi_{n+1}(Y) \simeq \pi_n(\Omega Y).
+\end{equation}
+It can also be proved that $\langle \cdot, \loopspace^2 \cdot \rangle$ is always an Abelian group.
+
+The definition of \concept{$\Omega$-spectrum} can now be given. $\{K_n\}_{n \in \mathbb{Z}}$ is an $\Omega$-spectrum if 
+\begin{equation}
+    \loopspace K_{n+1} \simeq K_n.
+\end{equation}
+
+From this definition we find a realization of generalized cohomology. The functor is 
+\begin{equation}
+    h^n(\cdot) = \langle \cdot, K_n \rangle.
+    \label{eq:cohom-imp}
+\end{equation}
+Since $\langle \cdot, \loopspace^2 \cdot \rangle$ is always an Abelian group,
+we find 
+\[
+    \langle X, K_n \rangle \simeq \langle X, \loopspace K_{n+1} \rangle \simeq \langle X, \loopspace^2 K_{n+2} \rangle \in \mathsf{Ab},
+\]
+so we see \eqref{eq:cohom-imp} is definitely to $\mathsf{Ab}$.
+
+The proof of the exact sequence condition 1 can be finished with the help of \eqref{eq:seq-1}.
+
+We finish this introduction with the \concept{Brown representation}, which says that every generalized cohomology can be implemented 
+by an $\Omega$-spectrum in that we can always find a series $\{K_n\}_{n \in \mathbb{Z}}$ such that 
+\begin{equation}
+    \langle X, K_n \rangle \simeq h^n(X).
+\end{equation}
+
+
+\end{document}
