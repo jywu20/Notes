@@ -1,0 +1,304 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+%\zexternaldocument*[prev-]{./lecture-10-20}[lecture-10-20.pdf]
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+% \zexternaldocument*[prev-]{./lecture-11-3}[lecture-11-10.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+\newcommand{\opticsddoc}{\href{../optics/optics}{the solid state physics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+\newcommand{\prevdoc}{\href{./lecture-11-3}{the previous lecture}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\allowdisplaybreaks
+
+\title{Green Function in Electrodynamics by Prof. Kun Din}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{A review of the theory of basic linear operators}
+
+It should be noted that the operators representing the system in linear optical systems are slightly more 
+complicated that the case in quantum mechanics. For example, 
+in Section~\ref{optics-sec:long-wavelength-photon-maxwell-general} in \opticsddoc, 
+we find the orthogonal relation is
+\[
+    \int_V \dd[3]{\vb*{r}} \vb*{u}^*_m \cdot \vb*{\epsilon} \cdot \vb*{u}_n = \delta_{mn}
+\]
+instead of 
+\[
+    \int_V \dd[3]{\vb*{r}} \vb*{u}^*_m \cdot \vb*{u}_n = \delta_{mn}.
+\]
+This means the Maxwell equations in a general linear optical system is \emph{not} Hermitian in the sense in quantum mechanics.
+
+Here we review basic aspects of linear operators in an attempt to create a ``generalized quantum mechanics'' for photons.
+
+Given an inner product $\langle \cdot, \cdot \rangle$, which is a positive bilinear form,
+we define the \emph{adjoint} of a linear operator $\mathcal{L}$ as $\bar{\mathcal{L}}$ such that for all vectors $u, v$, we have 
+\begin{equation}
+    \langle v , \mathcal{L} u \rangle = \langle \bar{\mathcal{L}} v, u \rangle.
+\end{equation}
+Then we have the following theorems:
+\begin{itemize}
+    \item \concept{Fredholm's theorem}: The orthogonal complement of the row space of $\mathcal{L}$ is the null space of $\mathcal{L}$.
+    In other words, if there exists a vector $u$ such that $\mathcal{L} u = f$, and we have $\bar{\mathcal{L}} v = 0$, 
+    then $\expval{v, f} = 0$.
+    \item Each linear operator corresponds to a bilinear form.
+    \item If $\mathcal{L} u_n = \lambda_n u_n$ and $\bar{\mathcal{L}} v_m = \lambda_m v_m$, then $\expval{v_m, u_n} = \delta_{mn}$.
+    In other words the orthogonal relation now works for a \concept{right eigenvector} and a \concept{left eigenvector}.
+\end{itemize}
+
+Let us consider elementary linear algebra on $\mathbb{C}$, which is the quantum mechanics for lattice systems, like a tight-binding model.
+Operators now correspond to matrices, and we no longer distinguish the two concepts.
+We define 
+\begin{equation}
+    \expval{\vb{a}, \vb{b}} = \vb{a}^\dagger \vb{b},
+\end{equation}
+which is a positive bilinear form. The definition of adjoints now reads 
+\[
+    \vb{v}^\dagger (\mathcal{L} \vb{u}) = (\bar{\mathcal{L}} \vb{v})^\dagger \vb{u} = \vb{v}^\dagger (\bar{\mathcal{L}})^\dagger \vb{u},
+\]
+or in other words $\bar{\mathcal{L}} = \mathcal{L}^\dagger$.
+If $\bar{\mathcal{L}} \vb{u} = \lambda \vb{u}$, i.e. $\vb{u}$ is a left eigenvector of $\mathcal{L}$, then 
+\[
+    \lambda^* \vb{u}^\dagger = (\bar{\mathcal{L}} \vb{u})^\dagger = \vb{u}^\dagger \mathcal{L}^{\dagger \dagger} 
+    = \vb{u}^\dagger \mathcal{L},
+\]
+and we see the meaning of the term ``left eigenvector''.
+
+Now we go to a infinite-dimensional case: \concept{Sturm-Liouville theory}. Consider a differential operator 
+\begin{equation}
+    \mathcal{L} = p_0 \dv[2]{x} + p_1 \dv{x} + p_2,
+\end{equation}
+and we define 
+\begin{equation}
+    \expval{f, g} = \int_{a}^b \dd{x} f(x)^* g(x).
+\end{equation}
+By integration by parts we have 
+\[
+    \begin{aligned}
+        \expval{v, \mathcal{L}u} &= \int_a^b \dd{x} v^* \left( p_0 \dv[2]{u}{x} + p_1 \dv{u}{x} + p_2 u \right) \\
+        &= \eval*{\left( (p_0 v^*) \dv{u}{x} - \dv{(p_0 v^*)}{x} u + p_1 v^* u \right) }_{a}^{b} 
+        + \int_a^b \dd{x} \left(\dv[2]{(p_0 v^*)}{x} - \dv{(p_1 v^*)}{x} + p_2 v^*\right) u .
+    \end{aligned}
+\]
+We say the \concept{formal adjoint} of $\mathcal{L}$ is defined by
+\begin{equation}
+    \bar{\mathcal{L}} f = \dv[2]{(p_0 f)}{x} - \dv{(p_1 f)}{x} + p_2 f.
+    \label{eq:formal-adjoint}
+\end{equation}
+If the boundary condition makes 
+\begin{equation}
+    \eval*{\left( (p_0 v^*) \dv{u}{x} - \dv{(p_0 v^*)}{x} u + p_1 v^* u \right) }_{a}^{b} = 0
+    \label{eq:sl-boundary}
+\end{equation}
+holds, then the formal adjoint of $\mathcal{L}$ defined in \eqref{eq:formal-adjoint} is the true adjoint.
+We can see that \eqref{eq:sl-boundary} holds under Dirichlet boundary condition, Neumann boundary condition 
+and Floquent boundary condition, so Sturm-Liouville theory works perfectly well for a large class of physical problems.
+We usually define 
+\begin{equation}
+    \expval{v, \mathcal{L} u} - \expval*{\bar{\mathcal{L}} v, u} = J(v, u)
+    \label{eq:generalized-green}
+\end{equation}
+as the \concept{bilinear concomitant}, where $\mathcal{L}$ is the formal adjoint in \eqref{eq:formal-adjoint}.
+\eqref{eq:generalized-green} may be seen as the generalized version of the Green formula in electrostatics.
+We can see that $\mathcal{L}$ is self-adjoint if and only if 
+\begin{equation}
+    p_1 = \dv{p_0}{x}.
+    \label{eq:self-adjoint-condition}
+\end{equation}
+
+It can be soon realized that \eqref{eq:self-adjoint-condition} does not hold in electrodynamics, 
+where $p_0$ may have spacial variation (i.e. $\epsilon$) but there is no $p_1$.
+There is one way to make up for the fact. We define 
+\begin{equation}
+    w(x) = \frac{1}{p_0} \exp(\int \dd{x} \frac{p_1(x)}{p_0(x)}),
+\end{equation}
+\begin{equation}
+    \bar{p}_0 = \exp(\int \dd{x} \frac{p_1(x)}{p_0(x)}),
+\end{equation}
+and 
+\begin{equation}
+    \bar{p}_1 = \frac{p_1}{p_0} \exp(\int \dd{x} \frac{p_1(x)}{p_0(x)}),
+\end{equation}
+then we have 
+\begin{equation}
+    \int_a^b \dd{x} v^* (w(x) \mathcal{L}) u = 
+    \eval{(v^* \bar{p}_0 u' - (v^*)' \bar{p}_0 u)}_a^b + \int_a^b \dd{x} (w(x) \mathcal{L} v)^* u. 
+\end{equation}
+So here again, we define the inner product to be 
+\begin{equation}
+    \expval{u, v} = \int_a^b \dd{x} u^* v,
+\end{equation}
+and we define the formal adjoint to be $\mathcal{L}^*$, and if the boundary condition makes 
+\begin{equation}
+    \eval{(v^* \bar{p}_0 u' - (v^*)' \bar{p}_0 u)}_a^b = 0
+\end{equation}
+holds then $\mathcal{L}$'s adjoint is the formal adjoint.
+
+\section{Maxwell equation}
+
+We consider the wave equation 
+\begin{equation}
+    \left( \curl \curl - \left(\frac{\omega}{c}\right)^2 \epsilon_\text{r}(\vb*{r})\right) \vb*{E} = 0.
+\end{equation}
+This may be viewed as an eigenvalue problem, where the linear operator is 
+\begin{equation}
+    \mathcal{L}_E = \frac{1}{\epsilon_\text{r}(\vb*{r})} \curl \curl.
+    \label{eq:wave-eigen-1}
+\end{equation}
+To make the equation more symmetric, we define 
+\begin{equation}
+    \vb*{Q}(\vb*{r}) = \sqrt{\epsilon_\text{r}(\vb*{r})} \vb*{E}(\vb*{r}),
+\end{equation}
+and now problem \eqref{eq:wave-eigen-1} reads 
+\begin{equation}
+    H \vb*{Q} \coloneqq \frac{1}{\sqrt{\epsilon_\text{r}(\vb*{r})}} 
+    \curl \left( \curl \frac{1}{\sqrt{\epsilon_\text{r}(\vb*{r})}} \vb*{Q}(\vb*{r}) \right)
+    = \left(\frac{\omega}{c}\right)^2 \vb*{Q}.
+\end{equation}
+We define inner product for $\vb*{Q}$ vectors as 
+\[
+    \expval{\vb*{f}, \vb*{g}} = \int \dd[3]{\vb*{r}} \vb*{f}^*(\vb*{r}) \cdot \vb*{g}(\vb*{r}),
+\]
+and then we have 
+\[
+    \int \dd[3]{\vb*{r}} \left( \frac{1}{\sqrt{\epsilon_\text{r}}} \curl \left( \curl \frac{1}{\sqrt{\epsilon_\text{r}}} \vb*{Q}_1^* \right) \right) \cdot \vb*{Q}_2
+    = \oint \dd{\vb*{S}} \cdot \left( \left( \curl \frac{\vb*{Q}^*_1}{\sqrt{\epsilon_\text{r}}} \right) \times \frac{\vb*{Q}_2}{\sqrt{\epsilon_\text{r}}} \right)
+    + , % TODO
+\]
+for Floquent boundary condition the surface term vanishes, and we fine \eqref{eq:wave-eigen-1} is self-adjoint.
+Thus, under the definition of inner product 
+\begin{equation}
+    \expval*{\vb*{E}_1, \vb*{E}_2} = \expval*{\vb*{Q}_1, \vb*{Q}_2} = \int \dd[3]{\vb*{r}} \epsilon_\text{r}(\vb*{r}) \vb*{E}_1^* \cdot \vb*{E}_2.
+\end{equation}
+
+Now we consider the generalized linear constitutive relation 
+\begin{equation}
+    (\tensor{\vb*{D}} - \ii \omega \tensor{\vb*{K}}) \vb*{e} = - \vb*{J},
+\end{equation}
+where 
+\begin{equation}
+    \tensor{\vb*{D}} \coloneqq \pmqty{0 & - \ii \curl \\ - \ii \curl & 0}, 
+    \quad \tensor{\vb*{K}} \coloneqq \pmqty{ \tensor{\vb*{\epsilon}} & \tensor{\vb*{\xi}} \\ \tensor{\vb*{\eta}} & \tensor{\vb*{\mu}} },
+    \quad \vb*{e} \coloneqq \pmqty{\vb*{E} \\ \vb*{H}} , \quad \vb*{j} \coloneqq \pmqty{\vb*{J} \\ \vb*{M}}.
+\end{equation}
+Let 
+\begin{equation}
+    U = \pmqty{\dmat{1, -1}},
+\end{equation}
+and we have 
+
+\section{Review}
+
+\begin{itemize}
+    \item Transforming differential equations into integral equations often makes things easier: the idea of Green functions.
+    \item Green function as the inverse of the LHS of an inhomogeneous equation.
+    \item From scalar Green function to the dyadic Green function.
+    \item Retarded potential.
+    \item Example: electric dipole.
+    \item Green function and Fourier transformation.
+    \item On-shell and off-shell properties.
+    \item Weyl and Sommerfield representation.
+    \item Fourier transformation of the dyadic Green function.
+    \item Spectrum decomposition.
+    \item The foundation of the spectrum decomposition: linear operators, adjoint.
+\end{itemize}
+
+These lectures do not cover 1D or 2D cases. The low dimensional cases may be derived in the same manner.
+The 1D, 2D and 3D Green functions are related. For example, the 2D Green function may be viewed as a 
+generalized 3D Green function with a line source instead of a point source.
+
+\end{document}
