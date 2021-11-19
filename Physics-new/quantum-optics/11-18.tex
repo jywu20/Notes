@@ -1,0 +1,283 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[info-]{../information/quantum-circuit}[quantum-circuit.pdf]
+\zexternaldocument*[1028-]{./10-28}[10-28.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
+\newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
+\newcommand{\infodoc}{\href{../information/quantum-circuit}{the quantum information note}}
+\newcommand{\atomicintrodoc}{\href{./10-28}{this note}}
+
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{sec}{Section~\ref{#1}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+\date{November 18, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Existence of back-reaction from the atom to the optical field}
+
+In the semi-classical approximation made in Section~\ref{1028-sec:semi-classical} in \atomicintrodoc,
+we assume the optical field does not feel the back-reaction of the atom, which is certainly impossible.
+In this section we discuss how to include the back-interaction.
+
+The Hamiltonian is again 
+\begin{equation}
+    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma},
+\end{equation}
+where 
+\begin{equation}
+    \vb*{\Omega} = (\Omega, 0, 0), \quad \Omega = \frac{\vb*{\mathcal{E}} \cdot \vb*{d}_{eg}}{\hbar}.
+\end{equation}
+The initial state is $\ket*{\psi(0)} = \ket*{g}$, and we have 
+\begin{equation}
+    \ket*{\psi(t)} = \cos \frac{\Omega t}{2} \ket*{g} + \ii \sin \frac{\Omega t}{2} \ket*{e}.
+\end{equation}
+
+Now we calculate the expectation of the electric dipole.
+Under the interaction picture we picked up in \atomicintrodoc{} (see \eqref{1028-eq:dipole-interaction-picture})
+we have 
+\begin{equation}
+    \vb*{d} = \vb*{d}_{eg} \ee^{\ii \omega_{eg} t } \dyad*{e}{g} + \text{h.c.},
+\end{equation}
+and thus we have 
+\begin{equation}
+    \expval*{\vb*{d}} = \vb*{d}_{eg} \sin \Omega t \sin \omega_{eg} t .
+\end{equation}
+We can see the expectation of the electric dipole has four frequency components, which are $\pm (\Omega \pm \omega_{eg})$,
+and therefore the atom will radiate electromagnetic wave in these frequencies.
+This is quite reasonable because the atom is receiving constant energy input, and we can expect somehow there is energy loss.
+This example of a two-level atom in a vibrating external field means we have \concept{stimulated emission}.
+
+Let us see another example. If we set 
+\begin{equation}
+    \Omega = \begin{cases}
+        \frac{\pi}{2 T}, &\quad 0 < t < T, \\
+        0,               &\quad \text{otherwise}.
+    \end{cases}
+\end{equation}
+After $t = T$ we have 
+\begin{equation}
+    \ket*{\psi} = \frac{1}{\sqrt{2}} (\ket*{g} + \ii \ket*{e}).
+\end{equation}
+Again we calculate the expectation of the electric dipole, and we have 
+\begin{equation}
+    \expval*{\vb*{d}} = \vb*{d}_{eg} \sin \omega_{eg} t,
+\end{equation}
+and again we expect radiation from the atom with frequency $\omega_{eg}$.
+This example hints that an excited atom may radiate and this is \concept{spontaneous emission}.
+
+\section{Spontaneous emission of a two-level atom}
+
+Now we consider the joint (quantum) system of the atom and the optical field.
+We make the approximation that the optical field may either be on the vacuum state or on the one-photon state, 
+and intuitively, we assume that when the atom is on the ground state there is a photon and when the atom is 
+on the excited state there is no photon, so the joint wave function is
+\begin{equation}
+    \ket*{\Phi(t)} = c_e \ket*{e, 0} + \sum_{k} c_k \ket*{g, 1_k}.
+\end{equation}
+The interaction Hamiltonian is 
+\begin{equation}
+    H_\text{I} = - \sum_k g_k \ee^{\ii \Delta_k t} a_k \dyad*{e}{g} + \text{h.c.},
+\end{equation}
+where 
+\begin{equation}
+    \Delta_k = \omega_k - \omega_{eg},
+\end{equation}
+and
+\begin{equation}
+    g_k = \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} \frac{\vb*{f}_k \cdot \vb*{d}_{eg}}{\hbar}.
+\end{equation}
+The time evolution is given by
+\begin{equation}
+    \ii \dot{c}_e = \sum_k g_k \ee^{\ii \Delta_k t} c_k, \quad \ii \dot{c}_k = g_k \ee^{- \ii \Delta_k t} c_e.
+\end{equation}
+
+We consider the example of spontaneous emission. We set 
+\begin{equation}
+    \ket*{\Phi(0)} = \ket*{e, 0},
+\end{equation}
+and further we assume that 
+\begin{equation}
+    \sum_k \abs*{c_k(t)}^2 \ll 1.
+\end{equation}
+The first order perturbation is 
+\[
+    c^{(1)}_k(T) = - \ii \int_0^T \dd{t} \ee^{- \ii \Delta_k t} c^{(0)}_e = - g_k \frac{\ee^{- \ii \Delta_k t} - 1}{\Delta_k},
+\]
+and thus we have 
+\[
+    \abs*{c_k(t)}^2 = \abs*{g_k}^2 \frac{t^2 \sin^2 \Delta_k t / 2}{(\Delta_k t / 2)^2} .
+\]
+If we measure the system at $t$, then the probability to find a photon (i.e. spontaneous emission happens) is 
+\[
+    P_\text{emission}(t) = \sum_k \abs*{c_k(t)}^2 = \sum_k \abs*{g_k}^2 \frac{ \sin^2 \Delta_k t / 2}{(\Delta_k / 2)^2} .
+\]
+The transition rate - which is defined by thinking \eqref{eq:original-spontaneous-emission} as a classical random process - is
+\begin{equation}
+    \begin{aligned}
+        \Gamma &= \dv{P_\text{emission}}{t} = 
+        \sum_k \abs*{g_k}^2 \frac{(\Delta_k / 2) \times 2 \sin \Delta_k t / 2 \cos \Delta_k t / 2 }{(\Delta_k / 2)^2} \\
+        &= \sum_k \abs*{g_k}^2 \frac{2 \sin \Delta_k t  }{\Delta_k}.
+    \end{aligned}
+    \label{eq:original-spontaneous-emission}
+\end{equation}
+
+We try to evaluate \eqref{eq:original-spontaneous-emission} in the free space, where $k = (\vb*{k}, \sigma)$.
+We have 
+\[
+    \sum_k \abs*{g_k}^2 \frac{2 \sin \Delta_k t  }{\Delta_k} 
+    = \int \dd{\omega} g(\omega) |g_k|^2 \frac{2 \sin \Delta_k t}{\Delta_k},
+\]
+where the $g_k$ on the RHS is rephrase into a function of $\omega$ and some additional labels that distinguish degenerate states.
+We see that when $t$ is large compared to $\omega_{eg}$, 
+the RHS is proportion to $t$ when $\Delta_k = 0$ and is almost zero otherwise, 
+and therefore we may think ${2 \sin \Delta_k t} / {\Delta_k}$ as an approximation of the Dirac $\delta$-function.
+Note that 
+\[
+    \int_{-\infty}^\infty \dd{\omega} \frac{2 \sin \Delta_k t}{\Delta_k} = 2 \pi \delta(\Delta_k),
+\]
+we get 
+\begin{equation}
+    \Gamma = \int \dd{\omega} g(\omega) \abs*{g_k}^2 2\pi \delta(\omega - \omega_{eg}).
+\end{equation}
+It can be easily found that we are just proving Fermi golden rule for this specific case.
+The final result is 
+\begin{equation}
+    \Gamma = \frac{\omega_{eg}^3 \abs*{\vb*{d}_{eg}}^2 }{3 \pi \epsilon_0 c^3 \hbar} 
+    = \frac{4 \pi}{3} \omega_{eg} \frac{a_\text{Bohr}^2}{\lambda_{eg}^2} \alpha^3.
+    \label{eq:spontaneous-emission-free-space}
+\end{equation}
+
+Similar procedures can be applied to other atomic models. For example, for a Rydberg atom, we have 
+\begin{equation}
+    \vb*{d}_{eg} \propto n^2 e \gamma_\text{Bohr}, 
+    \quad \omega_{eg} \propto \frac{1}{n^2} - \frac{1}{(n-1)^2} \propto \frac{1}{n^3},
+\end{equation}
+so finally we have 
+\begin{equation}
+    \Gamma \sim \Gamma_{2 \text{P}} \frac{1}{n^5}.
+\end{equation}
+This means that high excited states are actually \emph{more} stable, with a long lifetime and a narrow line width.
+
+Note that the above derivation has strict requirement on $t$: it must be small enough to make the first order perturbation work,
+while it must be large enough compared to $\omega_{eg}$.
+For a system with strong atom-light coupling, the two conditions contradict with each other, and we need to take the interaction 
+between the atom and the optical field more seriously instead of using a first order perturbative result.
+This is often dubbed as \concept{cavity QED}.
+
+The fact that when $t$ is small compared to $\omega_{eg}$ \eqref{eq:spontaneous-emission-free-space} does not work, on the other hand,  
+gives rise to \concept{quantum Zeno effect}, which is a thought experiment where the atom is surrounded by a lot of observers
+and the duration between two measurements is smaller than $1 / \omega_{eg}$. In such a system the atom stays at the excited state
+and there is no spontaneous emission.
+
+Spontaneous emission of two atoms may affect each other. Suppose we have two two-level atoms, and we let 
+\begin{equation}
+    \ket*{\psi_+(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} + \ket*{g_2, e_1, 0}), \quad 
+    \ket*{\psi_-(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} - \ket*{g_2, e_1, 0}),
+\end{equation}
+and we find that 
+\begin{equation}
+    \Gamma_{+ \to g} = 2 \Gamma_e, \quad \Gamma_{- \to 0} = 0.
+\end{equation}
+
+\section{Markov description of spontaneous emission}
+
+After obtain \eqref{eq:spontaneous-emission-free-space} we can describe 
+\begin{equation}
+    \dot{c}_e = - c_e 
+\end{equation}
+
+\end{document}
