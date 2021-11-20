@@ -1,0 +1,190 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% This package causes conflict.
+% \usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Math operators used in this lecture
+\DeclareMathOperator{\cone}{C}
+\DeclareMathOperator{\suspension}{S}
+\DeclareMathOperator{\sigmasus}{\Sigma}
+\DeclareMathOperator{\loopspace}{\Omega}
+
+\title{Atomic Magnetism by Yao Wang}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Magnetism of a single atom}
+
+Note that both the total spin magnetic moment and the orbital magnetic moment of a closed shell are zero, 
+and the magnetism shown in an atom solely comes from open shells.
+We use the following Hamiltonian to describe open shells:
+\begin{equation}
+    H = \sum_i \frac{\vb*{p}_i^2}{2m} + \sum_i V(\vb*{r}_i) + 
+    \sum_{i < j} \frac{e^2}{4 \pi \epsilon_0 \abs*{\vb*{r}_{ij}}} + \sum_i \xi \vb*{l}_i \cdot \vb*{s}_i.
+\end{equation}
+The (pseudo)potential $V(\vb*{r})$ is assumed to only be dependent to $\abs*{\vb*{r}}_i$, and in this case symmetry guarantees 
+it is spherical. This is not the case when we do \emph{ab initio} calculation and make quantitative comparison between 
+computational and experimental results. 
+
+The Coulomb interaction between electrons means that there is no rotational invariance for a single electron, but the atom 
+as a whole still has rotational invariance. Therefore, if we just consider the Coulomb interaction, then the good quantum 
+numbers of the system include the total orbital angular momentum $\vb*{L}$ and the total spin momentum $\vb*{S}$.
+Taking the spin-orbital coupling into account, only $\vb*{J} = \vb*{L} + \vb*{S}$ is a good quantum number.
+
+The relative magnitudes of the two interaction term decide whether we should use \concept{$L$-$S$ coupling} 
+or \concept{$J$-$J$ coupling}. For elements that are usually encountered in condensed matter physics, $L$-$S$ coupling
+is the correct choice, where Coulomb repulsion is much stronger than spin-orbital coupling.
+In this way we have the \concept{Hund's rule}: due to Coulomb repulsion the total spin should be maximized in the ground state,
+and then due to spin-orbital coupling the total orbital angular momentum can be determined, and finally we obtain $J$ and 
+can then derive the Landé $g$-factor.
+
+Adding a megnetic field $\vb*{B} = (0, 0, B_0)$, we have 
+\begin{equation}
+    \sum_i \frac{(\vb*{p}_i + e \vb*{A})^2}{2m} = \sum_i \frac{\vb*{p}_i^2}{2m} 
+    - \frac{e B_0}{2m} \sum_i \vb*{l}_i \cdot \vu*{e}_z + \frac{e^2 B_0^2}{4m} \sum_i (x_i^2 + y_i^2).
+\end{equation}
+The magnetic moment of the atom is therefore 
+\begin{equation}
+    \vb*{\mu} = \vb*{L} + % TODO
+\end{equation}
+and the atom-magnetic field coupling Hamiltonian is $- \vb*{\mu} \cdot \vb*{B}$.
+We can see that if the atom has a total orbital angular momentum, then it shows \concept{paramagnetism}, 
+otherwise it shows \concept{diamagnetism}.
+
+\section{Crystal field theory}
+
+The magnetic moment derived for isolated atoms often does not work well for atoms in a crystal. 
+The reason is clear, since an electron is actually surrounded by other atoms in the crystal.
+We call this correction of $V(\vb*{r})$ the \concept{crystal field}.
+Usually for a $L$-$S$ coupling atom, we have 
+\[
+    \text{energy gap between different $l$} > \text{exchange energy} > \text{crystal field} > \text{spin-orbital coupling},
+\]
+and therefore the crystal field can be seen as a perturbation acting on orbitals that have no spin-orbital coupling and mixing only 
+orbitals with the same $l$.
+
+Group representation theory can be used to see the structure of energy splitting: 
+We are actually splitting a irreducible representation of $SO(3)$ (with a definite $l$) into several 
+irreducible representations of the point group $G$ after introducing the crystal field.
+Orbitals in the same irreducible representation of $G$ share the same energy.
+We use the symbols for irreducible representation of point groups to label the orbitals after energy splitting.
+For example, orbitals that are in a $T_2$ representation are called $t_{2g}$ orbitals, where $g$ means 
+``inversion even'' (on the contrary, subscript $u$ means ``inversion odd'').
+
+We can also take the spin-orbital coupling back. Finally, what we are doing is to split a representation 
+of $SO^\text{D}(3)$ into irreducible representations of $G^\text{D}$. $G^\text{D}$ has several more 
+irreducible representation than $G$, the dimensions of which are always even, which comes from Kramers degeneracy.
+
+The energy splitting caused by the crystal field is the underlying reason why crystals have colors. 
+Hopping between split energy levels from orbitals with the same $l$ usually corresponds to a photon within 
+the visible light spectrum, and hence the crystal absorbs visible light and therefore has the complementary 
+color of the absorbed frequency. 
+
+We already have automated tools for determining the structure of energy splitting from the crystal structure. 
+With pesudopotentials, the energy levels can also be found.
+\texttt{PyCrystalField}, for example, is such a tool in Python. \url{https://github.com/asche1/PyCrystalField}
+Usually the number of low energy orbitals is limited and they often have overwhelmingly dominant $j$ components.
+That is why Ising-like degrees of freedom are frequently used to model magnetism in crystals.
+Note that crystal field theory is a single-electron model and is unable to determine the spin coupling.
+There are various methods to obtain parameters in the spin model for the crystal
+We can put different magnetic moments to different atoms and use DFT to find the energy, 
+and thus we can obtain the parameters. This approach is frequently used, though the fact that it completely
+ignores quantum fluctuation makes it dubious. Another approach is to write down a spin model and fit the experimental data.
+The effective model is usually \emph{not} a Heisenberg model because spin-orbital coupling destroys the $SU(2)$ 
+symmetry for spins. People often use Ising model to highlight the anisotropic nature of the system.
+It should also be noted that the ``spins'' used in the effective models are not real spins.
+The magnetic structure of these pseudo-spins may not be detected by experiments that are designed to detect ordinary
+magnetic orders. We may need to use NMR or neutron scattering experiments to detect them.
+
+It should be noted that in the crystal field theory we are only dealing with localized electrons. 
+For systems with itinerant electrons the approximation fails.
+Also, tools like \texttt{PyCrystalField} regard atoms as \emph{point charges}, which is of course not 
+correct, so energies calculated are usually quantitatively unreliable.
+What we are sure are only eigenstates. For quantitative investigation, we can use the eigenstates to obtain 
+an ansatz of scattering experiments and then fit the experiment data to obtain energy splitting.
+
+\end{document}

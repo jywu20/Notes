@@ -1,0 +1,165 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\im}{im}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\object}{Ob}
+\DeclareMathOperator{\morphism}{Hom}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Homology and Homotopy Groups}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is mainly based on \cite{nakahara}.
+
+Topological field theories often emerge from condensed matter systems, and the topological invariants they give
+are often connected to \concept{homotopy groups}, which, intuitively speaking, classify possible field 
+configurations into different topological sectors. 
+
+In practice homotopy groups are hard to calculate. That is why people often seek algebraic objects that 
+are more easy to calculated and then connect them to homotopy groups (or other algebraic objects that we
+are interested in). This approach is called \concept{algebraic topology}, and one most frequently used 
+algebraic object is the \concept{homology group}. They do not have very intuitive meaning, but they are 
+easier to deal with.
+
+\section{Some basic facts about Abelian groups}
+
+We use $+$ to denote the group operation of an Abelian group.
+The expression $x - y$ is defined as $x^{-1} \circ y$.
+The unit is denoted as $0$.
+The expression $n x$ where $n \in \mathbb{N}$ and $g \in G$ means $g^n$.
+
+A map between Abelian groups $f: G_1 \to G_2$ is said
+to be a \concept{homomorphism} if $f(x + y) = f(x) + f(y)$, i.e. it keeps the multiplication relations. 
+An \concept{isomorphism} is a homomorphism that is also a bijection. 
+
+Suppose $H$ is a subgroup of $G$. We have a equivalence relation $x \sim y$ if and only if $x - y \in H$.
+The equivalence class of $x$ is denoted as $[x]$, and the set of all equivalence classes in $G$ is denoted 
+as $G / H$, which is the \concept{the quotient space}. We can easily find that $G / H$ is also a group 
+and the group operation $+$ in $G$ naturally induces the group operation $+$ in $G/H$.
+We have 
+\begin{equation}
+    G / G = \{ [0] \} = \{ [h] \}, \quad h \in H, 
+\end{equation}
+and 
+\begin{equation}
+    G / \{0\} = G.
+\end{equation}
+
+Some examples of quotient spaces:
+\begin{equation}
+    \mathbb{Z} / k \mathbb{Z} \simeq \mathbb{Z}_k.
+\end{equation}
+
+If $f: G_1 \to G_2$ is a homomorphism, it can be found that $\ker f$ is a subgroup of $G_1$ and $\im f$ is a subgroup 
+of $G_2$. This lemma can be proved almost directly by definition.
+
+Now we state the \concept{fundamental theorem of homomorphism}: for a homomorphism $f: G_1 \to G_2$, we have 
+\begin{equation}
+    G_1 / \ker f \simeq \im f.
+\end{equation}
+This is Theorem~3.1 in \cite{nakahara}. 
+
+
+
+\bibliographystyle{plain}
+\bibliography{algebraic-topo} 
+
+\end{document}
