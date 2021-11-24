@@ -23,8 +23,12 @@
 \usepackage{listings}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
-\usepackage{xr-hyper}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../../solid/solid}[solid.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
 \usepackage{prettyref}
 
 % Page style
@@ -86,7 +90,13 @@
   keywordstyle=\color{blue}
 }
 
+% Reference formatting
 \newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
 
 \title{QFT I, Homework 3}
 \author{Jinyuan Wu}
@@ -371,21 +381,21 @@ We introduce Mandelstam variables
 and now we enumerate the diagrams (we have omitted factors like $(2\pi)^4 \delta^{(4)}(p_1 + p_2 - p_3 - p_4)$).
 The diagrams with $\phi_1$ propagators are 
 \input{s1-channel.tex}
-\input{t1-channel.tex}
+% Note that the out state consists of distinguishable particles
+%\input{t1-channel.tex}
 \input{u1-channel.tex}
 The expressions of diagrams with $\phi_2$ propagators are slightly more complicated. We have 
 \input{s2-channel.tex}
-\input{t2-channel.tex}
+%\input{t2-channel.tex}
 \input{u2-channel.tex}
 Summing all diagrams up, we get the tree-level amplitude
 \[
-    \ii \mathcal{M}^{(1)} = \ii \mathcal{M}_{s1} + \ii \mathcal{M}_{s2} + \ii \mathcal{M}_{t1} + \ii \mathcal{M}_{t2} + \ii \mathcal{M}_{u1} + \ii \mathcal{M}_{u2} ,
+    \ii \mathcal{M}^{(1)} = \ii \mathcal{M}_{s1} + \ii \mathcal{M}_{s2} + \ii \mathcal{M}_{u1} + \ii \mathcal{M}_{u2} ,
 \]
 or 
 \begin{equation}
     \begin{aligned}
-        \mathcal{M}^{(1)} = &- g^2 \left( \frac{1}{s} + \frac{1}{t} + \frac{1}{u} \right) - \lambda^2 \Biggl( \frac{ ((p_1 + p_2) \cdot p_2)((p_1 + p_2) \cdot p_4)}{s } \\
-        &\quad \quad - \frac{ (p_3 \cdot (p_1 - p_3))((p_1 - p_3) \cdot p_4)}{t } + \frac{ ((p_4 - p_1) \cdot p_2)((p_4 - p_1) \cdot p_4)}{u } \Biggr).
+        \mathcal{M}^{(1)} = &- g^2 \left( \frac{1}{s} + \frac{1}{u}  \right) - \lambda^2 \Biggl( \frac{ ((p_1 + p_2) \cdot p_2)((p_1 + p_2) \cdot p_4)}{s } + \frac{ ((p_4 - p_1) \cdot p_2)((p_4 - p_1) \cdot p_4)}{u } \Biggr).
     \end{aligned}
 \end{equation}
 Since the particles are all massless, we can use Eq.~(4.85) in Peskin, which is 
@@ -393,6 +403,17 @@ Since the particles are all massless, we can use Eq.~(4.85) in Peskin, which is
     \left(\dv{\sigma}{\Omega}\right)_\text{CM} = \frac{\abs*{\mathcal{M}}^2}{64 \pi^2 E_\text{CM}^2},  
 \end{equation}
 to calculate the cross section in the center-of-mass frame.
+
+\begin{warning*}{}{}
+    Note that not all the three $t$, $s$ and $u$ channels appear in this problem, 
+    because the out state in this problem consists of two \emph{distinguishable} particles.
+    The fact that for distinguishable particles only two channels appear can be verified using Wick theorem.
+    \cite{stackexchange-answer} discusses another example of lack of a channel for an out state with 
+    distinguishable particles. Note that in \cite{stackexchange-answer} the vertex connects two external 
+    lines with the \emph{same} type, so we have the $s$-channel and the $t$-channel, while in this problem 
+    the vertex connects one $\phi_1$ external line and one $\phi_2$ external line, 
+    so we have the $s$-channel and the $u$-channel.
+\end{warning*}
 
 \paragraph{}
 
