@@ -1,0 +1,272 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{TQD Model by Prof. Wang}
+\author{Jinyuan Wu}
+\date{November 26, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{The TQD model}
+
+The \concept{twisted quantum double (TQD)} models are a type of models with intrinsic topological order in 2D. 
+We know quantum double models are generalization of the toric code, and TQDs are generalization of quantum 
+double models. Details may be found in PRB 87, 125114 (2013).
+
+We consider a triangulated 2D plane. We index each sites with a natural number. In this way the sites are 
+\emph{ordered}. We place an arrow on each bond, the direction of which is from the site with a large index
+to the site with a small index. This lattice is the playground of the model.
+Note that if we view the arrows on the edges as oriented paths, then no closed loop will form on any triangle.
+
+The input data of TQD on such a lattice $\Gamma$ with $E$ edges is as follows:
+\begin{itemize}
+    \item A group $G$. We place an element $g_i$ of $G$ on each edge $i$. 
+    When $G = \mathbb{Z}_2$, for example, we have $g_i = \pm 1$. 
+    These group elements are all degrees of freedom in the model, and the Hilbert space is given. 
+
+    We use $[a b]$ to denote the group element on the edge between site $a$ and site $b$, and usually we 
+    assume $a < b$. We further define 
+    \begin{equation}
+        [ab] = [ba]^{-1}.
+    \end{equation}
+
+    We have the inner product relation 
+    \input{2021-11-26-diagram/inner-product-1.tex} 
+    where we assume the orders of $a, b, c$ and $a,', b', c'$ are the same.
+
+    \item A normalized 3-cocycle $\alpha \in H^3[G, U(1)]$. We require 
+    \begin{equation}
+        \var{\alpha}(g_0, g_1 g_2, g_3) = \alpha(g_1, g_2, g_3) \alpha^{-1}(g_0 g_1, g_2, g_3) 
+        \alpha(g_0, g_1 g_2, g_3),
+        \label{eq:cocycle-1}
+    \end{equation}
+    \begin{equation}
+        \alpha^{-1}(g_0, g_1, g_2 g_3) \alpha(g_0, g_1, g_2) = 1,
+        \label{eq:cocycle-2}
+    \end{equation}
+    and the normalization condition is 
+    \begin{equation}
+        \alpha(1, g, h) = \alpha(g, 1, h) = \alpha(g, h, 1) = 1.
+    \end{equation}
+
+    These 3-cocycles can be placed on a subgraph of the lattice like the follows:
+    \input{2021-11-26-diagram/subgraph.tex}
+    The subgraph is actually a flattened tetrahedron, and it can be oriented.
+    We see the ascending order of $v_1, v_2, v_3, v_4$ as the orientation.
+    For positive orientation we assign $\alpha([v_1 v_2], [v_2 v_3], [v_3 v_4])$ to the subgraph,
+    and for negative orientation we assign $\alpha([v_1 v_2], [v_2 v_3], [v_3 v_4])^{-1}$.
+    It can be seen that \eqref{eq:subgraph} is $\alpha([v_1 v_2], [v_2 v_3], [v_3 v_4])^{\epsilon(v_1, v_2, v_3, v_4)}$.
+
+    \item Now the Hamiltonian can be defined. We define 
+    \begin{equation}
+        H = - \sum_{v} A_v - \sum_f B_f,
+        \label{eq:hamiltonian}
+    \end{equation}
+    where $v$ runs over all vertices and $f$ runs over all triangles.
+    We have
+    \input{2021-11-26-diagram/b-def.tex}
+    This quantity is unity when 
+    \begin{equation}
+        [a b] [b c] = [a c].
+        \label{eq:flatness}
+    \end{equation}
+    This is called the \concept{flatness condition}, and $B_f$'s presence in the Hamiltonian means it holds 
+    in the ground state. It means there is no flux in the ground state, if we regard $G$ to be a gauge group
+    and $\{g_i\}$ a gauge field. Sometimes \eqref{eq:flatness} is also called the \concept{chain rule}.
+    The definition of $A$ is 
+    \begin{equation}
+        A_v = \frac{1}{\abs*{G}} \sum_{[v'v] = g \in G} A_v^g,
+    \end{equation}
+    where 
+    \input{2021-11-26-diagram/a-def.tex}
+    $A_v$ induces time evolution. Under the assume that $1 < 2 < 3' < 3 < 4$, 
+    applying \eqref{eq:flatness} to relevant triangles, we have 
+    \begin{equation}
+        [13]=[13'][3'3], \quad [23]=[23'][3'3], \quad [3'4]=[3'3][34],
+    \end{equation}
+    or in other words 
+    \begin{equation}
+        [13'] = [13][33'], \quad [23'] = [23][33'], \quad [3'4]=[3'3][34].
+        \label{eq:gauge-convention}
+    \end{equation}
+    This can be seen as a gauge transformation: for a given vertex, applying gauge transformation $g$ to it means 
+    to replace the group element $g_0$ on an incoming edge by $g g_0$ and to replace the group element $g_0$ on an 
+    outgoing edge by $g_0 g^{-1}$. 
+    The topological order in \eqref{eq:hamiltonian} is actually the same as a Dijkgraaf-Witten TQFT.
+    A TQFT does not have a Hamiltonian in the sense of Legendre transformation, and \eqref{eq:hamiltonian}
+    can be seen as a Hamiltonian extension of the TQFT. % ???
+\end{itemize}
+
+Note that for a given $\alpha$ we can find an equivalent 3-cocycle
+\begin{equation}
+    \alpha' = \alpha \cdot \var{\beta},
+\end{equation}
+and we have 
+\[
+    \alpha'(g_0, g_1, g_2) = \underbrace{\frac{\beta(g_1, g_2) \beta(g_0, g_1 g_2)}{\beta(g_0 g_1, g_2) \beta(g_0, g_1)}}_\text{3-coboundary} \alpha(g_0, g_1, g_2),
+\]
+and we will find all the additional $\beta$ factors in \eqref{eq:a-v-def} give rise to a equation in which 
+each $\beta$ factor corresponds to a triangle. So by redefinition states and absorb the $\beta$ factors into 
+the phase factors, \eqref{eq:a-v-def} remains the same. So in the end, the input data include an equivalent 
+class $[\alpha]$, a group $G$ and a lattice.
+
+\section{The topological order in a TQD model}
+
+\eqref{eq:hamiltonian} is similar to the toric code, but since the operators are much more complicated 
+and the algebra is not clear, we are unable to write down all ground states directly. 
+
+We can verify that again all $B_f$ operators and $A_v$ operators are commuting projectors. 
+Hence projector to the ground state subspace is 
+\begin{equation}
+    P^0_\Gamma = \prod_f B_f \prod_v A_v.
+\end{equation}
+The ground state subspace $\mathcal{H}^0_\Gamma$ is invariant under $P^0_\Gamma$. The ground state degeneracy is 
+\begin{equation}
+    \text{GSD} = \trace P^0_\Gamma.
+\end{equation}
+Since the lattice is complicated, there is no easy way to evaluate it directly from the Hamiltonian.
+Note, however, that we expect \eqref{eq:hamiltonian} to host a topological order, and if so, the GSD 
+is independent of the details of triangulation. We consider the following \concept{Pachner moves}:
+\input{2021-11-26-diagram/move1.tex}
+\input{2021-11-26-diagram/move2.tex}
+\input{2021-11-26-diagram/move3.tex}
+Note that we are working on a quantum theory and we need to find three operators on states to implement 
+these moves. A natural choice is 
+\input{2021-11-26-diagram/t1.tex}
+\input{2021-11-26-diagram/t2.tex}
+\input{2021-11-26-diagram/t3.tex}
+It can be proved that if $\ket*{\phi} \in \mathcal{H}^0_\Gamma$, we also 
+have $T \ket*{\phi} \in \mathcal{H}^0_{\Gamma'}$. It can also be proved that $T$'s are unitary.
+
+Now we consider the example of a torus, which may be considered as a square with its left and right 
+bonds identified, and its upper and lower bonds identified. We consider the following triangulation:
+\input{2021-11-26-diagram/torus.tex}
+where the boundary condition requires 
+\[
+    [13]=[24] = g, \quad [12] = [34] = h.
+\]
+The flatness conditions requires 
+\[
+    [14] = gh = hg, 
+\]
+so in $\mathcal{H}^0_\mathbb{T}$ we have $gh = hg$. 
+
+% TODO: details on the constraint imposed by A
+
+Now we find \eqref{eq:cocycle-1} and \eqref{eq:cocycle-2} are actually two Pachner moves. 
+
+\begin{equation}
+    A^x \ket*{g, h} = 
+\end{equation}
+
+\begin{equation}
+    \begin{aligned}
+        \text{GSD} &= \trace \left( \frac{1}{\abs*{G}} \sum_x A^x \right) \\
+        &= \frac{1}{\abs*{G}} \sum_{g, h} \sum_x \delta_{gh, hg} \expval*{A^x}{gh} \\
+        &= \frac{1}{\abs*{G}} \alpha(g, hx^{-1}, x) \alpha
+    \end{aligned}
+\end{equation}
+
+\end{document}

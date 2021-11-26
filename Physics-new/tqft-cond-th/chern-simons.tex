@@ -1,0 +1,220 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Field Theories for Anyons}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Abelian anyons and Chern-Simons theory}
+
+This section reviews what is covered in \cite{viefers_anyons}.
+Briefly speaking, what we are going to do is to encode the phases of anyons into a gauge theory.
+We expect a gauge theory will do the job because we can always mimic the exchange phases of anyons 
+by considering the anyons as particles created by a bosonic field coupled to a gauge field.
+The particles created by the bosonic field carry both a flux and a charge, 
+and thus the Aharonov–Bohm effect can reproduce the correct self and mutual phases. 
+What we are going to talk about in this section are Abelian anyons, so things will not be too hard.
+We claim after the exchange phases are correctly encoded into a gauge theory, 
+we can obtained a \emph{complete} low energy effective theory of a topological order,
+since we are usually not interested in the scattering of anyons, and the low energy dynamics of an 
+anyon system has nothing more than the exchange phases.
+
+Why we use a gauge field theory instead of something like a Coulomb interaction is discussed in Section~3.1
+in \cite{viefers_anyons}. In summary, it is because with a Coulomb-like Hamiltonian we often run into 
+duplicate phase factors. Another approach is to construct anyon field operators. It is possible, but 
+the resulting theories are usually highly complicated and technical.  
+
+Before discussing what gauge field theory we want to use we can first narrow down the candidates.
+We would better use a \emph{topological quantum field theory (TQFT)}, which has no non-trivial particle dynamics.
+A type of well-studied TQFT is \concept{Chern-Simons theories} - and they are what we are going to use.
+We consider, for example, the following theory where Schrödinger bosons are coupled to a single gauge field,
+and there is a Chern-Simons term for the gauge field itself:
+\begin{equation}
+    \mathcal{L}= \ii \bar{\phi} D_{0} \phi+\frac{1}{2 m} \bar{\phi} \vb*{D}^{2} \phi
+    +\underbrace{\frac{1}{4 \theta} \epsilon^{\mu \nu \lambda} a_{\mu} \partial_{\nu} a_{\lambda}}_{\mathcal{L}_\text{CS}},
+    \label{eq:simplest-cs-theory}
+\end{equation} 
+where 
+\begin{equation}
+    D_{\mu}=\partial_{\mu}+ \ii a_{\mu}.
+\end{equation}
+
+We have not proved that \eqref{eq:simplest-cs-theory} is indeed gauge invariant yet. Under a local transformation
+\[
+    a_\mu \longrightarrow a_\mu + \partial_\mu h,
+\]
+we have
+\[
+    \begin{aligned}
+        \frac{1}{4\theta} \epsilon^{\mu \nu \lambda} a_\mu \partial_\nu a_\lambda &\longrightarrow 
+        \frac{1}{4\theta} \epsilon^{\mu \nu \lambda} (a_\mu + \partial_\mu h) \partial_\nu (a_\lambda + \partial_\lambda h) \\
+        &= \frac{1}{4 \theta} (\epsilon^{\mu \nu \lambda} a_\mu \partial_\nu a_\lambda 
+        + \epsilon^{\mu \nu \lambda} \partial_\mu h \partial_\nu a_\lambda
+        + \epsilon^{\mu \nu \lambda} a_\mu \partial_\nu \partial_\lambda h
+        + \epsilon^{\mu \nu \lambda} \partial_\mu h \partial_\nu \partial_\lambda h) \\
+        &= \frac{1}{4 \theta} (\epsilon^{\mu \nu \lambda} a_\mu \partial_\nu a_\lambda 
+        + \epsilon^{\mu \nu \lambda} \partial_\mu( h \partial_\nu a_\lambda) 
+        - \epsilon^{\mu \nu \lambda} h \partial_\nu \partial_\mu a_\lambda ) \\
+        &= \frac{1}{4 \theta} (\epsilon^{\mu \nu \lambda} a_\mu \partial_\nu a_\lambda 
+        + \epsilon^{\mu \nu \lambda} \partial_\mu( h \partial_\nu a_\lambda)),
+    \end{aligned}
+\]
+where the last two terms in the second line vanish because $\epsilon^{\mu \nu \lambda} a_\mu a_\nu = 0$, and 
+this also how we get the last line. Note that though after the transformation the Lagrangian \emph{density}
+changes, after integrating over the whole space the total Lagrangian does \emph{not} change because the second 
+term in the last line above is a boundary term. So we find that in \eqref{eq:simplest-cs-theory}, the 
+Chern-Simons part is indeed gauge invariant.
+The coupling term in \eqref{eq:simplest-cs-theory} transforms in the same way of QED, where the bosonic 
+field undergoes a local $U(1)$ transformation. Thus, \eqref{eq:simplest-cs-theory} is a 
+\emph{$U(1)$ Chern-Simons theory}.
+
+Now we evaluate the EOM of \eqref{eq:simplest-cs-theory}. The Chern-Simons terms gives 
+\[
+    \begin{aligned}
+        \partial_\rho \pdv{\mathcal{L}}{\partial_\rho a_\sigma} - \pdv{\mathcal{L}}{a_\sigma} &= 
+        \frac{1}{4 \theta} \partial_\rho \epsilon^{\mu \rho \sigma} a_\mu - \frac{1}{4\theta} \epsilon^{\sigma \nu \lambda} \partial_\nu a_\lambda \\
+        &= -  \frac{1}{2 \theta} \epsilon^{\sigma \nu \lambda} \partial_\nu a_\lambda.
+    \end{aligned}
+\]
+Another way to find the above equation is to use integration by parts to rephrase all terms 
+containing $a_\mu \partial_\rho a_\sigma$ into $- \partial_\rho a_\mu a_\sigma$, so the first term in the 
+LHS of the first line vanishes, and we get a $2$ factor.
+In the Schrödinger field part, terms involving $a_\mu$ are 
+\[
+    \begin{aligned}
+        &\quad - \bar{\phi} a_0 \phi + \frac{\ii}{2m} \bar{\phi} \partial_i (a_i \phi) 
+        + \frac{\ii}{2m} \bar{\phi} a_i \partial_i \phi - \frac{1}{2m} a_i^2 \bar{\phi} \phi \\
+        &= - \bar{\phi} a_0 \phi - \frac{\ii}{2m} (\partial_i \bar{\phi}) a_i \phi 
+        + \frac{\ii}{2m} \bar{\phi} a_i \partial_i \phi - \frac{1}{2m} a_i^2 \bar{\phi} \phi  ,
+    \end{aligned}
+\]
+and we have 
+\[
+    \partial_\rho \pdv{\mathcal{L}}{\partial_\rho a_0} - \pdv{\mathcal{L}}{a_0} = \bar{\phi} \phi,
+\]
+and 
+\[
+    \partial_\rho \pdv{\mathcal{L}}{\partial_\rho a_i} - \pdv{\mathcal{L}}{a_i} 
+    = \frac{a_i}{m} \bar{\phi} \phi + \frac{\ii}{2m} (\phi \partial_i \bar{\phi} - \bar{\phi} \partial_i \phi).
+\]
+We soon find that the RHSs of the above two equations are just conservation flows of a Schrödinger field 
+coupled to a gauge field, as is the case in QED. So the EOM of $a_\mu$ is just 
+\begin{equation}
+    j^\sigma - \frac{1}{2 \theta} \epsilon^{\sigma \nu \lambda} \partial_\nu a_\lambda = 0.
+    \label{eq:simplest-eom}
+\end{equation} 
+Specifically, the temporal part of the EOM is 
+\begin{equation}
+    \epsilon^{i j} \partial_{i} a_{j}=2 \theta \rho, \quad \rho = \bar{\phi} \phi.
+\end{equation}
+
+\section{Chern-Simons theory as an effective theory of IQHE}
+
+
+
+\bibliographystyle{plain}
+\bibliography{field-theory} 
+
+\end{document}
