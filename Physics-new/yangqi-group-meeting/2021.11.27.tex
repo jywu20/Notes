@@ -1,0 +1,200 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Stochastic Series Expansion by Yuanda Liao}
+\author{Jinyuan Wu}
+\date{November 27, 2021}    
+
+\begin{document}
+
+\maketitle
+
+\section{The general formalism}
+
+\concept{Stochastic Series Expansion (SSE)} is a Monte Carlo flavor that does not use discrete path integral
+and therefore has no Trotter error.
+Consider the partition function 
+\[
+    Z = \Trace \ee^{- \beta H}.
+\]
+We use the basis $\{\alpha\}$, and by Taylor series we have 
+\[
+    \begin{aligned}
+        Z &= \sum_{\alpha} \expval{\sum_{n=0}^\infty \frac{1}{n!} (-\beta)^n H^n}{\alpha} \\
+        &= \sum_{\{\alpha_i\}} \sum_{n=0}^\infty \frac{\beta^n}{n!} 
+        \mel{\alpha_0}{-H}{\alpha_1} \mel{\alpha_1}{-H}{\alpha_2} \cdots \mel{\alpha_{n-1}}{-H}{\alpha_0}.
+    \end{aligned}
+\]
+In the equation above we find for the $n$th term we have $n$ matrix element factors. 
+Suppose we stop at the $M$th term, and to make the terms look more symmetric, we rephrase the partition 
+function into 
+\begin{equation}
+    Z = \sum_{\alpha_1, \ldots, \alpha_M} \sum_{n=0}^\infty \frac{\beta^n (M-n)!}{M!} 
+    \sum_{\{A_i\}} \prod_{i=1}^M \mel{\alpha_{i-1}}{A_i}{\alpha_i}, 
+    \label{eq:partition-1}
+\end{equation}
+where $\alpha_0 = \alpha_M$, and there are $n$ $(-H)$ operators in the $\{A_i\}$ series, 
+the rest being the unit operator. 
+
+Now we consider a piecewise Hamiltonian 
+\begin{equation}
+    H = - \sum_a \sum_b H_{a, b},
+\end{equation}
+where the $a$ index refers to the operator type, which may be null operator, diagonal operator and off-diagonal 
+operator. The $b$ index is the site index. For example for a 2D $L \times L$ square lattice, $b$ runs over 
+$1$ to $L^2$. We denote $(a, b)$ as $S$, and now 
+\begin{equation}
+    Z = \sum_{S_1, \ldots, S_M} \sum_{\alpha_1, \ldots, \alpha_M} 
+    \sum_{n=0}^\infty \frac{\beta^n (M-n)!}{M!} \prod_{i=1}^M \mel{\alpha_{i-1}}{(H_{i})_{a, b}}{\alpha_i}.
+    \label{eq:partition-2}
+\end{equation}
+
+Now we see the configuration space: each configuration is to put 
+
+\section{The 1D Heisenberg chain}
+
+We consider the example of Heisenberg model. The diagonal operator is 
+\begin{equation}
+    H_{1, b} = \frac{1}{4} - S^z_{\vb*{i}} S^z_{\vb*{j}},
+\end{equation}
+and the off-diagonal operator is 
+\begin{equation}
+    H_{2, b} = \frac{1}{2} (S_{\vb*{i}}^+ S_{\vb*{j}}^- + \text{h.c.}).
+\end{equation}
+The Hamiltonian is 
+\begin{equation}
+    H = - \sum_b (H_{1, b} - H_{2, b}) + \frac{N}{4}.
+\end{equation}
+The basis can be chose as 
+\begin{equation}
+    \ket*{\alpha} = \ket*{\uparrow \downarrow}, \ket*{\uparrow \uparrow}, \ket*{\downarrow \downarrow}, \ket*{\downarrow \uparrow}.
+\end{equation}
+We find that 
+\[
+    \mel{\alpha}{-H_{2, b}}{\alpha} = - \frac{1}{2},
+\]
+which means \eqref{eq:partition-2} has sign problem. What we really deal with is the model 
+\begin{equation}
+    H = J \sum_{\pair{\vb*{i}, \vb*{j}}} (S^z_{\vb*{i}} S^z_{\vb*{j}} - S^x_{\vb*{i}} S^x_{\vb*{j}} - S^y_{\vb*{i}} S^y_{\vb*{j}}) = - \sum_b (H_{1, b} + H_{2, b}) + \frac{N}{4}.
+\end{equation}
+
+\begin{figure}
+    \centering
+    \input{11-27/config.tex}
+    \caption{An SSE configuration with $M=6$}
+    \label{fig:chain-config}
+\end{figure}
+
+We consider a 1D Heisenberg chain. \prettyref{fig:chain-config} gives a schematic configuration.
+
+The update scheme is the follows:
+\begin{enumerate}
+    \item Sampling $\alpha_0$.
+    \item Diagonal update. 
+    \item Non-diagonal update.
+\end{enumerate} 
+
+Diagonal update can be done by Metropolis update. Whenever we meet a 
+
+\end{document}
