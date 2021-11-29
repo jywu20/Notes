@@ -1,0 +1,1871 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{autobreak}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+
+\newcommand*{\fd}[1]{\mathcal{D}{#1}}
+
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+\newcommand{\concept}[1]{\underline{\textbf{#1}}}
+\renewcommand{\emph}{\textbf}
+\newcommand*{\bigO}{\mathcal{O}}
+
+\newenvironment{bigcase}{\left\{\quad\begin{aligned}}{\end{aligned}\right.}
+
+\title{经典和量子的流体}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+以下如无特殊说明，所有的系统都是三维的，并且取自然单位制。
+
+\section{宏观各向同性系统的热力学}
+
+\subsection{热力学坐标}
+
+标记气体的物理量肯定包括能量和粒子数，这两者的算符对易。通常气体会被约束在一个深势陷当中，由于气体具有均一性（不是说描述它的物理定律是均一的——描述其它物态的物理定律照样是均一的——而是说它的各物理量在不同空间位置是均匀的），在达到平衡态之后势陷的形状不应该影响气体状态，因此气体与势陷的关系完全由体积$V$确定。
+体积是外界给定的参数，因此和其它任何量都对易。于是可以使用$E, N, V$标记平衡气体状态。
+这三个参数也许够了，也许还需要更多参数——例如可以是混合气体，那么还需要每种组分的粒子数。
+
+由于从气体到液体的相变没有出现任何对称性破缺，应当使用完全一样的哈密顿量来描写气体和液体。于是我们将粒子间相互作用弱的系统称为气体，将有一定的相互作用但是还没有出现晶格的系统称为液体。
+描述气体的理论也可以迁移到液体上，两者合称为\concept{流体}。
+
+气体具有均一性，当平衡时封闭空间中的气体处处压强相等，而外界对气体做功为
+\[
+    \begin{aligned}
+        \var{W} &= - \int \dd{\vb*{S}} \cdot (\vb*{n} \vb*{n} p) \cdot \var{\vb*{r}} \\
+        &= - p \int \dd{\vb*{S}} \cdot \var{\vb*{r}} \\
+        &= - p \dd{V}, 
+    \end{aligned}
+\]
+于是气体内能变化就是
+\begin{equation}
+    \dd{U} = -p \dd{V} + T \dd{S}.
+    \label{eq:first-law-of-gas}
+\end{equation}
+这样，只需要$V, T$两个参数——或者等价的任何其它两个参数——就可以确定平衡态时的气体的热力学状态。
+要完整描述气体状态当然还需要诸如容器体积之类的信息，但它们对气体的热力学状态毫无影响。
+如果气体和外界有交换，设$\{N_i\}$是气体中各种成分的分子数，那么
+\begin{equation}
+    \dd{U} = -p \dd{V} + T \dd{S} + \sum_i \mu_i \dd{N_i}.
+    \label{eq:first-law-of-gas-extended}
+\end{equation}
+这时就需要三个热力学坐标：$N, V, T$。
+
+热力学第一定律\eqref{eq:first-law-of-gas}和\eqref{eq:first-law-of-gas-extended}对任何气体系统都适用。
+由于它们的导出只用到了“系统表面只有处处相等的正应力”这个条件，它们实际上适用于所有这种类型的系统——例如，它们适用于液体系统，也适用于被放置在气体环境中的固体系统，虽然固体内部可以有应力变化和非正应力的分量。
+
+要完整地确定气体的热力学性质还需要一些其它的公式。
+回顾使用极大概然法分析系统的步骤，我们首先写出内能关于系统状态的表达式，并且通过分析状态数$\Omega$得到了熵关于系统状态的表达式，这两个表达式缺一不可（原因也很简单，内能一样的系统熵可以不一样）。
+如果熵的表达式不很清楚，可以使用状态方程，也就是$p, V, T$之间的关系。不过无论如何要有两个方程。
+
+从\eqref{eq:first-law-of-gas}出发，可以得到一系列其它的热力学势函数。
+
+\begin{equation}
+    C_p - C_V = \left( p + \left(\pdv{U}{V}\right)_T \right) \left(\pdv{V}{T}\right)_p = T \left(\pdv{V}{T}\right)_p \left(\pdv{p}{T}\right)_V,
+\end{equation}
+\begin{equation}
+    \left(\pdv{U}{V}\right)_T + p = T \left(\pdv{S}{V}\right)_T = T \left(\pdv{p}{T}\right)_V,
+\end{equation}
+
+\subsection{相变的热力学}
+
+\subsubsection{一级相变的两相共存曲线}
+
+考虑一个有两个可能的相的系统。
+在两相共存曲线上，设两个相的化学势分别为$\mu_A$和$\mu_B$。两相平衡意味着
+\begin{equation}
+    \mu_A = \mu_B,
+    \label{eq:equality-of-chemical-potential}
+\end{equation}
+否则将会出现两个相之间的粒子数转移。化学势相等马上又意味着方程
+\[
+    \pdv{G}{N_1} = 0
+\]
+有无穷多解，换而言之，固定$p, T$，物质在两相间怎么分配都是有可能的。一般来说，两个相单位分子占据的体积可以不同（例如水蒸气和液态水），因此这又意味着系统体积
+\[
+    V = V_A + V_B
+\]
+可以任意变化而不影响$p$和$T$（但会影响内能或者吉布斯自由能）。
+换而言之，此时完整描述系统状态需要三个参量而不只是两个，因为$V$不能用$p, T$确定。
+显然，在两相共存曲线的每一点都有\eqref{eq:equality-of-chemical-potential}成立，于是
+\[
+    \pdv{\mu_A}{p} \dd{p} + \pdv{\mu_A}{T} \dd{T} = \pdv{\mu_B}{p} \dd{p} + \pdv{\mu_B}{T} \dd{T}.
+\]
+从考虑粒子数变化的内能的麦克斯韦关系可以得到
+\[
+    \pdv{\mu}{p} = v, \quad \pdv{\mu}{T} = -s,
+\]
+其中$v$和$s$分别表示单位粒子数的体积和熵，我们有
+\[
+    \dv{p}{T} = \frac{s_A - s_B}{v_A - v_B}.
+\]
+设$\lambda$为\concept{每摩尔相变潜热}，即单位粒子数的$B$相物质相变到$A$相需要吸收的热量，则
+\[
+    T(s_A - s_B) = \lambda,
+\]
+这个式子成立是因为相变发生时若$p, V$固定则温度也固定（否则就不会是两相共存曲线了），于是相变是等温过程。
+这样就有
+\begin{equation}
+    \dv{p}{T} = \frac{\lambda}{T(v_A - v_B)} = \frac{L}{T(V_A - V_B)}.
+\end{equation}
+其中$L$指的是粒子数确定的一个系统的相变潜热。这就是\concept{克拉珀龙方程}。
+从克拉珀龙方程出发，可以发现出现两相共存的区域在$p-T$图上呈现为一条线而不是一个平面，称为\concept{两相共存曲线}。
+此外可以注意到相变时系统体积增大还是减小决定了两相共存曲线的斜率的正负，设$A$是能量较高的一个相，$B$是能量较低的一个相，此时$L > 0$，若$V_A > V_B$（即吸热膨胀），则斜率大于零，若$V_A < V_B$（即吸热收缩），则斜率小于零。
+例如，水的气液相变斜率大于零，而固液相变斜率小于零，因为零度的冰体积比水还要大。
+
+\subsubsection{范德瓦尔斯方程中的相变}
+
+考虑描述非理想气体的范德瓦尔斯方程
+\begin{equation}
+    (V-b)(p+\frac{a}{V^2}) = RT.
+    \label{eq:van-de-waars-eq}
+\end{equation}
+这个方程考虑到了分子之间的相互作用，假定分子是彼此吸引的硬球（也即，当分子间距是分子直径时就会有强烈的排斥），这样分子能够在其中移动的体积必须扣除所有分子自身的体积，同时压强需要加上一个表示分子间相互作用的修正。
+具体$a$和$b$是什么并不重要，本节只是要讨论\eqref{eq:van-de-waars-eq}展现出的相变行为。
+
+表面上，随着$T$的变动，\eqref{eq:van-de-waars-eq}总是光滑的，似乎没有什么能够触发相变；其次液体和气体的$a$和$b$理应相同（因为是同一种物质），那么两者都应该遵循\eqref{eq:van-de-waars-eq}，但这样就不能区分液体和气体。
+实际上，任何一个描述气体和液体的模型都会遇到上述疑难。但这些疑难实际上只是假象。
+\eqref{eq:van-de-waars-eq}的导出建立在液体/气体空间性质均一的基础上，但这个假设真的总是成立吗？
+
+当$T$降低到一定程度时，随着$V$增大，$p$先减小后增大再减小。
+$p$增大而$V$增大（即负压缩率）是非常奇特的现象，因为具有这种性质的系统是非常不稳定的：让$V$发生一个非常微小的增大，$p$就增大，然后$V$进一步增大。
+换而言之，$T$足够低时\eqref{eq:van-de-waars-eq}中有一段$p$-$V$曲线给出的状态是不稳定的。
+仅有的可能是，在这一段\eqref{eq:van-de-waars-eq}其实是一个非物理解。\eqref{eq:van-de-waars-eq}可以看成气体的低能有效理论，在负压缩率这一段它是不稳定不动点，会流到两个稳定不动点上，即出现分叉现象。
+因此负压缩率段应该发生了相变，出现了气液共存（从而破坏了范德瓦尔斯方程隐含的系统空间均一的性质）。
+
+在这样的思路下，可以把气液相变的临界点计算出来。当温度高于临界点时\eqref{eq:van-de-waars-eq}全程有效，当温度低于临界点时\eqref{eq:van-de-waars-eq}会有负压缩率段，即会有非物理解。
+出现负压缩率就意味着$p$-$V$曲线出现拐点。根据\eqref{eq:van-de-waars-eq}的性质，应当有两个拐点。
+这样，临界点就是两个拐点融合成一个时的温度。
+两个拐点融合成一个意味着拐点处同时有
+\[
+    \pdv{p}{V} = 0, \quad \pdv[2]{p}{V} = 0.
+\]
+求解该方程，得到临界点的各个参数：
+\begin{equation}
+    V_\text{c} = 3b, \quad p_\text{c} = \frac{a}{27b^2}, \quad RT_\text{c} = \frac{8a}{27b}.
+\end{equation}
+
+如前所述气液共存段一旦给定了$T$，$p$就是确定的。现在我们尝试从范德瓦尔斯方程出发计算这个$p$。
+设某个温度$T$下，增大$V$，在点1处相变开始，点2处相变结束。显然相变期间压强为
+\[
+    p^\text{trans} = p_1 = p_2.
+\]
+$p_1, V_1$和$p_2, V_2$均服从范德瓦尔斯方程。记$p^\text{vdw}$为范德瓦尔斯方程给出的（非物理的）压强。
+体系自由能满足
+\[
+    p = - \eval{\pdv{F}{V}}_T,
+\]
+因此$T$不变时就有
+\[
+    \dd{F} = - p \dd{V}.
+\]
+点1和点2被$p$-$V$曲线\eqref{eq:van-de-waars-eq}连接起来，因此
+\[
+    F_2 - F_1 = - \int_1^2 p^\text{vdw} \dd{V},
+\]
+而实际的过程又满足
+\[
+    F_2 - F_1 = - p^\text{trans} (V_2 - V_1),
+\]
+于是就有
+\begin{equation}
+    p^\text{trans} (V_2 - V_1) = \int_1^2 p^\text{vdw} \dd{V}.
+    \label{eq:maxwell-construction}
+\end{equation}
+\eqref{eq:maxwell-construction}意味着相变点1和2是直线$p=p^\text{trans}$与范德瓦尔斯方程绘制的曲线的三个交点的最左边和最右边两个，且直线$p=p^\text{trans}$与范德瓦尔斯方程围成的两块闭合面积相等。
+
+分别以$V_\text{c}$,$p_\text{c}$,$T_\text{c}$为特征尺度对$V$,$p$,$T$做归一化，我们有
+\begin{equation}
+    \left(\bar{V} - \frac{1}{3}\right) \left(\bar{p} + \frac{3}{\bar{V}^2}\right) = \frac{8}{3} \bar{T}. 
+\end{equation}
+此方程和实验结果吻合得很好，除了在临界点附近。这是因为范德瓦尔斯方程实际上是一个平均场理论，在临界点附近（涨落很强）就不适用了。
+
+\section{经典流体理论和经典动理学}
+
+本节讨论经典气体和液体，即可以使用经典动力学描述的气体和液体系统。由于热涨落，通常不能够直接使用哈密顿量做动力学演化而需要加入一些环境项而得到主方程。
+由于我们关注的是宏观气体，可以认为气体几乎总是处于经典的状态，即动量和坐标近似对易，密度矩阵在坐标-动量基下对角化。
+当然，实际上不存在坐标-动量基，但是可以这么考虑这个问题：我们允许流体中在长程上有一些涨落，但是因为假定系统近平衡，从流体中取任意一个微团都是近似热平衡的，并且不同微团之间没有什么量子纠缠。
+由空间平移不变性每个微团的密度矩阵可以认为是在动量表象下对角化的，而不同坐标点处有不同的密度矩阵，于是可以写出形如$\hat{n}_{\vb*{k}}(\vb*{r})$的密度矩阵，看起来就好像是坐标-动量基下对角化的密度矩阵。
+
+我们认为气体中的分子相互作用仅包含二分子相互作用，即
+\begin{equation}
+    H = \sum_i \frac{p_i^2}{2m} + \sum_{i \neq j} U(\abs*{\vb*{r}_i - \vb*{r}_j}).
+    \label{eq:general-gas-hamiltonian}
+\end{equation}
+这个假设通常是合理的，因为气体分子发生相互作用的时间尺度通常远小于电磁场的传播需要的时间，因此在气体分子发生相互作用的时间尺度上，基本上只有静电学和静磁学现象。
+这样，分子间相互作用无非是某种由于分子内部电荷分布不均匀而非常复杂的库伦相互作用；如果分子可以看成点电荷，那么$U$就是库伦势能。
+
+\subsection{经典理想气体}
+
+理想气体是经典气体\eqref{eq:general-gas-hamiltonian}的自由理论，其哈密顿量可以写成
+\begin{equation}
+    H = \sum_i \frac{p_i^2}{2m},
+\end{equation}
+当然，这不可能是真正的哈密顿量，否则分子之间没有相互作用，系统就不可能达到热平衡。因此实际上的哈密顿量还要加上一个碰撞项。
+
+\subsubsection{状态方程}
+
+经典的理想气体状态方程为
+\begin{equation}
+    pV=N k_B T,
+\end{equation}
+其中$T$为一个状态参数，称为\concept{理想气体温标}。
+
+实际上，只要我们确信压强和温度成正比，可以直接从熵出发非常简单地推导状态方程。平衡时熵是
+\[
+    S = k_B \ln \left(\frac{V}{\Delta V}\right)^N = N \ln \left( \frac{V}{\Delta V} \right),
+\]
+使用麦克斯韦关系式
+\[
+    \left( \pdv{S}{V} \right)_T = \left( \pdv{p}{T} \right)_V = \frac{p}{T},
+\]
+就得到
+\[
+    p = T \left( \pdv{S}{V} \right)_T = \frac{N k_B T}{V}.
+\]
+这就是全部了。
+
+\subsubsection{理想气体的热力学}
+
+外界压缩气体即能够做功，于是
+\begin{equation}
+    \var{W} = - p \dd{V}.
+\end{equation}
+热力学第一定律为
+\begin{equation}
+    \dd{U} = - p \dd{W} + \dd{S}, \quad \dd{S} \geq T \dd{S}.
+\end{equation}
+等号在可逆时取得。
+
+理想气体温标实际上就是热力学温标。我们如下构造理想气体的卡诺过程：
+\begin{enumerate}
+    \item 在温度$T_1$下气体状态从$(p_1, V_1)$演化为$(p_2, V_2)$，即发生一个等温过程，此过程中从外界吸收热量；
+    \item 
+\end{enumerate}
+
+计算得到的热机效率的形式和热力学温标下的热机效率是一致的，因此热力学温标和理想气体温标最多差一个常数因子，那么可以不失一般性地认为这两种温标相同。
+
+一种把所有这些量都记住的口诀是：
+Good physicists have studied under very fine teachers.
+把每个词的首字母拿出来，排成一圈。
+
+气体内能的公式必须通过哈密顿量得到，因此不能只通过热力学确定。然而，理想气体的内能实际上都仅仅依赖于温度。这是因为对平衡态气体有
+\[
+    \dd{U} = - p \dd{V} + T \dd{S},
+\]
+于是
+\[
+    \left(\pdv{S}{V}\right)_T = \left(\pdv{P}{T}\right)_V,
+\]
+从而
+\[
+    \begin{aligned}
+        \left(\pdv{U}{V}\right)_T &= \left(\pdv{U}{V}\right)_S + \left(\pdv{U}{S}\right)_V \left(\pdv{S}{V}\right)_T \\
+        &= - p + T \left(\pdv{P}{T}\right)_V.
+    \end{aligned}
+\]
+对理想气体，
+\[
+    \left(\pdv{P}{T}\right)_V = \frac{p}{T},
+\]
+于是
+\[
+    \left(\pdv{U}{V}\right)_T = 0.
+\]
+因此内能只和温度有关。对别的类型的气体这个式子未必成立。
+
+\begin{equation}
+    S = Nk \ln V + \frac{i}{2} Nk \ln T + \const.
+    \label{eq:entropy-from-thermodynamics}
+\end{equation}
+
+\subsubsection{麦克斯韦速度分布律}
+
+在热平衡时理想气体中气体分子的速度分布是什么样的？实际上可以使用简单的对称性分析得到其速度分布律。
+设$f(v_x),f(v_y),f(v_z)$分别是三个方向上的速度分布函数，$f(\vb*{v})$则是完整的速度分布函数，于是就有
+\[
+    f(v_x) = \int \dd{v_y} \int \dd{v_z} f(\vb*{v}),
+\]
+等等。
+
+首先考虑碰撞项比较小的情况。此时碰撞项的作用只是促成热平衡，因此每个分子三个方向上的运动速度近似是解耦的，也即我们有
+\[
+    f(\vb*{v}) = f(v_x) f(v_y) f(v_z).
+\]
+由空间旋转对称性，$f(v_x),f(v_y),f(v_z)$这三个函数的形式是一样的，并且$f(\vb*{v})$只应该依赖于$\vb*{v}$的某个标量函数，从而有
+\[
+    f(\vb*{v}) = g(v_x^2+v_y^2+v_z^2).
+\]
+于是就得到函数方程
+\[
+    f(v_x) f(v_y) f(v_z) = g(v_x^2+v_y^2+v_z^2).
+\]
+将其中两个方向上的速度固定为零，我们有
+\[
+    f(v_x) \propto g(v_x^2),
+\]
+于是考虑到三个方向上的速度分布函数是一样的，就得到
+\[
+    C g(v_x^2) g(v_y^2) g(v_z^2) = g(v_x^2+v_y^2+v_z^2).
+\]
+能够满足这种条件的只有指数函数，于是我们就得到
+\[
+    g(v_x^2) \propto \ee^{A v_x^2},
+\]
+最后
+\[
+    f(v_x) = C \ee^{A v_x^2}.
+\]
+
+\subsubsection{配分函数}
+
+首先考虑球形粒子，即只有质心三个自由度的粒子，那么理想气体的经典配分函数是
+\begin{equation}
+    Z = \int \prod_i \dd{p_i} \dd{q_i} \ee^{- \beta \sum_i \frac{p_i^2}{2m}} = \prod_i \int \dd{q_i} \int \dd{p_i} \ee^{- \frac{p_i^2}{2m} }.
+    \label{eq:simplest-ideal-gas-partition-def}
+\end{equation}
+首先尝试经典的计算，即认为$p,q$可以连续取值。设共有$N$个粒子，则
+\[
+    \prod_i \int \dd{q_i} = V^{N},
+\]
+而
+\[
+    \prod_i \int \dd{p_i} \ee^{- \beta \frac{p_i^2}{2m}} = \left( \frac{2\pi m}{\beta} \right)^{\frac{3N}{2}},
+\]
+于是
+\begin{equation}
+    Z = V^{N} \left( \frac{2\pi m}{\beta} \right)^{\frac{3N}{2}}.
+    \label{eq:simplest-ideal-gas-partition}
+\end{equation}
+如果我们把经典配分函数\eqref{eq:simplest-ideal-gas-partition-def}当成正确的配分函数用于计算自由能，那么
+\[
+    F = - k T \ln Z = - kNT \ln V - \frac{3}{2} kNT \ln (2\pi m T),
+\]
+从而可以计算熵为
+\begin{equation}
+    S = - \pdv{F}{T} = Nk \ln V + \frac{3}{2} kN \ln T + \frac{3}{2} kN + \frac{3}{2} kN \ln (2\pi m).
+    \label{eq:naive-entropy}
+\end{equation}
+\eqref{eq:naive-entropy}和\eqref{eq:entropy-from-thermodynamics}是一致的——本该如此。\eqref{eq:naive-entropy}的不足之处在于它不满足可加性。
+如果两个分别达到平衡，彼此只隔着一个隔板的同种粒子、温度相同的理想气体系统具有一样的压强，那么抽去隔板之后总系统立即达到平衡。
+% TODO:为什么？虽然直觉上理应如此
+然而，\eqref{eq:naive-entropy}不满足这个条件，因为显然其中的第一项不是线性的。
+这就是吉布斯佯谬——本应具有可加性的熵变得不可加了。
+为了让熵具有可加性我们不得不手动校准其零点，从而需要修改$F$，在其中引入一些不改变热力学预言的项，这表明\eqref{eq:simplest-ideal-gas-partition-def}不是正确的配分函数，它差了一些常数因子。
+
+考虑全同粒子的不可分辨性（它意味着交换两个粒子虽然会让系统的正则坐标发生变化但并不改变系统状态，为了消除掉这种重复，在配分函数前面加上因子$1/N!$）以及相空间需要划分为相格（它在配分函数前面加上因子$1/h^{3N}$），将\eqref{eq:simplest-ideal-gas-partition}修改为
+\begin{equation}
+    Z = \frac{1}{N!} V^{N} \left( \frac{m}{2\pi \beta \hbar^2} \right)^{\frac{3N}{2}}.
+\end{equation}
+重复以上计算，得到
+\[
+    F = - kNT \ln V - \frac{3}{2} kNT \ln \left(\frac{m T}{2\pi \hbar^2}\right) + k T \ln N!,
+\]
+从而熵为
+\[
+    S = N k \ln V + \frac{3}{2} Nk \ln T + \frac{3}{2} kN + \frac{3}{2} kN \ln \left( \frac{m}{2\pi \hbar^2} \right) - k \ln N!.
+\]
+表面上这个熵表达式仍然没有可加性，但请注意由于经典统计仅仅适用于大粒子数系统，我们可以应用斯特林公式
+\[
+    \ln N! \approx N \ln N - N,
+\]
+然后得到的熵表达式就是可加的了。总之，为了导出正确的熵，不能使用代表点密度的归一化常数为配分函数，而必须加上必要的修正因子。
+
+回顾以上修正。关于相空间应该分成相格的问题我们不做过多讨论，如果不加入这个修正因子，最后得到的熵实际上还是具有可加性的。加入这个因子的作用仅仅是为了确保通过经典统计物理计算出来的熵和量子统计的结果一致。
+真正恢复了可加性的实际上是因子$1/N!$。我们知道，吉布斯佯谬只有在混合的两盒气体真正是全同的时候才是佯谬，如果混合的两盒气体是不一样的，那么混合它们就是会有熵增的。
+换而言之，经典配分函数前面的修正因子必须能够区分全同粒子和非全同粒子。
+$1/N!$正是这样一个因子。
+
+关于什么时候需要乘上什么样的因子，我们还需要进一步讨论。想象两个分别装有$N_1$和$N_2$个全同粒子的盒子，它们的体积均为$V$。
+设单粒子配分函数为$Z_0$，显然
+\begin{equation}
+    Z_1 = \frac{Z_0^{N_1}}{N_1!}, \quad Z_2 = \frac{Z_0^{N_2}}{N_2!},
+    \label{eq:separate-boxes}
+\end{equation}
+而如果把两个盒子接通，似乎应该有
+\begin{equation}
+    Z = \frac{Z_0^{N_1+N_2}}{(N_1 + N_2)!}.
+    \label{eq:one-box}
+\end{equation}
+现在我们立刻可以看到几个佯谬：
+\begin{enumerate}
+    \item 最明显的，\eqref{eq:one-box}和\eqref{eq:separate-boxes}不可能都是对的，因为必须有$Z = Z_1 Z_2$；
+    \item 如果我们将两个盒子不接通而是放在一起，但是把它们当成一个整体计算，那么似乎应该有
+    \[
+        Z = \frac{Z_0^{N_1} Z_0^{N_2}}{(N_1+N_2)!},
+    \]
+    但这就和\eqref{eq:separate-boxes}矛盾了，因为仅仅将两个系统放在一起不可能破坏$Z=Z_1 Z_2$；
+    \item 即使两边的粒子不全同，\eqref{eq:separate-boxes}也是成立的，那么全同粒子和不全同的粒子的区别体现在何处？
+\end{enumerate}
+第一个佯谬之所以为佯谬，是因为没有考虑到两个盒子接通之后，单粒子配分函数会因为粒子可以活动的空间变大而增大。
+\eqref{eq:separate-boxes}和\eqref{eq:one-box}中的单粒子配分函数是不同的。
+第二个佯谬的解释略微复杂一些：在这里，我们将$(N_1+N_2)!$作为修正因子，因为交换左右两个盒子中的粒子不会造成系统状态改变，但这里的微妙之处在于，可以使用$\mathbb{R}^3$中的位矢标记粒子，也可以使用“粒子位于哪个箱子”加上“粒子相局限在箱子的位矢”来标记粒子，但是不能够使用“粒子位于哪个箱子”加上$\mathbb{R}^3$中的位矢来标记粒子——这两个标签存在信息的重复。
+如果我们使用$(N_1+N_2)!$作为修正因子，那就隐含地允许粒子的位矢随意取值（这样才能将左边的箱子中的粒子和右边的箱子中的粒子交换），此时必须使用两个盒子的单粒子配分函数，于是就得到了\eqref{eq:one-box}；而如果使用$N_1! N_2!$作为修正因子，那就隐含地认为“左边还是右边”是粒子的标签，此时必须用“粒子局限于箱子的位矢”来做另一个标签，这样将左右两边的两个粒子交换确实导致了一个新的态，因为“左右”的标签在这里没有被改变，从而交换之后右边的箱子中出现了一个“左”标签的粒子，于是计算得到的单粒子配分函数就是单个箱子的单粒子配分函数，于是得到\eqref{eq:separate-boxes}。
+这样，第三个佯谬也就得到了解释：当全同粒子局限在两个不同的箱子中时，可以认为它们是全同粒子，此时使用修正因子$(N_1+N_2)!$，也可以认为它们不是全同粒子，而是被“左-右”的标签区分开了，在全同粒子局限在两个不同的箱子中时，它们的统计性质确实和两边的粒子不全同的情况是一致的。
+
+\subsection{波尔兹曼方程}
+
+\subsubsection{从分子混沌性假设导出玻尔兹曼方程}
+
+考虑无粒子生灭的气体，假定
+\begin{enumerate}
+    \item 只考虑二体弹性碰撞，即不讨论碰撞导致化学反应，也不讨论多体过程（这个假设已经包含在\eqref{eq:general-gas-hamiltonian}中了）；
+    \item 气体相互作用时涉及到的自由度只有整体的坐标和动量（这个假设也已经包含在\eqref{eq:general-gas-hamiltonian}中了）；
+    \item 气体不非常密集以至于气体的平均自由时间相对于气体分子散射的时间尺度很大，从而碰撞可以看成是瞬时的；
+    \item 气体分子间的相互作用随距离增长快速衰减，从而碰撞可以看成是定域的；
+    \item 气体分子受外力作用的时间尺度远大于碰撞，即漂移和碰撞解耦；
+    \item 气体分子的分布彼此独立。
+\end{enumerate}
+前几个假设要求气体分子是简单的点粒子且气体稀薄，最后一个假设（称为\concept{分子混沌假设}）并不是非常显然，但通过BBGKY层级可以证明它是正确的。
+% TODO
+把每个气体分子的坐标和动量都绘制在一个六维空间$(\vb*{r}, \vb*{p})$中，%
+\footnote{注意这不是系统的相空间而是单个粒子的相空间，系统的相空间是一个$6N$维空间。}%
+设此单粒子相空间中的分布函数为$f$，它是多粒子分布函数积掉$N-1$个粒子，只剩下单个粒子所得到的结果：
+\begin{equation}
+    f(\vb*{q}, \vb*{p}, t) = \int \prod_{i=1}^{N-1} \dd{\vb*{q}_i} \dd{\vb*{p}_i} \rho(\{\vb*{q}_i\}, \{\vb*{p}_i\}, t),
+\end{equation}
+那么对只涉及单粒子的物理量或者一系列仅涉及单粒子的物理量之和$A$，就有
+\begin{equation}
+    \expval*{A(t)} = \int \dd{\vb*{p}} \dd{\vb*{q}} f(\vb*{q}, \vb*{p}, t) A(\vb*{q}, \vb*{p}).
+\end{equation}
+我们来推导输运方程，即$f$服从的方程。
+
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} + \frac{\vb*{F}}{m} \cdot \pdv{f}{\vb*{v}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{r}-\vb*{r}_2} (\underbrace{f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t)}_\text{in} - \underbrace{f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)}_\text{out}).
+    \label{eq:boltzmann-eq}
+\end{equation}
+等号右边的一长串称为\concept{碰撞积分}，一般记作$(\pdv*{f}{t})_\text{c}$。对一个相互作用势能$U(r)$，理论上总是可以计算出散射截面和碰撞之后的速度变化。
+
+\subsubsection{细致平衡条件和麦克斯韦分布}
+
+\eqref{eq:boltzmann-eq}意味着相空间中位于$\vb*{r}, \vb*{v}$附近的粒子数有进有出，并且粒子的转移是无记忆的。\concept{细致平衡条件}是说，很大一类系统平衡时从状态$i$转移到状态$j$和从状态$j$转移到状态$i$的概率相同，在这里就是
+\begin{equation}
+    f(\vb*{r}, \vb*{v}'_1, t) f(\vb*{r}, \vb*{v}'_{2}, t) = f(\vb*{r}, \vb*{v}_1, t) f(\vb*{r}, \vb*{v}_{2}, t).
+\end{equation}
+这个方程有没有解，到现在还不得而知，不过马上可以看到\eqref{eq:boltzmann-eq}可以直接推导出麦克斯韦分布。
+两边取对数得到
+\[
+    \ln f(\vb*{r}, \vb*{v}'_1, t) + \ln f(\vb*{r}, \vb*{v}'_{2}, t) = \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t),
+\]
+这个方程意味着$\ln f_1 + \ln f_2$是某种守恒量。\eqref{eq:general-gas-hamiltonian}没有给出任何单粒子守恒量（除了粒子数以外），因此只能是
+\[
+    \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t) = F(\vb*{v}_1, \vb*{v}_2).
+\]
+要让等式右边能够分解成一个关于$\vb*{v}_1$的函数加上一个关于$\vb*{v}_2$的函数之和，仅有的可能是
+\[
+    \ln f(\vb*{r}, \vb*{v}_1, t) + \ln f(\vb*{r}, \vb*{v}_{2}, t) = \sum_i \underbrace{(F_i(\vb*{v}_1) + F_i(\vb*{v}_2))}_{=\const}.
+\]
+\eqref{eq:general-gas-hamiltonian}的独立守恒量包括粒子数守恒、动量守恒（即任何方向上都有空间平移不变性）、动能守恒（即时间平移不变性）。（角动量守恒可以从动量守恒推出）
+这些量称为\concept{碰撞不变量}，因为它们在粒子碰撞前后守恒。
+因此，我们有
+\[
+    \ln f(\vb*{r}, \vb*{v}, t) = A + \vb*{\alpha} \cdot \vb*{v} + C v^2,
+\]
+或者等价的
+\[
+    \ln f(\vb*{r}, \vb*{v}, t) = A (\vb*{v} - \vb*{v}_0)^2.
+\]
+加入温度等常数，我们就得到了麦克斯韦分布。
+
+\subsubsection{H定理与时间反演}
+
+虽然表面上看起来，使用H定理让我们能够从牛顿方程推出热力学第二定律，但仔细考虑会发现几个很大的问题：
+\begin{enumerate}
+    \item 牛顿方程是时间反演不变的，热力学第二定律不是；
+    \item 庞加莱回归意味着封闭系统的演化总是可以几乎回到其初始状态，即熵可以回到原点，这似乎和热力学第二定律矛盾；
+    \item 
+\end{enumerate}
+
+如果一开始粒子之间的分布确实是完全无关的，发生几次散射之后它们的分布就产生关联了，或者说一个粒子的运动情况的信息会传递给别的粒子。分子混沌假设等于人为引入了环境扰动，使得关于粒子运动情况的信息会源源不断地被导向外部，这是熵增的根本原因。
+
+\subsubsection{弛豫时间近似}
+
+直接求解玻尔兹曼方程是非常困难的，基本上只能够数值求解。在系统接近平衡态时可以加入一些比较合理的拟设。
+本节讨论\concept{弛豫时间近似}，假定
+\begin{equation}
+    \left(\pdv{f}{t}\right)_\text{c} = - \frac{f - f_0}{\tau},
+\end{equation}
+其中$f_0$为没有任何外场时的平衡态分布。体系的微观性质体现在$\tau$上，如果能够从某个微观模型计算出$\tau$，那就可以放心大胆地使用弛豫时间近似。
+
+我们计算一些弛豫时间近似下的输运问题。考虑一个空间均匀的电子气，设在$x$方向外加了一个电场$E$，此时
+\[
+    \pdv{f}{t} - \frac{e E}{m} \pdv{f}{v_x} = - \frac{f - f_0}{\tau},
+\]
+由于空间均匀，我们略去了对空间求导的项。假定系统快速弛豫，则只需要求解
+\[
+    \pdv{f}{v_x} = \frac{m}{eE\tau} (f - f_0).
+\]
+设
+\[
+    f = f_0 + f_1,
+\]
+假定电场较弱，从而$f$没有偏离平衡态太多，则
+\[
+    \begin{aligned}
+        f_1 &= \frac{e E \tau}{m} \pdv{f_0}{v_x} = \frac{e E \tau}{m} \pdv{f_0}{\epsilon} m v_x \\
+        &= \frac{e E \tau}{m} \pdv{f_0}{\epsilon} \pdv{\epsilon}{v_x},
+    \end{aligned}
+\]
+在温度远小于费米温度（几乎总是如此）时，$f_0$对单粒子能量的求导几乎给出一个$\delta$函数，由于$f$不是单粒子分布函数而是包含了所有粒子的分布，$\pdv*{f_0}{\epsilon}$大体上是$n \delta(\epsilon-\mu)$。$\epsilon$对$v_x$的导数则由电子能带决定，如果能带各向同性它给出$m^* v_x$，其中$m^*$是电子的有效质量。
+于是
+\[
+    \begin{aligned}
+        j_x &= - e \int \dd[3]{\vb*{v}} f v_x = - e \int \dd[3]{\vb*{v}} f_1 v_x \\
+        &= - e^2 
+    \end{aligned}
+\]
+
+很多情况下，弛豫时间近似都是适用的。我们考虑一个比较简单的例子，
+
+\subsection{BBGKY序列}
+
+\subsubsection{BBGKY序列的导出}
+
+实际上，还可以直接从刘维尔方程出发推导气体的动理学方程。\eqref{eq:general-gas-hamiltonian}会导致如下的刘维尔方程：
+\[
+    \dv{P_N}{t} + \sum_i \left( \vb*{v}_i \cdot \pdv{P_N}{\vb*{r}_i} + \frac{\vb*{F}_i}{m} \cdot \pdv{P_N}{\vb*{v}_i} \right), \quad \vb*{F}_i = - \sum_{j \neq i} \pdv{U_{ij}}{\vb*{r}_i}, 
+\]
+其中$P_N$是$\{\vb*{q}_i, \vb*{p}_i\}$的函数，且随意交换两个粒子，$P_N$不变。考虑如下的$s$粒子边缘分布：
+\begin{equation}
+    P_N^{(s)} = \int \prod_{i \geq s+1} \dd{\vb*{r}_i} \dd{\vb*{v}_i} P_N,
+\end{equation}
+使用$P_N$的对称性以及积分边界项为零的事实，可以推导出
+\begin{equation}
+    \pdv{P_N^{(1)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(1)}}{\vb*{r}_1} = \frac{N-1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1},  
+    \label{eq:from-p2-to-p1}
+\end{equation}
+以及类似的从$P^{(3)}_N$推导出$P^{(2)}_N$的方程
+\begin{align}
+    \begin{autobreak}
+        \pdv{P_N^{(2)}}{t} + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+        + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+        - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} 
+        = \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \left( \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} + \pdv{P_N^{(3)}}{\vb*{v}_2} \cdot \pdv{U_{23}}{\vb*{r}_2} \right),
+    \end{autobreak}
+    \label{eq:from-p3-to-p2}
+\end{align}
+还有从$P_N^{(4)}$推导出$P_N^{(3)}$等等的方程。这就是\concept{BBGKY序列}。
+将某个高阶$P_N^{(s)}$取为零，就可以做一个截断，从而得到一组自洽方程，可以从$P_N^{(s)}$计算$P_N^{(s-1)}$，最后计算出$P_N^{(1)}$，这就得到了$f$。
+
+\subsubsection{BBGKY序列和玻尔兹曼方程}
+
+\eqref{eq:from-p3-to-p2}右边的空间积分只有在两个粒子间距在相互作用力程$d$中，即满足
+\[
+    \abs*{\vb*{r}_i - \vb*{r}_j} \lesssim d
+\]
+时才有非零值，因此该积分应该和$d^3$同阶。另一方面，设分子间距的数量级为$\delta$，则系统体积满足
+\[
+    V \sim N \delta^3.
+\]
+最后，注意到对整个系统体积和动量空间积分，有
+\[
+    \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1},
+\]
+于是合起来就有
+\[
+    \frac{N-2}{m} \int \dd{\vb*{r}_3} \dd{\vb*{v}_3} \pdv{P_N^{(3)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \sim \frac{1}{m} \pdv{P_N^{(2)}}{\vb*{v}_1} \cdot \pdv{U_{13}}{\vb*{r}_1} \frac{d^3}{\delta^3}.
+\]
+如果气体非常稀薄，那么$d/\delta$就是小量，于是\eqref{eq:from-p3-to-p2}右边可以略去，得到
+\begin{equation}
+    \pdv{P_N^{(2)}}{t} 
+    + \vb*{v}_1 \cdot \pdv{P_N^{(2)}}{\vb*{r}_1} 
+    + \vb*{v}_2 \cdot \pdv{P_N^{(2)}}{\vb*{r}_2} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{P_N^{(2)}}{\vb*{v}_1} 
+    - \frac{1}{m} \pdv{U_{12}}{\vb*{r}_2} \cdot \pdv{P_N^{(2)}}{\vb*{v}_2} = 0.
+    \label{eq:effective-2-particle}
+\end{equation}
+上式实际上可以写成一个全微分的形式：
+\[
+    \dv{P_N^{(2)}}{t}=0,
+\]
+这个全微分沿着哈密顿量
+\begin{equation}
+    H_\text{eff} = \frac{p_1^2}{2m} + \frac{p_2^2}{2m} + U(\abs*{\vb*{r}_1 - \vb*{r}_2})
+    \label{eq:2-particle-hamiltonian}
+\end{equation}
+描写的相轨道。这当然是正确的，因为近似\eqref{eq:effective-2-particle}只使用了两对坐标-动量对，因此描述了一个近似只有两个粒子的系统，那么它显然应该服从二粒子系统的刘维尔定律。
+
+假定不同粒子的分布基本独立（我们在此引入分子混沌性假设），从而
+\[
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_1, \vb*{v}_1, t) P^{(1)}_N(\vb*{r}_2, \vb*{v}_2, t).
+\]
+将上式沿着\eqref{eq:2-particle-hamiltonian}描述的相轨道积分就得到
+\[
+    P^{(2)}_N(\vb*{r}_1, \vb*{v}_1, \vb*{r}_2, \vb*{v}_2, t) = P^{(1)}_N(\vb*{r}_{10}, \vb*{v}_{10}, t_0) P^{(1)}_N(\vb*{r}_{20}, \vb*{v}_{20}, t_0).
+\]
+注意这里的$\vb*{r}_{10}, \vb*{r}_{20}$是$t-t_0,\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数，而$\vb*{v}_{10}, \vb*{v}_{20}$是$\vb*{r}_1,\vb*{r}_2,\vb*{v}_1, \vb*{v}_2$的函数。
+将上式代入\eqref{eq:from-p2-to-p1}，并将$N-1$近似为$N$，考虑到$f=NP_N^{(1)}$，得到
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \frac{1}{m} \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \pdv{U_{12}}{\vb*{r}_1} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{v}_1}.
+\]
+由于$f$要出现显著的变化需要在平均自由程的尺度上，而上式所述的积分在该尺度上是高度定域的（$d$远小于平均自由程），我们有
+\[
+    \pdv{\vb*{r}}{t} \cdot \pdv{f}{\vb*{r}} \ll \pdv{U}{\vb*{r}} \cdot \pdv{f}{\vb*{v}},
+\]
+这样可以将\eqref{eq:effective-2-particle}中的时间偏导数项去掉，而对$\vb*{r}_2$的偏导数对$\dd{\vb*{r}_2}$积分之后得到表面项，为零，于是
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \dd{\vb*{r}_2} \dd{\vb*{v}_2} \left( \vb*{v}_1 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_1} + \vb*{v}_2 \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}_2} \right) \\
+        &= \int \dd{\vb*{r}} \dd{\vb*{v}_2} \vb*{u} \cdot \pdv{f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0)}{\vb*{r}},
+    \end{aligned}
+\]
+其中$\vb*{r}$和$\vb*{u}$分别是粒子1和粒子2的相对位移和相对速度。
+以$\vb*{u}$的方向为$z$轴建立柱坐标系，得到
+\[
+    \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} = \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{10}, \vb*{v}_{10}, t_0) f(\vb*{r}_{20}, \vb*{v}_{20}, t_0))\big|_{z=-\infty}^\infty.
+\]
+请注意$\vb*{r}$是两个发生碰撞的粒子的相对位移，$\vb*{u}$指向碰撞发生的方向，则$z$趋于$\infty$意味着碰撞结束，而$z$趋于$-\infty$意味着碰撞开始。
+无论是碰撞开始还是结束，做一个小的时间平移$t \longrightarrow t_0$都不会造成什么影响，而由于碰撞高度定域，碰撞前后位矢可认为基本不变，且均位于$\vb*{r}_1$附近。于是就得到
+\[
+    \begin{aligned}
+        \pdv{f}{t} + \vb*{v}_1 \cdot \pdv{f}{\vb*{r}_1} &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{2}, \vb*{v}_{2}, t))\big|_{z=-\infty}^\infty \\
+        &= \int \rho \dd{\rho} \dd{\varphi} \dd{\vb*{v}_2} u (f(\vb*{r}_{1}, \vb*{v}'_{1}, t) f(\vb*{r}_{1}, \vb*{v}'_{2}, t) - f(\vb*{r}_{1}, \vb*{v}_{1}, t) f(\vb*{r}_{1}, \vb*{v}_{2}, t)),
+    \end{aligned}
+\]
+$\vb*{r}(t)$曲线组成一束束流管，微分形式$\rho \dd{\rho} \dd{\varphi}$实际上就是散射截面：
+\[
+    \rho \dd{\rho} \dd{\varphi} = \sigma \dd{\Omega},
+\]
+于是把$\vb*{v}_1$和$\vb*{r}_1$的下标去掉，最终得到
+\begin{equation}
+    \pdv{f}{t} + \vb*{v} \cdot \pdv{f}{\vb*{r}} = \int \dd{\vb*{v}_2} \dd{\Omega} \sigma \abs*{\vb*{r}-\vb*{r}_2} (f(\vb*{r}, \vb*{v}', t) f(\vb*{r}, \vb*{v}'_{2}, t) - f(\vb*{r}, \vb*{v}, t) f(\vb*{r}, \vb*{v}_{2}, t)).
+\end{equation}
+
+\subsection{流体力学和宏观输运}
+
+\subsubsection{局域平衡和流动}
+
+设$\chi$是一个碰撞不变量。由于\eqref{eq:general-gas-hamiltonian}的时间反演不变性和空间平移不变性（虽然势能确实显含各粒子的位置，但由于粒子间的相互作用高度定域，在更长的尺度上近似有空间平移不变性），碰撞不变量不显含时间和位置，而只显含动量（但这并不意味着它就不会随着位置的变化而变化，因为动量期望值在不同位置可以不同）。
+碰撞不变量是这样的：
+
+粒子流
+\[
+    \vb*{j} = \sum \vb*{v}
+\]
+
+\subsubsection{纳维-斯托克斯方程}
+
+\begin{equation}
+    \rho \left( \pdv{\vb*{v}}{t} + \vb*{v} \cdot \grad{\vb*{v}} \right) = - \grad{P} + \vb*{f}.
+\end{equation}
+
+\begin{equation}
+    \pdv{\rho}{t} + \div{\rho \vb*{v}} = 0.
+    \label{eq:transportation-eq}
+\end{equation}
+
+\subsection{经典气体模型的局限性}
+
+经典理想气体的模型只在温度不很低的情况下适用；当温度很低时，量子效应变得明显起来。
+低温下，气体的行为和气体粒子是费米子还是玻色子有密切的关系；低温下还会出现自由度冻结等现象。
+对量子气体，动量-坐标不确定性关系变得非常重要，不过“粒子空间密度”之类的概念还可以继续使用。
+设体积为$V$的盒子中有某种量子气体，则
+\[
+    N = \sum_{\vb*{k}} n_{\vb*{k}}.
+\]
+现在我们让$V\to \infty$，则做替换
+\[
+    \frac{1}{V} \sum_{\vb*{k}} \longrightarrow \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3},
+\]
+就得到
+\[
+    \frac{N}{V} = \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} n_{\vb*{k}}.
+\]
+对近平衡的气体，一个宏观小微观大的局部就可以当成一个盒子，于是就有
+\begin{equation}
+    \rho(\vb*{r}) = \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} n_{\vb*{k}},
+\end{equation}
+其中$n$对$\vb*{k}$的函数关系（如费米-狄拉克分布或者玻色-爱因斯坦分布）可以依赖坐标。
+
+\section{费米子系统}
+
+从本节开始我们讨论量子气体。本节是关于费米子系统的，我们首先回顾非相对论性理想费米气体，然后讨论相互作用费米子系统的重要的唯象理论——费米液体，并分析一个排斥性的电子系统，证明它可以用费米液体描述，最后给出微扰计算相互作用费米气体的系统方法。
+
+\subsection{理想费米气体}
+
+考虑一个非相对论自由理想费米气体，我们知道其分布函数为
+\begin{equation}
+    f(\epsilon) = \frac{1}{\ee^{-\beta(\epsilon - \mu)} + 1}.
+\end{equation}
+在温度很低时，气体分子倾向于待在最低的能级上，在$\vb*{p}$空间中填充一个球面。我们有
+\begin{equation}
+    \expval{n} = \begin{cases}
+        1, \quad \epsilon < \mu, \\
+        0, \quad \epsilon > \mu.
+    \end{cases}
+\end{equation}
+$\mu$给出了有粒子填充的最高能级，称为\concept{费米能级}，对应的动量围成的曲面为\concept{费米面}；费米面以下的所有状态称为\concept{费米球}。费米面内部的粒子数为
+\begin{equation}
+    N = \int \dd{\epsilon} \underbrace{\frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \alpha}_\text{space density} = \frac{4\pi V (2m)^{3/2} \alpha}{3h^3} \epsilon_\text{F}^{3/2},
+    \label{eq:particle-number-in-fermi-surface}
+\end{equation}
+其中$\alpha$指的是粒子的自旋可能的取值个数。
+基态能量为（下面的推导用到了非相对论自由粒子的态密度）
+\begin{equation}
+    E = \int \dd{\epsilon} \underbrace{\frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \alpha}_\text{space density} \epsilon = \frac{4 \pi V (2m)^{3/2} \alpha}{5 h^3} \epsilon_\text{F}^{5/2} = \frac{3}{5} N \epsilon_\text{F}.
+\end{equation}
+
+费米能除以$k_\text{B}$（本文中默认为$1$）就是\concept{费米温度}。费米子分布能够近似看成以费米面为分界的阶跃函数的条件是温度远小于费米温度；此时只有费米面附近一层厚度正比于$\sqrt{T}$的球层内费米子分布才显著偏离阶跃函数。
+如果给费米气体加上相互作用，那么发生散射的费米子通常来自这一层，因为空占据态上没有费米子而满了的能级上费米子散射没有终态可用。
+
+\subsection{费米液体}
+
+\subsubsection{费米型激发组成的系统}
+
+% TODO：这一段写得其实有问题
+
+很多体系——例如大部分具有强度大小不定的排斥相互作用的费米子系统——都可以看成一个费米气体加上一个排斥相互作用。
+在很多情况下，这样的体系看起来就像是相互之间没有太多相互作用的近独立费米气体。
+这样的近独立“费米子系统”称为\concept{费米液体}。%
+\footnote{由于从气体到液体的相变没有出现任何对称性破缺，应当使用完全一样的哈密顿量来描写气体和液体。于是我们将粒子间相互作用弱的系统称为气体，将有强关联但是还没有出现晶格的系统称为液体。
+}%
+费米液体有两个基本假设：
+\begin{enumerate}
+    \item 费米液体的状态可以和费米气体一样，使用占据数标记；
+    \item 当相互作用趋于零（“被关闭”）时，费米液体态回退到实际的费米气体态，我们假设此时费米液体态的占据数和实际的费米气体态的占据数相同。
+\end{enumerate}
+例如，对自由费米子系统系统，我们可以浸染地将相互作用加入，如果没有出现诸如费米子配对之类的情况，这只会带来粒子的自能修正和一个势能项，因为如果相互作用很小，那么可以以自由费米子系统系统的能量本征态为零级波函数，计算相互作用带来的一阶修正，相互作用仅仅会把自由费米子系统系统的能量本征态旋转一个小角度，不会改变本征态的结构。
+因此这样就得到了一个费米液体。
+
+如果相互作用较强，虽然加入相互作用之后表面上理论还是加了自能修正的费米子系统，但是也许某些条件下可能出现相变；令人震惊的是，虽然大部分实际体系中库仑相互作用的确很强，费米液体图像仍然是适用的。
+如果相互作用是吸引的，那么低温下可能出现费米子配对，此时总是会出现相变。
+
+费米液体的低能激发并非实际构成此系统的粒子——还是以加入相互作用的费米气体为例子，想象一个实际的费米子在实际的费米子系统的费米面外面运动，由于相互作用，会“激起一片涟漪”，这样导致的一系列粒子的集体运动模式就是准粒子，费米液体中的粒子实为这种准粒子。
+准粒子的能量就是将系统的含有相互作用的哈密顿量做严格对角化得到的，显然每个准粒子的能量和系统中总的粒子数等物理量都有关系，从而不能够写成单体算符的本征值。
+
+由于相互作用等价于加入了自能修正，准粒子的自旋没有发生变化，但是质量发生了变化，且格林函数中会出现一个明显的虚部，即粒子寿命有限。
+相互作用的存在意味着系统的谱不能简单地写成$\epsilon_{\vb*{p}} \hat{a}^\dagger_{\vb*{p}} \hat{a}_{\vb*{p}}$的形式%
+\footnote{
+    可以有稳定的单粒子态，但是两个这样的态的直积或者对称/反对称化就未必是本征态了。
+}%
+，于是二者必有其一：如果我们认为准粒子之间没有相互作用，那么准粒子会有自发的衰变；如果我们要求准粒子的“动能”是实数，那么就必须引入准粒子的相互作用。
+然而，我们还是可以从费米液体中准粒子的行为中看到很明显的裸粒子的影子：例如，准粒子的个数和实际构成系统的粒子的个数是一样的，准粒子的能谱的形式和实际粒子的能谱很相似，等等。
+当然，费米液体的图像并不适用于任意的体系，比如说如果粒子相互作用造成某种配对，那么显然最后形成的准粒子个数是粒子个数的一半，而且能谱的形式也大不相同。
+
+在费米液体理论中通常只分析费米面附近的物理，部分原因在于费米海的结构可以非常复杂，因此只考虑费米面附近的物理是比较容易的，也是比较有实际意义的（因为是低温近似），部分原因在于只有这里才确定有稳定的准粒子——通常准粒子的寿命在接近费米面时比较长，因此看起来像是“真正的”粒子（否则会有非常明显的能级展宽）。
+
+这件事的原因如下。设准粒子寿命为$\tau$，则$\tau$反比于散射速率，而散射速率正比于库仑相互作用的强度。完整地做这个计算是很困难的，因为涉及到静电屏蔽等复杂的效应。
+由于我们只做数量级估计，暂时将寿命对整个费米面做平均，从而使用一个常数$M$表示相互作用强度。
+散射的过程可以概括为：一个动量为$\vb*{p}$的费米面外部的粒子（实际上是费米液体中的准粒子，下同）的能量降低，变成了动量为$\vb*{p}_1$的粒子，同时激发了一个费米面内的动量为$\vb*{p}_2$的粒子。
+结果是，动量为$\vb*{p}$的费米面以外的粒子衰变成了两个粒子，动量分别为$\vb*{p}_1$和$\vb*{p} - \vb*{p}_1 + \vb*{p}_2$，还有一个动量为$\vb*{p}_2$的空穴。
+设动量分别为$\vb*{p}_1$和$\vb*{p} - \vb*{p}_1 + \vb*{p}_2$的两个粒子和动量为$\vb*{p}_2$的空穴的总态密度在当前温度下的期望值为$n$，由费米黄金法则有
+\[
+    \frac{1}{\tau} \propto \text{transition rate} \sim \abs{M}^2 n.
+\]
+由于系统中的粒子非常多，不同能级上粒子数的涨落可以略去，即认为不同能级上不多不少正好就有费米-狄拉克分布给出的粒子个数，%
+\footnote{这是热力学系统的一般性质：系统规模大时涨落可略去。由于本文涉及的系统都是多体系统，总是可以做这样的近似。}%
+那么就有
+\[
+    n = \int \dd[3]{\vb*{p}_1} \int \dd[3]{\vb*{p}_2} (1 - f(\epsilon_{\vb*{p}_1})) f(\epsilon_{\vb*{p}_2}) (1 - f(\epsilon_{\vb*{p} - \vb*{p}_1 + \vb*{p}_2})) \delta(\epsilon_{\vb*{p}} - \epsilon_{\vb*{p}_1} + \epsilon_{\vb*{p}_2} - \epsilon_{\vb*{p} - \vb*{p}_1 + \vb*{p}_2}).
+\]
+因子$(1-\epsilon_{\vb*{p}_1})$表示动量为$\vb*{p}_1$的粒子应该占据一个空态（或者说在接近零温时应该在费米面以外），因子$f(\epsilon_{\vb*{p}_2})$表示空穴一定来自一个已有的粒子，最后的$\delta$函数强制要求能量守恒。
+我们不严格计算这个积分，而是做一些数量级估计。
+由于$\vb*{p}_2$在费米面以下而$\vb*{p}- \vb*{p}_1 + \vb*{p}_2$在费米面以上，容易写出以下不等式
+\[
+    0 < \xi_{\vb*{p}_1} < \xi_{\vb*{p}}, \quad 0 < - \xi_{\vb*{p}_2} < \xi_{\vb*{p}} - \xi_{\vb*{p}_1} < \xi_{\vb*{p}},
+\]
+对$n$有贡献的$\vb*{p}_1$和$\vb*{p}_2$均满足这些不等式，这些不等式给出了两个宽度为$\xi_{\vb*{p}}$的球壳，因此
+\[
+    n \leq (4 \pi k_\text{F}^2 \xi_{\vb*{p}})^2,
+\]
+于是
+\begin{equation}
+    \frac{1}{\tau} \lesssim \xi_{\vb*{p}}^2.
+\end{equation}
+因此，如果准粒子非常接近费米液体的费米面，那么它是非常稳定的，因为此时$\xi_{\vb*{p}}$很小。从物理图像上看，此时的准粒子虽然会和费米海中的准粒子发生相互作用，但其能量不足以产生粒子-空穴对，因此也不会衰变。
+
+粒子“稳定”的数值判据是什么？按照费米-狄拉克分布，$\expval*{\hat{n}}$在$\epsilon_\text{F}$附近一个大约长为$T$的区域内明显偏离阶跃函数；另一方面，由于相互作用能量本身会有一个弥散，为
+\[
+    \Delta E \sim \frac{1}{\Delta t} \sim \frac{1}{\tau},
+\]
+其中$\tau$为准粒子平均自由时间。粒子稳定意味着
+\[
+    \Delta E \ll \frac{1}{T},
+\]
+也即
+\[
+    \frac{1}{\tau} \ll T.
+\]
+准粒子平均自由时间本身和温度有关，它大约是单位时间发生碰撞的概率的倒数，而只有费米子附近准粒子数明显偏离阶跃函数的那一部分准粒子比较有可能发生碰撞（费米球内部的准粒子不怎么会被激发，费米球外面根本没有准粒子），因此
+\[
+    \frac{1}{\tau} \sim T^2,
+\]
+最后就发现我们有
+\[
+    T \ll 1.
+\]
+因此费米液体图像只在低温下适用。
+这就又反过来确保了动量确定、寿命较长的粒子确实是低温下费米液体的自由度。在准粒子没有相互作用时按照空间平移不变性，动量显然是好量子数。
+加入库伦排斥之后，准粒子之间的散射会将准粒子的坐标牵扯进来。
+然而，设$\Delta x$为准粒子坐标的不确定度，数量级上有
+\[
+    \frac{1}{\Delta x} \sim \frac{1}{\Delta t} \sim \Gamma,
+\]
+其中$\Gamma$是单位时间的散射几率，而我们又有
+\[
+    \Delta p \Delta x \sim \hbar,
+\]
+那么就有
+\[
+    \Delta p \sim \Gamma.
+\]
+由于准粒子散射是二体过程，在低温下$\Gamma$正比于$\expval*{\hat{n}}$在$\epsilon_\text{F}$附近明显偏离阶跃函数的区域的厚度的平方。
+可以证明低温下这确实是正确的。
+
+\subsubsection{准粒子的相互作用}
+
+现在我们暂时认为准粒子的动能总是实数，从而用准粒子的相互作用表示准粒子的衰变。
+考虑一个能量本征态，其中准粒子在费米面之上的数量为$\var{n}$（$\delta$表示相对基态的偏离），则总是把能量本征值相对于零温平衡态（由于费米海的结构可以非常复杂，零温能量反而是算不出来的）的变化写成以下级数展开（$\vb*{k}$在费米面附近）：
+\begin{equation}
+    \var{E} = \underbrace{\sum_{\vb*{k}, \sigma} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1}} + \underbrace{\frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \sigma, \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2}},
+    \label{eq:fermi-liquid-energy}
+\end{equation}
+其中$\var{n}$表示准粒子数目相对基态的变化。
+取到二阶项，因为前两项有时是同阶的，后面的高阶项（对应多体相互作用）则可以略去（具体为什么马上可以看到）；把能量写成粒子数的函数假定了自旋守恒。
+对动量做求和化积分，就得到
+\begin{equation}
+    \frac{\var{E}}{V} = \underbrace{\sum_{\sigma} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \epsilon^0_{\vb*{k}} \var{n_{\vb*{k} \sigma}}}_{\var{E_1} / V} + \underbrace{\frac{1}{2} \sum_{\sigma, \sigma'} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k} \sigma}} \var{n_{\vb*{k}' \sigma'}}}_{\var{E_2} / V}
+\end{equation}
+
+我们来说明一下\eqref{eq:fermi-liquid-energy}中各项的意义。我们知道由于相互作用的存在，总能量$E$肯定不是单粒子哈密顿量（比如说$k^2/2m$这种形式）的期望值简单加起来的结果，但是显然能量具有可加性，设想我们改变了准粒子数分布，这样应该有
+\[
+    \var{E} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k} \sigma} \var{n_{\vb*{k} \sigma}},
+\]
+其中$\epsilon_{\vb*{k}}$是在有限温度下的近平衡态激发一个准粒子的能量，它的一部分是单准粒子能量，一部分是其它准粒子给它的相互作用能之和（零温情况下后者为零）。
+（$\epsilon_{\vb*{k}}$未必和带有相互作用的哈密顿量严格对角化得到的能谱一样，因为它是“边际能量”；计算$\epsilon_{\vb*{k}}$需要做的是将带有相互作用的哈密顿量严格对角化之后对粒子数求变分）
+$\epsilon_{\vb*{k}}$会依赖准粒子数分布是因为它有一部分来自相互作用能，由于我们只研究二体相互作用，我们有
+\[
+    \epsilon \sim \sum_{\vb*{k}'} \text{something} \cdot n_{\vb*{k}'},
+\]
+于是设
+\[
+    \var{\epsilon_{\vb*{k} \sigma}} = \frac{1}{V} \sum_{\vb*{k}', \sigma'} f_{\sigma \sigma' \vb*{k} \vb*{k}'} \var{n_{\vb*{k}' \sigma'}},
+\]
+记$\epsilon_{\vb*{k}}^0$为$n_{\vb*{k}}$一概为零的$\epsilon_{\vb*{k}}$，代入$\var{E}$中就得到\eqref{eq:fermi-liquid-energy}；第二项的$1/2$因子是因为一对粒子会被计数两次，所以要除以$2$；由于我们假定准粒子分布相对于零温只有微小的偏离，$\epsilon_{\vb*{k}}$被取为零温的值。
+虽然$\epsilon^0 \var{n}$看起来比$f\var{n} \var{n}$大，但需要注意到我们在巨正则系综中工作，则真的有意义的应该是$E-\mu N$（且由于是近平衡，应有$\var{E} = \mu \var{N}$），而
+\[
+    \sum_{\vb*{k}} (\epsilon^0_{\vb*{k}} - \mu) \var{n_{\vb*{k}}} \sim \var{n}^2,
+\]
+于是$\epsilon^0 \var{n}$项和$f\var{n} \var{n}$项的贡献是同阶的，都需要考虑。
+在已经知道了$E$的表达式之后（比如说微扰计算出了体系能量），可以用变分计算出各个物理量：
+\begin{equation}
+    \epsilon_{\vb*{k}} = \fdv{E}{n_{\vb*{k} \sigma}} , \quad f_{\sigma \sigma' \vb*{k} \vb*{k}'} = V \frac{\var[2]{E}}{\var{n_{\vb*{k} \sigma}}\var{n_{\vb*{k}' \sigma'}}}, \quad \mu = \pdv{E}{N}.
+\end{equation}
+
+\eqref{eq:fermi-liquid-energy}是一个经典的表达式，它当中的$\var{n}$可以诠释为粒子数算符（对应于纯态的算符），也可以诠释为密度矩阵（对应于纯态的态矢量）。我们先来看将$\var{n}$当成粒子数算符后\eqref{eq:fermi-liquid-energy}给出的费米液体的哈密顿量。
+\eqref{eq:fermi-liquid-energy}中的一阶项可以看成一个等效的单粒子能量。由于只讨论费米面附近的理论，我们让能量从费米面量起，即使用$\xi$代替$\epsilon$，$k=k_\text{F}$时$\xi^0_{\vb*{k}}$就是零，在假定费米面具有旋转对称性的情况下可以做展开
+\[
+    \xi^0_{\vb*{k}} = \frac{k_\text{F}}{m^*} (k - k_\text{F}).
+\]
+我们仿照自由粒子的能量
+\[
+    \xi_{\vb*{k}} = \frac{k^2}{2m} - \frac{k_\text{F}^2}{2m} \approx \frac{k_\text{F}}{m} (k - k_\text{F})
+\]
+得到了一个等效质量$m^*$。能够像上面这样做的前提是准粒子能谱要足够光滑，如果像声子那样，就没法定义任何等效质量。%
+\footnote{应注意此处的等效质量和“激发有能隙，是有质量的”中的“质量”是不同的；前者并不代表有一个能隙，而只是$\epsilon_{\vb*{k}}$的$k^2$项的系数而已。}%
+如果温度很高，以至于不能保证有趣的行为仅仅发生在费米面附近，那有效质量的概念也没有什么用；实际上此时费米液体的理论就没有什么用。
+请注意\eqref{eq:fermi-liquid-energy}完全是形式上的：诸如晶格势能造成的单粒子能量修正已经被纳入了$\var{E_1}$中，而只要费米面保持旋转对称性，就可以引入等效质量的概念。
+并且，在只有费米面附近才有明显的激发的情况下，可以不失一般性地设
+\[
+    \epsilon_{\vb*{k}}^0 = \frac{k^2}{2m^*},
+\]
+因为真正有意义的是$\epsilon_{\vb*{k}} - \mu$，只需要同时调节$\epsilon_{\vb*{k}}$和$\mu$就可以让准粒子的$\epsilon_{\vb*{k}}$取自由粒子的形式。
+再次强调，调节$\epsilon_{\vb*{k}}$和$\mu$之类的操作只适用于费米面附近；因此对一个费米液体我们通常避免讨论费米球深处有什么——这些东西对费米面附近的行为并不重要。
+
+对二阶项，假定系统具有自旋旋转不变性，则$f$的取值完全由$f_{\uparrow \uparrow \vb*{k} \vb*{k}'}$和$f_{\uparrow \downarrow \vb*{k} \vb*{k}'}$决定。
+实际上，由于$\vb*{k}$局限在费米面附近，我们有
+\[
+    f_{\alpha \beta \vb*{k} \vb*{k}'} = f_{\alpha \beta}(\vartheta),
+\]
+$\vartheta$是$\vb*{k}$和$\vb*{k}'$的夹角。这样，设
+\begin{equation}
+    \begin{aligned}
+        f_{\uparrow \uparrow}(\vartheta) &= f^\text{S}(\vartheta) + f^\text{A}(\vartheta), \\
+        f_{\uparrow \downarrow}(\vartheta) &= f^\text{S}(\vartheta) - f^\text{A}(\vartheta),
+    \end{aligned}
+\end{equation}
+或者等价地可以设
+\begin{equation}
+    \hat{f}(\vartheta) = f^\text{S}(\vartheta) + \hat{\sigma} \hat{\sigma}' f^\text{A}(\vartheta)
+\end{equation}
+从而将自旋守恒这一事实一并表示出来（$\hat{\sigma}^z$就是$z$方向的泡利矩阵），并将$f^\text{S}(\vartheta)$和$f^\text{A}(\vartheta)$展开成无量纲常数：
+\begin{equation}
+    \frac{k_\text{F} m^*}{\pi^2} f^\text{S,A}(\vartheta) = \sum_{l=0}^\infty F_l^\text{S,A} \legpoly (\cos \vartheta).
+\end{equation}
+于是，给定参数$m^*$，$k_\text{F}$以及$\{F_l^\text{S,A}\}$，费米液体服从的物理规律就给定了。
+在这里，我们实际上又把准粒子当成了可以彼此散射、有相互作用的粒子，“准粒子动能”$k^2/2m^*$和“准粒子势能”$f_{\alpha \beta}(\vartheta)$是“单个准粒子能量”$\epsilon_{\vb*{k}}$的两部分；单单一个$k^2/2m^*$肯定和$\epsilon_{\vb*{k}}$是不一样的。
+
+实际上，如果一个费米液体系统可以确定是一个实际的费米气体加入相互作用的结果，并且如前所述，能够保证准粒子个数和实际费米子的个数一样，自旋相同，等等，并且保证自旋旋转不变性、空间平移不变性、空间各向同性，那么费米液体中准粒子的等效质量和实际费米子的质量有一个简单的，使用$\{F_l^\text{S,A}\}$写出的关系。
+由于
+\[
+    E - E_0 = \sum_{\vb*{k}} \var{n_{\vb*{k}}} \epsilon_{\vb*{k}},
+\]
+由动量为$\vb*{k}$的一个准粒子的运动速度为
+\[
+    \vb*{v}_i = \pdv{E}{\vb*{p}_i} = \pdv{\epsilon_{\vb*{k}}}{\vb*{k}},
+\]
+上式的量子版本就是
+\[
+    \hat{\vb*{v}} = \pdv{\hat{\epsilon}_{\vb*{k}}}{\vb*{k}}.
+\]
+我们于是可以将$\hat{\vb*{v}}$当成费米液体中准粒子的流速。以下设$\hat{n}$为密度矩阵，由于它在动量-自旋表象下应该是对角化的，任意一个流算符的期望可以写成
+\[
+    \begin{aligned}
+        \sum_{\vb*{k}, \sigma} \trace(\hat{n}_{\vb*{k}} \rho \hat{\vb*{v}} \hat{c}^\dagger_{\vb*{k} \sigma} \hat{c}_{\vb*{k} \sigma}) &= \sum_{\vb*{k}, \sigma} \trace(\rho \hat{\vb*{v}} \hat{n}_{\vb*{k}}) \\
+        &= V \trace \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \rho \pdv{\hat{\epsilon}}{\vb*{k}} \hat{n}_{\vb*{k}}, 
+    \end{aligned}
+\]
+第一个等号是因为密度矩阵在动量-自旋确定的多粒子态表象下对角化而对费米子$\hat{n}^2=\hat{n}$，第二个等号则是普通的求和化积分，且其中的$\trace$实际上是对自旋求迹，因为对动量的迹已经通过对$\vb*{k}$的积分完成了。
+由于准粒子和实际的费米子数量相同，准粒子的粒子数流密度算符就是实际费米子的粒子数流密度算符，且由于动量守恒，准粒子的总动量就是实际费米子的总动量%
+\footnote{
+    可以这样论证这件事：在关闭相互作用时费米液体“无缝地”退化到实际的费米气体上，因此在无相互作用点处费米液体中准粒子的动量就是实际粒子的动量。
+    现在缓慢地加上相互作用，则费米液体准粒子的动量可以发生连续变化，但有限体系中动量实际上是分立的，从而动量只能不变。
+}%
+，而实际费米子的总动量就是总质量流（因为$\vb*{p}=m\vb*{v}$），于是我们有
+\[
+    \trace \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} \hat{n} = \trace \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{\hat{\epsilon}}{\vb*{k}} \hat{n}.
+\]
+由于密度矩阵在动量-自旋表象下对角化，我们可以恢复出经典的“某个状态上有几个粒子”的图像：
+\[
+    \hat{n}_{\vb*{k}, \alpha \beta} = \delta_{\alpha \beta} n_{\vb*{k} \alpha},
+\]
+同样$\hat{\epsilon}$也适用一样的推导，于是就有
+\[
+    \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} n_{\vb*{k} \sigma} = \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} n_{\vb*{k} \sigma},
+\]
+对上式求变分，就有
+\[
+    \begin{aligned}
+        \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \vb*{k} \var{n_{\vb*{k} \sigma}} &= \var \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} m \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} n_{\vb*{k} \sigma} \\
+        &= m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} \var{n_{\vb*{k} \sigma}} + m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} n_{\vb*{k} \sigma} \var{n_{\vb*{k}' \sigma}} \pdv{f_{\sigma}(\vartheta)}{\vb*{p}} \\
+        &= m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} \var{n_{\vb*{k} \sigma}} - m \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} \var{n_{\vb*{k} \sigma}} \pdv{n_{\vb*{k}' \sigma}}{\vb*{k}'} f_{\sigma}(\vartheta) .
+    \end{aligned}
+\]
+第三个等号交换了$\vb*{k}$和$\vb*{k}'$，但这是合理的，因为$f$只和这两者的夹角有关。
+考虑到$\var{n}$的任意性，就有
+\[
+    \frac{\vb*{k}}{m} = \pdv{\epsilon_{\vb*{k} \sigma}}{\vb*{k}} - \int \frac{\dd[3]{\vb*{k}'}}{(2\pi)^3} \pdv{n_{\vb*{k}' \sigma}}{\vb*{k}'} f_{\sigma}(\vartheta).
+\]
+在上式两边点乘$\vb*{k}$，代入$n$是阶跃函数这一事实，并且注意到动量几乎总是在费米面上，从而$\vb*{k} = k_\text{F} \vb*{n}$，就得到
+\begin{equation}
+    \frac{1}{m} = \frac{1}{m^*} + \frac{k_\text{F}}{(2\pi)^3} \int \dd{\Omega} \cos \vartheta f_\sigma(\vartheta).
+\end{equation}
+上式的形式其实有些容易让人误解，毕竟，$f$和$m^*$都是加入相互作用之后重整化得到的有效参数，而上式看起来似乎是“$f$和$m$决定了$m^*$”。
+但上式仍然能够提供一些物理图像，例如，由于相互作用总是排斥的（如前所述，否则会导致费米子配对），我们发现$m^*$总是大于$m$，这是合理的，因为相互作用会导致一个费米子的动量流失到其它费米子上，所以看起来，在加入相互作用后要拖动一个费米子（此时已经是准粒子了）更加困难。
+
+\subsubsection{费米液体的宏观性质}
+
+使用以上参数：$m^*$，$k_\text{F}$以及$\{F_l^\text{S,A}\}$，可以计算费米液体的各种宏观性质。
+
+首先考虑零温附近的比热。费米气体的比热在低温极限下正比于温度，费米液体实际上也一样。
+能量由\eqref{eq:fermi-liquid-energy}给出，随着$T$增大，一些粒子从费米海溢出，从而能量增大，产生一个热容。
+实际上，在零温极限附近，\eqref{eq:fermi-liquid-energy}中的$E_2$部分没有贡献。
+这是因为
+\[
+    E_2 = \sum_{\sigma, \sigma'} \underbrace{\frac{1}{2V} \sum_{\vb*{k}} f_{\sigma \sigma'}(\theta) \var{n}_{\vb*{k} \sigma}}_{\text{constant}} \var{n}_{\vb*{k}' \sigma'},
+\]
+被大括号括起来的部分和$\vb*{k}$无关，而显然
+\[
+    \sum_{\vb*{k}} \var{n}_{\vb*{k} \sigma} = 0,
+\]
+因此$E_2$对总能量没有贡献。这样费米液体的热容和费米气体的热容就是完全一致的，为
+\begin{equation}
+    C_V = \frac{1}{3} m^* k_\text{F} T.
+\end{equation}
+这个公式在实验上非常重要，如果确定一个体系是费米液体（如发现低温下热容正比于温度），那么就可以据此测出粒子的有效质量。
+
+也可以计算费米液体的磁化率。考虑弱场近似，则磁化率
+\[
+    \chi = \pdv{M}{H}
+\]
+近似为
+\[
+    \chi = \frac{M}{H},
+\]
+其中$M$表示磁化强度，$H$表示磁场强度（不是哈密顿量），而磁化强度为
+\[
+    M = \pdv{E}{H},
+\]
+于是得到
+\[
+    \frac{1}{\chi} = \pdv[2]{E}{M}.
+\]
+这样只需要使用$M$表示出$E$就可以了。
+记自旋向上（以磁场方向为$z$轴）和向下的粒子数为$N_\uparrow$和$N_\downarrow$，则
+\[
+    M = \mu_\text{B} (N_\uparrow - N_\downarrow),
+\]
+其中$\mu_\text{B}$为玻尔磁子。磁场导致自旋向上和向下的粒子数发生变化的原因是，自旋和磁场一致的粒子的费米面会扩大，自旋和磁场相反的粒子的费米面会缩小，从而让$N_\uparrow$变大，$N_\downarrow$缩小。
+由于粒子数不变，有
+\[
+    \var{N_\uparrow} = - \var{N_\downarrow},
+\]
+而没有磁场时向上和向下的粒子数一样，于是
+\[
+    M = 2 \mu_\text{B} \var{N}_\uparrow.
+\]
+$\var{N_\uparrow}$和费米动量的变化之间的关系是
+\[
+    \var{N_\uparrow} = \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} = \frac{V k_\text{F}^2 \var{k_\text{F}}}{2\pi^2}.
+\]
+现在可以将$M$用$\var{k_\text{F}}$表示出来了。接下来将能量写成$\var{k_\text{F}}$的函数。
+对动能部分$E_1$，我们有
+\[
+    \var{E_1} = \sum_{\sigma, \vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) \var{n}_{\vb*{k} \sigma},
+\]
+$n_{\vb*{k} \uparrow}$仅有的变化是在$k_\text{F} < k < k_\text{F} + \var{k_\text{F}}$的区域内从$0$变成$1$，$n_{\vb*{k} \downarrow}$仅有的变化是在$k_\text{F} - \var{k_\text{F}} < k < k_\text{F}$的区域内从$1$变成$0$。
+这样就有
+\[
+    \begin{aligned}
+        \var{E_1} &= \int_{k_\text{F} < k < k_\text{F} + \var{k_\text{F}}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) + \int_{k_\text{F} - \var{k_\text{F}} < k < k_\text{F}} \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}} \frac{k_\text{F}}{m^*} (k - k_\text{F}) (-1) \\
+        &= \frac{V k_\text{F}^3}{2 \pi^2 m^*} (\var{k_\text{F}})^2.
+    \end{aligned}
+\]
+最后，得到$\var{E_1}$和$M$的关系：
+\[
+    \var{E_1} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} M^2.
+\]
+同理，可以计算得到（计算的关键点在于意识到对全空间计算积分，则只有零阶勒让德多项式能够给出非零结果）
+\[
+    \var{E_2} = \frac{\pi^2}{2 m^* \mu_\text{B}^2 V k_\text{F}} F_0^\text{A} M^2.
+\]
+这样就得到了$\var{E}$关于$M$的表达式，从而最终得到
+\begin{equation}
+    \chi = \frac{1}{1 + F_0^\text{A}} \frac{m^* \mu_\text{B}^2 V k_\text{F}}{\pi^2}.
+\end{equation}
+
+\subsection{有排斥的电子系统}\label{sec:repel-gas}
+
+费米液体理论本身是非常唯象的，其中的参数都是通过对称性引入的，而没有考虑怎么通过更加底层的机制计算出它们。
+本节考虑一个粒子间有斥力的电子系统，并且展示这个系统在相互作用不是非常强、温度不高时（确切地说，温度低于费米温度时）可以使用费米液体描述。
+
+\subsubsection{动量表象下的相互作用}
+
+电子间的斥力就是库伦排斥，不过可能因为诸如屏蔽效应等有一些修正。无论如何，根据空间平移不变性，相互作用哈密顿量形如
+\begin{equation}
+    \hat{H}_\text{I} = \frac{1}{2} \sum_{\alpha, \beta} \int \dd[3]{\vb*{r}_1} \dd[3]{\vb*{r}_2} \hat{\psi}^\dagger_\alpha(\vb*{r}_1) \hat{\psi}^\dagger_\beta(\vb*{r}_2) U(\vb*{r}_1 - \vb*{r}_2) \hat{\psi}_\beta(\vb*{r}_2) \hat{\psi}_\alpha(\vb*{r}_1).
+    \label{eq:two-body-interaction-in-real-space}
+\end{equation}
+我们知道，有限体积下的归一化条件为
+\[
+    \sum_{\vb*{k}} \frac{1}{V} \int \dd[3]{\vb*{r}} \ee^{-\ii \vb*{k} \cdot \vb*{r}} = 1,
+\]
+二次量子化相互作用哈密顿量\eqref{eq:two-body-interaction-in-real-space}相当于将坐标表象下的测度取为$\int \dd[3]{\vb*{r}}$，于是动量表象下测度应当取为$\frac{1}{V} \sum_{\vb*{k}}$，
+现在切换到动量表象下，则从动量空间到实空间的变换为
+\[
+    \hat{\psi}_\sigma^\dagger(\vb*{r}) = \frac{1}{\sqrt{V}} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} \hat{c}^\dagger_{\vb*{k} \sigma},
+\]
+从而可以验证，二次量子化哈密顿量为
+\[
+    \hat{H}_\text{I} = \frac{1}{2} \sum_{\alpha, \beta} \sum_{\vb*{k}_1 + \vb*{k}_2 = \vb*{k}_1' + \vb*{k}_2'} \hat{c}^\dagger_{\vb*{k}'_1 \alpha} \hat{c}^\dagger_{\vb*{k}'_2 \beta} \mel*{\vb*{k}_1' \alpha, \vb*{k}_2' \beta}{\hat{U}}{\vb*{k}_1 \alpha, \vb*{k}_2 \beta} \hat{c}_{\vb*{k}_2 \beta} \hat{c}_{\vb*{k}_1 \alpha},
+\]
+上式中求和的独立变量有三个。相互作用矩阵元为
+\begin{equation}
+    \mel*{\vb*{k}_1' \alpha, \vb*{k}_2' \beta}{\hat{U}}{\vb*{k}_1 \alpha, \vb*{k}_2 \beta} = \frac{1}{V} \int \dd[3]{\vb*{r}} U(\vb*{r}) \ee^{\ii (\vb*{p}_1 - \vb*{p}'_1) \cdot \vb*{r}} = \frac{1}{V} \int \dd[3]{\vb*{r}} U(\vb*{r}) \ee^{\ii (\vb*{p}_2' - \vb*{p}_2) \cdot \vb*{r}}.
+\end{equation}
+这里我们再次改变了归一化规则，把原本应该和动量求和一起出现的因子$1/V$当成了相互作用矩阵元的一部分。这样做的原因在于以$\frac{1}{V} \sum_{\vb*{k}}$为积分测度在归一化波函数时非常合理，但是我们通常认为相互作用哈密顿量就应该是几个反应通道的哈密顿量简单地加起来，不应该有$1/V$之类的因子。
+这又意味着，对空间的积分需要带上因子$1/V$。
+
+对温度远低于费米温度的稀薄费米气体，设分子力的作用半径为$r_0$，于是我们有
+\[
+    \left( \frac{V}{N} \right)^{1/3} \gg r_0,
+\]
+而\eqref{eq:particle-number-in-fermi-surface}我们有
+\[
+    \frac{N}{V} \sim \epsilon_\text{F}^{3/2} \sim k_\text{F}^{3},
+\]
+而考虑到会发生散射的费米子都在费米面附加，对稀薄的费米气体我们有
+\begin{equation}
+    k_\text{F} \ll \frac{1}{r_0}.
+\end{equation}
+这意味着我们可以做慢散射近似
+\begin{equation}
+    \mel*{\vb*{k}_1' \alpha, \vb*{k}_2' \beta}{\hat{U}}{\vb*{k}_1 \alpha, \vb*{k}_2 \beta} = \frac{1}{V} \int \dd[3]{\vb*{r}} U(\vb*{r}) = \frac{U_0}{V},
+    \label{eq:slow-scattering-interaction}
+\end{equation}
+整个相互作用被新引入的参数$U_0$描述了。
+
+这样，系统哈密顿量就是
+\[
+    \hat{H} = \sum_{\vb*{k}, \alpha} \frac{k^2}{2m} \hat{c}^\dagger_{\vb*{k} \alpha} \hat{c}_{\vb*{k} \alpha} + \frac{1}{2} \sum_{\vb*{k}_1', \vb*{k}_1, \vb*{k}_2, \alpha, \beta} \frac{U_0}{V} \hat{c}^\dagger_{\vb*{k}'_1 \alpha} \hat{c}^\dagger_{\vb*{k}'_2 \beta} \hat{c}_{\vb*{k}_2 \beta} \hat{c}_{\vb*{k}_1 \alpha},
+\]
+而如果$\alpha$等于$\beta$，那么这一项会彼此抵消；而$\alpha \neq \beta$的情况下，同时交换两个产生算符和两个湮灭算符会发现两项是一样的，于是
+\begin{equation}
+    \hat{H} = \sum_{\vb*{k}, \alpha} \frac{k^2}{2m} \hat{c}^\dagger_{\vb*{k} \alpha} \hat{c}_{\vb*{k} \alpha} + \frac{U_0}{V} \sum_{\vb*{k}_1', \vb*{k}_1, \vb*{k}_2} \hat{c}^\dagger_{\vb*{k}'_1 \uparrow} \hat{c}^\dagger_{\vb*{k}'_2 \downarrow} \hat{c}_{\vb*{k}_2 \downarrow} \hat{c}_{\vb*{k}_1 \uparrow}.
+\end{equation}
+也即，在慢碰撞极限下只有自旋相反的碰撞才能发生。
+
+\subsubsection{相互作用重整化和赝势理论}
+
+应当指出一点：\eqref{eq:slow-scattering-interaction}可能不能微扰计算或者至少不能够只算一阶微扰，因为粒子之间的排斥力通常都不弱。
+然而，即使粒子间相互作用很强，由于我们只关心动量散射，可以使用一个较弱的相互作用代替原来的相互作用，只需要保证散射截面一致就可以。由于慢散射近似总是成立，只需要保证散射长度一致即可。
+这个较弱的然而充分描述了我们需要的全部物理的相互作用势能就是所谓的\concept{赝势}。
+
+这样的较弱的相互作用是否存在？设$U'(\vb*{r})$是这样的一个较弱的相互作用，由于慢散射近似始终成立，则有
+\[
+    U_0 = \int \dd[3]{\vb*{r}} U'(\vb*{r}), \quad \mel*{\vb*{k}_1' \alpha, \vb*{k}_2' \beta}{\hat{U}'}{\vb*{k}_1 \alpha, \vb*{k}_2 \beta} = \frac{U_0}{V}.
+\]
+设$a$是$U(\vb*{r})$产生的散射长度，如果$U'(\vb*{r})$和$U(\vb*{r})$产生同样的效果，并且$U'(\vb*{r})$取到二阶修正，那么
+\begin{equation}
+    \frac{4\pi}{m V} a  = \frac{1}{V} \int \dd[3]{\vb*{r}} U'(\vb*{r}) + \sum_{\vb*{k}'_1} \frac{1}{V} \int \dd[3]{\vb*{r}} U'(\vb*{r}) \left( \frac{k_1^2 + k_2^2 - k_1'^2 - k_2'^2}{2m} \right)^{-1} \frac{1}{V} \int \dd[3]{\vb*{r}} U'(\vb*{r}),
+    \label{eq:u-prime-and-a}
+\end{equation}
+第二项中的求和变量其实只有$\vb*{k}_1'$一个，因为$\vb*{k}_2'$可以通过动量守恒算出来。上式左边的式子看起来很奇怪，导出它的思路是这样的：设有一个非常弱的相互作用$U''$，则它导致的散射长度为
+\[
+    a = \frac{m}{4\pi} \int \dd[3]{\vb*{r}} U''(\vb*{r}),
+\]
+从而相互作用矩阵元为
+\[
+    \frac{1}{V} \int \dd[3]{\vb*{r}} U''(\vb*{r}) = \frac{4\pi}{m V} a,
+\]
+而如果$U''$和$U'$带来同样的结果，前者只需要考虑一阶近似而后者需要考虑二阶近似，那就得到了\eqref{eq:u-prime-and-a}。
+\eqref{eq:u-prime-and-a}在保留二阶小量的条件下（并不损失精度，因为\eqref{eq:u-prime-and-a}本身也只是二阶近似）我们有
+\begin{equation}
+    U_0 = \frac{4\pi a}{m} \left( 1 - \frac{4\pi a}{m V} \sum_{\vb*{k}'_1} \frac{2m}{k_1^2 + k_2^2 - k_1'^2 - k_2'^2} \right).
+    \label{eq:u0-and-a-second-order}
+\end{equation}
+容易看出上式的求和是发散的，但是这也是正常的：我们只关心费米面附近的动量而$\vb*{k}_1'$和$\vb*{k}_2'$非常大时自然会出现问题。在做进一步的计算时总是可以通过适当的手段把这些发散消除掉。
+乍一看，上式依赖于$\vb*{k}_1$和$\vb*{k}_2$，但是我们总是可以用费米动量替换这两个量。 % TODO
+如果$a$的大小足以保证上式中的$U_0$确实适用微扰论，那么我们就成功地将一个难以运动微扰论的问题转化为了一个弱相互作用问题。
+的确有这样的情况，就是无论如何重整化，$U_0$都非常大，此时系统本质上就是强关联的。
+
+\subsubsection{费米液体}
+
+在可以如上按照实际的散射长度$a$写出可做微扰的相互作用哈密顿量时，我们可以直接从实际费米子的质量、$U_0$等参数出发计算对应的费米液体的参数。
+在动量本征态下（无疑，相互作用会修正“单粒子”的定义，但是我们也不关心单粒子是什么），使用微扰论计算到二阶修正，能量本征值为
+\[
+    E = \sum_{\vb*{k}, \alpha} \frac{k^2}{2m} n_{\vb*{k} \alpha} 
+    + \frac{U_0}{V} \sum_{\vb*{k}_1, \vb*{k}_2} n_{\vb*{k}_1 \uparrow} n_{\vb*{k}_2 \downarrow}
+    + \left( \frac{U_0}{V} \right)^2 \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_1'} \frac{n_{\vb*{k}_1 \uparrow} n_{\vb*{k}_2 \downarrow} (1 - n_{\vb*{k}_1' \uparrow}) (1 - n_{\vb*{k}_2' \downarrow})}{(k_1^2 + k_2^2 - k_1'^2 - k_2'^2) / 2m}.
+\]
+每一项的意义是清晰的：第一项是动能，第二项是相互作用能的对角项（一阶修正），第三项是二阶修正，两个电子首先通过相互作用项跃迁到中间态，然后再通过相互作用项跃迁到低动量态。
+将\eqref{eq:u0-and-a-second-order}代入上式，并仅取到二阶近似，即在上式的一阶项中使用完整的\eqref{eq:u0-and-a-second-order}而在上式的二阶项中仅仅使用\eqref{eq:u0-and-a-second-order}的第一项。
+设
+\begin{equation}
+    g = \frac{4\pi a}{m},
+\end{equation}
+则
+\begin{equation}
+    E = \sum_{\vb*{k}, \alpha} \frac{k^2}{2m} n_{\vb*{k} \alpha} + \frac{g}{V} \sum_{\vb*{k}_1, \vb*{k}_2} n_{\vb*{k}_1 \uparrow} n_{\vb*{k}_2 \downarrow} - \frac{2m g^2}{V^2} \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_1'} \frac{n_{\vb*{k}_1 \uparrow} n_{\vb*{k}_2 \downarrow} (n_{\vb*{k}_1' \uparrow} + n_{\vb*{k}_2' \downarrow})}{k_1^2 + k_2^2 - k_1'^2 - k_2'^2}.
+\end{equation}
+
+在基态下，即粒子数分布为阶跃函数，自旋向上和向下各占一半的情况下，通过简单的求和化积分可以计算出
+
+\subsection{有排斥电子系统的费曼图}
+
+\prettyref{sec:repel-gas}中没有做任何实际的关联函数计算，本节介绍做这类计算的具体规则。
+
+\eqref{eq:two-body-interaction-in-real-space}中虽然已经积掉了光子，但是其费曼图顶角中还是需要有光子线，而不能画成四条电子线接在一个点上，因为后者意味着相互作用是完全局域的，但是\eqref{eq:two-body-interaction-in-real-space}实际上是一个超距作用。（当然这只是近似成立的，但是在我们关心的能量尺度下电子之间的电场当成经典场没有什么关系）
+
+由于凝聚态理论的费曼图并不“非常对称”——粒子线有箭头，顶角分出入，在只计算低阶图、不计算真空气泡图时基本上不需要考虑对称性因子。
+
+一个可能产生疑惑的点在于，接下来库伦相互作用哈密顿量前面会有因子$1/2$，但是一个二进二处的顶角通过重新安排粒子线似乎可以给出$4$项，
+
+原因：超距作用，Hartree项和Fock项的图形状不同，每个图有一个因子$2$。
+
+\subsubsection{RPA近似}
+
+RPA近似，即对占主导地位的费曼图做部分无穷求和，在凝聚态物理中最早是用于处理库仑相互作用的。库仑相互作用是长程的，所以做微扰论会导致发散，即需要计算无穷求和才能够得到有意义的结果。RPA近似本身则适用于各种相互作用，不只是库仑相互作用。
+本节演示动量空间中的相互作用电子气的RPA近似计算，即
+\begin{equation}
+    \hat{H}_\text{I} = \frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \alpha, \beta} \hat{c}^\dagger_{\vb*{k}+\vb*{q}, \alpha} \hat{c}^\dagger_{\vb*{k}'-\vb*{q}, \beta} \frac{4\pi e^2}{\vb*{q}^2} \hat{c}_{\vb*{k}' \beta} \hat{c}_{\vb*{k} \alpha}.
+\end{equation}
+相应的，其热力学作用量为
+\begin{equation}
+    S = \sum_{k, \alpha} \bar{\psi}_{k \alpha} (-\ii k_n + \xi_{\vb*{k}}) \psi_{k \alpha} + \frac{1}{2 \beta V} \sum_{k, k', q, \alpha, \beta} \bar{\psi}_{k+q, \alpha} \bar{\psi}_{k'-q, \beta} \underbrace{\frac{4\pi e^2}{\vb*{q}^2}}_{V(\vb*{q})} \psi_{k' \beta} \psi_{k \alpha},
+\end{equation}
+这里$k, k', q$是四维动量，所有场定义在松原频率和动量上，并且为了节约字母我们用$k_n$表示$k$中的松原频率部分；四维动量的点乘采取惯用的记号，即
+\begin{equation}
+    k \cdot r = \omega t - \vb*{k} \cdot \vb*{r}, \quad k = (\omega, \vb*{k}), \quad r = (t, \vb*{r}).
+\end{equation}
+$1/2$因子来自相互作用是二体的这一事实，不反映在费曼图中顶角带来的因子中。
+
+下面计算一阶自由能。我们有两种图：
+% TODO:Hartree term and Fock term
+Hartree图有一个$1/2$的对称性因子，因为它具有轴对称性，于是
+\[
+    - \beta F^{(1),\text{Hartree}} = - \frac{1}{2 \beta V} \sum_{k, k', \alpha, \beta} \frac{1}{\ii k_n - \xi_{\vb*{k}}} \frac{1}{\ii k'_n - \xi_{\vb*{k}'}} V(0) .
+\]
+在这里$q=k-k=0$，于是立刻出现了一个问题：$V(0)$是发散的。这不应该让人意外，因为只有库仑相互作用的电子气会立刻散开；实际上这样的一盒电子气会被晶格等未考虑的机制约束起来。
+此外，
+
+电子-电子格林函数的计算相对来说更加容易，因为有更少的对称性因子
+
+RPA近似修正了相互作用。正如我们所预期的那样，相互作用变得更加“柔和”了。
+
+\section{玻色子系统}
+
+\subsection{理想玻色气体}
+
+考虑一个非相对论自由理想玻色气体，也即，单个气体分子的能量完全为动能$k^2/2m$。
+玻色气体在零温时必定处在玻色-爱因斯坦凝聚状态，我们来观察非相对论自由理想玻色气体的这种状态的具体行为。
+近独立系统的粒子数期望为
+\[
+    n_i = \frac{1}{\ee^{\beta(\epsilon_i - \mu)} - 1},
+\]
+考虑单个粒子，在相空间体积$\dd[3]{\vb*{r}} \dd[3]{\vb*{p}}$中的量子态个数为
+\[
+    \dd{N} = \frac{\dd[3]{\vb*{r}} \dd[3]{\vb*{p}}}{h^3},
+\]
+由于动量空间的各向同性，只保留$\dd{p}$之后态密度为
+\[
+    \dd{N} = V \frac{4\pi p^2 \dd{p}}{h^3} = \frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon},
+\]
+其中$\epsilon$为自由费米子的能谱，即$p^2/2m$。
+这样，近似有
+\begin{equation}
+    N = \int_0^\infty \frac{2\pi V}{h^3} (2m)^{3/2} \sqrt{\epsilon} \dd{\epsilon} \frac{1}{\exp(\beta (\epsilon - \mu)) - 1} = \frac{2V}{\sqrt{\pi}} \frac{1}{\lambda_T^3} g_{3/2}(\ee^{\beta \mu}),
+\end{equation}
+其中$g_\nu(z)$定义为
+\[
+    g_\nu(z) = \int_0^\infty \frac{x^{\nu-1}}{z^{-1} \ee^{x} - 1},
+\]
+而$\lambda_T$或者说\concept{热德布罗意波长}是一个定义如下的长度尺度：
+\begin{equation}
+    \lambda_T = \sqrt{\frac{h^2}{2\pi m k_B T}}.
+\end{equation}
+上式成立的条件是能级间距非常密——这总是成立的——以及相邻能级上的粒子数变化得足够平滑——这却不总是成立。
+请注意等式右边是有最大值的：当$z$取$1$时$g_{3/2}(z)$取最大值。
+$z$取一意味着化学势为零。由于是理想玻色气体，化学势始终小于最低的能级（也就是零），这意味着化学势趋于$0^-$不会造成粒子数的发散。
+这是不合理的，因为粒子数是可以任意条件的物理量，化学势趋于$0^-$不造成粒子数发散说明系统中的粒子数有一个自然的上限。
+仅有的可能只能是，我们将粒子数求和化为积分的做法有问题。
+求和化积分成立仅仅依赖于两个事实：容器很大从而能级分布非常密集，以及粒子数相对均匀地分布在各个能级上（从而将$\vb*{k}$看成连续变化时能够形成一个连续函数）。
+第一个事实绝对不会出错，那么只能是第二个假设出错了——具体来说，$k=0$的能级上堆积了太多的粒子，以至于在求和转化为积分之后它看起来就像一个$\delta$函数一样。
+这就是\concept{玻色-爱因斯坦凝聚}：玻色子全部堆积在基态上，其行为就好像一个巨型的（纯的）乘积态。
+
+\section{相互作用修正}
+
+库仑相互作用受到修正。
+
+\subsection{阻尼}
+
+所谓阻尼无非是我们考虑的系统出于某些原因和某个系统（“热浴”）发生了耦合，导致能量逃逸到了外界。
+本节讨论最为简单的谐振子热浴。谐振子的实时间作用量为
+\begin{equation}
+    S = \int \dd{t} \left( \frac{1}{2} m \dot{x}^2 - \frac{1}{2} m \omega_0^2 x^2 \right) = - \int \dd{t} x \left( \frac{1}{2} m \dv[2]{t} + \frac{1}{2} m \omega_0^2 \right) x,
+\end{equation}
+于是实时间格林函数为（这里涉及一些比较麻烦的符号问题，比如说格林函数要不要加上一个负号或是虚数单位；由于我们不需要计算散射截面之类，暂且采取以下比较简洁的写法）
+\begin{equation}
+    G(t-t') = \left( m \dv[2]{t} + m \omega_0^2 \right)^{-1},
+\end{equation}
+在时域计算此格林函数并不方便，我们切换到频域：
+\begin{equation}
+    G(\omega) = \frac{1}{- m \omega^2 + m \omega_0^2 - \ii 0^+},
+\end{equation}
+此处已经为了保证因果性加入了$\ii 0^+$。现在假定某个变量$y(t)$和$x(t)$发生线性耦合，即
+\begin{equation}
+    S = S_y + S_x + S_\text{int}, \quad S_\text{int} = g \int \dd{t} xy,
+\end{equation}
+考虑到$S_x$是自由的，我们可以非常容易地严格积掉$x$自由度，只保留$y$，得到
+\begin{equation}
+    \begin{aligned}
+        S_\text{eff} &= S_y + \frac{g}{2} \int \dd{t} \dd{t'} y(t) G(t-t') y(t') \\
+        &= S_y + \frac{g}{2} \int \dd{\omega} y(-\omega) G(\omega) y(\omega).
+    \end{aligned}
+\end{equation}
+我们得到一个推迟相互作用，这是不足为怪的，因为$x$变量本身需要时间去响应$y$引入的冲击，然后再传递给$y$，那么必然导致推迟相互作用。
+
+以上步骤可以很容易地推广。我们更换记号，用$x(t)$表示我们关心的场而使用$q_i(t)$表示一群谐振子（因为热库通常非常大，肯定是一群数量很大的谐振子），那么就有
+\begin{equation}
+    S = \underbrace{\int \dd{t} \left( \frac{1}{2} m \dot{x}^2 + F(t) x(t) - V(x) \right)}_{S_x} + \int \dd{t} \sum_i g_i q_i(t) x(t) + \underbrace{\int \dd{t} \sum_i \left( \frac{1}{2} \dot{q}_i^2 - \frac{1}{2} \omega_i^2 q_i \right)}_{S_q}.
+\end{equation}
+
+
+\section{超流，玻色-爱因斯坦凝聚和超导}
+
+\subsection{超流的半定量分析}
+
+\subsubsection{超流性和超流流体}
+
+为什么流体流动会形成阻尼？答案显然是流体在流动过程中，一些能量从流体的宏观动力学自由度（速度等）转移到了它的一些内部自由度上。
+例如，和大量谐振子耦合就会导致一个线性阻尼。
+这些内部自由度，按照定义，应该是流体没有宏观上特别明显的运动时的流体运动模式；它们和流体的宏观动力学自由度之间是有耦合的，因为流体动力学不是线性的，所以在流体流动过程中可以被激发，这就是阻尼的来源。
+例如，流体和容器表面的接触可能会在流体中激发出一些内部运动模式，这就是流体和表面的摩擦的来源。
+
+流体的内部自由度何时被激发起来？设一小团质量为$M$的流体一开始以速度$\vb*{v}$运动，然后激发起来一个动量为$\vb*{p}$的准粒子，然后流体微团速度变成$\vb*{v}'$。
+由动量和能量守恒我们有
+\[
+    M \vb*{v} = M \vb*{v}' + \vb*{p}, \quad \frac{1}{2} M v^2 \geq \frac{1}{2} M v'^2 + \epsilon_{\vb*{p}}.
+\]
+第二个式子是因为可能出现了一些其它的激发。以上两个式子约去$\vb*{v}'$之后得到
+\[
+    \vb*{v} \cdot \vb*{p} \geq \epsilon_{\vb*{p}}.
+\]
+要能够找到一个$\vb*{p}$满足上式，就是要
+\begin{equation}
+    v \geq \frac{\epsilon_{\vb*{p}}}{p}.
+    \label{eq:dissipation-condition}
+\end{equation}
+当且仅当\eqref{eq:dissipation-condition}成立，流体中的准粒子能够产生，从而流体会出现阻尼。
+
+如果我们不想让流体在某些速度区间出现阻尼，就必须找到某个$\vb*{v}$，使得\eqref{eq:dissipation-condition}对它不成立，这又等价于
+\[
+    \eval{\frac{\epsilon_{\vb*{p}}}{p}}_{\vb*{p}=0} > 0,
+\]
+这就等价于，从坐标原点向$\epsilon_{\vb*{p}}-\vb*{p}$超曲面引切线，不应该出现斜率为零的切线。
+例如，在$\vb*{p}$很小时$\epsilon_{\vb*{p}}$不应该是“平坦”的。
+这种流体不会出现内摩擦的情况称为\concept{超流}。
+
+显然，如果$\epsilon_{\vb*{p}} \propto p^2$，那么绝对不可能出现超流；如果流体中的准粒子是某种声子%
+\footnote{声子是声波的量子化而声波可以从位移场$\vb*{u}$的小幅简谐振动推导出来，那么看起来声子似乎应该是某种宏观自由度，而不是我们需要的内部自由度。
+然而，对一个流体微团就能够良定义声子，而粗粒化下流场中甚至可以忽略每个流体微团的存在，那么把声子当成内部自由度其实问题也不大。}%
+，那么确实可能出现超流。
+在能够形成超流的时候，从从坐标原点向$\epsilon_{\vb*{p}}-\vb*{p}$超曲面引切线得到的斜率实际上给出了一个相变点：当$v$超过此速度时，不会形成超流，而当$v$低于此速度时，可以形成超流。
+
+以上推导和系统温度无关——它适用于任何情况，无论是零温还是有限温。
+但是，有限温时，由于热涨落，流体内部肯定会出现准粒子，这些准粒子和容器壁可以发生动量交换，从而将流体的能量转移给容器壁，也即，有限温下肯定会有一定的摩擦。
+唯一能够解释有限温下超流有可能出现但是摩擦也会出现的图像是，一部分流体进入超流状态，一部分流体中激发出了准粒子，从而在运动时和容器壁发生摩擦，最后黏附在容器壁上；由于存在超流现象，超流流体和“正常”流体之间并没有摩擦，它们可以“彼此穿过”而不互相干扰。
+
+如何确定确实有正常流体？实际上，流体内部的准粒子应该是相当局域的运动模式，那么准粒子本身整体的运动速度就应该是形成准粒子的流体的运动速度；另一方面，准粒子的动量总是可以直接累加到流体的总动量上面。
+设一群准粒子以速度$\vb*{v}$在运动，设$K_0$是一个在其中流体静止的参考系，$K$是一个在其中准粒子静止的参考系，则
+\[
+    E = E_0 - \vb*{P}_0 \cdot \vb*{v} + \frac{M v^2}{2}.
+\]
+现在设在流体中（在参考系$K_0$下）出现了一个动量为$\vb*{p}$的准粒子，则
+\[
+    E + \epsilon^K_{\vb*{p}} = E_0 + \epsilon_{\vb*{p}} - (\vb*{P}_0 + \vb*{p}) \cdot \vb*{v} + \frac{M v^2}{2},
+\]
+于是在$K$系中我们有
+\[
+    \epsilon^K_{\vb*{p}} = \epsilon_{\vb*{p}} - \vb*{p} \cdot \vb*{v},
+\]
+设$n(\epsilon)$为玻色-爱因斯坦分布函数，则在$K_0$系中动量为$\vb*{p}$的粒子数为$n(\epsilon_{\vb*{p}} - \vb*{p} \cdot \vb*{v})$（我们需要这么绕一下是因为玻色-爱因斯坦分布函数适用于本身没有宏观运动的系统，而粒子数在不同参考系之间是守恒的）。
+这样，在$K_0$系中，准粒子气体单位体积的动量就是
+\[
+    \vb*{P} = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \vb*{p} n(\epsilon_{\vb*{p}} - \vb*{p} \cdot \vb*{v}),
+\]
+在$\vb*{v}$很小的情况下展开就是
+\[
+    \begin{aligned}
+        \vb*{P} &= - \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \vb*{p} (\vb*{p} \cdot \vb*{v}) \dv{n}{\epsilon} \\
+        &= \frac{\vb*{v}}{3} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \left( - \dv{n}{\epsilon} \right) p^2.
+    \end{aligned}
+\]
+第二个等号用到了$\vb*{p}$的各向同性。考虑到$\vb*{P}$就是形成准粒子的流体的单位体积动量而$\vb*{v}$就是形成准粒子的流体的速度，我们发现“正常”流体——即其中激发出了准粒子，从而可以和器壁发生摩擦的流体——确实有质量。
+
+在高温下没有人看到过超流，因此随着温度升高肯定会发生一个相变，从超流相变成普通流体。
+不难想象这个相变发生在哪里：设
+\[
+    \rho = \rho_\text{n} + \rho_\text{s},
+\]
+右边两项分别是正常流体和超流体的质量，且
+\begin{equation}
+    \rho_\text{s} = \frac{1}{3} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \left( - \dv{n}{\epsilon} \right) p^2,
+\end{equation}
+如果随着温度上升$\rho_\text{s}$在某一点严格为零，那么就发生了相变。
+以声子为例，设能谱为
+\[
+    \epsilon = u p,
+\]
+我们有
+\[
+    \begin{aligned}
+        \rho_\text{s} &= - \frac{1}{3u} \int \frac{p^2 \dd{p} \dd{\Omega}}{(2\pi)^3} \dv{n}{p} p^2 \\
+        &= - \frac{1}{3u} \int \frac{\dd{\Omega}}{(2\pi)^3} \dd{n} p^4 \\
+        &= \frac{4}{3u} \int \frac{\dd\Omega}{(2\pi)^3} \dd{p} p^3 n \\
+        &= \frac{4}{3u} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} n p = \frac{4}{3u^2} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} n \epsilon,
+    \end{aligned}
+\]
+因此$\rho_\text{s}$正比于声子总内能。
+在液体中，声子自由能为
+\[
+    F = F_0 - T \ln \sum_{\vb*{k}, n} \ee^{-\beta u k \left( n + \frac{1}{2} \right) } = F_0 - V \frac{\pi^2 T^4}{90 u^3},
+\]
+上式中$F_0$为零温下的自由能；上式是固体中声子自由度的$1/3$，因为流体中只有纵波没有横波，所以声子偏振方向只有一个而不是三个。
+从自由能计算出声子内能为
+\[
+    \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} n \epsilon = E = E_0 + \frac{V \pi^2 T^4}{30 u^3},
+\]
+则
+\[
+    \rho_\text{s} = \frac{4}{3u^2} \left( E_0 + \frac{V \pi^2 T^4}{30 u^3} \right).
+\]
+可以看到，随着$T$的增长$\rho_\text{s}$持续增长而没有上限，而这是不可能的，因为显然$\rho_\text{s}$小于液体总密度，而后者是有上限的。
+唯一的可能是，当温度增长到某个$T$时出现了相变，超流完全消失，我们上面的推导不再适用。
+
+总之，当温度较高或者液体整体流速较大时，都不会出现超流。
+
+\subsubsection{液体中的声子}
+
+“声子”在固体物理中指的是空间连续平移对称性破缺导致的Goldstone模，虽然液体中没有空间连续平移对称性破缺，但是还是可以出现声波，这种波动的量子化同样会导致声子。
+本节将表明，非常一般的液体中都可以出现声子。
+
+我们首先讨论液体中声波的经典理论。
+液体中能量的严格形式为
+\begin{equation}
+    E = \int \dd[d]{\vb*{r}} \left( \frac{1}{2} \rho v^2 + \rho e(\rho) \right),
+\end{equation}
+其中$e$是单位质量的内能。这个量本身并不能完整描述液体的动力学，还需要加上一个输运方程
+\begin{equation}
+    \pdv{\rho}{t} + \div{\rho \vb*{v}} = 0.
+\end{equation}
+我们仅考虑非常小幅的运动，此时由于$v$本身是小量，我们可以将$\rho v^2$近似为$\rho_0 v^2$，其中$\rho_0$是液体无外力作用时的密度。
+由于$\rho=\rho_0$是一个能量极小值点，我们得到小幅振动的液体的能量：
+\begin{equation}
+    E = \int \dd[d]{\vb*{r}} \left( \frac{1}{2} \rho_0 v^2 + \frac{u^2 \rho'^2}{2 \rho_0} \right),
+    \label{eq:small-v-energy}
+\end{equation}
+其中$\rho'$定义为$\rho-\rho_0$。
+
+和\eqref{eq:small-v-energy}一起使用的还有连续性方程
+\[
+    \pdv{\rho}{t} + \div{(\rho \vb*{v})} = 0,
+\]
+以及液体中声波无旋这一事实。这样，我们引入速度势
+\begin{equation}
+    \vb*{v} = \grad{\varphi}.
+    \label{eq:v-potential}
+\end{equation}
+至于连续性方程，由于$v$和$\rho'$都是小量，我们有
+\begin{equation}
+    \pdv{\rho'}{t} + \rho_0 \div{\vb*{v}} = 0.
+    \label{eq:small-transportation}
+\end{equation}
+\eqref{eq:small-v-energy}，\eqref{eq:small-transportation}和\eqref{eq:v-potential}决定了流体中声波的行为。
+
+现在要做的是量子化以上理论。比较糟糕的是$\vb*{v}$并不能直接当成$\vb*{r}$的时间导数或者动量除以质量，虽然这两个量的宏观平均当然是完全一样的。
+这里的关键在于我们需要一个（欧拉法表述下的）流速场，而不是简单的$\hat{\vb*{p}} / m$。
+然而，\eqref{eq:small-v-energy}显含$\vb*{v}$和$\rho$，这又意味着我们需要这两个量的对易关系。
+一种可能的进路是以质量流密度$\vb*{j}$为中介。在经典理论中
+\[
+    \rho(\vb*{r}) = \sum_i m_i \delta(\vb*{r} - \vb*{r}_i), \quad \vb*{j}(\vb*{r}) = \sum_i \vb*{p}_i \delta(\vb*{r} - \vb*{r}_i),
+\]
+同时也有
+\[
+    \vb*{j} = \rho \vb*{v}.
+\]
+标准的量子化方案是（这实际上就是$U(1)$场的守恒流，确实是合理的）
+\[
+    \hat{\vb*{j}}(\vb*{r}) = \frac{1}{2} \sum_i ( \hat{\vb*{p}}_i \delta(\vb*{r} - \vb*{r}_i) + \delta(\vb*{r} - \vb*{r}_i) \hat{\vb*{p}}_i ) = \frac{1}{2} (\hat{\rho} \hat{\vb*{v}} + \hat{\vb*{v}} \hat{\rho}),
+\]
+而
+\[
+    \hat{\rho}(\vb*{r}) = \sum_i m_i \delta(\vb*{r} - \vb*{r}_i)
+\]
+保持不变。
+由于动量-坐标对易关系是确定的，可以直接计算出$\hat{\rho}$和$\hat{\vb*{j}}$的对易关系，从而就可以得到$\hat{\rho}$和$\hat{\vb*{v}}$的对易关系。
+
+依照定义，我们可以计算出
+\[
+    \comm*{\hat{\rho}(\vb*{r})}{\hat{\vb*{j}}(\vb*{r}')} = \ii \hat{\rho}(\vb*{r}) \grad{\delta(\vb*{r} - \vb*{r}')}.
+\]
+我们可以适当选取流场$\hat{\vb*{v}}$（到目前为止我们还没有给出任何流场的明确定义，只是给出了流场应该满足什么条件），使得
+\[
+    \comm*{\hat{\vb*{v}}(\vb*{r})}{\hat{\rho}(\vb*{r}')} = - \ii \grad{\delta(\vb*{r} - \vb*{r}')},
+\]
+这样所有方程都满足了。最后，引入速度势，就可以得到
+\[
+    \comm*{\hat{\varphi}(\vb*{r})}{\hat{\rho}(\vb*{r}')} = - \ii \delta(\vb*{r} - \vb*{r}'),
+\]
+也即
+\begin{equation}
+    \comm*{\hat{\varphi}(\vb*{r})}{\hat{\rho}'(\vb*{r}')} = - \ii \delta(\vb*{r} - \vb*{r}').
+\end{equation}
+这就得到了量子化\eqref{eq:small-v-energy}需要的正则对易关系。做完对应的玻色子正则量子化手续，我们得到一组玻色子产生湮灭算符$(\hat{a}^\dagger_{\vb*{k}}, \hat{a}_{\vb*{k}})$，使得
+\begin{equation}
+    \hat{H} = \sum_{\vb*{k}} u k \left( \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}} + \frac{1}{2} \right).
+\end{equation}
+这样我们就在液体中获得了声子：它就是液体做小幅机械运动的波的量子化，有一个线性的、无能隙的能谱。
+同往常一样，流体的非线性运动对应着声子-声子相互作用。
+
+因此，如果液体的小幅（宏观上不显著的）振动模式只有声波的话，那么其元激发能谱的确允许低温下出现超流。
+
+\subsection{简并近理想玻色气体}
+
+\subsubsection{超流平均场}
+
+现在我们来看一个更加“具体”的模型：低温下有排斥相互作用的玻色气体。
+我们知道在低温下，无相互作用玻色气体会发生玻色-爱因斯坦凝聚（BEC），这是一个经典理想气体不能够表现出来的性质。发生了BEC的玻色气体因此称为\emph{简并}的玻色气体。
+我们将说明，简并近理想玻色气体能够展现出超流。
+
+我们的主要工作其实在于在假定基态动量为零时解出近理想玻色气体中的准粒子谱。当然，由于流体可以运动，实验室参考系中的基态动量当然可以不是零，但这只是差一个坐标变换的问题。
+超流的物理中最重要的在于说明零温下不会激发出流体内部的准粒子，而这就是本节要证明的。
+至于超流体宏观运动的参数——如压缩率什么的——并不需要任何特殊处理。实际上，宏观的流体运动可以直接使用纳维-斯托克斯方程建模，而其中涉及的压缩系数什么的也是可以直接通过求解流体总能量和体积之间的关系得到的，没有任何异乎寻常的地方。
+
+\prettyref{sec:repel-gas}中关于散射哈密顿量的讨论基本上可以转移到玻色气体中。本节考虑一个无自旋的玻色气体，在低温下由于玻色-爱因斯坦凝聚，玻色子动量基本为零，于是
+\[
+    p \ll \frac{1}{r_0}
+\]
+成立，而假定空间具有各向同性，那么就有
+\begin{equation}
+    \hat{H} = \sum_{\vb*{k}} \frac{k^2}{2m} \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}} + \frac{U_0}{2V} \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_1'} \hat{a}^\dagger_{\vb*{k}_1'} \hat{a}^\dagger_{\vb*{k}_2'} \hat{a}_{\vb*{k}_2} \hat{a}_{\vb*{k}_1}.
+    \label{eq:boson-gas-weak-int}
+\end{equation}
+零温时所有玻色子凝聚到基态，则有
+\[
+    \expval*{\hat{a}^\dagger_0 \hat{a}_0} = N_0^2 \sim N^2,
+\]
+于是相对来说$\hat{a}_0$和$\hat{a}^\dagger_0$的对易关系就可以略去了，于是在讨论基态时我们可以将$\hat{a}_0$和$\hat{a}^\dagger_0$当成普通的数，均为$\sqrt{N_0}$。
+
+下面我们做\concept{超流平均场}近似，即假定大部分的散射过程都涉及动量为零的玻色子，而涉及大于等于三个动量不为零的玻色子的过程可以忽略，也即，假定$\hat{a}_{\vb*{k}}$在$\vb*{k} \neq 0$时是小量，并且取到二阶近似。
+这是非常强的假设，而且实际上从精度来说是不正确的，它只是考虑了一部分过程而已，但事实证明它确实能够给出定性正确的结果，因此超流平均场是一个很好的起点。
+于是我们做展开
+\begin{equation}
+    \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_1'} \hat{a}^\dagger_{\vb*{k}_1'} \hat{a}^\dagger_{\vb*{k}_2'} \hat{a}_{\vb*{k}_2} \hat{a}_{\vb*{k}_1} = a_0^4 + a_0^2 \sum_{\vb*{k} \neq 0} (\hat{a}^\dagger_{\vb*{k}} \hat{a}^\dagger_{-\vb*{k}} + \hat{a}_{\vb*{k}} \hat{a}_{-\vb*{k}} + 4 \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}}),
+    \label{eq:super-fluid-mf}
+\end{equation}
+其中系数$4$来自对称性：动量为零的输入粒子线有两个选择，输出粒子线也有两个选择。
+没有$\hat{a}_{\vb*{k}}$的一阶项，因为这样动量不守恒；也没有三阶项，这是超流平均场近似的要求。
+\eqref{eq:super-fluid-mf}破缺了$U(1)$对称性，其物理意义是我们并不知道凝聚的玻色子有多少个，只是将它看成一个深不可测的粒子库，可以随意从里面取出粒子或者向里面放入粒子而不影响系统状态。
+代入
+\[
+    a_0^2 = N - \sum_{\vb*{k} \neq 0} \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}},
+\]
+取到二阶近似就有
+\begin{equation}
+    \hat{H} = \frac{N^2}{2V} U_0 + \sum_{\vb*{k}} \frac{k^2}{2m} \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}} + \frac{U_0}{2V} N \sum_{\vb*{k}} (\hat{a}^\dagger_{\vb*{k}} \hat{a}^\dagger_{-\vb*{k}} + \hat{a}_{\vb*{k}} \hat{a}_{-\vb*{k}} + 2 \hat{a}^\dagger_{\vb*{k}} \hat{a}_{\vb*{k}}) .
+\end{equation}
+做Bogoliubov变换，要求变换之后得到一组玻色子：
+\[
+    \comm*{\hat{b}_{\vb*{k}}}{\hat{b}_{\vb*{k}'}^\dagger} = \delta_{\vb*{k} \vb*{k}'}, \quad \comm*{\hat{b}_{\vb*{k}}}{\hat{b}_{\vb*{k}'}} = 0,
+\]
+然后可以发现做以下矩阵元为实数的幺正变换
+\begin{equation}
+    \pmqty{\hat{b}_{\vb*{k}} \\ \hat{b}^\dagger_{-\vb*{k}}} = \pmqty{ u_{\vb*{k}} & v_{\vb*{k}} \\ v_{\vb*{k}} & u_{\vb*{k}} } \pmqty{\hat{a}_{\vb*{k}} \\ \hat{a}^\dagger_{-\vb*{k}}}, \quad u_{\vb*{k}}^2 - v_{\vb*{k}}^2 = 1, 
+\end{equation}
+能够满足玻色子对易关系。在这里我们没有做正交变换，因为正交变换不能够给出正确的玻色子对易关系。据此可以求解出能谱为
+\begin{equation}
+    \hat{H} = E_0 + \sum_{\vb*{k} \neq 0} \epsilon_{\vb*{k}} \hat{b}^\dagger_{\vb*{k}} \hat{b}_{\vb*{k}}, \quad \epsilon_{\vb*{k}} = \sqrt{ \frac{k^2}{2m} \left( \frac{k^2}{2m} + \frac{N}{V} U_0 \right) }.
+\end{equation}
+这是一个无能隙的激发，并且在$\vb*{k}=0$时斜率不为零，因此我们得出结论：简并近理想玻色气体会发生玻色-爱因斯坦凝聚，并且在BEC相中会出现超流。
+
+\subsubsection{路径积分和$U(1)$序参量}
+
+实际上，从路径积分出发可以更加清楚地看到$U(1)$对称性破缺意味着什么。
+我们还是讨论慢散射近似，但是和\prettyref{sec:repel-gas}中的赝势理论相反，我们寻找一个硬球散射，它的散射长度和实际的玻色气体的散射长度一样；由于慢散射近似中唯一描述了散射过程的就是散射长度，将相互作用势当成硬球散射不会带来任何物理上的改变。
+这样我们有
+\[
+    S = \int \dd{\tau} \left( 
+        \sum_{\vb*{k}} \bar{\psi}(\vb*{k}, \tau) \left( \partial_\tau + \frac{k^2}{2m} - \mu \right) \psi(\vb*{k}, \tau) 
+        + \frac{g}{2V} \sum_{\vb*{k}_1, \vb*{k}_2} \bar{\psi}(\vb*{k}_1, \tau) \bar{\psi}(\vb*{k}_2, \tau) \psi(\vb*{k}_2, \tau) \psi(\vb*{k}_1, \tau) 
+    \right).
+\]
+这里我们引入了一个不同的耦合常数$g$。将上式切换到实空间就得到了复场版本的$\psi^4$理论：
+\begin{equation}
+    S = \int \dd{\tau} \left( 
+        \int \dd[3]{\vb*{r}} \bar{\psi}(\vb*{r}, \tau) \left( \partial_\tau - \frac{\laplacian}{2m} - \mu \right) \psi(\vb*{r}, \tau) 
+        + \frac{g}{2} \int \dd[3]{\vb*{r}} \abs*{\psi(\vb*{r}, \tau)}^4 
+    \right).
+\end{equation}
+
+在零温下虚时间路径积分的范围为负无穷到正无穷，我们尝试做鞍点近似，先寻找稳定的极小值点。非常合理的，应该让$k^2$尽可能小，于是让$\psi(\vb*{k})$只有$\vb*{k}=0$时才有非零值，然后对$\psi$计算变分（请注意$\psi$和$\bar{\psi}$应该认为是独立的），并假定没有虚时间演化，就有
+\[
+    \bar{\psi}_0 \left( - \mu + g \bar{\psi}_0 \psi_0 \right) = 0.
+\]
+在$\mu < 0$时只有平凡解$\psi=0$，即小于零的化学势下不会出现玻色-爱因斯坦凝聚。（也不会出现后面所说的$U(1)$自发对称性破缺，因为$\psi=0$显然具有$U(1)$对称性）
+在$\mu > 0$时我们有
+\begin{equation}
+    \psi_0 = \underbrace{\sqrt{\frac{\mu}{g}}}_{\gamma} \ee^{\ii \theta},
+\end{equation}
+当然这就是BEC基态。我们马上可以注意到这里有一个对称性自发破缺：$\psi_0$显然不是$U(1)$不变的，而如果温度不很高，$\psi$几乎总是在$\psi_0$附近涨落，于是就破缺了$U(1)$对称性。
+我们设一般的$\psi$为
+\begin{equation}
+    \psi = \sqrt{\rho} \ee^{\ii \theta}, \quad \psi = \sqrt{\rho} \ee^{- \ii \theta},
+\end{equation}
+其中$\rho$和$\theta$是两个实场。这样做积分变量代换的好处在于可以证明
+\[
+    \abs*{\dd{\psi} \wedge \dd{\bar{\psi}}} = \abs*{\dd{\rho} \wedge \dd{\theta}}.
+\]
+在BEC基态附近做鞍点展开并假定$\rho$几乎总是在$\gamma$附近涨落（这就是超流平均场理论的路径积分版本；超流平均场不准确这件事意味着实际上更高阶项的涨落同样是重要的），从而略去$\rho$的时间导数，于是我们有近似
+\begin{equation}
+    S[\rho, \theta] = \int \dd{\tau} \dd[3]{\vb*{r}} \left( \ii \rho \partial_\tau \theta + \frac{\rho_0}{2m} (\grad{\theta})^2 + \frac{g}{2} \rho^2 \right),
+\end{equation}
+这就是超流平均场的作用量。我们马上可以注意到$\rho$能够被积掉，从而
+\begin{equation}
+    S[\theta] = \int \dd{\tau} \dd[3]{\vb*{r}} \left( \frac{1}{g} (\partial_\tau \theta)^2 + \frac{\rho_0}{2m} (\grad{\theta})^2 \right).
+\end{equation}
+$\theta$于是成了一个序参量，考虑到$\theta$实际上就是$U(1)$相位角，一个显然不是$U(1)$不变的物理量，这是非常直观的。
+$\theta$场没有质量，这也是合理的，因为被破缺的$U(1)$对称性是连续的，从而会产生一个Goldstone模式，在这里就是$\theta$。
+
+在超流相中，粒子数流密度为
+\[
+    \vb*{j} = \frac{\ii}{2m} ( \psi \grad{\bar{\psi}} - \bar{\psi} \grad{\psi} ),
+\]
+在$U(1)$对称性破缺相中就有
+\begin{equation}
+    \vb*{j} = \frac{\rho_0}{m} \grad{\theta}.
+\end{equation}
+这就意味着，$U(1)$对称性破缺相中，只需要序参量$\theta$——也就是玻色子场的相角——在空间上有一个涨落，就\emph{一定}会有粒子数流密度，而且是没完没了、不会衰减的流密度。
+因此$U(1)$对称性破缺相就是\concept{超流相}。
+
+总之，在简并近理想玻色气体中玻色-爱因斯坦凝聚基态附近的涨落意味着有一个超流相。
+但是需要注意的是，BEC和超流之间并没有必然的联系：BEC相出现时可以没有超流（如无相互作用的玻色气体也能够出现BEC但是显然没有超流，因为超流和流体内部的相互作用有关系），出现超流时也可以没有BEC。
+
+\subsection{BCS超导}
+
+如果我们积掉系统中的声子，电子之间将会有一个等效的吸引相互作用。
+当然，这个相互作用一定含有推迟，但是我们将讨论不涉及特别长距离的中间声子传递的过程，此时等效吸引相互作用可以认为是吸引的。
+实际上，只要电子之间存在吸引相互作用，就会发生电子配对。电子是费米子，费米子发生配对自然形成玻色子（即\concept{库伯对}）。电子配对意味着发生相变，出现一个对称性破缺，如果我们将电子对当成一种新的自由度，那么原本的电子场就发生了$U(1)$对称性自发破缺。
+电子配对形成的玻色子在低温下可以发生超流，从而形成一个超导相。
+使用这种方法解释超导的理论就是\concept{BCS理论}。
+
+考虑如下的比较简单的吸引相互作用：
+\begin{equation}
+    \hat{H}_\text{int} = - g \int \dd[d]{\vb*{r}} \hat{\psi}^\dagger_\uparrow(\vb*{r}) \hat{\psi}^\dagger_{\downarrow}(\vb*{r}) \hat{\psi}_{\downarrow}(\vb*{r}) \hat{\psi}_\uparrow(\vb*{r}),
+\end{equation}
+这个相互作用显然是一个低速散射极限下的相互作用，因为只有自旋相反的电子才发生散射。
+在这个相互作用中不存在任何超距作用，并且也没有任何空间的不均匀，因此它对应的动量空间形式为
+\begin{equation}
+    \hat{H}_\text{int} = - \frac{g}{L^d} \sum_{\vb*{k}, \vb*{k}', \vb*{q}} \hat{c}^\dagger_{\vb*{k}+\vb*{q}, \uparrow} \hat{c}^\dagger_{-\vb*{k}, \downarrow} \hat{c}_{-\vb*{k}'+\vb*{q}, \downarrow} \hat{c}_{\vb*{k}' \uparrow}.
+    \label{eq:bcs-hamiltonian-p}
+\end{equation}
+上式中我们选用的傅里叶正变换和逆变换的归一化因子都是$1/L^{d/2}$。
+我们将表明，这个理论的确会给出一个超导相。
+
+\subsubsection{库伯对稳定性}
+
+\eqref{eq:bcs-hamiltonian-p}提示，它之下的库伯对的自旋应该一上一下，或者取更加复杂的、自选旋转不变的组合。
+本节对自旋一上一下的库伯对（即所谓s波超导，因为此时的库伯对的自旋构成$SU(2)$的$0$表示，对称性和s波一致）的稳定性做一个粗糙的估计。一个库伯对需要使用两个动量来标记，不过我们姑且定义动量为$\vb*{q}$的库伯对为总动量为$\vb*{q}$的库伯对模式的线性叠加，于是库伯对的关联函数就是
+\begin{equation}
+    C(\vb*{q}, \tau) = \frac{1}{L^{2d}} \sum_{\vb*{k}, \vb*{k}'} \expval*{\hat{c}^\dagger_{\vb*{k}+\vb*{q}, \uparrow}(\tau) \hat{c}^\dagger_{-\vb*{k}, \downarrow}(\tau) \hat{c}_{-\vb*{k}'+\vb*{q}, \downarrow}(0) \hat{c}_{\vb*{k}' \uparrow}(0)}.
+\end{equation}
+为了方便起见我们将计算松原格林函数
+\[
+    C(\vb*{q}, \omega_n) = \frac{1}{\beta^2 L^{2d}} \sum_{k, k'} \expval*{\hat{c}^\dagger_{k+q, \uparrow} \hat{c}^\dagger_{-k \downarrow} \hat{c}_{-k'+q, \downarrow} \hat{c}_{k \uparrow}},
+\]
+其中所有算符都使用$k=(\omega_n, \vb*{k})$标记。（我们利用了能量守恒的性质）
+
+使用费曼图，并使用梯形图近似%
+\footnote{
+    表面上看，梯形图近似是对所有梯形图重求和而RPA近似是对所有项链图重求和，但这种差别只是表面上的。
+    在这里，我们既可以遵循吸引相互作用来自声子的事实，将相互作用顶角看成两个电子交换了一个声子，也可以等效地认为两个电子先融合成了一个电子对，然后电子对再拆散。
+    前面一种图景的梯形图近似就是后一种图景的RPA近似。
+    \label{note:rpa-graph}
+}%
+，则$C(\vb*{q}, \omega_n)$由于相互作用会多出来一个正比于顶角修正$\Gamma_{q}$的项。计算出来这个项就定性地得到了$C(\vb*{q}, \omega_n)$的性质。
+顶角修正为（推导这个公式时需要注意顶角修正在这里只和输入的两个电子的动量和有关，和自旋、电子各自的动量无关）
+\[
+    \Gamma_{q} = g + \frac{g}{\beta L^d} \sum_{p} G^0_{p + q} G^0_{- p} \Gamma_{q},
+\]
+从而
+\[
+    \Gamma_{q} = \frac{g}{1 - \frac{g T}{L^d} \sum_{p} G^0_{p+q} G^0_{-p}}.
+\]
+下面的计算使用了通常的技巧：设$f(\omega)$为自由费米子分布函数，$F$是任意的解析函数，我们有
+\[
+    \frac{1}{\beta} \sum_{\omega_n} F(\ii \omega_n) = - \oint \frac{\dd{z}}{2\pi \ii} f(z) F(z),
+\]
+注意到系统具有镜像对称性，即
+\[
+    \xi_{-\vb*{p}} = \xi_{\vb*{p}},
+\]
+通过留数定理可以计算出
+\[
+    \begin{aligned}
+        \frac{T}{L^d} \sum_{p} G^0_{p+q} G^0_{-p} &= \frac{1}{L^d} \sum_{\vb*{p}} \frac{1}{\beta} \sum_{\nu_n} \frac{1}{\ii (\omega_n + \nu_n) - \xi_{\vb*{p}+\vb*{q}}} \frac{1}{- \ii \nu_n - \xi_{\vb*{p}}} \\
+        &= \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}}, 
+    \end{aligned}
+\]
+这里我们设$q=(\omega_n, \vb*{q})$，$p=(\nu_n, \vb*{p})$。
+这样就有
+\begin{equation}
+    \frac{1}{\Gamma_q} = \frac{1}{g} - \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}}.
+    \label{eq:bcs-rpa-correction}
+\end{equation}
+
+我们计算一个最简单的情况：空间均匀，没有时间演化，则$\vb*{p}$和$\omega_n$都是零。
+这样就有
+\[
+    \frac{1}{L^d} \sum_{\vb*{p}} \frac{f(\xi_{\vb*{p}}) + f(\xi_{\vb*{p}+\vb*{q}}) - 1}{\ii \omega_n - \xi_{\vb*{p}} - \xi_{\vb*{p}+\vb*{q}}} = \int \nu(\epsilon) \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon},
+\]
+其中$\epsilon$指的是对能量的态密度。设费米面附近厚度为$\omega_\text{D}$的状态参与形成库伯对，则在$\epsilon<0$时$f(\epsilon)=-1$，在$\epsilon>0$时$f(\epsilon)=1$，于是
+\[
+    \begin{aligned}
+        \int \nu(\epsilon) \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon} &= \nu \int_{-\omega_\text{D}}^{\omega_\text{D}} \dd{\epsilon} \frac{1 - 2f(\epsilon)}{2\epsilon} \\
+        &= \nu \int_0^{\omega_\text{D}} \frac{\dd{\epsilon}}{\epsilon}.
+    \end{aligned}
+\]
+这是一个有红外发散的结果，会出现这个结果是因为以上各式实际上都是在有限温度下才有意义的，而有限温度下$\epsilon=0$附近$f(\epsilon)$会快速衰减，因此在红外端会有一个截断，于是
+\[
+    \begin{aligned}
+        \frac{1}{\Gamma_q} &\sim \frac{1}{g} - \nu \int_{T}^{\omega_\text{D}} \frac{\dd{\epsilon}}{\epsilon} \\
+        &= \frac{1}{g} - \nu \ln \frac{\omega_\text{D}}{T}.
+    \end{aligned}
+\]
+容易看出这里存在奇异性：温度较高时顶角修正的虚部意味着库伯对的指数衰减，但是当温度低到某一个临界温度时$\Gamma_q$无定义。
+临界温度的数量级为
+\begin{equation}
+    T_\text{c} \sim \omega_\text{D} \exp(- \frac{1}{g \nu}).
+\end{equation}
+这意味着当温度降低到这个数量级时，仅仅考虑顶角修正是不够的，更多的涨落都需要纳入考虑，也即暗示了相变的存在。
+梯形图近似或者RPA近似（见\autoref{note:rpa-graph}）常常被用于估计相变点的位置：它给出了形如$1/(1-\text{something})$的一个因子，从而可以预言相变的位置。
+
+\subsubsection{路径积分处理}
+
+将BCS相互作用放进虚时间配分函数中，就有
+\begin{equation}
+    S[\bar{\psi}, \psi] = \int_0^\beta \dd{\tau} \int \dd[d]{\vb*{r}} \left(
+        \bar{\psi}_\sigma \left( \partial_\tau + \ii e \phi - \frac{(\grad - \ii e)^2}{2m} - \mu \right) \psi_\sigma - g \bar{\psi}_\uparrow \bar{\psi}_\downarrow \psi_\downarrow \psi_\uparrow
+    \right).
+\end{equation}
+其中的电势项多出来了一个$\ii$，这是因为$U(1)$规范场的$\phi$部分和$\vb*{A}$部分不独立，如果保持$\vb*{A}$部分形式不变，在虚时间下，$U(1)$对称性就会让$\phi$项多出来一个$\ii$。
+在这里我们取$e<0$为负的元电荷，以保持$U(1)$协变导数的形式的正确。
+
+我们可以对相互作用部分做Hubbard-Stratonovich变换，引入一个辅助场$\Delta$并破缺$U(1)$对称性：
+\[
+    \begin{aligned}
+        &\quad \exp(g \int \dd{\tau} \dd[d]{\vb*{r}} \bar{\psi}_\uparrow \bar{\psi}_\downarrow \psi_\downarrow \psi_\uparrow) \\
+        &= \int \fd{(\bar{\Delta}, \Delta)} \exp(- \int \dd{\tau} \dd[d]{\vb*{r}} \left( \frac{1}{g} \abs*{\Delta}^2 - (\bar{\Delta} \psi_\downarrow \psi_\uparrow + \Delta \bar{\psi}_\uparrow \bar{\psi}_\downarrow) \right) ),
+    \end{aligned}
+\]
+这样得到的$\psi$和$\Delta$的相互作用顶角是非常直观的：两个电子被湮灭，产生一个$\Delta$，或者一个$\Delta$被湮灭产生两个电子。我们可以认为$\Delta$就是电子配对得到的玻色子场。
+做适当的变换将$\bar{\psi} \psi$形式的项写成$\psi \bar{\psi}$，则可以得到
+\begin{equation}
+    Z = \int \fd{(\bar{\Delta}, \Delta)} \int \fd{(\bar{\psi}, \psi)} \exp( - \int \dd{\tau} \dd[d]{\vb*{r}} \left( \frac{1}{g} \abs*{\Delta}^2 - \bar{\Psi} \mathcal{G}^{-1} \Psi \right) ),
+\end{equation}
+其中
+\begin{equation}
+    \Psi = \pmqty{\psi_\uparrow \\ \bar{\psi}_\downarrow}, \quad \bar{\Psi} = \pmqty{ \bar{\psi}_\uparrow & \psi_\downarrow }
+\end{equation}
+称为\concept{Nambu旋量}，而
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            \mathcal{G}^{-1} &= \pmqty{(G^\text{(p)}_0)^{-1} & \Delta \\ \bar{\Delta} & (G^\text{(h)}_0)^{-1}}, \\
+            (G^\text{(p)}_0)^{-1} &= - \partial_\tau - \ii e \phi + \frac{(\grad - \ii e)^2}{2m} + \mu, \\
+            (G^\text{(h)}_0)^{-1} &= - \partial_\tau + \ii e \phi - \frac{(\grad + \ii e)^2}{2m} - \mu
+        \end{aligned}
+    \right.
+\end{equation}
+组成所谓的\concept{Gor'kov格林函数}。$G_0^{(\text{h})}$中一些项的符号出现变化是因为我们交换了$\psi_\downarrow$和$\bar{\psi}_\downarrow$，交换这两项本身会引入负号，而对有导数的项，通过分部积分法将导数转移又会引入负号。
+$G_0^{(\text{h})}$和$G_0^{(\text{p})}$可以分别理解为自由空穴和自由电子的松原格林函数。
+由于$G_0^{(\text{h})}$是$\expval*{\bar{\psi} \psi}$型的关联函数而$\psi$可以看成粒子场对应的空穴场，它是“空穴格林函数”，使用字母h表示；相应的$G_0^{(\text{p})}$为“粒子格林函数”。
+从$G_0^{(\text{p})}$和$G_0^{(\text{h})}$之间的关系也可以看出两者之间差一个时间反演变换（注意时间反演变换下哈密顿量发生转置并且多一个负号），这是BCS理论的一个特点：电子-空穴对称性。
+
+现在可以将电子场积掉，因为这是简单的高斯积分，得到
+\begin{equation}
+    Z = \int \fd(\bar{\Delta}, \Delta) \exp(- \frac{1}{g} \int \dd{\tau} \dd[d]{\vb*{r}} \abs*{\Delta}^2 + \underbrace{\ln \det \mathcal{G}^{-1}}_{\trace \ln \mathcal{G}^{-1}}).
+    \label{eq:bcs-without-electron}
+\end{equation}
+上式实际上还有一个常数因子，因为做格拉斯曼场高斯积分的时候，二次型前面没有负号，从而行列式中可能会有一个负因子；不过总是可以把这个负因子提取出来，然后由于外层的$\ln$，它是一个无关紧要的常数。
+$\ln \det$一项看起来有点奇怪，因为它不包含任何对$\vb*{r}$和$\tau$的积分——这些积分都在$\det$运算里面了，并且使用何种表象并不重要。无穷维矩阵的行列式并不好定义，所以实际计算时通常使用$\trace \ln$形式。
+这就得到了描述序参量$\Delta$的有效理论。当然，这只是把复杂性从一个地方转移到了另一个地方，因为$\mathcal{G}^{-1}$是非常难以准确计算的。
+
+\subsubsection{金斯堡-朗道理论}
+
+我们现在微扰计算$\det \mathcal{G}^{-1}$，从而尝试得到一个显式的有效理论。本节先不考虑外加电磁场。
+切换到动量-频率表象下，引入记号
+\[
+    \hat{\Delta} = \pmqty{ & \Delta \\ \bar{\Delta} & }, \quad \mathcal{G}_0 = \mathcal{G} |_{\Delta = 0},
+\]
+有
+\[
+    \begin{aligned}
+        \trace \ln \mathcal{G}^{-1} &= \trace \ln (\mathcal{G}^{-1}_0 (1 + \mathcal{G}_0 \hat{\Delta})) \\
+        &= \underbrace{\trace \ln \mathcal{G}^{-1}_0}_{\const} + \trace \ln (1 + \mathcal{G}_0 \hat{\Delta}) \\
+        &= \trace \ln \mathcal{G}^{-1}_0 - \sum_{n \geq 1} \frac{1}{2n} \trace (\mathcal{G}_0 \hat{\Delta})^{2n} ,
+    \end{aligned}
+\]
+第二个等号是普遍成立的，不要求$\ln$的宗量中的两个矩阵对易；第三个等号是来自$\mathcal{G}^{-1}_0 \hat{\Delta}$无迹这一事实。
+
+展开式的第一项是一个无用的常数。我们将要看到，展开式的第二项实际上是一个RPA近似——或者，如果采用标准的“电子交换光子”的图像，一个梯形图近似（见\prettyref{note:rpa-graph}）。
+
+切换到四维动量表象下%
+\footnote{
+    准确地说，此时我们的表象是自旋直积上坐标，即
+    \[
+        \pmqty{ \vb*{r}_1 & \vb*{r}_2 & \cdots & \vb*{r}_1 & \vb*{r}_2 & \cdots }^\top.
+    \]
+    我们需要分别对两个坐标空间做傅里叶变换。
+
+    请注意此时我们已经将$\Psi$场积掉了，矩阵$\mathcal{G}$的傅里叶变换就是普通的矩阵的傅里叶变换而不是将$\Psi$调整为动量表象而适当调整$\mathcal{G}$使相应的二次型不变。
+    后面一种傅里叶变换的形式非常不便于处理。
+}%
+，对任意矩阵有
+\[
+    A_{k' k} \sim \int \dd[d+1]{r'} \int \dd[d+1]{r} \ee^{\ii k' \cdot r'} A_{r' r} \ee^{- \ii k \cdot r}.
+\]
+这里我们暂时略去了傅里叶变换的归一化系数，留到最后处理。当然，$G^\text{p}(r)$变换为$G^\text{p}(p) \delta_{p'p}$，或者记作$G_p \delta_{pp'}$，而$G^\text{h}(r)$变换为$-G_{-p} \delta_{pp'}$。
+最外层的负号是因为交换了产生算符和湮灭算符，脚标中的负号是因为因子$\ee^{-\ii k \cdot r}$原本应该作用在产生算符上但是对$G^\text{h}(r)$它作用在了湮灭算符上。
+显式地写出来，就是
+\[
+    G^\text{p}_{p' p} = \delta_{p' p} \frac{1}{\ii \omega_n - \xi_{\vb*{p}}}, \quad G^\text{h}_{p' p} = \delta_{p' p} \frac{1}{\ii \omega_n + \xi_{\vb*{p}}}.
+\]
+$\Delta$和$\bar{\Delta}$分别变换为$\Delta_{k'-k}$和$\bar{\Delta}_{k-k'}$。
+这样，第二阶展开为
+\[
+    \begin{aligned}
+        - \frac{1}{2} \trace (\mathcal{G}_0 \hat{\Delta})^2 &= - \trace G^\text{p} \Delta G^\text{h} \bar{\Delta} \\
+        &= \frac{1}{\beta L^d} \sum_{p_1, p_2} G_{p_1} \Delta_{p_1-p_2} G_{-p_2} \bar{\Delta}_{p_1-p_2} \\
+        &= \frac{1}{\beta L^d} \sum_{p, q} G_p G_{q-p} \abs*{\Delta_q}^2.
+    \end{aligned}
+\]
+因此有效作用量就是
+\begin{equation}
+    S = \sum_q \Gamma_q^{-1} \abs*{\Delta_q}^2 + \bigO(\Delta^4), \quad \Gamma_q^{-1} = \frac{1}{g} - \frac{1}{\beta L^d} \sum_{p} G_p G_{q-p}.
+\end{equation}
+我们现在看到，取二阶展开，$\Delta^2$的系数从$1/g$得到了一个修正，并且这就是在讨论库伯对稳定性时做的相互作用顶角修正\eqref{eq:bcs-rpa-correction}，是一个RPA近似（见\prettyref{note:rpa-graph}）。
+这是合理的，因为$\Delta^2$项画成费曼图就是所有以一个$\Delta$（即库伯对）出发，终结于另一个$\Delta$的费曼图求和，那么自然只能够包括项链图。
+
+在\eqref{eq:bcs-rpa-correction}中将$\Gamma_q$对$\omega_n$和$\vb*{q}$做展开，注意到$\ii \omega_n$没有系数地出现在分母中，且$\Gamma_q$在动量的空间镜像对称变换下不变，于是在实空间中$\Delta^2$项就是
+\[
+    \int \dd[d]{\vb*{r}} (\bar{\Delta} \partial_\tau \Delta +  c_0 \abs*{\Delta}^2 + c_1 \abs*{\grad{\Delta}}^2 + \cdots). 
+\]
+由于我们在讨论的是一个低能有效模型，可以直接截断到动量平方项，实际上，量纲分析也表明更高阶项在重整化群下是不重要的。%
+\footnote{
+    这里，以及其它涉及截断的地方，都有一定的微妙之处。
+    的确，重整化群下高阶项都会被指数压低，但是似乎没有什么阻止$\Delta$较大时高阶项很重要，而高阶项在被指数压低之前对低阶项可以产生影响。
+    通过这种截断计算出来的系数未必总是可靠的。
+}%
+因此$\Delta^2$阶的理论形如
+\begin{equation}
+    S = \int \dd{\tau} \dd[d]{\vb*{r}} \left( \bar{\Delta} \partial_\tau \Delta + \frac{c}{2} \abs*{\grad{\Delta}}^2 + \frac{r}{2} \abs*{\Delta}^2 \right).
+\end{equation}
+类似地可以计算到四阶修正，同样$\Delta^4$项中可能有导数算符，但是既然我们在上式中假定$k \sim \Delta$，可以将所有含有导数的四阶项忽略，得到
+\begin{equation}
+    S = \int \dd{\tau} \dd[d]{\vb*{r}} \left( \bar{\Delta} \partial_\tau \Delta + \frac{c}{2} \abs*{\grad{\Delta}}^2 + \frac{r}{2} \abs*{\Delta}^2 + \frac{u}{4!} \abs*{\Delta}^4 \right).
+    \label{eq:bcs-order-delta}
+\end{equation}
+当然，这和直接通过对称性得到的金斯堡-朗道理论是一致的。
+\eqref{eq:bcs-order-delta}仅仅在相变点附近成立，否则$\Delta$会变得很大，需要引入更多项；此外，我们也不能以“重整化群会指数压低含有导数算符的项”为由忽略诸如$\abs*{\grad{\Delta}}^4$之类的项。
+
+\eqref{eq:bcs-order-delta}的鞍点近似——从而，\eqref{eq:bcs-without-electron}的鞍点近似——就是平均场近似。
+我们对$\bar{\Delta}$做优化，取\eqref{eq:bcs-without-electron}关于$\bar{\Delta}$的极值点，使用前述$\trace \ln \mathcal{G}^{-1}$的展开式，可以得到
+\begin{equation}
+    \frac{1}{g} \Delta_0 = \frac{T}{L^d} \sum_{\vb*{p}, \omega_n} \frac{\Delta_0}{\omega_n^2 + \xi_{\vb*{p}}^2 + \abs*{\Delta_0}^2} . 
+\end{equation}
+这和平均场近似给出的的方程一致。
+
+\eqref{eq:bcs-order-delta}给出了一个具有自相互作用的玻色场。
+玻色性是预期之中的，因为两个费米子组合自然得到费米子；自相互作用意味着库伯对随着时间演化会解体。
+既然如此，\eqref{eq:bcs-order-delta}描述的相变实际上就是一个超流相变。因此BCS态实际上就是库伯对的超流态。
+
+\subsubsection{BCS下的Goldstone模}
+
+\subsection{BCS-BEC crossover}
+
+\end{document}

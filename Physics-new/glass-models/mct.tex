@@ -100,11 +100,12 @@
 
 \maketitle
 
-\section{The basic framework of Mode-Coupling Theory (MCT)} 
+The \concept{Mode-Coupling Theory (MCT)} is the only known theory about glass transition that are
+first-principles-based \cite{mct2005,mct-primer}. It uses the Mori-Zwanzig formalism 
+\cite{MoriZwanzigformalismWikipedia} to integrate out unnecessary degrees of freedom and focuses 
+on quantities that characterize glasses.
 
-The \concept{Mode-Coupling Theory (MCT)} is the only known theory that are first-principles-based \cite{mct2005,mct-primer}.
-It uses the Mori-Zwanzig formalism \cite{MoriZwanzigformalismWikipedia} to integrate out unnecessary degrees of
-freedom and focuses on quantities that characterize glasses.
+\section{A review of Mori-Zwanzig formalism}
 
 First we have a brief review of the Mori-Zwanzig formalism. 
 It says that any time-dependent quantity $A$ obeying the (generalized) Heisenberg equation 
@@ -114,13 +115,18 @@ It says that any time-dependent quantity $A$ obeying the (generalized) Heisenber
 also obeys the closed-form equation
 \begin{equation}
     {\dot {A}}(t)= \ii \Omega A(t) - \int _{0}^{t} \dd{s} K(s)A(t-s)+F(t).
+    \label{eq:closed-form-a}
 \end{equation}
 The three terms on the RHS are named as the \concept{frequency matrix}, the \concept{memory function}, 
 and the \concept{fluctuating force}, respectively. The fluctuating force collects all ``fast'' variables that 
 are orthogonal to $A$, and the memory function is the time autocorrelation function of the fluctuating force.
 These two terms represent how $A$ gets connected to (in the case in a quantum theory, entangled with) the degrees of
 freedom that are ignored. 
-Assuming we already have an inner product defined on physical quantities, we have 
+Assuming we already have an inner product defined on physical quantities, which is usually 
+\begin{equation}
+    (A, B) = \expval*{A^* B},
+\end{equation}
+we have 
 \begin{equation}
     \ii \Omega =(A, \ii \mathcal{L} A)(A,A)^{-1},
 \end{equation}
@@ -137,10 +143,72 @@ where
     \mathcal{P} X=(A,A)^{-1}(X,A)A.
 \end{equation}
 Note that the convention of notation varies in the literature, and the two expressions of $K(t)$ in \eqref{eq:k-def}
-can both be seen. 
+can both be seen. We require $A$ to be ``slow'' variables (or satisfy other conditions that somehow separate it 
+from other degrees of freedom), or otherwise fluctuation is too strong for $A$ to be a useful quantity.
+
+\section{The exact MCT equation} 
 
 Now we go back to derive a theory about glass transition. 
-The derivation shown below is mainly based on \cite{mct2005}.
+The derivation shown below is mainly based on \cite{mct2005}, but the notation is from \cite{RevModPhys.76.785}.
+Note that the spacial translation symmetry gives 
+\begin{equation}
+    \expval*{\rho(0, 0) \rho(\vb*{r}, t)} = \frac{1}{V} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} 
+    \ee^{- \ii \vb*{k} \cdot \vb*{r}} \expval*{\rho_{-\vb*{k}}(0) \rho_{\vb*{k}}(t)},
+\end{equation}
+and since no valuable information is provided when $\abs*{\vb*{r}} \to 0$, we will work on the correlation function
+in the momentum space to separate different spatial scales.
+What we are going to do is to find a self-consistent equation about the density-density correlation function in 
+the small momentum region (or the large $\abs*{\vb*{r}}$ region). We denote the correlation function as 
+\begin{equation}
+    F(k, t)=\frac{1}{N}\left\langle\rho_{-\vb*{k}}(0) \rho_{\vb*{k}}(t)\right\rangle=\frac{1}{N} \sum_{i j}\left\langle \ee^{-\ii \vb*{k} \cdot \vb*{r}_{i}(0)} \ee^{\ii \vb*{k} \cdot \vb*{r}_{j}(t)}\right\rangle,
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        \rho_{\vb*{k}}(t) &= \int \dd[3]{\vb*{r}} \ee^{\ii \vb*{k} \cdot \vb*{r}} \rho(\vb*{r}, t) \\
+        &=\sum_{i} \int \dd[3]{\vb*{r}} \ee^{\ii \vb*{k} \cdot \vb*{r}} \delta\left(\vb*{r}-\vb*{r}_{i}(t)\right) \\
+        &=\sum_{i} \ee^{\ii \vb*{k} \cdot \vb*{r}_{i}(t)}.
+    \end{aligned}
+\end{equation}
+
+We are going to apply the Mori-Zwanzig formalism to $F(k, t)$. We need to find some slow variables
+and apply \eqref{eq:closed-form-a} to them to find their dynamics, and then we are able to find the dynamics 
+of $F(k, t)$. It can be easily noticed that since we are interested in the small $k$ region, the time derivative 
+\[
+    \dot{\rho}_{\vb*{k}} = \sum_i \frac{\ii \vb*{k} \cdot \vb*{p}_i}{m} \ee^{\ii \vb*{k} \cdot \vb*{r}_i }
+\]
+is also small, and therefore $\rho_{\vb*{k}}(t)$ is a slow variable. Then we also find that 
+\[
+    \ii \abs*{\vb*{k}} j_{\vb*{k}}^\text{L} = \ii \vb*{k} \cdot 
+    \underbrace{\sum_{i} \frac{\vb*{p}_i}{m} \ee^{\ii \vb*{k} \cdot \vb*{r}}}_{\vb*{j}_{\vb*{k}}}
+\]
+is a slow variable. So the slow variable set is 
+\begin{equation}
+    \vb{A} = \pmqty{\var{\rho_{\vb*{k}}} \\ j_{\vb*{k}}^\text{L}},  
+\end{equation}
+where 
+\begin{equation}
+    \var{\rho_{\vb*{k}}} = \rho_{\vb*{k}} - \expval*{\rho_{\vb*{k}}} 
+    = \sum_{i} \ee^{\ii \vb*{q} \cdot \vb*{r}_i} - (2\pi)^3 \rho \delta(\vb*{q}).
+\end{equation}
+
+Applying \eqref{eq:closed-form-a} to $\vb{A}$, we have 
+\[
+    \dot{\vb{A}}(t)= \ii \vb{\Omega} \vb{A}(t) - \int_{0}^{t} \dd{s} \vb{K}(s) \vb{A}(t-s)+ \vb{F}(t),
+\]
+and since 
+\[
+    \expval*{\vb{A} \vb{F}(t)} = 0, 
+\]
+which is a result in the Mori-Zwanzig formalism, we have 
+\begin{equation}
+    \dot{\vb{C}} = \ii \vb{\Omega} \vb{C}(t) - \int_{0}^{t} \dd{s} \vb{K}(s) \vb{C}(t-s),
+\end{equation}
+where we define 
+\begin{equation}
+    \vb{C}(t) = \expval*{\vb{A}^\dagger(0) \vb{A}(t)} = \pmqty{\left\langle\delta \rho_{-\vb*{q}} \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle\delta \rho_{-\vb*{q}} j_{\vb*{q}}^\text{L}(t)\right\rangle \\
+    \left\langle j_{-\vb*{q}}^\text{L} \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle j_{-\vb*{q}}^\text{L} j_{\vb*{q}}^\text{L}(t)\right\rangle}.
+\end{equation}
 
 
 Viscosity may be viewed as 

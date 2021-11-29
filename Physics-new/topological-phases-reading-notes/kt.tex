@@ -1,0 +1,501 @@
+\documentclass[hyperref, UTF8, a4paper]{ctexart}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\comment}{\paragraph{注记}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% prettyref setting
+\newrefformat{sec}{第\ref{#1}节}
+\newrefformat{note}{注\ref{#1}}
+\newrefformat{fig}{图\ref{#1}}
+\newrefformat{alg}{算法\ref{#1}}
+\renewcommand{\autoref}{\prettyref}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+\renewcommand{\algorithmcfname}{算法}
+% Python-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif:}{else:}{}
+\SetKwFor{For}{for}{:}{}
+\SetKwFor{While}{while}{:}{}
+\SetKwInput{KwData}{输入}
+\SetKwInput{KwResult}{输出}
+\SetArgSty{textnormal}
+
+\renewcommand{\emph}[1]{\textbf{#1}}
+\newcommand*{\concept}[1]{\underline{\textbf{#1}}}
+\newcommand*{\Ztwo}{$\mathbb{Z}_2$}
+
+\title{凝聚态体系中的拓扑}
+\author{吴晋渊}
+
+\begin{document}
+
+\maketitle
+
+一些系统处在的底流形具有非平凡的拓扑性质。依照定义，在重整化群下由拓扑导致的项并不会发生跑动。%（？存疑）
+
+\section{拓扑相变}
+
+\subsection{二维经典XY模型的KT相变}
+
+\subsubsection{二维经典XY模型的反常相变}
+
+考虑一个二维经典XY模型：
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \vb*{S}_i \cdot \vb*{S}_j,
+\end{equation}
+使用$\theta_i$表示每个格点的自旋指向，并且将自旋长度整合进$J$中，就有
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j).
+\end{equation}
+如果假定诸$\theta_i$在空间上变化不大，那么就有
+\[
+    H = - J \sum_{\pair{i, j}} \left( 1 - \frac{(\theta_i - \theta_j)^2}{2} \right).
+\]
+在高温下可以出现波长非常短的$\theta$涨落，因此此时相邻自旋彼此方向相反也是没有关系的，而低温下，只有长波涨落才能够保留下来，因此下面的操作都是在低温极限下得到的。
+设晶格常数为$a$，格点总数为$N$，则将上式粗粒化之后得到
+\begin{equation}
+    H = E_0 + \frac{J}{2} \int \dd[2]{\vb*{r}} (\grad{\theta})^2, \quad E_0 = 2 J N.
+    \label{eq:smooth-xy}
+\end{equation}
+\eqref{eq:smooth-xy}的鞍点近似满足二维平面上的拉普拉斯方程
+\begin{equation}
+    \laplacian{\theta} = 0.
+\end{equation}
+
+计算低温下的关联函数。我们有
+\[
+    \expval*{\vb*{S}(\vb*{r}) \cdot \vb*{S}(0)} = \expval*{\cos(\theta(0) - \theta(\vb*{r}))} = \Re \expval*{\ee^{\ii (\theta(0) - \theta(\vb*{r}))}} = \Re \exp(-\frac{1}{2} \expval*{(\theta(0) - \theta(\vb*{r}))^2}).
+\]
+二维下$\theta$的关联函数正比于$\ln r$，具体来说是
+\[
+    \expval*{\theta(\vb*{r}) \theta(0)} = \frac{1}{\beta J} \int_{\frac{1}{L}}^{\frac{1}{a}} \frac{\dd[2]{\vb*{k}}}{(2\pi)^2} \frac{\ee^{\ii \vb*{k} \cdot \vb*{r}}}{k^2} 
+    % = \frac{1}{2\pi \beta J} \ln(\frac{r}{a}),
+\]
+因此
+\begin{equation}
+    \expval*{\vb*{S}(\vb*{r}) \cdot \vb*{S}(0)} \sim \ee^{- \ln (r/a) / (2 \pi \beta J)} \sim \left(\frac{a}{r}\right)^{1/2\pi \beta J}.
+\end{equation}
+我们观察到低温下二维XY模型存在（准）长程序：$\theta$关联函数以对数方式衰减，而自旋关联函数则以幂律衰减。另一方面高温下二维XY模型中不存在任何长程关联。这暗示降低温度时存在一个相变。
+
+看起来这里有一个矛盾。Mermin–Wagner定理说，二维及以下的场论不能出现连续对称性的对称性自发破缺，因为此时无质量的Goldstone玻色子的格林函数将无法良好定义。
+二维经典XY模型是$O(2)$模型，具有连续的自旋旋转对称性，因此不应该出现对称性自发破缺，也无法定义序参量。
+因此其相变——如果有的话——只能够来自一个不同的机制。
+
+\subsubsection{拓扑激发}
+
+由于$\theta$是一个角度，它具有多值性，或者，等价地说，$\theta$允许的值形成了一个环，因此每一点的$\theta$的取值范围组成了一个拓扑非平庸的空间。
+整个场构型就是实空间到这个环的映射。
+
+如果我们讨论一个闭合回路上的$\theta$，那么此闭合回路上可能的场构型可以根据环的第一同伦群
+\[
+    \pi_1(S^1) = \mathbb{Z}
+\]
+分类，分类这些场构型的整数就是绕数。
+从比较直观的角度看，如果场构型中存在路径，其上的$\vb*{S}_i$首尾连成一个环（也即，场构型中有一个涡旋而这个环包围着涡旋），那么如果我们要求保留$\theta$的连续性，就必须允许它具有多值性，而一个闭合回路上的$\theta$只能走过整数圈，这个整数就是绕数。
+
+绕数实际上给出了闭合路径中涡旋的“强度”的定量表述。涡旋是场构型中的奇点%
+\footnote{
+    这是物理中少数奇点可以直接出现在场构型中并且占据主导地位的情况。这没有违反我们观察做的“一切都可导”的假设，因为此处的场构型是一个离散系统连续化之后得到的，而奇点来自场量的取值空间（而非底流形）的内禀的拓扑结构而不是函数性质不良好。
+    设$M$是底流形上的一个紧致子流形，考虑$M$上的场构型，如果$M$对应的场量取值空间的同伦群是非平凡的，并且$M$上的场构型对应一个非平凡的同伦群群元，那么当我们缩小$M$时$M$上的场构型始终对应一个非平凡的同伦群群元（缩小$M$等价于对$M$上的场构型做一个光滑的变形），那么当$M$缩成一个点（假定这是可以的）时我们发现这个点上的场值不能唯一确定，因此就出现了一个奇点。
+    奇点出现意味着这里不再能够用连续的场作为自由度，晶格变得重要起来。
+    因此，如果$M$上的场构型对应一个非平凡的同伦群群元，那么$M$之内\emph{一定}有奇点。同伦群的群元通常表示了这个奇点的“强度”，称为\concept{拓扑荷}。
+}%
+，设$C$是闭合路径，设$n$为$C$中的涡旋数目（逆时针涡旋（一般直接称为涡旋）数目减去顺时针涡旋即\concept{反涡旋}的数目），$C_i$为围绕着第$i$个涡旋的小围道，由于$\theta$是调和场显然有
+\[
+    \oint_{C \cup ( \cup_i C_i)} \dd{\vb*{r}} \cdot \grad{\theta} = 0,
+\]
+而按照涡旋的定义环绕涡旋计算$\grad{\theta}$的线积分就得到$2\pi$，于是
+\begin{equation}
+    \oint \dd{\vb*{r}} \cdot \grad{\theta} = 2 \pi n.
+\end{equation}
+因此我们发现一个围道$C$上$\theta$的绕数不是别的，就是$C$中的净涡旋数目。
+% TODO:涡旋可以拆分
+
+如果要求$\theta$具有单值性，就必须做适当的割线：如果有偶数个涡旋则应当将它们两两配对并将一对涡旋之间的连线上的点割除，如果有奇数个涡旋则还应该作一条通向无穷远点的割线。
+等价地看，我们认为这些割线上有等效的冲击载荷，使得$\laplacian{\theta}$在这些割线上为某个$\delta$函数而不为零。
+
+设系统中的涡旋的总绕数为$n$，总是可以作一个闭合曲线将它们全部包起来，在远离此闭合曲线处有
+\[
+    2 \pi n \sim 2 \pi r \abs*{\grad{\theta}},
+\]
+从而
+\[
+    \abs*{\grad{\theta}} \sim \frac{n}{r}.
+\]
+因此涡旋实际上是相当非局域的激发，衰减是很慢的。
+代入哈密顿量，有
+\[
+    E \sim E_\text{core} + \frac{J}{2} 2 \pi \int r \dd{r} \left( \frac{n}{r} \right)^2 = E_\text{core} + \pi J n^2 \int \dd{r} \ln r,
+\]
+其中$E_\text{core}$是闭合回路内部的能量，在足够靠近涡旋处\eqref{eq:smooth-xy}可能已经失效，因此对这部分“核心处的”能量我们不做解析计算。
+能量同时出现了红外发散和紫外发散。考虑到坐标尺度的上下界分别被系统尺寸和晶格常数截断，有
+\begin{equation}
+    E \sim E_\text{core} + \pi J n^2 \ln \frac{L}{a}.
+\end{equation}
+因此在一个比较大的系统中，即使单个涡旋也具有很大能量。此外，$n^2$也暗示涡旋之间有相互作用——我们会看到实际上这就是库伦相互作用。
+于是单涡旋构型的那部分配分函数为
+\begin{equation}
+    Z_1 \sim \left( \frac{L}{a} \right)^2 \exp(-\beta E_\text{core} - \pi \beta J \ln \left( \frac{L}{a} \right)),
+\end{equation}
+前面的因子$(L/a)^2$来自单涡旋构型的数目，即来自熵对自由能的贡献。在低温极限下能量对自由能的贡献占据主导，在上式中$\ee$指数部分被指数压低，即单个涡旋几乎不可能出现。
+此时如果有涡旋出现，则涡旋倾向于正反配对，因为设有两个涡旋，一正一反，连接它们的矢量为$\vb*{d}$，由于单个涡旋远处的$\theta$满足
+\[
+    \grad{\theta} = \frac{\vb*{e}_\theta}{r},
+\]
+有两个涡旋时，在远离涡旋的区域有
+\[
+    \grad{\theta} \approx \eval{\frac{\vb*{e}_\theta}{r}}_{\vb*{r}+\vb*{d}/2} - \eval{\frac{\vb*{e}_\theta}{r}}_{\vb*{r}-\vb*{d}/2} = - \vb*{e}_\theta \frac{\vb*{d} \cdot \vb*{e}_r}{r^2}, 
+\]
+于是能量无需$L$截断，有
+\[
+    E = E_\text{core} + \frac{J}{2} \int \dd[2]{\vb*{r}} (\grad{\theta})^2 \sim E_\text{core} + \text{const} \times d^2,
+\]
+我们发现两个涡旋之间有正比于它们之间的距离的吸引力。
+另一方面高温下熵占主导，有
+\[
+    Z_1 \sim \left( \frac{L}{a} \right)^{2-\pi \beta J},
+\]
+由于$\beta$很小，上式很大，即单个涡旋的构型是可能出现的。这暗示，\eqref{eq:smooth-xy}的相变很可能和涡旋的行为有关：在低温相中，涡旋成对出现，如同“涡旋偶极子”，而高温下涡旋可以自由移动，如同“涡旋等离子体，”两种状态的转变点就是一个相变点。
+这个相变点称为\concept{KT相变}，的确没有任何对称性自发破缺伴随着它，也没有明确的对称性相关的序参量。
+% TODO:无穷阶相变
+
+\subsubsection{涡旋的有效理论}
+
+% TODO：这一段来自Altland
+由于涡旋是奇点，最好首先将涡旋涨落和不会产生奇点的涨落分解开来，并获得关于涡旋的一个有效理论。
+设$\phi$是$\grad{\theta}$的无旋部分的势，即
+\[
+    \grad{\theta} = \grad{\phi} + \vb*{u}_\text{vor},
+\]
+由于$\phi$在平面上处处有定义，它不能描述涡旋涨落。而由于
+\[
+    \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot (\curl{\grad{\theta}}) = \int \dd{\vb*{l}} \cdot \grad{\theta} = 2\pi n, 
+\]
+$\vb*{u}_\text{vor}$应该满足
+\[
+    \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot (\curl{\vb*{u}_\text{vor}}) = 2 \pi n.
+\]
+容易发现只需要令
+\[
+    \vb*{u}_\text{vor} = - \curl{(\psi \vb*{e}_z)}, \quad \laplacian{\psi} = 2\pi \sum_i n_i \delta(\vb*{r} - \vb*{r}_i),
+\]
+就有
+\[
+    \begin{aligned}
+        \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot (\curl{\vb*{u}_\text{vor}}) &= - \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot \curl{(\curl{(\psi \vb*{e}_z)})} \\
+        &= - \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot \grad{(\div{(\psi \vb*{e}_z)})} + \int \dd[2]{\vb*{r}} \vb*{e}_z \cdot \laplacian (\psi \vb*{e}_z) \\
+        &= \int \dd[2]{\vb*{r}} \laplacian{\psi} = 2 \pi n,
+    \end{aligned}
+\]
+正好给出正确的结果。因此可以这样做分解：
+\begin{equation}
+    \grad{\theta} = \grad{\phi} - \curl{(\psi \vb*{e}_z)}, \quad \laplacian{\psi} = 2\pi \sum_i n_i \delta(\vb*{r} - \vb*{r}_i),
+\end{equation}
+代入\eqref{eq:smooth-xy}得到
+\[
+    E = \frac{J}{2} \int \dd[2]{\vb*{r}} ((\grad{\phi})^2 + (\curl{(\psi \vb*{e}_z)})^2 - 2 (\grad{\phi}) \cdot (\curl{\psi \vb*{e}_z})).
+\]
+通过分部积分可以发现第三项为零，而由于以上所有$\grad$算符都是平面上的，应有
+\[
+    \begin{aligned}
+        \int \dd[2]{\vb*{r}} (\curl{\psi \vb*{e}_z}) &= \int \dd[2]{\vb*{r}} (\grad{\psi})^2 \\
+        &= \int \dd{l} \psi \vb*{n} \cdot \grad{\psi}  - \int \dd[2]{\vb*{r}} \psi \laplacian{\psi} \\
+        &= \int \dd{l} \psi \vb*{n} \cdot \grad{\psi} - 2\pi \sum_{i} n_i \psi(\vb*{r}_i).
+    \end{aligned}
+\]
+最后一行的第一项积分在三维情况下可以直接忽略，但是二维情况下它在远离所有涡旋时给出
+\[
+    \int \dd{l} \psi \vb*{n} \cdot \grad{\psi} \sim 2\pi r \sum_i \ln \abs*{\vb*{r} - \vb*{r}_i} \sum_j n_j \frac{1}{\abs*{\vb*{r} - \vb*{r}_j}} \sim \ln L (\sum_i n_i)^2,
+\]
+其中$L$是系统尺寸的尺度。在热力学极限下这一项会增长到无穷大而将对应构型的概率压低，除非$\sum_i n_i$为零。
+因此可以忽略这一项，而代之以“系统中全体涡旋总绕数之和为零”的约束。
+对第二项，由于$\psi$服从二维泊松方程，可以直接写出它关于涡旋的形式：
+\begin{equation}
+    \psi(\vb*{r}) = - \sum_i n_i \ln \frac{1}{\abs*{\vb*{r} - \vb*{r}_i}} ,
+\end{equation}
+于是能量可以写成
+\[
+    E = E_\text{core} + \frac{J}{2} \int \dd[2]{\vb*{r}} (\grad{\phi})^2 + \pi J \sum_{i, j} n_i n_j \ln \frac{1}{\abs*{\vb*{r}_i - \vb*{r}_j}}.
+\]
+在$\vb*{r}_i = \vb*{r}_j$时出现发散，但那是因为在非常接近涡旋时\eqref{eq:smooth-xy}已经失效了，于是可以将$\vb*{r}_i = \vb*{r}_j$的项单独收集出来，最终得到
+\begin{equation}
+    E = E_\text{core} + \frac{J}{2} \int \dd[2]{\vb*{r}} (\grad{\phi})^2 - 4 \pi^2 J \sum_{i < j} n_i n_j C(\vb*{r}_i - \vb*{r}_j), \quad C(\vb*{r}_i - \vb*{r}_j) = \frac{\ln \abs*{\vb*{r}_i - \vb*{r}_j}}{2\pi}. 
+    \label{eq:energy-decoupled}
+\end{equation}
+
+% TODO:将作用量和能量之间的关系写下来
+
+可以看到\eqref{eq:energy-decoupled}中有两个彼此之间完全没有相互作用的涨落模式，其一是$\phi$描述的连续、光滑的涨落，它实际上就是自旋波；其二是涡旋，涡旋和涡旋之间的相互作用是二维库伦相互作用。
+前者不会产生任何相变，因此如果系统中有相变，只能来自后者。接下来将只讨论后者对应的那部分配分函数，它是
+\[
+    Z_\text{vor} = \sum_{\{\vb*{r}_i\}} \frac{1}{N_1 ! N_2 ! \cdots} \delta(\sum_i n_i) \exp( - \beta E_\text{core} + \beta 4 \pi^2 J \sum_{i < j} n_i n_j C(\vb*{r}_i - \vb*{r}_j)),
+\]
+其中$N_k$是带有绕数$k$的涡旋的个数。由于$k$个拓扑荷都落在一点的场构型数目远小于$N$个拓扑荷分别落在$N$个涡旋上的场构型数目，我们假定所有涡旋的绕数或者是$1$或者是$-1$，那么 % TODO:这样做的合法性
+\[
+    Z_\text{vor} = \sum_{N=0}^\infty \frac{1}{(N!)^2} \int \prod_{i=1}^{2N} \dd[2]{\vb*{r}_i} \exp( - \beta E_\text{core} + 4 \pi^2 \beta J \sum_{i < j} \sigma_i \sigma_j C(\vb*{r}_i - \vb*{r}_j)),
+\]
+其中$N$为绕数为$1$的涡旋的个数，$\sigma_i$取值为$\pm 1$且和为零。大体上，$E_\text{core}$正比于$2N$，为方便起见，下面我们重新定义参数：
+\[
+    y_0^{2N} = \ee^{-\beta E_\text{core}}, \quad K = \beta J,
+\]
+就有
+\begin{equation}
+    Z_\text{vor} = \sum_{N=0}^\infty \frac{y_0^{2N}}{(N!)^2} \int \prod_{i=1}^{2N} \dd[2]{\vb*{r}_i} \exp(4 \pi^2 K \sum_{i < j} \sigma_i \sigma_j C(\vb*{r}_i - \vb*{r}_j)),
+    \label{eq:coulomb-gas}
+\end{equation}
+这里为方便起见我们直接假定$1 \leq i \leq N$时$\sigma_i=1$而其它时候$\sigma_i=-1$。
+这个模型实际上给出了一个电中性、粒子数不定的二维库伦相互作用气体，而$y_0$实际上对应涡旋的化学势，\eqref{eq:coulomb-gas}是一个巨正则系综的配分函数。
+从这个物理意义也可以看到可能的相变机制：在高温下此库仑相互作用气体为一等离子体，而低温下正的涡旋和负的涡旋彼此吸引，形成涡旋偶极子；这两者之间的转变是一个相变。
+
+\subsubsection{与Sine-Gordon模型的等价性}
+
+% TODO:来自David Tong的讲义
+% http://zimp.zju.edu.cn/~yizhou/2015-Fall/RG-BKT.pdf
+
+\eqref{eq:coulomb-gas}涉及共计$2N$个变量，不便于做重整化群计算。本节将指出它实际上对应著名的Sine-Gordon模型。
+为了方便讨论，以及将难以解析处理的\eqref{eq:coulomb-gas}中的对不同我选数目的求和改写得容易一些，我们暂时将空间格点化，从而每个格点上有$\sigma_i = 0, \pm 1$，于是把\eqref{eq:coulomb-gas}差一个常数因子地写成
+\[
+    Z_\text{vor} = \sum_{\{\sigma_i\}} \exp(4 \pi^2 K \sum_{i < j} \sigma_i \sigma_j C(\vb*{r}_i - \vb*{r}_j) + 2 \ln y_0 \sum_i \sigma_i^2),
+\]
+下面我们将采用这样的方法：引入一个自由标量场$\phi$，假定涡旋之间的“库仑力”由这个场传递，然后积掉原有的涡旋自由度而引入$\phi$的相互作用，从而最后得到关于$\phi$的一个有效理论。
+我们有
+\[
+    \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \left( \frac{1}{2} (\grad{\phi})^2 + f(\vb*{r}) \phi(\vb*{r}) \right) ) \propto \exp(\frac{1}{4\pi} \int \dd[2]{\vb*{x}} \int \dd[2]{\vb*{y}} f(\vb*{x}) \ln \abs*{\vb*{x} - \vb*{y}} f(\vb*{y})),
+\]
+取
+\[
+    f(\vb*{r}) = 2 \pi \sqrt{K} \sum_i \delta(\vb*{r} - \vb*{r}_i) \sigma_i,
+\]
+就得到
+\[
+    \exp(4 \pi^2 K \sum_{i < j} \sigma_i \sigma_j C(\vb*{r}_i - \vb*{r}_j)) = \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2 + 2\ii \pi \sqrt{K} \sum_i \sigma_i \phi(\vb*{r}_i) ).
+\]
+于是我们有
+\[
+    \begin{aligned}
+        Z_\text{vor} &= \sum_{\{\sigma_i\}} \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2 + 2\ii \pi \sqrt{K} \sum_i \sigma_i \phi(\vb*{r}_i) + 2 \ln y_0 \sum_i \sigma_i^2) \\
+        &= \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2) \prod_i \sum_{\sigma_i} \exp( 2\ii \pi \sqrt{K} \sigma_i \phi(\vb*{r}_i) + 2 \ln y_0  \sigma_i^2) \\
+        &= \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2) \prod_i \left( 1 + y_0^2 \cos (2 \pi \sqrt{K} \phi(\vb*{r}_i)) \right) \\
+        &\approx \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2) \exp(\sum_i y_0^2 \cos(2\pi \sqrt{K} \phi(\vb*{r}_i) )) \\
+        &= \int \fd{\phi} \exp(- \int \dd[2]{\vb*{r}} \frac{1}{2} (\grad{\phi})^2) \exp(\frac{y_0^2}{a^2} \int \dd[d]{\vb*{r}} \cos(2\pi \sqrt{K} \phi(\vb*{r}) )),
+    \end{aligned}
+\]
+由于$y_0 \sim \ee^{- \beta E_\text{core}}$，而低温情况下$\beta$很大，且由于涡旋本身的能量较大， % TODO
+可以认为$y_0$很小，于是倒数第二个等号成立；最后一个等号从离散化的空间回到了真实空间。
+重新定义参数，就得到Sine-Gordon模型
+\begin{equation}
+    F = \int \dd[2]{\vb*{r}} \left( \frac{1}{2} (\grad{\phi})^2 - \lambda \cos(\beta \phi) \right),
+    \label{eq:sine-gordon}
+\end{equation}
+其中$\lambda$是一个小量。
+
+\subsubsection{重整化群计算}
+
+本节计算\eqref{eq:sine-gordon}的重整化群流，从而判断有无相变。
+设动量截断为$\Lambda$，做分解
+\[
+    \phi = \phi^< + \phi^>,
+\]
+其中$\phi^<$包含了$\Lambda/\zeta$以下的动量模式而$\phi^>$包含了$\Lambda/\zeta$到$\Lambda$的动量模式。自由能的自由部分为
+\[
+    F_0 = \frac{1}{2} \int \dd[2]{\vb*{r}} (\grad{\phi})^2,
+\]
+相互作用部分为
+\[
+    F_I = - \lambda \int \dd[2]{\vb*{r}} \cos(\beta \phi).
+\]
+积掉高能自由度得到的有效自由能由
+\[
+    F'[\phi^<] = F_0[\phi^<] - \ln \expval*{\ee^{-F_I[\phi^< +  \phi^>]}}_>
+\]
+给出，实空间关联函数为
+\[
+    \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{y})}_> = \int^\Lambda_{\Lambda/\zeta} \frac{\dd[2]{\vb*{k}}}{(2\pi)^2} \frac{\ee^{\ii \vb*{k} \cdot (\vb*{x} - \vb*{y})}}{k^2},
+\]
+特别的，
+\[
+    \expval*{\phi^>(\vb*{r}) \phi^>(\vb*{r})}_> = \int_{\Lambda/\zeta}^\Lambda \frac{\dd[2]{\vb*{k}}}{(2\pi)^2} \frac{1}{k^2} = \frac{1}{2\pi} \ln \zeta.
+\]
+且只有$\abs*{\vb*{x} - \vb*{y}}$在大约$1/\Lambda$量级以内时关联函数才能够较明显的非零值。
+
+我们仅仅计算前两阶修正，即取
+\[
+    \begin{aligned}
+        F'[\phi^<] &= F_0[\phi^<] - \ln \expval*{\ee^{-F_I[\phi^< +  \phi^>]}}_> \\
+        &\approx F_0[\phi^<] - \ln(1 - \expval*{F_I[\phi^<+\phi^>]}_> + \frac{1}{2} \expval*{F_I[\phi^<+\phi^>]^2}_>) \\
+        &\approx F_0[\phi^<] + \expval*{F_I[\phi^<+\phi^>]}_> - \frac{1}{2} \langle \expval*{F_I[\phi^<+\phi^>]^2} \rangle_>,
+    \end{aligned}
+\]
+其中第三项不计算任何非连通图。
+一阶修正为
+\[
+    \begin{aligned}
+        \expval*{F_I[\phi^< + \phi^>]}_> &= - \lambda \int \dd[2]{\vb*{r}} \expval*{\cos(\beta (\phi^< + \phi^>))}_> \\
+        &= - \lambda \int \dd[2]{\vb*{r}} \frac{1}{2} \sum_{\sigma=\pm 1} \ee^{\ii \sigma \beta \phi^<} \expval*{\ee^{\ii \sigma \beta \phi^>}}_> \\
+        &= - \lambda \int \dd[2]{\vb*{r}} \frac{1}{2} \sum_{\sigma=\pm 1} \ee^{\ii \sigma \beta \phi^<} \ee^{- \frac{1}{2} \beta^2 \expval*{\phi^> \phi^>} } \\
+        &= - \lambda \int \dd[2]{\vb*{r}} \cos(\beta \phi^<) \ee^{- \frac{1}{4\pi} \beta^2 \ln \zeta} \\
+        &= - \lambda \zeta^{- \beta^2/ 4 \pi} \int \dd[2]{\vb*{r}} \cos(\beta \phi^<) .
+    \end{aligned}
+\]
+二阶修正为
+\[
+    \begin{aligned}
+        &\quad - \frac{1}{2} (\expval*{F_I[\phi^<+\phi^>]^2}_> - \expval*{F_I[\phi^<+\phi^>]}_>^2) \\
+        &= - \frac{\lambda^2}{2} \int \dd[2]{\vb*{x}} \int \dd[2]{\vb*{y}} ( \expval*{\cos(\beta (\phi^>(\vb*{x}) + \phi^<(\vb*{x}))) \cos(\beta (\phi^>(\vb*{y}) + \phi^<(\vb*{y})))}_> \\
+        &\quad - \expval*{\cos(\beta (\phi^>(\vb*{x}) + \phi^<(\vb*{x})))}_> \expval*{\cos(\beta (\phi^>(\vb*{y}) + \phi^<(\vb*{y})))}_> ),
+    \end{aligned}
+\]
+其中
+\[
+    \begin{aligned}
+        &\quad \expval*{\cos(\beta (\phi^>(\vb*{x}) + \phi^<(\vb*{x}))) \cos(\beta (\phi^>(\vb*{y}) + \phi^<(\vb*{y})))}_> \\
+        &= \frac{1}{4} \sum_{\sigma=\pm 1} (\ee^{\ii \sigma \beta (\phi^<(\vb*{x}) + \phi^<(\vb*{y}))} \expval*{\ee^{\ii \sigma \beta (\phi^>(\vb*{x}) + \phi^>(\vb*{y}))}}_> + \ee^{\ii \sigma \beta (\phi^<(\vb*{x}) - \phi^<(\vb*{y}))} \expval*{\ee^{\ii \sigma \beta (\phi^>(\vb*{x}) - \phi^>(\vb*{y}))}}_>) \\
+        &= \frac{1}{2} \left( \cos(\beta (\phi^<(\vb*{x}) + \phi^<(\vb*{y}))) \ee^{- \frac{\beta^2}{2} \expval*{(\phi^>(\vb*{x}) + \phi^>(\vb*{y}))^2}_>} + \cos(\beta (\phi^<(\vb*{x}) - \phi^<(\vb*{y}))) \ee^{- \frac{\beta^2}{2} \expval*{(\phi^>(\vb*{x}) - \phi^>(\vb*{y}))^2}_>} \right),
+    \end{aligned}
+\]
+而
+\[
+    \begin{aligned}
+        &\quad \expval*{\cos(\beta (\phi^<(\vb*{x}) + \phi^>(\vb*{x})))} \expval*{\cos(\beta (\phi^<(\vb*{y}) + \phi^>(\vb*{y})))} \\
+        &= \frac{1}{4} \sum_{\sigma_1, \sigma_2 = \pm 1} \expval*{\ee^{\ii \sigma_1 \beta (\phi^<(\vb*{x}) + \phi^>(\vb*{x}))}}_> \expval*{\ee^{\ii \sigma_2 \beta (\phi^<(\vb*{y}) + \phi^>(\vb*{y}))}}_> \\
+        &= \frac{1}{4} \sum_{\sigma_1=\pm 1} \ee^{\ii \sigma_1 \beta \phi^<(\vb*{x})} \sum_{\sigma_2 = \pm 1} \ee^{\ii \sigma_2 \beta \phi^<(\vb*{y})} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{x})}_>} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{y}) \phi^>(\vb*{y})}_>} \\
+        &= \cos(\beta \phi^<(\vb*{x})) \cos(\beta \phi^<(\vb*{y})) \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{x})}_>} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{y}) \phi^>(\vb*{y})}_>} \\
+        &= \frac{1}{2} (\cos(\beta (\phi^<(\vb*{x}) + \phi^<(\vb*{y}))) + \cos(\beta (\phi^<(\vb*{x}) - \phi^<(\vb*{y})))) \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{x})}_>} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{y}) \phi^>(\vb*{y})}_>},
+    \end{aligned}
+\]
+于是
+\[
+    \begin{aligned}
+        &\quad - \frac{1}{2} (\expval*{F_I[\phi^<+\phi^>]^2}_> - \expval*{F_I[\phi^<+\phi^>]}_>^2) \\
+        &= - \frac{\lambda^2}{4} \int \dd[2]{\vb*{x}} \dd[2]{\vb*{y}} \bigl( \cos(\beta (\phi^<(\vb*{x}) + \phi^<(\vb*{y}))) (\ee^{- \frac{\beta^2}{2} (\expval*{(\phi^>(\vb*{x}) + \phi^>(\vb*{y}))^2}_>} - \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{x})}_>} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{y}) \phi^>(\vb*{y})}_>}) \\
+        &\quad + \cos(\beta (\phi^<(\vb*{x}) - \phi^<(\vb*{y}))) (\ee^{- \frac{\beta^2}{2} \expval*{(\phi^>(\vb*{x}) - \phi^>(\vb*{y}))^2}_>} - \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{x}) \phi^>(\vb*{x})}_>} \ee^{- \frac{\beta^2}{2} \expval*{\phi^>(\vb*{y}) \phi^>(\vb*{y})}_>})
+        \bigr) \\
+        &= - \frac{\lambda^2}{4} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{x}} \dd[2]{\vb*{y}} (\cos(\beta(\phi^<(\vb*{x}) + \phi^<(\vb*{y}))) (\ee^{- \beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{y})}} - 1) \\
+        &\quad + \cos(\beta(\phi^<(\vb*{x}) - \phi^<(\vb*{y}))) (\ee^{ \beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{y})}} - 1)).
+    \end{aligned}
+\]
+由于$\expval*{\phi(\vb*{x}) \phi(\vb*{y})}_>$只有在短距离才有非零值，设$\vb*{y} = \vb*{x} + \vb*{u}$，上式可以写成
+\[
+    \begin{aligned}
+        &\quad - \frac{1}{2} (\expval*{F_I[\phi^<+\phi^>]^2}_> - \expval*{F_I[\phi^<+\phi^>]}_>^2) \\
+        &= - \frac{\lambda^2}{4} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{x}} \dd[2]{\vb*{u}} (\cos(\beta(\phi^<(\vb*{x}) + \phi^<(\vb*{x}+\vb*{u}))) (\ee^{- \beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{x}+\vb*{u})}} - 1) \\
+        &\quad + \cos(\beta(\phi^<(\vb*{x}) - \phi^<(\vb*{x}+\vb*{u}))) (\ee^{ \beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{x}+\vb*{u})}} - 1)) \\
+        &\approx - \frac{\lambda^2}{4} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{x}} \cos(2 \beta \phi^<(\vb*{x})) \int \dd[2]{\vb*{u}} (\ee^{- \beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{x}+\vb*{u})}} - 1) \\
+        &\quad - \frac{\lambda^2}{4} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{x}} \int \dd[2]{\vb*{u}} (1 - \frac{1}{2} \beta^2 (\grad{\phi}^< \cdot \vb*{u})^2) (\ee^{\beta^2 \expval*{\phi^<(\vb*{x}) \phi^<(\vb*{x}+\vb*{u})}} - 1)
+    \end{aligned}
+\]
+最后一步对第一项可能不适用，但这无关紧要，因为我们只关心对$\cos(\beta \phi)$的修正而不关心非局域的项。
+由对称性分析，第二项的主要贡献应该可以写成$u^2 (\grad{\phi})^2$，于是引入辅助函数$a_1(\beta, \zeta)$和$a_2(\beta, \zeta)$，有
+\[
+    \begin{aligned}
+        &\quad - \frac{1}{2} (\expval*{F_I[\phi^<+\phi^>]^2}_> - \expval*{F_I[\phi^<+\phi^>]}_>^2) \\
+        &= \frac{\lambda^2}{2} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{x}} \cos(2 \beta \phi^<(\vb*{x})) a_1(\beta, \zeta) + \frac{\lambda^2}{2} \zeta^{- \frac{\beta^2}{2 \pi}} \int \dd[2]{\vb*{r}} (\grad{\phi}^<)^2 a_2(\beta, \zeta)
+    \end{aligned}
+\]
+其中$a_1, a_2>0$，因为关联函数在$1/\Lambda$内是大于零的。对$a_2$可以确定它随着$\zeta$增大而递增，在$\beta=0$处为零。
+在后续的计算中这两个函数的具体形式没有太多用处。
+第一项，即$\cos(2 \beta \phi^<)$项，不包含在\eqref{eq:sine-gordon}中，实际上按照获得Sine-Gordon模型的方法可以发现这一项对应着绕数为$\pm 2$的涡旋。
+由于我们认为绕数绝对值多余$1$的系统构型不重要，可以直接略去这一项。
+因此有效理论中，参数$\beta$和$\lambda$的修正为
+\[
+    - \lambda' = - \lambda \zeta^{- \frac{\beta^2}{4\pi}}, \quad \beta' = \beta.
+\]
+其余需要做的修正包括标度变换；需要注意的是$(\grad{\phi})^2$项的系数也出现了一个修正，为
+\[
+    \frac{1}{2} (\grad{\phi})^2 \longrightarrow \frac{1}{2} (1 + \lambda'^2) (\grad{\phi})^2,
+\]
+因此还需要对$\phi$的值也做一个标度变换。正确的标度变换为
+\[
+    \vb*{r}' = \frac{\vb*{r}}{\zeta}, \quad \phi'(\vb*{x}') = \sqrt{1 + \lambda'^2 a_2(\beta, \zeta)} \phi(\vb*{x}),
+\]
+参数的变换方程为
+\[
+    \lambda(\zeta) = \zeta^2 \times \lambda(0) \zeta^{-\frac{\beta^2}{4\pi}}, \quad \beta(\zeta) = \frac{\beta(0)}{\sqrt{1 + \lambda'^2 a_2(\beta, \zeta)}} = (1 - \frac{1}{2} \lambda'^2 a_2) \beta(0),
+\]
+在这里我们始终假定$\lambda$很小，从而微扰论适用。求导即得到$\beta$函数：
+\[
+    \dv{\lambda}{\ln \zeta} = \left( 2 - \frac{\beta^2}{4\pi} \right) \lambda, \quad \dv{\beta}{\ln \zeta} = F \beta^3 \lambda^2,
+\]
+其中$F$是一个始终大于零的函数，它大体上满足
+\[
+    \begin{aligned}
+        F &\sim \int \dd[2]{\vb*{u}} u^2 (\ee^{\beta^2 \expval*{\phi^<(0) \phi^<(\vb*{u})}_<} - 1) \\
+        &= \int \dd[2]{\vb*{u}} u^2 \beta^2 \expval*{\phi^<(0) \phi^<(\vb*{u})}_< \sim A \beta^2,
+    \end{aligned}
+\]
+其中$A$大体上是一个常数。由于$\zeta$非常接近$1$，的确可以把关联函数当成小量处理。
+于是重整化群流方程为（重新定义了$A$，它的具体值也不重要）：
+\begin{equation}
+    \dv{\lambda}{\ln \zeta} = \left( 2 - \frac{\beta^2}{4\pi} \right) \lambda, \quad \dv{\beta^2}{\ln \zeta} = A \beta^6 \lambda^2.
+\end{equation}
+
+% TODO：最后一段来自Alexander O. Gogolin, Alexander A. Nersesyan, Alexei M. Tsvelik - Bosonization and strongly correlated systems-Cambridge University Press (1998)和David Tong给出的次数是不同的，一个是三次一个是五次
+
+可以看到一个最为明显的不动点$\beta^2=8 \pi, \lambda=0$，在它左边，重整化群流将我们带离$\lambda=0$直线，一路走向无穷远处；在它右边，重整化群流将我们带向$\lambda=0$处，即一整条射线都是不动点。
+
+计算可得前一种情况对应指数衰减的关联函数而后一种情况对应幂率衰减的关联函数，两者的交界处即$\lambda=0, \beta^2=8\pi$点为相变点。
+
+\section{自旋链中的拓扑项}
+
+
+
+% TODO:瞬子；瞬子是时空上的场构型，因此无所谓“瞬子的时间演化”
+
+% 参考文献：http://www.mit.edu/~levitov/8.334/notes/XYnotes1.pdf
+% Phase Transitions and Collective Phenomena https://www.tcm.phy.cam.ac.uk/~bds10/phase.html
+
+\section{任意子}
+
+
+
+\end{document}
