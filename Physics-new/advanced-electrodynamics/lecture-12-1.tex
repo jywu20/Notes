@@ -1,0 +1,275 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Diffraction and Scattering in Electrodynamics by Prof. Kun Din}
+\author{Jinyuan Wu}
+\date{December 1, 2021}
+
+\begin{document}
+
+\maketitle
+
+As was said in \href{lecture-11-24.pdf}{the previous lecture}, there is no rigid distinction between  
+scattering and diffraction. We can say scattering reflects the particle nature of light, while 
+diffraction reflects the wave nature of light, but scattering can be derived from the ``medium in 
+light'' picture, which utilizes Maxwell equations about \emph{waves}, while diffraction involves 
+things like aperture, i.e. boundary conditions, which may be seen as scattering. 
+
+In \href{lecture-11-24.pdf}{the previous lecture} we derived scattering, absorption and extinction 
+cross sections, the optical theorem from the conservation of energy, and we also discussed scattering 
+and absorption efficiency. We discussed the geometrical optics.
+
+\section{Mie scattering}
+
+\begin{figure}
+    \centering
+    \input{11-24-figures/mie.tex}
+    \caption{Mie scattering}
+\end{figure}
+
+We continue the discussion on Mie scattering.
+\concept{Mie scattering} is among few examples that can be solved exactly. It studies a sphere made of 
+dielectric. The scattered fields at infinity are expanded using spherical functions:
+\begin{equation}
+    \vb*{E}_\text{s} = \sum_{n=1}^\infty E_n (\ii a_n \vb*{N}^{(3)}_{e1n} - b_n \vb*{M}^{(3)}_{o1n}), \quad 
+    \vb*{H}_\text{s} = \frac{k}{\omega \mu} \sum_{n=1}^\infty E_n (\ii b_n \vb*{N}^{(3)}_{o1n} + a_n \vb*{M}^{(3)}_{e1n}).
+    \label{eq:scattered-beam}
+\end{equation}
+The coefficients $a_n$ and $b_n$ are called \concept{Mie coefficients}. We will find that the $a_n$ coefficients
+give the response of electric $n$-poles while the $b_n$ coefficients give the response of magnetic $n$-poles.
+The input light beam is described by 
+\begin{equation}
+    \vb*{E}_\text{i} = E_0 \sum_{n=1}^\infty \ii^n \frac{2n+1}{n(n+1)} (\vb*{M}^{(1)}).
+    \label{eq:input-beam}
+\end{equation}
+We label the electric and magnetic fields inside the sphere as $\vb*{E}_1$ and $\vb*{B}_1$, respectively.
+
+We introduce several notations. First we introduce the Legendre polynomials
+\begin{equation}
+    \legpoly^m_n(x) = (1 - x)^{m/2} \dv[m]{\legpoly_n(x)}{x}.
+\end{equation} 
+Note that Jackson, Zangwill and Mathematica add an additional $(-1)^m$ factor to the definition.
+Furthermore we define 
+\begin{equation}
+    \pi_n(\cos \theta) = \frac{\legpoly_n(\cos \theta)}{\sin \theta}, \quad 
+    \tau_n(\cos \theta) = \dv{\legpoly_n (\cos \theta)}{\theta}.
+\end{equation}
+We have several useful formulae about these functions. First are recurrence formulae:
+\begin{equation}
+    \pi_n(\nu) = \frac{2n-1}{n-1} \nu \pi_{n-1}(\nu) - \frac{n}{n-1} \pi_{n-2}(\nu),
+\end{equation}
+\begin{equation}
+    \tau_n(\nu) = n \nu \pi_n(\nu) - (n+1) \pi_{n-1}(\nu),
+\end{equation}
+and 
+\begin{equation}
+    \pi_0 = 0, \quad \pi_1 = 1.
+\end{equation}
+We also have 
+\begin{equation}
+    \pi_n(-\nu) = (-1)^{n-1} \pi_n(\nu), \quad \tau_n(-\nu) = (-1)^n \tau_n(\nu).
+\end{equation}
+The orthogonality relations are 
+\begin{equation}
+    \int_0^\pi \sin \theta \dd{\theta} (\tau_n + \pi_n) (\tau_m + \pi_m) = 0, \quad 
+    \int_0^\pi \sin \theta \dd{\theta}
+\end{equation}
+
+We compare \eqref{eq:input-beam} and \eqref{eq:scattered-beam} on the $r=a$ surface. 
+The boundary conditions are 
+\[
+    (\vb*{E}_\text{i} + \vb*{E}_\text{s} - \vb*{E}_1) \times \vu*{e}_r = 0, \quad 
+    (\vb*{H}_\text{i} + \vb*{H}_\text{s} - \vb*{H}_1) \times \vu*{e}_r = 0.
+\]
+We have 
+% long and boring coefficient calculation
+We get the final results 
+\begin{equation}
+    \begin{aligned}
+        a_n &= \frac{\mu m^2 j_n(mx) (x j_n(x))' - \mu_1 j_n(x) (mx j_n(mx))'}{
+        \mu m^2 j_n(mx) (x h^{(1)}_n(x))' - \mu_1 h_n^{(1)}(x) (mx j_n(mx))'}, \\
+        b_n &= \frac{\mu_1 j_n(mx) (x j(x))' - \mu j_n(x) (mx j_n(mx))'}{
+        \mu_1 j_n(mx) (x h^{(1)}_n(x))' - \mu h_n^{(1)}(x) (mx j_n(mx))' }.
+    \end{aligned}
+\end{equation}
+We find that the denominator of $a_n$ may be zero, which gives the eigenmodes of the system.
+Finding these modes is extremely hard. The behavior around poles is highly nonlinear, and ordinary 
+gradient descent methods have severe divergence problems. Sometimes the poles are close to each other 
+and it is almost impossible to distinguish them. Even when these problems are solved, whether we 
+have already found a complete set of eigenmodes is still a question hard to answer. 
+This topic - finding the poles of a scattering matrix - is still a frontline nowadays.
+
+In the $ka \ll 1$ limit, $x \ll 1$, and the denominator of $a_n$ is 
+\begin{equation}
+    \begin{aligned}
+        f_E(\omega, n) &= \frac{\epsilon_1 \mu_1}{\epsilon} \frac{(mx)^n}{(2n+1) !!} \ii \frac{(2n-1)!!}{x^{n+1}} n
+        + \mu_1 \ii \frac{(2n-1)!!}{x^{n+1}} \frac{(mx)^n}{(2n+1)!!} (1+n) \\
+        &= \frac{\mu_1}{\epsilon} \frac{\ii m^n}{(2n+1) x} (\epsilon_1 n + \epsilon (n+1)),
+    \end{aligned}
+\end{equation}
+and its zero point is given by 
+\begin{equation}
+    \frac{\epsilon_1(\omega, n)}{\epsilon} = - \frac{n+1}{n}.
+\end{equation}
+This equation gives the ``electric'' eigenmodes. For example, for a metal sphere, we have 
+\begin{equation}
+    \omega_1 = \frac{\omega_\text{p}}{\sqrt{3}}. 
+\end{equation}
+This is called \concept{local surface plasmon polariton}. The term ``plasmon'' comes from the fact that 
+this mode involves charge fluctuation in the metal, while the term ``polariton' comes from the fact that 
+this mode involves electromagnetic waves in the air (though Mie scattering also works in vacuum where 
+there is no polarization).
+
+Now we derive the energy flow in Mie scattering. Since we need to handle the fields directly, 
+we define \concept{Riccati-Bessel functions} as follows:
+\begin{equation}
+    \begin{aligned}
+        \psi_n(\rho) &= \rho j_n(\rho) = S_n(\rho), \\
+        \chi_n(\rho) &= - \rho y_n(\rho) = C_n(\rho), \\
+        \xi_n(\rho) &= \rho h_n^{(1)}(\rho) = \psi_n - \ii \chi_n, \\
+        \zeta_n(\rho) &= \rho h_n^{(2)}(\rho) = \psi_n + \ii \chi_n,
+    \end{aligned}
+\end{equation}
+and now the scattering field can be written in one line as 
+\begin{equation}
+    \begin{aligned}
+        E_{\text{s}, \theta} &= \frac{\cos \phi}{\rho} \sum_n E_n (\ii a_n \xi_n' \tau_n - b_n \chi_n \pi_n) , 
+    \end{aligned}
+\end{equation}
+where the $^\prime$ superscript means the argument is $r$ and the special functions without prime superscript
+have $\theta$ as arguments. 
+\begin{equation}
+    C_\text{sca} = \frac{2\pi}{k^2} \sum_{n=1}^\infty (2n+1) (\abs*{a_n}^2 + \abs*{b_n}^2),
+\end{equation}
+\begin{equation}
+    C_\text{ext} = \frac{2\pi}{k^2} \sum_{n=1}^\infty (2n+1) \Re (a_n + b_n).
+\end{equation}
+
+After calculating everything numerically, we find that Mie scattering agrees with Rayleigh scattering when 
+$k a \ll 1$, which, in the language of Mie scattering, can be described as throwing away all $b_n$'s and only 
+keep $a_1$, or in other words treating the sphere as an electric dipole. In this case we have 
+\begin{equation}
+    Q_\text{sca} = \frac{8}{3} (ka)^4 \left(\frac{\epsilon_1 - \epsilon}{\epsilon+1 + 2 \epsilon_2}\right)^2.
+\end{equation}
+The $(ka)^4$ dependence is the typical feature of Rayleigh scattering. This can be seen as 
+\begin{equation}
+    \alpha = 4 \pi \epsilon_0 a^3 \frac{\epsilon_1 - \epsilon}{\epsilon_1 + 2 \epsilon}.
+\end{equation}
+On the other limit we have geometrical optics. 
+
+The cross sections can also be evaluated via \concept{partial-wave expansion}, which is often used in 
+quantum mechanical scattering problems. 
+
+\begin{equation}
+    2 \delta_k = \Delta \sin \alpha.
+\end{equation}
+
+\begin{equation}
+    f(0) = 2 \pi a^2 \left( 1 - \frac{2}{\Delta} \sin \Delta + \frac{2}{\Delta^2} (1 - \cos \Delta) \right).
+\end{equation}
+We find that the large oscillating period can be easily captured if we consider the phase of each partial 
+wave. In other words, the large oscillating period is almost simply the interference of the components in 
+the scattering beam. On the other hand, the small oscillating period comes from the details of the sphere, 
+or to be exact from the eigenmodes of the system. If we change $a$, there will not be significant change 
+on the large oscillating period, because we will only see change on $\Delta$. 
+
+\end{document}
