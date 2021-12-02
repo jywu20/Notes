@@ -1,0 +1,316 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Spontaneous radiation of a two-level atom}
+
+We continue the discussion in \href{11-18.pdf}{the last lecture}.
+For an atom coupled with an optical field (with its own dynamics), we have 
+\[
+    \ii \dot{c}_\text{e} = \sum_k g_k \ee^{\ii \Delta_k t} c_k, \quad 
+    \ii \dot{c}_k = g_k^* \ee^{- \ii \Delta_k t} c_\text{e},
+\]
+so we have 
+\begin{equation}
+    c_\text{e} = - \int_0^t \dd{\tau} K(t - \tau) c_\text{e}(\tau),
+\end{equation}
+where 
+\begin{equation}
+    K(t) = \sum_k \abs*{g_k}^2 \ee^{\ii \Delta_k t}.
+\end{equation}
+We make a Markov approximation, i.e. we assume $K(t - \tau)$ is significant only for $\tau$ close enough to $t$,
+and therefore we have approximately
+\[
+    c_\text{e} = - c_\text{e}(t) \int_0^t \dd{\tau} K(t - \tau),
+\]
+and we can evaluate 
+\[
+    \int_0^t \dd{\tau} K(t - \tau) = \frac{\Gamma}{2} + \ii \delta_\text{L},
+\]
+so the time evolution equation is 
+\begin{equation}
+    c_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) ,
+    \label{eq:markov-eq}
+\end{equation}
+where 
+\begin{equation}
+    \Gamma = 2 \pi \sum_k \abs*{g_k}^2 \delta(\omega_k - \omega_\text{eg}),
+\end{equation}
+and 
+\begin{equation}
+    \delta_\text{L} = \primevalue \int_0^\infty \dd{k} \abs*{g_k}^2 \rho(k) \frac{1}{\omega_k - \omega_\text{eg}}.
+\end{equation}
+We can see that Fermi golden rule can be derived from the Markov approximation.
+The imaginary part $\delta_\text{L}$ is a part of Lamb shift.
+
+Solving \eqref{eq:markov-eq} and redefining the basis to absorb the Lamb shift, we get 
+\begin{equation}
+    c_\text{e}(t) = \ee^{- \frac{\Gamma}{2} t}, \quad 
+    c_\text{k}(t) = \ii g_k^* \frac{1 - \ee^{- \ii (\omega_\text{eg} - \ii \Gamma / 2 - \omega_k) t}}{\omega_\text{eg} - \ii \Gamma / 2 - \omega_k} .
+\end{equation}
+Now we can calculate the optical correlation functions in the space. Since we are working in the single-photon 
+subspace, we have 
+\begin{equation}
+    P^{(1)}(\vb*{r}, t) = \eta \abs*{\mathcal{E}(\vb*{r}, t)}^2,
+\end{equation}
+where 
+\begin{equation}
+    \mathcal{E}(\vb*{r}, t) = \mel{0}{E^+(\vb*{r}, t) \sum_k c_k }{1_k}.
+\end{equation}
+Again we consider the time region where $t \gg 1 / \Gamma$ so spontaneous radiation is likely to start, while the 
+time is not too large so that Markov approximation still works. We have 
+\[
+    \begin{aligned}
+        \mathcal{E} &= \frac{\ii}{(2\pi)^3} \int_0^\infty k^2 \dd{k} \int_0^\pi \sin \theta \dd{\theta}
+        \int_0^{2\pi} \dd{\varphi} \frac{\hbar \omega_k \vb*{d}_\text{eg}^2}{2 \epsilon_0} 
+        \frac{\ee^{- \ii (\omega_k t - k r \cos \theta)}}{ \omega_\text{eg} - \frac{\ii \Gamma}{2} - \omega_k} \\
+        &= \int_0^\infty \dd{k} \frac{k^2 d^2}{\epsilon_0 r} \frac{\ee^{- \ii \omega_k (t - r / c)}}{\omega_\text{eg} - \frac{\ii \Gamma}{2} - \omega_k} - \text{$(r + t/c)$ terms} \\
+        &\approx - \int_{-\infty}^\infty \frac{\omega_k^2}{c^2} ,
+    \end{aligned}
+\]
+so finally we get the single photon wave function of the spontaneous radiation:
+\begin{equation}
+    \mathcal{E}(\vb*{r}, t) = \frac{\omega_\text{eg}^2 d_\text{eg}^2}{\epsilon_0 r c^2} 
+    \ee^{- \ii \omega_\text{eg} (t - r / c)} \Theta(t - r/c).
+\end{equation}
+
+\begin{note*}{}{}
+    We should note that the so-called ``wave function in a subspace'' does not capture the high frequency 
+    details of the real wave function. What we are actually doing is \emph{integrating out} high energy 
+    states and working with an effective theory. The renormalization of constants in the theory about 
+    the subspace can be calculated via path integral or adiabatic elimination or other approaches.
+    The loss of high-frequency components of the wave function usually does not matter, though, 
+    because usually no detection means can be used to find the high-frequency behavior, and an effective
+    theory is just enough.
+\end{note*}
+
+\section{Three-level atoms}
+
+\begin{figure}
+    \centering
+    \input{12-2-figures/three-level.tex}
+    \caption{Energy levels of a three-level atom}
+    \label{fig:three-level-atom}
+\end{figure}
+
+Now we consider a three-level atom shown in \prettyref{fig:three-level-atom}. We work in the following 
+subspace:
+\begin{equation}
+    \ket*{\psi} = c_a \ket*{a, 0} + c_{b_k} \ket*{b, 1_k} + c_{c, k, g} \ket*{c, 1_k, 1_q}. 
+\end{equation}
+The Schrödinger equation now reads 
+\begin{equation}
+    \begin{aligned}
+        \ii \dot{c}_a &= \sum_k g_{a, k}^* \ee^{- \ii \Delta t} c_{b, k}, \\
+        \ii \dot{c}_{b, k} &= g_{a,k} \ee^{\ii \Delta_k t} c_a 
+        + \sum_q g^*_{b,q} \ee^{- \ii \Delta_q t} c_{c, k, q}, \\
+        \ii \dot{c}_{c, k, q} &= g_{b,q} \ee^{- \ii \Delta_q t} c_{b, k},
+    \end{aligned}
+\end{equation} 
+and we can just repeat the procedure in the last section.
+
+\section{Stochastic wave function description of the two-level atom}
+
+We want to write down a theory on the two-level atom itself and ignore the optical field. 
+This is usually hard because photons radiated may come back and interact with the atom again.
+If, however, we investigate the circumstance in a typical laboratory, where there are plenty 
+of things that may absorb or ``observe'' the photon, we can assume that as soon as a photon 
+is emitted, it gets observed, and so does the atom. If we observe a emitted photon then we are sure 
+that the atom is currently on the ground state.
+
+\concept{Stochastic wave function} is a formalism that is frequently used in quantum optics.
+We write down a non-Hermitian effective theory describing the atom, which is 
+\begin{equation}
+    H = H_0 - \frac{\ii}{2} C^\dagger C,
+\end{equation}
+where $H_0$ is the RWA Hamiltonian in \href{10-28.pdf}{this lecture}, and
+\begin{equation}
+    C = \sqrt{\Gamma} \dyad{\text{g}}{\text{e}}
+\end{equation}
+is called the \concept{collapse operator}.
+The effective Hamiltonian does not keep the total probability. The correct way to use it is the following 
+\emph{stochastic} Schrödinger evolution. For $\ket*{\psi(t)}$, we have 
+\begin{equation}
+    P(\ket*{\psi(t + \Delta t)} = \text{normalized $C \ket*{\psi(t)}$}) = \expval*{C^\dagger C}{\psi(t)} \Delta t,
+\end{equation}
+and 
+\begin{equation}
+    P(\ket*{\psi(t + \Delta t)} = \text{normalized $(1 + \Delta H_\text{eff} / \ii \hbar) \ket*{\psi(t)}$}) 
+    = 1 - \expval*{C^\dagger C}{\psi(t)} \Delta t.
+\end{equation}
+The former possibility is called a \concept{quantum jump}: a photon is emitted and observed, and now we are 
+sure that the atom is on the ground state.
+
+\begin{figure}
+    \centering
+    \input{12-2-figures/excited-decay.tex}
+    \caption{Stochastic wave function calculating of a two-level atom. The lines with color are possible 
+    evolution path of the wave function, and after averaging over them we get the dashed exponential decay
+    line.}
+    \label{fig:excited-decay}
+\end{figure}
+
+Stochastic wave function is an intuitive approach. If, for example, we start from a excited state, 
+what we will get is \prettyref{fig:excited-decay}. 
+
+We consider another example. Suppose from $0$ to $t$ there is no quantum jump, and we want to know 
+what is the probability that a quantum jump happens in the time duration $t$ to $t + \Delta t$.
+We assume $\Omega \ll \Gamma$, and we have 
+\begin{equation}
+    c_\text{g} \approx 1, \quad c_\text{e} = \frac{\Omega}{2} 
+    \frac{1 - \ee^{- \ii \Delta t - \Omega t / 2}}{\Delta - \ii \Gamma / 2}.
+\end{equation}
+We find that 
+\begin{equation}
+    P(\text{jump during $t$ to $t + \Delta t$}) = \gamma \Delta t,
+\end{equation}
+where 
+\begin{equation}
+    \gamma = \frac{\abs{\Omega}^2}{4 \Delta^2 + \Gamma^2 } \Gamma.
+\end{equation}
+
+We can also use the stochastic wave function method to calculate polarization in materials.
+We find the wave function
+\begin{equation}
+    \ket*{\psi(t)} \approx \frac{1}{\Delta - \ii \Gamma / 2} \frac{\Omega}{2} \ket*{\text{e}} + \ket*{\text{g}}
+\end{equation}
+is a meta-stable solution of the stochastic evolution, and we have 
+\begin{equation}
+    \expval*{d} = \frac{d_\text{eg} \Omega / 2}{\Delta - \ii \Gamma / 2} \ee^{- \ii \omega t} + \text{h.c.}.
+\end{equation}
+We therefore have 
+\begin{equation}
+    \alpha = \frac{\abs{d_\text{eg}}^2}{\omega_\text{eg} - \ii \Gamma / 2 - \omega}.
+\end{equation}
+The refractive index is now given by $n = \rho \alpha$. For glass, $\omega_\text{eg}$ is usually in the UV 
+spectrum, so for the visible spectrum, $\omega_\text{eg} - \omega$ is large, and therefore absorption 
+(or in other words random scattering) is not that important.
+
+\begin{figure}
+    \centering
+    \input{12-2-figures/phase-shift.tex}
+    \caption{Time evolution in the strong coupling limit.}
+\end{figure}
+
+We now consider the $\Omega \gg \Gamma$ case. The wave function 
+\begin{equation}
+    \ket*{\psi(t)} = \cos \frac{\Omega}{2} t \ket*{\text{g}} - \ii \sin \frac{\Omega}{2} t \ket*{\text{e}}
+\end{equation}
+is a meta-stable state, but as time goes by, the probability of a quantum jump accumulates. 
+A single time evolution trajectory is like 
+
+\eqref{eq:markov-eq} is a quantum master equation. We can, actually, write down a non-Hermitian Hamiltonian
+\begin{equation}
+    H_\text{eff} = - \frac{\ii \hbar \Gamma}{2} \dyad{\text{e}} 
+    + \hbar \sum_{k} g_k^* \ee^{- \ii \Delta_k t} a_k^\dagger \dyad{g}{e} + \text{h.c.}.
+\end{equation}
+which reproduces \eqref{eq:markov-eq}. We can replace the second and the third term using rotational 
+wave approximation in \href{10-28.pdf}{this lecture}, and after averaging over all paths we get a 
+damped oscillating curve.
+
+\end{document}
