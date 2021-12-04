@@ -1,0 +1,208 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Free Fermion Theories by Tian Yuan}
+\author{Jinyuan Wu}
+\date{December 4, 2021}    
+
+\begin{document}
+
+\maketitle
+
+This presentation is mostly based on Commun.Math.Phys. 257, 725-771. This article is about what constraints and 
+symmetry can be added to the Hilbert space of a free fermion system, and we can get the space of all possible 
+Hamiltonians. 
+
+From now on we use $\overline{(\cdot)}$ to denote complex conjugation and use $(\cdot)^*$ to denote adjoint.
+
+We define a \concept{Nambu space} to be a Hilbert space $W = V \oplus V^*$, where $V$ is also a Hilbert space,
+and $V^*$ is the dual space of $V$ and an inner product can be induced. An inner product can be defined on $W$
+if we assign the inner product of $V^*$ to be  
+\begin{equation}
+    \expval*{f, f'} = \overline{\expval*{Cf, Cf'}_V}, \quad f, f' \in V^*,
+    \label{eq:inner-w}
+\end{equation}
+where $C: W \to W$ is defined as 
+\begin{equation}
+    C: V \mapsto \expval*{V, -}.
+\end{equation} 
+The complex conjugate in \eqref{eq:inner-w} comes from the fact that $C$ is anti-linear and the requirement that 
+the first element in an inner product is anti-linear. We also assume there is a canonical bilinear form 
+\begin{equation}
+    b: W \otimes W \to \mathbb{C}, \quad b(v+f, v'+f') = f(v') + f'(v).
+\end{equation}
+
+We show the motivation to define Nambu spaces. The Hilbert space $V$ is actually the linear space spanned by 
+$\{c_i^\dagger\}$, and $V^*$ is the linear space spanned by $\{c_i\}$. The many-body Fock space is 
+\begin{equation}
+    \wedge V = \mathbb{C} \oplus V \oplus \wedge^2 V \oplus \cdots
+\end{equation}
+and using this construction we can verify that $V^*$ is indeed the dual space of $V$.
+$C$ is similar to a particle-hole transformation, though a physical particle-hole transformation may also contain
+some unitary transformations. Now we see $W$ is the space of all field operators, and $b$ actually imposed the
+anti-commutative relation. Therefore the definition of Nambu spaces summarizes the properties of Fermi operators.
+
+It can be verified that the $b(\cdot, \cdot)$ structure and the $\expval*{\cdot, \cdot}$ structure are not
+independent. We make the decomposition 
+\begin{equation}
+    w = v + f, \quad v \in V, f \in V^*,
+\end{equation}
+and we have
+\begin{equation}
+    \expval*{w, w'} = \expval*{v, v'} + \expval*{Cf, Cf'},
+\end{equation}
+
+A generalized quadratic Hamiltonian can be written as 
+\begin{equation}
+    H = \sum_{i,j} A_{ij} c^\dagger_i c_j + 
+    \frac{1}{2} \sum_{i,j} (B_{ij} c_i^\dagger c_j^\dagger + C_{ij} c_j c_i).
+\end{equation}
+We require $H = H^*$, and this in turn requires 
+\begin{equation}
+    A_{ij} = \overline{A_{ji}}, \quad C_{ij} = \overline{B_{ij}},
+\end{equation}
+or in other words 
+\begin{equation}
+    \vb{A} = \vb{A}^*, \quad \vb{B}^\top = - \vb{B}.
+\end{equation}
+Suppose 
+\begin{equation}
+    \psi = \pmqty{v_1 \\ \vdots \\ v_n \\ f_1 \\ \vdots \\ f_n},
+\end{equation}
+the EOM
+\[
+    \ii \hbar \dot{\psi} = \comm*{\psi}{H}
+\]
+now becomes 
+\begin{equation}
+    \dot{\psi} = \frac{\ii}{\hbar} \pmqty{\vb{A} & \vb{B} \\ \vb{B}^* & - \vb{A}^\top} \psi.
+\end{equation}
+The linear space of all possible Hamiltonians is actually an algebra on $W$, which we denote as $C(W)$.
+We have 
+\begin{equation}
+    C(W) = C^0(W) \oplus C^1(W) \oplus C^2(W) \oplus \cdots,
+\end{equation} 
+where $C^n(W)$ is all possible Hamiltonians containing only $n$-operator terms. Note that the product 
+structure on $C(W)$ is ordinary operator product, but $C^n(W)$ is not closed under ordinary operator product,
+so $C^n(W)$ is actually a Lie algebra.
+
+Now we are able to write down a theorem: 
+\emph{We have the isomorphism $C^2(W) \simeq \mathfrak{so}(W, b)$}.
+
+Now we can define symmetry on a Nambu space. An arbitrary unitary element $g$ and an anti-unitary element $h$ 
+in symmetric group $G$ satisfied the conditions that 
+\begin{equation}
+    \expval*{\psi, \psi'} = \expval*{g \psi, g' \psi} = \overline{\expval*{h \psi, h' \psi}},
+\end{equation}
+and 
+\begin{equation}
+    b(\psi, \psi') = b(g \psi, g' \psi) = \overline{b(h \psi, h' \psi)},
+\end{equation}
+and we have 
+\begin{equation}
+    g H g^{-1} = H.
+\end{equation}
+
+
+\end{document}
