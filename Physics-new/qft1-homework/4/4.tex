@@ -1,0 +1,167 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+
+\title{QFT I, Homework 4}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Scalar QED} Consider the theory of a complex scalar field $\phi$ interacting with the electromagnetic field $A^{\mu}$. The Lagrangian is
+\begin{equation}
+    \mathcal{L}=-\frac{1}{4} F_{\mu \nu} F^{\mu \nu}+\left(D_{\mu} \phi\right)^{*} D^{\mu} \phi-m^{2} \phi^{*} \phi.
+    \label{eq:scalar-qed}
+\end{equation}
+where $D_{\mu}=\partial_{\mu}+ \ii e A_{\mu}$ is the usual gauge covaraint derivative.
+\begin{itemize}
+    \item[(a)] Show the Lagrangian is invariant under the gauge transformations
+    \begin{equation}
+        \phi(x) \rightarrow \ee^{-\ii \alpha(x)} \phi(x), \quad A_{\mu}(x) \rightarrow A_{\mu}(x)+\frac{1}{e} \partial_{\mu} \alpha(x).
+        \label{eq:gauge}
+    \end{equation}
+    \item[(b)] Derive the Feynman rules for the interaction between photons and scalar particles.
+    \item[(c)] Draw all the leading-order Feynman diagrams and compute the amplitude for the process $\gamma \gamma \rightarrow \phi \phi^{*}$.
+    \item[(d)] Compute the differential cross section $\dd \sigma / \dd \cos \theta$. You can take an average over all initial state polarizations. For simplicity, you can restrict your calculation in the limit $m=0$.
+    \item[(e)] Draw all leading order Feynman diagrams, that contribute to the Compton scattering process $\gamma \phi \rightarrow \gamma \phi$ and compute the differential cross section $\dd \sigma / \dd \cos \theta$ with $m=0$.
+\end{itemize}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] Under the gauge transformation \eqref{eq:gauge}, we have 
+\[
+    F_{\mu \nu}  \to 
+    F'_{\mu \nu} = \partial_\mu A'_\nu - \partial_\nu A'_\mu
+    = \partial_\mu \left(A_\nu + \frac{1}{e} \partial_\nu \alpha\right) 
+    - \partial_\nu \left(A_\mu + \frac{1}{e} \partial_\mu \alpha\right)
+    = \partial_\mu A_\nu - \partial_\nu A_\mu = F_{\mu \nu},
+\] 
+\end{itemize}
+so the first term in \eqref{eq:scalar-qed} remains the same. It is obvious that under \eqref{eq:gauge}
+\[
+    \phi^* \phi \to \phi'^* \phi' = \ee^{\ii \alpha} \phi^* \ee^{- \ii \alpha} \phi = \phi^* \phi,
+\]
+so the third term in \eqref{eq:scalar-qed} is also invariant. Also we have
+\[
+    \begin{aligned}
+        D^\mu \phi \to (\partial^\mu + \ii e A'^\mu) \phi' 
+        &= (\partial^\mu + \ii e A^\mu + \ii \partial^\mu \alpha) \ee^{- \ii \alpha} \phi  \\
+        &= \ee^{- \ii \alpha} (\partial^\mu - \ii \partial^\mu \alpha 
+        + \ii e A^\mu + \ii \partial^\mu \alpha) \phi \\
+        &= \ee^{- \ii \alpha} D^\mu \phi,
+    \end{aligned}
+\]
+and also 
+\[
+    (D^\mu \phi)^* = \ee^{\ii \alpha} D^\mu \phi, 
+\]
+so $D^\mu \phi (D^\mu \phi)^*$ is also invariant. 
+Therefore \eqref{eq:scalar-qed} is invariant under \eqref{eq:gauge}.
+
+\item[(b)] Expanding \eqref{eq:gauge} we have 
+\begin{equation}
+    \mathcal{L} = \mathcal{L}_\text{scalar} + \mathcal{L}_\text{vector} + \mathcal{L}_\text{scalarQED},
+\end{equation} 
+where $\mathcal{L}_\text{scalar}$ and $\mathcal{L}_\text{vector}$ are Lagrangians of free scalar field and 
+free massless vector field, and 
+\begin{equation}
+    \mathcal{L}_\text{scalarQED} = 
+\end{equation}
+
+\end{document}
