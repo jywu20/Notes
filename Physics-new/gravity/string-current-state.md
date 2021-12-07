@@ -77,3 +77,8 @@ None of the "good news" are strong justification of string theory, though. What 
 this inverse RG flow is just educated guess. We take the example of general relativity. If general
 relativity is really the only reasonable gravity theory, then we can imagine that in the space of 
 all possible theories, GR is a fixed point and every candidate of theory of everything flows to it.
+
+Also, there still exist a lot of technical difficulties. Remember we do not even know what the M theory 
+exactly is! There are most duality results. We already know that M theory can be mapped to a zero-dimensional
+matrix model, but the matrix model itself is highly complicated, including infinite terms. It is almost 
+impossible to calculate anything from the matrix model. Nor can we obtain an explicit form of M theory.  
