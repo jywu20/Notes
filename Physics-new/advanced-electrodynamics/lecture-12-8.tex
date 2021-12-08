@@ -1,0 +1,252 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Diffraction and Scattering in Electrodynamics by Prof. Kun Din}
+\author{Jinyuan Wu}
+\date{December 8, 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Mie scattering and the partial wave expansion}
+
+In \href{lecture-12-1.tex}{the previous lecture} we discussed about Mie scattering. Here we discuss more about 
+the partial wave expansion. First we review the scalar version of partial wave approximation.
+Suppose the input wave function is a plane wave 
+\begin{equation}
+    u_\text{in} = \ee^{\ii k z} = \sum_{n=0}^\infty (2n+1) \ii^n j_n(kr ) \legpoly_n(\cos \theta).
+\end{equation}
+A scattering eigen state can still be seen as a mixture of spherical functions at the infinity, and therefore 
+it can be written as 
+\begin{equation}
+    u = \sum_n (2n+1) \ii^n \legpoly_n(\cos \theta) \frac{1}{2} (h_n^{(2)}(kr) + S_n h_n^{(1)}(kr)),
+\end{equation}
+where $S_n$ is a complex factor. We know that at the infinity we have 
+\begin{equation}
+    u = \ee^{\ii k z} + \frac{\ee^{\ii k r}}{r} f(\theta),
+\end{equation}
+and therefore we have 
+\begin{equation}
+    f(\theta) = \frac{1}{2 \ii k} \sum_n (2n+1) (S_n - 1) \legpoly_
+    n(\cos \theta) \eqqcolon 
+    \frac{1}{2 \ii k} \sum_n (2n+1) (\ee^{\ii 2 \delta_n} - 1) \legpoly_n(\cos \theta).
+\end{equation}
+The unitarity of scattering guarantees that $\abs*{S_n} = 1$, and therefore $\delta_n$ is a real number 
+and is often called the \concept{phase shift}.
+
+In the $ka \to 0$ limit, we have 
+\begin{equation}
+    a_n = \frac{\epsilon_1 - \epsilon}{\ii (\epsilon_1 n + \epsilon (n+1))} \frac{(ka)^{2n+1} (n+1)}{(2n+1)!! (2n-1)!!}, \quad 
+    b_n = \frac{\mu_1 - \mu}{\ii (\mu_1 n + \mu (n+1))} \frac{(ka)^{2n+1} (n+1)}{(2n+1)!! (2n-1)!!},
+\end{equation}
+and if we just keep the $a_1$ term we find 
+\begin{equation}
+    Q_\text{sca} = \frac{8}{3} (ka)^4 \left(\frac{\epsilon_1 - \epsilon}{\epsilon_1 + 2 \epsilon}\right)^2,
+    \label{eq:rayleigh-cross-section}
+\end{equation}
+which is just the Rayleigh cross section. 
+
+\section{Effective medium}
+
+This is actually a way to find the effective permittivity of a electric dipole or to find the effective electric
+dipole of a sphere. Suppose 
+\begin{equation}
+    \vb*{p} = \vu*{e}_x \alpha E_0 \ee^{\ii k z},
+\end{equation}
+and we have 
+\begin{equation}
+    \vb*{E}(\vb*{r}, \omega) = \omega^2 \mu_0 \tensor{\vb*{G}} \cdot \vb*{p}, 
+\end{equation}
+where 
+\begin{equation}
+    \tensor{\vb*{G}} = \frac{\ee^{\ii k R}}{4 \pi R} \left( \tensor{\vb*{I}} - \frac{\vb*{R} \vb*{R}}{\vb*{R}^2} \right)
+\end{equation}
+is the dyadic Green function. Then we find 
+\[
+    \frac{k}{\epsilon} \Im \alpha = C_\text{ext}^\text{dipole} = C_\text{ext}^\text{Mie} = 4 \pi k a^3 \Im \left(\frac{\epsilon_1 - \epsilon}{\epsilon_1 + 2 \epsilon}\right),
+\]
+and therefore 
+\begin{equation}
+    \alpha = 4 \pi \epsilon a^3 \frac{\epsilon_1 - \epsilon}{\epsilon_1 + 2 \epsilon}.
+\end{equation}
+This is the basis of \concept{Maxwell Garnett theory}. Suppose some particles with permittivity $\epsilon_1$
+are distributed in a matrix medium with permittivity $\epsilon_\text{m}$.
+By the Clausius–Mossotti relation we have 
+\[
+    \frac{\epsilon_\text{eff} - 1}{\epsilon_\text{eff} + 2} = \frac{N}{3 \epsilon_\text{m}} \alpha_\text{sphere},
+\]
+and on the other hand we have 
+\[
+    \alpha_\text{sphere} = 4 \pi \epsilon_\text{m} a^3 \frac{\epsilon_1 - \epsilon_\text{m}}{\epsilon_1 + 2 \epsilon_\text{m}},
+\]
+and therefore 
+\begin{equation}
+    \frac{\epsilon_\text{eff} - 1}{\epsilon_\text{eff} + 2} = \frac{4}{3} \pi a^3 N \frac{\epsilon_1 - \epsilon_\text{m}}{\epsilon_1 + 2 \epsilon_\text{m}}.
+    \label{eq:maxwell-garnett}
+\end{equation}
+\eqref{eq:maxwell-garnett} only works for spheres. A more general formulation is 
+\begin{equation}
+    \vb*{p} = V \beta (\epsilon_1 - \epsilon_\text{m}) \vb*{E},
+\end{equation}
+and in the case of \eqref{eq:maxwell-garnett} we have 
+\begin{equation}
+    \beta = \frac{3 \epsilon_\text{m}}{\epsilon_1 + 2 \epsilon_\text{m}} = \frac{\epsilon_\text{m}}{\epsilon_\text{m} + \frac{1}{3} (\epsilon_1 - \epsilon_m)}.
+\end{equation}
+More generally we have 
+\begin{equation}
+    \beta = \frac{\epsilon_\text{m}}{\epsilon_\text{m} + L (\epsilon_1 - \epsilon_\text{m})}.
+\end{equation}
+Note that $\beta$ and $L$ may be tensors, and for a sphere $L = 1/3$. We define 
+\begin{equation}
+    f_\text{r} = NV,
+\end{equation}
+where $V$ is the total volume of the medium. It can be seen that $f_\text{r}$ gives the volume fraction of the 
+particles. Therefore we have 
+\begin{equation}
+    \frac{\epsilon_\text{eff} - 1}{\epsilon_\text{eff} + 2} = \frac{f_\text{r} \beta}{3 \epsilon_\text{m}} (\epsilon_1 - \epsilon_\text{m}),
+\end{equation} 
+or in other words 
+\begin{equation}
+    \epsilon_\text{eff} = \epsilon_\text{m} \left( 1 + \frac{3 f_\text{r} \frac{\epsilon_1 - \epsilon_\text{m}}{\epsilon_1 + 2 \epsilon_\text{m}}}{1 - f_\text{r} \frac{\epsilon_1 - \epsilon_\text{m}}{\epsilon_1 + 2 \epsilon_\text{m}}} \right).
+\end{equation}
+This equation works for particles in the shape of spheres, rectangles or cylinders.
+For tablet-like particles, for example, we have $L_\parallel = 0, L_\bot = 1$, and therefore 
+\[
+    \beta_\parallel = 1, \quad \beta_\bot = \frac{\epsilon_\text{m}}{\epsilon_1},
+\] 
+and therefore 
+\begin{equation}
+    \epsilon_{\text{ext}, \parallel} = (1 - f_\text{r}) \epsilon_\text{m} + f_\text{r} \epsilon_1,
+\end{equation}
+and
+\begin{equation}
+    \epsilon_{\text{ext}, \bot} = \left( \frac{1 - f_\text{r}}{\epsilon_\text{m}} + \frac{f_\text{r}}{\epsilon_1} \right)^{-1}.
+\end{equation}
+
+Note that we have restricted ourselves on dielectrics, where the lowest electromagnetic modes are almost 
+always gapless, and the effective medium approximation works well. This approximation may broke for metals,
+where low frequency electromagnetic waves cannot pass because 
+\[
+    \epsilon = 1 - \frac{\omega_\text{p}^2}{\omega^2}.
+\]
+In the language of band theory, in metals, electromagnetic modes are gapped. An interesting case is 
+when both $\epsilon$ and $\mu$ are negative. This is called \concept{negative-index metamaterial}.
+
+\section{A brief summary}
+
+\begin{itemize}
+    \item Geometrical optics limit.
+    \item Mie scattering.
+    \begin{itemize}
+        \item Special functions: vector spherical functions, $\pi_n, \tau_n$, Riccati-Bessel functions,
+        \item Mie coefficients, and
+        \item Cross sections.        
+    \end{itemize}
+    \item Partial wave expansion, and
+    \item Effective permittivity.
+\end{itemize}
+
+\end{document}
