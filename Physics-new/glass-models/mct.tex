@@ -125,6 +125,7 @@ freedom that are ignored.
 Assuming we already have an inner product defined on physical quantities, which is usually 
 \begin{equation}
     (A, B) = \expval*{A^* B},
+    \label{eq:inner-product-def}
 \end{equation}
 we have 
 \begin{equation}
@@ -145,6 +146,17 @@ where
 Note that the convention of notation varies in the literature, and the two expressions of $K(t)$ in \eqref{eq:k-def}
 can both be seen. We require $A$ to be ``slow'' variables (or satisfy other conditions that somehow separate it 
 from other degrees of freedom), or otherwise fluctuation is too strong for $A$ to be a useful quantity.
+
+Of course we can have several slow variables and several fast variables. Therefore, we may replace $A$ by a vector. 
+Note that at this time, $\Omega, F$ and $K$ are matrices, and it can be found that \eqref{eq:inner-product-def}
+should be replaced by 
+\begin{equation}
+    \expval*{A, B} = \expval*{A^* B^\top},
+\end{equation} 
+instead of 
+\[
+    \expval*{A, B} = \expval*{A^\dagger B}.
+\]
 
 \section{The exact MCT equation} 
 
@@ -170,6 +182,11 @@ where
         &=\sum_{i} \ee^{\ii \vb*{k} \cdot \vb*{r}_{i}(t)}.
     \end{aligned}
 \end{equation}
+Specifically, we have 
+\begin{equation}
+    F(k, 0) = S(k),
+\end{equation}
+which is the static structural factor.
 
 We are going to apply the Mori-Zwanzig formalism to $F(k, t)$. We need to find some slow variables
 and apply \eqref{eq:closed-form-a} to them to find their dynamics, and then we are able to find the dynamics 
@@ -198,7 +215,7 @@ Applying \eqref{eq:closed-form-a} to $\vb{A}$, we have
 \]
 and since 
 \[
-    \expval*{\vb{A}(0)^\dagger \vb{F}(t)} = 0, 
+    \expval*{\vb{A}(0), \vb{F}(t)} = \expval*{\vb{A}(0)^* \vb{F}(t)^\top} = 0, 
 \]
 which is a result in the Mori-Zwanzig formalism, we have 
 \begin{equation}
@@ -206,12 +223,45 @@ which is a result in the Mori-Zwanzig formalism, we have
 \end{equation}
 where we have 
 \begin{equation}
-    \vb{C}(t) = \expval*{\vb{A}^\dagger(0) \vb{A}(t)} = \pmqty{\left\langle\delta \rho_{-\vb*{q}}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle\delta \rho_{-\vb*{q}} j_{\vb*{q}}^\text{L}(t)\right\rangle \\
-    \left\langle j_{-\vb*{q}}^\text{L}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle j_{-\vb*{q}}^\text{L}(0) j_{\vb*{q}}^\text{L}(t)\right\rangle}.
+    \vb{C}(t) = \expval*{\vb{A}(0)^* \vb{A}(t)^\top} = \pmqty{\left\langle\delta \rho_{-\vb*{q}}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle\delta \rho_{-\vb*{q}} j_{\vb*{q}}^\text{L}(t)\right\rangle \\
+    \left\langle j_{-\vb*{q}}^\text{L}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle j_{-\vb*{q}}^\text{L}(0) j_{\vb*{q}}^\text{L}(t)\right\rangle},
 \end{equation}
-
-
-Viscosity may be viewed as 
+\begin{equation}
+    \begin{aligned}
+        \ii \vb{\Omega} &= \expval*{\vb{A}, \dot{\vb{A}}} \expval*{\vb{A}, \vb{A}}^{-1} \\
+        &= \pmqty{ 
+            \expval*{\var{\rho_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } &
+            \expval*{\var{\rho_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} } \\
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } &
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} }} 
+        \pmqty{ 
+            \expval*{\var{\rho_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
+            \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \\
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } }^{-1}
+    \end{aligned}
+    \label{eq:omega-def}
+\end{equation}
+Note that unitarity guarantees that the $\expval*{\vb{A}, \vb{A}}$ factor in \eqref{eq:omega-def} is constant,
+and therefore we have 
+\[
+    \pmqty{ 
+            \expval*{\var{\rho_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
+            \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \\
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
+            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } 
+        } = \pmqty{
+            N S(q) & 0 \\ 
+            0 &  \frac{N k_\text{B} T}{m}
+        },
+\]
+where 
+\[
+    \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \propto \vb*{q} \cdot \expval*{\vb*{p}}  = 0,
+\]
+and 
+Here and below we calculate all expectations with the assumption that the translational symmetry is not broken,
+and therefore the probabilistic distributions of positions and momenta are independent.
 
 \bibliographystyle{plain}
 \bibliography{glass} 
