@@ -93,6 +93,9 @@
 \newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
 \newrefformat{sec}{Section~\ref{#1}}
 
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
 \title{Mode-Coupling Theory of the Glass Transition}
 \author{Jinyuan Wu}
 
@@ -127,12 +130,16 @@ Assuming we already have an inner product defined on physical quantities, which 
     (A, B) = \expval*{A^* B},
     \label{eq:inner-product-def}
 \end{equation}
-we have 
+The complex conjugate is motivated by the same argument in quantum field theories, i.e. if $A, B$ are Fourier 
+components of real variables $\varphi, \psi$, then $\expval*{\varphi \psi}$ can be expanded into a sum of 
+$\expval*{A^* B}$ terms, where $A$ and $B$ are indexed by the same frequency.
+We have 
 \begin{equation}
     \ii \Omega =(A, \ii \mathcal{L} A)(A,A)^{-1},
 \end{equation}
 \begin{equation}
-    F(t)=\ee^{\ii t(1-\mathcal{P}) \mathcal{L}}\ii (1-\mathcal{P}) \mathcal{L} A, \quad (F(t), A(0)) = 0,
+    F(t)= \ee^{\ii t(1-\mathcal{P}) \mathcal{L}}\ii (1-\mathcal{P}) \mathcal{L} A
+    = \ee^{\ii t(1-\mathcal{P}) \mathcal{L}} (\dot{A} - \ii \Omega A), \quad (F(t), A(0)) = 0,
 \end{equation}
 and 
 \begin{equation}
@@ -160,9 +167,10 @@ instead of
 
 \section{The exact MCT equation} 
 
-Now we go back to derive a theory about glass transition. 
-The derivation shown below is mainly based on \cite{mct2005}, but the notation is from \cite{RevModPhys.76.785}.
-Note that the spacial translation symmetry gives 
+Now we go back to derive a theory about glass transition. \concept{Mode coupling theory} is a so-called \emph{generalized}
+hydrodynamic theory for glasses \cite{RevModPhys.76.785} in that it still only considers density fluctuations in the system,
+but the density fluctuations are not smoothened. The derivation shown below is mainly based on \cite{mct2005}, 
+but the notation is from \cite{RevModPhys.76.785}. Note that the spacial translation symmetry gives 
 \begin{equation}
     \expval*{\rho(0, 0) \rho(\vb*{r}, t)} = \frac{1}{V} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} 
     \ee^{- \ii \vb*{k} \cdot \vb*{r}} \expval*{\rho_{-\vb*{k}}(0) \rho_{\vb*{k}}(t)},
@@ -220,11 +228,13 @@ and since
 which is a result in the Mori-Zwanzig formalism, we have 
 \begin{equation}
     \dot{\vb{C}} = \ii \vb{\Omega} \vb{C}(t) - \int_{0}^{t} \dd{s} \vb{K}(s) \vb{C}(t-s),
+    \label{eq:matrix-eq}
 \end{equation}
 where we have 
 \begin{equation}
-    \vb{C}(t) = \expval*{\vb{A}(0)^* \vb{A}(t)^\top} = \pmqty{\left\langle\delta \rho_{-\vb*{q}}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle\delta \rho_{-\vb*{q}} j_{\vb*{q}}^\text{L}(t)\right\rangle \\
-    \left\langle j_{-\vb*{q}}^\text{L}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle j_{-\vb*{q}}^\text{L}(0) j_{\vb*{q}}^\text{L}(t)\right\rangle},
+    \vb{C}(t) = \expval*{\vb{A}(0)^* \vb{A}(t)^\top} = \pmqty{\left\langle\delta \rho_{-\vb*{q}}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle\delta \rho_{-\vb*{q}}(0) j_{\vb*{q}}^\text{L}(t)\right\rangle \\
+    \left\langle - j_{-\vb*{q}}^\text{L}(0) \delta \rho_{\vb*{q}}(t)\right\rangle & \left\langle - j_{-\vb*{q}}^\text{L}(0) j_{\vb*{q}}^\text{L}(t)\right\rangle},
+    \label{eq:c-eq}
 \end{equation}
 \begin{equation}
     \begin{aligned}
@@ -232,20 +242,20 @@ where we have
         &= \pmqty{ 
             \expval*{\var{\rho_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } &
             \expval*{\var{\rho_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} } \\
-            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } &
-            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} }} 
+            \expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } &
+            \expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} }} 
         \pmqty{ 
             \expval*{\var{\rho_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
             \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \\
-            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
-            \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } }^{-1}
+            \expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
+            \expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } }^{-1}
     \end{aligned}
     \label{eq:omega-def}
 \end{equation}
 Note that unitarity guarantees that the $\expval*{\vb{A}, \vb{A}}$ factor in \eqref{eq:omega-def} is constant,
 and therefore we have 
-\[
-    \pmqty{ 
+\begin{equation}
+    \expval*{\vb{A}, \vb{A}} = \pmqty{ 
             \expval*{\var{\rho_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
             \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \\
             \expval*{\var{j^\text{L}_{-\vb*{q}}} \var{{\rho}_{\vb*{q}}} } &
@@ -254,14 +264,117 @@ and therefore we have
             N S(q) & 0 \\ 
             0 &  \frac{N k_\text{B} T}{m}
         },
-\]
+    \label{eq:normalize}
+\end{equation}
 where 
 \[
     \expval*{\var{\rho_{-\vb*{q}}} \var{{j}^\text{L}_{\vb*{q}}} } \propto \vb*{q} \cdot \expval*{\vb*{p}}  = 0,
 \]
 and 
+\[
+    \begin{aligned}
+        \expval*{- j^\text{L}_{-\vb*{q}} j^\text{L}_{\vb*{q}}} &= 
+        \sum_{i, j} \expval*{(\vu*{q} \cdot \vb*{v}_i) (\vu*{q} \cdot \vb*{v}_j)} \ee^{\ii \vb*{q} \cdot (\vb*{r}_j - \vb*{r}_i)} \\
+        &= \sum_{i, j} \delta_{ij} \vb*{q} \cdot \frac{k_\text{B} T}{m}  \cdot  \vb*{q} \ee^{\ii \vb*{q} \cdot (\vb*{r}_j - \vb*{r}_i)} \\
+        &= \frac{N k_\text{B} T}{m}.
+    \end{aligned}
+\]
 Here and below we calculate all expectations with the assumption that the translational symmetry is not broken,
-and therefore the probabilistic distributions of positions and momenta are independent.
+and therefore the probabilistic distributions of positions and momenta are independent. We also invoke the
+equipartition theorem. We also should keep in mind the fact that velocities at one time step may be correlated to
+the past configuration, and therefore \emph{non}-equal time correlation functions $\expval*{\rho_{-\vb*{q}}(0) j^\text{L}_{\vb*{q}}(t)}$ is not necessarily 
+zero (or otherwise some weird facts will occur, like a variable is constant but its time derivative is not, etc.).
+We can also evaluate the $\expval*{\vb{A}, \dot{\vb{A}}}$ factor. A variable is always 
+orthogonal to its time derivative, and we have 
+\[
+    \expval*{\var{\rho_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} } = \expval*{\var{\rho_{\vb*{q}}}, \var{\dot{\rho}_{\vb*{q}}} } = 0, \quad 
+    \expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{\dot{j}^\text{L}_{\vb*{q}}} } = 0,
+\]
+and 
+\[
+    \begin{aligned}
+        \expval*{\var{\rho_{\vb*{q}}} \dot{j}^\text{L}_{\vb*{q}}} &= 
+        \sum_i (\expval*{\var{\rho_{-\vb*{q}}} \vu*{q} \cdot \dot{\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}} +
+        \underbrace{\expval*{\var{\rho_{-\vb*{q}}} \cdot \ii \vb*{q} \cdot \vb*{v}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}}}_{\propto \expval*{\vb*{v}_i} = 0} ) \\
+        &= \sum_i \expval*{\var{\rho_{-\vb*{q}}} \vu*{q} \cdot \dot{\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}} \\
+        &= \sum_{i, j} \expval*{\ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \var{\rho_{-\vb*{q}}} \vu*{q} \cdot \dot{\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}} \\
+        &= \dv{t} \sum_{i, j} \underbrace{\expval*{\ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \var{\rho_{-\vb*{q}}} \vu*{q} \cdot {\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}}}_{\propto \expval*{\vb*{v}_i} = 0} - \sum_{i, j} \expval*{ - \ii \vb*{q} \cdot \vb*{v}_j \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \var{\rho_{-\vb*{q}}} \vu*{q} \cdot {\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}} \\
+        &= \ii \sum_{i, j} \expval*{ \vb*{q} \cdot \vb*{v}_j \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \var{\rho_{-\vb*{q}}} \vu*{q} \cdot {\vb*{v}}_i \ee^{\ii \vb*{q} \cdot \vb*{r}_i}} \\
+        &= \ii \sum_{i, j}  \vb*{q} \cdot \frac{k_\text{B} T}{m} \tensor{\vb*{I}} \cdot \vu*{q} \ee^{\ii \vb*{q} (\vb*{r}_i - \vb*{r}_j)} \\
+        &= \frac{\ii q N k_\text{B} T}{m},
+    \end{aligned}
+\]
+and the same derivation works for $\expval*{-\var{j^\text{L}_{-\vb*{q}}} \var{\dot{\rho}_{\vb*{q}}} }$.
+Therefore, \eqref{eq:omega-def} evaluates to be 
+\begin{equation}
+    \ii \vb{\Omega} = \pmqty{0 & \frac{\ii q N k_\text{B} T}{m} \\ \frac{\ii q N k_\text{B} T}{m} & 0} \pmqty{\dmat{NS(q), \frac{N k_\text{B} T}{m}}}^{-1} = \pmqty{0 & \ii q \\ \frac{\ii q k_\text{B} T}{m S(q)} & 0}.
+    \label{eq:omega-eq}
+\end{equation}
+Then we need the memory matrix, which in turn requires us to find the fluctuation force. Note that if we 
+are able to evaluate $\vb{F}(0)$ into a linear function of $\vb{A}(0)$, then we have already obtained 
+$\vb{F}(t)$ by replacing $\vb{A}(0)$ with $\vb{A}(t)$. We have 
+\[
+    \vb{F}(0) = \dot{\vb{A}} - \ii \vb{\Omega} \vb{A} = \pmqty{\var{\dot{\rho}_{\vb*{q}}} \\ \dot{j}_{\vb*{q}}^\text{L}} - \pmqty{0 & \ii q \\ \frac{\ii q k_\text{B} T}{m S(q)} & 0} \pmqty{\var{\rho_{\vb*{q}}} \\ j_{\vb*{q}}^\text{L}} = \eval{\pmqty{0 \\ \dot{j}_{\vb*{q}}^\text{L} - \frac{\ii q k_\text{B} T}{m S(q)} \var{\rho}_{\vb*{q}} } }_{t=0} \eqqcolon \pmqty{0 \\ R_{\vb*{q}}(0)}, 
+\]
+and hence we have 
+\begin{equation}
+    \vb{F}(t) = \pmqty{0 \\ \dot{j}_{\vb*{q}}^\text{L} - \frac{\ii q k_\text{B} T}{m S(q)} \var{\rho}_{\vb*{q}} }
+    = \pmqty{0 \\ R_{\vb*{q}}}.
+    \label{eq:f-q-eq}
+\end{equation}
+Now the memory matrix can be obtained straightforwardly:
+\begin{equation}
+    \begin{aligned}
+        \vb{K}(t) &= \expval{\vb{F}(0)^* \vb{F}(t)^\top} \expval*{\vb{A}, \vb{A}}^{-1} = \pmqty{0 & 0 \\ 0 & \expval*{R_{-\vb*{q}}(0) R_{\vb*{q}}(t)}} \pmqty{
+        N S(q) & 0 \\ 
+        0 &  \frac{N k_\text{B} T}{m}
+    }^{-1} \\
+    &=  \pmqty{0 & 0 \\ 0 & \frac{m}{N k_\text{B} T} \expval*{R_{-\vb*{q}}(0) R_{\vb*{q}}(t)}}.
+    \end{aligned}
+    \label{eq:k-eq}
+\end{equation}
+
+Now \eqref{eq:matrix-eq}, \eqref{eq:c-eq}, \eqref{eq:omega-eq}, \eqref{eq:k-eq} and the definition of $R_{\vb*{q}}$ 
+in \eqref{eq:f-q-eq} form a closed group of equations. Actually we are only interested in $F(q, t)$,
+and we can focus on the left bottom element of \eqref{eq:matrix-eq}, which is 
+\begin{equation}
+    \begin{aligned}
+        \dv{t} \expval*{ - j^\text{L}_{-\vb*{q}}(0) \var{\rho}_{\vb*{q}}(t) } 
+        &= \frac{\ii q k_\text{B} T}{m S(q)} \expval*{ \var{\rho}_{-\vb*{q}}(0) \var{\rho}_{\vb*{q}}(t) } \\
+        &\quad - \int_0^t \dd{\tau} \frac{m}{N k_\text{B} T} \expval*{R_{-\vb*{q}}(0) R_{\vb*{q}}(\tau)} \expval*{ - j^\text{L}_{-\vb*{q}}(0) \var{\rho}_{\vb*{q}}(t - \tau) } .
+    \end{aligned}
+    \label{eq:original-mct}
+\end{equation}
+Note that the time translation symmetry guarantees
+\[
+    \expval*{\var{\rho_{-\vb*{q}}(-t)} \var{\rho_{\vb*{q}}(0)}} = \expval*{\var{\rho_{-\vb*{q}}(0)} \var{\rho_{\vb*{q}}(t)}},
+\]
+and by taking time derivative we have 
+\[
+    \begin{aligned}
+        \dv{t} \expval*{\var{\rho_{-\vb*{q}}(0)} \var{\rho_{\vb*{q}}(t)}} &= 
+        \dv{t} \expval*{\var{\rho_{-\vb*{q}}(-t)} \var{\rho_{\vb*{q}}(0)}} \\
+        &= \dv{t} \sum_i \expval*{\ee^{- \ii \vb*{q} \cdot \vb*{r}_i (-t)} \var{\rho_{\vb*{q}}(0)}}  \\
+        &= \sum_i \expval*{ - \ii \vb*{q} \cdot (- \vb*{v}_i(-t)) \ee^{- \ii \vb*{q} \cdot \vb*{r}_i (-t)} \var{\rho_{\vb*{q}}(0)}}  \\
+        &= \ii q \expval*{- j^\text{L}_{-\vb*{q}}(-t) \var{\rho_{\vb*{q}}(0)}} \\
+        &= \ii q \expval*{- j^\text{L}_{-\vb*{q}}(0) \var{\rho_{\vb*{q}}(t)}},
+    \end{aligned}
+\]
+which means 
+\[
+    \begin{aligned}
+        \expval*{- j^\text{L}_{-\vb*{q}}(0) \var{\rho_{\vb*{q}}(t)}} 
+        &= \frac{1}{\ii q} \dv{t} \expval*{\var{\rho_{-\vb*{q}}(0)} \var{\rho_{\vb*{q}}(t)}} \\
+        &= \frac{N}{\ii q} \dv{F(q, t)}{t} .
+    \end{aligned}
+\]
+Substitution of the above equation into \eqref{eq:original-mct}, we get 
+\begin{equation}
+    \dv[2]{F(q, t)}{t} + \frac{q^2 k_\text{B} T}{m S(q)} F(q, t) + \frac{m}{N k_\text{B} T} \int_0^t \dd{\tau} \expval*{R_{-\vb*{q}}(0) R_{\vb*{q}}(\tau)} \dv{F(q, t)}{t} = 0.
+    \label{eq:exact-mct}
+\end{equation}
+
+\eqref{eq:exact-mct} is exact under the conditions that 
 
 \bibliographystyle{plain}
 \bibliography{glass} 
