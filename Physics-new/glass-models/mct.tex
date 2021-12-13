@@ -26,6 +26,7 @@
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
 \usepackage{prettyref}
 
 % Page style
@@ -87,6 +88,13 @@
   keywordstyle=\color{blue}
 }
 
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
 \newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
 \newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
 
@@ -95,6 +103,18 @@
 
 % Support for tensor double arrows.
 \renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
 
 \title{Mode-Coupling Theory of the Glass Transition}
 \author{Jinyuan Wu}
@@ -165,12 +185,26 @@ instead of
     \expval*{A, B} = \expval*{A^\dagger B}.
 \]
 
-\section{The exact MCT equation} 
+\section{Motivation of MCT}
 
-Now we go back to derive a theory about glass transition. \concept{Mode coupling theory} is a so-called \emph{generalized}
-hydrodynamic theory for glasses \cite{RevModPhys.76.785} in that it still only considers density fluctuations in the system,
-but the density fluctuations are not smoothened. The derivation shown below is mainly based on \cite{mct2005}, 
-but the notation is from \cite{RevModPhys.76.785}. Note that the spacial translation symmetry gives 
+\begin{figure}
+    \centering
+    \input{temperatures.tex}
+    \caption{Important temperature points}
+\end{figure}
+
+Now we go back to derive a tkheory about glass transition. \concept{Mode coupling theory} is a so-called 
+\emph{generalized} hydrodynamic theory for glasses \cite{RevModPhys.76.785} in that it still only considers 
+density fluctuations in the system, but the density fluctuations are not smoothened. We will find a closed 
+equation about the density-density correlation function, and observe its time evolution.
+
+Here we consider some motivation of MCT. We already know that glasses are like liquids in that there is no 
+broken spacial translational symmetry, but glasses are not just (simple) liquids in that there are some 
+weird things happening. That is the reason we need a \emph{hydrodynamic} theory which focuses on density 
+modes, which can be measured directly using scattering experiments \cite{mct2005}, but the theory must
+be more than ordinary Navier-Stokes equations to include microscopic details.  
+
+Note that the spacial translation symmetry gives 
 \begin{equation}
     \expval*{\rho(0, 0) \rho(\vb*{r}, t)} = \frac{1}{V} \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} 
     \ee^{- \ii \vb*{k} \cdot \vb*{r}} \expval*{\rho_{-\vb*{k}}(0) \rho_{\vb*{k}}(t)},
@@ -195,6 +229,20 @@ Specifically, we have
     F(k, 0) = S(k),
 \end{equation}
 which is the static structural factor.
+
+\begin{note*}{}{}
+    If we are discussing a quantum system, we need to be more clear here about whether the density modes we are
+    talking about are operators or expectations. If we are talking about a theory of density operators, 
+    this is known as (a hydrodynamic flavor of) bosonization. If we are talking about a theory of expectation
+    of density operators, this is known as (hydrodynamic approach) of kinetic theory or (dynamic) density 
+    functional theory. All these approaches are different in a quantum many-body theory context, but 
+    since we are talking about a system where quantum fluctuation is not important, we can consider these 
+    approaches being equivalent, and call them \emph{hydrodynamic} or \emph{generalized hydrodynamic} ones. 
+\end{note*}
+
+\section{The exact MCT equation} 
+
+The derivation shown below is mainly based on \cite{mct2005}, but the notation is from \cite{RevModPhys.76.785}. 
 
 We are going to apply the Mori-Zwanzig formalism to $F(k, t)$. We need to find some slow variables
 and apply \eqref{eq:closed-form-a} to them to find their dynamics, and then we are able to find the dynamics 
@@ -374,7 +422,22 @@ Substitution of the above equation into \eqref{eq:original-mct}, we get
     \label{eq:exact-mct}
 \end{equation}
 
-\eqref{eq:exact-mct} is exact under the conditions that 
+\eqref{eq:exact-mct} is exact under the conditions that the glass is at least locally in thermal equilibrium
+so we have a definition of temperature, that equipartition theorem works for the momenta and that spacial and 
+temporal translational symmetries are not broken, which is obviously correct for glass. 
+However, \eqref{eq:exact-mct} is \emph{not} closed in that $R_{\vb*{q}}$ should be evaluated using $\rho_{\vb*{q}}$
+and $j^\text{L}_{\vb*{q}}$ instead of $\expval*{\var{\rho_{-\vb*{q}}(0)} \var{\rho_{\vb*{q}}(t)}}$. 
+Therefore, we need to derive an explicit expression of $R_{\vb*{q}}$ using $F(q, t)$. 
+If such an expression is not available, then we are unable to reach a generalized hydrodynamic theory 
+of glass. 
+
+\section{Closing the MCT equation \eqref{eq:exact-mct}}
+
+Now we need some intuition to have an approximation of $\expval*{R_{-\vb*{q}}(0) R_{\vb*{q}}(\tau)}$.
+
+\section{MCT and its failure}
+
+Now we review what can and cannot be captured with MCT. 
 
 \bibliographystyle{plain}
 \bibliography{glass} 
