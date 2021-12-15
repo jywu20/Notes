@@ -1,0 +1,299 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Special Relativity by Prof. Kun Din}
+\author{Jinyuan Wu}
+\date{December 15, 2021}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}
+    \centering
+    \input{12-15-figures/experiment1.tex}
+    \caption{Light in moving liquid}
+    \label{fig:light-liquid}
+\end{figure}
+
+So the problem is whether the wave equation of light does transform under Galilean transformation.
+An experiment shown in \prettyref{fig:light-liquid} can be used to verify the claim. If Galilean transformation
+works well, then the two light beams undergo the following velocities change:
+\begin{equation}
+    w_+ = \frac{c}{n} + v, \quad w_- = \frac{c}{n} - v,
+\end{equation}
+where $v$ is the speed of the liquid. What was actually observed, however, was 
+\begin{equation}
+    w_+ = \frac{c}{n} + v \left( 1 - \frac{1}{n^2 } \right).
+    \label{eq:wplus}
+\end{equation}
+
+\eqref{eq:wplus} means things are more complicated than a pure Galilean transformation.
+This was not considered as a big problem, though, because at that time the only wave phenomenon observed 
+was mechanical wave. Therefore, \eqref{eq:wplus} was initially thought as a piece of evidence for 
+\concept{Luminiferous aether}, something that bore light and could have interaction with ordinary materials.
+
+The claim of existence of aether, nonetheless, was rejected by the Michelson–Morley experiment.
+
+Lorentz found that if the transformation (now named \concept{Lorentz transformation})
+\begin{equation}
+    \pmqty{c t' \\ z'} = \pmqty{\gamma & - \beta \gamma \\ - \beta & \gamma} \pmqty{ct \\ z}, 
+    \quad \beta = \frac{v}{c}, \quad \gamma = \frac{1}{\sqrt{1 - \beta^2}}
+    \label{eq:lorentz}
+\end{equation}
+was the correct rule for light, then everything was find. We can verify that 
+\[
+    \pdv{t} = - \beta \gamma c \pdv{z'} + \gamma \pdv{t'},
+\] 
+\[
+    \pdv[2]{t} = \beta^2 \gamma^2 c^2 \pdv[2]{{z'}} - 2 \beta c \gamma^2 \pdv{t'} \pdv{z'} + \gamma^2 \pdv[2]{{t'}},
+\]
+\[
+    \pdv{z} = \gamma =\pdv{z'} - \frac{\beta \gamma}{c} \pdv{t'},
+\]
+\[
+    \pdv[2]{z} = \gamma^2 \pdv[2]{{z'}} - \frac{2 \beta \gamma^2}{c} \pdv{t'} \pdv{z'} + \frac{\beta^2 \gamma^2}{c^2} \pdv[2]{{t'}},
+\]
+and therefore 
+\begin{equation}
+    \pdv[2]{z} - \frac{1}{c^2} \pdv[2]{t} = \pdv[2]{{z'}} - \frac{1}{c^2} \pdv[2]{{t'}}. 
+    \label{eq:invariant-wave}
+\end{equation}
+Therefore, the negative result in Michelson–Morley experiment can be explained.
+
+If we accept \eqref{eq:lorentz} to be the correct time-space transformation, we need to define an inner product 
+that is invariant under it. Since we have \eqref{eq:invariant-wave}, a wise idea is to define 
+\begin{equation}
+    \vb{a} \cdot \vb{b} = \vb{a}^\top \pmqty{\dmat{1, -1, -1, -1}} \vb{b}.
+\end{equation}
+This is called the \concept{Lorentz metric}. Usually, we use $a$ instead of $\vb{a}$ to denote a 4-vector. 
+Note that here we need to pay attention to \emph{covariant} and \emph{contravariant} vectors.
+A covariant vector transforms like 
+\begin{equation}
+    a^\mu \to a'^\mu = \Lambda\indices{^\mu_\nu} a_\nu,
+\end{equation}
+while a contravariant vector transforms like 
+\begin{equation}
+    a_\mu \to a'_\mu = a_\nu (\Lambda^{-1})\indices{^\nu_\mu}.
+\end{equation}
+A inner product is always performed between a contravariant vector and a covariant vector.
+
+Now we are able to find all possible Lorentz transformations: they are just matrices that keep the 
+Lorentz metric.%
+\footnote{To be exact, we just need to keep the Lorentz metrics before and after the transformation 
+\emph{congruent}, because a Lorentz transformation can rescale the coordinates. What really matter
+are the \emph{inertia indices}.}
+A detailed derivation can be found in Jackson Chapter~17. There we will find 
+\begin{equation}
+    \Lambda\indices{^\mu_\nu} = \pmqty{\gamma & - \gamma \vb{\beta}^\top \\ - \gamma \vb{\beta}^\top & \vb{I}_3 + (\gamma - 1) \frac{\vb{\beta} \vb{\beta}^\top}{\beta^2}},
+\end{equation}
+where 
+\begin{equation}
+    \vb{\beta} = (\beta_1, \beta_2, \beta_3).
+\end{equation}
+
+Now we rewrite electrodynamics in a relativistic way. We have 
+\begin{equation}
+    \partial_\mu = \pmqty{ \frac{1}{c} \pdv{t} & \grad }, \quad \partial^\mu = \pmqty{ \frac{1}{c} \pdv{t} \\ - \grad },
+\end{equation}
+and therefore the continuity equation is 
+\begin{equation}
+    \partial_\mu j^\mu = 0, \quad j^\mu = (\rho, \vb*{j}).
+\end{equation}
+We define 
+\begin{equation}
+    A^\mu = \pmqty{\frac{\phi}{c} \\ \vb*{A}}, 
+\end{equation}
+and we will find that the Lorentz gauge can now be written in a concise way:
+\begin{equation}
+    \partial_\mu A^\mu = 0.
+\end{equation} 
+Under the Lorentz gauge, the wave equations can be rewritten as
+\begin{equation}
+    \partial^\mu \partial_\mu A^\nu = \mu_0 j^\nu.
+\end{equation}
+
+The generalized (i.e. gauge independent) wave equation is 
+\begin{equation}
+    \partial_\mu (\underbrace{\partial^\mu A^\nu - \partial^\nu A^\mu}_{F^{\mu \nu}}) = \mu_0 j^\nu.
+    \label{eq:maxwell}
+\end{equation}
+We can verify that the components of this equation reduce to Maxwell equations. 
+We have 
+\[
+    F^{0(1,2,3)} = \pdv{(ct)} A^{(1,2,3)} - \left( - \pdv{x} (c^{-1} \phi) \right) = - \frac{1}{c} E^{(1,2,3)},
+\]
+\[
+    F^{12} = \partial^1 A^2 - \partial^2 A^1 = \left( - \pdv{x} \right) A_y - \left( - \pdv{y} \right) A_x = - B_z
+\]
+and similarly 
+\[
+    F^{23} = - B_x, \quad F^{31} = - B_y,
+\]
+and therefore we find the equation
+\[
+    \partial_\mu F^{\mu 0} = \mu_0 j^0
+\]
+is equivalent to 
+\[
+    \div{(c^{-1} \vb*{E})} = \mu_0 \rho c,
+\]
+which is the first Maxwell equation. The equation
+\[
+    \partial_\mu F^{\mu 1} = \mu_0 j^1
+\]
+is equivalent to 
+\[
+    \pdv{(ct)} (- c^{-1} E_x) + \pdv{y} B_z - \pdv{z} B_y = \mu_0 j_x,
+\]
+which is the fourth Maxwell equation. The other two Maxwell equations - two the sourceless equations - cannot 
+be derived from \eqref{eq:maxwell}. They actually come from the fact that $F^{\mu \nu}$ is generated from 
+antisymmetrized $\partial^\mu A^\nu$ and the consequent Bianchi identity. Therefore, \eqref{eq:maxwell} is 
+actually not exactly equivalent to all Maxwell equations. The tensor 
+\begin{equation}
+    F^{\mu \nu} = \pmqty{ 0 & - c^{-1} E_x & - c^{-1} E_y & - c^{-1} E_z \\
+    c^{-1} E_x & 0 & - B_z & B_y \\
+    c^{-1} E_y & B_z & 0 & - B_x \\
+    c^{-1} E_z & - B_y & B_x & 0 }
+\end{equation}
+or in other words 
+\begin{equation}
+    F_{\mu \nu} = \pmqty{ 0 & c^{-1} E_x & c^{-1} E_y & c^{-1} E_z \\
+    -c^{-1} E_x & 0 & - B_z & B_y \\
+    -c^{-1} E_y & B_z & 0 & - B_x \\
+    -c^{-1} E_z & - B_y & B_x & 0 }
+\end{equation}
+is called the \concept{field strength tensor}.
+
+\begin{note*}{}{}
+    Matrix representation of tensors may be misleading. For vectors, we can always use a column vector to 
+    represent components of a covariant vector and use a row vector to represent components of a contravariant
+    vector, but since $T^{\mu \nu}, T_{\mu \nu}, T\indices{^\mu_\nu}$ and $T\indices{_\mu^\nu}$ are all written
+    into a rectangular matrix, it is impossible to distinguish which index is covariant or contravariant. 
+\end{note*}
+
+We can find that if we define 
+\begin{equation}
+    \mathcal{F}^{\mu \nu} = \pmqty{ 0 & -B_x & -B_y & -B_z \\
+     - B_x & 0 & c^{-1} E_z & - c^{-1} E_y \\
+     - B_y & - c^{-1} E_z & 0 & c^{-1} E_x \\
+     - B_z & c^{-1} E_y & - c^{-1} E_x & 0},
+\end{equation}
+the equation 
+\begin{equation}
+    \partial_\mu \mathcal{F}^{\mu \nu} = 0
+\end{equation}
+gives the two sourceless Maxwell equations. Now we can find a duality between the electric field and the magnetic
+field: when there is no source in the space, we have 
+\[
+    \partial_\mu \mathcal{F}^{\mu \nu} = \partial_\mu {F}^{\mu \nu} = 0 = 0,
+\]
+and therefore the transformation 
+\begin{equation}
+    - c^{-1} E_i \longrightarrow B_i
+\end{equation}
+leaves every equation the same.
+
+\end{document}

@@ -54,3 +54,8 @@ standard model themselves are observables, and a many-body theory that is about 
 measurable quantities of gauge bosons can be about *the expectation of gauge fields*.
 So in the end, the formulation of something like "DFT for QED" looks just like classical electrodynamics,
 where the electromagnetic field interacts with electron density (instead of electronic fields).
+
+Expectation-based hydrodynamics can be further divided into several approaches. If we are talking about 
+the flavor of thermodynamics that we usually encounter in fluid dynamics courses, then there must be frequent
+collisions in the system to establish thermal equilibrium. When there are few collisions, however, formally we 
+may still have hydrodynamics, because bosonization may work.
