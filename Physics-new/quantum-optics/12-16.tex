@@ -1,0 +1,290 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[last-]{12-2}[12-2.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\newcommand{\lastnote}{\href{12-9.pdf}{the last lecture}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Master equation}
+
+We consider a open quantum system, whose Hamiltonian is $H$, and at each time step, there is a probability 
+of quantum jump to several given states. Suppose the probability of jumping to state $\ket*{i}$ is $\Gamma_i$,
+we define 
+\begin{equation}
+    C_i = \sqrt{\Gamma_i} \dyad{i},
+\end{equation} 
+and the system can be described using a stochastic wave function method shown in previous lectures.
+If we use a density matrix formalism, we find 
+\[
+    \rho(t + \Delta t) = \sum_i \Gamma_i \Delta t \dyad{i} + (1 - \sum_i \Gamma_i) \dyad{\psi_\text{s}(t + \Delta t)},
+\]
+where $\ket*{\psi_\text{s}}$ evolves according to $H$. We therefore find 
+\begin{equation}
+    \dot{\rho} = \frac{1}{\ii \hbar} \comm*{H_\text{eff}}{\rho} + \sum_i C_i \rho C_i^\dagger,
+    \label{eq:master-eq}
+\end{equation}
+where 
+\begin{equation}
+    H_\text{eff} = H - \frac{\ii \hbar}{2} \sum_i C_i^\dagger C_i.
+\end{equation}
+\eqref{eq:master-eq} is called \concept{the master equation in Lindblad form}.
+
+We want to check the unitarity of \eqref{eq:master-eq}. We have 
+\begin{equation}
+    \trace \dot{\rho} = - \sum_j \trace \left( \frac{1}{2} C_i^\dagger C_i \rho + \frac{1}{2} \rho C_i^\dagger C_i - C_i \rho C_i^\dagger \right).
+\end{equation}
+The last term is called the \concept{recycling term}, which makes the total probability increase, while the first 
+two terms make the total probability decrease. With trace cyclic property, we find the total probability 
+is conserved.
+
+We consider a light-atom interacting system with RWA, where 
+\begin{equation}
+    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma}, \quad C = \sqrt{\Gamma} \dyad{g}{e},
+\end{equation} 
+and we have 
+\begin{equation}
+    \begin{aligned}
+        \dot{\rho}_{gg} &= \frac{\ii \Omega}{2} \rho_{ge} - \frac{\ii \Omega^*}{2} \rho_{eg} + \Gamma \rho_{ee}, \\
+        \dot{\rho}_{ee} &= - \dot{\rho}_{gg}, \\
+        \dot{\rho}_{ge} &= \left( - \frac{\Gamma}{2} + \ii \Delta \right) \rho_{ge} - \frac{\ii \Omega}{2} (\rho_{ee} - \rho_{gg}),
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \rho_{ee} + \rho_{gg} = 1, \quad \rho_{eg} = \rho_{ge}^*.
+\end{equation}
+We define 
+\begin{equation}
+    \expval*{\sigma^x} = \Re \rho_{eg} \eqqcolon u, \quad \expval*{\sigma^y} = \Im \rho_{eg} \eqqcolon v,
+    \expval*{\sigma^z} = \rho_{ee} - \rho_{gg} \eqqcolon w,
+\end{equation}
+and 
+\begin{equation}
+    \vb*{n} = (\expval*{\sigma^x}, \expval*{\sigma^y}, \expval*{\sigma^z}),
+\end{equation}
+and we have 
+\begin{equation}
+    \dot{\vb*{n}} = \vb*{\Omega} \times \vb*{n} - \pmqty{ \gamma_\text{T} u \\ \gamma_\text{T} v \\ \gamma_\text{L} (w+1) },
+    \label{eq:optical-bloch}
+\end{equation}
+where 
+\begin{equation}
+    \gamma_\text{T} = \frac{\Gamma}{2}
+\end{equation}
+is called the \concept{transverse damping rate} and 
+\begin{equation}
+    \gamma_\text{L} = \Gamma
+\end{equation}
+is called the \concept{longitude relaxing rate}. \eqref{eq:optical-bloch} is called the 
+\concept{optical Bloch equation}.
+
+Now we try to find a stable solution of \eqref{eq:optical-bloch}. It is 
+\begin{equation}
+    \rho_{ee}^\text{stable} = \frac{(\Omega / \Gamma)^2 }{1 + 2 (\Omega / \Gamma)^2 + 4 (\Delta / \Gamma)^2},
+\end{equation}
+and 
+\begin{equation}
+    \rho_{ge}^\text{stable} = - \frac{\Omega / 2}{\Delta - \ii \Gamma / 2} (2 \rho_{ee} - 1).
+\end{equation}
+We define 
+\begin{equation}
+    S = 2 \left(\frac{\Omega}{\Gamma}\right)^2.
+\end{equation}
+We can also evaluate the response of the electric dipole. We have 
+\begin{equation}
+    \expval*{d} = \rho_{eg} d_{ge} + \text{h.c.} = \alpha E + \text{c.c.},
+    \quad \alpha = \frac{1}{1 + S + 4 (\Delta / \Gamma)^2 } \left( \frac{2 \Delta}{\Gamma} + \ii \right) 
+    \frac{3 \lambda^3}{4 \pi^2} \epsilon_0 \eqqcolon \alpha(I).
+\end{equation}
+
+saturated absorption, Saturated absorption spectroscopy 
+\concept{Lamb dip} 
+
+\section{Rate equation} 
+
+We choose a \emph{adiabatic} basis, which are dressed states of $H_\text{eff}$. In this basis, assuming that 
+the non-diagonal elements of the density matrix damp quickly enough, we have 
+\begin{equation}
+    \dot{\rho}_{nn} = - \gamma_{n} \rho_{nn} + \sum_{m \neq n} \gamma_{nm} \rho_{mm}, \quad \rho_{mn}|_{m \neq n} = 0,
+\end{equation} 
+which is called the \concept{rate equation}. 
+
+Again for a two-level system where RWA works, we have 
+\begin{equation}
+    \gamma_{\tilde{g}} = \Gamma \sin^2 \theta , \quad \gamma_{\tilde{e}} = \Gamma \cos^2 \theta,
+    \gamma_{\tilde{g} \tilde{e}} = \Gamma \sin^4 \theta , \gamma_{\tilde{e} \tilde{g}} = \Gamma \cos^4 \theta,
+\end{equation}
+and the rate equation is 
+\begin{equation}
+    \dot{\rho}_{\tilde{g} \tilde{g}} = (- \sin^4 \theta \rho_{\tilde{g} \tilde{g}} + \cos^4 \theta \rho_{\tilde{e} \tilde{e}})  \Gamma.
+\end{equation}
+The stable solution is 
+\begin{equation}
+    \rho^\text{stable}_{\tilde{g} \tilde{g}} = \frac{\cos^4 \theta}{\cos^4 \theta + \sin^4 \theta}, \quad 
+    \rho^\text{stable}_{\tilde{e} \tilde{e}} = \frac{\sin^4 \theta}{\cos^4 \theta + \sin^4 \theta}.
+\end{equation}
+
+\section{How atoms move in the space}
+
+All previous discussions were based on the assumption that atoms are somehow ``fixed'' or ``trapped'' at a 
+given point. This is of course possible (using laser trap or something), but a more interesting case is when 
+atoms are not that constrained. In this case, we need to take the spacial motion of atoms into account.
+
+Consider a stationary mode in a cavity:
+\begin{equation}
+    E = E_0 \cos(kx) \ee^{\ii \omega t} + \text{c.c.},
+\end{equation}
+and at each point the energies of the ground state and the excited state of a two-level atom are different.
+Since 
+\begin{equation}
+    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma} \propto E,
+\end{equation}
+we have 
+\begin{equation}
+    m \expval*{\ddot{\vb*{r}}} = - {\grad \expval*{H}} \propto - \grad{E}.
+\end{equation}
+
+Sisyphus cooling
+
+Note: there are some subtleties here. 
+\begin{equation}
+    \expval*{F} = \Re \frac{\grad \Omega}{\Omega} \alpha_r \abs*{E}^2 + 
+    \Im \frac{\grad \Omega}{\Omega} \alpha_i \abs*{E}^2 +
+\end{equation}
+We find that the conservative force causes cooling, while the scattering force causes heating.
+
+Doppler cooling is another cooling approach
+We will find 
+\begin{equation}
+    \Delta \to \Delta - k v, 
+\end{equation}
+\begin{equation}
+    F = - \beta v
+\end{equation}
+What Doppler cooling fails to take into account is the Sisyphus cooling or heating mechanism above.
+
+\section{A four-level atom model, and when polarization is important}
+
+\begin{equation}
+    H = \hbar \Delta (\dyad{e+} + \dyad{e-}) 
+    + \frac{\hbar \Omega_\text{T}}{2} (\dyad*{e+}{g+} + \dyad*{e-}{g-}) + \text{h.c.}
+    + \frac{\hbar \Omega_{\sigma-}}{2} (\dyad*{e-}{g+} + \text{h.c.}),
+\end{equation}
+and the dressed states are 
+\begin{equation}
+    \ket*{\tilde{g}+} = \ket*{g+} + \frac{\Omega_{\sigma-} / 2}{\Delta} \ket*{e-}, \quad
+    \ket*{\tilde{g}-} = \ket*{g-}.
+\end{equation} 
+We find $\ket*{g-}$ actually has no coupling with the optical field and therefore is not dressed at all.
+States like this are often called \concept{dark states}, because if a atom falls on such a state, no radiation
+will be seen. It does not mean these states are completely irrelevant, because quantum hopping may drive 
+an atom to such a state.
+
+In such a system we can realize \concept{sub-Doppler cooling}, again by Sisyphus cooling. This was first 
+found by Steven Chu, who found his cooling device mysteriously worked better than the estimation of Doppler 
+cooling.
+
+\end{document}
