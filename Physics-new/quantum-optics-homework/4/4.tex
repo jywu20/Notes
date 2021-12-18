@@ -77,6 +77,9 @@
 \SetKwProg{Function}{function}{}{end}
 \SetArgSty{textnormal}
 
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
 \newcommand*{\concept}[1]{{\textbf{#1}}}
 
 \newrefformat{fig}{Figure~\ref{#1}}
@@ -90,8 +93,10 @@
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
+% Tricky yet ad hoc details 
 \newtcbtheorem[number within=section]{warning}{Warning}%
   {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+% Details about external information
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
 
@@ -117,6 +122,10 @@ wave function and the scattering rate
 \begin{equation}
     \gamma_1 = \expval*{C_1^\dagger C_1}{\psi_\text{s}}, \quad \gamma_2 = \expval*{C_2^\dagger C_2}{\psi_\text{s}}.
 \end{equation}
+(d) Plot the time evolution of $\gamma_1$ and $\gamma_2$ under the circumstance of
+(i) $\Delta = 0, \Omega \gg \Gamma_1 \gg \Gamma_2$;
+(ii) $\Omega = 2 \Delta \gg \Gamma_1 \gg \Gamma_2$;
+(iii) $\Delta = 0, \Omega \ll \Gamma_1 , \Gamma_2$.
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] The effective Hamiltonian is
@@ -213,24 +222,274 @@ where
 \end{note*}
 Therefore we have (we have omitted the complex factors, since they will be canceled by normalization anyway) 
 \begin{equation}
-    \ket*{\psi_\text{s}(t)} \propto \left( \cos \frac{\abs*{\vb*{\Omega}} t}{2} - \ii \frac{\Delta + \ii \Gamma / 2}{\abs*{\vb*{\Omega}}} \sin \frac{\abs*{\vb*{\Omega}} t}{2}  \right) \ket*{\text{g}} - \frac{\ii \Omega}{\abs*{\vb*{\Omega}}} \sin \frac{\abs*{\vb*{\Omega}} t}{2} \ket*{\text{e}},
+    \ket*{\psi_\text{s}(t)} = \frac{1}{C} \left( \cos \frac{\abs*{\vb*{\Omega}} t}{2} - \ii \frac{\Delta + \ii \Gamma / 2}{\abs*{\vb*{\Omega}}} \sin \frac{\abs*{\vb*{\Omega}} t}{2}  \right) \ket*{\text{g}} - \frac{\ii \Omega}{\abs*{\vb*{\Omega}}} \sin \frac{\abs*{\vb*{\Omega}} t}{2} \ket*{\text{e}},
 \end{equation}
-and after normalization it is 
+the normalization constant being 
+\begin{equation}
+    C = \sqrt{ \abs{\cos \frac{\abs*{\vb*{\Omega}} t}{2} - \ii \frac{\Delta + \ii \Gamma / 2}{\abs*{\vb*{\Omega}}} \sin \frac{\abs*{\vb*{\Omega}} t}{2} }^2 + \frac{\abs{\Omega}^2}{\abs*{\vb*{\Omega}}^2} \sin^2 \frac{\abs*{\vb*{\Omega}} t}{2} }.
+\end{equation}
+Since  
+\[
+    C_1^\dagger C_1 = \Gamma_1 \dyad{\text{e}}, \quad C_2^\dagger C_2 = \Gamma_2 \dyad{\text{e}},
+\]
+it is then straightforward that 
+\begin{equation}
+    \gamma_1 = \frac{\Gamma_1}{{C}^2} \frac{\Omega^2}{\abs*{\vb*{\Omega}}^2} \abs{\sin \frac{\abs*{\vb*{\Omega}} t}{2}}^2,
+    \quad \gamma_2 = \frac{\Gamma_2}{{C}^2} \frac{\Omega^2}{\abs*{\vb*{\Omega}}^2} \abs{\sin \frac{\abs*{\vb*{\Omega}} t}{2}}^2.
+\end{equation}
+Note that in these equations $\abs{\vb*{\Omega}}^2$ means the norm, i.e. $\abs{\vb*{\Omega}} \cdot \abs*{\vb*{\Omega}}^*$. 
 
-\item
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \input{gamma-1.tex}
+        \subcaption{$\Delta = 0, \Omega \gg \Gamma_1 \gg \Gamma_2$}
+        \label{fig:gamma-1}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \input{gamma-2.tex}
+        \subcaption{$\Omega = 2 \Delta \gg \Gamma_1 \gg \Gamma_2$}
+        \label{fig:gamma-2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \input{gamma-3.tex}
+        \subcaption{$\Omega = 2 \Delta \gg \Gamma_1 \gg \Gamma_2$}
+        \label{fig:gamma-3}
+    \end{subfigure}
+    \caption{Time evolution of $\gamma_1$ and $\gamma_2$}
+    \label{fig:gammas}
+\end{figure}
+
+\item[(d)] Note that $\gamma_1$ and $\gamma_2$ only differ with a factor, so their plots only differ in scaling.
+\begin{itemize}
+    \item[(i)] In this case $\abs*{\vb*{\Omega}} \approx \abs*{\Omega}$, so $\gamma_1$ and $\gamma_2$ oscillate as
+    $A \sin^2 \abs*{\Omega} t / 2$ until a quantum jump happens, and both of them drop to zero, and then another 
+    oscillation starts. See \prettyref{fig:gamma-1}.
+    \item[(ii)] In this case 
+    \[
+        \abs*{\vb*{\Omega}} = \sqrt{\abs*{\Omega}^2 + \Delta^2 - \Gamma^2 / 4 + \ii \Delta \Gamma}
+        \approx \sqrt{\abs*{\Omega}^2 + \frac{1}{4} \abs*{\Omega}^2} = \frac{\sqrt{5}}{2} \abs*{\Omega},
+    \] 
+    so the case is similar to (i), but the oscillating period is now $4 \pi / \sqrt{5} \abs*{\Omega}$. See \prettyref{fig:gamma-2}.
+    \item[(iii)] In this case 
+    \[
+        \abs*{\vb*{\Omega}} \approx \sqrt{- \Gamma^2 / 4} = \frac{\ii}{2} \Gamma,
+    \] 
+    and we have 
+    \[
+        \begin{aligned}
+            \gamma_i &= \frac{\Gamma_i}{{C}^2} \frac{\Omega^2}{\Gamma^2 / 4} \abs{\sin \frac{\ii \Gamma}{2} t}^2 \\
+            &= \frac{\Gamma_i}{{C}^2} \frac{ \Omega^2}{\Gamma^2 } (\ee^{- \Gamma t / 4} - \ee^{\Gamma t / 4})^2.
+        \end{aligned}
+    \]
+    Its prefactor is small considering that $\Omega / \Gamma$ is small, but it increases exponentially. Before it 
+    grows too large, a quantum jump will happen. See \prettyref{fig:gamma-3}.
+\end{itemize}
 
 \end{itemize}
 
 \paragraph{}
 
-\paragraph{Cesium atom} 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{fig2.png}
+    \caption{Cesium atom subjected to three laser fields for nearly resonant excitations}
+    \label{fig:sys-2}
+\end{figure}
 
-\paragraph{EIT-assisted giant Kerr effect} The "lambda"-system composed of $|\text{a}\rangle,|\text{e}\rangle,|\text{b}\rangle \quad$ is further coupled to excited state $|\text{c}\rangle$, as in Fig. 1. We consider the situation of EIT-resonance: $\delta=0$. We further consider atomic state to be initially in $|\psi(t=0)\rangle=|\mathrm{a}\rangle$, and weak-excitation limit is satisfied $\left(\left|\Omega_{1}\right|\right.$ small "enough").
-3a) Write down the effective Hamiltonian for this problem for $\delta=0$
-3b) Obtain the approximate stochastic wavefunction in its steady state $\left|\widetilde{\psi_\text{S}}\right\rangle=|\text{a}\rangle+$ ${c}_{\mathrm{e}}|\text{e}\rangle+c_\text{b}|\text{b}\rangle+c_\text{c}|\text{c}\rangle$ such that $\mathrm{H}_{\mathrm{eff}}\left|\psi_{\mathrm{S}}\right\rangle \approx 0$
+\paragraph{Cesium atom} Consider a simplified cesium level diagram in \prettyref{fig:sys-2} (We ignore Zeeman and hyperfine structure). The laser beams at $895 \mathrm{~nm}, 761 \mathrm{~nm}$ and $794 \mathrm{~nm}$ induce coupling between the ground state $6 \mathrm{~S}_{1 / 2}-6 \mathrm{P}_{1 / 2}$ (with Rabi freq $\left.\Omega_{1}\right), 6 \mathrm{P}_{1 / 2}-8 \mathrm{~S}_{1 / 2}$ (with Rabi freq $\Omega_{2}$ ), and $8 \mathrm{~S}_{1 / 2}-6 \mathrm{P}_{3 / 2}$ (with Rabi freq $\Omega_{3}$ ) respectively. The 1-photon detuning $\Delta_{a}, 2-$ photon detuning $\Delta_{b}$, and 3-photon detuning $\Delta_{c}$ are sketched as in the diagram. We consider the case where all these detunings are at GHz level or smaller, which are tiny comparing with the optical frequencies of the lasers.
+
+Task 1: With $|g\rangle=\left|6 S_{1 / 2}\right\rangle,|a\rangle=\left|6 P_{1 / 2}\right\rangle ;|b\rangle=\left|8 S_{1 / 2}\right\rangle ;|c\rangle=\left|6 P_{3 / 2}\right\rangle$, invent your own additional notations to write down the time-dependent Hamiltonian for the cesium atom in the laser fields, that explicitly have the optical frequencies of the lasers.
+
+Task 2: Write down a time-independent Hamiltonian.
+
+Task 3: Consider radiative life time for $6 P_{1 / 2}, 8 S_{1 / 2}$ and $6 P_{3 / 2}$ are given by $\tau_{a}=$ $1 / \Gamma_{a}, \tau_{b}=1 / \Gamma_{b}$, and $\tau_{c}=1 / \Gamma_{c} .$ Write down the effective non-Hermitian Hamiltonian ${H}_{\mathrm{eff}}$ that includes an anti-Hermitian part to account for the spontaneous emissions.
+
+Task 4: Consider the internal state of the cesium has a wavefunction $\left|\psi_{S}(t)\right\rangle=$ $c_{g}|g\rangle+c_{a}|a\rangle+c_{b}|b\rangle+c_{c}|c\rangle$. Consider the weak perturbation limit (ie laser intensities are small enough that atoms are barely excited), write down the differential equations for the coefficients and approximately solve for $\left|\psi_\text{S}(t)\right\rangle \approx|\tilde{\psi}_\text{S}\rangle$ with $\mathrm{H}_{\mathrm{eff}}|{\tilde{\psi}_{S}}\rangle=0$.
+
+Task 5: Perturbative calculate the 3-photon scattering rate given by $\gamma_{3}=\left|c_{c}\right|^{2} \Gamma$, by assuming $|\psi(t)\rangle$ quickly relax to eigenstate of the effective Hamiltonian with $c_{g} \approx$ $1 .$
+
+Task 6: Consider strong $761 \mathrm{~nm}$ and $795 \mathrm{~nm}$ laser, calculate the atomic polaraizability $\alpha\left(\Omega_{2}, \Omega_{3}\right)$ for the $852 \mathrm{~nm}$ laser excitation by evaluating $\langle\mathrm{d}\rangle=\left\langle\widetilde{\Psi_{S}}\left|d_{a g}\right| a\right\rangle\left\langle g \mid \widetilde{\psi_{S}}\right\rangle+$ c.c., and express it as $\alpha \mathrm{E}_{1}+$ c.c..
+
+Task 7: Discuss the validity of your method of calculating $\gamma_{3}$ and $\alpha\left(\Omega_{2}, \Omega_{3}\right)$ using an ill-defined wavefunction (since its norm cannot be unity) and an effective nonHermitian Hamitonian, instead of using a density matrix and master equations (or the full Monte-Carlo wavefunction method). Your discussion may involve $\Omega, \Delta, \Gamma$ and the total time of observation $\mathrm{T}$.
 
 \paragraph{Solution} \begin{itemize}
-\item[(a)]  
+\item[(1)] The time-dependent Hamiltonian is 
+\begin{equation}
+    H = H_0 + H_\text{dipole},
+\end{equation}   
+where 
+\begin{equation}
+    H_0 = \hbar \omega_\text{g} \dyad{\text{g}} + \hbar \omega_\text{a} \dyad{\text{a}} 
+    + \hbar \omega_\text{b} \dyad{\text{b}} + \hbar \omega_\text{c} \dyad{\text{c}},
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        H_\text{dipole} = &-  \vb*{d}_\text{ag} \cdot (\vb*{E}_1 \ee^{- \ii \omega_1 t} + \vb*{E}_1^* \ee^{\ii \omega_1 t}) \dyad*{\text{a}}{\text{g}} 
+        -  \vb*{d}_\text{ba} \cdot (\vb*{E}_2 \ee^{- \ii \omega_2 t} + \vb*{E}_2^* \ee^{ \ii \omega_2 t}) \dyad*{\text{b}}{\text{a}} \\
+        & \quad -  \vb*{d}_\text{bc} \cdot (\vb*{E}_3 \ee^{- \ii \omega_3 t } + \vb*{E}_3^* \ee^{ \ii \omega_3 t }) \dyad*{\text{b}}{\text{c}} + \text{h.c.},
+    \end{aligned}
+\end{equation}
+where we denote the external electric fields as 
+\begin{equation}
+    \vb*{E}_i = \vb*{E}_{i0} \ee^{\ii \omega_i t } + \vb*{E}_{i0}^* \ee^{- \ii \omega_i t}, \quad i = 1, 2, 3.
+\end{equation}
+The laser frequencies satisfy
+\begin{equation}
+    \omega_1 + \Delta_\text{a} = \omega_\text{a} - \omega_\text{g}, \quad
+    \omega_2 + \Delta_\text{b} - \Delta_\text{a} = \omega_\text{b} - \omega_\text{a}, \quad 
+    \omega_3 + \Delta_\text{b} + \Delta_\text{c} = \omega_\text{b} - \omega_\text{c},
+\end{equation}
+from which we find 
+\begin{equation}
+    \omega_1 = \omega_\text{a} - \omega_\text{g} - \Delta_\text{a}, \quad 
+    \omega_2 = \omega_\text{b} - \omega_\text{a} + \Delta_\text{a} - \Delta_\text{b} , \quad 
+    \omega_3 = \omega_\text{b} - \omega_\text{c} - \Delta_\text{b} - \Delta_\text{c}.
+\end{equation}
+\item[(2)] We switch to the interaction picture, using $H_0$ as the free Hamiltonian, and we have 
+\begin{equation}
+    \begin{aligned}
+        H = H_\text{dipole, int} = &-  \vb*{d}_\text{ag} \cdot (\vb*{E}_1 \ee^{- \ii \omega_1 t} + \vb*{E}_1^* \ee^{\ii \omega_1 t}) \dyad*{\text{a}}{\text{g}} \ee^{\ii (\omega_\text{a} - \omega_\text{g}) t} \\
+        &- \vb*{d}_\text{ba} \cdot (\vb*{E}_2 \ee^{- \ii \omega_2 t} + \vb*{E}_2^* \ee^{ \ii \omega_2 t}) \dyad*{\text{b}}{\text{a}} \ee^{\ii (\omega_\text{b} - \omega_\text{a}) t} \\
+        & - \vb*{d}_\text{bc} \cdot (\vb*{E}_3 \ee^{- \ii \omega_3 t } + \vb*{E}_3^* \ee^{ \ii \omega_3 t }) \dyad*{\text{b}}{\text{c}} \ee^{\ii (\omega_\text{b} - \omega_\text{c}) t} + \text{h.c.}.
+    \end{aligned}
+\end{equation}  
+We make the rotating wave approximation, i.e. omitting all terms that vibrate much faster than all detunings, 
+and get 
+\begin{equation}
+    \begin{aligned}
+        H = & \frac{1}{2} \hbar \Omega_1 \dyad*{\text{a}}{\text{g}} \ee^{\ii (\omega_\text{a} - \omega_\text{g} - \omega_1) t} 
+        + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{b}}{\text{a}} \ee^{\ii (\omega_\text{b} - \omega_\text{a} - \omega_2 ) t} \\
+        &\quad + \frac{1}{2} \hbar \Omega_3  \dyad*{\text{b}}{\text{c}} \ee^{\ii (\omega_\text{b} - \omega_\text{c} - \omega_3) t} + \text{h.c.},
+    \end{aligned}
+\end{equation}
+where we define 
+\begin{equation}
+    \frac{1}{2} \hbar \Omega_1 = - \vb*{d}_\text{ag} \cdot \vb*{E}_1, \quad \frac{1}{2} \hbar \Omega_2 = - \vb*{d}_\text{ba} \cdot \vb*{E}_2,
+    \quad \frac{1}{2} \hbar \Omega_3 = - \vb*{d}_\text{bc} \cdot \vb*{E}_3.
+\end{equation}
+
+\begin{warning*}{}{}
+    If we define the electric field as 
+    \begin{equation}
+        \vb*{E}_i = \frac{1}{2} (\vb*{E}_{i0} \ee^{\ii \omega_i t } + \vb*{E}_{i0}^* \ee^{- \ii \omega_i t}) = \abs*{\vb*{E}_i} \cos(\omega_i t + \varphi_i), \quad i = 1, 2, 3,
+        \label{eq:electric-field-alternative}
+    \end{equation}
+    then there will be no $1/2$ factor in the definition of $\Omega_i$'s. However, later we will evaluate $\expval*{\vb*{d}}$, which has the form of $\text{something} \ee^{- \ii \omega t} + \text{h.c.}$, and if we insist 
+    on \eqref{eq:electric-field-alternative}, an additional and easy-to-forget factor $2$ must be added when we 
+    evaluate $\alpha = d / E$. 
+\end{warning*}
+
+There are three phase factors, and we have four states, so it is possible to use a rotating wave transformation to 
+eliminate them all. By  
+\begin{equation}
+    \begin{aligned}
+        &U \ket*{\text{a}} = \ee^{- \ii (\omega_\text{a} - \omega_\text{g} - \omega_1) t} \ket*{\text{a}} = \ee^{ \ii \Delta_\text{a} t} \ket*{\text{a}}  , \\
+        &U \ket*{\text{b}} = \ee^{- \ii (\omega_\text{b} - \omega_\text{a} - \omega_2 ) t} \ket*{\text{b}} = \ee^{- \ii (\Delta_\text{b} - \Delta_\text{a}) t} \ket*{\text{b}}, \\
+        &U \ket*{\text{c}} = \ee^{\ii (\omega_\text{a} + \omega_2 - \omega_\text{c} - \omega_3) t} \ket*{\text{c}} = \ee^{\ii (\Delta_\text{a} + \Delta_\text{c}) t},
+    \end{aligned}
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        H \to H' &= U H U^\dagger - \ii \hbar U \partial_t U^\dagger \\
+        &= \frac{1}{2} \hbar \Omega_1 \dyad*{\text{a}}{\text{g}} + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{b}}{\text{a}} + \frac{1}{2} \hbar \Omega_3  \dyad*{\text{b}}{\text{c}} + \text{h.c.} + \hbar \Delta_\text{a} \dyad*{\text{a}} + \hbar \Delta_\text{b} \dyad{\text{b}} - \hbar \Delta_\text{c} \dyad{\text{c}}.
+    \end{aligned}
+\end{equation}
+This is the time-independent Hamiltonian we want.
+\item[(3)] The effective Hamiltonian is 
+\begin{equation}
+    \begin{aligned}
+        H_\text{eff}& = \frac{1}{2} \hbar \Omega_1 \dyad*{\text{a}}{\text{g}} + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{b}}{\text{a}} + \frac{1}{2} \hbar \Omega_3  \dyad*{\text{b}}{\text{c}} + \text{h.c.} + \hbar \underbrace{\left( \Delta_\text{a} - \frac{\ii \Gamma_\text{a}}{2} \right)}_{\tilde{\Delta}_\text{a}} \dyad*{\text{a}} \\
+        &\quad + \hbar \underbrace{\left( \Delta_\text{b} - \frac{\ii \Gamma_\text{b}}{2} \right)}_{\tilde{\Delta}_\text{b}} \dyad{\text{b}} - \hbar \underbrace{\left( \Delta_\text{c} + \frac{\ii \Gamma_\text{c}}{2} \right)}_{\tilde{\Delta}_\text{c}} \dyad{\text{c}} .
+    \end{aligned}
+\end{equation} 
+
+\item[(4)] In the weak perturbation limit, $c_\text{g} \approx 1$, and the equation 
+$H_\text{eff} \ket*{\psi_\text{s}} = 0$ is equivalent to 
+\[
+    \begin{aligned}
+        &- \frac{1}{2} \hbar \Omega_1^* c_\text{a} = 0, \\
+        & \frac{1}{2} \hbar \Omega_1 + \hbar \left( \Delta_\text{a} - \frac{\ii \Gamma_\text{a}}{2}  \right) c_\text{a} + \frac{1}{2} \hbar \Omega_2^* c_\text{b} = 0, \\
+        &\frac{1}{2} \hbar \Omega_2 c_\text{a} + \hbar \left( \Delta_\text{b} - \frac{\ii \Gamma_\text{b}}{2}  \right) c_\text{b} + \frac{1}{2} \hbar \Omega_3 c_\text{c} = 0, \\
+        &\frac{1}{2} \hbar \Omega_3^* - \hbar \left( \Delta_\text{c} + \frac{\ii \Gamma_\text{c}}{2} \right) c_\text{c} = 0.
+    \end{aligned}
+\]
+The first equation can be throw away because it merely means $c_\text{a}$ is small. The solutions are therefore 
+\begin{equation}
+    \begin{aligned}
+        c_\text{a} &= - \frac{2 \Omega_1 \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} +  \abs*{\Omega_3}^2 \Omega_1 / 2 }{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} }, \\
+        c_\text{b} &= \frac{\Omega_1 \Omega_2 \tilde{\Delta}_\text{c}}{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} }, \\
+        c_\text{c} &= \frac{\Omega_1 \Omega_2 \Omega_3^* / 2 }{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} }.
+    \end{aligned}
+\end{equation}
+
+\item[(5)] We have 
+\begin{equation}
+    \gamma_3 = \Gamma_3 \abs*{c_\text{c}}^2 = \frac{\abs*{\Omega_1}^2 \abs*{\Omega_2}^2 \abs*{\Omega_3}^2 / 4 }{ \abs*{\abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c}}^2 } \Gamma_3.
+\end{equation} 
+
+\item[(6)] The total unitary transformation from the original picture to the current pictures is partly given by 
+\[
+    U_\text{total} \ket*{\text{g}} = \ee^{\ii \omega_\text{g} t} \ket*{\text{g}}, \quad 
+    U_\text{total} \ket*{\text{a}} = \ee^{- \ii (\omega_\text{a} - \omega_\text{g} - \omega_1) t} \ee^{\ii \omega_\text{a} t} \ket*{\text{a}} , 
+\]
+so in the current picture, we have 
+\[
+    \vb*{d} = U_\text{total} \vb*{d}_\text{original} U_\text{total}^{-1}, 
+\]
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\vb*{d}} &= \braket*{\psi_\text{s}}{\text{a}} \ee^{\ii (\omega_1 + \omega_\text{g}) t} \vb*{d}_\text{ag} \ee^{- \ii \omega_\text{g} t} \braket*{\text{g}}{\psi_\text{s}} + \text{h.c.} = \ee^{- \ii \omega_1 t} \vb*{d}_\text{ga} \braket*{\psi_\text{s}}{\text{g}} \braket*{\text{a}}{\psi_\text{s}} + \text{h.c.} \\
+        &= - \ee^{- \ii \omega_1 t} \vb*{d}_\text{ga} \frac{-2 \vb*{d}_\text{ag} \cdot \vb*{E}_1}{\hbar} \frac{2 \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} +  \abs*{\Omega_3}^2  / 2 }{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} } + \text{h.c.}  ,
+    \end{aligned}
+\end{equation}
+so we have 
+\begin{equation}
+    \tensor{\vb*{\alpha}} = \frac{ \vb*{d}_\text{ga} \vb*{d}_\text{ag}}{\hbar} \frac{4 \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} +  \abs*{\Omega_3}^2 }{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} + 4 \tilde{\Delta}_\text{a} \tilde{\Delta}_\text{b} \tilde{\Delta}_\text{c} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} } .
+\end{equation}
+When the other two laser beams are very, very strong, we have approximately 
+\begin{equation}
+    \tensor{\vb*{\alpha}} = \frac{ \vb*{d}_\text{ga} \vb*{d}_\text{ag}}{\hbar} \frac{ \abs*{\Omega_3}^2 }{ \abs*{\Omega_3}^2 \tilde{\Delta}_\text{a} - \abs*{\Omega_2}^2 \tilde{\Delta}_\text{c} } .
+\end{equation}
+
+\item[(7)] What we are doing is to assume (a) that quantum jump is highly impossible on the time scale that we 
+are interested, so the main effect of spontaneous radiation is to renormalize parameters in a pure state problem,
+and (b) that all perturbations, be it from $\Omega$ or $\Gamma$, are small enough. 
+
+The first condition is equivalent to $\gamma T \ll 1$, where $T$ is the time scale we are interested in, where 
+\begin{equation}
+    \Gamma \sim \Gamma_\text{a} \abs*{c_\text{a}}^2 + \Gamma_\text{b} \abs*{c_\text{b}}^2 + \Gamma_\text{c} \abs*{c_\text{c}}^2.
+\end{equation}
+The second condition is equivalent to $\abs*{c_\text{a}}^2 + \abs*{c_\text{b}}^2 + \abs*{c_\text{c}}^2 \ll 1$. 
+
+\end{itemize}
+
+\paragraph{}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig3.png}
+    \caption{A three-level system coupled to an additional energy level}
+    \label{fig:sys-3}
+\end{figure}
+
+\paragraph{EIT-assisted giant Kerr effect} The ``lambda''-system composed of $|\text{a}\rangle,|\text{e}\rangle,|\text{b}\rangle$ is further coupled to excited state $|\text{c}\rangle$, as in \prettyref{fig:sys-3}. We consider the situation of EIT-resonance: $\delta=0$. We further consider atomic state to be initially in $|\psi(t=0)\rangle=|\mathrm{a}\rangle$, and weak-excitation limit is satisfied $\left(\left|\Omega_{1}\right|\right.$ small "enough").
+(a) Write down the effective Hamiltonian for this problem for $\delta=0$.
+(b) Obtain the approximate stochastic wavefunction in its steady state $|\tilde{\psi}_\text{S}\rangle=|\text{a}\rangle+$ ${c}_{\mathrm{e}}|\text{e}\rangle+c_\text{b}|\text{b}\rangle+c_\text{c}|\text{c}\rangle$ such that ${H}_{\mathrm{eff}}\left|\psi_{\mathrm{S}}\right\rangle \approx 0$.
+(c) 3c) Approximately evaluate the atomic dipole moment $\langle {d}\rangle=\left\langle\psi_{S}\left|d_{a e}\right| a\right\rangle\left\langle e \mid \psi_{S}\right\rangle+$ c.c. oscillating at the $\mathrm{E}_{1}$ frequency.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] Repeating procedures in Task 1 of the previous problem, we have 
+\begin{equation}
+    H = \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{}
+\end{equation}  
 \end{itemize}
 
 \paragraph{}

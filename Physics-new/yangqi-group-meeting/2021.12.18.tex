@@ -1,0 +1,167 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Entanglement spectrum calculation using quantum Monte Carlo by Dr. Zheng yan}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+The idea first came from PDE, i.e. can one hear the shape of a drum. Am. Math. Mon. 73, 1 (1966) 
+It is natural to generalize the idea to the free energy. Nucl. Phys. B 300, 377, 1988
+\begin{equation}
+    F = f_\text{B} \abs*{A} + f_\text{S} L - \frac{1}{6} c \chi \ln L + \bigO(1).
+\end{equation}
+where $1/6$ is the conformal anomaly number, and $\chi$ is the Euler characteristic.
+Finally we arrive the idea of the relation boundary and entanglement entropy: We have 
+\begin{equation}
+    S = F_A + F_B - F_{A \cup B},
+\end{equation}
+and we find 
+\begin{equation}
+    S = f_\text{S} L_{A \cap B} - \frac{1}{6} c 
+\end{equation}
+the last term being the topological entanglement entropy.
+
+Now we discuss how to calculate entanglement entropy. The explicit definition of von Nuemann entanglement 
+entropy 
+\begin{equation}
+    S_A = - \trace_A \rho_A \ln \rho_A, \quad \rho_A = \trace_B \rho_B,
+\end{equation}
+but it is hard to calculate. We usually calculate the generalized 
+\begin{equation}
+    S_A^{(n)} = \frac{1}{1 - n} \trace_A \rho_A \ln \rho_A^n,
+\end{equation}
+and the usual entanglement entropy is the $n \to 1$ limit.
+
+\begin{equation}
+    S_A^{(n)} = \frac{1}{1-n} \ln\frac{Z_A^{(n)}}{Z_\emptyset^{(n)}},
+    \label{eq:s-n-partition}
+\end{equation}
+where $Z_A^{(n)}$ is the partition function of all possible field configuration obtained by gluing $n$ 
+configuration of $A$ together, and $Z_\emptyset^{(n)}$ is simply multiplication of $n$ partition functions 
+of $A$. 
+
+Naive Monte Carlo calculation of \eqref{eq:s-n-partition} suffers from small probabilities. A trick to 
+work around this is Phys. Rev. Lett. 124, 110602, 2020, Entanglement Entropy from Nonequilibrium work.
+We have 
+\begin{equation}
+    S_A^{(n)} = \frac{1}{1-n} \int_0^1 \dd{\lambda} \pdv{\ln Z_A^{(n)}(\lambda)}{\lambda},
+    \label{eq:s-n-integral}
+\end{equation}
+where 
+\begin{equation}
+    Z_A^{(n)}(\lambda) = \sum_{B \subseteq A} \lambda^{N_B} (1 - \lambda)^{N_A - N_B} Z_B^{(n)}, \quad Z_A^{(n)}(0) = Z_\emptyset^{(n)}, \quad Z_A^{(n)}(1) = Z_A^{(n)}.
+\end{equation}
+\begin{equation}
+    \pdv{\ln Z_A^{(n)}(\lambda)}{\lambda} = 
+\end{equation}
+A straight forward approach is to run a Monte Carlo process for each $\lambda$ separately, but note that 
+nonequilibrium statistic mechanics tells us 
+% TODO
+regardless of whether the system has reached equilibrium, we can slowly change $\lambda$ during \emph{one} 
+Monte Carlo simulation, and therefore efficiently calculate \eqref{eq:s-n-integral}.
+
+\end{document}
