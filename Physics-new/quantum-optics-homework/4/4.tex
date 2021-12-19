@@ -82,7 +82,8 @@
 
 \newcommand*{\concept}[1]{{\textbf{#1}}}
 
-\newrefformat{fig}{Figure~\ref{#1}}
+% Omit the page number
+% \newrefformat{fig}{Figure~\ref{#1}}
 
 % Embedded codes
 \lstset{basicstyle=\ttfamily,
@@ -106,6 +107,40 @@
 \begin{document}
 
 \maketitle
+
+\paragraph{Random wave function} Numerically simulate a two-level atom under an external laser using the random wave
+function method.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{rwf-1.png}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{rwf-2.png}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{rwf-3.png}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{rwf-4.png}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{rwf-5.png}
+        \subcaption{}
+    \end{subfigure}
+    \caption{Numerical simulated $P_\text{e}$.}
+    \label{fig:numerical-wave}
+\end{figure}
+
+\paragraph{Solution} The code can be found \href{simulation.jl}{with this document}. The results are 
+\prettyref{fig:numerical-wave}. The ``mean'' curves are the average value of 1000 runs. 
+
+\paragraph{}
 
 \begin{figure}
     \centering
@@ -239,6 +274,10 @@ it is then straightforward that
 \end{equation}
 Note that in these equations $\abs{\vb*{\Omega}}^2$ means the norm, i.e. $\abs{\vb*{\Omega}} \cdot \abs*{\vb*{\Omega}}^*$. 
 
+The scattering rates are calculated under the assumption that no quantum jump happened before, so what they mean
+are actually the probabilities that ``no quantum jump happened before, and a quantum jump will happen in the next 
+second''.
+
 \begin{figure}
     \centering
     \begin{subfigure}{0.45\textwidth}
@@ -274,7 +313,7 @@ Note that in these equations $\abs{\vb*{\Omega}}^2$ means the norm, i.e. $\abs{\
         \abs*{\vb*{\Omega}} = \sqrt{\abs*{\Omega}^2 + \Delta^2 - \Gamma^2 / 4 + \ii \Delta \Gamma}
         \approx \sqrt{\abs*{\Omega}^2 + \frac{1}{4} \abs*{\Omega}^2} = \frac{\sqrt{5}}{2} \abs*{\Omega},
     \] 
-    so the case is similar to (i), but the oscillating period is now $4 \pi / \sqrt{5} \abs*{\Omega}$. See \prettyref{fig:gamma-2}.
+    so the curve of $\gamma$ is similar to (i), but the oscillating period is now $4 \pi / \sqrt{5} \abs*{\Omega}$. See \prettyref{fig:gamma-2}.
     \item[(iii)] In this case 
     \[
         \abs*{\vb*{\Omega}} \approx \sqrt{- \Gamma^2 / 4} = \frac{\ii}{2} \Gamma,
@@ -389,9 +428,9 @@ There are three phase factors, and we have four states, so it is possible to use
 eliminate them all. By  
 \begin{equation}
     \begin{aligned}
-        &U \ket*{\text{a}} = \ee^{- \ii (\omega_\text{a} - \omega_\text{g} - \omega_1) t} \ket*{\text{a}} = \ee^{ \ii \Delta_\text{a} t} \ket*{\text{a}}  , \\
-        &U \ket*{\text{b}} = \ee^{- \ii (\omega_\text{b} - \omega_\text{a} - \omega_2 ) t} \ket*{\text{b}} = \ee^{- \ii (\Delta_\text{b} - \Delta_\text{a}) t} \ket*{\text{b}}, \\
-        &U \ket*{\text{c}} = \ee^{\ii (\omega_\text{a} + \omega_2 - \omega_\text{c} - \omega_3) t} \ket*{\text{c}} = \ee^{\ii (\Delta_\text{a} + \Delta_\text{c}) t},
+        &U \ket*{\text{a}} = \ee^{- \ii (\omega_\text{a} - \omega_\text{g} - \omega_1) t} \ket*{\text{a}} = \ee^{ - \ii \Delta_\text{a} t} \ket*{\text{a}}  , \\
+        &U \ket*{\text{b}} = \ee^{- \ii (\omega_\text{b} - \omega_\text{a} - \omega_2 ) t} \ee^{ - \ii \Delta_\text{a} t}  \ket*{\text{b}} = \ee^{- \ii \Delta_\text{b} t} \ket*{\text{b}}, \\
+        &U \ket*{\text{c}} = \ee^{- \ii (\omega_\text{b} - \omega_\text{c} - \omega_3) t} \ee^{ \ii \Delta_\text{b} t} \ket*{\text{c}} = \ee^{\ii \Delta_\text{c} t},
     \end{aligned}
 \end{equation}
 we have 
@@ -483,15 +522,175 @@ The second condition is equivalent to $\abs*{c_\text{a}}^2 + \abs*{c_\text{b}}^2
 \paragraph{EIT-assisted giant Kerr effect} The ``lambda''-system composed of $|\text{a}\rangle,|\text{e}\rangle,|\text{b}\rangle$ is further coupled to excited state $|\text{c}\rangle$, as in \prettyref{fig:sys-3}. We consider the situation of EIT-resonance: $\delta=0$. We further consider atomic state to be initially in $|\psi(t=0)\rangle=|\mathrm{a}\rangle$, and weak-excitation limit is satisfied $\left(\left|\Omega_{1}\right|\right.$ small "enough").
 (a) Write down the effective Hamiltonian for this problem for $\delta=0$.
 (b) Obtain the approximate stochastic wavefunction in its steady state $|\tilde{\psi}_\text{S}\rangle=|\text{a}\rangle+$ ${c}_{\mathrm{e}}|\text{e}\rangle+c_\text{b}|\text{b}\rangle+c_\text{c}|\text{c}\rangle$ such that ${H}_{\mathrm{eff}}\left|\psi_{\mathrm{S}}\right\rangle \approx 0$.
-(c) 3c) Approximately evaluate the atomic dipole moment $\langle {d}\rangle=\left\langle\psi_{S}\left|d_{a e}\right| a\right\rangle\left\langle e \mid \psi_{S}\right\rangle+$ c.c. oscillating at the $\mathrm{E}_{1}$ frequency.
+(c) Approximately evaluate the atomic dipole moment $\langle {d}\rangle=\left\langle\psi_{S}\left|d_{a e}\right| a\right\rangle\left\langle e \mid \psi_{S}\right\rangle+$ c.c. oscillating at the $\mathrm{E}_{1}$ frequency.
 
 \paragraph{Solution} \begin{itemize}
-\item[(a)] Repeating procedures in Task 1 of the previous problem, we have 
+\item[(a)] Repeating procedures in Task 1 of the previous problem, after RWA, we have 
 \begin{equation}
-    H = \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{}
+    H = H_0 + \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{- \ii \omega_1 t} 
+    + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{e}}{\text{b}} \ee^{- \ii \omega_2 t} 
+    + \frac{1}{2} \hbar \Omega_3 \dyad*{\text{c}}{\text{b}} \ee^{- \ii \omega_3 t} + \text{h.c.},
 \end{equation}  
+where 
+\begin{equation}
+    H_0 = \hbar \omega_\text{a} \dyad*{\text{a}} + \hbar \omega_\text{e} \dyad*{\text{e}}
+    + \hbar \omega_\text{b} \dyad*{\text{b}} + \hbar \omega_\text{c} \dyad*{\text{c}}.
+\end{equation}
+Switching to the interaction picture, the Hamiltonian becomes 
+\begin{equation}
+    H = \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{ \ii ( \omega_\text{e} - \omega_\text{a} - \omega_1 ) t} 
+    + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{e}}{\text{b}} \ee^{ \ii (\omega_\text{e} - \omega_\text{b} - \omega_2 ) t} 
+    + \frac{1}{2} \hbar \Omega_3 \dyad*{\text{c}}{\text{b}} \ee^{\ii ( \omega_\text{c} - \omega_\text{b} - \omega_3) t} + \text{h.c.}.
+    \label{eq:ham-int-origin}
+\end{equation}
+The detunings are 
+\begin{equation}
+    \Delta + \omega_1 = \omega_\text{e} - \omega_\text{a}, \quad 
+    \omega_\text{e} - \omega_\text{b} = \omega_2, \quad
+    \Delta_3 + \omega_3 = \omega_\text{c} - \omega_\text{b},
+\end{equation}
+so \eqref{eq:electric-field-alternative} is 
+\begin{equation}
+    H = \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{\ii \Delta t} 
+    + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{e}}{\text{b}} 
+    + \frac{1}{2} \hbar \Omega_3 \dyad*{\text{c}}{\text{b}} \ee^{\ii \Delta_3 t} + \text{h.c.}.
+\end{equation} 
+Now we do rotating wave transformation 
+\begin{equation}
+    U \ket*{\text{e}} = \ee^{- \ii \Delta t} \ket*{\text{e}}, \quad 
+    U \ket*{\text{c}} = \ee^{- \ii \Delta_3 t} \ket*{\text{c}}, \quad 
+    U \ket*{\text{a}} = \ket*{\text{a}}, \quad U \ket*{\text{b}} = \ket*{\text{b}},
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        H \to H' &= U H U^\dagger - \ii \hbar U \partial_t U^\dagger \\
+        &= \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{\ii \Delta t} 
+        + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{e}}{\text{b}} 
+        + \frac{1}{2} \hbar \Omega_3 \dyad*{\text{c}}{\text{b}} \ee^{\ii \Delta_3 t} + \text{h.c.}
+        + \hbar \Delta \dyad{\text{e}} + \hbar \Delta_3 \dyad*{\text{c}}.
+    \end{aligned}
+    \label{eq:ham-3}
+\end{equation}
+The effective Hamiltonian can be obtained by adding the damping terms, i.e. 
+\begin{equation}
+    \begin{aligned}
+        H_\text{eff} &= \frac{1}{2} \hbar \Omega_1 \dyad*{\text{e}}{\text{a}} \ee^{\ii \Delta t} 
+        + \frac{1}{2} \hbar \Omega_2 \dyad*{\text{e}}{\text{b}} 
+        + \frac{1}{2} \hbar \Omega_3 \dyad*{\text{c}}{\text{b}} \ee^{\ii \Delta_3 t} + \text{h.c.} \\
+        &\quad + \hbar \Delta \dyad{\text{e}} + \hbar \Delta_3 \dyad*{\text{c}}
+        - \frac{\ii \hbar (\Gamma_1 + \Gamma_2)}{2} \dyad{\text{e}} - \frac{\ii \hbar \Gamma_3}{2} \dyad*{\text{c}}.
+    \end{aligned}
+\end{equation}
+
+\item[(b)] The equation $H_\text{eff} \ket*{\tilde{\psi}_\text{s}} \approx 0$ is equivalent to 
+\[
+    \begin{aligned}
+        & \frac{1}{2} \hbar \Omega_1^* c_\text{e} = 0, \\
+        & \frac{1}{2} \hbar \Omega_1 + \frac{1}{2} \hbar \Omega_2 c_\text{b} + \hbar \left( \Delta - \frac{\ii (\Gamma_1 + \Gamma_2)}{2} \right) c_\text{e} = 0, \\
+        & \frac{1}{2} \hbar \Omega_2^* c_\text{e} + \frac{1}{2} \hbar \Omega_3^* c_\text{c} = 0, \\
+        & \frac{1}{2} \hbar \Omega_3 c_\text{b} + \hbar \left( \Delta_3 - \frac{\ii \Gamma_3}{2} \right) c_\text{c} = 0.
+    \end{aligned}
+\] 
+We throw away the first equation because it merely requires that $c_\text{c}$ is small, and solving the rest 
+of the equations gives 
+\begin{equation}
+    \begin{aligned}
+        c_\text{b} &= - \frac{\Omega_1 \Omega_2^* \tilde{\Delta}_3 }{ \abs*{\Omega_2}^2 \tilde{\Delta}_3 + \abs*{\Omega_3}^2 \tilde{\Delta}}, \\
+        c_\text{c} &= \frac{\Omega_1 \Omega_2^* \Omega_3}{2 (\abs*{\Omega_2}^2 \tilde{\Delta}_3 + \abs*{\Omega_3}^2 \tilde{\Delta}) } , \\
+        c_\text{e} &= - \frac{\Omega_1 \abs*{\Omega_3}^2}{2 (\abs*{\Omega_2}^2 \tilde{\Delta}_3 + \abs*{\Omega_3}^2 \tilde{\Delta}) },
+    \end{aligned}
+\end{equation}
+where we define 
+\begin{equation}
+    \tilde{\Delta} = \Delta - \frac{\ii (\Gamma_1 + \Gamma_2)}{2}, \quad \tilde{\Delta}_3 = \Delta_3 - \frac{\ii \Gamma_3}{2}.
+\end{equation}
+
+\item[(c)] The total picture transformation from the original picture to the picture we are using is 
+\begin{equation}
+    U_\text{total} \ket*{\text{a}} = \ee^{\ii \omega_\text{a} t} \ket*{\text{a}}, \quad 
+    U_\text{total} \ket*{\text{e}} = \ee^{- \ii \Delta t} \ee^{\ii \omega_\text{e} t} \ket*{\text{e}} = \ee^{\ii (\omega_1 + \omega_\text{a}) t} ,
+\end{equation} 
+and therefore in the current picture, we have 
+\[
+    \mel{\text{e}}{\vb*{d}}{\text{a}} = \mel{\text{e}}{U_\text{total} \vb*{d}_\text{original} U_\text{total}^\dagger }{\text{a}} = \vb*{d}_\text{ea} \ee^{\ii \omega_1 t}, \quad \mel{\text{a}}{\vb*{d}}{\text{e}} = \vb*{d}_\text{ae}  \ee^{- \ii \omega_1 t},
+\]
+so
+\begin{equation}
+    \begin{aligned}
+        \expval*{\vb*{d}} &= \vb*{d}_\text{ae} \ee^{- \ii \omega_1 t} \braket*{\psi_\text{s}}{\text{a}} \braket*{\text{e}}{\psi_\text{s}} + \text{h.c.} \\
+        &= \frac{\vb*{d}_\text{ae} \vb*{d}_\text{ea} \cdot \vb*{E}_{10} \ee^{- \ii \omega_1 t} }{\hbar} 
+        \frac{\abs*{\Omega_3}^2}{\abs*{\Omega_2}^2 \tilde{\Delta}_3 + \abs*{\Omega_3}^2 \tilde{\Delta}} + \text{h.c.}.
+    \end{aligned}
+\end{equation}
+
 \end{itemize}
 
 \paragraph{}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig4.png}
+    \caption{Left: Simplified Hydrogen levels and excitation of $1 \mathrm{~S}$ atom with $121.6 \mathrm{~nm}$ light resonant to $1 \mathrm{~S}-2 \mathrm{P}_{1 / 2}$ transition. Right: The Clebsch-Gordon coefficients for the $1 \mathrm{~S}_{1 / 2}-2 \mathrm{P}_{1 / 2}$ dipole transitions.}
+    \label{fig:sys-4}
+\end{figure}
+
+\paragraph{Effective Hamiltonian and Master Equation for the Hydrogen ``D1'' manifold} 
+This problem exercises on setting up effective Hamiltonian and master equation for multi-level system including radiative decays. We choose hydrogen atom as an example, and for simplicity we ignore the hyperfine structure.
+
+We consider a hydrogen atom subjected to $121.6 \mathrm{~nm}$ laser radiation. The laser is linearly polarized, and its frequency is exactly resonant to the $2 \mathrm{~S}_{1 / 2}-2 \mathrm{P}_{1 / 2}$ transition. The Rabi frequency is defined as $\Omega=\frac{E\left\langle 1 S_{1 / 2}, m\left|d_{z}\right| 2 P_{1 / 2}, m\right\rangle}{\hbar}$, and we choose the polarization direction of light to be along $z$, which is also chosen to be the quantization axis.
+
+(a) Write down the non-Hermitian effective Hamiltonian matrix that includes both light-atom interaction and the radiative decay from $2 \mathrm{P}_{1 / 2}$, in the rotating frame with no explicit time-dependence.
+(b) Write down the Master equation for the density matrix.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] After coupling the orbital angular momentum and the spin angular momentum together, for $\text{S}$
+we get $j=1/2, m_j = \pm 1/2$, and for $\text{P}$ we have $j = 1/2, m_j = \pm 1/2$, and 
+$j = 3/2, m_j = \pm 1/2, \pm 3/2$. These are shown in \prettyref{fig:sys-4}, and the external laser connects
+$1 \text{S}_{1/2}$ and $2 \text{P}_{1/2}$. Since the direction of $\vb*{E}$ is $z$ direction, the atom-light 
+coupling Hamiltonian is proportion to $z$, and since $\comm*{z}{L_z} = 0$, and spins are not directly coupled 
+to $\vb*{E}$, we find $J_z = L_z + S_z$ is conserved. Therefore, there are four 
+states that are involved in the presence of the \SI{121.6}{nm} laser radiation: $1 \text{S}_{1/2}, m = \pm 1/2$, 
+$2 \text{P}_{1/2}, m = \pm 1/2$, and only states with the same $m$ can be coupled. 
+
+To be concise we consider $1 \text{S}_{1/2}$ to be $\text{g}$ and $2 \text{P}_{1/2}$ to be $\text{e}$.
+So the Hamiltonian after RWA is 
+\begin{equation}
+    H = - \sum_{m = \pm 1/2} \hbar \Omega \dyad*{\text{e}, m}{\text{g}, m} \ee^{\ii (\omega_\text{e} - \omega_\text{g} - \omega)} + \text{h.c.}.
+\end{equation}
+Since the detuning 
+\begin{equation}
+    \Delta = \omega_\text{e} - \omega_\text{g} - \omega
+\end{equation}
+is zero, the RWA Hamiltonian is 
+\begin{equation}
+    H = - \sum_{m = \pm 1/2} \hbar \Omega \dyad*{\text{e}, m}{\text{g}, m} + \text{h.c.}.
+\end{equation}
+
+Now we include the damping terms. Note that the polarization of spontaneous radiation is not necessarily 
+along the $z$ axis. Emission of a $\sigma_+$ photon introduces a $1/2 \to -1/2$ decay channel. Emission of 
+a $\sigma_-$ photon introduces a $-1/2 \to 1/2$ decay channel. Emission of a $\pi$ photon introduces
+$1/2 \to 1/2$, $-1/2 \to -1/2$ channels. Therefore 
+\begin{equation}
+    \begin{aligned}
+        &C_{\sigma_+} = \sqrt{\frac{2}{3} \Gamma_\text{ge}} \dyad*{\text{g}, -1/2}{\text{e}, 1/2} , \quad 
+        C_{\sigma_-} = \sqrt{\frac{2}{3} \Gamma_\text{ge}} \dyad*{\text{g}, 1/2}{\text{e}, -1/2} , \\
+        &C_{\pi} = - \sqrt{\frac{1}{3} \Gamma_\text{ge}} \dyad*{\text{g}, -1/2}{\text{e}, -1/2}
+        + \sqrt{\frac{1}{3} \Gamma_\text{ge}} \dyad*{\text{g}, 1/2}{\text{e}, 1/2},
+    \end{aligned}
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        H_\text{eff} &= - \sum_{m = \pm 1/2} \hbar \Omega \dyad*{\text{e}, m}{\text{g}, m} + \text{h.c.} - \frac{\ii \hbar}{2} \sum_{p = \sigma_+, \sigma_-, \pi} C^\dagger_p C_p \\
+        &= - \sum_{m = \pm 1/2} \hbar \Omega \dyad*{\text{e}, m}{\text{g}, m} + \text{h.c.} - \frac{\ii \hbar}{2} \Gamma_\text{ge} (\dyad{\text{e}, -1/2} + \dyad{\text{e}, 1/2}).
+    \end{aligned}
+\end{equation}
+
+\item[(b)] The master equation is just 
+\begin{equation}
+    \dot{\rho} = \frac{1}{\ii \hbar} \comm*{H_\text{eff}}{\rho} + \sum_{p = \sigma_+, \sigma_-, \pi} C^\dagger_p \rho C_p.
+\end{equation}  
+\end{itemize}
 
 \end{document}
