@@ -1,0 +1,494 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{slashed}
+\usepackage{centernot}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[hw2-]{../2/2}[2.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% Feynman slash
+\newcommand{\fsl}[1]{{\centernot{#1}}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newcommand{\hwtwo}{\href{../2/2.pdf}{Homework 2}}
+
+\title{QFT I, Homework 5}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Gordon identity} Derive the Gordon identity [problem $3.2$ on p. 72 of Peskin],
+\begin{equation}
+    \bar{u}\left(p^{\prime}\right) \gamma^{\mu} u(p)=\bar{u}\left(p^{\prime}\right)\left[\frac{p^{\prime \mu}+p^{\mu}}{2 m}+\frac{i \sigma^{\mu \nu} q_{\nu}}{2 m}\right] u(p),
+    \label{eq:gordon-id}
+\end{equation}
+where $q=\left(p^{\prime}-p\right)$. We will put this formula to use in Chapter 6 .
+
+\paragraph{Solution} Since we have Eq.~(3.22) in Peskin
+\begin{equation}
+    \acomm*{\gamma^\mu}{\gamma^\nu} = 2 \eta^{\mu \nu}, 
+\end{equation}
+and 
+\begin{equation}
+    \frac{1}{2} \comm*{\gamma^\mu}{\gamma^\nu} = - \ii \sigma^{\mu \nu}
+\end{equation}
+in the beginning of Section~3.4 in Peskin, the RHS of \eqref{eq:gordon-id} is 
+\[
+    \begin{aligned}
+        &\quad \bar{u}\left(p^{\prime}\right)\left[\frac{p^{\prime \mu}+p^{\mu}}{2 m}+\frac{\ii \sigma^{\mu \nu} q_{\nu}}{2 m}\right] u(p) \\
+        &= \frac{1}{2m} \bar{u}\left(p^{\prime}\right) ( (p' + p)_\nu \eta^{\mu \nu} + \ii \sigma^{\mu \nu} (p' - p)_\nu ) u(p) \\
+        &= \frac{1}{2m} \bar{u}(p') \left( \frac{1}{2} \acomm*{\gamma^\mu}{\gamma^\nu} (p' + p)_\nu - \frac{1}{2} \comm*{\gamma^\mu}{\gamma^\nu} (p' - p)_\nu \right) u(p).
+    \end{aligned}
+\]
+Expanding the last line, we have 
+\[
+    \frac{1}{2} \acomm*{\gamma^\mu}{\gamma^\nu} (p' + p)_\nu - \frac{1}{2} \comm*{\gamma^\mu}{\gamma^\nu} (p' - p)_\nu = \gamma^\mu \gamma^\nu p_\nu + \gamma^\nu \gamma^\mu p'_\nu,
+\]
+and therefore by using the Dirac equation 
+\[
+    (\gamma^\mu p_\mu - m) u(p) = 0, \quad \bar{u}(p) (\gamma^\mu p_\mu - m) = 0,
+\]
+we have
+\[
+    \begin{aligned}
+        &\quad \frac{1}{2m} \bar{u}(p') \left( \frac{1}{2} \acomm*{\gamma^\mu}{\gamma^\nu} (p' + p)_\nu - \frac{1}{2} \comm*{\gamma^\mu}{\gamma^\nu} (p' - p)_\nu \right) u(p) \\
+        &= \frac{1}{2m} \bar{u}(p') (\gamma^\mu \gamma^\nu p_\nu + p'_\nu \gamma^\nu \gamma^\mu ) u(p) \\
+        &= \frac{1}{2m} (\bar{u}(p') \gamma^\mu m u(p) + \bar{u}(p') m \gamma^\mu u(p) ) = \text{LHS},
+    \end{aligned}
+\]
+which is \eqref{eq:gordon-id}.
+
+\paragraph{}
+
+\paragraph{Rutherford scattering} [Problem $4.4$ on p. 129 of Peskin.] The cross section for scattering of an electron by the Coulomb field of a nucleus can be computed, to lowest order, without quantizing the electromagnetic field. Instead, treat the field as a given, classical potential $A_{\mu}(x)$. The interaction Hamiltonian is
+\begin{equation}
+    H_{I}=\int d^{3} x e \bar{\psi} \gamma^{\mu} \psi A_{\mu},
+    \label{eq:interaction-ham-2}
+\end{equation}
+where $\psi(x)$ is the usual quantized Dirac field.
+(a) Show that the $T$-matrix element for electron scattering off a localized classical potential is, to lowest order,
+\[
+\left\langle p^{\prime}|i T| p\right\rangle=-i e \bar{u}\left(p^{\prime}\right) \gamma^{\mu} u(p) \cdot \tilde{A}_{\mu}\left(p^{\prime}-p\right)
+\]
+where $\widetilde{A}_{\mu}(q)$ is the four-dimensional Fourier transform of $A_{\mu}(x)$.
+(b) If $A_{\mu}(x)$ is time independent, its Fourier transform contains a delta function of energy. It is then natural to define
+\[
+\left\langle p^{\prime}|i T| p\right\rangle=i \mathcal{M} \cdot(2 \pi) \delta\left(E_{f}-E_{i}\right)
+\]
+where $E_{i}$ and $E_{f}$ are the initial and final energies of the particle, and to adopt a new Feynman rule for computing $\mathcal{M}$ :
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.75,xscale=0.75]
+            %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+            
+            %Straight Lines [id:da21043242361216352] 
+            \draw    (163,181.25) -- (193,124.92) ;
+            \draw [shift={(178,153.08)}, rotate = 118.04] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+            %Straight Lines [id:da6825093279600336] 
+            \draw    (168,171.67) -- (158,190.83) ;
+            
+            %Straight Lines [id:da2766305483503835] 
+            \draw    (188,115.25) -- (158,58.92) ;
+            \draw [shift={(173,87.08)}, rotate = 61.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+            %Straight Lines [id:da7541746616043725] 
+            \draw    (183,105.67) -- (193,124.83) ;
+            
+            %Straight Lines [id:da6302347302021725] 
+            \draw    (193,125) .. controls (194.67,123.33) and (196.33,123.33) .. (198,125) .. controls (199.67,126.67) and (201.33,126.67) .. (203,125) .. controls (204.67,123.33) and (206.33,123.33) .. (208,125) .. controls (209.67,126.67) and (211.33,126.67) .. (213,125) .. controls (214.67,123.33) and (216.33,123.33) .. (218,125) .. controls (219.67,126.67) and (221.33,126.67) .. (223,125) .. controls (224.67,123.33) and (226.33,123.33) .. (228,125) .. controls (229.67,126.67) and (231.33,126.67) .. (233,125) .. controls (234.67,123.33) and (236.33,123.33) .. (238,125) .. controls (239.67,126.67) and (241.33,126.67) .. (243,125) .. controls (244.67,123.33) and (246.33,123.33) .. (248,125) .. controls (249.67,126.67) and (251.33,126.67) .. (253,125) .. controls (254.67,123.33) and (256.33,123.33) .. (258,125) .. controls (259.67,126.67) and (261.33,126.67) .. (263,125) .. controls (264.67,123.33) and (266.33,123.33) .. (268,125) -- (271,125) -- (271,125) ;
+            %Flowchart: Summing Junction [id:dp8906099185423473] 
+            \draw   (271,125) .. controls (271,119.71) and (275.29,115.42) .. (280.58,115.42) .. controls (285.88,115.42) and (290.17,119.71) .. (290.17,125) .. controls (290.17,130.29) and (285.88,134.58) .. (280.58,134.58) .. controls (275.29,134.58) and (271,130.29) .. (271,125) -- cycle ; \draw   (273.81,118.22) -- (287.36,131.78) ; \draw   (287.36,118.22) -- (273.81,131.78) ;
+            \end{tikzpicture}            
+    \end{gathered}=- \ii e \gamma^{\mu} \tilde{A}_{\mu}(\vb*{q})
+\end{equation}
+where $\widetilde{A}_{\mu}(q)$ is the three-dimensional Fourier transform of $A_{\mu}(x)$. Given this definition of $\mathcal{M}$, show that the cross section for scattering off a time independent, localized potential is
+\begin{equation}
+    d \sigma=\frac{1}{v_{i}} \frac{1}{2 E_{i}(2 \pi)^{3}} \frac{d^{3} p_{f}}{2 E_{f}}\left|\mathcal{M}\left(p_{i} \rightarrow p_{f}\right)\right|^{2}(2 \pi) \delta\left(E_{f}-E_{i}\right)
+    \label{eq:single-cross-section}
+\end{equation}
+where $v_{i}$ is the particle's initial velocity. This formula is a natural modification of (4.79). Integrate over $\left|p_{f}\right|$ to find a simple expression for $d \sigma / d \Omega$.
+(c) pecialize to the case of electron scattering from a Coulomb potential $\left(A^{0}=\right.$ $Z e / 4 \pi r)$. Working in the nonrelativistic limit, derive the Rutherford formula,
+\begin{equation}
+    \frac{d \sigma}{d \Omega}=\frac{\alpha^{2} Z^{2}}{4 m^{2} v^{4} \sin ^{4}(\theta / 2)}.
+    \label{eq:rutherford}
+\end{equation}
+(With a few calculational tricks from Section 5.1, you will have no difficulty evaluating the general cross section in the relativistic case; see Problem 5.1.)
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] We work in the interaction picture. The leading order is 
+\[
+    \begin{aligned}
+        \mel{p', s'}{ 1 + \ii T }{p, s} &= 1 - \ii \int_{-\infty}^\infty \dd{t} \mel{p', s'}{H_\text{I}}{p, s} \\
+        &= 1 - \ii e \int_{-\infty}^\infty \dd{t} \int \dd[3]{\vb*{x}} \mel{p', s'}{\bar{\psi} \gamma^{\mu} \psi A_{\mu}}{p, s} + \cdots \\
+        &= 1 - \ii e \int \dd[4]{x} \mel{0}{ \sqrt{2 E_{\vb*{p}'}} a_{\vb*{p}'}^{s'} \bar{\psi} \gamma^{\mu} \psi A_{\mu} \sqrt{2 E_{\vb*{p}}} a^{s\dagger}_{\vb*{p}} }{0} + \cdots.
+    \end{aligned}
+\] 
+The expansions of $\psi, \bar{\psi}$ (Peskin Eq.~(3.99) and (3.100)) are 
+\[
+    \begin{aligned}
+        \psi(x) &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{\sqrt{2 E_{\vb*{p}}}} \sum_s \left( a^s_{\vb*{p}} u^s(p) \ee^{- \ii p \cdot x} + b_{\vb*{p}}^{s\dagger} v^s(p) \ee^{\ii p \cdot x} \right), \\
+        \bar{\psi}(x) &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \frac{1}{\sqrt{2 E_{\vb*{p}}}} \sum_s \left( a^{s \dagger}_{\vb*{p}} \bar{u}^s(p) \ee^{\ii p \cdot x} + b_{\vb*{p}}^{s} \bar{v}^s(p) \ee^{- \ii p \cdot x} \right) ,
+    \end{aligned}
+\]
+and we expand the electric field as 
+\[
+    A_\mu(x) = \int \frac{\dd[4]{k}}{(2\pi)^4} \tilde{A}_\mu(k) \ee{- \ii k \cdot x},
+\]
+so we have 
+\[
+    \begin{aligned}
+        &\quad - \ii e \int \dd[4]{x} \mel{0}{ \sqrt{2 E_{\vb*{p}'}} a_{\vb*{p}'}^{s'} \bar{\psi} \gamma^{\mu} \psi A_{\mu} \sqrt{2 E_{\vb*{p}}} a^{s\dagger}_{\vb*{p}} }{0} \\
+        &= - \ii e \sqrt{2 E_{\vb*{p}}} \sqrt{2 E_{\vb*{p}'}} \int \dd[4]{x} \int \frac{\dd[3]{\vb*{q}'}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{1}{\sqrt{2 E_{\vb*{q}}}} \frac{1}{\sqrt{2 E_{\vb*{q}'}}} \sum_{\sigma, \sigma'} \bra{0} a^{s'}_{\vb*{p}'} ( a^{\sigma' \dagger}_{\vb*{q}'} \bar{u}^{\sigma'}(q') \ee^{\ii q' \cdot x} \\
+        &\quad \quad + b^{\sigma'}_{\vb*{q}'} \bar{v}^{\sigma'}(q') \ee^{- \ii q' \cdot x} ) \gamma^\mu ( a^\sigma_{\vb*{q}} u^\sigma(q) \ee^{- \ii q \cdot x} + b^{\sigma \dagger}_{\vb*{q}} v^\sigma(q) \ee^{\ii q \cdot x} ) 
+        \tilde{A}_\mu(k) \ee^{- \ii k \cdot x} a^{s \dagger}_{\vb*{p}} \ket{0} \\
+        &= - \ii e \sqrt{2 E_{\vb*{p}}} \sqrt{2 E_{\vb*{p}'}} \int \frac{\dd[3]{\vb*{q}'}}{(2\pi)^3} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \int \frac{\dd[4]{k}}{(2\pi)^4} \frac{1}{\sqrt{2 E_{\vb*{q}}}} \frac{1}{\sqrt{2 E_{\vb*{q}'}}} \sum_{\sigma, \sigma'} \bra{0} a^{s'}_{\vb*{p}'} \times \\
+        & \quad \quad ( (2\pi)^4 \delta^4(q'-q-k) a^{\sigma' \dagger}_{\vb*{q}'} a^\sigma_{\vb*{q}} \bar{u}^{\sigma'}(q') \gamma^\mu u^\sigma(q) \tilde{A}_\mu(k) + (2\pi)^4 \delta^4(-q' - q +k) b^{\sigma'}_{\vb*{q}'} a^\sigma_{\vb*{q}} \bar{v}^{\sigma'}(q') \gamma^\mu u^\sigma(q) \tilde{A}_\mu (k) \\
+        &\quad \quad + (2\pi)^4 \delta^4(q' + q - k) a^{\sigma' \dagger}_{\vb*{q}'} b^{\sigma \dagger}_{\vb*{q}} \bar{u}^{\sigma'}(q') \gamma^\mu v^\sigma(q) \tilde{A}_\mu(k) + 
+        (2\pi)^4 \delta^4(-q' + q - k) b^{\sigma'}_{\vb*{q}'} b^{\sigma \dagger}_{\vb*{q}} \bar{v}^{\sigma'}(q') \gamma^\mu v^\sigma(q) \tilde{A}_\mu(k) ) a^{s \dagger}_{\vb*{p}} \ket*{0}.
+    \end{aligned}
+\]
+We can then integrate out $k$ and replace the $k$ in $\tilde{A}_\mu(k)$ with $q$ and $q'$.
+By Wick theorem, the second and the third term vanish because a antiparticle cannot be automatically transformed
+into a particle, and vice versa. The operators in the first term contract into 
+\[
+    \mel{0}{a^{s'}_{\vb*{p}'} a^{\sigma' \dagger}_{\vb*{q}'} a^\sigma_{\vb*{q}} a^{s \dagger}_{\vb*{p}} }{0} = (2\pi)^3 \delta^{s \sigma} \delta^3(\vb*{p} - \vb*{q}) \times (2\pi)^3 \delta^{s' \sigma'} \delta^3(\vb*{p}' - \vb*{q}'),
+\]
+and the operators in the fourth term contract into 
+\[
+    \mel{0}{a^{s'}_{\vb*{p}'} b^{\sigma'}_{\vb*{q}'} b^{\sigma \dagger}_{\vb*{q}} a^{s \dagger}_{\vb*{p}} }{0} = (2\pi)^3 \delta^{s s'} \delta^3(\vb*{p} - \vb*{p}') \times (2\pi)^3 \delta^{\sigma \sigma'} \delta^3(\vb*{q} - \vb*{q}').
+\]
+Therefore we have
+\[
+    \begin{aligned}
+        &\quad - \ii e \int \dd[4]{x} \mel{0}{ \sqrt{2 E_{\vb*{p}'}} a_{\vb*{p}'}^{s'} \bar{\psi} \gamma^{\mu} \psi A_{\mu} \sqrt{2 E_{\vb*{p}}} a^{s\dagger}_{\vb*{p}} }{0} \\
+        &= - \ii e \bar{u}^{s'}(p') \gamma^\mu u^s(p) \tilde{A}_\mu(p' - p) - \ii e \bar{v}^{\sigma'} \gamma^\mu v^\sigma(p) \tilde{A}_\mu(0) (2\pi)^3 \delta^3(0) \delta^3(\vb*{p} - \vb*{p}'). 
+    \end{aligned}
+\]
+Since the potential is localized, there is no such thing as a uniform field present at every point in the world, 
+and therefore $A_\mu(0) = 0$. So finally we get a first-order approximation of the transition matrix:
+\begin{equation}
+    \mel{p', s'}{\ii T}{p, s} = - \ii e \bar{u}^{s'}(p') \gamma^\mu u^s(p) \tilde{A}_\mu(p' - p) ,
+\end{equation}
+or in the matrix form, 
+\begin{equation}
+    \mel{p'}{\ii T}{p} = - \ii e \bar{u}(p') \gamma^\mu u(p) \tilde{A}_\mu(p' - p).
+\end{equation}
+
+\item[(b)] In this case, we have 
+\begin{equation}
+    A_\mu(k) = \int \dd[4]{x} \ee^{\ii k \cdot x} A_\mu(\vb*{x}) = 2 \pi \delta(k^0) \int \dd[3]{\vb*{x}} \ee^{- \ii \vb*{k} \cdot \vb*{x}} A_\mu(\vb*{x}) = 2 \pi \delta(k^0) A_\mu(\vb*{k}). 
+\end{equation}  
+Therefore, 
+\begin{equation}
+    \begin{aligned}
+        \mel{p'}{\ii T}{p} &= - \ii e \bar{u}(p') \gamma^\mu u(p) 2 \pi \delta(E_{\vb*{p}'} - E_{\vb*{p}}) A_\mu(\vb*{k}) \\
+        &= \ii \mathcal{M} \cdot (2\pi) \delta(E_f - E_i) ,
+    \end{aligned}
+\end{equation}
+where
+\begin{equation}
+    \ii \mathcal{M} = - \ii e \bar{u}(p') \gamma^\mu u(p) A_\mu(\vb*{k}).
+\end{equation}
+
+The formula \eqref{eq:single-cross-section} can be seen as a specific case of Eq.~(4.79). 
+We consider \eqref{eq:interaction-ham-2} to be an effective theory around the state in which there is one heavy
+particle, and the electric charge density and current density of it are stable and happen to generate an 
+electromagnetic field $A^\mu$. By taking the inverse of the Maxwell equation and design the wave function of 
+the heavy particle carefully, we can always make this happen. We call \eqref{eq:interaction-ham-2} the
+``effective'' theory and call the theory with a heavy field the ``original'' theory. 
+Diagrammatically, what we are doing is \input{original-eff-eq.tex}
+We can fix $q$ and $q'$ to two arbitrary values, as long as they are small enough (correct because the particle 
+is heavy) and satisfy the conservation of momentum.
+
+Under the basis of the original theory, we have 
+\[
+    \begin{aligned}
+        \ii \mathcal{M}^\text{original} &= - \ii e \bar{u}(p') \gamma^\mu u(p) \frac{- \ii}{p^2} \eta_{\mu \nu}
+        (- \ii e) \bar{u}(q') \gamma^\nu u(q) \\
+        &= - \ii e \bar{u}(p') \gamma^\mu u(p) \frac{- 1}{p^2} \bar{u}(q') \gamma_\mu u(q) .
+    \end{aligned}
+\]
+Since under the Lorenz gauge we have 
+\[
+    j^\mu = e \bar{\psi} \gamma^\mu \psi, \quad \partial_\mu \partial^\mu A^\nu = j^\mu,
+\]
+we find 
+\[
+    \expval*{A^\mu}(q - q') = - \frac{1}{p^2} \bar{u}(q') \gamma^\mu u(q).
+\]
+Under a mean field approximation, we can effectively write down 
+\[
+    \ii \mathcal{M}^\text{original} = - \ii e \bar{u}(p') \gamma^\mu u(p) A_\mu(q-  q'),
+\]
+which just looks like $\ii \mathcal{M}^\text{eff}$. However, note we have 
+\[
+    \ket*{p, \text{heavy particle}}_\text{origin} = \sqrt{2 E} \ket*{p}_\text{eff}, \quad 
+    \ket*{p', \text{heavy particle}}_\text{origin} = \sqrt{2 E} \ket*{p'}_\text{eff},
+\]
+where $E$ is the energy of the heavy particle, which, since the particle is heavy, almost does not change. 
+The $\sqrt{2 M}$ factors come from the fact that in relativistic QFT the covariant many-body wave 
+function is defined as 
+\[
+    \ket*{p_1, p_2, \ldots, p_n} = \sqrt{2 E_{1}} a^\dagger_{\vb*{p}_1} \cdots \sqrt{2 E_n} a^\dagger_{\vb*{p}_n} \ket*{0},
+\]
+and $\ket*{p}_\text{eff}$ misses the factor for the heavy particle. Therefore, we have
+\begin{equation}
+    \mathcal{M}^\text{original} = 2 E \mathcal{M}^\text{eff} .
+\end{equation} 
+Factors like the $2E$ can also be seen when one switch from the $\ket*{p} = \sqrt{2 E_{\vb*{p}}} 
+a^\dagger_{\vb*{p}} \ket*{0}$ basis to the $a^\dagger_{\vb*{p}} \ket*{0}$ basis, for example Eq.~(4.136) in Peskin.
+Now Peskin (4.79) gives 
+\[
+    \begin{aligned}
+        \dd{\sigma} &= \frac{1}{2 E_{\vb*{p}} 2 E \abs*{\vb*{v}_{\vb*{p}} - \vb*{v}_{\vb*{q}}}} 
+        \frac{\dd[3]{\vb*{p}'}}{(2\pi)^3} \frac{1}{2 E_{\vb*{p}'}} \int \frac{\dd[3]{\vb*{q}'}}{(2\pi)^3} \frac{1}{2E} \abs*{\mathcal{M}^\text{origin}}^2 \\
+        &\quad \quad \times (2\pi)^4 \delta(E_\text{f} + E - E_\text{i} - E) \delta^3(\vb*{q}' + \vb*{p}' - \vb*{q} - \vb*{p})  \\
+        &= \frac{1}{2 E_{\vb*{p}} 2 E \abs*{\vb*{v}_{\vb*{p}}} } 
+        \frac{\dd[3]{\vb*{p}'}}{(2\pi)^3} \frac{1}{2 E_{\vb*{p}'}} \int \frac{\dd[3]{\vb*{q}'}}{(2\pi)^3} \frac{1}{2E} \abs*{2 E \mathcal{M}^\text{eff}}^2 (2\pi)^4 \delta(E_{f} - E_{i} ) \delta^3(\vb*{q}' + \vb*{p}' - \vb*{q} - \vb*{p}) \\
+        &= \frac{1}{v_{\vb*{p}}} \frac{1}{2 E_{\vb*{p}} (2\pi)^3} \frac{\dd[3]{\vb*{p}'}}{2 E_{\vb*{p}'}} \abs*{\mathcal{M}^\text{eff}}^2 (2\pi) \delta(E_f- E_i) ,
+    \end{aligned}
+\]
+where the energy of the heavy particle does not change. Note that $\vb*{p}$ is the input momentum and $\vb*{p}'$
+is the output momentum, and $\mathcal{M}^\text{eff}$ is just $\mathcal{M}$ in the context of 
+\eqref{eq:interaction-ham-2}, and we find this is exactly \eqref{eq:single-cross-section}. 
+
+Now we integrate $\abs*{\vb*{p}_f}$. We have (following the notation in Chapter 4 of Peskin, we use $\abs*{p_f}$ to denote $\abs*{\vb*{p}_f}^2$)
+\[
+    \begin{aligned}
+        \dd{\sigma} &= \frac{1}{v_i} \frac{1}{2 E_i (2\pi)^3} \int \frac{ \abs*{{p}_f}^2 \dd{\Omega} \dd{\abs*{{p}_f}} }{2 E_f}
+        \abs*{\mathcal{M}(p_i \to p_f)}^2 (2\pi) \delta(E_f - E_i) \\
+        &= \frac{1}{v_i} \frac{1}{2 E_i (2\pi)^2} \eval{\frac{1}{{\abs*{p_f}}/{\sqrt{\abs*{p_f}^2 + m^2}}} \frac{\dd{\Omega} \abs*{p_f}^2}{2 E_i} \abs*{\mathcal{M}(p_i \to p_f)}^2}_{\sqrt{\abs*{p}_f^2 + m^2} = E_i} \\
+        &= \frac{1}{v_i} \frac{1}{(2 E_i)^2 (2\pi)^2} \dd{\Omega} \abs*{p_f} E_i \abs*{\mathcal{M}(p_i \to p_f)}^2 \\
+        &= \frac{1}{v_i} \frac{\dd{\Omega}}{16 \pi^2} \frac{\abs*{p_f}}{E_f} \abs*{\mathcal{M}(p_i \to p_f)}^2 \\
+        &= \frac{\dd{\Omega}}{16 \pi^2} \abs*{\mathcal{M}(p_i \to p_f)}^2.
+    \end{aligned}
+\]
+Therefore
+\begin{equation}
+    \dv{\sigma}{\Omega} = \frac{\abs*{\mathcal{M}(p_i \to p_f)}^2}{16 \pi^2}.
+    \label{eq:cross-section-r-2}
+\end{equation}
+
+\item[(c)] For $A^0 = Ze / 4 \pi r$, we have the well-known Fourier transformation
+\begin{equation}
+    A^0(\vb*{q}) = \frac{Z e}{ \abs*{\vb*{q}}^2}.
+    \label{eq:coulomb-point}
+\end{equation}
+We assume we are dealing with an averaged input spin, and in this case the $\abs{\mathcal{M}}^2$ in 
+\eqref{eq:cross-section-r-2} should be replaced by $\frac{1}{2} \sum_\text{spin} \abs*{\mathcal{M}}^2$.
+
+Note that $\gamma^0 \gamma^\mu$ is a Hermitian matrix, and we have (here we switch back to the notation 
+of $p$ and $p'$ to keep agreement with Peskin's notation in Section~5.1) 
+\[
+    \begin{aligned}
+        \sum_\text{spin} \abs*{\mathcal{M}}^2 &= e^2 \trace \bar{u}(p') \gamma^\mu \tilde{A}_\mu(p' - p) u(p) (\bar{u}(p') \gamma^\mu \tilde{A}_\mu(p' - p) u(p) )^\dagger \\
+        &= e^2 \trace \bar{u}(p') \gamma^\mu \tilde{A}_\mu(p' - p) u(p) \bar{u}(p) \gamma^\nu \tilde{A}_\nu(p - p') u(p') \\
+        &= e^2 \tilde{A}_\mu(p' - p) \tilde{A}_\nu(p - p') \trace u(p') \bar{u}(p') \gamma^\mu u(p) \bar{u}(p) \gamma^\nu \\
+        &= e^2 \tilde{A}_\mu(p' - p) \tilde{A}_\nu(p - p') \trace (\fsl{p}' + m) \gamma^\mu (\fsl{p} + m) \gamma^\nu .
+    \end{aligned}
+\]
+The second line can be justified in the discussion above Peskin Eq.~(5.2). The fourth line is because of Eq.~(5.3).
+Now expanding the trace with $\gamma$ matrices trace formulae, we have 
+\[
+    \begin{aligned}
+        &\quad \trace (\fsl{p}' + m) \gamma^\mu (\fsl{p} + m) \gamma^\nu \\
+        &= \trace (p'_\rho p_\sigma \gamma^\rho \gamma^\mu \gamma^\sigma \gamma^\nu + m^2 \gamma^\mu \gamma^\nu + p'_\rho m \gamma^\rho \gamma^\mu \gamma^\nu + p_\sigma m \gamma^\mu \gamma^\sigma \gamma^\nu ) \\
+        &= p'_\rho p_\sigma \times 4 (\eta^{\rho \mu} \eta^{\sigma \nu} - \eta^{\rho \sigma} \eta^{\mu \nu} + \eta^{\rho \nu} \eta^{\mu \sigma}) + m^2 \times 4 \eta^{\mu \nu} \\
+        &= 4 (p'^\mu p^\nu + p'^\nu p^\mu - p'_\rho p^\rho \eta^{\mu \nu}) + 4 m^2 \eta^{\mu \nu},
+    \end{aligned}
+\]
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \sum_\text{spin} \abs*{\mathcal{M}}^2 &= e^2 \tilde{A}_\mu(p' - p) \tilde{A}_\nu(p - p') (4 (p'^\mu p^\nu + p'^\nu p^\mu - p'_\rho p^\rho \eta^{\mu \nu}) + 4 m^2 \eta^{\mu \nu}) \\
+        &= 4 e^2 ( (\tilde{A}(p'-p) \cdot p') (\tilde{A}(p - p') \cdot p) + (\tilde{A}(p'-p) \cdot p) (\tilde{A}(p - p') \cdot p') \\
+        &\quad \quad + (m^2 - p \cdot p') \tilde{A}(p'-p) \cdot \tilde{A}(p - p') ) .
+    \end{aligned}
+    \label{eq:general-m-2}
+\end{equation}
+
+From \eqref{eq:coulomb-point} we have 
+\[
+    A^0(p - p') = A^0(p' - p) = \frac{Ze}{ \abs*{\vb*{p} - \vb*{p}'}^2} = \frac{Ze}{ \left( 2 \abs*{\vb*{p}} \sin \frac{\theta}{2} \right)^2}, \quad A^i = 0.
+\]
+Substituting these into \eqref{eq:general-m-2}, we have 
+\[
+    \begin{aligned}
+        \sum_\text{spin} \abs*{\mathcal{M}}^2 &= 4 e^2 \tilde{A}^0(p - p') \tilde{A}^0(p' - p) (2 p^0 p'^0 + (m^2 - p \cdot p') ) \\
+        &= 4 e^2 \left( \frac{Ze}{ \left( 2 \abs*{\vb*{p}} \sin \frac{\theta}{2} \right)^2} \right)^2 (2 p^0 p'^0 + (m^2 - p^0 p'^0 + \vb*{p} \cdot \vb*{p}') ) \\
+        &= \frac{(Z e^2)^2}{4 \abs*{\vb*{p}}^4 \sin^4 \frac{\theta}{2} } (E_{\vb*{p}}^2 + m^2 + \vb*{p} \cdot \vb*{p}') \\
+        &= \frac{(Z e^2)^2}{4 \abs*{\vb*{p}}^4 \sin^4 \frac{\theta}{2} } (E_{\vb*{p}}^2 + E_{\vb*{p}}^2 - \abs*{\vb*{p}}^2 + \vb*{p} \cdot \vb*{p}') \\
+        &= \frac{(Z e^2)^2}{4 \abs*{\vb*{p}}^2  \sin^4 \frac{\theta}{2} } ( \frac{2 E_{\vb*{p}}^2}{\abs*{\vb*{p}}^2} + \frac{- \abs*{\vb*{p}}^2 + \abs*{\vb*{p}}^2 \cos \theta }{\abs*{\vb*{p}}^2} ) \\
+        &= \frac{(Z e^2)^2}{4 \abs*{\vb*{p}}^2 \sin^4 \frac{\theta}{2} } ( \frac{2}{v^2} + (\cos \theta - 1) ) \\
+        &=  \frac{(Z e^2)^2}{4 \abs*{\vb*{p}}^2 \sin^4 \frac{\theta}{2} } \left( \frac{2}{v^2} - 2 \sin^2 \frac{\theta}{2} \right). 
+    \end{aligned}
+\]
+Therefore we get 
+\begin{equation}
+    \dv{\sigma}{\Omega} = \frac{1}{16 \pi^2} \frac{1}{2} \sum_\text{spin} \abs*{\mathcal{M}}^2 = \frac{1}{16 \pi^2} \frac{(Z e^2)^2}{ 4 \abs*{\vb*{p}}^2 \sin^4 \frac{\theta}{2} } \left( \frac{1}{v^2} - \sin^2 \frac{\theta}{2} \right) = \frac{(Z \alpha)^2}{4 \abs*{\vb*{p}}^2 \sin^4 \frac{\theta}{2}} \left( \frac{1}{v^2} - \sin^2 \frac{\theta}{2} \right).
+    \label{eq:relativistic-rutherford}
+\end{equation}
+\eqref{eq:relativistic-rutherford} is the relativistic cross section. In the non-relativistic limit, $v$ is small,
+and $1 / v^2$ is dominantly large, and $\vb*{p} = mv$, so we have 
+\begin{equation}
+    \dv{\sigma}{\Omega} = \frac{(Z \alpha)^2}{ 4 m^2 v^4 \sin^4 \frac{\theta}{2} },
+\end{equation}
+which is just \eqref{eq:rutherford}.
+
+\end{itemize}
+
+\paragraph{}
+
+\paragraph{Bhabha scattering} [Problem $5.2$ on p. 170 of Peskin.] Compute the differential cross section $d \sigma / d \cos \theta$ for Bhabha scattering, $e^{+} e^{-} \rightarrow e^{+} e^{-}$. You may work in the limit $E_{\mathrm{cm}} \gg m_{e}$, in which it is permissible to ignore the electron mass. There are two Feynman diagrams; these must be added in the invariant matrix element before squaring. Be sure that you have the correct relative sign between these diagrams. The intermediate steps are complicated, but the final result is quite simple. In particular, you may find it useful to introduce the Mandelstam variables $s, t$, and $u$. Note that, if we ignore the electron mass, $s+t+u=0$. You should be able to cast the differential cross section into the form
+\[
+\frac{d \sigma}{d \cos \theta}=\frac{\pi \alpha^{2}}{s}\left[u^{2}\left(\frac{1}{s}+\frac{1}{t}\right)^{2}+\left(\frac{t}{s}\right)^{2}+\left(\frac{s}{t}\right)^{2}\right]
+\]
+Rewrite this formula in terms of $\cos \theta$ and graph it. What feature of the diagrams causes the differential cross section to diverge as $\theta \rightarrow 0$ ?
+
+\paragraph{Solution} The diagrams are 
+\input{3-s.tex}
+\input{3-t.tex}
+The minus sign in the $t$-diagram can be found by contraction. Another way to see the minus sign is to connect the 
+two input lines together and connect the two output lines together, and we find the $s$-channel is the Hartree 
+diagram with two closed fermionic loops and has no additional minus sign, while the $t$-channel is the Fock diagram
+with one closed fermionic loop and therefore has a minus sign.
+The total amplitude is 
+\begin{equation}
+    \ii \mathcal{M} = \ii \mathcal{M}_s + \ii \mathcal{M}_t = \ii e^2 \left( \frac{1}{s} \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p) - \frac{1}{t} \bar{u}(p') \gamma^\mu u(p) \bar{v}(q) \gamma_\mu v(q') \right).
+\end{equation}
+
+Now we work in the high-energy limit, and consider the electrons to be approximately massless. In this way, by 
+Peskin (4.85),
+\[
+    \left( \dv{\sigma}{\Omega} \right)_\text{CM} = \frac{1}{64 \pi^2 E_\text{CM}^2} \frac{1}{4} \sum_\text{spins} \mathcal{M}^2.
+\]
+We have 
+\[
+    \begin{aligned}
+        \sum_\text{spins} \mathcal{M}^2 &= e^4 \trace \left( \frac{1}{s} \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p) - \frac{1}{t} \bar{u}(p') \gamma^\mu u(p) \bar{v}(q) \gamma_\mu v(q') \right) \\
+        &\quad \quad \quad \times \left( \frac{1}{s} \bar{u}(p) \gamma_\nu v(q) \bar{v}(q') \gamma^\nu u(p') - \frac{1}{t} \bar{v}(q') \gamma_\nu v(q) \bar{u}(p) \gamma^\nu u(p') \right) \\
+        &= e^4 \trace \Bigl( \frac{1}{s^2} \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p) \bar{u}(p) \gamma_\nu v(q) \bar{v}(q') \gamma^\nu u(p') \\
+        &\quad \quad \quad + \frac{1}{t^2} \bar{u}(p') \gamma^\mu u(p) \bar{v}(q) \gamma_\mu v(q') \bar{v}(q') \gamma_\nu v(q) \bar{u}(p) \gamma^\nu u(p') \\
+        &\quad \quad \quad - \frac{1}{st} \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p) \bar{v}(q') \gamma_\nu v(q) \bar{u}(p) \gamma^\nu u(p') \\
+        &\quad \quad \quad - \frac{1}{st} \bar{u}(p') \gamma^\mu u(p) \bar{v}(q) \gamma_\mu v(q') \bar{u}(p) \gamma_\nu v(q) \bar{v}(q') \gamma^\nu u(p') \Bigr). 
+    \end{aligned}
+\]
+Note that 
+\[
+    \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p)
+\]
+is actually 
+\[
+    \bar{u}(p') \gamma^\mu v(q') \otimes \bar{v}(q) \gamma_\mu u(p),
+\]
+which gives a four-dimensional matrix, the indices of which correspond to two input spins and two output spins.
+We therefore have 
+\[
+    \begin{aligned}
+        &\quad \trace \bar{u}(p') \gamma^\mu v(q') \bar{v}(q) \gamma_\mu u(p) \bar{u}(p) \gamma_\nu v(q) \bar{v}(q') \gamma^\nu u(p') \\
+        &= \trace(\bar{v}(q) \gamma_\mu u(p) \bar{u}(p) \gamma_\nu v(q)) \cdot \trace(\bar{v}(q') \gamma^\nu u(p') \bar{u}(p') \gamma^\mu v(q')) \\
+        &= \trace( v(q) \bar{v}(q) \gamma_\mu u(p) \bar{u}(p) \gamma_\nu ) \cdot \trace( v(q') \bar{v}(q') \gamma^\nu u(p') \bar{u}(p') \gamma^\mu ) \\
+        &= \trace( (\fsl{q} - m) \gamma_\mu (\fsl{p} + m) \gamma_\nu ) \cdot \trace( (\fsl{q}' - m) \gamma^\nu (\fsl{p}' + m) \gamma^\mu ),
+    \end{aligned}
+\]
+where 
+
+
+\end{document}
