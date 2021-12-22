@@ -1,0 +1,271 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Special Relativity by Prof. Kun Din}
+\author{Jinyuan Wu}
+\date{December 22, 2021}
+
+\begin{document}
+
+\maketitle
+
+In the \href{lecture-12-15.pdf}{previous lecture} we discussed the covariant form of the Maxwell equations.
+We also need to have a theory about \emph{matters} that are coupled to the electromagnetic field.
+This can be done by a 
+\begin{equation}
+    \dv{p^\nu}{\tau} = q F^{\mu \nu} u_\nu \eqqcolon f^\mu,
+    \label{eq:particle-eom}
+\end{equation}
+where $u_\mu$ is the four-velocity. 
+
+The dual field strength tensor, when written as a functional of the scalar and vector potentials
+\begin{equation}
+    \tilde{F}^{\mu \nu} = \pmqty{ 0 & - (\curl{\vb*{A}})_x & - (\curl{\vb*{A}})_y  & - (\curl{\vb*{A}})_z \\
+    (\curl{\vb*{A}})_x & 0 & - \partial_z (c^{-1} \phi) - \partial_{ct} A_z & \partial_y (c^{-1} \phi) + \partial_{ct} A_y \\ 
+    (\curl{\vb*{A}})_y & \partial_z(c^{-1} \phi) + \partial_{ct} A_z & 0 & - \partial_x(c^{-1} \phi) - \partial_{ct} A_x \\
+    (\curl{\vb*{A}})_z & - \partial_y(c^{-1} \phi) - \partial_{ct} A_y & \partial_x(c^{-1} \phi) + \partial_{ct} A_x & 0 },
+\end{equation}
+can be verified to satisfy the condition $\partial_\mu \tilde{F}^{\mu \nu} = 0$. Therefore, when we are dealing  
+with a theory about potentials instead of electromagnetic fields, we can completely ignore the two sourceless 
+Maxwell equations, and focus on $\partial_\mu F^{\mu \nu} = J^\nu$ and \eqref{eq:particle-eom}.
+
+The Lagrangian of a particle is 
+\begin{equation}
+    L_\text{m} = - m c^2 \sqrt{1 - \frac{v^2}{c^2}}.
+\end{equation}
+The total Lagrangian of the relativistic particle coupled to an electromagnetic field is 
+\begin{equation}
+    L = L_\text{m} - q \phi + q \vb*{v} \cdot \vb*{A}.
+    \label{eq:particle-coupling}
+\end{equation}
+We need to verify whether \eqref{eq:particle-coupling} gives \eqref{eq:particle-eom}. The Euler-Lagrangian 
+equation is 
+\[
+    \dv{t} \left( - m c^2 \frac{- \vb*{v} / c^2}{\sqrt{1 - v^2 / c^2}} \right)  - (- q \grad{\phi} )
+\]
+\begin{equation}
+    \dv{t} \frac{m \vb*{v}}{\sqrt{1 - v^2 / c^2}} = q \vb*{E} + q \vb*{v} \times \vb*{B}.
+\end{equation}
+
+We go on to write down a Lagrangian for the electromagnetic field. What we need to do is to construct a 
+scalar bilinear using $A_\mu$, $\partial_\mu A^\mu$, and $\partial_\mu A^\nu$. The most general case is 
+\[
+    \mathcal{L} = \alpha (\partial_\mu A^\mu)^2 + \beta (\partial_\mu A^\nu) (\partial^\mu A_\nu)
+    + \gamma (\partial_\mu A^\nu) (\partial_\nu A^\mu) + \delta A^\mu A_\mu,
+\]
+and we need to add a coupling term 
+\[
+    \mathcal{L}_\text{couple} = - j^\mu A_\mu.
+\]
+Note that $\tilde{F}^{\mu \nu}$ is a pseudotensor and therefore cannot appear linearly in the Lagrangian.
+For example, we know 
+\[
+    F_{\mu \nu} \tilde{F}^{\mu \nu} = - \frac{4}{c} \vb*{E} \cdot \vb*{B}
+\]
+is a pseudoscalar, and therefore cannot be a term of the Lagrangian. Theories about axions has a term like 
+\[
+    \trace \tensor{\vb*{k}} F_{\mu \nu} \tilde{F}^{\mu \nu} .
+\]
+We do not discuss such theories here. The Euler-Lagrangian equation is now 
+\[
+    - \beta \partial_\nu \partial^\nu A^\mu - (\alpha + \gamma) \partial_\nu \partial^\mu A^\nu + \delta A^\mu = \frac{1}{2} j^\mu.
+\]
+Comparing the equation with $\partial_\mu F^{\mu \nu} = j^\nu$, we find 
+\[
+    \delta = 0, \quad \beta = - \frac{1}{2 \mu_0} , \quad \alpha + \gamma = \frac{1}{2 \mu_0}.
+\]
+If we impose the Lorenz gauge, we have $\alpha = 0$, and in this way the Lagrangian can be written concisely as 
+\begin{equation}
+    \mathcal{L} = - \frac{1}{4 \mu_0} F_{\mu \nu} F^{\mu \nu} - j_\mu A^\mu.
+    \label{eq:lagrangian-coupled-em}
+\end{equation} 
+The fact that $\delta = 0$ means photons are massless. Weak interaction has a Lagrangian similar to the one of 
+electrodynamics, but the bosons are massive due to Higgs mechanism. 
+
+We can see the gauge symmetry in the Lagrangian. Under a gauge transformation of the potential, we have 
+\[
+    \begin{aligned}
+        j_\mu A^\mu &\longrightarrow j_\mu (A^\mu + \partial^\mu \Lambda) \\
+        &= j_\mu A^\mu + \partial^\mu (j_\mu \Lambda) - \Lambda \partial_\mu j^\mu,
+    \end{aligned}
+\]
+where the second term is a boundary term and the third term is zero because of charge conservation.
+Therefore, we find $j_\mu A^\mu$ invariant under the gauge transformation of $A^\mu$. Actually $j_\mu$ itself
+may change because of a phase factor in the matter field, and in QED we find it cancels the change of $- \frac{1}{4} F_{\mu \nu} F^{\mu \nu}$.
+
+Now we derive the conservation of energy and momentum. Under a small coordinate translation, we have 
+\[
+    \var{x^\mu} = x'^\mu = x^\mu,
+\]
+and it can be verified that if the Lagrangian has temporal and spacial translational invariance, then 
+\begin{equation}
+    \partial_\mu \Theta^{\mu \nu} = 0, \quad \Theta_{\mu \nu} = \pdv{L}{(\partial^\mu A_\sigma)} \partial_\nu A_{\sigma} - g^{\mu \nu} \mathcal{L}.
+\end{equation}
+Note that here we fix $j_\mu$, and therefore whether the Lagrangian has temporal or spacial translational 
+invariance depends on $j^\mu$. We then verify this for \eqref{eq:lagrangian-coupled-em}. We have 
+\[
+    \pdv{F_{\alpha \beta} F^{\alpha \beta}}{(\partial_\mu A_\sigma)} = 4 F^{\mu \sigma},
+\]
+and therefore 
+\begin{equation}
+    \Theta^{\mu \nu} = \frac{1}{4 \mu_0} g^{\mu \nu} F_{\alpha \beta} F^{\alpha \beta} - \frac{1}{\mu_0} F^{\mu \sigma} \partial^\nu A_\sigma + \eta^{\mu \nu} j_\sigma A^\sigma,
+\end{equation}
+and 
+\begin{equation}
+    \partial_\mu \Theta^{\mu \nu} = A^\sigma \partial^\nu j_\sigma.
+\end{equation}
+Therefore, if $j_\sigma$ depends on $t$, or in other words $\partial^0 j_\sigma \neq 0$, then $\partial_\mu \Theta^{\mu 0} \neq 0$.
+So we see that we have energy conservation if and only if the system has time translational symmetry.
+Similarly, a system has conserved momentum if and only if the system has space translational symmetry.
+
+The definition of $\Theta^{\mu \nu}$ as a energy-momentum tensor is flawed. We see that 
+\begin{equation}
+    \Theta^{00} = \frac{\epsilon_0}{2} \vb*{E} \cdot \vb*{E} + \frac{1}{2 \mu_0} \vb*{B} \cdot \vb*{B} + \epsilon_0 \div{(\phi \vb*{E})}.
+\end{equation}
+Here we see a useless boundary term, which is absent in the usual definition of electromagnetic energy.
+Nor is $\Theta^{\mu \nu}$ gauge invariant. What we need to do is to \emph{symmetrize} the tensor, hopping
+this can solve these two flaws. We will find the \concept{Belinfante symmetrization} 
+\begin{equation}
+    \begin{aligned}
+        T^{\mu \nu} &= \Theta^{\mu \nu} + \frac{1}{\mu_0} \partial_\sigma (F^{\mu \sigma} A^\nu) \\
+        &= \frac{1}{4 \mu_0} \eta^{\mu \nu} F_{\alpha \beta} F^{\alpha \beta} 
+        + \frac{1}{\mu_0} F^{\mu \sigma} F\indices{_\sigma^\mu} + \eta^{\mu \nu} j_\sigma A^\sigma - j^\mu A^\nu,
+    \end{aligned}
+\end{equation} 
+is a good choice. We find 
+\begin{equation}
+    T^{00} = \frac{\epsilon_0}{2} \left( \vb*{E} \cdot \vb*{E} + \frac{1}{c^2} \vb*{B} \cdot \vb*{B} \right) - \vb*{j} \cdot \vb*{A} ,
+\end{equation}
+and 
+\begin{equation}
+    T^{0 k} = \frac{1}{\mu_0} F^{0 \sigma} F\indices{_{\sigma}^k} = 
+\end{equation}
+
+We turn to consider the conserved flow associated with Lorentz boost and rotation. We have 
+\begin{equation}
+    \begin{aligned}
+        x'^\mu &= x^\mu + \var{\omega^{\mu \nu}} x_\nu, \\
+        A'^\mu &= A^\mu + \frac{1}{2} \var{\omega_{\alpha \beta}} (\eta^{\alpha \mu} \eta^{\beta \nu} - \eta^{\alpha \nu} \eta^{\beta \mu}) A_\nu(x),
+    \end{aligned}
+\end{equation}
+and we have 
+\begin{equation}
+    M^{\mu \nu \lambda} = \Theta^{\sigma \lambda} x^\nu - \Theta^{\sigma \nu} x^\lambda + \pdv{\mathcal{L}}{(\partial_\sigma A^\sigma)} (\eta^{\nu \sigma} \eta^{\lambda \tau} - \eta^{\nu \tau} \eta^{\lambda \sigma}) A_\tau.
+\end{equation}
+Especially, the conserved charge $M^{\nu \lambda} \coloneqq M^{0 \nu \lambda}$ is 
+\begin{equation}
+    M^{\nu \lambda} = \int \dd[3]{\vb*{x}} \left( \Theta^{0 \lambda} x^\nu - \Theta^{0 \nu} x^\lambda + \pdv{\mathcal{L}}{(\partial_0 A^\sigma)} (\eta^{\nu \sigma} \eta^{\lambda \tau} - \eta^{\nu \tau} \eta^{\lambda \sigma}) A_\tau \right).
+\end{equation}
+We can see that we have an orbital angular momentum term 
+\begin{equation}
+    L^{\nu \lambda} = \int \dd[3]{\vb*{x}} \left( \Theta^{0 \lambda} x^\nu - \Theta^{0 \nu} x^\lambda  \right), 
+\end{equation} 
+and a spin angular momentum term 
+\begin{equation}
+    S^{\nu \lambda} = \int \dd[3]{\vb*{x}} \pdv{\mathcal{L}}{(\partial_0 A^\sigma)} (\eta^{\nu \sigma} \eta^{\lambda \tau} - \eta^{\nu \tau} \eta^{\lambda \sigma}) A_\tau =  \frac{1}{\mu_0} \int \dd[3]{\vb*{x}} \vb*{E} \times \vb*{A} .
+\end{equation}
+
+
+\end{document}
