@@ -1,0 +1,228 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+% \zexternaldocument*[last-]{12-2}[12-2.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\newcommand{\lastnote}{\href{12-9.pdf}{the last lecture}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Optical mode in a cavity with a nanosphere}
+
+In previous lectures we are discussing atoms in a given optical field. Now we turn to discuss the optical field 
+itself in a cavity. 
+
+We consider such a system: We have a cavity, in which there is a small sphere (yet still large enough so that quantum fluctuation is not that important), and only one optical mode we are interested in is coupled to 
+the sphere. There are other optical modes coupled to the sphere, but we are not that interested in them, 
+and therefore they effectively create a damping channel for the mode we are interested in. 
+A beam of light is shed on the sphere.
+
+The Hamiltonian of photons can be obtained by solving the optical modes of the cavity,
+and the electric field component of mode $c$ - the mode we are interested in - is 
+\begin{equation}
+    \vb*{E}_c(\vb*{r}, t) = \sqrt{\frac{\hbar \omega_c}{2 \epsilon_0 V}} f(\vb*{r}) \ee^{- \ii \omega_c t} + \text{c.c}.
+\end{equation}
+For example, for a Fabry-Perot cavity, we have 
+\begin{equation}
+    \vb*{E}_c(\vb*{r}, t) = \sqrt{\frac{\hbar \omega_c}{2 \epsilon_0 V}} f(x, y) \cos(k_z z) \ee^{ - \ii \omega_c t} + \text{c.c}.
+\end{equation}
+We take a inverse approach of what has been used in previous lectures, trying not to explicitly include the sphere. 
+Note, however, that the sphere is not a many-body system and the inner states of it cannot be simply ignored, 
+and therefore the sphere is not a fixed external deriving field. We assume a large detuning, and the sphere 
+just ``move according to the external field'', and in this way 
+\begin{equation}
+    \expval{\vb*{d}} \approx \alpha \vb*{E}_k.
+\end{equation} 
+In this way we do not need to rigorously integrate out the sphere. Therefore the interaction Hamiltonian 
+is effectively 
+\begin{equation}
+    V = \sum_k \alpha \vb*{\mathcal{E}}(\vb*{r}_0)^* \vb*{\mathcal{E}}_k(\vb*{r_0}) a_k a^\dagger + \text{h.c.},
+\end{equation}
+where $a_k$ is the annihilation operator of a mode we are not interested in, and we have assume only 
+\emph{one} mode in the cavity is strongly coupled to the sphere. After RWA, the interaction Hamiltonian is 
+\begin{equation}
+    H_\text{int} = \sum_k g_k \ee^{- \ii \Delta_k} a^\dagger a_k + \text{h.c.}, \quad \Delta_k = \omega - \omega_k, \quad g_k = \frac{\alpha}{\hbar} \vb*{\mathcal{E}}^*(\vb*{r}_0) \vb*{\mathcal{E}}_k(\vb*{r}_0).
+\end{equation}
+
+Now we solve the Hamiltonian. We work in the subspace where the photon number change is limited to 1, i.e.
+\begin{equation}
+    \ket*{\psi(t)} = c_n \ket*{n, 0} + c_k \ket*{n-1, 1_k}.
+\end{equation}
+Unlike the case in the two-level atom system, this approximation may fail when the time is sufficiently long,
+but we can assume that the environment is noisy enough so that an observation has already taken place before 
+a second photon transition occurs. The time evolution equation turns into
+\begin{equation}
+    \ii \dot{c}_n = \sqrt{n} \sum_k g_k \ee^{\ii \Delta_k t} c_k, \quad 
+    \ii \dot{c}_k = \sqrt{n} g_k^* \ee^{- \ii \Delta_k t} c_n. 
+\end{equation} 
+Again we can make a Markovian approximation. We have 
+\[
+    \begin{aligned}
+        \ii \dot{c}_n &= \int_0^t \dd{\tau} n \sum_k \abs*{g_k}^2 \ee^{\ii \Delta_k (t - \tau)} c_n(\tau) \\
+        &\eqqcolon n \int_0^t \dd{\tau } K(t - \tau) c(\tau),
+    \end{aligned}
+\]
+and by the Markovian approximation, we have 
+\begin{equation}
+    \dot{c}_n(t) = n (\delta_c - \ii \kappa / 2) c_n(t),
+\end{equation}
+where 
+\begin{equation}
+    \kappa = 2 \pi \sum_k \abs*{g_k}^2 \delta(\omega - \omega_k) \sim \frac{\alpha^2 k_c^3 \abs*{\vb*{\mathcal{E}}_c}}{\hbar \epsilon_0},
+\end{equation}
+and 
+\begin{equation}
+    \delta_c \sim \primevalue \int_{-\infty}^\infty \rho(\omega) \abs*{g_k}^2 \frac{1}{\Delta_k} \dd{k}.
+\end{equation}
+Therefore we get an effective damping Hamiltonian 
+\begin{equation}
+    H_\text{eff} = - \frac{\ii n \kappa}{2} \dyad{n}, \quad C = \sqrt{n \kappa} \dyad*{n-1}{n}.
+\end{equation}
+Now we generalize to the second quantized formulation without explicit dependence on the photon number, and we have 
+\begin{equation}
+    H_\text{eff} = - \frac{\ii \kappa}{2} a^\dagger a, \quad C = \sqrt{\kappa} a.
+\end{equation}
+The probability of a quantum jump is 
+\begin{equation}
+    \var{P}_\text{jump} = \mel{\psi_\text{s}(t)}{C^\dagger C}{\psi_\text{s}(t)} \var{t} = \expval{n} \kappa \var{t} \eqqcolon \gamma \var{t}.
+\end{equation}
+The master equation is therefore 
+\begin{equation}
+    \dot{\rho} = - \frac{\kappa}{2} \left( a^\dagger a \rho + \rho a^\dagger a - 2 a \rho a^\dagger \right).
+\end{equation}
+If we turn the external driving field on, the Hamiltonian is now 
+\begin{equation}
+    H_\text{eff} = - \frac{\ii \kappa}{2} a^\dagger a + \hbar g \alpha \ee^{\ii \Delta_c t} + \text{h.c.}.
+    \label{eq:damping-and-driving}
+\end{equation}
+
+Plotting the time evolution according to \eqref{eq:damping-and-driving} gives us a quite intuitive picture.
+We see the last two terms correspond to a displacement operator, and the first term drags a coherent state 
+to the vacuum. Note that even there is no quantum jump, since high photon number states damp faster than 
+low photon number state, we can still see some explicit ``damping'' effector. For example, if the input 
+state is a coherent state, we will see its amplitude damping.
+If the input state is highly non-classical, we can see the quantum jumps destroy quantum interference.
+For example, for an input cat state 
+\[
+    \ket*{\psi(0)} \approx \frac{1}{\sqrt{2}} (\ket*{\alpha \ee^{- \kappa t / 2}} + \ket*{- \alpha \ee^{- \kappa t / 2}}),
+\]
+and after a quantum jump we have 
+\[
+    \ket*{\psi(t)} \approx \frac{1}{\sqrt{2}} (\ket*{\alpha \ee^{- \kappa t / 2}} - \ket*{- \alpha \ee^{- \kappa t / 2}}).
+\]
+After several quantum jumps, the pure input state becomes a mixed state where the non-trivial relative phase factor 
+between the two components of the wave functions vanish, and a cat state damps into a classical $1/2$ - $1/2$ 
+probability distribution.
+
+\section{Optical components in a cavity}
+
+Now we consider an optical 
+
+\section{Cavity QED}
+
+When the small sphere is very, very small, the approximation $\vb*{d} \approx \expval{\vb*{d}} = \alpha \vb*{E}$
+no longer works. The atom and the optical field must be quantized together. 
+
+
+\end{document}
