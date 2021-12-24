@@ -1,0 +1,260 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{marginnote}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{slashed}
+\usepackage{centernot}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[rep-]{lorentz-rep}[lorentz-rep.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% Feynman slash
+\newcommand{\fsl}[1]{{\centernot{#1}}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newcommand{\hwtwo}{\href{../2/2.pdf}{Homework 2}}
+
+\newcommand{\lorentzrep}{\href{lorentz-rep.pdf}{this article}}
+
+\title{Dirac Theory}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The Dirac equation}
+
+We have found spinors are representations of Lorentz group in \lorentzrep.
+
+\begin{equation}
+    (\ii \gamma^\mu \partial_\mu - m) \psi(x) = 0.
+    \label{eq:dirac-eq}
+\end{equation}
+
+\section{Free-particle solutions of the Dirac equation}
+ 
+Now we solve \eqref{eq:dirac-eq}. \marginnote{Peskin Section~3.3.}
+We work under the chiral basis. We search for a plane wave solution 
+\begin{equation}
+    \psi(x) = u(p) \ee^{- \ii p \cdot x}, \quad p^2 = m^2.
+\end{equation}
+In the rest frame, $p = p_0 = (m, 0)$, and \eqref{eq:dirac-eq} becomes 
+\[
+    (m \gamma^0 - m) u(p_0) = m \pmqty{-1 & 1 \\ 1 & -1} u(p_0) = 0,
+\]
+and the solutions are 
+\begin{equation}
+    u(p_0) = \sqrt{m} \pmqty{\xi \\ \xi}, 
+\end{equation}
+for \emph{any} Weyl spinor $\xi$. The normalization condition is $\xi^\dagger \xi = 1$, and 
+\begin{equation}
+    \xi_{S_z = \uparrow} = \pmqty{1 \\ 0}, \quad \xi_{S_z = \downarrow} = \pmqty{0 \\ 1}.
+\end{equation}
+
+We can find the solution for an arbitrary momentum by boosting. From \eqref{rep-eq:four-vec-lorentz} and 
+\eqref{rep-eq:weyl-lorentz} in \lorentzrep, we have 
+\[
+    (\mathcal{J}^{03})\indices{^\alpha_\beta} = \ii (\eta^{0 \alpha} \delta\indices{^3_\beta} - \delta\indices{^0_\beta} \eta^{3 \alpha}) = \ii \pmqty{ 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 1 & 0 & 0 & 0 },
+\]
+and 
+\[
+    S^{03} = - \frac{\ii}{2} \pmqty{\dmat{\sigma^3, - \sigma^3}},
+\]
+and therefore these two transformations 
+\[
+    \exp\left( \eta \pmqty{ 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 1 & 0 & 0 & 0 } \right), \quad 
+    \exp(\frac{- \eta}{2} \pmqty{\dmat{\sigma^3, - \sigma^3}} )
+\]
+are the same Lorentz group element acting on different objects. To boost $(m, 0)$ into $(E, p^3)$, one need 
+an $eta$ defined by \marginnote{Peskin (3.48)}
+\begin{equation}
+    \begin{aligned}
+        \left(\begin{array}{c}
+        E \\
+        p^{3}
+        \end{array}\right) &=\exp \left[\eta\left(\begin{array}{ll}
+        0 & 1 \\
+        1 & 0
+        \end{array}\right)\right]\left(\begin{array}{c}
+        m \\
+        0
+        \end{array}\right) \\
+        &=\left[\cosh \eta\left(\begin{array}{ll}
+        1 & 0 \\
+        0 & 1
+        \end{array}\right)+\sinh \eta\left(\begin{array}{ll}
+        0 & 1 \\
+        1 & 0
+        \end{array}\right)\right]\left(\begin{array}{c}
+        m \\
+        0
+        \end{array}\right) \\
+        &=\left(\begin{array}{c}
+        m \cosh \eta \\
+        m \sinh \eta
+        \end{array}\right) ,
+        \end{aligned}
+    \label{eq:momentum-change}
+\end{equation}
+and therefore $u(p)$ is obtained by a boost on the $z$ direction with the same $\eta$, 
+which is \marginnote{Peskin (3.49)}
+\begin{equation}
+    \begin{aligned}
+        u(p) &=\exp \left[-\frac{1}{2} \eta\left(\begin{array}{cc}
+        \sigma^{3} & 0 \\
+        0 & -\sigma^{3}
+        \end{array}\right)\right] \sqrt{m}\left(\begin{array}{l}
+        \xi \\
+        \xi
+        \end{array}\right) \\
+        &=\left[\cosh \left(\frac{1}{2} \eta\right)\left(\begin{array}{cc}
+        1 & 0 \\
+        0 & 1
+        \end{array}\right)-\sinh \left(\frac{1}{2} \eta\right)\left(\begin{array}{cc}
+        \sigma^{3} & 0 \\
+        0 & -\sigma^{3}
+        \end{array}\right)\right] \sqrt{m}\left(\begin{array}{l}
+        \xi \\
+        \xi
+        \end{array}\right) \\
+        &=\left(\begin{array}{cc}
+        e^{\eta / 2}\left(\frac{1-\sigma^{3}}{2}\right)+e^{-\eta / 2}\left(\frac{1+\sigma^{3}}{2}\right) & 0 \\
+        0 & e^{\eta / 2}\left(\frac{1+\sigma^{3}}{2}\right)+e^{-\eta / 2}\left(\frac{1-\sigma^{3}}{2}\right)
+        \end{array}\right) \sqrt{m}\left(\begin{array}{l}
+        \xi \\
+        \xi
+        \end{array}\right) \\
+        &=\left(\begin{array}{l}
+        {\left[\sqrt{E+p^{3}}\left(\frac{1-\sigma^{3}}{2}\right)+\sqrt{E-p^{3}}\left(\frac{1+\sigma^{3}}{2}\right)\right] \xi} \\
+        {\left[\sqrt{E+p^{3}}\left(\frac{1+\sigma^{3}}{2}\right)+\sqrt{E-p^{3}}\left(\frac{1-\sigma^{3}}{2}\right)\right] \xi}
+        \end{array}\right) ,
+        \end{aligned}
+\end{equation}
+where the last line comes from the fact that since \eqref{eq:momentum-change}, we have 
+\[
+    E + p^3 = m (\cosh \eta + \sinh \eta) = m \ee^{\eta}, \quad 
+    E - p^3 = m (\cosh \eta - \sinh \eta) = m \ee^{-\eta}.
+\]
+The last line gives \marginnote{Peskin (3.50)}
+\begin{equation}
+    u(p) = \left(\begin{array}{c}
+        \sqrt{p \cdot \sigma} \xi \\
+        \sqrt{p \cdot \bar{\sigma}} \xi
+        \end{array}\right),
+    \label{eq:u-general-p}
+\end{equation}
+where $\bar{\sigma} = (\sigma^0, - \vb*{\sigma})$. \marginnote{Peskin (3.41)}
+To prove \eqref{eq:u-general-p}, we note that 
+\[
+    \left(\sqrt{E+p^{3}}\left(\frac{1-\sigma^{3}}{2}\right)+\sqrt{E-p^{3}}\left(\frac{1+\sigma^{3}}{2}\right)\right)^2 = 
+    \pmqty{\dmat{E - p^3, E + p^3}} = p^0 \sigma^0 - p^3 \sigma^3 = p \cdot \sigma,
+\]
+and the same thing hold for $\sqrt{p \cdot \bar{\sigma}}$. 
+It would be straightforward to find \marginnote{Peskin (3.51)}
+\begin{equation}
+    (p \cdot \sigma)(p \cdot \bar{\sigma})=p^{2}=m^{2}.
+\end{equation}
+
+\section{Symmetries of the Dirac theory}
+
+This section is based on Peskin Section~3.6.
+
+
+
+\end{document}

@@ -1,6 +1,7 @@
 \documentclass[hyperref, a4paper]{article}
 
 \usepackage{geometry}
+\usepackage{marginnote}
 \usepackage{float}
 \usepackage{titling}
 \usepackage{titlesec}
@@ -37,7 +38,7 @@
 \postauthor{\par\end{center}}
 
 % More compact lists 
-\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+% \setlist[itemize]{itemindent=17pt, leftmargin=1pt}
 
 % Math operators
 \DeclareMathOperator{\timeorder}{\mathcal{T}}
@@ -67,6 +68,10 @@
     mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 \tikzstyle ray=[directed, thick]
 \tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
 
 % Algorithm setting
 % Julia-style code
@@ -106,9 +111,10 @@
 
 \maketitle
 
-\section{Demonstration of the relation between interaction Feynman propagators, free Feynman propagators, $S$-matrices using scalar field}
+\section{Interaction correlation functions of scalar field}
 
 Suppose the vacuum state $\ket*{\Omega}$ of a field theory with interaction is not orthogonal to the vacuum state $\ket*{0}$ of the free theory.
+\marginnote{Peskin Section 4.2}
 In order to build connection between the two states, we imaginarily set $\ket*{0}$ to be the initial state and turn on the interaction, 
 and make the excited components in $\ket*{0}$ ``relaxed'' back to $\ket*{\Omega}$.
 We add an imaginary part to the time to make this happen and we have 
@@ -125,13 +131,18 @@ Suppose $x^0 > y^0 > t_0$, we have
     \end{aligned}
 \]
 
-See Peskin 4.2 for details
-
-So in the end we have
+In the end we have
 \begin{equation}
     \expval*{\timeorder[\phi(x) \phi(y)]}{\Omega} = \lim_{T \to \infty(1 - \ii \epsilon)} \frac{\expval*{\timeorder \phi_\text{I}(x) \phi_\text{I}(y) \exp (- \ii \int_{-T}^T \dd{t} H_\text{I}(t))}{0}}{\expval*{\timeorder \exp(- \ii \int_{-T}^T \dd{t} H_\text{I}(t))}{0}}.
 \end{equation}
 
+\section{$S$-matrices of scalar fields}
+
+The correlation function and the $S$-matrix can be related using the LSZ reduction formula. \marginnote{Peskin Section 7.2}
+We only need to calculate connected (here the word means every subdiagram is connected to at least one 
+external line; It is not necessary to require the whole diagram being connected) and amputated diagrams.
+
+To remove trivial ``nothing happening'' processes, we make the decomposition \marginnote{Peskin (4.72) and (4.73)}
 \begin{equation}
     S = \mathbbm{1} + \ii T ,
 \end{equation}
@@ -140,15 +151,101 @@ and we define
     \ _0\mel{p_1, p_2, \ldots, p_m}{T}{q_1, q_2, \ldots, q_n}_0 = (2\pi)^{m+n} \delta^{(4)}(\sum p - \sum q) \mathcal{M}(p_1, p_2, \ldots, p_m \to q_1, q_2, \ldots, q_n).
 \end{equation}
 
-\section{Scattering}
+\section{Cross sections}
 
-A scattering experiment involves processes like the following:
+\begin{figure}
+    \centering
+    %\includegraphics[width=\textwidth]{scattering-parameter.pdf}
+    \input{scattering-params.tex}
+    \caption{A typical scattering scenario, where $\vb*{b}$ is the scattering parameter}
+    \label{fig:scattering-params}
+\end{figure}
+
+A scattering experiment involves a large number of independent processes, each of which is like the following: \marginnote{Peskin 4.5}
 \begin{equation}
-    p_1 + p_2 \longrightarrow \sum_{i} q_i.
+    k_\mathcal{A} + k_\mathcal{B} \longrightarrow \sum_{i} p_i.
 \end{equation}
-The 
+Since the absolute position is not important, in the (macroscopic) description of the scattering experiment, 
+we have the concept of \concept{scattering parameter}, which is depicted in Peskin Figure~4.2 or 
+in \prettyref{fig:scattering-params}. We see that the possible values of $\vb*{b}$ form a two-dimensional plane.
+Usually, the length scale of the probabilistic distribution of $\vb*{b}$ is much larger than the typical length
+scale of particle scattering, and in this way, the scatter experiment can be characterized by the 
+\concept{cross section}. Suppose we generate a series of independent scattering events, 
+in which $\vb*{v}$'s distribute uniformly in an area of $A$. 
+Suppose the number of events is $N(\text{total})$, we have 
+\[
+    N(\text{total}) = n_\mathcal{B} A, 
+\]
+where $n_\mathcal{B}$ is the density of incident $\mathcal{B}$ particles on the plane of $\vb*{b}$.
+Suppose among the $N(\text{total})$ events, $N(C)$ events of type $C$ occurs, and we have 
+\[
+    N(C) = \int \dd[2]{\vb*{b}} n_\mathcal{B} \mathcal{P}_C(\vb*{b}).
+\]
+If the scattering events are merely ``shooting a classical target'', then we just have 
 \begin{equation}
-    \dd{P} = 
+    N(C) = \sigma n_\mathcal{B},
+    \label{eq:def-cross-section}
 \end{equation}
+where $\sigma$ is the cross section of the target. We can still calculate the $\sigma$ in 
+\eqref{eq:def-cross-section} for other kind of scattering events, and the most general form of $\sigma$ is therefore \marginnote{Peskin (4.75)}
+\begin{equation}
+    \sigma = \int \dd[2]{\vb*{v}} \mathcal{P}(\vb*{b}).
+    \label{eq:cross-section}
+\end{equation}
+Of course, if there are uncountably types of events, then we have 
+\begin{equation}
+    \dd{\sigma} = \int \dd[2]{\vb*{v}} \dd\mathcal{P}(\vb*{b}).
+    \label{eq:diff-cross-section}
+\end{equation}
+
+For a scattering experiment in particle physics, the output states are distributed in the momentum space. 
+What can be measured by detectors are just momentum eigenstates, since their resolution of length is rough.
+We therefore have \marginnote{Peskin (4.74)}
+\begin{equation}
+    \dd\mathcal{P}(\mathcal{A B} \rightarrow 12 \ldots n)=\left(\prod_{f} \frac{\dd^{3} \vb*{p}_{f}}{(2 \pi)^{3}} \frac{1}{2 E_{f}}\right) | \prescript{}{\text{out}} \langle {p}_{1} \cdots {p}_{n} \mid \phi_{\mathcal{A}} \phi_{\mathcal{B}}\rangle_{\text {in }}|^{2}.
+    \label{eq:peskin-4.74}
+\end{equation} 
+The significance of the scattering parameter means we cannot consider the input state as momentum eigenstates, 
+because if so, the positional uncertainty will be infinity. That is why the input state in \eqref{eq:peskin-4.74} 
+is written as a wave packet state, where \marginnote{Peskin (4.68)}
+\begin{equation}
+    \left|\phi_{\mathcal{A}} \phi_{\mathcal{B}}\right\rangle_{\text {in }}=\int \frac{\dd^{3} \vb*{k}_{\mathcal{A}}}{(2 \pi)^{3}} \int \frac{\dd^{3} \vb*{k}_{\mathcal{B}}}{(2 \pi)^{3}} \frac{\phi_{\mathcal{A}}\left(\vb*{k}_{\mathcal{A}}\right) \phi_{\mathcal{B}}\left(\vb*{k}_{\mathcal{B}}\right) e^{-i \vb*{b} \cdot \vb*{k}_{\mathcal{B}}}}{\sqrt{\left(2 E_{\mathcal{A}}\right)\left(2 E_{\mathcal{B}}\right)}}\left|{k}_{\mathcal{A}} {k}_{\mathcal{B}}\right\rangle_{\text {in }},
+\end{equation}
+where the $\sqrt{2 E}$ factors are used to guarantee that \marginnote{Peskin (4.66)}
+\begin{equation}
+    \langle\phi \mid \phi\rangle=1 \quad \text { if } \quad \int \frac{\dd^{3} \vb*{k}}{(2 \pi)^{3}}|\phi(\vb*{k})|^{2}=1.
+\end{equation}
+Note that here we are using the Lorentz covariant integral measure (see \href{../qft1-homework/1/1.pdf}{here})
+in the momentum space. Now we see that according to \eqref{eq:diff-cross-section}, we have Peskin (4.76).
+
+Here we do not repeat the derivation in Peskin from (4.76) to (4.85), but just highlight some subtle details
+About the discussion around (4.77). There are $2 \times (3 + 3) = 12$ integral variables in (4.76),
+and the $\delta$-function arising from integrating $\vb*{b}$ and the two $\delta$-functions from 
+the definition of $\mathcal{M}$ pose in total $2 + 4 + 4 = 10$ constraints. Therefore, we need to 
+integrating two variables after these constraints are taken into account. This can also be seen in 
+(4.78), where there are six integral variables and a four-dimensional $\delta$-function.
+
+What we want to do is to derive (4.78) from (4.76). Therefore, we need to integrate $\bar{\vb*{k}}_i$
+variables. That is why we can see words like ``all six of the $\bar{k}$ integrals in (4.76)''.
+Also, it seems the authors use $k^\bot$ to denote $(k_x, k_y)$.
+
+The two $\delta$-functions from $\mathcal{M}$ requires $\sum k_i = \sum \bar{k}_i$, and we know 
+$k_\mathcal{B}^\bot = \bar{k}_\mathcal{B}^\bot$, so $k_\mathcal{A}^\bot = \bar{k}_\mathcal{A}^\bot$,
+and so do momenta of $\mathcal{B}$. 
+
+Note that the LHS of (4.77) is just a shorthand of 
+\[
+    \int \dd{\bar{k}^z_\mathcal{A}} \int \dd{\bar{k}^z_\mathcal{B}} 
+    \delta(\bar{k}^z_\mathcal{A} + \bar{k}^z_\mathcal{B} - \underbrace{\sum p^z_f}_{k_\mathcal{A} + k_\mathcal{B}}) 
+    \delta(\bar{E}_\mathcal{A} + \bar{E}_\mathcal{B} - \underbrace{\sum E_f}_{E_\mathcal{A} + E_\mathcal{B}}) \phi^*_\mathcal{A}(\bar{\vb*{k}}_\mathcal{A}) \phi^*_\mathcal{B}(\bar{\vb*{k}}_\mathcal{B}) .
+\]  
+After evaluating this integral, $\bar{k}^z_i$ in $\phi_i^*$'s are replaced by the solution of 
+\[
+    \bar{k}^z_\mathcal{A} + \bar{k}^z_\mathcal{B} - \underbrace{\sum p^z_f}_{k_\mathcal{A} + k_\mathcal{B}} = 0,
+    \quad \bar{E}_\mathcal{A} + \bar{E}_\mathcal{B} - \underbrace{\sum E_f}_{E_\mathcal{A} + E_\mathcal{B}},
+\]
+which is just $\bar{k}^z_i = k^z_i$. That is why in (4.78) we just see $\abs*{\phi_i(\vb*{k}_i)}^2$.
+
+(4.86) is proved in (7.49).
 
 \end{document}

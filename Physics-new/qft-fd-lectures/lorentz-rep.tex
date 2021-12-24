@@ -1,6 +1,7 @@
 \documentclass[hyperref, a4paper]{article}
 
 \usepackage{geometry}
+\usepackage{marginnote}
 \usepackage{titling}
 \usepackage{titlesec}
 % No longer needed, since we will use enumitem package
@@ -28,6 +29,7 @@
 \zxrsetup{toltxlabel}
 \zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[qft-]{../relativistic-qft/relativistic-qft}[relativistic-qft.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -104,7 +106,7 @@
 
 \newcommand{\ktnote}{\href{../topological-phases-reading-notes/kt.pdf}{this note}}
 
-\title{Lorentz Group}
+\title{Lorentz Group and Its Representations}
 \author{Jinyuan Wu}
 
 \begin{document}
@@ -112,13 +114,123 @@
 \maketitle
 
 This article is mainly based on Prof. Dingyu Shao's lecture on relativistic QFT at Fudan University.
+It also summarize how these things can be found in different QFT textbooks.
 
-\section{Lorentz group}
+\section{The geometry of the Lorentz group}
+
+The \concept{Lorentz group} is defined to be the metric-keeping   
+
+TODO: Double covering
+
+\section{Generators of the Lorentz group}
+
+In Section~\ref{qft-sec:symmetry} in \href{../relativistic-qft/relativistic-qft.pdf}{this note}, we have 
+introduced spins with the approach in \emph{Physics from Symmetry}. Here we redo the work in a more swift 
+way in Peskin Section~3.1.
+
+We already know the angular momentum operators are  
+\begin{equation}
+    \vb*{J} = \vb*{x} \times \vb*{p} = - \ii \vb*{x} \times \grad,
+\end{equation}
+which form a pseudovector. According to differential geometry, we can use the Hodge star operator to map it 
+into a rank $3-2=2$ tensor, which is 
+\begin{equation}
+    \begin{aligned}
+        J^{ij} &= \epsilon^{ijk} J^k = - \ii \epsilon^{ijk} \epsilon^{lmk} x^l \partial^m \\
+        &= - \ii (\delta^{il} \delta^{jm} - \delta^{im} \delta^{jl}) x^l \partial^m \\
+        &= - \ii (x^i \partial^j - x^j \partial^i).
+    \end{aligned}
+\end{equation}
+We can try to extend this antisymmetric tensor into a 4-antisymmetric tensor, which is 
+\begin{equation}
+    J^{\mu \nu} = \ii (x^\mu \partial^\nu - x^\nu \partial^\mu).
+    \label{eq:j-scalar-field}
+\end{equation}
+Note that $\partial^\mu = (\partial_t, - \grad)$. Now we find $J^{0 i}$ are just the boost generators.
+Therefore, $J^{\mu \nu}$ - an antisymmetric tensor with 6 independent components - gives all rotational and 
+boost generators of the Lorentz group. The $J^{0 i}$ components are boost generators, and the $J^{ij}$ 
+components are rotational generators. A general Lorentz transformation is 
+\begin{equation}
+    U = \ee^{- \frac{\ii}{2} \omega_{\mu \nu} J^{\mu \nu}},
+\end{equation}
+where $\omega_{\mu \nu}$ is an antisymmetric matrix.
+
+\eqref{eq:j-scalar-field} is actually the scalar field representation of the Lie algebra of the Lorentz group.
+We need to find the commutation rules from \eqref{eq:j-scalar-field}, to find more representations of the 
+Lorentz group. We have 
+\begin{equation}
+    \left[J^{\mu \nu}, J^{\rho \sigma}\right]=\ii \left(g^{\nu \rho} J^{\mu \sigma}-g^{\mu \rho} J^{\nu \sigma}-g^{\nu \sigma} J^{\mu \rho}+g^{\mu \sigma} J^{\nu \rho}\right).
+    \label{eq:lorentz-algebra}
+\end{equation}
+The derivation of this equation is just to expand the LHS and sort all terms according to the metric factor.
+
+The most frequently used representation is the representation on 4-vectors, which is 
+\begin{equation}
+    (\mathcal{J}^{\mu \nu})_{\alpha \beta} = \ii (\delta^{\mu}_\alpha \delta^{\nu}_\beta - \delta^\mu_\beta \delta^\nu_\alpha).
+    \label{eq:four-vec-lorentz}
+\end{equation}
+
+\section{Dirac algebra}
+
+Consider we have a representation $S^{\mu \nu}$ of \eqref{eq:lorentz-algebra}. Note that if we assume 
+\begin{equation}
+    S^{\mu \nu} = \frac{\ii}{4} \comm*{\gamma^\mu}{\gamma^\nu},
+    \label{eq:j-gamma-def}
+\end{equation}
+where we have the \concept{Dirac algebra}
+\begin{equation}
+    \acomm*{\gamma^\mu}{\gamma^\nu} = 2 \eta^{\mu \nu}, 
+\end{equation}
+then \eqref{eq:lorentz-algebra} holds. The calculation is tedious. Here we list the main steps. First we have 
+\[
+    \begin{aligned}
+        \comm*{S^{\mu \nu}}{S^{\rho \sigma}} &= - \frac{1}{16} \comm*{\comm*{\gamma^\mu}{\gamma^\nu}}{\comm*{\gamma^\rho}{\gamma^\sigma}} \\
+        &= - \frac{1}{16} (\comm*{\comm*{\comm*{\gamma^\mu}{\gamma^\nu}}{\gamma^\rho}}{\gamma^\sigma} 
+        + \comm*{\comm*{\comm*{\gamma^\nu}{\gamma^\rho}}{\gamma^\sigma}}{\gamma^\mu} \\
+        &\quad \quad + \comm*{\comm*{\comm*{\gamma^\rho}{\gamma^\sigma}}{\gamma^\mu}}{\gamma^\nu} 
+        + \comm*{\comm*{\comm*{\gamma^\sigma}{\gamma^\mu}}{\gamma^\nu}}{\gamma^\rho}) \\
+        &= 
+    \end{aligned}
+\]
+We can then prove 
+\begin{equation}
+    \comm*{\gamma^\mu}{S^{\rho \sigma}} = (\mathcal{J}^{\rho \sigma}) \indices{^\mu_\nu} \gamma^\nu,
+\end{equation}
+and then by inserting \eqref{eq:j-gamma-def} 
+
+\begin{note*}{}{}
+    We have the following formulae:
+    \[
+        \begin{aligned}
+            &\{A,BC\}=\{A,B\}C-B[A,C], \\ 
+            &\{AB,C\}=A\{B,C\}-[A,C]B, \\ 
+            &[AB,C]=A\{B,C\}-\{A,C\}B, \\
+            &[[A,C],[B,D]]=[[[A,B],C],D]+[[[B,C],D],A]+[[[C,D],A],B]+[[[D,A],B],C].
+        \end{aligned}
+    \]
+\end{note*}
 
 \begin{equation}
     S^{\rho \sigma} = \frac{\ii}{4} \comm*{\gamma^\rho}{\gamma^\sigma}.
 \end{equation}
 
-Dirac spinors are 
+TODO: Can every representation be rewritten into the form of gamma matrices?
+
+\section{Dirac spinors}
+
+A possible of the Dirac algebra in the four-dimensional Minkowski space is
+\begin{equation}
+    \gamma^0 = \pmqty{0 & 1 \\ 1 & 0}, \quad \gamma^i = \pmqty{ 0 & \sigma^i \\ - \sigma^i & 0 },
+\end{equation}
+which is called the \concept{Weyl} or \concept{chiral} representation. In this representation, we have 
+\begin{equation}
+    S^{0 i} = - \frac{\ii}{2} \pmqty{\dmat{\sigma^i, - \sigma^i}}, \quad 
+    S^{ij} = \frac{1}{2} \epsilon^{ijk} \pmqty{\dmat{\sigma^k, \digamma^k}} \eqqcolon \frac{1}{2} \epsilon^{ijk} \Sigma^k.
+    \label{eq:weyl-lorentz}
+\end{equation}
+
+\section{Lorentz transformation on Dirac spinors}
+
+
 
 \end{document}
