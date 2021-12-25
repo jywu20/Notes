@@ -1,0 +1,185 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\title{Defect String Operator in CFT and Topological Orders by Prof. Yang Qi}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+The idea originated in an article by Liang Kong and Kitaev, and Wen-Jie Li and Xiao-Gang Wen, PR Research 2, 033417 2020.
+We consider an (1+1)-dimensional transverse field Ising model. When we adjust the transverse field $h$,
+there is a well known quantum phase transition, and there is a CFT on the critical point. 
+We can, then, consider the system as the boundary of a (2+1)-dimensional $\mathbb{Z}_2$ toric-code model.
+The ferromagnetic phase can then be viewed as an anyon condensation phase where $\expval{e} \neq 0$,
+while the paramagnetic phase is an anyon condensation phase where $\expval{m} \neq 0$. 
+
+\begin{info*}{}{}
+    Haldane conjecture says spin-$1/2$ chains are gapless, and the conjecture can be generalized into 
+    higher dimensions. Now we consider a spin-$1/2$ chain as the boundary state of a (2+1)-dimensional
+    spin system (just like the spin-$1/2$ edge states of a AKLT chain). This idea means 
+    \concept{Lieb-Schultz-Mattis (LSM) theorem}, which states that a spin system with translation and 
+    spin rotation symmetry and half-integer spin per unit cell does not admit a gapped symmetric 
+    ground state lacking fractionalized excitations.
+
+    This can even be done for Fermi surface. Now people tend to consider an arbitrary gapless system as 
+    the boundary of a gapped system.
+\end{info*}
+
+\begin{figure}
+    \centering
+    \input{12-25/smooth.tex}
+    \caption{Smooth boundary}
+    \label{fig:smooth}
+\end{figure}
+Here we consider some edge states of a toric-code mode. The \concept{smooth} boundary is shown in 
+\prettyref{fig:smooth}, where the boundary Hamiltonian is the sum of terms like $\sigma^x_1 \sigma^x_2 \sigma^x_3$.
+We can see that an $e$-particle on the boundary cost energy, while an $m$-particle does not cost energy.
+Therefore, there is a $m$-particle condensation in the smooth boundary.
+The same works for $e$-particles. Consider the \concept{rough} boundary in \prettyref{fig:rough},
+where the boundary Hamiltonian is the sum of $\sigma^z_1 \sigma^z_2 \sigma^z_3$, and we find an $m$-particle
+on the boundary costs energy, while an $e$-particle does not, so there is an $e$-particle condensation.
+
+\begin{figure}
+    \centering
+    \input{12-25/rough.tex}
+    \caption{Rough boundary}
+    \label{fig:rough}
+\end{figure}
+
+We are still unable to determine the correspondence between the two any condensation phases and the two quantum
+phases of transverse Ising chain. This can be more easily found in Wen-Plaquette model, which can be mapped 
+precisely into the toric code model. 
+
+\begin{figure}
+    \centering
+    \input{12-25/defect-string.tex}
+    \caption{A defect string in an (1+1)-dimensional system. The orange bonds are flipped, and the yellow line is the defect string.}
+    \label{fig:defect-string-1d}
+\end{figure}
+
+Now we consider the generalized case in conformal field theories. We can impose \emph{defects} into the theory,
+or in other words we can impose certain kind of external potential field. It is natural to impose a 
+\emph{defect string} in an (1+1)-dimensional theory. For example, in a spin chain, we can flip the $J$ coefficient
+on a certain bond, or in other words turning it from antiferromagnetic into ferromagnetic. At different 
+time steps we can flip different bonds, so what we are doing is to impose a defect string in the spacetime 
+(see \prettyref{fig:defect-string-1d}). Note that, however, that a closed defect string is trivial, because we can 
+just flip all spins inside the closed defect string, and we find in this way the defect string does not effect the outer world.
+Therefore, only open defect strings matter, and open defect strings with the same edges are equivalent. 
+So what really matters are the edges of open strings, and in other words in (1+1)-dimensional CFTs, what matters
+are pairs of point excitations.
+
+The idea can be generalized into a (2+1)-dimensional theory, where we can impose defect \emph{surfaces}, and 
+again closed defect surfaces are trivial, and open surfaces with the same edge are equivalent (because they 
+only differ with a trivial closed surface), so what matter are the edge of open surfaces, and we have 
+\emph{line excitations}.
+
+This is precisely the case in a two-dimensional transverse field Ising model, which is considered as the boundary 
+of a (3+1)-dimensional toric code model, and the two phases in the TFIM correspond to one anyon condensation phase 
+and another line excitation condensation phase.  
+
+\end{document}
