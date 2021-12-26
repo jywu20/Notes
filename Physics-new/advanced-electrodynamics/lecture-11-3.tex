@@ -239,7 +239,7 @@ Now $\tensor{G}$ can be derived explicitly. Let $\vb*{R} = \vb*{r} - \vb*{r}'$, 
         \tensor{G}(\vb*{r} - \vb*{r}', \omega) &= \left( \tensor{I} + \frac{1}{k^2} \grad \grad \right) G_0(\vb*{r} - \vb*{r}', \omega) \\
         &= \frac{k}{4\pi} \left( \tensor{I} + \frac{1}{k^2} \grad \grad \right) \frac{\ee^{\ii k R}}{k R} \\
         &= \frac{k}{4\pi} \left( \frac{\ee^{\ii k R}}{k R} \tensor{I} + \frac{1}{k^2} \grad \left( \ee^{\ii k R} \grad\left( \frac{1}{kR} \right) + \frac{\ii \vb*{R}}{R^2} \ee^{\ii k R} \right) \right) \\
-        &= \frac{k}{4\pi} \left( \frac{\ee^{\ii k R}}{k R} \tensor{I} + \frac{1}{k^2} \left( \ee^{\ii k R} \grad\grad\left( \frac{1}{kR} \right) - \frac{\ii \vb*{R} \vb*{R}}{R^3} \ee^{\ii k R} - \frac{3 \ii \vb*{R} \vb*{R}}{R^4} \ee^{\ii k R} + \frac{\ii}{R^2} \tensor{I} \ee^{\ii k R} \right) \right) .
+        &= \frac{k}{4\pi} \left( \frac{\ee^{\ii k R}}{k R} \tensor{I} + \frac{1}{k^2} \left( \ee^{\ii k R} \grad\grad\left( \frac{1}{kR} \right) - \frac{k \vb*{R} \vb*{R}}{R^3} \ee^{\ii k R} - \frac{3 \ii \vb*{R} \vb*{R}}{R^4} \ee^{\ii k R} + \frac{\ii}{R^2} \tensor{I} \ee^{\ii k R} \right) \right) .
     \end{aligned}
 \]
 We have 
@@ -249,7 +249,7 @@ We have
 and finally we obtain
 \begin{align}
     \begin{autobreak}
-        \tensor{G}(\vb*{R}, \omega) = \frac{k}{4\pi} \frac{\ee^{\ii k R}}{k R} \Biggl( \tensor{I} \left( 1 - \frac{4\pi R}{3k^2} \delta(\vb*{R}) - \frac{1}{k^2 R^2} + \frac{1}{k R} \right) 
+        \tensor{G}(\vb*{R}, \omega) = \frac{k}{4\pi} \frac{\ee^{\ii k R}}{k R} \Biggl( \tensor{I} \left( 1 - \frac{4\pi R}{3k^2} \delta(\vb*{R}) - \frac{1}{k^2 R^2} + \frac{\ii}{k R} \right) 
         + \frac{\vb*{R} \vb*{R}}{R^2} \left( \frac{3}{k^2 R^2} - 1 - \frac{3\ii}{kR} \right) \Biggr).
     \end{autobreak}
 \end{align}
@@ -264,7 +264,7 @@ we have
 Examining the structure of this dyadics Green function, we can simply it in different regions with regard to the distance $R$.
 The near field is given by 
 \begin{equation}
-    \tensor{G}_\text{near field} = \frac{\ee^{\ii k R}}{k R} \frac{1}{k^2 R^2} \left( - \tensor{I} + \frac{3 \vb*{R} \vb*{R}}{R^2} \right),
+    \tensor{G}_\text{near field} = \frac{\ee^{\ii k R}}{4 \pi R} \frac{1}{k^2 R^2} \left( - \tensor{I} + \frac{3 \vb*{R} \vb*{R}}{R^2} \right),
 \end{equation}
 the far field
 \begin{equation}
@@ -272,23 +272,41 @@ the far field
 \end{equation}
 and the intermediate field 
 \begin{equation}
-    \tensor{G}_\text{intermediate field} = \frac{\ee^{\ii k R}}{4 \pi R} \frac{1}{k R} \left( \tensor{I} - \frac{3 \vb*{R} \vb*{R}}{R^2} \right).
+    \tensor{G}_\text{intermediate field} = \frac{\ee^{\ii k R}}{4 \pi R} \frac{\ii}{k R} \left( \tensor{I} - \frac{3 \vb*{R} \vb*{R}}{R^2} \right).
 \end{equation}
-
+The total Green function can be verified to be 
+\begin{equation}
+    \tensor{\vb*{G}} = - \frac{1}{3 k^2} \delta(\vb*{R}) \tensor{\vb*{I}} + \tensor{G}_\text{near field} + \tensor{G}_\text{intermediate field} + \tensor{G}_\text{far field}.
+\end{equation}
+The first term just gives the electric field in a polarized ball.
 For example, the charge density of an ideal electric dipole is 
 \begin{equation}
-    \rho(\vb*{r}) = - \vb*{p} \cdot \grad \delta(\vb*{r} - \vb*{r}'), \quad \vb*{j}(\vb*{r}) = - \ii \omega \vb*{p} \delta(\vb*{r} - \vb*{r}_0), \quad \div{\vb*{j}} = \ii \omega \rho(\vb*{r}),
+    \rho(\vb*{r}) = - \vb*{p} \cdot \grad \delta(\vb*{r} - \vb*{r}_0), \quad \vb*{j}(\vb*{r}) = - \ii \omega \vb*{p} \delta(\vb*{r} - \vb*{r}_0), 
 \end{equation}
-and we have 
+where 
 \[
+    \div{\vb*{j}} = \ii \omega \rho(\vb*{r}), \quad \pdv{\rho}{t} + \div{\vb*{j}} = 0.
+\]
+Therefore, we have 
+\begin{equation}
     \begin{aligned}
         \vb*{E}(\vb*{r}, \omega) &= \ii \omega \mu_0 \int \dd[3]{\vb*{r}'} \tensor{G}(\vb*{r} - \vb*{r}') \cdot \vb*{J}(\vb*{r}') \\
+        &= \ii \omega_\mu \int \dd[3]{\vb*{r}'} \frac{-1}{3k^2} \delta(\vb*{r} - \vb*{r}') \tensor{\vb*{I}} \cdot (- \ii \omega \vb*{p}) \\
         &= \omega^2 \mu_0 \tensor{G}(\vb*{r} - \vb*{r}_0) \cdot \vb*{p},
     \end{aligned}
-\]
+\end{equation}
+We ignore the radiation effects, which is correct when $k$ is small and therefore the radiation is not strong,
+or when we are actually dealing with many electric dipoles and their radiations cancel in the long length scale.
+Note that if we take into account the full radiation effects, we will face divergence. After ignoring the radiation
+effects, we get 
 and we get the familiar equation
 \begin{equation}
-    \vb*{E} = - \frac{\vb*{p}}{3 \epsilon_0}.
+    \vb*{E}(\vb*{r}) = - \frac{\vb*{p}}{3 \epsilon_0} \delta(\vb*{r} - \vb*{r}_0).
+\end{equation}
+Suppose there are $N$ dipoles per volume unit, we have 
+\begin{equation}
+    \vb*{E}_\text{self} = - \frac{N \vb*{p}}{3 \epsilon_0} = - \frac{\vb*{P}}{3 \epsilon_0}.
+    \label{eq:self-field-dipole}
 \end{equation}
 
 \end{document}
