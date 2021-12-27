@@ -99,6 +99,8 @@
   {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
 
 \title{Diffraction and Scattering in Electrodynamics by Prof. Kun Din}
 \author{Jinyuan Wu}
@@ -134,12 +136,14 @@ now has spatial distribution, or in other words we can see a smooth distribution
     \centering
     \input{11-24-figures/system-scattering.tex}
     \caption{Scattering system}
+    \label{fig:scattering}
 \end{figure}
 
 Consider a optical system is placed in vacuum, and we investigate its behavior when light is shed on it.
 Energy conservation gives 
 \begin{equation}
     - \int \dd[3]{\vb*{r}} \div{\vb*{S}} - \pdv{u}{t} = \int \dd[3]{\vb*{r}} \vb*{j} \cdot \vb*{E},
+    \label{eq:energy-conservation-eq}
 \end{equation}
 where the volume contains the volume of the system.
 We make the decomposition 
@@ -171,11 +175,13 @@ and from now on we work with monochromic light.
     Thus, time-dependent solution of Maxwell equations usually happens in investigation of ultrafast pulses.
 \end{note*}
 
-We expand the Poynting vector as  
-\[
+We consider a system illustrated in \prettyref{fig:scattering}. We choose a large surface $S$ to surround the 
+system. The surface $S$ must be large enough to ensure that it does not ``see'' the details of the scattering 
+system. We expand the Poynting vector as  
+\begin{equation}
     \expval*{\vb*{S}} = \frac{1}{2} \Re \vb*{E} \times \vb*{H}^* 
     = \frac{1}{2} \Re (\vb*{E}_\text{in} + \vb*{E}_\text{sca}) \times (\vb*{H}_\text{in}^* + \vb*{H}_\text{sca}^*),
-\]
+\end{equation}
 and we define 
 \begin{equation}
     \expval*{\vb*{S}_\text{in}} = \frac{1}{2} \Re \vb*{E}_\text{in} \times \vb*{H}_\text{in}^*,
@@ -195,12 +201,47 @@ We often define
 \begin{equation}
     C = \frac{W}{I}
 \end{equation}
-as the \concept{cross section}. By energy conservation we have 
+as the \concept{cross section}. After evaluating the expectation value of \eqref{eq:energy-conservation-eq}, we have 
+\[
+    - \oint \dd{\vb*{S}} \cdot \expval*{\vb*{S}} = \int \dd[3]{\vb*{r}} \expval*{\vb*{j} \cdot \vb*{E}}.
+\]
+We find the RHS is just the rate of light absorption: We have 
+\[
+    \begin{aligned}
+        W_\text{abs} &= - \oint \dd{\vb*{S}} \cdot \expval*{\vb*{S}} \\
+        &= - \oint \dd{\vb*{S}} \cdot \expval*{(\vb*{S}_\text{in} + \vb*{S}_\text{sca} + \vb*{S}_\text{ext} )}.
+    \end{aligned}
+\]
+We know that in the scattering components energy is flowing outward, and therefore 
+\begin{equation}
+    W_\text{sca} = \oint \dd{\vb*{S}} \cdot \expval*{\vb*{S}_\text{sca}}.
+\end{equation}
+It is possible that the background medium is dissipative, and in this case we use 
+\begin{equation}
+    W_\text{in} = - \oint \dd{\vb*{S}} \cdot \expval*{\vb*{S}_\text{in}}
+\end{equation}
+to denote the energy dissipation in $S$ caused by the dissipative nature of the background medium. 
+The sign of the extinction term needs some thinking, but since it is the interference between two beams 
+of light, it is also outward, and therefore 
+\begin{equation}
+    W_\text{ext} = - \oint \dd{\vb*{S}} \cdot \expval*{\vb*{S}_\text{ext}}.
+\end{equation}
+Therefore, we have 
+\[
+    W_\text{abs} = W_\text{in} - W_\text{sca} + W_\text{ext},
+\]
+and therefore 
+\begin{equation}
+    C_\text{ext} + C_\text{in} = C_\text{sca} + C_\text{abs}.
+\end{equation}
+Usually there is no dissipation in the background material, and in this case we have 
 \begin{equation}
     C_\text{ext} = C_\text{sca} + C_\text{abs},
 \end{equation}
 so the extinction cross section is also the \concept{total cross section}, including both scattering 
-and absorption effects. In geometrical optics, the total cross section cannot be larger than the geometric
+and absorption effects. We can see from the above derivation that it is a natural result of energy conservation.
+
+In geometrical optics, the total cross section cannot be larger than the geometric
 cross section of the absorber, but when the wave nature of light is taken into account, the total cross 
 section can be larger - the diameter of the total cross section may be several wavelengths larger than the 
 geometric diameter. This is often quite hard in engineering. The scattering cross section, even in geometrical
@@ -211,10 +252,11 @@ When $\vb*{E}_\text{in}$ is a plane wave, the asymptotic behavior of $\vb*{E}$ a
 \begin{equation}
     \vb*{E} = E_0 \vu*{e}_0 \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} + E_0 \frac{\ee^{\ii k r}}{r} \vb*{f}(\vb*{k}).
 \end{equation}
+Here we use $\vb*{k}$ to denote the direction of the scattered electromagnetic wave, which depends on $\vb*{r}$.
 We are sure that the spacial dependence is in the form of $\ee^{\ii k r} / r$ because when $\abs*{\vb*{r}} \to 0$
 the electromagnetic waves can be seen as spherical waves (the center of the sphere being the optical system where 
 scattering happens). Information about the optical system, i.e. the angular distribution of scattered 
-electromagnetic waves, the amplitude and the polarization is stored in $\vb*{f}(\vb*{r})$.
+electromagnetic waves, the amplitude and the polarization is stored in $\vb*{f}(\vb*{k})$.
 
 Since outside the optical system there is no current, we have 
 \begin{equation}
@@ -228,28 +270,61 @@ Then we find that
 \begin{equation}
     \begin{aligned}
         W_\text{ext} &= - \frac{1}{2} \oint \dd{S} \vu*{k} \cdot 
-            \Re (\vb*{E}_\text{in} \times (\vu*{k} \times \vb*{E}_\text{sca}^*) + \vb*{E}_\text{sca} \times (\vu*{k} \times \vb*{E}_\text{in}^*)) \\
+            \Re (\vb*{E}_\text{in} \times (\vu*{k} \times \vb*{E}_\text{sca}^*) + \vb*{E}_\text{sca} \times (\vu*{k}_0 \times \vb*{E}_\text{in}^*)) \\
         &= - \frac{E_0^2}{2 Z_0} \oint \frac{1}{r} \Re (
-        (\vu*{e}^*_0 \cdot \vb*{f}^* ) \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} \ee^{- \ii k r} 
-        + (\vu*{e}_0 \cdot \vb*{f}) (\vu*{k}_0 \cdot \vu*{k}) \ee^{- \ii \vb*{k}_0 \cdot \vb*{r}} \ee^{\ii k r} \\
+        (\vu*{e}_0 \cdot \vb*{f}^* ) \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} \ee^{- \ii k r} 
+        + (\vu*{e}^*_0 \cdot \vb*{f}) (\vu*{k}_0 \cdot \vu*{k}) \ee^{- \ii \vb*{k}_0 \cdot \vb*{r}} \ee^{\ii k r} \\
         &\quad \quad  - (\vu*{k} \cdot \vu*{e}_0) (\vu*{k} \cdot \vb*{f}^*) \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} \ee^{- \ii k r} 
-         - (\vu*{k} \cdot \vu*{e}_0^*) (\vu*{k} \cdot \vb*{f}) \ee^{- \ii \vb*{k}_0 \cdot \vb*{r}} \ee^{\ii k r}  ) \dd{S}.
+         - (\vu*{k} \cdot \vu*{e}_0^*) (\vu*{k}_0 \cdot \vb*{f}) \ee^{- \ii \vb*{k}_0 \cdot \vb*{r}} \ee^{\ii k r}  ) \dd{S}.
     \end{aligned}
     \label{eq:w-ext-step-1}
 \end{equation}
 Note that the factor $E_0^2 / (2 Z_0)$ is just the intensity of the input light, i.e. 
 \begin{equation}
-    I_\text{in} = \frac{1}{2} \epsilon_0 E_0^2 c,
+    I_\text{in} = \frac{1}{2} \epsilon_0 E_0^2 c = \frac{E_0^2}{2 Z_0},
 \end{equation}
 and $\dd{S}$ contains $r^2$ and a solid angle element $\dd{\Omega}$, so we can evaluate   
 \[
     \int_{-\pi}^\pi \cos \theta \dd{\theta} \ee^{\pm \ii \cos \theta k r}
 \]
 factors in \eqref{eq:w-ext-step-1}. Note that \eqref{eq:w-ext-step-1} is only correct when we are 
-far from the optical system, so we just need to take the 
+far from the optical system, so we just need to take the $kr \to \infty$ limit and use \eqref{eq:far-kr}.
+\begin{info*}{}
+    We have 
+    \[
+        \int_{-1}^1 \dd{\mu}  \ee^{\pm \ii k r \mu} g(\mu) 
+        = \int_{-1}^1 \dd \ee^{\pm \ii k r \mu} \frac{g(\mu)}{\pm \ii k r},
+    \]
+    and when $kr \to \infty$, since $\ee^{\ii k r \mu}$ vibrates much faster than $g(\mu)$, we have 
+    \[
+        \int_{-1}^1 \dd{\mu}  \ee^{\pm \ii k r \mu} g(\mu) \approx \int_{-1}^1 \dd\left(\ee^{\pm \ii k r \mu} \frac{g(\mu)}{\pm \ii k r}\right) = \frac{g(+1) \ee^{\pm \mathrm{i} k r}-g(-1) \ee^{\mp \mathrm{i} k r}}{\pm \mathrm{i} k r}.
+    \]
+    In the language of $\delta$-functions, we have 
+    \begin{equation}
+        \lim _{k_{0} r \rightarrow \infty} \ee^{\mathrm{i} \vb*{k}_{0} \cdot \vb*{r}}=\frac{2 \pi \mathrm{i}}{k_{0} r}\left\{\ee^{-\mathrm{i} k_{0} r} \delta\left(\hat{\vb*{r}}+\hat{\vb*{k}}_{0}\right)-\ee^{\mathrm{i} k_{0} r} \delta\left(\hat{\vb*{r}}-\hat{\vb*{k}}_{0}\right)\right\}.
+        \label{eq:far-kr}
+    \end{equation}
+\end{info*}
+\noindent Then we find that the last two terms in \eqref{eq:w-ext-step-1} vanish, because $\vb*{k}$ is 
+replaced by $\vb*{k}_0$, and the $\vu*{k} \cdot \vu*{e}_0$ factors just vanish. The rest terms are (here 
+we use $\mu$ to denote $\cos \theta$)
+\[
+    \begin{aligned}
+        W_\text{ext} &= - I_\text{in} \int \frac{r^2 \dd{\varphi} \dd{\mu}}{r} \Re ((\vu*{e}_0 \cdot \vb*{f}^*) \ee^{\ii \vb*{k}_0 \cdot \vb*{r}} \ee^{- \ii k r} + (\vu*{e}^*_0 \cdot \vb*{f}) (\vu*{k}_0 \cdot \vu*{k}) \ee^{- \ii \vb*{k}_0 \cdot \vb*{r}} \ee^{\ii k r}) \\
+        &= - I_\text{in} \int r \dd{\varphi} \Re \Biggl( \frac{\vu*{e}_0 \cdot \vb*{f}^*(\vb*{k}_0) \ee^{\ii k r} \ee^{- \ii k r}}{\ii k r} - \frac{\vu*{e}_0 \cdot \vb*{f}^*(- \vb*{k}_0) \ee^{- \ii k r} \ee^{- \ii k r}}{\ii k r} \\
+        & \quad \quad \quad + \frac{\vu*{e}_0^* \cdot \vb*{f}(\vb*{k}_0) (\vu*{k}_0 \cdot \vu*{k}_0) \ee^{- \ii k r} \ee^{\ii k r}}{- \ii k r} - \frac{\vu*{e}_0^* \cdot \vb*{f}(-\vb*{k}_0) (- \vu*{k}_0 \cdot \vu*{k}_0) \ee^{ \ii k r} \ee^{\ii k r}}{- \ii k r}  \Biggr) ,
+    \end{aligned}
+\]
+and it can be seen that there is no $\varphi$ dependence in the integral, so the integral over $\varphi$ just means $2\pi$. Moreover, we can see the second and the fourth term, after added up, is a pure imaginary number and therefore do not contribute to the final result. We therefore find 
+\[
+    \begin{aligned}
+        W_\text{ext} &= - I_\text{in} \cdot 2 \pi r \frac{2 \Im \vu*{e}_0 \cdot \vb*{f}^*(\vb*{k}_0)}{k r} \\
+        &= \frac{4 \pi }{k} I_\text{in} \Im \vu*{e}^*_0 \cdot \vb*{f}(\vb*{k}_0).
+    \end{aligned}
+\]
 The final result is 
 \begin{equation}
-    C_\text{in} = \frac{W_\text{ext}}{I_\text{in}} = \frac{4 \pi}{k} \Im \vb*{e}_0^* \cdot \vb*{f}(\vu*{k}_0).
+    C_\text{ext} = \frac{W_\text{ext}}{I_\text{in}} = \frac{4 \pi}{k} \Im \vb*{e}_0^* \cdot \vb*{f}(\vb*{k}_0).
     \label{eq:optical-theorem}
 \end{equation}
 This formula is called the \concept{optical theorem}. This is a result of energy conservation, or 
@@ -259,9 +334,30 @@ and it breaks for a highly convergent light beam. The generalized version of the
 can be found in Born's famous textbook.
 
 Similar to \eqref{eq:w-ext-step-1}, we have 
+\[
+    \begin{aligned}
+        W_\text{sca} &= \frac{1}{2} \oint \dd{\vb*{S}} \cdot \vb*{E}_\text{sca} \times \vb*{H}_\text{sca} \\
+        &= \frac{1}{2 Z} \oint \dd{\vb*{S}} \cdot \vb*{E}_\text{sca} \times (\vu*{k} \vb*{E}^*_\text{sca}) \\
+        &= \frac{1}{2 Z} \oint \dd{S} \vu*{k} \cdot (\abs*{\vb*{E}_\text{sca}}^2 \vu*{k} - (\vu*{k} \cdot \vb*{E}_\text{sca}) \vb*{E}^*_\text{sca}).
+    \end{aligned}
+\]
+When $r$ is large, $\ee^{\ii k r}$ vibrates much faster than $\vb*{f}(\vb*{k}) / r$, and therefore the transverse field condition requires
+\[
+    0 = \div{\frac{\ee^{\ii k r}}{r} \vb*{f}(\vb*{k})} \approx \ii \vb*{k} \cdot \vb*{f}(\vb*{r}) \frac{\ee^{\ii k r}}{r},
+\]
+and therefore $\vu*{k} \cdot \vb*{E}_\text{sca} = 0$, so we have 
+\[
+    \begin{aligned}
+        W_\text{sca} &= \frac{1}{2Z} \oint \dd{S} \abs*{\vb*{E}_\text{sca}}^2 \\
+        &= \frac{1}{2Z} E_0^2 \int r^2 \dd{\Omega} \frac{\abs*{\vb*{f}(\vb*{k})}^2}{r^2} \\
+        &= I_\text{in} \int \dd{\Omega} \abs*{\vb*{f}(\vb*{k})}^2,
+    \end{aligned}
+\]
+and therefore 
 \begin{equation}
-    C_\text{sca} = \frac{1}{2 Z_0 I_\text{in}} \oint \dd{S} \vu*{k} \cdot \Re \vb*{E}_\text{sca} \times (\vu*{k} \times \vb*{E}_\text{sca}) = \int_{4\pi} \abs*{\vb*{f}(\vb*{k})}^2 \dd{\Omega},
+    C_\text{sca} = \frac{1}{2 Z_0 I_\text{in}} \oint \dd{S} \vu*{k} \cdot \Re \vb*{E}_\text{sca} \times (\vu*{k} \times \vb*{E}_\text{sca}) = \int_{4\pi} \abs*{\vb*{f}(\vb*{k})}^2 \dd{\Omega}.
 \end{equation}
+Again we get something we are already familiar in quantum mechanics. 
 
 \section{Mie scattering}
 

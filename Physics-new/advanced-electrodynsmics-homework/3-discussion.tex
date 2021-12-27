@@ -1,0 +1,368 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Advanced Electrodynamics, Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{2D Green function} (a) Derive the 2D Green function in polar coordinates.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] The 2D Green function is given by the solution of the two dimensional version of Helmholtz equation
+with an external source: 
+\begin{equation}
+    (\laplacian + k^2) G_0(\vb*{r} - \vb*{r}') = - \delta^{(2)}(\vb*{r} - \vb*{r}').
+\end{equation}  
+The solution, in terms of Fourier transformation, is 
+\[
+    G_0(\vb*{R}) = - \int \frac{\dd[2]{\vb*{p}}}{(2\pi)^2} \frac{\ee^{\ii \vb*{p} \cdot \vb*{R}}}{k^2 - {\vb*{p}}^2 + \ii 0^+}.
+\]
+In polar coordinates where we consider the direction of $\vb*{R}$ to be the $\theta = 0$ axis, we have 
+% &= \frac{1}{(2\pi)^2} \frac{1}{2} \int_{0}^{2\pi} \dd{\theta} \int_0^\infty \dd{p}
+%         \left( \frac{1}{p + k - \ii 0^+} + \frac{1}{p - k - \ii 0^+} \right) 
+%         \ee^{\ii p \abs*{\vb*{R}} \cos \theta} \\
+%         &= \frac{1}{2 (2\pi)^2} \left(
+%             \int_{-\pi/2}^{\pi/2} \dd{\theta} \times 2 \pi \ii \ee^{\ii k \abs*{\vb*{R}} \cos \theta}
+%             + \int_{\pi/2}^{3\pi/2} \dd{\theta} \times 2 \pi \ii \ee^{- \ii k \abs*{\vb*{R}} \cos \theta}
+%         \right) \\
+%         &= \frac{\ii}{4\pi} ((\pi J_0(k \abs*{\vb*{R}}) + \ii \pi \mathbf{H}(k \abs*{\vb*{R}}))
+%         + (\pi J_0(k \abs*{\vb*{R}}) - \ii \pi \mathbf{H}(k \abs*{\vb*{R}}))) \\
+%         &= \frac{\ii}{4\pi} \times 2 \pi J_0(k \abs*{\vb*{R}}).
+\[
+    \begin{aligned}
+        G_0(\vb*{R}) &= - \frac{1}{(2\pi)^2} \int_{0}^\infty p \dd{p} \int_{0}^{2\pi} \dd{\theta} 
+        \frac{\ee^{\ii p \abs*{\vb*{R}} \cos \theta}}{k^2 - p^2 + \ii 0^+} \\
+        &= \frac{1}{(2\pi)^2} \int_0^\infty p \dd{p} \times \frac{1}{p^2 - k^2 - \ii 0^+} 
+        \times 2\pi J_0(p \abs*{\vb*{R}}) \\
+        &= \frac{1}{2\pi} \times K_0\left(\frac{\abs*{\vb*{R}}}{\sqrt{- 1 / k^2}}\right) \\
+        &= \frac{1}{2\pi} K_0(- \ii k \abs*{\vb*{R}}) 
+        = \frac{1}{2\pi} \times \frac{\pi}{2} \ii H_0^{(1)}(k \abs*{\vb*{R}}) ,
+    \end{aligned}
+\]
+where the third line is obtained using Mathematica, and the fourth line comes from well-known properties 
+of Bessel functions \cite{besselwiki}. So we get 
+\begin{equation}
+    G_0(\vb*{R}) = \frac{\ii}{4} H_0^{(1)}(k \abs*{\vb*{R}}). 
+\end{equation}
+
+\end{itemize}
+
+\paragraph{}
+
+\paragraph{Dyadic green function in Fourier space} (a) Show that in vacuum the Maxwell equations can be rephrased 
+into 
+\begin{equation}
+    \vb*{M}^{2}\left[\begin{array}{l}
+        \vb*{E} \\
+        \vb*{H}
+        \end{array}\right]=\left[\begin{array}{cc}
+        c^{2} \vb*{k} \cdot \vb*{k}-c^{2} \vb*{k} \vb*{k} & 0 \\
+        0 & c^{2} \vb*{k} \cdot \vb*{k}-c^{2} \vb*{k} \vb*{k}
+        \end{array}\right]\left[\begin{array}{c}
+        \vb*{E} \\
+        \vb*{H}
+        \end{array}\right]=\omega^{2}\left[\begin{array}{c}
+        \vb*{E} \\
+        \vb*{H}
+        \end{array}\right].
+        \label{eq:maxwell-eigen}
+\end{equation}
+(b) Find the eigenvalues and eigenvectors. (c) Derive the Green function in the Fourier space, 
+and show why longitude modes are absent.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] In the Fourier space the Maxwell equations are 
+\[
+    \begin{aligned}
+        \vb*{k} \cdot \vb*{E} &= 0, \\ 
+        \vb*{k} \times \vb*{E} &= \omega \vb*{B}, \\
+        \vb*{k} \cdot \vb*{B} &= 0, \\
+        \vb*{k} \times \vb*{B} &= - \frac{1}{c^2} \omega \vb*{E}.
+    \end{aligned}
+\]
+where $\vb*{E}$ and $\vb*{B}$ are actually $\vb*{\mathcal{E}}(\vb*{k}, \omega)$ 
+and $\vb*{\mathcal{B}}(\vb*{k}, \omega)$, respectively. The first and the third equations have 
+no $\omega$ dependence and therefore cannot be a part of the eigenvalue problem. 
+From the second and the fourth equations we have 
+\[
+    \begin{aligned}
+        \omega \vb*{k} \times \vb*{B} &= \vb*{k} \times (\vb*{k} \times \vb*{E}) \\
+        &= (\vb*{k} \cdot \vb*{E}) \vb*{k} - \vb*{k}^2 \vb*{E} \\
+        &= (\vb*{k} \vb*{k} - \vb*{k} \cdot \vb*{k}) \vb*{E},
+    \end{aligned}
+\]
+and therefore 
+\begin{equation}
+    - \frac{\omega^2}{c^2} \vb*{E} = (\vb*{k} \vb*{k} - \vb*{k} \cdot \vb*{k}) \vb*{E}.
+    \label{eq:e-eigen}
+\end{equation}
+Similarly we have 
+\[
+    \begin{aligned}
+        \frac{\omega}{c^2} \vb*{k} \times \vb*{E} &= - \vb*{k} \times (\vb*{k} \times \vb*{B}) \\
+        &= - (\vb*{k} \cdot \vb*{B}) \vb*{k} + \vb*{k}^2 \vb*{B} \\
+        &= (- \vb*{k} \vb*{k} + \vb*{k} \cdot \vb*{k}) \vb*{B}, 
+    \end{aligned}
+\]
+and therefore 
+\begin{equation}
+    \frac{\omega^2}{c^2} \vb*{B} = (- \vb*{k} \vb*{k} + \vb*{k} \cdot \vb*{k}) \vb*{B}.
+    \label{eq:b-eigen}
+\end{equation}
+From \eqref{eq:e-eigen} and \eqref{eq:b-eigen} we have 
+\begin{equation}
+    \pmqty{\dmat{ \vb*{k} \cdot \vb*{k} - \vb*{k} \vb*{k} , \vb*{k} \cdot \vb*{k} - \vb*{k} \vb*{k} }} 
+    \pmqty{\vb*{E} \\ \vb*{B}} = \frac{\omega^2}{c^2} \pmqty{\vb*{E} \\ \vb*{B}}. 
+\end{equation}
+Note that $B = \mu_0 \vb*{H}$, we find this is just \eqref{eq:maxwell-eigen}.
+
+\item[(b)] What we need to do is to solve the equation 
+\[
+    \det( c^2 \vb*{k} \cdot \vb*{k} - c^2 \vb*{k} \vb*{k} - \omega^2)^2 = 0,
+\] 
+or in other words 
+\[
+    \det\pmqty{
+        k_y^2 + k_z^2 - \frac{\omega^2}{c^2} & - k_x k_y & - k_x k_z \\
+        - k_x k_y & k_x^2 + k_z^2 - \frac{\omega^2}{c^2} & - k_y k_z \\
+        - k_x k_z & - k_y k_z & k_x^2 + k_y^2 - \frac{\omega^2}{c^2} 
+    }^2 = 0.
+\]
+Factoring the LHS of the equation using Mathematica, we have 
+\[
+    \frac{\omega^4}{c^4} \left( k_x^2 + k_y^2 + k_z^2 - \frac{\omega^2}{c^2} \right)^4 = 0,
+\]
+so we have six eigen values, which are 
+\begin{equation}
+    \left(\frac{\omega}{c}\right)^2_1 = \left(\frac{\omega}{c}\right)^2_2 = 0, \quad 
+    \left(\frac{\omega}{c}\right)^2_3 = \left(\frac{\omega}{c}\right)^2_4 
+    = \left(\frac{\omega}{c}\right)^2_5 = \left(\frac{\omega}{c}\right)^2_6 = \vb*{k}^2.
+\end{equation}
+
+We get six modes, and now we find the eigenmodes. 
+For mode 1 and mode 2, we have 
+\[
+    \pmqty{
+        k_y^2 + k_z^2 & - k_x k_y & - k_x k_z \\
+        - k_x k_y & k_x^2 + k_z^2 & - k_y k_z \\
+        - k_x k_z & - k_y k_z & k_x^2 + k_y^2 
+    } \pmqty{ E_x \\ E_y ^2 \\ E_z^2 } = 0
+\]
+and the same equation holds for $\vb*{H}$, and a complete set of linear independent non-zero solutions are
+\begin{equation}
+    \pmqty{\vb*{E} \\ \vb*{H}} = \pmqty{k_x \\ k_y \\ k_z \\ 0 \\ 0 \\ 0},  
+    \pmqty{0 \\ 0 \\ 0 \\ k_x \\ k_y \\ k_z}.
+    \label{eq:invariant-1}
+\end{equation}
+For mode 3, 4, 5, and 6, we have 
+\[
+    \pmqty{
+        - k_z^2 & - k_x k_y & - k_x k_z \\
+        - k_x k_y & - k_x^2 & - k_y k_z \\
+        - k_x k_z & - k_y k_z & - k_y^2 
+    } \pmqty{ E_x \\ E_y ^2 \\ E_z^2 } = 0,
+\]
+and the same equation holds for $\vb*{H}$, and a complete set of linear independent non-zero solutions are 
+\begin{equation}
+    \pmqty{\vb*{E} \\ \vb*{H}} = \pmqty{k_z \\ 0 \\ - k_x \\ 0 \\ 0 \\ 0}, 
+    \pmqty{0 \\ 0 \\ 0 \\ k_z \\ 0 \\ - k_x }, \pmqty{-k_y \\ k_x \\ 0 \\ 0 \\ 0 \\ 0},
+    \pmqty{ 0 \\ 0 \\ 0 \\ -k_y \\ k_x \\ 0}.
+    \label{eq:invariant-2}
+\end{equation}
+
+\item[(c)] We do Schmidt orthogonalization and then invoke spectrum decomposition.
+We let 
+\[
+    \pmqty{k_x \\ k_y \\ k_z} = k \pmqty{\sin \theta \cos \varphi \\ \sin \theta \sin \varphi \\ \cos \theta},  
+\]
+then the invariant space \eqref{eq:invariant-2} may be spanned by the direct product of the orthogonal uniform basis
+\begin{equation}
+    \pmqty{\cos \theta \cos \varphi \\ \cos \theta \sin \varphi \\ - \sin \theta}, 
+    \pmqty{- \sin \varphi \\ \cos \varphi \\ 0}
+    \label{eq:small-invariant}
+\end{equation}
+and $\{(1, 0), (0, 1)\}$. The projector operator into \eqref{eq:small-invariant} is 
+\[
+    \pmqty{\cos \theta \cos \varphi \\ \cos \theta \sin \varphi \\ - \sin \theta} 
+    \pmqty{\cos \theta \cos \varphi & \cos \theta \sin \varphi & - \sin \theta} + 
+    \pmqty{- \sin \varphi \\ \cos \varphi \\ 0} \pmqty{- \sin \varphi & \cos \varphi & 0} .
+\]
+Replacing $\theta, \varphi$ by $k_x, k_y, k_z$ using the equations 
+\[
+    \sin \varphi = \frac{k_y}{\sqrt{k_x^2 + k_y^2}}, \quad 
+    \cos \varphi = \frac{k_x}{\sqrt{k_x^2 + k_y^2}}, \quad 
+    \sin \theta = \frac{\sqrt{k_x^2 + k_y^2}}{\sqrt{k_x^2 + k_y^2 + k_z^2}}, \quad 
+    \cos \theta = \frac{k_z}{\sqrt{k_x^2 + k_y^2 + k_z^2}},
+\]
+the projector operator into \eqref{eq:invariant-2} is the product between
+\[
+    \pmqty{ \frac{k_y^2}{k_x^2 + k_y^2} & - \frac{k_x k_y}{k_x^2 + k_y^2} & 0
+    \\ - \frac{k_x k_y}{k_x^2 + k_y^2} & \frac{k_x^2}{k_x^2 + k_y^2} & 0 \\
+    0 & 0 & 0} +
+    \pmqty{
+        \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} &
+        \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+        - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} \\
+        \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+        \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} & 
+        - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} \\
+        - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} & 
+        - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} &
+        \frac{k_x^2 + k_y^2}{k_x^2 + k_y^2 + k_z^2}
+    } 
+\]
+and $I^{2 \times 2}$. So by spectrum decomposition
+\begin{equation}
+    \tensor{\vb*{G}} = \sum_n \frac{\vb*{u}_n \vb*{u}_n^\dagger}{\lambda_n - \lambda},
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        \tensor{\vb*{G}} &= - \frac{1}{\omega^2} \frac{1}{k^2} \pmqty{\dmat{
+            k_x^2 & k_x k_y & k_x k_z \\ k_x k_y & k_y^2 & k_y k_z \\ k_x k_z & k_y k_z & k_z^2,
+            k_x^2 & k_x k_y & k_x k_z \\ k_x k_y & k_y^2 & k_y k_z \\ k_x k_z & k_y k_z & k_z^2
+        }} \\
+        &\quad+ \frac{1}{c^2 k^2 - \omega^2} \pmqty{\dmat{
+            \frac{k_y^2}{k_x^2 + k_y^2} & - \frac{k_x k_y}{k_x^2 + k_y^2} & 0
+            \\ - \frac{k_x k_y}{k_x^2 + k_y^2} & \frac{k_x^2}{k_x^2 + k_y^2} & 0 \\
+            0 & 0 & 0,
+            \frac{k_y^2}{k_x^2 + k_y^2} & - \frac{k_x k_y}{k_x^2 + k_y^2} & 0
+            \\ - \frac{k_x k_y}{k_x^2 + k_y^2} & \frac{k_x^2}{k_x^2 + k_y^2} & 0 \\
+            0 & 0 & 0
+        }} \\
+        &\quad+ \frac{1}{c^2 k^2 - \omega^2} \pmqty{\dmat{
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} &
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+            - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} \\
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} & 
+            - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} \\
+            - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} & 
+            - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} &
+            \frac{k_x^2 + k_y^2}{k_x^2 + k_y^2 + k_z^2}, 
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} &
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+            - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} \\
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_x k_y}{k_x^2 + k_y^2} &
+            \frac{k_z^2}{k_x^2 + k_y^2 + k_z^2} \frac{k_y^2}{k_x^2 + k_y^2} & 
+            - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} \\
+            - \frac{k_x k_z}{k_x^2 + k_y^2 + k_z^2} & 
+            - \frac{k_y k_z}{k_x^2 + k_y^2 + k_z^2} &
+            \frac{k_x^2 + k_y^2}{k_x^2 + k_y^2 + k_z^2}
+            }}
+        \end{aligned}
+\end{equation}
+ 
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{3} 
+
+\end{document}
