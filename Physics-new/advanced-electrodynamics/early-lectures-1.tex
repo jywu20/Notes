@@ -17,6 +17,7 @@
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
+\usepackage{booktabs}
 \usepackage[version=4]{mhchem}
 \usepackage{tikz}
 \usepackage{xcolor}
@@ -103,6 +104,8 @@
   {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
 
 \newcommand{\opticsdoc}{\href{../optics/optics.pdf}{this optics note}}
 
@@ -122,17 +125,141 @@ We use the guiding vector method to find eigenmodes in
 several systems. Here we summarize the procedure: what we want to do is to solve the equation 
 \begin{equation}
     (\laplacian + k^2) \vb*{M} = 0, \quad \div{\vb*{M}} = 0.
+    \label{eq:m-problem}
 \end{equation}
 By doing so we can make the ansatz 
 \begin{equation}
     \vb*{M} = \curl(\psi \vb*{c}), \quad \div{\vb*{c}} = \const, \quad \curl{\vb*{c}} = 0, 
 \end{equation}
-which is always possible. (see \eqref{optics-sec:guiding-vector} in \opticsdoc) Now what should be done is 
-to find a certain $\vb*{c}$ and then solve 
-
+which is always possible. (see \eqref{optics-sec:guiding-vector} in \opticsdoc) Now \eqref{eq:m-problem} 
+becomes 
+\[
+    \laplacian \curl{(\psi \vb*{c})} + k^2 \curl{(\psi \vb*{c})} = 0.
+\]
+The LHS is 
+\[
+    \begin{aligned}
+        &\quad \laplacian \curl{(\psi \vb*{c})} + k^2 \curl{(\psi \vb*{c})} \\
+        &= - \curl{ \curl \curl (\psi \vb*{c})} + k^2 \curl{(\psi \vb*{c})} \\
+        &= - \curl{(\grad{\div{(\psi \vb*{c})}} - \laplacian (\psi \vb*{c}))} + k^2 \curl{(\psi \vb*{c})} \\
+        &= \curl(\laplacian(\psi \vb*{c})) + k^2 \curl{(\psi \vb*{c})} \\
+        &= (\laplacian + k^2) \curl(\psi \vb*{c}) \\
+        &= (\laplacian + k^2) 
+    \end{aligned}
+\]
 TODO
+So what should be done is to find a certain $\vb*{c}$ and then solve 
+\begin{equation}
+    \laplacian \psi + k^2 \psi = 0.
+    \label{eq:scalar-helmholtz}
+\end{equation}
 
+Note that we are sure that $\vb*{c}$ is perpendicular to $\vb*{M}$, but not necessarily $\vb*{N}$.
+A good example is reflection: $\vb*{c}$ is the normal vector of the surface, $\grad{\psi}$ is the 
+wave vector, and it can be easily found that only one of the electric field and the magnetic field 
+can be perpendicular to $\vb*{c}$.
+Therefore, we call the solution $\vb*{E} = \vb*{M}, \vb*{B} = \vb*{N}$ the \concept{TE mode}, 
+the solution $\vb*{B} = \vb*{M}, \vb*{E} = \vb*{N}$ the \concept{TM mode}. There is yet a third mode 
+\begin{equation}
+    \vb*{L} = \grad{\psi},
+\end{equation} 
+which is a longitude mode.
 
+Note that it is possible that $\grad {\psi} \parallel \vb*{c}$ everywhere, and in this case we need to 
+find another vector field $\vb*{a}$ such that TODO: always scalar?
+
+\begin{info*}{Bessel functions}{}
+    We consider the Bessel equation 
+    \begin{equation}
+        x^{2} \frac{\mathrm{d}^{2} y}{\mathrm{~d} x^{2}}+x \frac{\mathrm{d} y}{\mathrm{~d} x}+\left(x^{2}-\alpha^{2}\right) y=0.
+        \label{eq:bessel}
+    \end{equation}
+    Here is a list of its solutions:
+    
+    \begin{center}
+        \begin{tabular}{cccc}
+            \toprule
+            $\alpha$ & type & first type & second type \\
+            \midrule
+            integer & Bessel functions & $J_\alpha$ & $Y_\alpha$ or $N_\alpha$ \\
+            integer & Hankel functions & $H_{\alpha}^{(1)}=J_{\alpha}+\mathrm{i} Y_{\alpha}$ & $H_{\alpha}^{(2)}=J_{\alpha}-\mathrm{i} Y_{\alpha}$ \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+
+    $J_\alpha$ is well defined everywhere. $Y_\alpha$ diverges when $x \to 0$.
+
+    Another interesting equation is
+    \begin{equation}
+        x^{2} \frac{\mathrm{d}^{2} y}{\mathrm{~d} x^{2}}+ 2x \frac{\mathrm{d} y}{\mathrm{~d} x}+\left(x^{2}-n(n+1)\right) y=0.
+    \end{equation}
+    The solutions are
+    \begin{center}
+        \begin{tabular}{cccc}
+            \toprule
+            $n$ & type & first type & second type \\
+            \midrule
+            integer & spherical Bessel functions & $j_n$ & $h_n$  \\
+            integer & spherical Bessel functions & $h^{(1)}_n = j_n + \ii y_n$ & $h^{(2)}_n = j_n - \ii y_n$  \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    
+    We also need to work with modified Bessel equation 
+    \begin{equation}
+        x^{2} \frac{\mathrm{d}^{2} y}{\mathrm{~d} x^{2}}+x \frac{\mathrm{d} y}{\mathrm{~d} x}-\left(x^{2}+\alpha^{2}\right) y=0,
+    \end{equation}
+    which can be derived from \eqref{eq:bessel} with $x \to \ii x$. The solutions are 
+    \begin{center}
+        \begin{tabular}{cccc}
+            \toprule
+            $\alpha$ & type & first type & second type \\
+            \midrule
+            integer & Modified Bessel functions & $I_\alpha$ & $K_\alpha$ \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+
+    $I_\alpha$ is divergent as $x \to \infty$, and $K_\alpha$ is divergent when $x \to 0$.
+\end{info*}
+
+We first consider the case of a cylinder. We set 
+\begin{equation}
+    \vb*{c} = \vb*{\rho} = (x,y,0), \quad \div{\vb*{c}} = 2. 
+\end{equation}
+We need to solve \eqref{eq:scalar-helmholtz} for a cylinder system. By separation of variables we have 
+
+Now we consider the case of a sphere. The equation is 
+\begin{equation}
+    \frac{1}{r^{2}} \frac{\partial}{\partial r}\left(r^{2} \frac{\partial \psi}{\partial r}\right)+\frac{1}{r^{2} \sin \theta} \frac{\partial}{\partial \theta}\left(\sin \theta \frac{\partial \psi}{\partial \theta}\right)+\frac{1}{r^{2} \sin ^{2} \theta} \frac{\partial^{2} \psi}{\partial \phi^{2}}+k^{2} \psi=0.
+    \label{eq:spherical-wave}
+\end{equation}
+If we are dealing with a specific spherical cavity or something, $k$ is quantized: The boundary condition 
+will force $k$ to take discrete values, just as is the case in the Hydrogen atom. We are, however, interested 
+in a more generalized case, and therefore we just fix $k$, and solve the angular part of the problem.
+In the following derivation, we use $n$ for $l$ in quantum mechanics. The radius part is 
+\begin{equation}
+    \frac{1}{r^{2}} \frac{\partial}{\partial r}\left(r^{2} \frac{\partial \psi}{\partial r}\right) + \left( k^2 - \frac{n(n+1)}{r^2} \right) \psi = 0,
+\end{equation}
+the solutions of which are the linear combination of 
+\begin{equation}
+    z_n(r) = j_n(r), j_n(r), h^{(1)}_n(r), h^{(2)}_n(r).
+\end{equation}
+The solution of the angular part is just the spherical harmonics. Since we are not dealing with a 
+specific system, we ignore the normalization and the solutions of \eqref{eq:spherical-wave} are 
+\begin{equation}
+    \begin{aligned}
+        &\psi_{e m n}(r, \theta, \phi)=z_{n}(k r) P_{n}^{m}(\cos \theta) \cos (m \phi), \\
+        &\psi_{o m n}(r, \theta, \phi)=z_{n}(k r) P_{n}^{m}(\cos \theta) \sin (m \phi).
+        \end{aligned}
+\end{equation}
+Here the subscripts $e$ and $o$ represent the even and odd properties in $\phi$.
+
+Note that when $n=0$, we have non-trivial solution of $\psi$, but both $\vb*{M}$ and $\vb*{N}$ are zero.
+We can show this by a contradiction. Suppose $\vb*{M}_0$ is obtained by $\psi_{e00}$ or $\psi_{o00}$ or a linear combination.
+Since $\vb*{M}_0$ is perpendicular to $\vb*{c}$, we can see its values on a sphere a non-zero smooth 
+vector field on $S^2$, without singularities (or otherwise due to the perfect rotational symmetry of 
+the solution, singularities must be everywhere). The \emph{Hairy ball theorem} tells us this is impossible. 
 
 \section{Effective continuous medium}
 
