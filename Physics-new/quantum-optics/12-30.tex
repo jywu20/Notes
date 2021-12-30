@@ -1,0 +1,271 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+% \zexternaldocument*[last-]{12-2}[12-2.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\newcommand{\lastnote}{\href{12-9.pdf}{the last lecture}}
+
+\title{Quantum Optics by Prof. Saijun Wu}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{A brief overview of cavity QED}
+
+For a system where RWA and RWT work but photons emitted by the atom does not necessarily fly to infinity, 
+the Hamiltonian is 
+\begin{equation}
+    H_\text{eff} = \hbar (\Delta_c - \ii \kappa / 2) a^\dagger a + \hbar (\Delta - \ii \Gamma / 2) \dyad{e} + \hbar (g_{ac} a + \Omega / 2) \dyad{e}{g} + \text{h.c.},
+    \label{eq:photon-atom-coupling}
+\end{equation}
+where 
+\begin{equation}
+    g_{ac} = \frac{\vb*{\mathcal{E}}_{c}\cdot \vb*{d}_{eg}}{\hbar}, \quad 
+    C_1 = \sqrt{\Gamma} \dyad{g}{e}, \quad 
+    C_2 = \sqrt{\kappa} a.
+\end{equation}
+The difference between \eqref{eq:photon-atom-coupling} and previous models is that neither the optical field nor 
+the atom can be integrated out, leaving a Markovian evolution. \eqref{eq:photon-atom-coupling} is a famous model 
+in \concept{cavity QED}, where a \emph{local} optical field interacts with a localized atom. This is called 
+\emph{QED} because we are still studying both electrons and photons. When ignoring all decaying, we get 
+\begin{equation}
+    H_\text{eff} = \hbar \Delta_c a^\dagger a + \hbar \Delta \dyad{e} + \hbar (g_{ac} a + \Omega / 2) \dyad{e}{g} + \text{h.c.}.
+\end{equation}
+This is \concept{Jaynes–Cummings model}. Jaynes–Cummings model is much harder to implement in laboratories 
+because no one can create a cavity without any decaying, but anyway, someone has implemented it.
+
+Now we discuss when we should calculate with the complete \eqref{eq:photon-atom-coupling}, instead of 
+Markovian approximations. Intuitively speaking, we need very, very strong coupling between the atom and 
+the optical field in the cavity so that if the atom radiates a photon in the cavity, before it runs away,
+it already takes part in another process. This is the \concept{strong coupling} condition. Note that 
+\[
+    g \sim \frac{\vb*{\mathcal{E}} \cdot \vb*{d}_{eg}}{\hbar}, \quad 
+    \Gamma \sim \frac{\omega^3 \vb*{d}_{eg}^2}{3 \pi \epsilon_0 c^3},
+\]
+what we need to do is to increase the intensity at the position of the atom, A schematic illustration of 
+this is \prettyref{fig:focus}.
+
+\begin{figure}
+    \centering
+    \input{12-30-figures/cavity-beam.tex}
+    \caption{A cavity which focuses the light beam, and the atom is placed at the brightest position}
+    \label{fig:focus}
+\end{figure}
+
+\section{Jaynes–Cummings model} 
+
+\begin{figure}
+    \centering
+    \input{12-30-figures/jc-subspace.tex}
+    \caption{The energy level diagram of \eqref{eq:jc-subspace}}
+    \label{fig:jc-subspace}
+\end{figure}
+
+Now we discuss the Jaynes–Cummings model. From the RWA Hamiltonian
+\begin{equation}
+    H = \hbar g \ee^{- \ii \Delta t} a \dyad{e}{g} + \text{h.c.},
+\end{equation}
+after RWT, we have  
+\begin{equation}
+    H_\text{JC} = \hbar \Delta_c a^\dagger a + (\hbar g a \dyad{e}{g} + \text{h.c.}). 
+\end{equation}
+If we just consider the subspace spanned by $\ket*{g, n}$ and $\ket*{e, n-1}$, the Hamiltonian is 
+\begin{equation}
+    H = \pmqty{n \Delta & \sqrt{n} g \\ \sqrt{n} g & (n-1) \Delta}.
+    \label{eq:jc-subspace}
+\end{equation}
+We find two \emph{dressed} states, the energies of them being 
+\begin{equation}
+    \hbar \tilde{\omega}_{g,n} = \left(n - \frac{1}{2}\right) \hbar \Delta - \frac{1}{2} (\sqrt{\Delta^2 + 4 n g^2} - \Delta), 
+\end{equation}
+and 
+\begin{equation}
+    \hbar \tilde{\omega}_{e, n-1} = \left(n - \frac{1}{2}\right) \hbar \Delta + \frac{1}{2} (\sqrt{\Delta^2 + 4 n g^2} - \Delta).
+\end{equation}
+
+Now the Jaynes–Cummings model where the optical field state is a single-photon state coupled with only 
+one atom - or in other words, \concept{single-photon Rabi oscillation} - appears to be solved completely. 
+Things are not that simple, since the parameters $g$ and $\Delta$ sometimes are time-dependent. 
+
+When the input state involves a non-Fock state, the time evolution can also be non-trivial, since we no longer 
+work in \prettyref{fig:jc-subspace}. Suppose the input state is 
+\begin{equation}
+    \ket*{\psi(0)} = \ket*{e, \alpha} = \ket*{e} \otimes \sum_{n} \ee^{- \abs*{\alpha} / 2} \frac{\alpha^n}{\sqrt{n!}} \ket*{n},
+\end{equation}
+then we have 
+We can observe how the 
+
+This is a vivid demonstration of when the semi-classical approximation of light-atom coupling works and does not 
+work. We can see that the time scale of the semi-classical regions is $1 / g$. When $t \gg 1 / g$, the state of 
+the optical field becomes a cat state. In ordinary systems, $g$ is small, and therefore $1/g$ is large, and long 
+before a cat state is formed, spontaneous radiation or leaking or other quantum jumps happens. However, 
+in Jaynes–Cummings model, there is no quantum jump and $g$ is strong, and we can just see a cat state occurring. 
+
+\section{Heisenberg picture of a leaky cavity}
+
+Now we consider the Heisenberg picture of 
+\begin{equation}
+    H_\text{eff} = \hbar (\omega - \ii \kappa / 2) a^\dagger a.
+    \label{eq:leaky-cavity}
+\end{equation}
+We already know that the master equation has a term $\rho H_\text{eff} - H_\text{eff}^\dagger \rho$, 
+the $^\dagger$ symbol coming from the non-Hermitian property of \eqref{eq:leaky-cavity}. 
+Now we naively consider the Heisenberg picture of \eqref{eq:leaky-cavity}, \emph{without} considering 
+the non-Hermitian property. We have 
+\[
+    \ii \dot{a} = \comm*{a}{H} = (\omega_c - \ii \kappa / 2) a, 
+\]
+and similarly 
+\[
+    \ii \dot{a}^\dagger = (- \omega_c - \ii \kappa / 2) a^\dagger.
+\]
+These equations correctly show the damping behavior of the system, but now the commutation relation is 
+\[
+    \comm*{a}{a^\dagger} = \ee^{- \kappa t},
+\]
+which is obviously wrong, since we expect the creation and annihilation operators to always satisfy 
+$[a, a^\dagger] = 1$. 
+
+It does not mean that a Heisenberg picture of \eqref{eq:leaky-cavity} is impossible. To see clearly how, 
+let us go back to the original Hamiltonian 
+\begin{equation}
+    H = \underbrace{\hbar \omega_c a^\dagger a}_{H_S} + \underbrace{\sum_k \hbar \omega_k a^\dagger_k a_k}_{H_R} + \underbrace{\sum_k \hbar g_k a a_k^\dagger + \text{h.c.}}_{H_{SR}}.
+\end{equation}
+From the Heisenberg EOMs we have 
+\[
+    \ii \dot{a} = \sum_k g_k \ee^{- \ii \Delta_k t} a_k, \quad \ii \dot{a}_k = g_k^* \ee^{\ii \Delta_k t} a,
+\]
+and therefore 
+\[
+    \ii a = - \ii \int_0^t \dd{\tau} a(\tau) \sum_k \abs*{g}_k^2 \ee^{\ii \Delta_k (t - \tau)}
+    + \sum_k g_k \ee^{\ii \Delta_k t} a(k).
+\]
+Now we coarse-grain the time. When the time scale we are interested is much larger than $1 / \Delta \omega$,
+we have 
+\begin{equation}
+    \ii \dot{\tilde{a}} = (\Delta_c - \ii \kappa / 2) \tilde{a} + \tilde{F}(t),
+    \label{eq:quantum-langevin}
+\end{equation}
+and it can be verified that 
+\begin{equation}
+    \expval{F(t)} = 0, 
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \expval{F(t) F^\dagger(t')} &= \sum_{k, k'} \ee^{\ii \Delta_k t - \ii \Delta_{k'} t} \expval*{a_k a^\dagger_{k'}} \\
+        &= \sum_k \abs*{g_k}^2 \ee^{\ii \Delta_k (t - t')} = \kappa \delta(t - t').
+    \end{aligned}
+\end{equation}
+Therefore, we can see \eqref{eq:quantum-langevin} is actually a \emph{quantum} Langevin equation.
+This is the counterpart of the wave function formalism in the Schrodinger picture.
+By a picture transformation we can eliminate the $\Delta_c$ term, and in this case we have 
+\begin{equation}
+    a(t) = a(0) \ee^{- \kappa t / 2} - \ii \int_0^t \tilde{F}(\tau) \ee^{\kappa (\tau - t) / 2} \dd{\tau},
+\end{equation}
+and since the fluctuation term has zero expectation, we have  
+\begin{equation}
+    \expval{a(t)} = \ee^{- \kappa t / 2} \expval{a(0)}.
+\end{equation}
+
+\section{A brief overview of quantum optics}
+
+\end{document}
