@@ -117,11 +117,10 @@
 
 \maketitle
 
+\section{准晶概述}
+
 准晶的发现可以追溯到Shechtman等报道的快速冷却的Al-Mn合金的衍射图样中观察到的正二十面体对称性\cite{PhysRevLett.53.1951}。
 正二十面体对称性包含一个$C_5$对称轴，而不可能有一个晶格具有这种类型的对称性——它不在晶体允许的32种点群中\cite{Johnston_1960}。
-
-\section{准晶的几何结构}
-
 
 
 \section{准晶相变的金斯堡-朗道理论}
@@ -129,10 +128,10 @@
 本节将以文献\cite{PhysRevB.32.5764}为例，介绍准晶相变的金斯堡-朗道理论。
 我们采用金斯堡-朗道理论的标准处理方法，假定系统的状态可以使用一个空间中的连续、平滑的序参量描述，系统的行为可以使用一个仅仅关于序参量的自由能完整描述，通过对称性写下自由能的形式，并分析自由能中各参数变动时系统是否发生对称性自发破缺，以及发生后系统基态的性质。
 虽然金斯堡-朗道理论通常是用于处理二级相变的，但是如果序参量在两相交界处变化足够平缓，从而能够保证系统在相变点附近的行为仍然可以使用。使用金斯堡-朗道理论处理固液相变已经成为常见的方法\cite{fabrizio2008,PhysRevB.90.104101}。
-事实上，对有明确、不连续的两相交界的一级相变，基于金斯堡-朗道理论的相场方法\cite{provatas2011phase}也常常在数值模拟中被使用，以避免显式追踪相边界\cite{boettinger2002phase}。
+事实上，对有明确、不连续的两相交界的一级相变，基于金斯堡-朗道理论的相场方法\cite{provatas2011phase}也常常在数值模拟中被使用，以避免显式追踪相边界，节约计算资源\cite{boettinger2002phase}。
 
 考虑一个具有平移不变性和（连续）旋转不变性的液体。液体结晶属于结构相变，故序参量大体上是密度。
-对一个最一般的系统，序参量选取是否正确、系统自由能是否还依赖于序参量以外的（无法直接从系统的哈密顿量出发获得序参量），但对液体，自由能总是可以写成密度的一个泛函\cite{Evans_2016,cdft2020}。
+对一个最一般的系统，序参量选取是否正确、系统自由能是否还依赖于序参量以外的（无法直接从系统的哈密顿量出发获得序参量），但对液体，将自由能写成密度的一个泛函已经属于常规操作\cite{Evans_2016,cdft2020}。
 通常的液体的低能状态是均匀的，而无论是晶体还是准晶依照定义密度分布都不是完全均匀的，如果特定条件下能够形成准晶，那么准晶态必定相较其它状态在某种意义上更加稳定，即系统自由能最低的状态将不再是密度处处为常数的状态。
 因此可以将密度的$\vb*{q} \neq 0$的傅里叶分量$\rho(\vb*{q})$视作结晶的序参量。根据涉及的波矢的个数，液体的自由能的展开式子形如下式：
 \begin{equation}
@@ -144,21 +143,127 @@
         + v_5 \rho_{\vb*{q}_1} \rho_{\vb*{q}_2} \rho_{\vb*{q}_3} \rho_{\vb*{q}_4} \rho_{\vb*{q}_5}
         \delta^3(\sum_i \vb*{q}_i) + \cdots,
     \end{aligned}
+    \label{eq:free-energy-static}
 \end{equation}
 其中的$\delta$函数保证了理论的空间平移不变性；空间旋转不变性保证了系数仅仅依赖于$\vb*{q}_i$的模长。
 据此自由能可以计算$\rho(\vb*{r})$的期望值。如果发现出现非零的$\expval{\rho(\vb*{q})}$意味着出现对称性自发破缺，有某种序形成。
+不同种类的序会贡献不同形式的项到$\rho(\vb*{r})$中。例如，一个完美的层列液晶序会贡献一个单独的
+\begin{equation}
+    \rho_\text{nematic} = \rho(\vb*{q}) (\ee^{\ii \vb*{q} \cdot \vb*{r} + \ii \theta } + \ee^{- \ii \vb*{q} \cdot \vb*{r} - \ii \theta } ) + \rho(2\vb*{q}) (\ee^{\ii \vb*{q} \cdot \vb*{r} + \ii \theta' } + \ee^{- \ii \vb*{q} \cdot \vb*{r} - \ii \theta' } ) + \cdots,
+\end{equation}
+项，它在一个方向上有连续平移对称性破缺，但是在其它方向上连续平移对称性仍然保持（见\prettyref{fig:smectic}）。如果我们只考虑系统的长程行为，可以截断高次谐波。
+使用$\rho(\vb*{q})$的语言，就是由液晶序贡献的那部分密度中有$\rho(\vb*{q}) = \text{phase factor} \times \rho(-\vb*{q})$，其中$\vb*{q}$方向取为液晶分子的指向，长度取为$2\pi n/ L$，因为液晶仍然保留了$C_2$对称性。这里$\theta$因子来自液晶序可以整体平移这一事实。
+类似的，一个保留了$C_3$对称性的序中$\rho(\vb*{q}_1)$, $\rho(\vb*{q}_2)$, $\rho(\vb*{q}_3)$这三个量也只应该相差一个相因子，其中$\vb*{q}_2$是$\vb*{q}_1$绕着指定的轴旋转\SI{120}{\degree}得到的矢量，$\vb*{q}_3$是$\vb*{q}_1$绕着同一个轴旋转\SI{240}{\degree}得到的；$\rho(\vb*{q}_1)$, $\rho(\vb*{q}_2)$, $\rho(\vb*{q}_3)$这三个量的相位因子来自序中原子的平移，它们相差的相位因子则表明了$C_3$序的晶格常数。
+因此，通过观察$\rho(\vb*{q})$的不同成分可以辨认出体系中的不同序。
 
-不同种类的序会贡献不同形式的项到$\rho(\vb*{r})$中。
+\begin{figure}
+    \centering
+    \input{smectic.tex}
+    \caption{层状液晶的密度分布：一个方向上出现了空间平移对称性破缺，从而有一个波矢，但是其它方向上密度仍然是大体上均匀的}
+    \label{fig:smectic}
+\end{figure}
 
-为简便起见，我们考虑一个二维液体，在其中$v_4$不重要，
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{wavevector.PNG}
+    \caption{文献\cite{PhysRevB.32.5764}中的图1，不同序的密度的非零傅里叶分量的波矢。(a) 简单的层状液晶，(b) 三棱柱状液晶，(c) 体心立方晶格，具有正八面体对称性，图中标出了六个独立的波矢方向，(d) 五棱柱状液晶，在$z$方向上没有破缺平移对称性，但是在$xy$平面上构成彭罗斯镶嵌(e) 正二十面体对称性的准晶}
+    \label{fig:wavevectors}
+\end{figure}
 
-\section{准晶构型的生长}
+容易看出，由于\eqref{eq:free-energy-static}中各项都有$\delta$函数，只有对称性匹配的序才能对\eqref{eq:free-energy-static}中的特定一项有贡献。
+以下为简便起见，我们考虑一个液体，在其中$v_4$不重要，只有$v_3$和$v_5$项是重要的。显然，如果某种序中能够找到三个波矢和为零的傅里叶分量，那么这个序会对$v_3$项有贡献，否则就没有贡献。一个体心立方晶格（bcc）的点群是$O_h$，从而其对称性和正八面体完全相同；空间群在波矢上的作用仅有点群操作有非平庸的效果，因此一个bcc序对密度的贡献中，所有的波矢都可以放在一个正八面体的棱上，即
+\begin{equation}
+    \rho(\vb*{r}) = \sum_\text{$\vb*{q}_i$ in octahedron edge} \frac{\rho}{\sqrt{6}} \cos(\vb*{q}_i \cdot \vb*{r} + \theta_i) + \cdots,
+\end{equation}
+其中$\cdots$指的是bcc格点的内部结构导致的高次谐波，此处略去；一个正八面体有12条棱，但是为了保证空间倒转对称性，我们需要让正对的两条棱上的波矢符号相反，因此只需要求和6条棱；这里我们已经将$\vb*{q}_i$和$-\vb*{q}_i$项的贡献加了起来，并且做了正确的归一化。
+计算得到最低的自由能为
+\begin{equation}
+    (F_3)_\text{min} = - \frac{2 \rho^3 v_3}{3 \sqrt{6}}.
+    \label{eq:bcc-free-energy}
+\end{equation}
+另一种对$v_3$项有贡献的序是截面为三角形的棒状液晶，但是由于一个正八面体中有更多首尾相连构成三角形的波矢，一般来说这种棒状液晶不如bcc稳定。
 
-在说明了理论上确实可以存在稳定的准晶相之后，我们讨论
+类似的，$v_5$项只能由一个波矢中有五个波矢能够首尾相连成五边形的序“激活”，如具有$C_5$对称性的序。注意这个序不是周期的，因为五个波矢不可公度，但是既然我们是在讨论平滑化的密度，没有周期性毫无影响。一种可能的序是截面为五边形的棱柱状液晶，在$z$轴上是比较连续的，但是在$xy$平面上是非周期性密铺，其波矢结构如\prettyref{fig:wavevectors}(d)，密度为
+\begin{equation}
+    \rho(\boldsymbol{r})=\sum_{i=1}^{5} \frac{\rho}{\sqrt{5}} \cos \left(\boldsymbol{q}_{i} \cdot \boldsymbol{r}+\theta_{i}\right),
+\end{equation}
+其自由能的极小值为
+\begin{equation}
+    (F_{5})_\text{min} =-\frac{v_{5}}{25 \sqrt{5}} \rho^{5}.
+    \label{eq:rodlike-lyotropic-free-energy}
+\end{equation}
 
-\section{准晶背景下的新奇物理现象}
+还有一个更加结构更加复杂的序能够同时激活$v_3$项和$v_5$项：波矢结构为\prettyref{fig:wavevectors}(e)中的正二十面体的准晶。
+可以看到，\prettyref{fig:wavevectors}(e)中的波矢既能够形成首尾相连的三角形，也能够形成首尾相连的五边形，因此对$v_3$项和$v_5$项都有贡献。
+与前述两个序类似，可以计算出这种准晶序的最低的自由能是
+\begin{equation}
+    \left(F_{3}+F_{5}\right)_{\min }=-\frac{2 \rho^{3} v_{3}}{75 \sqrt{15}}-\frac{2 \rho^{5} v_{5}}{3 \sqrt{15}}.
+    \label{eq:quasi-crystal-free-energy}
+\end{equation}
+比较\eqref{eq:bcc-free-energy}，\eqref{eq:rodlike-lyotropic-free-energy}和\eqref{eq:quasi-crystal-free-energy}，可以发现\eqref{eq:quasi-crystal-free-energy}总是低于\eqref{eq:rodlike-lyotropic-free-energy}，即准晶序总是比五棱柱液晶序稳定，但是\eqref{eq:bcc-free-energy}和\eqref{eq:quasi-crystal-free-energy}的大小关系在$v_3$和$v_5$值没有给定时是不能确定的。
+因此，调节$v_3$和$v_5$项，可以让正二十面体对称性的准晶序和正八面体对称性的bcc晶体序互相转化。
 
-正如传统固体物理中，晶格为各种电子态提供了周期性背景，
+综上所述，我们可以看到，在结晶过程的金斯堡-朗道理论描述中，准晶序除了对称性和晶体序不同以外，其它没有任何不同；没有什么对称性上条件要求\eqref{eq:free-energy-static}中不能出现$v_5$之类的项，而有这种项出现，准晶序就能够产生。因此，在特定的参数下，准晶序出现是稳定且非常自然的。
+事实上，基于常见的刻画电中性粒子间相互作用的兰纳德-琼斯势进行的平衡态蒙特卡洛模拟表明，一个简单的二成分系统的平衡态就是十重旋转对称的准晶（如\prettyref{fig:10fold}所示），而且甚至不是彭罗斯结构的\cite{PhysRevLett.58.706}。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{10fold.PNG}
+    \caption{文献\cite{PhysRevLett.58.706}中的图1，二成分兰纳德-琼斯势体系的低能态。注意这里黑色原子和白色原子的位置关系相比彭罗斯镶嵌更加“随意”，没有明确的镶嵌规则。}
+    \label{fig:10fold}
+\end{figure}
+
+\section{准晶的生长}
+
+在说明了理论上确实可以存在稳定的准晶序之后，我们讨论准晶生长的动力学过程。对动力学过程的研究是非常重要的，因为实际的凝聚态系统中充斥着各种亚稳态和寿命较长的瞬态\cite{PhysRevB.75.064107}，一些诸如玻璃化的重要物理现象本质上就是动力学的\cite{mct-primer}。
+原则上，对结晶的研究完全可以通过分子动力学模拟实现，但由于计算资源的限制，能够模拟的时间和空间尺度都极其受限\cite{PhysRevLett.88.245701}。因而，现实的准晶生长的动力学必定需要一些低能有效模型。
+动态密度泛函理论是一种常见的理论框架\cite{pfc2009,PhysRevB.75.064107}，其中系统的自由能被写成系统密度的泛函，形如
+\begin{equation}
+    F[\rho(\boldsymbol{r})]=F_{\mathrm{id}}[\rho(\boldsymbol{r})]+F_{\mathrm{ex}}[\rho(\boldsymbol{r})]+F_{\mathrm{ext}}[\rho(\boldsymbol{r})],
+\end{equation}
+其中
+\begin{equation}
+    F_{\text {id }}[\rho(\boldsymbol{r})]=k_{B} T \int d \boldsymbol{r} \rho(\boldsymbol{r})\left\{\ln \left[\rho(\boldsymbol{r}) \Lambda^{d}\right]-1\right\}
+\end{equation}
+为理想气体的自由能密度泛函，而
+\begin{equation}
+    F_{\text {ext }}[\rho(\boldsymbol{r})]=\int \dd^3 \boldsymbol{r} \rho(\boldsymbol{r}) V(\boldsymbol{r}, t)
+\end{equation}
+为外界势场和密度的耦合，而
+\begin{equation}
+    \begin{aligned}
+        {F}_\text{ex} / k_{B} T=& \int d \boldsymbol{x}\left\{\rho(\boldsymbol{r}) \ln \left[\rho(\boldsymbol{r}) / \rho_{l}\right]-\delta \rho(\boldsymbol{r})\right\} \\
+        &-\sum_{n=2}^{\infty} \frac{1}{n !} \int \prod_{i=1}^{n} d \boldsymbol{r}_{i} \delta \rho\left(\boldsymbol{r}_{i}\right) C_{n}\left(\boldsymbol{r}_{1}, \boldsymbol{r}_{2}, \boldsymbol{r}_{3}, \ldots, \boldsymbol{r}_{n}\right)
+        \end{aligned}
+\end{equation}
+为液体内相互作用引入的修正，其中$\var{\rho}(\vb*{r})$为$\rho(\vb*{r})$偏离平衡密度的多少，而$C_n$为$n$点关联函数。
+这三项中的参数可以第一性原理地获得。
+在假定系统过阻尼、阻尼相比其它动力学过程明显很多，以及动态的系统状态仍然可以完全使用密度刻画（而忽略流量等其它物理量）后，可以使用郎之万方程导出密度的运动方程\cite{pfc2009,PhysRevB.75.064107}
+\begin{equation}
+    \dot{\rho}(\mathbf{r}, t)=\gamma^{-1} \nabla \cdot\left[\rho(\mathbf{r}, t) \nabla \frac{\delta F[\rho(\mathbf{r}, t)]}{\delta \rho(\mathbf{r}, t)}\right].
+    \label{eq:ddft}
+\end{equation}
+这是一个非线性的方程，通常称为动态密度泛函理论（dynamic density functional theory, DDFT），解之可获得结晶过程\cite{Neuhaus_2014}，但仍然耗费较多计算资源。前一节介绍的金斯堡-朗道理论在唯象地引入动力学之后可以更加高效地模拟结晶，称为相场模型，已经在材料科学中取得了广泛应用，但一般的相场模型通常直接将周期性的密度场平滑化（如见\prettyref{fig:phase-field}）到看不清其晶格结构，即假定晶相内部完全是均匀各向同性的，这会遗漏弹性各向异性、晶向等信息。
+一种兼顾计算简单和物理图像完整的理论是相场晶体（phase field crystal, PFC）方法，它基于一个简化了的自由能密度泛函和将\eqref{eq:ddft}右边括号内的$\rho(\vb*{r})$用稳定时的密度替换得到的时间演化方程，形式上很像普通的相场理论，但是可以从动力学经典密度泛函理论推导出，且平衡时密度分布是（准）周期性的\cite{pfc2009,PhysRevB.75.064107}。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{phase-field.PNG}
+    \caption{相场的物理解释，来自文献\cite{boettinger2002phase}中的图1，其中$\phi(x)$为相场}
+    \label{fig:phase-field}
+\end{figure}
+
+我们做近似
+我们考虑\cite{PhysRevB.19.2775}导出，用于一个第一性原理的结晶过程的静态密度泛函理论，
+
+引入$\nabla^4$项的好处在于，此时\cite{PhysRevE.70.051605}
+
+\section{准晶中的电子态}
+
+到目前为止，我们都只是在讨论准晶的结构，而将电子视为提供原子间等效相互作用的中间媒介。但正如传统固体物理中，晶格为库仑相互作用电子气提供了周期性背景一样，准晶为电子提供了由不可公度的频率成分构成的非周期性背景。
+准晶中的电子态因此值得特别讨论。
+
+\section{结论}
 
 \bibliographystyle{plain}
 \bibliography{main} 
