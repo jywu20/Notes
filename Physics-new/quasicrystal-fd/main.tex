@@ -224,6 +224,7 @@
 其中
 \begin{equation}
     F_{\text {id }}[\rho(\boldsymbol{r})]=k_{B} T \int d \boldsymbol{r} \rho(\boldsymbol{r})\left\{\ln \left[\rho(\boldsymbol{r}) \Lambda^{d}\right]-1\right\}
+    \label{eq:id-free-energy}
 \end{equation}
 为理想气体的自由能密度泛函，而
 \begin{equation}
@@ -231,10 +232,8 @@
 \end{equation}
 为外界势场和密度的耦合，而
 \begin{equation}
-    \begin{aligned}
-        {F}_\text{ex} / k_{B} T=& \int d \boldsymbol{x}\left\{\rho(\boldsymbol{r}) \ln \left[\rho(\boldsymbol{r}) / \rho_{l}\right]-\delta \rho(\boldsymbol{r})\right\} \\
-        &-\sum_{n=2}^{\infty} \frac{1}{n !} \int \prod_{i=1}^{n} d \boldsymbol{r}_{i} \delta \rho\left(\boldsymbol{r}_{i}\right) C_{n}\left(\boldsymbol{r}_{1}, \boldsymbol{r}_{2}, \boldsymbol{r}_{3}, \ldots, \boldsymbol{r}_{n}\right)
-        \end{aligned}
+    {F}_\text{ex} / k_\text{B} T=-\sum_{n=2}^{\infty} \frac{1}{n !} \int \prod_{i=1}^{n} \dd^3 \boldsymbol{r}_{i} \delta \rho\left(\boldsymbol{r}_{i}\right) C_{n}\left(\boldsymbol{r}_{1}, \boldsymbol{r}_{2}, \boldsymbol{r}_{3}, \ldots, \boldsymbol{r}_{n} \right)
+    \label{eq:ex-free-energy}
 \end{equation}
 为液体内相互作用引入的修正，其中$\var{\rho}(\vb*{r})$为$\rho(\vb*{r})$偏离平衡密度的多少，而$C_n$为$n$点关联函数。
 这三项中的参数可以第一性原理地获得。
@@ -244,7 +243,12 @@
     \label{eq:ddft}
 \end{equation}
 这是一个非线性的方程，通常称为动态密度泛函理论（dynamic density functional theory, DDFT），解之可获得结晶过程\cite{Neuhaus_2014}，但仍然耗费较多计算资源。前一节介绍的金斯堡-朗道理论在唯象地引入动力学之后可以更加高效地模拟结晶，称为相场模型，已经在材料科学中取得了广泛应用，但一般的相场模型通常直接将周期性的密度场平滑化（如见\prettyref{fig:phase-field}）到看不清其晶格结构，即假定晶相内部完全是均匀各向同性的，这会遗漏弹性各向异性、晶向等信息。
-一种兼顾计算简单和物理图像完整的理论是相场晶体（phase field crystal, PFC）方法，它基于一个简化了的自由能密度泛函和将\eqref{eq:ddft}右边括号内的$\rho(\vb*{r})$用稳定时的密度替换得到的时间演化方程，形式上很像普通的相场理论，但是可以从动力学经典密度泛函理论推导出，且平衡时密度分布是（准）周期性的\cite{pfc2009,PhysRevB.75.064107}。
+一种兼顾计算简单和物理图像完整的理论是相场晶体（phase field crystal, PFC）方法，它基于一个简化了的自由能密度泛函和将\eqref{eq:ddft}右边括号内的$\rho(\vb*{r})$用稳定时的密度替换得到的时间演化方程
+\begin{equation}
+    \dot{\rho}(\vb*{r}) = \gamma^{-1} \rho_0 \laplacian \fdv{F}{\rho(\vb*{r})},
+    \label{eq:pfc-eom}
+\end{equation}
+形式上很像普通的相场理论，但是可以从动力学经典密度泛函理论推导出，且平衡时密度分布是（准）周期性的\cite{pfc2009,PhysRevB.75.064107}。
 
 \begin{figure}
     \centering
@@ -253,10 +257,53 @@
     \label{fig:phase-field}
 \end{figure}
 
-我们做近似
-我们考虑\cite{PhysRevB.19.2775}导出，用于一个第一性原理的结晶过程的静态密度泛函理论，
+我们做所谓的Ramakrishnan-Yussouff近似，记
+\begin{equation}
+    \phi(\vb*{r}) = \frac{\rho(\vb*{r}) - \rho_0}{\rho_0},
+\end{equation}
+对\eqref{eq:id-free-energy}按照$\phi(\vb*{r})$做级数展开，在\eqref{eq:ex-free-energy}中仅仅保留$\phi^2$项，即仅仅保留
+\begin{equation}
+    F_\text{ex} = - \frac{k_\text{B} T \rho^2_0}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} {\phi(\vb*{r})} C_2(\vb*{r}, \vb*{r}') {\phi(\vb*{r}')}, 
+\end{equation}
+并对$C_2$（实际上就是结构因子$S(\vb*{q})$的傅里叶逆变换）做波矢展开，即
+\begin{equation}
+    C_2 = C_{20} + C_{22} \laplacian + C_{24} \nabla^4 + \cdots,
+\end{equation}
+或者也可以用正态曲线来拟合$C_2$的低波矢部分。不同的拟设形式拟合了$S(\vb*{q})$的不同行为，波矢展开相当于拟合了$q=0$到第一个峰的部分，正态曲线相当于拟合了第一个峰。对这些拟设形式的直观展示见\prettyref{fig:sq-fitting}。
+该近似最早由Ramakrishnan和Yussouff导出\cite{PhysRevB.19.2775,Singh1991351}，我们这里展示的是其较为现代和清楚的形式\cite{pfc2009}。
+通常我们不会引入$\phi$的高阶项，因为按照重整化群理论，$\phi$的高阶项一般都是irrelevant的\cite{kardar2007statistical}。
+高阶$\nabla$项虽然也是irrelevant的，从而在一般的统计场论中也会被忽略，但是在PFC中是必要的，因为需要它们来引导周期性或准周期性结构形成（直观地看，一般的统计场论分析的都是重整化群不动点附近的行为，周期性结构的波矢总是有限的，但是我们关心的空间尺度的倒数可以任意的小，从而在重整化群不动点附近，密度的周期性结构的细节将被抹去；在PFC理论中我们需要把高阶$\nabla$项找回来以重新获得周期性结构）。
+一个简单的适用于晶体形成的示例由\cite{PhysRevLett.88.245701}给出，在适当地做无量纲化之后，能够得到
+\begin{equation}
+    F = \int \dd^3 \boldsymbol{r}\left\{\psi\left[\left(q_{0}^{2}+\nabla^{2}\right)^{2}-\epsilon\right] \psi / 2+\psi^{4} / 4\right\},
+    \label{eq:swift-hohenberg-free-energy}
+\end{equation}
+其中$\psi$是无量纲化的$\phi$。按照\cite{PhysRevE.70.051605}中的方法引入拟设$\psi(\vb*{r}) = A \cos(\vb*{q} \cdot \vb*{r})$，会发现\eqref{eq:swift-hohenberg-free-energy}的$\psi$二阶项成为
+\[
+    F_2 \propto (q_0^2 - \vb*{q}^2)^2 - \epsilon.
+\]
+我们发现$\abs*{\vb*{q}}^2 = q_0^2$是一个极小值点，即\eqref{eq:swift-hohenberg-free-energy}诱导了一个波矢长度大体上在$q_0$附近的周期性序形成；如果我们在\eqref{eq:swift-hohenberg-free-energy}中仅仅考虑$\nabla^2$阶的导数，那么只有
+\[
+    F_2 \propto q_0^2 - \abs*{\vb*{q}}^2,
+\]
+即没有极小值点，没有稳定的周期性结构生成。根据\eqref{eq:swift-hohenberg-free-energy}和\eqref{eq:pfc-eom}可以得到无量纲化的运动方程
+\[
+    \pdv{\rho}{\tau} = \laplacian ((- \epsilon + (1 + \laplacian)^2) \psi + \psi^3),
+\]
+或者更常见的，引入一个无平均的随机扰动$\eta$以唯象地描述热涨落并改善方程的解析行为\cite{PhysRevLett.88.245701}：
+\begin{equation}
+    \pdv{\rho}{\tau} = \laplacian ((- \epsilon + (1 + \laplacian)^2) \psi + \psi^3) + \eta.
+\end{equation}
+这个方程称为Swift-Hohenberg方程，在一般的PFC出现之前由Swift和Hohenberg在研究流体动力学涨落时导出\cite{PhysRevA.15.319}，是著名的模式形成方程\cite{phasediffusion2012}，已经被用于计算成核、晶体生长、稳定相等结晶学问题\cite{PhysRevLett.88.245701,PhysRevE.70.051605}。% https://www.chem.uci.edu/~lawm/Lowengrub%2010-14-10.pdf
 
-引入$\nabla^4$项的好处在于，此时\cite{PhysRevE.70.051605}
+显然，我们只需要在\eqref{eq:swift-hohenberg-free-energy}中引入一定的不可公度因素，即可以和晶体形成完全一致的方式描述准晶形成。文献
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{sq-adapted.png}
+    \caption{拟合$S(\vb*{q})$的不同方式，改编自文献\cite{PhysRevE.70.051605}的图1。蓝色曲线给出动量展开近似，黑色钟形曲线给出正态曲线近似。}
+    \label{fig:sq-fitting}
+\end{figure}
 
 \section{准晶中的电子态}
 
