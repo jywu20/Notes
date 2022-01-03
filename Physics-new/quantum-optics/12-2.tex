@@ -27,6 +27,7 @@
 \zxrsetup{toltxlabel}
 \zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[prev-]{11-18}[11-18.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -100,6 +101,8 @@
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
 
+\newcommand{\prevlecture}{\href{11-18.pdf}{the previous lecture}}
+
 \title{Quantum Optics by Prof. Saijun Wu}
 \author{Jinyuan Wu}
 
@@ -117,7 +120,8 @@ For an atom coupled with an optical field (with its own dynamics), we have
 \]
 so we have 
 \begin{equation}
-    c_\text{e} = - \int_0^t \dd{\tau} K(t - \tau) c_\text{e}(\tau),
+    \dot{c}_\text{e}(t) = - \int_0^t \dd{\tau} K(t - \tau) c_\text{e}(\tau),
+    \label{eq:one-component-eom}
 \end{equation}
 where 
 \begin{equation}
@@ -126,7 +130,7 @@ where
 We make a Markov approximation, i.e. we assume $K(t - \tau)$ is significant only for $\tau$ close enough to $t$,
 and therefore we have approximately
 \[
-    c_\text{e} = - c_\text{e}(t) \int_0^t \dd{\tau} K(t - \tau),
+    \dot{c}_\text{e} = - c_\text{e}(t) \int_0^t \dd{\tau} K(t - \tau),
 \]
 and we can evaluate 
 \[
@@ -134,19 +138,46 @@ and we can evaluate
 \]
 so the time evolution equation is 
 \begin{equation}
-    c_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) ,
+    \dot{c}_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) ,
     \label{eq:markov-eq}
 \end{equation}
 where 
 \begin{equation}
     \Gamma = 2 \pi \sum_k \abs*{g_k}^2 \delta(\omega_k - \omega_\text{eg}),
+    \label{eq:scattering-rate}
 \end{equation}
 and 
 \begin{equation}
     \delta_\text{L} = \primevalue \int_0^\infty \dd{k} \abs*{g_k}^2 \rho(k) \frac{1}{\omega_k - \omega_\text{eg}}.
+    \label{eq:phase-shift}
 \end{equation}
 We can see that Fermi golden rule can be derived from the Markov approximation.
 The imaginary part $\delta_\text{L}$ is a part of Lamb shift.
+
+\begin{note*}{}
+    What we are actually doing here is to ``integrate out'' the external optical field and get a non-Hermitian
+    theory of the atom. We are assuming that the emission of photon is fast enough so that 
+    we can move $c_e$ out of the integral in \eqref{eq:one-component-eom}, but not too fast so that the 
+    perturbation theory still works. The first assumption means it is correct to integrate out optical degrees 
+    of freedom, and we only have to include the leading order of correction, while the second assumption means 
+    we can just interpret the imaginary part of the propagator as decaying (and do not need to fear that the 
+    emitted photon may come back). We can then note the fact that \eqref{eq:scattering-rate} and 
+    \eqref{eq:phase-shift} are just two parts of a propagator in the form of $1 / (E - H + \ii 0^+)$.
+
+    The definition of $\Gamma$ has a $1/2$ factor. This is to ensure that $\Gamma$ is the damping rate of 
+    the probability that the atom is on the excited state, because if the time evolution of $c_\text{e}$ is 
+    \[
+        c_\text{e} \to (1 - \Gamma \Delta t / 2) c_\text{e},
+    \]
+    then the time evolution of $\abs*{c_\text{e}}^2$ is 
+    \[
+        \abs*{c_\text{e}}^2 \to (1 - \Gamma \Delta t / 2)^2 \abs*{c_\text{e}}^2 = (1 - \Gamma \Delta t) \abs*{c_\text{e}}^2.
+    \]
+    We immediately find that the discussion in \prevlecture{} around \eqref{prev-eq:original-spontaneous-emission}
+    and \eqref{prev-eq:fermi-golden-rule} is a specific case of the above derivation, where 
+    $\abs*{c_\text{e}(0)}^2$. In other words, the two definitions of $\Gamma$ in \prevlecture{} and in this 
+    lecture are actually the same. 
+\end{note*}
 
 Solving \eqref{eq:markov-eq} and redefining the basis to absorb the Lamb shift, we get 
 \begin{equation}
