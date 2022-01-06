@@ -102,6 +102,8 @@
 \newtcbtheorem[number within=section]{info}{Info}%
   {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
 
+\newcommand{\soliddoc}{\href{../solid/solid.pdf}{this solid state physics note}}
+
 \title{Electron Gas with Coulomb Interaction}
 \author{Jinyuan Wu}
 
@@ -111,13 +113,143 @@
 
 It is said that for a simple demonstration of what happens in a metal, we can only work with the jellium model,
 ignoring the details of the lattice, which means we can just work with a non-relativistic electron gas with Coulomb
-interaction. \marginnote{Zhengzhong Li, Sec.~4.2} This article is an extension of Section~\ref{solid-sec:high-density} in 
-\href{../solid/solid.pdf}{this solid state physics note}. We will discuss some early development of RPA.
+interaction. \marginnote{Zhengzhong Li, Sec.~4.2} This article is an extension of Section~\ref{solid-sec:high-density} in \soliddoc. We will discuss some early development of RPA.
 
 \section{Notations and basic facts about the jellium model} 
 
+We define 
+\begin{equation}
+    \rho(\vb*{r}) = \sum_\sigma \psi^\dagger_\sigma(\vb*{r}) \psi_\sigma(\vb*{r}) 
+    = \frac{1}{V} \sum_{\vb*{k}, \vb*{k}', \sigma} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \ee^{- \ii (\vb*{k} - \vb*{k}') \cdot \vb*{r}} 
+    = \frac{1}{V} \sum_{\vb*{q}} \sum_{\vb*{k}, \sigma} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k} + \vb*{q}, \sigma} \ee^{\ii \vb*{q} \cdot \vb*{r}},
+\end{equation}
+and the commutation relations are 
+\begin{equation}
+    \comm*{c_{\vb*{k}}}{c^\dagger_{\vb*{k}'}} = \delta_{\vb*{k} \vb*{k}'}.
+\end{equation}
+We can also write down $\rho(\vb*{r})$ in the first quantization formulation, i.e. 
+\begin{equation}
+    \rho(\vb*{r}) = \sum_i \delta(\vb*{r} - \vb*{r}_i) = \sum_i \frac{1}{V} \sum_{\vb*{q}} \ee^{\ii \vb*{q} \cdot (\vb*{r} - \vb*{r}_i)} = \frac{1}{V} \sum_{\vb*{q}} \sum_i \ee^{\ii \vb*{q} \cdot (\vb*{r} - \vb*{r}_i)}.
+\end{equation}
+We have 
+\begin{equation}
+    \rho_{\vb*{q}} \coloneqq \sum_i \ee^{- \ii \vb*{q} \cdot \vb*{r}_i} = \sum_{\vb*{k}, \sigma} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k} + \vb*{q}, \sigma} , \quad 
+    \rho(\vb*{r}) = \frac{1}{V} \sum_{\vb*{q}} \rho_{\vb*{q}} \ee^{\ii \vb*{q} \cdot \vb*{r}}.
+    \label{eq:density}
+\end{equation}
+Easily, we find 
+\begin{equation}
+    \rho_{\vb*{q} = 0} = \int \dd[3]{\vb*{r}} \rho(\vb*{r}) = N.
+\end{equation}
+The Hamiltonian of electrons is 
+\[
+    H_\text{electron} = \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k} \sigma} 
+    + \frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \vb*{q} , \sigma, \sigma'} 
+    c^\dagger_{\vb*{k} + \vb*{q}, \sigma}  c^\dagger_{\vb*{k}' - \vb*{q}, \sigma'} V(q)
+    c_{\vb*{k}' \sigma'} c_{\vb*{k} \sigma},
+\]
+where 
+\begin{equation}
+    V(q)= \int \ee^{- \ii \vb*{q} \cdot \vb*{r}} \frac{e^2}{r} = \frac{4 \pi e^2}{\vb*{q}^2}.
+\end{equation}
+The Hamiltonian of the lattice and the electron-lattice coupling is 
+\[
+    H_\text{lattice} = \frac{1}{2V} \sum_{\vb*{q}} \rho_\text{ion,$-\vb*{q}$} V(q)\rho_\text{ion,$\vb*{q}$} -
+    \frac{1}{V} \sum_{\vb*{q}} \rho_\text{ion,$\vb*{q}$} V(q) \rho_{\vb*{q}}.
+\]
+When $\abs*{\vb*{q}} = 0$, $V(q)$ is divergent, but this does not matter. 
+In the jellium model, the only non-zero Fourier component of $\rho_\text{ion}(\vb*{r})$ is 
+$\rho_\text{ion,$\vb*{q}=0$} = N$ (the solid is neutral so the number of positive charges must be equal to 
+the number of negative charges), and we soon find 
+\[
+    H_\text{lattice} + \frac{1}{2V} \sum_{\vb*{q} = 0, \vb*{k}, \vb*{k}', \sigma, \sigma'} c^\dagger_{\vb*{k} + \vb*{q}, \sigma}  c^\dagger_{\vb*{k}' - \vb*{q}, \sigma'} V(q)
+    c_{\vb*{k}' \sigma'} c_{\vb*{k} \sigma} = 0.
+\]
+So all divergences cancel with each other, and in the end, the total Hamiltonian is 
+\begin{equation}
+    \begin{aligned}
+        H &= \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k} \sigma} 
+        + \frac{1}{2V} \sum_{\vb*{q} \neq 0} \sum_{\vb*{k}, \vb*{k}', \sigma, \sigma'} c^\dagger_{\vb*{k} + \vb*{q}, \sigma}  c^\dagger_{\vb*{k}' - \vb*{q}, \sigma'} V(q)
+        c_{\vb*{k}' \sigma'} c_{\vb*{k} \sigma} \\
+        &= \sum_{\vb*{k}, \sigma} \epsilon_{\vb*{k}} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k} \sigma} 
+        + \frac{1}{2V} \sum_{\vb*{q} \neq 0} \rho^\dagger(\vb*{q}) V(q) \rho(\vb*{q}).
+    \end{aligned}
+    \label{eq:whole-ham}
+\end{equation}
+The contribution of the positive ion ``jell'' both constrains the electrons in the solid (or in other words,
+give a chemical potential) and regularize the singularity of $V(\vb*{q} = 0)$. 
+
+Note that \eqref{eq:whole-ham} differs with 
+\begin{equation}
+    H = \sum_{i} \frac{\vb*{p}_i^2}{2m} + \frac{1}{2} \sum_{i \neq j} \frac{e^2}{\abs*{\vb*{r}_i - \vb*{r}_j}}
+\end{equation} 
+with the $i=j$ term. This is an infinite constant and does not matter. 
+
 \section{Classical (or first quantized) theory of the collective oscillation of electrons} 
 
+From \eqref{eq:density}, we have \marginnote{Zhengzhong Li, Sec.~4.3}
+\[
+    \dot{\rho}_{\vb*{q}} = \sum_j (- \ii \vb*{q}) \cdot \vb*{v}_j \ee^{- \ii \vb*{q} \cdot \vb*{r}_j},
+\]
+\begin{equation}
+    \ddot{\rho}_{\vb*{q}} = \sum_j (- \ii \vb*{q} \cdot \dot{\vb*{v}}_j - (\vb*{q} \cdot \vb*{v}_j)^2) \ee^{- \ii \vb*{q} \cdot \vb*{r}_j}.
+    \label{eq:rho-q-eom}
+\end{equation}
+Now $\dot{\vb*{v}}_j$ can be derived from \eqref{eq:whole-ham}:
+\[
+    \begin{aligned}
+        m \dot{\vb*{v}}_j &= - \grad_j \frac{1}{2V} \sum_{\vb*{q} \neq 0} V(q) \rho^\dagger_{\vb*{q}} \rho_{\vb*{q}} \\
+        &= - \frac{1}{2V} \grad_j \sum_{\vb*{q} \neq 0} V(q) \sum_{i, k} \ee^{\ii \vb*{q} \cdot (\vb*{r}_i - \vb*{r}_k)} \\
+        &= - \frac{1}{2V} \sum_{\vb*{q} \neq 0} V(q) \sum_k (\ii \vb*{q}) \ee^{\ii \vb*{q} \cdot (\vb*{r}_j - \vb*{r}_k)} + \sum_i (- \ii \vb*{q}) \ee^{\ii \vb*{q} \cdot (\vb*{r}_j - \vb*{r}_i)} \\
+        &= - \frac{1}{V} \sum_{\vb*{q} \neq 0} \ii \vb*{q} V(q) \sum_i \ee^{\ii \vb*{q} \cdot (\vb*{r}_j - \vb*{r}_i)} \\
+        &= - \frac{4 \pi e^2}{V} \sum_{\vb*{q} \neq 0} \frac{\ii \vb*{q}}{q^2} \ee^{\ii \vb*{q} \cdot \vb*{r}_j} \rho_{\vb*{q}},
+    \end{aligned}
+\]
+and from \eqref{eq:rho-q-eom}, we have 
+\[
+    \begin{aligned}
+        \ddot{\rho}_{\vb*{q}} &= - \sum_j \frac{4 \pi e^2}{m V} \sum_{\vb*{q}' \neq 0} \frac{\vb*{q} \cdot \vb*{q}'}{q'^2} \ee^{\ii \vb*{q}' \cdot \vb*{r}_j} \rho_{\vb*{q}'} \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} - \sum_j (\vb*{q} \cdot \vb*{v}_j)^2 \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \\
+        &= - \frac{4 \pi e^2}{m V} \sum_{\vb*{q}' \neq 0} \rho_{\vb*{q}'} \rho_{\vb*{q} - \vb*{q}'} - \sum_j (\vb*{q} \cdot \vb*{v}_j)^2 \ee^{- \ii \vb*{q} \cdot \vb*{r}_j}.
+    \end{aligned}
+\]
+Now we make the \concept{random phase approximation (RPA)} in its original form: We assume that only the 
+$\vb*{q} = \vb*{q}'$ term in the first term is important, because in the high density limit, there are no 
+position preference of electrons (when the density is low, there might be a Wigner crystal, and RPA fails), 
+and when $\vb*{q} \neq 0$, both $\rho_{\vb*{q}'}$ and $\rho_{\vb*{q} - \vb*{q}'}$ are sums of almost random 
+phase factors $\ee^{- \ii \vb*{q} \cdot \vb*{r}_j}$, and therefore are both small enough. So we get the EOM 
+after RPA:
+\begin{equation}
+    \begin{aligned}
+        \ddot{\rho}_{\vb*{q}} &= - \frac{4 \pi e^2}{mV} \rho_{\vb*{q}} \rho_{0} - \sum_j (\vb*{q} \cdot \vb*{v}_j)^2 \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} \\
+        &= - \frac{4 \pi e^2 n}{m} \rho_{\vb*{q}} - \sum_j (\vb*{q} \cdot \vb*{v}_j)^2 \ee^{- \ii \vb*{q} \cdot \vb*{r}_j} ,
+    \end{aligned}
+\end{equation}  
+where $n = N / V$ is the jellium density. Section~\eqref{solid-sec:linear-response-energy-band} in \soliddoc{} 
+tells us that the electron-hole pair excitations are gapless, but from the EOM above we soon find that in the 
+$\vb*{q} \to 0$ case there is a finite $\omega$ solution, which is given by 
+\begin{equation}
+    \ddot{\rho}_{\vb*{q}} + \omega_\text{p}^2 \rho_{\vb*{q}} = 0, \quad \omega_\text{p}^2 = \frac{4 \pi e^2 n}{m}.
+\end{equation}
+We see that this term arises from the Coulomb interaction. In other words, long range interaction induces a 
+collective modes in the metal, which is now known as \concept{plasmon}. We know it is plasmon, or quantized 
+plasma oscillation, because our derivation above also works for the oscillation of negative charges around 
+positive charges in a plasma.
+
+\section{Second quantized EOM of density modes}
+
+Now we try to derive plasmon in the second quantization EOM framework. Generally speaking, a generalized 
+hydrodynamic mode in an electron gas is made of a linear combination of 
+\begin{equation}
+    \rho_{\vb*{k} \vb*{q}}^\dagger \eqqcolon c^\dagger_{\vb*{k} + \vb*{q}} c_{\vb*{k}}
+\end{equation}
+with different 
+
+\marginnote{Zhengzhong Li, Sec.~4.4}
+
+\section{The Green function theory}
+
 \section{The electric susceptibility and bosonic modes}\label{sec:boson-modes}
+
+Now it is time to evaluate \marginnote{Zhengzhong Li, Sec.~4.6}
 
 \end{document}
