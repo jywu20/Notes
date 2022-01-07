@@ -27,6 +27,7 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{xr-hyper}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
 \usepackage{prettyref}
 
 % Page style
@@ -86,6 +87,15 @@
   commentstyle=\color{gray},
   keywordstyle=\color{blue}
 }
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+% Tricky yet ad hoc details 
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+% Details about external information
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
 
 \title{Quantum Optics, Homework 2}
 \author{Jinyuan Wu}
@@ -557,7 +567,91 @@ The input states $\left|\psi_{\text{in}}\right\rangle=\ee^{\alpha a_{1}^{\dagger
     With the precision requirement $\Delta \Omega / \Omega = \SI{1}{\percent}$ we need at least to detect 2500 photons at the $b_2^\dagger$ port.
     \item[(e)] From (a) and (b), especially \eqref{eq:sagnac-total-matrix} and the fact that $\varphi \ll 1$, 
     we can view the whole system as an effective beam splitter with large transmission and small reflection.
-    For this case % TODO: 
+
+    We consider the total transformation matrix \eqref{eq:sagnac-total-matrix}. We have 
+    \[
+        b_2^\dagger = \ii \sin \varphi a_1^\dagger - \cos \varphi a_2^\dagger,
+    \] 
+    and therefore 
+    \[
+        n_{b2} = \sin^2 \varphi a_1^\dagger a_1 + \cos^2 \varphi a_2^\dagger a_2 - \ii \sin \varphi \cos \varphi (a_1^\dagger a_2 - a_2^\dagger a_1).
+    \]
+    Since we will make no change to the input beam at the $a_1$ port, we will work in the subspace 
+    $\ket*{\alpha, \cdot}$, and when evaluating the expectation value of $n_{b2}$, we can replace 
+    $a_1^\dagger$ by $\alpha^*$ and $a_1$ by $\alpha$, obtaining
+    \[
+        n_{b2} = \abs*{\alpha}^2 \sin^2 \varphi + a_2^\dagger a_2 \cos^2 \varphi - \ii \sin \varphi \cos \varphi 
+        (\alpha^* a_2 - \alpha a_2^\dagger).
+    \]
+    We define 
+    \begin{equation}
+        X(\alpha) = \frac{1}{\sqrt{2}} \frac{1}{\abs*{\alpha}} (\alpha^* a_2 + \alpha a_2^\dagger),
+    \end{equation}
+    \begin{equation}
+        P(\alpha) = \frac{1}{\sqrt{2} \ii} \frac{1}{\abs*{\alpha}} (\alpha a^\dagger_2 - \alpha^* a_2),
+    \end{equation}
+    and we have 
+    \begin{equation}
+        n_{b2} = \abs*{\alpha}^2 \sin^2 \varphi + a_2^\dagger a_2 \cos^2 \varphi - \sqrt{2} \abs*{\alpha} \sin \varphi \cos \varphi P(\alpha)
+        \label{eq:nb2-origin}
+    \end{equation}
+    Similarly, we have (note that we cannot square \eqref{eq:nb2-origin} because of the ordering of $a_1$ and
+    $a_1^\dagger$ is not normal)
+    \[
+        \begin{aligned}
+            n_{b2}^2 &= \sin^4 \varphi (a_1^\dagger a_1)^2 + \cos^4 \varphi (a_2^\dagger a_2)^2 - \sin^2 \varphi \cos^2 \varphi (a_1^\dagger a_2 - a_2^\dagger a_1)^2 + 2 \sin^2 \varphi \cos^2 \varphi a_1^\dagger a_1 a_2^\dagger a_2 \\
+            &\quad - \ii \sin \varphi \cos^3 \varphi \acomm*{a_2^\dagger a_2}{(a_1^\dagger a_2 - a_2^\dagger a_1)}
+            - \ii \sin^3 \varphi \cos \varphi \acomm*{a_1^\dagger a_1}{(a_1^\dagger a_2 - a_2^\dagger a_1)},
+        \end{aligned}
+    \]
+    and after normal ordering and replace $a_1^\dagger$ by $\alpha^*$ and $a_1$ by $\alpha$, we have 
+    \begin{equation}
+        \begin{aligned}
+            n_{b2}^2 &= \sin^4 \varphi (\abs*{\alpha}^4 + \abs*{\alpha}^2) + \sin^2 \varphi \cos^2 \varphi (2 \abs*{\alpha}^2 P(\alpha)^2 + a_2^\dagger a_2) + 2 \sin^2 \varphi \cos^2 \varphi \abs*{\alpha}^2 a_2^\dagger a_2 \\
+            &\quad - \text{terms that changes $n_{a1}$ and $n_{a2}$}.
+        \end{aligned}
+        \label{eq:nb2-square-mf}
+    \end{equation}
+    Now since the $a_2$ part of the wave function is in the vacuum state, we have $\expval{a_2^\dagger a_2} = 0$.
+    On the other hand, we find $\expval{P(\alpha)^2}$ is not zero. Actually we will find it is $1/2$.
+    So in the end, we have 
+    \begin{equation}
+        \expval*{n_{b2}^2} = \sin^4 \varphi (\abs*{\alpha}^4 + \abs*{\alpha}^2) + 
+        \underbrace{\sin^2 \varphi \cos^2 \varphi \times 2 \abs*{\alpha}^2 \times 1/2}_{\text{from the $P(\alpha)^2$ term in \eqref{eq:nb2-square-mf}}} = \expval{n_{b2}}^2 + \sin^2 \varphi \abs*{\alpha}^2,
+        \label{eq:shot-noise-decomposition}
+    \end{equation}
+    which leads to the expected shot-noise error. Actually, since $t = \sin \varphi$ is very small, we find the 
+    shot-noise error term $\sin^2 \varphi \abs*{\alpha}^2$ mainly comes from the $P(\alpha)^2$ term in 
+    \eqref{eq:nb2-square-mf}. Therefore, the non-vanishing $\expval{P(\alpha)^2}$ term - which finally arises
+    because of vacuum fluctuation of the $a_2$ mode or the \emph{dark port} - contributes most to the 
+    shot-noise error when $\sin \varphi$ is small.
+
+    \begin{note*}{}
+        The operators $X(\alpha)$ and $P(\alpha)$ may be seen as a single frequency component of the field operator
+        and its conjugate momentum. When quantizing the electromagnetic field, we know that $X(\alpha)$ and 
+        $P(\alpha)$ are coupled together, and the eigen states of the system are not labeled by them. Therefore,
+        both $X$ and $P$ does not have definite values under the vacuum. This is an example of \emph{vacuum quantum
+        fluctuation}, though it is a trivial version of vacuum fluctuation, since the so-called ``interaction'' is
+        quadratic. This also why we say the Wigner function of the vacuum state illustrates vacuum fluctuation, 
+        since the coordinates are $\Re \alpha$ and $\Im \alpha$, which just (when properly normalized) forms a 
+        pair of $X$ and $P$.
+    \end{note*}
+
+    \item[(f)] In this case we can use the dark port squeezed state injection technique to go beyond the 
+    standard quantum limit. We inject a squeezed vacuum into the dark port, i.e. setting 
+    \begin{equation}
+        \ket*{\psi} = D_1(\alpha) S_2(\xi) \ket*{0}.
+    \end{equation}
+    Since a squeezed state only have even particle number components, the last term in \eqref{eq:nb2-square-mf} 
+    still evaluates to zero. Now we have (see Scully (2.7.13), where we set $\abs*{\alpha} = 0$)
+    \[
+        \expval{n_{a2}} \sim \sinh^2 \xi \sim \ee^{\abs*{\xi}},
+    \]
+    but as long as the input beam in $a_1$ port is strong enough, the $b_2 b_2$ term in the second term of 
+    \eqref{eq:nb2-square-mf} can be ignored. If we set $\xi$ to be a negative real number (so the Wigner function
+    of $a_2$ modes gets squeezed in the $P$ direction), large enough to reduce $\expval{P(\alpha)}^2$ but not
+    too large to significantly increase the third term, we are able to reduce $\expval{n_{b2}^2}$.
+    Therefore, by injecting a squeezed vacuum into the dark port, we can go beyond the quantum limit.
 \end{itemize}
 
 \paragraph{Discussion} Though we have an elegant relation between the required photon number at the \emph{output} port, 
@@ -567,7 +661,7 @@ experimentally people are more interested in the required photon number at the \
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{free-fall.png}
+    \includegraphics[width=0.5\textwidth]{free-fall.png}
     \caption{Measuring the position of a free-falling object}
     \label{fig:free-fall}
 \end{figure}
