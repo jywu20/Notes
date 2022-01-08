@@ -5,7 +5,7 @@
 \usepackage{titlesec}
 % No longer needed, since we will use enumitem package
 % \usepackage{paralist}
-\usepackage{enumitem}
+% \usepackage{enumitem}
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
@@ -39,12 +39,12 @@
 \postauthor{\par\end{center}}
 
 % More compact lists 
-\setlist[itemize]{
-    itemindent=17pt, 
-    leftmargin=1pt,
-    listparindent=\parindent,
-    parsep=0pt,
-}
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
 
 % Math operators
 \DeclareMathOperator{\timeorder}{\mathcal{T}}
@@ -107,10 +107,21 @@
 
 \section{The rotational wave approximation and the Bloch sphere}
 
+We can also think of the RWT in an intuitive way illustrated in \prettyref{fig:energy-diagram},
+where we start from a $\ket*{g}$ state, and then a photon comes in, and the system is brought to the $\ket*{g, n=1}$
+state (shown as a dotted line), and then an absorption process happens, and this $\ket*{g, n=1}$ state 
+is turned into an $\ket*{e}$ state, and the whole process can be summarized as a $\ket*{g}$ state being 
+turned into an $\ket*{e}$ state (the process is illustrated using a blue arrow). RWT can be thought as 
+redefining $\ket*{g}$ into $\ket*{g, n=1}$, the energy of which is $\omega_g + \omega$.
+
 \begin{figure}
     \centering
     \input{11-4-figures/energy-level-1.tex}
-    \caption{The energy diagram of a two-level system in an external optical field}
+    \caption{The energy diagram of a two-level system in an external optical field. A yellow wavy arrow 
+    is an incoming photon, and the blue lines labeled with $\Omega$ denote to the coupling between 
+    the $\ket*{g}$ state and the $\ket*{e}$ state.
+    (a) $\omega - \omega_{eg} > 0$, $\Delta > 0$. (b) $\omega - \omega_{eg} < 0$, $\Delta < 0$.}
+    \label{fig:energy-diagram}
 \end{figure}
 
 Under the rotational wave approximation and the corresponding RWA transformation, the Hamiltonian of a two-level system is 
@@ -123,7 +134,7 @@ where the norm of the \concept{Rabi vector} $\vb*{\Omega} = (\Omega_\text{r}, \O
     \abs*{\vb*{\Omega}} = \sqrt{\abs{\Omega}^2 + \Delta^2},
 \end{equation}
 \begin{equation}
-    \Omega = \frac{\vb*{E}_0 \cdot \vb*{d}_{eg}}{\hbar}
+    \Omega = \frac{-2 E_0^+ \vu*{\epsilon} \cdot \vb*{d}_{eg}}{\hbar}
     \label{eq:rabi-freq}
 \end{equation}
 is the \concept{Rabi frequency} and $\Delta$ the \concept{detuning}.
@@ -143,12 +154,16 @@ It is natural to put $\vb*{n}$ on a sphere, which is known as \concept{Bloch sph
 The constructions are standard for a qubit and can be found in Section~\ref{info-sec:single-qubit} in \infodoc.
 The equation of motion is 
 \[
-    \frac{\ii \hbar}{2} \vb*{n} \cdot \vb*{\sigma} = \ii \hbar \rho = \comm*{H}{\rho} = \comm*{\vb*{\Omega} \cdot \vb*{\sigma}}{\frac{1}{2} \vb*{n} \cdot \vb*{\sigma}} = \frac{1}{2} (\vb*{\Omega} \times \vb*{n}) \cdot \vb*{\sigma},
+    \frac{\ii \hbar}{2} \dot{\vb*{n}} \cdot \vb*{\sigma} = \ii \hbar \dot{\rho} = \comm*{H}{\rho} = \comm*{\frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma}}{\frac{1}{2} \vb*{n} \cdot \vb*{\sigma}} = \frac{\hbar}{4} \cdot 2 \ii (\vb*{\Omega} \times \vb*{n}) \cdot \vb*{\sigma},
 \]
 and therefore we have 
 \begin{equation}
     \dot{\vb*{n}} = \vb*{\Omega} \times \vb*{n}. 
     \label{eq:n-eom}
+\end{equation}
+We find that the Bloch vector rotates with the frequency of 
+\begin{equation}
+    \tilde{\Omega} = \abs*{\vb*{\Omega}} = \sqrt{\abs*{\Omega}^2 + \Delta^2}.
 \end{equation}
 
 We review some properties about the Bloch sphere.
@@ -163,6 +178,7 @@ Note that the direction of the Rabi vector is not determined.
 Usually we use the convention
 \begin{equation}
     \vb*{\Omega} = (\Omega, 0, \Delta), 
+    \label{eq:omega-convention}
 \end{equation} 
 and the two Bloch vectors
 \begin{equation}
@@ -172,6 +188,9 @@ represents two eigenstates of \eqref{eq:rwa-hamiltonian}, namely $\ket*{\tilde{g
 \begin{equation}
     \theta = \arctan \frac{\Omega}{\Delta}.
 \end{equation}
+The whole formulation - representing the wave function of a two-level atom as a vector on the Bloch sphere, 
+rephrasing the EOM as \eqref{eq:n-eom} - is together called \concept{Feynman–Vernon–Hellwarth representation (FVH)}.
+\eqref{eq:n-eom} directs $\vb*{n}$ to rotate anticlockwise when $\vb*{\Omega}$ is toward us.
 
 \section{Control a two-level system with external fields}
 
@@ -188,7 +207,7 @@ Consider we start from $\ket*{g}$, i.e. $\vb*{n} = \vb*{e}_z$.
 We want to excite the atom to $\ket*{e}$, i.e. $\vb*{n} = - \vb*{e}_z$.
 When there is no external field $\vb*{\Omega}$ is along the $z$ axis, and therefore $\vb*{n}$ stays at $\vb*{e}_z$. 
 Now suppose we add an electric field $\vb*{E}_0$, the Bloch vector starts to rotate around the new Rabi vector (depicted as the red curve in \prettyref{fig:pi-pulse-result}).
-If, after $t = T/2 = \pi / \abs*{\vb*{\Omega}}$, we remove the external field, the Bloch vector will again rotate around the $z$ axis (depicted as the blue curve in \prettyref{fig:pi-pulse-result}).
+If, after $t = T/2 = \pi / \tilde{\Omega}$, we remove the external field, the Bloch vector will again rotate around the $z$ axis (depicted as the blue curve in \prettyref{fig:pi-pulse-result}).
 Therefore we successfully change the $\theta$ angle of $\vb*{n}$.
 This process is called a \concept{$\pi$-pulse}.
 With a series of $\pi$-pulse, we can make $\vb*{n}$ arbitrarily close to $- \vb*{e}_z$.
@@ -256,5 +275,89 @@ and we have
 which is the standard quantum error.
 
 \section{Atomic clock}
+
+A light clock is discussed in the last problem of \href{quantum-optics-homework/3/3-discussion.pdf}{this homework},
+where we claimed that an atomic clock is much more precise. Now we can use the technologies mentioned in the 
+previous few sections to build an atomic clock based on Ramsey’s method of separated, oscillatory fields. 
+
+\begin{figure}
+    \centering
+    \input{11-4-figures/clock.tex}
+    \caption{A atomic clock based on Ramsey's method of separated, oscillatory fields}
+    \label{fig:clock}
+\end{figure}
+
+The device is illustrated as \prettyref{fig:clock}. We use the convention \eqref{eq:omega-convention}, and assume 
+$\Delta \ll \Omega$, so $\tilde{\Omega} \approx \Omega$ and $\vb*{\Omega} = \Omega \vu*{x}$. We carefully 
+choose the width $l$ of the two beams so that 
+\begin{equation}
+    \tilde{\Omega} \frac{l}{v} = \tilde{\Omega} \tau \approx \Omega \tau = \frac{\pi}{2}.
+\end{equation}
+What happens on the Bloch vector of a single atom is shown in \prettyref{fig:bloch-vector}. An atom first 
+goes through the first light beam and rotate around the $x$ axis \SI{90}{\degree}, then goes around the $z$ 
+axis and rotate $\tilde{\Omega} T$, and finally goes through the second light beam and rotate around the $x$
+axis \SI{90}{\degree} again. It is easy to find that if $T$ is chose so that $\vb*{n}(T + \tau) = - \vu*{y}$,
+then $\vb*{n}(T + 2 \tau) = - \vu*{z}$, while if $\vb*{n}(T + \tau) = \vu*{y}$, then $\vb*{n}(T + 2 \tau) = \vu*{z}$.
+Therefore, we find that the probability to find the final state on $\ket*{e}$ - which we denote as $P_e$ - depends
+on $T$. It is straightforward to find that 
+\[
+    \exp(-\ii \frac{\Omega}{2} \sigma^x \tau) = \exp(- \frac{\pi}{4} \sigma^x) = \frac{1}{\sqrt{2}} - \frac{1}{\sqrt{2}} \ii \sigma^x,
+\]
+and 
+\[
+    \exp(- \ii \frac{\Delta}{2} \sigma^z T) = \cos(\frac{T \Delta}{2}) - \ii \sin(\frac{T \Delta}{2}) \sigma^z,
+\]
+so the total transformation matrix is 
+\begin{equation}
+    \begin{aligned}
+        U &= \exp(-\ii \frac{\Omega}{2} \sigma^x \tau) \exp(- \ii \frac{\Delta}{2} \sigma^z T) \exp(-\ii \frac{\Omega}{2} \sigma^x \tau) \\
+        &= \pmqty{ - \ii \sin \frac{T \Delta}{2} & - \ii \cos \frac{T \Delta}{2} \\ - \ii \cos \frac{T \Delta}{2} & \ii \sin \frac{T \Delta}{2} },
+    \end{aligned}
+\end{equation}
+and therefore 
+\begin{equation}
+    \ket*{\psi}(T + 2\tau) = U \ket*{\psi}(0) = \pmqty{ - \ii \sin \frac{T \Delta}{2} \\ - \ii \cos \frac{T \Delta}{2} },
+\end{equation}
+and we have 
+\begin{equation}
+    P_e = \cos^2 \frac{T \Delta}{2} = \frac{1}{2} (1 + \cos(T \Delta)).
+\end{equation}
+These oscillations are called \concept{Ramsey fringes}. 
+
+Here is how to use the atomic clock: we need a laser device with adjustable frequencies, and a device which 
+can generate a jet of atoms on the ground state whose velocity is known, and we can adjust the frequency 
+of the laser to maximize $P_e$. When this is done, we know the frequency of the laser is the same as $\omega_{eg}$.
+We known $\omega_{eg}$ can hardly be changed by interaction with the external environment, so after we maximize 
+$P_e$, we extract the hard-to-change frequency $\omega_{eg}$ into $\omega$, the inverse of which is a ruler of time.
+
+\begin{figure}
+    \centering
+    \input{11-4-figures/clock-sphere.tex}
+    \caption{How the Bloch vector moves for atoms in \prettyref{fig:clock}}
+    \label{fig:bloch-vector}
+\end{figure}
+
+It can be easily seen that the mathematical structure of the atomic clock is just the same as interferometers
+of light. Indeed, the two states - $\ket*{g}$ and $\ket*{e}$ - are just two modes of the atoms; since there is 
+coupling between the two states in the distance between two light beams, we can regard this period as two 
+arms of a Michelson interferometer and regard the two light beams as two beam splitters. And finally, we find 
+that both the Michelson interferometer and the atomic clock have the same mathematical structure with 
+the most famous double slit experiment: all of them can be summarized into the following procedure:
+\begin{enumerate}
+    \item One mode is split into the composition of two modes, and
+    \item The two modes then propagate separately, and when the propagation ends, there is a relative error between them, and
+    \item The two modes are again fused together. 
+\end{enumerate}
+The only differences are how these steps are implemented. \prettyref{fig:same-structure} shows the corresponding 
+parts of three interferometers. The double split and the Michelson interferometer use two beams with the same 
+frequency but different propagating path, so we have a relative phase factor of the two beams, while the atomic
+clock uses two beams with the same propagating time and speed but different frequencies.
+
+\begin{figure}
+    \centering
+    \input{11-4-figures/interference.tex}
+    \caption{The common structure of a double slit experiment, a Michelson interferometer and an atomic clock}
+    \label{fig:same-structure}
+\end{figure}
 
 \end{document}

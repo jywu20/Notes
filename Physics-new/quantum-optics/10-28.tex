@@ -29,6 +29,7 @@
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \zexternaldocument*[info-]{../information/quantum-circuit}[quantum-circuit.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
 \usepackage{prettyref}
 
 % Page style
@@ -89,6 +90,13 @@
   commentstyle=\color{gray},
   keywordstyle=\color{blue}
 }
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
 
 \newcommand{\opticsdoc}{\href{../optics/optics}{the optics note}}
 \newcommand{\soliddoc}{\href{../solid/solid}{the solid state physics note}}
@@ -202,21 +210,60 @@ For the sake of convenience we consider $H_\text{atom}$ as the ``free'' Hamilton
     \vb*{d} = \sum_{m, n} \vb*{d}_{mn} \ee^{\ii \omega_{mn} t} \dyad{m}{n}, \quad \omega_{mn} = \omega_m - \omega_n,
     \label{eq:dipole-interaction-picture}
 \end{equation}
-and the dipole Hamiltonian - now the interaction Hamiltonian - is 
+and since the $\omega$ frequency component of the electric field is 
 \begin{equation}
-    H_\text{I} = - (\vb*{E}_0 \ee^{- \ii \omega t} + \text{h.c.}) \cdot \sum_{m, n} \vb*{d}_{mn} \ee^{\ii \omega_{mn} t} \dyad{m}{n}.
+    \vb*{E} = \vb*{E}_0^+ \ee^{- \ii \omega t} + \vb*{E}_0^- \ee^{\ii \omega t} , \quad \vb*{E}_0^+ = \sqrt{\frac{\hbar \omega}{2 \epsilon_0 V}} \vu*{\epsilon} \ee^{\ii \varphi} a, \quad \vb*{E}_0^- = (\vb*{E}_0^+)^*,
+\end{equation}
+the dipole Hamiltonian - now the interaction Hamiltonian - is 
+\begin{equation}
+    H_\text{I} = - (\vb*{E}_0^+ \ee^{- \ii \omega t} + \text{h.c.}) \cdot \sum_{m, n} \vb*{d}_{mn} \ee^{\ii \omega_{mn} t} \dyad{m}{n}.
+\end{equation}
+To make things easier for us, we can move the complex phase factor of $\vb*{E}^+$ into the definition of 
+$\vu*{\epsilon}$, and therefore 
+\begin{equation}
+    \vb*{E}_0^+ = E_0^+ \vu*{\epsilon} a, \quad \vb*{E}_0^- = E_0^- \vu*{\epsilon}^* a^\dagger, \quad E_0^+ = E_0^- = \sqrt{\frac{\hbar \omega}{2 \epsilon_0 V}} ,
+\end{equation}
+and the expectation of $\vb*{E}$ under a coherent state $\ket*{\alpha}$ is proportion to $\cos (\omega t)$ and 
+the amplitude is 
+\begin{equation}
+    E_0 = 2 E_0^+.
 \end{equation}
 
 A widely used model is the \concept{two-level system}, where we only keep two atomic states $\ket*{g}$ and $\ket*{e}$ and higher excited states are integrated out.
 In a two-level system we have 
 \begin{equation}
-    H_\text{I} = - \vb*{E}_0 \cdot \vb*{d}_{eg} \ee^{- \ii (\omega - \omega_{eg}) t} \dyad{e}{g} - \vb*{E}_0^* \cdot \vb*{d}^*_{{eg}} \ee^{\ii (\omega + \omega_{eg})} \dyad{e}{g} + \text{h.c.}.
+    H_\text{I} = - \vb*{E}_0^+ \cdot \vb*{d}_{eg} \ee^{- \ii (\omega - \omega_{eg}) t} \dyad{e}{g} - \vb*{E}_0^- \cdot \vb*{d}^*_{{eg}} \ee^{\ii (\omega + \omega_{eg})} \dyad{e}{g} + \text{h.c.}.
+    \label{eq:original-atom-electric-field}
 \end{equation}
-We usually denote 
+\begin{note*}{}
+    If we view the electric field in \eqref{eq:original-atom-electric-field} as a given external field,
+    it is easy to find that there is no conservation of energy here. This is understandable because 
+    a time dependent external field destroys time translation symmetry. We can view the breaking of 
+    energy conservation from another point of view. In QFT, only asymptotic states can be viewed as 
+    energy eigenstates. A state where particles come closer is not an energy eigenstate and therefore 
+    does not have a definite energy, though the expectation of the energy is conserved.
+    In the present case, the atom is always soaked in photons and they have strong coupling, so the 
+    atom does not have a definite energy, and since we ignore the energy of the photons, nor does 
+    the expectation value of the atom.
+
+    If we view the electric field in \eqref{eq:original-atom-electric-field} as a quantum field with its own dynamics,
+    we get some vertices where energy conservation of $\omega, \omega_e$ and $\omega_g$ does not apply. The logic is the same as above.
+    In the present case, the atom and the optical field is always interacting, and neither of them 
+    are in an energy eigenstate. The energies $\hbar \omega$, $\hbar \omega_g$ and $\hbar \omega_e$
+    are the energies before and after the interaction is turned on, and there is no reason to believe that we have an energy conservation equation involving these three quantities when the interaction is still going on and both the optical field and the atom do not have definite energies. Unlike the case in QFT, here 
+    the interaction is never turned off. 
+
+    Nonetheless, certain degree of energy conservation still exists, as if a vertex violates ``energy 
+    conservation of $\omega$ and $\omega_{eg}$'' too much, it introduces high frequency oscillation 
+    and disappears after coarse graining. This is exactly the underlying idea of RWA, which will be 
+    introduced below.
+\end{note*}
+
+We can always redefine $\ket*{e}$ and $\ket*{g}$ to give $\vb*{d}_{eg}$ a phase factor. We usually denote 
 \begin{equation}
-    \Omega = \frac{\vb*{E}_0 \cdot \vb*{d}_{eg}}{\hbar}
+    \Omega = - \frac{2 E_0^+ \vu*{\epsilon} \cdot \vb*{d}_{eg}}{\hbar} = - \frac{E_0 \vu*{\epsilon} \cdot \vb*{d}_{eg}}{\hbar}
 \end{equation}
-as the \concept{Rabi frequency}.
+as the \concept{Rabi frequency}. Usually, we will adjust $\ket*{g}$ and $\ket*{e}$ to make $\Omega > 0$.
 Suppose the initial state is 
 \begin{equation}
     \ket*{\psi(0)} = c_{g} \ket*{g} + c_{e} \ket*{e}.
@@ -229,7 +276,7 @@ We immediately notice that the $\ee^{\ii (\omega + \omega_{eg}) t}$ term oscilla
 Therefore, it can be expected that when the time scale we are working on is significantly smaller than $1 / (\omega + \omega_{eg})$, this term can be omitted, which is called the \concept{rotational wave approximation}.
 The Hamiltonian corresponding to the rotational wave approximation is 
 \begin{equation}
-    H_\text{RWA} = - \hbar \Omega \ee^{- \ii \Delta t} \dyad{e}{g} + \text{h.c.}, \quad \Delta = \omega - \omega_{eg}.
+    H_\text{RWA} = \frac{1}{2} \hbar \Omega \ee^{- \ii \Delta t} \dyad{e}{g} + \text{h.c.}, \quad \Delta = \omega - \omega_{eg}.
     \label{eq:rwa-original}
 \end{equation}
 We usually call $\Delta$ the \concept{detuning}.
@@ -237,10 +284,29 @@ We usually call $\Delta$ the \concept{detuning}.
 It can then be noticed that \eqref{eq:rwa-original}, undergoing another picture transformation, is equivalent to 
 \begin{equation}
     H = - \hbar \Delta \dyad{e} + \hbar \Omega \dyad{e}{g} + \text{h.c.}.
+    \label{eq:rwa-and-rwt}
 \end{equation}
-The transformation is called the \concept{rotational wave transformation}.
+We do the following unitary transformation on wave functions:
+\begin{equation}
+    U \ket*{e} = \ee^{\ii \Delta t} \ket*{e}, \quad U \ket*{g} = \ket*{g},
+\end{equation} 
+and since the transformation is time-dependent, the new Hamiltonian acting on $U \ket*{\psi}$ is 
+\[
+    H' = U H U^\dagger + \ii \hbar (\partial_t U) U^\dagger = \ee^{\ii \Delta t} \times \frac{1}{2} \hbar \Omega \ee^{- \ii \Delta t} \dyad{e}{g} + \text{h.c.} + \ii \hbar (\ii \Delta) \dyad{e},
+\]
+which is just \eqref{eq:rwa-and-rwt}. The transformation is called the \concept{rotational wave transformation 
+(RWT)}.
 
-Now since the Hamiltonian is much more simpler we can then study it exactly instead of using perturbation theory, 
+\begin{note*}{}
+    RWT is an \emph{active} transformation, i.e. it acts on the vectors and keeps the basis unchanged.
+    On the other hand, a \emph{passive} transformation rotates the basis, and the vectors are unchanged 
+    (but the components change). The advantage of active transformations are that we do not need to always 
+    keep an eye on things like ``whether the basis is before or after the transformation''. The basis 
+    vectors $\ket*{e}$ and $\ket*{g}$ in \eqref{eq:rwa-and-rwt} have exactly the \emph{same} value as 
+    anywhere else. 
+\end{note*}
+
+Now since the Hamiltonian is much simpler we can then study it exactly instead of using perturbation theory, 
 which is not that reliable with a strong external field or with a long time duration.
 The Schrödinger equation reads in terms of $c_e$ and $c_g$
 \begin{equation}
@@ -248,13 +314,13 @@ The Schrödinger equation reads in terms of $c_e$ and $c_g$
 \end{equation}
 It can be seen that the excited component in the atomic wave function first goes up and then goes down, oscillating periodically,
 which is called the \concept{Rabi oscillation}. 
-Classically speaking, the atom undergoes first absorption then stimulated emission.
+In the language of phonons, the atom undergoes first absorption then stimulated emission.
 
 A two-level system is essentially a qubit. The Hamiltonian can be rephrase into 
 \begin{equation}
-    H = \frac{\hbar \Delta}{2} \sigma^z + \frac{\hbar \Omega_r}{2} \sigma^x + \frac{\hbar \Omega_i}{2} \sigma^y, 
+    H = \frac{\hbar \Delta}{2} \sigma^z + \frac{\hbar \Omega_r}{2} \sigma^x + \frac{\hbar \Omega_i}{2} \sigma^y 
 \end{equation}
-and if we define 
+if we add a $\hbar \Delta (\dyad{g} + \dyad{e}) / 2$ into it, and if we define 
 \begin{equation}
     \vb*{\Omega} = (\Omega_\text{r}, \Omega_\text{i}, \Delta),
 \end{equation}
@@ -263,5 +329,18 @@ then the vector representing the atomic wave function on the Bloch sphere satisf
 \begin{equation}
     \dot{\vb*{n}} = \vb*{\Omega} \times \vb*{n}.
 \end{equation}
+This equation is first written down for magnetic resonance imaging.
+
+Finally we discuss when the two-level atom is a good approximation, and when RWA is a good approximation.
+It is easy to find that if we add an external driving field $\vb*{E}^+ \ee^{- \ii \omega t} + \text{c.c.}$
+to an atom with multiple energy levels, it can be seen that any energy level pair $\ket*{1}, \ket*{2}$ can 
+be coupled by the external field as long as $\Omega_{12}$ is large enough. However, the selection rules 
+and the frequency matching condition often mean only two energy levels are coupled strongly enough, where
+the two-level approximation works. In such a case, the detuning should not be too large (or otherwise 
+the coupling is small), and therefore $1 / (\omega - \omega_{eg})$ is indeed much larger than 
+$1 / (\omega + \omega_{eg})$. Therefore, we find that in a real atom system with an external driving field,
+when two energy levels are coupled overwhelmingly strong, i.e. the two energy level approximation works,
+then RWA also works. If RWA does not work, then it is impossible that only two energy levels are significantly
+coupled together. 
 
 \end{document}
