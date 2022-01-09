@@ -29,6 +29,8 @@
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \zexternaldocument*[info-]{../information/quantum-circuit}[quantum-circuit.pdf]
 \zexternaldocument*[1028-]{./10-28}[10-28.pdf]
+\zexternaldocument*[122-]{./12-2}[12-2.pdf]
+\zexternaldocument*[1110-]{../advanced-electrodynamics/lecture-11-10}[lecture-11-10.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage{prettyref}
 
@@ -115,11 +117,7 @@ In this section we discuss how to include the back-interaction.
 
 The Hamiltonian is again 
 \begin{equation}
-    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma},
-\end{equation}
-where 
-\begin{equation}
-    \vb*{\Omega} = (\Omega, 0, 0), \quad \Omega = \frac{\vb*{\mathcal{E}} \cdot \vb*{d}_{eg}}{\hbar}.
+    H = \frac{\hbar}{2} \vb*{\Omega} \cdot \vb*{\sigma}, \quad \vb*{\Omega} = (\Omega, 0, 0), \quad \Omega = \frac{\vb*{\mathcal{E}} \cdot \vb*{d}_{eg}}{\hbar}.
 \end{equation}
 The initial state is $\ket*{\psi(0)} = \ket*{g}$, and we have 
 \begin{equation}
@@ -170,7 +168,7 @@ on the excited state there is no photon, so the joint wave function is
 \end{equation}
 The interaction Hamiltonian is 
 \begin{equation}
-    H_\text{I} = - \sum_k g_k \ee^{\ii \Delta_k t} a_k \dyad*{e}{g} + \text{h.c.},
+    H_\text{I} = \sum_k \hbar g_k \ee^{- \ii \Delta_k t} a_k \dyad*{e}{g} + \text{h.c.},
 \end{equation}
 where 
 \begin{equation}
@@ -182,7 +180,7 @@ and
 \end{equation}
 The time evolution is given by
 \begin{equation}
-    \ii \dot{c}_e = \sum_k g_k \ee^{\ii \Delta_k t} c_k, \quad \ii \dot{c}_k = g_k \ee^{- \ii \Delta_k t} c_e.
+    \ii \dot{c}_e = \sum_k g_k \ee^{- \ii \Delta_k t} c_k, \quad \ii \dot{c}_k = g_k \ee^{\ii \Delta_k t} c_e.
 \end{equation}
 
 We consider the example of spontaneous emission. We set 
@@ -195,7 +193,7 @@ and further we assume that
 \end{equation}
 The first order perturbation is 
 \[
-    c^{(1)}_k(T) = - \ii \int_0^T \dd{t} \ee^{- \ii \Delta_k t} c^{(0)}_e = - g_k \frac{\ee^{- \ii \Delta_k t} - 1}{\Delta_k},
+    c^{(1)}_k(t) = - \ii g_k \int_0^t \dd{\tau} \ee^{\ii \Delta_k \tau} c^{(0)}_e = - g_k \frac{\ee^{\ii \Delta_k t} - 1}{\Delta_k},
 \]
 and thus we have 
 \[
@@ -215,15 +213,19 @@ The transition rate - which is defined by thinking \eqref{eq:original-spontaneou
     \label{eq:original-spontaneous-emission}
 \end{equation}
 
-We try to evaluate \eqref{eq:original-spontaneous-emission} in the free space, where $k = (\vb*{k}, \sigma)$.
-We have 
+We try to evaluate \eqref{eq:original-spontaneous-emission} in the free space or in a large box, 
+where $k = (\vb*{k}, \sigma)$. We have 
 \[
-    \sum_k \abs*{g_k}^2 \frac{2 \sin \Delta_k t  }{\Delta_k} 
-    = \int \dd{\omega} g(\omega) |g_k|^2 \frac{2 \sin \Delta_k t}{\Delta_k},
+    \begin{aligned}
+        \sum_k \abs*{g_k}^2 \frac{2 \sin \Delta_k t  }{\Delta_k} 
+        &\to \int \dd[3]{\vb*{k}} \frac{V}{(2\pi)^3} \sum_\text{spins} \abs*{g_k}^2 \frac{2 \sin \Delta_k t  }{\Delta_k}  \\
+        &= V \int \dd{\omega} g(\omega) \expval{|g_k|^2 \frac{2 \sin \Delta_k t}{\Delta_k}}_{\omega_{\vb*{k} \sigma} = \omega},
+    \end{aligned}
 \]
-where the $g_k$ on the RHS is rephrase into a function of $\omega$ and some additional labels that distinguish degenerate states.
-We see that when $t$ is large compared to $\omega_{eg}$, 
-the RHS is proportion to $t$ when $\Delta_k = 0$ and is almost zero otherwise, 
+where $V$ is the volume of the box, $g(\omega)$ is the density of states, and the $k$ dependence on the RHS 
+is averaged on the $\omega_{\vb*{k} \sigma} = \omega$ surface. We see that when $t$ is large compared to 
+$1 / \omega_{eg}$, the RHS is proportion to $t$ when $\Delta_k = 0$ (but still small so that the first order 
+perturbation theory works - see \prettyref{fig:pe-time-evo}) and is almost zero otherwise, 
 and therefore we may think ${2 \sin \Delta_k t} / {\Delta_k}$ as an approximation of the Dirac $\delta$-function.
 Note that 
 \[
@@ -231,18 +233,66 @@ Note that
 \]
 we get 
 \begin{equation}
-    \Gamma = \int \dd{\omega} g(\omega) \abs*{g_k}^2 2\pi \delta(\omega - \omega_{eg}).
+    \Gamma = V \int \dd{\omega} g(\omega) 2\pi \delta(\omega - \omega_{eg}) \expval*{\abs*{g_k}^2}_{\omega = \omega_{\vb*{k} \sigma}}.
     \label{eq:fermi-golden-rule}
 \end{equation}
 It can be easily found that we are just proving Fermi golden rule for this specific case.
-The final result is 
+Actually, we can generalized the derivation above to the case where $\abs*{c_e}^2 < 1$, and in this case 
+we will find that 
+\[
+    \dv{P_e}{t} = - \Gamma P_e,
+\]
+where $\Gamma$ is given by \eqref{eq:fermi-golden-rule}. Therefore the occupation of the excited state 
+damps exponentially. We will redo the proof in a more systematic way with the Markovian approximation in 
+Section~\ref{122-sec:spon-rad} in \href{12-2.pdf}{the next lecture}. 
+
+\begin{figure}
+    \centering
+    \input{11-18-figures/time-pe.tex}
+    \caption{The time evolution of the occupation of the excited state. The Fermi golden rule only works for the 
+    Markovian period. }
+    \label{fig:pe-time-evo}
+\end{figure}
+
+Now it is time to explicitly complete the integral in \eqref{eq:fermi-golden-rule}. 
+The density of states is given by \eqref{1110-eq:density-of-states-light}  
+\href{../advanced-electrodynamics/lecture-11-10.pdf}{here}, which is 
+\[
+    \begin{aligned}
+        \rho(\omega) &= 2 \times  \dv{k^2(\omega)}{\omega} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \delta(k^2(\omega) - \abs*{\vb*{q}}^2) \\ 
+        &= 2 \times \dv{k^2(\omega)}{\omega} \int \frac{\dd{S}}{(2\pi)^3} \frac{1}{\abs*{\grad_{\vb*{k}} \vb*{k}^2 }} \\
+        &= 2 \times \frac{2 \omega}{c^2} \frac{1}{(2\pi)^3} \frac{4 \pi \vb*{k}^2}{2 \abs*{\vb*{k}}} \\
+        &= \frac{\omega^2}{\pi^2 c^3} .
+    \end{aligned}
+\]
+Note that the $2$ factor comes from the fact that a momentum mode has two possible polarization.
+The square of the coupling constant is 
+\begin{equation}
+    \abs*{g_{\vb*{k} \sigma}}^2 = \frac{\omega_{\vb*{k} \sigma}}{2 \epsilon_0 V \hbar} \abs*{\vu*{\epsilon}_{\sigma} \cdot \vb*{d}_{eg}}^2,
+\end{equation}
+and since on the $\omega_{\vb*{k} \sigma} = \omega$ surface, $\vb*{k}$ distributes uniformly, we can also 
+find that 
+\[
+    \expval*{(\epsilon_{\vb*{k} \sigma})_x^2} = \expval*{(\epsilon_{\vb*{k} \sigma})_y^2} = \expval*{(\epsilon_{\vb*{k} \sigma})_z^2} = \frac{1}{3}, \quad 
+    \expval*{(\epsilon_{\vb*{k} \sigma})_x (\epsilon_{\vb*{k} \sigma})_y} = 
+    \expval*{(\epsilon_{\vb*{k} \sigma})_y (\epsilon_{\vb*{k} \sigma})_z} = 
+    \expval*{(\epsilon_{\vb*{k} \sigma})_z (\epsilon_{\vb*{k} \sigma})_x} = 0,
+\]
+so 
+\[
+    \expval*{\abs*{g_{\vb*{k} \sigma}}^2} = \frac{\omega_{\vb*{k} \sigma}}{2 \epsilon_0 V \hbar} \frac{1}{3} \abs*{\vb*{d}_{eg}}^2.
+\]
+Putting these factors into \eqref{eq:fermi-golden-rule}, we get the famous spontaneous radiation rate
 \begin{equation}
     \Gamma = \frac{\omega_{eg}^3 \abs*{\vb*{d}_{eg}}^2 }{3 \pi \epsilon_0 c^3 \hbar} 
     = \frac{4 \pi}{3} \omega_{eg} \frac{a_\text{Bohr}^2}{\lambda_{eg}^2} \alpha^3.
     \label{eq:spontaneous-emission-free-space}
 \end{equation}
 
-Similar procedures can be applied to other atomic models. For example, for a Rydberg atom, we have 
+The only fact about the two-level approximation used in the above derivation is the value of $\vb*{d}_{eg}$, 
+and we can just apply \eqref{eq:spontaneous-emission-free-space} to other atomic models as long as we replace 
+$\vb*{d}_{eg}$ by the dipole matrix elements between two energy levels of interest. For example, for a 
+Rydberg atom, we have 
 \begin{equation}
     \vb*{d}_{eg} \propto n^2 e \gamma_\text{Bohr}, 
     \quad \omega_{eg} \propto \frac{1}{n^2} - \frac{1}{(n-1)^2} \propto \frac{1}{n^3},
@@ -257,28 +307,42 @@ Note that the above derivation has strict requirement on $t$: it must be small e
 while it must be large enough compared to $\omega_{eg}$.
 For a system with strong atom-light coupling, the two conditions contradict with each other, and we need to take the interaction 
 between the atom and the optical field more seriously instead of using a first order perturbative result.
-This is often dubbed as \concept{cavity QED}.
+This is often dubbed \concept{cavity QED}.
 
 The fact that when $t$ is small compared to $\omega_{eg}$ \eqref{eq:spontaneous-emission-free-space} does not work, on the other hand,  
 gives rise to \concept{quantum Zeno effect}, which is a thought experiment where the atom is surrounded by a lot of observers
 and the duration between two measurements is smaller than $1 / \omega_{eg}$. In such a system the atom stays at the excited state
 and there is no spontaneous emission.
 
-Spontaneous emission of two atoms may affect each other. Suppose we have two two-level atoms, and we let 
+\begin{figure}
+    \centering
+    \input{11-18-figures/level-config-1.tex}
+    \caption{The energy level configuration of two two-level atoms slightly coupled}
+    \label{fig:energy-level-config}
+\end{figure}
+
+Suppose we have two two-level atoms which are  very close in position, and therefore the electric fields they 
+feel are the same. The interaction Hamiltonian is 
 \begin{equation}
-    \ket*{\psi_+(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} + \ket*{g_2, e_1, 0}), \quad 
-    \ket*{\psi_-(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} - \ket*{g_2, e_1, 0}),
+    H_\text{int} = - \vb*{E} \cdot (\vb*{d}_1 + \vb*{d}_2).
+\end{equation}
+When there is no interaction between two atoms, the spontaneous radiation here has no difference with 
+the single atom case. However, usually two very close atoms are coupled, and the energy eigenstates 
+$\ket*{g_1, e_2, 0}$ and $\ket*{e_1, g_2, 0}$ are mixed into
+\begin{equation}
+    \ket*{\psi_+(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} + \ket*{e_1, g_2, 0}), \quad 
+    \ket*{\psi_-(t=0)} = \frac{1}{\sqrt{2}} (\ket*{g_1, e_2, 0} - \ket*{e_1, g_2, 0}),
 \end{equation}
 and we find that 
+\[
+    \mel{g_1, g_2, 0}{\vb*{d}_1 + \vb*{d}_2}{\psi_+} = \frac{1}{\sqrt{2}} (\vb*{d}_{eg} + \vb*{d}_{eg}), \quad
+    \mel{g_1, g_2, 0}{\vb*{d}_1 + \vb*{d}_2}{ \psi_+} = \frac{1}{\sqrt{2}} (\vb*{d}_{eg} - \vb*{d}_{eg}),
+\]
+and therefore we have
 \begin{equation}
-    \Gamma_{+ \to g} = 2 \Gamma_e, \quad \Gamma_{- \to 0} = 0.
+    \Gamma_{+ \to g} = 2 \Gamma_e, \quad \Gamma_{- \to g} = 0.
 \end{equation}
-
-\section{Markov description of spontaneous emission}
-
-After obtain \eqref{eq:spontaneous-emission-free-space} we can describe 
-\begin{equation}
-    \dot{c}_e = - c_e 
-\end{equation}
+This is called \concept{Dicke superradiance}, where one state has a stronger tendency to spontaneously emit,
+while another state almost has no spontaneous radiation.
 
 \end{document}

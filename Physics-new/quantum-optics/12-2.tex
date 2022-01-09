@@ -110,13 +110,13 @@
 
 \maketitle
 
-\section{Spontaneous radiation of a two-level atom}
+\section{Spontaneous radiation of a two-level atom}\label{sec:spon-rad}
 
 We continue the discussion in \href{11-18.pdf}{the last lecture}.
 For an atom coupled with an optical field (with its own dynamics), we have 
 \[
-    \ii \dot{c}_\text{e} = \sum_k g_k \ee^{\ii \Delta_k t} c_k, \quad 
-    \ii \dot{c}_k = g_k^* \ee^{- \ii \Delta_k t} c_\text{e},
+    \ii \dot{c}_\text{e} = \sum_k g_k \ee^{- \ii \Delta_k t} c_k, \quad 
+    \ii \dot{c}_k = g_k^* \ee^{\ii \Delta_k t} c_\text{e},
 \]
 so we have 
 \begin{equation}
@@ -125,34 +125,56 @@ so we have
 \end{equation}
 where 
 \begin{equation}
-    K(t) = \sum_k \abs*{g_k}^2 \ee^{\ii \Delta_k t}.
+    K(t) = \sum_k \abs*{g_k}^2 \ee^{- \ii \Delta_k t}.
 \end{equation}
 We make a Markov approximation, i.e. we assume $K(t - \tau)$ is significant only for $\tau$ close enough to $t$,
 and therefore we have approximately
 \[
-    \dot{c}_\text{e} = - c_\text{e}(t) \int_0^t \dd{\tau} K(t - \tau),
+    \dot{c}_\text{e} = - c_\text{e}(t) \int_0^t \dd{\tau} K(t - \tau).
 \]
-and we can evaluate 
-\[
-    \int_0^t \dd{\tau} K(t - \tau) = \frac{\Gamma}{2} + \ii \delta_\text{L},
-\]
+Formally, we define 
+\begin{equation}
+    \int_0^t \dd{\tau} K(t - \tau) \eqqcolon \frac{\Gamma}{2} + \ii \delta_\text{L},
+\end{equation}
 so the time evolution equation is 
 \begin{equation}
-    \dot{c}_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) ,
+    \dot{c}_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) .
     \label{eq:markov-eq}
 \end{equation}
-where 
+Now we need to evaluate $\Gamma$ and $\delta_\text{L}$. We have 
+\[
+    \begin{aligned}
+        \int_0^t \dd{\tau} K(t - \tau) &= \sum_k \abs*{g_k}^2 \int_0^t \dd{\tau} \ee^{- \ii \Delta_k (t - \tau)} \\
+        &= \sum_k \abs*{g_k}^2 \int_0^t \dd{\tau} \ee^{- \ii (\omega_k - \omega_{eg}) (t - \tau)} \\
+        &= \sum_k \abs*{g_k}^2 \int_0^t \dd{\tau'} \ee^{- \ii (\omega_k - \omega_{eg}) \tau' },
+    \end{aligned}
+\]
+and since we are working in the region where $t \gg 1 / \omega_{eg}$, we push the integral to the $t \to \infty$ 
+limit, i.e. making the approximation that 
+\[
+    \begin{aligned}
+        \int_0^t \dd{\tau} K(t - \tau) &\approx \sum_k \abs*{g_k}^2 \int_0^\infty \dd{\tau'} \ee^{- \ii (\omega_k - \omega_{eg}) \tau' - 0^+ \tau'} \\
+        &= \sum_k \abs*{g_k}^2 \frac{-1}{- \ii (\omega_k - \omega_{eg})  - 0^+ } \\
+        &= \sum_k \abs*{g_k}^2 \frac{\ii}{\omega_{eg} - \omega_k + \ii 0^+} \\
+        &= \sum_k \abs*{g_k}^2 \left( \primevalue \frac{\ii}{\omega_{eg} - \omega_k } + \pi \delta(\omega_{eg} - \omega_k) \right),
+    \end{aligned}
+\]
+The final results are
 \begin{equation}
     \Gamma = 2 \pi \sum_k \abs*{g_k}^2 \delta(\omega_k - \omega_\text{eg}),
     \label{eq:scattering-rate}
 \end{equation}
 and 
 \begin{equation}
-    \delta_\text{L} = \primevalue \int_0^\infty \dd{k} \abs*{g_k}^2 \rho(k) \frac{1}{\omega_k - \omega_\text{eg}}.
+    \delta_\text{L} = \primevalue \sum_k \abs*{g_k}^2 \rho(k) \frac{1}{\omega_\text{eg} - \omega_k }.
     \label{eq:phase-shift}
 \end{equation}
-We can see that Fermi golden rule can be derived from the Markov approximation.
-The imaginary part $\delta_\text{L}$ is a part of Lamb shift.
+We can see that Fermi golden rule can be derived from the Markov approximation. We also see that the approach 
+we used in the last lecture fail to capture an imaginary factor. The imaginary part $\delta_\text{L}$ is a part 
+of Lamb shift, which arises from the vacuum fluctuation of the optical field. The two parts can be obtained 
+from the following Feynman diagram 
+\input{12-2-figures/one-loop-correction.tex}
+where $\Gamma$ comes from half of the diagram.
 
 \begin{note*}{}
     What we are actually doing here is to ``integrate out'' the external optical field and get a non-Hermitian
@@ -181,8 +203,8 @@ The imaginary part $\delta_\text{L}$ is a part of Lamb shift.
 
 Solving \eqref{eq:markov-eq} and redefining the basis to absorb the Lamb shift, we get 
 \begin{equation}
-    c_\text{e}(t) = \ee^{- \frac{\Gamma}{2} t}, \quad 
-    c_\text{k}(t) = \ii g_k^* \frac{1 - \ee^{- \ii (\omega_\text{eg} - \ii \Gamma / 2 - \omega_k) t}}{\omega_\text{eg} - \ii \Gamma / 2 - \omega_k} .
+    c_{e}(t) = \ee^{- \frac{\Gamma}{2} t}, \quad 
+    c_{k}(t) = \ii g_k^* \frac{1 - \ee^{- \ii (\omega_\text{eg} - \ii \Gamma / 2 - \omega_k) t}}{\omega_\text{eg} - \ii \Gamma / 2 - \omega_k} .
 \end{equation}
 Now we can calculate the optical correlation functions in the space. Since we are working in the single-photon 
 subspace, we have 
@@ -210,16 +232,6 @@ so finally we get the single photon wave function of the spontaneous radiation:
     \ee^{- \ii \omega_\text{eg} (t - r / c)} \Theta(t - r/c).
 \end{equation}
 
-\begin{note*}{}{}
-    We should note that the so-called ``wave function in a subspace'' does not capture the high frequency 
-    details of the real wave function. What we are actually doing is \emph{integrating out} high energy 
-    states and working with an effective theory. The renormalization of constants in the theory about 
-    the subspace can be calculated via path integral or adiabatic elimination or other approaches.
-    The loss of high-frequency components of the wave function usually does not matter, though, 
-    because usually no detection means can be used to find the high-frequency behavior, and an effective
-    theory is just enough.
-\end{note*}
-
 \section{Three-level atoms}
 
 \begin{figure}
@@ -244,6 +256,16 @@ The Schrödinger equation now reads
     \end{aligned}
 \end{equation} 
 and we can just repeat the procedure in the last section.
+
+\begin{note*}{}{}
+    We should note that the so-called ``wave function in a subspace'' does not capture the high frequency 
+    details of the real wave function. What we are actually doing is \emph{integrating out} high energy 
+    states and working with an effective theory. The renormalization of constants in the theory about 
+    the subspace can be calculated via path integral or adiabatic elimination or other approaches.
+    The loss of high-frequency components of the wave function usually does not matter, though, 
+    because usually no detection means can be used to find the high-frequency behavior, and an effective
+    theory is just enough.
+\end{note*}
 
 \section{Stochastic wave function description of the two-level atom}\label{sec:stochastic-two-level}
 
