@@ -141,6 +141,22 @@ so the time evolution equation is
     \dot{c}_\text{e} = - \left( \frac{\Gamma}{2} + \ii \delta_\text{L} \right) c_\text{e}(t) .
     \label{eq:markov-eq}
 \end{equation}
+\begin{note*}{}
+    The definition of $\Gamma$ has a $1/2$ factor. This is to ensure that $\Gamma$ is the damping rate of 
+    the probability that the atom is on the excited state, because if the time evolution of $c_\text{e}$ is 
+    \[
+        c_\text{e} \to (1 - \Gamma \Delta t / 2) c_\text{e},
+    \]
+    then the time evolution of $\abs*{c_\text{e}}^2$ is 
+    \[
+        \abs*{c_\text{e}}^2 \to (1 - \Gamma \Delta t / 2)^2 \abs*{c_\text{e}}^2 = (1 - \Gamma \Delta t) \abs*{c_\text{e}}^2.
+    \]
+    We immediately find that the discussion in \prevlecture{} around \eqref{prev-eq:original-spontaneous-emission}
+    and \eqref{prev-eq:fermi-golden-rule} is a specific case of the above derivation, where 
+    $\abs*{c_\text{e}(0)}^2$. In other words, the two definitions of $\Gamma$ in \prevlecture{} and in this 
+    lecture are actually the same. In the language of QFT, we can call $\Gamma$ the \emph{scattering rate}.
+\end{note*}
+
 Now we need to evaluate $\Gamma$ and $\delta_\text{L}$. We have 
 \[
     \begin{aligned}
@@ -174,32 +190,32 @@ we used in the last lecture fail to capture an imaginary factor. The imaginary p
 of Lamb shift, which arises from the vacuum fluctuation of the optical field. The two parts can be obtained 
 from the following Feynman diagram 
 \input{12-2-figures/one-loop-correction.tex}
-where $\Gamma$ comes from half of the diagram.
+where $\Gamma$ comes from half of the diagram. The above procedure - working in a subspace, regarding the 
+optical field as in a large box and then applying the Markovian approximation and calculating $\Gamma$ and 
+$\delta_\text{L}$ - is called \concept{Wigner-Weisskopf theory}.
 
 \begin{note*}{}
+    \eqref{eq:scattering-rate} and \eqref{eq:phase-shift} are just two parts of a propagator in the form of $1 / (E - H + \ii 0^+)$.
     What we are actually doing here is to ``integrate out'' the external optical field and get a non-Hermitian
-    theory of the atom. We are assuming that the emission of photon is fast enough so that 
-    we can move $c_e$ out of the integral in \eqref{eq:one-component-eom}, but not too fast so that the 
-    perturbation theory still works. The first assumption means it is correct to integrate out optical degrees 
-    of freedom, and we only have to include the leading order of correction, while the second assumption means 
-    we can just interpret the imaginary part of the propagator as decaying (and do not need to fear that the 
-    emitted photon may come back). We can then note the fact that \eqref{eq:scattering-rate} and 
-    \eqref{eq:phase-shift} are just two parts of a propagator in the form of $1 / (E - H + \ii 0^+)$.
-
-    The definition of $\Gamma$ has a $1/2$ factor. This is to ensure that $\Gamma$ is the damping rate of 
-    the probability that the atom is on the excited state, because if the time evolution of $c_\text{e}$ is 
-    \[
-        c_\text{e} \to (1 - \Gamma \Delta t / 2) c_\text{e},
-    \]
-    then the time evolution of $\abs*{c_\text{e}}^2$ is 
-    \[
-        \abs*{c_\text{e}}^2 \to (1 - \Gamma \Delta t / 2)^2 \abs*{c_\text{e}}^2 = (1 - \Gamma \Delta t) \abs*{c_\text{e}}^2.
-    \]
-    We immediately find that the discussion in \prevlecture{} around \eqref{prev-eq:original-spontaneous-emission}
-    and \eqref{prev-eq:fermi-golden-rule} is a specific case of the above derivation, where 
-    $\abs*{c_\text{e}(0)}^2$. In other words, the two definitions of $\Gamma$ in \prevlecture{} and in this 
-    lecture are actually the same. In the language of QFT, we can call $\Gamma$ the \emph{scattering rate}.
+    theory of the atom. We are assuming 
+    \begin{itemize}
+        \item that the emitted photon leaves the atom quickly enough, so the Markovian approximation (the state 
+        of the system can be labeled completely by $c_e$ and $c_g$), without any need to fear that the emitted 
+        photon may come back (i.e. the optical degrees of freedom can effectively be seen as a \emph{bath}), and
+        \item that the time scale we are interested is large enough so that we are able to take the $t \to \infty$
+        limit.
+    \end{itemize} 
+    Formally, the first and the second approximation means the concepts in perturbative QFT work here, i.e.
+    we have concepts like propagators and Feynman diagrams and we can just interpret the imaginary 
+    part of a propagator as decay. Only one diagram - \eqref{eq:one-loop} - is taken into account, because 
+    actually we are doing the self-energy correction to the atom, and \eqref{eq:one-loop} is the irreducible
+    self energy. Therefore, the Wigner-Weisskopf theory is actually a non-perturbative theory.
 \end{note*}
+
+However, we will soon find a huge problem in the Wigner-Weisskopf theory: the total probability is not conserved.
+What is happening is that the emitted photon gets observed by the environment from time to time, and therefore 
+the wave function gets collapsed to certain states (for a two-level atom, the ground state) from time to time.
+We will see a detailed calculation in \prettyref{sec:stochastic-two-level}.
 
 Solving \eqref{eq:markov-eq} and redefining the basis to absorb the Lamb shift, we get 
 \begin{equation}
@@ -244,7 +260,7 @@ so finally we get the single photon wave function of the spontaneous radiation:
 Now we consider a three-level atom shown in \prettyref{fig:three-level-atom}. We work in the following 
 subspace:
 \begin{equation}
-    \ket*{\psi} = c_a \ket*{a, 0} + c_{b_k} \ket*{b, 1_k} + c_{c, k, g} \ket*{c, 1_k, 1_q}. 
+    \ket*{\psi} = c_a \ket*{a, 0} + \sum_k c_{b_k} \ket*{b, 1_k} + \sum_{k, q} c_{c, k, g} \ket*{c, 1_k, 1_q}. 
 \end{equation}
 The Schrödinger equation now reads 
 \begin{equation}
@@ -267,7 +283,7 @@ and we can just repeat the procedure in the last section.
     theory is just enough.
 \end{note*}
 
-\section{Stochastic wave function description of the two-level atom}\label{sec:stochastic-two-level}
+\section{Random wave function description of the two-level atom}\label{sec:stochastic-two-level}
 
 We want to write down a theory on the two-level atom itself and ignore the optical field. 
 This is usually hard because photons radiated may come back and interact with the atom again.
@@ -276,7 +292,7 @@ of things that may absorb or ``observe'' the photon, we can assume that as soon 
 is emitted, it gets observed, and so does the atom. If we observe a emitted photon then we are sure 
 that the atom is currently on the ground state.
 
-\concept{Stochastic wave function} is a formalism that is frequently used in quantum optics.
+\concept{Random wave function} is a formalism that is frequently used in quantum optics.
 We write down a non-Hermitian effective theory describing the atom, which is 
 \begin{equation}
     H = H_0 - \frac{\ii}{2} C^\dagger C,
@@ -287,7 +303,7 @@ where $H_0$ is the RWA Hamiltonian in \href{10-28.pdf}{this lecture}, and
 \end{equation}
 is called the \concept{collapse operator}.
 The effective Hamiltonian does not keep the total probability. The correct way to use it is the following 
-\emph{stochastic} Schrödinger evolution. For $\ket*{\psi(t)}$, we have 
+\emph{random} Schrödinger evolution. For $\ket*{\psi(t)}$, we have 
 \begin{equation}
     P(\ket*{\psi(t + \Delta t)} = \text{normalized $C \ket*{\psi(t)}$}) = \expval*{C^\dagger C}{\psi(t)} \Delta t,
 \end{equation}
@@ -302,13 +318,13 @@ sure that the atom is on the ground state.
 \begin{figure}
     \centering
     \input{12-2-figures/excited-decay.tex}
-    \caption{Stochastic wave function calculating of a two-level atom. The lines with color are possible 
+    \caption{Random wave function calculating of a two-level atom. The lines with color are possible 
     evolution path of the wave function, and after averaging over them we get the dashed exponential decay
     line.}
     \label{fig:excited-decay}
 \end{figure}
 
-Stochastic wave function is an intuitive approach. If, for example, we start from a excited state, 
+Random wave function is an intuitive approach. If, for example, we start from a excited state, 
 what we will get is \prettyref{fig:excited-decay}. 
 
 We consider another example. Suppose from $0$ to $t$ there is no quantum jump, and we want to know 
@@ -327,12 +343,12 @@ where
     \gamma = \frac{\abs{\Omega}^2}{4 \Delta^2 + \Gamma^2 } \Gamma.
 \end{equation}
 
-We can also use the stochastic wave function method to calculate polarization in materials.
+We can also use the random wave function method to calculate polarization in materials.
 We find the wave function
 \begin{equation}
     \ket*{\psi(t)} \approx \frac{1}{\Delta - \ii \Gamma / 2} \frac{\Omega}{2} \ket*{\text{e}} + \ket*{\text{g}}
 \end{equation}
-is a meta-stable solution of the stochastic evolution, and we have 
+is a meta-stable solution of the random evolution, and we have 
 \begin{equation}
     \expval*{d} = \frac{d_\text{eg} \Omega / 2}{\Delta - \ii \Gamma / 2} \ee^{- \ii \omega t} + \text{h.c.}.
 \end{equation}
@@ -361,7 +377,7 @@ A single time evolution trajectory is like
 \eqref{eq:markov-eq} is a quantum master equation. We can, actually, write down a non-Hermitian Hamiltonian
 \begin{equation}
     H_\text{eff} = - \frac{\ii \hbar \Gamma}{2} \dyad{\text{e}} 
-    + \hbar \sum_{k} g_k^* \ee^{- \ii \Delta_k t} a_k^\dagger \dyad{g}{e} + \text{h.c.}.
+    + \hbar \sum_{k} g_k^* \ee^{ \ii \Delta_k t} a_k^\dagger \dyad{g}{e} + \text{h.c.}.
 \end{equation}
 which reproduces \eqref{eq:markov-eq}. We can replace the second and the third term using rotational 
 wave approximation in \href{10-28.pdf}{this lecture}, and after averaging over all paths we get a 
