@@ -14,7 +14,7 @@
 \usepackage{bbm}
 \usepackage{cite}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
@@ -26,8 +26,8 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
-\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
-\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+%\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+%\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -112,7 +112,19 @@
 
 \maketitle
 
-Consider a one dimensional infinite chain on the $z$ direction consisting of metallic balls, 
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{alpha-re.pdf}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{alpha-im.pdf}
+    \end{subfigure}
+    \caption{The real and the imaginary part of $\alpha(\omega)$. The lines are plotted by definition, and the scattered points are obtained by K-K relations. (a) The real part. (b) The imaginary part.}
+    \label{fig:plot}
+\end{figure}
+
+\paragraph{Problem 1} Consider a one dimensional infinite chain on the $z$ direction consisting of metallic balls, 
 each of which have radius $a$ and is made of a metal with permittivity
 \begin{equation}
     \epsilon_\text{r} = 1 - \frac{\omega_\text{p}^2}{\omega (\omega + \ii \gamma)}.
@@ -121,19 +133,39 @@ When $a \to 0$, we have
 \begin{equation}
     \alpha(\omega) = 4 \pi \epsilon_0 a^3 \frac{\epsilon_\text{r}(\omega) - 1}{\epsilon_\text{r}(\omega) + 2},
 \end{equation}
+We use Mathematica to plot the real and the imaginary part of $\alpha(\omega)$ in \prettyref{fig:plot}. 
+TODO: features
 
+\paragraph{}
+
+\paragraph{Problem 2} We need to solve 
 \begin{equation}
-    \vb*{p}_m = \alpha (\vb*{E}_\text{ext} + \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}} \cdot \vb*{p}_n),
+    \vb*{p}_m = \alpha (\vb*{E}_\text{ext}(\vb*{r}_m) + \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \cdot \vb*{p}_n),
 \end{equation}
-and by the Bloch condition 
+and when there is no external field, by the Bloch condition 
 \begin{equation}
     \vb*{p}_m = \vb*{u} \ee^{\ii k z_m},
 \end{equation}
 we have 
+\[
+    \vb*{u} \ee^{\ii k z_m} = \alpha \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \cdot \vb*{u} \ee^{\ii k z_n},
+\]
+\[
+    \left( \tensor{\vb*{I}} - \alpha \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \ee^{\ii k z_n} \ee^{- \ii k z_m}  \right) \vb*{u}  = 0,
+\]
+and we have 
 \begin{equation}
-    \tensor{\vb*{M}} \cdot \vb*{u} \ee^{\ii k z_m} = \left( \tensor{\vb*{I}} - \alpha \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \ee^{\ii k z_n} \ee^{- \ii k z_m}  \right) \vb*{u} \ee^{\ii k z_m} = 0.
+    \tensor{\vb*{M}} = \alpha^{-1} \tensor{ \vb*{I}} - \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \ee^{\ii k (z_n - z_m)}, \quad \tensor{\vb*{M}} \vb*{u} = 0,
     \label{eq:eigen-problem}
 \end{equation}
+and we need to evaluate 
+\begin{equation}
+    \tensor{\vb*{W}} = \omega^2 \mu_0 \sum_{n \neq m} \tensor{\vb*{G}}(\vb*{r}_m - \vb*{r}_n) \ee^{\ii k (z_n - z_m)}.
+\end{equation}
+
+The dyadic Green function is 
+
+
 The eigenvalues are actually ``eigen polarization'':
 \begin{equation}
     \tensor{\vb*{M}} \cdot \vb*{u} = \frac{1}{\lambda^\text{eigen}} \vb*{u}.
