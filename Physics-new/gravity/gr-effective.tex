@@ -1,0 +1,173 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{marginnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+%\zexternaldocument*[oldfluid-]{fluid}[fluid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+% Correctly displaying equation number in section titles
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+%\newcommand{\ktnote}{\href{../topological-phases-reading-notes/kt.pdf}{this note}}
+
+\title{General Relativity as an Effective Field Theory}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This article is a reading note of the chapters in Schwartz about how general Relativity (henceforth GR) can
+be thought as an effective field theory. 
+
+\section{The free spin-2 theory}
+
+We first construct a spin-2 field theory with the approach of Schwartz Section 8.7. \marginnote{Sec.~8.7}
+Consider a symmetric rank 2 tensor $h_{\mu \nu}$. We try to write down a free theory of the theory, which 
+must be quadratic in $h_{\mu \nu}$, and either quadratic or zeroth order in $\partial_\mu$. From $h_{\mu \nu}$ 
+we can construct a list of objects that are first order in $h_{\mu \nu}$ and do not contain $\bigO(\partial^3)$:
+\[
+    h_{\mu \nu},\  h_{\alpha \alpha}, \ \Box h_{\mu \nu}, \ \partial_\mu \partial_\nu h_{\mu \nu}, \ 
+    \partial_\mu \partial_\nu h_{\mu \alpha}, \ \Box h_{\alpha \alpha}, 
+\]
+and we can construct terms that are possible to appear in the free Lagrangian:
+\[
+    h_{\mu \nu}^2, \ h_{\mu \nu} \Box h_{\mu \nu}, \ h_{\nu \alpha} \partial_\mu \partial_\nu h_{\mu \alpha}, 
+    \ h_{\alpha \alpha}^2, \ h_{\alpha \alpha} \Box h_{\beta \beta}, \ h_{\alpha \alpha} \partial_\mu \partial_\nu h_{\mu \nu},
+\]
+and hence we get (8.126) \marginnote{(8.126)}
+\begin{equation}
+    \mathcal{L}=a h_{\mu \nu} \square h_{\mu \nu}+b h_{\mu \nu} \partial_{\mu} \partial_{\alpha} h_{\nu \alpha}+c h \square h + d h \partial_{\mu} \partial_{\nu} h_{\mu \nu}+m^{2}\left(x h_{\mu \nu}^{2}+y h^{2}\right),
+    \label{eq:general-lag}
+\end{equation}
+where we define $h = h_{\alpha \alpha}$. 
+
+Now we consider the ``inner structure'' of $h_{\mu \nu}$. We first do the decomposition \marginnote{(8.124) to (8.125)}
+\begin{equation}
+    h_{\mu \nu} = h_{\mu\nu}^\text{T} + \partial_\mu \pi_\nu + \partial_\nu \pi_\mu,
+\end{equation}
+where we require  
+\begin{equation}
+    h_{\mu \nu}^\text{T} = h_{\nu \mu}^\text{T}, \quad \partial^\mu h_{\mu \nu}^\text{T} = 0.
+\end{equation}
+Again we can decompose $\pi_\mu$ into 
+\begin{equation}
+    \pi_{\mu}=\pi_{\mu}^\text{T}+\partial_{\mu} \pi^\text{L}, \quad \partial^\mu \pi_\mu^\text{T} = 0.
+\end{equation}
+
+Now we find the decomposition actually imposes strong constraints on \eqref{eq:general-lag}. First, 
+since 
+\[
+    x h_{\mu \nu}^2 + y h^2 = 2 x (\Box \pi^\text{L})^2 + 2 y (\partial_\mu \partial_\nu \pi^\text{L})^2 \simeq 
+    - 2x \pi^\text{L} \Box^2 \pi^\text{L} - 2y \partial_\mu \partial_\nu \partial^\mu \partial^\nu \pi^\text{L} 
+    = - 2 (x+y) \pi^\text{L} \Box^2 \pi^\text{L},
+\]
+and there should be no $\bigO(\partial^4)$ terms in \eqref{eq:general-lag}, we find $x + y = 0$. 
+
+\section{Coupling with another field and the self interaction}
+
+The conclusion is that there is, actually, \emph{no} conflict between general relativity and quantum mechanics.
+\marginnote{Sec.~22.4}
+What is really concerning is that GR, in the context of QFT, is not 
+
+\end{document}
