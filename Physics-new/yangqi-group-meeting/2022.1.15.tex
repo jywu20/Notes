@@ -1,0 +1,154 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\title{Jinxiang Hao on KT fluctuations on Superconductor Films}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+Today's representation is about how to use a 2D Coulomb gas model to explain the behavior of oscillating magnetic 
+susceptibility for certain kind of superconducting films.
+
+A 2D Coulomb gas consists of particles with positive and negative charges of equal magnitude. 
+The Hamiltonian is 
+\begin{equation}
+    H = \sum_{\pair{i, j}} V(r_{ij}) q_i q_j,
+\end{equation}
+where $V(r)$ is the $d$-dimensional Coulomb potential, and in 2D it is  
+\begin{equation}
+    V(r_{ij}) = - \ln r_{ij} / \lambda.
+\end{equation}
+We already know that it is equivalent to a sine-Gordon model after a Hubbard-Stratonovich transformation, and 
+it is the effective theory of vortices in the XY model. Therefore it undergoes a KT phase transition at 
+a critical temperature $T_\text{c}$ when the numbers of positive and negative charged particles are the same. 
+
+Now we discuss a \emph{non-neutral} Coulomb gas. We introduce a parameter $\Delta E$ to give positive and 
+negative charges different energies, or in other words, difference in chemical potentials of positive and 
+negative charges. When $\Delta E = 0$, there is no KT phase transition (just like the case in the Ising model:
+when there is a magnetic field, there is no second order phase transition), but as $\Delta E$ changes 
+there may be some non-trivial phenomena (again like the case in the Ising model).
+
+So what is the relation between KT phase transition and superconductivity? We know the complex order parameter 
+in superconductivity itself is in a superfluid phase, and only its phase $\theta$ is important. Note that the 
+target space of $\theta$ is $S^{1}$, and we have vortices in the system. We have discussed this
+\href{../quantum-fluid/wen-boson.pdf}{here}. Also, note that the magnetic field in superconductivity is just 
+$\Delta E$ in a Coulomb gas. The last thing we need to map from superconductivity to the Coulomb gas is the 
+boundary, which corresponds to $\vb*{n} \cdot \grad \theta = 0$ and can be modeled as the boundary of a 
+ideal conductor and solved by the image charge method.
+
+Now we can calculate observables from the Coulomb gas model and try to explain some behaviors of a 2D 
+superconducting film. We do not need to simulate the Coulomb gas model numerically from the beginning.
+Rather, we can use the idea of effective interaction and screening and measure the ``dielectric constant''
+from experiment and calculate the susceptibility. The oscillation of the susceptibility can be intuitively 
+explained as follows: as the magnetic field increases, at first it is weak and there is no vortex, so 
+the susceptibility is zero; when the magnetic field is able to excite a vortex, the current increases quickly,
+so there is a peak in the susceptibility; then the magnetic field is able to excite a cortex but unable to 
+excite two vortices, and again the susceptibility is down to zero. These steps occur over and over again,
+therefore inducing oscillating a magnetic susceptibility.
+
+\end{document}
