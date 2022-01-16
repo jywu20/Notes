@@ -14,7 +14,8 @@
 \usepackage{bbm}
 \usepackage{cite}
 \usepackage{graphicx}
-\usepackage{subfigure}
+%\usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
@@ -92,7 +93,7 @@
 }
 
 % Reference formatting
-\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+\newrefformat{fig}{Figure~\ref{#1}}
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
@@ -115,7 +116,14 @@
 
 This article is a reading note of Xiaogang Wen's Quantum Field Theories of Many-body Systems, Chapter~4.
 
-\section{The shape of the Fermi surface and equal-time Green function}
+\section{The shape of the Fermi surface and algebraic long-range orders}
+
+\begin{figure}
+    \centering
+    \input{fermi-surface-tangent-plane.tex}
+    \caption{The shape of the Fermi surface and \eqref{eq:n-tilde}. The green shadow is the Fermi sea. The slim blue lines are $k = \vb*{k} \cdot \vu*{x}$ planes. The yellow lines represents the intersection between the Fermi sea and $k = \vb*{k} \cdot \vu*{x}$ planes. The two thick blue lines are the $\vb*{k} \cdot \vu*{x} = \vb*{k}_\text{F}(\vu*{x}) \cdot \vu*{x}$ plane and the $\vb*{k} \cdot \vu*{x} = \vb*{k}_\text{F}(-\vu*{x}) \cdot \vu*{x}$ plane. $\tilde{N}$ is only non-zero in the grey area where $\boldsymbol{k}_{\text{F}}( -\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}} < k< \boldsymbol{k}_{\text{F}}(\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}$.}
+    \label{fig:n-tilde}
+\end{figure}
 
 In this section we explicitly evaluate the equal-time Green function.  \marginnote{Sec.~4.2.4}
 An important fact is that it is highly affected by the shape of the Fermi surface. When $T=0$, we have 
@@ -130,23 +138,121 @@ one spin polarization)
 \end{equation}
 We define 
 \begin{equation}
-    \tilde{N}(k, \vu*{x}) = \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \Theta(-\xi_{\vb*{k}}) \delta(k - \vb*{k} \cdot \vu*{x}),
+    \begin{aligned}
+        \tilde{N}(k, \vu*{x}) &\coloneqq \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \Theta(-\xi_{\vb*{k}}) \delta(k - \vb*{k} \cdot \vu*{x}) \\
+        &= \frac{1}{(2\pi)^d} \times \text{intersection area between the Fermi sea and the $k = \vb*{k} \cdot \vu*{x}$ plane} ,
+    \end{aligned}
     \label{eq:n-tilde}
 \end{equation}
-and since when $k = \vb*{k} \cdot \vu*{x}$, we have $k \abs*{\vb*{x}} = \vb*{k} \cdot \vb*{x}$, we have 
+where the second line is since the $\delta$-function is non-zero on the plane $\vb*{k} \cdot \vu*{x} = k$ in 
+the momentum space, and we have 
+\[
+    \int \dd[d]{\vb*{k}} \delta(k - \vb*{k} \cdot \vu*{x}) \cdots = \int \dd[d-1]{{S}} \frac{1}{\abs*{\grad_{\vb*{k}} (\vb*{k} \cdot \vu*{x})}} \cdots = \int \dd[d-1]{{S}} \cdots.
+\] 
+Since when $k = \vb*{k} \cdot \vu*{x}$, we have $k \abs*{\vb*{x}} = \vb*{k} \cdot \vb*{x}$, we have 
 \begin{equation}
     \ii G(-0^+, \vb*{x}) = - \int_{-\infty}^\infty \dd{k} \tilde{N}(k, \vu*{x}) \ee^{\ii k \abs*{\vb*{x}}}.
+    \label{eq:n-tilde-to-green}
 \end{equation}
-Now the most important task is to evaluate \eqref{eq:n-tilde}. The $\delta$-function is non-zero on the 
-plane $\vb*{k} \cdot \vu*{x} = k$ in the momentum space. 
+
+Now the most important task is to evaluate \eqref{eq:n-tilde}. Since it strongly depends on the shape of 
+the Fermi surface, we are not going to give a generalized form of \eqref{eq:n-tilde}. What we want to focus 
+on is the fact that Fermionic systems usually have \emph{algebraic long-range orders}. The Fourier transformation
+relation in the first equation of \eqref{eq:n-tilde} means that a long-range component 
+in $G(- 0^+, \vb*{x})$ is caused by a highly localized feature in $\tilde{N}(k, \vu*{x})$, and 
+smooth, continuous components in $N(k, \vu*{x})$ with regard to $k$ contribute to details with small 
+characteristic length scales in $G(-0^+, \vb*{x})$. Therefore, to investigate possible long-range orders 
+in $G(-0^+, \vb*{x})$, we need to look for something that is kind of \emph{singular} in $\tilde{N}(k, \vu*{x})$.
+
+From \prettyref{fig:n-tilde} find that when $\vu*{x}$ is given, $\tilde{N}(k, \vu*{x})$ is only non-zero 
+in the interval 
+\begin{equation}
+    \vb*{k}_\text{F}(-\vu*{x}) \cdot \vu*{x} < k < \vb*{k}_\text{F}(\vu*{x}) \cdot \vu*{x},
+    \label{eq:non-zero-n}
+\end{equation}
+where we define $\vb*{k}_\text{F}(\vu*{x})$ to be the point of tangency of a tangent plane of the Fermi
+surface that is perpendicular to $\vb*{x}$.
+Therefore, there are two singularities in the derivative of $\tilde{N}(k, \vu*{x})$ with respect to $k$,
+which are the upper and lower limits of the interval. Therefore, the terms that contribute to a long-range 
+order are 
+\begin{equation}
+    \begin{aligned}
+        \tilde{N}(k, \hat{\boldsymbol{x}}) \sim &\  c_{+} \Theta\left(\boldsymbol{k}_{F}(\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}-k\right)\left|\boldsymbol{k}_{F}(\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}-k\right|^{(d-1) / 2} \\
+        &+c_{-} \Theta\left(-\boldsymbol{k}_{F}(-\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}+k\right)\left|-\boldsymbol{k}_{F}(-\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}+k\right|^{(d-1) / 2},
+        \end{aligned}
+        \label{eq:n-tilde-singularity}
+\end{equation}
+where the exponent $(d-1)/2$ can be explained by \prettyref{fig:radius}(a). Now we can evaluate \eqref{eq:n-tilde-to-green} and get 
+\begin{equation}
+    \left.\mathrm{i} G\left(-0^{+}, \boldsymbol{x}\right)\right|_{\boldsymbol{x} \rightarrow \infty} \sim \const \times \left(c_{+} \mathrm{e}^{\mathrm{i} \boldsymbol{k}_\text{F}(\hat{\boldsymbol{x}}) \cdot \boldsymbol{x}} \mathrm{c}^{-\mathrm{i} \frac{\pi(d+1)}{4}}+c_{-} \mathrm{e}^{\mathrm{i} \boldsymbol{k}_\text{F}(-\hat{\boldsymbol{x}}) \cdot \boldsymbol{x}} \mathrm{e}^{\mathrm{i} \frac{\pi(d+1)}{4}}\right) \frac{1}{|x|^{(d+1) / 2}}.
+    \label{eq:g-two-point-order}
+\end{equation}
+The first term comes from 
+\[
+    \begin{aligned}
+        &\quad \int_{-\infty}^\infty \ee^{\ii k \abs*{\vb*{x}}} \dd{k} \Theta(\vb*{k}_\text{F}(\vu*{x}) \cdot \vu*{x} - k) \abs*{\vb*{k}_\text{F}(\vu*{x}) \cdot \vu*{x} - k)}^{(d-1)/2} \\
+        &= \int_{-\infty}^\infty \ee^{\ii (\vb*{k}_\text{F}(\vu*{x}) \cdot \vu*{x} - k') \abs*{\vb*{x}}} \Theta(k') \abs*{k'}^{(d-1)/2} \\
+        &= \ee^{ \ii \vb*{k}_\text{F}(\vu*{x}) \cdot \vb*{x}} \int_0^\infty k'^{(d-1)/2} \ee^{- \ii k' x} \dd{k'},
+    \end{aligned}
+\]
+and we have 
+\[
+    \int_0^\infty k^D \ee^{ \ii k x} \dd{k} = ( \ii x )^{-1-D} \Gamma(1+D), \quad \Re D > -1, \ \Im x > 0.
+\]
+The second term can be obtained in a similar manner.
+Note that \eqref{eq:n-tilde-singularity} is not zero outside \eqref{eq:non-zero-n}, and when integrating 
+over $k$, we need to set a cutoff for both terms in \eqref{eq:n-tilde-singularity}, but this does not 
+change the form of \eqref{eq:g-two-point-order}, since we just have 
+\[
+    \int_0^\Lambda k^D \ee^{-\ii k x } \dd{k} = (\ii x)^{-1-D} (\Gamma(1+D) - \Gamma(1+D, \ii x \Lambda)).
+\]
+Actually, the form of \eqref{eq:g-two-point-order} can be observed by a dimensional analysis and some common
+sense about the step function -- the dimensional analysis of $k^{(d-1)/2} \dd{k}$ means we have a 
+$\abs*{\vb*{x}}^{-((d-1)/2+1)}$ factor in $(-0^+, \vb*{x})$, and the step function brings in the oscillation.
+We see that \eqref{eq:g-two-point-order} oscillates as $\abs*{\vb*{x}} \to \infty$ and damps in an algebraic way.
+The algebraic damping eventually comes from the mere existence of a sharp boundary of $n_\text{F}(\xi_{\vb*{k}})$,
+or in other words, comes from the existence of the Fermi surface. 
 
 \begin{figure}
     \centering
-    \input{fermi-surface-tangent-plane.tex}
-    \caption{The shape of the Fermi surface and \eqref{eq:n-tilde}}
+    \input{curve-tilde-n.tex}
+    \caption{Estimation of $\tilde{N}(k, \vu*{x})$. (a) The case when the Fermi surface is not flat. The intersection in \eqref{eq:n-tilde} is a $d-1$ hypersurface, the ``radius'' of which is about $2 \sqrt{2R(k - \vb*{k} \cdot \vu*{x})} \sim \sqrt{k - \vb*{k} \cdot \vu*{x}}$, and therefore the ``area'' of the intersection is proportion to $(k - \vb*{k} \cdot \vu*{x})^{(d-1)/2}$. (b) The Fermi surface is flat on some directions. In this case there is no well-defined $R$, and the ``area'' of the intersection is almost constant when $k$ enters \eqref{eq:non-zero-n}.}
+    \label{fig:radius}
 \end{figure}
 
+Our derivation above does not include the case in which there are uncountably infinite $\vb*{k}_\text{F}(\vu*{x})$'s.
+This happens when a part of the Fermi surface is flat. This means we should not approximate the behavior 
+of $\tilde{N}(k, \vu*{x})$ near the boundary points of \eqref{eq:non-zero-n} with \prettyref{fig:n-tilde}(b).
+In this case, we have 
+\begin{equation}
+    \tilde{N}(k, \vu*{x}) \sim c_+ \Theta\left(\boldsymbol{k}_\text{F}(\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}-k\right) + c_- \Theta\left(- \boldsymbol{k}_\text{F}(-\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}+ k\right) \left|-\boldsymbol{k}_\text{F}(-\hat{\boldsymbol{x}}) \cdot \hat{\boldsymbol{x}}+k\right|^{(d-1) / 2}.
+    \label{eq:one-side-flat-n-tilde}
+\end{equation}
+Again we evaluate \eqref{eq:n-tilde-to-green} and get 
+\begin{equation}
+    \left.\ii G(-0^+, \vb*{x})\right|_{\vb*{x} \to \infty} \sim - \ii \ee^{\ii \vb*{k}_\text{F}(\vu*{x})} \frac{1}{\abs*{\vb*{x}}}.
+\end{equation}
+Note that here we throw away the term contributed by the second term of \eqref{eq:one-side-flat-n-tilde}
+because it decays more quickly ($\sim \abs*{\vb*{x}}^{-(d+1)}$) than the contribution of the first term 
+($\sim \abs*{\vb*{x}}$). In other words, a flat Fermi surface induces an algebraic long-range order that decays slower.
+If the Fermi surface is flat on both side -- i.e. $\vb*{k}_\text{F}(\vu*{x})$ and $\vb*{k}_\text{F}(-\vu*{x})$ --
+then we have 
+\begin{equation}
+    \left.\ii G(-0^+, \vb*{x})\right|_{\vb*{x} \to \infty} \sim - \ii \ee^{\ii \vb*{k}_\text{F}(\vu*{x})} \frac{1}{\abs*{\vb*{x}}} + \ii \ee^{\ii \vb*{k}_\text{F}(- \vu*{x}) \cdot \vb*{x}} \frac{1}{\abs*{\vb*{x}}}.
+\end{equation}
+
 \section{Density-density correlation function}
+
+Now we discuss the simplest two-body correlation function. \marginnote{Sec.~4.3.1} This topic is important for two reasons. 
+First, it gives the electrostatics of a band material. Second, if a \concept{charge density wave (CDW)}
+order forms, we can see a periodic pattern in the real space density-density correlation function,
+and if we are able to find something like the algebraic long-range order discussed in the past section,
+it is a good hint of what kind of Fermi surface tends to induce a CDW. Note that in the jellium model 
+(see \href{electron-gas.pdf}{here}), the only strong correlation effect is the Wigner crystal. 
+We can conclude that the rich strong correlation effects in condensed matter physics are mostly 
+controlled by the \emph{lattice}, and the lattice shapes the bands and thus the Fermi surface.
+
+
 
 \section{Linear response and effective theory}
 
