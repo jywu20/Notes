@@ -29,6 +29,7 @@
 \zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \zexternaldocument*[oldfluid-]{fluid}[fluid.pdf]
+\zexternaldocument*[kt-]{../topological-phases-reading-notes/kt}[kt.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -123,7 +124,7 @@ It is mainly a reconstruction of material related to the KT phase transition cov
 
 \section{A simplest interacting boson system}
 
-(3.3.1) in Section~3.3.1 provides a simplest interacting bosonic system with a complex scalar field \marginnote{Section~3.3.1}
+Eq. (3.3.1) in Section~3.3.1 provides a simplest interacting bosonic system with a complex scalar field \marginnote{Section~3.3.1}
 \begin{equation}
     S = \int \dd[d]{\vb*{x}} \dd{t} (\ii \varphi^* \partial_t \varphi - \frac{1}{2m} \partial_{\vb*{x}} \varphi^* \partial_{\vb*{x}} \varphi + \mu \abs*{\varphi}^2 - \frac{V_0}{2} \abs*{\varphi}^4).
     \label{eq:bosonic}
@@ -136,9 +137,9 @@ Hamiltonian, and therefore we have a $\varphi^* \laplacian \varphi / 2m$ term in
 integration by parts we have $\varphi^* \laplacian \varphi / 2m \simeq - \partial_{\vb*{x}} \varphi^* 
 \partial_{\vb*{x}} \varphi / 2m$. 
 
-The semiclassical approximation from (3.3.1) to (3.3.2) can be justified when the temperature is high 
+The semiclassical approximation from Eq. (3.3.1) to Eq. (3.3.2) can be justified when the temperature is high 
 and therefore the most economical path does not have imaginary time evolution at all. It can also 
-be derived using the ideas behind (3.4.1), where with a finite temperature, we can always integrate 
+be derived using the ideas behind Eq. (3.4.1), where with a finite temperature, we can always integrate 
 out modes with non-zero Matsubara frequencies. This gives a physical picture behind dynamic density 
 functional theories and also explains why ``classical'' statistical physics is still relevant today.
 It should be noted that when the temperature is low, parameters in the ``classical'' theory obtained 
@@ -203,19 +204,92 @@ then the electric field $- \grad \theta$ is just the current of the $\varphi$ bo
 configuration, we have stale non-zero $\grad{\theta}$, meaning that $\varphi$ bosons continuously flow from 
 the position of the test charge to infinity. This definitely is not allowed in 
 
-Still I'm not sure about what a roton is in this picture \ldots
+TODO: Still I'm not sure about what a roton is in this picture \ldots
 
-\section{KT phase transition}
+\section{Equivalence to a sine-Gordon model}
 
-The KT phase transition in the \emph{classical} XY model - which is most frequently 
-seen in introduction to KT phase transition itself - is covered in \ktnote. It should be noticed that the 
-phase transition is not restricted to the classical region - we may define quantum XY models, just as
+In this section we show the duality between the 2D XY model and the 2D sine-Gordon model, which can also 
+be thought as an effective model of \emph{clock model} (Wen used this name for the sine-Gordon model, just 
+like using the name ``XY model'' for the effective field theory of the XY model). \marginnote{Section 3.5.2}
+Sine-Gordon model is easier to study using RG, and \ktnote{} discusses the KT phase transition in the 
+\emph{classical} XY model using the sine-Gordon model -- which is most frequently 
+seen in introduction to KT phase transition itself. It should be noticed that the 
+phase transition is not restricted to the classical region -- we may define quantum XY models, just as
 is the case in \prettyref{sec:quantum-xy}. 
-
 TODO: For example, the $\theta$ degrees of freedom in \ktnote{} can be realized with quantum rotors, which are 
 introduced in the first chapter in \cite{Sachdev2009}. 
 
-However, since the KT phase transition is a , 
+The duality is shown by Eq. (3.5.4). Here we show some details in the derivation. \marginnote{Eq. (3.5.4)} 
+From Eq.~(3.5.3) we get the first line of Eq. (3.5.4): 
+\[
+    \begin{aligned}
+        Z &= \int \fd{\theta} \  \sum_{k=0}^\infty \frac{1}{k!} \left( g \int \dd[2]{\vb*{x}} \frac{\ee^{\ii \theta} + \ee^{- \ii \theta}}{2} \right)^k \ee^{- \int \dd[2]{\vb*{x}} \frac{\kappa}{2} (\grad \theta)^2} \\
+        &= \int \fd{\theta} \  \sum_{k=0}^\infty \frac{1}{k!} \left(\frac{g}{2}\right)^k \prod_{i=1}^k \int \dd[2]{\vb*{x}_i} \sum_{\{q_i = \pm 1 \}} \ee^{\sum_{i=1}^k \ii q_i \theta(\vb*{x}_i)} \ee^{ \int \dd[2]{\vb*{x}} \frac{\kappa}{2} \theta \laplacian \theta} .
+    \end{aligned}
+\]
+Now, note that 
+\[
+    \exp(\sum_{i=1}^k \ii q_i \theta(\vb*{x}_i)) = \exp(\int \dd[2]{\vb*{x}} \theta(\vb*{x}) \sum_{i=1}^k \ii q_i \delta(\vb*{x} - \vb*{x}_i)),
+\]
+we can integrate out $\theta$ and get 
+\[
+    \begin{aligned}
+        &\quad \int \fd{\theta} \ \ee^{\sum_{i=1}^k \ii q_i \theta(\vb*{x}_i)} \ee^{ \int \dd[2]{\vb*{x}} \frac{\kappa}{2} \theta \laplacian \theta} \\
+        &= Z_0 \exp(- \frac{1}{2} \int \dd[2]{\vb*{x}} \int \dd[2]{\vb*{y}} \frac{1}{2 \pi \kappa} \ln \abs*{\vb*{x} - \vb*{y}} \sum_{i=1}^k \ii q_i \delta(\vb*{x} - \vb*{x}_i) \cdot \sum_{j=1}^k \ii q_j \delta(\vb*{y} - \vb*{x}_j)) \\
+        &= Z_0 \exp(\frac{1}{4 \pi \kappa} \sum_{i=1}^k \sum_{j=1}^k q_i q_j \ln r_{ij}),
+    \end{aligned}
+\]
+where we have used the Green function of $\laplacian$, which is 
+\[
+    \frac{1}{\kappa \laplacian} = \frac{1}{2 \pi \kappa} \ln r_{ij},
+\]
+and $Z_0$ is the partition function of the action $- \int \dd[2]{\vb*{x}} (\grad \theta)^2$. 
+Therefore, we have 
+\begin{equation}
+    Z = Z_0 \sum_{k=0}^\infty \frac{1}{k!} \left(\frac{g}{2}\right)^k \prod_{i=1}^k \int \dd[2]{\vb*{x}_i} 
+    \sum_{\{q_i = \pm 1 \}} \exp(\frac{1}{4 \pi \kappa} \sum_{i=1}^k \sum_{j=1}^k q_i q_j \ln r_{ij}).
+    \label{eq:proto-sine-gordon-to-xy-1}
+\end{equation}
+Note that when $i=j$, $\ln r_{ij}$ diverges, and there are $k$ diverging terms. We can collect these divergence 
+and $(g/2)^k$ together and define 
+\begin{equation}
+    \ee^{-k S_\text{core}} = \left(\frac{g}{2}\right)^k \exp(\frac{1}{4 \pi \kappa} k \ln 0 ),
+\end{equation}  
+and now we have 
+\begin{equation}
+    Z = \sum_{k=0}^\infty \frac{1}{k!} \ee^{- k S_\text{c}} \prod_{i=1}^k \int \dd[2]{\vb*{x}_i} \sum_{\{q_i = \pm 1\}} \exp(\frac{1}{4 \pi \kappa} 2 \sum_{i < j}^k q_i q_j \ln r_{ij}).
+\end{equation}
+This is already very close to the second line of Eq. (3.5.4), and we already get the 2D Coulomb interaction. 
+What we need to do to get the final version of Eq. (3.5.4) is to notice that the low energy configurations 
+contain the same number of positive and negative $q_i$'s, so we only have to consider the even $k$ terms. 
+Defining
+\begin{equation}
+    h = \frac{1}{4 \pi \kappa},
+\end{equation}
+we have 
+\[
+    Z \approx \sum_{k=0}^\infty \frac{1}{(2k)!} \ee^{- 2 k S_\text{c}} \int \prod_{i=1}^{2k} \dd[2]{\vb*{x}_i} \sum_{q_i = \pm 1} \ee^{\sum_{i < j}^k 2 q_i q_j \ln r_{ij}}.
+\]
+Currently we imposes no restriction on $\{q_i\}$ and we just sum over all possible configurations, but since 
+we can just rearrange $\{\vb*{x}_i\}$, all $\{q_i\}$ configurations with the same $k$ actually give the same 
+weight in the partition function. There are $C_{2k}^k$ possible $\{q_i\}$ configurations with a given $k$ (since
+we need exactly $k$ positive charges in $2k$ charges), and therefore we have 
+\[
+    \begin{aligned}
+        Z &\approx \sum_{k=0}^\infty \frac{1}{(2k)!} \ee^{- 2 k S_\text{c}} \int \prod_{i=1}^{2k} \dd[2]{\vb*{x}_i} \underbrace{\frac{(2k!)}{k! k!}}_{C_{2k}^k} \ee^{\sum_{i < j}^k 2 q_i q_j \ln r_{ij}} \\
+        &= \sum_{k=0}^\infty \frac{1}{k! k!} \ee^{- 2 k S_\text{c}} \int \prod_{i=1}^{2k} \dd[2]{\vb*{x}_i} \ee^{\sum_{i < j}^k 2 q_i q_j \ln r_{ij}}.
+    \end{aligned}
+\]
+So now we have completed the derivation of Eq. (3.5.4).
+
+In \ktnote{} we showed the equivalence between the XY model and the sine-Gordon model using Hubbard-Stratonovich
+transformation (see Section~\ref{kt-sec:sine-gordon}), and here we show the equivalence directly by analyzing 
+the Taylor expansion of the partition function. What we are doing here is actually a path integral version of 
+second quantization, where we have shown that indeed the partition function of a many-body system is the 
+same as the partition function of a field theory. 
+
+\section{KT phase transition}
+
 
 \bibliographystyle{plain}
 \bibliography{xy} 
