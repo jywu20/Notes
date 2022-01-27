@@ -7,6 +7,7 @@
 % \usepackage{paralist}
 \usepackage{enumitem}
 \usepackage{footnote}
+\usepackage{marginnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
@@ -27,6 +28,8 @@
 \zxrsetup{toltxlabel}
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
 \zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[rpa-]{./electron-gas}[electron-gas.pdf]
+\zexternaldocument*[1027-]{../advanced-electrodynamics/lecture-10-27}[lecture-10-27.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -100,6 +103,8 @@
 
 \newcommand{\soliddoc}{\href{../solid/solid.pdf}{this solid state physics note}}
 \newcommand{\opticsdoc}{\href{../optics/optics.pdf}{this optics note}}
+\newcommand{\rpanote}{\href{./electron-gas.pdf}{this note}}
+\newcommand{\advancedelenote}{\href{../advanced-electrodynamics/lecture-10-27.pdf}{this note}}
 
 \title{Phonons in Band Metal and Insulators}
 \author{Jinyuan Wu}
@@ -112,8 +117,128 @@ The general theory of phonons can be found in \soliddoc. In this note we just di
 phonons. We have \concept{longitude acoustic (LA) phonons}, \concept{transverse acoustic (TA) phonons},
 \concept{longitude optical (LO) phonons}, and \concept{transverse optical (TO) phonons}.
 
-\section{Self-energy correction of phonons and the Bohm-Staver formula}
+\section{Self-energy correction of LA phonons and the Bohm-Staver formula}
 
-% TODO: diagrammatical approach
+Phonons are usually derived by considering the displacement of each atom in the lattice as a bosonic field and 
+then doing canonical quantization. This approach is based on effective potentials between atoms, which takes the 
+effective interaction induced by electrons into account. In this section, we consider the case of alkali metals
+and show how can we derive the spectrum of phonons from just Coulomb interaction.
+
+Ions in a alkali metal can be thought as point charges with charge $+\abs{e}$, and they repulse each other. 
+If we view the electrons in the metal as a uniform jellium, we can just apply \eqref{rpa-eq:uniform-oscillation} in \rpanote
+to \emph{atoms}, and find that 
+\begin{equation}
+    \ddot{Q}_{\vb*{q}} + \Omega^2_{\vb*{q}} Q_{\vb*{q}} = 0, \quad \Omega^2_{\vb*{q}} = \frac{4 \pi n e^2}{M},
+\end{equation}
+where $n$ is the density of number of electron and $M$ is the mass of an atom. 
+This phonon branch longitude, since for Coulomb field, we have $\curl{\vb*{E}} = 0$, and transverse modes 
+cannot occur. It is also acoustic, since in a plasmon mode, all particles vibrate synchronously, so we can see a long range density fluctuation.
+Note that $\Omega_{\vb*{q}}$ has nothing to do with $\vb*{q}$, and we do not see the regular linear dispersion. 
+
+Now we introduce the self-energy correction of phonons. 
+\input{feynman/phonon-self-energy.tex}
+where under the RPA, we have 
+\input{feynman/phonon-self-energy-bubble.tex}
+where $M_{\vb*{q}}$ is the phonon-electron interaction vertex and $\Pi^0_q$ is defined in \eqref{rpa-eq:normal-interaction-correction} in \rpanote. 
+The propagator of the phonon is 
+\begin{equation}
+    \ii D^0_q = \ii \frac{2 \Omega_{\vb*{q}}}{(q^0)^2 - \Omega_{\vb*{q}}^2 + \ii 0^+},
+\end{equation}
+and we have 
+\[
+    \begin{aligned}
+        &\quad \ii D_q = \frac{\ii D^0_q}{1 - \ii D^0_q \times \text{normal self-energy}} \\
+        &= \frac{\ii 2 \Omega_{\vb*{q}}}{\omega^2 - \Omega^2_{\vb*{q}} + \ii 0^+ - \ii 2 \Omega_{\vb*{q}} \times (- \ii \Pi^0_q \abs*{M_{\vb*{q}}}^2 - \ii \abs*{M_{\vb*{q}}}^2 (\Pi^0_q)^2 V^\text{eff}_q )} \\
+        &= \ii \frac{2 \Omega_{\vb*{q}}}{\omega^2 - \Omega^2_{\vb*{q}} - 2 \Omega_{\vb*{q}} \abs*{M_{\vb*{q}}}^2 \Pi^0_q (1 + \Pi^0_q V^\text{eff}_q)}. 
+    \end{aligned}
+\]
+The corrected pole is no longer $\omega = \pm \Omega_{\vb*{q}}$, but 
+\[
+    \omega^2 = \Omega^2_{\vb*{q}} + 2 \Omega_{\vb*{q}} \abs*{M_{\vb*{q}}}^2 \Pi^0_q (1 + \Pi^0_q V^\text{eff}_q).
+\]
+Since 
+\[
+    V_q^\text{eff} = \frac{V_q}{1 - V_q \Pi^0_q},
+\]
+we have 
+\begin{equation}
+    \omega^2 = \Omega^2_{\vb*{q}} + 2 \Omega_{\vb*{q}} \abs*{M_{\vb*{q}}}^2 \frac{\Pi^0_q}{1 - \Pi^0_q V_q} .
+    \label{eq:renormalized-phonon-freq}
+\end{equation}
+
+In this simple case we are able to find $M_{\vb*{q}}$. We have 
+\[
+    \begin{aligned}
+        V_\text{e-i} &= - \sum_\sigma \int \dd[3]{\vb*{r}} \sum_{\vb*{i}} \frac{e^2 \psi^\dagger_\sigma(\vb*{r}) \psi_\sigma(\vb*{r})}{\abs*{\vb*{r} - \vb*{R}_{\vb*{i}}^0 - \vb*{X}_{\vb*{i}}}} \\
+        &\approx - \sum_\sigma \int \dd[3]{\vb*{r}} \sum_{\vb*{i}} \vb*{X}_{\vb*{i}} \cdot \grad_{\vb*{X}_{\vb*{i}}} \frac{e^2 \psi^\dagger_\sigma(\vb*{r}) \psi_\sigma(\vb*{r})}{\abs*{\vb*{r} - \vb*{R}_{\vb*{i}}^0 - \vb*{X}_{\vb*{i}}}} \\
+        &= \sum_\sigma \int \dd[3]{\vb*{r}} \sum_{\vb*{i}} \vb*{X}_{\vb*{i}} \cdot \grad_{\vb*{r}} \frac{e^2 \psi^\dagger_\sigma(\vb*{r}) \psi_\sigma(\vb*{r})}{\abs*{\vb*{r} - \vb*{R}_{\vb*{i}}^0 }} ,
+    \end{aligned}
+\]
+and by Fourier transformation, we have 
+\[
+    \begin{aligned}
+        V_\text{e-i} &= \sum_\sigma \int \dd[3]{\vb*{r}} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} \frac{1}{\sqrt{V}} \ee^{- \ii \vb*{k} \cdot \vb*{r}} c^\dagger_{\vb*{k} \sigma} \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k}' \cdot \vb*{r}} c_{\vb*{k}' \sigma} \vb*{X}_{\vb*{i}} \cdot \grad_{\vb*{r}} \frac{ e^2}{\abs*{\vb*{r} - \vb*{R}_{\vb*{i}}^0 }} \\
+        &= \frac{1}{V} \sum_{\sigma} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \int \dd[3]{\vb*{r}} \vb*{X}_{\vb*{i}} \cdot \grad_{\vb*{r}} \frac{e^2}{\abs*{\vb*{r} - \vb*{R}^0_{\vb*{i}} }} \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{r}} \\
+        &= - \frac{1}{V} \sum_{\sigma} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \int \dd[3]{\vb*{r}} \vb*{X}_{\vb*{i}} \cdot \frac{e^2}{\abs*{\vb*{r} - \vb*{R}^0_{\vb*{i}} }} \grad_{\vb*{r}} \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot (\vb*{r} - \vb*{R}_{\vb*{i}}^0 )} \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{R}^0_{\vb*{i}}} \\
+        &=  - \frac{1}{V} \sum_{\sigma} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \vb*{X}_{\vb*{i}} \cdot \ii (\vb*{k}' - \vb*{k}) \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{R}^0_{\vb*{i}}} \int \dd[3]{\vb*{r}} \frac{e^2}{\abs*{\vb*{r} - \vb*{R}^0_{\vb*{i}} }}  \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot (\vb*{r} - \vb*{R}_{\vb*{i}}^0 )} \\
+        &= \frac{1}{V} \sum_{\sigma} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \vb*{X}_{\vb*{i}} \cdot \ii (\vb*{k} - \vb*{k}') \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{R}^0_{\vb*{i}}} \frac{4 \pi e^2}{\abs*{\vb*{k} - \vb*{k}'}}.
+    \end{aligned}
+\]
+Now we use the expansion \eqref{solid-eq:phonon-displacement-general} in \soliddoc, and we have 
+\[
+    \begin{aligned}
+        V_\text{e-i} &= \frac{1}{V} \sum_{\sigma} \sum_{\vb*{i}} \sum_{\vb*{k}, \vb*{k}'} \sum_{\vb*{q}, \lambda} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \frac{1}{\sqrt{2 M N \Omega_{\vb*{q} \lambda}}} (\vb*{\lambda} b_{\vb*{q} \lambda} \ee^{\ii \vb*{q} \cdot \vb*{R}^0_{\vb*{i}}} + \text{h.c.}) \cdot \ii (\vb*{k} - \vb*{k}') \ee^{\ii (\vb*{k}' - \vb*{k}) \cdot \vb*{R}^0_{\vb*{i}}} \frac{4 \pi e^2}{\abs*{\vb*{k} - \vb*{k}'}} \\
+        &= \frac{N}{V} \sum_{\sigma} \sum_{\vb*{k}, \vb*{k}'} \sum_{\vb*{q}, \lambda} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \frac{1}{\sqrt{2 M N \Omega_{\vb*{q} \lambda}}} \ii (\vb*{k} - \vb*{k}') \cdot \vb*{\lambda} (  b_{\vb*{q} \lambda} \delta_{\vb*{q} + \vb*{k}', \vb*{k}} + b^\dagger_{\vb*{q} \lambda} \delta_{- \vb*{q} + \vb*{k}' , \vb*{k})}) \frac{4 \pi e^2}{\abs*{\vb*{k} - \vb*{k}'}} \\
+        &= \frac{1}{V} \sum_{\sigma} \sum_{\vb*{k}, \vb*{k}'} \sum_{\vb*{q}, \lambda} c^\dagger_{\vb*{k} \sigma} c_{\vb*{k}' \sigma} \sqrt{\frac{N}{2 M \Omega_{\vb*{q} \lambda}}} ( \ii \vb*{q} \cdot \vb*{\lambda} b_{\vb*{q} \lambda} \delta_{\vb*{q} + \vb*{k}', \vb*{k}} - \ii \vb*{q} \cdot \vb*{\lambda} b^\dagger_{\vb*{q} \lambda} \delta_{- \vb*{q} + \vb*{k}' , \vb*{k})}) \frac{4 \pi e^2}{\vb*{q}^2}.
+    \end{aligned}
+\]
+Note that this interaction channel only involves longitude phonons, which is expected, since it comes from Coulomb
+interaction. From symmetry analysis, we have 
+\[
+    V_\text{e-i} = \frac{1}{V} \sum_{\vb*{k}, \vb*{q}, \sigma, \lambda} M_{\vb*{q}} a^\dagger_{\vb*{k} \sigma} a_{\vb*{k} - \vb*{q}, \sigma} b_{\vb*{q} \lambda}  + \text{h.c.},
+\]
+and therefore we have 
+\begin{equation}
+    M_{\vb*{q}} = \ii \vb*{q} \cdot \vb*{\lambda} \sqrt{\frac{N}{2 M \Omega_{\vb*{q} \lambda}}} \frac{4 \pi e^2}{\vb*{q}^2} = \frac{\ii 4 \pi e^2}{\abs*{\vb*{q}} } \sqrt{\frac{N}{2 M \Omega_{\vb*{q} \lambda}}}.
+\end{equation}
+
+Now we can evaluate \eqref{eq:renormalized-phonon-freq} explicitly. The renormalized pole of the phonon propagator is 
+\[
+    \begin{aligned}
+        \omega^2 &= \Omega^2_{\vb*{q}} + 2 \Omega_{\vb*{q}} \abs*{M_{\vb*{q}}}^2 \frac{\Pi^0_q}{1 - \Pi^0_q V_q} \\
+        &= \Omega^2_{\vb*{q}} + 2 \Omega_{\vb*{q}} \frac{4 \pi e^2 N}{2M \Omega_{\vb*{q} \lambda}} \frac{4 \pi e^2}{\vb*{q}^2} \frac{\Pi^0_q}{1 - \Pi^0_q V_q}  \\
+        &= \Omega^2_{\vb*{q}} + \Omega^2_{\vb*{q}} V_q \frac{\Pi^0_q}{1 - \Pi^0_q V_q} = \frac{\Omega^2_{\vb*{q}}}{1 - \Pi^0_q V_q},
+    \end{aligned}
+\]
+and therefore we get the renormalized LA phonon spectrum:
+\begin{equation}
+    \omega_{\vb*{q}}^2 = \frac{\Omega_{\vb*{q}}^2}{\epsilon(\omega_{\vb*{q}}, \vb*{q})} ,
+\end{equation}
+or in the language of atom motion, 
+\begin{equation}
+    \ddot{Q}_{\vb*{q}} + \frac{\Omega_{\vb*{q}}^2}{\epsilon(\vb*{q})} Q_{\vb*{q}} = 0.
+    \label{eq:oscillating-eq-renormalized}
+\end{equation}
+Since usually LA phonon frequencies are much lower than the characteristic frequency of electrons, we can take 
+the Thomas-Fermi approximation (see \eqref{1027-eq:thomas-fermi-approx} in \advancedelenote, and here $\epsilon_0 = 1 / 4 \pi$)
+\begin{equation}
+    \epsilon(\omega=0, \vb*{q}) = 1 + \frac{k_\text{TF}^2}{\vb*{q}^2}, \quad k_\text{TF}^2 = \frac{6 \pi e^2 n}{\epsilon_\text{F}},
+\end{equation}
+and the dispersion relation of the LA phonon is 
+\[
+    \omega^2 \approx \frac{\Omega^2_{\vb*{q}}}{1 + \frac{k_\text{TF}^2}{\vb*{q}^2}} = \frac{\Omega^2_{\vb*{q}}}{\vb*{q}^2 + k_\text{TF}^2} \vb*{q}^2,
+\] 
+and in the long wave length approximation, i.e. $\vb*{q} \to 0$, we have 
+\begin{equation}
+    \omega_{\vb*{q}}^2 \approx \frac{\Omega^2_{\vb*{q}}}{k_\text{TF}^2} \vb*{q}^2 = \frac{2 \epsilon_\text{F}}{3M} \vb*{q}^2 = \frac{m}{3 M} v_\text{F}^2 \vb*{q}^2, \quad \omega_{\vb*{q}} = \sqrt{\frac{m}{3M}} v_\text{F} \abs*{\vb*{q}}. 
+\end{equation}
+This is called the \concept{Bohm-Staver formula} of sound speed.
+
+The above derivation can be simplified if we notice the fact that what electrons do is to screen the Coulomb 
+interaction between ions in the metal, which is just Coulomb repulsion exactly the same as the mutual 
+interaction between electrons, and the screening is therefore the same as \eqref{rpa-eq:external-screened} 
+and \marginnote{Zhengzhong Li Sec.~5.3} \eqref{rpa-eq:v-eff-resum} in \rpanote. 
+With this insight, since $\Omega_{\vb*{q}}^2$ is just proportion to 
+the Coulomb repulsion force, we can directly write down \eqref{eq:oscillating-eq-renormalized}. 
 
 \end{document}
