@@ -18,6 +18,7 @@ Topological order, emergent gauge fields, and Fermi surface reconstruction
     - 比如说Z2拓扑序，交换相位就是靠$\sigma^x$和$\sigma^z$的不对易引入的，那么如果朴素地做Trotter分解，要么看得清$\sigma^x$要么看得清$\sigma^z$，好像不能够同时看清楚两者，那么如何能够同时看清楚e激发和m激发呢？更别提引入交换相位了
     - 而且，靠$\sigma^x$和$\sigma^z$的不对易引入类似的两套准粒子，这似乎是Levin-Wen模型的特点，就是说如果产生Chern-Simons序，那产生的也是doubled Chern-Simons理论
 - 当然这两套东西的表现力不一样其实也正常，AKLT和能带不还都是SPT……
+- 纤维丛先生说要看hep-th/9110057；关于string-net和Turaev-Viro的关系，见1106.6033
 
 关于dirac monopole的问题。
 - 弦构造是artificial的还是有一定意义的？
@@ -26,5 +27,7 @@ Topological order, emergent gauge fields, and Fermi surface reconstruction
 - 弦结构和toric-code类似吗？Real-space observation of emergent magnetic monopoles and associated Dirac strings in artificial kagome spin ice
 
 Levin-Wen模型中$U(1)$规范场的弦上面放置整数是什么意思？
+
+多体系统中有演生Berry phase，一定说明有规范场吗？
 
 https://arxiv.org/pdf/1604.08400.pdf quantum skyrmion
