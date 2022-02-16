@@ -28,6 +28,7 @@
 \zxrsetup{toltxlabel}
 \zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
 \zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[jellium-]{../band-metal-insulator/electron-gas}[electron-gas.pdf]
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -100,6 +101,8 @@
   {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\newcommand{\jellium}{\href{../band-metal-insulator/electron-gas.pdf}{this note}}
 
 \title{Bosonization by Prof. Yue Yu}
 \author{Jinyuan Wu}
@@ -203,7 +206,57 @@ Similarly, the density fluctuation around $k = - k_\text{F}$ is defined as
     + \sum_{- k_\text{F} + \lambda q > k > - k_\text{F} } \normalorder{c^\dagger_{\frac{k + k_\text{F}}{\lambda} - k_\text{F} - q} c_k} .
 \end{equation}
 
-Now we make the \concept{Tomonaga approximaton}: we replace 
+Now we make the \concept{Tomonaga approximaton}: we replace $\comm*{\rho^\pm_q}{\rho^\pm_{q'}}$ by its ground state 
+expectation value. The procedure we are taking here is similar to how we simply \eqref{jellium-eq:bosonic-eq} in \jellium. % TODO: hubbard-stratonovich
+This gives 
+\begin{equation}
+    \comm*{\rho^\pm_q}{\rho^\pm_{q'}} \approx \expval*{\comm*{\rho^\pm_q}{\rho^\pm_{q'}}}{0} = \sum_{k_\text{F} - \lambda q < k < k_\text{F}} \expval*{c_{k+\lambda q} c^\dagger_{k + \lambda q'}}{0} = \frac{L}{2\pi} q \delta_{qq'}.
+\end{equation}
+Since there is no interaction between $c_+$ modes and $c_-$ modes, the Hamiltonian in \eqref{eq:free-spectrum} is  
+\begin{equation}
+    \comm*{H}{\rho_q^\pm} = \comm*{H_\pm}{\rho_q^\pm} \approx \pm v_\text{F} q \rho^\pm_q.
+    \label{eq:free-boson-comm-ham}
+\end{equation}
+under the Tomonaga approximation. \eqref{eq:free-boson-comm-ham} is the same as the commutation relation in a free phonon system.
+Defining 
+\begin{equation}
+    b_{q} = \sqrt{\frac{2\pi}{q}} \rho^+_q, \quad \tilde{b}_q = \sqrt{\frac{2\pi}{q}} (\rho_q^-)^\dagger,
+\end{equation}
+we find that the Hamiltonian
+\begin{equation}
+    H_\text{B} = v_\text{s} \sum_{q > 0} \left( q(b^\dagger_q b_q + \tilde{b}^\dagger_q \tilde{b}_q) + \frac{\pi}{2L} (\lambda M^2 + \frac{1}{\lambda} J^2) \right)
+    \label{eq:luttinger-bosonized}
+\end{equation}
+has the same commutation relation with density fluctuations with $H_\text{eff}$. 
+If only density fluctuations are important, \eqref{eq:luttinger-bosonized} is a good effective theory of the free fermion theory, which is usually called the \concept{Luttinger liquid theory}.
+
+Note that there is a constant term in \eqref{eq:luttinger-bosonized} which does not affect the dynamics. 
+It comes from the contribution of zero modes.
+We will skip the discussion about these terms currently, but actually it is these terms that \emph{classifies} Luttinger liquids.
+
+\section{Interaction between density fluctuations}
+
+Now we take $\lambda = 1$ and add back the electron spins, which is merely to add an additional index to the density modes.
+Consider the Hamiltonian (often called \concept{Tomonaga-Luttinger model}) introduced in \cite{onedfermi1995}:
+\begin{equation}
+    \begin{aligned}
+        & H = H_0 + H_2 + H_4,  \\
+        & H_2 = \frac{1}{L} \sum_{p, s, s'} \left( g_{2 \parallel} (p) \delta_{s s'} + g_{2 \bot }(p) \delta_{s, -s'} \right) \rho_{p + s} \rho_{-p, -, s'}, \\
+        & H_4 = \frac{1}{2L} \sum_{p, r, s, s'} \left( g_{4 \parallel} (p) \delta_{s s'} + g_{4 \bot }(p) \delta_{s, -s'} \right) \normalorder{\rho_{p r s} \rho_{-p, r, s'}},
+    \end{aligned}
+    \label{eq:tomonaga-luttinger-model}
+\end{equation} 
+which only includes density-density interaction (or in other words, ``forward scattering'').
+After bosonization of $H_0$, we find that the Hamiltonian is a bilinear of density fluctuations.
+Therefore, after bosonization, the Tomonaga-Luttinger model is exactly solvable.
+Despite being non-perturbative, \eqref{eq:tomonaga-luttinger-model} can be understood precisely.
+
+The zero mode term is now 
+\begin{equation}
+    \frac{\pi}{2L} \sum_s (v_N (\underbrace{N_{+ s} + N_{-s}}_{N_s})^2  + v_{J} (\underbrace{N_{+s} - N_{-s}}_{J_s})^2 ),
+\end{equation}
+where $N_{rs} = \rho_{0, r, s}$. When there is no interaction, we have $v_\text{s} = v_N = v_J = v_\text{F}$, but after 
+introducing forward scattering, generally speaking there will be charge-spin separation.
 
 \bibliographystyle{plain}
 \bibliography{../bosonization/bosonization}
