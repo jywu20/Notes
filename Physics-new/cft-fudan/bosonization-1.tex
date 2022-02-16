@@ -1,0 +1,211 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{marginnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+\title{Bosonization by Prof. Yue Yu}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{An overview of CFTs}
+
+This is a note about a lecture given by Prof. Yue Yu as a part of his course on CFT.
+
+To not start from the abstract mathematics, we start from bosonization of (1+1)-dimensional 
+interacting fermion systems. This results in a CFT with $c=1$ in (1+1)-dimensions.
+We are especially interested in the (1+1)-dimensional case, because in higher dimensional systems, the conformal 
+symmetry is a global symmetry, something like $\mathrm{SL}(2, \mathbb{C})$, while in the 
+(1+1)-dimensional case, the conformal symmetry is a \emph{local} symmetry, and therefore it is actually a \emph{gauge symmetry}.
+
+CFTs often describe critical points of 2-dimensional classical models and (1+1)-dimensional quantum models.
+From CFT we can calculate correlation functions and critical exponents \emph{exactly}.
+A classification of a certain group of CFTs is also a classification of the corresponding physical models.
+
+Though $c=1$ CFTs are directly related to the Luttinger liquid, they contain infinite primary fields and therefore is too ``large'' to be handled.
+The case when $c < 1$ is even worse: the number of primary fields can be infinite and the primary fields can be not well-defined.
+Fortunately, we still have \concept{minimal models} where we have a finite number of primary fields, and the whole Hilbert space is well-defined.
+(On the other hand, the Hilbert space of a generic gauge theory may contain states with negative norms and therefore is not well-defined before gauge fixing.)
+Some of minimal models corresponds to well-known exactly solvable statistical models, e.g. Ising model, tricritical Ising model, Potts model.
+The primary fields in a minimal model generally obeys anyon statistics, Abelian and non-Abelian.
+
+CFTs may also describe systems with a finite characteristic length, if we place them on a finite Riemann surface (for example, a torus). 
+This reduces the conformal symmetry to a smaller symmetry.
+For example, on a torus, the conformal invariance reduces into modular invariance.
+A finite size system can also be described by a CFT with finite size scaling, and the CFT can predict boundary effects.
+
+For $c > 1$, we have the \concept{Wess-Zumino-Witten (WZW) models} with Lie group symmetry.
+The most interesting WZW models are those with simple Lie group symmetry.
+% TODO
+
+CFTs with different central charges are connected by RG flows, which is shown by the \concept{c-theorem}. CFTs with definite central charges, therefore, are fixed points.
+
+In higher dimensions, the naive generalization of CFTs is not interesting, but we also have some results.
+There are higher dimensional generalization of the c-theorem.
+AdS/CFT is a correspondence between gravity and CFTs and was once thought to be hopeful to solve some strongly correlated problems.
+Conformal bootstrap can also be generalized to higher dimensions, though we are less confident about whether we take the constraints correctly there. 
+
+Probably the most intriguing application of CFTs in condensed matter physics is about topological quantum computation,
+where non-Abelian anyons are thought as qubits, and the braiding of anyons corresponds to the unitary transformations.
+We can build quantum gates with braiding.
+The simplest example is Ising non-Abelian anyon, which is the bound state of the spin and Majorana fermion.
+Braidings of Ising non-Abelian anyons cannot represent all unitary transformations.
+The Fibonacci anyon can achieve universal topological quantum computing.
+
+Note that fermions can also be non-Abelian. For example, a charge fermion can be delocalized into two types of Majorana fermions.
+% TODO: Kitaev superconducting chain
+Majorana fermions can also achieve universal topological quantum computing.
+Note, however, they can not be generated within a CFT. The theory describing them is a unitary tensor category, a generalization of CFTs.
+
+\section{Bosonization of free fields}
+
+This section is mainly based on \cite{onedfermi1995,PhysRevLett.75.890}. 
+\cite{onedfermi1995} is an introduction. \cite{PhysRevLett.75.890} is a work by Prof. Yu about some details.
+
+To make things easier, we redefine the unit of energy, and the Hamiltonian of a one-dimensional spinless fermion gas is 
+\begin{equation}
+    H = \int \dd{x} \abs*{\grad{\psi}}^2 + \frac{1}{2} \int \dd{x} \dd{y} V(x - y) \rho(x) \rho(y). 
+    \label{eq:1d-ham}
+\end{equation}
+The free theory case is 
+\begin{equation}
+    H_\text{eff} = H - \mu N = \sum_k \xi_k c^\dagger_k c_k, \quad \xi_k = \begin{cases}
+        (k^2 - k_\text{F}^2) / \lambda, \quad &\abs*{k} < k_\text{F}, \\
+        k^2 - k_\text{F}^2, \quad &\abs*{k} > k_\text{F}.
+    \end{cases}
+    \label{eq:free-spectrum}
+\end{equation}
+Here we take a more generalized form. For \eqref{eq:1d-ham}, of course $\lambda = 1$. 
+The theory with $\lambda = 3$ is actually about edge states of $\nu = 1 /3$ FQHE and is related to anyon statistics in the sense of exclusion. % ??? TODO
+
+We only consider \eqref{eq:free-spectrum} near the two Fermi points, and the spectrum is now 
+\begin{equation}
+    \xi_{k, \pm} = \begin{cases}
+        \pm v_\text{F} (k \mp k_\text{F}), \quad \abs*{k} > k_\text{F}, \\
+        \pm v_\text{F} (k \mp k_\text{F}) / \lambda, \quad \abs*{k} < k_\text{F},
+    \end{cases}
+\end{equation}
+where $\pm$ in the subscript of $\xi_{k, \pm}$ distinguishes the mode around $\pm k_\text{F}$.
+Since we are only interested in the density fluctuation, around $k = k_\text{F}$, we define 
+\begin{equation}
+    \rho^+_q = \sum_{k > k_\text{F}} \normalorder{c^\dagger_{k+q} c_k} 
+    + \sum_{k < k_\text{F} - \lambda q} \normalorder{c^\dagger_{k + \lambda q} c_k} 
+    + \sum_{k_\text{F} - \lambda q < k < k_\text{F} } \normalorder{c^\dagger_{\frac{k - k_\text{F}}{\lambda}  + k_\text{F} +q} c_k} 
+\end{equation}
+for $0 <q \ll k_\text{F}$. When $\lambda = 1$, the definition goes back to the ordinary 
+\begin{equation}
+    \rho^+_q = \sum_k \normalorder{c^\dagger_{k+q} c_k}.
+\end{equation}
+Similarly, the density fluctuation around $k = - k_\text{F}$ is defined as 
+\begin{equation}
+    \rho^-_q = \sum_{k < -k_\text{F}} \normalorder{c^\dagger_{k-q} c_k} 
+    + \sum_{k > - k_\text{F} + \lambda q} \normalorder{c^\dagger_{k - \lambda q} c_k} 
+    + \sum_{- k_\text{F} + \lambda q > k > - k_\text{F} } \normalorder{c^\dagger_{\frac{k + k_\text{F}}{\lambda} - k_\text{F} - q} c_k} .
+\end{equation}
+
+Now we make the \concept{Tomonaga approximaton}: we replace 
+
+\bibliographystyle{plain}
+\bibliography{../bosonization/bosonization}
+
+\end{document}
