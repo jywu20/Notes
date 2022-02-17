@@ -62,3 +62,41 @@ body parts, tense system
 
 The author argues that no external evidence should be use to motivate some analysis of a certain construction in
 a language. This goes in contrary to the methodology often seen in generative studies.
+
+It should also be noted that if a word with meaning X is in the word class C1 in one language, a word in another language with a similar meaning to X may be in a word class very different with C1. 
+For example, kin relationships can be described using verbs. So do the number "two".
+
+## 1.9
+
+The example of Dyirbal is very interesting, where noun class memberships are deeply associated with legends:
+- Most birds are thought to be the spirits of dead human females and therefore are associated with femininity
+- Animals and fishes have animacy and therefore are associated with masculinity
+- The moon and sun are, in legend, believed to be husband and wife.
+- Light and stars are associated with fire.
+
+## 1.11
+
+The category "case" may be split into the following features:
+- the role of an NP in a sentence
+  - the role as a certain kind of "core" argument
+    - nominative-accusative system
+      - nominative
+      - accusative
+    - ergative–absolutive alignment
+      - ergative
+      - absolutive
+  - the role as a peripheral argument
+    - locative
+    - instrumental
+- the role of an NP in another NP
+  - genitive
+  - comitative
+
+It is possible that every lexical word in an accusative NP has an ACC mark, and the possessor in the large NP
+itself has a GEN mark.
+
+# 2
+
+## 2.3
+
+Does everyone have the intuition that *i* is associated with short distance, and *u* is associated with long distance, and *a* is associated with mid-distance?
