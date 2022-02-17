@@ -97,6 +97,12 @@ itself has a GEN mark.
 
 # 2
 
+There are no key points. The chapter is worth a thorough reading.
+
 ## 2.3
 
 Does everyone have the intuition that *i* is associated with short distance, and *u* is associated with long distance, and *a* is associated with mid-distance?
+
+# 2.6
+
+Useful reading list
