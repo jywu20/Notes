@@ -31,3 +31,11 @@ Levin-Wen模型中$U(1)$规范场的弦上面放置整数是什么意思？
 多体系统中有演生Berry phase，一定说明有规范场吗？
 
 https://arxiv.org/pdf/1604.08400.pdf quantum skyrmion
+
+一些临时性的笔记
+- 首先基本上可以确定electric monopole和magnetic monopole就是electric charge和magnetic flux
+- 然后问题有：
+  - Z2规范场中为什么光子缺席了
+- 似乎磁单极子量子化确实是一个量子力学有关的东西
+- 费米场产生玻色涡旋；费米涡旋？？
+- 涡旋有涡旋场，所以量子理论中某种“涡旋”——磁单极子or something——是量子化的也不奇怪；奇怪的乃是经典的涡旋也可以是量子化的，这两者会有什么关系吗？我之前的想法是
