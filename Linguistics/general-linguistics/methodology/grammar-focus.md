@@ -22,9 +22,30 @@ Examples include:
 
 ## Distributed morphology
 
+# Note on terminology
+
+## "Heads"
+
+The term *head*, in a more descriptive context, means something that somehow "dominates" a phrase. 
+For example, the head of an NP is the central noun, because it means the NP must have case, gender, number, etc.
+The head of a PP, arguably, is also the noun, because the preposition may be viewed as an additional marker of the case of the noun. 
+
+This results in the definition of [NPs](#general-structure-of-noun-phrases) and [VPs](#verb-phrases), which seem trivially reasonable, especially under a functionalist perspective.
+However, to say that when verbs are involved, this notion of heads may involves some subtlety.
+In languages like English, a verb can be turned into a gerund, which is almost a noun and can do whatever nouns do.
+How would we name a phrase with a gerund head? An NP or a VP?
+If we consider it as a VP, then we have to classify English as a language allowing a verb to be a predicate. 
+Dixon himself may argue that, since the gerund behaves just like a 3sg uncountable noun, we should label a phrase with a gerund head as an NP.
+But recall that in [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (12), the phrase be.large-ARTICLE is seen as a VP, and Dixon claims that this means Nootka allows verbs to be arguments.
+Can we just claim that a verb in Nootka should undergo a *zero*-derivation to become an argument?
+
+Dixon may reject this analysis by saying that in English, the gerund no longer keeps its verbal features (say, tense and aspect), so it is noun, but since be.large-ARTICLE will never appear in a predicate position, we do not know whether it keeps its verbal features, and the simplest way is just to analyze it as a whole as an NP.
+Here we see a seemingly arbitrary distinction between syntax and morphology: we would happily agree that a gerund is a noun, but when nominalization is achieved by a syntactic device, we would be hesitate about what label we give to it.
+As we know, the distinction between syntax and morphology is often blurred: very informal oral French may be analyzed as a polysynthesis language, for example.
+
 # Word classification
 
-## Nouns
+# Nouns
 
 Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot.
 
@@ -44,7 +65,7 @@ The sematic type of a noun may influence TODO: hyperref
 - an obligatory possessor
 - classification markers (for example, grammatical gender system)
 
-## Verbs
+# Verbs
 
 Note that the verb category may be a closed category, sometimes only a few dozen.
 
@@ -70,6 +91,12 @@ Secondary concepts describe some details (how the event is started or stopped, f
 They can be verb affixes in some languages and lexemes in others (for example, English).
 
 ## Adjectives
+
+Adjective is a highly heterogeneous category. It may be
+- type 1: verb-like
+  - in that it can be the head of a [VP](#verb-phrases), i.e. form the main part of a predicate, just like an intransitive verb
+  - which may be slightly different from typical verbs in that 
+    - it can be a 
 
 # Structure and function of sentences
 
@@ -132,7 +159,7 @@ A main clause is a clause which on its own makes up a sentence.
 
 ### Relative clause
 
-A relative clause is a [modifier](#modifier). 
+A relative clause is a modifier in an NP. 
 
 ### Complement clause
 
@@ -158,7 +185,15 @@ A clause's inner structure may be
     - peripheral arguments
 - not "complete", with only some NPs
 
-Arguments may be filled by a [noun](#nouns), TODO
+Arguments may be filled by 
+- a phrase with a [noun](#nouns) head (which is attested in all languages)
+- a phrase with a [verb](#verbs) head
+
+The predicate may be 
+- a [verb](#verbs) (which is attested in all languages)
+- a [noun](#nouns) (where morphological markers, if any, will be added to the predicate noun)
+  - attested in Nenets (see [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (7-8))
+- a adjective
 
 ## Typical verb clause
 
@@ -243,18 +278,20 @@ TODO: microparameter of unaccusativity and macroparameter of ergativity
 
 # Verb valence increasing 
 
-# "Verb phrases"
+# Verb phrases
 
-Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell minus all arguments. The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
+Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
+
+
 
 # Verb morphology
 
-# Noun phrases
+# General structure of noun phrases
 
 A noun phrase can be made up by 
 - a head [noun](#nouns), or 
 - a pronoun or a demonstrative
-and zero, one or more [modifiers](#modifier), which may be
+and zero, one or more NP modifiers, which may be
   - [adjectives](#adjective), which may be in comparative or superlative form, or participles TODO: infinite, participles, norminalization
   - a cardinal or ordinal number, and/or a [quantifier](#pro-forms), and/or a [demonstrative](#pro-forms) (which may be analyzed as a subclass of adjectives in some languages, for example in English)
     - Note that a demonstrative seemingly as a modifier may actually be an apposition, like *[that one]* in
