@@ -101,6 +101,18 @@
 \newtcbtheorem[number within=section]{note}{Note}%
   {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
 
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
 \title{Chern-Simons Theory for Topological States of Matter}
 \author{Jinyuan Wu}
 
@@ -260,7 +272,17 @@ and thus the Hall conductivity is
 Now if we are able to show that $K$ can only take discrete values, than we can explain IQHE in a quite 
 neat way without touching the dirty microscopic details.
 
+This way to show that the Chern-Simons theory is the effective theory for IQHE is often called the 
+\concept{hydrodynamic method} because what we are doing is actually reverse engineering an action that 
+can reproduce the linear response of density modes in IQHE, and our decision to keep only the Chern-Simons term 
+is actually taking only the term with the lowest momentum order in the response function, i.e. the lowest 
+term in the \emph{gradient expansion} of the response function (the next term will give the familiar Maxwell 
+action). 
 
+\section{The microscopic derivation of Chern-Simons theory for IQHE}
+
+Beside the hydrodynamic method, we can use the so-called \concept{Chern-Simons Ginzburg Landau theory} to 
+prove that the final macroscopic description of IQHE is a Chern-Simons theory \cite{zhang_1992}.
 
 \section{Anyons within Chern-Simons theory and an effective theory of FQHE}
 
@@ -341,9 +363,26 @@ With the Coulomb gauge condition $\div{\vb*{a}} = 0$, we have
     a^i = \frac{2\pi}{K} q \cdot \frac{1}{2\pi} \epsilon^{ij} \frac{x^j}{x^2} = \frac{q}{K} \epsilon^{ij} \frac{x^j}{x^2}.
     \label{eq:one-flux-field}
 \end{equation}
-We do not seen any string structure in this expression, but this may be just illusion: first, 
-in \eqref{eq:one-flux-field} we are talking about a classical gauge field configuration, and 
-\href{chern-simons-single-flux.nb}{this Mathematica notebook}.
+We do not seen any string structure in this expression, but this may be just illusion: strings can be viewed 
+as field lines, and since we are working in the path integral formulation, the field \eqref{eq:one-flux-field}
+is a classical field contains \emph{many} possible field lines, and we cannot distinguish a single, clear,
+well-defined field line. To find the string structure, we consider the following gauge transformation:
+\begin{equation}
+    \vb*{a}' = \vb*{a} - \grad{\chi}, \quad \chi = \begin{cases}
+        \arctan(\frac{y}{x}) + \pi, \quad & x > 0, \\
+        \arctan(\frac{y}{x}), \quad & x < 0.
+    \end{cases}
+\end{equation} 
+We will find that $\vb*{a} = 0$ except on the ray $x = 0, y > 0$, where there is a step discontinuity (see \prettyref{fig:single-flux-potential}), and the value of $\vb*{a}$ there is proportion to $\delta(x)$.
+This ray is just the string we expect. With a gauge transformation, we can distort the shape of the string,
+as is the case in string-net models.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chern-simons-single-flux-potential.pdf}
+    \caption{Density plot of $\chi$ on the $x$-$y$ plane. Obtained by \href{chern-simons-single-flux.nb}{this Mathematica notebook}.}
+    \label{fig:single-flux-potential}
+\end{figure}
 
 One more thing we need to do is to find the EFT for the $1 / \nu$ FQHE driven by the external electromagnetic field.
 The EOM of such a theory must result in something like \eqref{eq:iqhe-eom}, 
