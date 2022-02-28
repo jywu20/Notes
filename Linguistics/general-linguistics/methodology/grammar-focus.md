@@ -4,7 +4,7 @@
 
 Inside a CP:
 - The CP layer(s)
-  - [The function of the left peripheral](#structure-and-function-of-sentences)
+  - [The function of the left peripheral](#structure-and-function-of-sentences-and-clauses)
 - The TP layer(s)
 - The vP layer(s)
   - [Argument structure](#argument-structure-of-verbs)
@@ -20,9 +20,15 @@ Generally speaking, sematic information is mapped into grammatical relations in 
 Examples include:
 - [the case of argument labels](#a-note-about-argument-labels-used-here)
 
-## Distributed morphology
+## Word classification and DM category labels
 
 # Note on terminology
+
+## Abbreviation
+
+| abbreviation | meaning |
+| :---- | :---- |
+| DM | distributed morphology |
 
 ## "Heads"
 
@@ -42,8 +48,8 @@ Can we just claim that a verb in Nootka should undergo a *zero*-derivation to be
 Dixon may reject this analysis by saying that in English, the gerund no longer keeps its verbal features (say, tense and aspect), so it is noun, but since be.large-ARTICLE will never appear in a predicate position, we do not know whether it keeps its verbal features, and the simplest way is just to analyze it as a whole as an NP.
 Here we see a seemingly arbitrary distinction between syntax and morphology: we would happily agree that a gerund is a noun, but when nominalization is achieved by a syntactic device, we would be hesitate about what label we give to it.
 As we know, the distinction between syntax and morphology is often blurred: very informal oral French may be analyzed as a polysynthesis language, for example.
-
-# Word classification
+Dixon may reject analyzing an argument verb as a zero-deviation of a verb into a noun, which involves invisible morphological derivation, but he accepts the analysis that an NP headed by an adjective may be seen as headed by a null noun head!
+We can definitely see some self-contradiction here.
 
 # Nouns
 
@@ -67,7 +73,7 @@ The sematic type of a noun may influence TODO: hyperref
 
 # Verbs
 
-Note that the verb category may be a closed category, sometimes only a few dozen.
+Note that the verb category may be a closed category, sometimes only a few dozen, but in this case, they can usually be enriched with certain affixes.
 
 Verbs may be classified according to the [argument structure](#argument-structure-of-verbs).
 
@@ -90,19 +96,50 @@ Even if the case is not that simple, the light verb for liking and thinking and 
 Secondary concepts describe some details (how the event is started or stopped, for example) about a primary verb.
 They can be verb affixes in some languages and lexemes in others (for example, English).
 
-## Adjectives
+# Adjectives
 
 Adjective is a highly heterogeneous category. It may be
 - type 1: verb-like
   - in that it can be the head of a [VP](#verb-phrases), i.e. form the main part of a predicate, just like an intransitive verb
-  - which may be slightly different from typical verbs in that 
-    - it can be a 
+  - which may be slightly different from typical verbs in 
+    - how it is modified when acting as a predicate 
+    - that it can be a modifier
+    - that it can appear in comparative constructions
+    - that it can form adverbs
+- type 2: noun like
+  - in that 
+    - it may head an NP
+    - it has similar morphological properties like a noun
+  - which may be slightly different from typical nouns in
+    - that fewer modification possibilities exist for it than for nouns
+    - that it can appear in comparative constructions
+    - that it can form adverbs
+- type 3: sharing properties with both verbs and nouns
+  - in that it can both
+    - appear in the head of a predicate, and
+    - inflect like a noun when in an NP
+- type 4: different from nouns and verbs
+  - in that it can neither appear in the head of a predicate nor behave like a noun in an NP
 
-# Structure and function of sentences
+A language may have two adjective classes, and the adjective class in a language can be closed and highly restricted.
+
+The size of the adjective category is often related to the [semantics of adjectives](#adjective-function-and-semantics).
+
+# Structure and function of sentences and clauses
 
 A sentence is made by
 - a [main clause](#main-clause)
 - zero, one more more [linked clauses](#linked-clause)
+
+The syntactic role of a clause may be
+- The [main clause](#main-clause) in a sentence
+- Embedded clause which looks like adjectives or nouns
+  - [Relative clause](#relative-clause)
+  - [Complement clause](#complement-clause)
+- Linked clause which are after conjunctions like ", and ..." in English
+  - [Temporal clause](#temporal-clause)
+  - [Contrast clause](#contrast-clause)
+  - [Consequence clause](#consequence-clause)
 
 A sentence has one of the following pragmatic function-related *mood*:
 - a statement, with [declarative mood](#declarative)
@@ -141,39 +178,27 @@ An interrogative sentence may be marked by one or more features in the following
 
 # Syntactic roles of clauses
 
-The syntactic role of a clause may be
-- The [main clause](#main-clause) in a sentence
-- [Embedded clause](#embedded-clause) which looks like adjectives or nouns
-  - [Relative clause](#relative-clause)
-  - [Complement clause](#complement-clause)
-- [Linked clause](#linked-clause) which are after conjunctions like ", and ..." in English
-  - [Temporal clause](#temporal-clause)
-  - [Contrast clause](#contrast-clause)
-  - [Consequence clause](#consequence-clause)
+
 
 ## Main clause
 
 A main clause is a clause which on its own makes up a sentence.
 
-## Embedded clause
-
-### Relative clause
+# Relative clause
 
 A relative clause is a modifier in an NP. 
 
-### Complement clause
+# Complement clause
 
 A complement clause is an [argument](#argument-structure-of-verbs) in another clause.
 
-## Linked clause
-
-### Temporal clause
+# Temporal clause
 
 
-### Contrast clause
+# Contrast clause
 
 
-### Consequence clause
+# Consequence clause
 
 # Inner structure of clauses
 
@@ -282,8 +307,6 @@ TODO: microparameter of unaccusativity and macroparameter of ergativity
 
 Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
 
-
-
 # Verb morphology
 
 # General structure of noun phrases
@@ -314,3 +337,7 @@ and zero, one or more NP modifiers, which may be
 Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
 
 ## Pronouns
+
+# Adjective function and semantics
+
+The 
