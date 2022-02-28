@@ -110,3 +110,18 @@ Useful reading list
 # 3
 
 Since the framework introduced in this chapter will be used ubiquitously, I separated it into [a single file](./grammar-focus.md).
+
+# 4
+
+A problematic aspect in the methodology of many generative linguists is they just assuming one grammatical construction is in UG and try to fit observation data into this framework.
+But as we know, the truly innate language faculty may be as small as several functional modules surrounding Merge, and we really cannot just expect we can find, say, complement clauses in every language.
+We need to reject *linguistic analysis* in the above sense. Rather, we should keep previously observed constructions as *prototypes* that may appear or may not appear in the language in question, and check whether something in the newly described language looks close enough to one of these prototypes.
+If so, we can, for example, label one construction as "complement clause". If not, we need to invent new terms to describe the construction.
+
+## 4.2
+
+### How to distinguish coordination and relative clause?
+
+Semantics can be the golden standard when there is little evidence otherwise to support the existence of relativization. See (2), for example: "Their food was little. It was boiled." = Their food was little and it was boiled / Their food that was boiled was little.
+
+### 

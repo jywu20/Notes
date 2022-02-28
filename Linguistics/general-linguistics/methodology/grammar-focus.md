@@ -53,7 +53,7 @@ We can definitely see some self-contradiction here.
 
 # Nouns
 
-Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot.
+Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the prototype role of nouns, and also an important criteria to recognize a noun class.
 
 Nouns include
 - **Common nouns** that are about a class of objects
@@ -72,6 +72,8 @@ The sematic type of a noun may influence TODO: hyperref
 - classification markers (for example, grammatical gender system)
 
 # Verbs
+
+Similar to the case of [nouns](#nouns), all languages have verbs, which typically appear in the head of a predicate - this distribution feature [in clauses](#inner-structure-of-clauses) is the prototype role of verbs, and also an important criteria to recognize a verb class.
 
 Note that the verb category may be a closed category, sometimes only a few dozen, but in this case, they can usually be enriched with certain affixes.
 
@@ -125,6 +127,10 @@ A language may have two adjective classes, and the adjective class in a language
 
 The size of the adjective category is often related to the [semantics of adjectives](#adjective-function-and-semantics).
 
+# Word derivation
+
+## Derivation into adverbs
+
 # Structure and function of sentences and clauses
 
 A sentence is made by
@@ -172,14 +178,6 @@ An interrogative sentence may be marked by one or more features in the following
 - word order change
 - interrogative affix or particle
 
-# Word derivation
-
-## How to obtain adverbs
-
-# Syntactic roles of clauses
-
-
-
 ## Main clause
 
 A main clause is a clause which on its own makes up a sentence.
@@ -191,9 +189,6 @@ A relative clause is a modifier in an NP.
 # Complement clause
 
 A complement clause is an [argument](#argument-structure-of-verbs) in another clause.
-
-# Temporal clause
-
 
 # Contrast clause
 
@@ -211,11 +206,11 @@ A clause's inner structure may be
 - not "complete", with only some NPs
 
 Arguments may be filled by 
-- a phrase with a [noun](#nouns) head (which is attested in all languages)
+- a phrase with a [noun](#nouns) head (which is attested in all languages); this is the *prototype* function of nouns
 - a phrase with a [verb](#verbs) head
 
 The predicate may be 
-- a [verb](#verbs) (which is attested in all languages)
+- a [verb](#verbs) (which is attested in all languages); this is the *prototype* function of verbs
 - a [noun](#nouns) (where morphological markers, if any, will be added to the predicate noun)
   - attested in Nenets (see [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (7-8))
 - a adjective
@@ -309,6 +304,8 @@ Here the term *verb phrase* means something like *could have been planning*. In 
 
 # Verb morphology
 
+## Person and number affix on a verb
+
 # General structure of noun phrases
 
 A noun phrase can be made up by 
@@ -335,9 +332,42 @@ and zero, one or more NP modifiers, which may be
 # Pro-forms
 
 Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
+The term *pronoun* is used differently in Basic Linguistic Theory and in this Wikipedia page.
+In Basic Linguistic Theory, the term *pronoun* is used to denote *personal pronouns*, while in the Wikipedia page personal pronouns are not discussed, and the term *pronoun* is used to denote any pro-form referring to a noun.
 
-## Pronouns
+## Personal pronouns
+
+All languages have 1st and 2nd person pronouns. There is almost always a number distinction in a pronoun system, while it is possible that some numbers share one pronoun form (i.e. in English).
+
+The 1st person pronoun may have a distinction between inclusive and exclusive when in the plural form.
+Soe languages have a "me and you" pronoun.
+
+It is possible that a language both have free pronouns, which are single words, and bound pronouns, which are clitics or affixes [attached to the verb](#person-and-number-affix-on-a-verb) or the end of the first constituent of the clause.
+
+## Demonstratives
+
+A few languages have just one nominal demonstrative: "this".
+All languages seem to have at least two adverbial demonstratives, "here" and "there".
+
+## Interrogatives
+
+Note that words belonging to "interrogatives" may have different word classes, but somehow they have shared properties (for example inducing an interrogative affix on the verb).
 
 # Adjective function and semantics
 
-The 
+When the number of adjectives is just a dozen or so, there are likely to be adjectives about
+- dimension: big, small, long, short
+- age: old, young
+- color: black, white, red
+- value: good, bad
+
+When there are more members:
+- physical property: raw, hard, heavy
+
+larger classes:
+- human propensity: clever, rude
+
+# Space and time
+
+## Temporal clause
+
