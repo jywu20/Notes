@@ -103,6 +103,16 @@ There are no key points. The chapter is worth a thorough reading.
 
 Does everyone have the intuition that *i* is associated with short distance, and *u* is associated with long distance, and *a* is associated with mid-distance?
 
+## 2.5
+
+The term *ergative verb* is not a good one. Compare the behavior of an "ergative" verb like *close* in an accusative language like English:
+> The door closes.
+> He closes the door.
+
+and the case in an ergative language (e.g. Sec. 3.2, (8) and (10)), we can see that in a truly ergative language, the position of O is exactly the same as S, while even in a clause with an "ergative" verb in an accusative language, the position of O is not the same as S.
+Therefore, beside the argument structure of the central verb, there must be something else that is different between an nominative/accusative language and an ergative language.
+Thus the term *ergative verb* is unnecessary and misleading. 
+
 ## 2.6
 
 Useful reading list
@@ -124,4 +134,27 @@ If so, we can, for example, label one construction as "complement clause". If no
 
 Semantics can be the golden standard when there is little evidence otherwise to support the existence of relativization. See (2), for example: "Their food was little. It was boiled." = Their food was little and it was boiled / Their food that was boiled was little.
 
-### 
+### Ergative and instrumental case in Dyirbal
+
+TODO
+
+### English temporal clause 
+
+The argument of the author can be reconstructed as follows:
+- (8a) and (8b) have similar meanings and phonetic forms and should be analyzed similarly.
+- In (8b), the main clause and the condition clause have a logical relationship and therefore should be considered as two independent clauses instead of one clause and an embedded clause into the former.
+- So there is no embedding in (8b), and hence there is no embedding in (8a).
+- Since (7c) and (8a) have exactly the same structure, there is no embedding in (7c).
+- Since the relation between the temporal clause and the main clause is the same in (7a-c), we conclude there is no embedding in any of these sentences.
+- And therefore, we conclude that a temporal clause is not embedded into the main clause.
+
+But this line of argument has several problems:
+- Why is the author so sure that if two clauses have a logical relationship, then they must be independent?
+- How should he name the bracketed phrase in 
+  > He testified [that Mary sang yesterday after locking the doors].
+
+  Is it a clause? Or is it a sentence?
+
+# 8
+
+The author criticizes the ignorance of many dictionary editors towards grammatical issues.

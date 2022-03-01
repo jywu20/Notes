@@ -127,6 +127,18 @@ A language may have two adjective classes, and the adjective class in a language
 
 The size of the adjective category is often related to the [semantics of adjectives](#adjective-function-and-semantics).
 
+# General notion of morphology
+
+## The Lepzig Glossing Rules
+
+The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf).
+
+- affixes are labeled as
+  > they-OBL-GEN
+- clitics are labeled as
+  > priest=and shopkeeper=and
+- 
+
 # Word derivation
 
 ## Derivation into adverbs
