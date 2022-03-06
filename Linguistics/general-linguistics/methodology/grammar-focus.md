@@ -230,11 +230,6 @@ However, the term *core argument* is still handy because there are often argumen
 - are selected by the predicate verb (for example, the complement clause of *want* must be infinite and the complement clause of *suggest* must be subjunctive), and
 - often leave marks on the predicate verb when the language has complicated morphology 
 
-From the perspective of generative (morpho)syntax, the core arguments can be seen as specifiers of inner vP layers.
-They are obliged to appear, because otherwise the verb cannot get spelt out (we can reasonably assume that due to some general cognitive reasons, in the lexicon we can only find entries like [Do [Trans √V]] for transitive verbs).
-This also explains why they are strongly selected by the predicate verb and why they leave marks on the predicate verb, both of which can be introduced in the spellout process.
-They cannot undergo certain movements, because there is a phase layer between them and the peripheral arguments (which may in the TP layer), or because there is some constraints prohibiting long-range movements.
-
 Arguments may be filled by 
 - a phrase with a [noun](#nouns) head (which is attested in all languages); this is the *prototype* function of nouns
 - a phrase with a [verb](#verbs) head
@@ -243,9 +238,14 @@ The predicate may be
 - a [verb](#verbs) (which is attested in all languages); this is the *prototype* function of verbs
 - a [noun](#nouns) (where morphological markers, if any, will be added to the predicate noun)
   - attested in Nenets (see [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (7-8))
-- a adjective
+- a [adjective](#adjectives)
 
-## Typical verb clause
+From the perspective of generative (morpho)syntax, the core arguments can be seen as specifiers of inner vP layers.
+They are obliged to appear, because otherwise the verb cannot get spelt out (we can reasonably assume that due to some general cognitive reasons, in the lexicon we can only find entries like [Do [Trans √V]] for transitive verbs).
+This also explains why they are strongly selected by the predicate verb and why they leave marks on the predicate verb, both of which can be introduced in the spellout process.
+They cannot undergo certain movements, because there is a phase layer between them and the peripheral arguments (which may in the TP layer), or because there is some constraints prohibiting long-range movements.
+
+## Typical verb clauses, the corresponding verb types and the core arguments
 
 A clause with a verb as its predicate has some possible structures (here we only list the core arguments):
 - transitive, in which there is 
@@ -287,14 +287,20 @@ Some languages support a clause made up solely by two NPs, which are
 
 ## A note about argument labels used here
 
-The labels S, O, A, etc. used in purely descriptive grammars are *coarse-grained* semantic roles.
+The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
 They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
 indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
 The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
+So we'd better think of these labels as phenomenological concepts. 
 
-So we'd better think of these labels as phenomenological concepts. In active sentences: A means something with a closer meaning to "agent", while O means something with a closer meaning to "theme". In passive sentences, TODO
+The definition of these labels in active sentences is 
+- A means something with a closer meaning to "agent", 
+- while O means something with a closer meaning to "theme". 
 
 If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs.
+What really is important 
+
+In passive sentences, it is consistent to 
 
 # Argument structure of verbs
 
