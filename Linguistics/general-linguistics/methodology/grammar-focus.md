@@ -52,6 +52,10 @@ As we know, the distinction between syntax and morphology is often blurred: very
 Dixon may reject analyzing an argument verb as a zero-deviation of a verb into a noun, which involves invisible morphological derivation, but he accepts the analysis that an NP headed by an adjective may be seen as headed by a null noun head!
 We can definitely see some self-contradiction here.
 
+## "Verb phrase"
+
+Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
+
 # Nouns
 
 Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the prototype role of nouns, and also an important criteria to recognize a noun class.
@@ -210,10 +214,6 @@ A complement clause is an [argument](#argument-structure-of-verbs) in another cl
 
 # Inner structure of clauses
 
-There is generally no clear distinction between "core" arguments and peripheral arguments.
-The term *adjunct* is best avoided, both for theoretical reasons (only one Merge operation in MP) and for empirical reasons. See the end of Sec. 3.2 of BLT. 
-However, the term *core argument* is still handy because 
-
 A clause's inner structure may be
 - a "complete" one, consisting of 
   - a predicate or [none](#verbless-clause), typically a verb or including a verb or something like a verb
@@ -221,6 +221,19 @@ A clause's inner structure may be
     - core arguments, which are either stated or easily inferred from the context 
     - peripheral arguments
 - not "complete", with only some NPs
+
+There is generally no clear distinction between "core" arguments and peripheral arguments.
+The term *adjunct* is best avoided, both for theoretical reasons (only one Merge operation in MP) and for empirical reasons. See the end of Sec. 3.2 of BLT. 
+However, the term *core argument* is still handy because there are often arguments that
+- are obliged to appear, and
+- cannot undergo many movements (for peripheral arguments, we have [In the forest], I was caught ~in the forest~), and
+- are selected by the predicate verb (for example, the complement clause of *want* must be infinite and the complement clause of *suggest* must be subjunctive), and
+- often leave marks on the predicate verb when the language has complicated morphology 
+
+From the perspective of generative (morpho)syntax, the core arguments can be seen as specifiers of inner vP layers.
+They are obliged to appear, because otherwise the verb cannot get spelt out (we can reasonably assume that due to some general cognitive reasons, in the lexicon we can only find entries like [Do [Trans √V]] for transitive verbs).
+This also explains why they are strongly selected by the predicate verb and why they leave marks on the predicate verb, both of which can be introduced in the spellout process.
+They cannot undergo certain movements, because there is a phase layer between them and the peripheral arguments (which may in the TP layer), or because there is some constraints prohibiting long-range movements.
 
 Arguments may be filled by 
 - a phrase with a [noun](#nouns) head (which is attested in all languages); this is the *prototype* function of nouns
@@ -309,10 +322,6 @@ TODO: microparameter of unaccusativity and macroparameter of ergativity
 
 # Verb valence increasing 
 
-# Verb phrases
-
-Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
-
 # Verb morphology
 
 ## Person and number affix on a verb
@@ -393,6 +402,7 @@ For example, in English, we have
 
 If we replace [the photon] by *it*, then we only have the second reading, because a pronoun cannot be modified by a spatial phrase.
 
+Both spatial and temporal information can be introduced by a word, a phrase or a clause.
 
 
 ## Temporal clause
