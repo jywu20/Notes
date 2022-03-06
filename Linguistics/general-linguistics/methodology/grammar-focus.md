@@ -28,6 +28,7 @@ Examples include:
 
 | abbreviation | meaning |
 | :---- | :---- |
+| BLT | [Basic Linguistic Theory](basic-linguistic-theory.md) | 
 | DM | distributed morphology |
 
 ## "Heads"
@@ -209,6 +210,10 @@ A complement clause is an [argument](#argument-structure-of-verbs) in another cl
 
 # Inner structure of clauses
 
+There is generally no clear distinction between "core" arguments and peripheral arguments.
+The term *adjunct* is best avoided, both for theoretical reasons (only one Merge operation in MP) and for empirical reasons. See the end of Sec. 3.2 of BLT. 
+However, the term *core argument* is still handy because 
+
 A clause's inner structure may be
 - a "complete" one, consisting of 
   - a predicate or [none](#verbless-clause), typically a verb or including a verb or something like a verb
@@ -246,7 +251,7 @@ A clause with a verb as its predicate has some possible structures (here we only
 - extended intransitive, where there is 
   - a extended transitive predicate
   - an intransitive subject labeled as S
-  - an extended argument labeled as E (example can be seen in Sec. 3.2 (9) in [Dixon's book](./basic-linguistic-theory.md))
+  - an extended argument labeled as E (example can be seen in Sec. 3.2 (9) in BLT)
     - the role of E may be 
 
 ## Copula clause
@@ -267,18 +272,12 @@ Some languages support a clause made up solely by two NPs, which are
 - verbless clause subject (VCS) and
 - verbless clause complement (VCC) argument
 
----
-**Note** There is generally no clear distinction between "core" arguments and peripheral arguments.
-The term *adjunct* is best avoided, both for theoretical reasons (only one Merge operation in MP) and for empirical reasons.
-
----
-
 ## A note about argument labels used here
 
 The labels S, O, A, etc. used in purely descriptive grammars are *coarse-grained* semantic roles.
 They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
 indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
-The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) in [Dixon's book](./basic-linguistic-theory.md))
+The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
 
 So we'd better think of these labels as phenomenological concepts. In active sentences: A means something with a closer meaning to "agent", while O means something with a closer meaning to "theme". In passive sentences, TODO
 
@@ -322,7 +321,8 @@ Here the term *verb phrase* means something like *could have been planning*. In 
 
 A noun phrase can be made up by 
 - a head [noun](#nouns), or 
-- a pronoun or a demonstrative
+- a pronoun or a demonstrative,
+  
 and zero, one or more NP modifiers, which may be
   - [adjectives](#adjective), which may be in comparative or superlative form, or participles TODO: infinite, participles, norminalization
   - a cardinal or ordinal number, and/or a [quantifier](#pro-forms), and/or a [demonstrative](#pro-forms) (which may be analyzed as a subclass of adjectives in some languages, for example in English)
@@ -331,7 +331,7 @@ and zero, one or more NP modifiers, which may be
   - one or more nouns, the type of which is usually limited, specifying sex, composition, purpose, etc.
   - a [possessive phrase](#possessive-phrases)
   - a [relative clause](#relative-clauses)
-  - an NP or PP for time, location, intended purpose, etc.
+  - an NP or PP for [time or location](#space-and-time), intended purpose, etc.
 
 ## Possessive phrases
 
@@ -346,6 +346,8 @@ and zero, one or more NP modifiers, which may be
 Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
 The term *pronoun* is used differently in Basic Linguistic Theory and in this Wikipedia page.
 In Basic Linguistic Theory, the term *pronoun* is used to denote *personal pronouns*, while in the Wikipedia page personal pronouns are not discussed, and the term *pronoun* is used to denote any pro-form referring to a noun.
+
+Generally speaking, pro-forms are more limited in possible modifiers. For example, in English, pronouns cannot be modified by [temporal or spacial phrases](#space-and-time).
 
 ## Personal pronouns
 
@@ -380,6 +382,18 @@ larger classes:
 - human propensity: clever, rude
 
 # Space and time
+
+See Sec. 3.8 of Basic Linguistic Theory.
+
+Phrases about space and time appear both in [NPs](#general-structure-of-noun-phrases) and as a peripheral argument in a clause.
+For example, in English, we have 
+> John will examine [the photo in that room]
+> 
+> John will examine [the photo] [in that room]
+
+If we replace [the photon] by *it*, then we only have the second reading, because a pronoun cannot be modified by a spatial phrase.
+
+
 
 ## Temporal clause
 
