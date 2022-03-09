@@ -66,3 +66,36 @@ and
 > 
 > (b) *The - and this is really important - more I read, the more I understand
 
+Finally, we have 
+
+> The more chocolate *that* you eat, the quicker you put on weight
+
+Since the first clause is a single clause, *that* must be its complementizer, and therefore the correlative *the* is not a complementizer.
+This may be explained alternatively by assuming [*that you eat*] is a relative clause, but this is again unlikely, because we don't have (dubious: we can find similar sentences on COCA)
+
+> *The more people to whom you talk, the more problems into which you get.
+
+This explanation also does not explain what role *the* in C1 takes, and why we have displaced *the more* phrases.
+
+# *The* as a degree operator
+
+It's instructive to see that outside CCs, *the* can serve as a degree operator.
+In COCA, we can find *all the better*-like adjectival phrases.
+It's also instructive to notice that a degree operator can be moved to the edge of a nominal expression:
+
+> I've never had quite so unpleasant an experience
+> 
+> It was rendered an all the more delicate situation by the presence of the President
+
+TODO: why only *all the more* in ordinary clauses?
+
+It can be expected A-bar movement to the edge of CP can also happen in a clause under certain circumstances.
+That's exactly what happens in the CC construction: we can assume the QP [*the more chocolate*] is moved from TP to SpecFocP.
+
+# The relation between C1 and C2
+
+The last question is the relation between C1 and C2. Phenomena requiring explanation:
+- Why C1 is always before C2, and 
+- Why we never see a single *the more*
+
+The second question can be answered by thinking the two *the more* phrases as correlatives, and the first question can be answered by assuming the first sentence to be a topic. Since TopP cannot be spell out with an arbitrary order, so are C1 and C2.
