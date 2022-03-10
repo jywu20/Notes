@@ -75,6 +75,10 @@
     mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 \tikzstyle ray=[directed, thick]
 \tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
 
 % Algorithm setting
 % Julia-style code
@@ -142,17 +146,129 @@ in the (3+1)-dimensional Minkowski spacetime.
 Equations from (2.22) to (2.27) are trying to relate the parameter of $\mathbb{R}^4$ rotations to the relative 
 velocity of the two reference frames.
 
+Note that since the rotation group $SO(4)$ is not Abelian, Lorentz transformations do not commute in general. \marginnote{Problem~2.3}
+
 \section{Aberration of light and superluminal motion}
 
 We should note that \emph{Lorentz contraction} of length (see for example (2.43)) is often \emph{not} 
-\marginnote{(2.48) to (2.57)} the length change we observe when an object is moving fast.
-This fact can be 
+\marginnote{(2.48) to (2.57)} the length change we \emph{observe} when an object is moving fast.
+The point here is that to measure a line we need to detect light signals from its two ends, and generally 
+speaking, two signals arriving at our detector start their journeys at different time points, while on the 
+other hand, from the way we derive Lorentz contraction ((2.41) and (2.42)) \marginnote{(2.41) and (2.42)}
+we are dealing with events happening at the same time point in the laboratory frame of reference. 
+The conclusion is $l$ in (2.43) is often not the length we \emph{see} of a moving object.
+
+The fact that the ``distance'' we see is actually not the authentic space distance between two events with the 
+same time in a given frame of reference means that when calculating the velocity, we are taking the time
+derivative of two points at different time points, or in other words, taking the derivative of a distance 
+with respect to a time not coherent with the current frame of reference. In this way, some superfluous
+``superluminal'' movement can occur. Consider, for example, the case of \prettyref{fig:superluminal}. 
+Suppose at $t$ a beam of light is emitted from the ejected material, and it arrives at the detector at $t'$.
+We therefore have 
+\begin{equation} \marginnote{(2.51), (2.52)}
+    \begin{aligned}
+        c(t' - t) &= L = \sqrt{(D - vt \cos \varphi)^2 + v^2 t^2 \sin^2 \varphi} \\
+        &= D - vt \cos \varphi + \bigO(v^2 t^2 / D^2).
+    \end{aligned}
+\end{equation}
+Therefore, we have 
+\begin{equation} \marginnote{(2.53)}
+    t' = \frac{D}{c} + t (1 - \beta \cos \varphi).
+\end{equation}
+Now we try to evaluate the \emph{apparent} velocity on the $y$ direction, which is $\dv*{y}{t'}$.
+Note that only $\dv*{y}{t}$ is bounded by $c$, while $\dv*{y}{t'}$ does not have an upper bound.
+Actually, we have 
+\begin{equation} \marginnote{(2.54)}
+    \dv{y}{t'} = \dv{y}{t} \dv{t}{t'} = v \sin \varphi \times \frac{1}{1 - \beta \cos \varphi}.
+\end{equation}
+The maximum is shown to be $v \gamma$. Here we can see the apparent velocity is obtained using $t'$ \marginnote{(2.57)}
+as the time, which is not $x^0$ in the frame of coordinate attached to the observer. 
+
+\begin{figure}
+    \centering
+    \input{coordinate-figures/superluminal.tex}
+    \caption{Superluminal motion of a ejected material from a galaxy}
+    \label{fig:superluminal}
+\end{figure}
 
 \section{Time dilation and cosmic ray muons}
 
-The lifetime of an unstable particle is measured according to its proper time, and this causes the difference
+The lifetime of an unstable particle is measured according to its proper time, and this causes the difference \marginnote{Sec.~2.6}
 between the prediction of Newtonian and relativistic theories of the flux of the particle after traveling a 
 certain distance. This is actually a piece of strong evidence of special relativity.
+
+\section{Relativistic perfect fluid}
+
+The topic of relativistic idea fluid is discussed in Problem 2.1 and 2.2. \marginnote{Problem 2.1, 2.2}
+First of all, we always have 
+\[
+    T^{00} = \epsilon = \rho_m c^2,
+\]
+where $\epsilon$ is the energy density of the fluid in the rest frame, and $\rho_m$ is the mass density.
+In a perfect fluid, when we are in the rest-frame, there is no flow, and since momentum is carried by fluid flow,
+the density of momentum is also zero, i.e.
+\[
+    T^{i0} = 0.
+\]
+The argument used in non-relativistic perfect fluid can be transplanted here for $T^{ij}$: since an idea fluid 
+is isotropic, and it cannot hold shear force, as long as the time scale we are interested is long enough to 
+hide how the fluid responds to an external shear force, we can assume all shear force components in $T^{ij}$
+are zero. Thus we have 
+\[
+    T^{ij} = \pmqty{\dmat{p, p, p}}.
+\]
+Putting everything together, we get 
+\begin{equation} \marginnote{(2.60)}
+    T^{\mu \nu} = \pmqty{\dmat{\epsilon, p, p, p}}.
+    \label{eq:rest-frame-perfect-fluid-t}
+\end{equation}
+
+Now we can get $T^{\mu \nu}$ in any coordinate system with a Lorentz transformation.
+Applying the Lorentz transformation on $x$ direction:
+\begin{equation} \marginnote{(2.28)}
+    \Lambda\indices{^\mu_\nu} = \pmqty{\dmat{\gamma & - \gamma \beta \\ - \gamma \beta & \gamma, 1, 1}},
+    \label{eq:lorentz-x}
+\end{equation}
+we get (the process can be found in \href{relativistic-ideal-fluid.nb}{this Mathematica notebook})
+\begin{equation}
+    T'^{\mu \nu} = \pmqty{\frac{p \beta ^2}{1-\beta ^2}+\frac{\epsilon }{1-\beta ^2} & -\frac{\epsilon  \beta }{1-\beta
+    ^2}-\frac{p \beta }{1-\beta ^2} \\
+  -\frac{\epsilon  \beta }{1-\beta ^2}-\frac{p \beta }{1-\beta ^2} & \frac{\epsilon  \beta ^2}{1-\beta
+    ^2}+\frac{p}{1-\beta ^2} }.
+    \label{eq:x-moving-fluid-t}
+\end{equation}
+Suppose the speed of the frame of reference after \eqref{eq:lorentz-x} in the rest frame of the fluid is $v$,
+we find \eqref{eq:x-moving-fluid-t} is the energy-momentum tensor of a fluid moving with the velocity of 
+$- v \vu*{e}_x$.  \marginnote{Problem~2.2}
+
+\eqref{eq:x-moving-fluid-t} is not covariant. We need to generalize it into a \marginnote{Liang Sec.~6.5} 
+covariant version. Solely with information provided in \eqref{eq:x-moving-fluid-t}, the covariant version 
+cannot be decided, because systems other than a perfect fluid can also has a energy-momentum tensor like 
+\eqref{eq:rest-frame-perfect-fluid-t}. Another way to see the point is to note that velocity of the fluid is 
+different on different points, and a global Lorentz transformation cannot turn the fluid into the state of rest. 
+We can do local Lorentz transformation, but this distorts the components of $\eta^{\mu \nu}$, but when deriving 
+\eqref{eq:rest-frame-perfect-fluid-t} we have $\eta = \diag(-1, 1, 1, 1)$.  
+
+The generic covariant energy-momentum tensor of a perfect fluid is % TODO: derivation
+\begin{equation}
+    T^{\mu \nu} = \left( \rho_m + \frac{p}{c^2} \right) U^\mu U^\nu + p \eta^{\mu \nu} = \frac{1}{c^2} \left( \epsilon + p \right) U^\mu U^\nu + p \eta^{\mu \nu}.
+    \label{eq:general-fluid}
+\end{equation}
+Note that $p$ and $\epsilon$ in \eqref{eq:general-fluid} are defined in a special frame of reference, but this does 
+not eliminate the covariance of \eqref{eq:general-fluid}, because for a fluid there is indeed a special frame of reference, i.e. the rest frame of itself. When in the rest frame of reference, we have 
+\begin{equation}
+    U^\mu = \pmqty{\mu \\ 0 \\ 0 \\ 0},
+\end{equation}
+and \eqref{eq:general-fluid} reads 
+\[
+    T^{\mu \nu} = \frac{1}{c^2} (\epsilon + p) \pmqty{\dmat{c^2, 0, 0, 0}} + p \pmqty{\dmat{-1, 1, 1, 1}}, 
+\]
+which is just \eqref{eq:rest-frame-perfect-fluid-t}. After a global Lorentz transformation \eqref{eq:lorentz-x}, 
+we have 
+\[
+    U'^\mu = \Lambda\indices{^\mu_\nu} U^\nu = \pmqty{\gamma c \\ - \gamma \beta c \\ 0 \\ 0}.
+\]
+Substituting this into \eqref{eq:general-fluid}, we get \eqref{eq:x-moving-fluid-t}. (The process is in \href{relativistic-ideal-fluid.nb}{this Mathematica notebook}). 
 
 \bibliographystyle{plain}
 \bibliography{books-used}
