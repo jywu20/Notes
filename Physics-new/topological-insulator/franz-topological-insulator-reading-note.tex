@@ -13,7 +13,7 @@
 \usepackage{bbm}
 \usepackage{cite}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage[labelformat=simple]{subcaption}
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
@@ -21,6 +21,7 @@
 \usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{marginnote}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
@@ -89,6 +90,11 @@
   keywordstyle=\color{blue}
 }
 
+\newcommand{\soliddoc}{\href{../solid/solid.pdf}{this note}}
+
+\renewcommand\thesubfigure{(\alph{subfigure})}
+\newrefformat{fig}{Figure~\ref{#1}}
+
 \title{Reading Note of Topological Insulators by M. Franz and L. Molenkamp}
 \author{Jinyuan Wu}
 
@@ -97,6 +103,74 @@
 \maketitle
 
 This is a reading note of \cite{franz2013topological}.
+
+\section{SSH model and AKLT chain}
+
+We have already done some calculation about the SSH model in Section \ref{solid-sec:ssh} in \soliddoc. Here we briefly review 
+the model. \marginnote{Sec.~3.2} The model (spinless version) is 
+\begin{equation} \marginnote{Sec.~3.2, (15)}
+    H = \sum_i (t + \var{t}) c^\dagger_{i \text{A}} c_{i \text{B}} + (t - \var{t}) c^\dagger_{i+1, \text{A}} c_{i \text{B}} + \text{h.c.}
+\end{equation}
+After a Fourier transformation we have 
+\begin{equation} \marginnote{(16), (17)}
+    H = \sum_k c^\dagger_{ka} H_{ab} c_{kb}, \quad H(k) = \vb*{d}(k) \cdot \vb*{\sigma},
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        d_x(k) &= (t + \var{t}) + (t - \var{t}) \cos ka, \\
+        d_y(k) &= (t - \var{t}) \sin ka, \\
+        d_z(k) &= 0 .
+    \end{aligned}
+    \label{eq:ssh-spectrum}
+\end{equation}
+All two-band models can be rewritten into $\sum_k d_\mu \sigma^\mu$, and here $d_0 = d_3 = 0$. 
+Now we see \eqref{eq:ssh-spectrum} is a $S^1 \to S^1$ mapping, and it can be classified by the winding number 
+around $\vb*{d} = 0$, which is either $0$ or $1$ when we adjust $t$ and $\var{t}$. The phase 
+where the winding number is 0 is a trivial phase, with the same topological properties of the vacuum, so 
+it does not have any edge state, which can be verified explicitly and is illustrated in \prettyref{fig:ssh-trivial}.
+The phase with winding number being 1 is topologically non-trivial, and something must happen at the edge, 
+so we predict there will be an edge state, which can also be explicitly verified and is shown in \prettyref{fig:ssh-edge}.
+
+The existence of a topological phase transition between the two states relies on the fact that the curve of 
+$\vb*{d}$ decided by \eqref{eq:ssh-spectrum} is $S^1$. If we can perturb the system with an external Hamiltonian
+which provides a non-zero $d_z$, then we can smoothly switch from one phase to another. 
+The problem is under which symmetry constraint we have $d_0 = d_3 = 0$. Note that 
+\[
+    \acomm*{\sigma^z}{\sigma^x} = \acomm*{\sigma^z}{\sigma^y} = 0, \quad 
+    \acomm*{\sigma^z}{\sigma^0} = \acomm*{\sigma^z}{\sigma^z} = 2 \sigma^0,
+\]
+we have 
+\begin{equation}
+    \acomm*{\sigma^z}{d_\mu \sigma^\mu} = 2 (d_0 + d_3) \sigma^0 .
+\end{equation}
+Therefore, under the condition 
+\begin{equation}
+    \comm*{\sigma^z}{H} = 0,
+\end{equation}
+% Question: d_0 = 0???
+a two-band system always
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.8\textwidth}
+        \centering
+        \input{../solid/topological-band/ssh/trivial-dimer.tex}
+        \subcaption{}
+        \label{fig:ssh-trivial}
+    \end{subfigure}    
+    \vspace{1em}
+    \begin{subfigure}{0.8\textwidth}
+        \centering
+        \input{../solid/topological-band/ssh/topological-dimer.tex}
+        \subcaption{}
+        \label{fig:ssh-edge}
+    \end{subfigure}
+    \caption{(a)}
+\end{figure}
+
+It is easy to notice that with half filling, we can regard a pair of 
+ALKT chain, Jordan-Wigner transformation
 
 \bibliographystyle{plain}
 \bibliography{topological-band}
