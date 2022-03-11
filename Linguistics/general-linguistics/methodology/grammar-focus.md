@@ -560,6 +560,5 @@ If we replace [the photon] by *it*, then we only have the second reading, becaus
 
 Both spatial and temporal information can be introduced by a word, a phrase or a clause.
 
-
 ## Temporal clause
 
