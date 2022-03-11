@@ -22,7 +22,19 @@ Examples include:
 
 ## Word classification and DM category labels
 
+## Constituent order
+
+Constituent order is also called *word order*, though the latter term is misleading because what we are discussing is about constituents with possible modifiers, not single words.
+
+## Clause structure and arguments
+
+TODO
+
 # Note on terminology
+
+It should be noted that BLT (and many other typological works) are functionalist, which means syntactic devices
+are often sorted and classified according to how they serve the semantics, and this can create some barrier to 
+generative linguistics. Here we briefly list some of possible confusions.
 
 ## Abbreviation
 
@@ -35,7 +47,9 @@ Examples include:
 
 The term *head*, in a more descriptive context, means something that somehow "dominates" a phrase. 
 For example, the head of an NP is the central noun, because it means the NP must have case, gender, number, etc.
-The head of a PP, arguably, is also the noun, because the preposition may be viewed as an additional marker of the case of the noun. 
+The head of a PP is also the noun, because the preposition may be viewed as an additional marker of the case of the noun. 
+Actually Dixon rejects the term PP: in Sec. 3.9 of BLT he questions: "If the head of an NP marked by a preposition is the preposition, then should we say the head of *viro obeso* in Latin is the case". 
+But this is exactly what happens in generative linguistics. Here we again see the disagreement between generative and functional approaches.
 
 This results in the definition of [NPs](#general-structure-of-noun-phrases) and [VPs](#verb-phrases), which seem trivially reasonable, especially under a functionalist perspective.
 However, to say that when verbs are involved, this notion of heads may involves some subtlety.
@@ -55,6 +69,21 @@ We can definitely see some self-contradiction here.
 ## "Verb phrase"
 
 Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
+
+## "Subject"
+
+- SpecTP
+- A and S argument
+- the argument with nominative case
+
+## Verb's role in argument marking
+
+Since in purely descriptive works concepts like TP are not acknowledged, we may say "the verb mark its A argument
+with the nominative case", while in generative grammar we say it's T that does the task. The two accounts can be 
+reconciled if we think of the term "verb" here as verb phrase in the sense in BLT or in other words "the predicate
+complex", which includes all functional projections governing the whole clause. Similarly, Dixon may say 
+"the verb marks the subject by the SVO order", which again makes sense even in the generative context because 
+here the term "verb" concludes the TP projection, and therefore includes the EPP feature.
 
 # Nouns
 
@@ -205,7 +234,20 @@ A relative clause is a modifier in an NP.
 
 # Complement clause
 
+BLT Sec. 3.10
+
 A complement clause is an [argument](#argument-structure-of-verbs) in another clause.
+Some people call it both an NP and a sentence, though not all arguments are NPs and clauses themselves are not sentences.
+We *don't* name a clause describing a place or a time as a complement clause - a complement clause always represents a fact or an event.
+We should also note that the complement clause is NOT verb nominalization, though it's common that they involve similar morphological operations.
+For example, in English, we have a -ing complement clause variety:
+> John's playing the national anthem
+
+and we also have a -ing nominalization construction:
+
+> John's playing of the national anthem
+
+The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
 
 # Contrast clause
 
@@ -223,6 +265,8 @@ A clause's inner structure may be
 - not "complete", with only some NPs
 
 There is generally no clear distinction between "core" arguments and peripheral arguments.
+Different languages may have different obliged arguments for verbs with the same meaning.
+Some obliged arguments are about time and space, which surely are not traditionally conceived core arguments.
 The term *adjunct* is best avoided, both for theoretical reasons (only one Merge operation in MP) and for empirical reasons. See the end of Sec. 3.2 of BLT. 
 However, the term *core argument* is still handy because there are often arguments that
 - are obliged to appear, and
@@ -306,13 +350,23 @@ In passive sentences, it is consistent to
 
 See BLT Sec. 3.9, [the Wikipedia page about alignment](https://en.wikipedia.org/wiki/Morphosyntactic_alignment).
 
+## Prototypical marking of S, A and O
+
 There are several prototypical marking of core arguments based on the SAO notation. 
 Note that since there is no clear distinction between core and peripheral arguments (see the discussion 
 [here](#inner-structure-of-clauses)), what we are really doing here is classification of marking of 
 S, A and O arguments. The list is
 - [Accusative marking](#accusative-marking): S=A, O
 - [Ergative marking](#ergative-marking): S=O, A
-- [Tripartite](#tripartite): S, A, O are all different
+- [Tripartite](#tripartite-marking): S, A, O are all different
+- [Direct](#direct-marking): no difference between S, A and O
+- [Transitive](#transitive-argument-marking): A=O, S, i.e. the arguments of a transitive clause are marked the same, and different from the argument of an intransitive clause
+
+It's also possible that S is split into several subcategories:
+- [Split S](#active–stative-alignment)
+- [Fluid S]
+
+## Mixture of accusative and ergative marking and the nominal hierarchy
 
 Note that it's possible that some nouns are marked in the accusative way, while some nouns are marked in the ergative way.
 This can be explained by the following nominal hierarchy:
@@ -330,11 +384,56 @@ with a high position in the list tend to be marked in the accusative way. On the
 with a low position tends to be O and therefore if it functions as A, it deserves a special marking, 
 so it tends to be marked in the ergative way.
 
+## Marking of peripheral arguments
+
+- [space and time](#space-and-time)
+  - allative
+  - locative
+- instraument
+- accompaniment: *he walked with his wife*
+- recipient: *he showed his license to the policeman*
+- beneficiary: *she wrote the letter for her cousin*
+- aversive: *In case of thunderstorm*
+
+## Marking strategies of arguments 
+
+- Marking on the NP
+  - by case affixes or clitics, 
+    - on the last word of an NP, or
+    - on the first word, or
+    - on the head, or 
+    - on all words, or
+    - on all words of a certain type
+  - and/or by adposition
+- Marking by a bound pronominal 
+  - usually attached to the verb or a verbal auxiliary
+  - or sometimes cliticized on the first contituent of the clause
+  - Actually, this is one way to distinguish "core arguments", since verb morphology about arguments is usually highly limited.
+- Constituent order, like AOV (i.e. SOV)
+
+The first strategy is usually called **case**, which is a closed system, and each NP of a certain type must make only one choice from the system.
+Note, however, this doesn't mean a noun can only have one case marker. Consider a language in which the case of an NP is marked on each member of the NP, with no exception, and in this case a genitive NP within a larger nominative NP has both a genitive and a nominative marker.
+
+Peripheral arguments are usually marked, with some exceptions like *go home*. 
+
+It's possible some arguments are marked in the same way:
+- ergative and instrumental (ergative argument = Causer? If so, maybe this means in ergative languages the prototypical verb argument structure is the same as the so-called ergative verbs, i.e. [ A Cause [ O Undergo V ] ], where A is optional)
+- instrumental and locative
+- dative and allative (give ... to = go to)
+- locative and allative ("arrive at")
+
 ## Accusative marking
 
 ## Ergative marking
 
-## Tripartite
+## Tripartite marking
+
+## Direct marking
+
+## Active–stative alignment
+
+
+## Transitive argument marking
 
 # Argument structure of verbs
 
@@ -356,6 +455,17 @@ An English example is melt, as in *The butter melted* and *She melted the butter
 
 TODO: microparameter of unaccusativity and macroparameter of ergativity
 
+It should be noted that the terms used here may be misleading, especially for those not familiar with generative 
+jargons. An unergative verb has vP structure [ A Do [ O Trans V ] ], with O being optional, while an 
+unaccusative verb has [ A Cause [ O Undergo V ] ], with A being optional. If the marking of arguments
+faithfully reflects their semantic roles, then unergative verbs are indeed marked as accusative and vice versa.
+However, we know this is almost impossible. Constructions like *Simon walks* involves a single A argument, and we 
+can't expect this construction to be always absent in ergative languages. A possible solution which enable us 
+to explain ergativity solely by argument structure is to give up
+any semantic indication of light verb structure, but this seems rather strange. Besides, ergativity is actually
+a highly diverse concept, with syntactic ergativity, morphological ergativity, mixture between ergativity and 
+accusativity, and so on, so it really doesn't make any sense to insist a verb argument structure explanation.
+
 ## Unergative verb
 
 # Verb valence decreasing
@@ -365,6 +475,8 @@ TODO: microparameter of unaccusativity and macroparameter of ergativity
 # Verb morphology
 
 ## Person and number affix on a verb
+
+There may be person and number affix on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
 
 # General structure of noun phrases
 
@@ -391,7 +503,7 @@ and zero, one or more NP modifiers, which may be
 # Noun morphology
 
 Morphological marking of nouns may be about
-- it's [argument role](#marking-of-core-and-peripheral-arguments)
+- it's [argument role](#marking-of-core-and-peripheral-arguments), usually named as [case](#marking-strategies-of-arguments)
 - 
 
 # Pro-forms
