@@ -302,6 +302,40 @@ What really is important
 
 In passive sentences, it is consistent to 
 
+# Marking of core and peripheral arguments
+
+See BLT Sec. 3.9, [the Wikipedia page about alignment](https://en.wikipedia.org/wiki/Morphosyntactic_alignment).
+
+There are several prototypical marking of core arguments based on the SAO notation. 
+Note that since there is no clear distinction between core and peripheral arguments (see the discussion 
+[here](#inner-structure-of-clauses)), what we are really doing here is classification of marking of 
+S, A and O arguments. The list is
+- [Accusative marking](#accusative-marking): S=A, O
+- [Ergative marking](#ergative-marking): S=O, A
+- [Tripartite](#tripartite): S, A, O are all different
+
+Note that it's possible that some nouns are marked in the accusative way, while some nouns are marked in the ergative way.
+This can be explained by the following nominal hierarchy:
+1. 1st pronouns
+2. 2nd pronouns
+3. demonstratives, 3rd pronouns
+4. proper nouns
+5. common nouns: human
+6. common nouns: animate
+7. common nouns: inanimate
+
+The higher a noun's position in the list is, the more possible it will be A. Therefore, for a noun with a high
+position in the list, if it functions as O, then the fact deserves a special marking. Therefore, nouns 
+with a high position in the list tend to be marked in the accusative way. On the other hand, a noun
+with a low position tends to be O and therefore if it functions as A, it deserves a special marking, 
+so it tends to be marked in the ergative way.
+
+## Accusative marking
+
+## Ergative marking
+
+## Tripartite
+
 # Argument structure of verbs
 
 ## Transitive verb
@@ -355,6 +389,10 @@ and zero, one or more NP modifiers, which may be
 ## Demonstratives as modifiers
 
 # Noun morphology
+
+Morphological marking of nouns may be about
+- it's [argument role](#marking-of-core-and-peripheral-arguments)
+- 
 
 # Pro-forms
 
