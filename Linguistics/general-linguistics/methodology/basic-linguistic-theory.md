@@ -158,3 +158,8 @@ But this line of argument has several problems:
 # 8
 
 The author criticizes the ignorance of many dictionary editors towards grammatical issues.
+
+# 9
+
+The chapter is worth a thorough reading. Opinions from a generative linguist who also works with natural data can be found in [this blog](http://ordinaryworkinggrammarian.blogspot.com/2019/10/two-kinds-of-data-in-syntactic-fieldwork.html
+).

@@ -34,7 +34,12 @@ TODO
 
 It should be noted that BLT (and many other typological works) are functionalist, which means syntactic devices
 are often sorted and classified according to how they serve the semantics, and this can create some barrier to 
-generative linguistics. Here we briefly list some of possible confusions.
+generative linguistics. It should also be noted that the approach of BLT is also drastically different from the 
+approach of *theoretical* functionalists. (see Descriptive theories, explanatory theories, and Basic Linguistic Theory by Matthew S. Dryer) BLT further will also be unfamiliar to typologists who are more interested in finding
+language universals rather than describing a language in details (for the relation between typology and generative
+syntax, see A note on linguistic theory and typology by GUGLIELMO CINQUE)
+
+Here we briefly list some of possible confusions.
 
 ## Abbreviation
 
@@ -163,25 +168,45 @@ The size of the adjective category is often related to the [semantics of adjecti
 
 # General notion of morphology
 
-## The Lepzig Glossing Rules
+BLT Sec. 3.13
 
+Distinction between derivation and inflection is useful in some languages, but not others. 
+In the former case, we can define *stem* easily: it's something that may or may not undergo some derivation, but not inflection, and after proper inflection it becomes a full word.
+
+Here we introduce different morphological operations and how they are labeled in the Lepzig Glossing Rules.
 The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf).
 
-- affixes are labeled as
+- Compounding
+  - [noun compound](#noun-compounding), as a mean of derivation
+  - [serial verb construction](#serial-verb-constructions) 
+  - [noun incorporation](#noun-incorporation)
+- Affixation
+  - almost universal, with exceptions of perhaps several totally isolating languages
+  - affixes are labeled as
   > they-OBL-GEN
-- clitics are labeled as
+  - clitics (something not that closely attached to one word, yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
   > priest=and shopkeeper=and
-- 
+- Reduplication
 
-# Word derivation
-
-## Derivation into adverbs
+Derivation into adverbs
 
 # Structure and function of sentences and clauses
+
+See BLT Sec. 3.1, 3.11
 
 A sentence is made by
 - a [main clause](#main-clause)
 - zero, one more more [linked clauses](#linked-clause)
+
+Note that it's often hard to distinguish what is really a sentence. There are several approaches:
+- ask a literate speaker to edit the transcription. This, however, may be influenced by the actual stylistic preference. For example, people may begin a sentence with a conjunction.
+- The final syllable of a sentence may undergo certain phonology process.
+- There is a grammatical marker signaling the end of the sentence.
+- SOV language
+
+But these criterions may be in conflict with each other. Intonation may suggest two sentences, while the syntax of linkers points to one.
+
+Sentences may also undergo ellipsis and parenthesis.
 
 The syntactic role of a clause may be
 - The [main clause](#main-clause) in a sentence
@@ -190,8 +215,15 @@ The syntactic role of a clause may be
   - [Complement clause](#complement-clause)
 - Linked clause which are after conjunctions like ", and ..." in English
   - [Temporal clause](#temporal-clause)
+    - Likely a universal construction.
+    - Note that conditional constructions are usually similar to a temporal one, but the semantics of a conditional construction may be not directly temporal, as is in *If Shanghai is bigger than London, then it must be a huge conurbation*
   - [Contrast clause](#contrast-clause)
+    - Not that universal 
   - [Consequence clause](#consequence-clause)
+  - Addition
+    - A universal type of linkage, often simply by apposition of clauses
+  - [Disjunction]
+    - closed disjunction "either ... or ..." is rarer 
 
 A sentence has one of the following pragmatic function-related *mood*:
 - a statement, with [declarative mood](#declarative)
@@ -472,11 +504,40 @@ accusativity, and so on, so it really doesn't make any sense to insist a verb ar
 
 # Verb valence increasing 
 
-# Verb morphology
+# Verb phrase and verb morphology
 
 ## Person and number affix on a verb
 
 There may be person and number affix on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
+
+## Serial verb constructions
+
+## Noun incorporation
+
+Sometimes an argument in the underlying argument structure becomes incorporated into the verbal word.
+Possible situations include:
+- O argument incorporated into the verb, and the clause becomes intransitive
+- the head of an O argument is incorporated, and a modifier in the [NP]<sub>O</sub> becomes the new O: "I'm house-making Subih"
+
+# Negation
+
+See BLT Sec. 3.12
+
+The only universal mechanism is negation of a main clause. Other languages may be able to negate subordinate clause, predicate, and argument.
+Negation may be represented by an interjection (which can be the full reply to a polar question).
+
+Clausal negation can be shown by a separate word or a verbal affix or clitic, or by a negative verb.
+
+The scope of negation is also a critical issue:
+- Negation with scope over predicate:
+  > He could not write the review because he could decline the invitation to review the book to avoid offending the author.
+- Negation with scope over clause
+  > He could not write the review because he is too busy.
+  > I don't beat my dog, because I love her. Yeah, I never, ever beat my dog. I love her so much.
+- Negation over sentence
+  > I don't beat my dog because I love her. I do beat her sometimes, but of course not for the reason I love her.
+
+The contrast between positive and negative is referred to as polarity.
 
 # General structure of noun phrases
 
@@ -501,6 +562,16 @@ and zero, one or more NP modifiers, which may be
 ## Demonstratives as modifiers
 
 # Noun morphology
+
+See BLT Sec. 3.13.
+
+## Noun compounding
+
+- gunman, gunpowder: one root modifying another
+- cry-baby: metaphoric
+- cut-throat: indicating someone doing certain action (i.e. a person who cuts other's throats)
+
+## Argument marking on the noun
 
 Morphological marking of nouns may be about
 - it's [argument role](#marking-of-core-and-peripheral-arguments), usually named as [case](#marking-strategies-of-arguments)
