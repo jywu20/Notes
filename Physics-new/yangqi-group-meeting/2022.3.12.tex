@@ -1,0 +1,185 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+% Conflicts with enumitem
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\title{Xucheng Wang on Superconducting Phase Fluctuations and the Pseudogap}
+\author{Jinyuan Wu}
+\date{March 12, 2022}
+
+\begin{document}
+
+\maketitle
+
+High $T_\text{c}$ superconducting has been discovered for several decades, but still with fundamental puzzles like
+\begin{itemize}
+    \item Symmetry of order parameter: $s$-wave or $p$-wave?
+    \item Mechanism of pairing
+    \item The role of spin fluctuation.
+\end{itemize}
+The main topic today is \concept{pseudogap}. When there is no doping, the system is an AF insulator, and with some 
+hole doping we have the superconducting phase, and with higher hole concentration, we get a metal state.
+When the hole concentration is in the superconducting range but the temperature is risen, we will 
+enter the \concept{pseudogap phase}, where there is no superconductivity but we still have remaining
+pairing, with a ``pseudo'' superconducting gap. The region may come from AFM or CDW order competing with 
+SC, and it is also possible that in this region electrons already form pairs, but the pairs do not \emph{condense}.
+It is also theoretically predicted that pseudogap-like features can arise in BCS theory because of pairing of 
+vortex of the phase $\theta$ of the order parameter. Recently, a pseudogap state was reported in strongly 
+disordered conventional superconductors.
+
+Several models, like the Hubbard model, have been confirmed to possess pseudogap-like behaviors. 
+In this presentation we consider a BCS model:
+\begin{equation}
+    H = H_0 + V, V = \int \dd[2]{\vb*{r}} \Delta(\vb*{r}) \psi^\dagger_{\uparrow} \psi^\dagger_{\downarrow} + \text{h.c.},
+\end{equation}
+and $H_0$ is the Hamiltonian of free electrons. The mean field order parameter $\Delta$ is disordered, where 
+we assume 
+\begin{equation}
+    \expval*{\Delta(\vb*{r})}_\text{dis} = \expval{\Delta^*(\vb*{r})}_\text{dis} = 0, \quad 
+    \expval*{\Delta(\vb*{r}) \Delta^*(\vb*{r}')}_\text{dis} = g(\vb*{r} - \vb*{r}').
+    \label{eq:disordered-delta}
+\end{equation}
+
+There are two types of disorder averaging. In \concept{quenched disorder}, the time scale of quenched disorder is 
+much longer than the rest of the system, i.e. the disorder configuration is frozen when the rest of the 
+system evolves, and the free energy is 
+\begin{equation}
+    F_\text{q} = - \frac{1}{\beta} \expval{\ln Z(\beta)}_\text{dis},
+\end{equation}
+which means we first calculate physical quantities and \emph{then} calculate the disorder average.
+On the other hand, we have \concept{annealed disorder}, where the disorder configuration evolves \emph{together}
+with the rest of the system, and we have 
+\begin{equation}
+    F_\text{a} = - \frac{1}{\beta} \ln \expval{Z(\beta)}_\text{dis}.
+\end{equation}
+In this setting, we first calculate the partition function after disorder averaging, and then give a 
+definite physical quantity prediction.
+
+We can then repeat the procedure as in Anderson localization and represent the disorder as a self-energy 
+correction. Then the problem is feasible using existing numerical simulation methods. 
+We can also make some approximation when the disorder is not strong. We can evaluate the imaginary part 
+of the self energy explicitly and find its asymptotic behavior when the decoherence length $\xi$ 
+introduced by disorder is small. After replacing the imaginary part of $\Sigma$ with a function easier 
+to deal with, we can do inverse analytical continuation and get an approximate $\Sigma$.
+
+We then will find expected split peak in the spectrum function. We find after introducing $\xi$, the peaks 
+are broadened with 
+\begin{equation}
+    \Delta \omega = \pi \Delta_0 \frac{\xi}{\xi_\text{BCS}},
+\end{equation}
+where $\xi_{\text{BCS}}$ is the coherence length of the BCS system. 
+
+We can then verify whether the above picture works in a 2D Hubbard model. In this model, at half-filling 
+we have SC and CDW together, and the latter suppresses $T_\text{c}$ to zero, and when doped away from 
+half-filling, CDW is suppressed and SC comes out. Indeed we find pseudogap in the spectrum function.
+
+Note: here we are working in 2D and usually the phase transition is a KT phase transition, and as the 
+temperature goes down, first we get electron pairing and then a KT phase transition, and the region 
+between the two is the pseudogap phase. (??? why after KT phase transition we get SC?)
+
+It should also be noted that the broadening comes from both the disordered $\Delta$ and something else,
+because experimentally, when the temperature is very low, we still have broadened peaks in the spectrum 
+function, which is not the case in \eqref{eq:disordered-delta}.
+
+\end{document}

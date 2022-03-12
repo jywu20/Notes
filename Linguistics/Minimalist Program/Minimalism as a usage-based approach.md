@@ -11,4 +11,7 @@ https://www.frontiersin.org/articles/10.3389/fpsyg.2019.03056/full
 
 Deriving the Functional Hierarchy Gillian Ramchand and Peter Svenonius
 
+# Comparison with more descriptive approaches
 
+The version of minimalist syntax described here is almost a binary ICA in traditional grammar, with the only difference being that the minimalist syntax here is *derivational*, while ICA is more "static", and that the minimalist syntax described here is not directly about the surface structure. 
+We can expect a future convergence between generative syntax and more typological-functional works.
