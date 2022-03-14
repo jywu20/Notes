@@ -509,6 +509,10 @@ accusativity, and so on, so it really doesn't make any sense to insist a verb ar
 ## Person and number affix on a verb
 
 There may be person and number affix on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
+This is sometimes called *argument indexing*.
+
+See 
+- The rise and preservation of argument indexing systems by Sebastian Collin
 
 ## Serial verb constructions
 
