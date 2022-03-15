@@ -66,6 +66,8 @@ I paper study want Kapoogo
 
 ‘I want Kapoogo to study’ 
 
+# 介词短语的嵌套
+
 # 一些评论
 
 扶手椅语言学家胡乱评论真的做田野调查的人是非常大不敬的，但是我还是有一些——不说批评，说是疑惑的地方吧。
