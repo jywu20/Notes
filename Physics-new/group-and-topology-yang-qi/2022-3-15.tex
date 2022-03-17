@@ -58,6 +58,7 @@
 \newcommand*{\pair}[1]{\langle #1 \rangle}
 \newcommand*{\fd}[1]{\mathcal{D} #1}
 \DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\id}{id}
 
 % TikZ setting
 \usetikzlibrary{arrows,shapes,positioning}
@@ -139,6 +140,220 @@ always the dimension of \emph{one} representation. Since a reducible representat
 two irreducible representations by a perturbation, from then on we only investigate energy degeneracy protected 
 by irreducible representations.
 
+\section{Group extension and group cohomology}
+
+\subsection{Group extension}
+
+Consider the following short exact sequence
+\begin{equation}
+    1 \to N \stackrel{f}{\to} G \stackrel{\pi}{\to} Q \to 1.
+    \label{eq:short-exact-sequence-group}
+\end{equation}
+The definition of exact sequence means 
+\begin{itemize}
+    \item $f$ is injective, since $\ker f = \im (\text{the monomorphism $1 \to N$}) = 1$.
+    \item $\pi$ is surjective, since $\im \pi = \ker (\text{the monomorphism $Q \to 1$}) = Q$.
+    \item $Q \simeq G / \im{f}$, because $G / \ker \pi = \im \pi$, and by definition we have $\ker \pi = \im f$,
+    and $\im \pi = Q$ (from last line). Note that since $f$ is injective, $\im f$ is a perfect copy of $N$,
+    and can be seen as an inclusion map from $N$ into $G$.
+\end{itemize}
+$G$ is defined said to be an \concept{extension} of $Q$ over $N$. 
+
+We consider the case where $N$ is Abelian. What we want to do is to find and classify all group extensions
+-- under the assumption that $N$ is Abelian, we are actually working on \emph{central extensions}. 
+Two group extensions are said to be \concept{equivalent} if and only if the following diagram 
+\input{group-extension-equivalent-diagram.tex} commutes, and we need to find equivalent classes of 
+this equivalence relation.
+
+\subsection{Direct product and semidirect product}
+
+The simplest kind of group extension is just direct product: we define $G$ to be 
+\begin{equation}
+    G = N \otimes Q,
+\end{equation}
+and the multiplication operation is defined as 
+\begin{equation}
+    (a, g) \circ (b, h) \coloneqq (a + b, g h).
+    \label{eq:direct-product-def}
+\end{equation}
+We also have \concept{semidirect product} or \concept{split extension} $N \rtimes Q$, 
+the multiplication rule of which is defined as 
+\begin{equation}
+    (a, g) \circ (b, h) \coloneqq (a + g b g^{-1}, gh).
+    \label{eq:semidirect-product-def-original}
+\end{equation}
+We also say $G$ \concept{splits} over $N$. Note that the notation $g b g^{-1}$ is kind of ambiguous,
+because up to now we haven't introduced any multiplication relation between $N$ and $Q$.
+A more accurate notation is to introduce a group homomorphism $\varphi: Q \to \mathrm{Aut}(N)$
+and interpret $\varphi(g)(a)$ as $\tilde{g} a \tilde{g}^{-1}$, where $\pi(\tilde{g}) = g$. 
+According to the definition, $\pi$ is surjective and not injective, because after group extension, 
+the same group element $g$ in $Q$ is ``split'' into several copies in $G$, and we use $\tilde{g}$
+to denote a certain ``copy'' of $g$. \eqref{eq:semidirect-product-def-original} is therefore corrected into 
+\begin{equation}
+    (a, g) \circ (b, h) \coloneqq (a + \tilde{g} b \tilde{g}^{-1}, gh).
+    \label{eq:semidirect-product-def}
+\end{equation}
+
+We need to check whether \eqref{eq:direct-product-def} and 
+\eqref{eq:semidirect-product-def} can really make $G$ a group, i.e. we need to check whether the 
+associative law holds for $\{(a, g)\}$. For direct product, this is obviously true.
+For semidirect product, we have 
+\[
+    \begin{aligned}
+        ((a, g) (b, h)) (c, i) &= (a + \tilde{g} b \tilde{g}^{-1}, gh) (c, i) \\
+        &= (a + \tilde{g} b \tilde{g}^{-1} + (\widetilde{g h} ) c (\widetilde{g h})^{-1}, ghi),
+    \end{aligned}
+\]
+and 
+\[
+    \begin{aligned}
+        (a, g) ((b, h) (c, i)) &= (a, g) (b + \tilde{h} c \tilde{h}^{-1}, hi) \\
+        &= (a + \tilde{g}(b + \tilde{h} c \tilde{h}^{-1}) \tilde{g}^{-1}, ghi).
+    \end{aligned}
+\]
+Usually, we define multiplication rules under the definition of $(a, h)$-pairs as is in 
+\eqref{eq:pair-element-def}, i.e. $\tilde{g} = s(g)$ and doesn't depend on $a, b$, and under this assumption, we have \eqref{eq:s-inv-pi-return-n}.
+So we have
+\[
+    \tilde{g} \tilde{h} c \tilde{h}^{-1} \tilde{g}^{-1} = \widetilde{gh} c \widetilde{gh}^{-1},
+\]
+because 
+\[
+    \begin{aligned}
+        &\quad \widetilde{gh}^{-1} \tilde{g} \tilde{h} c \tilde{h}^{-1} \tilde{g}^{-1} \widetilde{gh}  \\
+        &= \underbrace{\widetilde{gh}^{-1} \tilde{g} \tilde{h}}_{\in \im f} + c + \underbrace{(\widetilde{gh}^{-1} \tilde{g} \tilde{h})^{-1}}_{\in \im f} \\
+        &= c.
+    \end{aligned}
+\]
+and therefore \eqref{eq:semidirect-product-def} is always self-consistent. 
+
+The motivation of semidirect product is to imitate \emph{inner} semidirect product. 
+An abstract definition of inner semidirect product can be found \href{https://en.wikipedia.org/wiki/Semidirect\_product\#Inner\_semidirect\_product\_definitions}{this Wikipedia page}.
+In short, if $G$ has a subgroup $H$ and a normal subgroup $N$ with no nontrivial intersection with 
+$Q$, and $G = NQ$, then we say $G$ is the \concept{inner semidirect product} of $N$ and $Q$.
+\eqref{eq:semidirect-product-def}, on the other hand, is \concept{outer semidirect product}, and after we 
+construct $G$ according to it, we will find $G$ is the inner semidirect product of $N \times e_Q$ and
+$0_N \times Q$. 
+
+Similarly, we have inner direct product. But it's often the case that we can only guarantee that $N$ is normal 
+and there is nontrivial multiplication relation between $N$ and $Q$. In this case, $G$ simply can't be 
+written as the (outer) direct product of $N$ and $Q$, and if we still want to \emph{factor} $G$ into 
+something like $N \times Q$, inner \emph{semidirect} product will be handy. This explains the motivation
+to introduce \eqref{eq:semidirect-product-def}.
+
+\subsection{Generic group extensions and their equivalence relations}
+
+Now we want to investigate a generic central extension. The multiplication rule is 
+\begin{equation}
+    (a, g) \circ (b, h) \coloneqq (a + \tilde{g} b \tilde{g}^{-1} + \omega_2(g, h), gh),
+    \label{eq:generic-central-extension}
+\end{equation}
+where
+\begin{equation}
+    \omega_2 : Q \times Q \to N.
+\end{equation}
+Here we assume that $\omega_2$ is only dependent on $g$ and $h$ and doesn't include $a$ and $b$, 
+because of the argument below. Since $\pi$ is surjective, we can find a map $s$ from $Q$ to $G$ such that 
+$\pi \circ s = \id_Q$. Note that $s$ is not necessarily a homomorphism, or otherwise 
+\eqref{eq:short-exact-sequence-group} is split. % TODO
+Usually we define 
+\begin{equation}
+    (a, g) = f(a) s(g)
+    \label{eq:pair-element-def}
+\end{equation}
+to derive multiplication rules. A little calculation gives
+\begin{equation}
+    \begin{aligned}
+        (a, g) \circ (b, h) &= f(a) s(g) f(b) s(h) \\
+        &= f(a) s(g) f(b) s(g)^{-1} s(g) s(h) s(gh)^{-1} s(gh).
+    \end{aligned}
+    \label{eq:mul-by-def}
+\end{equation}
+Note that since $\pi$ is a homomorphism, we have 
+\[
+    \begin{aligned}
+        \pi (s(g) s(h) s(gh)^{-1}) &= \pi(s(g)) \pi(s(h)) \pi(s(gh))^{-1} \\
+        &= g h (gh)^{-1} = e,
+    \end{aligned}
+\]
+and the derivation also works for $s(gh)^{-1} s(g) s(h)$, so we have 
+\begin{equation}
+    s(gh)^{-1} s(g) s(h), s(g) s(h) s(gh)^{-1} \in \ker \pi = \im i,
+    \label{eq:s-inv-pi-return-n}
+\end{equation}
+So \eqref{eq:mul-by-def} is now 
+\[
+    (a, g) \circ (b, h) = (f(a) + s(g) f(b) s(g)^{-1} + \underbrace{s(g) s(h) s(gh)^{-1}}_{\coloneqq \omega_2(g,h)}) s(gh),
+\]
+and we get \eqref{eq:generic-central-extension}.
+
+The next step is to check the constraint on $\omega_2$ to ensure that $G$ is really a group. 
+From 
+\[
+    ((a, g) \circ (b, h)) \circ (c, i) = (a, g) \circ ((b, h) \circ (c, i)),
+\]
+we have 
+\begin{equation}
+    \omega_2(g, h) + \omega_2(gh, i) = \underbrace{\tilde{g} \omega_2(h, i) \tilde{g}^{-1}}_{g \cdot \omega_2(h, i)} + \omega_2(g, hi).
+    \label{eq:omega-consistent-condition}
+\end{equation}
+This constraint on $\omega_2$ seems strange, but actually it's a part of a larger structure: 
+\concept{group cohomology}. 
+
+\subsection{Group cohomology}
+
+A cohomology structure can be illustrated as 
+\begin{equation}
+    \cdots \to C^{n-1} \stackrel{\dd^{n-1}}{\longrightarrow} C^n \stackrel{\dd^n}{\longrightarrow} C^{n+1} \to \cdots ,
+\end{equation}
+where 
+\begin{equation}
+    \dd_{n+1} \circ \dd_n \eqqcolon \dd^2 = 0,
+\end{equation} 
+and 
+\begin{equation}
+    \im \dd_{n-1} = \ker \dd_n.
+\end{equation}
+An element $\omega \in C^{n}$ is an \concept{$n$-cochain}. An $n$-cochain $\omega$ is said to be an 
+\concept{$n$-cocycle} if and only if $\dd{\omega} = 0$, the set of which is denoted as $Z^n$, and an $n$-cochain $\omega$ is said to be an 
+\concept{$n$-coboundary} if and only if $\omega = \dd{\mu}$, the set of which is denoted as $B^n$. Of course, $n$-coboundaries are all 
+$n$-cocycles, but not inverse. A natural equivalence relation between $n$-cocycles is that 
+\begin{equation}
+    \omega \sim \omega' \quad \text{iff} \quad \omega - \omega' \in B^n,
+\end{equation}
+and the set of equivalence classes is 
+\begin{equation}
+    H^n = Z^n / B^n.
+\end{equation}
+
+For groups, we define 
+\begin{equation}
+    C^n(G, N) \coloneqq C^n \to N,
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        (\dd_n \omega)(g_1, \ldots, g_{n+1}) &\coloneqq g_1 \cdot \omega(g_2, \ldots, g_{n+1}) + \sum_{i=1}^{n} (-1)^i \omega(g_1, \ldots, g_i g_{i+1}, \ldots, g_{n+1})  \\
+        &\quad \quad - (-1)^n \omega(g_1, \ldots, g_n).
+    \end{aligned}
+\end{equation}
+% TODO
+Specifically, we have 
+\begin{equation}
+    \dd{\omega}(g_1, g_2, g_3) = g_1 \cdot \omega(g_2, g_3) - \omega(g_1 g_2, g_3) + \omega(g_1, g_2 g_3) - \omega(g_2, g_3),
+\end{equation}
+and this means the self-consistent constraint \eqref{eq:omega-consistent-condition} on $\omega_2$ 
+appearing in \eqref{eq:generic-central-extension} is just equivalent to 
+\begin{equation}
+    \dd{\omega_2} = 0 \quad \text{or in other words} \quad \omega_2 \in Z^2(G, N).
+\end{equation}
+\begin{equation}
+    \cdots \to C^{n-1}(G, N) \stackrel{\dd^{n-1}}{\longrightarrow} C^n(G, N) \stackrel{\dd^n}{\longrightarrow} C^{n+1}(G, N) \to \cdots ,
+\end{equation}
+The fact $\omega_2$ in \eqref{eq:generic-central-extension} being a 2-cocycle hints us that 
+classification of possible $\omega_2$'s can also be done in terms of group cohomology.
+We need to check the condition whether $\omega_2$ is equivalent to $\omega_2'$. 
+
 \section{Space groups}
 
 In this section we are not going to show that there are 230 space groups in $\mathbb{R}^3$. 
@@ -169,38 +384,12 @@ There are also \concept{nonsymmorphic} operations, which involve fraction transl
 types of nonsymmorphic generators: \concept{screw axis} $(c_n | n \vb*{R} / m)$, where $m = 1, 2, 3, \ldots$,
 and \concept{glide plane} $(\sigma | \vb*{R} / 2)$.
 
+We can find the ``deep'' reason of the emergence of nonsymmorphic operations . 
 The point group of a space group $G$ is $K = G / \mathbb{T}$, where $\mathbb{T}$ is the translation group.
 Note that if $G$ is nonsymmorphic, $K$ is \emph{not} a subgroup of $G$. $G$ is actually \emph{semidirect}
 product of $K$ and $\mathbb{T}$. We have 
 \begin{equation}
     G = \mathbb{T} \rtimes K.
 \end{equation}
-
-\begin{info*}{Short exact sequence and group extension}
-    Consider the following short exact sequence
-    \begin{equation}
-        1 \to N \stackrel{f}{\to} G \stackrel{\pi}{\to} Q \to 1.
-    \end{equation}
-    The definition of exact sequence means 
-    \begin{itemize}
-        \item $f$ is injective, since $\ker f = \im (\text{the monomorphism $1 \to N$}) = 1$.
-        \item $g$ is surjective, since $\im \pi = \ker (\text{the monomorphism $Q \to 1$}) = Q$.
-        \item $Q \simeq G / \im{f}$, because $G / \ker \pi = \im \pi$, and by definition we have $\ker \pi = \im f$,
-        and $\im \pi = Q$ (from last line).
-    \end{itemize}
-    $G$ is defined said to be an \concept{extension} of $Q$ over $N$. 
-    
-    We consider the case where $N$ is Abelian. The simplest kind of group extension 
-    is just direct product. We also have \concept{semidirect product} or \concept{split extension} $N \rtimes Q$
-    (for an abstract definition, see \href{https://en.wikipedia.org/wiki/Semidirect\_product\#Inner\_semidirect\_product\_definitions}{this Wikipedia page}), 
-    the multiplication rule of which is defined as 
-    \begin{equation}
-        (a, g) \times (b, h) \coloneqq 
-    \end{equation}
-    We also say $G$ \concept{splits} over $N$.
-    The third kind of group extension is \concept{central extension}. 
-\end{info*}
-
-Realizing this, we can find the ``deep'' reason of the emergence of nonsymmorphic operations. 
 
 \end{document}
