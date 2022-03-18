@@ -122,17 +122,19 @@
 
 \maketitle
 
-This is a note about Prof. Cosimo Bambi's lecture on general relativity on February 25 and March 3, 2022.
+This is a note about Prof. Cosimo Bambi's lecture on general relativity from February 25 to March 18, 2022.
 
 This lecture is about the 1-2 chapters in \cite{bambi2018introduction}. Nothing quite interesting.
 \cite{bambi2018introduction} itself is very detailed and it seems I don't really need to take much notes.
 
-\section{The Christoffel symbols of spherical coordinates}
+\section{Relativistic kinetics}
+
+\subsection{The Christoffel symbols of spherical coordinates}
 
 The Christoffel symbol of spherical coordinates, given in (1.83) in \cite{bambi2018introduction}, can be 
 calculated automatically in \href{spherical-coordinate-differential-geometry.nb}{this Mathematica notebook}.
 
-\section{Derivation of special relativity}
+\subsection{Derivation of special relativity}
 
 Section~2.1 and 2.2 seem to be based on Chapter 1 and 2 of Landau's book about field theory. 
 The arguments have been summarized in Section~\ref{gr-sec:principle-special-relativity} in \grnote.
@@ -148,7 +150,35 @@ velocity of the two reference frames.
 
 Note that since the rotation group $SO(4)$ is not Abelian, Lorentz transformations do not commute in general. \marginnote{Problem~2.3}
 
-\section{Aberration of light and superluminal motion}
+The time coordinate in the reference frame attached to a particle (i.e. in the reference frame the particle 
+is at rest) is called the \concept{proper time} of the particle, usually denoted as $\tau$.
+Since 
+\[ \marginnote{(2.36) and (2.37)}
+    \dd{s^2} = - \left( c^2 - \left(\pdv{x}{t}\right)^2 - \left(\pdv{y}{t}\right)^2 - \left(\pdv{z}{t}\right)^2 \right) \dd{t^2} = - \left( 1 - \frac{v^2}{c^2} \right) c^2 \dd{t^2} = - \frac{c^2}{\gamma^2} \dd{t^2} = - c^2 \dd{\tau}^2,
+\] 
+we have 
+\begin{equation}
+    \dd{t} = \gamma \dd{\tau}.
+\end{equation}
+Since a Lorentz transformation keeps the metrics, we have 
+\[
+    \dd{t} \dd{V} = \dd{\tau} \dd{V_0},
+\]
+where $\dd{V_0}$ is the volume metrics in the reference frame attached to the particle. This can also by checked 
+by noting that (here $\vb*{v}$ is along the $x$ axis)
+\[ \marginnote{from (2.45)}
+    \begin{aligned}
+        \dd{x'} \wedge \dd{t'} &= (-\gamma v \dd{t} + \gamma \dd{x}) \wedge (\gamma \dd{t} - \gamma v \dd{x} / c^2) \\
+        &= \gamma^2 \dd{x} \wedge \dd{t} + \frac{\gamma^2 v^2}{c^2} \dd{t} \wedge \dd{x} \\
+        &= \gamma^2 \left( 1 - \frac{v^2}{c^2} \right) \dd{x} \wedge \dd{t} = \dd{x} \wedge \dd{t}.
+    \end{aligned}
+\]
+Therefore, 
+\begin{equation} \marginnote{(2.44)}
+    \dd{V} = \frac{\dd{V_0}}{\gamma}.
+\end{equation}
+
+\subsection{Aberration of light and superluminal motion}
 
 We should note that \emph{Lorentz contraction} of length (see for example (2.43)) is often \emph{not} 
 \marginnote{(2.48) to (2.57)} the length change we \emph{observe} when an object is moving fast.
@@ -191,13 +221,15 @@ as the time, which is not $x^0$ in the frame of coordinate attached to the obser
     \label{fig:superluminal}
 \end{figure}
 
-\section{Time dilation and cosmic ray muons}
+\subsection{Time dilation and cosmic ray muons}
 
 The lifetime of an unstable particle is measured according to its proper time, and this causes the difference \marginnote{Sec.~2.6}
 between the prediction of Newtonian and relativistic theories of the flux of the particle after traveling a 
 certain distance. This is actually a piece of strong evidence of special relativity.
 
-\section{Relativistic mechanics}
+\section{Relativistic mechanics (single particle)}
+
+\subsection{The action}
 
 We know the Lagrangian of a Newtonian free particle is 
 \begin{equation} \marginnote{(3.1)}
@@ -225,6 +257,18 @@ We can repeat the process in (1.71) \marginnote{(1.71)} and find that the EOM is
 Actually Newton's second law can also be written into this form (again see the discussion around (1.71)),
 but this time we are working with $\mu, \nu, \rho = 0, 1, 1, 3$, not just $1, 2, 3$.
 Note that \eqref{eq:eom-sr} is actually the geodesic equation. 
+
+\eqref{eq:eom-sr} is about $\dv*{x^\mu}{\tau}$, which is the tangent vector of the trajectory of the particle
+and is manifestly a 4-vector. Its components are 
+\begin{equation}
+    \dv{x^\mu}{\tau} = \dv{x^\mu}{t} \dv{t}{\tau} = (\gamma c, \gamma \vb*{v}).
+    \label{eq:4-velocity-single}
+\end{equation}
+
+\begin{note*}{}
+    When we say some expression is \concept{manifestly} covariant, we mean the expression is built up by 
+    tensor and Einstein summation notation and can be automatically decided as covariant.
+\end{note*}
 
 We have a more ``geometric'' version of \eqref{eq:newton}. Since 
 \[
@@ -254,7 +298,7 @@ The Lagrangian therefore can still be written as
 \end{equation}
 but now $m$ should be a constant interpreted as a \emph{coupling constant} with the dimension of mass.
 
-\section{Particle collision}
+\subsection{Particle collision}
 
 Relativistic scattering theory is important in particle physics. Consider a typical reaction:
 \begin{equation} \marginnote{(3.41)}
@@ -357,9 +401,12 @@ The generic covariant energy-momentum tensor of a perfect fluid is % TODO: deriv
     \label{eq:general-fluid}
 \end{equation}
 Note that $p$ and $\epsilon$ in \eqref{eq:general-fluid} are defined in a special frame of reference, but this does 
-not eliminate the covariance of \eqref{eq:general-fluid}, because for a fluid there is indeed a special frame of reference, i.e. the rest frame of itself. When in the rest frame of reference, we have 
+not eliminate the covariance of \eqref{eq:general-fluid}, because for a fluid there is indeed a special frame of reference, i.e. the rest frame of itself. 
+
+Finally we check whether \eqref{eq:general-fluid} reduces to \eqref{eq:x-moving-fluid-t} if the velocity 
+of the fluid is globally $- v \vu*{e}$. When in the rest frame of reference, we have 
 \begin{equation}
-    U^\mu = \pmqty{\mu \\ 0 \\ 0 \\ 0},
+    U^\mu = \pmqty{c \\ 0 \\ 0 \\ 0},
 \end{equation}
 and \eqref{eq:general-fluid} reads 
 \[
@@ -370,7 +417,73 @@ we have
 \[
     U'^\mu = \Lambda\indices{^\mu_\nu} U^\nu = \pmqty{\gamma c \\ - \gamma \beta c \\ 0 \\ 0}.
 \]
-Substituting this into \eqref{eq:general-fluid}, we get \eqref{eq:x-moving-fluid-t}. (The process is in \href{relativistic-ideal-fluid.nb}{this Mathematica notebook}). 
+Substituting this into \eqref{eq:general-fluid}, we indeed come back to \eqref{eq:x-moving-fluid-t}. (The process is in \href{relativistic-ideal-fluid.nb}{this Mathematica notebook}). 
+
+\section{Electromagnetism}
+
+\subsection{The action}
+
+In this section we try to establish a relativistic covariant version of electromagnetism.
+First, the EOM of particles 
+\begin{equation} \marginnote{(4.1)}
+    m \ddot{\vb*{r}} = e \vb*{E} + \frac{e}{c} \dot{\vb*{r}} \times \vb*{B} 
+\end{equation}
+has to change, because it allows particles to be accelerated without an upper bound. 
+Second, the Maxwell equations must be written into a covariant form. \marginnote{(4.2) to (4.5)}
+We've already done this in \href{../advanced-electrodynamics/lecture-12-15.pdf}{this note}, 
+but here we need to repeat the procedure with $g_{\mu \nu} = \diag(-1, 1, 1, 1)$ and in the Gaussian 
+unit system. 
+
+We will find the action 
+\begin{equation}
+    \begin{aligned}
+        S&=S_{\mathrm{m}}+S_{\mathrm{int}}+S_{\mathrm{em}}, \\
+        S_{\mathrm{m}} &=-m c \int_{\Gamma} \sqrt{-\dd s^{2}}, \\
+        S_{\mathrm{int}} &=\frac{e}{c} \int_{\Gamma} A_{\mu} \dd x^{\mu}, \\
+        S_{\mathrm{em}} &=-\frac{1}{16 \pi c} \int_{\Omega} F^{\mu v} F_{\mu v} \dd^{4} \Omega
+    \end{aligned}
+\end{equation}
+recovers to the relativistic version of Newton's second law and Maxwell equations.  \marginnote{(4.15) and (4.12)}
+Here $\dd[4]{\Omega} = c \dd{t} \dd[3]{\vb*{r}}$.
+Note that the definition of $F_{\mu \nu}$ here differs with $F_{\mu \nu}$ with $g_{\mu \nu} = (1, -1, -1, -1)$
+with a global minus sign.
+
+The interaction action $S_{\text{int}}$ can also be written into a ``hydrodynamic'' form. \marginnote{(4.19)}
+Before doing so, we need to find a relativistic description of flowing. We start from a collective quantity that 
+is invariant between frames of reference, which is total electric charge here. 
+The density is 
+\begin{equation}
+    \rho = \dv{Q}{V} = \gamma \dv{Q}{V_0}
+\end{equation}
+and is not a Lorentz scalar (because $\dv*{Q}{V_0}$ is one). We tentatively define a manifestly 4-vector 
+\begin{equation}
+    J^\mu = \dv{Q}{V_0} U^\mu = \frac{\rho}{\gamma} (\gamma c, \gamma \vb*{v}) = (\rho c, \rho \vb*{v}),
+\end{equation}
+where $U^\mu$ in the many-body case is the coarse-grained 4-velocity as defined in \eqref{eq:4-velocity-single},
+and in the case where there is only one particle is just \eqref{eq:4-velocity-single}. 
+It can be immediately found that $\partial_\mu J^\mu = 0$, and therefore $J^\mu$ is a good definition of 4-current.
+
+Now in the case with only one particle in the electrodynamic field, we have 
+\[
+    \rho(\vb*{r}', t) = e \delta(\vb*{r}' - \vb*{r}(t)), \quad \Gamma = \{ (t, \vb*{r}(t)) \}_t,
+\]
+so
+\[
+    \begin{aligned}
+        S_\text{int} &= \frac{1}{c} \int \rho \dd{V}  \int_\Gamma \dd{x^\mu} A_\mu = \frac{1}{c} \int \rho \dd{V} \int_{t_1}^{t_2} A_\mu \dv{x^\mu}{t} \dd{t} \\
+        &= \frac{1}{c^2} \int_\Omega \underbrace{c \dd{t} \dd{V}}_{\dd[4]{x}} \rho \dv{x^\mu}{t} A_\mu \\
+        &= \frac{1}{c^2} \int_\Omega \dd[4]{x} J_\text{single particle}^\mu A_\mu .
+    \end{aligned}
+\]
+Since $J^\mu$ in a continuum is just the coarse-grained version of $\sum J^\mu_\text{single particle}$,
+the many-body version of $S_\text{int}$ is 
+\begin{equation} \marginnote{(4.19)}
+    S_\text{int} = \frac{1}{c^2} \int_\Omega \dd[4]{x} J^\mu A_\mu.
+\end{equation}
+
+\subsection{Maxwell equations}
+
+Maxwell equations don't need to be generalized, because they are already invariant. 
 
 \bibliographystyle{plain}
 \bibliography{books-used}
