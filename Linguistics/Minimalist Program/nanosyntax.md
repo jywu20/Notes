@@ -90,7 +90,7 @@ Nanosyntax是不是承认adjunct实际上反而和这个理论本身关系不大
 
 然后EPP驱动的movement让主语移动到EppP的specifier上。这是经典的head splitting分析；如果不需要这么细粒度的分析，考虑到remnant movement会让需要被合并为一个词的成分自然地聚集起来，也可以沿用过去的feature bundle分析。
 
-那么，一个含有feature bundle的head的complements和specifier应该怎么分析？实际上只要把这些complement和specifier分配给分裂出来的heads就可以了。
+那么，一个含有feature bundle的head的complements和specifier应该怎么分析（例如，一个动词将不同的theta role分发给specifier和complement）？实际上只要把这些complement和specifier分配给分裂出来的heads就可以了。
 这里的过程非常类似于将管约论中的大NP分解成DP-NumP-ClP-NP的过程。
 
 需要注意的是，由于我们总是可以像把人称和数组合起来一样，把多个的特征组合成单个特征，feature bundle不存在这个论断也是可以被部分绕开的。
