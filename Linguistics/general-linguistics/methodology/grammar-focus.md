@@ -373,8 +373,7 @@ The definition of these labels in active sentences is
 - A means something with a closer meaning to "agent", 
 - while O means something with a closer meaning to "theme". 
 
-If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs.
-What really is important 
+If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
 
 In passive sentences, it is consistent to 
 
