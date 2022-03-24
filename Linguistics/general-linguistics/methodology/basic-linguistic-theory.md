@@ -155,6 +155,85 @@ But this line of argument has several problems:
 
   Is it a clause? Or is it a sentence?
 
+I think [Haspelmath's definition](https://dlc.hypotheses.org/1725) certainly makes more sense.
+
+# 6
+
+## 6.1
+
+An important point to remember is to always compare things that can be compare. For example, suppose we are going 
+to do a typological study on adjectives, and this of course involves word classification. 
+Now suppose we already know three languages in which what are traditionally known as nouns, verbs and adjectives 
+have properties listed in Table 6.1. We need to recognize the notion of "adjectives" when doing typology.
+
+One possible way to do word classification is to apply criteria *eagerly*: for example, first, we classify *all* 
+words that can be head of an NP as nouns, and then we classify *all* words that can be head of a predicate complex
+as verbs, and then we classify what can be modifier within an NP as adjectives.
+In this way, we classify "adjectives in language 1" as stative verbs and "adjectives in language 2" as quality
+nouns. So only language 3 has adjectives.
+
+Another way is to apply criteria spontaneously to each group of words, and if several criteria all work, choose 
+the most important one (for example, we may assume that being able to be head of NP is more important than 
+being able to be head of predicate complex, which in turn is more important than being able to be NP modifier).
+In this way, all three languages have adjectives.
+
+The above two word classification rules are all consistent, and we may go on to do typology according to one of 
+them. Which approach is better is determined by what approach reveals more language universals.
+However, it's often the case that a references grammar of language 1 uses rule 1 while a reference grammar of 
+language 2 uses rule 2, so, if we are doing a typological work according to rule 2, and we mistakenly take the 
+words of the reference grammar of language 1 literally, then we are only working with adjectives in language 2 
+and language 3 and skip adjectives in language 1 (in the sense of rule 2).
+
+That's why high quality typology requires high quality language documentation. If the reference grammar of language
+1 is detailed enough, we will find what is called as stative verbs can also be classified as adjectives (in
+the sense of rule 2) because, say, it has distinct morphology, etc. Also, in high quality typological works, 
+we need to read the whole grammar, not just pages devoted to "adjectives".
+
+Just because two languages realize the same function/structure differently doesn't mean no sensible comparison can
+be made between them. For example, a language's case affix may be analyzed as postposition, but this doesn't matter:
+we can still compare its abstract case system with other languages, regardless of how cases are morphologically 
+marked. 
+
+## 6.2
+
+We may do intra-language typology or extra-language typology. The first is about systems within the language, while
+the latter is about how things in the real world get represented. If we find something in the real world is 
+systematically encoded as a system in the grammar (example: time coded as tense), then an intra-language study 
+about that abstract system should be done afterwards. 
+
+When doing intra-language typology, do not compare isolated entities: do not compare the existence of a 
+single vowel, whether the language has plural, and so on. Rather, compare the vowel system, the number system, etc.
+
+## 6.3
+
+No key points: worth a thorough reading
+
+- a common five vowel system: i e a o u
+- a frequent four vowel system: i e a u (u = u + o)
+- a less frequent four vowel system: i a o u (i = i + e)
+- a three-vowel system is almost always i a u
+
+Note that sometimes only certain consonants are allowed to appear at certain positions, so terms like CVCV have no
+value in this case.
+
+## 6.4
+
+No key points: worth a thorough reading
+
+- The role of morphological operations in marking grammatical relations
+- Structure of verbal clauses: verb arguments and argument marking
+- Phrase structures, especially NP
+- Construction types: imperative, interrogative, etc.
+- Dependencies between negation and person system (fewer person distinctions under negation)
+
+## 6.5
+
+Worth a thorough reading, TODO
+
+## 6.6
+
+
+
 # 8
 
 The author criticizes the ignorance of many dictionary editors towards grammatical issues.
