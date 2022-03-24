@@ -4,6 +4,7 @@ Capturing free word order in generative syntax
 Two basic types:
 - Radical free order: argument indexation around the verb as core arguments + peripheral arguments interpreted as S and O
 - Scrambling: like Japanese and German: scrambling as a result of multiple topics and focuses
+  - https://doi.org/10.1515/9781614516613-023
 
 Mirrors and Microparameters: Phrase Structure Beyond Free Word Order David Adger， Daniel Harbour， Laurel J. Watkins
 
