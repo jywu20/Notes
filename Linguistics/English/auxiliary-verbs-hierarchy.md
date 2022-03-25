@@ -5,7 +5,7 @@ This is a reading note of Deriving the Functional Hierarchy by Gillian Ramchand 
 
 This article is to explain why in English we have the following ordering of auxiliaries:
 
-{T, Mod} < Perf < Prog < Pass < V
+{T, Mod} < Perf < Prog < Pass < V (some argue that Mod < T - see 8.4 and 8.5 in Analysing English sentences by Andrew Radford)
 
 The author shows that with the following list of ingredients:
 1. syntactic Cartography heads (T<sub>PERF</sub> etc.)
