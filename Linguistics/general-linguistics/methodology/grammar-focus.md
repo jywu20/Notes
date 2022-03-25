@@ -76,6 +76,7 @@ We can definitely see some self-contradiction here.
 Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
 
 So we can see that the meaning of "phrase" is closer to "phase" in generative syntax. Whether XPs in generative syntax can be called as "phrases" is problematic in a functional perspective.
+But on the other hand, functional analysis of constituent-hood often fails to account for movements.
 
 ## "Subject"
 
