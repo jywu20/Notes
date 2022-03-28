@@ -107,43 +107,12 @@
 
 \maketitle
 
-\section{Group theory in condensed matter physics}
-
-Let's first briefly review the role of group theory in quantum mechanics.
-We are usually interested in Lie group symmetries and discrete symmetries, the latter being more important in 
-condensed matter physics because in this field we have to deal with lattices with point group symmetries, 
-and many symmetries that are important for topological states of matter are associated with discrete symmetries 
-like parity symmetry and a special symmetry for fermions named the \concept{fermion-parity symmetry}, which 
-exists in all fermionic systems and arises from the fact that each term in the Hamiltonian always contains 
-even fermionic operators.
-
-So we will just work with discrete groups hereafter. Actually we have the continuous spin rotational symmetry,
-but since spin-orbital coupling exists in all realistic materials, operations on the spin degrees of freedom 
-are just a part of \emph{doubled} space groups.
-
-A \concept{linear representation} is a group homomorphism from a symmetry group $G$ to $\mathrm{GL}(\mathcal{H})$,
-where $\mathcal{H}$ is the Hilbert space. Since the wave function of the system can differ a phase factor 
-after a symmetric operation, we can also have \concept{projective representation}. 
-Representation theory gives very generic results for studying symmetries.
-
-Let $\varphi(\cdot)$ be the mapping from $G$ to $\mathrm{GL}(\mathcal{H})$. If $\varphi$ is a linear representation,
-then it's easy to see 
-\begin{equation}
-    \comm*{H}{\varphi(g)} = 0,
-\end{equation}
-for any group element $g$. We often say that $\varphi(g)$'s \emph{label} the energy eigenstates. 
-For Abelian symmetric group $G$, the labels of $\ket*{n}$ are simply given by $\varphi(g_i) \ket*{n}$, where $\{g_i\}$ 
-are generators of $G$. If $G$ is non-Abelian, we need to work with its irreducible representations, and 
-energy eigenstates are classified into several irreducible representations of $G$, and group elements turn one 
-state into another state in the same irreducible representation. The degeneracy of energy eigenstates is 
-always the dimension of \emph{one} representation. Since a reducible representation can always be split into 
-two irreducible representations by a perturbation, from then on we only investigate energy degeneracy protected 
-by irreducible representations.
-
 \section{Group extension and group cohomology}
 
 \subsection{Group extension}
 
+The motivation to study group extension is that many times in condensed matter physics, we need to combine two 
+groups of which group elements do not commute with each other, and therefore direct product can't be applied.
 Consider the following short exact sequence
 \begin{equation}
     1 \to N \stackrel{f}{\to} G \stackrel{\pi}{\to} Q \to 1.
@@ -163,7 +132,8 @@ We consider the case where $N$ is Abelian. What we want to do is to find and cla
 -- under the assumption that $N$ is Abelian, we are actually working on \emph{central extensions}. 
 Two group extensions are said to be \concept{equivalent} if and only if the following diagram 
 \input{group-extension-equivalent-diagram.tex} commutes, and we need to find equivalent classes of 
-this equivalence relation.
+this equivalence relation. Note that the only essential information added in this diagram is the 
+group isomorphism between $G$ and $G'$ -- $f'$ and $\pi'$ can be evaluated from it.
 
 \subsection{Direct product and semidirect product}
 
@@ -264,7 +234,7 @@ Usually we define
 \end{equation}
 to derive multiplication rules for $G$. With this notation, we can say that $G$ is a bundle over $Q$, each 
 fiber of which is labeled by an element in $Q$, and each point on a fiber is labeled by one element from $N$. 
-$s$ is a (set-theoretic) section. $G$ is assembled by fibers:
+Therefore $s$ is a (set-theoretic) section. $G$ is assembled by fibers:
 \begin{equation}
     E = \coprod_{g \in G} \underbrace{M \cdot s (g)}_{\pi^{-1}(g)}.
 \end{equation}
@@ -289,9 +259,9 @@ and the derivation also works for $s(gh)^{-1} s(g) s(h)$, so we have
     \label{eq:s-inv-pi-return-n}
 \end{equation}
 So \eqref{eq:mul-by-def} is now 
-\[
-    (a, g) \circ (b, h) = (f(a) + s(g) f(b) s(g)^{-1} + \underbrace{s(g) s(h) s(gh)^{-1}}_{\coloneqq \omega_2(g,h)}) s(gh),
-\]
+\begin{equation}
+    (a, g) \circ (b, h) = (f(a) + s(g) f(b) s(g)^{-1} + \underbrace{s(g) s(h) s(gh)^{-1}}_{\coloneqq f(\omega_2(g,h))}) s(gh),
+\end{equation}
 and we get \eqref{eq:generic-central-extension}.
 
 The next step is to check the constraint on $\omega_2$ to ensure that $G$ is really a group. 
@@ -304,8 +274,74 @@ we have
     \omega_2(g, h) + \omega_2(gh, i) = \underbrace{\tilde{g} \omega_2(h, i) \tilde{g}^{-1}}_{g \cdot \omega_2(h, i)} + \omega_2(g, hi).
     \label{eq:omega-consistent-condition}
 \end{equation}
-This constraint on $\omega_2$ seems strange, but actually it's a part of a larger structure: 
-\concept{group cohomology}. 
+The existence of inverse can then be constructed explicitly as 
+\begin{equation}
+    (a, g)^{-1} = (-g^{-1} a - g^{-1} \omega(g, g^{-1}), g^{-1}).
+\end{equation}
+The constraint on $\omega_2$ seems strange, but actually it's a part of a larger structure: \concept{group cohomology}. 
+
+What we have done here is to prove that a group extension -- or in other words, 
+a short exact sequence \eqref{eq:short-exact-sequence-group} -- can be mapped to a $Q \times Q \to N$ 
+function which satisfies \eqref{eq:omega-consistent-condition}. But note that this mapping is dependent 
+on the definition of $s: g \mapsto \tilde{g}$. From \eqref{eq:pair-element-def}, we can see the possibility 
+that after we change $s$ to $s'$ by adding an additional $N$ element determined by $\nu: Q \to N$ as 
+\[
+    s'(g) = f(\nu(g)) s(g),
+\]
+or in other words 
+\[
+    (a, g)' = (a + \nu(g), g),
+\]
+the group extension $G'$ given by $(f, s')$ is still the same as the group extension $G$ given by $(f, s)$.
+The relation between the $\omega_2$ of $G$ and the $\omega_2$ of $G'$ is given by
+\[
+    \begin{aligned}
+        f(\omega'_2(g, h)) &= s'(g) s'(h) s'(gh)^{-1} \\
+        &= f(\nu(g)) \underbrace{s(g) f(\nu(h))}_{f(g \cdot \nu(h)) s(g)} s(h) s(gh)^{-1} \underbrace{f(\nu(gh))^{-1}}_{f(- \nu(gh))} \\
+        &= f(\nu(g) + g \cdot \nu(h)) \underbrace{s(g) s(h) s(gh)^{-1}}_{\omega_2(g, h)} f(- \nu(gh)) \\
+        &= \omega(g, h) + f(\nu(g)) + f(g \cdot \nu(h))  - f(\nu(gh)).
+    \end{aligned}
+\]
+So what's really happening is that we can establish a mapping from a group extension 
+\eqref{eq:short-exact-sequence-group} to an \emph{equivalent class} of a subset of $Q \times Q \to N$
+where \eqref{eq:omega-consistent-condition} holds, and the equivalence relation is  
+\begin{equation}
+    \omega_2'(g, h) = \omega(g, h) + f(\nu(g)) + f(g \cdot \nu(h))  - f(\nu(gh)).
+    \label{eq:omega-2-prime-relation}
+\end{equation}
+The available range of $\nu$ is yet to be determined, because it may be possible that some $\nu$'s lead to a group 
+extension equivalent to $G$, while others lead to different group extensions.
+
+And here is the next step we want to take: to show that an arbitrary $\nu$ actually gives a group isomorphism.
+We have 
+\[
+    \begin{aligned}
+        (a - \nu(g), g) \circ (b - \nu(h), h) &= (a - \nu(g) + \tilde{g} (b - \nu(h)) \tilde{g}^{-1} + \omega_2'(g, h), gh) \\
+        &= (a + \tilde{g} b \tilde{g}^{-1} - \nu(g) - g \cdot \nu(h) + \omega_2'(g, h) , gh) \\
+        &= (a + \tilde{g} b \tilde{g}^{-1} + \omega_2(g,h) - \nu(gh), gh),
+    \end{aligned}
+\]
+where $\omega_2'$ is given by \eqref{eq:omega-2-prime-relation}.  
+The conclusion is that 
+\begin{equation}
+    (a, g) \mapsto (a + \nu(g), g )
+    \label{eq:equivalent-isomorphism}
+\end{equation}
+is a group isomorphism, with $\mu$ being an arbitrary function from $Q$ to $N$. 
+
+To summarize, we find that the set of (equivalent) group extensions differ with the group isomorphism 
+\eqref{eq:equivalent-isomorphism} has one-to-one correspondence to a \eqref{eq:omega-2-prime-relation}-equivalent
+class of the subset of $Q \times Q \to N$ where \eqref{eq:omega-consistent-condition} holds. Now if two 
+group extensions are equivalent, the commuting diagram \eqref{eq:equivalent-commuting-diagram} means 
+an element in $G$ and its corresponding element in $G'$ are both mapped to the same element in $Q$,
+and they must be in the form of 
+\[
+    (\text{something in $N$}, g), \quad (\text{something else in $N$}, g)',
+\] 
+So the group isomorphism is just \eqref{eq:equivalent-isomorphism}. Therefore, we find that equivalent 
+group extensions only differ with a group isomorphism \eqref{eq:equivalent-isomorphism}, and a equivalent 
+class of group extensions has one-to-one correspondence to a \eqref{eq:omega-2-prime-relation}-equivalent
+class of the subset of $Q \times Q \to N$ where \eqref{eq:omega-consistent-condition} holds.
 
 \subsection{Group cohomology}
 
@@ -378,11 +414,58 @@ Specifically, we have
 and this means the self-consistent constraint \eqref{eq:omega-consistent-condition} on $\omega_2$ 
 appearing in \eqref{eq:generic-central-extension} is just equivalent to 
 \begin{equation}
-    \dd{\omega_2} = 0 \quad \text{or in other words} \quad \omega_2 \in Z^2(G, N).
+    \dd{\omega_2} = 0 \quad \text{or in other words} \quad \omega_2 \in Z^2(Q, N).
 \end{equation}
 The fact $\omega_2$ in \eqref{eq:generic-central-extension} being a 2-cocycle hints us that 
-classification of possible $\omega_2$'s can also be done in terms of group cohomology.
-We need to check the condition whether $\omega_2$ is equivalent to $\omega_2'$. 
+classification of possible $\omega_2$'s -- and therefore possible group extensions -- can also be 
+done in terms of group cohomology. Note that \eqref{eq:omega-2-prime-relation} can now be written as 
+\begin{equation}
+    \omega_2' = \omega_2 + \dd{\nu}, \quad \nu \in C^1(Q, N),
+\end{equation}
+because 
+\begin{equation}
+    \dd{\nu}(g_1, g_2) = g_1 \cdot \nu(g_2) - \nu(g_1 g_2) + \nu(g_1),
+\end{equation}
+so the \eqref{eq:omega-2-prime-relation}-equivalence classes are exactly shown in $H^2(Q, N)$.
+
+So we arrive at a beautiful conclusion that possible equivalent group extensions have one-to-one 
+correspondence with elements in $H^2(Q, N)$, and from one element $\omega_2$ in $H^2(Q, N)$ we can construct 
+a group extension $G$ according to \eqref{eq:generic-central-extension}, and by replacing $\omega_2$
+by $\omega_2 + \dd{\nu}$, we can construct \emph{all} group extensions equivalent to $G$. This completely 
+classifies all group extensions.
+
+\section{Group theory in condensed matter physics}
+
+Let's first briefly review the role of group theory in quantum mechanics.
+We are usually interested in Lie group symmetries and discrete symmetries, the latter being more important in 
+condensed matter physics because in this field we have to deal with lattices with point group symmetries, 
+and many symmetries that are important for topological states of matter are associated with discrete symmetries 
+like parity symmetry and a special symmetry for fermions named the \concept{fermion-parity symmetry}, which 
+exists in all fermionic systems and arises from the fact that each term in the Hamiltonian always contains 
+even fermionic operators.
+
+So we will just work with discrete groups hereafter. Actually we have the continuous spin rotational symmetry,
+but since spin-orbital coupling exists in all realistic materials, operations on the spin degrees of freedom 
+are just a part of \emph{doubled} space groups.
+
+A \concept{linear representation} is a group homomorphism from a symmetry group $G$ to $\mathrm{GL}(\mathcal{H})$,
+where $\mathcal{H}$ is the Hilbert space. Since the wave function of the system can differ a phase factor 
+after a symmetric operation, we can also have \concept{projective representation}. 
+Representation theory gives very generic results for studying symmetries.
+
+Let $\varphi(\cdot)$ be the mapping from $G$ to $\mathrm{GL}(\mathcal{H})$. If $\varphi$ is a linear representation,
+then it's easy to see 
+\begin{equation}
+    \comm*{H}{\varphi(g)} = 0,
+\end{equation}
+for any group element $g$. We often say that $\varphi(g)$'s \emph{label} the energy eigenstates. 
+For Abelian symmetric group $G$, the labels of $\ket*{n}$ are simply given by $\varphi(g_i) \ket*{n}$, where $\{g_i\}$ 
+are generators of $G$. If $G$ is non-Abelian, we need to work with its irreducible representations, and 
+energy eigenstates are classified into several irreducible representations of $G$, and group elements turn one 
+state into another state in the same irreducible representation. The degeneracy of energy eigenstates is 
+always the dimension of \emph{one} representation. Since a reducible representation can always be split into 
+two irreducible representations by a perturbation, from then on we only investigate energy degeneracy protected 
+by irreducible representations.
 
 \section{Space groups}
 

@@ -171,7 +171,7 @@ The size of the adjective category is often related to the [semantics of adjecti
 
 # General notion of morphology
 
-BLT Sec. 3.13
+BLT Sec. 3.13 and 3.14
 
 Distinction between derivation and inflection is useful in some languages, but not others. 
 In the former case, we can define *stem* easily: it's something that may or may not undergo some derivation, but not inflection, and after proper inflection it becomes a full word.
@@ -183,13 +183,28 @@ The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.p
   - [noun compound](#noun-compounding), as a mean of derivation
   - [serial verb construction](#serial-verb-constructions) 
   - [noun incorporation](#noun-incorporation)
+- Reduplication
+  - Things repeated may be initial syllable, first two syllables, last syllable, and the whole word; each of them may have a distinct function
+  - For nouns: plural, diminutive, selection ("long" -> "things that are long")
+  - For verbs: repeating, intensive, continuous
+  - But generally this operation can mean anything
+  - When annotated, reduplication is treated similar to affixation, but with a tilde: yerak-rak in Hebrew means "greenish" and is tagged as green-ATT
+- Internal change
+  - foot -> feet, and may also apply to consonants
+- Subtraction 
+  - for example Somoan: silaf -> sila
 - Affixation
   - almost universal, with exceptions of perhaps several totally isolating languages
-  - affixes are labeled as
+  - affixes (as well as compounding) are labeled as
   > they-OBL-GEN
   - clitics (something not that closely attached to one word, yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
   > priest=and shopkeeper=and
-- Reduplication
+- Infixation
+  - most  used in 
+
+https://en.wikipedia.org/wiki/Transfix
+
+It's sometimes useful to 
 
 Derivation into adverbs
 
