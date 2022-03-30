@@ -7,7 +7,7 @@ Inside a CP:
   - [The function of the left peripheral](#structure-and-function-of-sentences-and-clauses)
 - The TP layer(s)
 - The vP layer(s)
-  - [Argument structure](#argument-structure-of-verbs)
+  - [Argument structure](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments)
 
 ## Recursion involving CP
 
@@ -93,9 +93,27 @@ complex", which includes all functional projections governing the whole clause. 
 "the verb marks the subject by the SVO order", which again makes sense even in the generative context because 
 here the term "verb" concludes the TP projection, and therefore includes the EPP feature.
 
-# Nouns
+## Argument label, S, O and A
 
-Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the prototype role of nouns, and also an important criteria to recognize a noun class.
+The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
+They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
+indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
+The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
+So we'd better think of these labels as phenomenological concepts. 
+
+The definition of these labels in active sentences is 
+- A means something with a closer meaning to "agent", 
+- while O means something with a closer meaning to "theme". 
+
+If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
+
+In passive sentences, it is consistent to 
+
+# Prototypical word classes
+
+## Nouns
+
+Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the *prototype* role of nouns, and also an important criteria to recognize a noun class.
 
 Nouns include
 - **Common nouns** that are about a class of objects
@@ -113,13 +131,13 @@ The sematic type of a noun may influence TODO: hyperref
 - an obligatory possessor
 - classification markers (for example, grammatical gender system)
 
-# Verbs
+## Verbs
 
-Similar to the case of [nouns](#nouns), all languages have verbs, which typically appear in the head of a predicate - this distribution feature [in clauses](#inner-structure-of-clauses) is the prototype role of verbs, and also an important criteria to recognize a verb class.
+Similar to the case of [nouns](#nouns), all languages have verbs, which typically appear in the head of a predicate - this distribution feature [in clauses](#inner-structure-of-clauses) is the *prototype role* of verbs, and also an important criteria to recognize a verb class.
 
 Note that the verb category may be a closed category, sometimes only a few dozen, but in this case, they can usually be enriched with certain affixes.
 
-Verbs may be classified according to the [argument structure](#argument-structure-of-verbs).
+Verbs may be classified according to the [argument structure](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments).
 
 A verb may have a semantic type, which, just like the semantic type of nouns, may have syntactic consequences. 
 To name a few verbs:
@@ -140,7 +158,13 @@ Even if the case is not that simple, the light verb for liking and thinking and 
 Secondary concepts describe some details (how the event is started or stopped, for example) about a primary verb.
 They can be verb affixes in some languages and lexemes in others (for example, English).
 
-# Adjectives
+## Distinguishing nouns and verbs
+
+See BLT Chap. 11
+
+Several languages are claimed to lack the distinction between nouns and verbs. 
+
+## Adjectives
 
 Adjective is a highly heterogeneous category. It may be
 - type 1: verb-like
@@ -167,14 +191,48 @@ Adjective is a highly heterogeneous category. It may be
 
 A language may have two adjective classes, and the adjective class in a language can be closed and highly restricted.
 
-The size of the adjective category is often related to the [semantics of adjectives](#adjective-function-and-semantics).
+The size of the adjective category is often related to the semantics of adjectives.
+When the number of adjectives is just a dozen or so, there are likely to be adjectives about
+- dimension: big, small, long, short
+- age: old, young
+- color: black, white, red
+- value: good, bad
+
+When there are more members:
+- physical property: raw, hard, heavy
+
+larger classes:
+- human propensity: clever, rude
+
+## Pro-forms
+
+Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
+The term *pronoun* is used differently in Basic Linguistic Theory and in this Wikipedia page.
+In Basic Linguistic Theory, the term *pronoun* is used to denote *personal pronouns*, while in the Wikipedia page personal pronouns are not discussed, and the term *pronoun* is used to denote any pro-form referring to a noun.
+
+Generally speaking, pro-forms are more limited in possible modifiers. For example, in English, pronouns cannot be modified by [temporal or spacial phrases](#space-and-time).
+
+### Personal pronouns
+
+All languages have 1st and 2nd person pronouns. There is almost always a number distinction in a pronoun system, while it is possible that some numbers share one pronoun form (i.e. in English).
+
+The 1st person pronoun may have a distinction between inclusive and exclusive when in the plural form.
+Soe languages have a "me and you" pronoun.
+
+It is possible that a language both have free pronouns, which are single words, and bound pronouns, which are clitics or affixes [attached to the verb](#person-and-number-marking-on-a-verb) or the end of the first constituent of the clause.
+
+### Demonstratives
+
+A few languages have just one nominal demonstrative: "this".
+All languages seem to have at least two adverbial demonstratives, "here" and "there".
+
+### Interrogatives
+
+Note that words belonging to "interrogatives" may have different word classes, but somehow they have shared properties (for example inducing an interrogative affix on the verb).
 
 # General notion of morphology
 
 BLT Sec. 3.13 and 3.14
-
-Distinction between derivation and inflection is useful in some languages, but not others. 
-In the former case, we can define *stem* easily: it's something that may or may not undergo some derivation, but not inflection, and after proper inflection it becomes a full word.
 
 Here we introduce different morphological operations and how they are labeled in the Lepzig Glossing Rules.
 The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf).
@@ -199,22 +257,75 @@ The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.p
   > they-OBL-GEN
   - clitics (something not that closely attached to one word, yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
   > priest=and shopkeeper=and
-- Infixation
-  - most  used in 
+  > If the major morphological process is affixation, then we can distinguish from "free" and "bound". This doesn't work when there is tone change, for example.
+- Template morphology as seen in Semitic languages https://en.wikipedia.org/wiki/Transfix
+- Change of value within a vowel harmony system, nasalization, prosody, etc.
 
-https://en.wikipedia.org/wiki/Transfix
+It's sometimes useful to distinguish between derivation and inflection. 
+Distinction between derivation and inflection is useful in some languages, but not others. 
+In the former case, we can define *stem* easily: it's something that may or may not undergo some derivation, but not inflection, and after proper inflection it becomes a full word.
 
-It's sometimes useful to 
+Zero inflection marker is a convenient term when similar features are marked. 
 
-Derivation into adverbs
+The method to show morphology in a table is called the word-and-paradigm model, while we can also show morphology in an item-and-arrangement method, which lists all morphemes and how they are arranged together.
+A morpheme mau have several alternative forms, called "allomorphs".
+Again, for languages in which non-affixation processes are frequent and/or fusion is strong (as is the case in Latin: a noun inflection suffix should be analyzed as one or three morphemes?), we can't use these terms and should work with a more general "item-and-process" approach.
+
+Derivations 
 
 # Structure and function of sentences and clauses
 
 See BLT Sec. 3.1, 3.11
 
+## Sentences and clauses
+
 A sentence is made by
-- a [main clause](#main-clause)
-- zero, one more more [linked clauses](#linked-clause)
+- a main clause
+- zero, one more more linked clauses
+
+The syntactic role of a clause may be
+- The **main clause** in a sentence, a clause which on its own makes up a sentence. Categories about a sentence, if grammatically marked, is usually marked on the main clause. 
+- Embedded clause which looks like adjectives or nouns in some aspects
+  - [**Relative clause**](#relative-clause)
+  - [Complement clause](#complement-clause)
+- Linked clause which are after conjunctions like ", and ..." in English.
+  - [Temporal clause](#temporal-clause)
+    - Likely a universal construction.
+    - Note that conditional constructions are usually similar to a temporal one, but the semantics of a conditional construction may be not directly temporal, as is in *If Shanghai is bigger than London, then it must be a huge conurbation*
+  - **Contrast clause**
+    - Not that universal 
+  - [**Consequence clause**](#consequence-clause)
+  - Addition
+    - A universal type of linkage, often simply by apposition of clauses
+  - **Disjunction**
+    - closed disjunction "either ... or ..." is rarer 
+
+## Mood of a sentence
+
+A sentence has one of the following pragmatic function-related *mood*:
+- a statement, with **declarative mood**
+- a command, with **imperative mood**
+- a question, with **interrogative mood**
+  - a content question
+  - a polar question, or in other words, a yes/no question (some languages lack "yes" and "no")
+
+Note that the same meaning may be expressed by different *syntactic* moods. For example, *Would you mind ...* is interrogative but it actually is a command.
+
+---
+**Note** In generative linguistics, these *moods* are usually called *Force* to distinguish them from the indicative/subjunctive *Mood* (which is called *modality* in a more descriptive context).
+
+---
+
+Declarative mood is typically unmarked.
+
+Imperative mood is often shown by a verbal suffix.
+
+An interrogative sentence may be marked by one or more features in the following:
+- intonation
+- word order change
+- interrogative affix or particle
+
+## What's really a sentence or a clause?
 
 Note that it's often hard to distinguish what is really a sentence. There are several approaches:
 - ask a literate speaker to edit the transcription. This, however, may be influenced by the actual stylistic preference. For example, people may begin a sentence with a conjunction.
@@ -226,85 +337,7 @@ But these criterions may be in conflict with each other. Intonation may suggest 
 
 Sentences may also undergo ellipsis and parenthesis.
 
-The syntactic role of a clause may be
-- The [main clause](#main-clause) in a sentence
-- Embedded clause which looks like adjectives or nouns
-  - [Relative clause](#relative-clause)
-  - [Complement clause](#complement-clause)
-- Linked clause which are after conjunctions like ", and ..." in English
-  - [Temporal clause](#temporal-clause)
-    - Likely a universal construction.
-    - Note that conditional constructions are usually similar to a temporal one, but the semantics of a conditional construction may be not directly temporal, as is in *If Shanghai is bigger than London, then it must be a huge conurbation*
-  - [Contrast clause](#contrast-clause)
-    - Not that universal 
-  - [Consequence clause](#consequence-clause)
-  - Addition
-    - A universal type of linkage, often simply by apposition of clauses
-  - [Disjunction]
-    - closed disjunction "either ... or ..." is rarer 
-
-A sentence has one of the following pragmatic function-related *mood*:
-- a statement, with [declarative mood](#declarative)
-- a command, with [imperative mood](#imperative)
-- a question, with [interrogative mood](#interrogative)
-  - a content question
-  - a polar question, or in other words, a yes/no question (some languages lack "yes" and "no")
-
-Note that the same meaning may be expressed by different *syntactic* moods. For example, *Would you mind ...* is interrogative but it actually is a command.
-
----
-**Note** In generative linguistics, these *moods* are usually called *Force* to distinguish them from the indicative/subjunctive *Mood* (which is called *modality* in a more descriptive context).
-
----
-
-The mood, if grammatically marked, is usually marked on the [main clause](#main-clause). TODO: how mood is marked 
-
-## Declarative
-
-Declarative mood is typically unmarked.
-
-## Imperative
-
-Imperative mood is often shown by a verbal suffix.
-
-## Interrogative
-
-An interrogative sentence may be marked by one or more features in the following:
-- intonation
-- word order change
-- interrogative affix or particle
-
-## Main clause
-
-A main clause is a clause which on its own makes up a sentence.
-
-# Relative clause
-
-A relative clause is a modifier in an NP. 
-
-# Complement clause
-
-BLT Sec. 3.10
-
-A complement clause is an [argument](#argument-structure-of-verbs) in another clause.
-Some people call it both an NP and a sentence, though not all arguments are NPs and clauses themselves are not sentences.
-We *don't* name a clause describing a place or a time as a complement clause - a complement clause always represents a fact or an event.
-We should also note that the complement clause is NOT verb nominalization, though it's common that they involve similar morphological operations.
-For example, in English, we have a -ing complement clause variety:
-> John's playing the national anthem
-
-and we also have a -ing nominalization construction:
-
-> John's playing of the national anthem
-
-The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
-
-# Contrast clause
-
-
-# Consequence clause
-
-# Inner structure of clauses
+## Inner structure of clauses
 
 A clause's inner structure may be
 - a "complete" one, consisting of 
@@ -327,27 +360,40 @@ However, the term *core argument* is still handy because there are often argumen
 Arguments may be filled by 
 - a phrase with a [noun](#nouns) head (which is attested in all languages); this is the *prototype* function of nouns
 - a phrase with a [verb](#verbs) head
+- a [complement clause](#complement-clause)
 
 The predicate may be 
 - a [verb](#verbs) (which is attested in all languages); this is the *prototype* function of verbs
 - a [noun](#nouns) (where morphological markers, if any, will be added to the predicate noun)
   - attested in Nenets (see [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (7-8))
-- a [adjective](#adjectives)
+  Note that this is different from the verbless clause.
+- an [adjective](#adjectives)
+
+- [verbal clauses](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments), the prototypical clause structure
+- [copula clause](#copula-clause)
+- [verbless clause](#verbless-clause)
 
 From the perspective of generative (morpho)syntax, the core arguments can be seen as specifiers of inner vP layers.
 They are obliged to appear, because otherwise the verb cannot get spelt out (we can reasonably assume that due to some general cognitive reasons, in the lexicon we can only find entries like [Do [Trans √V]] for transitive verbs).
 This also explains why they are strongly selected by the predicate verb and why they leave marks on the predicate verb, both of which can be introduced in the spellout process.
 They cannot undergo certain movements, because there is a phase layer between them and the peripheral arguments (which may in the TP layer), or because there is some constraints prohibiting long-range movements.
 
-## Typical verb clauses, the corresponding verb types and the core arguments
+## Transitive argument marking
+
+# Typical verb clauses, the corresponding verb types and the core arguments
+
+This section is about the "default" argument configuration of verbs, i.e. without any change on valence, like passivization, and typical verb clauses the predicates of which are (ordinary) verbs.
+We discuss the vP layer in this section.
+
+## Argument number and transitivity
 
 A clause with a verb as its predicate has some possible structures (here we only list the core arguments):
 - transitive, in which there is 
-  - a [transitive](#transitive-verb) predicate
+  - a **transitive** predicate
   - a transitive subject labeled as A
   - a transitive object labeled as O
 - intransitive, where there is 
-  - an [intransitive](#intransitive-verb) predicate
+  - an **intransitive** predicate
   - an intransitive subject labeled as S
 - extended transitive, sometimes called [ditransitive](https://en.wikipedia.org/wiki/Ditransitive_verb), where there is 
   - a extended transitive predicate
@@ -361,39 +407,26 @@ A clause with a verb as its predicate has some possible structures (here we only
   - an extended argument labeled as E (example can be seen in Sec. 3.2 (9) in BLT)
     - the role of E may be 
 
-## Copula clause
+A verb may both be transitive and intransitive, where its intransitive subject takes the same function as its transitive subject. An English example is *knit*, as in *She knits* and *She knits socks*.
+This is called **ambitransitives of type S = A**.
 
-A copula clause contains 
-- a copula verb
-- a copula subject labeled as CS
-- a copula complement labeled as CC, which may be an identity of the subject, an attribution, or a location
+**Ambitransitives of type S = O** are similar to ambitransitives of type S = A but the intransitive subject functions as the transitive object.
+An English example is melt, as in *The butter melted* and *She melted the butter*.
 
-CS can be realized like an S, but in some case (e.g. Ainu), it can be realized as similar to A and different from S.
-The behavior of CC generally is different from other arguments (for example, no bound pronouns can be an CC in known languages).
+## "Ergativity" of verbs
 
-Sometimes the copula can be omitted. 
+TODO: microparameter of unaccusativity and macroparameter of ergativity
 
-## Verbless clause
-
-Some languages support a clause made up solely by two NPs, which are 
-- verbless clause subject (VCS) and
-- verbless clause complement (VCC) argument
-
-## A note about argument labels used here
-
-The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
-They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
-indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
-The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
-So we'd better think of these labels as phenomenological concepts. 
-
-The definition of these labels in active sentences is 
-- A means something with a closer meaning to "agent", 
-- while O means something with a closer meaning to "theme". 
-
-If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
-
-In passive sentences, it is consistent to 
+It should be noted that ergativity terms used for verbs may be misleading, especially for those not familiar with generative 
+jargons. An unergative verb has vP structure [ A Do [ O Trans V ] ], with O being optional, while an 
+unaccusative verb has [ A Cause [ O Undergo V ] ], with A being optional. If the marking of arguments
+faithfully reflects their semantic roles, then unergative verbs are indeed marked as accusative and vice versa.
+However, we know this is almost impossible. Constructions like *Simon walks* involves a single A argument, and we 
+can't expect this construction to be always absent in ergative languages. A possible solution which enable us 
+to explain ergativity solely by argument structure is to give up
+any semantic indication of light verb structure, but this seems rather strange. Besides, ergativity is actually
+a highly diverse concept, with syntactic ergativity, morphological ergativity, mixture between ergativity and 
+accusativity, and so on, so it really doesn't make any sense to insist a verb argument structure explanation.
 
 # Marking of core and peripheral arguments
 
@@ -482,50 +515,13 @@ It's possible some arguments are marked in the same way:
 ## Active–stative alignment
 
 
-## Transitive argument marking
-
-# Argument structure of verbs
-
-## Transitive verb
-
-## Intransitive verb
-
-## Ambitransitives of type S = A
-
-A verb may both be transitive and intransitive, where its intransitive subject takes the same function as its transitive subject. An English example is *knit*, as in *She knits* and *She knits socks*.
-This is called **ambitransitives of type S = A**.
-
-## Ambitransitives of type S = O.
-
-Similar to [ambitransitives of type S = A](#ambitransitives-of-type-s--a) but the intransitive subject functions as the transitive object.
-An English example is melt, as in *The butter melted* and *She melted the butter*.
-
-## Unaccusative verb
-
-TODO: microparameter of unaccusativity and macroparameter of ergativity
-
-It should be noted that the terms used here may be misleading, especially for those not familiar with generative 
-jargons. An unergative verb has vP structure [ A Do [ O Trans V ] ], with O being optional, while an 
-unaccusative verb has [ A Cause [ O Undergo V ] ], with A being optional. If the marking of arguments
-faithfully reflects their semantic roles, then unergative verbs are indeed marked as accusative and vice versa.
-However, we know this is almost impossible. Constructions like *Simon walks* involves a single A argument, and we 
-can't expect this construction to be always absent in ergative languages. A possible solution which enable us 
-to explain ergativity solely by argument structure is to give up
-any semantic indication of light verb structure, but this seems rather strange. Besides, ergativity is actually
-a highly diverse concept, with syntactic ergativity, morphological ergativity, mixture between ergativity and 
-accusativity, and so on, so it really doesn't make any sense to insist a verb argument structure explanation.
-
-## Unergative verb
-
-# Verb valence decreasing
-
-# Verb valence increasing 
+# Verb valence change
 
 # Verb phrase and verb morphology
 
-## Person and number affix on a verb
+## Person and number marking on a verb
 
-There may be person and number affix on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
+There may be person and number marking on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
 This is sometimes called *argument indexing*.
 
 See 
@@ -540,7 +536,25 @@ Possible situations include:
 - O argument incorporated into the verb, and the clause becomes intransitive
 - the head of an O argument is incorporated, and a modifier in the [NP]<sub>O</sub> becomes the new O: "I'm house-making Subih"
 
-# Negation
+# Copula clause
+
+A copula clause contains 
+- a copula verb
+- a copula subject labeled as CS
+- a copula complement labeled as CC, which may be an identity of the subject, an attribution, or a location
+
+CS can be realized like an S, but in some case (e.g. Ainu), it can be realized as similar to A and different from S.
+The behavior of CC generally is different from other arguments (for example, no bound pronouns can be an CC in known languages).
+
+Sometimes the copula can be omitted. 
+
+# Verbless clause
+
+Some languages support a clause made up solely by two NPs, which are 
+- verbless clause subject (VCS) and
+- verbless clause complement (VCC) argument
+
+# Negation of clause
 
 See BLT Sec. 3.12
 
@@ -560,6 +574,12 @@ The scope of negation is also a critical issue:
 
 The contrast between positive and negative is referred to as polarity.
 
+# Non-spatial setting of clauses
+
+See BLT 3.15
+
+In this section we discuss features that may appear in the TP layer, also called **TAME categories** (tense, aspect, modality, evidentiality). 
+
 # General structure of noun phrases
 
 A noun phrase can be made up by 
@@ -573,12 +593,14 @@ and zero, one or more NP modifiers, which may be
       > I like [that one], [the read dress]
   - one or more nouns, the type of which is usually limited, specifying sex, composition, purpose, etc.
   - a [possessive phrase](#possessive-phrases)
-  - a [relative clause](#relative-clauses)
+  - a [relative clause](#relative-clause)
   - an NP or PP for [time or location](#space-and-time), intended purpose, etc.
 
 ## Possessive phrases
 
-## Relative clauses
+## Relative clause
+
+A relative clause is a modifier in an NP. 
 
 ## Demonstratives as modifiers
 
@@ -598,46 +620,6 @@ Morphological marking of nouns may be about
 - it's [argument role](#marking-of-core-and-peripheral-arguments), usually named as [case](#marking-strategies-of-arguments)
 - 
 
-# Pro-forms
-
-Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
-The term *pronoun* is used differently in Basic Linguistic Theory and in this Wikipedia page.
-In Basic Linguistic Theory, the term *pronoun* is used to denote *personal pronouns*, while in the Wikipedia page personal pronouns are not discussed, and the term *pronoun* is used to denote any pro-form referring to a noun.
-
-Generally speaking, pro-forms are more limited in possible modifiers. For example, in English, pronouns cannot be modified by [temporal or spacial phrases](#space-and-time).
-
-## Personal pronouns
-
-All languages have 1st and 2nd person pronouns. There is almost always a number distinction in a pronoun system, while it is possible that some numbers share one pronoun form (i.e. in English).
-
-The 1st person pronoun may have a distinction between inclusive and exclusive when in the plural form.
-Soe languages have a "me and you" pronoun.
-
-It is possible that a language both have free pronouns, which are single words, and bound pronouns, which are clitics or affixes [attached to the verb](#person-and-number-affix-on-a-verb) or the end of the first constituent of the clause.
-
-## Demonstratives
-
-A few languages have just one nominal demonstrative: "this".
-All languages seem to have at least two adverbial demonstratives, "here" and "there".
-
-## Interrogatives
-
-Note that words belonging to "interrogatives" may have different word classes, but somehow they have shared properties (for example inducing an interrogative affix on the verb).
-
-# Adjective function and semantics
-
-When the number of adjectives is just a dozen or so, there are likely to be adjectives about
-- dimension: big, small, long, short
-- age: old, young
-- color: black, white, red
-- value: good, bad
-
-When there are more members:
-- physical property: raw, hard, heavy
-
-larger classes:
-- human propensity: clever, rude
-
 # Space and time
 
 See Sec. 3.8 of Basic Linguistic Theory.
@@ -654,3 +636,19 @@ Both spatial and temporal information can be introduced by a word, a phrase or a
 
 ## Temporal clause
 
+# Complement clause
+
+BLT Sec. 3.10
+
+A complement clause is an argument in another clause.
+Some people call it both an NP and a sentence, though not all arguments are NPs and clauses themselves are not sentences.
+We *don't* name a clause describing a place or a time as a complement clause - a complement clause always represents a fact or an event.
+We should also note that the complement clause is NOT verb nominalization, though it's common that they involve similar morphological operations.
+For example, in English, we have a -ing complement clause variety:
+> John's playing the national anthem
+
+and we also have a -ing nominalization construction:
+
+> John's playing of the national anthem
+
+The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
