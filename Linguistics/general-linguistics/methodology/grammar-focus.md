@@ -131,6 +131,11 @@ The sematic type of a noun may influence TODO: hyperref
 - an obligatory possessor
 - classification markers (for example, grammatical gender system)
 
+- countable noun
+- mass noun: *coffee*, *bread*
+- collective noun: *committee*
+- abstract noun (countable and uncountable both are OK)
+
 ## Verbs
 
 Similar to the case of [nouns](#nouns), all languages have verbs, which typically appear in the head of a predicate - this distribution feature [in clauses](#inner-structure-of-clauses) is the *prototype role* of verbs, and also an important criteria to recognize a verb class.
@@ -162,7 +167,33 @@ They can be verb affixes in some languages and lexemes in others (for example, E
 
 See BLT Chap. 11
 
-Several languages are claimed to lack the distinction between nouns and verbs. 
+We know that in many languages, nouns can take the prototypical role of verbs and be the predicate, while verbs can take the prototypical role of nouns and head an NP. (see [here](#inner-structure-of-clauses))
+These languages are claimed to lack the distinction between nouns and verbs. 
+However, it's often the case that one of the following criteria can still distinguish nouns and verbs:
+- Verbs in argument slots show meaning different from their meaning when being the predicate
+  - Example: in English, the meaning of the verb is not predictable from the meaning of the noun.
+  *Father* v. means "to be sb's father", while *baby* v. does *not* means to be sb's baby.
+- Noun-to-verb and verb-to-noun derivation mechanisms exist, and show similar semantic behavior of so-called "noun used as verb" or "verb used as noun" mechanisms:
+  - Example: in English, we have 
+  > *witness* v. -> *witness* n. "someone who witness"
+  > 
+  > *observe* v. -> *observer* n. "someone who observe"
+
+  The semantic relation from the verb to the noun is the same for the two verb-noun pairs, so we conclude that the first pair carries a zero allomorph of *-er*.
+- Nouns acting as predicates are almost always intransitive, especially when there are many, many normal transitive verbs. This can be easily explained by assuming the nouns undergo a zero derivation and the derivation affix is intransitive.
+- An NP headed by a verb often has more restricted structures (this is also one criterion that defined pronouns). 
+  - NP headed by a verb is possible to reject possessive affixes.
+  - NP headed by a verb may obligatorily take an "article" - a nominalizer, actually.
+  - Verbs in argument slots show signs that they are actually clauses or have undergone zero realization: clauses usually can't be modified by adjectives, for example
+- A predicate headed by a noun is possibly unable to be modified by certain adverbs, like "almost"
+- Nouns as predicates may have uncanonical behaviors in serial verb constructions
+- It's also possible that nominal predicates don't take [TAME features](#non-spatial-setting-of-clauses) and mood
+- Nominal predicates may undergo fewer [valence changing](#verb-valence-change)
+- Typical nouns may have a noun class or gender system (which can be reflected by a classifier), number feature, definiteness, and/or case. NPs headed by a verb often lack one or more systems. 
+- Verb and noun may undergo different morphological process: word-class-changing derivations, reduplication, etc.
+
+Above are all morphosyntactic criteria. Note that semantics should *not* be the key point when classifying words.
+*After* word classes are established, it's then necessary to find the semantics of each class.
 
 ## Adjectives
 
@@ -203,6 +234,8 @@ When there are more members:
 
 larger classes:
 - human propensity: clever, rude
+
+## Distinguish adjective class(es)
 
 ## Pro-forms
 
@@ -364,6 +397,7 @@ Arguments may be filled by
 
 The predicate may be 
 - a [verb](#verbs) (which is attested in all languages); this is the *prototype* function of verbs
+  - Note that in Dixon's term, a copula is also a predicate, while the adjective after the copula is the CC argument
 - a [noun](#nouns) (where morphological markers, if any, will be added to the predicate noun)
   - attested in Nenets (see [Basic Linguistic Theory](basic-linguistic-theory.md) Sec. 3.5 (7-8))
   Note that this is different from the verbless clause.
@@ -579,6 +613,8 @@ The contrast between positive and negative is referred to as polarity.
 See BLT 3.15
 
 In this section we discuss features that may appear in the TP layer, also called **TAME categories** (tense, aspect, modality, evidentiality). 
+In Dixon's terms, features appearing in the TP layer are called "categories associated with the clause", 
+while features appearing in the CP layer (for example, Mood, or generative syntax's Force) are called "categories associated with the sentence".
 
 # General structure of noun phrases
 

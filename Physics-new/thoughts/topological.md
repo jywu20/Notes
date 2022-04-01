@@ -55,3 +55,5 @@ https://arxiv.org/pdf/1604.08400.pdf quantum skyrmion
 一种可能的理解方式是，将Z2中的e和m激发看成拓扑孤子一类的东西，既然规范势不能连续地变动，没有光子，所以系统能谱是gapped的；compact-U(1)能谱中应该也有孤子？它们对应e和m吗？
 
 曾经有人认为平带不可能有拓扑非平庸性（为什么）？但是QHE明显地表明，事情不是这样的；通过Moire bilayer twisted material可以弄出来和IQHE类似的平带，同时具有拓扑性质，通过bilayer TMD也可以；拓扑能带+非整数填充=FQHE
+
+TODO: Classical topological order in the kinetics of artificial spin ice
