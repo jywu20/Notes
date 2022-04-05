@@ -40,7 +40,7 @@
 \postauthor{\par\end{center}}
 
 % More compact lists 
-\setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+% \setlist[itemize]{itemindent=17pt, leftmargin=1pt}
 
 % Math operators
 \DeclareMathOperator{\timeorder}{T}
@@ -804,11 +804,19 @@ is a good choice. Under this operation,
 \[
     \vb*{\mu} \to - \vb*{\mu}, \quad \vb*{B} \to - \vb*{B}, \quad \vb*{\sigma} \to - \vb*{\sigma}.
 \]
-The last equation is because 
+The last equation is because it can be verified that 
+\begin{equation}
+    \mathcal{K} U \mathcal{K} = U^*,
+\end{equation}
+and 
+\begin{equation}
+    \sigma^y (\sigma^i)^* \sigma^y = - \sigma^i,
+\end{equation}
+so
 \[
     \begin{aligned}
         \mathcal{T} \sigma^i \mathcal{T}^{-1} &= \sigma^y \mathcal{K} \sigma^i \mathcal{K}^{-1} \sigma^y = \sigma^y \mathcal{K} \sigma^i \mathcal{K} \sigma^y  \\
-        &= 
+        &= \sigma^y (\sigma^i)^* \sigma^y = - \sigma^i.
     \end{aligned}
 \]
 Under \eqref{eq:fermion-time-reversal}, since $\mathcal{T}^2 = -1$, we find the group formed by generator $\mathcal{T}$
@@ -834,10 +842,184 @@ It's easy to verify that
 \end{equation}
 because the product of two antiunitary is unitary, and therefore $s: MSG \to \mathbb{Z}_2$ is a 
 group homomorphism. Since the group elements don't know whether they are unitary, a magnetic group 
-is actually to be represented by $(MSG, s)$, and we have the following short exact sequence: 
+is actually to be represented by $(MSG, s)$, and suppose $MSG_0$ is the unitary subgroup, 
+we find the following short exact sequence: 
 \begin{equation}
     1 \to MSG_0 \to MSG \stackrel{s}{\to} \mathbb{Z}_2 \to 1,
 \end{equation}
-where $MSG_0$ is the unitary subgroup, and of course it is a space group. 
+We can do coset decomposition of $MSG$ and get 
+\[
+    MSG = MSG_0 \cup \underbrace{(-1)}_{\in \mathbb{Z}_2} \circ MSG_0,
+\]
+where $-1$ means the corresponding element is mapped to $-1$ by $s$. Note that it's not necessary that 
+$(-1) \circ MSG_0 = \mathcal{T} MSG_0$, or otherwise $MSG$ is just the semidirect product of $MSG_0$ and 
+$\mathbb{Z}_2^T$ and is therefore a trivial type II magnetic group. However, we know the size of $(-1) \circ MSG_0$ is the same as $MSG_0$, and since an element
+of $(-1) \circ MSG_0$ always contains a time reversal operation, we can rephrase $MSG$ into 
+\begin{equation}
+    MSG = MSG_0 \cup \mathcal{T} MSG_1,
+    \label{eq:magnetic-group-decomposition}
+\end{equation}
+where $MSG_1$ is a set of space group operations (not that $MSG_1$ itself may not be a group, since 
+it's possible that $\mathcal{T}$ without any attached space operation is not in $MSG$, so $e$ may not be in 
+$MSG_1$). Note that we can define an obvious group homomorphism 
+\[
+    MSG \to MSG_0 \cup MSG_1,
+\]
+because $\mathcal{T}$ commutes with all space group operations and can be simply ``removed'' or ``forgot'' and therefore 
+the multiplication rules are also multiplication rules of $MSG_0 \cup MSG_1$, and $MSG_0 \cup MSG_1$ has 
+inverse and unity and therefore is a group. \eqref{eq:magnetic-group-decomposition} therefore means that 
+a magnetic group can be constructed by classify half of the elements of a space group as unitary and 
+another half antiunitary, or in other words, by ``color'' the group elements into white and black, and 
+black times black is white, black times white is black, white times white is white. 
+
+There are basically four types of magnetic space groups, listed as below:
+\begin{itemize}
+    \item Type I, or \concept{colorless groups}, where are just space groups, in which all operations are 
+    unitary. A magnetic order with a colorless group don't have time reversal symmetry in its symmetry: 
+    it's impossible to recover a previous state destroyed by an operation destroyed by a pure space group 
+    operation which is not in the symmetry group. This is the symmetry of a standard FM phase: all spins 
+    are up (or down), so it makes no sense to use $\mathcal{T}$ to flip a spin. 
+    Note that a colorless group can also be the symmetry group of an AFM order. Consider, for example, 
+    an AFM phase on a lattice with trivial point group symmetry. After a time reversal operation, we can't 
+    transform the state into the initial state, so time reversal operation is not in its symmetry group. 
+    \item Type II, or \concept{grey groups}, which is the direct product of a space group and $\mathbb{Z}_2^T$.
+    Since with such a group, .
+    \item Type III, or \concept{Black-White groups with ordinary Bravais lattices}. The translation symmetry 
+    operations are not combined with an additional time reversal operation, but some of point group operations 
+    are combined with an additional time reversal operation. 
+    \item Type IV, or \concept{Black-White groups or black-white Bravais Lattices}. A state with this symmetry
+    group is always AFM, because a translation operation times $\mathcal{T}$ keeps the system invariant, 
+    so the translate operation flips the spins.
+\end{itemize}
+
+\subsection{Corepresentations of magnetic groups}
+
+A corepresentation of a group 
+\begin{equation}
+    G = G_0 \cup G_1
+\end{equation}
+with structures similar to magnetic groups is defined by data $(V, \mathcal{K}, \varphi)$, where $V$ is a 
+linear space with a real structure, and $\mathcal{K}$ is the ``complex conjugate'' operation defined on $V$,
+$\varphi$ gives the representation as 
+\begin{equation}
+    u \cdot \ket*{\phi} \coloneqq \varphi(u) \ket*{\phi}, \quad u \in G_0,
+\end{equation}
+and 
+\begin{equation}
+    a \cdot \ket*{\phi} \coloneqq \varphi(a) \mathcal{K} \ket*{\phi}, \quad a \in G_1.
+\end{equation}
+In other words, we have 
+\begin{equation}
+    g \cdot \ket*{\phi} = \varphi(g) \mathcal{K}^{s(g)} \ket*{\phi}.
+\end{equation}
+We require a group homomorphism from $g$ to $g \cdot \ket*{\phi}$. Note that $\varphi(\cdot)$ doesn't necessarily 
+constitute a group homomorphism \emph{itself}. From 
+\[
+    g \cdot (h \cdot \ket*{\phi}) = (gh) \cdot \ket*{\phi},
+\]
+we have 
+\[
+    \varphi(g) \mathcal{K}^{s(g)} \varphi(h) \mathcal{K}^{s(h)} \ket*{\phi} = \varphi(gh) \mathcal{K}^{s(gh)} \ket*{\phi} = \varphi(gh) \mathcal{K}^{s(g)} \mathcal{K}^{s(h)} \ket*{\phi},
+\]
+and therefore 
+\[
+    \varphi(g) \mathcal{K}^{s(g)} \varphi(h) = \varphi(gh) \mathcal{K}^{s(g)},
+\]
+so 
+\begin{equation}
+    \varphi(gh) = \varphi(g) g \cdot \varphi(h), \quad g \cdot \varphi(h) \coloneqq \mathcal{K}^{s(g)} \varphi(h) \mathcal{K}^{s(g)}.
+\end{equation}
+Here we use different notation from the last section concerning $s(g)$: we denote $s(g)$ to be $0, 1$ 
+(0 is unitary and 1 is antiunitary) and denote the multiplication operation as $+$.
+
+Consider the corepresentation of the fermionic time reversal group. 
+We have 
+\begin{equation}
+    \mathbb{Z}_4^T = G_0 \cup G_1, \quad G_0 = \{ 1, P_f \}, \quad G_1 = \{ \mathcal{T}, \mathcal{T} P_f \}.
+\end{equation}
+
+Now we check some well-known theorems' counterpart in group representation theory for corepresentations.
+The first is the Schur's lemma. For vanilla representations, if the following diagram 
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \node (A) at (-1, 1) {$V$};
+            \node (B) at (1, 1) {$V'$};
+            \draw[->] (A) -- (B);
+            \node at (0, 1.3) {$f$};
+            \node (C) at (-1, -1) {$V$};
+            \draw[->] (A) -- (C);
+            \node (D) at (1, -1) {$V'$};
+            \node at (0, -1.3) {$f$};
+            \draw[->] (C) -- (D);
+            \draw[->] (B) -- (D);
+            \node at (-1.3, 0) {$\varphi$};
+            \node at (1.3, 0) {$\varphi'$};
+        \end{tikzpicture}
+    \end{gathered}
+\end{equation}  
+commutes, we have
+\begin{itemize}
+    \item If $V \not\simeq V'$, $f = 0$.
+    \item If $V \simeq V'$, $f$ is a scalar operator.
+\end{itemize} 
+For corepresentations, the diagram is now 
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}
+            \node (A) at (-1, 1) {$V$};
+            \node (B) at (1, 1) {$V'$};
+            \draw[->] (A) -- (B);
+            \node at (0, 1.3) {$f$};
+            \node (C) at (-1, -1) {$V$};
+            \draw[->] (A) -- (C);
+            \node (D) at (1, -1) {$V'$};
+            \node at (0, -1.3) {$f$};
+            \draw[->] (C) -- (D);
+            \draw[->] (B) -- (D);
+            \node at (-1.6, 0) {$\varphi \mathcal{K}^{s(g)}$};
+            \node at (1.7, 0) {$\varphi' \mathcal{K}'^{s(g)}$};
+        \end{tikzpicture}
+    \end{gathered}
+\end{equation}  
+If this diagram commutes and $V \simeq V'$, then possible $f$'s forms a divisible algebra on $\mathbb{R}$, which is isomorphism
+to $\mathbb{R}$ (called \concept{type a}, example: 1d representation of $\mathbb{Z}_4^T$ where $\mathcal{T}^2 = 1$) or $\mathbb{C}$ (called \concept{type b}, example: 2d representation of $\mathbb{Z}_4^T$ where $\mathcal{T}^2 = -1$) or $\mathbb{Q}$ (called \concept{type c}, example: 2d representation of $\mathbb{Z}_3 \times \mathbb{Z}_2^T$). This differs from the case for representations.
+However, we find if the system has a certain magnetic group symmetry, then 
+we can take $f = H$ (or $\ee^{- \ii H t}$, which makes more sense physically), where $H$ is the Hamiltonian for an irreducible representations, 
+and since $H^\dagger = H$, $H$ is always a scalar operator, regardless of what a generic $f$ is.
+So though we don't have the original version of Schur's lemma here, we find magnetic group symmetry can 
+still protect energy degeneracy.
+
+We move on to the theory of character. We show (without proof) the following orthogonal relations:
+\begin{equation}
+    \sum_{g \in G_0} \phi(g)_{\alpha \beta} \phi'(g)^*_{\alpha' \beta'} = 0, \quad \sum_{g \in G_1} \phi(g)_{\alpha \beta} \phi'(g)^*_{\alpha' \beta'} = 0
+\end{equation}
+for two different representations, and 
+\begin{equation}
+    \sum_{g \in G_0} \phi(g)_{\alpha \beta} \phi'(g)^*_{\alpha' \beta'} + \sum_{g \in G_1} \phi(g)_{\alpha \beta'} \phi'(g)^*_{\alpha' \beta} = \frac{|G|}{\dim V} \delta_{\alpha \alpha'} \delta_{\beta \beta'}.
+\end{equation}
+Note that since we have a real structure, basis transformation involving complex phase factor may give rise to % TODO
+\begin{equation}
+    \phi(\mathcal{T}) = \ee^{\ii \theta}.
+\end{equation}
+Therefore, the trace of $\phi(a)$ for antiunitary element $a$ is not invariant under basis transformation, and
+therefore is not of particular interest. As an alternative, we have 
+\begin{equation}
+    \sum_{g \in G_0} \abs*{\chi(g)}^2 + \sum_{g \in G_1} \chi(g^2) = \abs*{G}.
+\end{equation}
+\begin{itemize}
+    \item For type a corepresentations, we have 
+    \begin{equation}
+        \sum_{g \in G_0} \abs*{\chi(g)}^2 = \sum_{g \in G_1} \chi(g^2) = \frac{1}{2} \abs*{G}.
+    \end{equation}
+    \item For type b corepresentations, we have 
+    \begin{equation}
+        \sum_{g \in G_0} \abs*{\chi(g)}^2 = 2\abs*{G}, \quad \sum_{g \in G_1} \chi(g^2) = - \abs*{G}.
+    \end{equation}
+    \item For type c corepresentations, we have 
+    \begin{equation}
+        \sum_{g \in G_0} \abs*{\chi(g)}^2 = \abs*{G}, \quad \sum_{g \in G_1} \chi(g^2) = 0.
+    \end{equation}
+\end{itemize}
 
 \end{document}
