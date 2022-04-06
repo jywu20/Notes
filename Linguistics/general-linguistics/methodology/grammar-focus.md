@@ -197,18 +197,49 @@ Above are all morphosyntactic criteria. Note that semantics should *not* be the 
 
 ## Adjectives
 
-Adjective is a highly heterogeneous category. It may be
+See BLT Chap. 12. 
+
+To describe a single language, any terms may be used, and it's alright to merge adjectival classes
+into the verb class or the noun class. However, for unified description and role in typology (to "provide 
+feedback into the basic linguistic theory"), we need to recognize a separate adjective class, 
+because what can be said as adjectives have robust cross-linguistic functional properties and semantic 
+content. If we don't set an adjective class, then typical adjectives (those in English) have to be 
+compared with a subclass of a language lacking prototypical adjectives, creating unnecessary 
+obstacles.
+
+Adjectives can't be distinguished using a single criterion. Latin grammarians use the existence of a gender 
+feature to distinguish adjectives, which fails for the genderless language Finnish. However, in Finnish,
+some words take possessive suffixes but not comparative and superlative suffixes, but another class of 
+words is the opposite, so we can name them as nouns and adjectives. 
+
+When analyzing languages where adjectives are like verbs, linguists often use the term "stative verb",
+but if so, in order to be consistent, they have to admit that in Spanish, adjectives are "stative nouns".
+Here we see the effort to remind people that something in a language is different from European languages
+unfortunately makes them to ignore important language universals.
+
+Adjective is a highly heterogeneous category. It may have the following roles:
+- It may (but not necessarily) make a statement that something has a certain property, either
+  - by a copula clause 
+  - with the main part of the predicate being the adjective, just like an intransitive verb
+- It may (but not necessarily) modify an NP (and sometimes a verb)
+- It may be in a comparative construction (which may not exist for certain languages)
+
+According to its behavior in these constructions, we can classify adjectives into
 - type 1: verb-like
-  - in that it can be the head of a [VP](#verb-phrases), i.e. form the main part of a predicate, just like an intransitive verb
+  - in that it can be head a predicate
   - which may be slightly different from typical verbs in 
     - how it is modified when acting as a predicate 
-    - that it can be a modifier
+    - that it can be a modifier (usually only possible via a relative clause for adjectives like verbs; 
+    if this can be achieved without a relative construction, then the adjective is not likely to undergo 
+    similar morphological processes with the noun)
     - that it can appear in comparative constructions
     - that it can form adverbs
 - type 2: noun like
   - in that 
+    - it may be an NP modifier
     - it may head an NP
     - it has similar morphological properties like a noun
+    - it may fill the copula complement position
   - which may be slightly different from typical nouns in
     - that fewer modification possibilities exist for it than for nouns
     - that it can appear in comparative constructions
@@ -216,9 +247,14 @@ Adjective is a highly heterogeneous category. It may be
 - type 3: sharing properties with both verbs and nouns
   - in that it can both
     - appear in the head of a predicate, and
-    - inflect like a noun when in an NP
+    - inflect like a noun when in an NP, and
+    - sometimes also act as a copula complement
 - type 4: different from nouns and verbs
-  - in that it can neither appear in the head of a predicate nor behave like a noun in an NP
+  - different from nouns in that
+    - it don't undergo similar morphological process with the noun
+    - its behavior in the copula complement position differs with a typical noun (for example a noun may require an article but an adjective doesn't) 
+  - different from verbs in that 
+    - it can't appear in the head of a predicate 
 
 A language may have two adjective classes, and the adjective class in a language can be closed and highly restricted.
 
@@ -234,8 +270,6 @@ When there are more members:
 
 larger classes:
 - human propensity: clever, rude
-
-## Distinguish adjective class(es)
 
 ## Pro-forms
 
