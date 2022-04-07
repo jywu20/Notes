@@ -157,6 +157,81 @@ But this line of argument has several problems:
 
 I think [Haspelmath's definition](https://dlc.hypotheses.org/1725) certainly makes more sense.
 
+# 5
+
+## 5.1
+
+The lexicon doesn't need to contain grammatical items. Some dictionaries contain affixes, but this is trying to 
+do the job of grammar in a lexicon and can't be successful. (But since there is currently no "basic linguistic 
+theory standard committee" or "online English descriptive reference grammar", including affixes into a dictionary
+is still useful in practice.)
+
+Taboos can be used to find how lexical or "substantive" a morpheme is. In Dyirbal, in the presence of a taboo relative, the following items remain the same:
+- grammatical and phonological rules
+- affixes
+- pronouns and demonstratives
+- negation operator, auxiliary verbs
+- proper names
+- grandparent terms
+
+But all lexemes (including time words) become different. Since proper names and grandparent terms are by no means grammatical, we also classify them as lexical. The remaining items are grammatical.
+
+Sometimes grammar means morphosyntax + phonology, sometimes grammar means morphosyntax (especially in America).
+
+## 5.2
+
+Some French people use the term *morpheme* as a shorthand of "grammatical morpheme". 
+
+Some people use the term *morpheme* for *feature*. So we get weird phrases like "a morpheme of tone change".
+
+Allomorphs: different realizations of the same process in different environments
+
+## 5.3
+
+Some people claim that inflection is always subject to agreement and derivation not. This is not the case in Dyirbal.
+In Dyirbal, the comitative case can stack with another case marking the argument role, so it may be seen as derivation suffix. 
+However, it shows agreement between the adjective and the head noun.
+
+## 5.5
+
+Duplicate with [this](./语言共性和语言类型（第二版）笔记.md#形态类型学)
+
+## 5.4 and 5.6
+
+I have to say Dixon's comment on "govern" and "preposition as head" doesn't make sense, because first, the notion of government (actually, c-commanding) has consequences: it shows how the syntax tree is built and the asymmetric nature of S and O.
+Similarly, prepositions aren't "heads" if *head* means the most substantive lexeme in a phrase, but they are heads in the sense that after a DP (in generative sense) is merged with P, the whole constituent is able to appear in a peripheral argument slot, while the DP itself can't fill such a slot (at least in English). 
+P introduces new features into the syntax tree, and it's a head in this sense.
+
+Dixon's comment does serve as a good methodological hint that we need to be consistent in the meaning of *head*.
+We can use standard generative terms: PP, CaseP and so on (Dixon objects these terms in this section, but that's because he doesn't know what these terms really mean in generative syntax), and we can use a purely "functionalist" term, regarding adpositions, case clitics and case affixes as case markers attached to the NP.
+Both approaches are self-consistent and are actually dual to each other - we just need to flip the arrow indicating headedness, and we can map a theory of minimalist morphosyntax into a basic linguistic theory account, and vice versa. 
+This is well illustrated in Dixon's example of *to the fat man*, where by reversing the head relation, we transfer the tree diagram into a "functionalist" account. 
+But it's NOT a wise idea to mix the two approaches. If we consider the case marker as an adjunct in NP while insist adpositions being heads of PP, then whether we analyze a case marker in a newly documented language will flip the status of a nominal expression between NP and PP, which is unsatisfactory.
+We may call adpositions "non-inflectional case markers". 
+
+The term *word order* may mean *constituent order* like SVO or SOV. For non-configurational languages, any constituent order is possible. 
+These are further radical free word order languages that literally have free *word* order, for example Dyirbal.
+This is often explained by Pronominal Argument Hypothesis.
+For these languages, we still have underlying constituents, but these can't be revealed by checking the surface form of word order. 
+
+## 5.7
+
+The term *markedness* is often overused. Formal markedness is easy to define but isn't quite interesting.
+Functional markedness is defined as follows: marked terms are used in a restricted case, and unmarked terms cover the default case.
+Functionally unmarked terms may be formally marked. For example, in Portuguese, masculinity is the unmarked gender, though it's grammatically marked.
+It's also possible that the formally unmarked term and the functional unmarked term are different. Latin imperative may be seen as the formally unmarked term, but people never use it as the citation form.
+Similar phenomenon appears in Dyirbal, where people use the verb form with the default (functionally unmarked) inflection in their dialect for citation, and never use the formally unmarked imperative form.
+
+Not every system has an unmarked term. For Dyirbal, for example, the gender of a group people is decided by the most senior member of the group (the "representative" in some sense).
+
+It's often the case that the realization of the unmarked term is simpler phonologically. A counterexample: in English, *me* is the default 1sg pronoun, but it's heavier than the marked *I*.
+
+When a system X depends on Y, and there are more choices in X if Y1 is chosen, then Y1 is likely to be unmarked in system Y.
+
+Like simpler systems like gender, construction types can also be described as marked or unmarked. Declarative, for example, is often unmarked.
+
+There is also functional markedness in the lexicon. For example, in Portuguese, "father" may be used to refer to parents. In English, "light" is marked in contrast to "heavy". "How light is the suitcase" presuppose the suitcase is light.
+
 # 6
 
 ## 6.1

@@ -78,11 +78,13 @@ Here the term *verb phrase* means something like *could have been planning*. In 
 So we can see that the meaning of "phrase" is closer to "phase" in generative syntax. Whether XPs in generative syntax can be called as "phrases" is problematic in a functional perspective.
 But on the other hand, functional analysis of constituent-hood often fails to account for movements.
 
-## "Subject"
+## "Subject", "topic" and "pivot"
 
 - SpecTP
 - A and S argument
 - the argument with nominative case
+
+In more descriptive terms, "topic" is a pragmatic category, while "pivot" is a grammatical category. Note that the latter is called as "topic" in generative works.
 
 ## Verb's role in argument marking
 
@@ -299,7 +301,7 @@ Note that words belonging to "interrogatives" may have different word classes, b
 
 # General notion of morphology
 
-BLT Sec. 3.13 and 3.14
+BLT Sec. 3.13 and 3.14, 5.2, 5.3, 5.4
 
 Here we introduce different morphological operations and how they are labeled in the Lepzig Glossing Rules.
 The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf).
@@ -322,15 +324,27 @@ The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.p
   - almost universal, with exceptions of perhaps several totally isolating languages
   - affixes (as well as compounding) are labeled as
   > they-OBL-GEN
-  - clitics (something not that closely attached to one word, yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
+  - a clitic is something not that closely attached to one word (for example, in-word phonological rules like assimilation doesn't apply), yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
   > priest=and shopkeeper=and
-  > If the major morphological process is affixation, then we can distinguish from "free" and "bound". This doesn't work when there is tone change, for example.
+  
+  If the major morphological process is affixation, then we can distinguish from "free" and "bound". This doesn't work when there is tone change, for example.
+
+  A grammatical system (like tense) may be realized as affix, clitic or separate grammatical word. The latter two are unlikely to be associated with every word of a phrase, but an affix may be (for example, Latin case).
+  A case marker at the end of an NP is often a clitic.
+  Note, however, that there are no necessary restrictions. Whether something is an affix or a clitic should be decided according to phonological criteria, not syntax. Syntax only defines the feature structure. 
+  It's possible that a dialect of a language place the case marker to the end of the NP, while another dialect place the case marker after the head of the NP. 
+  The phonological-morphological process involved is the same between the two dialects, but if we claim that a case marker after an NP *must* be a clitic, then we have to make the strange claim that the same morphological process results in a clitic in one dialect and an affix in another.
+
 - Template morphology as seen in Semitic languages https://en.wikipedia.org/wiki/Transfix
 - Change of value within a vowel harmony system, nasalization, prosody, etc.
 
 It's sometimes useful to distinguish between derivation and inflection. 
 Distinction between derivation and inflection is useful in some languages, but not others. 
 In the former case, we can define *stem* easily: it's something that may or may not undergo some derivation, but not inflection, and after proper inflection it becomes a full word.
+For some other languages the distinction between derivation and inflection doesn't make sense.
+Some people claim that inflection is always subject to agreement and derivation not. This is not the case in Dyirbal.
+In Dyirbal, the comitative case can stack with another case marking the argument role, so it may be seen as derivation suffix. 
+However, it shows agreement between the adjective and the head noun.
 
 Zero inflection marker is a convenient term when similar features are marked. 
 
@@ -603,6 +617,17 @@ Sometimes an argument in the underlying argument structure becomes incorporated 
 Possible situations include:
 - O argument incorporated into the verb, and the clause becomes intransitive
 - the head of an O argument is incorporated, and a modifier in the [NP]<sub>O</sub> becomes the new O: "I'm house-making Subih"
+
+## Non spatial settings
+
+TODO: split vP, TP and CP layer?
+
+See BLT 3.15
+
+TODO
+- The relation between Reichenbach's  theory and completion and composition in BLT 3.15
+- The contrast between completion and composition
+- Whether BLT 3.15 is about lexical or grammatical aspect
 
 # Copula clause
 
