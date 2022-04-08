@@ -144,6 +144,19 @@ TODO
 
 不同VI的互相竞争这一步是可以出差错的，实际上这就解释了“想着一个东西说出了另一个”这一现象。
 
+一些评注：我原本感觉好像nanosyntax的基于句法树的、没有任何post syntactic操作的理论更加有吸引力，我现在改变这个想法了。理由如下：
+- nanosyntax最大的好处在于能够非常简洁地解释why the biggest wins，但是subset principle实际上就是在做这件事
+- DM表面上似乎要面临这样的困难：node和tree地位不同，似乎仍然没有做到将词和短语一视同仁
+  - 一个node和tree地位不同的地方来自fusion操作的存在，但是正如我们在[此处](#fusion)看到的那样，可以认为fusion是针对树的
+  - feature discharge和exponent是针对单个node的而不是树的，从而引入了树和node的区别，但是只要我们让vocabulary insertion也是针对树的就可以了
+- DM有一个不够优雅的地方就是有大量杂乱无章的形态学操作，包括merger, fusion等
+  - 这些操作的其中一个目的是为了解释为什么T, v, Trans, 动词词根会一起出现，既然它们没有构成一个句法树；但是可以使用span spellout（即有一条 [ T [ v [ Trans _ ] ] ] -> 语音实现 这样的规则）这样的记号来替代它们
+  - 这些操作的另一个目的是为了解释语序，如T-v-Trans序列中可能会有否定词介入，那么T-v-Trans复合体和Neg就必须要排序，因此认为T, v, Trans特征都落到某一个head上面似乎是比较方便的选择，因为这样依赖，自然地产生了T-v-Trans复合体和Neg的排序；但是考虑到否定词和predicate的复杂的互动关系，也许实际上Neg是会参与到T-v-Trans序列的语音实现中的，只不过在英语中这种实现是平庸的
+  - 这些操作的局域性也会带来诸如probe-goal之类的直观图像，但是基于树的语音实现也能够做到
+  - 事实上，相比于更加离谱的roll up movement之类的东西，DM已经看起来优雅很多了
+  - 因此DM中杂乱无章的形态学操作可以理解成基于句法树的spellout规则的一种唯象诠释
+  - 实际上，Distributed Morphology as a regular relation一文还要激进，他们直接认为vocabulary insertion看不到句法树结构（但是他们还是假定存在一个morphological process，即句法树的线性化，然后什么affix lowering之类的东西还是存在的；不过这也没什么，因为可以认为有好多轮insertion：第一轮的规则是[ T [ v [ Trans √V ] ] ] -> # [ [√V v Trans] T] #，然后第二轮插入真实的语音内容，[√SLEEP v] -> sleep, [√SLEEP v] pase -> slept）
+
 # 关于DM理论内部的一些差异
 
 上面所说的DM理论和有些其它文献所阐述的还是有一定区别的，本节讨论这些区别。
@@ -232,7 +245,7 @@ Downward Agree运算或者说probe-goal mechanism也可以使用类似的方法�
 ## Affix Lowering和Head Movement
 
 这两个东西，正如别的形态操作一样，完全可以通过增加各种AGR head然后使用Agree来求值这些AGR heads。
-一种可能的思路是将它们看成同一个特征的多个Copy，然后Chiain reduction。
+一种可能的思路是将它们看成同一个特征的多个Copy，然后Chain reduction。
 这个思路也可以用于导出Merger
 
 实际上，我是觉得DM中真正重要的还是Vocabulary Insertion这一步，以及“参与句法运算的是词根和functional heads而不是明确的一个个词”。具体形态操作在句法内部还是句法后、是真的有一个独立的merger操作还是实际上这只是functional heads+Agree，更多的是formalism的问题。
