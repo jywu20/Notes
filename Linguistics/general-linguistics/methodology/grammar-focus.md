@@ -306,28 +306,19 @@ BLT Sec. 3.13 and 3.14, 5.2, 5.3, 5.4
 Here we introduce different morphological operations and how they are labeled in the Lepzig Glossing Rules.
 The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.pdf).
 
-- Compounding
-  - [noun compound](#noun-compounding), as a mean of derivation
-  - [serial verb construction](#serial-verb-constructions) 
-  - [noun incorporation](#noun-incorporation)
-- Reduplication
-  - Things repeated may be initial syllable, first two syllables, last syllable, and the whole word; each of them may have a distinct function
-  - For nouns: plural, diminutive, selection ("long" -> "things that are long")
-  - For verbs: repeating, intensive, continuous
-  - But generally this operation can mean anything
-  - When annotated, reduplication is treated similar to affixation, but with a tilde: yerak-rak in Hebrew means "greenish" and is tagged as green-ATT
-- Internal change
-  - foot -> feet, and may also apply to consonants
-- Subtraction 
-  - for example Somoan: silaf -> sila
-- Affixation
+A list of morphological processes can be found [here](https://en.wikipedia.org/wiki/Transfix).
+The terminology is slightly different from Dixon's, as the latter insists only morphological units in 
+concatenative morphology can be said as *morphemes*.
+
+- Concatenative morphology (*prefix* and *suffix*, *interfix*)
+  - affixation and compounding; an interfix is something that must appear to link other morphemes but doesn't have any semantic meaning
   - almost universal, with exceptions of perhaps several totally isolating languages
   - affixes (as well as compounding) are labeled as
   > they-OBL-GEN
   - a clitic is something not that closely attached to one word (for example, in-word phonological rules like assimilation doesn't apply), yet cannot stand solely by itself, like the Latin -que, which may be attached to the head of an NP as well as the first word) are labeled as
   > priest=and shopkeeper=and
   
-  If the major morphological process is affixation, then we can distinguish from "free" and "bound". This doesn't work when there is tone change, for example.
+  If the major morphological process is affixation, then we can distinguish "free" and "bound" morphemes. This doesn't work when there is tone change, however.
 
   A grammatical system (like tense) may be realized as affix, clitic or separate grammatical word. The latter two are unlikely to be associated with every word of a phrase, but an affix may be (for example, Latin case).
   A case marker at the end of an NP is often a clitic.
@@ -335,8 +326,28 @@ The rules can be found [here](https://www.eva.mpg.de/lingua/pdf/Glossing-Rules.p
   It's possible that a dialect of a language place the case marker to the end of the NP, while another dialect place the case marker after the head of the NP. 
   The phonological-morphological process involved is the same between the two dialects, but if we claim that a case marker after an NP *must* be a clitic, then we have to make the strange claim that the same morphological process results in a clitic in one dialect and an affix in another.
 
-- Template morphology as seen in Semitic languages https://en.wikipedia.org/wiki/Transfix
-- Change of value within a vowel harmony system, nasalization, prosody, etc.
+  Compounding may have following functions
+  - [noun compound](#noun-compounding), as a mean of derivation
+  - [serial verb construction](#serial-verb-constructions) 
+  - [noun incorporation](#noun-incorporation)
+
+- Non-concatenative morphology with easy-to-recognize morphemes (infix, circumfix, transfix)
+  - infix is annotated as morpheme\<infix\>morpheme 
+  - circumfix is annotated as cirfumfix.meaning<sub>1</sub>-morpheme-circumfix.meaning<sub>1</sub>
+  - transfix: template morphology as seen in Semitic languages, where the root is a template and the affix is a discontinuous one inserted into the root. In [this wiki](https://wikis.hu-berlin.de/interlinear_glossing/Glossing_Rules#Affixes_and_clitics), it is glossed as morpheme\affix
+- Internal change (*suprafix*, *simulfix*)
+  - a suprafix is a suprasegmental change, including tone, prosody, stress, or nasalization
+  - a simulfix changes one sound in an existing morpheme (a transfix can be seen as a generalized simulfix):
+   foot -> feet, and may also apply to consonants
+- Reduplication (*duplifix*)
+  - annotated as main.morpheme~the.function.of.duplication
+  - Things repeated may be initial syllable, first two syllables, last syllable, and the whole word; each of them may have a distinct function
+  - For nouns: plural, diminutive, selection ("long" -> "things that are long")
+  - For verbs: repeating, intensive, continuous
+  - But generally this operation can mean anything
+  - When annotated, reduplication is treated similar to affixation, but with a tilde: yerak-rak in Hebrew means "greenish" and is tagged as green~ATT
+- Subtraction (*disfix*)
+  - for example Somoan: silaf -> sila
 
 It's sometimes useful to distinguish between derivation and inflection. 
 Distinction between derivation and inflection is useful in some languages, but not others. 
