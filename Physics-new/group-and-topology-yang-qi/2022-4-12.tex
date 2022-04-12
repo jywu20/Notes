@@ -1,0 +1,239 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+% \setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\id}{id}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\DeclareMathOperator{\im}{im}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\soliddoc}{\href{../solid/solid.pdf}{this note}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\title{Prof. Yang Qi on topological classification of free fermion models}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Antiunitary symmetry of second quantized Hamiltonian of free fermions}
+
+Consider the following second quantized Hamiltonian:
+\begin{equation}
+    \hat{H} = \sum_{\alpha, \beta} c^\dagger_\alpha H_{\alpha \beta} c_\beta,
+    \label{eq:second-quantization}
+\end{equation}
+where operators with $\hat{}$ are second quantized operators. In this section, we consider how 
+antiunitary symmetries acts on \eqref{eq:second-quantization}. The action of a unitary group element can be 
+written as 
+\begin{equation}
+    g \cdot \ket{\alpha} = \ket{\beta} \varphi(g)_{\beta \alpha}, \quad 
+    g \cdot \bra{\alpha} = \varphi(g)^\dagger_{\alpha \beta} \bra{\beta}, 
+\end{equation}
+and 
+\begin{equation}
+    g \cdot c^\dagger_\alpha = g c^\dagger_\alpha g^{-1} = c^\dagger_\beta \varphi(g)_{\beta \alpha}, \quad 
+    g \cdot c_\alpha = g c_\alpha g^{-1} = \varphi(g)^\dagger_{\alpha \beta} c_\beta.
+\end{equation}
+So the Hamiltonian transforms as 
+\begin{equation}
+    g \cdot \hat{H} = c^\dagger_{\alpha'} \varphi(g)_{\alpha' \alpha} H_{\alpha \beta} \varphi(g)^\dagger_{\beta \beta'} c_{\beta'}.
+\end{equation}
+Of course, this is just in the form of basis transition. If the Hamiltonian has the symmetry of $g$, we have 
+\begin{equation}
+    H_{\alpha' \beta'} = \varphi(g)_{\alpha' \alpha} H_{\alpha \beta} \varphi(g)^\dagger_{\beta \beta'}.
+\end{equation}
+Suppose $\{\ket{\alpha}\}$ is real with regard of the time reversal operation $\mathcal{T} = T \mathcal{K}$.
+In this case, the time reversal symmetry doesn't act on the basis, but $\mathcal{K}$ acts on $H_{\alpha \beta}$
+and adds a star, so if the system has time reversal symmetry, we have 
+\begin{equation}
+    T H T^{-1} = {H}^*.
+\end{equation}
+
+Now we move to the ``real'' particle-hole symmetry in an insulator. Consider 
+\begin{equation}
+    \hat{H} = - \sum_{\pair{\vb*{i}, \vb*{j}}} (t_{\vb*{i} \vb*{j}} c^\dagger_{\vb*{i}} c_{\vb*{j}} + \text{h.c.}).
+\end{equation}
+We use $\mathcal{C}$ to denote the particle-hole transformation from $c$ to $c^\dagger$, i.e.
+\begin{equation}
+    \mathcal{C} c_{\vb*{i}} \mathcal{C}^{-1} = c_{\vb*{i}}^\dagger, \quad \mathcal{C} c_{\vb*{i}}^\dagger \mathcal{C}^{-1} = c_{\vb*{i}},
+\end{equation}
+then we have 
+\begin{equation}
+    \mathcal{C} \hat{H} \mathcal{C}^{-1} = - \sum_{\pair{\vb*{i}, \vb*{j}}} (t_{\vb*{i} \vb*{j}} c_{\vb*{i}} c^\dagger_{\vb*{j}} + \text{h.c.}) = \sum_{\pair{\vb*{i}, \vb*{j}}} (t_{\vb*{j} \vb*{i}}^* c^\dagger_{\vb*{j}} c_{\vb*{i}} + \text{h.c.}) = - \hat{H}^* = - \hat{H}^\top.
+\end{equation}
+The minus sign, physically, means flipping the spectrum with the Fermi surface as a mirror, while the transpose 
+operation comes from flipping $\ket{\vb*{i}}$ to $\bra{\vb*{i}}$. Here we need to keep in mind a strange property 
+of particle-hole transformation. $\mathcal{C}$ should be unitary in the second quantization formalism, because 
+we want 
+\begin{equation}
+    c_{\vb*{k}}^\dagger \stackrel{\mathcal{C}}{\longrightarrow} c_{- \vb*{k}}
+\end{equation}
+to keep momentum conservation, and if $\mathcal{C}$ is unitary, we have 
+\[
+    \mathcal{C} c_{\vb*{k}}^\dagger = \mathcal{C} \frac{1}{\sqrt{N}} \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c^\dagger_{\vb*{i}} = \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c_{\vb*{i}} = c_{- \vb*{k}},
+\]
+which is exactly what we want. However, the first quantization version of $\mathcal{C}$ maps a single-electron 
+wave function in the single electron Hilbert space to the \emph{dual} space, and a map $\mathcal{H} \to \mathcal{H}^*$
+should be antiunitary to keep naturalness.
+
+The action of $\mathcal{C}$ on an arbitrary state is 
+\begin{equation}
+    \mathcal{C} c^\dagger_{\alpha} \mathcal{C}^{-1} = c_\beta C_{\beta \alpha}, \quad 
+    \mathcal{C} c_{\alpha} \mathcal{C}^{-1} = C^{-1}_{\alpha \beta} c_\beta,
+\end{equation}
+% TODO
+\begin{equation}
+    \mathcal{C} H \mathcal{C}^{-1} = - C H^* C^{-1}.
+\end{equation}
+
+Despite their weirdness, $\mathcal{T}$ and $\mathcal{C}$ can be fully demonstrated by constraints on 
+the coefficient matrix $H$ (i.e. first quantized Hamiltonian) in \eqref{eq:second-quantization}.
+Classification of free fermion systems is therefore classification of these matrices.
+
+\section{Particle-hole symmetry in superconductors}
+
+Particle-hole symmetry is another antiunitary symmetry that may concern us for fermionic systems. 
+Consider, for example, the following BCS model of superconductivity:
+\begin{equation}
+    H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} - V \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \alpha, \beta} c^\dagger_{\vb*{k}' - \vb*{q}, \alpha} c^\dagger_{\vb*{k} + \vb*{q}, \beta} c_{\vb*{k} \beta} c_{\vb*{k}' \alpha},
+    \label{eq:bcs}
+\end{equation}
+which turns into 
+\begin{equation}
+    H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} 
+    + \sum_{\vb*{k}} (\Delta c^\dagger_{- \vb*{k} \downarrow} c^\dagger_{\vb*{k} \uparrow} + \Delta^* c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow}),
+    \label{eq:bdg}
+\end{equation}
+where $\Delta$ is the BCS order parameter. \eqref{eq:bdg} is called the \concept{BdG Hamiltonian}, 
+which describes the spectrum of (electron-like) quasiparticles in a BCS superconductor. Note that 
+the order parameter in \eqref{eq:bdg} has quantum fluctuation, but what we are discussing here is 
+the \emph{topological band behavior} of fermions, so ignoring the fluctuation of $\Delta$ makes sense.
+It's possible that the fluctuation of $\Delta$ destroys the ordinary BCS order, but it's not the case 
+in 3D. Note also that our current approach -- ignoring the fluctuation of $\Delta$, i.e. ignoring the 
+many-body effect introduced by electron interaction -- is a non-interaction limit of the general theory 
+of topological classification with interaction. 
+
+In 1D and 2D, Mermin–Wagner theorem means the 
+effective theory about fermionic quasiparticles of \eqref{eq:bcs} is not \eqref{eq:bdg}, because 
+$U(1)$ symmetry -- a continuous symmetry -- can't be broken here. But we can always use a 
+3D bulk state to ``induce'' a low-dimensional superconducting phase, which has electron pairing anyway
+and can be described by \eqref{eq:bdg}, though this time \eqref{eq:bdg} has nothing to do with BCS mechanism.
+So henceforth we will work with the free-fermionic model \eqref{eq:bdg} and ignore what induces superconductivity
+pairing.
+
+Now we repeat the classical procedure in BCS theory: \eqref{eq:bdg} can be rephrased into 
+\begin{equation}
+    H = \sum_{\vb*{k}} \Psi_{\vb*{k}}^\dagger \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & -\xi_{\vb*{k}} } \Psi_{\vb*{k}}, \quad \Psi_{\vb*{k}} = 
+\end{equation}
+
+The particle-hole symmetry is actually a \emph{redundancy}: BdG Hamiltonians without this symmetry aren't 
+qualified theories of superconductors. A superconductor has \emph{more} symmetry than a similar insulator 
+because it has a particle-hole symmetry, while it has \emph{fewer} actual symmetry than a similar 
+insulator because it breaks the $U(1)$ symmetry. 
+
+\section{The 10-fold way}
+
+\begin{itemize}
+    \item Class A: no time reversal symmetry, no particle-hole symmetry, no chiral symmetry. An insulator with
+    charge conservation. Example: Chern-insulators, IQHE.
+    \item Class AIII: no time reversal symmetry, no particle-hole symmetry, but there is a chiral symmetry. 
+    Example: SSH model. 
+    \item Class D: no time reversal, but there is a particle-hole symmetry. This is a superconductor.
+    It actually may not have any physical symmetry other than the fermion parity symmetry.
+    Example: 1D Kitaev chain, 2D $p + \ii $ superconductor.
+    \item Class DIII: $T=-1, $
+\end{itemize}
+
+\end{document}
