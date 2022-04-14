@@ -1,15 +1,17 @@
 Reading note of Comprehensive Grammar of English Language
 ======
 
+This is a reading note of Quirk 1985, with some commentaries with regard to its implication in generali linguistics. 
+
 # Terms and definitions
 
 We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../general-linguistics/methodology/grammar-focus.md#note-on-terminology) in 
 descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
 
 - **Verb phrase** means predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
-- But **predicate** means V plus O
+- But **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
 - The term **preposition phrase** is used, as opposed to Dixon's advice. But now I find Dixon's argument is 
-  interesting, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
+  interesting and persuasive, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
   house" as a whole, and by no means I am exactly that house. Well, Dixon may argue that [that house] is in a
   locative case, similar to Latin locative ablative, and the structure of the sentence is 
   > was<sub>copula, past tense</sub> I<sub>CS</sub> [in that house]<sub>Locative</sub> 
@@ -19,11 +21,120 @@ descriptive grammar and in formal generative grammar, and from the terminology u
   Well, this sounds pretty generative :) 
 
   On the other hand, analyzing PP in generative syntax as headed by a preposition also makes senses in a functionalist context, because the preposition may be regard as a part of the predicate.
-- 
+- **Headedness** is defined in a sense different from generative morphosyntax, BLT and,
+  quite strangely, the conventional notion that assigns V as the head of VP, N the head of NP, and P the 
+  head of PP. In CGEL, a PP is *not* seen as headed (Sec. 2.26), because both P and NP are obliged to appear.
+  NPs are VPs are regarded as not prototypically headed or non-headed.
 
-# Topics
+  It seems the term *head* is defined as "the only word in a phrase that is obligatory". If there are more than
+  one obliged constituents, then there is no head.
+- **Form and function** have meanings unlike their meaning in a more theoretical context. Here, *form* means the internal structure of a constituent, while *function* means its external environment
+- **Complement** is defined in Sec. 2.16. It's not used in the sense of X-bar theory. Nor is it used as a 
+  catch-all term of all sorts of things that looks like arguments. 
+- **Adjunct** is defined in Sec. 2.15:
+  > ... which are more closely integrated with the rest of the clause ...
+  
+  Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
+
+# Organization of grammar
+
+Modern generative morphosyntax is highly feature-based and fine-grained. In CGEL, however, like other 
+descriptive works, constructions are *not* anatomized as small as possible. An example can be found 
+in Sec. 2.16. Sec. 2.16 is about clause types, or to be clear, about obligatory arguments. The authors 
+simply list all possible argument configurations (see Table 2.16). A generative grammarian may then 
+go on to discuss how subjects, objects, complements, and adverbials are introduced by different 
+functional heads (i.e. how "subjectness, objectness, complementness and adverbialness" features are 
+introduced into the syntactic tree and whether and how they are licensed by the main verb). 
+But you don't see this in CGEL.
+
+This is kind of like construction grammar in that constructions are basic units, but unlike construction
+grammar, the authors focus solely on *structures*, not form-meaning pairs. Nor do they claim anything like 
+"network of constructions" or the role of domain-general cognitive processes (Hoffmann and Trousdale 2013).
+In a word, it's more like PSG. We can rephrase Table 2.16 and Fig. 2.25 as 
+
+- S → Subject Verb
+- S → Subject Verb Object
+- S → Subject Verb Complement
+- S → Subject Verb Adverbial
+- S → Subject Verb Object Object
+- S → Subject Verb Object Complement
+- S → Subject Verb Object Adverbial
+- Subject → NP
+- Verb → VP
+- Object → NP
+- ...
+
+Similar examples can be found in Sec. 2.28. 
+
+Grammatical relations beyond PSG (i.e. long range dependencies, like agreement or wh-movement, or relation between arguments) are introduced in an informal way. 
+Table 2.19 is an example.
+These relations means the grammar framework needed for describing natural languages is stronger than PSG.
+On the other hand, we don't have rules like
+
+> S → left-parenthesis Subject Verb Object right-parenthesis
+
+and it's very rare that constructions of the same type involve completely different sets of tags. (For example, 
+all sentences listed in Sec. 2.16 have a subject)
+This is because each constituent is introduced by a functional head, and we have a stable functional hierarchy. 
+So the grammar framework needed for describing natural languages is also more restricted than PSG used to describe 
+programming languages. Dependencies beyond surface phrase structures are often derived by some kind of movement.
+
+# Clause structure 
+
+## Core arguments, verb classification and clause types
+
+There are roughly seven types of clauses, which also gives seven types of verbs (Sec. 2.16).
+Note that PPs may also function as complement (Sec. 10.11), which is a case of gradience between complement and adverbial.
 
 For clause type see Sec. 14.5-9.
 
+Note that adverbials may have scopes over the whole sentence and may be regarded as a 
+"relative clause describing a predicate" (Sportiche 2017, using terms in CGEL). For example, consider the 
+following sentence:
+
+> A cow is missing [in the barn]<sub>adverbial</sub> .
+
+The cow is highly likely not in the barn; what this sentence really means is 
+
+> [a cow is missing]<sub>event</sub> [in the barn]<sub>describing the event</sub> 
+
+TODO: so Table 2.19 [7] seems to be not that correct, since A is not necessarily Ao. The following example
+> They treated her kindly
+
+also reflects the same problem, since *kindly* is about the action, not the object.
+
+## Gradience between nouns, adverbs and prepositional phrases
+
+The syntactic distribution of nouns, adverbs and prepositional phrases can be summarized as (see Sec. 2.25)
+
+| construction type | topic | subject | object | complement | adverbial | topic |
+| :------ | :----- | :---- | :------ | :------ | :----- | :------ |
+| noun | + | + | + | + | - | + |
+| prepositional phrase | + | -? (Sec. 10.15) | - | -? (Sec. 10.11) | + | + |
+| adverbs | +? | -? (Sec. 10.15) | - | - | + | +? |
+
+Here the "topic" column is not mentioned in Sec. 2.25, as the section is about core arguments. 
+Nonetheless, the (syntactic) topic position is still worth mentioning here because it bridges 
+an adverbial constituent and a nominal one, making an adverbial constituent appearing like a 
+subject and therefore able to "sink" into the argument structure. 
+
+Actually, if we split nouns according to their cases, we will find nominative NPs, accusative NPs 
+and PPs have almost complementary distributions, so PPs are better classified as NPs with peripheral cases.
+However, since the English case system has almost completely eroded, it's wise to merge NPs 
+with core cases into one class and name them as NPs, and put NPs with peripheral cases into another type, 
+and name them as PPs.
+
+# Non-finite verb forms
+
+In CGEL, verb forms are listed in Sec. 3.2. 
+- -*ing* participle 
+  - Note that nominalization, or "gerund" is classified as "nominal -*ing* clause" (Sec. 15.12)
+  - Question: why? Why does it make sense to merge nominalization and participle?
+
 # References
 
+Hoffmann, Thomas and Trousdale, Graeme. Construction Grammar: Introduction. In The Oxford Handbook of Construction Grammar, 2013.
+
+Quirk, Randolph, Sidney Greenbaum, Geoffrey Leech, & Jan Svartvik. A Comprehensive Grammar of the English Language, Longman, 1985.
+
+Sportiche, D. 2017. Fewer adjuncts: more relatives. A Schri to Fest Kyle Johnson, 341.
