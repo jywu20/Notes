@@ -8,8 +8,8 @@ This is a reading note of Quirk 1985, with some commentaries with regard to its 
 We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../general-linguistics/methodology/grammar-focus.md#note-on-terminology) in 
 descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
 
-- **Verb phrase** means predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
-- But **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
+- The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
+- But the **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
 - The term **preposition phrase** is used, as opposed to Dixon's advice. But now I find Dixon's argument is 
   interesting and persuasive, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
   house" as a whole, and by no means I am exactly that house. Well, Dixon may argue that [that house] is in a
@@ -30,11 +30,13 @@ descriptive grammar and in formal generative grammar, and from the terminology u
   one obliged constituents, then there is no head.
 - **Form and function** have meanings unlike their meaning in a more theoretical context. Here, *form* means the internal structure of a constituent, while *function* means its external environment
 - **Complement** is defined in Sec. 2.16. It's not used in the sense of X-bar theory. Nor is it used as a 
-  catch-all term of all sorts of things that looks like arguments. 
+  catch-all term of all sorts of things that looks like arguments. TODO: is there a term "complement clause"?
 - **Adjunct** is defined in Sec. 2.15:
   > ... which are more closely integrated with the rest of the clause ...
   
   Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
+- **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
+- **Adverbial** means "being able to modify an action".
 
 # Organization of grammar
 
@@ -84,12 +86,14 @@ programming languages. Dependencies beyond surface phrase structures are often d
 ## Core arguments, verb classification and clause types
 
 There are roughly seven types of clauses, which also gives seven types of verbs (Sec. 2.16).
-Note that PPs may also function as complement (Sec. 10.11), which is a case of gradience between complement and adverbial.
+Note that PPs may also function as complements (Sec. 10.11), which is a case of gradience between complement and adverbial.
 
 For clause type see Sec. 14.5-9.
 
+## About the adverbial
+
 Note that adverbials may have scopes over the whole sentence and may be regarded as a 
-"relative clause describing a predicate" (Sportiche 2017, using terms in CGEL). For example, consider the 
+"relative clause describing the main clause" (Sportiche 2017). For example, consider the 
 following sentence:
 
 > A cow is missing [in the barn]<sub>adverbial</sub> .
@@ -128,8 +132,70 @@ and name them as PPs.
 
 In CGEL, verb forms are listed in Sec. 3.2. 
 - -*ing* participle 
-  - Note that nominalization, or "gerund" is classified as "nominal -*ing* clause" (Sec. 15.12)
-  - Question: why? Why does it make sense to merge nominalization and participle?
+- -*ed* participle
+
+Note that "gerunds" is classified as "nominal -*ing* clauses" (Sec. 15.12)
+This is because the distinction between the gerund and the present participle used as a noun or an adjective no longer makes sense in English.
+
+First we need to check the distributional difference between the term *gerund* and the term *participle* in other English grammars. 
+People may say a gerund is more like a noun, while a participle is more like an adjective. 
+These claim are correct metaphorically but not literally. (see Sec. 15.12) 
+The gerund is *not* the nominalization of the verb, because the gerund takes the same arguments as the verb in the same form as the verb,
+and the subject of the gerund may appear in the accusative case, not the genitive case. 
+The nominal property of a gerund comes from its being a *nominal clause*. 
+The *-ing* suffix can be used in real nominalization, as is in 
+> John's playing of the national anthem,
+> 
+> *John's having played of the national anthem
+
+We see here *playing* is totally nominalized: it can't take an argument in the typical verbal way (the argument has to be 
+carried out by *of*), and it doesn't generalize for the perfect aspect of *have*.
+But this construction is restricted in its productivity. For example, we have 
+> renormalize *v*. - renormalization *n*. - \*renormalizing *n*.
+
+but *renormalizing* is still the correct form when in a gerund clause. 
+
+On the other hand, the present participle appears in the following environments:
+- appearing as a modifier of an NP, describing an action going on of an NP:
+  > a swimming man
+
+- used after *when*, *if*, etc. 
+  > When developing a software, you'd better keep good documentation. 
+- appearing in the progressive aspect: be doing sth. 
+
+The third function can be seen as grammaticalized version of [√BE sb. V-ing ], and can be merged with the first function.
+Under this analysis, a present participle can be seen as a *relative construction*: 
+> a swimming man = a man *who* is in the status of swimming
+
+So now we see why it's often said that a particle works like an adjective: because it lacks a subject and therefore 
+has to be linked to an NP. A gerund may also be a modifier in an NP, but it has a different role. Consider the 
+following comparison:
+> a swimming pool ~ an apple tree  (\*The pool is swimming. \*The tree is apple.)
+> 
+> a swimming man ~ a strong man (The man is swimming. The man is strong.)
+
+In languages like Latin, gerunds and participles have morphological differences. 
+But nominal and relative clauses are also marked differently. 
+
+Now we turn to check the second function of present participle. It's not relative construction, and 
+its role is similar to a sentence-level adverbial. TODO
+
+In conclusion, for Latin, we have the following table:
+
+| | nominal clause | relative clause | adverbial clause |
+| :------ | :------ | :------ | :------|
+| finite verb | + | + | + |
+| participle | - | + | + |
+| gerund | + | - | - |
+
+while in English, we have
+
+| | nominal clause | relative clause | adverbial clause |
+| :------ | :------ | :------ | :------|
+| finite verb | + | + | + |
+| -*ing* verb | + | + | + |
+
+so the distributional test decides it's better to classify all clauses with -*ing* verb form under the tag of *-ing clause*.
 
 # References
 
