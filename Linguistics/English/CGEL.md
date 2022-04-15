@@ -5,7 +5,7 @@ This is a reading note of CGEL (Quirk 1985), with some commentaries with regard 
 
 # Terms and definitions
 
-We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../methodology/grammar-focus.md#note-on-terminology) in 
+We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../methodology/morphosyntax-points.md#note-on-terminology) in 
 descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
 
 - The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21

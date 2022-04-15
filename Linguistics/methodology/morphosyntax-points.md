@@ -1,4 +1,7 @@
-# Topics in syntax (and *informal* semantics)
+# Topics in morphosyntax (and *informal* semantics)
+
+For a more theoretically motivated list, see [here](phenomenon.md). Aspects mentioned in this file also apply
+to sign languages, but they may have some [distinct properties](sign-language.md).
 
 ## Inside a CP: The structure of clauses
 

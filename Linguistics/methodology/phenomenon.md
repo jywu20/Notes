@@ -1,4 +1,4 @@
-# Language Phenomenons that seems hard to explain
+# Topics in generative syntax and approaches to them 
 
 ## Agreement
 

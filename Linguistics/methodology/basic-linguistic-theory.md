@@ -119,7 +119,7 @@ Useful reading list
 
 # 3
 
-Since the framework introduced in this chapter will be used ubiquitously, I separated it into [a single file](./grammar-focus.md).
+Since the framework introduced in this chapter will be used ubiquitously, I separated it into [a single file](./morphosyntax-points.md).
 
 # 4
 
