@@ -1,11 +1,11 @@
 Reading note of Comprehensive Grammar of English Language
 ======
 
-This is a reading note of Quirk 1985, with some commentaries with regard to its implication in generali linguistics. 
+This is a reading note of CGEL (Quirk 1985), with some commentaries with regard to its implication in generali linguistics. 
 
 # Terms and definitions
 
-We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../general-linguistics/methodology/grammar-focus.md#note-on-terminology) in 
+We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../methodology/grammar-focus.md#note-on-terminology) in 
 descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
 
 - The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
@@ -37,6 +37,7 @@ descriptive grammar and in formal generative grammar, and from the terminology u
   Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
 - **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
 - **Adverbial** means "being able to modify an action".
+- **Phrases** do not include clauses.
 
 # Organization of grammar
 
@@ -199,8 +200,8 @@ so the distributional test decides it's better to classify all clauses with -*in
 
 # References
 
-Hoffmann, Thomas and Trousdale, Graeme. Construction Grammar: Introduction. In The Oxford Handbook of Construction Grammar, 2013.
+Hoffmann, Thomas and Trousdale, Graeme. Construction Grammar: Introduction. In *The Oxford Handbook of Construction Grammar*, 2013.
 
 Quirk, Randolph, Sidney Greenbaum, Geoffrey Leech, & Jan Svartvik. A Comprehensive Grammar of the English Language, Longman, 1985.
 
-Sportiche, D. 2017. Fewer adjuncts: more relatives. A Schri to Fest Kyle Johnson, 341.
+Sportiche, D. 2017. Fewer adjuncts: more relatives. In *A Schri to Fest Kyle Johnson*, 341.
