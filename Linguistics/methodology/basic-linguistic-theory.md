@@ -317,3 +317,17 @@ The author criticizes the ignorance of many dictionary editors towards grammatic
 
 The chapter is worth a thorough reading. Opinions from a generative linguist who also works with natural data can be found in [this blog](http://ordinaryworkinggrammarian.blogspot.com/2019/10/two-kinds-of-data-in-syntactic-fieldwork.html
 ).
+
+# Topics not covered in the volumes
+
+It's kind of strange that adverbs are not frequently mentioned. There are some discussion about how adverbs 
+can be constructed from adjectives, but that's all. [*Describing morphosyntax*](describing-morphosyntax.md#34)
+is about this topic, but it doesn't contain useful information, either, beside emphasizing "adverb is a catch-all
+category". In well-written grammars, Jacques 2021 just [lists possible adverbs](../Sino-Tibetan/茶堡话.md#adverbs)
+in chapters describing environments where they occur. A [similar approach](../English/CGEL.md#terms-and-definitions) is taken by CEGL (Quirk et al 1985). Their role is just like verb affixes. 
+
+# References
+
+Jacques, Guillaume. 2021. A grammar of Japhug. (Comprehensive Grammar Library 1). Berlin: Language Science Press. DOI: 10.5281/zenodo.4548232
+
+Quirk, Randolph, Sidney Greenbaum, Geoffrey Leech, & Jan Svartvik. A Comprehensive Grammar of the English Language, Longman, 1985.

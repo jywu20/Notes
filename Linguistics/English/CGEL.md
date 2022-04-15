@@ -37,6 +37,8 @@ descriptive grammar and in formal generative grammar, and from the terminology u
   Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
 - **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
 - **Adverbial** means "being able to modify an action".
+- **Adverbs** are not recognized as a uniform class. CGEL introduces and classifies them according to 
+  their functions and distributions (see, for example, Sec. 8.97 to 8.106).
 - **Phrases** do not include clauses.
 
 # Organization of grammar

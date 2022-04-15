@@ -14,3 +14,7 @@ Quantitative definition of indices of synthesis and fusion are simply not useful
 
 Note that *fusion* has no direct relation to *regularity*. If a morphological process involves a suprasegmental 
 morpheme (example: Nilotic languages), it is still fusional, though it's highly regular.
+
+# Chapter 3
+
+## 3.4

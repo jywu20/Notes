@@ -204,6 +204,8 @@ Above are all morphosyntactic criteria. Note that semantics should *not* be the 
 
 See BLT Chap. 12. 
 
+The prototypical function of adjectives is [to modify an NP](#general-structure-of-noun-phrases).
+But whether it's really necessary to introduce a single adjective class is often disputed.
 To describe a single language, any terms may be used, and it's alright to merge adjectival classes
 into the verb class or the noun class. However, for unified description and role in typology (to "provide 
 feedback into the basic linguistic theory"), we need to recognize a separate adjective class, 
@@ -233,7 +235,7 @@ According to its behavior in these constructions, we can classify adjectives int
 - type 1: verb-like
   - in that it can be head a predicate
   - which may be slightly different from typical verbs in 
-    - how it is modified when acting as a predicate 
+    - how it is modified when acting as a predicate (less adverbial constituents are available, for example) 
     - that it can be a modifier (usually only possible via a relative clause for adjectives like verbs; 
     if this can be achieved without a relative construction, then the adjective is not likely to undergo 
     similar morphological processes with the noun)
@@ -456,6 +458,8 @@ Arguments may be filled by
 - a phrase with a [noun](#nouns) head (which is attested in all languages); this is the *prototype* function of nouns
 - a phrase with a [verb](#verbs) head
 - a [complement clause](#complement-clause)
+
+These constituents may be considered as *nominal*.
 
 The predicate may be 
 - a [verb](#verbs) (which is attested in all languages); this is the *prototype* function of verbs
