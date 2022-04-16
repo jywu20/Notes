@@ -3,44 +3,6 @@ Reading note of Comprehensive Grammar of English Language
 
 This is a reading note of CGEL (Quirk 1985), with some commentaries with regard to its implication in generali linguistics. 
 
-# Terms and definitions
-
-We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../methodology/morphosyntax-points.md#note-on-terminology) in 
-descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
-
-- The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
-- But the **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
-- The term **preposition phrase** is used, as opposed to Dixon's advice. But now I find Dixon's argument is 
-  interesting and persuasive, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
-  house" as a whole, and by no means I am exactly that house. Well, Dixon may argue that [that house] is in a
-  locative case, similar to Latin locative ablative, and the structure of the sentence is 
-  > was<sub>copula, past tense</sub> I<sub>CS</sub> [in that house]<sub>Locative</sub> 
-
-  (See Sec. 2.8) 
-
-  Well, this sounds pretty generative :) 
-
-  On the other hand, analyzing PP in generative syntax as headed by a preposition also makes senses in a functionalist context, because the preposition may be regard as a part of the predicate.
-- **Headedness** is defined in a sense different from generative morphosyntax, BLT and,
-  quite strangely, the conventional notion that assigns V as the head of VP, N the head of NP, and P the 
-  head of PP. In CGEL, a PP is *not* seen as headed (Sec. 2.26), because both P and NP are obliged to appear.
-  NPs are VPs are regarded as not prototypically headed or non-headed.
-
-  It seems the term *head* is defined as "the only word in a phrase that is obligatory". If there are more than
-  one obliged constituents, then there is no head.
-- **Form and function** have meanings unlike their meaning in a more theoretical context. Here, *form* means the internal structure of a constituent, while *function* means its external environment
-- **Complement** is defined in Sec. 2.16. It's not used in the sense of X-bar theory. Nor is it used as a 
-  catch-all term of all sorts of things that looks like arguments. TODO: is there a term "complement clause"?
-- **Adjunct** is defined in Sec. 2.15:
-  > ... which are more closely integrated with the rest of the clause ...
-  
-  Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
-- **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
-- **Adverbial** means "being able to modify an action".
-- **Adverbs** are not recognized as a uniform class. CGEL introduces and classifies them according to 
-  their functions and distributions (see, for example, Sec. 8.97 to 8.106).
-- **Phrases** do not include clauses.
-
 # Organization of grammar
 
 Modern generative morphosyntax is highly feature-based and fine-grained. In CGEL, however, like other 
@@ -84,16 +46,68 @@ This is because each constituent is introduced by a functional head, and we have
 So the grammar framework needed for describing natural languages is also more restricted than PSG used to describe 
 programming languages. Dependencies beyond surface phrase structures are often derived by some kind of movement.
 
+Here we give a brief mapping between the BLT-like approach here and the DM-like feature-based generative morphosyntax:
+- PSG ≈ the surface form of a projection hierarchy
+- list of possible constructions ≈ allowed feature combination
+- transformational relation between two constructions ≈ the first few steps of derivation are the same (example: same vP structure)
+- local grammatical relations ≈ Agree, post-syntactic morphological process, etc.
+
+# Terms and definitions
+
+We first do a brief sketch of the description framework of CGEL. Many terms have [different meanings](../methodology/morphosyntax-points.md#note-on-terminology) in 
+descriptive grammar and in formal generative grammar, and from the terminology used we can also see how authors organize the grammar.
+
+- The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
+- But the **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
+- The term **preposition phrase** is used, as opposed to Dixon's advice. But now I find Dixon's argument is 
+  interesting and persuasive, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
+  house" as a whole, and by no means I am exactly that house. Well, Dixon may argue that [that house] is in a
+  locative case, similar to Latin locative ablative, and the structure of the sentence is 
+  > was<sub>copula, past tense</sub> I<sub>CS</sub> [in that house]<sub>Locative</sub> 
+
+  (See Sec. 2.8) 
+
+  Well, this sounds pretty generative :) 
+
+  On the other hand, analyzing PP in generative syntax as headed by a preposition also makes senses in a functionalist context, because the preposition may be regard as a part of the predicate.
+- **Headedness** is defined in a sense different from generative morphosyntax, BLT and,
+  quite strangely, the conventional notion that assigns V as the head of VP, N the head of NP, and P the 
+  head of PP. In CGEL, a PP is *not* seen as headed (Sec. 2.26), because both P and NP are obliged to appear.
+  NPs are VPs are regarded as not prototypically headed or non-headed.
+
+  It seems the term *head* is defined as "the only word in a phrase that is obligatory". If there are more than
+  one obliged constituents, then there is no head.
+- **Form and function** have meanings unlike their meaning in a more theoretical context. Here, *form* means the internal structure of a constituent, while *function* means its external environment
+- **Complement** is defined in Sec. 2.16. It's not used in the sense of X-bar theory. Nor is it used as a 
+  catch-all term of all sorts of things that looks like arguments. TODO: is there a term "complement clause"?
+- **Adjunct** is defined in Sec. 2.15:
+  > ... which are more closely integrated with the rest of the clause ...
+  
+  Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
+- **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
+- **Adverbial** means "being able to modify an action". TODO: Are so-called adverbs included?
+- **Adverbs** are not recognized as a uniform class. CGEL introduces and classifies them according to 
+  their functions and distributions (see, for example, Sec. 8.97 to 8.106).
+- **Phrases** *do not* include clauses.
+
 # Clause structure 
+
+This section is a brief review and reconstruction of Chapter 2. 
 
 ## Core arguments, verb classification and clause types
 
-There are roughly seven types of clauses, which also gives seven types of verbs (Sec. 2.16).
+Chapter 2 analyzes clauses according to obliged elements in their inner structures. Clauses can also be classified 
+according to whether they are finite and which kind of non-finite clauses they are. For that 
+classification, see Sec. 14.5-9. The classification given in this section is completely 
+orthogonal to the finite-non-finite distinction, with no implicational relations. (For example, 
+it's not the case that SVO clauses can't be non-finite)
+
+There are seven general types of clauses, which also gives seven general types of verbs (Sec. 2.16).
+There are multiple subcategory under each type of clauses. 
+
 Note that PPs may also function as complements (Sec. 10.11), which is a case of gradience between complement and adverbial.
 
-For clause type see Sec. 14.5-9.
-
-## About the adverbial
+## Objection to Table 2.19's treatment of the adverbial
 
 Note that adverbials may have scopes over the whole sentence and may be regarded as a 
 "relative clause describing the main clause" (Sportiche 2017). For example, consider the 
@@ -130,6 +144,8 @@ and PPs have almost complementary distributions, so PPs are better classified as
 However, since the English case system has almost completely eroded, it's wise to merge NPs 
 with core cases into one class and name them as NPs, and put NPs with peripheral cases into another type, 
 and name them as PPs.
+
+TODO: syntactic cartography of adverbs and "peripheral arguments"
 
 # Non-finite verb forms
 
@@ -188,17 +204,22 @@ In conclusion, for Latin, we have the following table:
 | | nominal clause | relative clause | adverbial clause |
 | :------ | :------ | :------ | :------|
 | finite verb | + | + | + |
-| participle | - | + | + |
+| participle | - | + | + (ablative absolute) |
 | gerund | + | - | - |
 
-while in English, we have
+Since participle clauses and gerund clauses have different morphological marking on 
+
+In English, however, we have
 
 | | nominal clause | relative clause | adverbial clause |
 | :------ | :------ | :------ | :------|
 | finite verb | + | + | + |
-| -*ing* verb | + | + | + |
+| -*ing* verb | + (so-called gerund) | + (so-called present participle) | + (so-called present participle) |
 
-so the distributional test decides it's better to classify all clauses with -*ing* verb form under the tag of *-ing clause*.
+so the only meaningful distinction between *gerund* and *present participle* is their syntactic distribution.
+We will not give finite clauses acting as nominal clauses one name and finite clauses acting as relative clauses
+another, so distributional test decides it's better to classify all clauses with -*ing* verb form under the 
+tag of *-ing clause* and to use "nominal" and "relative" instead of "gerund" and "present participle".
 
 # References
 
