@@ -61,6 +61,7 @@
 \DeclareMathOperator{\id}{id}
 
 % TikZ setting
+\usetikzlibrary{decorations.text}
 \usetikzlibrary{arrows,shapes,positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{decorations.markings}
@@ -107,7 +108,7 @@
 
 \maketitle
 
-\section{Antiunitary symmetry of second quantized Hamiltonian of free fermions}
+\section{Antiunitary symmetry of free fermions}
 
 Consider the following second quantized Hamiltonian:
 \begin{equation}
@@ -139,7 +140,12 @@ In this case, the time reversal symmetry doesn't act on the basis, but $\mathcal
 and adds a star, so if the system has time reversal symmetry, we have 
 \begin{equation}
     T H T^{-1} = {H}^*.
+    \label{eq:time-reversal-first-quantization}
 \end{equation}
+Note that here $H$ is the \emph{first quantized} Hamiltonian, i.e. the coefficient matrix 
+in \eqref{eq:second-quantization}. The operation $T$ is also the \emph{unitary} transformation associated 
+to $\mathcal{K}$, instead of the full \emph{second quantized} $\mathcal{T}$. We work with first quantization
+because it's easier: we don't need to actually work with complex conjugate of creation and annihilation operators.
 
 Now we move to the ``real'' particle-hole symmetry in an insulator. Consider 
 \begin{equation}
@@ -153,44 +159,89 @@ then we have
 \begin{equation}
     \mathcal{C} \hat{H} \mathcal{C}^{-1} = - \sum_{\pair{\vb*{i}, \vb*{j}}} (t_{\vb*{i} \vb*{j}} c_{\vb*{i}} c^\dagger_{\vb*{j}} + \text{h.c.}) = \sum_{\pair{\vb*{i}, \vb*{j}}} (t_{\vb*{j} \vb*{i}}^* c^\dagger_{\vb*{j}} c_{\vb*{i}} + \text{h.c.}) = - \hat{H}^* = - \hat{H}^\top.
 \end{equation}
-The minus sign, physically, means flipping the spectrum with the Fermi surface as a mirror, while the transpose 
+We know the spectrum of the tight-binding model is a cosine curve, so the minus sign comes as is expected, meaning flipping the spectrum with the Fermi surface as a mirror, while the transpose 
 operation comes from flipping $\ket{\vb*{i}}$ to $\bra{\vb*{i}}$. Here we need to keep in mind a strange property 
-of particle-hole transformation. $\mathcal{C}$ should be unitary in the second quantization formalism, because 
+of particle-hole transformation. $\mathcal{C}$ should be \emph{unitary} in the second quantization formalism, because 
 we want 
 \begin{equation}
     c_{\vb*{k}}^\dagger \stackrel{\mathcal{C}}{\longrightarrow} c_{- \vb*{k}}
 \end{equation}
-to keep momentum conservation, and if $\mathcal{C}$ is unitary, we have 
+to keep momentum conservation, and if $\mathcal{C}$ is unitary, it doesn't act on a complex factor, so we have 
 \[
-    \mathcal{C} c_{\vb*{k}}^\dagger = \mathcal{C} \frac{1}{\sqrt{N}} \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c^\dagger_{\vb*{i}} = \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c_{\vb*{i}} = c_{- \vb*{k}},
+    \mathcal{C} \cdot c_{\vb*{k}}^\dagger = \mathcal{C} \cdot \frac{1}{\sqrt{N}} \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c^\dagger_{\vb*{i}} = \sum_{\vb*{i}} \ee^{- \ii \vb*{k} \cdot \vb*{r}_{\vb*{i}}} c_{\vb*{i}} = c_{- \vb*{k}},
 \]
 which is exactly what we want. However, the first quantization version of $\mathcal{C}$ maps a single-electron 
 wave function in the single electron Hilbert space to the \emph{dual} space, and a map $\mathcal{H} \to \mathcal{H}^*$
-should be antiunitary to keep naturalness.
+should be \emph{antiunitary} to keep naturalness.
 
-The action of $\mathcal{C}$ on an arbitrary state is 
+The action of $\mathcal{C}$ on an arbitrary basis is 
 \begin{equation}
-    \mathcal{C} c^\dagger_{\alpha} \mathcal{C}^{-1} = c_\beta C_{\beta \alpha}, \quad 
-    \mathcal{C} c_{\alpha} \mathcal{C}^{-1} = C^{-1}_{\alpha \beta} c_\beta,
+    \mathcal{C} c_{\alpha} \mathcal{C}^{-1} = c_\beta^\dagger C_{\beta \alpha}, \quad 
+    \mathcal{C} c^\dagger_{\alpha} \mathcal{C}^{-1} = C^{-1}_{\alpha \beta} c_\beta,
+    \label{eq:arbitrary-particle-hole}
 \end{equation}
-% TODO
+and the second quantized Hamiltonian under \eqref{eq:arbitrary-particle-hole} transforms as 
 \begin{equation}
-    \mathcal{C} H \mathcal{C}^{-1} = - C H^* C^{-1}.
+    \begin{aligned}
+        \mathcal{C} \hat{H} \mathcal{C}^{-1} &= \mathcal{C} c_\alpha^\dagger \mathcal{C}^{-1} H_{\alpha \beta} \mathcal{C} c_\beta \mathcal{C}^{-1} = C^{-1}_{\alpha \alpha'} c_{\alpha'} \underbrace{H_{\alpha \beta}}_{H_{\beta \alpha}^*} c^\dagger_{\beta'} C_{\beta' \beta} \\
+        &= - c^\dagger_{\beta'} C_{\beta' \beta} H^*_{\beta \alpha} C^{-1}_{\alpha \alpha'} c_{\alpha'} = - c^\dagger_{\beta'} (CH^* C^{-1})_{\beta' \alpha'} c_{\alpha'}.
+    \end{aligned}
+\end{equation}
+So the particle-hole symmetry condition for the first quantized Hamiltonian is 
+\begin{equation}
+    H = - C H^* C^{-1}.
+    \label{eq:charge-symmetry-first-quantization}
 \end{equation}
 
 Despite their weirdness, $\mathcal{T}$ and $\mathcal{C}$ can be fully demonstrated by constraints on 
 the coefficient matrix $H$ (i.e. first quantized Hamiltonian) in \eqref{eq:second-quantization}.
-Classification of free fermion systems is therefore classification of these matrices.
+Classification of free fermion systems is therefore classification of these matrices. 
+
+$\mathcal{T}$ and $\mathcal{C}$ have non-trivial multiplication relation: since $\mathcal{T}$ is antiunitary
+in both first and second quantization formulation, and $\mathcal{C}$ is unitary in second quantization but 
+antiunitary in first quantization, 
+\begin{equation}
+    \mathcal{S} = \mathcal{T} \mathcal{C}
+\end{equation} 
+is unitary in first quantization but antiunitary in second quantization. We call it \concept{chiral symmetry}
+to keep consistent with the definition in particle physics.
+The condition that a second quantized Hamiltonian has chiral symmetry can be verified similar to \eqref{eq:time-reversal-first-quantization} and \eqref{eq:charge-symmetry-first-quantization}, and we have 
+\begin{equation}
+    S H S^{-1} =  - H.
+    \label{eq:chiral-first-quantization}
+\end{equation}
+
+In the momentum representation, $\mathcal{C}$ is bond to change the momentum in the $\vb*{k} \to - \vb*{k}$ 
+way, because of momentum conservation. The rest of labels (band index, spin, etc.) are mixed together with a finite dimensional matrix.
+So suppose $H(\vb*{k})$ is the block in $H$ with momentum $\vb*{k}$, and we have 
+\begin{equation}
+    T H(\vb*{k}) T^{-1} = H(- \vb*{k})^*.
+\end{equation}
+where $C$ is the block in the $C$ matrix in \eqref{eq:time-reversal-first-quantization} that mixes labels other than $\vb*{k}$.
+Similarly from \eqref{eq:charge-symmetry-first-quantization}, we have 
+\begin{equation}
+    C H(- \vb*{k})^* C^{-1} = - H(\vb*{k}).
+\end{equation}
+The chiral symmetry doesn't change the momentum, since it's the multiplication of $\mathcal{T}$ and $\mathcal{C}$,
+so from \eqref{eq:chiral-first-quantization} we have 
+\begin{equation}
+    S H(\vb*{k}) S^{-1} =  - H(\vb*{k}).
+\end{equation}
+
+Now in a model with multiple bands, it's possible that 
+there are several different particle-hole symmetry: it may be possible that band A's particles are equivalent 
+to \emph{both} band B and band C's holes. But in this case, band B and band C must coincide and there is 
+a symmetry switching B and C, so in the end we only need to define one particle-hole symmetry as the generator:
+the rest of the particle-hole symmetries can be automatically generated using composition.
 
 \section{Particle-hole symmetry in superconductors}
 
-Particle-hole symmetry is another antiunitary symmetry that may concern us for fermionic systems. 
-Consider, for example, the following BCS model of superconductivity:
+The following BCS model of superconductivity:
 \begin{equation}
     H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} - V \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \alpha, \beta} c^\dagger_{\vb*{k}' - \vb*{q}, \alpha} c^\dagger_{\vb*{k} + \vb*{q}, \beta} c_{\vb*{k} \beta} c_{\vb*{k}' \alpha},
     \label{eq:bcs}
 \end{equation}
-which turns into 
+can be turned into 
 \begin{equation}
     H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} 
     + \sum_{\vb*{k}} (\Delta c^\dagger_{- \vb*{k} \downarrow} c^\dagger_{\vb*{k} \uparrow} + \Delta^* c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow}),
@@ -210,20 +261,53 @@ effective theory about fermionic quasiparticles of \eqref{eq:bcs} is not \eqref{
 $U(1)$ symmetry -- a continuous symmetry -- can't be broken here. But we can always use a 
 3D bulk state to ``induce'' a low-dimensional superconducting phase, which has electron pairing anyway
 and can be described by \eqref{eq:bdg}, though this time \eqref{eq:bdg} has nothing to do with BCS mechanism.
-So henceforth we will work with the free-fermionic model \eqref{eq:bdg} and ignore what induces superconductivity
-pairing.
+So henceforth we will work with a free-fermionic model like \eqref{eq:bdg} and ignore what induces superconductivity
+pairing. 
 
-Now we repeat the classical procedure in BCS theory: \eqref{eq:bdg} can be rephrased into 
+In such a Hamiltonian, the existence of a pairing channel means we have terms like $c_\alpha c_\beta$,
+and therefore the Hamiltonian can't be recast into \eqref{eq:second-quantization} from which we can extract 
+the first quantized Hamiltonian $H$. The solution is a classical procedure in BCS theory: \eqref{eq:bdg} can be rephrased into 
 \begin{equation}
-    H = \sum_{\vb*{k}} \Psi_{\vb*{k}}^\dagger \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & -\xi_{\vb*{k}} } \Psi_{\vb*{k}}, \quad \Psi_{\vb*{k}} = 
+    H = \sum_{\vb*{k}} \Psi_{\vb*{k}}^\dagger \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & -\xi_{\vb*{k}} } \Psi_{\vb*{k}}, \quad \Psi_{\vb*{k}} = \pmqty{c_{\vb*{k} \uparrow} \\ c^\dagger_{- \vb*{k}, \downarrow}}.
 \end{equation}
+This Hamiltonian has a particle-hole symmetry. Because $\xi_{\vb*{k}} = \xi_{- \vb*{k}}$, we have 
+\begin{equation}
+    \pmqty{0 & 1 \\ -1 & 0} \pmqty{\xi_{\vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{\vb*{k}}} \pmqty{0 & -1 \\ 1 & 0} = - \pmqty{\xi_{- \vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{- \vb*{k}}}^*.
+\end{equation}
+But the particle-hole symmetry is actually \emph{redundant}. BdG Hamiltonians without this symmetry aren't 
+qualified theories of superconductors. The point here is that suppose there are $d$ kind of fermions (i.e. 
+possible values of labels other than the momentum), then the existence of $c_\alpha c_\beta$ terms means 
+$\Psi_{\vb*{k}}$ should be $2d$ dimensional to include all possible terms. (In the BCS case there are two 
+kind of fermions and $\Psi$ is 2-dimensional, but we can always introduce $c_{\vb*{k} \downarrow}$ and 
+$c^\dagger_{- \vb*{k}, \uparrow}$ components and assign zero matrix elements for them, and the resulting 
+first-quantized Hamiltonian still has a particle-hole symmetry.) So the resulting $H$ matrix 
+is $2d \times 2d$ dimensional, the same as the first quantized Hamiltonian of $2d$ kind of fermions,
+but it describes $d$ kind of fermions anyway.
+Since $d$ kinds of fermions are actually just holes for the rest $d$ kinds of fermions, 
+there must be a particle-hole symmetry to make sure the spectrum of the first quantized Hamiltonian 
+reflects this fact.
 
-The particle-hole symmetry is actually a \emph{redundancy}: BdG Hamiltonians without this symmetry aren't 
-qualified theories of superconductors. A superconductor has \emph{more} symmetry than a similar insulator 
-because it has a particle-hole symmetry, while it has \emph{fewer} actual symmetry than a similar 
+Sometimes the particle-hole symmetry comes from existing symmetries of the Hamiltonian. In the 
+BCS case, it's easy to find that it's just the spin flipping symmetry.
+Sometimes it's just a redundancy: the $C$ matrix acting on a state gives exactly the state itself.
+Consider, for example, the following simplest case:
+\begin{equation}
+    H = \sum_{\vb*{k}} \xi_{\vb*{k}} c^\dagger_{\vb*{k}} c = \frac{1}{2} \sum_{\vb*{k}} \pmqty{c^\dagger_{\vb*{k}} & c_{\vb*{k}} } \pmqty{\dmat{\xi_{\vb*{k}}, - \xi_{\vb*{k}}}} \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}} + \text{const},
+\end{equation}
+the first quantized Hamiltonian of which obviously has a particle-hole symmetry, which is based on the simple 
+fact that (here the complex conjugate operation only applies to the elements of a matrix)
+\[
+    \pmqty{0 & 1 \\ 1 & 0} \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}}^\dagger = \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}}.
+\]
+A superconductor has \emph{more} symmetry than a similar insulator 
+because its first quantized Hamiltonian has a particle-hole symmetry, while it has \emph{fewer} actual symmetry than a similar 
 insulator because it breaks the $U(1)$ symmetry. 
 
 \section{The 10-fold way}
+
+So there are several possibility of these three weird symmetries. $\mathcal{T}$ and $\mathcal{C}$ symmetries 
+may simply not exist, which we denote as ${T} = 0$ or ${C} = 0$. When these symmetries are present,
+
 
 \begin{itemize}
     \item Class A: no time reversal symmetry, no particle-hole symmetry, no chiral symmetry. An insulator with
