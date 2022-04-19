@@ -101,6 +101,18 @@
 \newtcbtheorem[number within=section]{info}{Info}%
   {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
 
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
 \title{Prof. Yang Qi on topological classification of gapped free fermion models}
 \author{Jinyuan Wu}
 
@@ -260,12 +272,12 @@ the rest of the particle-hole symmetries can be automatically generated using co
 
 The following BCS model of superconductivity:
 \begin{equation}
-    H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} - V \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \alpha, \beta} c^\dagger_{\vb*{k}' - \vb*{q}, \alpha} c^\dagger_{\vb*{k} + \vb*{q}, \beta} c_{\vb*{k} \beta} c_{\vb*{k}' \alpha},
+    \hat{H} = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} - V \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \alpha, \beta} c^\dagger_{\vb*{k}' - \vb*{q}, \alpha} c^\dagger_{\vb*{k} + \vb*{q}, \beta} c_{\vb*{k} \beta} c_{\vb*{k}' \alpha},
     \label{eq:bcs}
 \end{equation}
 can be turned into 
 \begin{equation}
-    H = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} 
+    \hat{H} = \sum_{\vb*{k}, \alpha} \xi_{\vb*{k}} c^\dagger_{\vb*{k} \alpha} c_{\vb*{k} \alpha} 
     + \sum_{\vb*{k}} (\Delta c^\dagger_{- \vb*{k} \downarrow} c^\dagger_{\vb*{k} \uparrow} + \Delta^* c_{\vb*{k} \uparrow} c_{- \vb*{k} \downarrow}),
     \label{eq:bdg}
 \end{equation}
@@ -290,37 +302,44 @@ In such a Hamiltonian, the existence of a pairing channel means we have terms li
 and therefore the Hamiltonian can't be recast into \eqref{eq:second-quantization} from which we can extract 
 the first quantized Hamiltonian $H$. The solution is a classical procedure in BCS theory: \eqref{eq:bdg} can be rephrased into 
 \begin{equation}
-    H = \sum_{\vb*{k}} \Psi_{\vb*{k}}^\dagger \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & -\xi_{\vb*{k}} } \Psi_{\vb*{k}}, \quad \Psi_{\vb*{k}} = \pmqty{c_{\vb*{k} \uparrow} \\ c^\dagger_{- \vb*{k}, \downarrow}}.
+    \hat{H} = \sum_{\vb*{k}} \Psi_{\vb*{k}}^\dagger \pmqty{ \xi_{\vb*{k}} & - \Delta \\ - \Delta^* & -\xi_{\vb*{k}} } \Psi_{\vb*{k}}, \quad \Psi_{\vb*{k}} = \pmqty{c_{\vb*{k} \uparrow} \\ c^\dagger_{- \vb*{k}, \downarrow}}.
 \end{equation}
-This Hamiltonian has a particle-hole symmetry. Because $\xi_{\vb*{k}} = \xi_{- \vb*{k}}$, we have 
-\begin{equation}
-    \pmqty{0 & 1 \\ -1 & 0} \pmqty{\xi_{\vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{\vb*{k}}} \pmqty{0 & -1 \\ 1 & 0} = - \pmqty{\xi_{- \vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{- \vb*{k}}}^*.
-\end{equation}
-But the particle-hole symmetry is actually \emph{redundant}. BdG Hamiltonians without this symmetry aren't 
-qualified theories of superconductors. The point here is that suppose there are $d$ kind of fermions (i.e. 
+Often, we call this form of Hamiltonian as the \concept{BdG Hamiltonian} rather than \eqref{eq:bdg}.
+
+BdG Hamiltonians often have \emph{redundant} particle-hole symmetry. The point here is that suppose there are $d$ kind of fermions (i.e. 
 possible values of labels other than the momentum), then the existence of $c_\alpha c_\beta$ terms means 
-$\Psi_{\vb*{k}}$ should be $2d$ dimensional to include all possible terms. (In the BCS case there are two 
-kind of fermions and $\Psi$ is 2-dimensional, but we can always introduce $c_{\vb*{k} \downarrow}$ and 
-$c^\dagger_{- \vb*{k}, \uparrow}$ components and assign zero matrix elements for them, and the resulting 
-first-quantized Hamiltonian still has a particle-hole symmetry.) So the resulting $H$ matrix 
+$\Psi_{\vb*{k}}$ should be $2d$ dimensional to include all possible terms. So the resulting $H$ matrix 
 is $2d \times 2d$ dimensional, the same as the first quantized Hamiltonian of $2d$ kind of fermions,
 but it describes $d$ kind of fermions anyway.
 Since $d$ kinds of fermions are actually just holes for the rest $d$ kinds of fermions, 
-there must be a particle-hole symmetry to make sure the spectrum of the first quantized Hamiltonian 
-reflects this fact.
-
-Sometimes the particle-hole symmetry comes from existing symmetries of the Hamiltonian. In the 
-BCS case, it's easy to find that it's just the spin flipping symmetry.
-Sometimes it's just a redundancy: the $C$ matrix acting on a state gives exactly the state itself.
-Consider, for example, the following simplest case:
+there is possibly a particle-hole symmetry to make sure the spectrum of the first quantized Hamiltonian 
+reflects this fact. Consider, for example, the following simplest case:
 \begin{equation}
-    H = \sum_{\vb*{k}} \xi_{\vb*{k}} c^\dagger_{\vb*{k}} c = \frac{1}{2} \sum_{\vb*{k}} \pmqty{c^\dagger_{\vb*{k}} & c_{\vb*{k}} } \pmqty{\dmat{\xi_{\vb*{k}}, - \xi_{\vb*{k}}}} \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}} + \text{const},
+    \hat{H} = \sum_{\vb*{k}} \xi_{\vb*{k}} c^\dagger_{\vb*{k}} c = \frac{1}{2} \sum_{\vb*{k}} \pmqty{c^\dagger_{\vb*{k}} & c_{\vb*{k}} } \pmqty{\dmat{\xi_{\vb*{k}}, - \xi_{\vb*{k}}}} \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}} + \text{const},
 \end{equation}
 the first quantized Hamiltonian of which obviously has a particle-hole symmetry, which is based on the simple 
 fact that (here the complex conjugate operation only applies to the elements of a matrix)
 \[
     \pmqty{0 & 1 \\ 1 & 0} \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}}^\dagger = \pmqty{c_{\vb*{k}} \\ c^\dagger_{\vb*{k}}}.
 \]
+
+The BCS BdG Hamiltonian \eqref{eq:bdg} also has a particle-hole symmetry. Because $\xi_{\vb*{k}} = \xi_{- \vb*{k}}$, we have 
+\begin{equation}
+    \pmqty{0 & 1 \\ -1 & 0} \pmqty{\xi_{\vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{\vb*{k}}} \pmqty{0 & -1 \\ 1 & 0} = - \pmqty{\xi_{- \vb*{k}} & - \Delta \\ - \Delta^* & - \xi_{- \vb*{k}}}^*.
+\end{equation}
+In the BCS case there are two kind of fermions and $\Psi$ is 2-dimensional, so the particle-hole symmetry is 
+not a byproduct of double counting of degrees of freedom. 
+Sometimes the particle-hole symmetry comes from existing symmetries of the Hamiltonian. In the 
+BCS case, it's easy to find that it's just the spin flipping symmetry.
+
+The particle-hole symmetry is not always here. For example, the following superconductor Hamiltonian with the spin rotational symmetry on the $z$ direction:
+\begin{equation}
+    \hat{H} = \sum_{\vb*{k}} \pmqty{c^\dagger_{\vb*{k} \uparrow} & c_{\vb*{k} \downarrow}} \pmqty{\epsilon_{\vb*{k} \uparrow} & \Delta \\ \Delta & - \epsilon_{- \vb*{k} \downarrow}} \pmqty{c_{\vb*{k} \uparrow} \\ c^\dagger_{\vb*{k} \downarrow}}.
+    \label{eq:no-particle-hole-sc-example}
+\end{equation}
+Its first quantized Hamiltonian don't have any $\mathcal{T}, \mathcal{C}$ or $\mathcal{S}$ symmetry and therefore 
+can't be distinguished from, say, the first quantized Hamiltonian of IQHE. 
+
 A superconductor has \emph{more} symmetry than a similar insulator 
 because its first quantized Hamiltonian has a particle-hole symmetry, while it has \emph{fewer} actual symmetry than a similar 
 insulator because it breaks the $U(1)$ symmetry. 
@@ -343,16 +362,17 @@ or absent. So in the end, the symmetry of a free fermionic or bosonic system con
 $\mathcal{T}$ and $\mathcal{S}$ has $3 \times 3 - 1 + 2 = 10$ possibilities, called \concept{the ten-fold way}. Here we list the notation for these symmetry classes and some examples \cite{Ryu_2010}.
 
 \begin{itemize}
-    \item Class A: $T = 0, \  C = 0, \ S = 0$. Without the particle-hole symmetry this can't be a superconductor,
-     so it has to be an insulator, and therefore charge conservation holds. Example: Chern-insulators, IQHE.
-    \item Class AIII: $T = 0, \  C = 0, \ S = 1$. Again, insulator only. Example: SSH model. 
+    \item Class A: $T = 0, \  C = 0, \ S = 0$. Without the particle-hole symmetry,
+    typically this is an insulator, and therefore charge conservation holds. Example: Chern-insulators, IQHE.
+    But a superconductor like \eqref{eq:no-particle-hole-sc-example} can also be a realization of this symmetry class.
+    \item Class AIII: $T = 0, \  C = 0, \ S = 1$. Again, typically an insulator, while superconductors are also possible. Example: SSH model. 
     \item Class D: $T = 0,\  C = 1, \ S = 0$. This class is typically realized as a superconductor,
     which actually may not have any physical symmetry other than the fermion parity symmetry.
     Example: 1D Kitaev chain, 2D $(p + \ii p)$ superconductor.
     Of course, this class can also be implemented by an insulator with a real particle-hole symmetry.
     \item Class DIII: $T=-1, C = 1, S = 1$. Usual superconductors belong to this class, in which 
     $\mathcal{T}^2$ is the fermion parity symmetry. 1D topological superconductors are in this class.
-    \item Class AII: $T = -1, C = 0, S = 0$. Without the particle-hole symmetry it has to be an insulator.
+    \item Class AII: $T = -1, C = 0, S = 0$. 
     Topological insulators in the ordinary sense are in this class.
     \item Class CII: $T = -1, C = -1, S = 1$. This is a strange symmetry class. $C = -1$ means the 
     symmetry class can be realized by a $SU(2)$ superconductor, but typically in this case we define $T = 1$.
@@ -369,6 +389,169 @@ $\mathcal{T}$ and $\mathcal{S}$ has $3 \times 3 - 1 + 2 = 10$ possibilities, cal
     \item Class BDI: $T = 1, C = 1, S = 0$. A typical realization is a spinless superconductor, like a $p$-wave 
     superconductor in which the pairing order parameter $\Delta$ is real.
 \end{itemize}
+
+\section{The SSH model}
+
+\subsection{The Hamiltonian, topological phases and the winding number}
+
+Band structures in class A and class AIII may be classified by their Chern numbers. It can be proved that 
+the possible Chern classes of class A and class AIII gapped free fermion are 
+
+\begin{figure}
+    \centering
+    \input{ssh-lattice.tex}
+    \caption{The lattice of the SSH model}
+    \label{fig:ssh-lattice}
+\end{figure}
+
+The \concept{SSH model} is first a tight-binding model on a polyacetyene chain. From the lattice structure 
+\prettyref{fig:ssh-lattice}, we can write down the second quantized Hamiltonian
+\begin{equation}
+    \begin{aligned}
+        \hat{H} &= - t \sum_i (a_i^\dagger b_i + \text{h.c.}) - t' \sum_i (b^\dagger_i a_{i+1} + \text{h.c.}) \\
+        &= \sum_k \pmqty{a^\dagger_k & b^\dagger_k} \pmqty{0 & - t - t' \ee^{- \ii k} \\ - t - t' \ee^{\ii k} & 0} \pmqty{a_k \\ b_k}.
+    \end{aligned}
+\end{equation}
+The first quantized Hamiltonian is 
+\begin{equation}
+    H(k) = \pmqty{0 & - t - t' \ee^{- \ii k} \\ - t - t' \ee^{\ii k} & 0} \eqqcolon \pmqty{0 & D(k) \\ D^*(k) & 0}.
+    \label{eq:ssh-first-quant}
+\end{equation}
+Now we check the chiral symmetry. Consider the following definition:
+\begin{equation}
+    \mathcal{S} : a_i \mapsto a_i^\dagger, \quad b_i \mapsto - b_i^\dagger, \quad \ii \mapsto - \ii.
+\end{equation}
+This is a typical definition of chiral operation, which involves both flipping $c$ and $c^\dagger$ 
+($\mathcal{C}$) and the complex conjugate ($\mathcal{T}$). Under this transformation,
+\begin{equation}
+    a_k = \sum_i a_i \ee^{- \ii k r_i} \mapsto \sum_i a_i^\dagger \ee^{\ii k r_i} = a_k^\dagger,
+\end{equation}
+\begin{equation}
+    b_k = \sum_i b_i \ee^{- \ii k r_i} \mapsto - \sum_i b_i^\dagger \ee^{\ii k r_i} = - b_k^\dagger,
+\end{equation}
+so the first quantization transformation is 
+\begin{equation}
+    S = \tau^z = \pmqty{\dmat{1, -1}},
+\end{equation}
+and we find 
+\begin{equation}
+    S H(k) S^{-1} = - H(k),
+\end{equation}
+so indeed the SSH model has a chiral symmetry. 
+
+All information of a SSH band structure is stored in $D(k)$ in \eqref{eq:ssh-first-quant}. We see $D(k)$
+is a circle on the complex plane, and it can't go over the origin (which means the gap is closed).
+It's easy to check that when $t = t'$, the gap is closed. This is the critical point which separate the 
+$t > t'$ topological phase and the $t < t'$ topological phase. 
+
+We consider the \emph{flattened} Hamiltonian, in which the energy of occupied eigenstate is assigned as $-1$,
+and the energy of unoccupied states is assigned as $1$. This means $H^2 = 1$, and all bands of this Hamiltonian
+is flatten. We usually denote it as $Q$ to distinct it from the real Hamiltonian $H$. 
+For the SSH model, it's 
+\begin{equation}
+    Q(k) = \pmqty{0 & g(k) \\ g^*(k) & 0}, \quad g(k) = \frac{D(k)}{\abs{D(k)}} \eqqcolon \ee^{\ii \theta(k)},
+\end{equation}
+and we have 
+\begin{equation}
+    Q(k)^2 = \pmqty{\dmat{g(k) g^*(k), g(k) g^*(k)}} = 1.
+\end{equation}
+So now a winding number can be defined for $\theta$, which can also be calculated by 
+\begin{equation}
+    W = \ii \int \frac{\dd{k}}{2\pi} g^*(k) \partial_k g(k) ,
+\end{equation}
+because 
+\begin{equation}
+    W= \ii \int \frac{\dd{k}}{2\pi} g^*(k) \partial_k g(k)  = \ii \int \frac{\dd{k}}{2\pi} \ii \partial_k \theta = - \int_0^{2\pi} \dd{\theta} = - \theta(k)|^{2\pi}_{k=0}.
+\end{equation}
+Note that $\theta(k)$ can be multivalued, as long as $g(2\pi) = g(0)$, which means
+\[
+    \theta(2\pi) - \theta(0) = 2\pi n , \quad n \in \mathbb{Z},
+\]
+so we find $W \in \mathbb{Z}$.
+
+Here a possible paradox occurs: we can decide the topological property of $Q$ (and hence $H$) by calculating 
+the winding number, while the shape of bands of $Q$ and a trivial flat band model created by highly localized 
+Wannier functions are the same. So what's the information loss after we diagonalize the Hamiltonian?
+Actually the topological information is stored in the \emph{basis} after diagonalization. 
+
+\subsection{Polarization}
+
+Now we turn to a concept first developed in \emph{ab initio} calculation: the microscopic definition of 
+charge polarization. Now we use $n$ (instead of $i$) to denote the site index and $\alpha$ the sublattice label
+(and hence the band index). We have 
+\begin{equation}
+    \vb*{P} = \expval{\vb*{r}}{n \alpha}, \quad P_x = \expval{x}{n \alpha}.
+\end{equation}
+Now we are going to show that $P_x$ is actually given by the Berry phase on the $x$ direction.
+
+A Bloch state is in the form of 
+\begin{equation}
+    \psi_{k \alpha} (x) = \ee^{\ii k x} u_{n \alpha} (x),
+\end{equation}
+which in the bra-ket notation is 
+\begin{equation}
+    \ket{\psi_{k \alpha}} = \ee^{\ii k \hat{x}} \ket{u_{k n}}.
+\end{equation}
+The Wannier function is 
+\begin{equation}
+    \ket{n \alpha} = \frac{1}{\sqrt{N}} \sum_k \ee^{\ii k (\hat{x} - x_n)} \ket{u_{k n}}
+\end{equation}
+When the polarization is uniform enough, we have
+\begin{equation}
+    \begin{aligned}
+        P_x &= \sum_{\alpha < 0} \expval{\hat{x}}{n=0, \alpha} = \frac{1}{N} \sum_{k, k', \alpha < 0} \mel{u_{k' \alpha}}{\ee^{- \ii k' \hat{x}} \hat{x} \ee^{\ii k \hat{x}} }{u_{k\alpha}} \\
+        &= % TODO
+        \frac{\ii}{N} \sum_{k, \alpha < 0} \mel{u_{k \alpha}}{\pdv{k}}{u_{k \alpha}} = \sum_{\alpha < 0} \int \frac{\dd{k}}{2\pi} \ii \mel{u_{k \alpha}}{\pdv{k}}{u_{k \alpha}} .
+    \end{aligned}
+\end{equation}
+This is just the integral 
+\begin{equation}
+    P_x = \int \frac{\dd{k}}{2\pi} A_x
+\end{equation}
+of the Berry phase
+\begin{equation}
+    A_x = \ii \sum_{\alpha < 0} \mel{u_{k \alpha}}{\pdv{k}}{u_{k \alpha}}.
+\end{equation}
+The polarization $P_x$ is only well defined mod 1, because we can do a gauge transformation
+\begin{equation}
+    \ket{u_{k \alpha}} \to \ee^{\ii \theta(k)} \ket{u_{k \alpha}},
+\end{equation}
+and 
+\begin{equation}
+    P_x \to P_x + \frac{\theta(2\pi) - \theta(0)}{2\pi}.
+\end{equation}
+
+Now we will find the chiral symmetry in class AIII requires 
+\begin{equation}
+    P_x = 0, \  \frac{1}{2} \text{ mod 1}
+\end{equation}
+for the SSH model. The eigenstate of $Q(k)$ can be found as 
+\begin{equation}
+    Q \pmqty{u_k \\ \pm q^*(k) u_k } = \pmqty{\pm q(k) q^*(k) u_k \\ q^*(k) u_k} = \pm \pmqty{u_k \\ \pm q^*(k) u_k }.
+\end{equation}
+Note that by selecting these states as the basis, we have already chosen a \emph{gauge} for $A_x$. 
+Since $(u_k, - q^*(k) u_k)$ is the occupied state, we have 
+\begin{equation}
+    \begin{aligned}
+        A_x(k) &= \ii \pmqty{u^*_k & - q(k) u_k^*} \pdv{k} \pmqty{u_k \\ - q^*(k) u_k}  \\
+        &= \frac{\ii}{2} \trace (q(k) \partial_k q^*(k)) 
+    \end{aligned}
+\end{equation}
+
+We find that though $Q$ is as flat as a trivial flat band model constructed by localized Wannier functions, 
+by extracting information from the \emph{basis}, we are able to recover the topological classification obtained 
+previously by the winding number.
+
+\section{Class A insulators when $d=2$}
+
+Now we consider the $d=2$ class A insulators. Examples of this class include IQHE and Chern insulators.
+This time the physical quantity bearing the topological index is the \concept{Chern number}
+\begin{equation}
+    C = \int_\text{B.Z.} \frac{\dd{k_1} \dd{k_2}}{2 \pi} F_{ij}, \quad F_{ij} = \partial_i A_j - \partial_j A_i,
+\end{equation}
+which, according to the Kubo formula, is actually the transverse (i.e. Hall) conductivity. 
+
+
 
 \bibliographystyle{plain}
 \bibliography{symmetry-topological-band}
