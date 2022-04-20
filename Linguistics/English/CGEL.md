@@ -59,7 +59,23 @@ descriptive grammar and in formal generative grammar, and from the terminology u
 
 - The **verb phrase** means the predicate complex, not [V O] (see Sec. 2.3) Though the generative [ Aux1 [ Aux2 ... ] ] analysis can also be seen in, for example, Fig. 3.21
 - But the **predicate** means V plus O, while in basic linguistic theory (BLT), *predicate* means *verb phrase*
-- The term **preposition phrase** is used, as opposed to Dixon's advice. But now I find Dixon's argument is 
+- The term **preposition phrase** is used, as opposed to Dixon's advice. But note that in English, peripheral arguments like locative or comitative can only be filled by PPs (or in Dixon's
+  terms, by "NPs with peripheral case"), so we have the following table:
+  
+  | | preposition | core argument | peripheral argument |
+  | :----- | :------ | :------ | :----- |
+  | NP | - | + | - |
+  | PP | + | - | + |
+
+  So we have the following implicational rules:
+  > For a phrase with mostly nominal contents:
+  > 
+  > - if it has a preposition, then it can only fill a peripheral argument slot, and vice versa, and
+  > - if it doesn't has a preposition, then it can only fill a core argument slot, and vice versa.
+
+  So the concept *prepositional phrase* is useful, because it highlights the role of the preposition.
+
+  A side note: now I find Dixon's argument is 
   interesting and persuasive, because in a clause "I was in that house yesterday", obviously the copula complement is "in that 
   house" as a whole, and by no means I am exactly that house. Well, Dixon may argue that [that house] is in a
   locative case, similar to Latin locative ablative, and the structure of the sentence is 
@@ -67,9 +83,7 @@ descriptive grammar and in formal generative grammar, and from the terminology u
 
   (See Sec. 2.8) 
 
-  Well, this sounds pretty generative :) 
-
-  On the other hand, analyzing PP in generative syntax as headed by a preposition also makes senses in a functionalist context, because the preposition may be regard as a part of the predicate.
+  Well, this sounds pretty generative :) But on the other hand, analyzing PP in generative syntax as headed by a preposition also makes senses in a functionalist context, because the preposition may be regard as a part of the predicate. This, again, shows the opaqueness of what's the head when doing syntactic annotation.
 - **Headedness** is defined in a sense different from generative morphosyntax, BLT and,
   quite strangely, the conventional notion that assigns V as the head of VP, N the head of NP, and P the 
   head of PP. In CGEL, a PP is *not* seen as headed (Sec. 2.26), because both P and NP are obliged to appear.
@@ -84,6 +98,12 @@ descriptive grammar and in formal generative grammar, and from the terminology u
   > ... which are more closely integrated with the rest of the clause ...
   
   Again, the term is not used in the sense of X-bar theory (though strongly related to the original motivation of the X-bar scheme). 
+  Together introduced are the following terms:
+  - **disjunct**: comment on the form or content of the clause ("To my regret, ...")
+  - **conjunct**: connective adverbs, like "However, ..."
+  - **subjunct** TODO 
+
+  The detailed discussion can be found in Sec. 8.39, 8.51, 8.79, 8.104. 
 - **Nominal** seems to be synonym of "being able to be an argument". TODO: not quite, see Sec. 15.3
 - **Adverbial** means "being able to modify an action". TODO: Are so-called adverbs included?
 - **Adverbs** are not recognized as a uniform class. CGEL introduces and classifies them according to 
@@ -105,8 +125,6 @@ it's not the case that SVO clauses can't be non-finite)
 There are seven general types of clauses, which also gives seven general types of verbs (Sec. 2.16).
 There are multiple subcategory under each type of clauses. 
 
-Note that PPs may also function as complements (Sec. 10.11), which is a case of gradience between complement and adverbial.
-
 ## Objection to Table 2.19's treatment of the adverbial
 
 Note that adverbials may have scopes over the whole sentence and may be regarded as a 
@@ -119,10 +137,39 @@ The cow is highly likely not in the barn; what this sentence really means is
 
 > [a cow is missing]<sub>event</sub> [in the barn]<sub>describing the event</sub> 
 
-TODO: so Table 2.19 [7] seems to be not that correct, since A is not necessarily Ao. The following example
+So Table 2.19 [7] seems to be not that correct, since A is not necessarily Ao. The following example
 > They treated her kindly
 
 also reflects the same problem, since *kindly* is about the action, not the object.
+It's in a MannerP position, not directly linked to the subject or the object.
+
+## Distinction between obligatory adjuncts and complements
+
+Typical (optional) adverbs and peripheral arguments seems to be projections in the TP layer (Rizzi and 
+Cinque 2016, Schweikert 2005), and that's why they are called adverbials. On the other hand, 
+for copular verbs, complements and obligatory adverbials are generated in their argument slots (Myler 2018). 
+This creates a list of problems:
+- Theoretically, why are some adverbials obligatory at all, since they are in the TP layer?
+- Why for copular verbs, complements and obligatory adverbials are distinguished?
+- Are there further relation between obligatory adverbials and optional ones? In other words, does the label 
+ *adverbial* concern only the *inner* structure of a phrase (i.e. "An adverbial is what usually plays the role 
+ of optional adverbials"), or does it have any structural implications?
+
+The first question concerns the nature of obligatory adverbials. The second question concerns the relation 
+between obligatory adverbials and optional adverbials. The third question concerns the relation between 
+obligatory adverbials and optional adverbials (or in other words, why obligatory adverbials are called 
+as adverbials after all). The answers to these questions are correlated:
+- If obligatory adverbials have the same syntactic position as optional adverbials, then
+  - the second and the third problem is solved, but
+  - it is now a huge problem why sometimes, especially in SVC and SVA clauses, complements and adverbials are so similar (Note that PPs may also function as complements (Sec. 10.11), which is a case of gradience between complement and adverbial.), and 
+  - it is also a huge problem why obligatory adverbials are obligatory.
+- If obligatory adverbials have similar positions to complements, then 
+  - the second and the third problems now need an answer, and 
+  - it remains to be explained why PPs can appear in very different positions
+
+Answering these questions requires knowledge in syntactic cartography. Crosslinguistic comparison may be a hint.
+If, for example, we are able to find a language in which PPs in the vP layer are marked different from sentential
+(TP) PPs, then it's a strong support to the claim that obligatory adverbials are similar to complements.
 
 ## Gradience between nouns, adverbs and prepositional phrases
 
@@ -143,15 +190,15 @@ Actually, if we split nouns according to their cases, we will find nominative NP
 and PPs have almost complementary distributions, so PPs are better classified as NPs with peripheral cases.
 However, since the English case system has almost completely eroded, it's wise to merge NPs 
 with core cases into one class and name them as NPs, and put NPs with peripheral cases into another type, 
-and name them as PPs.
-
-TODO: syntactic cartography of adverbs and "peripheral arguments"
+and name them as PPs. 
 
 # Non-finite verb forms
 
 In CGEL, verb forms are listed in Sec. 3.2. 
 - -*ing* participle 
 - -*ed* participle
+
+## Elimination of the term *gerund*
 
 Note that "gerunds" is classified as "nominal -*ing* clauses" (Sec. 15.12)
 This is because the distinction between the gerund and the present participle used as a noun or an adjective no longer makes sense in English.
@@ -207,7 +254,9 @@ In conclusion, for Latin, we have the following table:
 | participle | - | + | + (ablative absolute) |
 | gerund | + | - | - |
 
-Since participle clauses and gerund clauses have different morphological marking on 
+Since participle clauses and gerund clauses have different morphological marking on the main verb, 
+the difference between a present participle clause and a gerund clause is not just their distribution in 
+the clause, so it may be a wise idea to keep the participle-gerund distinction.
 
 In English, however, we have
 
@@ -223,8 +272,16 @@ tag of *-ing clause* and to use "nominal" and "relative" instead of "gerund" and
 
 # References
 
+Haspelmath, M. (2014). Arguments and adjuncts as language-particular syntactic categories and as comparative concepts. Linguistic Discovery, 12(2), 3-11.
+
 Hoffmann, Thomas and Trousdale, Graeme. Construction Grammar: Introduction. In *The Oxford Handbook of Construction Grammar*, 2013.
 
+Myler, N. 2018. Complex copula systems as suppletive allomorphy. Glossa: a journal of general linguistics, 3(1).
+
 Quirk, Randolph, Sidney Greenbaum, Geoffrey Leech, & Jan Svartvik. A Comprehensive Grammar of the English Language, Longman, 1985.
+
+Rizzi, Luigi & Cinque, Guglielmo. 2016. Functional Categories and Syntactic Theory. Annual Review of Linguistics. 2. 139-163. 10.1146/annurev-linguistics-011415-040827. 
+
+Schweikert, W. 2005. The order of prepositional phrases in the structure of the clause (Vol. 83). John Benjamins Publishing.
 
 Sportiche, D. 2017. Fewer adjuncts: more relatives. In *A Schri to Fest Kyle Johnson*, 341.
