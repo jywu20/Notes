@@ -175,11 +175,11 @@ If, for example, we are able to find a language in which PPs in the vP layer are
 
 The syntactic distribution of nouns, adverbs and prepositional phrases can be summarized as (see Sec. 2.25)
 
-| construction type | topic | subject | object | complement | adverbial | topic |
+| construction type | topic | subject | object | complement | adverbial | attributive modifier(TODO: terminology) |
 | :------ | :----- | :---- | :------ | :------ | :----- | :------ |
-| noun | + | + | + | + | - | + |
+| noun | + | + | + | + | - | +? (an apple tree ~ ?The tree is for apples ???) |
 | prepositional phrase | + | -? (Sec. 10.15) | - | -? (Sec. 10.11) | + | + |
-| adverbs | +? | -? (Sec. 10.15) | - | - | + | +? |
+| adverbs | +? | -? (Sec. 10.15) | - | - | + | - |
 
 Here the "topic" column is not mentioned in Sec. 2.25, as the section is about core arguments. 
 Nonetheless, the (syntactic) topic position is still worth mentioning here because it bridges 
