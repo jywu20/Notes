@@ -190,8 +190,12 @@ The description framework is introduced in 1.4. Here is a sketch of the system:
   In particular, the notion of heads and dependents in English grammar (as well as dependency annotations in
   treebanks). It doesn't really matter, though, because it's quite easy to switch from one head annotation rule
   to another: in the formalism employed here, all we need to do is to rewritten the "grammatical function" part 
-  of PSG labels. In dependency grammars things are a little more complicated, because we need to change the root
-  node of a dependency tree and change the direction of all dependency arcs.  
+  of PSG labels. That's why for structures like coordination where head is only easily definable for the
+  derivational tree, the authors simply ignore the notion of headedness and classify them as non-headed. 
+  In dependency grammars things are a little more complicated, because we need to assign a head for every
+  constituent so that dependency arcs can indeed form a tree, and to make the notion of dependency arcs
+  closer to traditional views, we also need to change the root
+  node of a dependency tree and change the direction of all dependency arcs. 
 - The term **adjunct** roughly corresponds to *adverbials* in Quirk et al (1985) but strictly denotes *optional*
   ones. Obligatory adverbials are also considered as complements (see 2.8). But on the other hand, both optional
   adverbials (*adjuncts*) and obligatory adverbials (*manner, temporal, etc. complements*) are discussed in 
