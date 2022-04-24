@@ -13,7 +13,8 @@ BLT-like than generative, considering that most reference grammars don't insist 
 
 # Terms and organization of grammar
 
-The description framework is introduced in 1.4. Here is a sketch of the system: 
+The description framework is introduced in 1.4. Here is a sketch of the system (for a review about its relation
+to the generative enterprise, see Culicover 2004): 
 - The grammar is not a semantic-first one: see the "Imperfect match between syntax and semantics" in 4.5.1.
 - It's a context-free constituency grammar (without unbounded movements, etc.) with mostly binary branching, 
   but also unitary branching. This seems to be only suitable for languages analytic enough, or otherwise 
@@ -21,7 +22,7 @@ The description framework is introduced in 1.4. Here is a sketch of the system:
   Oracle bone script, for example, often involves more than 3 arguments, aligned in the form of S V O1 O2 O3,
   which can be analyzed in a binary way if we consider the *derivation tree* of vP, but the grammar for the 
   surface form is obviously not binary branching. So "describe a language in its own term" makes more sense 
-  in descriptive grammars.
+  in descriptive grammars, while still being compatible to generative ones.
 - It's mostly lexicalist. In other words, affixes are not in the tree. Since English is already analytic 
   enough, this don't deviate from generative morphosyntax traditions like Distributed Morphology. 
 
@@ -218,6 +219,8 @@ The description framework is introduced in 1.4. Here is a sketch of the system:
   sense of Quirk et al. 1985 as an "English verb conjugation table", just like [this Wikipedia page](https://en.wikipedia.org/wiki/Uses_of_English_verb_forms).
 
 # References
+
+Culicover, P. W. 2004. The Cambridge grammar of the English language. Language, 80(1), 127-141.
 
 Huddleston, Rodnry and Pullum, Geqffrry. 2002. The Cambridge Grammar of the English Language. 
 
