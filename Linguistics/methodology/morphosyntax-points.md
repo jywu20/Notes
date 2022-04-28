@@ -1,39 +1,12 @@
-# Topics in morphosyntax (and *informal* semantics)
+# Organization of grammar and terminology
 
-For a more theoretically motivated list, see [here](phenomenon.md). Aspects mentioned in this file also apply
-to sign languages, but they may have some [distinct properties](sign-language.md).
-
-## Inside a CP: The structure of clauses
-
-Inside a CP:
-- The CP layer(s)
-  - [The function of the left peripheral](#structure-and-function-of-sentences-and-clauses)
-- The TP layer(s)
-- The vP layer(s)
-  - [Argument structure](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments)
-
-## Recursion involving CP
-
-CP embedded into 
-- [a subordinate clause of a sentence](#linked-clause) TODO: "that he is mad since he got so stimulated in that event" is a clause, yet it has one linking clause attached to it. What category will Dixon put it into? A sentence, or a clause?
-
-## Semantic roles, grammatical statuses and morphological marks
-
-Generally speaking, sematic information is mapped into grammatical relations in a *lossy* way, and the morphology just roughly reflects the syntactic structure. 
-Examples include:
-- [the case of argument labels](#a-note-about-argument-labels-used-here)
-
-## Word classification and DM category labels
-
-## Constituent order
-
-Constituent order is also called *word order*, though the latter term is misleading because what we are discussing is about constituents with possible modifiers, not single words.
-
-## Clause structure and arguments
-
-TODO
-
-# Note on terminology
+Here is the organization of the following discussion:
+- we have domains and subdomains (in the sense of "vP-TP-CP domain", or "NumP projection"), which may also be called as **constructions**
+- in each domain, we have **grammatical relations**, which arises from constituent relations or c-command relations 
+  in the *derivational tree* (for details see [here](语言学中什么样的概念并不科学.md))
+- Constructions that are generated in a similar way may have uniform **transformational rules** between them; 
+  roughly we start from a **canonical** form, but there is no well-defined criterion to distinguish a 
+  canonical form. Chinese 把-constructions are often seen as non-canonical, but sentences like 他把城市管理得很好 can't be transformed to a "canonical" SVO one.
 
 It should be noted that BLT (and many other typological works) are functionalist, which means syntactic devices
 are often sorted and classified according to how they serve the semantics, and this can create some barrier to 
@@ -74,12 +47,22 @@ As we know, the distinction between syntax and morphology is often blurred: very
 Dixon may reject analyzing an argument verb as a zero-deviation of a verb into a noun, which involves invisible morphological derivation, but he accepts the analysis that an NP headed by an adjective may be seen as headed by a null noun head!
 We can definitely see some self-contradiction here.
 
+With this notion in mind, we can see that some theoretical disputations are merely differences in notation.
+Since in purely descriptive works concepts like TP are not acknowledged, we may say "the verb mark its A argument
+with the nominative case", while in generative grammar we say it's T that does the task. The two accounts can be 
+reconciled if we think of the term "verb" here as verb phrase in the sense in BLT or in other words "the predicate
+complex", which includes all functional projections governing the whole clause. Similarly, Dixon may say 
+"the verb marks the subject by the SVO order", which again makes sense even in the generative context because 
+here the term "verb" concludes the TP projection, and therefore includes the EPP feature.
+
 ## "Phrase" and "verb phrase"
 
 Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
 
-So we can see that the meaning of "phrase" is closer to "phase" in generative syntax. Whether XPs in generative syntax can be called as "phrases" is problematic in a functional perspective.
-But on the other hand, functional analysis of constituent-hood often fails to account for movements.
+So we can see that the meaning of "phrase" is closer to "phase" or to be more exact, "domain" 
+(as is in "vP domain" or "CP domain") in generative syntax. A *phrase* is made of several smaller constructions,
+since a CP domain is made of several functional projections. A flat phrase structure tree preferred by functionalists
+merely displays the hierarchy relation between *domains*.
 
 ## "Subject", "topic" and "pivot"
 
@@ -89,32 +72,48 @@ But on the other hand, functional analysis of constituent-hood often fails to ac
 
 In more descriptive terms, "topic" is a pragmatic category, while "pivot" is a grammatical category. Note that the latter is called as "topic" in generative works.
 
-## Verb's role in argument marking
+# Topics in morphosyntax (and *informal* semantics)
 
-Since in purely descriptive works concepts like TP are not acknowledged, we may say "the verb mark its A argument
-with the nominative case", while in generative grammar we say it's T that does the task. The two accounts can be 
-reconciled if we think of the term "verb" here as verb phrase in the sense in BLT or in other words "the predicate
-complex", which includes all functional projections governing the whole clause. Similarly, Dixon may say 
-"the verb marks the subject by the SVO order", which again makes sense even in the generative context because 
-here the term "verb" concludes the TP projection, and therefore includes the EPP feature.
+For a more theoretically motivated list, see [here](phenomenon.md). Aspects mentioned in this file also apply
+to sign languages, but they may have some [distinct properties](sign-language.md).
 
-## Argument label, S, O and A
+## Grammatical relations and transformation relations between them
 
-The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
-They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
-indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
-The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
-So we'd better think of these labels as phenomenological concepts. 
+Below are topics  inside a CP, or in other words, concerning the structure of clauses
+- [Classification of possible CPs](#structure-and-function-of-sentences-and-clauses)
+- The CP layer(s)
+  - [Basic notion of CPs](#structure-and-function-of-sentences-and-clauses)
+- The TP layer(s)
+  - [Non-spatial information: TAME categories](#non-spatial-settings)
+- The vP layer(s)
+  - [Canonical argument structure](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments)
+  - [Change in verb valence: passivization and more](#verb-valence-change)
+  - [Many verbs but no embedded clauses: serial verb constructions](#serial-verb-constructions)
+  - The influence of arguments to the verb
+    - [Noun incorporation](#noun-incorporation)
+    - [Argument indexation](#argument-indexation)
+- Topics that are not clearly about TP or CP
 
-The definition of these labels in active sentences is 
-- A means something with a closer meaning to "agent", 
-- while O means something with a closer meaning to "theme". 
+Inside a DP
 
-If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
+## Recursion involving CP
 
-In passive sentences, it is consistent to 
+CP embedded into 
+- [a subordinate clause of a sentence](#linked-clause) TODO: "that he is mad since he got so stimulated in that event" is a clause, yet it has one linking clause attached to it. What category will Dixon put it into? A sentence, or a clause?
 
-# Prototypical word classes
+## Semantic roles, grammatical statuses and morphological marks
+
+Generally speaking, sematic information is mapped into grammatical relations in a *lossy* way, and the morphology just roughly reflects the syntactic structure. 
+Examples include:
+- [the case of argument labels](#a-note-about-argument-labels-used-here)
+
+## Word classification and DM category labels
+
+## Constituent order
+
+Constituent order is also called *word order*, though the latter term is misleading because what we are discussing is about constituents with possible modifiers, not single words.
+
+# Prototypical lexical word classes
 
 ## Nouns
 
@@ -278,7 +277,7 @@ When there are more members:
 larger classes:
 - human propensity: clever, rude
 
-## Pro-forms
+# Pro-forms
 
 Here the word *pro-forms* takes the meaning [here](https://en.wikipedia.org/wiki/Pro-form). 
 The term *pronoun* is used differently in Basic Linguistic Theory and in this Wikipedia page.
@@ -286,7 +285,7 @@ In Basic Linguistic Theory, the term *pronoun* is used to denote *personal prono
 
 Generally speaking, pro-forms are more limited in possible modifiers. For example, in English, pronouns cannot be modified by [temporal or spacial phrases](#space-and-time).
 
-### Personal pronouns
+## Personal pronouns
 
 All languages have 1st and 2nd person pronouns. There is almost always a number distinction in a pronoun system, while it is possible that some numbers share one pronoun form (i.e. in English).
 
@@ -295,12 +294,12 @@ Soe languages have a "me and you" pronoun.
 
 It is possible that a language both have free pronouns, which are single words, and bound pronouns, which are clitics or affixes [attached to the verb](#person-and-number-marking-on-a-verb) or the end of the first constituent of the clause.
 
-### Demonstratives
+## Demonstratives
 
 A few languages have just one nominal demonstrative: "this".
 All languages seem to have at least two adverbial demonstratives, "here" and "there".
 
-### Interrogatives
+## Interrogatives
 
 Note that words belonging to "interrogatives" may have different word classes, but somehow they have shared properties (for example inducing an interrogative affix on the verb).
 
@@ -485,6 +484,22 @@ They cannot undergo certain movements, because there is a phase layer between th
 This section is about the "default" argument configuration of verbs, i.e. without any change on valence, like passivization, and typical verb clauses the predicates of which are (ordinary) verbs.
 We discuss the vP layer in this section.
 
+## Argument label, S, O and A
+
+The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
+They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
+indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
+The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
+So we'd better think of these labels as phenomenological concepts. 
+
+The definition of these labels in active sentences is 
+- A means something with a closer meaning to "agent", 
+- while O means something with a closer meaning to "theme". 
+
+If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
+
+In passive sentences, it is consistent to 
+
 ## Argument number and transitivity
 
 A clause with a verb as its predicate has some possible structures (here we only list the core arguments):
@@ -530,10 +545,11 @@ accusativity, and so on, so it really doesn't make any sense to insist a verb ar
 
 # Marking of core and peripheral arguments
 
-See BLT Sec. 3.9, [the Wikipedia page about alignment](https://en.wikipedia.org/wiki/Morphosyntactic_alignment).
+See BLT Sec. 3.9.
 
-## Prototypical marking of S, A and O
+## Prototypical marking strategies of S, A and O
 
+Marking strategies of S, A and O is also called **alignment**. See [the Wikipedia page about alignment](https://en.wikipedia.org/wiki/Morphosyntactic_alignment).
 There are several prototypical marking of core arguments based on the SAO notation. 
 Note that since there is no clear distinction between core and peripheral arguments (see the discussion 
 [here](#inner-structure-of-clauses)), what we are really doing here is classification of marking of 
@@ -617,7 +633,7 @@ It's possible some arguments are marked in the same way:
 
 # Verb valence change
 
-# Verb phrase and verb morphology
+# Verb morphology
 
 ## Person and number marking on a verb
 
@@ -627,18 +643,18 @@ This is sometimes called *argument indexing*.
 See 
 - The rise and preservation of argument indexing systems by Sebastian Collin
 
-## Serial verb constructions
+# Serial verb constructions
 
-## Noun incorporation
+# Argument indexation
+
+# Noun incorporation
 
 Sometimes an argument in the underlying argument structure becomes incorporated into the verbal word.
 Possible situations include:
 - O argument incorporated into the verb, and the clause becomes intransitive
 - the head of an O argument is incorporated, and a modifier in the [NP]<sub>O</sub> becomes the new O: "I'm house-making Subih"
 
-## Non spatial settings
-
-TODO: split vP, TP and CP layer?
+# Non spatial settings
 
 See BLT 3.15
 
@@ -698,30 +714,35 @@ while features appearing in the CP layer (for example, Mood, or generative synta
 A noun phrase can be made up by 
 - a head [noun](#nouns), or 
 - a pronoun or a demonstrative,
+- an adjective or a free relative clause
   
-and zero, one or more NP modifiers, which may be
-  - [adjectives](#adjective), which may be in comparative or superlative form, or participles TODO: infinite, participles, norminalization
-  - a cardinal or ordinal number, and/or a [quantifier](#pro-forms), and/or a [demonstrative](#pro-forms) (which may be analyzed as a subclass of adjectives in some languages, for example in English)
+and zero, one or more NP modifiers. We classify these modifiers according to the grammatical relation between 
+the head the the modifier and the inner structure of the modifier:
+  - adjectival modifiers, including
+    - [adjectives](#adjectives), which may be in comparative or superlative form, or participles TODO: infinite, participles, norminalization
+    - a [relative clause](#relative-clause)
+  - modifiers about the range of the NP, including
+    -  a cardinal or ordinal number, and/or 
+    -  a [quantifier](#pro-forms), 
+    -  and/or a [demonstrative](#pro-forms) (which may be analyzed as a subclass of adjectives in some languages, for example in English)
     - Note that a demonstrative seemingly as a modifier may actually be an apposition, like *[that one]* in
       > I like [that one], [the read dress]
   - one or more nouns, the type of which is usually limited, specifying sex, composition, purpose, etc.
-  - a [possessive phrase](#possessive-phrases)
-  - a [relative clause](#relative-clause)
+  - a [possessive phrase](#possessive-constructions)
   - an NP or PP for [time or location](#space-and-time), intended purpose, etc.
 
-## Possessive phrases
-
-## Relative clause
-
-A relative clause is a modifier in an NP. 
-
-## Demonstratives as modifiers
+It should be noted that the above grammatical relations are not necessarily compositional. 
+It's possible that an NP headed by an adjective can't be further modified, for example.
 
 # Noun morphology
 
 See BLT Sec. 3.13.
 
-## Noun compounding
+Noun morphology may record the grammatical relation within the NP (example: possessive prefix on the head noun in
+some languages), between the NP and an external construction (for example, case marking), and derivation to nouns.
+The last can also be seen as a grammatical relation within the NP, from a DM aspect.
+
+## Noun compounding in noun-to-noun derivation
 
 - gunman, gunpowder: one root modifying another
 - cry-baby: metaphoric
@@ -732,6 +753,22 @@ See BLT Sec. 3.13.
 Morphological marking of nouns may be about
 - it's [argument role](#marking-of-core-and-peripheral-arguments), usually named as [case](#marking-strategies-of-arguments)
 - 
+
+# Possessive constructions
+
+# Relative clause
+
+A relative clause is a modifier in an NP. 
+
+# NP without noun head
+
+## Free relative clause
+
+> I want [what I want]
+> 
+> I am [who I am]
+
+# Demonstratives as modifiers
 
 # Space and time
 
@@ -753,10 +790,11 @@ Both spatial and temporal information can be introduced by a word, a phrase or a
 
 BLT Sec. 3.10
 
-A complement clause is an argument in another clause.
-Some people call it both an NP and a sentence, though not all arguments are NPs and clauses themselves are not sentences.
-We *don't* name a clause describing a place or a time as a complement clause - a complement clause always represents a fact or an event.
-We should also note that the complement clause is NOT verb nominalization, though it's common that they involve similar morphological operations.
+Roughly speaking, a complement clause is an argument in another clause.
+Some people call it both an NP and a sentence, though not all arguments are NPs and clauses themselves 
+are not sentences. We *don't* name a clause describing a place or a time as a complement clause - 
+a complement clause always represents a fact or an event. We should also note that the complement 
+clause is NOT verb nominalization, though it's common that they involve similar morphological operations.
 For example, in English, we have a -ing complement clause variety:
 > John's playing the national anthem
 
@@ -764,4 +802,7 @@ and we also have a -ing nominalization construction:
 
 > John's playing of the national anthem
 
-The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
+The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, 
+and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
+
+Complement clauses should be distinguished from [*free relative clauses*](#free-relative-clause), which may also fill argument slots.
