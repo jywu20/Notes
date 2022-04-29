@@ -2,6 +2,8 @@
 
 Here is the organization of the following discussion:
 - we have domains and subdomains (in the sense of "vP-TP-CP domain", or "NumP projection"), which may also be called as **constructions**
+- A word can also be seen as a construction, since it's formed by several functional heads and/or lexical roots,
+  and can be seen as the "crystallized" phonetic realization of a domain.
 - in each domain, we have **grammatical relations**, which arises from constituent relations or c-command relations 
   in the *derivational tree* (for details see [here](语言学中什么样的概念并不科学.md))
 - Constructions that are generated in a similar way may have uniform **transformational rules** between them; 
@@ -107,11 +109,18 @@ Generally speaking, sematic information is mapped into grammatical relations in 
 Examples include:
 - [the case of argument labels](#a-note-about-argument-labels-used-here)
 
-## Word classification and DM category labels
-
 ## Constituent order
 
 Constituent order is also called *word order*, though the latter term is misleading because what we are discussing is about constituents with possible modifiers, not single words.
+
+## Distinguish constructions and word classes
+
+Working procedure:
+1. Sketchy fragmentation
+2. Identify expressions with shared *inner* constructions
+3. Check whether they can be in grammatical relations introduced in the following discussion
+4. Identify "typical" constructions and word classes
+5. 
 
 # Prototypical lexical word classes
 
@@ -139,6 +148,15 @@ The sematic type of a noun may influence TODO: hyperref
 - mass noun: *coffee*, *bread*
 - collective noun: *committee*
 - abstract noun (countable and uncountable both are OK)
+
+A list of frequent roles of nouns:
+- *prototypical*: [head an NP](#general-structure-of-noun-phrases)
+- be a [modifier](#general-structure-of-noun-phrases) of an NP about its sex, purpose, etc.
+- be [marked](#marking-strategies-of-arguments) as arguments
+- involve in [noun classification](#noun-classification)
+
+How a noun (or another construction, like a participle relative clause) behaves in these grammatical relations
+is the main criterion of subcategorization of the noun class.
 
 ## Verbs
 
@@ -331,7 +349,7 @@ concatenative morphology can be said as *morphemes*.
   The phonological-morphological process involved is the same between the two dialects, but if we claim that a case marker after an NP *must* be a clitic, then we have to make the strange claim that the same morphological process results in a clitic in one dialect and an affix in another.
 
   Compounding may have following functions
-  - [noun compound](#noun-compounding), as a mean of derivation
+  - [noun compound as a mean of derivation](#noun-compounding)
   - [serial verb construction](#serial-verb-constructions) 
   - [noun incorporation](#noun-incorporation)
 
@@ -486,19 +504,41 @@ We discuss the vP layer in this section.
 
 ## Argument label, S, O and A
 
-The labels S, O, A, etc. used here are coarse-grained and are not simple aliases of generative concepts. 
-They are coarse-grained so that they can immediately influence syntax, but they themselves do not directly 
-indicate any surface syntactic structure. O may behave like SpecTP in an ergative language (disagreement between syntax and semantics, and maybe morphology and semantics as well), or just morphologically marked like S (disagreement between semantics and morphology).
-The definition of these labels, however, are related to the syntactic derivation of a sentence. (See the discussion around Sec. 3.3 (6-7) of BLT)
-So we'd better think of these labels as phenomenological concepts. 
-
+The labels S, O, A, etc. used here are defined in a "prototypical way" according to *semantics* (but they are syntactic categories), 
+as coarse-grained concepts that captures a set of grammatical features that occur together.  
 The definition of these labels in active sentences is 
 - A means something with a closer meaning to "agent", 
 - while O means something with a closer meaning to "theme". 
+ 
+If we believe ergativity (and other non-accusative alignments) only comes from a different construction of the TP and CP layers and the inner light 
+verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the
+"external" argument (SpecvP) when there are two core argument being present and O being the internal one, 
+and S marking the argument when there is only one. But this doesn't hold for passive sentences and other valence changing constructions. In passive 
+sentences, it is convenient to talk about the "surface S" which is the underlying O. No one would think 
+of the surface S as the agent in any sense. Similar to the [case in ergativity](../argument-structure/配列.md#混合中枢), it may be a good idea to distinguish "deep" and "surface" S, A and O:
+- S, A and O may be defined according to "deeper" dependency relations in the vP layer, which are connected to
+  properties like binding. This definition also works for core arguments in the clause with valence changing, 
+  but it doesn't work for peripheral arguments in the clause. For example, with this definition, we know the 
+  subject in a passive clause is the *deep* O, but under this definition there is *no* deep A here. 
+- S, A and O may be defined according to grammatical relations associated to "deep" S, A and O built in 
+  the TP-CP layer. This definition covers 
 
-If we believe ergativity only comes from a different strategy to promote an argument to SpecTP and the inner light verb shell is the same, then the S, O, A labels are just aliases of specifiers of light verbs, with A being the "external" argument (SpecvP) when there are two core argument being present and O being the internal one, and S marking the argument when there is only one. 
+  Note that we don't specify *what* TP-CP grammatical relations are involved in this definition. 
+  O be promoted to SpecTP in an ergative language,
+  which creates syntactic and probably morphological marking of ergativity, or it may be just morphologically 
+  marked like S, but since the case assignment is about the whole TP domain, this morphological ergativity
+  is also done in the TP layer. So,
+  - in the former case, being the surface A means being unable to be promoted to SpecTP, 
+  - while in the latter case, being the surface A only means being morphologically assign a case
+   
+  The question about what defines a surface S, A or O relation should be answered in the language's own term.
 
-In passive sentences, it is consistent to 
+Neither the 
+
+A single term like "S" or "A" without the context being specified is value and is not a simple alias of generative
+concepts, though in any contexts the definition of these label can be related to certain steps of the syntactic
+derivation process. (See the discussion around Sec. 3.3 (6-7) of BLT)
+So we'd better think of these labels as phenomenological concepts.  
 
 ## Argument number and transitivity
 
@@ -510,7 +550,7 @@ A clause with a verb as its predicate has some possible structures (here we only
 - intransitive, where there is 
   - an **intransitive** predicate
   - an intransitive subject labeled as S
-- extended transitive, sometimes called [ditransitive](https://en.wikipedia.org/wiki/Ditransitive_verb), where there is 
+- extended transitive, sometimes called [**ditransitive**](https://en.wikipedia.org/wiki/Ditransitive_verb), where there is 
   - a extended transitive predicate
   - a transitive subject labeled as A
   - a transitive direct object labeled as O
@@ -596,7 +636,7 @@ so it tends to be marked in the ergative way.
 ## Marking strategies of arguments 
 
 - Marking on the NP
-  - by case affixes or clitics, 
+  - by [case affixes or clitics](#argument-marking-on-the-noun), 
     - on the last word of an NP, or
     - on the first word, or
     - on the head, or 
@@ -709,6 +749,10 @@ In this section we discuss features that may appear in the TP layer, also called
 In Dixon's terms, features appearing in the TP layer are called "categories associated with the clause", 
 while features appearing in the CP layer (for example, Mood, or generative syntax's Force) are called "categories associated with the sentence".
 
+# Finite and non-finite clauses
+
+BLT 2.5 warns about the ambiguity of the term *finite* and *infinite*. 
+
 # General structure of noun phrases
 
 A noun phrase can be made up by 
@@ -718,7 +762,7 @@ A noun phrase can be made up by
   
 and zero, one or more NP modifiers. We classify these modifiers according to the grammatical relation between 
 the head the the modifier and the inner structure of the modifier:
-  - adjectival modifiers, including
+  - attributive modifiers, including
     - [adjectives](#adjectives), which may be in comparative or superlative form, or participles TODO: infinite, participles, norminalization
     - a [relative clause](#relative-clause)
   - modifiers about the range of the NP, including
@@ -733,6 +777,11 @@ the head the the modifier and the inner structure of the modifier:
 
 It should be noted that the above grammatical relations are not necessarily compositional. 
 It's possible that an NP headed by an adjective can't be further modified, for example.
+It should also be noted that the above classification of grammatical relations are *functional* and for each 
+function there is by no means only one construction. Attributive constituents in a NP in English may appear
+in front of the head noun or behind the head noun. Only adjectives may fill the former position, and there can 
+be several adjectives, while certain adjectives (often those with prepositional phrase complements) and 
+relative clauses may fill the latter position. 
 
 # Noun morphology
 
@@ -753,6 +802,10 @@ The last can also be seen as a grammatical relation within the NP, from a DM asp
 Morphological marking of nouns may be about
 - it's [argument role](#marking-of-core-and-peripheral-arguments), usually named as [case](#marking-strategies-of-arguments)
 - 
+
+## Genders and classes
+
+# Noun classification
 
 # Possessive constructions
 
