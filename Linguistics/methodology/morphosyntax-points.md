@@ -1,7 +1,13 @@
 # Organization of grammar and terminology
 
 Here is the organization of the following discussion:
-- we have domains and subdomains (in the sense of "vP-TP-CP domain", or "NumP projection"), which may also be called as **constructions**
+- we have domains and subdomains (in the sense of "vP-TP-CP domain or layer", or "NumP projection"), 
+  which may also be called as **constructions** or **grammatical systems**
+
+  Words in one layer (for example, the so-called "predicate", or things in the clause except the arguments, or an NP) 
+  are often said to be "unbranchable", because too many things happen in a single layer:
+  there may be movements like Cinque 2005, there may be prosody segmentation (which is so strong that it 
+  strongly affects native speakers' intuition of phrase segmentation), etc. 
 - A word can also be seen as a construction, since it's formed by several functional heads and/or lexical roots,
   and can be seen as the "crystallized" phonetic realization of a domain.
 - in each domain, we have **grammatical relations**, which arises from constituent relations or c-command relations 
@@ -9,6 +15,56 @@ Here is the organization of the following discussion:
 - Constructions that are generated in a similar way may have uniform **transformational rules** between them; 
   roughly we start from a **canonical** form, but there is no well-defined criterion to distinguish a 
   canonical form. Chinese 把-constructions are often seen as non-canonical, but sentences like 他把城市管理得很好 can't be transformed to a "canonical" SVO one.
+- Multiple analysis of the same construction are possible, and sometimes it's just a matter of notation. 
+  Let's consider the simplest example: English SVO clauses, both active and passive. We can describe them using 
+  the following one-step production rules:
+  > An active clause consists of a subject, a predicate complex, which includes auxiliary verbs and the main verb,
+  > and an object, and adjuncts; adjuncts typically appear at the end of the clause, but it's also possible for
+  > them to appear in front of the predicate complex. There is subject-verb agreement ...
+  > 
+  > A passive clause consists of a subject, which is the patient of the main verb, a predicate complex the 
+  > main verb of which is *be* ...
+
+  Now as is shown [here](语言学中什么样的概念并不科学.md), the predicate complex is just the TP layer minus all
+  DP layers in it (or in other words, the "pure" TP layer), we can decompose the predicate by binary branching.
+  This can also be seen as breaking a large construction into smaller ones: here, we break the clause construction
+  into the argument structure, the aspect marking, the tense marking, the adjunct modifying construction, 
+  and the concept of subject, which involves subject-verb agreement.
+
+  We can also treat the passive clause as transformed from the active one. By introducing a transformation
+  rule, we can relate two constructions with related derivation processes.
+
+  We can even treat the optional adjuncts as something added by a transformation process. Embedding a construction
+  into another may cause transformation into the former. When the transformation is not severe, it can be 
+  described by a production rule, and when it's severe, it would better be analyzed as transformation.
+  When describing the SVO clause, we can first describe the simplest clause with S, V and O only, and 
+  describe a clause with adjuncts by a specific "manner-adjoining" transformation.
+  Here we are simply rephrasing 
+  > Clause → S V O
+  > Clause → S V O Adjunct
+
+  into 
+  > Clause → S V O
+  > Clause → adding adjuncts to a clause
+
+  An adjunct position in a clause template, a manner-adjoining transformation rule, and a manner-modifying 
+  construction are all about the same thing.
+
+  Similarly, auxiliary verbs can also be introduced by transformation rules.
+
+  Another usage of transformation rules is to introduce local operations, like agreement.
+
+- Existence and non-existence of certain type of constructions are called **typological parameters**. 
+  A language has SVO clauses but not unmarked SOV clauses, so the *word order parameter* (which actually is clause 
+  constituent order parameter) is well-defined for it and we say it's a SVO language. 
+  A language with free clause constituent order doesn't have a well-defined word order parameter, but 
+  the *free word order parameter* is well-defined for it and we say it has free word order.
+  Correlations between logically independent typological parameters are called **typological universals**.
+- It's often the case that two elements with a certain grammatical relation are of limited choice. 
+  In this case we say there are dependencies between grammatical systems.
+  Usually only nouns can fill argument slots; some aspects and tensors may not be available under negation;
+  in some languages, no evidentiality specifications are not available in future tense.
+
 
 It should be noted that BLT (and many other typological works) are functionalist, which means syntactic devices
 are often sorted and classified according to how they serve the semantics, and this can create some barrier to 
@@ -89,7 +145,7 @@ Below are topics  inside a CP, or in other words, concerning the structure of cl
   - [Non-spatial information: TAME categories](#non-spatial-settings)
 - The vP layer(s)
   - [Canonical argument structure](#typical-verb-clauses-the-corresponding-verb-types-and-the-core-arguments)
-  - [Change in verb valence: passivization and more](#verb-valence-change)
+  - [Change in verb valency: passivization and more](#verb-valence-change)
   - [Many verbs but no embedded clauses: serial verb constructions](#serial-verb-constructions)
   - The influence of arguments to the verb
     - [Noun incorporation](#noun-incorporation)
@@ -117,10 +173,17 @@ Constituent order is also called *word order*, though the latter term is mislead
 
 Working procedure:
 1. Sketchy fragmentation
-2. Identify expressions with shared *inner* constructions
+2. Identify some expressions with shared *inner* constructions
 3. Check whether they can be in grammatical relations introduced in the following discussion
 4. Identify "typical" constructions and word classes
-5. 
+5. Compare words the categories of which are not clear with the behavior of typical nouns and verbs.
+   (It may seem "scientific" to list all grammatical relations in a language and then check the distribution of 
+   each words in them, but this is too time-consuming - organizing grammatical relations around typical
+  constructions is much more efficient)
+
+  For example, we can compare how "noun-like" the adjectives are or how "noun-like" or "verb-like" the participles
+  are.
+6. Give detailed cartography of large constructions, like NP or the clause structure
 
 # Prototypical lexical word classes
 
@@ -385,7 +448,7 @@ The method to show morphology in a table is called the word-and-paradigm model, 
 A morpheme mau have several alternative forms, called "allomorphs".
 Again, for languages in which non-affixation processes are frequent and/or fusion is strong (as is the case in Latin: a noun inflection suffix should be analyzed as one or three morphemes?), we can't use these terms and should work with a more general "item-and-process" approach.
 
-Derivations 
+# Derivations 
 
 # Structure and function of sentences and clauses
 
@@ -400,8 +463,8 @@ A sentence is made by
 The syntactic role of a clause may be
 - The **main clause** in a sentence, a clause which on its own makes up a sentence. Categories about a sentence, if grammatically marked, is usually marked on the main clause. 
 - Embedded clause which looks like adjectives or nouns in some aspects
-  - [**Relative clause**](#relative-clause)
-  - [Complement clause](#complement-clause)
+  - [**Relative clause**](#relative-clause) can be seen as 
+  - [**Complement clause**](#complement-clause)
 - Linked clause which are after conjunctions like ", and ..." in English.
   - [Temporal clause](#temporal-clause)
     - Likely a universal construction.
@@ -520,8 +583,10 @@ of the surface S as the agent in any sense. Similar to the [case in ergativity](
   properties like binding. This definition also works for core arguments in the clause with valence changing, 
   but it doesn't work for peripheral arguments in the clause. For example, with this definition, we know the 
   subject in a passive clause is the *deep* O, but under this definition there is *no* deep A here. 
+- Another way to define deep S, A, and O may be transformation relations: the deep S, O and A arguments 
+  of a clause is the S, O and A arguments in the canonical form of the clause.
 - S, A and O may be defined according to grammatical relations associated to "deep" S, A and O built in 
-  the TP-CP layer. This definition covers 
+  the TP-CP layer. By definition, surface and deep S, A and O coincide. Valence changing 
 
   Note that we don't specify *what* TP-CP grammatical relations are involved in this definition. 
   O be promoted to SpecTP in an ergative language,
@@ -533,7 +598,12 @@ of the surface S as the agent in any sense. Similar to the [case in ergativity](
    
   The question about what defines a surface S, A or O relation should be answered in the language's own term.
 
-Neither the 
+Neither the deep definition nor the surface definition says anything deterministic about how the arguments 
+interact with external constructions. So we have the following logically independent (macro)parameters:
+- allowed types of valence change 
+- in-clause grammatical relations marking the surface S, A and O, which define parameters like morphological/syntactic ergativity
+- how surface S, A and O interact with external constructions, e.g. which one can be relativized, which one 
+  can have coreference with external pronouns, etc. 
 
 A single term like "S" or "A" without the context being specified is value and is not a simple alias of generative
 concepts, though in any contexts the definition of these label can be related to certain steps of the syntactic
@@ -594,15 +664,20 @@ There are several prototypical marking of core arguments based on the SAO notati
 Note that since there is no clear distinction between core and peripheral arguments (see the discussion 
 [here](#inner-structure-of-clauses)), what we are really doing here is classification of marking of 
 S, A and O arguments. The list is
-- [Accusative marking](#accusative-marking): S=A, O
-- [Ergative marking](#ergative-marking): S=O, A
-- [Tripartite](#tripartite-marking): S, A, O are all different
-- [Direct](#direct-marking): no difference between S, A and O
-- [Transitive](#transitive-argument-marking): A=O, S, i.e. the arguments of a transitive clause are marked the same, and different from the argument of an intransitive clause
+- [**Accusative marking**](#accusative-marking): S=A, O
+- [**Ergative marking**](#ergative-marking): S=O, A
+- [**Tripartite**](#tripartite-marking): S, A, O are all different
+- [**Direct**](#direct-marking): no difference between S, A and O
+- [**Transitive**](#transitive-argument-marking): A=O, S, i.e. the arguments of a transitive clause are marked the same, and different from the argument of an intransitive clause
 
 It's also possible that S is split into several subcategories:
-- [Split S](#active–stative-alignment)
-- [Fluid S]
+- [**Split S**](#active–stative-alignment): For some verbs, S and A are marked in the same way (so we call the S Sa 
+  in this case), while for others, S and O are marked in the same way (and S is now called So). Sa is often 
+  called as **active**, while So is often called as **stative**.
+- [Fluid S]: for some verbs, we have a system similar to a split S system, while for other verbs, 
+  S can be marked as either A or O, to convey active or stative meanings.
+
+The distribution can be found in [WALS](https://wals.info/chapter/100).
 
 ## Mixture of accusative and ergative marking and the nominal hierarchy
 
@@ -673,12 +748,16 @@ It's possible some arguments are marked in the same way:
 
 # Verb valence change
 
+BLT 3.20
+
+
+
 # Verb morphology
 
 ## Person and number marking on a verb
 
-There may be person and number marking on the verb which [contains information about the core arguments](#marking-strategies-of-arguments).
-This is sometimes called *argument indexing*.
+There may be person and number marking on the verb which contains information about 
+[the core arguments](#marking-strategies-of-arguments). This is sometimes called [argument indexing](#argument-indexation).
 
 See 
 - The rise and preservation of argument indexing systems by Sebastian Collin
@@ -686,6 +765,10 @@ See
 # Serial verb constructions
 
 # Argument indexation
+
+# Direct-inverse system
+
+Empathy hierarchy
 
 # Noun incorporation
 
@@ -711,7 +794,8 @@ A copula clause contains
 - a copula complement labeled as CC, which may be an identity of the subject, an attribution, or a location
 
 CS can be realized like an S, but in some case (e.g. Ainu), it can be realized as similar to A and different from S.
-The behavior of CC generally is different from other arguments (for example, no bound pronouns can be an CC in known languages).
+The behavior of CC generally is different from other arguments (for example, no bound pronouns can be an CC 
+in known languages).
 
 Sometimes the copula can be omitted. 
 
@@ -857,5 +941,13 @@ and we also have a -ing nominalization construction:
 
 The -ing complement clause can only be modified by an adverb and can have auxiliaries like *have* and *be*, 
 and the -ing nominalization can only be modified by an adjective and can't have auxiliaries.
+This is an example of the difference between a complement clause and a genuine NP.
 
 Complement clauses should be distinguished from [*free relative clauses*](#free-relative-clause), which may also fill argument slots.
+
+In many languages, complement clauses and content clauses in non-argument positions have exactly the same 
+construction, and therefore it's tempting to analyze them as [the same type of clause](http://itre.cis.upenn.edu/~myl/languagelog/archives/001317.html).
+
+# References
+
+Cinque, G. (2005). Deriving Greenberg's Universal 20 and its exceptions. Linguistic inquiry, 36(3), 315-332.

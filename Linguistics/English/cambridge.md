@@ -218,6 +218,8 @@ to the generative enterprise, see Culicover 2004):
   syntax into the word paradigm. For example, we can summarize the possible values of a verb phrase in the 
   sense of Quirk et al. 1985 as an "English verb conjugation table", just like [this Wikipedia page](https://en.wikipedia.org/wiki/Uses_of_English_verb_forms).
 
+# The noun phrase
+
 # References
 
 Culicover, P. W. 2004. The Cambridge grammar of the English language. Language, 80(1), 127-141.
