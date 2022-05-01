@@ -76,7 +76,12 @@ Here is the organization of the following discussion:
   In this case we say there are dependencies between grammatical systems.
   Usually only nouns can fill argument slots; some aspects and tensors may not be available under negation;
   in some languages, no evidentiality specifications are not available in future tense.
-
+- The descriptive framework presented here involves multiple mechanisms, which can be reduced to the standard 
+  Merge-based Minimalist syntax without losing its explanatory scope (Adger 2021). The reason we introduce 
+  so many notations is to simply the *descriptive* burden: derivational syntax proves to be non handy when 
+  doing a sketch of a language (but once a derivational syntax is established, it can lead us to investigate 
+  aspects of syntax we have never thought of). Some linguists like Croft call this descriptive framework
+  construction grammar. For perspectives on this issue, see Trotzke 2020.
 
 It should be noted that BLT (and many other typological works) are functionalist, which means syntactic devices
 are often sorted and classified according to how they serve the semantics, and this can create some barrier to 
@@ -994,6 +999,10 @@ construction, and therefore it's tempting to analyze them as [the same type of c
 
 # References
 
+Adger, D. (2021). On doing theoretical linguistics. Theoretical Linguistics, 47(1-2), 33-45.
+
 Cinque, G. (2005). Deriving Greenberg's Universal 20 and its exceptions. Linguistic inquiry, 36(3), 315-332.
 
 Haider, H. 2021 "OVS"–A misnomer for SVO languages with ergative alignment. https://ling.auf.net/lingbuzz/005680
+
+Trotzke, A. (2020). Constructions in Minimalism: A Functional Perspective on Cyclicity. Frontiers in Psychology, 2152.

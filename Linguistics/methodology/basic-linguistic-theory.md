@@ -1,6 +1,8 @@
 Dixon的Basic Linguistic Theory reading notes
 ======
 
+For existing reviews, see van den Berg 2010.
+
 # Book1, Chapter 1
 
 ## 1.3
@@ -327,6 +329,8 @@ category". In well-written grammars, Jacques 2021 just [lists possible adverbs](
 in chapters describing environments where they occur. A [similar approach](../English/CGEL.md#terms-and-definitions) is taken by CEGL (Quirk et al 1985). Their role is just like verb affixes. 
 
 # References
+
+van den Berg, René. (2010). Dixon, R.M.W. 2010. Basic Linguistic Theory. Volume 1. Methodology. Studies in Language. 34. 10.1075/sl.34.3.13van. 
 
 Jacques, Guillaume. 2021. A grammar of Japhug. (Comprehensive Grammar Library 1). Berlin: Language Science Press. DOI: 10.5281/zenodo.4548232
 
