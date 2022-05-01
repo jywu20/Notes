@@ -52,7 +52,19 @@ Here is the organization of the following discussion:
 
   Similarly, auxiliary verbs can also be introduced by transformation rules.
 
-  Another usage of transformation rules is to introduce local operations, like agreement.
+  Besides relating two correlated structures and the operation of embedding one construction into another, 
+  another usage of transformation rules is to introduce local operations, like agreement.
+
+  These roles of transformation rules are interrelated. If the derivation processes of two structures involve
+  similar stages, they are related by a transformation rule.
+  On the other hand, if construction C2 is made by embedding construction C1 into another construction ΔC,
+  we may regard C2 and C1 to undergo the same stages of derivation that create C1, and then undergo 
+  ΔC and a "null" version of ΔC, respectively. So we can also say that C2 and C1 are two structures with 
+  similar derivation stages at some time steps.
+  So the transformation rules invoked when embedding one construction into another can also be seen as 
+  the transformation rules used to related a canonical construction and its non-canonical peers.
+  As for the morphological transformation rules, they are frequently invoked in the above two kinds of 
+  transformation rules.
 
 - Existence and non-existence of certain type of constructions are called **typological parameters**. 
   A language has SVO clauses but not unmarked SOV clauses, so the *word order parameter* (which actually is clause 
@@ -584,31 +596,63 @@ of the surface S as the agent in any sense. Similar to the [case in ergativity](
   but it doesn't work for peripheral arguments in the clause. For example, with this definition, we know the 
   subject in a passive clause is the *deep* O, but under this definition there is *no* deep A here. 
 - Another way to define deep S, A, and O may be transformation relations: the deep S, O and A arguments 
-  of a clause is the S, O and A arguments in the canonical form of the clause.
-- S, A and O may be defined according to grammatical relations associated to "deep" S, A and O built in 
-  the TP-CP layer. By definition, surface and deep S, A and O coincide. Valence changing 
+  of a clause is the S, O and A arguments in the *canonical form* of the clause.
 
-  Note that we don't specify *what* TP-CP grammatical relations are involved in this definition. 
-  O be promoted to SpecTP in an ergative language,
+  For example, in English passivization construction *he was arrested*, the deep A is not specified and the 
+  deep O is *he*. The canonical form of this clause is *Someone arrested him*, where *him* (i.e. *he*) is 
+  O, so in the passive clause, the deep argument position of *he* should be O as well.
+- Contrary to the *deep* definition, the *surface* S, A and O are defined by there similarity to "deep" S, A 
+  and O in a "canonical" clause. By definition, surface and deep S, A and O coincide. Valence changing  
+  doesn't change the deep S, A and O, but it changes the surface ones. Again, consider the example of 
+  *he was arrested*. Here *he* is the *deep* O, but since in the passive clause it's marked similar to the 
+  active S, we say its *surface* role is S.
+
+  Note that we don't specify *what* grammatical relations are involved in the definition of surface argument
+  slots. What we just say is "what overt marking strategies that define the surface S, A and O in a canonical
+  construction also define the same argument slots in a non-canonical construction". The question about 
+  what defines a surface S, A or O relation should be answered in the language's own term.
+
+  Let's consider an example. O may be promoted to SpecTP in an ergative language,
   which creates syntactic and probably morphological marking of ergativity, or it may be just morphologically 
   marked like S, but since the case assignment is about the whole TP domain, this morphological ergativity
   is also done in the TP layer. So,
   - in the former case, being the surface A means being unable to be promoted to SpecTP, 
   - while in the latter case, being the surface A only means being morphologically assign a case
-   
-  The question about what defines a surface S, A or O relation should be answered in the language's own term.
-
-Neither the deep definition nor the surface definition says anything deterministic about how the arguments 
-interact with external constructions. So we have the following logically independent (macro)parameters:
-- allowed types of valence change 
-- in-clause grammatical relations marking the surface S, A and O, which define parameters like morphological/syntactic ergativity
-- how surface S, A and O interact with external constructions, e.g. which one can be relativized, which one 
-  can have coreference with external pronouns, etc. 
 
 A single term like "S" or "A" without the context being specified is value and is not a simple alias of generative
 concepts, though in any contexts the definition of these label can be related to certain steps of the syntactic
 derivation process. (See the discussion around Sec. 3.3 (6-7) of BLT)
-So we'd better think of these labels as phenomenological concepts.  
+So we'd better think of these labels as phenomenological concepts. 
+
+Neither the deep definition nor the surface definition says anything deterministic about how the arguments 
+interact with external constructions. So we have the following logically independent (macro)parameters:
+- allowed types of valence change, i.e. how deep and surface S, A and O are interconnected
+- in-clause grammatical relations marking the surface S, A and O, which define parameters like morphological/syntactic ergativity
+- how surface S, A and O interact with external constructions, e.g. which one can be relativized, which one 
+  can have coreference with external pronouns, etc. In other words, among S, A, and O, which one is the *subject*, etc.
+
+Deep S, A and O are solely defined with vP-level grammatical relations. The notions of subject and clause 
+constituent order are TP-level or even CP-level grammatical relations.
+A word order typology with parameters defined according to the *relative order* (a feature influenced strongly 
+by the TP layer, though also reflecting something about the vP layer) of clause constituents and *deep* 
+(or even worse, purely semantic and not syntactic) definition of 
+argument slots (a feature about the vP layer) is likely to fail for ergative languages, 
+where even in the canonical clause, the mapping from vP grammatical relations 
+to TP ones is complicated (Haider 2021).
+
+We should also remark that though the deep definitions of S, A and O are largely independent on the definition 
+of clause-level grammatical relations, this is not the case for the surface definitions. 
+There is no intermediate level between the vP grammatical relations that define the deep S, A and O and the 
+TP grammatical relations that define what's the clause subject, so the notion of *surface* S, A and O 
+is based on the *same* set of grammatical relations that define the clause subject, clause constituent order, etc.
+What can be easily identified is the deep S, A and O (by binding, serial verb construction, etc., and also largely
+by semantic intuition - though without knowing the cultural background, mistakes can be done here - consider the 
+example of English Jack marries Marry and Marry marries Jack and the Chinese *她爸妈*把她嫁给了他, where an 
+asymmetry arises between 娶 and 嫁 and for 嫁 the family of the bride is the agent) and the clause-level 
+argument slots like the subject (by checking the interpretation scope, distribution in non-finite clauses, etc.)
+So what we are actually doing here is to *first* investigate deep S, A and O, and clause-level constructions, 
+and then to *define* surface S, A and O, and finally to determine whether a seemingly non-canonical construction 
+is *really* a valence changing construction or something else.
 
 ## Argument number and transitivity
 
@@ -951,3 +995,5 @@ construction, and therefore it's tempting to analyze them as [the same type of c
 # References
 
 Cinque, G. (2005). Deriving Greenberg's Universal 20 and its exceptions. Linguistic inquiry, 36(3), 315-332.
+
+Haider, H. 2021 "OVS"–A misnomer for SVO languages with ergative alignment. https://ling.auf.net/lingbuzz/005680
