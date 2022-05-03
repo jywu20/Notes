@@ -11,3 +11,7 @@ their positions in the world.
 
 [Pangloss](https://pangloss.cnrs.fr/?lang=en) is another open archive for endangered languages. 
 Each corpus item [has its own DOI](https://pangloss.cnrs.fr/corpus/Beijing_Mandarin?lang=en).
+
+# Romance 
+
+Italian immigrants to North and South America with their "dialects": https://microcontact.sites.uu.nl/

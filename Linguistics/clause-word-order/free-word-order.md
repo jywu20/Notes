@@ -33,6 +33,8 @@ http://www.unice.fr/scheer/egg/BLuka18/EggScrambledDay5.pdf
 
 Imamura 2015 is a good example of combination of corpus-based and Givonian approach to pragmatics and Minimalist and Cartographic approach to the underlying syntactic structure.
 
+# Correlation between scrambling and SOV
+
 # References
 
 Mirrors and Microparameters: Phrase Structure Beyond Free Word Order David Adger， Daniel Harbour， Laurel J. Watkins
