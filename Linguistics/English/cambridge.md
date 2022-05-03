@@ -10,6 +10,8 @@ I'm quite struggling with Quirk et al (1985) for several reasons.
 The Cambridge Grammar of English Language (Huddleston and Pullum 2002, henceforth CGEL) seems more appropriate 
 for people like me. My personal idea is the latter is more "generative" and "BLT-like" - actually less 
 BLT-like than generative, considering that most reference grammars don't insist on binary tree diagrams. 
+The authors are closely associated with generative research (see, for example, Pullum 2009), so probably 
+this is not surprising.
 
 # Terms and organization of grammar
 
@@ -197,10 +199,6 @@ to the generative enterprise, see Culicover 2004):
   constituent so that dependency arcs can indeed form a tree, and to make the notion of dependency arcs
   closer to traditional views, we also need to change the root
   node of a dependency tree and change the direction of all dependency arcs. 
-- The term **adjunct** roughly corresponds to *adverbials* in Quirk et al (1985) but strictly denotes *optional*
-  ones. Obligatory adverbials are also considered as complements (see 2.8). But on the other hand, both optional
-  adverbials (*adjuncts*) and obligatory adverbials (*manner, temporal, etc. complements*) are discussed in 
-  Chapter 8. For example, 8.2.1 contains a section about "Manner complements". 
 - **Canonical form** See 2.2. In modern Minimalist syntax, the notion of "canonical" word order no longer makes 
  sense because the  syntactic trees are *derivational*: non-canonical sentences are *not* transformed 
  from canonical sentences. Instead, all sentences are built from features in a cyclic-successive way. 
@@ -217,8 +215,80 @@ to the generative enterprise, see Culicover 2004):
   without any analysis of intermediate stages. Both are good phenomenological models. We can even put some
   syntax into the word paradigm. For example, we can summarize the possible values of a verb phrase in the 
   sense of Quirk et al. 1985 as an "English verb conjugation table", just like [this Wikipedia page](https://en.wikipedia.org/wiki/Uses_of_English_verb_forms).
+- Dependents of a constituent have two prominent subclasses: **complements** and **modifiers**.
+  The term **adjunct** roughly corresponds to *adverbials* in Quirk et al (1985) but strictly denotes *optional*
+  ones. Obligatory adverbials are also considered as complements (see 2.8). But on the other hand, both optional
+  adverbials (*adjuncts*) and obligatory adverbials (*manner, temporal, etc. complements*) are discussed in 
+  Chapter 8. For example, 8.2.1 contains a section about "Manner complements". Adjuncts can also be defined 
+  as *clause modifiers*, a subset of modifiers. 
+
+  Whether *complements of NPs*, *complements of PPs* and *complements of clauses* can be considered as
+  the same thing is of course not a problem that can be answered by the descriptive framework above. 
+  The original notion of X-bar theory roughly corresponds to this segmentation of phrases, where 
+  modifiers are called as *adjuncts* in X-bar theory. Note, however, that the locality of morphological 
+  fusion - and the spellout of the lexical root and its nearest functional head, hence a major way 
+  of subcategorization (e.g. transitive verbs can only spell out with Trans heads) - means obliged 
+  dependents of a head (in the sense of CGEL, not generative syntax) are usually in inner positions,
+  so at least some distinction between complements and modifiers can be established.
+- The term **category** roughly means a type of constructions. The authors define *lexical* and *phrasal* 
+  categories, agreeing with DM-based observations that there is no definite distinction between a word and 
+  a phrase and a phrase and a clause. Here is a list of categories recognized in English: (see 1.4.2.2 [4] and [5])
+  - noun
+  - verb
+  - adjective
+  - adverb
+  - preposition
+  - determinative
+  - subordinator
+  - coordinator
+  - interjection
+  - clause
+  - verb phrase
+  - noun phrase
+  - nominal
+  - adjective phrase
+  - adverb phrase
+  - preposition phrase
+  - determinative phrase
+- The **structure** of a construction is its inner structure; the **function** of a construction is its distribution
+  in larger constructions. Note that the term *function* doesn't necessarily have semantic or pragmatic meanings. 
 
 # The noun phrase
+
+## NP function, or distribution of NPs
+
+An NP, when in an appropriate case form, can fill complement slots in the clause structure.
+This is the **prototypical function of NPs**. (See 5.1 [1])
+
+## NP structure
+
+- An NP is made of zero or more **external modifiers**, including **predeterminer modifiers** and **peripheral modifiers**, and a **core NP**.
+- A core NP is made of zero or one **determiner** and a **nominal**.
+- A nominal is made of 
+  - zero or more **internal dependents** (**modifiers** and **complements**), and a minimal nominal - the head noun, or in the case of head-modifier, head-determiner, head-predeterminer fusion, some internal dependent
+
+Note that the so-called external modifiers may not be purely "optional": consider the NP *three times the amount*,
+where *three times* is a predeterminer modifier, but removing it gives a rather different interpretation of the NP.
+
+The difference between NP complements and modifiers can be found in 5.14.1. We can see the complements of the
+nominal form of a verb as is defined in this chapter has clear correspondence with the complements of the verb, 
+so it's a good idea to call both "complements". Since the complements of the nominal form of a verb and nouns 
+without corresponding verbs work in the same way, calling both the NP complement and the clause complement 
+"complement" is justified. 
+
+Nominals themselves may appear as modifiers, as is in *the \[apple](\*apples) tree*.
+
+## Noun classification according to the distribution in NPs
+
+By their ability to take dependents and inflectional properties (internal structure of words), 
+nouns can be classified as (5.2 [1])
+- common nouns
+- proper nouns, TODO: what dependents they take
+- pronouns, which 
+
+Note that proper names may have common nouns as heads (*The Open University*), and 
+
+## Fusion constructions
 
 # References
 
@@ -231,6 +301,8 @@ Michaelis, J. 1998. Derivational minimalism is mildly context–sensitive. In In
 Nilsson, Jens & Nivre, Joakim. 2008. Dependency Parsing by Transformation and Combination. 348-359. 10.1007/978-3-540-85287-2_33. 
 
 Pullum, G. K., & Rogers, J. 2008. Expressive power of the syntactic theory implicit in the cambridge grammar of the english language. In annual meeting of the Linguistics Assocition of Great Britain, University of Essex.
+
+Pullum, G. K. 2009. Computational linguistics and generative linguistics: The triumph of hope over experience. In Proceedings of the EACL 2009 Workshop on the Interaction between Linguistics and Computational Linguistics: Virtuous, Vicious or Vacuous? (pp. 12-21).
 
 Quirk, Randolph, Sidney Greenbaum, Geoffrey Leech, & Jan Svartvik. A Comprehensive Grammar of the English Language, Longman, 1985.
 

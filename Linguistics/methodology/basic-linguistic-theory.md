@@ -112,8 +112,9 @@ The term *ergative verb* is not a good one. Compare the behavior of an "ergative
 > He closes the door.
 
 and the case in an ergative language (e.g. Sec. 3.2, (8) and (10)), we can see that in a truly ergative language, the position of O is exactly the same as S, while even in a clause with an "ergative" verb in an accusative language, the position of O is not the same as S.
-Therefore, beside the argument structure of the central verb, there must be something else that is different between an nominative/accusative language and an ergative language.
-Thus the term *ergative verb* is unnecessary and misleading. 
+Therefore, beside the argument structure of the central verb, there must be something *else* that is different between an nominative/accusative language and an ergative language.
+Thus the term *ergative verb* is unnecessary and misleading. See Aldridge 2015 for an example of 
+the terminology chaos in Archaic Chinese study.
 
 ## 2.6
 
@@ -329,6 +330,8 @@ category". In well-written grammars, Jacques 2021 just [lists possible adverbs](
 in chapters describing environments where they occur. A [similar approach](../English/CGEL.md#terms-and-definitions) is taken by CEGL (Quirk et al 1985). Their role is just like verb affixes. 
 
 # References
+
+Aldridge, Edith. (2015). ERGATIVITY AND UNACCUSATIVITY. 
 
 van den Berg, René. (2010). Dixon, R.M.W. 2010. Basic Linguistic Theory. Volume 1. Methodology. Studies in Language. 34. 10.1075/sl.34.3.13van. 
 
