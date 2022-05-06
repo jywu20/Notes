@@ -10,7 +10,10 @@ I'm quite struggling with Quirk et al (1985) for several reasons.
 The Cambridge Grammar of English Language (Huddleston and Pullum 2002, henceforth CGEL) seems more appropriate 
 for people like me. My personal idea is the latter is more "generative" and "BLT-like" - actually less 
 BLT-like than generative, considering that most reference grammars don't insist on binary tree diagrams. 
-The authors are closely associated with generative research (see, for example, Pullum 2009), so probably 
+The authors are closely associated with generative research (see, for example, Pullum 2009; Pullum himself is
+better described as a *mathematical* linguist, who participated in developing of GPSG and other non-derivational
+formal grammars, but these aren't directly reflected in CGEL; The notion of lexical heads - as opposed to functional
+heads, i.e. NP not DP - may be interpreted as resembling HPSG, but CGEL is not strictly movement-less), so probably 
 this is not surprising.
 
 # Terms and organization of grammar

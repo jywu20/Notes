@@ -1,0 +1,337 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+% \usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{marginnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[gr-]{../relativity/relativistic}[relativistic.pdf]
+\zexternaldocument*[optics-]{../optics/optics}[optics.pdf]
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[kt-]{../topological-phases-reading-notes/kt}[kt.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+%\setlist[itemize]{
+%    itemindent=17pt, 
+%    leftmargin=1pt,
+%    listparindent=\parindent,
+%    parsep=0pt,
+%}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Support for tensor double arrows.
+\renewcommand{\tensor}[1]{ \stackrel{\leftrightarrow}{\vb*{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1} on page~\pageref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+
+% Correctly displaying equation number in section titles
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\newcommand{\grnote}{\href{../relativity/relativistic.pdf}{this note}}
+
+\title{Midterm project}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Part 1: ideal fluid in flat spacetime}
+
+\subsection{Derivation of the ideal fluid energy-momentum tensor}
+
+\paragraph{Problem} Show that the energy-momentum tensor of an ideal fluid is 
+\begin{equation}
+    T^{\mu \nu} = \frac{1}{c^2} (\epsilon + p) U^\mu U^\nu + p \eta^{\mu \nu},
+    \label{eq:ideal-fluid-t}
+\end{equation}
+where 
+\begin{equation}
+    \epsilon = \rho_m c^2,
+\end{equation}
+$\rho_m$ is the density of the rest mass in the rest frame of reference, $U^\mu$ is the 4-velocity and hence 
+\begin{equation}
+    U_\mu U^\mu = - c^2,
+\end{equation}
+and $p$ is the pressure.
+Hint: an ideal fluid is a isotropic system in which there is no dissipation, i.e. there is no hidden degrees 
+of freedom other then the velocity of flow and the pressure, and which doesn't have any shear forces inside.
+
+\paragraph{Solution} Consider a small control volume $V$ around $x^i$ in the ideal fluid at the time $x^0$, whose 
+velocity is $\vb*{v}$ in the lab reference frame. Consider a frame of reference $S'$ that moves with 
+velocity $\vb*{v}$. Suppose $x'$ is the coordinates in $S'$ corresponding to $x$ in the lab reference frame. 
+In $S'$, the flow velocity of $V$ is zero, and therefore since it is only dependent on ``local'' information, 
+$T'_{\mu \nu}(x')$ is the same as the energy-momentum tensor of an ideal fluid at rest. (Note that this step 
+of of reasoning implicitly invokes the assumption that there is no hidden degree of freedom in the fluid -- 
+if there is, then we have no guarantee that these degrees of freedom in $V$ have the same values in an ideal 
+fluid.)
+
+So now we need to write down the energy-momentum tensor for an ideal fluid at rest. By the physical meaning of 
+the terms we immediately find $T^{00}$ is the ``rest energy density'' of the system, which is $\rho_m c^2$.
+The $T^{ij}$ components are the stress tensor. The no-shear-force condition means $T^{ij}$ is diagonal, and the 
+isotropic condition means all three diagonal elements of $T^{ij}$ are the same, which means $T^{ij}$ assumes 
+the following form:
+\begin{equation}
+    T^{ij} = \pmqty{\dmat{p, p, p}}.
+\end{equation}
+Obviously, $p$ is just what is known as the \emph{pressure}. The components $T^{i0}$ are the density of momentum,
+which are also zero. So $T^{\mu \nu}$ of an ideal fluid at rest is 
+\begin{equation}
+    T^{\mu \nu} = \pmqty{\dmat{\rho_m c^2, p, p, p}},
+\end{equation}
+and therefore for the fluid volume in the $S'$ reference frame, we have 
+\begin{equation}
+    T^{' \mu \nu} = \pmqty{\dmat{\rho_m c^2, p, p, p}} = \pmqty{\dmat{\epsilon, p, p, p}} .
+\end{equation}
+
+Now we can use a Lorentz transformation back into the lab reference frame. The lab reference frame moves with 
+velocity $- \vb*{v}$ in $S'$. Without loss of generality, we assume $\vb*{v} = v \vu*{e}_x$, and and transformation
+matrix (which is the inverse Lorentz transformation between the lab reference frame and $S'$) is 
+\begin{equation}
+    \Lambda\indices{^\mu_\nu} = \pmqty{\dmat{\gamma & \gamma \beta \\ \gamma \beta & \gamma, 1, 1}},
+\end{equation}
+where 
+\begin{equation}
+    \beta = \frac{v}{c}, \quad \gamma = \frac{1}{\sqrt{1 - v^2 / c^2}}.
+\end{equation}
+So the energy-momentum tensor in the lab reference frame at $x$ is 
+\begin{equation}
+    \begin{aligned}
+        T^{\mu \nu}(x) &= \Lambda\indices{^\mu_\rho} \Lambda\indices{^\nu_\sigma} T^{' \rho \sigma}(x') \\
+        &= \pmqty{\dmat{\gamma & \gamma \beta \\ \gamma \beta & \gamma, 1, 1}} \pmqty{\dmat{\epsilon, p, p, p}} \pmqty{\dmat{\gamma & \gamma \beta \\ \gamma \beta & \gamma, 1, 1}} \\
+        &= \pmqty{\dmat{ \gamma^2 \epsilon + \gamma^2 \beta^2 p & \gamma^2 \beta \epsilon + \gamma^2 \beta p \\ \gamma^2 \beta \epsilon + \gamma^2 \beta p & \gamma^2 \beta^2 \epsilon + \gamma^2 p , p, p}}.
+    \end{aligned}
+    \label{eq:t-in-beta-gamma}
+\end{equation} 
+
+Now we need to rephrase this equation in terms of $U^\mu$. We have 
+\begin{equation}
+    U^\mu = \gamma (c, \vb*{v}), 
+\end{equation}
+and therefore we have 
+\begin{equation}
+    \begin{aligned}
+        \frac{1}{c^2} (\epsilon + p) U^\mu U^\nu + p \eta^{\mu \nu} &= \frac{1}{c^2} (\epsilon + p) \pmqty{c \\ \vb*{v}} \pmqty{c & \vb*{v}} + p \pmqty{\dmat{-1, 1, 1, 1}} \\
+        &= \frac{\epsilon + p}{c^2} \pmqty{ \dmat{\gamma^2 c^2 & \gamma^2 \vb*{v} \\ \gamma^2 \vb*{v} & \gamma^2 \vb*{v}^2 , , } } + + p \pmqty{\dmat{-1, 1, 1, 1}}  \\
+        &= \pmqty{ \dmat{ \epsilon \gamma^2 + p (\gamma^2 - 1) & \gamma^2 \beta (\epsilon + p) \\ \gamma^2 \beta (\epsilon + p) & (\epsilon + p) \gamma^2 \beta^2 + p , p, p } }.
+    \end{aligned}
+    \label{eq:def-ideal-fluid-rhs}
+\end{equation}
+It's straightforward to verify that 
+\[
+    \gamma^2 \epsilon + p(\gamma^2 - 1) = \gamma^2 \epsilon + p \frac{v^2 / c^2}{1 - v^2 / c^2} = \gamma^2 \epsilon + p \gamma^2 \beta^2,
+\]
+\[
+    (\epsilon + p) \gamma^2 \beta^2 + p = \epsilon \gamma^2 \beta^2 + p \left(1 + \frac{v^2/c^2}{1 - v^2 / c^2} \right) = \epsilon \gamma^2 \beta^2 + p \frac{1}{1 - v^2 / c^2} = \epsilon \gamma^2 \beta^2 + p \gamma^2.
+\]
+Therefore, the RHSs of \eqref{eq:t-in-beta-gamma} and \eqref{eq:def-ideal-fluid-rhs} are the same, and therefore 
+we have shown \eqref{eq:ideal-fluid-t} for a single small fluid volume. Since our argument works at every point 
+of the fluid, we have shown \eqref{eq:ideal-fluid-t} for the whole fluid system. Note that it's possible to have 
+different $\epsilon$'s and different $p$'s at different points.
+
+Until now we haven't decided the status of $p$, but since $T^{\mu \nu}$ should be a tensor, and $\epsilon$ is a 
+scalar by definition, and \eqref{eq:ideal-fluid-t} is a covariant formula, the only possibility is that $p$ is a 
+scalar. 
+
+\subsection{The equations of movement}
+
+\paragraph{Problem} Find equations of motion from \eqref{eq:ideal-fluid-t}. Is the resulting equation system 
+closed? If not, why? 
+
+\paragraph{Solution} From the conservation of energy and momentum, we have 
+\begin{equation}
+    0 = \partial_\mu T^{\mu \nu} = \frac{1}{c^2} U^\mu U^\nu \partial_\mu(\epsilon + p) + \frac{\epsilon + p}{c^2} (U^\nu \partial_\mu U^\mu + U^\mu \partial_\mu U^\nu) + \partial^\nu p.
+    \label{eq:conservation}
+\end{equation}
+Multiplying $U_\nu$ to \eqref{eq:conservation}, we have 
+\begin{equation}
+    \begin{aligned}
+        0 &= \frac{1}{c^2} \underbrace{U_\nu U^\nu}_{- c^2} U^\mu \partial_\mu (\epsilon + p) 
+        + \frac{\epsilon + p}{c^2} ( \underbrace{U_\nu U^\nu}_{-c^2} \partial_\mu U^\mu + \underbrace{U_\nu U^\mu \partial_\mu U^\nu}_{=0} ) + U^\mu \partial_\mu p \\
+        &= - U^\mu \partial_\mu \epsilon - (\epsilon + p) \partial_\mu U^\mu ,
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    U_\nu U^\mu \partial_\mu U^\nu = U^\mu \partial_\mu ( \underbrace{U^\nu U_\nu}_{-c^2} ) - U^\mu U^\nu \partial_\mu U_\nu = - U_\nu U^\mu \partial_\mu U^\nu 
+    \label{eq:aux-1}
+\end{equation}
+and therefore is zero. 
+
+Multiplying $U^\sigma U_\nu + c^2 \delta^\sigma_\nu$ to \eqref{eq:conservation},
+we have 
+\begin{equation}
+    \begin{aligned}
+        0 &= \frac{1}{c^2} U^\sigma U^\mu \underbrace{U_\nu U^\nu}_{- c^2} \partial_\mu(\epsilon + p) + \frac{\epsilon + p}{c^2} U^\sigma ( \underbrace{U_\nu U^\nu}_{-c^2} \partial_\mu U^\mu + \underbrace{U_\nu U^\mu \partial_\mu U^\nu}_{\eqref{eq:aux-1} = 0}) + U^\sigma U_\nu \partial^\nu p  \\
+        &\quad + U^\sigma U^\mu \partial_\mu (\epsilon + p) + (\epsilon + p) (U^\sigma \partial_\mu U^\mu + U^\mu \partial_\mu U^\sigma) + c^2 \partial^\sigma p \\
+        &= U^\sigma U_\nu \partial^\nu p + (\epsilon + p) U^\mu \partial_\mu U^\sigma + c^2 \partial^\sigma p.
+    \end{aligned}
+\end{equation}
+
+So we get the EOMs:
+\begin{equation}
+    \begin{aligned}
+        &U^\mu \partial_\mu \epsilon + (\epsilon + p) \partial_\mu U^\mu = 0, \\
+        &U^\nu U_\mu \partial^\mu p + (\epsilon + p) U^\mu \partial_\mu U^\nu + c^2 \partial^\nu p = 0.
+    \end{aligned}
+    \label{eq:relativistic-eom}
+\end{equation}
+
+The EOMs are not closed if $\epsilon$ and $p$ are allowed to vary. In this case, we still need an additional
+equation. This additional equation has to be derived from the property of the fluid in question to decide 
+how the distribution of $\epsilon$ and $p$ evolve. For example, it may be an equation in the form of 
+$p = p (\epsilon) = p(\rho_m)$, i.e. the inhomogeneous distribution of the density creates an inhomogeneous
+pressure field.
+
+\subsection{Low speed approximation}
+
+\paragraph{Problem} Show that \eqref{eq:relativistic-eom} reduced to Euler's equations when the speed is low.
+
+\paragraph{Solution} We start from the first equation. When the speed is slow, we have 
+\begin{equation}
+    U^\mu \approx (c, \vb*{v}), \quad c \gg \abs{\vb*{v}}, \quad \partial_\mu U^\mu \approx \div{\vb*{v}},
+\end{equation}
+and therefore 
+\[
+    \begin{aligned}
+        0 &= (\partial_t + \vb*{v} \cdot \grad ) \rho_m c^2 + (\underbrace{\rho_m c^2 + p}_{\approx \rho_m c^2}) \div{\vb*{v}} \\
+        &= c^2 (\partial_t \rho_m + \vb*{v} \cdot \grad \rho_m + \rho_m \div{\vb*{v}}) \\
+        &= c^2 (\partial_t \rho_m + \div{(\rho_m \vb*{v})}), 
+    \end{aligned}
+\]
+\begin{equation}
+    \partial_t \rho_m + \div{(\rho_m \vb*{v})} = 0.
+\end{equation}
+This is the continuity equation. 
+
+The second equation is 
+\[
+    \begin{aligned}
+        0 = U^\nu (\partial_t + \vb*{v} \cdot \grad) p + (\rho_m c^2 + p) (\partial_t + \vb*{v} \cdot \grad) U^\nu + c^2 \partial^\nu p = 0.
+    \end{aligned}
+\]
+We only consider the case of $\nu = i$, which gives 
+\[
+    \begin{aligned}
+        0 &= \vb*{v} (\partial_t + \vb*{v} \cdot \grad) p + (\rho_m c^2 + p) (\partial_t + \vb*{v} \cdot \grad) \vb*{v} + c^2 \grad{p} \\ 
+        &\approx c^2 ( \rho_m (\partial_t + \vb*{v} \cdot \grad) \vb*{v} + \grad{p} ), 
+    \end{aligned}
+\]
+so 
+\begin{equation}
+    \rho_m (\partial_t + \vb*{v} \cdot \grad) \vb*{v} = - \grad{p}.
+\end{equation}
+This is the momentum equation, which can also be written more explicitly as a conservation law:
+\begin{equation}
+    \pdv{t} (\rho \vb*{v}) + \div{(\rho \vb*{v} \otimes \vb*{v})} = - \grad{p},
+\end{equation} 
+or as the Newton's second law on an infinitesimal control volume
+\begin{equation}
+    \dv{t} (\rho \vb*{v})  = -\grad{p} - \rho \vb*{v} \div{\vb*{v}} , \quad \dv{t} = \pdv{t} + \vb*{v} \cdot \grad.
+\end{equation}
+
+So we find the relativistic theory of ideal fluids proposed here reduces correctly to the non-relativistic theory.
+
+\subsection{The ``dust''}
+
+\paragraph{Problem} Ideal fluid without inner pressure is called dust. It can also be seen as a bunch of 
+particles with very weak interactions. Discuss why the two definitions are compatible.
+
+\paragraph{Solution} We substitute $p$ with zero in \eqref{eq:relativistic-eom}, and the second equation 
+immediately becomes 
+\begin{equation}
+    U^\mu \partial_\mu U^\nu = 0.
+\end{equation}
+This is the geodesic equation, which is the EOM of free particles, so indeed the infinitesimal volumes in 
+the fluid doesn't interact with each other. The (maybe coarse-grained) theory of a bundle of non-interacting 
+particles is always an ideal fluid without inner pressure. 
+
+\section{Part 2: idea fluid in curved spacetime}
+
+
+
+\end{document}
