@@ -113,6 +113,18 @@
 
 \newcommand{\grnote}{\href{../relativity/relativistic.pdf}{this note}}
 
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
 \title{Midterm project}
 \author{Jinyuan Wu}
 
@@ -196,7 +208,7 @@ and therefore we have
 \begin{equation}
     \begin{aligned}
         \frac{1}{c^2} (\epsilon + p) U^\mu U^\nu + p \eta^{\mu \nu} &= \frac{1}{c^2} (\epsilon + p) \pmqty{c \\ \vb*{v}} \pmqty{c & \vb*{v}} + p \pmqty{\dmat{-1, 1, 1, 1}} \\
-        &= \frac{\epsilon + p}{c^2} \pmqty{ \dmat{\gamma^2 c^2 & \gamma^2 \vb*{v} \\ \gamma^2 \vb*{v} & \gamma^2 \vb*{v}^2 , , } } + + p \pmqty{\dmat{-1, 1, 1, 1}}  \\
+        &= \frac{\epsilon + p}{c^2} \pmqty{ \dmat{\gamma^2 c^2 & \gamma^2 \vb*{v} \\ \gamma^2 \vb*{v} & \gamma^2 \vb*{v}^2 , , } } + p \pmqty{\dmat{-1, 1, 1, 1}}  \\
         &= \pmqty{ \dmat{ \epsilon \gamma^2 + p (\gamma^2 - 1) & \gamma^2 \beta (\epsilon + p) \\ \gamma^2 \beta (\epsilon + p) & (\epsilon + p) \gamma^2 \beta^2 + p , p, p } }.
     \end{aligned}
     \label{eq:def-ideal-fluid-rhs}
@@ -330,8 +342,180 @@ This is the geodesic equation, which is the EOM of free particles, so indeed the
 the fluid doesn't interact with each other. The (maybe coarse-grained) theory of a bundle of non-interacting 
 particles is always an ideal fluid without inner pressure. 
 
-\section{Part 2: idea fluid in curved spacetime}
+\section{Part 2: idea fluid and a static star}
 
+\subsection{The inner spacetime of a static spherically symmetric star}
 
+\paragraph{Problem} A star can be approximated as an ideal fluid system. Find the metric \emph{inside} a static
+spherically symmetric star. Here ``static'' means $U^\mu$ only has non-zero $\mu = 0$ component.
+
+\paragraph{Solution} The spherically symmetric condition means we can still start from
+\begin{equation}
+    \dd{s^2} = - f \dd{t^2} + g \dd{r^2} + r^2 (\dd{\theta^2} + \sin^2 \theta \dd{\phi^2}),
+\end{equation}
+\begin{equation}
+    g_{\mu \nu} = \diag(-f, g, r^2, r^2 \sin^2 \theta), \quad g^{\mu \nu} = \diag(- 1 / f, 1 / g, 1 / r^2, 1 / r^2 \sin^2 \theta).
+\end{equation}
+Here we follow the convention in our textbook \cite{bambi2018introduction} and set $c = 1$ when solving 
+the Einstein field equations. Now $\epsilon = \rho_m$, and we write $\rho$ instead of $\rho_m$ for the sake 
+of convenience. Since $U^\mu = (U^0, 0, 0, 0)$, we have 
+\[
+    -1 = U^\mu U_\mu = - f (U^0)^2,
+\]
+and 
+\begin{equation}
+    U^0 = \frac{1}{\sqrt{f}}, \quad U_0 = - g_{00} U^0 = - \sqrt{f}.
+\end{equation}
+This immediately gives the energy-momentum tensor: 
+\begin{equation}
+    \begin{aligned}
+        T_{\mu \nu} &= (p + \rho) \diag(f, 0, 0, 0) + p \diag(- f, g, r^2, r^2 \sin^2 \theta) \\
+        &= \diag (\rho f, pg, p r^2, p r^2 \sin^2 \theta).
+    \end{aligned}
+\end{equation}
+
+We can then go on to solve 
+\begin{equation}
+    R\indices{^\mu_\nu} - \frac{1}{2} R \delta\indices{^\mu_\nu} = 8 \pi G T\indices{^\mu_\nu}.
+    \label{eq:einstein}
+\end{equation}
+The RHS is 
+\begin{equation}
+    T\indices{^\mu_\nu} = g^{\mu \sigma} T_{\sigma \nu} = \pmqty{\dmat{- \rho, p, p, p}}  .
+\end{equation}
+According to (8.27) in \cite{bambi2018introduction}, since $T_{\mu \nu}$ is diagonal and so is the metric tensor, 
+we have $R_{tr} = 0$, and therefore $\dot{g} = 0$, and from (8.26) to (8.29), we have 
+\begin{equation}
+    R_{\mu \nu} = \pmqty{\dmat{R_{tt}, R_{rr}, R_{\theta \theta}, R_{\phi \phi}}},
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        R_{tt} &= \frac{f^{\prime \prime}}{2 g}-\frac{f^{\prime}}{4 g}\left(\frac{f^{\prime}}{f}+\frac{g^{\prime}}{g}\right) + \frac{f'}{rg}, \\
+        R_{rr} &= -\frac{f^{\prime \prime}}{2 f}+\frac{f^{\prime}}{4 f}\left(\frac{f^{\prime}}{f}+\frac{g^{\prime}}{g}\right)+\frac{g^{\prime}}{r g}, \\
+        R_{\theta \theta} &= 1-\frac{1}{g}+\frac{r}{2 g}\left(\frac{g^{\prime}}{g}-\frac{f^{\prime}}{f}\right), \\
+        R_{\phi \phi} &= \left(1-\frac{1}{g}+\frac{r}{2 g}\left(\frac{g^{\prime}}{g}-\frac{f^{\prime}}{f}\right)\right) \sin^2 \theta.
+    \end{aligned}
+\end{equation}
+From these we have 
+\begin{equation}
+    \begin{aligned}
+        R &= R_{\mu \nu} g^{\nu \mu} = R_{tt} g^{tt} + R_{rr} g^{rr} + R_{\theta \theta} g^{\theta \theta} + R_{\phi \phi} g^{\phi \phi} \\
+        &= - \frac{f''}{fg} + \frac{2}{r^2} \left(1 - \frac{1}{g}\right) + \frac{f'}{2fg} \left(\frac{f'}{f} + \frac{g'}{g}\right) + \frac{2}{gr} \left( \frac{g'}{g} - \frac{f'}{f} \right),
+    \end{aligned} 
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        R\indices{^t_t} &= R_{tt} g^{tt} - \frac{1}{2} R = - \frac{1}{r^2} + \frac{1}{g r^2} - \frac{g'}{g^2 r}, \\
+        R\indices{^r_r} &= R_{rr} g^{rr} - \frac{1}{2} R = \frac{f'}{fgr} - \frac{1}{r^2} + \frac{1}{g r^2}, \\
+        R\indices{^\theta_\theta} &= R_{\theta \theta} g^{\theta \theta} - \frac{1}{2} R = \frac{f''}{2 f g} - \frac{f'}{4 f g} \left(\frac{f'}{f} + \frac{g'}{g}\right) + \frac{1}{2 g r} \left( \frac{f'}{f} - \frac{g'}{g} \right), \\
+        R\indices{^\theta_\theta} &= R\indices{^\phi_\phi}.
+    \end{aligned}
+\end{equation}
+So now \eqref{eq:einstein} is equivalent to three independent equations:
+\begin{equation}
+    - \frac{1}{r^2} + \frac{1}{g r^2} - \frac{g'}{g^2 r} = - 8 \pi G \rho,
+    \label{eq:star-1}
+\end{equation}
+\begin{equation}
+    \frac{f'}{fgr} - \frac{1}{r^2} + \frac{1}{g r^2} = 8 \pi G p, 
+    \label{eq:star-2}
+\end{equation}
+\begin{equation}
+    \frac{f''}{2 f g} - \frac{f'}{4 f g} \left(\frac{f'}{f} + \frac{g'}{g}\right) + \frac{1}{2 g r} \left( \frac{f'}{f} - \frac{g'}{g} \right) = 8 \pi G p.
+    \label{eq:star-3}
+\end{equation}
+
+\eqref{eq:star-1} is easy to solve. It can be recast into 
+\[
+    8 \pi G \rho r^2 = 1 + \frac{g' r - g}{g^2} = 1 - \dv{r} \frac{r}{g},
+\]
+and since when $r = 0$, $r / g$ is zero, we have 
+\[
+    \frac{r}{g} = 1 - 2G \int_0^r 4 \pi r'^2 \dd{r'} \rho(r').
+\]
+We define 
+\begin{equation}
+    m(r) = \int_0^r 4 \pi r'^2 \dd{r'} \rho(r'),
+\end{equation}
+and we have 
+\begin{equation}
+    g(r) = \frac{1}{1 - \frac{2 G m(r)}{r}}.
+\end{equation}
+The function $f$ can then be solved from \eqref{eq:star-2} and \eqref{eq:star-3}. Substitute $g$ in \eqref{eq:star-2} with the equation above, we have 
+\[
+    \left( 1 - \frac{2 m(r)}{r} \right) \frac{1}{r} \left( \frac{f'}{f} + \frac{1}{r} \right) - \frac{1}{r^2} = 8 \pi G p,
+\]
+\begin{equation}
+    \frac{f'}{f} = \frac{2 m(r) + 8 \pi G p r^3}{r (r - 2 m(r))}.
+    \label{eq:f-eq-1}
+\end{equation}
+$p$ can then be solved using \eqref{eq:star-3}.
+
+\subsection{The $M$ in Schwarzschild solution for the star}
+
+\paragraph{Problem} The external gravitational field of star, due to the spherical symmetry, is bond to be 
+a Schwarzschild solution. Find the meaning of $M$ in the solution. Is it simply summation of $\rho$ at every point?
+If not, what's going on here?
+
+\paragraph{Solution} Since the Schwarzschild coordinates don't have any singularity at the edge of the star 
+-- which is far from the Schwarzschild radius -- we can directly apply the continuity condition 
+\[
+    f(R - 0^+) = f(R + 0^+)
+\]
+at the edge of the star $r = R$. This means 
+\[
+    \frac{1}{1 - \frac{2GM}{R}} = \frac{1}{1 - \frac{2 G m(R)}{R}},
+\]
+and we have 
+\begin{equation}
+    M = m(R) = \int_0^R 4 \pi r^2 \dd{r} \rho(r). 
+\end{equation}
+This is a strange expression, because the space is distorted by the gravitational field, and the spatial volume
+element is \emph{not} $r^2 \sin\theta \dd{r} \dd{\theta} \dd{\phi}$ but $\sqrt{g} r^2 \sin\theta \dd{r} \dd{\theta} \dd{\phi}$. The point here is $M$ includes the gravitational potential energy and is not simply the sum of the 
+mass of each part of the star.
+
+\subsection{The pressure distribution in the star}
+
+\paragraph{Problem} Establish the equation governing the distribution of the pressure inside the star. 
+
+\paragraph{Solution} Though all we need to so is to solve \eqref{eq:star-3}, the equation is just too complicated.
+Note that $\nabla_\mu T^{\mu \nu} = 0$ is a consequence of the Einstein's field equation, and we can just solve 
+the $\nabla_\mu T^{\mu \nu} = 0$ equation. Specifically, we solve 
+\[
+    (\partial_r)^\nu \nabla^\mu T_{\mu \nu} = 0,
+\] 
+where $\partial_r$ means the basis vector along the $r$ direction (which doesn't act on fields following it). We have 
+\[
+    \begin{aligned}
+        0 &= (\partial_r)^\nu ( \underbrace{U_\mu U_\nu}_{(\partial_r)^\nu U_\nu = 0} \nabla^\mu (\rho + p) + (\rho + p) (U_\mu \nabla^\mu U_\nu + \underbrace{U_\nu}_{(\partial_r)^\nu U_\nu = 0} \nabla^\mu U_\mu) + \underbrace{\nabla_\nu p}_{(\partial_r)^\nu \nabla_\nu = \dv{r}} ) \\
+        &= (\partial_r)^\nu (\rho + p) U_\mu \nabla^\mu U_\nu + \dv{p}{r} ,
+    \end{aligned}
+\]
+where 
+\[
+    \begin{aligned}
+        (\partial_r)^\nu U_\mu \nabla^\mu U_\nu &= \nabla^\mu (\underbrace{(\partial_r)^\nu U_\nu}_{=0} U_\mu) - \underbrace{U_\nu (\partial_r)^\nu}_{= 0 } \nabla^\mu U_\mu - U_\mu U_\nu \nabla^\mu (\partial_r)^\nu \\
+        &= - U_\mu U_\nu \nabla^\mu (\partial_r)^\nu = - U^\mu U_\nu \nabla_\mu (\partial_r)^\nu \\
+        &= - U^\mu U_\nu \Gamma_{\mu \sigma}^\nu (\partial_r)^\sigma = \Gamma^t_{r t} ,
+    \end{aligned}
+\]
+and 
+\[
+    \Gamma^t_{rt} = \frac{1}{2} g^{t \sigma} (\partial_r g_{\sigma t} + \partial_t g^{\sigma r} - \partial_\sigma g_{tr} ) = \frac{1}{2} g^{tt} \partial_r g_{tt} = \frac{f'}{2f}.
+\]
+Putting these equations together, we have 
+\begin{equation}
+    \dv{p}{r} = - \frac{f'}{2f} (p + \rho).
+\end{equation}
+Since we also have \eqref{eq:f-eq-1}, we have 
+\begin{equation}
+    \dv{p}{r} = - (p + \rho) \frac{m(r) + 4 \pi p r^3}{r (r - 2m(r))}.
+\end{equation}
+This is the equation governing the pressure distribution in a star.
+
+\bibliographystyle{plain}
+\bibliography{books-used}
 
 \end{document}
