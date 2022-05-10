@@ -16,7 +16,7 @@ formal grammars, but these aren't directly reflected in CGEL; The notion of lexi
 heads, i.e. NP not DP - may be interpreted as resembling HPSG, but CGEL is not strictly movement-less), so probably 
 this is not surprising.
 
-# Terms and organization of grammar
+# Terminology and organization of grammar
 
 The description framework is introduced in 1.4. Here is a sketch of the system (for a review about its relation
 to the generative enterprise, see Culicover 2004): 
@@ -202,6 +202,8 @@ to the generative enterprise, see Culicover 2004):
   constituent so that dependency arcs can indeed form a tree, and to make the notion of dependency arcs
   closer to traditional views, we also need to change the root
   node of a dependency tree and change the direction of all dependency arcs. 
+
+  Unfortunately, it seems that the authors didn't notice the subtle definition of *head* here. They still maintain the notion that there is a unique definition of head and that the definition in generative literature is in conflict with their definition used in this grammar (see the end of 5.4). This isn't a big deal practically, because natural languages' hierarchy structures are all layered (NP layer, DP layer, vP layer, tP layer, etc.), so ignoring the head status of functional morphemes and regarding the core lexical word (in the context of 5.4, the noun) as the head is equivalent to identifying the property of the layer in question (in the context of 5.4, we work with DP and NP, both of which are noun-related and hence recognizing the core noun as the head does make sense). 
 - **Canonical form** See 2.2. In modern Minimalist syntax, the notion of "canonical" word order no longer makes 
  sense because the  syntactic trees are *derivational*: non-canonical sentences are *not* transformed 
  from canonical sentences. Instead, all sentences are built from features in a cyclic-successive way. 
@@ -223,7 +225,7 @@ to the generative enterprise, see Culicover 2004):
   ones. Obligatory adverbials are also considered as complements (see 2.8). But on the other hand, both optional
   adverbials (*adjuncts*) and obligatory adverbials (*manner, temporal, etc. complements*) are discussed in 
   Chapter 8. For example, 8.2.1 contains a section about "Manner complements". Adjuncts can also be defined 
-  as *clause modifiers*, a subset of modifiers. 
+  as *clause modifiers*, a subset of modifiers. Both adverbs and PPs are seen as adjuncts (see the beginning of Chapter 8)
 
   Whether *complements of NPs*, *complements of PPs* and *complements of clauses* can be considered as
   the same thing is of course not a problem that can be answered by the descriptive framework above. 
@@ -256,21 +258,53 @@ to the generative enterprise, see Culicover 2004):
 - The **structure** of a construction is its inner structure; the **function** of a construction is its distribution
   in larger constructions. Note that the term *function* doesn't necessarily have semantic or pragmatic meanings. 
 
+  Actually, CGEL is *not* function-oriented. For example, a function-oriented author may classify all constructions with dative meaning together as *dative*, but CGEL rejects this idea (5.16.1, footnote 59).
+
+# The grammar sketch
+
+The term **subject** in a construction can be roughly defined as a complement that somehow is promoted to a high position. The subject of a clause fits this definition, and in an NP like [*the little boy's*]<sub>NP, genitive</sub> *father*, we can also identify a subject: it's *the little boy*, which is a complement, not a modifier, because a father must be someone's father, and therefore *father* takes a complement, which denotes his child, and which is an external one.
+The authors name *the little boy* the **subject-determiner** of the whole NP, since it's a determiner (it's in complementary distribution with *the*) and is also a subject. 
+
 # The noun phrase
 
-## NP function, or distribution of NPs
+Sections 5.1 and 5.2 give a overview of NP function and structure. Section 5.3 elaborates the classfication of numbers accourding to the countability and the number system. 
+
+Sections 5.4-5.8 are about determinatives, their distributions and semantics. Section 5.11 gives detailed discussion of determinative phrases. 
+
+Sections 5.9 and 5.10 are about NPs not headed by a prototypical noun, including fusion-head constructions and pronouns. 
+
+Sections 5.12 and 5.13 are about external modifiers (external to the determiner).
+
+Section 5.14 is about internal dependents: dependents that are mostly familiar to us.
+
+Section 5.15 assembles every dependent and the head - possibly a prototypical noun or a fused head construction or a pronoun - together.
+
+Now it's time to discuss grammatical relations with an external end. Section 5.16 discusses the relation between the NP and its external context, which is realized by the case system (and hence the name of the section).
+
+Section 5.17 discusses gender. Since English doesn't have gender on adjectives, so the gender system doesn't have realization inside an NP, and Section 5.17 is mainly about pronoun-antecedent agreement. 
+
+Section 5.18 discusses another type of agreement: subject-verb agreement.
+
+## Overview of NP function (or distribution) and structure
+
+### Distribution
 
 An NP, when in an appropriate case form, can fill complement slots in the clause structure.
 This is the **prototypical function of NPs**. (See 5.1 [1])
 
-## NP structure
+Distributions of NPs in different constructions with respect to their cases is covered in 5.16.
+
+### Anatomy of NP
+
+Section 5.2 can be summarized as the following production rules:
 
 - An NP is made of zero or more **external modifiers**, including **predeterminer modifiers** and **peripheral modifiers**, and a **core NP**.
 - A core NP is made of zero or one **determiner** and a **nominal**.
 - A nominal is made of 
-  - zero or more **internal dependents** (**modifiers** and **complements**), and a minimal nominal - the head noun, or in the case of head-modifier, head-determiner, head-predeterminer fusion, some internal dependent
+  - zero or more **internal dependents** (**modifiers** and **complements**; other dependents are called **external dependents**), and 
+  - a minimal nominal - the head noun, or in the case of head-modifier, head-determiner, head-predeterminer fusion, some internal dependent 
 
-Note that the so-called external modifiers may not be purely "optional": consider the NP *three times the amount*,
+Note that the so-called external modifiers may *not* be purely "optional": consider the NP *three times the amount*,
 where *three times* is a predeterminer modifier, but removing it gives a rather different interpretation of the NP.
 
 The difference between NP complements and modifiers can be found in 5.14.1. We can see the complements of the
@@ -279,9 +313,14 @@ so it's a good idea to call both "complements". Since the complements of the nom
 without corresponding verbs work in the same way, calling both the NP complement and the clause complement 
 "complement" is justified. 
 
-Nominals themselves may appear as modifiers, as is in *the \[apple](\*apples) tree*.
+Nominals themselves may appear as modifiers, as is in *the \[apple](\*apples) tree* and 
+*the \[Department of Defense\] employee*. This justifies the practice to give them a separate name. This also justifies the (generative) idea to divide the NP (or DP in more technical terms) into different layers, just like the vP-TP-CP segmentation of the clause. The nominal is roughly the NP layer (in generative terms), corresponding to the TP-vP layer in a clause, or "VP" in the terminology of CGEL (the counterpart of CGEL's NP is the clause).
 
-## Noun classification according to the distribution in NPs
+The order of these elements is described in 5.15. 
+
+### Subordinate clauses are not NPs
+
+## Noun classification
 
 By their ability to take dependents and inflectional properties (internal structure of words), 
 nouns can be classified as (5.2 [1])
@@ -290,6 +329,10 @@ nouns can be classified as (5.2 [1])
 - pronouns, which 
 
 Note that proper names may have common nouns as heads (*The Open University*), and 
+
+## Determinatives
+
+Chapter 
 
 ## Fusion constructions
 
