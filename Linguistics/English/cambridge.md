@@ -262,8 +262,18 @@ to the generative enterprise, see Culicover 2004):
 
 # The grammar sketch
 
+## Core arguments (or complements)
+
+The terms *subject*, *object* and *predicative complement* appear first in 2.4, where the authors carry out 
+the definitions of the terms first for verbs. Complements of prepositions are also said to be objects or predicative complements (7.5). Nouns don't take objects (5.1). Here we summarize the (partly implicit) most 
+generic definition of these terms.
+
 The term **subject** in a construction can be roughly defined as a complement that somehow is promoted to a high position. The subject of a clause fits this definition, and in an NP like [*the little boy's*]<sub>NP, genitive</sub> *father*, we can also identify a subject: it's *the little boy*, which is a complement, not a modifier, because a father must be someone's father, and therefore *father* takes a complement, which denotes his child, and which is an external one.
 The authors name *the little boy* the **subject-determiner** of the whole NP, since it's a determiner (it's in complementary distribution with *the*) and is also a subject. 
+The term **object** means an internal argument that aren't in any oblique case (nor is it in a PP). 
+Things that take objects are said to be **transitive** (6.2).
+
+In summary, here the terms *subject*, *object* and *predicative complement* are purely syntactic and correspond to the surface S, A, O, CC in Dixon's terms. Since English is an accusative language, the usage of "subject" - which could mean agent or external position - will not create confusion.
 
 # The noun phrase
 
