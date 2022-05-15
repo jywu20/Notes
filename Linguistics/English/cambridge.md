@@ -106,7 +106,7 @@ to the generative enterprise, see Culicover 2004):
     When there are just *too many* movements - be them phrasal or morphological - binary branching is no longer a feasible analysis for the 
     surface forms. For radical free word language, there are plenty of 
     discontinuous constituents, which may arise because of pronominal argument hypothesis or 
-    a lineraization process that doesn't reflect the structure of the derivational tree (dual structure hypothesis),
+    a linearization process that doesn't reflect the structure of the derivational tree (dual structure hypothesis),
     and dependency relations that are without cross-serial dependencies and therefore can be used to recover
     a tree structure of constituency relations in the surface form 
     can only build a flat tree. From another perspective, in these languages there is no canonical word order,
@@ -203,7 +203,7 @@ to the generative enterprise, see Culicover 2004):
   closer to traditional views, we also need to change the root
   node of a dependency tree and change the direction of all dependency arcs. 
 
-  Unfortunately, it seems that the authors didn't notice the subtle definition of *head* here. They still maintain the notion that there is a unique definition of head and that the definition in generative literature is in conflict with their definition used in this grammar (see the end of 5.4). This isn't a big deal practically, because natural languages' hierarchy structures are all layered (NP layer, DP layer, vP layer, tP layer, etc.), so ignoring the head status of functional morphemes and regarding the core lexical word (in the context of 5.4, the noun) as the head is equivalent to identifying the property of the layer in question (in the context of 5.4, we work with DP and NP, both of which are noun-related and hence recognizing the core noun as the head does make sense). 
+  Unfortunately, it seems that the authors dont't notice the subtle definition of *head* here - or maybe they notice it, because in 3.4 they say "the dependents *a* and *each* select singular heads", but they still reject this as the definition of the head, and hence they reject the head status of determiners. They still maintain the notion that there is a unique "correct" definition of head and that the definition in generative literature is in conflict with their definition used in this grammar (see the end of 5.4). This isn't a big deal practically, because natural languages' hierarchy structures are all layered (NP layer, DP layer, vP layer, tP layer, etc.), so ignoring the head status of functional morphemes and regarding the core lexical word (in the context of 5.4, the noun) as the head is equivalent to identifying the property of the layer in question (in the context of 5.4, we work with DP and NP, both of which are noun-related and hence recognizing the core noun as the head does make sense). 
 - **Canonical form** See 2.2. In modern Minimalist syntax, the notion of "canonical" word order no longer makes 
  sense because the  syntactic trees are *derivational*: non-canonical sentences are *not* transformed 
  from canonical sentences. Instead, all sentences are built from features in a cyclic-successive way. 
@@ -279,15 +279,22 @@ In summary, here the terms *subject*, *object* and *predicative complement* are 
 
 Sections 5.1 and 5.2 give a overview of NP function and structure. Section 5.3 elaborates the classfication of numbers accourding to the countability and the number system. 
 
-Sections 5.4-5.8 are about determinatives, their distributions and semantics. Section 5.11 gives detailed discussion of determinative phrases. 
+Section 5.3 is about *number* - the only feature that still remains on the head noun in contemporary English.
+
+Sections 5.5-5.8 are about determinatives, their distributions and semantics. Section 5.4 discusses the determiner 
+function and what can fill the determiner slot. Section 5.5 discusses one main semantic function of determiners:
+quantification. Section 5.6 discusses another semantic function - definiteness. Section 5.7 includes all other 
+determinatives and their roles. Section 5.8 is about when an NP denote to something the value of which is stable 
+enough in different contexts, which is also about the determiner of the NP.
+Section 5.11 gives detailed discussion of determinative phrases. 
 
 Sections 5.9 and 5.10 are about NPs not headed by a prototypical noun, including fusion-head constructions and pronouns. 
 
-Sections 5.12 and 5.13 are about external modifiers (external to the determiner).
+Sections 5.12 and 5.13 are about external modifiers or modifiers external to the determiner.
 
-Section 5.14 is about internal dependents: dependents that are mostly familiar to us.
+Section 5.14 is about internal dependents: dependents that are mostly familiar to us, like adjectives, numerals, etc.
 
-Section 5.15 assembles every dependent and the head - possibly a prototypical noun or a fused head construction or a pronoun - together.
+Section 5.15 assembles every dependent and the head - possibly a prototypical noun or a fused head construction or a pronoun - together, and discuss the ranking of different modifiers.
 
 Now it's time to discuss grammatical relations with an external end. Section 5.16 discusses the relation between the NP and its external context, which is realized by the case system (and hence the name of the section).
 
