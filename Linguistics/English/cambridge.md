@@ -16,7 +16,7 @@ formal grammars, but these aren't directly reflected in CGEL; The notion of lexi
 heads, i.e. NP not DP - may be interpreted as resembling HPSG, but CGEL is not strictly movement-less), so probably 
 this is not surprising.
 
-# Terminology and organization of grammar
+# The formalism and organization of grammar
 
 The description framework is introduced in 1.4. Here is a sketch of the system (for a review about its relation
 to the generative enterprise, see Culicover 2004): 
@@ -235,6 +235,12 @@ to the generative enterprise, see Culicover 2004):
   of subcategorization (e.g. transitive verbs can only spell out with Trans heads) - means obliged 
   dependents of a head (in the sense of CGEL, not generative syntax) are usually in inner positions,
   so at least some distinction between complements and modifiers can be established.
+
+  Note that there is no guarantee that modifiers are always "higher" in position than complements.
+  Counterexamples can be found in [11] in 5.2, where a complement of the noun *salary* is on a higher position
+  than the modifier *preposterous*. And we shouldn't forget the most famous example: the subject (see the 
+  discussion about the complement status of subjects in 4.1). The criteria to tell complements from 
+  modifiers can be found in 4.1.2.  
 - The term **category** roughly means a type of constructions. The authors define *lexical* and *phrasal* 
   categories, agreeing with DM-based observations that there is no definite distinction between a word and 
   a phrase and a phrase and a clause. Here is a list of categories recognized in English: (see 1.4.2.2 [4] and [5])
@@ -255,25 +261,50 @@ to the generative enterprise, see Culicover 2004):
   - adverb phrase
   - preposition phrase
   - determinative phrase
+
+  The term *category* is also used to denote things like definiteness (5.6).
 - The **structure** of a construction is its inner structure; the **function** of a construction is its distribution
   in larger constructions. Note that the term *function* doesn't necessarily have semantic or pragmatic meanings. 
 
   Actually, CGEL is *not* function-oriented. For example, a function-oriented author may classify all constructions with dative meaning together as *dative*, but CGEL rejects this idea (5.16.1, footnote 59).
 
-# The grammar sketch
+# The grammar sketch 
 
-## Core arguments (or complements)
+Chapter 2 gives a sketch of the English grammar, each section of which corresponds to a chapter, and there 
+isn't much that can be said about the grammar sketch.
 
-The terms *subject*, *object* and *predicative complement* appear first in 2.4, where the authors carry out 
-the definitions of the terms first for verbs. Complements of prepositions are also said to be objects or predicative complements (7.5). Nouns don't take objects (5.1). Here we summarize the (partly implicit) most 
-generic definition of these terms.
+# NP-clause resemblance
 
+## Non-peripheral arguments (or complements)
+
+The term *argument* is not used in CGEL, and the term *complement* and *modifier* are used instead.
+In the clause structure, an **oblique** complement is a complement (i.e. something meeting the conditions
+in 4.1.2) that is in a PP, i.e. in an oblique case. It's still a complement (i.e. more or less core argument
+in BLT's sense). A **core** complement is a complement that is not oblique.
+
+The abstract definition of *subject*, *object* and *predicative complement* is not given. Here we summarize 
+how these terms appear in CGEL:
+> The terms *subject*, *object* and *predicative complement* appear first in 2.4, where the authors carry out 
+> the definitions of the terms first for verbs. Complements of prepositions are also said to be objects or predicative complements (7.5). Nouns don't take objects (5.1). 
+
+Now we summarize the (partly implicit) most generic definition of these terms.
 The term **subject** in a construction can be roughly defined as a complement that somehow is promoted to a high position. The subject of a clause fits this definition, and in an NP like [*the little boy's*]<sub>NP, genitive</sub> *father*, we can also identify a subject: it's *the little boy*, which is a complement, not a modifier, because a father must be someone's father, and therefore *father* takes a complement, which denotes his child, and which is an external one.
 The authors name *the little boy* the **subject-determiner** of the whole NP, since it's a determiner (it's in complementary distribution with *the*) and is also a subject. 
 The term **object** means an internal argument that aren't in any oblique case (nor is it in a PP). 
 Things that take objects are said to be **transitive** (6.2).
 
-In summary, here the terms *subject*, *object* and *predicative complement* are purely syntactic and correspond to the surface S, A, O, CC in Dixon's terms. Since English is an accusative language, the usage of "subject" - which could mean agent or external position - will not create confusion.
+In summary, here the terms *subject*, *object* and *predicative complement* are purely syntactic and correspond to the surface S/A/CS, O, CC in Dixon's terms. Since English is an accusative language, the usage of "subject" - which could mean agent or external position - will not create confusion, as the intransitive subject, the transitive
+surface agent and the copular subject all work the same.
+
+## Coordination
+
+
+
+# The simple clause 
+
+# Non-canonical clauses
+
+All non-canonical things happening in the CP layer are described in a prenucleus-nucleus framework (2.2, [7] and [8]).
 
 # The noun phrase
 
