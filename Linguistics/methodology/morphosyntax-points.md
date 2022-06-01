@@ -135,7 +135,7 @@ here the term "verb" concludes the TP projection, and therefore includes the EPP
 Here the term *verb phrase* means something like *could have been planning*. In the context of generative syntax, this is the VP shell *minus* all arguments. It is NOT the VP in S → NP VP: the latter *contains* all arguments (beside the subject). The VP shell is usually one or more complete phases and in this sense may be considered as a syntactic phrase.
 
 So we can see that the meaning of "phrase" is closer to "phase" or to be more exact, "domain" 
-(as is in "vP domain" or "CP domain") in generative syntax. A *phrase* is made of several smaller constructions,
+(as in "vP domain" or "CP domain") in generative syntax. A *phrase* is made of several smaller constructions,
 since a CP domain is made of several functional projections. A flat phrase structure tree preferred by functionalists
 merely displays the hierarchy relation between *domains*.
 
@@ -485,7 +485,7 @@ The syntactic role of a clause may be
 - Linked clause which are after conjunctions like ", and ..." in English.
   - [Temporal clause](#temporal-clause)
     - Likely a universal construction.
-    - Note that conditional constructions are usually similar to a temporal one, but the semantics of a conditional construction may be not directly temporal, as is in *If Shanghai is bigger than London, then it must be a huge conurbation*
+    - Note that conditional constructions are usually similar to a temporal one, but the semantics of a conditional construction may be not directly temporal, as is the case in *If Shanghai is bigger than London, then it must be a huge conurbation*
   - **Contrast clause**
     - Not that universal 
   - [**Consequence clause**](#consequence-clause)
@@ -881,6 +881,35 @@ See BLT 3.15
 In this section we discuss features that may appear in the TP layer, also called **TAME categories** (tense, aspect, modality, evidentiality). 
 In Dixon's terms, features appearing in the TP layer are called "categories associated with the clause", 
 while features appearing in the CP layer (for example, Mood, or generative syntax's Force) are called "categories associated with the sentence".
+His definition of clause, then, seems to be identical to a routinized TP, and he extracts embedded CP layers 
+out and names them "clause connecting devices".
+
+The notion of **completion** is identical to the definition of aspect [here](../Chinese/古汉语句式.md#功能范畴).
+Note that Dixon's definition of completion is in the present tense; we need to replace "present" in his definition
+by "reference time". In this way, a **perfect** clause denotes to an action that happened before the reference 
+time (but still has relevance at the reference time - by the definition of "reference time"), while an
+**imperfect** clause denotes to an action that was the case at the reference time.
+
+TODO: when the reference time is before the event time
+
+**Extent** is about an event's actual temporal organization. A more or less instant event is **punctual**, while 
+an event that last for some time is **durative** (or **continuous** or **progressive**).
+
+**Composition** is about whether an event is *regarded* as a whole. A durative event can still be regarded as 
+somehow "punctual". A **perfective** event is regarded as a whole, while an **imperfective** event is regarded 
+as having temporal make-up. Consider, for example:
+> [John baked the cake] (perfective, a event as a whole) while [Mary was sleeping] (imperfective, because Mary was sleeping before, during and after John's baking the cake, so it is regarded as having temporal make-up).
+
+The category of composition is different from the category of completion, for quite obvious reasons.
+
+TODO: phase of activity, boundedness
+
+It should be noted that features mentioned above are semantic features that are frequently coded grammatically.
+The terms can be used in the following ways:
+- as purely functional or semantic terms, e.g. "Evidentiality in English" (though English doesn't have systematic
+  syntactic way to code evidentiality)
+- as inherent features to the verb, i.e. "lexical aspect", which may include morphological phenomena
+- as grammatical terms, including syntactic and morphological marking (not the inherent one!) of the verb
 
 # Finite and non-finite clauses
 

@@ -43,7 +43,7 @@ to the generative enterprise, see Culicover 2004):
   8. D → *the*
   9. N → *car*
 
-  With these annotations, we find [11] can be easily transformed into an "ordinary" constituency tree as is in
+  With these annotations, we find [11] can be easily transformed into an "ordinary" constituency tree as in
   Penn Treebank by just erasing the grammatical function labels. On the other hand, after we annotate some words
   as heads (this step is necessary - see below), [11] can also be easily
   transformed into a dependency tree by a bottom-up fashion. This shows the duality between constituency trees
@@ -177,7 +177,7 @@ to the generative enterprise, see Culicover 2004):
 
   Of course, the DP hypothesis is simply too striking for most readers. Since the *nominal* (in the sense of 
   the present grammar) contains most contents in an NP and therefore may be considered as *determining* that 
-  the phrase is an NP. This is also satisfactory from the generative aspect, since the categorizer (as is in
+  the phrase is an NP. This is also satisfactory from the generative aspect, since the categorizer (as in
   Distributed Morphology) *n* is in the core noun.
 
   So here comes the problem of the status of *prepositional phrases* (discussed in Chapter 7, where the head status of the 
@@ -361,7 +361,7 @@ so it's a good idea to call both "complements". Since the complements of the nom
 without corresponding verbs work in the same way, calling both the NP complement and the clause complement 
 "complement" is justified. 
 
-Nominals themselves may appear as modifiers, as is in *the \[apple](\*apples) tree* and 
+Nominals themselves may appear as modifiers, as in *the \[apple](\*apples) tree* and 
 *the \[Department of Defense\] employee*. This justifies the practice to give them a separate name. This also justifies the (generative) idea to divide the NP (or DP in more technical terms) into different layers, just like the vP-TP-CP segmentation of the clause. The nominal is roughly the NP layer (in generative terms), corresponding to the TP-vP layer in a clause, or "VP" in the terminology of CGEL (the counterpart of CGEL's NP is the clause).
 
 The order of these elements is described in 5.15. 

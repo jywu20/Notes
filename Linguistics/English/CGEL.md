@@ -209,7 +209,7 @@ These claim are correct metaphorically but not literally. (see Sec. 15.12)
 The gerund is *not* the nominalization of the verb, because the gerund takes the same arguments as the verb in the same form as the verb,
 and the subject of the gerund may appear in the accusative case, not the genitive case. 
 The nominal property of a gerund comes from its being a *nominal clause*. 
-The *-ing* suffix can be used in real nominalization, as is in 
+The *-ing* suffix can be used in real nominalization, as is the case in 
 > John's playing of the national anthem,
 > 
 > *John's having played of the national anthem
