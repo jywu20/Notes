@@ -22,7 +22,9 @@ and there are conditions about how these slots ("functions")
 are filled by smaller constructions ("forms").
 Now selectional rules, agreement rules, etc. can be imposed,
 which are all ways to show dependency relations.
-A slot, with relevant dependency relations, is called a **grammatical relation** (e.g. subject, object, predicator).
+A slot, with relevant dependency relations, 
+is called a **grammatical relation** (e.g. subject, object, predicator),
+or maybe **function** in CGEL.
 A feature that is used in dependency relations is a **grammatical category** (e.g. number, case, tense).
 A type of constructions, i.e. packages of grammatical relations and grammatical categories,
 is a lexical category, e.g. nouns, verbs, noun phrases, clauses, etc.
