@@ -1,0 +1,323 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[cgel-]{../English/cambridge}[cambridge.pdf]
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citefootnote}[1]{footnote~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{infobox}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand*{\corpus}[1]{\emph{#1}}
+
+\newcommand*{\vP}{\textit{v}P}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence final particle, short = SFP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = NEG}
+\DeclareAcronym{tam}{long = {Tense, Aspect, Mood}, short = TAM}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newcommand{\cgel}{\href{../English/cambridge.pdf}{my notes about CGEL}}
+
+\title{Notes about Latin grammar}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\automath
+
+\section{Theoretical framework and descriptive framework}
+
+\subsection{Tree diagrams}
+
+The theoretical orientation can be found in \cgel, especially \citesec{\ref{cgel-sec:theory}}.
+There is one barrier to adopt a surface-oriented binary-branching tree diagram analysis,
+since Latin has largely arbitrary constituent order 
+Many works have been attributed to this topic 
+(\citealt{danckaert2011left,devine2006latin}, among others),
+but whether they are enough to account for the variations observed in Latin is questioned
+\citep{spevak2007latin},
+and all of them (unsurprisingly) involve lots of movements,
+which are not acceptable for a surface-oriented analysis --
+indeed, translation between contemporary Minimalist theory 
+and the more surface-oriented typologically oriented theory (the so-called \ac{blt})
+is not trivial and needs special attention \citep{clausetypology}.
+Note that, however, that argumentation pertaining to c-command relations, e.g. binding,
+has been studied in the generative literature \citep{mateu2017latin},
+and hence for the surface-oriented descriptive target in this note,
+positing a \acs{cgel}-like surface-oriented framework 
+plus a (possibly pragmatic) scrambling operation is still a good idea:
+the former visualizes relevant grammatical relations and categories,
+while the latter respects the free-order property.
+
+\subsection{Distinction between form and function}
+
+% TODO: 关于分词是“名词”之类的说法
+
+\subsection{Terminology}
+
+\ac{np}
+
+\section{Morphosyntactic overview and topological information}
+
+In the following sections,
+I discuss grammatical systems contained in all levels of Latin grammar,
+their realizations and typological information.
+
+\subsection{Note about section organization}\label{sec:organization}
+
+I intentionally do not employ the section division 
+an experienced grammar writer will use to describe a language with rich morphology,
+for example \citet[\citechap{2}]{jacques2021grammar},
+to present Latin in a more ``content-free'' way,
+dealing with only abstract (and typologically comparative) aspects of the grammar.
+Should the organization of \citet[\citechap{2}]{jacques2021grammar} be used
+and hence constructions are described in a bottom-up way,
+with grammatical categories being introduced in discussions about smallest constructions that show them,
+\prettyref{sec:alignment-abs} would be placed in a ``core and oblique arguments'' section,
+% TODO: complete the list
+
+It can be seen that describing a language purely in terms of 
+``what happens in what construction''
+is usually cumbersome.
+\prettyref{sec:alignment-abs} is obviously too long, and deserves at least a subsection.
+But since it all happens within the clause,
+it has to be placed under the subsection about clause structure.
+\citet{jacques2021grammar}, on the other hand, introduces categories in a bottom-up manner,
+and thus there is no section devoted to the clause structure,
+so contents in \prettyref{sec:alignment-abs} and the rest of \prettyref{sec:clause-structure-abs}
+can be well split into two sections, 
+which are \citesec{2.4} and \citesec{2.5} in his book.
+On the other hand, 
+sections from \prettyref{sec:voice-abs} to \prettyref{sec:force-abs} are too short.
+They can be all inserted into \prettyref{sec:verb-inflection-abs}.
+
+\subsection{Parts of speech}
+
+\subsection{Clause structure}\label{sec:clause-structure-abs}
+
+\subsubsection{Argument structure and alignment}\label{sec:alignment-abs}
+
+Latin is a typical nominative-accusative language, both syntactically and morphologically.
+A subject can be identified for all clauses, though it is frequently omitted.
+Grammatical behaviors restricted to the subject are summarized in the following list: 
+\begin{itemize}
+    \item \emph{Case marking} (\prettyref{sec:case-abs}): 
+    nominative for finite clauses, accusative for infinitives.
+    \item \emph{}
+\end{itemize}
+
+A minimal clause -- without any adjuncts, negation, etc. -- can therefore be analyzed as 
+a subject plus a predicate,
+with the predicate headed by the predicator (which can only be filled by a verb in Latin) 
+and its internal arguments
+(the subject is the external argument).
+
+\subsubsection{Voice}\label{sec:voice-abs}
+
+Latin only has active (the canonical one) and passive voices.
+Passivization can be done morphologically in all circumstances 
+except the case of the passive perfective,
+which is realized resembling the English passive,
+i.e. via a copula and the perfect passive participle.
+
+% TODO: ditransitive
+
+\subsubsection{Polarity}\label{sec:polarity-abs}
+
+Unlike languages like Japanese, polarity is not marked morphologically in Latin.
+Latin realizes negation in a largely regular syntactic way: 
+the negation operator \corpus{n\={o}n} can be placed into the clause.
+% TODO: linear order, scope, etc.
+
+\subsubsection{\ac{tam}}\label{sec:tam-abs}
+
+Latin has the realis/irrealis contrast in mood (or modality in \ac{blt} terms), 
+which are much more frequently called as the indicative/subjective distinction.
+
+\subsubsection{Finiteness}\label{sec:finite-abs}
+
+Besides the usual canonical clauses, Latin has several nonfinite clauses -- much more than English.
+
+
+\subsubsection{Clause types and illocutionary forces}\label{sec:force-abs}
+
+The term \term{clause type} is reserved for the syntactic marking of illocutionary force in \ac{cgel}.
+Latin has three syntactically coded clause types:
+declarative, interrogative and imperative.
+The interrogative clause does not have much syntactic markedness,
+and hence is usually not considered as a separate clause type in Latin grammars.
+The imperative is restricted in TAM features:
+the realis/irrealis distinction vanishes,
+and the aspect feature is unavailable.
+
+\subsubsection{Verb inflection}\label{sec:verb-inflection-abs}
+
+Traditional grammars place the labels \term{voice}, \term{tense}, \term{mood}, etc. on the verb,
+and hence the big, big conjugation table.
+From a modern perspective, this is not quite correct:
+labels like \term{voice}, \term{tense}, \term{mood} etc. are introduced by functional heads 
+in the derivational process of the clause 
+and should be considered, in an abstract and cross-linguistic way, 
+as labels attached to the clause, not the predicator (usually filled by a verb).
+Specifically, from a cross-linguistic way,
+these labels are not to be considered as labels of verb conjugation:
+the number of conjugation forms and how to name them should be decided 
+solely with syntactic distributional tests. 
+If in clausal environment 1 and clausal environment 2,
+the verb has exactly the same appearance,
+then we say there is only one verbal conjugation form in these two environments, not two.
+It is thus in principle not appropriate to label verb conjugation forms according to 
+clausal grammatical categories.
+However, from a more practical (and describe-a-language-in-its-own-terms) perspective,
+since in Latin (and languages with rich verbal morphology, like Japhug), 
+these categories are marked on the verb and nowhere else,
+and there are never two forms identical when changing these clausal categories,
+naming verb conjugation forms with respect to the clausal environment
+is well justified.
+
+It also follows from the modern linguistic view taken here 
+that in Latin, the passive perfect forms of a lexical verb, 
+strictly speaking, do not exist, since what changes form is the copula and not the lexical verb,
+the latter being always in the perfect passive participle form.
+Nonetheless, showing these so-called ``conjugation'' form on the conjugation table 
+is more user-friendly, and this is still the standard practice taken when studying and teaching Latin.
+
+
+
+\subsubsection{Verbal derivation}\label{sec:verb-derivation-abs}
+
+\subsubsection{Constituent order in the clause}
+
+\subsection{\Acl{np}s and prepositions}
+
+\subsubsection{Unattested categories}
+
+Unlike the case in English, a NP in Latin does not have syntactic marking of definiteness,
+and hence the determiner function (and related parts of speech, like the article) is completely absent.
+Definiteness can be indirectly marked by demonstratives,
+which is also how descendants of Latin obtained articles: by grammaticalized demonstratives.
+
+\subsubsection{The head}
+
+\subsubsection{Case}\label{sec:case-abs}
+
+\subsubsection{Prepositional phrases}
+
+
+
+\subsection{Subordination}
+
+\section{Existing grammars, reference and pedagogical}
+
+\subsection{Learning Latin}
+
+\subsection{Reference grammars}
+
+Most traditional Latin grammars organize grammatical systems according to their morphological realizations.
+The reasons are summarized in \prettyref{sec:organization}.
+
+\section{Nouns}
+
+\section{\Acl{np}s}
+
+\section{Verb}
+
+\bibliographystyle{plainnat}
+\bibliography{latin-notes}
+
+\end{document}
