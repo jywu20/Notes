@@ -206,7 +206,7 @@ Working procedure:
 
 ## Nouns
 
-Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling a predicate argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the *prototype* role of nouns, and also an important criteria to recognize a noun class.
+Despite some morphological and syntactic varieties, all languages have nouns. A noun is typically a head of a phrase filling an argument slot - this distribution feature [in clauses](#inner-structure-of-clauses) is the *prototype* role of nouns, and also an important criteria to recognize a noun class.
 
 Nouns include
 - **Common nouns** that are about a class of objects
