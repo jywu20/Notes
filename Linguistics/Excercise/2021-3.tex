@@ -1,0 +1,748 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{multicol} 
+\usepackage{footnote}
+\usepackage{marginnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citefootnote}[1]{footnote~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{infobox}{Box~\ref{#1}}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=section]{infobox}{Box}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{infobox}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand*{\corpus}[1]{\emph{#1}}
+\newcommand{\translate}[1]{`#1'}
+
+\newcommand*{\vP}{\textit{v}P}
+
+\DeclareAcronym{plural}{short = PL, long = plural}
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence final particle, short = SFP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{what}{long = \term{wh}-pronoun, short = WH}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = NEG}
+\DeclareAcronym{tame}{long = {Tense, Aspect, Mood, Evidentiality}, short = TAME}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{future}{long = future, short = FUT}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Solving Problem 3 in the Eighteenth International Linguistics Olympiad (2021)}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\automath
+
+\section{Data}\label{sec:data}
+
+\begin{exe}
+
+\ex\label{ex:1} Bibani navasi yena minasina tetala tau. \\
+`One man will catch these four fish.'
+
+\ex\label{ex:2} Lekota dimdim mtona. \\
+`This white man arrived.'
+
+\ex\label{ex:3} Bikota gwadi magudiwena. \\
+`That child will arrive.'
+
+\ex\label{ex:4} Legisi waga makesiwena namwaya minana. \\
+`This old woman saw those canoes.'
+
+\ex\label{ex:5} Amtona tau lekalimati nayu bunukwa? \\
+`Which man killed two pigs?'
+
+\ex\label{ex:6} Leyamatasi teyu tauwau nunumwaya. \\
+`The old women looked after two men.'
+
+\ex\label{ex:7} Bigisi kwetala vivila minawena nakabitam. \\
+`That clever woman will see something.'
+
+\ex\label{ex:8} Navila ka’ukwa lekotasi? \\
+`How many dogs arrived?
+
+\ex\label{ex:9} Amakena waga legisesi gweguyau? \\
+`Which canoe did the chiefs see?'
+
+\ex\label{ex:10} Legisi dakuna makwena gwadi magudiwena gudimanabweta. \\
+`That beautiful child saw this stone.'
+
+\ex\label{ex:11} Kwevila lekamkwamsi dimdim mtosiwena? \\
+`How many things did those white men eat?'
+
+\ex\label{ex:12} Lekalimati natala bunukwa nagasisi guyau tokabitam. \\
+`The clever chief killed one wild pig.'
+
+\ex\label{ex:13} Navila vivila biyamatasi tau mtona? \\
+`How many women will look after this man?'
+
+\ex\label{ex:14}  Navila vivila biyamata tomwaya mtona?
+
+\ex\label{ex:15} Bikamkwamsi kweyu vivila minasina.
+
+\ex\label{ex:16} Amagudina gwadi lekota?
+
+\ex\label{ex:17} Tevila tauwau bigisesi gugwadi gudigasisi?
+
+\ex\label{ex:18} Legisesi ketala waga vivila minasiwena.
+
+\end{exe}
+
+\section{Basic partition of the clause}
+
+\subsection{Finding the verb}
+
+From \eqref{ex:2}, \eqref{ex:3}, and \eqref{ex:8}, which all have \corpus{arrive} as the main verb,
+it seems that 
+\begin{itemize}
+    \item \corpus{le-} is the past tense prefix;
+    \item \corpus{bi-} is the future tense prefix;
+    \item \corpus{-si} is the interrogative suffix.
+    \item \corpus{-kota-} means `arrive'.
+\end{itemize}
+%\marginnote{verb morphological category: anything else?}
+It is possible that the apparent verb stem carries argument indexation,
+but this is not what can be found out here.
+
+\eqref{ex:2}, \eqref{ex:3} are declarative and are verb-initial,
+while the interrogative \eqref{ex:8} is verb-final.
+It is not uncommon for the main verb to move in an interrogative clause,
+but it is also not uncommon to have \term{wh}-movement,
+so what happens in the interrogative clause is yet to be decided.
+
+The initial position in a clause may be occupied by syntactic objects other than the main verb,
+like the topic, adjuncts, etc., 
+but in the translations of data given in \prettyref{sec:data},
+it seems such constructions are absent, 
+and so we make the working hypothesis that 
+the first words in the declarative sentences in \prettyref{sec:data} are always the verbs.
+Thus, 
+\begin{itemize}
+    \item From \eqref{ex:1}, \corpus{-bani-} is \translate{catch}.
+    \item From \eqref{ex:4}, \eqref{ex:7} and \eqref{ex:10}, \corpus{-gisi-} is \translate{see}.
+    \item From \eqref{ex:5} and \eqref{ex:12}, \corpus{-kalimati-} is \translate{kill}.
+    \item From \eqref{ex:6}, \eqref{ex:13}, \eqref{ex:14}, \corpus{-yamata-} is \translate{look after}.
+\end{itemize}
+The examples \eqref{ex:6} and \eqref{ex:14}, however, does not support the previous claim that 
+\corpus{-si} is the interrogative marker:
+\eqref{ex:6} has \corpus{-si} but is not interrogative,
+while \eqref{ex:14} does not has \corpus{-si} but is interrogative.
+Now we need to reconsider the syntactic context licensing \corpus{-si}.
+For those with \corpus{-si} on the main verb,
+\begin{itemize}
+    \item \eqref{ex:6}, where both A and O are plural.
+    \item \eqref{ex:8}, where S is plural.
+    \item The potential example \eqref{ex:9}, where the verb is \corpus{legisesi}, 
+    which seems to be \corpus{le-gise-si} modified by a phonological rule.
+    The A argument is plural, while O is singular.
+    \item The potential example \eqref{ex:11}, 
+    where there is a word \corpus{lekamkwamsi} ending with \corpus{-si}.
+    \item \eqref{ex:13}, where A is plural while O is singular.
+\end{itemize}
+So it can be generalized that \corpus{-si} appears if and only if S or A is plural.
+If this is the correct generalization,
+then Kilivila has the accusative property that S and A are treated equally in argument indexation, 
+and \corpus{-si} means the subject -- S or A -- is plural.
+
+Now we need to check whether clauses without \corpus{-si} on the verb 
+always have singular subjects.
+Scanning \eqref{ex:1} to \eqref{ex:13}, we find it seems to be the case. 
+Then, from \eqref{ex:11}, \corpus{-kamkwam-} is \translate{eat}.
+
+To summarize:
+\begin{infobox}{Verb morphology and lexicon}{verb}
+    Kilivila is an accusative language, and henceforth \term{subject} is S or A.
+    Tense and number agreement with the subject are marked on the verb.
+    The verb template is 
+    \begin{center}
+        \tikzset{every picture/.style={line width=0.3pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+        %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+        %Shape: Rectangle [id:dp25115832339538713] 
+        \draw   (100,143.26) -- (150,143.26) -- (150,162) -- (100,162) -- cycle ;
+        %Shape: Rectangle [id:dp44314871587370064] 
+        \draw   (160,143.26) -- (238.67,143.26) -- (238.67,162) -- (160,162) -- cycle ;
+        %Shape: Rectangle [id:dp9625885958326557] 
+        \draw   (247.67,143.26) -- (355.33,143.26) -- (355.33,162.26) -- (247.67,162.26) -- cycle ;
+
+        % Text Node
+        \draw (125,152.63) node   [align=left] {tense};
+        % Text Node
+        \draw (199.33,152.63) node   [align=left] {verb stem};
+        % Text Node
+        \draw (301.5,152.76) node   [align=left] {subject number};
+
+
+        \end{tikzpicture}
+    \end{center}
+    The tense prefix can be the past tense \corpus{le-} or the future tense \corpus{bi-}.
+    The subject number agreement suffix is 
+    \corpus{-si} when the subject is plural,
+    and zero when the subject is singular.
+
+    Here is a list of verb stems attested:
+    \begin{multicols}{2}     
+        \begin{itemize}
+            \item \corpus{-kota-} arrive
+            \item \corpus{-bani-} catch
+            \item \corpus{-gisi-} see 
+            \item \corpus{-kalimati} kill
+            \item \corpus{-yamata-} look after
+            \item \corpus{-kamkwam-} eat
+        \end{itemize}
+    \end{multicols}
+\end{infobox}
+
+There is a remaining question not answered by \prettyref{infobox:verb}:
+the verb in \eqref{ex:9}, which may involve phonological rules.
+
+\subsection{Constituent order}
+
+Now clause-level constituents of intransitive clauses \eqref{ex:2} and \eqref{ex:3}
+can already be found out:
+\begin{exe}
+    \ex\label{ex:intransitive-constituent} Constituent order of intransitive declarative clauses
+    \begin{xlist}
+        \ex\label{ex:annotated-2} Annotation of \eqref{ex:2}
+        \gll Le-kota {[dimdim mtona]_{\text{subject}}} \\ 
+        \acs{past}-arrive  {this white man} \\
+        \glt \translate{This white man arrived}.
+        \ex\label{ex:annotated-3} Annotation of \eqref{ex:3}
+        \gll Bi-kota {[gwadi magudiwena]_{\text{subject}}} \\ 
+        \acs{future}-arrive {that child} \\
+        \glt \translate{That child will arrive}.
+    \end{xlist}
+\end{exe}
+As is noted before, Kilivila is verb-initial, 
+so VS constituent order is expected.
+
+We already know there is no interrogative marker on the verb,
+but it is still possible that the interrogative clause type has to be marked by something else, 
+possibly \term{wh}-movement.
+This seems to be the case since in \eqref{ex:5}, \eqref{ex:8}, \eqref{ex:9}, \eqref{ex:11} and \eqref{ex:13},
+the verb -- which can be identified by comparing each word with the verb template in \prettyref{infobox:verb} --
+is not at the initial position.
+Then what precedes the verb is likely to be the \term{wh}-phrase, 
+and hence the post-verbal area is filled by the remaining argument,
+so the clause-level constituents in these five clauses can be annotated:
+\begin{exe}
+    \ex\label{ex:interrogative-constituent} Constituent order of interrogative clauses 
+    \begin{xlist}
+        \ex\label{ex:annotated-5} Annotation of \eqref{ex:5}
+        \gll {[Amtona tau]_{\text{subject, \term{wh}}}} le-kalimati {[nayu bunukwa]_{\text{object}}} \\
+        {which man} \acs{past}-kill {two pigs} \\
+        \glt \translate{Which man killed two pigs?}
+
+        \ex\label{ex:annotated-8} Annotation of \eqref{ex:8}
+        \gll {[Navila ka’ukwa]_{\text{subject, \term{wh}}}} le-kota-si \\
+        {how many dogs} \acs{past}-arrive-\acs{plural} \\
+        \glt \translate{How many dogs arrived?}
+
+        \ex\label{ex:annotated-9} Annotation of \eqref{ex:9} (\corpus{-gesi-} may have undergone phonological processes)
+        \gll {[Amakena waga]_{\text{object, \term{wh}}}} le-gise-si [gweguyau]_{\text{subject}} \\
+        {which canoe} \ac{past}-see-\acs{plural} {the chiefs} \\
+        \glt \translate{What canoe did the chiefs see?}
+
+        \ex\label{ex:annotated-11} Annotation of \eqref{ex:11}
+        \gll [Kwevila] le-kamkwam-si {[dimdim mtosiwena]_{\text{subject, \term{wh}}}}  \\
+        how.many.things \acs{past}-eat-\acs{plural} {those white men} \\
+        \glt \translate{How many things did thos white men eat?}
+
+        \ex\label{ex:annotated-13} Annotation of \eqref{ex:13}
+        \gll {[Navila vivila]_{\text{subject, \term{wh}}}} bi-yamata-si {[tau mtona]_{\text{object}}}  \\
+        {how many women} \acs{future}-look.after-\acs{plural} {this man} \\
+        \glt \translate{How many women will look after this man?}
+    \end{xlist}
+\end{exe}
+
+Comparing \eqref{ex:annotated-9} and \eqref{ex:4},
+we find \corpus{waga} seems to mean \translate{canoe}, \marginnote{\corpus{waga}}
+and then the linear order of the word \corpus{waga} in \eqref{ex:4} means 
+in declarative clauses, the constituent order is VOS.
+
+Therefore, the constituent order information is summarized as the follows:
+\begin{infobox}{Clause constituent order}
+    The clausal constituent order of declarative clauses in Kilivila is VOS.
+    As for interrogative clauses, the \term{wh}-phrase is fronted.
+\end{infobox}
+
+\subsection{Partition of declarative clauses}
+
+Now all interrogative clauses and intransitive declarative clauses 
+have been divided into clausal constituents 
+in \eqref{ex:intransitive-constituent} and \eqref{ex:interrogative-constituent}.
+We need to complete the task for transitive declarative clauses.
+
+Comparing \eqref{ex:2} and \eqref{ex:11}, 
+\corpus{dimdim} is likely to mean \translate{white man}, \marginnote{\corpus{dimdim}}
+and hence we find in Kilivila NPs, 
+demonstratives follow head nouns. \marginnote{N Dem}
+Comparing \eqref{ex:7} and \eqref{ex:13}, it seems \corpus{vivila} means \translate{woman}, 
+\marginnote{\corpus{vivila}}
+and since we have the N Dem constituent order, 
+in \eqref{ex:7} the NP corresponding to \translate{that clever woman}
+is \corpus{vivila minawena nakabitam},
+and therefore we have 
+\begin{exe}
+    \ex\label{ex:annotated-7} Annotation of \eqref{ex:7}
+    \gll Bi-gisi [kwetala]_{\text{object}} {[vivila minawena nakabitam]_{\text{subject}}} \\
+    \acs{future}-see something {that clever woman} \\
+    \glt \translate{That clever woman will see something}.
+\end{exe}
+This also means we have N Dem Adj constituent order, 
+since \corpus{minawena}, by comparison with \eqref{ex:annotated-11},
+is obviously a demonstrative,
+and thus \corpus{nakabitam} has to be the adjective. \marginnote{N Dem Adj}
+
+From \eqref{ex:9} and \eqref{ex:12}, we find \corpus{guyau} means \translate{chief}, \marginnote{\corpus{guyau}}
+and the prefix \corpus{gwe-} may have plural markers or something that we are unable to decide now.
+\marginnote{\corpus{gwe-}}
+Then, since the subject in \eqref{ex:12} contains two concepts commonly marked by lexical words,
+while the object contains three,
+and there are exactly five words beside the main verb,
+the following glossing is highly plausible:
+\begin{exe}
+    \ex\label{ex:annotated-12} Annotation of \eqref{ex:12}
+    \gll Le-kalimati {[natala bunukwa nagasisi]_{\text{object}}} {[guyau tokabitam]_{\text{subject}}}  \\
+    \acs{past}-kill {one wild pig} {the clever chief} \\
+    \glt \translate{The clever chief killed one wild pig.}
+\end{exe}
+And from the above annotation, we have N Adj constituent order in NPs.
+\marginnote{N Adj}
+
+Comparing \eqref{ex:annotated-12} and \eqref{ex:1}, 
+we find \corpus{tetala} and \corpus{natala} have similar forms, \marginnote{\corpus{tetala}, \corpus{natala}}
+and a reasonable guess is 
+these two are alternants of the numeral \translate{one} 
+in different syntactic environments.
+Since Kilivila is VOS, 
+\corpus{tetala tau} in \eqref{ex:1} is likely to be a constituent filling the subject slot,
+and hence clausal constituents of \eqref{ex:1} can be recognized:
+\begin{exe}
+    \ex\label{ex:annotated-1} Annotation of \eqref{ex:1}
+    \gll Bi-bani {[navasi yena minasina]_{\text{object}}} {[tetala tau]_{\text{subject}}} \\
+    \acs{future}-catch {these four fish} {one man} \\
+    \glt \translate{One man will catch these four fish.} 
+\end{exe}
+Also, it seems numerals precede the head noun. \marginnote{Num N}
+
+Partition of \eqref{ex:4} can be seen by the N Dem fact and comparison with \eqref{ex:11}:
+\corpus{makesiwena} seems to be a demonstrative,
+and thus by the N Dem constituent order,
+we have 
+\begin{exe}
+    \ex\label{ex:annotated-4} Annotation of \eqref{ex:4}
+    \gll Le-gisi {[waga makesiwena]_{\text{object}}} {[namwaya minana]_{\text{subject}}} \\
+    \acs{past}-see {those canoes} {this old woman} \\
+    \glt \translate{This old woman saw those canoes.}
+\end{exe}
+Then it is likely that \corpus{namwaya} means \translate{old woman} as a whole. \marginnote{\corpus{namwaya}}
+In a largely same line of reasoning,
+\eqref{ex:10} is analyzed as the following:
+\begin{exe}
+    \ex\label{ex:annotated-10} Annotation of \eqref{ex:10}
+    \gll Le-gisi {[dakuna makwena]_{\text{object}}} {[gwadi magudiwena gudimanabweta]_{\text{subject}}} \\
+    \acs{past}-see {this stone} {that beatiful child} \\
+    \glt \translate{That beautiful child saw this stone.}
+\end{exe}
+
+By counting lexemes and comparison with \eqref{ex:annotated-4},
+\eqref{ex:6} can be annotated as 
+\begin{exe}
+    \ex\label{ex:annotated-6} Annotation of \eqref{ex:6}
+    \gll Le-yamata-si {[teyu tauwau]_{\text{object}}} [nunumwaya]_{\text{subject}} \\
+    \acs{past}-look.after-\acs{plural} {two men} {the old women} \\
+    \glt \translate{The old women looked after two men.} 
+\end{exe}
+
+Now all examples with known translations are divided into clause-level constituents.
+
+\section{The noun phrase}
+
+The above discussion hints a high complicated inner structure of NPs.
+In this section, we first summarize plausible variatns of the same word
+and then search for the details of the syntactic environment of each variant.
+
+\subsection{Some quick observations}
+
+\subsubsection{Variants of numerals}
+
+Here is a list of numerals attested:
+\begin{itemize}
+    \item \translate{one}: 
+    \corpus{tetala} in \corpus{tetala tau} \translate{one man} in \eqref{ex:annotated-1},
+    \corpus{natala} in \corpus{natala bunukwa nagasisi} \translate{one wild pig} \eqref{ex:annotated-12}.
+    \item \translate{two}: 
+    \corpus{nayu} in \corpus{nayu bunukwa} \translate{two pigs} in \eqref{ex:annotated-5},
+    \corpus{teyu} in \corpus{teyu tauwau} \translate{two men} \eqref{ex:annotated-6}.
+    \item There is \translate{four} hidden in \eqref{ex:annotated-1}, 
+    but currently we are unable to find it,
+    because the relative order of numerals and demonstratives are not clear yet.
+    By observing the form resemblance with demonstratives attested before, 
+    it seems \corpus{minasina} is the demonstrative,
+    so one word in \corpus{navasi yena} has to be \translate{four}.
+\end{itemize}
+
+By observing the alternation in the form of the four numerals attested,
+it seems we have \corpus{-tela} \translate{one} and \corpus{-yu} \translate{two},
+while \corpus{te-} and \corpus{na-} are prefixes marking certain grammatical categories.
+Thus \corpus{navasi} is more likely to be the numeral \translate{four}, \marginnote{\corpus{navasi}, \corpus{yena}}
+while the remaining word \corpus{yena} is \translate{fish}. 
+Thus we have the constituent order Num N Dem,
+and hence by comparison with \eqref{ex:annotated-7},
+the structure of a declarative NP is Num N Dem Adj. \marginnote{Num N Dem Adj}
+
+\subsubsection{Variants of nouns}
+
+Here is a list of nouns attested:
+\begin{itemize}
+    \item \corpus{dimdim} \translate{white man} in \eqref{ex:annotated-2}, \eqref{ex:annotated-11}.
+    \item \corpus{tau} \translate{man} in \eqref{ex:annotated-1}, \eqref{ex:annotated-5}.
+    A variant \corpus{tauwau} is found in \eqref{ex:annotated-6}.
+    \item \corpus{waga} \translate{canoe} in \eqref{ex:annotated-4}, \eqref{ex:annotated-9}.
+    \item 
+\end{itemize}
+
+\subsubsection{Variants of adjectives}\label{sec:adjectives-observe}
+
+\begin{itemize}
+    \item \corpus{gudimanabweta}: \translate{beatiful} in \eqref{ex:annotated-10}.
+    \item \corpus{tokabitam}: \translate{clever} in \eqref{ex:annotated-12}.
+    The variant \corpus{nakabitam} is found in \eqref{ex:annotated-7}.
+\end{itemize}
+
+\subsection{Demonstratives}\label{sec:demonstrative}
+
+There are two types of demonstratives attested: \acl{prox} \translate{this} and \acl{dist} \translate{that}.
+Comparing \eqref{ex:annotated-2} and \eqref{ex:annotated-13},
+we find Kilivila lacks case marking on at least the demonstrative,
+and the grammatical categories marked on the demonstrative
+are likely to be all from the head noun.
+Attested examples are summarized here,
+where the source, the form of demonstrative, and glossing of the head noun are listed:
+\begin{center}
+    \begin{tabular}{@{}ccc@{}}
+        \toprule
+                 & \acl{prox}, \translate{this} and \translate{these} & \acl{dist}, \translate{that} and \translate{those} \\ \midrule
+        singular &      
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-2}  & \corpus{mtona} & white man \\ 
+            \eqref{ex:annotated-4}  & \corpus{minana} & old woman \\
+            \eqref{ex:annotated-10} & \corpus{makwena} & stone \\
+            \eqref{ex:annotated-13} & \corpus{mtona} & man
+        \end{tabular}
+        &      
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-3}  & \corpus{magudiwena} & child \\ 
+            \eqref{ex:annotated-7}  & \corpus{minawena} & woman \\
+            \eqref{ex:annotated-10} & \corpus{magudiwena} & child
+        \end{tabular}
+        \\
+        plural   &      
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-1} & \corpus{minasina} & fish 
+        \end{tabular}
+        &      
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-4}  & \corpus{makesiwena} & canoe \\
+            \eqref{ex:annotated-11} & \corpus{mtosiwena} & white men \\ 
+        \end{tabular}
+        \\ \bottomrule
+        \end{tabular}
+\end{center}
+Here some examples without translation also provide useful information 
+about how to find morphemes in the demonstratives:
+\begin{itemize}
+    \item \corpus{minasina} in \eqref{ex:15}, which is attached to \corpus{vivila} \translate{woman};
+    \item \corpus{minasiwena} in \eqref{ex:18}, which is also attached to \corpus{vivila}.
+\end{itemize}
+
+By comparing the above attested demonstratives,
+the following facts can be found:
+\begin{itemize}
+    \item All of them end in \corpus{-na} and start with \corpus{m-}.
+    \item The morpheme \corpus{-si-} appears, if and only if the NP is plural.
+    \item It seems the distal feature is marked by \corpus{-we-}.
+    The only exception to this is \corpus{makwena} in \eqref{ex:annotated-10},
+    but the \corpus{-we-} sequence in this word possibly origins from another morpheme.
+\end{itemize}
+So now \corpus{mtona} in \eqref{ex:annotated-2} 
+and \corpus{mtosiwena} in \eqref{ex:annotated-11} can be labeled as 
+\begin{exe}
+    \ex\label{ex:masculine-try}Demonstratives pertaining to \corpus{dimdim} \translate{white man}
+    \begin{xlist}
+        \ex \gll mto-na \\
+        ???-\acs{dem} \\
+        \ex\label{ex:mto-si-we-na} \gll mto-si-we-na \\ 
+        ???-\acs{plural}-\acs{dist}-\acs{dem} \\
+    \end{xlist}
+\end{exe}
+Now the problem is what is marked by \corpus{mto-} and
+whether \corpus{mto-} can be decomposed into smaller units.
+Comparison between \eqref{ex:annotated-2}, \eqref{ex:annotated-11}, and \eqref{ex:annotated-13}
+reveals the stability of \corpus{mto-} in different argument slots 
+and with different clearly masculine nouns,
+so it is highly likely that \corpus{mto-} contains a classifier 
+corresponding to roughly the masculine noun class.
+
+Similarly, \corpus{minana} in \eqref{ex:annotated-4} and \corpus{minawena} in \eqref{ex:annotated-7} 
+can be glossed as 
+\begin{exe}
+    \ex\label{ex:feminine-try} Demonstratives pertaining to \translate{woman} and \translate{old woman} 
+    \begin{xlist}
+        \ex \gll mina-na  \\
+        ???-\acs{dem} \\
+        \ex \gll mina-we-na \\
+        ???-\acs{dist}-\acs{dem} \\
+    \end{xlist}
+\end{exe}
+And \corpus{mina-} seems to be -- or contains -- the classifier of the feminine noun class.
+The demonstrative \corpus{minasiwena} is also attested (in \eqref{ex:18}),
+and comparison between it and \eqref{ex:mto-si-we-na} 
+means the order of the distal marker and the plural marker is always 
+plural marker $>$ distal marker.
+Interestingly, \corpus{mina-si-na} -- \acs{cls}.female-\acs{plural}-\acs{dem} -- 
+also works with \translate{fish}, 
+so the latter seems to be feminine in Kilivila.
+
+Applying the above scheme to \corpus{magudiwena} and \corpus{makesiwena},
+we find \corpus{magudi-} is or contains the classifier for the noun class containing \translate{child},
+while \corpus{make-} is or contains the classifier for the noun class containing \translate{canoe}.
+Then we may further decompose the two into 
+\begin{exe}
+    \ex \begin{xlist}
+        \ex \gll ma-gudi- \\
+        \acs{dem}-\acs{cls}.child- \\
+        \ex \gll ma-ke- \\
+        \acs{dem}-\acs{cls}.canoe- \\
+    \end{xlist}
+\end{exe}
+Thus a demonstrative prefix \corpus{ma-} is distinguished.
+Thus \corpus{makwena}, 
+the apparent counterexample to the generalization that \corpus{-we-} is the distal marker,
+can be parsed as \corpus{ma-kwe-na},
+where \corpus{-kwe-} is the classifier corresponding to the stone-like noun class.
+
+Now compare this with \eqref{ex:masculine-try} and \eqref{ex:feminine-try}.
+The question: why do we see alternation in the demonstrative prefix?
+What changes \corpus{ma-} into \corpus{mi-} and \corpus{m-}?
+Since \corpus{t} is a stop and the place of articulation \corpus{n} is about the teeth,
+the alternation of the initial \corpus{ma-} may simply be a result of phonological assimilation.
+
+\begin{infobox}{Demonstratives and noun classes}{demonstratives}
+    The morphological structure of Kilivila demonstratives 
+    can be summarized as follows:
+    \begin{center}
+    \tikzset{every picture/.style={line width=0.3pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+    %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+    %Shape: Rectangle [id:dp2098168590035141] 
+    \draw   (120,163.26) -- (170,163.26) -- (170,182) -- (120,182) -- cycle ;
+    %Shape: Rectangle [id:dp027135292121464705] 
+    \draw   (183,163.26) -- (256.67,163.26) -- (256.67,182.01) -- (183,182.01) -- cycle ;
+    %Shape: Rectangle [id:dp4401824790603348] 
+    \draw   (268.67,163.26) -- (376.33,163.26) -- (376.33,182.26) -- (268.67,182.26) -- cycle ;
+    %Shape: Rectangle [id:dp3864690317654884] 
+    \draw   (386.33,163.26) -- (494,163.26) -- (494,182.26) -- (386.33,182.26) -- cycle ;
+    %Shape: Rectangle [id:dp1799623244874018] 
+    \draw   (508,163.26) -- (558,163.26) -- (558,182) -- (508,182) -- cycle ;
+
+    % Text Node
+    \draw (145,172.63) node   [align=left] {\corpus{ma-}};
+    % Text Node
+    \draw (219.83,172.64) node   [align=left] {classifier};
+    % Text Node
+    \draw (322.5,172.76) node   [align=left] {plural marker};
+    % Text Node
+    \draw (440.17,172.76) node   [align=left] {distal marker};
+    % Text Node
+    \draw (533,172.63) node   [align=left] {\corpus{-na}};
+    \end{tikzpicture}
+    \end{center}
+    When the demonstrative is a distal one,
+    the distal marker position is filled by \corpus{-we-},
+    otherwise it is zero.
+    When the head noun is plural,
+    the plural marker position is filled by \corpus{-si-},
+    otherwise it is zero.
+    The morpheme in the classifier slot corresponds to one of the following noun classes,
+    before some of which the \corpus{ma-} prefix is altered, possibly for phonological reasons:
+    \begin{itemize}
+        \item \corpus{-na-}: the feminine class, members of which include 
+        \corpus{vivila} \translate{woman}, \corpus{namwaya} \translate{old woman}, 
+        and \translate{fish}.
+        The \corpus{ma-} prefix becomes \corpus{mi-} with this classifier.
+        \item \corpus{-to-}: the masculine class, members of which include 
+        \corpus{tau} \translate{man}, \corpus{dimdim} \translate{white man}.
+        The \corpus{ma-} prefix becomes \corpus{m-} with this classifier.
+        \item \corpus{-gudi-}: the ``child'' class, 
+        members of which include \corpus{gwadi} \translate{child}.
+        \item \corpus{-ke-}: the ``canoe'' class,
+        memebers of which include \corpus{waga} \translate{canoe}.
+        \item \corpus{-kwe-}: the ``stone'' class,
+        memebers of which include \corpus{dakuna} \translate{stone}.
+    \end{itemize}
+\end{infobox}
+
+\subsection{Interrogative pronouns}
+
+In the same line of reasoning in \prettyref{sec:demonstrative},
+we list all interrogative pronouns attested here:
+\begin{center}
+    \begin{tabular}{@{}ccc@{}}
+        \toprule
+         & number interrogative: how many & interrogative determiner: which \\ \midrule
+         &
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-8} & \corpus{navila} & dog \\
+            \eqref{ex:annotated-11} & \corpus{kwevila} & -- (class: things) \\
+            \eqref{ex:annotated-13} & \corpus{navila} & woman \\
+        \end{tabular} 
+        &  
+        \begin{tabular}[c]{ccc}
+            \eqref{ex:annotated-5} & \corpus{amtona} & man \\
+            \eqref{ex:annotated-9} & \corpus{amakena} & canoe     
+        \end{tabular} 
+        \\
+          \bottomrule
+    \end{tabular}
+\end{center}
+The three number interrogatives are distinguished by similar forms 
+and by the interrogative pronoun $>$ head noun constituent order. % TODO: 疑问代词的简写是什么？
+
+The inner construction of interrogative determiners can be easily identified:
+we just need to add \corpus{a-} to the corresponding singular proximate demonstratives.
+They are glossed as 
+\begin{exe}
+    \ex \term{Which} pronouns 
+    \begin{xlist}
+        \ex \gll a-m-to-na \\
+        \acs{what}-\acs{dem}-\acs{cls}.masculine-\acs{dem} \\
+        \ex \gll a-ma-ke-na \\
+        \acs{what}-\acs{dem}-\acs{cls}.canoe-\acs{dem} \\
+    \end{xlist}
+\end{exe}
+
+The numer interrogatives have a different ending: 
+all of them end in \corpus{-vila}.
+Once this is observed,
+their inner structure is obvious:
+they are constructed by put a classifier and the \corpus{-vila} ending together.
+Besides, now we see the role of \corpus{-kwe-}: 
+it is the class of ``things'' or ``objects'', like stones.
+The \corpus{-na-} class includes both women and dogs.
+
+Here is a summary of interrogative pronouns:
+\begin{infobox}{Interrogative pronouns}{interrogative-pronoun}
+    The interrogative determiner (\translate{which}) is made by adding \corpus{a-} 
+    to the singular proximate demonstrative pertaining to the head noun.
+    The interrogative pronoun about number (\translate{how many}) is made by 
+    putting the \corpus{-vila} suffix to the classifier of the head noun.
+\end{infobox}
+
+\subsection{The structure of adjectives}
+
+Now it can be seen that classifiers appear frequently in NP dependents.
+By comparing \prettyref{infobox:demonstratives} and \prettyref{sec:adjectives-observe},
+the 
+
+\subsection{The noun phrase}
+
+\section{Result: grammar sketch}
+
+Here is a \ac{blt}-based, bottom-up grammar sketch of Kilivila.
+
+\section{Result: lexicon}
+
+\end{document}
