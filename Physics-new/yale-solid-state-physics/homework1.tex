@@ -1,0 +1,218 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[hw2-]{../2/2}[2.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Solid State Physics Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+
+\paragraph{Solution} 
+\begin{itemize}
+\item[(a)] Consider \prettyref{fig:volume-between}. Suppose there are $N$ points in an area $A$
+on a certain lattice plane.
+The volume between $A$ and its counterpart on an adjacent lattice plane is 
+\[
+    V_{\text{total}} = A d
+\]
+Now since there are $N$ points in $A$,
+there are $N$ primitive unit cells between $A$ and its counterpart, so 
+\[
+    V_{\text{total}} = N V.
+\]
+Thus 
+\begin{equation}
+    NV = Ad, \quad \text{areal density} \coloneqq \frac{N}{A} = \frac{d}{V}.
+\end{equation}
+\item[(b)] To maximize the areal density of lattice points is to maximize $d$.
+
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{lattices/lattice-distance.tex}
+    \caption{The volume between two areas on adjacent lattice planes}
+    \label{fig:volume-between}
+\end{figure}
+
+\paragraph{Solution} 
+Below I use the side length of the so-called cubes as the length unit.
+\begin{itemize}
+\item[(a)] Based-centered cubic is a Bravais lattice but the name is not on the list of 14. 
+It is not really cubic, 
+because it doesn't have the rotational symmetry around the $x$ and $y$ axes.
+It's actually a simple tetragonal lattice with $a= 1 / \sqrt{2}, c = 1$, and
+the primitive vectors are 
+\begin{equation}
+    \vb*{a}_1 = (1/2, -1/2, 0), \quad \vb*{a}_2 = (1/2, 1/2, 0), \quad \vb*{a}_3 = (0, 0, 1).
+    \label{eq:based-centered-cubic-vector}
+\end{equation}
+\item[(b)] Similar to the first case, 
+side-centered cubic is also a Bravais lattice but not cubic,
+because it also doesn't have the rotational symmetry around the $x$ and $y$ axes
+and therefore is not really ``cubic''.
+It's actually a body-centered tetragonal lattice with $a= 1 / \sqrt{2}, c = 1$.
+The primitive vectors are the same with \eqref{eq:based-centered-cubic-vector}.
+\item[(c)] The edge-centered cubic lattice has the symmetry of a cube and therefore has to be a cubic lattice.
+By counting the number of lattice points, 
+we find \prettyref{fig:unit-cell-edge-centered} shows one unit cell.
+No translation symmetry is able to turn one of the points into another,
+so the unit cell is actually a primitive one.
+Thus the edge-centered cubic lattice is actually a simple cubic lattice: 
+in each primitive unit cell,
+there are four points.
+So the edge-centered cubic lattice is not a Bravais lattice.
+It's the simple cubic lattice plus the basis shown as black (or red, or blue) in 
+\prettyref{fig:unit-cell-edge-centered}.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{lattices/edge-center-lattice.tex}
+    \caption{One unit cell of a edge centered cubic lattice}
+    \label{fig:unit-cell-edge-centered}
+\end{figure}
+
+\paragraph{Solution} In each conventional cell of the bcc lattice, 
+there are 2 lattice points, and so is the case for hcp.
+The volume of a conventional cell of the bcc lattice is $a^3$.
+In the hcp lattice, $c = 2 \sqrt{6} a / 3$,
+so the volume is 
+\[
+    \frac{\sqrt{3}}{2} a^2 \times c = \sqrt{2} a^3.
+\]
+So to keep the density invariant,
+\[
+    \sqrt{2} a_\text{hcp}^3 = a_{\text{bcc}}^3,
+\]
+and 
+\begin{equation}
+    a_{\text{hcp}} = 2^{-1/6} a_{\text{bcc}} = \SI{3.77}{\angstrom}.
+\end{equation}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] There is only one Ti atom in the cube given, 
+and obviously it's impossible to use a translation symmetry operation 
+to turn one atom into another in the cube.
+The lattice is a simple cubic lattice,
+and the primitive lattice vectors are 
+\begin{equation}
+    \vb*{a}_1 = (1, 0, 0), \quad \vb*{a}_2 = (0, 1, 0), \quad \vb*{a}_3 = (0, 0, 1).
+\end{equation}
+\item[(b)] There are five: $1/4 \times 4 = 1$ Sr atom, $1$ Ti atom, and 
+$1/2 \times 6 = 3$ O atoms.
+The coordinates of the Ti atom are $(1/2, 1/2, 1/2)$.
+The coordinates of the Sr atom are $(0, 0, 0)$.
+The coordinates of the O atoms are $(1/2, 1/2, 0), (0, 1/2, 1/2), (1/2, 0, 1/2)$.
+\item[(c)] The nearest neighbors of a Sr atom are 12 Ti atoms.
+The nearest neighbors of a Ti atom are 6 O atoms.
+The nearest neighbors of an O atom are 2 Ti atoms.
+\end{itemize}
+
+\paragraph{Solution} 
+
+\end{document}
