@@ -1,0 +1,260 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+\preauthor{\vspace{-10pt}\begin{center}}
+\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Exercise 9 in 1.1.7} (**)
+
+\paragraph{Solution} Since 
+\[
+    r^{(n)} = \beta^{(1)} \beta^{(2)} \cdots \beta^{(n)} . \beta^{(n+1)} \beta^{(n+2)} \cdots,
+\]
+we know 
+\begin{equation}
+    r^{(n)} = 0. \beta^{(n + 1)} \beta^{(n+2)} \cdots.
+\end{equation}
+Each digit of $r^{(n)}$ is 0 or 1, 
+and thus the possible range of $r^{(n)}$ is [0, 1].%
+\footnote{
+    It's actually possible to have $r^{(n)} = 1$,
+    because the binary $0.11111\cdots$ is actually $1$,
+    in the same way $0.9999\cdots = 1$ in the decimal case.
+    But the probability to have such a $r^{(n)}$ is $1/2 \times 1/2 \times \cdots = 0$.
+    That is, the event that $r^{(n)} = 1$ is possible but is a null set.
+} 
+Suppose 
+\[
+    x = 0.x^{(1)} x^{(2)} \cdots \in [0, 1],
+\]
+we have 
+\[
+    \begin{aligned}
+        P(r^{(n)} < x) &= P(\beta^{(n+1)} < x^{(1)}) + P(\beta^{(n+1)} = x^{(1)}) P(\beta^{(n+2)} < x^{(2)}) + \cdots \\
+        &= \frac{1}{2} \delta_{x^{(1)}, 1} + \frac{1}{2} \times \frac{1}{2} \delta_{x^{(2)}, 1} + \cdots \\
+        &= 0.x^{(1)} x^{(2)} \cdots = x,
+    \end{aligned}
+\]
+so $r^{(n)}$ has a uniform probabilistic distribution on $[0, 1]$.
+So the probability of $r^{(n)} < m$ i.e. $\beta^{(n)}_m = 1$ is exactly $m$,
+and therefore $\beta^{(n)}_m$ is a realization of $B_m$, regardless of what $n$ is.
+
+\paragraph{Exercise 3 in 2.2.3.1} (**)  
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] From (2.15) we have 
+\[
+    \begin{aligned}
+        \pdv{t} w(x, t) &= 
+        - \frac{1}{2} \sqrt{\frac{1}{4 \pi D t^3}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} \frac{1}{4 D t^2} 
+        (2 v_d (v_d t - x) t - (x- v_d t)^2 ) \\
+        &= - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        \left( \frac{1}{2 t} + \frac{(v_d t - x) (v_d t + x)}{4 D t^2} \right),
+    \end{aligned}
+\]
+\[
+    \begin{aligned}
+        \pdv{x}w(x, t) &= - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        \frac{x - v_d t}{2 D t},
+    \end{aligned}
+\]
+and 
+\[
+    \begin{aligned}
+        \pdv[2]{x}w(x, t) &= - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        \left(
+            \frac{1}{2 D t} - \left( \frac{x - v_d t}{2 D t} \right)^2
+        \right),
+    \end{aligned}
+\]
+The RHS of the Smoluchowski equation is 
+\[
+    \begin{aligned}
+        D \pdv[2]{w}{x} - v_d \pdv{w}{x} &= - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        \left(
+            \frac{1}{2 t} - \frac{(x - v_d t)^2}{4 D t^2} - v_d \frac{x - v_d t}{2 D t}
+        \right) \\
+        &= - \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} 
+        \left(
+            \frac{1}{2 t} - \frac{x^2 - v_d^2 t^2}{4 D t^2}
+        \right),
+    \end{aligned}
+\]
+so we have 
+\[
+    \pdv{x}w(x, t) = D \pdv[2]{w}{x} - v_d \pdv{w}{x} .
+\]
+
+\item[(b)] The initial condition is 
+\[
+    \lim_{t \to 0} w = \delta(x),
+\]
+which can be imposed to (2.26) by adding an ``impact'':
+\begin{equation}
+    \pdv{w}{t} = D \pdv[2]{w}{x} - v_d \pdv{w}{x} + \delta(x) \delta(t).
+\end{equation}
+Now by Fourier transformation we have 
+\[
+    \begin{aligned}
+        w(x, t) &= \int \frac{\dd{k} \dd{\omega}}{(2\pi)^2} \ee^{- \ii (\omega t - k x)} \tilde{w}(k, \omega),  \\
+        - \ii \omega \tilde{w} &= D (\ii k)^2 \tilde{w} - \ii k v_d \tilde{w}  + 1.
+    \end{aligned}
+\]
+We find 
+\[
+    \tilde{w} = \frac{1}{- \ii \omega + k^2 D + \ii k v_d},
+\]
+and thus 
+\[
+    w(x, t) = \int \frac{\dd{k} \dd{\omega}}{(2\pi)^2} \ee^{- \ii (\omega t - k x)}  \frac{1}{- \ii \omega + k^2 D + \ii k v_d}.
+\]
+We first complete the integral over $\omega$, with the following contour:
+\[
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+        %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+        
+        %Straight Lines [id:da9297518667832358] 
+        \draw    (139.5,107) -- (397.5,107) ;
+        \draw [shift={(399.5,107)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+        %Straight Lines [id:da9150191168439286] 
+        \draw    (206.75,217.85) -- (206.75,80.43) ;
+        \draw [shift={(206.75,78.43)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+        %Straight Lines [id:da9914740440795959] 
+        \draw    (241,147) ;
+        \draw [shift={(241,147)}, rotate = 0] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]      (0, 0) circle [x radius= 3.35, y radius= 3.35]   ;
+        %Straight Lines [id:da5103977712607115] 
+        \draw  [dash pattern={on 4.5pt off 4.5pt}]  (142,117) -- (393.5,117) ;
+        %Shape: Arc [id:dp04340597399658641] 
+        \draw  [draw opacity=0][dash pattern={on 4.5pt off 4.5pt}] (393.46,114.38) .. controls (393.49,115.38) and (393.51,116.39) .. (393.5,117.4) .. controls (393.01,171.72) and (336.32,215.25) .. (266.87,214.63) .. controls (198.23,214.02) and (142.81,170.51) .. (142,117.05) -- (267.75,116.28) -- cycle ; \draw  [dash pattern={on 4.5pt off 4.5pt}] (393.46,114.38) .. controls (393.49,115.38) and (393.51,116.39) .. (393.5,117.4) .. controls (393.01,171.72) and (336.32,215.25) .. (266.87,214.63) .. controls (198.23,214.02) and (142.81,170.51) .. (142,117.05) ;  
+        
+        % Text Node
+        \draw (250,144.4) node [anchor=north west][inner sep=0.75pt]    {$-\ii k^{2} D+kv_{d}$};
+        
+        
+        \end{tikzpicture}    
+\]
+\[
+    \begin{aligned}
+        \int \dd{\omega} \ee^{- \ii (\omega t - k x)} \frac{1}{\omega + \ii D k^2 - k v_d} = - 2\pi \ii \ee^{- \ii ( - \ii k^2 D t + k v_d t - kx )}.
+    \end{aligned}
+\]
+Thus 
+\[
+    \begin{aligned}
+        w(x, t) &= \frac{\ii}{(2\pi)^2} \int \dd{k} (- 2\pi \ii) \ee^{- \ii ( - \ii k^2 D t + k v_d t - kx )} \\
+        &= \frac{1}{2\pi} \int \dd{k} \ee^{- k^2 D t - \ii k (v_d t - x)} \\
+        &= \frac{1}{2\pi} \cdot \sqrt{\frac{2\pi}{2 D t}} \ee^{\frac{1}{2} \frac{1}{2 D t} (- \ii (v_d t - x))^2} \\
+        &= \sqrt{\frac{1}{4 \pi D t}} \ee^{- \frac{(x - v_d t)^2}{4 D t}} .
+    \end{aligned}
+\]
+This is exactly (2.15).
+
+\end{itemize}
+
+\end{document}
