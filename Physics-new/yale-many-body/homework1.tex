@@ -109,10 +109,209 @@
 
 \maketitle
 
+\paragraph{Problem 1}
+
+\paragraph{Solution} \begin{itemize}
+\item[1.] We make the Trotter decomposition:
+\begin{equation}
+    \begin{aligned}
+        \mel{\alpha_f}{\ee^{- \ii H(t_f - t_i)}}{\alpha_i} &= \lim_{N \to \infty}
+        \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N \mel{\alpha_j}{\ee^{- \ii \Delta t H}}{\alpha_{j-1}} \\
+        &= \lim_{N\to \infty} \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N 
+        \ee^{- \ii \Delta t \omega \alpha_{j-1}^* \alpha_{j-1}} \braket*{\alpha_j}{\alpha_{j-1}} \\
+        &= \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N 
+        \ee^{- \ii \Delta t \omega \alpha_{j-1}^* \alpha_{j-1}}
+        \ee^{- \frac{1}{2} (\abs{\alpha_j}^2 + \abs{\alpha_{j-1}}^2) + \alpha_j^* \alpha_{j-1}} ,
+    \end{aligned}
+\end{equation}
+where $\Delta \tau = (t_f - t_i) / N$, $\alpha_N = \alpha_f$,
+and $\alpha_0 = \alpha_i$.
+
+\item[2.] To continue, we can use the condition that $\alpha_j$ and $\alpha_{j-1}$ is close to each other 
+and make the following derivation: 
+\[
+    \begin{aligned}
+        \mel{\alpha_f}{\ee^{- \ii H(t_f - t_i)}}{\alpha_i} 
+        &= \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N 
+        \ee^{- \ii \Delta t \omega \alpha_{j-1}^* \alpha_{j-1}}
+        \ee^{- \alpha^*_j \alpha_j + \alpha_j^* \alpha_{j-1}} \\ 
+        &= \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N 
+        \ee^{- \ii \Delta t \omega \alpha_{j-1}^* \alpha_{j-1} - \alpha_j^* (\alpha_j - \alpha_{j-1})} \\
+        &= \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \prod_{j=1}^N 
+        \ee^{\ii \Delta t (\ii \alpha_j^* (\alpha_j - \alpha_{j-1}) / \Delta t - \omega \alpha_{j-1}^* \alpha_{j-1}) } \\
+        &= \lim_{N \to \infty} \left( \prod_{j=1}^{N-1} \int \frac{\dd{\alpha_j}}{\pi} \right)
+        \ee^{\ii \sum_j \Delta t (\ii \alpha_j^* (\alpha_j - \alpha_{j-1}) / \Delta t - \omega \alpha_{j-1}^* \alpha_{j-1}) },
+    \end{aligned}
+\]
+so after taking the continuous limit, we get 
+\begin{equation}
+    \mel{\alpha_f}{\ee^{- \ii H (t_f - t_i)}}{\alpha_i} = \int \mathcal{D} \alpha 
+    \ee^{\ii \int_{t_i}^{t_f} \dd{t} (\ii \alpha^* \dot{\alpha} - \omega \abs{\alpha}^2 )}.
+\end{equation}
+So the Lagrangian is 
+\begin{equation}
+    L = \ii \alpha^* \dot{\alpha} - \omega \abs{\alpha}^2.
+    \label{eq:lagrangian-oscillator}
+\end{equation}
+
+\item[3.] By putting 
+\begin{equation}
+    \alpha = \sqrt{\frac{m \omega}{2}} (x + \ii p / m \omega) 
+\end{equation}
+into \eqref{eq:lagrangian-oscillator}, we get 
+\[
+    \begin{aligned}
+        L &= \ii \frac{m \omega}{2} \left( x - \frac{\ii p}{m \omega} \right) 
+        \left( \dot{x} + \frac{\ii \dot{p}}{m \omega} \right) 
+        - \omega \frac{m \omega}{2} \left( x - \frac{\ii p}{m \omega} \right) 
+        \left( x + \frac{\ii p}{m \omega} \right) \\
+        &= \ii \frac{m \omega}{2} \left( x - \frac{\ii p}{m \omega} \right) 
+        \left( \dot{x} + \frac{\ii \dot{p}}{m \omega} \right) 
+        - \frac{p^2}{2m} - \frac{1}{2} m \omega^2 x^2.
+    \end{aligned}
+\]
+By integration by parts, we have 
+\[
+    \dot{p} \left( x - \frac{\ii p}{m \omega} \right) 
+    = \dv{t} \left( px - \frac{\ii p^2}{m \omega} \right) 
+    - p \left( \dot{x} - \frac{\ii \dot{p}}{m \omega} \right),
+\]
+and thus 
+\[
+    \begin{aligned}
+        &\quad \ii \frac{m \omega}{2} \left( x - \frac{\ii p}{m \omega} \right) 
+        \left( \dot{x} + \frac{\ii \dot{p}}{m \omega} \right) \\
+        &= \ii \frac{m \omega}{2} \left( x \dot{x} - \frac{\ii}{m \omega} p \dot{x} + \frac{\ii}{m \omega} \left( \dv{t} \left( px - \frac{\ii p^2}{m \omega} \right) 
+        - p \left( \dot{x} - \frac{\ii \dot{p}}{m \omega} \right) \right) \right) \\
+        &= \frac{\ii m \omega}{2} \left( - \frac{2 \ii}{m \omega} p \dot{x} + 
+        \dv{t} \left( x^2 - \frac{p^2}{m^2 \omega^2} \right) \right) \\
+        &= p \dot{x} + \text{total time derivative}.
+    \end{aligned}
+\]
+So we have 
+\begin{equation}
+    L = p \dot{x} - \frac{p^2}{2m} - \frac{1}{2} m \omega^2 x^2 + \text{total time derivative}.
+\end{equation}
+
+\end{itemize}
+
+\paragraph{Problem 2} 
+
+\paragraph{Solution} \begin{itemize}
+\item[1.] The discrete path integral is 
+\[
+    \begin{aligned}
+        \mel{\vb*{x}_f}{\ee^{- \ii H t}}{\vb*{x}_i} &= 
+        \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \dd[3]{\vb*{x}_j} 
+        \prod_{j=1}^N \mel{\vb*{x}_j}{\ee^{- \ii \Delta t H}}{\vb*{x}_{j-1}} \\
+        &= \lim_{N \to \infty} \prod_{j=1}^{N-1} \int \dd[3]{\vb*{x}_j} 
+        \prod_{j=1}^N \mel{\vb*{x}_j}{\ee^{- \ii \Delta t ( 
+            \hat{\vb*{p}}^2  - \hat{\vb*{p}} \cdot \vb*{A}(\vb*{x}_{j-1}) 
+            - \vb*{A}(\vb*{x}_j) \cdot \hat{\vb*{p}} + \vb*{A}(\vb*{x}_{j-1})^2
+        ) / 2m}}{\vb*{x}_{j-1}}.
+    \end{aligned}
+\]
+Now we introduce a $\vb*{p}$ variable to eliminate the momentum operator:
+\[
+    \begin{aligned}
+        &\quad \mel{\vb*{x}_j}{\ee^{- \ii \Delta t ( 
+            \hat{\vb*{p}}^2  - \hat{\vb*{p}} \cdot \vb*{A}(\vb*{x}_{j-1}) 
+            - \vb*{A}(\vb*{x}_j) \cdot \hat{\vb*{p}} + \vb*{A}(\vb*{x}_{j-1})^2
+        ) / 2m}}{\vb*{x}_{j-1}} \\
+        &= \int \dd[3]{\vb*{p}} \braket*{\vb*{x}_j}{\vb*{p}}
+        \mel{\vb*{p}}{\ee^{- \ii \Delta t ( 
+            \hat{\vb*{p}}^2  - \hat{\vb*{p}} \cdot \vb*{A}(\vb*{x}_{j-1}) 
+            - \vb*{A}(\vb*{x}_j) \cdot \hat{\vb*{p}} + \vb*{A}(\vb*{x}_{j-1})^2
+        ) / 2m}}{\vb*{x}_{j-1}} \\
+        &= \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \ee^{\ii \vb*{p} \cdot \vb*{x}_j}
+        \ee^{- \ii \Delta t ( 
+            {\vb*{p}}^2  - {\vb*{p}} \cdot \vb*{A}(\vb*{x}_{j-1}) 
+            - \vb*{A}(\vb*{x}_j) \cdot {\vb*{p}} + \vb*{A}(\vb*{x}_{j-1})^2
+        ) / 2m}
+        \ee^{- \ii \vb*{p} \cdot \vb*{x}_{j-1}} \\
+        &= \ee^{- \ii \Delta t \vb*{A}(\vb*{x}_{j-1})^2 / 2m} 
+        \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \ee^{- \frac{1}{2} \frac{\ii \Delta t}{m} \vb*{p}^2}
+        \ee^{\ii \vb*{p} \cdot \left(
+            \vb*{x}_j - \vb*{x}_{j-1} +
+            \frac{\Delta t}{2m} (\vb*{A} (\vb*{x}_j) + \vb*{A}(\vb*{x}_{j-1}) )
+        \right)} \\
+        &= \ee^{- \ii \Delta t \vb*{A}(\vb*{x}_{j-1})^2 / 2m} \frac{1}{(2\pi)^3} \sqrt{\frac{(2\pi)^3}{(\ii \Delta t / m)^3}} \ee^{- \frac{1}{2} \frac{m}{\ii \Delta t} \left(
+            \vb*{x}_j - \vb*{x}_{j-1} +
+            \frac{\Delta t}{2m} (\vb*{A} (\vb*{x}_j) + \vb*{A}(\vb*{x}_{j-1}) )
+        \right)^2 } \\
+        &\approx \sqrt{\frac{- \ii m^3}{(2\pi)^3 \Delta t^3}} \ee^{\ii \Delta t \frac{m}{2} 
+        \left(\frac{(\vb*{x}_j - \vb*{x}_{j-1})^2}{\Delta t^2} 
+        + \frac{\vb*{x}_j - \vb*{x}_{j-1}}{\Delta t} \cdot \frac{\vb*{A}(\vb*{x}_j) + \vb*{A}(\vb*{x}_{j-1})}{2}\right)}.
+    \end{aligned}
+\]
+Here in the last line we make the approximation that $\vb*{A}(\vb*{x}_j)$ and $\vb*{A}(\vb*{x}_{j-1})$
+are close to each other,
+so the two $\vb*{A}^2$ terms cancel with each other.
+So the final discrete path integral is 
+\begin{equation}
+    \begin{aligned}
+        \mel{\vb*{x}_f}{\ee^{- \ii H t}}{\vb*{x}_i} &= 
+        \lim_{N \to \infty} \prod_{j=1}^{N-1} \left( \frac{- \ii m^3}{(2\pi)^3 \Delta t^3} \right)^{N/2}
+        \int \dd[3]{\vb*{x}_j} \\
+        &\quad \quad \cdot \ee^{\sum_{j=1}^N \ii \Delta t 
+            \left( \frac{m}{2}  \frac{(\vb*{x}_j - \vb*{x}_{j-1})^2}{\Delta t^2} 
+            + \frac{\vb*{x}_j - \vb*{x}_{j-1}}{\Delta t} \cdot \frac{\vb*{A}(\vb*{x}_j) + \vb*{A}(\vb*{x}_{j-1})}{2}\right)}.
+    \end{aligned}
+    \label{eq:magnetic-path-integral-1}
+\end{equation}
+
+\item[2.] The derivation is largely the same, but now in each time stp,
+the $- 2 \hat{\vb*{p}} \cdot \vb*{A}(\vb*{x})$ term 
+results in $- 2 \hat{\vb*{p}} \cdot \vb*{A}(\vb*{x}_{j-1})$,
+and the result is 
+\begin{equation}
+    \begin{aligned}
+        \mel{\vb*{x}_f}{\ee^{- \ii H t}}{\vb*{x}_i} &= 
+        \lim_{N \to \infty} \prod_{j=1}^{N-1} \left( \frac{- \ii m^3}{(2\pi)^3 \Delta t^3} \right)^{N/2}
+        \int \dd[3]{\vb*{x}_j} \\
+        &\quad \quad \cdot \ee^{\sum_{j=1}^N \ii \Delta t 
+            \left(\frac{m}{2} \frac{(\vb*{x}_j - \vb*{x}_{j-1})^2}{\Delta t^2} 
+            + \frac{\vb*{x}_j - \vb*{x}_{j-1}}{\Delta t} \cdot \vb*{A}(\vb*{x}_{j-1}) + \frac{\ii}{2m} \div{\vb*{A} (\vb*{x}_{j-1})} \right)}.
+    \end{aligned}
+    \label{eq:magnetic-path-integral-2}
+\end{equation}
+
+\item[3.] We make the following replacements:
+\[
+    \frac{(\vb*{x}_j - \vb*{x}_{j-1})^2}{\Delta t^2} \longrightarrow \dot{\vb*{x}}^2, \quad 
+    \sum_j \Delta t = \int \dd{t},
+\]
+and from \eqref{eq:magnetic-path-integral-1} we get 
+\begin{equation}
+    \mel{\vb*{x}_f}{\ee^{- \ii H t}}{\vb*{x}_i} = \int \fd{\vb*{x}} \ee^{\ii \int_{t_i}^{t_f} \dd{t}
+    \left(  \frac{1}{2} m \dot{\vb*{x}}^2 + \dot{\vb*{x}} \cdot \vb*{A}\right) },
+\end{equation} 
+and from \eqref{eq:magnetic-path-integral-2} we get 
+\begin{equation}
+    \mel{\vb*{x}_f}{\ee^{- \ii H t}}{\vb*{x}_i} = \int \fd{\vb*{x}} \ee^{\ii \int_{t_i}^{t_f} \dd{t}
+    \left(  \frac{1}{2} m \dot{\vb*{x}}^2 + \dot{\vb*{x}} \cdot \vb*{A} + \frac{\ii}{2m} \div{\vb*{A}} \right) }.
+\end{equation}
+So for the first path integral the Lagrangian is 
+\begin{equation}
+    L = \frac{1}{2} m \dot{\vb*{x}}^2 + \dot{\vb*{x}} \cdot \vb*{A},
+\end{equation}
+while for the second, it is 
+\begin{equation}
+    L = \frac{1}{2} m \dot{\vb*{x}}^2 + \dot{\vb*{x}} \cdot \vb*{A} + \frac{\ii}{2m} \div{\vb*{A}}.
+\end{equation}
+
+\item[4.] 
+
+\end{itemize}
+
+\paragraph{Problem 3}
+
+\paragraph{Solution} 
+
 \paragraph{Problem 4} 
 
 \paragraph{Solution} \begin{itemize}
-\item[(a)] We do the Trotter decomposition again:
+\item[1.] We do the Trotter decomposition again:
 \[
     \mel{\vb*{k}_f}{\ee^{- \ii H t}}{\vb*{k}_i} = \lim_{N \to \infty}
     \prod_{j=1}^{N-1} \int \frac{V}{(2\pi)^3} \dd[3]{\vb*{k}_j} \cdot \prod_{j=1}^{N} 
@@ -154,15 +353,123 @@ and the Gaussian integral on the RHS can be evaluated as
 \]
 Thus 
 \[
-    \mel{\vb*{k}_f}{\ee^{- \ii H t}}{\vb*{k}_i} = \lim_{N \to \infty} \mathcal{N} \prod_{j=1}^{N-1} 
-    \int \dd[3]{\vb*{k}_j} \frac{1}{V_{\text{u.c.}}} \int \dd[3]{\vb*{r}} u^*
+    \begin{aligned}
+        \mel{\vb*{k}_f}{\ee^{- \ii H t}}{\vb*{k}_i} &= \lim_{N \to \infty} \mathcal{N} \prod_{j=1}^{N-1} 
+        \int \dd[3]{\vb*{k}_j} \ee^{- \ii \Delta t \epsilon_{\vb*{k}_{j-1}}} \ee^{\frac{\ii \Delta t \alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2}
+        \braket*{u_{\vb*{k}_j}}{u_{\vb*{k}_{j-1}}} \\
+        &= \lim_{N \to \infty} \mathcal{N} \prod_{j=1}^{N-1} 
+        \int \dd[3]{\vb*{k}_j} \ee^{- \ii \Delta t \epsilon_{\vb*{k}_{j-1}}} \ee^{\frac{\ii \Delta t \alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2}
+        (1 - \Delta t \dot{\vb*{k}} \cdot \mel*{u_{\vb*{k}_{j}}}{\grad_{\vb*{k}_{j}}}{u_{\vb*{k}_{j}}}) \\
+        &= \lim_{N \to \infty} \mathcal{N} \prod_{j=1}^{N-1} 
+        \int \dd[3]{\vb*{k}_j} \ee^{- \ii \Delta t \epsilon_{\vb*{k}_{j-1}} + \frac{\ii \Delta t \alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2 - \Delta t \dot{\vb*{k}} \cdot \mel*{u_{\vb*{k}_{j}}}{\grad_{\vb*{k}_{j}}}{u_{\vb*{k}_{j}}}} \\
+        &= \lim_{N \to \infty}  \left(\mathcal{N} \prod_{j=1}^{N-1} 
+        \int \dd[3]{\vb*{k}_j}\right) \ee^{\ii \Delta t (\sum_{j} - \epsilon_{\vb*{k}_{j-1}} + \frac{ \alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2 + \ii \dot{\vb*{k}} \cdot \mel*{u_{\vb*{k}_{j}}}{\grad_{\vb*{k}_{j}}}{u_{\vb*{k}_{j}}})}.
+    \end{aligned}
 \]
-For 
 Putting all normalization factors into the measure, we get 
 \begin{equation}
-    \mel{\vb*{k}_f}{\ee^{- \ii H t}}{\vb*{k}_i} = \int \mathcal{D} \vb*{k} 
+    \begin{aligned}
+        \mel{\vb*{k}_f}{\ee^{- \ii H t}}{\vb*{k}_i} = \int \mathcal{D} \vb*{k} \ee^{\ii \int_i^f \dd{t} L_{\text{eff}}}, \\
+        L_{\text{eff}} = \dot{\vb*{k}} \cdot \vb*{\mathcal{A}} + \frac{\alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2 - \epsilon_{\vb*{k}}.
+    \end{aligned}
 \end{equation}
-\item[] 
+So we find 
+\begin{equation}
+    \mathcal{F}(\vb*{k}, \dot{\vb*{k}}) = \frac{\alpha}{2} (\dot{\vb*{k}} - \vb*{E})^2 - \epsilon_{\vb*{k}}.
+\end{equation}
+
+\item[2.] We have 
+\begin{equation}
+    \vb*{\pi} = \pdv{L_{\text{eff}}}{\dot{\vb*{k}}} = \vb*{\mathcal{A}} + \alpha (\dot{\vb*{k}} - \vb*{E}).
+\end{equation}
+So 
+\[
+    \begin{aligned}
+        H_{\text{eff}} &= \dot{\vb*{k}} \cdot \vb*{\pi} - L_{\text{eff}} \\
+        &= \frac{1}{2} \alpha \dot{\vb*{k}}^2 - \frac{1}{2} \alpha \vb*{E}^2 + \epsilon_{\vb*{k}}.
+    \end{aligned}
+\]
+Replacing $\dot{\vb*{k}}$ by $\vb*{\pi}$, 
+we get 
+\[
+    \begin{aligned}
+        H_{\text{eff}} &= \frac{1}{2} \alpha \left( \frac{\vb*{\pi} - \vb*{\mathcal{A}}}{\alpha} + \vb*{E} \right)^2
+        - \frac{1}{2} \alpha \vb*{E}^2 + \epsilon_{\vb*{k}} \\
+        &= \frac{(\vb*{\pi} - \vb*{\mathcal{A}})^2}{2 \alpha} + (\vb*{\pi} - \vb*{\mathcal{A}}) \cdot \vb*{E} + \epsilon_{\vb*{k}}.
+    \end{aligned}
+\]
+So the answer is 
+\begin{equation}
+    H_{\text{eff}} = \frac{(\vb*{\pi} - \vb*{\mathcal{A}})^2}{2 \alpha} + (\vb*{\pi} - \vb*{\mathcal{A}}) \cdot \vb*{E} + \epsilon_{\vb*{k}}.
+\end{equation}
+
+\item[3.] We can interpret $-\vb*{\pi}$ as some sort of ``position'',
+because 
+\[
+    \comm{\vb*{k}}{\vb*{\pi}} = 1 \Leftrightarrow \comm{- \vb*{\pi}}{\vb*{k}} = 1,
+\]
+so we replace $\vb*{\pi}$ by $- \vb*{x}$, and thus in the $\alpha \to \infty$ limit, we have
+\begin{equation}
+    H_{\text{eff}} = - (\vb*{x} + \vb*{\mathcal{A}}) \cdot \vb*{E} + \epsilon_{\vb*{k}}.
+\end{equation}
+
+\item[4.] We have 
+\[
+    \dot{\vb*{x}} = \pdv{H_{\text{eff}}}{\vb*{k}} = \grad_{\vb*{k}} \epsilon_{\vb*{k}} - \grad_{\vb*{k}} (\vb*{E} \cdot \vb*{\mathcal{A}}).
+\]
+By vector analysis formula, and by the condition that $\vb*{E}$ is a constant,
+we have 
+\[
+    \grad_{\vb*{k}} (\vb*{E} \cdot \mathcal{\vb*{A}}) = \vb*{E} \times (\grad_{\vb*{k}} \times \vb*{\mathcal{A}}),
+\]
+so finally we get
+\begin{equation}
+    \dot{\vb*{x}} = \grad_{\vb*{k}} \epsilon_{\vb*{k}} - \vb*{E} \times \vb*{\Omega},
+    \label{eq:x-eom}
+\end{equation}
+where 
+\begin{equation}
+    \vb*{\Omega} = \grad_{\vb*{k}} \times \vb*{\mathcal{A}}.
+\end{equation}
+Also 
+\begin{equation}
+    \dot{\vb*{k}} = - \pdv{H_{\text{eff}}}{\vb*{x}} = \vb*{E}.
+    \label{eq:k-eom}
+\end{equation}
+
+\item[5.] From \eqref{eq:x-eom} and \eqref{eq:k-eom} we have%
+\footnote{
+    Here we assume there is a very weak electric field $\vb*{E}$,
+    so we can put \eqref{eq:k-eom} and \eqref{eq:x-eom} into one equation,
+    and then we let $\vb*{E} \to 0$.
+}
+\[
+    \dot{\vb*{x}} = - \vb*{E} \times \vb*{\Omega} = - \dot{\vb*{k}} \times \vb*{\Omega}, 
+\]
+and therefore 
+\begin{equation}
+    \vb*{\Omega} \times \dot{\vb*{x}} = - \Omega^2 \dot{\vb*{k}} + (\vb*{\Omega} \cdot \dot{\vb*{k}}) \vb*{\Omega}.
+    \label{eq:eom-iqhe}
+\end{equation}
+On the other hand, the classical EOM is (here $e = 1$)
+\begin{equation}
+    \dot{\vb*{p}} = - \dot{\vb*{x}} \times \vb*{B}.
+\end{equation}
+So 
+\begin{equation}
+    \vb*{\Omega} = \Omega_0 \vu*{z}, \quad \Omega_0 = \frac{1}{B}.
+\end{equation}
+
+\item[6.] The size of the first Brillouin zone is 
+\[
+    \frac{(2\pi)^2}{2\pi / B} = 2\pi B.
+\]
+So 
+\[
+    2\pi C = \int \dd[2]{\vb*{k}} \Omega = 2\pi B \cdot \Omega_0 = 2\pi,
+\]
+and thus the Chern number of the Landau level is 1.
+
 \end{itemize}
 
 \end{document}
