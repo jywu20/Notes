@@ -439,6 +439,20 @@ Thus
 \begin{equation}
     S = - k_{\text{B}} \ln Z - \frac{1}{T} \sum_i p_i E_i = - k_{\text{B}} \ln Z - \frac{\expval*{E}}{T}.
 \end{equation}
+On the other hand, we have 
+\[
+    \begin{aligned}
+        \sum_i p_i \ln p_i &= 
+        \sum_i p_i
+        \underbrace{\left( - \frac{1}{k_{\text{B}} T} \sum_i E_i - \ln Z \right)}_{\ln p_i} \\
+        &= - \frac{1}{k_{\text{B}} T} \expval{E} - \ln Z,
+    \end{aligned}
+\]
+so we get 
+\begin{equation}
+    S = - k_{\text{B}} \sum_i p_i \ln p_i = k_{\text{B}} \ln 2 \times H.
+    \label{eq:shannon-canonical}
+\end{equation}
 
 \item[(c)] In the high temperature limit $E_i / k_{\text{B}} T \to 0$ for every $E_{i}$,
 so energy is no longer important in determining the probabilistic distribution 
@@ -469,10 +483,97 @@ so
 \]
 Thus 
 \begin{equation}
-    \lim_{N \to \infty} \frac{1}{N} S(N, \mathcal{E}) = k_{\text{B}} \ln 2 = k_{\text{B}} \ln 2 \times S_{\text{Shannon}} (\mathrm{B}_{1/2}).
+    \lim_{N \to \infty} \frac{1}{N} S(N, \mathcal{E}) = k_{\text{B}} \ln 2.
 \end{equation}
 
-\item[(d)] 
+\item[(d)] An output of $E$ -- we denote it as $\epsilon$ -- may be decomposed into
+\begin{equation}
+    \epsilon = \sum_i n_i \xi_i,
+\end{equation}
+so its probability is 
+\begin{equation}
+    p(\epsilon) = \Omega p_1^{n_1} p_2^{n_2} \cdots p_M^{n_M},
+\end{equation}
+where 
+\begin{equation}
+    \sum_{i} n_i = N,
+    \label{eq:total-event-number}
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \Omega &= \binom{N}{n_1} \binom{N - n_1}{N - n_1 - n_2} \cdots \binom{N - n_1 - \cdots - n_{M-1}}{n_M} \\
+        &= \frac{N!}{(N-n_1)! n_1!} \frac{(N - n_1)!}{(N - n_1 - n_2)! n_2!} 
+        \cdots \frac{(N - n_1 - \cdots - n_{M-1})!}{n_{M}! 0!} \\
+        &= \frac{N!}{n_1! n_2! \cdots n_M!}.
+    \end{aligned}
+\end{equation}
+Since $N$ is large, we view $\{n_i\}$ as continuous variables.
+Then, to maximize $p(\epsilon)$, we can maximize
+\begin{equation}
+    \ln p(\epsilon) = \ln \Omega + \sum_{i} n_i \ln p_i
+\end{equation}
+under the constraint of \eqref{eq:total-event-number}.
+The expression of $\ln \Omega$ is given by the Stirling approximation:
+\begin{equation}
+    \begin{aligned}
+        \ln \Omega &= \ln N! - \sum_i \ln n_i! \\
+        &\approx N \ln N - N - \sum_i (n_i \ln n_i - n_i) \\
+        &= N \ln N - \sum_i n_i \ln n_i.
+    \end{aligned}
+\end{equation}
+By the method of Lagrange multiplier, the minimum is given by the equations 
+\[
+    \begin{aligned}
+        0 &= \pdv{n_j} \left( \ln \Omega + \sum_i n_i \ln p_i - \lambda \left( \sum_i n_i - N \right)  \right) \\
+        &= - \ln n_j - 1 + \ln p_j - \lambda.
+    \end{aligned}
+\] 
+This means there is a constant $C$ such that for all $i$, we have 
+\[
+    n_i = C p_i.
+\]
+By \eqref{eq:total-event-number}, we know 
+\begin{equation}
+    n_i = N p_i.
+\end{equation}
+So 
+\begin{equation}
+    \begin{aligned}
+        \ln \Omega(N, \mathcal{E}) &= N \ln N - \sum_i N p_i \ln (N p_i) \\
+        &= N \ln N - N \sum_i p_i \ln p_i - \sum_i N p_i \ln N = - N \sum_i p_i \ln p_i.
+    \end{aligned}
+    \label{eq:omega-max}
+\end{equation}
+So in the $N \to \infty$ limit, under $\log_2$, \eqref{eq:omega-max} means  
+\begin{equation}
+    \lim_{N \to \infty } \frac{1}{N} \log_2 \Omega(N, \mathcal{E}) = - \sum_i p_i \log p_i \eqqcolon H(X).
+\end{equation}
+
+The Boltzmann entropy of $(N, \mathcal{E})$ is 
+\begin{equation}
+    S(N, \mathcal{E}) = k_{\text{B}} \ln \Omega(N, \mathcal{E}) = - k_{\text{B}} N \sum_i p_i \ln p_i,
+\end{equation}
+and thus 
+\begin{equation}
+    \lim_{N \to \infty} \frac{S(N, \mathcal{E})}{N} = - k_{\text{B}} \sum_{i} p_i \ln p_i 
+    = k_{\text{B}} \ln 2 \times H.
+    \label{eq:shannon-micro}
+\end{equation}
+Thus if we put a large amount of identical copies of the same system together 
+and calculate its Boltzmann entropy when the total energy is in its most possible value,
+then the average Boltzmann entropy only differs with the Shannon entropy with a prefactor $k_{\text{B}} \ln 2$.
+
+\item[(e)] To summarize:
+\begin{itemize}
+    \item In the canonical ensemble, the thermodynamic entropy 
+    only differs with the Shannon entropy of the system configuration 
+    with a prefactor $k_{\text{B}} \ln 2$ -- see \eqref{eq:shannon-canonical}.
+    \item In the microcanonical ensemble, when a large amount of systems are put together 
+    and their total energy is in the most possible value, 
+    then the average Boltzmann entropy only differs with the Shannon entropy of the system configuration 
+    with a prefactor $k_{\text{B}} \ln 2$ -- see \eqref{eq:shannon-micro}. 
+\end{itemize}
 
 \item[(f)] The terms in the RHS are
 \[

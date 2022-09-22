@@ -1,0 +1,218 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Solid State Physics Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} Consider the ionic crystal $\mathrm{NaCl}$. Model the total energy of the system in the standard way as a sum of an attractive electrostatic term (Madelung part) and a repulsive part with the usual $1 / r^{12}$ dependence between atom pairs. Show that at the equilibrium conventional lattice parameter $a$ (or equivalently at the equilibrium nearest neighbor distance $R$ ), the total energy is dominated to high precision by the electrostatic part and that the repulsive contribution is small. [Note: this happens because the electrostatic part is gentle and changing like $1 / r$ while the repulsive one is very steep.]
+
+\paragraph{Solution} The total energy is 
+\begin{equation}
+    E = \sum_{i \neq j} E_{ij} = \frac{N}{2} \sum_{i \neq 0} E_{0i}.
+    \label{eq:total-energy}
+\end{equation}
+We can replace the integer index $\vb*{i}$ by $\vb*{i}$,
+where $ a /2 \cdot (i_x, i_y, i_z)$ are the coordinates of each atom in the crystal.
+(That is, $\vb*{i}$ is \emph{not} the index of unit cells.)
+Without the loss of generality,
+we assume at $\vb*{i}=0$ lies a Na atom.
+Then, if $i_x + i_y + i_z$ is an odd number,
+then the atom at $\vb*{i}$ is a Cl atom; 
+otherwise it's a Na atom.
+So we have 
+\begin{equation}
+    E_{0i} = \frac{e^2}{4\pi \epsilon_0} \frac{(-1)^{i_x + i_y + i_z}}{\frac{a}{2} \sqrt{i_x^2 + i_y^2 + i_z^2}} 
+    + \frac{C}{\left(\frac{a}{2}\right)^{12} \left( i_x^2 + i_y^2 + i_z^2 \right)^6}.
+    \label{eq:separate-energy}
+\end{equation}
+The values of
+\begin{equation}
+    \sum_{\vb*{i} \neq 0} \frac{(-1)^{i_x + i_y + i_z}}{\sqrt{i_x^2 + i_y^2 + i_z^2}} 
+    \label{eq:coefficient1}
+\end{equation}
+and 
+\begin{equation}
+    \sum_{\vb*{i} \neq 0} \frac{1}{ \left( i_x^2 + i_y^2 + i_z^2 \right)^6}.
+    \label{eq:coefficient2}
+\end{equation}
+have already been calculated in the literature,
+but they actually don't matter here:
+from \eqref{eq:total-energy} and \eqref{eq:separate-energy} we know 
+\begin{equation}
+    E = \frac{C_1}{a} - \frac{C_2}{a^{12}}, \quad C_1, C_2 > 0.
+    \label{eq:abstract-energy}
+\end{equation}
+The first term is the electrostatic term,
+and the second term is the Lennard-Jones term.
+Now by taking the derivative we can find the minimum point:
+\[
+    \dv{E}{a} = - \frac{C_1}{a^2} + \frac{12 C_2}{a^{13}} = 0 \Rightarrow a^{11} = \frac{12 C_2}{C_1}.
+\]
+Putting this back to \eqref{eq:abstract-energy}, we get 
+\begin{equation}
+    E = - \frac{C_1}{a_{\text{min}}} \left( 1 - \frac{C_2}{C_1} \frac{1}{a_{\text{min}}^{11}} \right) 
+    = - \frac{11}{12} \frac{C_1}{a} = 0.92 E_{\text{electrostatic}}.
+\end{equation}
+Note that this result doesn't depend on the exact value of $C_1$ and $C_2$:
+as long as the repulsive part is $\sim a^{-12}$,
+the total energy is 0.92 times of the electrostatic energy.
+When the repulsive potential goes steeper,
+the total energy and the electrostatic energy get closer
+($12/13$, $13/14$, and so on).
+
+\paragraph{Problem 2} Consider the compound $\mathrm{La}_2 \mathrm{O}_3$ in its lowest energy crystal structure. What do you believe is the dominant type of bonding in this material? Look up the ionization energies of $\mathrm{Y}$ and $\mathrm{La}$ and thereby decide which of $\mathrm{La}_2 \mathrm{O}_3$ and $\mathrm{Y}_2 \mathrm{O}_3$ has more covalent character (assume for this problem that they have same crystal structure).
+
+\paragraph{Solution} 
+\href{https://www.angelo.edu/faculty/kboudrea/periodic/trends\_ionization\_energy.htm}{This webpage}
+lists the ionization energies together with the periodic table.
+The ionization energy of oxygen is \SI{1314}{kJ/mol}.
+The ionization energy of Y is \SI{616}{kJ/mol}.
+The ionization energy of La is \SI{538}{kJ/mol}.
+The difference between the ionization energies of La and O is \SI{776}{kJ/mol},
+much greater than \SI{600}{kJ/mol},
+so O atoms easily get electrons and La atoms easily lose electrons
+and thus the dominant type of bonding in \ce{La2O3} is likely to be ionic bond.
+The difference between the ionization energies of Y and O is smaller,
+so \ce{Y2O3} has more covalent character.
+
+\paragraph{Problem 3} Consider a one-dimensional monoatomic chain of atoms as discussed in Kittel or A\&M: e.g., the situation described by equation (2) of Chapter 4 of Kittel: $M \ddot{u}_s=C\left(u_{s+1}+u_{s-1}-2 u_s\right)$. Following Kittel's notations, $C$ is the spring constant between neighbors and $M$ is the mass of each atom. Show that for long wavelength vibrational modes, the displacements $u$ obey the continuum wave equation
+$$
+\frac{\partial^2 u}{\partial t^2}=v^2 \frac{\partial^2 u}{\partial x^2}
+$$
+Where $u$ is now a function of continuous $x$ and $v$ is the velocity of sound. Hint: the main issue to convert from discrete positions (integer $s$ in Kittel labelling the atoms that spaced by $a$ ) to continuous ones and figure out how to convert the derivative. The simplest approach is to use $x=a$ and then assume that changing by one lattice unit $\pm a$ is a small displacement so you can Taylor expand in powers of the shift $a$. Long wavelength means $u$ varies gently in space.
+
+\paragraph{Solution} In the long wavelength limit,
+the lattice is almost continuous,
+and the distance between neighbor atoms is small enough.
+Thus 
+\begin{equation}
+    \pdv{u}{x} \approx \frac{u(x) - u(x-a)}{a} = \frac{u_{i} - u_{i-1}}{a},
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \pdv[2]{u}{x} &= \frac{1}{a} 
+        \left( \eval{\pdv{u}{x}}_{x + a} - \eval{\pdv{u}{x}}_{x} \right) \\
+        &= \frac{1}{a} \left( \frac{u_{i+1} - u_i}{a} - \frac{u_i - u_{i-1}}{a} \right) \\
+        &= \frac{u_{i+1} - 2u_i + u_{i-1}}{a^2}.
+    \end{aligned}
+\end{equation}
+So the EOM of atoms 
+\begin{equation}
+    M \ddot{u}_i = C (u_{i+1} + u_{i-1} - 2u_i)
+\end{equation}
+now reads 
+\[
+    M \pdv[2]{u}{t} = C a^2 \pdv[2]{u}{x},
+\]
+and we get 
+\begin{equation}
+    \pdv[2]{u}{t} = v^2 \pdv[2]{u}{x}, \quad v^2 = \frac{C a^2}{M}.
+\end{equation}
+
+\end{document}
