@@ -1,0 +1,248 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Correlation function and response function}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+This document gives several examples of the calculation of 
+the correlation function and the response function.
+
+\section{Important formulae}
+
+For disturbance $H' = \lambda O_1$, 
+the first order response of the expectation of the operator $O_1$ is 
+\begin{equation}
+    D(t_2, t_1) = - \ii \theta(t_2 - t_1) \expval{\comm{O_2(t_2)}{O_1(t_1)}}.
+\end{equation}
+This function, as its definition hints, 
+is hard to calculate. 
+We usually calculate the time-ordered correlation function
+\begin{equation}
+    G(t_2, t_1) = - \ii \expval{\timeorder O_2(t_2) O_1(t_1)}.
+\end{equation}
+For calculation of the time-ordered correlation function, we have 
+\begin{equation}
+    \expval{\timeorder O_2(t_2) O_1(t_1)} = 
+    \frac{
+        \int \fd{x} O_2(t_2) O_1(t_1) \ee^{\ii S[x]}
+    }{
+        \int \fd{x} \ee^{\ii S[x]}
+    }.
+\end{equation}
+Here when calculating the action,
+we need to replace $t$ with $t (1 - \ii \epsilon)$ and then let $\epsilon \to 0$.
+For free systems, if 
+\begin{equation}
+    S = x G^{-1} x,
+\end{equation}
+then the correlation function is exactly $G$, because 
+\begin{equation}
+    \frac{
+        \int \dd[n]{\vb{x}} x_k x_l \ee^{\frac{\ii}{2} \vb{x} \vb{A} \vb{x}}
+    }{
+        \int \dd[n]{\vb{x}} \ee^{\frac{\ii}{2} \vb{x} \vb{A} \vb{x}}
+    } = \ii (\vb{A}^{-1})_{kl}.
+\end{equation}
+
+\section{The harmonic oscillator}
+
+The action is 
+\begin{equation}
+    S = \int \dd{t} \left( \frac{1}{2} m \dot{x}^2 - \frac{1}{2} m \omega_0^2 x^2 \right).
+\end{equation}
+The kernel is 
+\begin{equation}
+    K(t_1, t_2) = (- m \partial_{t_1}^2 - m \omega_0^2) \delta(t_1 - t_2).
+\end{equation}
+Here the derivative \emph{doesn't} act on the $\delta$-function.
+So we need to find the inverse of the kernel.
+The definition of ``summation'' in the continuous path integral is $\int \dd{t}$,
+so we have 
+\begin{equation}
+    \int \dd{t_2} K(t_1, t_2) G(t_2, t_3) = \delta(t_1 - t_3),
+\end{equation}
+and thus we have 
+\[
+    (-m \partial^2_{t_1} - m \omega_0^2) G(t_1, t_3) = \delta(t_1, t_3).
+\]
+The equation has time translational symmetry,
+so we have 
+\begin{equation}
+    (-m \partial_t^2 - m \omega_0^2) G(t - t') = \delta(t - t').
+\end{equation}
+By Fourier transformation 
+\begin{equation}
+    G(t - t') = \int \frac{\dd \omega}{2\pi} \ee^{- \ii \omega (t - t')} G(\omega),
+\end{equation}
+we have 
+\[
+    \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega (t - t')} (m \omega^2 - m \omega_0^2) G(\omega) 
+    = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega (t - t')},
+\]
+so 
+\begin{equation}
+    G(\omega) = \frac{1}{m (\omega^2 - \omega_0^2)},
+\end{equation}
+and we get 
+\begin{equation}
+    \ii G (\omega) = \frac{\ii}{m (\omega^2 - \omega_0^2)} \sim \expval{x x},
+\end{equation}
+which is the propagator in perturbation calculation.
+We naively do the inverse Fourier transformation 
+\begin{equation}
+    G(t - t') = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega (t - t')} \frac{1}{m (\omega^2 - \omega_0^2)}
+\end{equation}
+and find the integral is not well-defined.
+The solution is well-known:
+to add an infinitesimal imaginary part that fits the definition of the time-ordered correlation function,
+and when we have a $\omega^2$ term in the denominator, 
+it should be 
+\begin{equation}
+    G(\omega) = \frac{1}{m (\omega^2 - \omega_0^2 + \ii 0^+)}.
+    \label{eq:g-omega-0-plus}
+\end{equation}
+But here I'll show this choice of imaginary part can be directly derived 
+from the infinitesimal imaginary part in the time variable in the path integral.
+The action, after adding the imaginary part to $t$, is 
+\begin{equation}
+    S = \int \dd{t} (1 - \ii \epsilon) \left( \frac{m}{2} \frac{1}{(1 - \ii \epsilon)^2} \dot{x}^2 
+    - \frac{1}{2} m \omega_0^2 x^2 \right),
+\end{equation}
+and the kernel is 
+\begin{equation}
+    K(t_1, t_2) = - \frac{m}{2} 
+    \left(
+        \frac{1}{1 - \ii \epsilon} \partial_{t_1}^2 + (1 - \ii \epsilon) \omega_0^2
+    \right) \delta(t_1 - t_2).
+\end{equation}
+So the Green function is now 
+(just replace $m$ by $m / (1 - \ii \epsilon)$, 
+and replace $\omega_0^2$ by $(1 - \ii \epsilon)^2 \omega_0^2$)
+\begin{equation}
+    \begin{aligned}
+        G(\omega) &= \frac{1 - \ii \epsilon}{m ( (1 - \ii \epsilon)^2 \omega^2 - \omega_0^2 )}.
+    \end{aligned}
+\end{equation}
+Now we let $\epsilon \to 0$,
+and the $- \ii \epsilon$ term in the numerator can be thrown away because it doesn't affect the pole structure;
+in the denominator,
+the $\epsilon^2$ term is relatively small and can also be ignored.
+So we get 
+\[
+    G(\omega) = \frac{1}{m ( \omega^2 - 2 \ii \epsilon \omega^2 - \omega_0^2 )}.
+\]
+Since the exact value of $\epsilon$ is not important 
+(only its sign is important),
+we can replace $\epsilon \omega^2$ -- which has the same sign with $\epsilon$ -- by $\epsilon$ or $0^+$,
+and thus 
+\begin{equation}
+    G(\omega) = \frac{1}{m (\omega^2 - \omega_0^2 + \ii \epsilon)},
+\end{equation}
+which is exactly \eqref{eq:g-omega-0-plus}.
+
+\end{document}
