@@ -102,6 +102,8 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
 \title{Solid State Physics Homework 4}
 \author{Jinyuan Wu}
 
@@ -109,20 +111,46 @@
 
 \maketitle
 
-\paragraph{Problem 1}
+\paragraph{Problem 1} Optical phonons have that name because they can couple to electromagnetic radiation: when the atoms in the unit cell have different charge states (e.g., oppositely charged ions), then if they move "against" each other we have oscillating dipoles which can couple to electromagnetic waves. Explain, using energy and momentum conservation, why you can only excite an optical mode and not an acoustic mode using one photon of light. (To do this, look up a few dispersion curves for phonons in real materials to see the physical ranges of wave vector and frequency that are typical, and then compare to electromagnetic waves.)
 
 \paragraph{Solution} From \cite{messaoudi2015band},
-it can be seen the frequencies of optical phonons in \ce{NaCl} are around $\sim \SI{6}{THz}$
-$\sim \SI{0.06}{eV}$.
+it can be seen the highest frequencies of acoustic phonons in \ce{NaCl} are around $\sim \SI{6}{THz}$.
 The lattice constant is \SI{0.563}{nm},
 which is also the magnitude of the ``wave length'' of phonons.
-The magnitude of wave lengths in the visible light spectrum is $\sim \SI{500}{nm}$,
-which is much longer than the wave length of phonons, 
-so its momentum is much smaller than the momentum of phonons.
+So the magnitude of the sound speed is 
+\[
+    \SI{6}{THz} \times \SI{0.563}{nm} = \SI{3e3}{m/s}.
+\]
+This is much lower than the speed of light.
+This is shown on \prettyref{fig:light-and-optical-phonon}.
 
-TODO
+Exciting a phonon means converting a photon to a phonon,
+and by the conservation of energy and momentum,
+this only happens at the intersection of the photon dispersion curve 
+and the phonon dispersion curves.
+So from the diagram, we see only the optical branch has intersection with the light dispersion curve,
+so only optical phonons can be excited.
 
-\paragraph{Problem 2}
+\begin{figure}
+    \centering
+    \input{bands/light-and-optical-phonon.tex}
+    \caption{The dispersion curves of light and phonons; the orange lines are for the photon,
+    and the blue lines are for phonons}
+    \label{fig:light-and-optical-phonon}
+\end{figure}
+
+\paragraph{Problem 2} Consider two related one-dimensional crystals:
+\begin{itemize}
+\item Case $\mathrm{A}$ is a monoatomic linear chain with atoms of mass $M$, spring constant $\mathrm{C}$, and atomic spacing $a$. Label the atoms by the integers.
+\item Case B is obtained from case A by letting the masses alternate: the even numbered atomic sites are have mass $M_1=M+\Delta$ and the odd numbered ones have mass $M_2=M-\Delta$ where $0<\Delta \ll M$. The spring constants and interatomic spacings are unchanged.
+\end{itemize}
+\begin{itemize}
+\item[(a)] For case A, what is $\omega$ at the Brillouin zone boundary?
+\item[(b)] What is the speed of sound for case $A$ ?
+\item[(c)] What is the speed of sound for case B? Compare to question (b) and explain what is going on.
+\item[(d)] For case $B$, what is the optical phonon $\omega$ at $k=0$ ?
+\item[(e)] Sketch the phonon dispersion relation for both crystals on the same plot in the Brillouin zone of case $A$ and indicate the $k$ value for the first Brillouin zone edge for both cases.
+\end{itemize}
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] The EOM is 
@@ -230,9 +258,59 @@ is the same as the phonon spectrum of case A near the $\Gamma$ point,
 while the optical phonon spectrum of case B near the $\Gamma$ point 
 is the same as the phonon spectrum of case A near the boundary of the Brillouin zone.
 
+What's going on here is in the $\Delta = 0$ case, 
+when we view $2a$ -- instead of $a$ -- 
+as the lattice parameter,
+the size of the Brillouin zone shrinks,
+and the phonon spectrum in $\pi / 2a \leq \abs{k} \leq \pi / a$
+now has to be fold into the shrunk Brillouin zone.
+Thus, the so-called frequency of the optical phonon at $k=0$ is actually 
+the frequency of the case A phonon at $k = \pi / 2$,
+which is folded back to $k=0$ in case B;
+the so-called acoustic phonon branch in case B 
+is just the $0 \leq \abs{k} \leq \pi / 2a$ part of the phonon spectrum in case A.
+
+When $\Delta \neq 0$,
+by perturbation theory we know at the boundary of the shrunk Brillouin zone,
+an energy gap will be opened.
+This is what's going on in (e).
+
+\item[(e)] When $k = \pi / (2a)$, i.e. when we are at the boundary of the Brillouin zone of case B,
+we have $1 - \cos^2 ka = 1$, and 
+\[
+    \omega^2 = \frac{M_1 + M_2 \pm (M_1 - M_2)}{M_1 M_2} C,
+\]
+\begin{equation}
+    \omega^2 = \sqrt{\frac{2 C}{M_1}} \approx \sqrt{\frac{2C}{M}} 
+    \left(1 - \frac{\Delta}{2M} \right), \quad 
+    \text{or } \omega = \sqrt{\frac{2C}{M_2}} \approx \sqrt{\frac{2C}{M}} \left( 1 + \frac{\Delta}{2M} \right).
+\end{equation}
+In case B, when $\Delta \neq 0$, the $k=0$ value of the optical phonon band is 
+\[
+    \omega^2 = \frac{2 (M_1 + M_2)}{M_1 M_2} C = \frac{4 M}{M^2 - \Delta^2} C ,
+\]
+\begin{equation}
+    \omega = \sqrt{\frac{4 M}{M^2 - \Delta^2} C} \approx \sqrt{\frac{4 C}{M}}.
+\end{equation}
+So we sketch the phonon bands in \prettyref{fig:phonon-spectrum}.
+Here the blue lines are case B phonons,
+the upper band being the optical branch,
+the lower band being the acoustic branch.
+The boundaries of the Brillouin zone of case A are $\pm \pi / a$,
+and the boundaries of the Brillouin zone of case B are $\pm \pi / 2a$.
+
+\begin{figure}
+    \centering
+    \input{bands/two-atom-1-d-phonon.tex}
+    \caption{The phonon spectrum}
+    \label{fig:phonon-spectrum}
+\end{figure}
+
 \end{itemize}
 
-\paragraph{Problem 3} 
+\paragraph{Problem 3} Partly in response to some good questions in lecture: go to this web site \address{https://en.wikipedia.org/wiki/File:Phonon\_k\_3k.gif} which shows a closed loop animation of a monoatomic line of atoms spaced by $a$ in 1D and with the harmonic nearest neighbor approximation. There are two different waves being shown (black and red) and the black balls are the actual atoms that move up and down (the wave is propagating along the horizontal axis and the atoms are moving up and down so this is transverse).
+(a) Take $k>0$ to mean wave motion to the right. Indicate the $(k, \omega)$ for both waves on the dispersion relation for this system. Explain briefly how you determined them.
+(b) At what speed is energy being transmitted along this chain of atoms?
 
 \paragraph{Solution}
 
@@ -254,7 +332,10 @@ so there is no transmission of energy here:
 the speed of energy transmission is zero.
 \end{itemize}
 
-\paragraph{Problem 4}
+\paragraph{Problem 4} Here are five chemical formulae for crystals:
+(i) $\mathrm{LiNbO}_3$, (ii) $\mathrm{Ni}_3 \mathrm{Ti}$, (iii) $\mathrm{V}_2 \mathrm{O}_5$, (iv) $\mathrm{Fe}_3 \mathrm{O}_4$, , v) $\mathrm{PbO}_2$
+And below are two actual dispersion relations for phonons ( $A$ and $B$ ).
+For each dispersion curve, list the crystals that might correspond to it (and you must provide at least one answer per curve). Also please make some reasonable assumptions instead of pleading ignorance of degeneracies and thus saying anything goes.
 
 \paragraph{Solution} There are 12 curves in the first figure, 
 so there are $12 / 3 = 4$ atoms in each primitive unit cell.
