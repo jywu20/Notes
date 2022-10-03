@@ -18,7 +18,7 @@
 \usepackage{tikz}
 \usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
 \usepackage{xr-hyper}
-\usepackage[colorlinks]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[colorlinks,citecolor=purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -67,16 +67,6 @@
 \newrefformat{chap}{\citechap{\ref{#1}}}
 \newrefformat{fn}{\citefootnote{\ref{#1}}}
 \newrefformat{box}{Box~\ref{#1}}
-
-\usetikzlibrary{arrows,shapes,positioning}
-\usetikzlibrary{arrows.meta}
-\usetikzlibrary{decorations.markings}
-\tikzstyle arrowstyle=[scale=1]
-\tikzstyle directed=[postaction={decorate,decoration={markings,
-    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
-\tikzstyle ray=[directed, thick]
-\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
-
 
 \tcbuselibrary{skins, breakable, theorems}
 
@@ -136,6 +126,8 @@
 \DeclareAcronym{np}{long = noun phrase, short = NP}
 \DeclareAcronym{vp}{long = verb phrase, short = VP}
 \DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{adjp}{long = adjective phrase, short = AdjP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
 \DeclareAcronym{cc}{long = copular complement, short = CC}
 \DeclareAcronym{cs}{long = copular subject, short = CS}
 \DeclareAcronym{tam}{long = {tense, aspect, mood}, short = TAM}
@@ -178,12 +170,15 @@
 \newcommand{\translate}[1]{`#1'}
 \newcommand{\vP}{\textit{v}P}
 
+\newcommand{\classify}[1]{{\textsc #1}}
+
 % Make subsubsection labeled
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 % reset example counter every chapter (but do not include the chapter number to the label)
 \counterwithin{exx}{chapter} 
 
+\renewcommand{\bibname}{References}
 
 \title{Note on Latin Grammar}
 \author{Jinyuan Wu}
@@ -315,7 +310,7 @@ just like their concatenative counterparts.
 
 \section{Noun phrases and nominal morphology}
 
-\section{Verbal morphology and clause structure}
+\section{Verbal morphology and clause structure}\label{sec:verb-inflection-abs}
 
 Most clausal grammatical categories are marked on the verbal morphology.
 Sometimes a grammatical category is there but is not reflected in the morphology.
@@ -345,10 +340,11 @@ or in \concept{passive voice}.
     See \citesec{\ref{general-sec:valency-changing-theory}} in \general.
     From a generative perspective, some languages realize valency changing 
     by a series of \vP{} structures, and then the case assignment of the arguments is trivial.
-    Some languages use non-trivial cases of 
-    the structural case assignment mechanism 
+    Some languages use non-trivial structural case assignment mechanisms
     to achieve valency changing 
-    (``suppressing the agent argument, and then the nominative probe has to choose the patient argument'').
+    (``suppressing the agent argument, 
+    and leave the nominative probe to find the subject;
+    the probe then has to choose the patient argument'').
     Of course, \vP{} changes in the second type are still there,
     which may be a likely source of relevant verb morphology.
     Naturally, the second group of languages have more restricted valency changing devices;
@@ -434,15 +430,21 @@ second person singular/plural with the \acl{present} tense,
 and second/third person singular/plural with the \acl{future} tense.
 The absence of first person is also probably from semantic origin.
 
-In conclusion, the scheme of the finite verb paradigm of Latin 
+In conclusion, the categories involved in the finite verb paradigm of Latin 
 is shown in \prettyref{fig:paradigm-finite-verb}.
+Here mood and tense are realized in one morpheme,
+and voice, person and number are realized in one morpheme.
 The exact realization is divided into four conjugation classes,
 and the details are too complex to show here.
+The paradigm is realized synthetically in all circumstances 
+except in passive voice and perfect tense.
+In that case, the verb conjugation is realized like the English passive,
+i.e. via a copula and the perfect passive participle.
 
 \begin{figure}[H]
     \centering
     \input{tables/finite-table.tex}
-    \caption{The scheme of the finite paradigm}
+    \caption{Categories in the finite paradigm}
     \label{fig:paradigm-finite-verb}
 \end{figure}
 
@@ -450,7 +452,50 @@ and the details are too complex to show here.
 
 \subsection{Core, oblique, and peripheral arguments}
 
-\section{Clause combining}
+\subsubsection{Alignment}
+
+Latin is a clear nominative-accusative language.
+Similar to what is documented in \acs{cgel},
+Latin core arguments are coded as subject, object(s),
+and copular complements at the level of alignment.
+They can be distinguished by the semantic roles,
+case marking, possible contents, and transformational properties 
+(\prettyref{sec:core-argument-marking}).
+In 
+
+\begin{theorybox}{The term \term{complement}}{complement}
+    In \ac{cgel} the term \term{complement} 
+    means the grammatical status of anything that originates from the argument structure of the main verb.
+    Thus the subject, several kinds of objects,
+    the copular complement (\ac{cgel} calls it \term{predicative complement}) are all complements,
+    and they are also function labels 
+    (roughly corresponding to ``SpecTP'' or ``what is in \vP{} 
+    and receives the object case from a high light verb'').
+    In traditional Latin grammar \term{complement} means the copular complement. 
+
+    This note follows the terminology used in most descriptive grammars,
+    so use the term \term{copular complement} to refer to the \ac{cgel} \term{predicative complement}.
+    Also, the term \term{complement-taking verb}, despite being confusing,
+    is used to denote a verb that take a complement clause as one of its arguments.
+
+    The mapping from the argument structure of a verb 
+    to clausal complement types is called alignment.
+\end{theorybox}
+
+\subsubsection{Peripheral arguments}
+
+There is no serial verb constructions in Latin (\prettyref{sec:clause-combine-abs}),
+and thus semantic functions like location or instrument 
+are always realized by typical peripheral arguments
+attached to the core argument structure.
+These peripheral argument positions sometimes can be filled by adverbs,
+which also reveals an origin of adverbs.
+
+\subsection{Clause combining}\label{sec:clause-combine-abs}
+
+In Latin there is no serial verb constructions.
+Subordination strategies can be neatly summarized into 
+complement clauses, relative clauses and adverbial clauses.
 
 \section{Constituent order}\label{sec:constituent-order-abs}
 
@@ -459,14 +504,41 @@ and the details are too complex to show here.
 
 \chapter{Nominal morphology}
 
-\begin{infobox}{Testing}{test}
-    test
-\end{infobox}
 
 \chapter{Verb morphology}
 
-\begin{theorybox}{About the number of conjugation forms}{conjugation-form}
-    Different people use the term \term{conjugation forms} -- and count them -- in different ways.
+\section{The structure of Latin verbs}
+
+The traditional analysis of the structure of a Latin verb 
+can be roughly represented by \prettyref{fig:latin-verb}.
+Derivation in Latin is predominantly preverbal,
+and hence the conjugation is mostly about the final lexical morpheme in the verb stem.
+The stem-final vowel is sometimes considered as a part of the stem,
+and sometimes as a part of the verb ending.
+It is the residue of the \ac{pie} stem suffix, which is after the core stem and before the conjugation ending,
+and still has morphosyntactic alternation as well as phonological ones in Latin. % TODO: ref
+The uncontroversial components of the verb ending include 
+the \concept{tense and mood marker},
+and the person, number and voice marker 
+(here after the \concept{personal ending}, 
+following the terminology in \citet[\citesec{165}]{allen1903allen}).
+But the tense and mood marker is influenced by the personal ending:
+the same tense and mood may be marked by one marker under one person and one number
+but by another under another case.
+The inverse is also true.
+There is also phonological interaction between the two components of the ending.
+
+\begin{figure}[H]
+    \centering
+    \input{tables/verb-template.tex}
+    \caption{The template of Latin verbs}
+    \label{fig:latin-verb}
+\end{figure}
+
+TODO: explain the \corpus{-mus} and \corpus{-imus} alternation
+
+\begin{theorybox}{About the number of verb forms}{conjugation-form}
+    Different people use the term \term{verb forms} -- and count them -- in different ways.
     The most generous -- and the most syntactically relevant -- way 
     is to view the realization of every possible CP-TP-\vP{} projection 
     as a form of the main verb -- the verb root at the core of the CP-TP-\vP{} domains.
@@ -490,30 +562,310 @@ and the details are too complex to show here.
     The analysis of conjugation forms of the verb, theoretically speaking,
     is more about vocabulary insertion and readjustment rules,
     instead of the syntax proper.
+    This is an instance of the \emph{separation principle}:
+    morphophonological features can be irrelevant to morphosyntactic features
+    \citep{embick2000features}.
 \end{theorybox}
 
+\begin{theorybox}{Distributed Morphology of deponent verbs}{deponent}
+    \citet{embick2000features} analyzes deponent verbs as roots carrying a passive feature themselves.
+    When functional heads higher than the roots are realized,
+    the passive feature -- which may come from the root or from the passive light verb -- 
+    guides the realization of the person and number categories.
+\end{theorybox}
+
+\section{Formation of stems}
+
+\subsection{The three verb stems}\label{sec:three-latin-stem}
+
 \begin{theorybox}{About the concept of stem}{stem}
+    Prototypically, the verb conjugation in a language is described by 
+    a series of morphological devices that take \emph{the} verb stem as the input,
+    and give conjugated verb forms as the final product.
+    This is indeed the case for Latin nouns (\prettyref{sec:regular-noun-declension})
+    and for English regular verbs:
+    the infinitive form is taken in,
+    and third-person singular \corpus{-s}, past tense \corpus{-ed}, 
+    past participle \corpus{-ed}, and the gerund-participle \corpus{-ing}
+    are attached according to the syntactic environment.
+    Sometimes the process is a little more irregular but not that irregular:
+    \emph{several} stems can be identified, each of which is fed into different morphosyntactic machines.
+    In other words, we have irregular stem alternation.
+    Again, for English irregular verbs,
+    there are three stems: the infinitive stem (e.g. \corpus{go}), 
+    the preterite stem (e.g. \corpus{went})
+    and the past participle stem (e.g. \corpus{gone}).
+    The step to feed stems into morphosyntactic machine is irregular,
+    but everything else is regular:
+    irregular, in this case, does appear, but it appear \emph{regularly}:
+    it only appears in certain parts.
+
+    This phenomenon -- that a verb has more than one stem, i.e. irregular stem alternation
+    -- is frequent cross-linguistically
+    (\citealt{jacques2021grammar} \citesec{12.2}, \citealt{forker2020grammar} \citesec{11.2}, among others).
+    Usually, certain correlation between the stem varieties can still be recognized,
+    and verbs can be grouped accordingly,
+    which, if the linguist truly will, 
+    can be (though tediously) summarized as more fine-grained conjugation classes.
+    This is also the case for Latin.
+    The irregularity of stem alternation is so prevalent
+    that if the conjugation paradigm of a verb can be described with a few stems,
+    the verb is deemed as regular, 
+    despite the fact that such verbs are obviously irregular by the standard of English.
+
     The notion of \concept{stems} isn't really essential in the description of morphosyntactic:
     it can well be modeled by environment-dependent vocabulary insertion rules 
     and/or post-syntactic operations.
-    When suppletion rules are still synchronic,
+    When certain correlations can still be built between so-called suppletive forms,
     what happens may be analyzed as in \citet{embick2005status},
-    where certain stems receive morphophonological readjustment.
+    where certain stems receive morphophonological readjustment
+    (according to the aforementioned hyper fine-grained conjugation subclasses).
+    Thus, it's not true suppletion:
+    it's just a corner case of non-concatenative morphology.
     When these readjustment rules are fossilized,
     suppletion -- like the English \corpus{good}/\corpus{better} -- 
     may just be the result of conditional insertion,
     as is outlined in \citet{siddiqi2009syntax}.
 
-    This in return gives an predication about suppletion:
-    conditional vocabulary insertion can create unlimited allomorphs,
-    while readjustment rules are restricted in their computational capacity,
-    so real lexical verbs are highly unlikely to have truly irregular suppletion;
-    that is, if a verb is truly suppletive,
-    then it's likely to be 
-    As is said in ,
+    A general tendency about suppletion
+    is truly suppletive verbs are usually light verbs 
+    (in the surface-oriented sense),
+    with meanings like \translate{do}, \translate{come}, etc.
+    This may come from the fact that conditional realization of the root 
+    is somehow ``heavy''.
+    When we do away with this,
+    e.e. under \citet{embick2005status}'s assumption,
+    unrestricted suppletion can only be the result of 
+    vocabulary insertion rules of functional heads;
+    certain degree of suppletion can still be realized by readjustment rules,
+    which however are restricted in their computational capacity.
+    Thus, real lexical verbs are highly unlikely to have truly irregular suppletion;
+    if a verb is truly suppletive,
+    then it's highly likely to be 
+    the spellout of \vP{} functional heads.
 \end{theorybox}
 
-\chapter{Valency classes}
+Latin shows prevalent and not completely predictable stem alternation.
+All forms mentioned in \prettyref{sec:verb-inflection-abs}
+can be obtained by three stems \citep[\citesec{164}]{allen1903allen},
+if the verb is regular:
+\begin{itemize}
+    \item The \concept{present stem}, which, after attached with proper endings, forms
+    \begin{itemize}
+        \item The \acl{present}, \acl{imperfect}, and future forms, indicative or subjunctive,
+        active or passive. (There is no future or future perfect subjunctive).
+        \item All the imperatives.
+        \item The present infinitives, active and passive.
+        \item The present participle, the gerundive, and the gerund.
+    \end{itemize}
+    \item The \concept{perfect stem}, which, after attached with proper endings, forms 
+    \begin{itemize}
+        \item The perfect, pluperfect, and future perfect active, indicative or subjunctive.
+        Again, there is no future or future perfect subjunctive.
+        Note that the passives are \emph{not} formed by the perfect stem.
+        \item The perfect active infinitive. 
+        (Or the perfective infinitive active, since infinitive is considered as a mood by some people.)
+    \end{itemize}
+    Note that the perfect passive participle is \emph{not} obtained from the perfect stem.
+    \item The \concept{supine stem}, 
+    which, after attached with proper endings or used together with proper forms of \corpus{sum},
+    forms 
+    \begin{itemize}
+        \item The perfect passive participle, which, by being used with proper forms of \corpus{sum}, forms
+        \begin{itemize}
+            \item The perfect, pluperfect, and future perfect passive forms, indicative or subjunctive.
+            Again, there is no future or future perfect subjunctive.
+            This is periphrastic conjugation: it is done by using proper forms of \corpus{sum}
+            with the perfect passive participle.
+            \item The perfect infinitive passive.
+        \end{itemize}
+        \item The future active participle, which, used together with \corpus{esse},
+        makes the future active infinitive.
+        \item The future passive infinitive, by being used together with \corpus{īrī}.
+    \end{itemize}
+\end{itemize}
+This process is summarized in \prettyref{fig:stem-to-form}.
+
+\begin{sidewaysfigure}
+    \centering
+    \input{arrow-box/conjugation.tex}
+    \caption{How to get all conjugation forms from the three stems}
+    \label{fig:stem-to-form}
+\end{sidewaysfigure}
+
+\subsection{Rules of stem alternation}
+
+\section{The finite paradigm}
+
+\subsection{Tense and mood}\label{sec:tense-mood-marking}
+
+\subsection{The personal ending}
+
+\section{The infinitives}
+
+\section{Deponent verbs}
+
+\section{Periphrastic conjugations}
+
+\section{Irregular verbs}
+
+\section{Verb derivation}
+
+\chapter{Arguments and verb valency classes}
+
+\section{Overview of marking of core arguments}\label{sec:core-argument-marking}
+
+\subsection{The subject}
+
+\subsection{The direct object}
+
+Here is a list of grammatical properties of the direct object:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: in a AO-type argument structure, 
+    the direct object is the O argument, i.e. the most patientive argument. 
+
+    \item \emph{Case marking}: direct objects are always accusative -- 
+    but not all accusative arguments are direct objects.
+    \item \emph{Passivization}: in a passive clause, the subject corresponds to 
+    \item % TODO: category
+\end{itemize}
+
+\subsection{The indirect object}
+
+Latin also has two complement positions named as object:
+the indirect object and the secondary object.
+The indirect object is distinguished by the following grammatical properties:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: in a AGT-type argument structure, 
+    the indirect object is usually the G argument.
+    Intransitive clauses sometimes also have indirect objects, 
+    and an indirect object, in this case, is also a G argument.
+    \item \emph{Case marking}: indirect objects are always dative.
+    \item \emph{Passivization}: indirect objects are always retained in passive clauses. 
+    They are never promoted to subjects in passivization.
+    % TODO: category
+\end{itemize}
+
+The secondary object is distinguished by the following grammatical properties:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: in an AGT-type argument structure
+    that is always about information flowing,
+    the T argument (i.e. the thing asked about or taught about) is the secondary object.
+    The G argument (i.e. the person who is asked or taught) is the direct object.
+    Sometimes the G argument is ablative, and in this case, 
+    there is only one accusative argument: the secondary object.
+    Another place where secondary objects appear is 
+    clauses headed by a verb with a compounded accusative preposition. % TODO: SAO typology
+    \item \emph{Case marking}: secondary objects are always accusative.
+    \item \emph{Passivization}: secondary objects can be passivized, but much more rarely than direct objects.
+    \item % TODO: category
+\end{itemize}
+
+The distributions of the secondary object and the indirect object 
+are mutually exclusive.
+This means for ditransitive verbs of type \classify{giving}, 
+Latin shows a clear and strong tendency to identify the T argument with the monotransitive O,
+while for ditransitive verbs about teaching,
+the inverse is true.
+
+\begin{infobox}{Comparison with English}{english-indirect-object}
+    It can be found that the Latin indirect object has more similarity with the English \corpus{to}-PP,
+    which is also called the indirect object in some grammars, but not \ac{cgel}.
+    The Latin indirect object differs from the English (accusative) indirect object in passivization.
+    Since in Latin, verbs with AGT-type argument structure do not have alternation of complementation pattern
+    -- in English we have \corpus{give sth. to sb.} and \corpus{give sb. sth.}, 
+    while in Latin there is only the former one, but \corpus{to sb.} is replaced by a dative,
+    and in Latin datives never have prepositions --
+    the G argument is identified with the E argument,
+    and the T argument is identified with the O argument.
+    In other words, in Latin, there is only pattern \eqref{cgel-ex:john-gave-goods-to-charity} in \cgel.
+    
+    The secondary object, therefore, is like \eqref{cgel-ex:john-gave-student-book} in \cgel.
+    Therefore, for typical ditransitive verbs, i.e. verbs like \corpus{give}, 
+    Latin shows a clear and strong tendency to identify the T argument with the monotransitive O,
+    which is more typical than English%
+    \footnote{
+        In English, in the \corpus{give sb. sth.} construction, it is the person i.e. the G argument that is passivized,
+        while the T argument i.e. \corpus{sth.} cannot, though the latter is identified with monotransitive O
+        according to other criteria. 
+    },
+    but for verbs with meaning of \corpus{teach} or \corpus{ask},
+    there is also a clear and strong tendency to identify the G argument with the monotransitive O.
+\end{infobox}
+
+\subsection{Predicative complements}
+
+Latin also has predicative complements.
+A predicative complement, just like its counterpart in English,
+basically can be viewed as a displaced attributive or appositive 
+(and hence is prototypically filled by an \ac{np} or an \acs{adjp})
+but is a little more peripheral (manner, state, factitive, etc.) 
+in its meaning than an attributive or appositive.
+Latin has nominative predicate and accusative predicate:
+as hinted by their names, 
+the nominative predicate is roughly about the subject and agrees with it,
+and the accusative predicate is roughly about the direct object and agrees with it.
+In passivization of the direct object,
+the accusative predicate becomes the nominative predicate.
+
+
+
+\begin{theorybox}{How complement types are discussed}{complement-discussion}
+    The traditional practice of Latin grammar research
+    is to classify clausal complement and adjunct types according to their case marking.
+    This strategy is also found in modern grammars.
+    Some introduce clausal complement types just in chapters about case marking 
+    \citep[\citechap{8}]{jacques2021grammar},
+    while other grammars, despiting giving a brief description of the context of case marking,
+    spare some time to discuss complement types in the chapters about valency and clause structure 
+    \citep[\citesec{3.4}, \citechap{19}, \citechap{22}]{forker2020grammar}.
+    From a \ac{tag} perspective, 
+    the two extremes are different in how they treat function labels:
+    in the former, the function label of a construction appears together with its category label on the root node,
+    while in the latter, the function is described separately from the form of what fills that position.
+    The former is more bottom-up, 
+    while the latter is more top-down.
+    The choice between the two, however, is usually language-dependent:
+    grammars for analytic languages, of course, have to lean even further to the 
+    ``complement type as clause slot'' extreme 
+    and away from the ``complement type as case-form context'' extreme.
+    \citet{allen1903allen} uses a hybrid method:
+    the discussion about case marking (\citesec{39}) is separated from 
+    the discussion about complement and adjunct types (\citesec{338}),
+    so the top-down approach seems to be adopted,
+    but the latter is still arranged in terms of case.
+    This arises both from the distinct features of Latin and the intended readers:
+    the relation between complement types and cases is regular enough in Latin,
+    and what is most important for Latinists is to understand, at least sketchily, ancient writings, 
+    so a parsing-oriented grammar is much handier.
+\end{theorybox}
+
+\section{Peripheral arguments}
+
+Beside the subject, various types of objects, and predicative complements,
+there are more peripheral clause dependents
+(or ``adjuncts'' in the terminology of \citet{cgel}),
+like purpose, direction, location, etc.
+Besides clauses and \ac{np}s (with or without prepositions),
+their categories also include \ac{advp}s,
+which is an etymological origin of \ac{advp}s.
+
+Latin peripheral arguments do not necessarily have prepositions.
+This fact, together with the fact that Latin is highly free-ordered, 
+highly \term{pro}-drop,
+means criteria used to tell core arguments from peripheral arguments, 
+like the criteria of category, position, and argumenthood in \citet[\citesec{4.1.2}]{cgel} 
+all fail to work,
+and since the problem is how to tell adjuncts from adjunct-like complements,
+the criterion about role also fails.
+Latin does not have systematic way to replace the core predicate (i.e. without adjuncts) by an anaphora,
+and that criterion does not work, either.
+The remaining criteria are about selection, licensing, and obligatoriness.
+
+
+\section{Prototypical intransitive verbs}
+
+\chapter{Clause linking and coordination}
 
 \chapter{Examples of texts}
 
