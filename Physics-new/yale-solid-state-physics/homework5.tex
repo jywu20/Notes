@@ -1,0 +1,209 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
+\title{Homework 5}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} Consider a particular vibrational mode of a crystal with a frequency (not angular $\omega$ but ``regular'' $\nu$) of $10^{12} \mathrm{~Hz}$. At what temperature is the mean energy of this mode equally divided between the zero-point energy contribution and the temperature dependent contribution?
+
+\paragraph{Solution} We have 
+\begin{equation}
+    \expval{E} = \sum_{\vb*{k}, \sigma} \hbar \omega_{\vb*{k} \sigma}  
+    \left( \frac{1}{2} + \frac{1}{\ee^{{\hbar \omega_{\vb*{k} \sigma}} / {k_{\text{B}} T}} - 1} \right).
+\end{equation}
+So to make the contribution of the zero-point energy and temperature dependent term the same,
+we have 
+\[
+    \frac{1}{2} = \frac{1}{\ee^{{\hbar \omega_{\vb*{k} \sigma}} / {k_{\text{B}} T}} - 1},
+\]
+\begin{equation}
+    T = \frac{\hbar \omega_{\vb*{k} \sigma}}{k_{\text{B}} \ln 3} = \frac{h \nu}{k_{\text{B}} \ln 3} 
+    \sim \SI{43}{K}.
+\end{equation}
+
+\paragraph{Problem 2} Problem 1(b) only of Kittel Chapter 5: Suppose that an optical phonon branch has the form $\omega(K)=\omega_0-A K^2$, near $K=0$ in three dimensions. Show that $D(\omega)=$ $(L / 2 \pi)^3\left(2 \pi / A^{3 / 2}\right)\left(\omega_0-\omega\right)^{1 / 2}$ for $\omega<\omega_0$ and $D(\omega)=0$ for $\omega>\omega_0$. Here the density of modes is discontinuous.
+
+\paragraph{Solution} The relation between $\omega$ and $K$ is 
+\begin{equation}
+    K = \sqrt{\frac{\omega_0 - \omega}{A}}.
+\end{equation}
+Note that for $\omega_0 < \omega$,
+there is no $K$: so $D(\omega) = 0$ for $\omega > \omega_0$.
+For $\omega < \omega_0$, we have 
+\begin{equation}
+    \begin{aligned}
+        D(\omega) \dd{\omega} &= \int_{\omega = \omega_K} \dd[3]{\vb*{K}} \cdot \left(\frac{L}{2\pi}\right)^3 \\
+        &= \int_{\omega = \omega_K} \dd[2]{\vb*{S}_{\vb*{K}}} \frac{\dd{\omega}}{\abs{\grad_{\vb*{K}} \omega}}
+        \cdot \left(\frac{L}{2\pi}\right)^3 ,
+    \end{aligned}
+\end{equation}
+\begin{equation}
+    D(\omega) = \left(\frac{L}{2\pi}\right)^3 
+    \int_{\omega=\omega_{\vb*{K}}} \frac{\dd[2]{\vb*{S}_{\vb*{K}}}}{\abs{\grad_{\vb*{K}} \omega}}
+    = \left(\frac{L}{2\pi}\right)^3 \frac{4\pi K^2}{2 A K} 
+    = \left(\frac{L}{2\pi}\right)^3 \frac{2\pi}{A^{3/2}} \sqrt{\omega_0 - \omega}.
+\end{equation}
+So 
+\begin{equation}
+    D(\omega) = \begin{cases}
+        0, & \omega > \omega_0, \\
+        \left(\frac{L}{2\pi}\right)^3 \frac{2\pi}{A^{3/2}} \sqrt{\omega_0 - \omega},
+        & \omega < \omega_0.
+    \end{cases}
+\end{equation}
+
+\paragraph{Problem 3} Minor variation of Problem 5 of Chapter 25 of A\&M: anharmonic terms mean that the harmonic phonon modes are no longer eigenstates and have finite lifetimes. This is because a phonon can decay into two other phonons or two phonons combine (disappear) into a new third phonon. Consider a 3D monoatomic crystal and a particular direction in $\mathrm{k}$ space so we can simply discuss $\mathrm{k}$ as a number. The LA mode lie above the TA modes in frequency for all $\mathrm{k}$, and all the modes have negative curvature $\dd^2 \omega / \dd k^2<0$ for all $k \neq 0$. Assume the two TA modes are degenerate (have the same dispersion relation).
+(a) Show that both the above two processes are impossible if all three phonons belong to the same phonon branch.
+(b) Show that the only possible processes are $\mathrm{TA}+\mathrm{TA} \leftrightarrow \mathrm{LA}$ and $\mathrm{TA} +\mathrm{LA} \leftrightarrow \mathrm{LA}$ where the branch of each phonon is indicated by LA or TA and the double arrow means the process can go left or right (our two processes).
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] What we need to prove is it's impossible to have 
+\begin{equation}
+    k_1 + k_2 = k_3, \quad 
+    \omega_{k_1} + \omega_{k_2} = \omega_{k_3},
+\end{equation}
+or in other words, it's impossible to have 
+\begin{equation}
+    \Delta \omega \coloneqq \omega_{k_1 + k_2} - \omega_{k_1} - \omega_{k_2} = 0.
+    \label{eq:impossible-2}
+\end{equation}
+Since $\pdv[2]{\omega}{k} < 0$, we find  
+\[
+    \pdv{\Delta \omega}{k_2} = \eval{\pdv{\omega}{k}}_{k_1 + k_2} - \eval{\pdv{\omega}{k}}_{k_1}
+\]
+has the opposite sign to $k_2$. 
+So when $k_1$ is fixed, $\Delta \omega$ reaches its maximum when $k_2 = 0$.
+But when $k_2 = 0$, we have 
+\[
+    \Delta \omega = \omega_{k_1} - \omega_{k_1} - \omega_{k_2} < 0,
+\]
+so $\Delta \omega$ is always smaller than zero, so \eqref{eq:impossible-2} can never be reached,
+and hence it's impossible to have a three-photon process on a single band.
+
+\item[(b)] The $\mathrm{TA} + \mathrm{TA} \leftrightarrow \mathrm{TA}$ 
+and $\mathrm{LA} + \mathrm{LA} \leftrightarrow \mathrm{LA}$ 
+processes are already discarded.
+The $\mathrm{TA} + \mathrm{LA} \leftrightarrow \mathrm{TA}$ process 
+is impossible simply because of energy conservation:
+the energy of the LA phonon on the LHS is already higher than the energy of the TA phonon on the RHS.
+The $\mathrm{LA} + \mathrm{LA} \leftrightarrow \mathrm{TA}$ process 
+is similarly impossible.
+So the only remaining processes are $\mathrm{TA} + \mathrm{TA} \leftrightarrow \mathrm{LA}$
+and $\mathrm{TA} + \mathrm{LA} \leftrightarrow \mathrm{LA}$.
+It's easy to construct instances of the two processes:
+we can just pick two points on the TA spectrum, 
+and it's always possible to draw a concave curve that passes the sum of the two,
+which is the LA spectrum;
+similarly it's always possible to draw a concave curve -- which is the TA spectrum -- that passes the difference 
+between two points on the LA spectrum.
+
+\end{itemize}
+
+\end{document}
