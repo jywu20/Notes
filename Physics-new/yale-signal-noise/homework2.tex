@@ -124,9 +124,397 @@ Since the global minimum is much lower than the local minimum at $x_0$,
 the particle is most likely to appear near the global minimum on the right of the barrier;
 there is still some possibility to find the particle near $x_0$.
 
-\item[(b)] When 
+\item[(b)] I basically will follow the derivation in \cite{kramers1940284}. 
+The Fokker-Planck equation 
+\begin{equation}
+    \frac{\partial}{\partial t} W=\left\{-\frac{\partial}{\partial x} v+\frac{\partial}{\partial v}[\gamma v-f(x)]+\frac{\partial^2}{\partial v^2} \gamma^2 D\right\} W
+\end{equation}
+can be recast into 
+\[
+    \pdv{W}{t} = \gamma \left( \pdv{v} - \frac{1}{\gamma} \pdv{x} \right)
+    \left( vW + \gamma D \pdv{W}{v} - \frac{1}{\gamma} f W + D \pdv{W}{x} \right) 
+    + \pdv{x} \left( - \frac{1}{\gamma} f W + D \pdv{W}{x} \right).
+\]
+Now we perform the integral $\int \dd{v}$ on the straight line $v + \gamma x = \const$.
+We have 
+\[
+    \int_{v + \gamma x = \const} \dd{v} \left( \pdv{v} - \frac{1}{\gamma} \pdv{x} \right) (\cdots) 
+    \propto \int \dd{\vb*{l}} \cdot \left( \pdv{v}, \pdv{x} \right) (\cdots),
+\]
+and since when $\abs{v} \to \infty$, $W \to 0$,
+this term vanishes.
+By definition we have 
+\[
+    \frac{f}{\gamma} = \mu M f = \mu F.
+\]
+So we get 
+\[
+    \pdv{t} \int_{v + \gamma x = C} \dd{v} W(x, v, t) = 
+    \int_{v + \gamma x = C} \dd{v} \left( - \mu \pdv{x} (F W) + D \pdv[2]{W}{x} \right).
+\]
+Until now the derivation is strictly true.
+Now if $\gamma$ is somehow ``large'' enough, 
+the equation $v + \gamma x = C$ is just a specification of the value of $x$,
+and hence we get 
+\begin{equation}
+    \pdv{t} \int \dd{v} W(x, v, t) = \left( - \mu \pdv{x} F + \pdv[2]{x} D \right) \int \dd{v} W(x, v, t),
+    \label{eq:proto-smoluchowsky}
+\end{equation}
+and by defining 
+\begin{equation}
+    W(x, t) = \int \dd{v} W(x, v, t),
+\end{equation}
+we get the Smoluchowsky equation
+\begin{equation}
+    \pdv{W}{t} = \left( - \mu \pdv{x} F + \pdv[2]{x} D \right) W.
+\end{equation}
+
+The question of validity is now how large should $\gamma$ be. 
+When $\gamma$ is large, the deviation of the error on the LHS of \eqref{eq:proto-smoluchowsky} is always small,
+but if the spatial variation of $W$ is large, then the RHS will introduce a large error.
+So to prevent this from happening, $U$ shouldn't have large variation, i.e. $F$ shouldn't be too strong,
+and thus we have $\gamma \ll \omega_0$,
+because $\omega_0$ is the only constant that has the dimension of $[T]^{-1}$
+and also measures the strength of $F$.
+
+\item[(c)] Since  
+\begin{equation}
+    \pdv{W}{t} = - \pdv{j_{\text{d}}}{x},
+\end{equation}
+we can just take 
+\begin{equation}
+    j_{\text{d}} = \mu F(x) W(x, t) - \pdv{x} (D W).
+\end{equation}
+
+\item[(d)] Since the barrier is high,
+we can assume in the time scale of our observation,
+the state of the whole system doesn't change much.
+So first, $j_{\text{d}}$ doesn't change as time goes by,
+and second, since $W$ also doesn't change much,
+$j_{\text{d}}$ is a constant under spatial translation.
+So $j_{\text{d}}$ is a constant anywhere and at any time.
+In this way the trick of (13) in \cite{kramers1940284} can be used to find $j_{\text{d}}$.
+We have 
+\[
+    \begin{aligned}
+        j_{\text{d}} &= - \mu W \pdv{U}{x} - \mu k_{\text{B}} T \pdv{W}{x} \\
+        &= - \mu k_{\text{B}} T \ee^{- U / k_{\text{B}} T} 
+        \pdv{x} \left( \ee^{U / k_{\text{B}} T} W \right) ,
+    \end{aligned}
+\]
+and therefore 
+\[
+    j_{\text{d}} \ee^{U / k_{\text{B}} T} = - \mu k_{\text{B}} T \pdv{x} \left( \ee^{U / k_{\text{B}} T} W \right),
+\]
+and since $j_{\text{d}}$ is a constant, 
+we can integrate the above equation and get 
+\begin{equation}
+    j_{\text{d}} \int_a^b \ee^{U(x) / k_{\text{B}} T} \dd{x} 
+    = D \left(\ee^{U(x_a) / k_{\text{B}} T} W(x_a) - \ee^{U(x_b) / k_{\text{B}} T} W(x_b) \right).
+\end{equation}
+In our case, let $a$ be $x_0$ and $b$ be $x_{\text{b}}$.
+Since $\Delta U$ is large, at first it's almost impossible for any particle to appear there,
+and thus we have $W(x_{\text{b}}) = 0$.
+So we have 
+\[
+    j_{\text{d}} = \frac{
+        D \ee^{U(x_0) / k_{\text{B}} T}
+    }{
+        \int_{x_0}^{x_{\text{b}}} \ee^{U(x) / k_{\text{B}} T} \dd{x}
+    } W(x_0).
+\]
+We don't know exactly what $W(x_0)$ is, but since $\Delta U$ is large,
+we can expect in the region where $W(x)$ isn't nearly zero, approximately 
+\begin{equation}
+    U(x) - U(x_0) = \frac{1}{2} M \omega_0^2 (x - x_0)^2,
+\end{equation}
+so we have 
+\[
+    \begin{aligned}
+        1 &= \int \dd{x} W(x) \\
+        &= \int \dd{x} W(x_0) \ee^{- (U(x) - U(x_0) / k_{\text{B}} T} \\
+        &\approx W(x_0) \int_{-\infty}^\infty \dd{x} \ee^{- \frac{M \omega_0^2}{k_{\text{B}} T} (x - x_0)^2} \\
+        &= W(x_0) \sqrt{\frac{2\pi k_{\text{B}} T}{M \omega_0^2}}.
+    \end{aligned}
+\]
+So 
+\begin{equation}
+    j_{\text{d}} = \frac{D \ee^{U(x_0) / k_{\text{B}} T} }%
+    {\int_{x_0}^{x_b} \ee^{U(x) / k_{\text{B}} T} \dd{x}}
+    \sqrt{\frac{M \omega_0^2}{2 \pi k_{\text{B}} T}} .
+    \label{eq:j-d-half-finished}
+\end{equation}
+
+\item[(e)] Similar to the above procedure we normalize $W$,
+the main contribution to the denominator of \eqref{eq:j-d-half-finished} is the quadratic part,
+and we have 
+\[
+    \int_{x_0}^{x_{\text{b}}} \ee^{U(x) / k_{\text{B}} T} \dd{x}
+    \approx \int_{x_0}^{x_{\text{b}}} 
+    \ee^{ \frac{ U(x_{\text{b}}) - \frac{1}{2} M \omega_\text{b}^2 (x - x_{\text{b}})^2 }{k_{\text{B}} T} } \dd{x} 
+    = \ee^{U(x_{\text{b}}) / k_{\text{B}} T} \sqrt{\frac{2\pi k_{\text{B}} T}{M \omega_{\text{b}}^2}}.
+\]
+Thus 
+\begin{equation}
+    j_{\text{d}} = D \ee^{- \Delta U / k_{\text{B}} T} \cdot \frac{M}{2\pi k_{\text{B}} T} \omega_0 \omega_{\text{b}} 
+    = \frac{\mu M \omega_0 \omega_{\text{b}}}{2\pi} \ee^{- \Delta U / k_{\text{B}} T} = 
+    \frac{\omega_0 \omega_{\text{b}}}{2\pi \gamma} \ee^{- \Delta U / k_{\text{B}} T}.
+\end{equation}
+Since we are in 1D, this is just the escaping rate.
+
+\item[(f)] Assuming the dissipation is small enough (but is still sufficient to drive the system to equilibrium).
+Now the equilibrium distribution function is 
+\begin{equation}
+    W(x, v) = \frac{1}{\mathcal{N}} \ee^{- \frac{M v^2 / 2 + U(x)}{k_{\text{B}} T}}.
+\end{equation}
+If a particle at $x_{\text{b}}$ with velocity $v$ is moving rightward,
+it goes to the $x > x_{\text{b}}$ region.
+So the transition rate is 
+\[
+    \begin{aligned}
+        \Gamma &= \int_{v \geq 0} v \dd{v} W(x_{\text{b}}, v) \\
+        &= \frac{1}{\mathcal{N}} \ee^{- U(x_0) / k_{\text{B}} T}
+        \ee^{- \Delta U / k_{\text{B}} T} 
+        \int_{v \geq 0} v \dd{v} \ee^{- \frac{M v^2 / 2}{k_{\text{B}} T}} \\
+        &= \frac{1}{\mathcal{N}} \ee^{- U(x_0) / k_{\text{B}} T}
+        \ee^{- \Delta U / k_{\text{B}} T}
+        \frac{k_{\text{B}} T}{M}.
+    \end{aligned}
+\]
+Now we find the normalization constant.
+Similar to the above steps, we have 
+\[
+    \begin{aligned}
+        1 &= \frac{1}{\mathcal{N}} \int \dd{x} \int \dd{v} \ee^{- \frac{M v^2 / 2 + U(x)}{k_{\text{B}} T}} \\
+        &\approx  \frac{1}{\mathcal{N}}  \int \dd{x} \int \dd{v}
+        \ee^{- \frac{M v^2 + M \omega_0^2 (x - x_0)^2}{k_{\text{B}} T}} 
+        \ee^{- U(x_0) / k_{\text{B}} T }\\
+        &= \frac{1}{\mathcal{N}} \sqrt{\frac{2\pi k_{\text{B}} T}{M}} 
+        \sqrt{\frac{2\pi k_{\text{B}} T}{M \omega_0^2}} \ee^{- U(x_0) / k_{\text{B}} T }.
+    \end{aligned}
+\]
+So we get 
+\begin{equation}
+    \Gamma = \left(\sqrt{\frac{2\pi k_{\text{B}} T}{M}} 
+    \sqrt{\frac{2\pi k_{\text{B}} T}{M \omega_0^2}} \right)^{-1}
+    \ee^{- \Delta U / k_{\text{B}} T}
+    \frac{k_{\text{B}} T}{M}
+    = \frac{\omega_0}{2\pi} \ee^{- \Delta U / k_{\text{B}} T}.
+\end{equation}
+
+\item[(g)] The two approximate conditions, $\gamma \to 0$ and 
+\begin{equation}
+    \gamma^{-1} \ll t \ll \Gamma_{\text{esc}}^{-1},
+\end{equation}
+are actually not contradictory:
+the first condition is actually $\gamma \ll \omega_0$,
+while the second is 
+\[
+    \Gamma_{\text{esc}} \ll \gamma,
+\]
+\[
+    \frac{\omega_0}{2\pi} \ee^{- \Delta U / k_{\text{B}} T} \ll \gamma.
+\]
+It's of course possible to have 
+\begin{equation}
+    \frac{\omega_0}{2\pi} \ee^{- \Delta U / k_{\text{B}} T} \ll \gamma \ll \omega_0
+\end{equation}
+because $\Delta U$ is large, so there is no contradictory here.
+
+The trajectories ignored are ``particles going to the $x > x_{\text{b}}$ region and then going back''.
+In (d) and (e), these trajectories are automatically taken into consideration 
+because $v$ has been integrated over.
+When $\gamma$ is small enough, we are certain that even for a small region on the right of $x_{\text{b}}$,
+the distribution isn't established,
+so it's a good idea to ignore these trajectories.
+
 \end{itemize}
 
+\paragraph{Exercise 1 in lecture 4} 
 
+\paragraph{Solution} The EOMs can be straightforwardly given as  
+\begin{equation}
+    \begin{aligned}
+        M   \ddot{X}   &= K_1 (q_1 - X) + K_2 (q_2 - X), \\
+        m_1 \ddot{q_1} &= K_1 (X - q_1) + F(q_1 - q_2), \\
+        m_2 \ddot{q_2} &= K_2 (X - q_2) - F(q_1 - q_2). 
+    \end{aligned}
+\end{equation}
+Here $F$ is the force between the two molecules.
+
+\paragraph{Exercise 2 in lecture 5}
+
+\paragraph{Solution} We first simply the original definition of $S_{XX}[\omega]$. We have 
+\begin{equation}
+    \begin{aligned}
+        S_{XX}[\omega] &= \lim_{T_a \to \infty} \frac{1}{T_a} 
+        \int_{-T_a / 2}^{T_a / 2} \dd{t_1} \int_{- T_a / 2}^{T_a / 2} \dd{t_2} 
+        \ee^{\ii \omega (t_1 - t_2)} 
+        \expval*{X(t + t_1) X(t + t_2)} \\
+        &= \lim_{T_a \to \infty} \frac{1}{T_a} 
+        \int_{- T_a / 2}^{T_a / 2} \dd{T} \int_{- T_a + 2T}^{T_a - 2T} \dd{\tau}
+        \ee^{\ii \omega \tau} \expval*{X(t + T + \tau / 2) X(t + T - \tau / 2)} \\
+        &= \lim_{T_a \to \infty} \frac{1}{T_a} 
+        \int_{- T_a / 2}^{T_a / 2} \dd{T} \int_{- T_a + 2T}^{T_a - 2T} \dd{\tau}
+        \ee^{\ii \omega \tau} \expval*{X(0) X(\tau)}.
+    \end{aligned}
+    \label{eq:def-1-eq}
+\end{equation}
+Here we define 
+\begin{equation}
+    t_1 = \frac{\tau}{2} + T, \quad t_2 = - \frac{\tau}{2} + T.
+    \label{eq:another-time}
+\end{equation}
+The time translational symmetry is used,
+which is always correct, or otherwise we need an additional time variable in the spectral density function.
+
+On the other hand, the second definition 
+\begin{equation}
+    \left\langle X\left[\omega_1\right] X\left[\omega_2\right]\right\rangle=2 \pi S_{X X}\left[\omega_1\right] \delta\left(\omega_1+\omega_2\right)
+\end{equation}
+is equivalent to 
+\[
+    \begin{aligned}
+        \expval*{X(t_1) X(t_2)} &= 
+        \int_{-\infty}^\infty \frac{\dd{\omega_1}}{2\pi} \ee^{- \ii \omega_1 t_1} 
+        \int_{-\infty}^\infty \frac{\dd{\omega_2}}{2\pi} \ee^{- \ii \omega_2 t_2} 
+        2 \pi \delta(\omega_1 + \omega_2) S_{XX}[\omega_1] \\
+        &= \int_{-\infty}^\infty \frac{\dd{\omega_1}}{2\pi} S_{XX}[\omega_1] \ee^{- \ii \omega_1 (t_1 - t_2)},
+    \end{aligned}
+\]
+which is in turn equivalent to 
+\begin{equation}
+    \begin{aligned}
+        S_{XX}[\omega] &= \int_{-\infty}^\infty \dd{t_1} \ee^{\ii \omega (t_1 - t_2)} \expval*{X(t_1) X(t_2)} \\
+        &= \int_{-\infty}^\infty \dd{\tau} \ee^{\ii \omega \tau} 
+        \expval*{X(T - \tau /2) X(T + \tau / 2)}  \\
+        &= \int_{-\infty}^\infty \dd{\tau} \ee^{\ii \omega \tau} \expval*{X(0) X(\tau)} .
+    \end{aligned}
+    \label{eq:def-2-eq}
+\end{equation}
+Here the definition of $\tau$ and $T$ is the same as \eqref{eq:another-time}.
+
+Now the two definitions are equivalent, 
+if and only if \eqref{eq:def-1-eq} and \eqref{eq:def-2-eq} are equivalent.
+As long as we can change the region of the integral in the RHS of \eqref{eq:def-1-eq}
+into $[- T_a, T_a]$, we have
+\[
+    \begin{aligned}
+        \text{RHS of \eqref{eq:def-1-eq}} &= 
+        \lim_{T_a \to \infty} \frac{1}{T_a} \int_{- T_a / 2}^{T_a / 2} \dd{T} 
+        \int_{- T_a}^{T_a} \dd{\tau} \ee^{\ii \omega \tau}
+        \expval*{X(t - \tau / 2) X(t + \tau / 2)} \\
+        &= \lim_{T_a \to \infty} \int_{- T_a}^{T_a} \dd{\tau} \ee^{\ii \omega \tau}
+        \expval*{X(t - \tau / 2) X(t + \tau / 2)} = \text{RHS of \eqref{eq:def-2-eq}},
+    \end{aligned}
+\]
+and thus the two definitions are equivalent.
+We find as long as the correlation time scale of $\expval*{X(0) X(\tau)}$ is finite,
+changing $[- T_a + 2T, T_a - 2T]$ in the RHS of \eqref{eq:def-1-eq} is acceptable,
+because as \prettyref{fig:spectral-density-approx} shows,
+we can always choose a very large $T_a$ compared with the correlation time scale of $\expval*{X(0) X(\tau)}$,
+and in this case for most $T$'s,
+integration with regard to $\tau$ over $[- T_a + 2T, T_a - 2T]$ 
+has nothing different with integral over $[-T_a, T_a]$ or $(-\infty, \infty)$ 
+(see the green line in \prettyref{fig:spectral-density-approx}),
+because only the part in which $\abs{\tau}$ is smaller than the correlation time scale 
+is important.
+
+\begin{figure}
+    \centering
+    \input{plots/spectral-density-approx.tex}
+    \caption{The integral in \eqref{eq:def-1-eq}. 
+    The blue region labels the region in which $\expval*{X(0) X(\tau)}$ has 
+    considerable absolute values.
+    Its width is the scale of the time correlation.} 
+    \label{fig:spectral-density-approx}
+\end{figure}
+
+So as long as $X(t)$ is stationary and $\expval*{X(0) X(\tau)}$ has a finite correlation time,
+the two definitions are equivalent.
+
+\paragraph{Exercise 3 in lecture 6}
+
+\paragraph{Solution} We have 
+\[
+    \begin{aligned}
+        \left\langle\delta V\left(t_1\right) \delta V\left(t_2\right)\right\rangle &= q \int_0^{t_1} \int_0^{t_2} \mathrm{e}^{-\gamma\left(t_1-t_1^{\prime}\right)} \mathrm{e}^{-\gamma\left(t_2-t_2^{\prime}\right)} \delta\left(t_1^{\prime}-t_2^{\prime}\right) \dd t_1^{\prime} \dd t_2^{\prime} \\
+        &= q \ee^{- \gamma (t_1 + t_2)} \int_0^{t_1} \dd{t_1'} \int_0^{t_2} \dd{t_2'}
+        \ee^{\gamma (t_1' + t_2')} \delta (t'_1 - t'_2). 
+    \end{aligned}
+\]
+When $t_1 > t_2$, in the $t_1' > t_2$ region, 
+it's impossible to have $t_1' = t_2'$, and the $\delta$-function is always zero, so we have 
+\[
+    \begin{aligned}
+        \expval*{\delta V(t_1) \delta V(t_2)} &= q \ee^{- \gamma (t_1 + t_2)} 
+        \int_{0}^{t_2} \dd{t_1'} \int_0^{t_2} \dd{t_2'} \ee^{\gamma (t_1' + t_2')} \delta (t_1' - t_2')  \\
+        &= q \ee^{- \gamma (t_1 + t_2)} \int_0^{t_2} \dd{t_2'} \ee^{2 \gamma t_1'} \\
+        &= q \ee^{- \gamma (t_1 + t_2)} \frac{1}{2 \gamma} (\ee^{2 \gamma t_2} - 1) \\
+        &= \frac{q}{2 \gamma} (\ee^{- \gamma (t_1 - t_2)} - \ee^{- \gamma (t_1 + t_2)}).
+    \end{aligned}
+\] 
+Due to the symmetry between $t_1$ and $t_2$,
+when $t_1 < t_2$, we can just switch the two variables and we have 
+\[
+    \expval*{\delta V(t_1) \delta V(t_2)} = 
+    \frac{q}{2 \gamma} (\ee^{- \gamma (t_2 - t_1)} - \ee^{- \gamma (t_1 + t_2)}).
+\]
+So putting the two cases together, we get 
+\begin{equation}
+    \expval*{\delta V(t_1) \delta V(t_2)} = 
+    \frac{q}{2 \gamma} (\ee^{- \gamma \abs{t_1 - t_2}} - \ee^{- \gamma (t_1 + t_2)}).
+\end{equation}
+
+\paragraph{Exercise 2 in lecture 7}
+
+\paragraph{Solution} What we need to show is when the Fokker-Planck-like equation is not derived 
+from the Langevin equation,
+\begin{equation}
+    W = \frac{1}{\mathcal{N}} \ee^{- \frac{M v^2 / 2 + U}{k_{\text{B}} T}}
+    \label{eq:boltzmann}
+\end{equation}
+is not a solution of the equation.
+To see if it is so, we check the condition to have both \eqref{eq:boltzmann} and 
+\begin{equation}
+    \left(-\frac{\partial}{\partial x} v+\frac{\partial}{\partial v}[\gamma v-f(x)]+\frac{\partial^2}{\partial v^2} \gamma^2 D\right) W = 0.
+    \label{eq:stationary-fp}
+\end{equation}
+We have 
+\[
+    v \pdv{W}{x} = \frac{v}{k_{\text{B}} T} \left( - \pdv{U}{x} \right) W = \frac{v}{k_{\text{B}} T} F W, 
+\]
+\[
+    f \pdv{W}{v} = - f \frac{M v}{k_{\text{B}} T} W = - \frac{v}{k_{\text{B}} T} F W,
+\]
+so the first and the third term in \eqref{eq:stationary-fp} cancel with each other.
+We also have 
+\[
+    \pdv{v} (\gamma v W) = \gamma W - \gamma v \cdot \frac{M v}{k_{\text{B}} T} W,
+\]
+and 
+\[
+    \pdv[2]{W}{v} = \pdv{v} \left( - \frac{M v}{k_{\text{B}} T} W \right) 
+    = - \frac{M}{k_{\text{B}} T} W + \left( \frac{M v}{k_{\text{B}} T} \right)^2.
+\]
+So after extracting out common factors, we get 
+\begin{equation}
+    \text{LHS of \eqref{eq:stationary-fp}} = \left( \gamma - \gamma^2 D \frac{M}{k_{\text{B}} T} \right) 
+    \left(1 - \frac{M v^2}{k_{\text{B}} T}\right) W.
+\end{equation}
+To make the RHS of the equation above constantly zero,
+we can't rely on the second factor containing $v$ -- our only choice is 
+\[
+    \gamma = \underbrace{\gamma^2 D}_{\mathcal{D}} \frac{M}{k_{\text{B}} T},
+\]
+which is just 
+\begin{equation}
+    \mathcal{D} = \frac{\gamma}{M} k_{\text{B}} T,
+\end{equation}
+which appears in the Langevin equation.
+So when this condition is broken, \eqref{eq:boltzmann} is not a solution of the Fokker-Planck-like equation.
+
+\bibliographystyle{plain}
+\bibliography{equations}
 
 \end{document}
