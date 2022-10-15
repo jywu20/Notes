@@ -1,0 +1,600 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 2}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} \begin{itemize}
+\item[1.] The EOM is 
+\[
+    \dv{t} (\dot{\varphi} - \ii \theta / 2\pi) = \dv{\varphi} V_0 (1 - \cos \varphi),
+\]
+\begin{equation}
+    \ddot{\varphi} = V_0 \sin \varphi.
+\end{equation}
+Integrating over $\varphi$, we have 
+\begin{equation}
+    \frac{1}{2} \dot{\varphi}^2 = - V_0 \cos \varphi + C.
+\end{equation}
+The range of $C$ is between $\pm V_0$,
+because it corresponds to the $\varphi$ when $\dot{\varphi} = 0$.
+The boundary condition that when $\tau \to \pm \infty$, 
+$\varphi$ stays zero,
+so we have $\varphi = 0$ and $\dot{\varphi} = 0$ in the two limits,
+so $C = V_0$,
+and therefore 
+\begin{equation}
+    \frac{1}{2} \dot{\varphi}^2 = \underbrace{V_0 (1 - \cos \varphi)}_{V(\varphi)} ,
+\end{equation}
+\[
+    \pm \sqrt{2 V_0} \tau = \int \frac{\dd{\varphi}}{\sqrt{1 - \cos \varphi}}
+    = \sqrt{2} \ln \tan \frac{\varphi}{4},
+\]
+\[
+    \varphi = 4 \arctan \ee^{\pm \sqrt{V_0} (\tau - \tau_0)}.
+\]
+By checking continuity and the $\tau \to \pm \infty$ limits,
+we find 
+\begin{equation}
+    \varphi_+ = 4 \arctan \ee^{\sqrt{V_0} (\tau - \tau_0)},
+    \quad \varphi_- = 4 \arctan \ee^{- \sqrt{V_0} (\tau - \tau_0)}
+\end{equation}
+are exactly the two single instanton solutions we need -- 
+there is no need ``cut and connect'' branches of solutions.
+
+We have 
+\[
+    \begin{aligned}
+        S[\varphi] &= \int \dd{\tau} \left( \frac{1}{2} \dot{\varphi}^2 
+        - \ii \frac{\theta}{2\pi} \dot{\varphi}
+        + V(\varphi) \right) \\
+        &= - \ii \frac{\theta}{2\pi} (\varphi(\infty) - \varphi(-\infty)) + 
+        2 \int \dd{\tau} V(\varphi).
+    \end{aligned}
+\]
+For $\varphi_+$, the first term is $- \ii \theta$, 
+while for $\varphi_-$, the first term is $\ii \theta$.
+For $\varphi_+$, the second term is 
+\[
+    \begin{aligned}
+        &\quad 2 V_0 \int^\infty_{-\infty} \dd{\tau} \left( 
+            1 - \cos(4 \arctan \ee^{\sqrt{V_0} (\tau - \tau_0)})
+        \right) \\
+        &= 2 \sqrt{V_0} \int_{-\infty}^\infty \dd{x}  \left( 
+            1 - \cos(4 \arctan \ee^{x})
+        \right) \\
+        &= 8 \sqrt{V_0}.
+    \end{aligned}
+\]
+The same is true for $\varphi_{-}$ because of the time reversal symmetry.
+So we have 
+\begin{equation}
+    S_{0, +}(\theta) = - \ii \theta + 8 \sqrt{V_0}, \quad 
+    S_{0, -}(\theta) =   \ii \theta + 8 \sqrt{V_0}.
+    \label{eq:single-instanton}
+\end{equation}
+
+\item[2.] The saddle point approximation, without considering the instantons, gives 
+\begin{equation}
+    U(0, T; 0, 0) = \sqrt{\frac{m \omega}{2 \pi \sinh \omega T}},
+\end{equation}
+where the oscillation frequency is just 
+\begin{equation}
+    \omega = \sqrt{V_0}.
+\end{equation}
+
+Now we insert instantons into the paths taken into consideration.
+We make the dilute instanton gas approximation,
+assuming that the total time $T$ and the distances between instantons 
+are largely enough compared with the temporal size of each instanton ($\sim 1 / \sqrt{V_0}$),
+and in this case, action has additivity,
+and the contribution to the action of each instanton 
+is approximately the same as the action of the instanton with
+the $-\infty < \tau < \infty$ time span,
+which we just evaluated in \eqref{eq:single-instanton}.
+So for a configuration with $n_+$ $\varphi_+$ instantons and $n_-$ $\varphi_-$ instantons,
+the total saddle-point action is 
+\[
+    K^{n_1 + n_2} \ee^{- n_+ S_{0, +} - n_- S_{0, -}}.
+\]
+The number of the possible orders of the instantons is $\binom{n_1 + n_2}{n_1}$,
+so the path integral is 
+\[
+    \begin{aligned}
+        &\quad \sum_{n_-, n_+} 
+        \int_{0}^T \dd{\tau_1} \int_{\tau_1}^T \dd{\tau_2} \cdots \int_{\tau_{n-1}}^T \dd{\tau}
+        \binom{n_1 + n_2}{n_1} K^{n_1 + n_2} \ee^{- n_+ S_{0, +} - n_- S_{0, -}}
+        U(0, T; 0, 0) \\
+        &= U(0, T; 0, 0) \sum_{n_-, n_+} \frac{T^{n_+ + n_-}}{(n_+ + n_-) !} 
+        \frac{(n_+ + n_-) !}{n_+! n_-!} 
+        K^{n_+ + n_-} \ee^{- n_+ S_{0, +} - n_- S_{0, -}} \\
+        &= U(0, T; 0, 0) \sum_{n_+} \frac{(T K \ee^{- S_{0, +}})^{n_+}}{n_+!} 
+        \sum_{n-} \frac{(T K \ee^{- S_{0, -}})^{n_-}}{n_-!} \\
+        &= U(0, T; 0, 0) \ee^{TK \ee^{- S_{0,+}}} \ee^{TK \ee^{- S_{0,-}}}.
+    \end{aligned}
+\]
+So we get 
+\begin{equation}
+    \expval{\ee^{- H T}}{0} = U(0, T; 0, 0) \ee^{TK \ee^{- S_{0,+}}} \ee^{TK \ee^{- S_{0,-}}}.
+\end{equation}
+
+\item[3.] When $T \to \infty$,
+we know (in the last homework) 
+\begin{equation}
+    U(0, T; 0, 0) \sim \ee^{- \frac{1}{2} \omega T},
+\end{equation}
+Since in the long run 
+\begin{equation}
+    \expval{\ee^{- HT}}{0} \sim \ee^{- \frac{1}{2} \omega T} \ee^{TK (\ee^{- S_{0, +}} + \ee^{- S_{0, -}})} 
+    \eqqcolon \ee^{- E T},
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        E &= \frac{1}{2} \omega - K ( \ee^{- S_{0, +}} + \ee^{- S_{0, -}} ) \\
+        &= \frac{1}{2} \omega - K \ee^{- 8 \sqrt{V_0}} ( \ee^{\ii \theta} + \ee^{- \ii \theta} ) \\
+        &= \frac{1}{2} \sqrt{V_0} - 2 K \ee^{- 8 \sqrt{V_0}} \cos\theta.
+    \end{aligned}
+\end{equation}
+So the ground state energy oscillates with respect to $\theta$.
+
+\end{itemize}
+
+\paragraph{Solution} 
+
+\paragraph{Problem 2}
+
+\paragraph{Solution} \begin{itemize}
+\item[1.] We have 
+\[
+    \timeorder \expval{j(t) j(0)}{0} = \expval{j(t) j(0)} ,
+\]
+where 
+\[
+    \expval{\cdots} \coloneqq 
+    \frac{\int \fd{x} (\cdots) \ee^{\ii \int \dd{t} L}}{\int \fd{x} \ee^{\ii \int \dd{t} L}}.
+\]
+So we can do Fourier expansion to $j(t)$ without fears of details of normal ordering.
+We have 
+\[
+    \begin{aligned}
+        j(t) &= \dv{t} \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} e x(\omega) \\
+        &= \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t}
+        (- \ii \omega) e x(\omega),
+    \end{aligned}
+\]
+so 
+\[
+    \begin{aligned}
+        \int \dd{t} \ee^{\ii \omega t} \expval{j(t) j(0)} &= 
+        \frac{1}{2\pi \delta(0)} \int \dd{t} \ee^{\ii \omega t} \int \dd{t_2}
+        \expval{j(t + t_2) j(t_2)} \\
+        &= \frac{1}{2\pi \delta(0)} \int \dd{t} \ee^{\ii \omega t} \int \dd{t_2}
+        \int \frac{\dd{\omega_1}}{2\pi} (- e \ii \omega_1) \ee^{- \ii \omega_1 (t + t_2)} \\
+        &\quad \quad \cdot \int \frac{\dd{\omega_2}}{2\pi} (- \ii e \omega_2) \ee^{- \ii \omega_2 t_2}
+        \expval{j(\omega_1) j(\omega_2)} \\
+        &= \frac{1}{2\pi \delta(0)} \int \frac{\dd{\omega_1}}{2\pi} \int \frac{\dd{\omega_2}}{2\pi}
+        (- \ii e \omega_1) (- \ii e \omega_2) 
+        2\pi \delta (\omega - \omega_1) 2\pi \delta (\omega_1 + \omega_2) 
+        \expval{j(\omega_1) j(\omega_2)} \\
+        &= e^2 \frac{1}{2\pi} \omega^2 \expval{j(\omega) j(- \omega)}.
+    \end{aligned}
+\]
+On the other hand, we have 
+\[
+    \int \frac{\dd{\omega}}{2\pi} \expval{x(t) x(0)} 
+    = \frac{1}{2\pi} \expval{x(\omega) x(-\omega)},
+\]
+and thus 
+\begin{equation}
+    \ii G_{jj}(\omega) = \int \dd{t} \ee^{\ii \omega t} \expval{j(t) j(0)} = 
+    e^2 \omega^2 \int \dd{t} \ee^{\ii \omega t} \expval{x(t) x(0)}
+    = e^2 \omega^2 \frac{\ii}{m (\omega^2 - \omega_0^2 + \ii \epsilon)},
+\end{equation}
+\begin{equation}
+    G_{jj}(\omega) = \frac{e^2 \omega^2}{m (\omega^2 - \omega_0^2 + \ii \epsilon)}.
+\end{equation}
+
+\item[2.] The EOMs are 
+\[
+    \dot{x} = \pdv{H}{p} = \frac{p}{m}, \quad \dot{p} = - \pdv{H}{x} = - m \omega_0^2 + eE,
+\]
+\[
+    m\ddot{x} + m \omega_0^2 x = e E.
+\]
+After adding a small friction we get 
+\begin{equation}
+    m\ddot{x} + m \epsilon \dot{x} + m \omega_0^2 x = e E.
+\end{equation}
+Again by Fourier transformation
+\[
+    x(t) = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} x(\omega), \quad 
+    E(t) = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} E(\omega),
+\] 
+we have 
+\[
+    (- m \omega^2 + m \omega_0^2 - \ii m \epsilon \omega) x(\omega) = e E(\omega),
+\]
+\begin{equation}
+    \sigma(\omega) = \frac{j(\omega)}{E(\omega)} = - \ii \omega e \frac{x(\omega)}{E(\omega)}
+    = \ii \frac{e^2 \omega}{m (\omega^2 - \omega_0^2 + \ii \sgn(\omega) \epsilon)}.
+\end{equation}
+
+\item[3.] So when $\omega > 0$, $\sgn(\omega) \epsilon$ is just $0^+$, and we get 
+\begin{equation}
+    \sigma(\omega) = C \frac{G_{jj} (\omega)}{\omega}, \quad C = \ii.
+\end{equation}
+This is expected: the correlation function corresponding to $\sigma(\omega)$ is $G_{j, ex}$,
+not $G_{jj}$.
+The two all contain a $e^2$ factor but they differ with a time derivative,
+which is the origin of the $- \ii \omega$ in the denominator.
+
+\item[4.] We have 
+\begin{equation}
+    \begin{aligned}
+        \sigma(\omega) &= \ii \frac{e^2}{m} \omega \left(
+            \mathrm{P} \frac{1}{\omega^2 - \omega_0^2} - \pi \ii \sgn(\omega) \delta(\omega^2 - \omega_0^2) 
+        \right) \\
+        &= \frac{\pi e^2}{m} \omega \delta (\omega^2 - \omega_0^2) 
+        + \ii \frac{e^2 \omega}{m} \mathrm{P} \frac{1}{\omega^2 - \omega_0^2}.
+    \end{aligned}
+\end{equation}
+So the real part is non-zero only when $\omega = \omega_0$.
+
+\end{itemize}
+
+\paragraph{Problem 3}
+
+\paragraph{Solution} \begin{itemize}
+\item[1.] The path integral is 
+\begin{equation}
+    \begin{aligned}
+        Z &= \int \fd{X} \fd{x} \ee^{\ii \int \dd{t} \left(
+            \frac{1}{2} m \dot{x}^2-\frac{1}{2} m \omega_0^2 x^2
+            +\frac{1}{2} M \dot{X}^2-\frac{1}{2} M \Omega_0^2 X^2-g x X
+        \right)} \\
+        &= \int \fd{x} \ee^{\ii \int \dd{t} \left( \frac{1}{2} m \dot{x}^2-\frac{1}{2} m \omega_0^2 x^2 \right)}
+        \int \fd{X} \ee^{\ii \int \dd{t} \left(
+            \frac{1}{2} M \dot{X}^2-\frac{1}{2} M \Omega_0^2 X^2-g x X
+        \right)} .
+    \end{aligned}
+    \label{eq:integrate-x-big-x}
+\end{equation}
+We need to integrate out the $X$ variable to obtain an effective theory for $x$.
+We have 
+\[
+    \begin{aligned}
+        &\quad \int \fd{X} \ee^{\ii \int \dd{t} \left(
+            \frac{1}{2} M \dot{X}^2-\frac{1}{2} M \Omega_0^2 X^2-g x X
+        \right)} \\
+        &= \int \fd{X} \ee^{\ii \int \dd{t} \left(
+            - \frac{1}{2} M X (\partial_t^2 + \Omega_0^2) X -g x X
+        \right)}  \\
+        &= \const \cdot \exp(\ii \int \dd{t} \frac{1}{2} g^2 x \frac{1}{M (\partial_t^2 + \Omega_0^2)} x) \\
+        &= \const \cdot \exp(\ii \int \dd{t} \frac{1}{2} g^2 x \frac{1}{M \Omega_0^2} 
+        \left( 1 - \frac{1}{\Omega_0^2} \dv[2]{t} + \cdots \right) x) \\
+        &= \const \cdot \exp(\ii \int \dd{t} \left(
+            \frac{g^2}{2 M \Omega_0^2} x^2 
+            + \frac{1}{2} \frac{g^2}{M \Omega_0^4} \dot{x}^2 + \cdots
+        \right)) .
+    \end{aligned}
+\]
+Only keeping the first-order correction, we have 
+\begin{equation}
+    m^* = m + \frac{g^2}{M \Omega_0^4},
+\end{equation}
+\begin{equation}
+    m^* (\omega_0^*)^2 = m \omega_0^2 - \frac{g^2}{M \Omega_0^2}.
+    \label{eq:corrected-m}
+\end{equation}
+When $g$ is large, \eqref{eq:corrected-m} becomes negative.
+This results TODO
+
+\item[2.] We just need to replace $gx$ by $gx - E$ in \eqref{eq:integrate-x-big-x}.
+Now after integrating out $X$, we get 
+\[
+    \begin{aligned}
+        &\quad \const \cdot \exp(\ii \int \dd{t} \frac{1}{2} 
+        (g x - E) \frac{1}{M (\partial_t^2 + \Omega_0^2)} (gx - E)) \\
+        &= \const \cdot \exp(\ii \int \dd{t} \frac{1}{2} (gx - E) \frac{1}{M \Omega_0^2} 
+        \left( 1 - \frac{1}{\Omega_0^2} \dv[2]{t} + \cdots \right) (gx - E)) \\
+        &= \const \cdot \exp(\ii \int \dd{t} \left(
+            \frac{1}{2 M \Omega_0^2} (gx - E)^2 
+            + \frac{1}{2} \frac{1}{M \Omega_0^4} \left(\dv{(gx - E)}{t}\right)^2 + \cdots
+        \right)) \\
+        &= \const \cdot \exp(\ii \int \dd{t} \left(
+            \frac{1}{2 M \Omega_0^2} (gx - E)^2 
+            + \frac{1}{2} \frac{g^2}{M \Omega_0^4} \dot{x}^2 + \cdots
+        \right)).
+    \end{aligned}
+\]
+So now the effective theory is 
+\begin{equation}
+    L_{\text{eff}} = \frac{1}{2} \left( m + \frac{g^2}{M \Omega_0^4} \right) \dot{x}^2 
+    - \frac{1}{2} m \omega_0^2 x^2 + \frac{1}{2 M \Omega_0^2} (gx - E)^2 .
+\end{equation}
+To find the expression of $X$, we just need to take the derivative of $L_{\text{eff}}$ with respect to $E$,
+because to find an $n$-order correlation function of $X$,
+we just find the $n$-th derivative of $Z$, 
+and if this is done with $L_{\text{eff}}$, 
+then what is averaged over is just $\pdv*{L_{\text{eff}}}{E}$ to the $n$.
+So 
+\begin{equation}
+    X = \eval{\pdv{L_{\text{eff}}}{E}}_{E=0} = - \frac{g}{M \Omega_0^2} x,
+\end{equation}
+and 
+\begin{equation}
+    \dot{X} = - \frac{g}{M \Omega_0^2} \dot{x}.
+\end{equation}
+
+\item[3.] 
+
+\end{itemize}
+
+\paragraph{Problem 4}
+
+\paragraph{Solution} \begin{enumerate}
+\item We have 
+\begin{equation}
+    a(\vb*{x}, t) = \frac{1}{\sqrt{V}} \sum_{\vb*{k}} 
+    \ee^{\ii \vb*{k} \cdot \vb*{x} - \ii \omega_{\vb*{k}} t} a_{\vb*{k}}.
+\end{equation}
+So 
+\[
+    \begin{aligned}
+        \ii G(\vb*{x}, t) &= \frac{1}{V} \sum_{\vb*{k}} \sum_{\vb*{k}'}
+        \ee^{\ii \vb*{k} \cdot \vb*{x}} 
+        \expval{\timeorder \ee^{- \ii \omega_{\vb*{k}} t} a_{\vb*{k}} a^\dagger_{\vb*{k}'} }{0}.
+    \end{aligned}
+\]
+When $t > 0$, we have 
+\[
+    \timeorder \ee^{- \ii \omega_{\vb*{k}} t} a_{\vb*{k}} a^\dagger_{\vb*{k}'}
+    = \ee^{- \ii \omega_{\vb*{k}} t} a_{\vb*{k}} a^\dagger_{\vb*{k}'}
+    = \ee^{- \ii \omega_{\vb*{k}} t} (a^\dagger_{\vb*{k}'} a_{\vb*{k}} + \delta_{\vb*{k} \vb*{k}'}),
+\]
+and when $t < 0$, we have 
+\[
+    \timeorder \ee^{- \ii \omega_{\vb*{k}} t} a_{\vb*{k}} a^\dagger_{\vb*{k}'}
+    = \ee^{- \ii \omega_{\vb*{k}} t} a^\dagger_{\vb*{k}'} a_{\vb*{k}}.
+\]
+The momentum correlation function is then evaluated as follows:
+\[
+    \begin{aligned}
+        \expval{\timeorder \ee^{- \ii \omega_{\vb*{k}} t} a_{\vb*{k}} a^\dagger_{\vb*{k}'} }{\Psi_0}
+        &= \theta(t) \delta_{\vb*{k} \vb*{k}'} \ee^{- \ii \omega_{\vb*{k}} t} 
+        + \ee^{- \ii \omega_{\vb*{k}} t} \expval{a_{\vb*{k}'}^\dagger a_{\vb*{k}}}{\Psi_0} \\
+        &= \theta(t) \delta_{\vb*{k} \vb*{k}'} \ee^{- \ii \omega_{\vb*{k}} t} 
+        + \ee^{- \ii \omega_{\vb*{k}} t} \delta_{\vb*{k}, 0} \delta_{\vb*{k}', 0} 
+        \expval{a_0^\dagger a_0}{\Psi_0} \\
+        &=  \theta(t) \delta_{\vb*{k} \vb*{k}'} \ee^{- \ii \omega_{\vb*{k}} t} 
+        + \ee^{- \ii \omega_{\vb*{k}} t} \delta_{\vb*{k}, 0} \delta_{\vb*{k}', 0} N.
+    \end{aligned}
+\]
+The correlation function is therefore 
+\[
+    \begin{aligned}
+        \ii G(\vb*{x}, t) &= \frac{1}{V} \sum_{\vb*{k}, \vb*{k}'} 
+        \ee^{\ii \vb*{k} \cdot \vb*{x}} \left(
+            \theta(t) \delta_{\vb*{k} \vb*{k}'} \ee^{- \ii \omega_{\vb*{k}} t} 
+            + \ee^{- \ii \omega_{\vb*{k}} t} \delta_{\vb*{k}, 0} \delta_{\vb*{k}', 0} N
+        \right) \\
+        &= \frac{N}{V} + 
+        \theta(t) \frac{1}{V} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{x}} \ee^{- \ii \frac{\vb*{k}^2}{2m} t} \\
+        &= \rho_0 +
+        \theta(t) \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{ \ii \vb*{k} \cdot \vb*{x} - \ii \frac{\vb*{k}^2}{2m} t } .
+    \end{aligned}
+\]
+After completing the integral, we get 
+\begin{equation}
+    \ii G(\vb*{x}, t) = \rho_0 + \theta(t) \sqrt{\frac{m^3}{(2 \pi \ii t)^3}} \ee^{\frac{\ii}{2} \frac{m x^2}{t}}.
+    \label{eq:spatial-oscillating}
+\end{equation}
+When $\abs{\vb*{x}} \to \infty$, 
+the second term oscillates fast, 
+and its average is zero, so we have 
+\begin{equation}
+    \ii G(\vb*{x}, t) \simeq \rho_0,
+\end{equation}
+so there is indeed a long-range order in the ground state of BEC.
+
+\item[2.] By Wick's theorem and the fact that $\expval{\timeorder a_1 a_2}{0} = 0$,
+as well as $\expval{a^\dagger a}{0}$, 
+we have 
+\begin{equation}
+    \begin{aligned}
+        &\quad \timeorder a^\dagger(\vb*{x}, t) a(\vb*{x}, t) a^\dagger(0, 0) a(0, 0) \\
+        &= \normalorder{a^\dagger(\vb*{x}, t) a(\vb*{x}, t) a^\dagger(0, 0) a(0, 0)} \\
+        &\quad + \normalorder{a^\dagger(\vb*{x}, t) a(0, 0)} 
+        \expval{\timeorder a(\vb*{x}, t) a^\dagger(0, 0) }{0} \\
+        &\quad + \normalorder{a(\vb*{x}, t) a^\dagger(0, 0)} 
+        \expval{\timeorder a^\dagger (\vb*{x}, t) a(0, 0)}{0} \\
+        &\quad + \expval{\timeorder a(\vb*{x}, t) a^\dagger(0, 0) }{0}
+        \expval{\timeorder a^\dagger (\vb*{x}, t) a(0, 0)}{0}.
+    \end{aligned}
+    \label{eq:expected-operator-density}
+\end{equation}
+By space and time translational symmetry, we have 
+\[
+    \begin{aligned}
+        \expval{\timeorder a^\dagger (\vb*{x}, t) a(0, 0)}{0}
+        &= \expval{\timeorder a(0, 0) a^\dagger (\vb*{x}, t)}{0} 
+        = \expval{\timeorder a(- \vb*{x}, -t) a^\dagger (0, 0)}{0}  \\
+        &= \underbrace{\rho_0}_{\text{$=0$ for $\ket{0}$}} +
+        \theta(-t) \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} \ee^{- \ii \vb*{k} \cdot \vb*{x} + \ii \frac{\vb*{k}^2}{2m} t }.
+    \end{aligned}
+\]
+Thus the last term in \eqref{eq:expected-operator-density} vanishes,
+because it contains both $\theta(t)$ and $\theta(-t)$.
+So we get 
+\begin{equation}
+    \begin{aligned}
+        &\quad \expval{\timeorder a^\dagger(\vb*{x}, t) a(\vb*{x}, t) a^\dagger(0, 0) a(0, 0)}{\Psi_0} \\
+        &= \expval{\normalorder{a^\dagger(\vb*{x}, t) a(\vb*{x}, t) a^\dagger(0, 0) a(0, 0)}}{\Psi_0} \\
+        &\quad + \expval{\normalorder{a^\dagger(\vb*{x}, t) a(0, 0)}}{\Psi_0} 
+        \expval{\timeorder a(\vb*{x}, t) a^\dagger(0, 0) }{0} \\
+        &\quad + \expval{\normalorder{a^\dagger(0, 0) a(\vb*{x}, t)} }{\Psi_0}
+        \expval{\timeorder a(-\vb*{x}, -t) a^\dagger(0, 0)}{0} .
+    \end{aligned}
+\end{equation}
+The normal ordered operator factor in the second term is 
+\[
+    \begin{aligned}
+        \expval{\normalorder{a^\dagger(\vb*{x}, t) a(0, 0)}}{\Psi_0} &= 
+        \frac{1}{V} \sum_{\vb*{k}, \vb*{k}'} \ee^{- \ii \vb*{k} \cdot \vb*{x}} \ee^{\ii \omega_{\vb*{k}} t}
+        \expval{a^\dagger_{\vb*{k}} a_{\vb*{k}'}}{\Psi_0}  \\
+        &= \frac{1}{V} \sum_{\vb*{k}, \vb*{k}'} \ee^{- \ii \vb*{k} \cdot \vb*{x}} \ee^{\ii \omega_{\vb*{k}} t}
+        N \delta_{\vb*{k}, 0} \delta_{\vb*{k}', 0} = \frac{N}{V},
+    \end{aligned}
+\]
+and similarly the normal ordered operator factor in the third term is $N / V$.
+The first term is 
+\[
+    \begin{aligned}
+        &\quad \expval{\normalorder{a^\dagger(\vb*{x}, t) a(\vb*{x}, t) a^\dagger(0, 0) a(0, 0)}}{\Psi_0}  \\
+        &= \frac{1}{V^2} \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} 
+        \ee^{- \ii \vb*{k}_1 \cdot \vb*{x} + \ii \omega_{\vb*{k}_1} t} 
+        \ee^{  \ii \vb*{k}_2 \cdot \vb*{x} - \ii \omega_{\vb*{k}_2} t} 
+        \expval{a^\dagger_{\vb*{k}_1} a^\dagger_{\vb*{k}_3} a_{\vb*{k}_2} a_{\vb*{k}_4} }{\Psi_0} \\
+        &= \frac{1}{V^2} \sum_{\vb*{k}_1, \vb*{k}_2, \vb*{k}_3, \vb*{k}_4} 
+        \ee^{- \ii \vb*{k}_1 \cdot \vb*{x} + \ii \omega_{\vb*{k}_1} t} 
+        \ee^{  \ii \vb*{k}_2 \cdot \vb*{x} - \ii \omega_{\vb*{k}_2} t} 
+        \delta_{\vb*{k}_1, 0} \delta_{\vb*{k}_2, 0} \delta_{\vb*{k}_3, 0} \delta_{\vb*{k}_4, 0} N(N-1) \\
+        &= \frac{N(N-1)}{V^2}.
+    \end{aligned}
+\]
+So the final result is 
+\begin{equation}
+    \begin{aligned}
+        &\quad \expval{\timeorder \rho(\vb*{x}, t) a(\vb*{x}, t) \rho(0, 0)}{\Psi_0} \\
+        &= \frac{N(N-1)}{V^2} + 
+        \frac{N}{V} \theta(t) \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} 
+        \ee^{ \ii \vb*{k} \cdot \vb*{x} - \ii \frac{\vb*{k}^2}{2m} t } + 
+        \frac{N}{V} \theta(- t) \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} 
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} + \ii \frac{\vb*{k}^2}{2m} t } .
+    \end{aligned}
+    \label{eq:original-density-density}
+\end{equation}
+
+\item[3.] We have 
+\begin{equation}
+    \expval{\timeorder \rho(\vb*{x}, t) \rho(0, 0)}{0} 
+    = \rho_0^2 \expval{\timeorder \ee^{\ii \theta(\vb*{x}, t)}}{0}
+\end{equation}
+
+\item[4.] The second and third terms of \eqref{eq:original-density-density} 
+are all rapidly oscillating in the same way we see in \eqref{eq:spatial-oscillating}.
+So we have 
+\begin{equation}
+    \expval{\timeorder \rho(\vb*{x}, t) a(\vb*{x}, t) \rho(0, 0)}{\Psi_0} 
+    \stackrel{\abs{\vb*{x}} \to \infty}{\longrightarrow} \rho_0^2.
+\end{equation}
+
+\end{enumerate}
+
+\end{document}

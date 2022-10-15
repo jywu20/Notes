@@ -1,0 +1,380 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
+\title{Homework 6}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} 
+
+\paragraph{Solution} The mistakes are
+\begin{itemize}
+    \item Electrons change their directions when they are far from nuclei,
+    and this may symbolize the Coulomb interaction between electrons,
+    which is ignored in Drude model.
+    \item I'm not sure whether I understand the video correctly,
+    but I notice in the video the collisions are illustrated in a quite ``realistic'' way:
+    $\theta_{\text{in}} = \theta_{\text{out}}$,
+    if the distance between an electron and an ion is large, then $\Delta \vb*{v}$ isn't large, etc.
+    That's not how Drude model sees collisions:
+    In Drude model there is not correlation between the velocities before and after a collision.
+\end{itemize}
+
+\paragraph{Problem 2} Problem 2 of chapter 1 of A\&M.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] Suppose $\vb*{p}_{\text{i}}$ is the momentum after the first collision,
+and $\vb*{p}_{\text{f}}$ is the momentum after the second collision.
+The energy lost in the second collision, on average, is 
+\[
+    \begin{aligned}
+        \Delta E &= \expval{\frac{(\vb*{p}_{\text{i}} + e \vb*{E} t)^2}{2m}} 
+        - \expval{\frac{\vb*{p}_{\text{f}}^2}{2m}} \\
+        &= \expval{\frac{\vb*{p}_{\text{i}}^2}{2m}} - \expval{\frac{\vb*{p}_{\text{f}}^2}{2m}}
+        + \frac{e \vb*{E} t}{m} \cdot \expval{\vb*{p}_{\text{i}}} 
+        + \frac{(e \vb*{E} t)^2}{2m}.
+    \end{aligned}
+\]
+Because we assume after the collision the particle is in thermal equilibrium,
+the first two terms cancel each other,
+and the third term is zero because of spatial mirror symmetry.
+So the only remaining term is the last term, and we have 
+\begin{equation}
+    \Delta E = \frac{(e \vb*{E} t)^2}{2m}.
+\end{equation}
+
+\item[(b)] Now $t$ is a random variable and the expected energy loss per electron per collision is 
+\[
+    \begin{aligned}
+        &\quad \int_{0}^\infty \frac{\dd{t}}{\tau} \ee^{- t / \tau} 
+        \frac{(e \vb*{E} t)^2}{2m} \\
+        &= \frac{e^2 \vb*{E}^2}{2m \tau} \cdot \tau^3 \int_{0}^\infty \frac{\dd{t} t^2}{\tau^3} \ee^{- t / \tau} \\
+        &= \frac{e^2 \vb*{E}^2}{2m \tau} \cdot \tau^3 \cdot \int_{0}^\infty \dd{x} x^2 \ee^{-x} \\
+        &= \frac{e^2 \vb*{E}^2}{2m \tau} \cdot \tau^3 \cdot 2 = \frac{(e \vb*{E} \tau)^2}{m}.
+    \end{aligned} 
+\]
+So the average energy loss per electron per collision is $(e \vb*{E} \tau)^2 / m$.
+\begin{equation}
+    \dv{t} \dv{E_{\text{loss}}}{V} = \frac{(e \vb*{E} \tau)^2}{m} \cdot \frac{n}{\tau} 
+    = \left( \frac{n e^2 \tau}{m} \right) \vb*{E} = \sigma \vb*{E}^2.
+\end{equation}
+
+For a wire of length $L$ and cross section $A$, the current density is 
+\[
+    j = \frac{I}{A},
+\]
+so we have 
+\[
+    E = \frac{j}{\sigma} = \frac{I}{A \sigma}.
+\]
+Then 
+\begin{equation}
+    P_{\text{loss}} = \int \dd[3]{\vb*{r}} \sigma \vb*{E}^2 
+    = AL \sigma \frac{I^2}{A^2 \sigma^2} = \frac{L}{A} \frac{1}{\sigma} I^2 = I^2 R,
+\end{equation}
+where 
+\[
+    R = \frac{L}{A} \rho = \frac{L}{A} \frac{1}{\sigma}.
+\]
+
+\end{itemize}
+
+\paragraph{Problem 3} The ionosphere consists of a plasma of electrons and positive ions. It acts like a Drude metal when interacting with electromagnetic waves. AM radio frequencies (up to $1600 \mathrm{kHz}$ ) are reflected by the ionosphere (so you can bounce them over the horizon for long range radio transmissions) while FM frequencies (starting at $88 \mathrm{MHz}$ ) pass through the ionosphere.
+a) In what range is the plasma energy (in eV) of the ionosphere?
+b) For the larger of those values, what would be the electron density in the ionosphere? To get a sense of scale, compare the mean distance between electrons in this plasma to that of the conduction electrons in solid $\mathrm{Na}$ at STP as well as to the mean distance between molecules in air at STP (STP means $1 \mathrm{~atm}$ and $298 \mathrm{~K}$ ). Define the mean distance between particles as the length of the side of a cube whose volume contains one particle on average.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] It must be between \SI{1600}{kHz} and \SI{88}{MHz}:
+when $\omega < \omega_{\text{p}}$,
+the system looks like a mirror to an external beam of light,
+and when $\omega > \omega_{\text{p}}$,
+the system is transparent.
+So in \si{eV}, the range is 
+(here the numbers \SI{1600}{kHz} and \SI{88}{MHz} are all ordinary frequencies, not angular frequencies)
+between \SI{4.2e-8}{eV} and \SI{2.3e-6}{eV}.
+
+\item[(b)] We have 
+\begin{equation}
+    \omega_{\text{p}}^2 = \frac{e^2 n}{m \epsilon_0}.
+\end{equation}
+So when we estimate $\omega_{\text{p}}$ to be $2\pi \cdot \SI{88}{MHz}$, we have 
+\begin{equation}
+    n = \frac{m \epsilon_0}{e^2} \omega_{\text{p}}^2 = \SI{9.6e13}{m^{-3}}.
+\end{equation}
+So the mean distance can be estimated as 
+\begin{equation}
+    l = \sqrt[3]{\frac{1}{n}} = \SI{2.2e-5}{m}.
+\end{equation} 
+
+The mass density of solid Na is \SI{0.968}{g/cm^3}, 
+and the mass of one Na atom is \SI{22.989769}{u}.
+So the number density of Na atoms -- and also the electrons -- is 
+$\SI{0.968}{g/cm^3} / \SI{22.989769}{u} = \SI{2.5e28}{m^{-3}}$.
+So the mean distance is $(1 / n)^{1/3} = \SI{3.4e-10}{m}$.
+
+The number density of air is 
+\[
+    \frac{N}{V} = \frac{p}{k_{\text{B}} T} = \SI{2.46e25}{m^{-3}},
+\]
+and the mean distance is $(1/n)^{1/3} = \SI{3.4e-9}{m}$.
+
+So air is much dilute than solid Na, but ionosphere is much, much more dilute than the first two.
+
+\end{itemize}
+
+\paragraph{Problem 4} Problem 1 of chapter 2 of A\&M.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] By definition, 
+\begin{equation}
+    n = \frac{N}{L^2} = \frac{1}{L^2} \cdot 2 \frac{L^2}{(2\pi)^2} \pi k_{\text{F}}^2
+    = \frac{k_{\text{F}}^2}{2\pi}.
+\end{equation}
+\item[(b)] By counting electrons we have 
+\[
+    N = 2 \frac{L^2}{(2\pi)^2} \pi k_{\text{F}}^2 = \frac{L^2}{\pi r_{\text{s}}^2},
+\]
+so 
+\begin{equation}
+    k_{\text{F}} = \frac{\sqrt{2}}{r_{\text{s}}}.
+\end{equation}
+
+\item[(c)] By definition
+\[
+    \begin{aligned}
+        g(E) &= 2 \cdot \frac{1}{(2\pi)^2} \int_{\epsilon_{\vb*{k}} = E} 
+        \frac{\dd{l_{\vb*{k}}}}{\abs{\grad_{\vb*{k}} \epsilon_{\vb*{k}}}} \\
+        &= 2 \cdot \frac{1}{(2\pi)^2} \eval{\frac{2\pi k}{\frac{\hbar^2 k}{m}}}_{ E = \frac{\hbar^2 k^2}{2m} } \\
+        &= \begin{cases}
+            \frac{m}{\pi \hbar^2}, & \quad E \geq 0, \\
+            0                    , & \quad E < 0.
+        \end{cases}
+    \end{aligned}
+\]
+When $E < 0$, it's impossible to find a $k$ such that $E = \hbar^2 k^2 / 2m$,
+so there is a cutoff.
+So when $E > 0$, $g(E)$ is a constant $m / \pi \hbar^2$.
+
+\item[(d)] Since $g(E)$ is a constant when $E > 0$,
+from (C.7) in A\&M we have (here the function $H(E)$ is just $g(E)$)
+\begin{equation}
+    n = \int_{-\infty}^\infty g(E) f(E) \dd{E}  = \int_{-\infty}^\mu g(E) \dd{E} = 
+    \frac{m}{\pi \hbar^2} \cdot \mu.
+\end{equation}
+All the following terms containing derivatives of $g(E)$ vanish, 
+so even at a finite temperature,
+$n$ doesn't have temperature dependence.
+
+On the other hand, when $T = 0$, we have 
+\begin{equation}
+    n = \int_{-\infty}^{\epsilon_{\text{F}}} g(E) \dd{E} = \frac{m}{\pi \hbar^2} \cdot \epsilon_{\text{F}}.
+\end{equation}
+So we find 
+\begin{equation}
+    \mu = \epsilon_{\text{F}}.
+    \label{eq:wrong-mu}
+\end{equation}
+
+\item[(e)] The spatial density of electrons is  
+\[
+    n = \int_{-\infty}^\infty g(E) f(E) \dd{E} 
+    = \frac{m}{\pi \hbar^2} \int_{0}^\infty \frac{\dd{E}}{1 + \ee^{\beta (E - \mu)}}.
+\]
+The integral can be evaluated as 
+\[
+    \int_{- \mu}^\infty \dd{\xi} \frac{1}{1 + \ee^{\beta \xi}} = 
+    \int_{- \mu}^\infty \dd{\xi} \frac{\ee^{- \beta \xi}}{1 + \ee^{- \beta \xi}} =
+    - \frac{1}{\beta} \int_{\ee^{\beta \mu}}^0 \frac{\dd{x}}{1 + x} 
+    = \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}),
+\]
+so we get 
+\[
+    n = \frac{m}{\pi \hbar} \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}).
+\]
+On the other hand, at the zero temperature, we have 
+\[
+    n = \frac{m}{\pi \hbar^2} \cdot \epsilon_{\text{F}}.
+\]
+Changing the temperature doesn't change the number of electrons, so we get 
+\begin{equation}
+    \begin{aligned}
+        \epsilon_{\text{F}} &= \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}) \\
+        &= k_{\text{B}} T \left(
+            \ln (\ee^{- \mu / k_{\text{B}} T} + 1) + \frac{\mu}{k_{\text{B}} T}
+        \right) \\
+        &= \mu + k_{\text{B}} T \ln (\ee^{- \mu / k_{\text{B}} T} + 1).
+    \end{aligned}
+    \label{eq:correct-mu}
+\end{equation}
+
+\item[(f)] The relative error of the value of $\mu$ in \eqref{eq:wrong-mu},
+according to \eqref{eq:correct-mu} is 
+\begin{equation}
+    \frac{1}{\mu} k_{\text{B}} T \ln (\ee^{- \mu / k_{\text{B}} T} + 1) \eqqcolon
+    f(k_{\text{B}} T / \mu), \quad f(x) = x \ln (\ee^{- 1/x} + 1).
+\end{equation}
+When $x \to \infty$, the behavior of $f(x)$ is quite normal: $\ee^{-1/x} \to 1$ and $f(x) \approx x \ln 2$.
+Around $x = 0$, however, we don't have a Taylor expansion of the function.
+This can be seen by plotting the function,
+which is almost complete flat in the $0 < x < 0.5$ region,
+and this can also be seen by doing Taylor expansion with respect to $\ee^{- 1 / x}$, 
+which is small when $x \to 0$: we have 
+\[
+    f(x) \approx x \ee^{- 1 / x},
+\]
+which is also almost completely zero around $x = 0$ and also doesn't have a Taylor expansion. 
+So the conclusions are:
+\begin{itemize}
+    \item It's safe to use $\mu = \epsilon_{\text{F}}$ as an approximation,
+    because even when $k_{\text{B}} T \sim \mu / 2$, 
+    the relative error is still very small.
+    \item The reason $\mu = \epsilon_{\text{F}}$ is not \SI{100}{\percent} correct 
+    is because $n(T)$ -- and hence $\mu(T)$ -- doesn't have a Taylor expansion near $T = 0$,
+    so we don't have the Sommerfield expansion in the first place.
+\end{itemize} 
+
+\end{itemize}
+
+\paragraph{Problem 5} The gold atom has the ground state electron configuration $[X e] 4 f^{14} 5 d^{10} 6 s^1$.
+(a) In solid gold, how many electrons do you think each Au atom would contribute to the "electron sea" that makes for the metallic behavior and holds the crystal together? Why?
+(b) Using that number, determine the electron relaxation time (within the Drude model) of $\mathrm{Au}$ at $273 \mathrm{~K}$ using the resistivity in Table $1.2$ and lattice constant given in Table $4.1$ of A\&M.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] One gold atom only contributes one electron, the 6s$^1$ one,
+because the 4f and 5d shells are closed and electrons in them have lower energies 
+when staying nears the nuclei instead of moving around.
+\item[(b)] When $T = \SI{273}{K}$, $\rho = \SI{2.04e-8}{\ohm \cdot m}$.
+The density of electrons is just the density of Au atoms, which is $1 / a^3$,
+$a = \SI{4.08e-10}{m}$,
+and therefore 
+\begin{equation}
+    \sigma = \frac{n e^2 \tau}{m}, \quad 
+    \tau = \frac{\sigma m}{n e^2} = \frac{m a^3}{e^2 \rho} = \SI{1.2e-13}{s}.
+\end{equation}
+\end{itemize}
+
+\paragraph{Problem 6} Show that for a 3D free electron gas within the Sommerfeld model at zero temperature, the kinetic energy per electron is $3 / 5$ the Fermi energy.
+
+\paragraph{Solution} The total kinetic energy is 
+\begin{equation}
+    E = 2 \cdot \int_{0}^{k_{\text{F}}} \frac{V}{(2\pi)^3} 
+    \cdot 4\pi k^2 \dd{k} \cdot \frac{\hbar^2 k^2}{2m} 
+    = \frac{V}{(2\pi)^3} \frac{8\pi}{5} \frac{\hbar^2}{2m} k_{\text{F}}^5,
+\end{equation}
+and the total number of electrons is 
+\begin{equation}
+    N = 2 \cdot \int_{0}^{k_{\text{F}}} \frac{V}{(2\pi)^3} \cdot 4\pi k^2 \dd{k}
+    = \frac{V}{(2\pi)^3} \frac{8\pi}{3} k_{\text{F}}^3.
+\end{equation}
+So the kinetic energy per electron is 
+\begin{equation}
+    \frac{E}{V} = \frac{3}{5} \frac{\hbar^2 k_{\text{F}}^2}{2m} = \frac{3}{5} \epsilon_{\text{F}}.
+\end{equation}
+
+\end{document}
