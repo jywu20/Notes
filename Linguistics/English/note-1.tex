@@ -1,0 +1,642 @@
+\documentclass[UTF8, a4paper, oneside, scheme=plain]{ctexrep}
+
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[cgel-]{../English/cambridge}[cambridge.pdf]
+\zexternaldocument*[alignment-]{../alignment/alignment}[alignment.pdf]
+\zexternaldocument*[exercise1-]{../Exercise/2021-3}[2021-3.pdf]
+\zexternaldocument*[method-]{../methodology/glossing}[glossing.pdf]
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\corpus}[1]{\emph{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, and mood}, short = TAM}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+\newcommand{\category}[1]{\textsc{#1}}
+
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand{\bibname}{References}
+\setcitestyle{aysep={}} 
+
+\title{English notes}
+\author{Jinyuan Wu}
+
+\begin{document}
+    
+\maketitle
+
+\automath
+
+\chapter{Introduction}
+
+\chapter{Grammatical overview}
+
+\section{Parts of speech}
+
+\section{Nouns and noun phrases}
+
+\section{Verbal morphology and the clause}
+
+\subsection{\acs{tam} categories}
+
+English has two tenses: the past and the present.
+The aspectual system is more complicated. 
+The concept of composition 
+-- whether the inner makeup of an event is important \citep[\citesec{19.10}]{dixon2012basic3} -- 
+is marked by the so-called plain-progressive distinction,
+though \citep{dixon2012basic3} calls it the imperfective-perfective distinction.
+The English plain-perfect distinction arguably marks 
+a distorted version of the completion concept 
+-- whether the time of an event is before the time of narratives defined by tense 
+\citep[\citesec{19.7}]{dixon2012basic3},
+because sometimes the event time in the English \category{Perfect} 
+is the starting time of the event in question,
+not the finishing time,
+and this disagrees with the term \term{completion}.
+English also has several modal constructions.
+The above categories interact freely (TODO: really?).
+
+The category of tense is always realized morphologically 
+on the main verb when there is no auxiliary 
+or on the highest auxiliary verb (\prettyref{sec:verb-forms}).
+The category of the two aspect categories are marked by auxiliary verbs, 
+as well as modality (\prettyref{sec:auxiliaries}). 
+
+There is no future tense in English:
+The future time is marked by the auxiliary \corpus{will} or \corpus{would} 
+or the \corpus{be going to do} construction (\prettyref{sec:future}).
+
+Besides the regular \acs{tam} system,
+there are also some periphrastic constructions marking specific \acs{tam} configurations,
+like \corpus{used to} or \corpus{would rather} (\prettyref{sec:semi-auxiliary}).
+Adverbs are also a important part in expressing \acs{tam} information in English (TODO: ref).
+
+\subsection{Negation} 
+
+Negation in English clauses is usually realized by the negator \corpus{not}.
+Negative forms of auxiliaries and pronouns can also be used to express a negative idea.
+
+\subsection{Verb valency and alignment}
+
+English is a typical accusative language.
+A subject can be identified syntactically 
+according to constituent order, 
+
+\subsection{Moods}
+
+English has three types of finite main clauses with regard to the related speech act:
+the imperative, the indicative and the interrogative.
+No further morphosyntactic marking of sentential speech act (such as sentence-final particles)
+exists in English.
+The three moods are not marked morphologically.
+The interrogative mood 
+
+\begin{infobox}{Mood and modality}{mood}
+    \citet{dixon2009basic1} firmly argues against using the term \term{mood} 
+    for the syntactic marking of modality,
+    while \citet{cgel} uses the term \term{mood} for the syntactic marking of modality
+    and uses \term{clause type} to specifically refer to Dixon's \term{mood}.
+    To avoid confusion (\term{clause type} is too vague),
+    this note follows the definition of Dixon.
+
+    The confusion seems to arise from traditional Latin grammar,
+    in which there is no significant difference 
+    between a declarative sentence and an interrogative sentence, 
+    while there is significant difference
+    between the verbal morphology in indicative and subjunctive clauses.
+    On the other hand, in imperative clauses 
+    there is no indicative-subjunctive distinction.
+    Therefore the imperative-non-imperative distinction is fused with 
+    the indicative-subjunctive distinction 
+    and is named \term{mood}.
+    This relies on the specificities of Latin grammar 
+    and surely is not a universal category for all languages.
+    English also has subjunctive clauses,
+    but that's about modality, not mood.
+\end{infobox}
+
+\begin{theorybox}{Clause and sentence}{clause-sentence}
+    Also, note that \emph{mood} is about \emph{sentences}, 
+    and not necessarily anything that can be called a clause \citet[96]{dixon2009basic1}.
+    (Here Dixon is trapped into another extreme by claiming 
+    the clause linking procedure is flat,
+    and the sentence is the ultimate product of grammar.
+    But of course clause linking can be done recursively,
+    with a tree-like order.)
+    In generative syntax, 
+    a TP or a low-level CP is already well qualified as a clause,
+    but in order to construct a sentence -- a verbal constituent 
+    that serves as a ``full'' utterance --
+    we still need to include the full functional projections marking speech acts or speech ``forces''.
+    In Mandarin Chinese, for example,
+    a clause often needs sentence-final particles attached to it to be an acceptable independent sentence,
+    while clauses without sentence-final particles appear regularly in 
+    clause linking,
+    and even more impoverished ``small clauses'' -- basically \vP{}s -- also appear in clause embedding.
+    Thus, there are several types of clauses with different sizes.
+
+    Such phenomena also appear in English, arguably in all languages.
+    Non-embedded finite clauses are of course full CPs,
+    but some embedded finite clauses,
+    like the indirect quoted question in \corpus{I asked [why he was always late]},
+    show different behaviors with their non-embedded counterparts:
+    In the bracketed example, the subject-auxiliary inversion is absent.
+    Participle constructions are likely to be TPs, as well as infinitives in control constructions
+    \citep{pires2006minimalist},
+    while infinitives are impoverished CPs.
+
+    Still, \citet[\citepage{45}]{cgel} uses the term \term{sentence} 
+    almost as a synonym of \term{utterance},
+    and all discussions concerning the syntax in their account of English grammar are about clauses.
+    In practice, covering all kinds of TPs and CPs with the catch-all term \term{clause}
+    doesn't create much confusion,
+    because non-embedded finite clauses, 
+    embedded finite clauses, and nonfinite clauses are usually discussed in different places 
+    and it's easy to infer whether the term \term{clause} 
+    means a full CP, a defective CP or a TP. 
+    So to say mood (or \term{clause type}, 
+    with the specific meaning of the imperative/declarative/interrogative distinction)
+    is marked on a finite clause doesn't create much confusion, 
+    and nor do wordings like ``the clause type or the mood marks the speech force'',
+    though the latter is not universally true
+    (in Chinese there are several syntactic systems marking the speech force).
+\end{theorybox}
+
+\subsection{Valency changing}
+
+\begin{theorybox}{Valency changing}{valency-changing}
+    Valency changing involves the lexicon, the \vP{} layer, and the TP layer.
+    The term \term{valency changing} is kind of misleading,
+    because what actually happens is \emph{valency corresponding},
+    and the transformational rules used to describe valency changing 
+    are just phenomenological.
+
+    Some kinds of valency changing is likely to be purely because of 
+    the verb in question has two subcategorization frames.
+    The clause \corpus{John and Mary will meet tomorrow} 
+    has the same meaning of \corpus{John will meet with Mary tomorrow},
+    but it's unlikely the relation between the two arises from some operations in the \vP{} layer:
+    The case may just be that \corpus{meet} is compatible with two \vP{} structures,
+    which turn out to have the same semantic interpretation.
+
+    Sometimes, however, we can add a \term{v} head to an existing \vP{},
+    and extract one of the arguments introduced in the latter into the specifier of the former
+    or introduce a new argument.
+    This is frequently seen in Old Chinese as well as its sisters,
+    and is still the main way Modern Mandarin Chinese does valency changing.
+
+    It's also possible to have two (or more) \vP{} structures that both work for a group of verbs,
+    and for some reason (e.g. the agentive argument is assigned an inherent case, 
+    so it's no longer visible for the A-movement to SpecTP),
+    one of them disrupts the way TP usually works.
+    This seems to be the way the English passive works.
+
+    In more descriptive terms,
+    the \vP-internal strategy lies on the blur line between derivation and inflection
+    (and if the additional \term{v} head is realized as a word, 
+    that it lines on the line between multi-verb predicates and auxiliary verb constructions),
+    while the \vP-TP strategy involves the \emph{alignment}.%
+    \footnote{
+        This -- the agentive argument in a transitive clause being assigned an inherent case -- 
+        also seems to be the source of morphological ergativity \citep{aldridge2008generative}.
+        Syntactic ergativity, on the other hand, is caused by an early EPP feature 
+        targeting the absolutive \acs{np}.
+    }
+    It's hard to draw a clear line between the first and the second strategy.
+\end{theorybox}
+
+\subsection{Nonfinite constructions}
+
+\section{Clause combining}
+
+All English clause combining devices are on the level of complete clauses:
+There is no complex predicate or clause chaining.
+Thus, TODO: types of clause combining
+
+\section{Constituent order}
+
+As is said above, 
+English has highly rigid constituent orders. 
+Moving of syntactic objects usually indicates 
+non-trivial information structure (TODO) 
+or is triggered by the syntactic environment (TODO: interrogative, etc.).
+
+\chapter{The structure of the noun phrase}
+
+\chapter{Verb inflection}
+
+\section{The verb paradigm}
+
+\subsection{Inflectional forms}\label{sec:verb-forms}
+
+\subsubsection{Lexical verbs}
+
+\begin{theorybox}{Distinguishing inflectional forms}{morphological-form}
+    Traditional grammars usually have a large paradigm
+    with its row and column headers being grammatical categories.
+    (When there are too many categories 
+    -- and in this case the language in question is usually agglutinative -- 
+    the paradigm will be unbearably large, 
+    and another way -- like the School Grammar of Japanese -- is needed to cover verb inflection.
+    Still, partial paradigms are useful in this case.) 
+    This is a morphosyntactic way to represent the inflection of a word, 
+    but if we are talking purely about the \emph{morphological} part
+    (i.e. how grammatical relations and categories are realized),
+    then it's sometimes not necessary to recognize so many forms:
+    If a verb appears exactly the same in two different syntactic environments,
+    then we say there is only one \emph{inflectional form} of that verb.
+    For languages like Latin, 
+    the traditional large-paradigm way is handy,
+    while for English, we can zip the paradigm severely \citep[\citesec{3.1.2}]{cgel}.
+\end{theorybox}
+
+Modern English has already lost most of its verb inflection.
+Following the analysis of \citet[\citesec{3.1.1}]{cgel},
+for lexical verbs,
+there are six remaining inflectional forms: 
+the past form, the plain present form, 
+the 3sg present form,
+the plain form, the \corpus{ing}-participle,
+and the \corpus{ed}-participle.
+The two present forms and the past form appear solely 
+with trivial aspectual values and trivial modality.
+They are \concept{primary} forms:
+They already have all \acs{tam} categories marked on them.
+The plain form and the two participles are \concept{secondary} forms:
+They usually appear after auxiliaries 
+in a periphrastic construction to have full \acs{tam} marking,
+though a subjunctive clause may sometimes get rid of any auxiliary verb,
+as in \corpus{he suggests that she [complete] this task first} (TODO: ref).
+
+Examples of these forms are illustrated in \prettyref{tbl:lexical-inflection}. 
+This is a copy of [1] in \citet[\citesec{1.1}]{cgel}.
+It can be noticed that the plain form is usually the same as the plain present form.
+However, since modal verbs (see below) have no plain form,
+and that the syntactic environments of the plain form and the present plain form are too different,
+if \prettyref{tbl:lexical-inflection} is to be regarded as a paradigm
+-- that is, to be incorporated with morphosyntactic information -- 
+then the two forms should occupy two cells.
+
+\begin{table}[H]
+    \caption{Paradigms of lexical verbs}
+    \label{tbl:lexical-inflection}
+    \centering
+    \begin{tabular}{@{}llllll@{}}
+    \toprule
+    \multicolumn{1}{l}{}       &                               &       & \corpus{take}   & \corpus{want}    & \corpus{hit}     \\ \midrule
+    \multirow{3}{*}{Primary}   & past form                     &       & \corpus{took}   & \corpus{wanted}  & \corpus{hit}     \\
+                               & \multirow{2}{*}{present form} & 3sg   & \corpus{takes}  & \corpus{wants}   & \corpus{hits}    \\
+                               &                               & plain & \corpus{take}   & \corpus{want}    & \corpus{hit}     \\ \midrule
+    \multirow{3}{*}{Secondary} & plain form                    &       & \corpus{take}   & \corpus{want}    & \corpus{hit}     \\
+                               & \corpus{ing}-participle       &       & \corpus{taking} & \corpus{wanting} & \corpus{hitting} \\
+                               & \corpus{ed}-participle        &       & \corpus{taken}  & \corpus{wanted}  & \corpus{hit}     \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{infobox}{The name of the forms}{verb-form-name}
+    Here I deviate from the practice in \citep[\citechap{3}]{cgel} 
+    and pick up the more common names for some of the forms. 
+
+    The \corpus{ing}-participle is frequently called the \term{gerund},
+    because it now has the function of both a gerund and an active participle.
+    \citep{cgel} calls it the \term{gerund-participle}.
+    Some grammars use the term \term{present participle}.
+    Since in Modern English,
+    the \corpus{ing}-participle no longer carries any tense information,
+    the historical term \term{present participle} is abandoned in this note.
+
+    The traditional name \term{past participle} for the \corpus{ed}-participle makes more sense,
+    because it's morphologically related to the past form for regular verbs 
+    and it still has some sense of ``past'':
+    It is strongly related to the \category{perfect} and therefore has some sense of the past,
+    though it doesn't carry the past tense.
+    A better term would be the one in Latin grammar: the \term{perfect passive participle},
+    but this is in conflict with the name of the \corpus{having been done} construction.
+
+    A usual name for the plain form is the infinitive form,
+    which I reject here because the morphological marking of 
+    the main verb after modal auxiliary verbs  
+    (\corpus{would [like]}),
+    the verb in a subjunctive clause 
+    (\corpus{he suggests that she [complete] this task first}),
+    and the verb in a real infinitive clause are all the same,
+    and therefore it makes no sense to use the term \term{infinitive} 
+    to cover the \emph{morphological} form of all the three.
+\end{infobox}
+
+The \corpus{ing}-participle is regularly formed by adding \corpus{-ing} to the end of the plain form
+(TODO: -tt- in splitting).
+The \corpus{ed}-participle and the past form are usually obtained 
+by adding \corpus{-ed} to the end of the plain form,
+but for irregular verbs they can't be inferred from the plain form.
+Thus English verbs have three principal forms:
+the plain form, the past form, and the \corpus{ed}-participle.
+
+\subsubsection{Auxiliary verbs}
+
+English also has a number of auxiliary verbs (\prettyref{sec:auxiliaries}).
+All auxiliary verbs have tense-dependent forms,
+because all of them may appear as the first word in an auxiliary chain,
+and the tense category is to be marked on the highest i.e. the first of them (\prettyref{sec:auxiliary-chain}).
+Thus, we say English auxiliaries also have primary forms.
+Modal auxiliaries don't have a separate 3sg present form,
+but \corpus{do}, \corpus{have} and \corpus{be} (when used as auxiliary verbs) do.
+It should be noted that the past forms of many auxiliary verbs don't just appear in past clauses:
+They may have distinct meanings (TODO: ref).
+
+Modal auxiliaries don't have secondary forms,
+probably because they never appear after another auxiliary verb 
+or in nonfinite clauses,
+but \corpus{do}, \corpus{have} and \corpus{be} do.
+
+English auxiliary verbs also have negative forms,
+which are obtained by attaching \corpus{-nt} to the end of auxiliary.
+The \corpus{-nt} is historically a contraction form of the negator \corpus{not},
+but in modern English the negative suffix moves together with the auxiliary in
+subject-auxiliary inversion (\prettyref{sec:sai}).
+Thus, it's recognized as a part of the auxiliary \citep[\citepage{91}]{cgel}.
+All auxiliaries don't have secondary negative forms,
+though \corpus{do}, \corpus{have} and \corpus{be} have primary negative forms.
+
+Since auxiliary verbs are a part of the grammar,
+here I list the paradigms TODO
+
+\subsection{Periphrastic constructions with auxiliary verbs}\label{sec:auxiliaries}
+
+\subsubsection{The regular auxiliary chain}\label{sec:auxiliary-chain}
+
+In a canonical finite clause
+(non-canonical clauses may undergo subject-auxiliary inversion (\prettyref{sec:sai}) or may not), 
+the order of auxiliaries is constantly given by \prettyref{tbl:auxiliary-chain}.
+The auxiliaries positions can be filled by the corresponding auxiliaries or be just left blank,
+without creating ungrammatical constructions.
+The \category{modal} slot may be filled by a modal auxiliary.
+The \category{perfect} slot may be filled by the auxiliary version of \corpus{have} with the correct inflection,
+and the \category{progressive} and \corpus{passive} slots 
+may be filled by the auxiliary version of \corpus{be} with the correct inflection.
+
+The rules of inflection are the follows.
+The tense category is always marked on the first auxiliary,
+and when there is no auxiliary,
+it's marked on the main verb.
+The progressive marking \corpus{be} is always followed by an \corpus{ing}-participle,
+and the perfect marking \corpus{have} is always followed by an \corpus{ed}-participle,
+and so is the passive marking \corpus{be}.
+
+In nonfinite forms, the \category{modal} slot has to go;
+the rest are still there.
+Thus we have \corpus{to have been being taken} or \corpus{having been being taken}.
+
+\begin{table}[H]
+    \caption{The order of auxiliaries and some examples}
+    \label{tbl:auxiliary-chain}
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    \category{modal}      & \category{perfect}      & \category{progressive}        & \category{passive}            & main verb    \\ \midrule
+    \corpus{}           & \corpus{}             & \corpus{}                   & \corpus{}                   & \corpus{takes}  \\
+    \corpus{}           & \corpus{}             & \corpus{}                   & \corpus{am/are/is/was/were} & \corpus{taken}  \\
+    \corpus{}           & \corpus{}             & \corpus{am/are/is/was/were} & \corpus{}                   & \corpus{taking} \\
+    \corpus{}           & \corpus{have/has/had} & \corpus{}                   & \corpus{}                   & \corpus{taken}  \\
+    \corpus{}           & \corpus{have/has/had} & \corpus{been}               & \corpus{being}              & \corpus{taken}  \\
+    \corpus{will/would} & \corpus{have}         & \corpus{been}               & \corpus{being}              & \corpus{taken}  \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\prettyref{tbl:auxiliary-chain} is a part of the larger picture of clause structure,
+because adverbs and the negator may be inserted into somewhere between two auxiliaries.
+The rule of negation is simple: 
+If the negator \corpus{not} is used, it is always after the first auxiliary 
+(\prettyref{ex:auxiliary-chain-breaking-2}),
+otherwise the first auxiliary is in its negative form (\prettyref{ex:auxiliary-chain-breaking-3}).
+TODO: rules for adverbs and where to place them
+
+\begin{exe}
+    \ex\label{ex:auxiliary-chain-breaking-1} 
+    He [is]_{\text{\category{progressive}}} [vigorously]_{\text{TODO:}} [doing]_{\text{main verb}} [his job]_{\text{object}}. 
+    \ex\label{ex:auxiliary-chain-breaking-2}
+    He is [not]_{\text{negation}} vigorously doing his job.
+    \ex\label{ex:auxiliary-chain-breaking-3}
+    He isn't vigorously doing his job.
+\end{exe}
+
+\begin{theorybox}{The TP projections}{tp}
+    From a generative perspective, 
+    what happens here isn't surprising:
+    What happens here is the span spellout of grammatical categories in the TP layer.
+    The T feature is realized via affix lowering, 
+    and it's attached locally to the nearest ``word'' after vocabulary insertion,
+    which is, of course, the first auxiliary.
+    Some adverbs are actually heads of functional projections,
+    and they are by all means a part of the sequence in \prettyref{tbl:auxiliary-chain}.
+    TODO: cartography of TP, especially the position of not
+\end{theorybox}
+
+\subsubsection{Subject-auxiliary inversion}\label{sec:sai}
+
+In interrogative sentences, TODO: what else 
+the first auxiliary in the chain undergoes leftward movement,
+usually to the initial position but may be preceded by preposed constituents (TODO: ref). 
+This is called \concept{subject-auxiliary inversion}.
+If 
+
+\subsection{Semi-auxiliaries}\label{sec:semi-auxiliary}
+
+\subsection{Other semantic concepts}
+
+Some concepts exist in English but are not marked in the verb paradigm.
+
+\subsubsection{The future time}\label{sec:future}
+
+\subsubsection{Evidentiality}
+
+The usual idea is English doesn't have an evidentiality category.
+The idea of evidentiality may be expressed by TODO: allegedly 
+and by complement clause constructions about quoted speech (TODO: ref).
+
+\section{The imperative mood}
+
+\section{The verb in nonfinite constructions}
+
+\section{The subjunctive mood}
+
+\chapter{Verb valency}
+
+\chapter{Peripheral arguments}
+
+\chapter{Passivization}
+
+\chapter{Simple clauses}
+
+This chapter is mainly about the inner makeup of ``canonical'' clauses, 
+i.e. clauses without information packaging (\prettyref{chap:information-packaging}).
+The details of how a clause is embedded into another are not covered in this chapter
+-- they are covered in \prettyref{chap:complement-clause}, \prettyref{chap:relative-clause} and TODO: adverbial clause.
+
+\section{Canonical verbal clauses}
+
+\section{Clauses containing copular complements}
+
+\subsection{Copular clause}
+
+\chapter{Information packaging}\label{chap:information-packaging}
+
+\chapter{Complement clause constructions}\label{chap:complement-clause}
+
+\section{Types of complement clauses}
+
+\section{Complement-taking verbs}
+
+\chapter{Relative clauses}\label{chap:relative-clause}
+
+\bibliographystyle{plainnat}
+\bibliography{cambridge}
+
+\end{document}
