@@ -1,0 +1,158 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+
+\title{Summary of concepts in near-equilibrium physics}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+It should be noted that the fluctuation-dissipation theorem 
+is derived \emph{without} mentioning any thermal fluctuation of the system:
+We just assume the initial state is fully thermalized,
+and then the system evolves on its own.
+When we invoke the fluctuation-dissipation theorem to derive a constraint on 
+the damping term and the fluctuating term in a Langevin equation,
+we are not invoking the theorem considering the \emph{particle} as the system.
+Here we have an onion-like structure 
+for any system described by a Langevin-like equation:
+The system is surrounded by an environment
+(in the case of Brownian motion, it's the water surrounding the particle,
+and in the case of atomic damping, 
+it's the light field in the cavity) that is large, 
+and usually has linear response to any external fluctuation,
+and the environment is surrounded by a larger environment.
+The damping and fluctuating terms in the Langevin equation 
+are the properties of the water, the light field, etc.,
+that is, the smaller environment directly surrounding the system described by the Langevin equation.
+We can safely apply the fluctuation-dissipation theorem to the smaller environment,
+which is now the \emph{system}, 
+and the larger environment is now the \emph{environment}.
+The smaller system is still large enough 
+so that its time evolution is basically decided by its own Hamiltonian,
+not by its interaction with the larger environment.
+
+It's kind of misleading to show the basic techniques of linear response theory 
+by calculating a harmonic oscillator, therefore:
+A single oscillator is too small compared with the usual environment,
+and its behaviors are better described by a Langevin-like equation.
+Note that even when $T = 0$,
+there can still be damping and fluctuation in the Langevin equation,
+simply because of there is still interaction between the system and the environment
+(which is described by fluctuation-dissipation theorem and linear response theory,
+while the system is described the Langevin equation and can have highly nonlinear response).
+
+It's still possible to write a Langevin-like equation for a large system,
+like the water in Brownian motion.
+Here the system in the Langevin equation is the low-energy degrees of freedom,
+and the smaller environment is the hidden degrees of freedom 
+(like small scale flows),
+and the larger environment is the environment surrounding the many-body system.
+This is covered in the (88.9) and (88.10) of the volume on condensed matter physics in 
+The fluctuation in a classical liquid is assumed to come from 
+``local spontaneous stress and heat flow'',
+and a Langevin equation (88.8) -- this time on a \emph{field} instead of a coordinate --
+is given.
+
+\end{document}

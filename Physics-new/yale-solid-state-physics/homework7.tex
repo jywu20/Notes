@@ -111,7 +111,125 @@
 
 \maketitle
 
-\paragraph{Problem 2} 
+\paragraph{Problem 1} Problem 1 of chapter 2 of A\&M.
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] By definition, 
+\begin{equation}
+    n = \frac{N}{L^2} = \frac{1}{L^2} \cdot 2 \frac{L^2}{(2\pi)^2} \pi k_{\text{F}}^2
+    = \frac{k_{\text{F}}^2}{2\pi}.
+\end{equation}
+\item[(b)] By counting electrons we have 
+\[
+    N = 2 \frac{L^2}{(2\pi)^2} \pi k_{\text{F}}^2 = \frac{L^2}{\pi r_{\text{s}}^2},
+\]
+so 
+\begin{equation}
+    k_{\text{F}} = \frac{\sqrt{2}}{r_{\text{s}}}.
+\end{equation}
+
+\item[(c)] By definition
+\[
+    \begin{aligned}
+        g(E) &= 2 \cdot \frac{1}{(2\pi)^2} \int_{\epsilon_{\vb*{k}} = E} 
+        \frac{\dd{l_{\vb*{k}}}}{\abs{\grad_{\vb*{k}} \epsilon_{\vb*{k}}}} \\
+        &= 2 \cdot \frac{1}{(2\pi)^2} \eval{\frac{2\pi k}{\frac{\hbar^2 k}{m}}}_{ E = \frac{\hbar^2 k^2}{2m} } \\
+        &= \begin{cases}
+            \frac{m}{\pi \hbar^2}, & \quad E \geq 0, \\
+            0                    , & \quad E < 0.
+        \end{cases}
+    \end{aligned}
+\]
+When $E < 0$, it's impossible to find a $k$ such that $E = \hbar^2 k^2 / 2m$,
+so there is a cutoff.
+So when $E > 0$, $g(E)$ is a constant $m / \pi \hbar^2$.
+
+\item[(d)] Since $g(E)$ is a constant when $E > 0$,
+from (C.7) in A\&M we have (here the function $H(E)$ is just $g(E)$)
+\begin{equation}
+    n = \int_{-\infty}^\infty g(E) f(E) \dd{E}  = \int_{-\infty}^\mu g(E) \dd{E} = 
+    \frac{m}{\pi \hbar^2} \cdot \mu.
+\end{equation}
+All the following terms containing derivatives of $g(E)$ vanish, 
+so even at a finite temperature,
+$n$ doesn't have temperature dependence.
+
+On the other hand, when $T = 0$, we have 
+\begin{equation}
+    n = \int_{-\infty}^{\epsilon_{\text{F}}} g(E) \dd{E} = \frac{m}{\pi \hbar^2} \cdot \epsilon_{\text{F}}.
+\end{equation}
+So we find 
+\begin{equation}
+    \mu = \epsilon_{\text{F}}.
+    \label{eq:wrong-mu}
+\end{equation}
+
+\item[(e)] The spatial density of electrons is  
+\[
+    n = \int_{-\infty}^\infty g(E) f(E) \dd{E} 
+    = \frac{m}{\pi \hbar^2} \int_{0}^\infty \frac{\dd{E}}{1 + \ee^{\beta (E - \mu)}}.
+\]
+The integral can be evaluated as 
+\[
+    \int_{- \mu}^\infty \dd{\xi} \frac{1}{1 + \ee^{\beta \xi}} = 
+    \int_{- \mu}^\infty \dd{\xi} \frac{\ee^{- \beta \xi}}{1 + \ee^{- \beta \xi}} =
+    - \frac{1}{\beta} \int_{\ee^{\beta \mu}}^0 \frac{\dd{x}}{1 + x} 
+    = \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}),
+\]
+so we get 
+\[
+    n = \frac{m}{\pi \hbar} \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}).
+\]
+On the other hand, at the zero temperature, we have 
+\[
+    n = \frac{m}{\pi \hbar^2} \cdot \epsilon_{\text{F}}.
+\]
+Changing the temperature doesn't change the number of electrons, so we get 
+\begin{equation}
+    \begin{aligned}
+        \epsilon_{\text{F}} &= \frac{1}{\beta} \ln (1 + \ee^{\beta \mu}) \\
+        &= k_{\text{B}} T \left(
+            \ln (\ee^{- \mu / k_{\text{B}} T} + 1) + \frac{\mu}{k_{\text{B}} T}
+        \right) \\
+        &= \mu + k_{\text{B}} T \ln (\ee^{- \mu / k_{\text{B}} T} + 1).
+    \end{aligned}
+    \label{eq:correct-mu}
+\end{equation}
+
+\item[(f)] The relative error of the value of $\mu$ in \eqref{eq:wrong-mu},
+according to \eqref{eq:correct-mu} is 
+\begin{equation}
+    \frac{1}{\mu} k_{\text{B}} T \ln (\ee^{- \mu / k_{\text{B}} T} + 1) \eqqcolon
+    f(k_{\text{B}} T / \mu), \quad f(x) = x \ln (\ee^{- 1/x} + 1).
+\end{equation}
+When $x \to \infty$, the behavior of $f(x)$ is quite normal: $\ee^{-1/x} \to 1$ and $f(x) \approx x \ln 2$.
+Around $x = 0$, however, we don't have a Taylor expansion of the function.
+This can be seen by plotting the function,
+which is almost complete flat in the $0 < x < 0.5$ region,
+and this can also be seen by doing Taylor expansion with respect to $\ee^{- 1 / x}$, 
+which is small when $x \to 0$: we have 
+\[
+    f(x) \approx x \ee^{- 1 / x},
+\]
+which is also almost completely zero around $x = 0$ and also doesn't have a Taylor expansion. 
+So the conclusions are:
+\begin{itemize}
+    \item It's safe to use $\mu = \epsilon_{\text{F}}$ as an approximation,
+    because even when $k_{\text{B}} T \sim \mu / 2$, 
+    the relative error is still very small.
+    \item The reason $\mu = \epsilon_{\text{F}}$ is not \SI{100}{\percent} correct 
+    is because $n(T)$ -- and hence $\mu(T)$ -- doesn't have a Taylor expansion near $T = 0$,
+    so we don't have the Sommerfield expansion in the first place.
+\end{itemize} 
+
+\end{itemize}
+
+
+\paragraph{Problem 2} Aluminum has a convention unit cell lattice constant of $a=\SI{4.05}{\angstrom}$. 
+At room temperature, its resistivity is $\rho=\SI{2.74e-8}{\Omega.m}$. Each aluminum atom contributes three electrons to the mobile "electron gas" in the material.
+(a) If an aluminum wire is carrying a current density of $10 \mathrm{~A} / \mathrm{cm}^2$, what is the average drift speed $|\langle\vec{v}\rangle|$ of electrons down the wire?
+(b) What fraction is this of the Fermi velocity for a typical metal?
+(c) What is the scattering time $\tau$ of electrons in the wire?
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] From $j = n e v$ we get 
@@ -130,7 +248,7 @@ we have
 \]
 \end{itemize}
 
-\paragraph{Problem 3}
+\paragraph{Problem 3} A\&M Chapter 2 problem 4
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] The number density, according to (2.76) in A\&M, is 
@@ -166,7 +284,11 @@ we have
 \end{equation}
 \end{itemize}
 
-\paragraph{Problem 4}
+\paragraph{Problem 4} We have studied the classical Drude and quantum Sommerfeld models for electrons and classical lattice vibrations and quantum phonons. In this problem, we are going to explore the question of when we cross from classical to quantum; i.e., when do we go from having to use a classical Boltzmann distribution to Fermi-Dirac or Bose-Einstein distributions; i.e., when must we start worrying about quantum statistics (bosons versus fermions). Here, we start with the classical side and then go to the boundary to quantum behavior for free particles.
+(a) Classical physics describes particles as points but in reality they are quantum waves. In general, quantum mechanics must be used when the de Broglie wavelength of a particle $h / p$ becomes larger than the "characteristic size of the system" which for free particles is the typical interparticle spacing (i.e., do their waves overlap or not?). A classical particle in thermal equilibrium has an average kinetic energy of $\left\langle p^2 /(2 m)\right\rangle=\frac{3 k_B T}{2}$. So the thermal de Broglie wavelength is $\lambda=h / \sqrt{3 m k_B T}$. What is the room temperature $\lambda$ for an electron? A Na atom? A $^4 \mathrm{He}$ atom?
+(b) Let the typical lattice spacing in a solid is $\SI{3}{\angstrom}$ which is also the typical spacing between particles in a solid. Find the temperature below which free electrons in a solid are quantum mechanical. Then find the temperature below which the nuclei of solid $\mathrm{Na}$ are quantum mechanical. Answer the same for ${ }^4 \mathrm{He}$. What is your conclusion about which degrees of freedom in a solid must be treated quantum mechanically under typical conditions?
+(c) Using the ideal gas law $P V=N k_B T$ find an expression in for the temperature below which the gas must be treated quantum mechanically (you will have to estimate the mean inter-particle separation using $N$ and $V$ ). What do you find for ${ }^4 \mathrm{He}$ at 1 atm? What do you find for hydrogen molecules in outer space (typical separation of $1 \mathrm{~cm}$ and the temperature is around $3 \mathrm{~K}) ?$
+(d) When a gas of bosons is cooled to sufficiently low temperatures, there is macroscopic occupation of the lowest-energy state quantum state for the atoms and a Bose-Einstein condensate forms. For a gas of sodium atoms at a number density of $10^{14} \mathrm{~cm}^{-3}$, at what temperature do you estimate this to happen? (Cornell, Wieman, and Ketterle shared the 2001 Nobel prize for experimentally realizing a condensate of $\mathrm{Rb}$ atoms; today, many labs can create such condensates and thus study coherent quantum effects on collections atoms: e.g. atomic interference, creating atom lasers, etc. or set up optical lattices and put the atoms on a regular grid to study their dynamics, etc.)
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] We choose $T = \SI{298}{K}$.
@@ -208,7 +330,31 @@ When $T = \SI{3}{K}$, we have $\lambda = \SI{7.3e-10}{m}$,
 which is much smaller than \SI{1}{cm},
 so $^4$He atoms in outer space can be treated classically.
 
-\item[(d)] 
+\item[(d)] The point here is to make excited states unable to hold the total number of particles in the system,
+and an amount of particles have to be squeezed to the ground state.
+The threshold equation is 
+\begin{equation}
+    N = \int_0^\infty D(\epsilon) \frac{1}{\ee^{\beta \epsilon} - 1} \dd{\epsilon},
+\end{equation}
+where 
+\begin{equation}
+    D(\epsilon) = \frac{V}{4\pi^2} \left(\frac{2m}{\hbar^2}\right)^{3/2} \sqrt{\epsilon},
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \frac{N}{V} &= \frac{1}{4\pi^2} \left(\frac{2m}{\hbar^2}\right)^{3/2} 
+        \int_0^\infty \frac{\sqrt{\epsilon}}{\ee^{\beta \epsilon} - 1} \dd{\epsilon} \\
+        &= \frac{1}{4\pi^2} \left(\frac{2m k_{\text{B}} T}{\hbar^2}\right)^{3/2} 
+        \underbrace{\int_0^\infty \frac{\sqrt{x}}{\ee^{x} - 1} \dd{x}}_{= \sqrt{\pi} \zeta(3/2) / 2} \\
+        &= 0.059 \left(\frac{2m k_{\text{B}} T}{\hbar^2}\right)^{3/2} ,
+    \end{aligned}
+\end{equation}
+and we find 
+\begin{equation}
+    T = \frac{1}{k_{\text{B}}} \frac{\hbar^2}{2m} \left( 17 \frac{N}{V} \right)^{2/3}
+    = \SI{1.5e-10}{K}.
+\end{equation}
 
 \end{itemize}
 
