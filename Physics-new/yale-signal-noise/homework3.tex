@@ -1,0 +1,200 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem} 
+
+\paragraph{Solution} 
+\begin{itemize}
+\item[(a)] The transmission line model is still a quasi-magnetostatic model.
+Ignoring all resistance, and assuming that 
+the only conducting objects in the system 
+are the line at $r = 0$ and the boundary of the transmission line
+(or otherwise we need several ``vertical layers'' in the effective circuit model),
+that the inner structures of which can be ignored
+(or otherwise there may be multiple modes of the system),
+and that the boundary is grounded everywhere so there is no spatial variation of voltage on it
+(or otherwise there has to be an inductor on the top line in \prettyref{fig:transmission}(b)),
+the physics of a line element is shown in \prettyref{fig:transmission}(a):
+The current along the $x$ direction creates a magnetic field, 
+which induces an electric field component along the $x$ axis 
+because $\curl{\vb*{E}} = - \pdv*{\vb*{B}}{t}$.
+We also have a radial component of $\vb*{E}$ 
+because of the electrostatic field established between the surface and the inner conducting line.
+
+Thus, in \prettyref{fig:transmission}(a),
+we have two electric current degrees of freedom (one at $r=0$, the other on the boundary),
+one electric field degrees of freedom between the central line and the boundary,
+one magnetic field degree of freedom 
+which gives $\vb*{E}_{\text{ind}}$ along the $x$ direction.
+The distribution of the magnetic field is completely decided by the currents 
+so we only need one scalar -- the magnetic flux -- to represent the magnetic field,
+and similarly we only need two scalars -- the voltage on the central conducting line 
+and the voltage between the $r=0$ line and the surface -- 
+to represent $\vb*{E}_{\text{ind}}$ and $\vb*{E}_{\text{static}}$.
+The resulting theory for the line element in \prettyref{fig:transmission}(a) 
+has the same equations of motion with the shaded area in \prettyref{fig:transmission}(b).
+
+Suppose the parameters of the capacitor and the inductor in \prettyref{fig:transmission}(b)
+are $C$ and $L$, respectively.
+Note that $\varphi(x, t)$ is defined on the capacitors, not the inductors,
+and the variable doesn't represent the magnetic flux.
+
+By basic circuit analysis we know 
+
+\begin{equation}
+    L_{n} = \frac{1}{2} C \dot{\varphi}_n^2 - \frac{1}{2 L} (\varphi_n - \varphi_{n+1})^2.
+\end{equation}
+So the total Lagrangian is 
+\begin{equation}
+    \begin{aligned}
+        L &= \sum_n L_n = 
+        \sum_n \left( \frac{1}{2} C \dot{\varphi}_n^2 - \frac{1}{2 L} (\varphi_n - \varphi_{n+1})^2 \right) 
+        = \sum \frac{\Delta{x}}{a} 
+        \left( \frac{1}{2} C \dot{\varphi}_n^2 - \frac{1}{2 L} (\varphi_n - \varphi_{n+1})^2 \right) \\
+        &= \sum \Delta{x} \left(
+            \frac{1}{2} \frac{C}{a} \dot{\varphi_n}^2 
+            - \frac{1}{2 L / a} 
+            \frac{(\varphi_n - \varphi_{n+1})^2}{a^2}  
+        \right) \\
+        &= \int \dd{x} \left(
+            \frac{1}{2} c (\partial_t \varphi)^2 - \frac{1}{2 l} (\grad{\varphi})^2
+        \right).
+    \end{aligned}
+\end{equation}
+The dynamic equation is 
+\[
+    \partial_t \pdv{\mathcal{L}}{\partial_t \varphi} + \div \pdv{\mathcal{L}}{\grad{\varphi}} = 0,
+\]
+\begin{equation}
+    c \pdv[2]{\varphi}{t} = \frac{1}{l} \laplacian \varphi.
+\end{equation}
+
+\item[(b)] By definition, 
+\begin{equation}
+    \pi(x, t) = \pdv{\mathcal{L}}{\dot{\varphi}} = c \dot{\varphi},
+\end{equation}
+and the Hamiltonian is 
+\begin{equation}
+    \begin{aligned}
+        H &= \int \dd{x} (\pi \dot{\varphi} - \mathcal{L}) 
+        = \int \dd{x} \left( \frac{1}{2} c \dot{\varphi}^2 + \frac{1}{2l} (\grad{\varphi})^2 \right) \\
+        &= \int \dd{x} \left( \frac{1}{2c} \pi^2 + \frac{1}{2l} (\grad{\varphi})^2 \right) .
+    \end{aligned}
+\end{equation}
+
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \input{systems/transmission.tex}
+    \caption{Transmission line}
+    \label{fig:transmission}
+\end{figure}
+
+\end{document}
