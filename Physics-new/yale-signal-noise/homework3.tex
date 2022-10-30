@@ -146,7 +146,35 @@ Note that $\varphi(x, t)$ is defined on the capacitors, not the inductors,
 and the variable doesn't represent the magnetic flux.
 
 By basic circuit analysis we know 
-
+the electromotive force on the insulator in \prettyref{fig:transmission}(b) is
+\[
+    \mathcal{E} = V_{n+1} - V_{n},
+\]
+and according to Faraday's law of induction, the electromotive force on the inductor is 
+(here the ``inductor'' is single-turned, which can be found by looking at \prettyref{fig:transmission}(a))
+\[
+    \mathcal{E} = - \dv{\Phi}{t},
+\]
+so the current is 
+\[
+    I = \frac{1}{L} \Phi = - \frac{1}{L} \int \dd{t} \mathcal{E} = \frac{1}{L} (\varphi_n - \varphi_{n+1}) ,
+\]
+so the energy is 
+\begin{equation}
+    \frac{1}{2} L I^2 = \frac{1}{2L} (\varphi_n - \varphi_{n+1})^2.
+    \label{eq:magnetic-energy}
+\end{equation}
+The energy of $C_n$ is by definition
+\begin{equation}
+    \frac{1}{2} C V_n^2 = \frac{1}{2} C \dot{\varphi_n}^2.
+    \label{eq:electric-energy}
+\end{equation}
+Tracing the origin of \eqref{eq:magnetic-energy} and \eqref{eq:electric-energy},
+we find they eventually come from the magnetic part and the electric part of electromagnetic energy,
+and since in the electromagnetism Lagrangian,
+they are recognized as the kinetic energy part and the potential energy part, respectively,
+in our effective model the same should be done, 
+so the Lagrangian of the shaded part in \prettyref{fig:transmission}(b) is
 \begin{equation}
     L_{n} = \frac{1}{2} C \dot{\varphi}_n^2 - \frac{1}{2 L} (\varphi_n - \varphi_{n+1})^2.
 \end{equation}
@@ -173,6 +201,7 @@ The dynamic equation is
 \]
 \begin{equation}
     c \pdv[2]{\varphi}{t} = \frac{1}{l} \laplacian \varphi.
+    \label{eq:telegraph-eq}
 \end{equation}
 
 \item[(b)] By definition, 
@@ -187,6 +216,90 @@ and the Hamiltonian is
         &= \int \dd{x} \left( \frac{1}{2c} \pi^2 + \frac{1}{2l} (\grad{\varphi})^2 \right) .
     \end{aligned}
 \end{equation}
+The EOM in Hamiltonian language is 
+\begin{equation}
+    \dot{\varphi} = \frac{1}{c} \pi, \quad 
+    \dot{\pi} = - \fdv{H}{\varphi} = \frac{1}{l} \laplacian \varphi.
+\end{equation}
+
+\item[(c)] Suppose 
+\begin{equation}
+    \varphi(x, t) = \frac{1}{\sqrt{V}} \sum_k 
+    (\underbrace{A_k \ee^{- \ii \omega_k t}}_{A_k(t)} \ee^{\ii k x}
+    + \underbrace{A_k^* \ee^{\ii \omega_k t}}_{A^*_k(t)} \ee^{- \ii k x}).
+\end{equation}
+The momentum variable is 
+\begin{equation}
+    \pi(x, t) = c \dot{\varphi} 
+    = \frac{c}{\sqrt{V}} \sum_k 
+    (- \ii \omega_k \underbrace{A_k \ee^{- \ii \omega_k t}}_{A_k(t)} \ee^{\ii k x}
+    + \ii \omega_k \underbrace{A_k^* \ee^{\ii \omega_k t}}_{A^*_k(t)} \ee^{- \ii k x}).
+\end{equation}
+So we have 
+\[
+    \begin{aligned}
+        &\underbrace{\frac{1}{\sqrt{V}} \int \ee^{- \ii k x} \varphi(x, t)}_{\varphi_k(t)}
+        = A_k(t) + A^*_{-k} , \\
+        &\frac{1}{c} \underbrace{\frac{1}{\sqrt{V}} \int \ee^{- \ii k x} \pi(x, t)}_{\pi_k(t)}
+        = - \ii \omega_k A_k(t) + \ii \omega_{-k} A_{-k}^*(t),
+    \end{aligned}
+\] 
+where from \eqref{eq:telegraph-eq}, we have 
+\begin{equation}
+    \omega_k = \frac{\abs{k}}{\sqrt{lc}} = \omega_{-k}.
+\end{equation}
+So now $A_k(t)$ can be found from the above equation system:
+\begin{equation}
+    A_k(t) = \frac{1}{2} \left( \varphi_k - \frac{1}{\ii c \omega_k} \pi_k \right)
+    = \frac{1}{2} \left( \varphi_k - \frac{Z}{\ii \abs{k}} \pi_k \right),
+\end{equation}
+and 
+\begin{equation}
+    A_k^*(t) = \frac{1}{2} \left( \varphi_{-k} + \frac{1}{\ii c \omega_k} \pi_{-k} \right)
+    = \frac{1}{2} \left( \varphi_{-k} + \frac{Z}{\ii \abs{k}} \pi_{-k} \right).
+\end{equation}
+Now we compare this with $A^\leftarrow$ and $A^\rightarrow$.
+We have 
+\begin{equation}
+    A^\leftarrow(x, t) = \frac{1}{2 \sqrt{Z}} (V(x, t) - Z I(x, t)).
+\end{equation}
+Circuit analysis means 
+\begin{equation}
+    I_{n-1} - I_n = C \dv{V}{t},
+\end{equation}
+and its continuous version is 
+\begin{equation}
+    - \pdv{I}{x} = c \pdv{V}{t} = c \pdv[2]{\varphi}{2} = \pdv{\pi}{t}, 
+\end{equation}
+So we have 
+\begin{equation}
+    A^\leftarrow(x, t) = \frac{1}{2 \sqrt{Z}} \left( \pdv{\varphi}{t} + Z \int \dd{x'} \pdv{\pi(x', t)}{t} \right).
+\end{equation}
+After Fourier transformation, we have 
+\begin{equation}
+    A_k^\leftarrow(t) = \frac{1}{2 \sqrt{Z}} \pdv{t} \left( \varphi_k(t) + Z \frac{1}{\ii k} \pi_k(t) \right)
+    = \frac{- \ii \omega_k}{2 \sqrt{Z}} \left( \varphi_k(t) + Z \frac{1}{\ii k} \pi_k(t) \right).
+\end{equation}
+Similarly, we have 
+\begin{equation}
+    A_k^\rightarrow(t) = \frac{1}{2 \sqrt{Z}} \pdv{t} \left( \varphi_k(t) + Z \frac{1}{\ii k} \pi_k(t) \right)
+    = \frac{- \ii \omega_k}{2 \sqrt{Z}} \left( \varphi_k(t) - Z \frac{1}{\ii k} \pi_k(t) \right).
+\end{equation}
+So when $k > 0$, we have 
+\begin{equation}
+    \begin{aligned}
+        A_k^\rightarrow(t) &= \frac{- \ii \omega_k}{\sqrt{Z}} A_k(t), \\
+        A_k^\leftarrow(t) &= \frac{- \ii \omega_k}{\sqrt{Z}} A_{-k}^*(t),
+    \end{aligned}
+\end{equation}
+and when $k < 0$, we have 
+\begin{equation}
+    \begin{aligned}
+        A_k^\leftarrow(t) &= \frac{- \ii \omega_k}{\sqrt{Z}} A_k(t), \\
+        A_k^\rightarrow(t) &= \frac{- \ii \omega_k}{\sqrt{Z}} A_{-k}^*(t).
+    \end{aligned}
+\end{equation}
+This is expected if we interpret 
 
 \end{itemize}
 
