@@ -107,7 +107,46 @@
 
 \maketitle
 
+\paragraph{Lecture 8, Exercise 3}
+
+\paragraph{Solution} We have 
+\[
+    U = I_1 R = \frac{1}{C} \int \dd{t} I_2 = L \dv{I_3}{t},
+\]
+and 
+\[
+    I = I_1 + I_2 + I_3.
+\]
+In the frequency domain, we have 
+\[
+    U[\omega] = I_1[\omega] R = \frac{1}{C} \frac{1}{- \ii \omega} I_2 = L (- \ii \omega) I_3,
+\]
+and therefore 
+\begin{equation}
+    Z[\omega] = \frac{U[\omega]}{I_1[\omega] + I_2[\omega] + I_3[\omega]} 
+    = \frac{1}{\frac{1}{R} - \ii \omega C - \frac{1}{\ii \omega L}}.
+\end{equation}
+So we have 
+\begin{equation}
+    \Re Z[\omega] = \frac{1}{R} \frac{1}{\frac{1}{R^2} + \left( \frac{1}{\omega L} - \omega C \right)^2},
+\end{equation}
+and 
+\begin{equation}
+    \Im Z[\omega] = - \left( \frac{1}{\omega L} - \omega C \right) \frac{1}{\frac{1}{R^2} + \left( \frac{1}{\omega L} - \omega C \right)^2}.
+\end{equation}
+The zero points of the denominator are given by 
+\begin{equation}
+    \omega = \omega_{1, 2} \coloneqq \frac{- \frac{\ii}{R} \pm \sqrt{- \frac{1}{R^2} + \frac{4C}{L}}}{2 C}.
+\end{equation}
+
 \paragraph{Problem} 
+
+\begin{figure}
+    \centering
+    \input{systems/transmission.tex}
+    \caption{Transmission line}
+    \label{fig:transmission}
+\end{figure}
 
 \paragraph{Solution} 
 \begin{itemize}
@@ -146,7 +185,7 @@ Note that $\varphi(x, t)$ is defined on the capacitors, not the inductors,
 and the variable doesn't represent the magnetic flux.
 
 By basic circuit analysis we know 
-the electromotive force on the insulator in \prettyref{fig:transmission}(b) is
+the electromotive force on the inductor in \prettyref{fig:transmission}(b) is
 \[
     \mathcal{E} = V_{n+1} - V_{n},
 \]
@@ -222,25 +261,25 @@ The EOM in Hamiltonian language is
     \dot{\pi} = - \fdv{H}{\varphi} = \frac{1}{l} \laplacian \varphi.
 \end{equation}
 
-\item[(c)] Suppose 
+\item[(c)] Suppose (I will readjust the definitions at the end of this subsection)
 \begin{equation}
-    \varphi(x, t) = \frac{1}{\sqrt{V}} \sum_k 
+    \varphi(x, t) = \frac{1}{\sqrt{L}} \sum_k 
     (\underbrace{A_k \ee^{- \ii \omega_k t}}_{A_k(t)} \ee^{\ii k x}
     + \underbrace{A_k^* \ee^{\ii \omega_k t}}_{A^*_k(t)} \ee^{- \ii k x}).
 \end{equation}
 The momentum variable is 
 \begin{equation}
     \pi(x, t) = c \dot{\varphi} 
-    = \frac{c}{\sqrt{V}} \sum_k 
+    = \frac{c}{\sqrt{L}} \sum_k 
     (- \ii \omega_k \underbrace{A_k \ee^{- \ii \omega_k t}}_{A_k(t)} \ee^{\ii k x}
     + \ii \omega_k \underbrace{A_k^* \ee^{\ii \omega_k t}}_{A^*_k(t)} \ee^{- \ii k x}).
 \end{equation}
 So we have 
 \[
     \begin{aligned}
-        &\underbrace{\frac{1}{\sqrt{V}} \int \ee^{- \ii k x} \varphi(x, t)}_{\varphi_k(t)}
+        &\underbrace{\frac{1}{\sqrt{L}} \int \ee^{- \ii k x} \varphi(x, t)}_{\varphi_k(t)}
         = A_k(t) + A^*_{-k} , \\
-        &\frac{1}{c} \underbrace{\frac{1}{\sqrt{V}} \int \ee^{- \ii k x} \pi(x, t)}_{\pi_k(t)}
+        &\frac{1}{c} \underbrace{\frac{1}{\sqrt{L}} \int \ee^{- \ii k x} \pi(x, t)}_{\pi_k(t)}
         = - \ii \omega_k A_k(t) + \ii \omega_{-k} A_{-k}^*(t),
     \end{aligned}
 \] 
@@ -263,13 +302,13 @@ We have
 \begin{equation}
     A^\leftarrow(x, t) = \frac{1}{2 \sqrt{Z}} (V(x, t) - Z I(x, t)).
 \end{equation}
-Circuit analysis means 
+Circuit analysis tells us
 \begin{equation}
     I_{n-1} - I_n = C \dv{V}{t},
 \end{equation}
 and its continuous version is 
 \begin{equation}
-    - \pdv{I}{x} = c \pdv{V}{t} = c \pdv[2]{\varphi}{2} = \pdv{\pi}{t}, 
+    - \pdv{I}{x} = c \pdv{V}{t} = c \pdv[2]{\varphi}{t} = \pdv{\pi}{t}, 
 \end{equation}
 So we have 
 \begin{equation}
@@ -299,15 +338,50 @@ and when $k < 0$, we have
         A_k^\rightarrow(t) &= \frac{- \ii \omega_k}{\sqrt{Z}} A_{-k}^*(t).
     \end{aligned}
 \end{equation}
-This is expected if we interpret 
+From the definition, it can be seen that in the Fourier expansion of $A^{\rightarrow}(x, t)$,
+$k$ and $\omega$ have the same sign,
+while for $A^{\leftrightarrow}(x, t)$, $k$ and $x$ have the opposite sign,
+so when $k>0$, $A_k^\rightarrow(t)$ has to be proportion to the $A_k(t)$ components
+while $A_k^\leftarrow(t)$ has to be proportion to the $A_k^*(t)$ components.
+So the above results are expected.
+
+To make the definition of $A_k(t)$ closer to the definition of $A^{\leftrightarrow, \rightarrow}_k(t)$
+so that the relation between 
+
+\item[(d)] 
+\item[(f)] The equation is 
+(here $C_{\text{ext}}$ and $L_{\text{ext}}$ are used to avoid confusion with $C$ and $L$ in the transmission line;
+note that if we regard the inductor as a power source, 
+then its \emph{electromotive force} is $- L \dot{I}$,
+while if we regard its as an ordinary component,
+then its \emph{voltage} is $L \dot{I}$)
+\begin{equation}
+    \frac{q_{\text{ext}}}{C_{\text{ext}}} + L_{\text{ext}} \dv{I_{\text{ext}}}{t} = V_0(t) = V(0, t),
+\end{equation}
+and (following the notation in the lecture notes,
+here $I_0$ is the current on the first inductor in the transmission line)
+\begin{equation}
+    \underbrace{I_0}_{I(0, t)} + \underbrace{\dv{q_0}{t}}_{C \dot{V}(0, t)} + I_{\text{ext}} = 0.
+\end{equation}
+Since $C = ca$, in the continuous limit, the second term in the equation can be thrown away.
+(Which is equivalent to directly removing $C_0$ and starting the transmission line with 
+the inductor instead of the capacitor).
+So the EOM of the external circuit is 
+\begin{equation}
+    \frac{1}{C_{\text{ext}}} q_{\text{ext}} + L_{\text{ext}} \dv{I_{\text{ext}}}{t} = V(0, t),
+    \quad I(0, t) + I_{\text{ext}} = 0.
+\end{equation}
+Following the same procedure in the lecture note,
+
+
 
 \end{itemize}
 
 \begin{figure}
     \centering
-    \input{systems/transmission.tex}
-    \caption{Transmission line}
-    \label{fig:transmission}
+    \input{systems/transmission-load.tex}
+    \caption{A serial $LC$ resonator and a transmission line}
+    \label{fig:transmission-load}
 \end{figure}
 
 \end{document}
