@@ -1,0 +1,216 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
+\title{Homework 8}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} Consider a 1D chain of identical atoms with one atom per unit cell. Each atom donates $Z$ electrons to the band structure. How many bands will be filled by electrons and briefly explain why?
+
+\paragraph{Solution} When the bands overlap with each other,
+we really can't say much about how many bands are filled,
+because we can distort the bands and make the number of filled bands 
+as many as we want (\prettyref{fig:overlap}).
+
+\begin{figure}
+    \centering
+    \input{bands/overlapping-bands.tex}
+    \caption{Overlapping bands and partial filling}
+    \label{fig:overlap}
+\end{figure}
+
+When there is no overlapping,
+if $Z$ is even, then there are $Z/2$ bands filled,
+because a band can host $N$ orbital modes 
+and therefore it can host $2N$ electrons when spin is considered.
+There are $ZN$ electrons in the band structure in total,
+so we need $ZN / 2N = Z/2$ bands.
+If $Z$ is odd, then we need to fill $(Z+1)/2$ bands,
+because $N(Z-1)$ electrons are hosted by $(Z-1)/2$ bands,
+and we need an additional band to host the rest $N$ electrons.
+
+\paragraph{Problem 2}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] We have 
+\begin{equation}
+    k_1 = \frac{2\pi}{L} = \frac{2\pi}{Na}, \quad 
+    k_2 = \frac{\pi}{a}.
+\end{equation}
+\begin{equation}
+    E' = \frac{\hbar^2}{2m} \left(\frac{\pi}{a}\right)^2.
+\end{equation}
+\begin{equation}
+    E'' = \epsilon_{n = 3, \vb*{k} = \pi / a} = \frac{\hbar^2}{2m} \Big( 
+        \frac{\pi}{a} + \underbrace{\frac{2\pi}{a}}_{\vb*{G}_{n = 3}} \Big)
+        = 9 \frac{\hbar^2}{2m} \left(\frac{\pi}{a}\right)^2.
+\end{equation}
+
+\item[(b)] From the band diagram, 
+\begin{equation}
+    \epsilon_{n = 2, k} = \frac{\hbar^2}{2m} (k + G_2)^2 
+    = \frac{\hbar^2}{2m} \left( k - \frac{2\pi}{a} \right)^2.
+\end{equation}
+The group speed is 
+\begin{equation}
+    v = \frac{1}{\hbar} \pdv{\epsilon_{n = 2, k}}{k} = \frac{\hbar}{m} \left( k - \frac{2\pi}{a} \right)
+    = - \frac{3 \hbar \pi}{2 m a}.
+\end{equation}
+The effective mass is 
+\begin{equation}
+    \frac{1}{m^*} = \frac{1}{\hbar^2} \pdv[2]{\epsilon_{n = 2, k}}{k}
+    = \frac{1}{m}, \quad m^* = m.
+\end{equation}
+
+\item[(c)] Regardless of the shape,
+each band accommodates 
+\begin{equation}
+    \underbrace{2}_{\text{spin}} \cdot \frac{2 k_2}{k_1} = 2N
+\end{equation}
+electrons.
+
+\item[(d)] See \prettyref{fig:weak-perturbation}.
+
+\begin{figure}
+    \centering
+    \input{bands/free-plus-weak-perturbation.tex}
+    \caption{Empty lattice model after weak perturbation}
+    \label{fig:weak-perturbation}
+\end{figure}
+
+\item[(e)] TODO
+
+\end{itemize}
+
+\paragraph{Problem 4}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] It has to be an insulator.
+Selective absorption of light of one particular color 
+means there is a direct band gap corresponding to the energy 
+of the photon of that color.
+\item[(b)] The transmitted light is red, 
+so the absorbed light is bluish,
+so the photon energy -- and the direct band gap -- 
+is about \SI{2.5}{eV}.
+\end{itemize}
+
+\paragraph{Problem 5}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] We just need to find a material whose direct band gap falls in the visible light spectrum.
+This is the third material ($E_g = \SI{1.42}{eV}$), 
+and it will be a red color LED.
+\item[(b)] The smaller the direct band gap is, 
+the easier it is to be a thermally activated conductor.
+So the conductivity of the second material ($E_{g} = \SI{0.35}{eV}$) 
+turns on first.
+\end{itemize}
+
+\end{document}
