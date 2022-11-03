@@ -135,7 +135,17 @@ If $Z$ is odd, then we need to fill $(Z+1)/2$ bands,
 because $N(Z-1)$ electrons are hosted by $(Z-1)/2$ bands,
 and we need an additional band to host the rest $N$ electrons.
 
-\paragraph{Problem 2}
+\paragraph{Problem 2} Consider a 1D system of a finite number of identical atoms $N$ arranged in a large ring $(N \gg 1)$. The circumference of the ring is $L=N a$ where $a$ is the primitive lattice constant. Below is a plot of the band structure in the Brillouin zone for this system when we employ the "empty lattice" (i.e., free electron; i.e., no periodic potential from the nuclei) approximation.
+(a) What is the value of the minimum allowed wavevector $k_1\left(k_1>0\right)$ ?
+What is the zone-edge wavevector $k_2$ ? What are the energies $E^{\prime}$ and $E^{\prime \prime}$ ?
+(b) What are the velocity and effective mass associated with point $\alpha$ which lies at wavevector $k_2 / 2$ ?
+(c) How many electrons can band 1 accommodate? Band 2?
+(d) Redraw the figure when a weak potential is introduced from the ions.
+(e) Will the answer to (b) change in the case of a weak potential? Why?
+
+\begin{center}
+    \includegraphics[width=0.6\textwidth]{bands/free-electron-folding-1.PNG}
+\end{center}
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] We have 
@@ -184,11 +194,72 @@ electrons.
     \label{fig:weak-perturbation}
 \end{figure}
 
-\item[(e)] TODO
+\item[(e)] Of course there will be small changes, but not very significant:
+In first-order correction to band energy,
+we have 
+\begin{equation}
+    \Delta \epsilon_{\vb*{k}} = \mel{\vb*{k}}{V}{\vb*{k}}
+    = \frac{N}{V} \int_{\text{u.c.}} \dd[2]{\vb*{r}} U(\vb*{r}),
+\end{equation}
+which doesn't have any $\vb*{k}$ dependency.
+So a weak potential field just gives all bands a small, constant shift,
+and the derivatives of $\epsilon_{\vb*{k}}$ all stay the same,
+and so is the case for group velocity or $m^*$.
 
 \end{itemize}
 
-\paragraph{Problem 4}
+\paragraph{Problem 3} Consider the two-dimensional square lattice with lattice constant $a$ where the crystal potential is
+$$
+U(x, y)=-4 A \cos \left(\frac{2 \pi x}{a}\right) \cos \left(\frac{2 \pi y}{a}\right) .
+$$
+Assuming $\mathrm{U}$ is a weak potential, compute the energy gap at the corner point of the Brillouin zone $\left(\frac{\pi}{a}, \frac{\pi}{a}\right)$ to the lowest order in $A$. (You should only be diagonalizing a $2 \times 2$ matrix. First, find all the degenerate free electron states at that point in the BZ. Second, see which ones connect via the potential and build the $2 \times 2$ problem.)
+
+\paragraph{Solution} We first evaluate the hopping matrix.
+We have ($V = N a^2$ is the total area of the crystal; 
+it should be $A$ but it's in conflict with the strength of the potential)
+\begin{equation}
+    \begin{aligned}
+        \mel{\vb*{k}'}{U}{\vb*{k}} 
+        &= \int \dd[2]{\vb*{r}} \frac{1}{\sqrt{V}} \ee^{- \ii \vb*{k}' \cdot \vb*{r}} U(\vb*{r}) 
+        \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}} \\
+        &= \frac{N}{V} \sum_{\vb*{G}} \delta_{\vb*{k}', \vb*{k} + \vb*{G}}
+        \int_{\text{u.c.}} \dd[2]{\vb*{r}} \ee^{- \ii \vb*{G} \cdot \vb*{r}} U(\vb*{r}) \\
+        &= \frac{N}{V} \sum_{\vb*{G}} \delta_{\vb*{k}', \vb*{k} + \vb*{G}}
+        \int_0^a \dd{x} \int_0^a \dd{y} \ee^{- \ii \frac{2\pi}{a} n_x x} \ee^{- \ii \frac{2\pi}{a} n_y y}
+        (-4 A) \cos(\frac{2\pi x}{a}) \cos(\frac{2\pi y}{a}) \\
+        &= - 4 A \frac{N}{V} \sum_{\vb*{G}} \delta_{\vb*{k}', \vb*{k} + \vb*{G}} 
+        \cdot \frac{a}{2} (\delta_{n_x, 1} + \delta_{n_x, -1}) 
+        \cdot \frac{a}{2} (\delta_{n_y, 1} + \delta_{n_y, -1}) \\
+        &= - A \sum_{\vb*{G}} \delta_{\vb*{k}', \vb*{k} + \vb*{G}} \sum_i \delta_{\vb*{G} \vb*{G}_i},
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \vb*{G}_i = \frac{2\pi}{a} (\pm 1, \pm 1). 
+\end{equation}
+The four $\vb*{G}_i$ points can be transformed into each other by symmetric operations,
+and without loss of generality,
+below we just consider $\vb*{G}_1 = \frac{2\pi}{a} (1, 1)$.
+
+The four corners of the Brillouin zone constitute a degeneracy subspace.
+With $\vb*{G}_1$, 
+$\frac{\pi}{a} (1, 1)$ and $\frac{\pi}{a} (-1, -1)$ are connected.
+So the Hamiltonian for the two-state subspace is 
+\begin{equation}
+    \pmqty{
+        \frac{\hbar^2}{2m} \cdot 2 \frac{\pi^2}{a^2} & - A \\
+        - A & \frac{\hbar^2}{2m} \cdot 2 \frac{\pi^2}{a^2} 
+    },
+\end{equation}
+and the eigenvalues -- the energies after correction -- are 
+\begin{equation}
+    E = \frac{\hbar^2}{m} \frac{\pi^2}{a^2} \pm A,
+\end{equation}
+so the energy gap is $2A$.
+
+\paragraph{Problem 4} A pure crystalline material with no impurity or dopants appears transparent but colored in the following sense: if you hold it up to white light, the light transmitted through it looks red but you can see clearly through it otherwise (as if it was red colored glass).
+(a) Is this material a conductor or insulator (at $\mathrm{T}=0)$ ?
+(b) What is the approximate (direct) band gap of this material in eV?
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] It has to be an insulator.
@@ -201,7 +272,9 @@ so the photon energy -- and the direct band gap --
 is about \SI{2.5}{eV}.
 \end{itemize}
 
-\paragraph{Problem 5}
+\paragraph{Problem 5} Below you find schematics of the key aspects of three unidentified pure crystalline materials that have fundamental energy gaps and are thus insulating at $\mathrm{T}=0$. In all three diagrams, $\mathrm{k}$ (wave vector) is horizontal and energy is vertical; the horizontal line is the top of the valence band (highest occupied energy level); and all the low-energy band edge differences are shown with numerical values.
+a) Which material is best for use as an LED that generates visible light? Roughly what color LED will it be?
+b) Which material becomes a thermally activated conductor at the lowest temperature (i.e., its conductivity "turns on" first as we increase temperature from $\mathrm{T}=0)$ ? Increasing temperature will energize electrons to leave what used to be filled states at $\mathrm{T}=0$ and go into what used to be empty states; then the bands become partially occupied and we can have conduction.
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] We just need to find a material whose direct band gap falls in the visible light spectrum.
