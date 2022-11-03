@@ -1,0 +1,241 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 2} 
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] Repeating the procedure used in ordinary superfluid, we do the decomposition
+\begin{equation}
+    \varphi = \sqrt{\rho} \ee^{\ii \theta} = \sqrt{\rho_0 + \var{\rho}} \ee^{\ii \theta},
+\end{equation}
+and therefore 
+\begin{equation}
+    - \frac{\varphi^* \laplacian \varphi}{2m} = 
+    \frac{\rho}{2m} (\grad{\theta})^2 + \frac{(\grad{\rho})^2}{8 \rho m} ,
+\end{equation}
+\begin{equation}
+    \varphi^* \partial_\tau \varphi 
+    = \underbrace{\frac{1}{2} \partial_\tau \rho}_{\text{time derivative, ignored}} + 
+    \ii \rho \partial_\tau \theta,
+\end{equation}
+\begin{equation}
+    \abs{\varphi(\vb*{x})} U(\vb*{x} - \vb*{y}) \abs{\varphi(\vb*{y})} = 
+    \rho(\vb*{x}) U(\vb*{x} - \vb*{y}) \rho(\vb*{y}),
+\end{equation}
+the theory is now 
+\begin{equation}
+    S = \int \dd{\tau} \left(
+        \int \dd[d]{\vb*{x}} \left(
+            \ii \rho \partial_\tau \theta 
+            + \frac{\rho}{2m} (\grad{\theta})^2 + \frac{(\grad{\rho})^2}{8 \rho m}
+            - \mu \rho
+        \right) + 
+        \frac{1}{2} \int \dd[d]{\vb*{x}} \int \dd[d]{\vb*{y}}
+        \rho(\vb*{x}) U(\vb*{x} - \vb*{y}) \rho(\vb*{y})
+    \right).
+\end{equation}
+Around the ground state, we have 
+(note that since we are around a saddle point,
+the sum of all terms containing $\var{\rho}$ only is always zero;
+the resulting theory has the form of $c_1 \var{\rho} \partial_\tau \theta + c_2 \var{\rho}^2$;
+the chemical potential term is therefore missing in the theory around the saddle point)
+\[
+    \ii \rho \partial_\tau \theta = \underbrace{\ii \rho_0 \partial_\tau \theta}_{\text{time derivative}} 
+    + \ii \var{\rho} \partial_\tau \theta,
+\]
+and since $\grad{\rho} = \grad{\var{\rho}}$,
+we have 
+\[
+    \frac{(\grad{\rho})^2}{8 \rho m} \approx \frac{(\grad{\var{\rho}})^2}{8 \rho_0 m},
+\]
+ignoring the fluctuation of the $\rho$ in the denominator.
+Similarly, since we are working on a low energy theory,
+the fluctuation of $\theta$ shouldn't be large,
+and we have 
+\[
+    \frac{\rho}{2m} (\grad{\theta})^2 \approx \frac{\rho_0}{2m} (\grad{\theta})^2.
+\]
+The theory is then 
+\begin{equation}
+    S = \int \dd[d+1]{x} \left(
+        \frac{\rho_0}{2m} (\grad{\theta})^2 
+        + \ii \var{\rho} \partial_\tau \theta  
+        + \frac{(\grad{\var{\rho}})^2}{8 \rho_0 m} 
+        + \frac{1}{2} \var{\rho}(\vb*{x}) \int \dd[d]{\vb*{y}} U(\vb*{x} - \vb*{y}) \var{\rho}(\vb*{y})
+    \right) + S_{\text{saddle}}.
+\end{equation}
+Integrating out $\var{\rho}$, we get 
+\begin{equation}
+    \begin{aligned}
+        S_{\text{eff}} &= \int \dd[d+1]{x} \frac{\rho_0}{2m} (\grad{\theta})^2 
+        - \frac{1}{2} \int \dd{\tau} \int \dd[d]{\vb*{x}} \dd[d]{\vb*{y}} 
+        \ii \partial_\tau \theta(\vb*{x}, \tau)
+            \frac{1}{
+                \int \dd[d]{\vb*{y}} U(\vb*{x} - \vb*{y}) - \frac{1}{4 \rho_0 m} \laplacian
+            } \ii \partial_\tau \theta (\vb*{y}, \tau) \\
+        &= \int \dd[d+1]{x} \frac{\rho_0}{2m} (\grad{\theta})^2 + 
+        \frac{1}{2} \int \dd{\tau} \int \dd[d]{\vb*{x}} \dd[d]{\vb*{y}}
+        \partial_\tau \theta(\vb*{x}, \tau) G(\vb*{x} - \vb*{y}) \partial_\tau \theta(\vb*{y}),
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \int \dd[d]{\vb*{y}} U(\vb*{x} - \vb*{y}) G(\vb*{y} - \vb*{z}) 
+    - \frac{1}{4 \rho_0 m} \laplacian_{\vb*{x}} G(\vb*{x} - \vb*{z})  = \delta(\vb*{x} - \vb*{z}).
+\end{equation}
+Similar to the procedure in dealing with ordinary superfluid,
+since we are only interested in the long wave length behaviors of $\theta$,
+the $\laplacian$ term can be thrown away,
+and we have 
+\[
+    \begin{aligned}
+        \int \frac{\dd[d]{\vb*{p}}}{(2\pi)^d} \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{z})}
+        &= \int \frac{\dd[d]{\vb*{p}}}{(2\pi)^d} \int \dd[d]{\vb*{y}} U(\vb*{x} - \vb*{y}) 
+        G(\vb*{p}) \ee^{\ii \vb*{p} \cdot (\vb*{y} - \vb*{z})} \\
+        &= \int \frac{\dd[d]{\vb*{p}}}{(2\pi)^d} 
+        \int \dd[d]{\vb*{r}} U(\vb*{r}) \ee^{- \ii \vb*{p} \cdot \vb*{r}} 
+        G(\vb*{p}) \ee^{\ii \vb*{p} \cdot (\vb*{x} - \vb*{z})} \quad (\vb*{r} = \vb*{x} - \vb*{y}) ,
+    \end{aligned}
+\]
+so 
+\begin{equation}
+    G(\vb*{r}) = \int \frac{\dd[d]{\vb*{p}}}{(2\pi)^d} \ee^{\ii \vb*{p} \cdot \vb*{r}} G(\vb*{p}), \quad 
+    G(\vb*{p}) = \frac{1}{U(\vb*{p})} 
+    = \frac{1}{\int \dd[d]{\vb*{r}} U(\vb*{r}) \ee^{- \ii \vb*{p} \cdot \vb*{r}}}.
+\end{equation}
+To evaluate $G(\vb*{p})$, we need to find 
+\begin{equation}
+    U(\vb*{p}) = \int_0^\infty \dd{r} \frac{2\pi^{d/2}}{\Gamma(d / 2)} r^{d-1} \frac{U_0}{r^{d - \epsilon}}
+\end{equation}
+
+\end{itemize}
+
+\paragraph{Problem 3}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] The energy now can be exactly evaluated ($N$ is the number of sites):
+\begin{equation}
+    E = \frac{U N}{2} (M^2 - M) - \mu NM
+    = \frac{N}{2} (U M^2 - (U + 2\mu) M).
+\end{equation}
+At the ground state, $E$ is minimized, and we have
+\begin{equation}
+    M = \frac{U + 2\mu}{2 U}, 
+\end{equation}
+and the energy gap is 
+\begin{equation}
+    \Delta E = E|_{M+1} - E|_M = \frac{N}{2} (2 U M - 2 \mu)
+    = \frac{1}{2} NU.
+\end{equation}
+
+\end{itemize}
+
+\end{document}
