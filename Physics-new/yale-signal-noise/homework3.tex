@@ -48,6 +48,7 @@
 \DeclareMathOperator{\legpoly}{P}
 \DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -138,6 +139,74 @@ The zero points of the denominator are given by
 \begin{equation}
     \omega = \omega_{1, 2} \coloneqq \frac{- \frac{\ii}{R} \pm \sqrt{- \frac{1}{R^2} + \frac{4C}{L}}}{2 C}.
 \end{equation}
+It can be easily verified that the zero points of 
+\[
+    \frac{1}{R^2} + \left( \frac{1}{\omega L} - \omega C \right)^2
+\]
+are $\omega_{1, 2}$ and $\omega_{1, 2}^*$.
+So we have 
+\begin{equation}
+    \Re Z[\omega] = \frac{1}{R} \frac{\omega^2}{C^2 
+    (\omega - \omega_1) (\omega - \omega_2) (\omega - \omega_1^*) (\omega - \omega_2^*)},
+\end{equation}
+and 
+\begin{equation}
+    \Im Z[\omega] = - \left(\frac{\omega}{L} - \omega^3 C \right) 
+    \frac{1}{C^2 
+    (\omega - \omega_1) (\omega - \omega_2) (\omega - \omega_1^*) (\omega - \omega_2^*)}.
+\end{equation}
+So now let's show that 
+\begin{equation}
+    \Im Z[\omega] = \frac{1}{\pi} \mathrm{P} \int_{-\infty}^\infty \dd{\omega'}
+    \frac{\Re Z[\omega']}{\omega - \omega'}.
+    \label{eq:k-k-1}
+\end{equation}
+Since both $\Re Z[\omega]$ and $\Im Z[\omega]$ are well-behaved at $\omega \to \infty$,
+we can just apply the residue theorem to the upper plane or the lower plane -- 
+here we choose the upper plane, and 
+\[
+    \begin{aligned}
+        \mathrm{P} \int_{-\infty}^\infty \dd{\omega'}
+        \frac{\Re Z[\omega']}{\omega - \omega'} &= 
+        - (\pi \ii \res_{\omega' = \omega} 
+        + 2\pi \ii \res_{\omega' = \omega_1^*} 
+        + 2\pi \ii \res_{\omega' = \omega_2^*}) \Re \frac{Z[\omega']}{\omega' - \omega} \\
+        &= - \pi \ii \frac{1}{R} \frac{\omega^2}{
+            C^2 (\omega - \omega_1) (\omega - \omega_2) (\omega - \omega_1^*) (\omega - \omega_2^*)
+        } \\
+        &\quad - 2 \pi \ii \frac{1}{\omega_1^* - \omega} \frac{1}{R} \frac{(\omega_1^*)^2}{
+            C^2 (\omega_1^* - \omega_1) (\omega_1^* - \omega_2) (\omega_1^* - \omega_2^*)
+        } \\
+        &\quad - 2 \pi \ii \frac{1}{\omega_2^* - \omega} \frac{1}{R} \frac{(\omega_2^*)^2}{
+            C^2 (\omega_2^* - \omega_1) (\omega_2^* - \omega_2) (\omega_2^* - \omega_1^*)
+        }.
+    \end{aligned}
+\]
+Comparing this equation and \eqref{eq:k-k-1}, what we need to prove is 
+\begin{equation}
+    \frac{2\ii}{R} \left(
+        \frac{(\omega - \omega_2^*) (\omega - \omega_1) (\omega - \omega_2) (\omega_1^*)^2}{
+            (\omega_1^* - \omega_1) (\omega_1^* - \omega_2) (\omega_1^* - \omega_2^*)
+        } + 
+        \frac{(\omega - \omega_1) (\omega - \omega_2) (\omega - \omega_1^*) (\omega_2^*)^2}{
+            (\omega_2^* - \omega_1) (\omega_2^* - \omega_2) (\omega_2^* - \omega_1^*)
+        }
+    \right) - \ii \frac{\omega^2}{R} = - \left(\frac{\omega}{L} - \omega^3 C \right) .
+\end{equation}
+This can be verified by Mathematica (\prettyref{fig:notebook}).
+The exact same procedure can also be used to prove 
+\begin{equation}
+    \Re Z[\omega] = \frac{1}{\pi} \mathrm{P} \int_{-\infty}^\infty \dd{\omega'}
+    \frac{\Im Z[\omega']}{\omega' - \omega}.
+    \label{eq:k-k-2}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{software/kk-relation-1.PNG}
+    \caption{A Mathematica notebook verifying \eqref{eq:k-k-1} in the underdamped case}
+    \label{fig:notebook}
+\end{figure}
 
 \paragraph{Lecture 9, Exercise 3} 
 
@@ -173,6 +242,50 @@ we have
 \end{equation}
 
 \paragraph{Lecture 10, Exercise 1}
+
+\begin{equation}
+    x_j(t)=a_j \sin \left(\omega_j \tau+\phi_j\right)+\int_{-\infty}^t d \tau \cos \left(\omega_j(t-\tau)\right) \dot{X}(\tau)+X(t),
+    \label{eq:oscillator-eom}
+\end{equation}
+and
+\begin{equation}
+    \dot{P}=-\frac{\partial}{\partial X} V(X)+\int_{-\infty}^t d \tau K(t-\tau) \dot{X}(\tau)+\xi(t),
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        K(t) &=\sum_{j=1}^M k_j \cos \left(\omega_j t\right), \\
+        \xi(t) &=\sum_{j=1}^M k_j a_j \sin \left(\omega_j t+\phi_j\right).
+    \end{aligned}
+\end{equation}
+
+\paragraph{Solution} In equilibrium, we have 
+\begin{equation}
+    a_j^2 \sim \frac{k_{\text{B}} T}{m_j \omega_j^2},
+\end{equation}
+and we need to compare the first two terms on RHS of \eqref{eq:oscillator-eom}.
+Since we are in the equilibrium, 
+the energy flowing into the particle is equal to the energy flowing out of the particle, and therefore 
+\[
+    \int_{-\infty}^t \dd{\tau} K(t - \tau) \dot{X} \sim \xi (t), 
+\]
+and therefore 
+\[
+    \int_{-\infty}^t d \tau \cos \left(\omega_j(t-\tau)\right) \dot{X}(\tau) \sim 
+    \frac{K_{\text{single oscillator}}}{K} \xi,
+\]
+and 
+\[
+    \abs{\int_{-\infty}^t d \tau \cos \left(\omega_j(t-\tau)\right) \dot{X}(\tau)}^2 \sim 
+    \frac{K_{\text{single oscillator}}^2}{K^2} k_{\text{B}} T K ,
+\]
+and therefore 
+\[
+    \frac{1}{a^2}  \abs{\int_{-\infty}^t d \tau \cos \left(\omega_j(t-\tau)\right) \dot{X}(\tau)}^2 \sim
+    \frac{K_{\text{single oscillator}}^2}{K^2} \frac{K}{m \omega_j^2}
+    \sim \frac{K_{\text{single oscillator}}}{K} \ll 1,
+\]
+and therefore the influence of $X$'s dynamics is small.
 
 \paragraph{Lecture 11, Exercise 2}
 
@@ -389,7 +502,8 @@ The EOM in Hamiltonian language is
     \dot{\pi} = - \fdv{H}{\varphi} = \frac{1}{l} \laplacian \varphi.
 \end{equation}
 
-\item[(c)] By definition 
+\item[(c)] By definition (below I will eschew using $L$ as the symbol for capacitor,
+because it conflicts with the symbol of the length of the transmission line)
 \begin{equation}
     A^{\rightarrow}(x, t) = \frac{1}{\sqrt{L}} 
     \sum_{k > 0} (\ee^{\ii k x} A_k(t) + \ee^{- \ii k x} A_k^*(t)),
@@ -461,20 +575,44 @@ So the total energy of the transmission line
 is the sum of $\abs{A_k}^2$,
 and that's why we call $\{A_k\}$ normal mode amplitudes.
 
-\item[(d)] We have 
-\[
+\item[(d)] The voltage is 
+\begin{equation}
     \begin{aligned}
-        \varphi(x, t) &= \int_0^{t} \dd{t'} V(x, t')
-        = \int_0^t \dd{t'} \sqrt{Z} (A^\leftarrow + A^\rightarrow) \\
-        &= \sqrt{Z} \frac{1}{\sqrt{L}} \sum_{k} \int_0^t \dd{t'} (\ee^{\ii k x} A_k(t') + \ee^{- \ii k x} A_k^*(t')) \\
-        &= \frac{\sqrt{Z}}{\sqrt{L}} \sum_k \frac{1}{- \ii \omega_k} \ee^{\ii k x} A_k(t)
+        V(x, t) &= \sqrt{Z} (A^{\leftarrow}(x, t) + A^{\rightarrow}(x, t))
+        = \frac{\sqrt{Z}}{\sqrt{L}} \sum_{k } (\ee^{\ii k x} A_k(t) + \ee^{- \ii k x} A_k^*(t)) .
     \end{aligned}
-\]
+\end{equation}
+Therefore
+\begin{equation}
+    \begin{aligned}
+        \varphi(x, t) 
+        &= \sqrt{Z} \frac{1}{\sqrt{L}} \sum_{k} \int_0^t \dd{t'} (\ee^{\ii k x} A_k(t') + \ee^{- \ii k x} A_k^*(t')) \\
+        &= \frac{\sqrt{Z}}{\sqrt{L}} \sum_k \left(
+            \frac{1}{- \ii \omega_k} \ee^{\ii k x} (A_k(t) - A_k(0))
+            + \frac{1}{\ii \omega_k} \ee^{- \ii k x} (A_k^*(t) - A_k^*(0))
+        \right).
+    \end{aligned}
+\end{equation}
 By \eqref{eq:telegraph-eq} we have 
 \begin{equation}
-    \omega_k = \frac{1}{\sqrt{lc}} \abs{k},
+    \omega_k = \frac{1}{\sqrt{lc}} \abs{k}.
 \end{equation}
-so 
+The current is 
+\begin{equation}
+    \begin{aligned}
+        I(x, t) &= \frac{1}{\sqrt{Z}} (A^{\rightarrow}(x, t) - A^{\leftarrow}(x, t)) \\
+        &= \frac{1}{\sqrt{ZL}} \sum_{k} \sgn(k) (\ee^{\ii k x} A_k(t) + \ee^{- \ii k x} A_k^*(t)),
+    \end{aligned}
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        q(x, t) &= \frac{1}{\sqrt{ZL}} \sum_{k} \sgn(k) \left(
+            \frac{1}{- \ii \omega_k} \ee^{\ii k x} (A_k(t) - A_k(0)) 
+            + \frac{1}{\ii \omega_k} \ee^{- \ii k x} (A_k^*(t) - A_k^*(0))
+        \right).  
+    \end{aligned}
+\end{equation}
 
 \item[(e)] The variable $\varphi$ appears in the Lagrangian,
 and from it we can find all other physical quantities,
@@ -515,11 +653,13 @@ we have
 \begin{equation}
     V(0, t) = Z I(0, t) + 2 \sqrt{Z} A^{\leftarrow}(0, t)
     = - Z I^{\text{ext}}(t) + 2\sqrt{Z} A^{\leftarrow}(0, t),
+    \label{eq:v-noise-decomposition}
 \end{equation}
 and the EOM of the external circuit is 
 \begin{equation}
     \frac{1}{C_{\text{ext}}} q_{\text{ext}} + L_{\text{ext}} \dv{I_{\text{ext}}}{t} + Z I^{\text{ext}}
-    = \underbrace{2 \sqrt{Z} A^{\leftarrow}(0, t)}_{U^{\text{noise}}}.
+    = \underbrace{2 \sqrt{Z} A^{\leftarrow}(0, t)}_{V^{\text{noise}}}.
+    \label{eq:eom-external}
 \end{equation}
 Here the $Z I^{\text{ext}}$ term is the dissipative term introduced by 
 energy loss into the transmission line,
@@ -528,7 +668,7 @@ of the transmission line into the $LC$ resonator.
 The correlation function of the dissipative term is 
 \[
     \begin{aligned}
-        \expval{U^{\text{noise}}(t) U^{\text{noise}}(0)} &= 4Z \expval{A^{\leftarrow}(0, t) A^{\leftarrow}(0, 0)} \\
+        \expval{V^{\text{noise}}(t) V^{\text{noise}}(0)} &= 4Z \expval{A^{\leftarrow}(0, t) A^{\leftarrow}(0, 0)} \\
         &= 4 Z \frac{1}{L} \sum_{k, k' < 0} (A_k \ee^{- \ii \omega_k t} + A_k^* \ee^{\ii \omega_k t})
         (A_{k'} + A_{k'}^*).
     \end{aligned}
@@ -543,7 +683,7 @@ From \eqref{eq:circuit-ham} and the equipartition theorem we have
 So 
 \begin{equation}
     \begin{aligned}
-        \expval{U^{\text{noise}}(t) U^{\text{noise}}(0)} &= 
+        \expval{V^{\text{noise}}(t) V^{\text{noise}}(0)} &= 
         4 Z \frac{1}{L} \sum_{k < 0} \frac{1}{2 \sqrt{lc}} k_{\text{B}} T 
         (\ee^{- \ii \abs{k} t / \sqrt{lc} } + \ee^{\ii \abs{k} t / \sqrt{lc} }) \\
         &= 2 Z k_{\text{B}} T \frac{1}{\sqrt{lc}} \frac{1}{L} \sum_k \ee^{- \ii k t / \sqrt{lc}} \\
@@ -552,8 +692,20 @@ So
 \end{equation}
 which is the expected form in the Langevin equation.
 
+The voltage reflection coefficient is defined as 
+(here ``reflection'' is about signals inside the transmission line;
+note that the directions of the currents in the $LC$ resonator 
+and in the transformation line are opposite in \prettyref{fig:transmission-load})
 \begin{equation}
-    r = \frac{A^{\leftarrow}(0, t)}{A^{\rightarrow}(0, t)} = \frac{V(0, t) - }{}
+    r = \frac{V^{\rightarrow} [0, \omega]}{V^{\leftarrow} [0, \omega]} 
+    = \frac{A^{\rightarrow} [0, \omega]}{A^{\leftarrow} [0, \omega]} 
+    = \frac{V[0, \omega] + Z I[0, \omega]}{V[0, \omega] - Z I[0, \omega]}
+    = \frac{V_{\text{ext}} - Z I_{\text{ext}}}{V_{\text{ext}} + Z I_{\text{ext}}} 
+    = \frac{Z_{\text{ext}} - Z}{Z_{\text{ext}} + Z},
+\end{equation}
+where 
+\begin{equation}
+    Z = \sqrt{\frac{l}{c}}, \quad Z_{\text{ext}}[\omega] = \frac{1}{- \ii \omega L + \frac{1}{- \ii \omega C}}.
 \end{equation}
 
 \end{itemize}
@@ -564,5 +716,22 @@ which is the expected form in the Langevin equation.
     \caption{A serial $LC$ resonator and a transmission line}
     \label{fig:transmission-load}
 \end{figure}
+This is expected: Similar to \eqref{eq:v-noise-decomposition},
+we have 
+\begin{equation}
+    V(0, t) = ZI(0, t) + V(0, t),
+\end{equation}
+and therefore similar to \eqref{eq:eom-external}, we have 
+\begin{equation}
+    \frac{1}{C_{\text{ext}}} q_{\text{ext}} + L_{\text{ext}} \dv{I_{\text{ext}}}{t} - Z I^{\text{ext}}
+    = 2 \sqrt{Z} A^{\rightarrow}(0, t).
+\end{equation}
+So comparing the above equation and \eqref{eq:eom-external},
+and from $r = A^{\rightarrow} / A^{\leftarrow}$, 
+we arrive at 
+\begin{equation}
+    r = \frac{Z_{\text{ext}} - Z}{Z_{\text{ext}} + Z}
+\end{equation}
+again.
 
 \end{document}
