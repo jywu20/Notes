@@ -50,6 +50,8 @@
 \DeclareMathOperator{\legpoly}{P}
 \DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -133,17 +135,66 @@ The Hamiltonian is
         &= \frac{1}{2} \frac{U_0}{V} \left( p + \frac{\mu V}{U_0} \right)^2.
     \end{aligned}
 \end{equation}
-The eigenstates of this Hamiltonian is the same as the ``particle on a ring'' model, and we have 
+In Heisenberg's picture, the variance of $\theta$ can be evaluated in the follows.
+We know 
+\[
+    \begin{aligned}
+        \dv{\theta^2}{t} &= \frac{1}{\ii} \comm{\theta^2}{H} \\
+        &= \frac{U_0}{2 \ii V} \comm{\theta^2}{\left( p + \frac{\mu V}{U_0} \right)^2} \\
+        &= \frac{U_0}{V} \left(
+            \theta \left( p + \frac{\mu V}{U_0} \right)
+            + \left( p + \frac{\mu V}{U_0} \right) \theta
+        \right),
+    \end{aligned}
+\]
+and therefore 
 \begin{equation}
-    \braket{\theta}{p} = \frac{1}{\sqrt{2\pi}} \ee^{\ii p \theta},
+    \begin{aligned}
+        \dv[2]{\theta^2}{t} &= \frac{U_0}{V} \left(
+            \dot{\theta} \left( p + \frac{\mu V}{U_0} \right)
+            + \theta \dot{p} 
+            + \dot{p} \theta + 
+            \left(p + \frac{\mu V}{U_0}\right) \dot{\theta} 
+        \right) \\
+        &= \frac{2 U_0^2}{V^2} \left( p + \frac{\mu V}{U_0} \right)^2.
+    \end{aligned}
+    \label{eq:eom-sigma-op}
 \end{equation}
-where $p \in \mathbb{Z}$ so that $\theta$ and $\theta + 2\pi$ are equivalent.
+Here we use the EOMs 
+\begin{equation}
+    \dot{\theta} = \frac{1}{\ii} \comm{\theta}{H} = \frac{U_0}{V} \left( p + \frac{\mu V}{U_0} \right),
+    \quad \dot{p} = 0.
+\end{equation}
+From \eqref{eq:eom-sigma-op}, we have 
+\begin{equation}
+    \dv[2]{\sigma_\theta^2}{t} = 
+    \dv[2]{t} (\expval*{\theta^2} - \expval*{\theta}^2) 
+    = \frac{4 U_0}{V} E - \frac{2 U_0}{V} \expval*{\theta} \left( \expval*{p} + \frac{\mu V}{U_0} \right).
+\end{equation}
+Assuming the wave packet doesn't move,
+we have 
+\begin{equation}
+    \dv[2]{\sigma_\theta^2}{t} = \frac{4 U_0}{V} E,
+\end{equation}
+and therefore 
+\begin{equation}
+    \sigma_\theta = \sqrt{ \frac{2 U_0}{V} E t^2 + \sigma_\theta^2(0) }.
+\end{equation}
+The speed sound is 
+\begin{equation}
+    v = \sqrt{\frac{\rho_0 U_0}{m}},
+\end{equation}
+so 
+\begin{equation}
+    \sigma_\theta = \sqrt{ \frac{2 U_0}{V} E t^2 + \sigma^2 } 
+    = \sqrt{ \frac{2 E m v^2 t^2}{\rho_0 V} + \sigma^2 },
+\end{equation}
+and the time it takes to have $\sigma_\theta = 2 \pi$ is 
+\begin{equation}
+    t = \sqrt{\frac{\rho_0 V}{2 E mv^2} (4\pi^2 - \sigma^2 )}.
+\end{equation}
 
-Suppose the initial state is 
-\begin{equation}
-    \braket{\theta}{\psi} = \sum_p c_p \frac{1}{\sqrt{2\pi}} \ee^{\ii p \theta}.
-\end{equation}
-The time evolution is 
+\item[(b)] 
 
 \end{itemize}
 
@@ -264,15 +315,105 @@ To evaluate $G(\vb*{p})$, we need to find
     E = \frac{U N}{2} (M^2 - M) - \mu NM
     = \frac{N}{2} (U M^2 - (U + 2\mu) M).
 \end{equation}
-At the ground state, $E$ is minimized, and we have
+At the ground state, $E$ is minimized.
+If $M$ were continuous, we would have
 \begin{equation}
-    M = \frac{U + 2\mu}{2 U}, 
+    M = \frac{U + 2\mu}{2 U} = \frac{1}{2} + \frac{\mu}{U}, 
+    \label{eq:continuous-m}
 \end{equation}
-and the energy gap is 
+but it's not. So we need to find the closest integer to \eqref{eq:continuous-m}.
+Note that since
+\[
+    \frac{1}{2} \leq \frac{1}{2} + \frac{\mu}{U} - \floor*{\frac{\mu}{U}} < \frac{3}{2},
+\]
+the following $M$ is always a minimum point:
 \begin{equation}
-    \Delta E = E|_{M+1} - E|_M = \frac{N}{2} (2 U M - 2 \mu)
-    = \frac{1}{2} NU.
+    M = \floor*{\frac{\mu}{U}} + 1.
 \end{equation}
+When $\mu / U$ is an integer, both 
+\begin{equation}
+    M = \frac{\mu}{U} 
+\end{equation}
+and 
+\begin{equation}
+    M = \floor*{\frac{\mu}{U}} + 1 = \frac{\mu}{U} + 1
+\end{equation}
+can be found in ground states.
+
+The energy gap is 
+\begin{equation}
+    \begin{aligned}
+        \Delta E &= E|_{n_i = M+1 \text{ on one site}} - E|_M  \\
+        &= \frac{U}{2} ((M+1)^2 - (M+1)) - \mu (M+1)
+        - \frac{U}{2} (M^2 - M) + \mu M \\
+        &= UM - \mu
+        = \begin{cases}
+            0 \text{ or } U, \quad &\text{$\mu / U$ integer}, \\
+            U,\quad &\text{otherwise}.
+        \end{cases}
+    \end{aligned}
+\end{equation}
+Since when $\mu$ changes we observe discontinuous change of $M$,
+we may say when $\mu / U$ is an integer,
+a phrase transition happens,
+so we pick $\Delta E = 0$ when $\mu / U$ is an integer and get 
+\begin{equation}
+    \frac{\Delta E}{U} = M - \frac{\mu}{U}
+    = \begin{cases}
+        0, \quad \text{$\mu / U$ integer}, \\
+        1, \quad \text{otherwise}. 
+    \end{cases}
+\end{equation}
+The energy gap and the phase diagram are shown in \prettyref{fig:mott-phase}.
+
+\begin{figure}
+    \centering
+    \input{phase/boson-mott-1.tex}
+    \caption{Phase diagram when $t = 0$}
+    \label{fig:mott-phase}
+\end{figure}
+
+\item[(b)] The gapless points in \prettyref{fig:mott-phase} can only be connected to the superfluid phase,
+and therefore we get \prettyref{fig:boson-hubbard}.
+
+\begin{figure}
+    \centering
+    \input{phase/boson-hubbard-1.tex}
+    \caption{Schematic phase diagram of the boson Hubbard model}
+    \label{fig:boson-hubbard}
+\end{figure}
+
+\item[(c)] We have 
+\begin{equation}
+    \mel{n_0 + k'}{a}{n_0 + k} = \sqrt{n_0 + k} \braket{n_0 + k'}{n_0 + k - 1} 
+    = \sqrt{n_0 + k} \delta_{k', k-1},
+\end{equation}
+and 
+\begin{equation}
+    \mel{k'}{\ee^{- \ii \theta}}{k} 
+    = \int_{0}^{2\pi} \frac{\dd{\theta}}{2\pi} \ee^{- \ii k' \theta} \ee^{- \ii \theta} \ee^{\ii k \theta}
+    = \delta_{k', k - 1}.
+\end{equation}
+When $k \ll n_0$, we have 
+\begin{equation}
+    \mel{n_0 + k'}{a}{n_0 + k} \approx \sqrt{n_0} \mel{k'}{\ee^{- \ii \theta}}{k} \Rightarrow
+    a \approx \sqrt{n_0} \ee^{- \ii \theta}.
+\end{equation}
+And similarly we have 
+\begin{equation}
+    \mel{n_0 + k'}{a^\dagger}{n_0 + k} = \sqrt{n_0 + k + 1} \delta_{k', k+1},
+\end{equation}
+and 
+\begin{equation}
+    \mel{k'}{\ee^{\ii \theta}}{k} 
+    = \int_0^{2\pi} \frac{\dd{\theta}}{2\pi} \ee^{- \ii k \theta} \ee^{\ii \theta} \ee^{\ii k' \theta}
+    = \delta_{k', k+1},
+\end{equation}
+and in the $k \ll n_0$ limit we have 
+\begin{equation}
+    a^{\dagger} \approx \sqrt{n_0} \ee^{\ii \theta}.
+\end{equation}
+
 
 \end{itemize}
 
