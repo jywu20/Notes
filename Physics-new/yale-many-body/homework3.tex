@@ -310,7 +310,7 @@ To evaluate $G(\vb*{p})$, we need to find
 \paragraph{Problem 3}
 
 \paragraph{Solution} \begin{itemize}
-\item[(a)] The energy now can be exactly evaluated ($N$ is the number of sites):
+\item[1.] The energy now can be exactly evaluated ($N$ is the number of sites):
 \begin{equation}
     E = \frac{U N}{2} (M^2 - M) - \mu NM
     = \frac{N}{2} (U M^2 - (U + 2\mu) M).
@@ -343,25 +343,22 @@ can be found in ground states.
 The energy gap is 
 \begin{equation}
     \begin{aligned}
-        \Delta E &= E|_{n_i = M+1 \text{ on one site}} - E|_M  \\
-        &= \frac{U}{2} ((M+1)^2 - (M+1)) - \mu (M+1)
-        - \frac{U}{2} (M^2 - M) + \mu M \\
-        &= UM - \mu
-        = \begin{cases}
+        \Delta E &= \min( E|_{n_i = M+1 \text{ on one site}} - E|_M, E|_{n_i = M-1 \text{ on one site}} - E|_M ) \\
+        &= \min( UM - \mu, U(- M + 1) + \mu ) \\
+        &= \begin{cases}
             0 \text{ or } U, \quad &\text{$\mu / U$ integer}, \\
-            U,\quad &\text{otherwise}.
+            \min\left( 
+                U \floor*{\frac{\mu}{U}} + U - \mu,
+                \mu - U \floor*{\frac{\mu}{U}} \right),\quad &\text{otherwise}.
         \end{cases}
     \end{aligned}
 \end{equation}
-Since when $\mu$ changes we observe discontinuous change of $M$,
-we may say when $\mu / U$ is an integer,
-a phrase transition happens,
-so we pick $\Delta E = 0$ when $\mu / U$ is an integer and get 
+So
 \begin{equation}
-    \frac{\Delta E}{U} = M - \frac{\mu}{U}
+    \frac{\Delta E}{U} 
     = \begin{cases}
-        0, \quad \text{$\mu / U$ integer}, \\
-        1, \quad \text{otherwise}. 
+        \frac{\mu}{U} - \floor*{\frac{\mu}{U}} , &\quad \frac{\mu}{U} - \floor*{\frac{\mu}{U}} \leq \frac{1}{2} , \\
+        1 + \floor*{\frac{\mu}{U}} - \frac{\mu}{U} , &\quad \frac{\mu}{U} - \floor*{\frac{\mu}{U}} \geq \frac{1}{2}. 
     \end{cases}
 \end{equation}
 The energy gap and the phase diagram are shown in \prettyref{fig:mott-phase}.
@@ -369,11 +366,11 @@ The energy gap and the phase diagram are shown in \prettyref{fig:mott-phase}.
 \begin{figure}
     \centering
     \input{phase/boson-mott-1.tex}
-    \caption{Phase diagram when $t = 0$}
+    \caption{The energy gap plot and the phase diagram when $t = 0$}
     \label{fig:mott-phase}
 \end{figure}
 
-\item[(b)] The gapless points in \prettyref{fig:mott-phase} can only be connected to the superfluid phase,
+\item[2.] The gapless points in \prettyref{fig:mott-phase} can only be connected to the superfluid phase,
 and therefore we get \prettyref{fig:boson-hubbard}.
 
 \begin{figure}
@@ -383,7 +380,7 @@ and therefore we get \prettyref{fig:boson-hubbard}.
     \label{fig:boson-hubbard}
 \end{figure}
 
-\item[(c)] We have 
+\item[3.] We have 
 \begin{equation}
     \mel{n_0 + k'}{a}{n_0 + k} = \sqrt{n_0 + k} \braket{n_0 + k'}{n_0 + k - 1} 
     = \sqrt{n_0 + k} \delta_{k', k-1},
@@ -413,7 +410,163 @@ and in the $k \ll n_0$ limit we have
 \begin{equation}
     a^{\dagger} \approx \sqrt{n_0} \ee^{\ii \theta}.
 \end{equation}
+Also, 
+\begin{equation}
+    \mel{n_0 + k'}{n}{n_0 + k} = (n_0 + k) \braket{n_0 + k}{n_0 + k'} = (n_0 + k) \delta_{k k'},
+\end{equation}
+and 
+\begin{equation}
+    \mel{k'}{\pi}{k} = \int_0^{2\pi} \dd{\theta} \ee^{- \ii k' \theta} (-\ii \partial_\theta) \ee^{\ii k \theta}
+    = k \delta_{k k'},
+\end{equation}
+so 
+\begin{equation}
+    n = n_0 + \pi.
+\end{equation}
 
+\item[4.] When the above approximation works, 
+\[
+    \begin{aligned}
+        H &= - t n_0 \sum_{\pair{i, j}} \ee^{\ii \theta_i} \ee^{- \ii \theta_j} + \text{h.c.}
+        + \frac{U}{2} \sum_i (n_0 + \pi_i) (n_0 + \pi_i - 1) - \mu \sum_i (n_0 + \pi_i) \\
+        &= - 2 t n_0 \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
+        + \frac{U}{2} \sum_i \pi_i^2 + \text{linear terms in $\pi$} + f(n_0).
+    \end{aligned}
+\]
+The linear terms of $\pi$ can be safely ignored 
+because we are working around $n = n_0$ that minimize the energy,
+and $\pdv{E}{n} = 0$ at $n = n_0$.
+Since $\pi$ is the fluctuation of $n$,
+linear terms in $\pi$ correspond to first order Taylor terms and are also bound to be zero.
+So 
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
+    + u \sum_i \pi_i^2, \quad J = 2n_0 t, \quad u = \frac{U}{2}.
+\end{equation}
+
+\item[5.] In the limit of slow spatial varying,
+we have 
+\begin{equation}
+    H = -J \sum_{\pair{i, j}} \left(1 - \frac{1}{2} (\theta_i - \theta_j)^2 \right) + u \sum_i \pi_i^2. 
+\end{equation}
+This Hamiltonian has exactly the same form of the lattice phonon Hamiltonian.
+The operator EOMs are 
+\begin{equation}
+    \begin{aligned}
+        \dv{\pi_i}{t} &= \frac{1}{\ii} \comm{\pi_i}{H} = 
+        - J \sum_{\pair{i, j}} (\theta_i - \theta_j) , \\
+        \dv{\theta_i}{t} &= \frac{1}{\ii} \comm{\theta_i}{H} = 2 u \pi_i,
+    \end{aligned}
+\end{equation}
+and therefore 
+\begin{equation}
+    \dv[2]{\theta_i}{t} = 2 J u \sum_{\pair{i, j}} (\theta_j - \theta_i).
+\end{equation}
+Suppose the bond length of the lattice is $a$.
+In a normal mode
+\begin{equation}
+    \theta_i \propto \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega_{\vb*{k}} t)},
+\end{equation}
+we have 
+\[
+    \begin{aligned}
+        - \omega_{\vb*{k}}^2 &= 2 Ju \sum_{i=1}^d (
+            \ee^{\ii \vb*{k} \cdot a \vu*{x}_i} + \ee^{- \ii \vb*{k} \cdot a \vu*{x}_i} - 2
+        ) \\
+        &= 2 J u\sum_{i=1}^d (2 \cos (\vb*{k} \cdot a \vu*{x}_i) - 2) \\
+        &\approx - 2 J u \sum_{i=1}^d (\vb*{k} \cdot a \vu*{x}_i)^2 \\
+        &= - 2 J u a^2 \vb*{k}^2,
+    \end{aligned}
+\]
+so
+\begin{equation}
+    \omega_{\vb*{k}} = \sqrt{2 J u} a \abs{\vb*{k}}.
+\end{equation}
+
+\item[6.] When $J / u = 0$, we have
+\begin{equation}
+    H = \sum_i (u \pi_i^2 - B \pi_i).
+\end{equation}
+Again we apply the same procedure used to derive \prettyref{fig:boson-hubbard}.
+In the ground state, we have 
+\begin{equation}
+    \pi_i = \begin{cases}
+        \floor*{\frac{B}{2u}}, \quad & 0 \leq \frac{B}{2u} - \floor*{\frac{B}{2u}} \leq \frac{1}{2}, \\
+        \floor*{\frac{B}{2u}} + 1, \quad & \frac{1}{2} \leq \frac{B}{2u} - \floor*{\frac{B}{2u}} < 1, \\
+    \end{cases}
+\end{equation}
+and when 
+\begin{equation}
+    \frac{B}{2u} - \floor*{\frac{B}{2u}} = \frac{1}{2},
+    \label{eq:gapless-cond-2}
+\end{equation}
+changing $\pi_i$ on one site doesn't change the energy,
+and we get a gapless system.
+So on the phase diagram, points defined by \eqref{eq:gapless-cond-2} are connected to the superfluid phase,
+and the phase diagram of 
+\begin{equation}
+    H = - J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
+    + u \sum_i \pi_i^2 - B \sum_i \pi_i , 
+    \label{eq:eft-with-b}
+\end{equation}
+is given in \prettyref{fig:phase-eft-b}.
+
+\begin{figure}
+    \centering
+    \input{phase/quantum-xy-1.tex}
+    \caption{Phase diagram of \eqref{eq:eft-with-b}}
+    \label{fig:phase-eft-b}
+\end{figure}
+
+\item[7.] We have 
+\begin{equation}
+    \dot{\theta}_i = \pdv{H}{\pi_i} = 2 u \pi_i - B, \quad 
+    \pi_i = \frac{\dot{\theta}_i + B}{2u}.
+\end{equation}
+So
+\begin{equation}
+    \begin{aligned}
+        L &= \sum_i \dot{\theta}_i \pi_i - H \\
+        &= \sum_i \dot{\theta}_i \frac{\dot{\theta}_i + B}{2u} 
+        + J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
+        - u \sum_i \left( \frac{\dot{\theta}_i + B}{2u} \right)^2
+        + B \sum_i \frac{\dot{\theta}_i + B}{2u} \\
+        &= \frac{1}{4u} \sum_i (\dot{\theta}_i + B)^2 + J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) .
+    \end{aligned}
+\end{equation}
+In the continuous limit, we have 
+\begin{equation}
+    \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
+    \to \sum_{\pair{i, j}} \left( 1 - \frac{1}{2} (\theta_i - \theta_j)^2 \right) 
+    \simeq - \sum_{\pair{i, j}} \frac{1}{2} (\theta_i - \theta_j)^2 = - \frac{1}{2} a^2 (\grad{\theta})^2,
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        L &= \int \frac{\dd[d]{\vb*{x}}}{a^d} \frac{1}{4 u} (\dot{\theta} + B)^2 
+        - \int \frac{\dd[d]{\vb*{x}}}{a^d} \frac{J}{2} a^2 (\grad{\theta})^2  \\
+        &= \int \dd[d]{\vb*{x}} \left(
+            \frac{1}{4 u a^d} (\dot{\theta} + B)^2
+            - \frac{J}{2} a^{d-2} (\grad{\theta})^2
+        \right).
+    \end{aligned}
+\end{equation}
+
+\item[8.] In the imaginary time path integral,
+\begin{equation}
+    \ii \int \dd{t} \frac{B}{2u} \dot{\theta}_i \longrightarrow 
+    \ii \int_0^{\beta} \dd{\tau} \frac{B}{2u} \partial_\tau \theta 
+    = \frac{B}{2u} \ii (\theta_i(\beta) - \theta_i(0)).
+    \label{eq:theta-dot-term}
+\end{equation}
+Since in the imaginary time integral,
+the final state and the initial state have to be the same,
+$\theta_i(\beta)$ and $\theta_i(0)$ have to be equivalent to each other,
+and therefore 
+\begin{equation}
+    \theta_i(\beta) - \theta_i(0) = 2\pi n, \quad n \in \mathbb{Z}.
+\end{equation}
+So when $B / 2u$ is an integer, \eqref{eq:theta-dot-term} contributes nothing to the partition function.
 
 \end{itemize}
 
