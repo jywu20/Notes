@@ -165,36 +165,71 @@ Here we use the EOMs
     \dot{\theta} = \frac{1}{\ii} \comm{\theta}{H} = \frac{U_0}{V} \left( p + \frac{\mu V}{U_0} \right),
     \quad \dot{p} = 0.
 \end{equation}
-From \eqref{eq:eom-sigma-op}, we have 
+To calculate $\sigma_\theta^2$, we also need $\expval*{\theta}^2$. Its time evolution is given by 
 \begin{equation}
-    \dv[2]{\sigma_\theta^2}{t} = 
-    \dv[2]{t} (\expval*{\theta^2} - \expval*{\theta}^2) 
-    = \frac{4 U_0}{V} E - \frac{2 U_0}{V} \expval*{\theta} \left( \expval*{p} + \frac{\mu V}{U_0} \right).
+    \begin{aligned}
+        \dv[2]{\expval*{\theta}}{t} &= 2 \expval*{\theta} \dv[2]{\expval*{\theta}}{t} 
+       + 2 \left( \dv{\expval*{\theta}}{t} \right)^2  \\
+       &= 2 \expval*{\theta} \dv{t} \left(  \frac{U_0}{V} \expval*{p} + \mu \right)
+       + 2 \left(  \frac{U_0}{V} \expval*{p} + \mu \right)^2 \\
+       &= \frac{2 U_0^2}{V^2} \left( \expval*{p} + \frac{\mu V}{U_0} \right)^2 .
+    \end{aligned}
+    \label{eq:theta-exp-2-eom}
 \end{equation}
-Assuming the wave packet doesn't move,
-we have 
+From \eqref{eq:eom-sigma-op} and \eqref{eq:theta-exp-2-eom}, we have 
 \begin{equation}
-    \dv[2]{\sigma_\theta^2}{t} = \frac{4 U_0}{V} E,
+    \begin{aligned}
+        \dv[2]{\sigma_\theta^2}{t} &= 
+        \dv[2]{t} (\expval*{\theta^2} - \expval*{\theta}^2) 
+        = \frac{2 U_0^2}{V^2} \left( 
+            \expval{\left( p + \frac{\mu V}{U_0} \right)^2} 
+            - \left( \expval*{p} + \frac{\mu V}{U_0} \right)^2 
+        \right)  \\
+        &= \frac{2 U_0^2}{V^2} \sigma_p^2.
+    \end{aligned}
+\end{equation}
+From uncertainty relation we have 
+\begin{equation}
+    \sigma_p^2 \sigma_x^2 \simeq \frac{1}{4},
 \end{equation}
 and therefore 
 \begin{equation}
-    \sigma_\theta = \sqrt{ \frac{2 U_0}{V} E t^2 + \sigma_\theta^2(0) }.
+    \dv[2]{\sigma_\theta^2}{t} \simeq \frac{2 U_0^2}{V^2} \frac{1}{4 \sigma^2},
 \end{equation}
-The speed sound is 
+and therefore 
+\begin{equation}
+    \sigma_\theta \simeq \sqrt{ \frac{ U_0^2}{4 V^2 \sigma^2} t^2 + \sigma^2 }.
+\end{equation}
+
+\item[(b)] The speed sound is 
 \begin{equation}
     v = \sqrt{\frac{\rho_0 U_0}{m}},
 \end{equation}
 so 
 \begin{equation}
-    \sigma_\theta = \sqrt{ \frac{2 U_0}{V} E t^2 + \sigma^2 } 
-    = \sqrt{ \frac{2 E m v^2 t^2}{\rho_0 V} + \sigma^2 },
+    \sigma_\theta  = \sqrt{ \frac{m^2 v^4}{4 V^2 \rho_0^2 \sigma^2} t^2 + \sigma^2 },
 \end{equation}
 and the time it takes to have $\sigma_\theta = 2 \pi$ is 
 \begin{equation}
-    t = \sqrt{\frac{\rho_0 V}{2 E mv^2} (4\pi^2 - \sigma^2 )}.
-\end{equation}
+    t = \sqrt{ \frac{4 V^2 \rho_0^2 \sigma^2}{m^2 v^4} (4\pi^2 - \sigma^2 )}.
+\end{equation} 
+For $^4$\ce{He}, we have $m = \SI{6.65e-27}{kg}$,
+and the sound speed is around $\sim \SI{20}{m/s}$ \cite{PhysRev.71.600},
+and the mass density -- the product of $\rho_0$ and $m$ -- is $\sim \SI{125}{g/L}$,
+so $t \sim \SI{5.6e45}{s}$.
 
-\item[(b)] 
+\item[(c)] Ignoring density fluctuation,
+the perturbation is 
+\begin{equation}
+    - g \int \dd[d]{\vb*{x}} (a^2 + (a^\dagger)^2) = 
+    - g \int \dd[d]{\vb*{x}} n_0 (\ee^{\ii 2 \theta} + \ee^{- \ii 2 \theta})
+    = - 2 g n_0 \int \dd[d]{\vb*{x}} \cos(2 \theta).
+\end{equation}
+In the uniform $\theta$ case, we further have 
+\begin{equation}
+    H = \frac{1}{2} \frac{U_0}{V} \left( p + \frac{\mu V}{U_0} \right)^2
+    - 2 g n_0 V \cos(2 \theta).
+\end{equation}
 
 \end{itemize}
 
@@ -438,6 +473,12 @@ because we are working around $n = n_0$ that minimize the energy,
 and $\pdv{E}{n} = 0$ at $n = n_0$.
 Since $\pi$ is the fluctuation of $n$,
 linear terms in $\pi$ correspond to first order Taylor terms and are also bound to be zero.
+Indeed, this condition connects $n_0$ and $\mu$:
+\begin{equation}
+    \frac{U}{2} (2 n_0 \pi_i - \pi_i) - \mu \pi_0 = 0 \Rightarrow
+    n_0 = \frac{1}{2} + \frac{\mu}{U}.
+    \label{eq:n0-mu}
+\end{equation}
 So 
 \begin{equation}
     H = - J \sum_{\pair{i, j}} \cos(\theta_i - \theta_j) 
@@ -550,6 +591,7 @@ and
             - \frac{J}{2} a^{d-2} (\grad{\theta})^2
         \right).
     \end{aligned}
+    \label{eq:continuous-eft}
 \end{equation}
 
 \item[8.] In the imaginary time path integral,
@@ -567,7 +609,19 @@ and therefore
     \theta_i(\beta) - \theta_i(0) = 2\pi n, \quad n \in \mathbb{Z}.
 \end{equation}
 So when $B / 2u$ is an integer, \eqref{eq:theta-dot-term} contributes nothing to the partition function.
+The points are plotted on \prettyref{fig:phase-eft-b}.
+Comparing the positions of these points on \prettyref{fig:phase-eft-b} and
+on the original model \prettyref{fig:boson-hubbard},
+we find the condition that the $\partial_\tau \theta$ term in \eqref{eq:continuous-eft} can be ignored 
+is equivalent to 
+\[
+    \frac{\mu}{U} = \frac{1}{2} + n, \quad n = 0, 1, 2, \ldots,
+\]
+and from \eqref{eq:n0-mu} we know this is equivalent to the condition that $n_0$ is an integer.
 
 \end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{data}
 
 \end{document}
