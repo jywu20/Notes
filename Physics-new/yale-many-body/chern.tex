@@ -213,10 +213,12 @@ we are around a Dirac cone.
 Since we are not interested in the graphene system itself, 
 and only use it as a platform to realize Dirac fermions,
 it doesn't bring any inconvenience to redefine $\Psi^\dagger_{\vb*{K} + \vb*{k}}$ as $\Psi^\dagger_{\vb*{k}}$,
-and to rescale $\vb*{k}$ so that $a \vb*{k}$ becomes $\vb*{k}$.
+and to rescale $\vb*{k}$ so that $a \vb*{k}$ becomes $\vb*{k}$,
+and further, to absorb the $v$ factor into the unit of energy 
+(or in other words the unit of time -- so that the ``light speed'' is set to 1)
 The effective theory therefore becomes 
 \begin{equation}
-    H = v \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} (k_x \sigma_x + k_y \sigma_y) \Psi_{\vb*{k}}.
+    H = \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} (k_x \sigma_x + k_y \sigma_y) \Psi_{\vb*{k}}.
     \label{eq:eff-ham-k}
 \end{equation}
 
@@ -265,19 +267,37 @@ and the second is the band index -- or equivalently, the sublattice.
 \] 
 
 So what's \eqref{eq:dirac-ham-1}?
-
-
-
+It has four modes,
+two with dispersion relation $\epsilon = v \abs{\vb*{k}}$,
+two with $\epsilon = - v \abs{\vb*{k}}$
+-- it describes Dirac electrons!
 So we find indeed Dirac electrons can be realized in a realistic model.
+In this note we are not going to rewrite \eqref{eq:dirac-ham-1} 
+into the form usually seen in high energy physics,
+because the picture of underlying A sublattice and B sublattice 
+proves to be useful in the following discussion.
 
 \subsection{Symmetries}
 
 Before going on, let's first do a sketchy analysis of the Dirac electrons.
 Of course we have translational symmetry.
+Note that because $\vb*{K} + \vb*{k}$ is conserved,
+both $\vb*{k}$ and $\vb*{K}$ are conserved, 
+because the decomposition of the real crystal momentum into $\vb*{k}$ and $\vb*{K}$
+is somehow unique, allowing the difference of a $\vb*{G}$ vector.
+So translational symmetry means two things in \eqref{eq:dirac-ham-1}:
+First, $\vb*{k}$ is conserved,
+and second, the valley degree of freedom is conserved.
+The second condition also means there is no $\mu^x$ or $\mu^z$ matrix in the Hamiltonian.
+(Here $\mu^i$ means 
+the direct product of $\sigma^i$ in the valley space 
+and the identity matrix in the sublattice space.)
+
 We also have inversion symmetry:
 Under the inversion operation, sublattice A and sublattice B are exchanged,
 and $\vb*{k}$ becomes $- \vb*{k}$,
-which means K and K' are swapped,
+and K and K' are swapped 
+(the latter two operations are equivalent to flipping the real lattice momentum $\vb*{K} + \vb*{k}$),
 so because of the exchange of A and B, we have
 \[
     \sigma^y = \pmqty{0 & - \ii \\ \ii & 0} \longrightarrow \pmqty{0 & \ii \\ - \ii & 0} = - \sigma^y,
@@ -289,7 +309,7 @@ and similarly
 and by the definition of $\tau^z$ and $\tau^x$, 
 exchange valley K and valley K' doesn't change their values, so finally we get
 \begin{equation}
-    \tau^x \to \tau^x, \quad \tau^z \to - \tau^z.
+    \tau^x \to \tau^x, \quad \tau^y \to - \tau^y.
 \end{equation}
 On the other hand, swapping A and B doesn't change $\mu^z$,
 but after K and K' are swapped, we get 
@@ -302,10 +322,163 @@ The sign of $k$ and the sign of the matrices cancel.
 Both translational symmetry and inversion symmetry are space group operations.
 \eqref{eq:dirac-ham-1} also has a non-space group symmetry:
 the time reversal symmetry.
+It can be proved that if a system has time reversal symmetry 
+(see \href{../group-and-topology-yang-qi/2022-4-12.pdf}{here}),
+then we can always find a unitary matrix $T$ 
+(which is consistent with out intuition about how time reversal changes discrete degrees of freedom)
+such that 
+\begin{equation}
+    T H_{\vb*{k}} T^{-1} = H_{-\vb*{k}}^*.
+\end{equation}
+In the case of graphene,
+time reversal swaps K and K', 
+but leaves the lattice along,
+so $T A T'$ means to swap the K part and the K' part in $A$.
+Thus 
+\[
+    T H_{\vb*{k}} T^{-1}
+    = \underbrace{T \mu^z T^{-1}}_{- \mu^z} T \tau^x T^{-1} k_x + \tau^y k_y
+    = - \mu^z \tau^x k_x + \tau^y k_y,
+\]
+and 
+\[
+    H_{- \vb*{k}}^* = - \underbrace{\mu^z \tau^x}_{\text{real}} k_x + (-\tau^y) (-k_y),
+\]
+and indeed we find \eqref{eq:dirac-ham-1} has time reversal symmetry.
 
+\section{Broken symmetry and Chern insulator}
 
-\subsection{Mass term}
+\subsection{Introducing mass terms}
 
+\eqref{eq:dirac-ham-1} is a gapless theory,
+though not a metal but a semimetal.
+A mass term may be introduced if some additional mechanisms are put in,
+say, spontaneous symmetry breaking or external field.
+The terms $m \tau^z$ and $m \tau^y$ break the inversion symmetry 
+(after changing A and B, a minus sign appears).
+This is usually caused by a CDW order,
+and since in a CDW order, electrons are localized around atoms in the real space,
+we choose $m \tau^z$,
+which is diagonal in the sublattice basis.
+To break the time reversal symmetry, any $m \mu^z \tau^i$ term is fine,
+but again to make our model easily realizable 
+we use $m \mu^z \tau^z$ which is diagonal in the sublattice basis
+-- and then something like a magnetic field easily induces this term.
+So the model including the two mass terms we are interested in is 
+\begin{equation}
+    H_{\vb*{k}} = \mu^z \tau^x k_x + \tau^y k_y + m_1 \tau^z + m_2 \mu^z \tau^z.
+    \label{eq:model-ham}
+\end{equation}
 
+\subsection{The spectrum}
+
+Now we solve the model \eqref{eq:model-ham}.
+By brutal force, we diagonalize the matrix,
+and find that the matrix is block diagonal, 
+two two block corresponding to $\mu^z = \pm 1$, respectively,%
+\footnote{
+    Here we follow a common misuse of notation 
+    and use the symbol $\mu^z$ to refer to 
+    the matrix, the corresponding (basis-independent) operator,
+    and the value of that operator on an eigenstate.
+}
+and for $\mu^z = 1$ (i.e. K valley) we have 
+\begin{equation}
+    \epsilon_{\vb*{k}}^2 = (m_1 + m_2)^2 + k_x^2 + k_y^2,
+\end{equation}
+and for $\mu^z = -1$ (i.e. K' valley) we have 
+\begin{equation}
+    \epsilon_{\vb*{k}}^2 = (n_1 - m_2)^2 + k_x^2 + k_y^2,
+\end{equation}
+so 
+\begin{equation}
+    \epsilon_{\vb*{k}, \mu^z} = \pm \sqrt{
+        \vb*{k}^2 + (m_1 + \mu^z m_2)^2
+    }.
+\end{equation}
+It can be seen that the model is mostly gapped,
+except when 
+\begin{equation}
+    m_1 + \mu^z m_2 = 0 \Leftrightarrow \begin{cases}
+        \abs{m_1} = \abs{m_2}, \\
+        \mu^z = - \frac{m_2}{m_1} .
+    \end{cases}
+    \label{eq:gap-close}
+\end{equation}
+In the above case, 
+the gap is closed for one of the valleys.
+
+\subsection{Phase diagram of a non-interactive fermion theory?}
+
+The fact that when \eqref{eq:gap-close} holds,
+the gap is closed 
+means it's possible that \eqref{eq:gap-close} is actually a phase transition condition. 
+This seems not likely,
+because anyway \eqref{eq:model-ham} is a non-interactive theory.
+Further investigations, however, reveal that there is indeed a transition when \eqref{eq:gap-close} holds.
+
+Let's consider the $\abs{m_1} \to \infty$ limit and the $\abs{m_2} \to \infty$ limit.
+In the former limit, the first quantization Hamiltonian is 
+\[
+    H_{\vb*{k}} = \pm \abs{m_1} \pmqty{\dmat{1, -1, 1, -1}},
+\]
+and when $m_1 > 0$, filled states are $\ket{\vb*{k}, \text{K}, \text{B}}$ 
+and $\ket{\vb*{k}, \text{K'}, \text{B}}$.
+So all B states are occupied while A states are not.
+The picture is quite clear:
+Due to the CDW order parameter,
+the electrons are gapped out,
+and now in a unit cell,
+the electron (note that the model is half-filled so we have two atoms but only one electron in one unit cell)
+is confined around the B atom.
+Similarly when $m_1 < 0$, 
+the electron is confined around the A atom in a unit cell.
+So $m_1 \to \infty$ limit is the ``CDW B'' limit,
+while $m_1 \to - \infty$ limit is the ``CDW A'' limit.
+
+Now let's consider the $\abs{m_2} \to \infty$ limit.
+The Hamiltonian is now 
+\begin{equation}
+    H_{\vb*{k}} = \pm \abs{m_2} \pmqty{\dmat{1, -1, -1, 1}}.
+\end{equation}
+So if $m_2 > 0$, the filled states are $\ket{\vb*{k}, \text{K}, \text{B}}$
+and $\ket{\vb*{k}, \text{K'}, \text{A}}$.
+Something rather interesting is hidden here:
+K and K' are \emph{momentum space} labels.
+The fact that in the momentum space,
+at K and K',
+different bands are filled 
+means in the real space we \emph{don't} have a picture that looks like CDW A or CDW B.
+If electrons are confined around particular atoms,
+we get a flat filled band
+with a band index that can be traced back to the type of atom with electron localization in the unit cell.
+(Of course, we can have staggering electron localization sites,
+but this results in the shrinking of the first Brillouin zone,
+which obviously doesn't happen here.)
+And here though the bands are all flat,
+we can't say electrons are around A or B.
+Somehow, we get flat bands,
+but there is no corresponding \emph{atomic limit} (i.e. hopping $\to 0$).
+
+The above results strongly hint at a phase diagram like \prettyref{fig:possible-phase-1},
+with CDW A, CDW B, the two flat-band-yet-no-atomic-limit states 
+being the four phases on the diagram.
+
+\begin{figure}
+    \centering
+    \input{phase/chern-model-ex.tex}
+    \caption{Possible phase diagram of \eqref{eq:model-ham}. The red and blue triangles are CDW A and CDW B phases.}
+    \label{fig:possible-phase-1}
+\end{figure}
+
+\subsection{Boundary states}
+
+The above claim about \prettyref{fig:possible-phase-1} is still not quite convincing.
+In this section, 
+we explicitly place
+
+\subsection{Laughling's argument}
+
+The symmetric classification of Chern insulator is the same as IQHE.
 
 \end{document}
