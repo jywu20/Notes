@@ -1,0 +1,311 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[solid-]{../solid/solid}[solid.pdf]
+\zexternaldocument*[last-]{./2022-3-15}[2022-3-15.pdf]
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+% \setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\id}{id}
+
+% TikZ setting
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\DeclareMathOperator{\im}{im}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\soliddoc}{\href{../solid/solid.pdf}{this note}}
+\newcommand{\lastlec}{\href{./2022-3-15.pdf}{the last lecture}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Chern insulators}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The field theory of graphene}
+
+\subsection{Tight-binding model}
+
+Let's start from the tight-binding model of graphene.
+A Chern insulator is by no means required to be realized in a graphene,
+but the model of graphene helps us to see how Dirac cone appears 
+and how emergent Dirac electrons appear in a condensed matter system.
+
+\begin{figure}
+    \centering
+    \input{structure/graphene.tex}
+    \caption{Tight-binding model of graphene (a) The real space lattice structure. 
+    The distance between nearest A atom and B atom is $a$.
+    (b) The momentum space, with first Brillouin zone derived from the real space primitive lattice vectors.
+    (c) Hopping in a unit cell and between unit cells.
+    We have $\abs{\vb*{b}_1} \abs{\vb*{a}_1} \cos \SI{30}{\degree} = 2\pi \Rightarrow \abs{\vb*{b}_1} = 4\pi / 3a$.
+    (d) An effective theory of \emph{all} (not just one) Dirac cones 
+    should cover two non-equivalent valleys (K and K') and two bands 
+    (corresponding to the A sublattice and the B sublattice).}
+    \label{fig:graphene}
+\end{figure}
+
+The lattice structure of graphene is shown in \prettyref{fig:graphene}.
+Note that there are three bonds per unit cell (\prettyref{fig:graphene}(c)),
+and the tight-binding Hamiltonian is 
+\begin{equation}
+    H = - t \sum_{\vb*{i}}(
+        c^\dagger_{\vb*{i} \text{A}} c_{\vb*{i} \text{B}}
+        + c^\dagger_{\vb*{i} + \vu*{x}, \text{A}} c_{\vb*{i} \text{B}}
+        + c^\dagger_{\vb*{i} + \vu*{y}, \text{A}} c_{\vb*{i} \text{B}}
+    ) + \text{h.c.}
+\end{equation}
+Here $\vb*{i}$ labels unit cells and not atoms.
+The Fourier transformation is 
+\begin{equation}
+    c^\dagger_{\vb*{i} n} = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{R}_{\vb*{i}}} c^\dagger_{\vb*{k} n}, \quad 
+    \vb*{R}_{\vb*{i}} = i_x \vb*{a}_1 + i_y \vb*{a}_2,
+\end{equation}
+and following the standard procedure to solve tight-binding models, we have 
+\begin{equation}
+    H = - t \sum_{\vb*{k}} 
+    (1 + \ee^{- \ii \vb*{k} \cdot \vb*{a}_1} + \ee^{- \ii \vb*{k} \cdot \vb*{a}_2}) 
+    c^\dagger_{\vb*{k} \text{A}} c_{\vb*{k} \text{B}} + \text{h.c.}
+    \label{eq:full-tb-ham}
+\end{equation}
+Diagonalization of this Hamiltonian gives the familiar graphene band structure,
+and at K abd K' points in \prettyref{fig:graphene}(b),
+we have energy minimum and linear dispersion,
+the so-called Dirac cones.
+
+\subsection{Effective theories at K}
+
+Now we derive the effective theory of \eqref{eq:full-tb-ham} near K points.
+We rewrite it into 
+\begin{equation}
+    H = - t \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} \pmqty{
+        0 & f(\vb*{k}) \\ f^*(\vb*{k}) & 0
+    } \Psi_{\vb*{k}}, \quad 
+    f(\vb*{k}) = 1 + \ee^{- \ii \vb*{k} \cdot \vb*{a}_1} + \ee^{- \ii \vb*{k} \cdot \vb*{a}_2}, \quad 
+    \Psi_{\vb*{k}} = (c_{\vb*{k} \text{A}}, c_{\vb*{k} \text{B}}).
+\end{equation}
+Let's do Taylor expansion of $f(\vb*{k})$ around, for example, the rightmost point in \prettyref{fig:graphene}(b),
+that is
+\begin{equation}
+    \vb*{K} = \left( \frac{4\pi}{3\sqrt{3} a}, 0 \right).
+\end{equation}
+It gives 
+\begin{equation}
+    \begin{aligned}
+        f(\vb*{K} + \vb*{k}) &= 
+        1 + \ee^{- \ii \frac{2\pi}{3} - \ii \vb*{k} \cdot \vb*{a}_1} 
+        + \ee^{\ii \frac{2\pi}{3} - \ii \vb*{k} \cdot \vb*{a}_2} \\
+        &= 1 + \left( - \frac{1}{2} - \frac{\sqrt{3}}{2} \ii \right) (1 - \ii \vb*{k} \cdot \vb*{a}_1 + \cdots)
+        + \left( - \frac{1}{2} + \frac{\sqrt{3}}{2} \ii \right) (1 - \ii \vb*{k} \cdot \vb*{a}_2 + \cdots) \\
+        &= - \frac{3}{2} a k_x + \ii \frac{3}{2} a k_y,
+    \end{aligned}
+    \label{eq:f-func}
+\end{equation}
+and therefore we get the effective theory around the Dirac cone:
+\begin{equation}
+    H = v \sum_{\vb*{k}} \Psi^\dagger_{\vb*{K} + \vb*{k}}
+    \pmqty{
+        0 & a k_x - \ii a k_y \\
+        a k_x + \ii a k_y & 0
+    } \Psi_{\vb*{K} + \vb*{k}}, \quad 
+    v = \frac{3}{2} t.
+\end{equation}
+The fact that there is no constant term in the above Hamiltonian also indicates that 
+we are around a Dirac cone.
+Since we are not interested in the graphene system itself, 
+and only use it as a platform to realize Dirac fermions,
+it doesn't bring any inconvenience to redefine $\Psi^\dagger_{\vb*{K} + \vb*{k}}$ as $\Psi^\dagger_{\vb*{k}}$,
+and to rescale $\vb*{k}$ so that $a \vb*{k}$ becomes $\vb*{k}$.
+The effective theory therefore becomes 
+\begin{equation}
+    H = v \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} (k_x \sigma_x + k_y \sigma_y) \Psi_{\vb*{k}}.
+    \label{eq:eff-ham-k}
+\end{equation}
+
+It should be \eqref{eq:eff-ham-k} is only about K point in \prettyref{fig:graphene}(b).
+It should be noted that the K' point is \emph{not} connected to the K point with a $\vb*{G}$ factor.
+Though in our free theory,
+there is no hopping between K and K',
+to find a complete theory about Dirac cones 
+we still need to include K'
+(and we get a 4-component electron wave function,
+which may be seen as a Dirac electron).
+We therefore follow the procedure to derive \eqref{eq:f-func},
+and replace $\vb*{K}$ by $- \vb*{K}$, and we get 
+\begin{equation}
+    f(- \vb*{K} + \vb*{k}) = \frac{3}{2} k_x a + \ii \frac{3}{2} k_y a,
+\end{equation}
+and therefore we need to change the sign of the $k_x$ term in \eqref{eq:eff-ham-k} for $\Gamma'$ point 
+and we get 
+\begin{equation}
+    H = v \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} (- k_x \sigma_x + k_y \sigma_y) \Psi_{\vb*{k}}.
+    \label{eq:eff-ham-kp}
+\end{equation}
+Combining \eqref{eq:eff-ham-k} and \eqref{eq:eff-ham-kp} together, we get 
+\begin{equation}
+    H = v \sum_{\vb*{k}} \Psi^\dagger_{\vb*{k}} \underbrace{(\mu^z \tau^x k_x + \tau^y k_y)}_{\eqqcolon H_{\vb*{k}}} \Psi_{\vb*{k}},
+    \label{eq:dirac-ham-1}
+\end{equation}
+where 
+\begin{equation}
+    \mu^z = \diag(1, 1, -1, -1), \quad 
+    \tau^x = \diag(\sigma^x, \sigma^x), \quad 
+    \tau^z = \diag(\sigma^z, \sigma^z).
+    \label{eq:matrix-def}
+\end{equation}
+Here we actually have two discrete degrees of freedom:
+The first degree of freedom is the position of valley (K or K'),
+and the second is the band index -- or equivalently, the sublattice.
+\eqref{eq:matrix-def} is under the basis 
+\[
+    \{
+        (\text{K}, \text{A}),
+        (\text{K}, \text{B}),
+        (\text{K'}, \text{A}),
+        (\text{K'}, \text{B})
+    \}.
+\] 
+
+So what's \eqref{eq:dirac-ham-1}?
+
+
+
+So we find indeed Dirac electrons can be realized in a realistic model.
+
+\subsection{Symmetries}
+
+Before going on, let's first do a sketchy analysis of the Dirac electrons.
+Of course we have translational symmetry.
+We also have inversion symmetry:
+Under the inversion operation, sublattice A and sublattice B are exchanged,
+and $\vb*{k}$ becomes $- \vb*{k}$,
+which means K and K' are swapped,
+so because of the exchange of A and B, we have
+\[
+    \sigma^y = \pmqty{0 & - \ii \\ \ii & 0} \longrightarrow \pmqty{0 & \ii \\ - \ii & 0} = - \sigma^y,
+\]
+and similarly 
+\[
+    \sigma^x \longrightarrow \sigma^x,
+\]
+and by the definition of $\tau^z$ and $\tau^x$, 
+exchange valley K and valley K' doesn't change their values, so finally we get
+\begin{equation}
+    \tau^x \to \tau^x, \quad \tau^z \to - \tau^z.
+\end{equation}
+On the other hand, swapping A and B doesn't change $\mu^z$,
+but after K and K' are swapped, we get 
+\begin{equation}
+    \mu^z \to - \mu^z.
+\end{equation}
+So we find the first quantization Hamiltonian $H_{\vb*{k}}$ is invariant under spatial inversion:
+The sign of $k$ and the sign of the matrices cancel.
+
+Both translational symmetry and inversion symmetry are space group operations.
+\eqref{eq:dirac-ham-1} also has a non-space group symmetry:
+the time reversal symmetry.
+
+
+\subsection{Mass term}
+
+
+
+\end{document}
