@@ -1,0 +1,224 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
+\title{Homework 10}
+\author{Jiinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1}
+
+\paragraph{Solution}  \begin{itemize}
+\item[(a)] From 
+\begin{equation}
+    w\left(\vb*{r}-\vb*{r}_n\right)=N^{-1 / 2} \sum_{\vb*{k}} \exp \left(- \ii \vb*{k} \cdot \vb*{r}_n\right) \psi_{\vb*{k}}(\vb*{r})
+\end{equation}
+we have 
+\[
+    \begin{aligned}
+        \int \dd[3]{\vb*{r}} w(\vb*{r} - \vb*{r}_n) w^*(\vb*{r} - \vb*{r}_m)
+        &= \frac{1}{N} \sum_{\vb*{k}, \vb*{k}'} 
+        \ee^{- \ii \vb*{k} \cdot \vb*{r}_n} \ee^{\ii \vb*{k} \cdot \vb*{r}_m}
+        \int \dd[3]{\vb*{r}} \psi_{\vb*{k}}(\vb*{r}) \psi_{\vb*{k}'}^*(\vb*{r}) \\
+        &= \frac{1}{N} \sum_{\vb*{k}, \vb*{k}'} \delta_{\vb*{k} \vb*{k}'} 
+        \ee^{- \ii \vb*{k} \cdot \vb*{r}_n} \ee^{\ii \vb*{k} \cdot \vb*{r}_m} \\
+        &= \frac{1}{N} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r}_m - \vb*{r}_n)} \\
+        &= \delta_{mn}.
+    \end{aligned}
+\]
+So when $m \neq n$, we have 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} w(\vb*{r} - \vb*{r}_n) w^*(\vb*{r} - \vb*{r}_m) = 0.
+\end{equation}
+
+\item[(b)] We have 
+\[
+    \begin{aligned}
+        w(x - x_n) &= \frac{1}{\sqrt{N}} \sum_{k} 
+        \ee^{- \ii k x_n} \underbrace{\frac{1}{\sqrt{N}} \ee^{\ii k x} u_0(x)}_{\psi_k(x)} \\
+        &= \frac{1}{N} u_0(x) \sum_k \ee^{\ii k (x - x_n)} \\
+        &= \frac{1}{N} u_0(x) \sum_{i=1}^N \ee^{\ii (x - x_n) \cdot 2\pi i / L} \\
+        &= \frac{1}{N} u_0(x) \frac{
+            \ee^{\ii (x - x_n) \cdot 2\pi / L} (1 - \ee^{\ii (x - x_n) \cdot 2\pi N / L})
+        }{
+            1 - \ee^{\ii (x - x_n) \cdot 2\pi / L}
+        } \\
+        &= \frac{1}{N} u_0(x) \ee^{\ii (x - x_n) \cdot 2\pi / L} 
+        \frac{\ee^{\ii (x - x_n) \cdot \pi N / L}}{\ee^{\ii (x - x_n) \cdot \pi / L}}
+        \frac{
+            \ee^{- \ii (x - x_n) \cdot \pi N / L} - \ee^{\ii (x - x_n) \cdot \pi N / L}
+        }{
+           \ee^{- \ii (x - x_n) \cdot \pi / L} - \ee^{\ii (x - x_n) \cdot \pi / L}
+        } \\
+        &= \frac{1}{N} u_0(x) \ee^{\ii (x - x_n) \cdot 2\pi / L} 
+        \frac{\ee^{\ii (x - x_n) \cdot \pi N / L}}{\ee^{\ii (x - x_n) \cdot \pi / L}}
+        \frac{\sin \pi (x - x_n) N / L}{\sin \pi (x - x_n) / L}.
+    \end{aligned}
+\]
+Note that $L = Na$, and therefore 
+\[
+    \frac{\sin \pi (x - x_n) N / L}{\sin \pi (x - x_n) / L}
+    = \frac{\sin \pi (x - x_n) / a}{\sin \pi (x - x_n) / Na}
+    \approx \frac{\sin \pi (x - x_n) / a}{\pi (x - x_n) / Na},
+\]
+and therefore 
+\begin{equation}
+    w(x - x_n) = \ee^{\ii \cdot \text{some number}} 
+    \cdot u_0(x) \frac{\sin \pi (x - x_n) / a}{\pi (x - x_n) / a},
+\end{equation}
+and we can just throw away the unitary prefactor and therefore 
+\begin{equation}
+    w(x - x_n) = u_0(x) \frac{\sin \pi (x - x_n) / a}{\pi (x - x_n) / a}.
+\end{equation}
+
+\end{itemize}
+
+
+\paragraph{Problem 2}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] Following the standard procedure to find the band structure, we have 
+\begin{equation}
+    \begin{aligned}
+        E_{\vb*{k}} &= A + \sum_{\vb*{R}} \ee^{\ii \vb*{k} \cdot \vb*{R}} h(\vb*{R}) \\
+        &= A - t \ee^{\ii k a} - t \ee^{- \ii k a} = A - 2 t \cos(ka).
+    \end{aligned}
+\end{equation}
+\item[(b)] The smallest energy is taken when $k = 0$,
+and here we have 
+\begin{equation}
+    m^* = \frac{1}{\hbar^2} \pdv[2]{E_k}{k} = 2 t \frac{a^2}{\hbar^2} \cos ka |_{k = 0} = 2 t \frac{a^2}{\hbar^2}.
+\end{equation}
+The largest energy is taken when $k = \pm \pi / a$,
+and 
+\begin{equation}
+    m^* = \frac{1}{\hbar^2} \pdv[2]{E_k}{k} = 2 t \frac{a^2}{\hbar^2} \cos ka |_{k = \pi / a} = - 2 t \frac{a^2}{\hbar^2}.
+\end{equation}
+
+\item[(c)] The band can contain $2N$ electrons,
+because each $\vb*{k}$ position can host a spin-up electron and a spin-down electron.
+So if each atom donates one valence electron,
+then the band is half-filled,
+so the system is a metal, and
+\begin{equation}
+    E_\text{F} = A,
+\end{equation}
+and 
+\begin{equation}
+    k_{\text{F}} a = \pm \frac{\pi}{2}, \quad k_{\text{F}} = \pm \frac{\pi}{2a}.
+\end{equation}
+If one atom donates two electrons,
+then the band is completely filled and the system is an insulator.
+
+\end{itemize}
+
+\paragraph{Problem 3}
+
+\paragraph{Solution} 
+
+\end{document}
