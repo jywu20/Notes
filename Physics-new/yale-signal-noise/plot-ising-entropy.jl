@@ -2,7 +2,7 @@ using PGFPlotsX
 using Colors
 using LaTeXStrings
 
-ms = LinRange(-1, 1, 300)
+ms = LinRange(-1, 1, 500)
 H(α) = 1 / (1 - α) * log2.(( (1 .- ms) / 2).^α + ((1 .+ ms) / 2).^α)
 
 plot_axis = @pgf Axis({
