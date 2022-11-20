@@ -109,7 +109,7 @@
 
 \maketitle
 
-\paragraph{Exercise 3 in lecture 12}
+\paragraph{Exercise 3 in lecture 12} 
 
 \paragraph{Solution} The normalization factor in the time domain is 
 \begin{equation}
@@ -250,6 +250,214 @@ The plots can be found in \prettyref{fig:entropy-plot}.
     \label{fig:entropy-plot}
 \end{figure}
 
+\paragraph{Exercise 4 in lecture 14}
 
+\paragraph{Solution} We have 
+\begin{equation}
+    \begin{aligned}
+        H(Y | X) &= \sum_x H(Y, X = x) p(x) \\
+        &= - \sum_x p(x) \sum_y p(y | x) \log_2 p(y | x) \\
+        &= - \sum_{x, y} p(x, y) \log_{2} p(y | x),
+    \end{aligned}
+\end{equation}
+and a direct verification gives 
+\begin{equation}
+    \begin{aligned}
+        H(X, Y) &= - \sum_{x, y} p(x, y) \log_{2} \underbrace{p(x , y)}_{p(x) p(y | x)} \\
+        &= - \sum_{x, y} p(x, y) (\log_2 p(x) + \log_2 p(y | x)) \\
+        &= - \sum_{x} p(x) \log_2 p(x) - \sum_{x, y} p(x, y) \log_2 p(y | x) \\
+        &= H(X) + H(Y | X).
+    \end{aligned}
+\end{equation}
+
+\paragraph{Problem} Differences between the classical and quantum entropies 
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] This can be done by Schmidt decomposition. 
+Suppose $\dim \mathcal{H}_{\text{A}} = m$, 
+$\dim \mathcal{H}_{\text{B}} = n$,
+and without loss of generality $m \geq n$,
+then we can already find a set of basis, in which
+\begin{equation}
+    \ket{\psi_{\text{AB}}} = \sum_{i = 1}^m c_{i} \ket*{u^i_{\text{A}}} \otimes \ket*{v^i_{\text{B}}}.
+    \label{eq:schmidt}
+\end{equation}
+We have 
+\begin{equation}
+    \begin{aligned}
+        \rho_\text{A} &= \sum_{j=1}^m 
+        \braket*{v_\text{B}^j}{\psi_{\text{AB}}}
+        \braket*{\psi_{\text{AB}}}{v_\text{B}^j} \\
+        &= \sum_{j=1}^m c_{j} \ket*{u^j_{\text{A}}} c_{j}^* \bra*{u^{j}_{\text{A}}} \\
+        &= \sum_{j=1}^m \abs{c_j}^2 \dyad*{u^j_{\text{A}}}{u^{j}_{\text{A}}},
+    \end{aligned}
+\end{equation}
+and similarly (note that $\{\ket*{v^j_{\text{B}}}\}_{j=1}^m$ 
+appearing in the expansion of $\ket{\psi_{\text{AB}}}$ is over-complete,
+and the form of $\rho_{\text{B}}$ is exactly the same as $\rho_{\text{A}}$)
+\begin{equation}
+    \rho_\text{B} = \sum_{i=1}^m \abs{c_{i}}^2 \dyad*{v_{\text{B}}^i}{v_{\text{B}}^{i}}.
+\end{equation}
+So we find 
+\begin{equation}
+    S(\rho_\text{A}) = S(\rho_{\text{B}}) = - \sum_{j=1}^m \abs{c_{i}}^2 \ln \abs{c_{i}}^2.
+\end{equation}
+Note that here 
+\begin{equation}
+    S(\rho_{\text{AB}}) = 0,
+\end{equation}
+because we are dealing with a pure state.
+So here the entropy of a system is less than any of its parts,
+and this is not possible in the classical case.
+
+\item[(b)] Let 
+\[
+    \rho = \rho_{\text{AB}}, \quad \sigma = \rho_{\text{A}} \otimes \rho_{\text{B}},
+\]
+and from 
+\[
+    \trace (\rho \ln \rho ) - \trace (\rho \ln \sigma) \geq 0,
+\]
+we have 
+\[
+    \begin{aligned}
+        0 &\leq \trace (\rho_{\text{AB}} \ln \rho_{\text{AB}} ) 
+        - \trace (\rho_{\text{AB}} 
+        \underbrace{\ln \rho_{\text{A}} \otimes \rho_{\text{B}}}_{\ln \rho_{\text{A}} + \ln \rho_{\text{B}}}) \\
+        &= - S(\rho_{\text{AB}})
+        - \trace_{\text{A}} \trace_{\text{B}} \rho_{\text{AB}} \ln \rho_{\text{A}}
+        - \trace_{\text{B}} \trace_{\text{A}} \rho_{\text{AB}} \ln \rho_{\text{B}} \\
+        &= - S(\rho_{\text{AB}}) + S(\rho_{\text{A}}) + S(\rho_{\text{B}}),
+    \end{aligned}
+\]
+and thus 
+\begin{equation}
+    S(\rho_{\text{A}}) + S(\rho_{\text{B}}) - S(\rho_{\text{AB}}) \geq 0.
+    \label{eq:ineq1}
+\end{equation}
+
+\item[(c)] What we need to prove 
+\begin{equation}
+    S(\rho_{\text{AB}}) \geq S(\rho_{\text{B}}) - S(\rho_{\text{A}}).
+\end{equation}
+Assume the density matrix $\rho_{\text{AB}}$ is actually 
+the partial trace of the pure state $\ket{\Psi_{\text{ABC}}}$.
+\eqref{eq:ineq1} means 
+\[
+    S(\rho_{\text{B}}) + S(\rho_{\text{C}}) \geq S(\rho_{\text{BC}}) ,
+\]
+and from (a), we have
+\[
+    S(\rho_{\text{C}}) = S(\rho_{\text{AB}}), \quad 
+    S(\rho_{\text{BC}}) = S(\rho_{\text{A}}),
+\]
+and therefore 
+\[
+    S(\rho_{\text{B}}) + S(\rho_{\text{AB}}) \geq S(\rho_{\text{A}}),
+\]
+\begin{equation}
+    S(\rho_{\text{AB}}) \geq S(\rho_{\text{A}}) - S(\rho_{\text{B}}).
+\end{equation}
+Similarly 
+\begin{equation}
+    S(\rho_{\text{AB}}) \geq S(\rho_{\text{B}}) - S(\rho_{\text{A}}).
+\end{equation}
+
+\item[(d)] We have
+\begin{equation}
+    p_j = \expval{\rho_{\text{B}}}{j},
+\end{equation}
+and therefore 
+\begin{equation}
+    \rho_{\text{AB}|\Pi^j_{\text{B}}} = 
+    \frac{1}{p_j} \trace_{\text{B}} \dyad{j} \expval{\rho_{\text{AB}}}{j}
+    = \frac{1}{p_j} \expval{\rho_{\text{AB}}}{j}.
+\end{equation}
+So 
+\begin{equation}
+    \begin{aligned}
+        \sum_j p_j S\left( \rho_{\text{AB}|\Pi^j_{\text{B}}} \right)
+        &= - \trace_{\text{A}} \sum_j \expval{\rho_{\text{AB}}}{j} \ln \frac{\expval{\rho_{\text{AB}}}{j}}{p_j} \\
+        &= - \trace_{\text{A}} \sum_{j} \expval{\rho_{\text{AB}}}{j} \ln \expval{\rho_{\text{AB}}}{j} 
+        + \sum_j \expval{\rho_{\text{B}}}{j} \ln \expval{\rho_{\text{B}}}{j} \\
+        &= S(\rho_{\text{AB}}^{\text{D}}) - S(\rho_{\text{B}}^{\text{D}}).
+    \end{aligned}
+    \label{eq:ineq-2}
+\end{equation}
+The inequality to be proven is equivalent to 
+\[
+    S(\rho_{\text{A}}) - S(\rho_{\text{A}} | \rho_{\text{B}}) \leq S(\rho_{\text{A}}) - H(\rho_{\text{A}} | \rho_{\text{B}}), 
+\]
+which further is equivalent to 
+\begin{equation}
+    S(\rho_{\text{A}} | \rho_{\text{B}}) 
+    = \min_{\{\Pi^j_{\text{B}}\}} \sum_j p_j S\left( \rho_{\text{AB}|\Pi^j_{\text{B}}} \right)
+    \geq H(\rho_{\text{A}} | \rho_{\text{B}}).
+\end{equation}
+\eqref{eq:ineq-2}  and 
+\begin{equation}
+    S(\rho_{\text{AB}}^{\text{D}}) - S(\rho_{\text{B}}^{\text{D}}) \geq H(\rho_{\text{A}} | \rho_{\text{B}})
+\end{equation}
+show that for any $\{\Pi^j_{\text{B}}\}$,
+the inequality is correct,
+so we have already finished the proof.
+
+\item[(e)] The disagreements in the definition of conditional entropy 
+intuitively arises from the entanglement between the two systems,
+so we expect when 
+\begin{equation}
+    \rho_{\text{AB}} = \rho_{\text{A}} \otimes \rho_{\text{B}},
+    \label{eq:no-entanglement}
+\end{equation}
+there is no inconsistency in the definition of conditional entropy,
+which is the classical case.
+This can be verified directly, because when \eqref{eq:no-entanglement} is correct,
+we have 
+\[
+    \rho^\text{D}_{\text{AB}} = \rho_{\text{AB}}, \quad 
+    \rho^\text{D}_{\text{B}} = \rho_{\text{B}},
+\]
+and therefore according to \eqref{eq:ineq-2}, 
+we have 
+\begin{equation}
+    S(\rho_{\text{A}} | \rho_{\text{B}}) = S(\rho_{\text{AB}}) - S(\rho_{\text{B}}),
+\end{equation}
+and 
+\begin{equation}
+    J(\rho_{\text{A}} : \rho_{\text{B}}) = 
+    S(\rho_{\text{A}}) + S(\rho_{\text{B}}) - S(\rho_{\text{AB}}) 
+    \eqqcolon I(\rho_{\text{A}} : \rho_{\text{B}}).
+\end{equation}
+
+\item[(f)] In a pure state, we have 
+\begin{equation}
+    I(\rho_{\text{A}} | \rho_{\text{B}}) = S(\rho_{\text{A}}) + S_{\rho_{\text{B}}} - S_{\rho_{\text{AB}}}
+    = 2 S(\rho_{\text{A}}).
+\end{equation}
+On the other hand, we have 
+\begin{equation}
+    \rho_{\text{AB} | \Pi^j_{\text{B}}} = \frac{1}{p_j} \braket*{j}{\psi_{\text{AB}}} \braket*{\psi_{\text{AB}}}{j}.
+\end{equation}
+So now we can use Schmidt decomposition again:
+We have \eqref{eq:schmidt},
+and therefore (here $\ket*{j}$ means a basis vector for B, 
+and $\ket*{j}_{\text{A}}$ is used to refer to a basis vector for A)
+\[
+    \braket*{j}{\psi_{\text{AB}}} = c_i \ket*{j}_{\text{A}},
+\]
+so $\rho_{\text{AB} | \Pi_\text{B}^j}$ is actually a pure state, 
+and therefore we have $S(\rho_{\text{A}} | \rho_{\text{B}}) = 0$,
+because each term in it is zero.
+So 
+\begin{equation}
+    J(\rho_{\text{A}} : \rho_{\text{B}}) = S(\rho_{\text{A}}),
+\end{equation}
+and thus 
+\begin{equation}
+    \delta(\rho_{\text{A}} : \rho_{\text{B}}) = 2 S(\rho_{\text{A}}) - S(\rho_{\text{A}}) = 
+    S(\rho_{\text{A}}) = S(\rho_{\text{B}}).
+\end{equation}
+
+\end{itemize}
 
 \end{document}
