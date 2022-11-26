@@ -1,0 +1,273 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\polylog}{\mathrm{Li}}
+\DeclareMathOperator{\arctanh}{\mathrm{arctanh}}
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 4}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Problem 1} In this problem we will introduce another way to think about Hall conductance. As discussed in class, the edge of a Chern insulator with Chern number $n$ should have $n$ chiral edge modes. Suppose that the $n$ edge modes move one way near the $y=0$ edge, and the opposite way at the $y=L_y$ edge.
+1. First consider the $y=L_y$ edge. Each of the $n$ edge modes near $y=L_y$ can be modeled as a non-interacting free fermion model $H=\sum_k\left(\epsilon_{1 k}-\mu_1\right) c_k^{\dagger} c_k$, where $\epsilon_{1 k}$ is a monotonically increasing function of $k, \mu_1$ corresponds to the chemical potential at the $y=L_y$ edge. We assume that the infinitely many states with $\epsilon_{1 k}<\mu_1$ are all filled (in reality, the limit $k \rightarrow-\infty$ corresponds to moving into the bulk, and $k$ is cut off accordingly). Suppose one changes the chemical potential $\mu_1 \rightarrow \mu_1+\Delta \mu_1$. What is the corresponding change $\Delta I_1$ in the $y=L_y$ edge current? (Include all $n$ edge modes).
+2. Now consider the $y=0$ edge mode, modeled by $n$ chiral modes of the form $H=\sum_k\left(\epsilon_{2 k}-\mu_2\right) c_k^{\dagger} c_k$, where $\epsilon_{2 k}$ is a monotonically decreasing function of $k$. What is the corresponding change $\Delta I_2$ in the $y=0$ edge current if one changes the chemical potential $\mu_2 \rightarrow \mu_2+\Delta \mu_2$ ?
+3. Find the total current $I=I_1+I_2$ induced by a chemical potential difference $\mu_1-\mu_2=\Delta \mu$ between the two edges, assuming that $I=0$ when $\mu_1=\mu_2$. Interpret your result in terms of the Hall conductance $\sigma_H$.
+4. Now repeat the calculation at finite temperature $T$. Show that the edge currents and the Hall conductance do not change. (In reality, there is a temperature dependence coming from thermal activation above the bulk gap $\Delta$, but it is exponentially small $\left.\sim e^{-\Delta / T}\right)$.
+
+\begin{figure}
+    \centering
+    \input{structure/chern-insulator.tex}
+    \caption{Boundary modes of a 2D Chern insulator 
+    (a) The device and sign conventions
+    (b) The spectrum of the boundary modes at $y = L_y$, where $\Lambda_1$ is a momentum cutoff 
+    (c) The spectrum of the boundary modes at $y = 0$, where $\Lambda_2$ is a momentum cutoff}
+    \label{fig:chern-boundary}
+\end{figure}
+
+\paragraph{Solution} The problem is illustrated in \prettyref{fig:chern-boundary}.
+\begin{itemize}
+\item[(a)] The current is 
+\begin{equation}
+    \begin{aligned}
+        I_1 &= - e \cdot \text{density of states} \cdot \text{cross section} \cdot v \\
+        &= - e \frac{1}{L} \sum_{\text{ocupied states}} \frac{1}{\hbar} \pdv{\epsilon_{1k}}{k} 
+        = - \frac{e}{\hbar} \frac{n}{L} \sum_{\Lambda_1 \leq k \leq k_{\text{1F}}} \pdv{\epsilon_{1k}}{k} 
+        = - n \frac{e}{\hbar} \int_{\Lambda_1}^{k_{\text{1F}}} \frac{\dd{k}}{2\pi} \pdv{\epsilon_{1k}}{k} \\
+        &= - n \frac{e}{h} (\epsilon_{1 \text{F}} - \epsilon_{1, k = \Lambda_1})
+        = - n \frac{e}{h} (\mu_1 - \epsilon_{1, k = \Lambda_1}).
+    \end{aligned}
+\end{equation}
+So we have 
+\begin{equation}
+    \Delta I_1 = - n \frac{e}{h} \Delta \mu_1.
+\end{equation}
+
+\item[(b)] Similarly, we have 
+\begin{equation}
+    \begin{aligned}
+        I_2 &= - e \cdot \text{density of states} \cdot \text{cross section} \cdot v \\
+        &= - e \frac{1}{L} \sum_{\text{ocupied states}} \frac{1}{\hbar} \pdv{\epsilon_{1k}}{k} 
+         = - \frac{e}{\hbar} \frac{n}{L} \sum_{k_{2\text{F}} \leq k \leq \Lambda_2} \pdv{\epsilon_{2k}}{k} 
+         = - n \frac{e}{\hbar} \int^{\Lambda_2}_{k_{2\text{F}}} \frac{\dd{k}}{2\pi} \pdv{\epsilon_{2k}}{k} \\
+        &= - n \frac{e}{h} (\epsilon_{2, k = \Lambda_2} - \epsilon_{2 \text{F}}) 
+         = - n \frac{e}{h} (\epsilon_{2, k = \Lambda_2} - \mu) , 
+    \end{aligned}
+\end{equation}
+and 
+\begin{equation}
+    \Delta I_2 = n \frac{e}{\hbar} \Delta \mu_2.
+\end{equation}
+
+\item[(c)] We have 
+\begin{equation}
+    I = - n \frac{e}{h} (\mu_1 - \mu_2 + \epsilon_{2, k = \Lambda_2} - \epsilon_{1, k = \Lambda_1}).
+\end{equation}
+When $\Delta \mu = 0$, we have $I = 0$, so we find the two cutoff terms cancel each other, and 
+\begin{equation}
+    I = - n \frac{e}{h} \Delta \mu.
+\end{equation}
+
+In a Hall effect setting, the difference of the chemical potentials arises from the external electric field:
+conservation of energy tells us 
+\begin{equation}
+    \mu_1 - e U = \mu_2,
+\end{equation}
+and therefore 
+\begin{equation}
+    I = - n \frac{e}{h} \cdot e U = \underbrace{ - n \frac{e^2}{h} }_{1 / R_{\text{H}}} U.
+\end{equation}
+So we get the expected quantized conductance.
+
+\item[(d)] Ignoring excited bulk modes, we have 
+\begin{equation}
+    \begin{aligned}
+        I_1 &= - n \frac{e}{\hbar} \int_{\Lambda_1}^{\infty} 
+        \frac{\dd{k}}{2\pi} \frac{1}{1 + \ee^{(\epsilon_{1k} - \mu_1) / k_{\text{B}} T}} \pdv{\epsilon_{1k}}{k} \\
+        &= - n \frac{e}{h} \int_{\epsilon_{1, k = \Lambda_1} - \mu_1}^{\infty} 
+        \dd{\xi} \frac{1}{1 + \ee^{\xi / k_{\text{B}} T} }, 
+    \end{aligned}
+\end{equation}
+and similarly 
+\begin{equation}
+    \begin{aligned}
+        I_2 &= - n \frac{e}{\hbar} \int^{\Lambda_2}_{-\infty} 
+        \frac{\dd{k}}{2\pi} \frac{1}{1 + \ee^{(\epsilon_{2k} - \mu_2) / k_{\text{B}} T}} \pdv{\epsilon_{2k}}{k} \\
+        &= - n \frac{e}{h} \int^{\epsilon_{2, k = \Lambda_2} - \mu_2}_{\infty} 
+        \dd{\xi} \frac{1}{1 + \ee^{\xi / k_{\text{B}} T} } 
+        = n \frac{e}{h} \int_{\epsilon_{2, k = \Lambda_2} - \mu_2}^{\infty} 
+        \dd{\xi} \frac{1}{1 + \ee^{\xi / k_{\text{B}} T} } , 
+    \end{aligned}
+    \label{eq:i-2-e}
+\end{equation}
+and therefore 
+\begin{equation}
+    I = - n \frac{e}{h} \int_{\epsilon_{1, k = \Lambda_1} - \mu_1}^{\epsilon_{2, k = \Lambda_2} - \mu_2}
+    \frac{\dd{\xi}}{1 + \ee^{\xi / k_{\text{B}} T}}.
+\end{equation}
+Since the Fermi-Dirac distribution function is always positive,
+the condition that when $\Delta \mu = 0$, $I = 0$
+implies $\epsilon_{1, k=\Lambda_1} = \epsilon_{2, k=\Lambda_2} \eqqcolon \epsilon_\Lambda$, so we have 
+\begin{equation}
+    I = - n \frac{e}{h} \int_{\epsilon_{\Lambda} - \mu_1}^{\epsilon_{\Lambda} - \mu_2}
+    \frac{\dd{\xi}}{1 + \ee^{\xi / k_{\text{B}} T}}.
+\end{equation}
+Since $\Lambda$ must be large, a very good approximation is 
+\begin{equation}
+    I = - n \frac{e}{h} \Delta \mu = - n \frac{e^2}{h} U,
+\end{equation}
+so the edge current and the Hall conductance are not affected much by a finite $T$.
+
+\end{itemize}
+
+\paragraph{Problem 2}
+
+\paragraph{Solution} \begin{itemize}
+\item[(a)] The only change we need to do is to replace the electric charge $-e$ 
+by the ``energy charge'' $\epsilon_{k}$, and following the line of reasoning in Problem 1 (d), 
+we have 
+\begin{equation}
+    \begin{aligned}
+        I_{Q1} &= \frac{n}{h} \int^\infty_{\epsilon_{1, k = \Lambda_1}} \dd{\epsilon}  
+        \frac{1}{1 + \ee^{(\epsilon - \mu_1) / k_{\text{B}} T_1}}
+        \epsilon \\
+        &= k_{\text{B}} T_1 \frac{n}{h} 
+        \left(
+            k_{\text{B}} T_1 \int^\infty_{\frac{\epsilon_{1, k = \Lambda_1} - \mu}{k_{\text{B}} T_1}} \dd{x}
+            \frac{x}{1 + \ee^x}
+            + \mu \int^\infty_{\frac{\epsilon_{1, k = \Lambda_1} - \mu}{k_{\text{B}} T_1}} \dd{x}
+            \frac{1}{1 + \ee^x}
+        \right),
+    \end{aligned}
+\end{equation}
+and similarly 
+\begin{equation}
+    I_{Q2} = - k_{\text{B}} T_2 \frac{n}{h} 
+    \left(
+        k_{\text{B}} T_2 \int^\infty_{\frac{\epsilon_{2, k = \Lambda_2} - \mu}{k_{\text{B}} T_2}} \dd{x}
+        \frac{x}{1 + \ee^x}
+        + \mu \int^\infty_{\frac{\epsilon_{2, k = \Lambda_2} - \mu}{k_{\text{B}} T_2}} \dd{x}
+        \frac{1}{1 + \ee^x}
+    \right).
+\end{equation}
+The sign difference between $I_{Q1}$ and $I_{Q2}$ comes in the same way of \eqref{eq:i-2-e}.
+Again, when $T_1 = T_2$, 
+we need $I = I_{Q1} + I_{Q2} = 0$, 
+so $\epsilon_{1, k=\Lambda_1} = \epsilon_{2, k=\Lambda_2} \eqqcolon \epsilon_\Lambda$.
+
+\item[(b)] We have 
+\begin{equation}
+    \int_{t}^\infty \dd{x} \frac{1}{1 + \ee^x} = 2 \arctanh (1 + 2 \ee^t),
+\end{equation}
+\begin{equation}
+    \int_{t}^\infty \dd{x} \frac{x}{1 + \ee^x} = t \ln(1 + \ee^{-t}) - \polylog_2(- \ee^{-t}).
+\end{equation}
+
+
+\end{itemize}
+
+\end{document}
