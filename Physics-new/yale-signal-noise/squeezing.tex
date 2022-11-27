@@ -175,6 +175,11 @@ illustrated in \prettyref{fig:mz-inter}.
 The interferometer contains two beam splitters, 
 two ideal mirrors, 
 and one sample that introduces a $2\varphi$ phase shift to the light beam going through it.
+The two beams created by the first beam splitter gain a phase difference caused by the sample,
+and are then remixed together by the second beam splitter,
+so there is interference,
+and $\varphi$ can be found by comparing the output signal with the injected laser beam.
+
 We are going to work in the Heisenberg picture,
 because the whole system is linear 
 and time evolution can be easily described by a linear transformation on the operators. 
@@ -192,9 +197,10 @@ The time evolution operator of the whole system is therefore
     \label{eq:total-matrix}
 \end{equation} 
 and therefore 
-\[
+\begin{equation}
     \pmqty{b_1^\dagger \\ b_2^\dagger} = \pmqty{ \cos \varphi & - \ii \sin \varphi \\ \ii \sin \varphi & - \cos \varphi } \pmqty{a_1^\dagger \\ a_2^\dagger},
-\]
+    \label{eq:b-def-by-a}
+\end{equation}
 from which we find 
 \begin{equation}
     \pmqty{a_1^\dagger \\ a_2^\dagger} = \pmqty{ \cos \varphi & - \ii \sin \varphi \\ \ii \sin \varphi & - \cos \varphi } \pmqty{b_1^\dagger \\ b_2^\dagger}.
@@ -205,7 +211,7 @@ so the state at input port 1 is a coherent state.
 Then, the wave function is 
 \begin{equation}
     \begin{aligned}
-        \ket{\psi} &= \ee^{\alpha a_1 - \alpha^* a_1^\dagger} \\
+        \ket{\psi} &= \underbrace{\ee^{\alpha a_1 - \alpha^* a_1^\dagger}}_{D_{a_1}(\alpha)} \ket{0} \\
         &= \ee^{\alpha (\cos \varphi b_1^\dagger - \ii \sin \varphi b_2^\dagger) -\alpha^{*} (\cos \varphi b_1 + \ii \sin \varphi b_2)}|0\rangle \\
         &= \ket{b_1 = \alpha \cos \varphi, b_2 = - \ii \alpha \sin \varphi} .
     \end{aligned}
@@ -213,12 +219,126 @@ Then, the wave function is
 \end{equation}
 
 The next step is measurement.
-Usually, the perturbation of the light beam of the 
-The expectation value of 
+Usually, the influence of the sample to the light beam is small,
+and therefore the signal in the $b_2$ mode is $\sim \varphi$,
+while the signal in the $b_1$ mode is $\sim \varphi^2$
+(the signal in the $b_1$ mode should be defined as $\alpha - \alpha \cos \varphi$,
+because when $\varphi = 0$, the output state is $\ket{b_1 = \alpha, b_2 = 0}$).
+So we usually measure the intensity of the $b_2$ mode.
+The expectation of photon number is 
+\begin{equation}
+    \expval{n_{b_2}} = \abs{\alpha}^2 \sin^2 \varphi.
+\end{equation}
+This output comes with a quantum uncertainty, which is given by 
+\begin{equation}
+    \begin{aligned}
+        \Delta n_{b_2} &= \sqrt{ \expval*{n_{b_2}^2} - \expval*{n_{b_2}}^2 } \\
+        &= \sqrt{ \expval*{ b_2^\dagger (b_2^\dagger b_2 + 1) b_2} - \expval*{n_{b_2}}^2 } \\
+        &= \sqrt{ \abs{\alpha}^4 \sin^4 \varphi + \abs{\alpha}^2 \sin^2 \varphi - \abs{\alpha}^4 \sin^4 \varphi } \\
+        &= \abs{\alpha} \sin \varphi.
+    \end{aligned}
+    \label{eq:stdvar-n2}
+\end{equation}
+Here we have used the property of coherent states as eigenstates of the annihilation operator.
+
+So it can be seen that the relative uncertainty of the measurement is 
+\begin{equation}
+    \frac{\Delta n_{b_2}}{\expval{n_{b_2}}} = \frac{1}{\abs{\alpha} \sin \varphi} = \frac{1}{\sqrt{n_{b_2}}}.
+    \label{eq:relvar-n2}
+\end{equation}
+It can be seen from \eqref{eq:stdvar-n2} that this standard error comes from the commutation relation 
+\begin{equation}
+    \comm*{b_2}{b_2^\dagger} = 1,
+\end{equation}
+which, eventually, comes from the fact that $\vb*{E}$ and $\vb*{A}$ in electromagnetism don't commute.
+This is therefore a quantum noise.
+
+Of course, \eqref{eq:relvar-n2} can be systematically reduced by using stronger and stronger laser beams,
+but then another problem occurs:
+in a real measurement setting,
+the detecting laser beam of course perturbs the sample,
+introducing another source of error.
+(For example, if the sample is an additional optical path,
+which is the case in gravitational wave detection,
+then the mirrors used will be heated
+and begin to have thermal vibration.)
+In a classical theory,
+we can always use weaker and weaker laser beams to do the measurement,
+and do an extrapolation for the measured results
+to systematically reduce the perturbation of measurement to the system
+and get results as accurate as we want,
+but in the quantum theory,
+this results in stronger quantum noise.
+
+This leads to an astonishing fact:
+when quantum noise is present, 
+even in principle, 
+we still can't find a way to reduce the error as much as we want.
+There is a non-zero minimum error,
+which is met when $\abs{\alpha}$ strikes a balance 
+between the thermal fluctuation caused by large $\abs{\alpha}$
+and quantum noise caused by small $\abs{\alpha}$.
+This actually makes sense,
+or otherwise we are faced with the problem 
+that an infinitely accurate continuous degree of freedom can store infinite bits of information.
 
 \section{Squeezing the quantum noise}\label{sec:squeezing}
 
-Since the input in the $a_1$ port is a 
+One thing to keep in mind is \eqref{eq:relvar-n2} 
+is about the quantum noise of the photon number, not others.
+This quantity is not the only observable in $b_2$ mode,
+but it is the only thing actually measured.
+Thus it is possible that we reduce the quantum noise of $n_{b_2}$
+and in exchange, get a larger quantum noise of other variables,
+which we do not care.
+This is called ``squeezing'' the quantum noise
+-- the term will be visualized in the following discussion.
+To do so, it is necessary to trace the origin of $\Delta{n_{b_2}}$ 
+in terms of quantum noises of $a_1$ and $a_2$. 
+For sake of simplicity,
+here we keep the input state in the $a_1$ mode $\ket{\alpha}$,
+without modifying anything,
+and we also exclude all cross terms between $a_1$ and $a_2$ in the wave function, 
+so we have 
+\begin{equation}
+    \ket{\psi} = D_{a_1}(\alpha) f(a_2, a_2^\dagger) \ket{0},
+    \label{eq:coherent-plus-squeeze}
+\end{equation}
+and squeezing $\Delta{n_{b_2}}$ therefore reduces to squeezing the quantum error of some operator in mode $a_2$.
+
+From \eqref{eq:b-def-by-a}, we have 
+\begin{equation}
+    n_{b_2} = b_2^\dagger b_2 = 
+    \sin^2 \varphi a_1^\dagger a_1 + \cos^2 \varphi a_2^\dagger a_2
+    - \ii \sin \varphi \cos \varphi (a_1^\dagger a_2 - a_2^\dagger a_1),
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        n_{b2}^2 &= \sin^4 \varphi (a_1^\dagger a_1)^2 + \cos^4 \varphi (a_2^\dagger a_2)^2 - \sin^2 \varphi \cos^2 \varphi (a_1^\dagger a_2 - a_2^\dagger a_1)^2 + 2 \sin^2 \varphi \cos^2 \varphi a_1^\dagger a_1 a_2^\dagger a_2 \\
+        &\quad - \ii \sin \varphi \cos^3 \varphi \acomm*{a_2^\dagger a_2}{(a_1^\dagger a_2 - a_2^\dagger a_1)}
+        - \ii \sin^3 \varphi \cos \varphi \acomm*{a_1^\dagger a_1}{(a_1^\dagger a_2 - a_2^\dagger a_1)},
+    \end{aligned}
+\end{equation}
+If we are sure the wave function takes the form of \eqref{eq:coherent-plus-squeeze},
+then all $a_1$ can be replaced by $\alpha$ in the above two equations,
+but before that we should first complete normal ordering of $a_1$ and $a_1^\dagger$.
+The expression of $n_{b_2}$ 
+in the subspace of \eqref{eq:coherent-plus-squeeze}
+after normal ordering and replacement of $a_1$ by $\alpha$ is 
+\begin{equation}
+    n_{b_2} = \abs*{\alpha}^2 \sin^2 \varphi a_2 + \cos^2 \varphi n_{a_2} 
+    - \ii \sin \varphi \cos \varphi (\alpha^* a_2 - \alpha a_2^\dagger),
+\end{equation}
+and the expression of $n_{b_2}^2$ is 
+\begin{equation}
+    \begin{aligned}
+        n_{b_2}^2 &= \sin^4 \varphi (\abs*{\alpha}^4 + \abs*{\alpha}^2) + \sin^2 \varphi \cos^2 \varphi (2 \abs*{\alpha}^2 P(\alpha)^2 + a_2^\dagger a_2) + 2 \sin^2 \varphi \cos^2 \varphi \abs*{\alpha}^2 a_2^\dagger a_2 \\
+        &\quad - \text{terms that changes $n_{a1}$ and $n_{a2}$}.
+    \end{aligned}
+    \label{eq:nb2-square-mf}
+\end{equation}
+The 
 
 \bibliographystyle{plain}
 \bibliography{squeezing}
