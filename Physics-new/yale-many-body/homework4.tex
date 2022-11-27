@@ -182,6 +182,10 @@ and therefore
     I = - n \frac{e}{h} \cdot e U = \underbrace{ - n \frac{e^2}{h} }_{1 / R_{\text{H}}} U.
 \end{equation}
 So we get the expected quantized conductance.
+Since we are working in a 2D material, by definition 
+\begin{equation}
+    \sigma_{\text{H}} = \frac{1}{R_{\text{H}}} = - n \frac{e^2}{h}.
+\end{equation}
 
 \item[(d)] Ignoring excited bulk modes, we have 
 \begin{equation}
@@ -224,7 +228,15 @@ so the edge current and the Hall conductance are not affected much by a finite $
 
 \end{itemize}
 
-\paragraph{Problem 2}
+\paragraph{Problem 2} In general, one can construct a Hall conductance for every conserved quantity. The usual electric Hall conductance $\sigma_H$ originates from conservation of charge. Of course, most systems have another conserved quantity, which is even more fundamental: energy. Correspondingly, there is another important Hall conductance - the "thermal Hall conductance" $\kappa_H$. Just as the electric Hall conductance is defined by the electric current induced by a chemical potential difference between the top and bottom edges of a Hall bar, the thermal Hall conductance is defined by the energy or heat current $I_Q$ induced by a temperature difference $\Delta T$ between the two edges:
+$$
+\kappa_H=\left.\frac{\partial I_Q}{\partial \Delta T}\right|_{\Delta T \rightarrow 0} .
+$$
+In this problem we compute the thermal Hall conductance for a Chern insulator with Chern number $n$.
+1. As above, we begin with the $y=L_y$ edge. Each of the $n$ edge modes near $y=L_y$ can be modeled as a noninteracting free fermion model $H=\sum_k\left(\epsilon_{1 k}-\mu_1\right) c_k^{\dagger} c_k$, where $\epsilon_{1 k}$ is a monotonically increasing function of $k$. What is the energy/heat current as a function of temperature, $I_{Q 1}(T)$ ? You may write your answer in terms of a dimensionless integral.
+2. Compute $\kappa_H$. You should find $\kappa_H=n \frac{\pi^2}{3 h} T$ if you evaluate the integral explicitly.
+Remark: The thermal Hall conductance $\kappa_H$ is quantized in multiples of $\frac{\pi^2}{3 h} T$, just like the electric Hall conductance is quantized in multiples of $\frac{e^2}{h}$, and it is equally robust against interactions and disorder. The two quantities are almost perfect analogues (though it is unclear what the analogue of the Laughlin argument is for the thermal case).
+3. Can one construct a "mixed" thermo-electric Hall conductance that describes the electric current induced by a temperature difference between the two edges, or the energy/heat current induced by a chemical potential difference?
 
 \paragraph{Solution} \begin{itemize}
 \item[(a)] The only change we need to do is to replace the electric charge $-e$ 
@@ -232,41 +244,105 @@ by the ``energy charge'' $\epsilon_{k}$, and following the line of reasoning in 
 we have 
 \begin{equation}
     \begin{aligned}
-        I_{Q1} &= \frac{n}{h} \int^\infty_{\epsilon_{1, k = \Lambda_1}} \dd{\epsilon}  
+        I_{Q1} &= n \frac{1}{\hbar} \int_{\Lambda_1}^{\infty} \epsilon_{1k}
+        \frac{\dd{k}}{2\pi} \frac{1}{1 + \ee^{(\epsilon_{1k} - \mu_1) / k_{\text{B}} T}} \pdv{\epsilon_{1k}}{k}  \\
+        &= \frac{n}{h} \int^\infty_{\epsilon_{1, k = \Lambda_1}} \dd{\epsilon}  
         \frac{1}{1 + \ee^{(\epsilon - \mu_1) / k_{\text{B}} T_1}}
-        \epsilon \\
-        &= k_{\text{B}} T_1 \frac{n}{h} 
-        \left(
-            k_{\text{B}} T_1 \int^\infty_{\frac{\epsilon_{1, k = \Lambda_1} - \mu}{k_{\text{B}} T_1}} \dd{x}
-            \frac{x}{1 + \ee^x}
-            + \mu \int^\infty_{\frac{\epsilon_{1, k = \Lambda_1} - \mu}{k_{\text{B}} T_1}} \dd{x}
-            \frac{1}{1 + \ee^x}
-        \right),
+        \epsilon,
     \end{aligned}
 \end{equation}
 and similarly 
 \begin{equation}
-    I_{Q2} = - k_{\text{B}} T_2 \frac{n}{h} 
-    \left(
-        k_{\text{B}} T_2 \int^\infty_{\frac{\epsilon_{2, k = \Lambda_2} - \mu}{k_{\text{B}} T_2}} \dd{x}
-        \frac{x}{1 + \ee^x}
-        + \mu \int^\infty_{\frac{\epsilon_{2, k = \Lambda_2} - \mu}{k_{\text{B}} T_2}} \dd{x}
-        \frac{1}{1 + \ee^x}
-    \right).
+    I_{Q2} = - \frac{n}{h} \int_{-\infty}^{\epsilon_{2, k = \Lambda_2}} 
+    \frac{1}{1 + \ee^{(\epsilon - \mu_2) / k_{\text{B}} T_2}}
+    \epsilon.
 \end{equation}
+Here since there is no external field to establish a chemical potential gradience,
+we have $\mu_1 = \mu_2 \eqqcolon \mu$.
 The sign difference between $I_{Q1}$ and $I_{Q2}$ comes in the same way of \eqref{eq:i-2-e}.
 Again, when $T_1 = T_2$, 
-we need $I = I_{Q1} + I_{Q2} = 0$, 
+we need $I_Q = I_{Q1} + I_{Q2} = 0$, 
 so $\epsilon_{1, k=\Lambda_1} = \epsilon_{2, k=\Lambda_2} \eqqcolon \epsilon_\Lambda$.
 
-\item[(b)] We have 
+Another step to simply the expressions is to notice that 
+although the cutoff $\epsilon_\Lambda$ is important to have well-defined $I_{Q1}$ and $I_{Q2}$,
+since only $I_{Q1} + I_{Q2}$ matters 
+-- which seems to be well defined 
+if we take the difference between the two integrated functions in $I_{Q1}$ and $I_{Q2}$ 
+and integrate it from $-\infty$ to $\infty$ -- 
+formally we can just extend $\epsilon_\Lambda \to 0$ before we calculate $I_{Q1} + I_{Q2}$.
+So finally we get 
 \begin{equation}
-    \int_{t}^\infty \dd{x} \frac{1}{1 + \ee^x} = 2 \arctanh (1 + 2 \ee^t),
+    I_{Q1} = \frac{n}{h} \int^\infty_{-\infty} \dd{\epsilon} \epsilon f_{T_1}(\epsilon) , 
 \end{equation}
+and 
 \begin{equation}
-    \int_{t}^\infty \dd{x} \frac{x}{1 + \ee^x} = t \ln(1 + \ee^{-t}) - \polylog_2(- \ee^{-t}).
+    I_{Q2} = - \frac{n}{h} \int^\infty_{-\infty} \dd{\epsilon} \epsilon f_{T_2}(\epsilon).
+\end{equation}
+We can't just make the integrals dimensionless, because 
+\[
+    (k_{\text{B}} T_1)^2 \int^\infty_{-\infty} x \dd{x} \frac{1}{\ee^{x} + 1}
+\]
+is a ill-defined quantity.
+The total heat current is 
+\begin{equation}
+    \begin{aligned}
+        I_Q &= I_{Q1} + I_{Q2} \approx
+        \frac{n}{h} \underbrace{(T_1 - T_2)}_{\Delta T} \int^\infty_{-\infty} \pdv{f_T(\epsilon)}{T} \epsilon \dd{\epsilon} \\
+        &= \frac{n}{h} \Delta T \frac{1}{k_{\text{B}} T^2} 
+        \int^\infty_{-\infty} \dd{\epsilon} \epsilon^2 \frac{\ee^{\epsilon / k_{\text{B}} T}}{(\ee^{\epsilon / k_{\text{B}} T} + 1)^2} \\
+        &= \Delta T \cdot \frac{n}{h} k_{\text{B}}^2 T 
+        \int^\infty_{-\infty}  \dd{x} \frac{x^2 \ee^x}{(\ee^x + 1)^2}.
+    \end{aligned}
+    \label{eq:delta-t-i-q}
 \end{equation}
 
+\item[(b)] Mathematica tells us that  
+\begin{equation}
+    \int^\infty_{-\infty}  \dd{x} \frac{x^2 \ee^x}{(\ee^x + 1)^2} = \frac{\pi^2}{3},
+\end{equation}
+so we get 
+\begin{equation}
+    I_Q = \frac{\pi^2 T}{3h} n k_{\text{B}}^2,
+\end{equation}
+and if we take the unit of temperature to be the same as the unit of energy, then 
+\begin{equation}
+    \kappa_{\text{H}} = \eval{\pdv{I_Q}{\Delta T}}_{\Delta T \to 0} = \frac{\pi^2 T}{3h} n.
+\end{equation}
+
+\item[(c)] For chemical potential difference-induced heat transportation,
+following the derivation of \eqref{eq:delta-t-i-q}, we have 
+\begin{equation}
+    \begin{aligned}
+        I_Q &= \frac{n}{h} \Delta \mu \pdv{\mu} \int^\infty_{-\infty} \epsilon \dd{\epsilon} \frac{1}{1 + \ee^{(\epsilon - \mu) / k_{\text{B}} T}} \\
+        &= \Delta \mu \cdot \frac{n}{h} \int^\infty_{-\infty} \epsilon \dd{\epsilon}
+        \frac{\ee^{(\epsilon - \mu) / k_{\text{B}} T}}{(1 + \ee^{(\epsilon - \mu) / k_{\text{B}} T})^2} \\
+        &= \Delta \mu \cdot \frac{n}{h} (k_{\text{B}} T)^2 \int^\infty_{-\infty} \dd{x}
+        (\mu + k_{\text{B}} T x) \frac{\ee^x}{(1 + \ee^x)^2} \\
+        &= \Delta \mu \cdot \frac{n}{h} (k_{\text{B}} T)^2 \cdot \mu,
+    \end{aligned}
+\end{equation}
+so the transverse thermal current induced by chemical potential difference is 
+\begin{equation}
+    \eval{\pdv{I_Q}{\Delta \mu}}_{\Delta \mu \to 0} = \frac{n}{h} (k_{\text{B}} T)^2 \mu.
+\end{equation}
+Similarly 
+\begin{equation}
+    \begin{aligned}
+        I &= - e \frac{n}{h} \Delta T \cdot \pdv{T} \int^\infty_{-\infty} \dd{\epsilon} \frac{1}{1 + \ee^{(\epsilon - \mu) / k_{\text{B}} T}} \\
+        &= \Delta T \cdot (-1) \cdot \frac{en}{h} \int^\infty_{-\infty} 
+        \ee^{(\epsilon - \mu) / k_{\text{B}} T} 
+        \frac{1}{(1 + \ee^{(\epsilon - \mu) / k_{\text{B}} T})^2}
+        \frac{\epsilon - \mu}{k_{\text{B}} T^2} \dd{\epsilon} \\
+        &= \Delta T \cdot (-1) \cdot \frac{en}{h} k_{\text{B}} \int^\infty_{-\infty} x \dd{x} 
+        \frac{\ee^x}{(1 + \ee^x)^2} \\
+        &= \Delta T \cdot (-1) \cdot \frac{en}{h} k_{\text{B}} \cdot \frac{\pi^2}{3},
+    \end{aligned}
+\end{equation}
+so 
+\begin{equation}
+    \eval{\pdv{I}{\Delta T}}_{\Delta T \to 0} = - \frac{\pi^2}{3} \frac{en}{h} k_{\text{B}}.
+\end{equation}
 
 \end{itemize}
 
