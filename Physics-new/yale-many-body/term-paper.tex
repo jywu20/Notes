@@ -1,0 +1,253 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage[labelformat=simple]{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\polylog}{\mathrm{Li}}
+\DeclareMathOperator{\arctanh}{\mathrm{arctanh}}
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\renewcommand\thesubfigure{(\alph{subfigure})}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newrefformat{subfig}{Fig.~\ref{#1}(\subref{#1})}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Twisted bilayer graphene}
+\author{Jinyuan Wu}
+
+\begin{document}
+    
+\maketitle
+
+\section{Introduction}
+
+\section{The lattice structure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{structure/moire-square.png}
+        \subcaption{}
+        \label{fig:square-moire}
+    \end{subfigure}    
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{structure/moire-graphene.PNG}
+        \subcaption{}
+        \label{fig:hexagonal-moire}
+    \end{subfigure}
+    \begin{subfigure}{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{structure/moire-k-graphene.PNG}
+        \subcaption{}
+        \label{fig:1bz-1}
+    \end{subfigure}
+    \caption{Moire patterns in condensed matter physics.
+    (a) Moire pattern of twisted bilayer square lattice. 
+    Picture taken from \href{https://en.wikipedia.org/wiki/Moir\%C3\%A9\_pattern\#/media/File:Moir\%C3\%A9\_grid.svg}{Wikipedia}.
+    (b) Twisted bilayer graphene in real space. Image from Fig. 1(b) in \cite{padhi_doped_2018}.
+    The length $\lambda_\text{s}$ is the lattice constant of the hexagonal supercell.
+    Note that $\lambda_{\text{s}}$ is the distance between the centers of two nearest supercells,
+    but \emph{not} the length of each side of the supercell:
+    it is $\sqrt{3}$ times of the length of each side of the supercell.
+    (c) The first Brillouin zone of the two layers in (b) (red and green),
+    and the first Brillouin zone (the black hexagon at the center) of the whole system.
+    Image from Fig. 1(c) in \cite{koshino_band_2019}.
+    }
+\end{figure}
+
+Let us begin with the easier case of twisted square lattices.
+Consider \prettyref{fig:square-moire}, 
+and suppose $\vb*{a}_1$ is the primitive lattice vector in the $x$ direction,
+and $\vb*{a}_2$ is the primitive lattice vector in the $y$ direction.
+We choose the origin to be a point 
+that is a lattice point of both layers.
+In \prettyref{fig:square-moire} we can observe supercell-like patterns,
+and the origin point may be seen as the center of one supercell.
+Any other point that a lattice point of both layers, then,
+has to be the center of another supercell.
+
+Now suppose we are to calculate the distance between two nearest supercells 
+on the $x$ direction in \prettyref{fig:square-moire}.
+Suppose $n \vb*{a}_2$ connects the two unit cells.
+From the condition that the center of a supercell is 
+a lattice point of both lattices, 
+we have
+\begin{equation}
+    n \vb*{a}_2 = m \vb{R} \vb*{a}_2 + \vb*{a}_1.
+    \label{eq:supercell-eq-origin}
+\end{equation}
+Here $\vb{R}$ is the rotation matrix;
+the difference between $n \vb*{a}_2$ and $m \vb{R} \vb*{a}_2$ 
+should be roughly in the $x$ direction, 
+and it should be minimal, so we take it to be $\vb*{a}_1$.%
+\footnote{
+    To be exact, it may not be $\vb*{a}_1$, but, say, $10 \vb*{a}_1 + \vb*{a}_2$,
+    and if the latter value is the case,
+    the supercell built according to \eqref{eq:supercell-eq-origin} is just an approximate supercell; 
+    but usually this approximation is already good enough -- 
+    see the discussion on incommensurability below.
+}
+Since the rotation angle is not very large,
+if $n \vb*{a}$ is between two nearest supercells, 
+we have $m \approx n$
+(because in this case the lengths of $n \vb*{a}_2$ and $m R \vb*{a}_2$ should be approximately the same),
+and therefore we get 
+\begin{equation}
+    \text{lattice constant of supercell} = n a = a / \tan \theta \approx \frac{na}{\theta}.
+    \label{eq:supercell-sq}
+\end{equation}
+
+If we twist two ideal lattices with an arbitrary angle and stack them,
+that the two lattices are commensurable is not guaranteed,
+so the resulting material is not periodic,
+which may block electric currents.
+What makes this structure different from non-periodic systems like quasicrystals or amorphous is 
+even when the two layers of lattices are not commensurable,
+we can still see approximate supercells,
+though with a varying lattice constant.
+In practice, even prototypical crystals have spatially varying distortion of the lattice structure,
+and the incommensurability of the two layers seems to have nothing different from that.
+The quasi-periodic supercells may further be regularized into a truly periodic structure by lattice relaxation.
+Therefore, the procedure used to derive \eqref{eq:supercell-sq} is used
+even when the two layers of lattices are not, if viewed as ideal lattices, commensurable.
+
+Now we move to the twisted bilayer construction of graphene (\prettyref{fig:hexagonal-moire}).
+Following the logic of \eqref{eq:supercell-eq-origin},
+we have 
+\begin{equation}
+    \text{lattice constant of supercell} \approx \frac{na}{\theta}
+\end{equation}
+again. Note that here the lattice constants of both the honeycomb structure of each layer and the supercell 
+are \emph{not} the bond length:
+it is $\sqrt{3}$ times of the bond length.
+Suppose we draw a vector $\vb*{\lambda}_{\text{s}}$ 
+from the center of one unit cell to the unit cell directly above it,
+and then rotate it with the angle $\theta$.
+By the definition of ``center of one unit cell'' above,
+we have $\Delta \vb*{\lambda}_{\text{s}}$ equal to a lattice vector,
+but $\Delta \vb*{\lambda}_{\text{s}}$ is roughly in the $x$ direction 
+and is not parallel to any bond in \prettyref{fig:hexagonal-moire}:
+the length of the shortest lattice vector in the $x$ direction is 
+the lattice constant of the honeycomb structure.%
+\footnote{
+    Recall that the graphene structure is a non-Bravais lattice.
+    $\sqrt{3}$ times the bond length is exactly the length of a primitive lattice vector 
+    if we reconsider the graphene structure as a Bravais lattice 
+    with a two-atom basis.
+}
+
+With the supercell established in \prettyref{fig:hexagonal-moire},
+we now consider the corresponding phenomenon in the reciprocal space
+(\prettyref{fig:1bz-1}).
+The uncertainty principle tells us that an increased unit cell in the real space 
+means a shrunk first Brillouin zone.
+
+
+\section{Band theory and engineering of flat bands}
+
+\section{Coulomb interaction and electron correlation}
+
+\section{Conclusion}
+
+\bibliographystyle{plain}
+\bibliography{tbg}
+
+\end{document}
