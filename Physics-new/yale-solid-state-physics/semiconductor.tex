@@ -1,0 +1,206 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\address}[1]{\href{#1}{\url{#1}}}
+
+\title{Semiconductors}
+\author{Jiinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Two-band model}
+
+At $T = 0$ there is strictly no such thing as a semiconductor:
+there are just band metals or band insulators.
+When $T > 0$, however, 
+the following two mechanisms happen.
+The first is that electrons jump from the valence band to the conduction band.
+The second is if there are energy levels 
+near the highest point of the valence band ($E_{\text{v}}$)
+or the lowest point of the conduction band ($E_{\text{c}}$),
+thermally excited electrons will jump to them.
+(From another point of view we may say doped atoms eat electrons or give electrons,
+so some electrons are missing if we only look at Bloch states in the spectrum.)
+In both mechanisms,
+we have electrons in the conduction band and holes in the valence band,
+which are \concept{carriers} of electric current.
+
+In the discussion below, we assume that the band gap is \emph{larger} compared with $k_{\text{B}} T$,
+and this means when $E \geq E_{\text{c}}$,
+\begin{equation}
+    n_{\text{electron}} = \ee^{- (E - \mu) / k_{\text{B}} T},
+\end{equation}
+and when $E \leq E_{\text{v}}$
+\begin{equation}
+    n_{\text{hole}} = \ee^{- (\mu - E) / k_{\text{B}} T}.
+\end{equation}
+In semiconductor physics we usually use the following abbreviations:
+p (positive), v (valence), h (hole) mean holes in the valence band,
+and n (negative), c (conduction), e (electron) mean electrons in the conduction band.
+Thus the density of electrons and holes are given by 
+\begin{equation}
+    n = \int_{E_\text{c}}^\infty D_{\text{c}} (E) \dd{E} \ee^{- (E - \mu) / k_{\text{B}} T},
+\end{equation}
+and 
+\begin{equation}
+    p = \int^{E_{\text{v}}}_{-\infty} D_{\text{v}} (E) \dd{E} \ee^{- (\mu - E) / k_{\text{B}} T}.
+\end{equation}
+
+Consider the simplest case, where we have a band gap (possibly indirect) 
+\begin{equation}
+    E_{\text{g}} = E_{\text{c}} - E_{\text{v}}
+\end{equation}
+between the highest valence band the the lowest conduction band.
+The $\Delta E \gg k_{\text{B}} T$ condition also means there should be 
+electrons or holes with very high energy,
+and therefore the hyperbolic approximation works, 
+and the conduction band is completely characterized by its effective mass 
+and the momentum with lowest energy,
+and so is the case for the valence band.
+We have 
+\begin{equation}
+    D(E) = \frac{1}{2 \pi^2} \left( \frac{2 m^*}{\hbar^2} \right) \sqrt{E - E_{\text{max/min}}}
+\end{equation}
+for hyperbolic bands,
+and therefore we have 
+\begin{equation}
+    n = 2 \left( \frac{m_\text{e}^* k_{\text{B}} T}{2 \pi \hbar^2} \right)^{3/2} 
+    \ee^{- (E_{\text{c}} - \mu) / k_{\text{B}} T},
+\end{equation}
+\begin{equation}
+    p = 2 \left( \frac{m_\text{h}^* k_{\text{B}} T}{2 \pi \hbar^2} \right)^{3/2} 
+    \ee^{- (\mu - E_{\text{v}}) / k_{\text{B}} T}.
+\end{equation}
+Note that if there is doping, electrons donated or attracted by the doped atoms 
+are not included in the above equations.
+
+\section{The intrinsic semiconductor limit}
+
+In the \concept{intrinsic semiconductor limit},
+there is no doping, and only the first mechanism 
+-- thermal excitation in the conduction band and the valence band --
+works. 
+This limit is useful 
+when $T$ is very high so the effect of doping can be ignored.
+(So in the opposite, 
+when $T$ is low enough, 
+even materials that are very clean can't be described well by the intrinsic semiconductor limit,
+because in this case, if the material has any semiconductor property,
+then it has to come from doping.)
+Since there is no doping, we have $n = p$ because of charge neutrality,
+and we have $n = \sqrt{np}$,
+and solving this equation we find 
+\begin{equation}
+    \mu = E_{\text{v}} + \frac{1}{2} E_{\text{g}} + \frac{3}{4} k_{\text{B}} T \ln(\frac{m_\text{h}^*}{m_{\text{e}^*}}).
+\end{equation}
+Here we can see that when $T = 0$, 
+actually $\mu \neq E_{\text{F}} = E_{\text{v}}$,
+but it doesn't matter:
+when $T$ is zero and we are working with an insulator,
+putting $\mu$ anywhere between $E_{\text{c}}$ and $E_{\text{v}}$ is acceptable.
+
+
+\end{document}
