@@ -1,0 +1,244 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{tbl}{Table~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{Homework 5}
+\author{Jinyuan Wu}
+
+\begin{document}
+    
+\maketitle
+
+\paragraph{Exercise 1 in Lecture 15}  In the classical limit
+\[
+    \begin{aligned}
+\hbar & \rightarrow 0 \\
+\expval*{[\hat{B}(t), \hat{A}]}_\text{eq} & \rightarrow 0
+\end{aligned}
+\]
+and the ratio becomes ill-defined. It acquires meaning when we replace the commutator $\ii [\hat{B}(t), \hat{A}]$ divided by $\hbar$ by the corresponding Poisson bracket. We then recover a classical expression for the susceptibility, soluble analytically for certain models like the Caldeira-Leggett model (see corresponding lecture).
+
+\paragraph{Solution} Suppose 
+\begin{equation}
+    \hat{A} = \sum_{m, n \geq 0} A_{mn} \hat{x}^m \hat{p}^n, 
+\end{equation}
+\begin{equation}
+    \hat{B} = \sum_{m, n \geq 0} B_{mn} \hat{x}^m \hat{p}^n,
+\end{equation}
+and we have (below we omit the hat over operators)
+\begin{equation}
+    \begin{aligned}
+        \comm{A}{B} &= \sum_{m, n, p, q \geq 0} A_{mn} B_{pq} 
+        ( x^m \comm*{p^n}{x^p} p^q + 
+          x^p \comm*{x^m}{p^q} p^n ) \\
+        &=\sum_{m, n, p, q \geq 0} A_{mn} B_{pq} 
+        (- x^m \comm*{x^p}{p^n} p^q + 
+          x^p \comm*{x^m}{p^q} p^n ).
+    \end{aligned}
+\end{equation}
+Here 
+\begin{equation}
+    \begin{aligned}
+        \comm{x^m}{p^q} &= x^{m-1} \comm*{x}{p^q} + \comm*{x^{m-1}}{p^q} x \\
+        &= x^{m-1} \comm*{x}{p^q} + ( x^{m-2} \comm*{x}{p^q} + \comm*{x^{m-2}}{p^q} x ) x \\
+        &= x^{m-1} \comm*{x}{p^q} + x^{m-2} \comm*{x}{p^q} x +  \comm*{x^{m-2}}{p^q} x^2 \\
+        &= \cdots \\
+        &= \underbrace{
+            x^{m-1} \comm*{x}{p^q} + x^{m-2} \comm*{x}{p^q} x + x^{m-3} \comm*{x}{p^q} x^2 + \cdots + 
+            \comm*{x}{p^q} x^{m-1}
+        }_{\text{$m$ terms}},
+    \end{aligned}
+\end{equation}
+and further we have 
+\begin{equation}
+    \begin{aligned}
+        \comm*{x}{p^q} &= p \comm*{x}{p^{q-1}} + \underbrace{\comm*{x}{p}}_{\ii \hbar} p^{q-1} \\
+        &= p ( \underbrace{\comm*{x}{p}}_{\ii \hbar} p^{q-2} + p \comm*{x}{p^{q-2}} ) + \ii \hbar p^{q-1} \\
+        &= 2 \ii \hbar p^{q-1} + p^2 \comm*{x}{p^{q-2}} \\
+        &= \cdots = \ii \hbar q p^{q-1},
+    \end{aligned}
+\end{equation}
+so 
+\begin{equation}
+    \comm{x^m}{p^q} = \ii \hbar q ( \underbrace{x^{m-1} p^{q-1} + x p^{q-1} x^{m-2} + \cdots + p^{q-1} x^{m-1}}_{\text{$m$ terms}} ).
+\end{equation}
+In the classical limit we have $xp \approx px$, so 
+\[
+    \comm{x^m}{p^q} \approx \ii \hbar q m \cdot x^{m-1} p^{q-1},
+\]
+and 
+\begin{equation}
+    \lim_{\hbar \to 0} \frac{1}{\ii \hbar} \comm*{x^m}{p^q} = qm \cdot x^{m-1} p^{q-1}.
+\end{equation}
+So we find 
+\begin{equation}
+    \begin{aligned}
+        \lim_{\hbar \to 0} \frac{1}{\ii \hbar} \comm*{A}{B} 
+        &= \sum_{m, n, p, q \geq 0} A_{mn} B_{pq} 
+        ( - pn \cdot x^{m} x^{p-1} p^{n-1} p^q + mq \cdot x^p x^{m-1} p^{q-1} p^n ) \\
+        &= \sum_{m, n, p, q \geq 0} \left(
+            A_{mn} m x^{m-1} p^n \cdot B_{pq} q x^p p^{q-1}
+            - A_{mn} n x^m p^{n-1} \cdot B_{pq} p x^{p-1} p^{q}
+        \right) \\
+        &= \pdv{A}{x} \pdv{B}{p} - \pdv{A}{p} \pdv{B}{x} \eqqcolon \{ A, B \}.
+    \end{aligned}
+\end{equation}
+So we recover the classical expression.
+
+\paragraph{Exercise 2 in Lecture 15} When is 
+\begin{equation}
+    \chi_{B A}[z]=\frac{1}{\hbar} \sum_{n, q}\left(p_q-p_n\right) B_{n q} A_{q n} \frac{1}{z-\omega_{q n}}
+\end{equation}
+independent to the temperature?
+Here 
+\begin{equation}
+    \omega_{q n}=\left(E_q-E_n\right) / \hbar,
+\end{equation}
+and 
+\begin{equation}
+    \chi_{B A}[\omega]=\int_{-\infty}^{+\infty} \dd t \chi_{B A}(t) \mathrm{e}^{\ii \omega t}, \quad 
+    \chi_{B A}(t)=\frac{\ii}{\hbar}\langle[\hat{B}(t), \hat{A}]\rangle_\text{eq} \Theta(t).
+\end{equation}
+
+\paragraph{Solution} When $\comm{\hat{B}(t)}{\hat{A}}$ is a number (and not an operator),
+the susceptibility is always independent to the temperature.
+This can be seen for example in the case of harmonic oscillator
+in the next exercise.
+
+Another example of temperature-independent susceptibility is diamagnetism,
+but this originates from $B^2$ dependence of the Hamiltonian 
+and is beyond the linear response theory.
+
+\paragraph{Exercise 4 in Lecture 16} Show that the quantum susceptibility $\chi_{B A}$ is temperatureinvariant for a reservoir consisting of harmonic oscillators (note: here we must take $\chi_{B A}$ in its most primitive sense, where the operators $A$ and $B$ are linear in the position and momentum variables of the oscillators).
+
+\paragraph{Solution} Here we have 
+\begin{equation}
+    H = \frac{p^2}{2m} + \frac{1}{2} m \omega^2 x^2,
+\end{equation}
+and the EOMs of operators are 
+\begin{equation}
+    \dot{x} = \frac{1}{\ii \hbar} \comm{x}{H} = \frac{p}{m}, \quad 
+    \dot{p} = \frac{1}{\ii \hbar} \comm{p}{H} = - m \omega^2 x,
+\end{equation}
+so we have 
+\begin{equation}
+    x = x(0) \cos \omega t + \frac{p(0)}{m} \sin \omega t, \quad 
+    p = p(0) \cos \omega t - m \omega^2 x(0) \sin \omega t.
+\end{equation}
+So $\comm{x(t)}{x(0)}$, $\comm{x(t)}{p(0)}$, $\comm{p(t)}{x(0)}$, and $\comm{p(t)}{p(0)}$
+are all pure numbers and contain no operator.
+Now $A$ and $B$ are all linear combinations of $x_i$ and $p_i$,
+with $i$ indexing the harmonic oscillators in the reservoir,
+so $\comm{A(t)}{B(0)}$ or the inverse is also a number and contains no operator,
+so by definition $\chi_{BA} \propto \expval*{\comm{B(t)}{A(0)}}$ 
+is just that number times $\ii \Theta(t) / \hbar$, 
+without any temperature dependence.
+
+\paragraph{Exercise 3 in Lecture 17}
+
+\paragraph{Solution} The matrix element $\mel{1}{\Phi}{0}$ corresponds to the 
+dipole matrix element $\mel{f}{\vb*{d}}{i}$,
+and $\Re Y$ corresponds to the density of states of photons
+(which is the imaginary part of the photon Green function).
+
+\end{document}
