@@ -13,7 +13,7 @@
 \usepackage{bbm}
 \usepackage{cite}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
@@ -125,7 +125,8 @@ This kind of noise is called \concept{quantum noise}.
 In systems that can be well described by 
 the harmonic oscillator picture,
 in which for each oscillation mode, 
-we have two variables $X$ and $P$, and $[X, P] = \ii$,
+we have two variables $X$ and $P$, and $[X, P] = \ii$
+(here and below we use Planck system of units),
 and the Hamiltonian is $H \simeq c_1 X^2 + c_2 P^2$.%
 \footnote{
     The Planck system of units is used in this report, 
@@ -149,16 +150,116 @@ quantum noise comes from the zero point-energy.
 % Quantum noise and quantum measurement
 % https://clerkgroup.uchicago.edu/PDFfiles/LesHouchesNotesAC.pdf
 
-This report focuses on quantum noise in systems mentioned above.
-This includes linear optics and micromechanics.
+This report focuses on quantum noise in linear quantum optics,
+which fits in the picture described above.
 \prettyref{sec:overview-rep} discusses more quantitative ways to represent and characterize quantum noise.
 \prettyref{sec:interferometer} calculates quantum noise 
 in a prevalent phase measurement scheme using interferometer.
 \prettyref{sec:squeezing} shows how to squeeze the quantum noise.
 
-\section{Overview of representation of states in quantum optics}\label{sec:overview-rep}
+\section{Quantum optics states and quasi-probability distribution functions}\label{sec:overview-rep}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{heatmaps/coherent-state.pdf}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{heatmaps/fock-state.pdf}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{heatmaps/coherent-state2.pdf}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{heatmaps/coherent-state-composition.pdf}
+        \subcaption{} 
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{heatmaps/squeezed-state.pdf}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \input{heatmaps/squeeze-scheme.tex}
+        \subcaption{}
+    \end{subfigure}
+    \caption{Wigner functions in quantum optics. 
+    Figures are plotted using \texttt{QuantumOptics.jl} \cite{kramer2018quantumoptics}.
+    (a) The Wigner function of the vacuum. Note that this is not a $\delta$-function located at $\alpha = 0$.
+    (b) The Wigner function of a single-photon state. Negative values occur.
+    (c) The Wigner function of $\ket{\alpha = 2 + 2\ii}$.
+    (d) The Wigner function of $(\ket{\alpha = 2 + 2 \ii} + \ket{\alpha = - 2 - 2 \ii}) / \sqrt{2}$.
+    (e) The Wigner function of $S(\ee^{\ii \frac{\pi}{3}}) \ket{0}$.
+    (f) Schematic illustration of the Wigner function of a squeezed vacuum state
+    $S(r\ee^{\ii \theta}) \ket{0}$.
+    The diagram is adapted from Fig. 2.8 in \cite{scully1999quantum}.
+    }
+\end{figure}
+
+In linear quantum optics, we have 
+\begin{equation}
+    H = \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2
+    = \sum_{k} \omega_k \left( a^\dagger_k a_k + \frac{1}{2} \right),
+\end{equation}
+where $k$ is the label of optical normal modes.
+It is the momentum and polarization in a large box, 
+and in an spherical optical cavity, it labels spherical harmonics.
+We have the standard bosonic commutation relations 
+\begin{equation}
+    \comm*{a_k}{a_{k'}} = 0, \quad \comm*{a_k}{a^\dagger_{k'}} = \delta_{k k'}.
+\end{equation}
+
+As is known in quantum mechanics,
+the wave function characterizes the state of the system,
+but cannot be measured directly.
+One way to visualize a quantum state -- and therefore the quantum noise in it --
+is the so-called quasi-probability distribution functions.
+For one mode, if $a$ and $a^\dagger$ in an arbitrary operator $O$ is ordered according to a certain convention
+($a$ before $a^\dagger$, or $a^\dagger$ before $a$, 
+or whenever multiplication appears, it is in the form of $(a^\dagger a + a a^\dagger) / 2$), 
+we have 
+\begin{equation}
+    \expval*{O(a, a^\dagger)} = \int \dd[2]{\alpha} f(\alpha, \alpha^*) O(\alpha, \alpha^*),
+\end{equation}
+we say $f(\alpha, \alpha^*)$ is a quasi-probability distribution function.
+Note that this definition even extends to the case 
+when we are in a mixed state instead of a pure state, 
+i.e. it is a unified treatment of both quantum noise and thermal noise.
+
+The most famous quasi-probability distribution
+
+To plot the function as a 2D heatmap,
+it is often more convenient to change the coordinates into $\Re \alpha$ and $\Im \alpha$.
+Note that we have 
+\begin{equation}
+    \comm*{\Re a}{\Im a} = \frac{1}{4 \ii} \comm*{a + a^\dagger}{a - a^\dagger}
+    = \frac{\ii}{2},
+\end{equation}
+and according to the uncertainty principle, we have 
+\begin{equation}
+    \Delta (\Re a) \cdot \Delta (\Im a) \geq \frac{1}{4}.
+\end{equation}
+This means not all two-variable functions can be a Wigner function:
+it cannot have too strong ``spatial resolution''.
 
 
+Another frequent convention is to define 
+\begin{equation}
+    a = \frac{1}{\sqrt{2}} (X + \ii P), \quad 
+    a^\dagger = \frac{1}{\sqrt{2}} (X - \ii P),
+\end{equation}
+and we find 
+\begin{equation}
+    \comm*{X}{P} = \frac{\ii}{2} \comm*{a + a^\dagger}{a - a^\dagger} = \ii.
+\end{equation}
+Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation.
 
 \section{Quantum noise in the Mach-Zehnder interferometer}\label{sec:interferometer}
 
@@ -186,17 +287,24 @@ and time evolution can be easily described by a linear transformation on the ope
 Since this section is just to exemplify the overall idea of quantum noise,
 for the sake of simplicity we assume the time evolution operator of the beam splitter is 
 \begin{equation}
-    S_{\text{beam splitter}} = \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 } .
+    S_{\text{beam splitter}} = \frac{1}{\sqrt{2}} \pmqty{ 1 & 1 \\ -1 & 1 } .
 \end{equation}
 The time evolution operator of the whole system is therefore
 \begin{equation}
     \begin{aligned}
-        S_\text{total}(\varphi) &= \frac{1}{\sqrt{2}} \pmqty{ 1 & 1 \\ 1 & -1 } \cdot \pmqty{\dmat{\ee^{\ii \varphi}, \ee^{- \ii \varphi}}} \cdot \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 } \\
-        &= \pmqty{ \cos \varphi & - \ii \sin \varphi \\ \ii \sin \varphi & - \cos \varphi },
+        S_\text{total}(\varphi) &= \frac{1}{\sqrt{2}} \pmqty{ 1 & -1 \\ 1 & 1 } \cdot \pmqty{\dmat{\ee^{\ii \varphi}, \ee^{- \ii \varphi}}} \cdot \frac{1}{\sqrt{2}} \pmqty{ 1 & 1 \\ -1 & 1 } \\
+        &= \pmqty{ \cos \varphi & \ii \sin \varphi \\ - \ii \sin \varphi & - \cos \varphi },
     \end{aligned}
     \label{eq:total-matrix}
 \end{equation} 
-and therefore 
+and therefore%
+\footnote{
+    Note that the EOM of the annihilation operators in the Heisenberg picture 
+    has the same form with the EOM of the wave function in the Schr\={o}dinger picture.
+} 
+\begin{equation}
+    \pmqty{b_1 \\ b_2} = \pmqty{ \cos \varphi & \ii \sin \varphi \\ - \ii \sin \varphi & - \cos \varphi } \pmqty{a_1 \\ a_2},
+\end{equation}
 \begin{equation}
     \pmqty{b_1^\dagger \\ b_2^\dagger} = \pmqty{ \cos \varphi & - \ii \sin \varphi \\ \ii \sin \varphi & - \cos \varphi } \pmqty{a_1^\dagger \\ a_2^\dagger},
     \label{eq:b-def-by-a}
@@ -387,7 +495,7 @@ so
 which is the small-angle approximation of \eqref{eq:stdvar-n2}.
 
 Note that \eqref{eq:nb2-single-mode} only concerns one mode now,
-and the quantum noise can also be read from the quasi-probabilistic distribution,
+and the quantum noise can also be read from the quasi-probability distribution,
 and indeed this leads us to design an appropriate quantum noise squeezing scheme.
 Redefining 
 
