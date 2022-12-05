@@ -88,7 +88,7 @@
 }
 
 % Reference formatting
-\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
@@ -145,6 +145,11 @@ is $\simeq n = a^\dagger a \sim X^2$,
 and quantum noise appears in the measurement.
 People therefore sometimes say that 
 quantum noise comes from the zero point-energy.
+Of course, in some states, 
+the error on the $X$ degree of freedom -- or $P$, or some combination of them -- 
+may be reduced,
+at the cost of larger error on other degrees of freedom.
+This is called ``squeezing'' of the error.
 
 % We may also consult this:
 % Quantum noise and quantum measurement
@@ -155,9 +160,69 @@ which fits in the picture described above.
 \prettyref{sec:overview-rep} discusses more quantitative ways to represent and characterize quantum noise.
 \prettyref{sec:interferometer} calculates quantum noise 
 in a prevalent phase measurement scheme using interferometer.
-\prettyref{sec:squeezing} shows how to squeeze the quantum noise.
+\prettyref{sec:dark-port-analysis} demonstrates how the quantum noise, 
+when the input laser beam is strong enough,
+can be attributed to the quantum noise in the dark port.
+\prettyref{sec:squeezing} shows how to squeeze the quantum noise in the output 
+by injecting a squeezed state into the dark port.
 
 \section{Quantum optics states and quasi-probability distribution functions}\label{sec:overview-rep}
+
+
+
+In linear quantum optics, we have 
+\begin{equation}
+    H = \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2
+    = \sum_{k} \omega_k \left( a^\dagger_k a_k + \frac{1}{2} \right),
+\end{equation}
+where $k$ is the label of optical normal modes.
+It is the momentum and polarization in a large box, 
+and in an spherical optical cavity, it labels spherical harmonics.
+We have the standard bosonic commutation relations 
+\begin{equation}
+    \comm*{a_k}{a_{k'}} = 0, \quad \comm*{a_k}{a^\dagger_{k'}} = \delta_{k k'}.
+\end{equation}
+
+As is known in quantum mechanics,
+the wave function characterizes the state of the system,
+but cannot be measured directly.
+One way to visualize a quantum state -- and therefore the quantum noise in it --
+is the so-called quasi-probability distribution functions.
+For one mode, if $a$ and $a^\dagger$ in an arbitrary operator $O$ is ordered according to a certain convention
+($a$ before $a^\dagger$, or $a^\dagger$ before $a$, 
+or whenever multiplication appears, it is in the form of $(a^\dagger a + a a^\dagger) / 2$), 
+we have 
+\begin{equation}
+    \expval*{O(a, a^\dagger)} = \int \dd[2]{\alpha} f(\alpha, \alpha^*) O(\alpha, \alpha^*),
+\end{equation}
+we say $f(\alpha, \alpha^*)$ is a quasi-probability distribution function.
+Note that this definition even extends to the case 
+when we are in a mixed state instead of a pure state, 
+i.e. it is a unified treatment of both quantum noise and thermal noise.
+
+To plot the function as a 2D heatmap,
+it is often more convenient to change the coordinates into $\Re \alpha$ and $\Im \alpha$.
+Note that we have 
+\begin{equation}
+    \comm*{\Re a}{\Im a} = \frac{1}{4 \ii} \comm*{a + a^\dagger}{a - a^\dagger}
+    = \frac{\ii}{2},
+\end{equation}
+and according to the uncertainty principle, we have 
+\begin{equation}
+    \Delta (\Re a) \cdot \Delta (\Im a) \geq \frac{1}{4}.
+    \label{eq:re-im-fluctuation}
+\end{equation}
+Another frequent convention is to define 
+\begin{equation}
+    a = \frac{1}{\sqrt{2}} (X + \ii P), \quad 
+    a^\dagger = \frac{1}{\sqrt{2}} (X - \ii P),
+    \label{eq:xy-to-a}
+\end{equation}
+and we find 
+\begin{equation}
+    \comm*{X}{P} = \frac{\ii}{2} \comm*{a + a^\dagger}{a - a^\dagger} = \ii.
+\end{equation}
+Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation.
 
 \begin{figure}
     \centering
@@ -201,65 +266,27 @@ in a prevalent phase measurement scheme using interferometer.
     $S(r\ee^{\ii \theta}) \ket{0}$.
     The diagram is adapted from Fig. 2.8 in \cite{scully1999quantum}.
     }
+    \label{fig:wigner-example}
 \end{figure}
 
-In linear quantum optics, we have 
+The most famous quasi-probability distribution is probably the \concept{Wigner function},
+and it is the quasi-probability distribution used in this report.
+The Wigner function of a density matrix $\rho$ (which is $\dyad{\psi}$ for a pure state) 
+is defined as \cite{scully1999quantum}
 \begin{equation}
-    H = \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2
-    = \sum_{k} \omega_k \left( a^\dagger_k a_k + \frac{1}{2} \right),
+    W(x, p)=\frac{1}{\pi \hbar} \int_{-\infty}^{\infty}\langle x-y|{\rho}| x+y\rangle e^{-2 \ii p y / \hbar} \dd y,
 \end{equation}
-where $k$ is the label of optical normal modes.
-It is the momentum and polarization in a large box, 
-and in an spherical optical cavity, it labels spherical harmonics.
-We have the standard bosonic commutation relations 
-\begin{equation}
-    \comm*{a_k}{a_{k'}} = 0, \quad \comm*{a_k}{a^\dagger_{k'}} = \delta_{k k'}.
-\end{equation}
+and we can use \eqref{eq:xy-to-a} to define $W(\alpha, \alpha^*)$ and hence $W(\Re \alpha, \Im \alpha)$.
 
-As is known in quantum mechanics,
-the wave function characterizes the state of the system,
-but cannot be measured directly.
-One way to visualize a quantum state -- and therefore the quantum noise in it --
-is the so-called quasi-probability distribution functions.
-For one mode, if $a$ and $a^\dagger$ in an arbitrary operator $O$ is ordered according to a certain convention
-($a$ before $a^\dagger$, or $a^\dagger$ before $a$, 
-or whenever multiplication appears, it is in the form of $(a^\dagger a + a a^\dagger) / 2$), 
-we have 
-\begin{equation}
-    \expval*{O(a, a^\dagger)} = \int \dd[2]{\alpha} f(\alpha, \alpha^*) O(\alpha, \alpha^*),
-\end{equation}
-we say $f(\alpha, \alpha^*)$ is a quasi-probability distribution function.
-Note that this definition even extends to the case 
-when we are in a mixed state instead of a pure state, 
-i.e. it is a unified treatment of both quantum noise and thermal noise.
-
-The most famous quasi-probability distribution
-
-To plot the function as a 2D heatmap,
-it is often more convenient to change the coordinates into $\Re \alpha$ and $\Im \alpha$.
-Note that we have 
-\begin{equation}
-    \comm*{\Re a}{\Im a} = \frac{1}{4 \ii} \comm*{a + a^\dagger}{a - a^\dagger}
-    = \frac{\ii}{2},
-\end{equation}
-and according to the uncertainty principle, we have 
-\begin{equation}
-    \Delta (\Re a) \cdot \Delta (\Im a) \geq \frac{1}{4}.
-\end{equation}
-This means not all two-variable functions can be a Wigner function:
-it cannot have too strong ``spatial resolution''.
-
-
-Another frequent convention is to define 
-\begin{equation}
-    a = \frac{1}{\sqrt{2}} (X + \ii P), \quad 
-    a^\dagger = \frac{1}{\sqrt{2}} (X - \ii P),
-\end{equation}
-and we find 
-\begin{equation}
-    \comm*{X}{P} = \frac{\ii}{2} \comm*{a + a^\dagger}{a - a^\dagger} = \ii.
-\end{equation}
-Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation.
+Some examples of pure state Wigner functions are given in \prettyref{fig:wigner-example}.
+\prettyref{fig:wigner-example}(a) is the Wigner function of the vacuum state:
+there is no photon, 
+and the distribution of probability is focused on $\alpha = 0$.
+Note that it is not a $\delta$-function,
+and is somehow ``blurred'':
+this is a visualization of \eqref{eq:re-im-fluctuation}.
+Not all two-variable functions can be a Wigner function:
+they cannot have too strong ``spatial resolution''.
 
 \section{Quantum noise in the Mach-Zehnder interferometer}\label{sec:interferometer}
 
@@ -271,7 +298,7 @@ Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation
 \end{figure}
 
 To have a concrete example of quantum noise, 
-let us move to the Mach-Zehnder interferometer,
+let us move to the \concept{Mach-Zehnder interferometer},
 illustrated in \prettyref{fig:mz-inter}.
 The interferometer contains two beam splitters, 
 two ideal mirrors, 
@@ -325,6 +352,8 @@ Then, the wave function is
     \end{aligned}
     \label{eq:out-state}
 \end{equation}
+Note that the state in $a_2$ subspace remains vacuum;
+it is a convention to call $a_2$ the \concept{dark port}.
 
 The next step is measurement.
 Usually, the influence of the sample to the light beam is small,
@@ -390,7 +419,7 @@ This actually makes sense,
 or otherwise we are faced with the problem 
 that an infinitely accurate continuous degree of freedom can store infinite bits of information.
 
-\section{Squeezing the quantum noise}\label{sec:squeezing}
+\section{The quantum noise as the fluctuation of the dark port}\label{sec:dark-port-analysis}
 
 One thing to keep in mind is \eqref{eq:relvar-n2} 
 is about the quantum noise of the photon number, not others.
@@ -485,7 +514,7 @@ and again due to the non-trivial commutation relation, we have
         &= \sqrt{
             \abs{\alpha}^2 \expval*{a_2 a_2^\dagger}
         } \\
-        &= \abs{\alpha} \sqrt{ 1 + a^\dagger_2 a_2 } = \abs{\alpha},
+        &= \abs{\alpha} \sqrt{ 1 + \expval*{a^\dagger_2 a_2} } = \abs{\alpha},
     \end{aligned}
 \end{equation}
 so 
@@ -494,16 +523,74 @@ so
 \end{equation}
 which is the small-angle approximation of \eqref{eq:stdvar-n2}.
 
-Note that \eqref{eq:nb2-single-mode} only concerns one mode now,
-and the quantum noise can also be read from the quasi-probability distribution,
-and indeed this leads us to design an appropriate quantum noise squeezing scheme.
-Redefining 
+Note that \eqref{eq:nb2-single-mode} can also be written as  
+\begin{equation}
+    \begin{aligned}
+        \Delta n_{b_2} &= \varphi \abs{\alpha} \Delta (\ee^{- \ii \varphi} a_2 - \ee^{\ii \varphi} a_2^\dagger)  \\
+        &= \varphi \abs{\alpha} \Delta ( - 2 \ii \sin \varphi \Re a_2 + 2 \ii \cos \varphi \Im a_2 ) \\
+        &= 2 \varphi \abs{\alpha} \Delta (- \sin \varphi \Re a_2 + \cos \varphi \Im a_2 ).
+    \end{aligned}
+\end{equation}
+The third line has a direct graphic meaning:
+it is proportion to the projection of the ``light spot'' in $W(\beta, \beta^*)$
+on the axis 
+\begin{equation}
+    \cos \varphi \Re \beta + \sin \varphi \Im \beta = 0.
+    \label{eq:measure-axis}
+\end{equation}
+This leads us to design an appropriate quantum noise squeezing scheme:
+if we can reduce the variance on this axis,
+while still keeping the conditions that $\varphi$ is small and 
+$\abs{\alpha}^2$ is large compared with the photon number expectation in the $a_2$ mode.
 
-Injecting a squeezed state into the dark port however does not improve 
+\section{Squeezing the quantum noise}\label{sec:squeezing}
+
+If we inject a squeezed state with parameter $r \ee^{\ii \theta}$ 
+into the dark port,
+and let it has narrowest variation in the axis defined by \eqref{eq:measure-axis}, 
+then we have 
+\begin{equation}
+    \frac{\theta}{2} + \frac{\pi}{2} = \varphi.
+    \label{eq:optimal-angle}
+\end{equation}
+This means if we increase $r$, 
+the relative error seen in $n_{b_2}$ changes as 
+\begin{equation}
+    \frac{\Delta n_{b_2}}{\expval*{n_{b_2}}} \approx \frac{1}{\abs{\alpha} \varphi} \ee^{-r}.
+    \label{eq:approx-squeezing}
+\end{equation}
+Despite the exponent function factor,
+injecting a squeezed state into the dark port however does not improve 
 the precision of Mach-Zehnder interferometer endlessly:
 when $\xi$ is very large,
 the particle number expectation of the $a_2$ mode is no longer ignorable,
 breaking one of the two conditions used to derive \eqref{eq:nb2-single-mode}.
+This is illustrated in \prettyref{fig:squeezing},
+where $\alpha = 2$, $\varphi = \pi / 10$,
+and \eqref{eq:optimal-angle} is followed.
+The initial difference between two plots arises because of the error between $\varphi$ and $\sin \varphi$;
+it can be seen that as $r$ exceeds 0.15,
+the shapes of the two curves becomes different,
+and in reality, increasing $r$ further actually increases the relative error on $n_{b_2}$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{plots/squeezing-error-measure-cutoff-30-phi-pi-10-alpha-2.pdf}
+    \caption{Example of squeezed quantum error: at $r = 0$ we have the standard quantum error.
+    Figure plotted using \texttt{QuantumOptics.jl} \cite{kramer2018quantumoptics}.
+    In the ``real'' plot, 
+    we calculate $\Delta n_{b_2}$ strictly by definition, 
+    i.e. on the tensor product of the $a_1$ subspace and the $a_2$ subspace.
+    The photon number cutoff for both spaces is 30,
+    and $\alpha$ is set to 2 so that $\abs{\alpha}^2$ is much smaller than the cutoff.
+    The ``approx.'' plot is drawn according to \prettyref{eq:approx-squeezing}.
+    }
+    \label{fig:squeezing}
+\end{figure}
+
+\section{Conclusion}
+
+This report 
 
 \bibliographystyle{plain}
 \bibliography{squeezing}
