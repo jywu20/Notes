@@ -11,7 +11,6 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
-\usepackage{cite}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{physics}
@@ -25,6 +24,8 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\bibliography{squeezing}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -113,7 +114,8 @@
 Noise usually arises from coupling with an unknown external object:
 when we keep our eyes only on one of the objects (the ``system''),
 we need to average over the state of the other (``the environment''),
-which corrects the theory with noise and dissipation \cite{zwanzig_nonequilibrium_2001}.
+which corrects the equation of motion of the system 
+with noise and dissipation \cite{zwanzig_nonequilibrium_2001}.
 When the full quantum treatment is needed,
 however, another type of noise appears:
 the state itself does not have a definite value of the observable in question, 
@@ -145,11 +147,11 @@ is $\simeq n = a^\dagger a \sim X^2$,
 and quantum noise appears in the measurement.
 People therefore sometimes say that 
 quantum noise comes from the zero point-energy.
-Of course, in some states, 
-the error on the $X$ degree of freedom -- or $P$, or some combination of them -- 
+Of course, by manipulating the quantum state, 
+the variance of the $X$ degree of freedom -- or $P$, or some combination of them -- 
 may be reduced,
-at the cost of larger error on other degrees of freedom.
-This is called ``squeezing'' of the error.
+at the cost of larger variances on other degrees of freedom.
+This is called ``squeezing'' of the quantum noise.
 
 % We may also consult this:
 % Quantum noise and quantum measurement
@@ -168,15 +170,19 @@ by injecting a squeezed state into the dark port.
 
 \section{Quantum optics states and quasi-probability distribution functions}\label{sec:overview-rep}
 
-
-
-In linear quantum optics, we have 
+In linear quantum optics, we have \cite{steck2007quantum} 
 \begin{equation}
-    H = \frac{1}{2} \epsilon_0 \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2
+    H = \frac{1}{2} \epsilon \vb*{E}^2 + \frac{1}{2 \mu} \vb*{B}^2
     = \sum_{k} \omega_k \left( a^\dagger_k a_k + \frac{1}{2} \right),
 \end{equation}
-where $k$ is the label of optical normal modes.
-It is the momentum and polarization in a large box, 
+where $k$ is the label of the optical normal mode $\vb*{f}_k$ and 
+\begin{equation}
+    \boldsymbol{E}=\sum_k \mathcal{E}_k \boldsymbol{f}_k a_k \mathrm{e}^{-\mathrm{i} \omega_k t}+\text { h.c., } 
+\end{equation}
+\begin{equation}
+    \mathcal{E}_k = \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} , \quad \frac{1}{V} \int \mathrm{d}^3 \boldsymbol{r} \boldsymbol{f}_{k'}^* \cdot \frac{\boldsymbol{\epsilon}}{\epsilon_0} \cdot \boldsymbol{f}_k =\delta_{k k'} .
+\end{equation}
+The label $k$ is the momentum and polarization in a large box, 
 and in an spherical optical cavity, it labels spherical harmonics.
 We have the standard bosonic commutation relations 
 \begin{equation}
@@ -233,12 +239,12 @@ Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation
     \end{subfigure}
     \begin{subfigure}{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{heatmaps/fock-state.pdf}
+        \includegraphics[width=\textwidth]{heatmaps/coherent-state2.pdf}
         \subcaption{}
     \end{subfigure}
     \begin{subfigure}{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{heatmaps/coherent-state2.pdf}
+        \includegraphics[width=\textwidth]{heatmaps/fock-state.pdf}
         \subcaption{}
     \end{subfigure}
     \begin{subfigure}{0.45\textwidth}
@@ -258,8 +264,8 @@ Here the $\sqrt{2}$ factor is simply there to normalize the commutation relation
     \caption{Wigner functions in quantum optics. 
     Figures are plotted using \texttt{QuantumOptics.jl} \cite{kramer2018quantumoptics}.
     (a) The Wigner function of the vacuum. Note that this is not a $\delta$-function located at $\alpha = 0$.
-    (b) The Wigner function of a single-photon state. Negative values occur.
-    (c) The Wigner function of $\ket{\alpha = 2 + 2\ii}$.
+    (b) The Wigner function of $\ket{\alpha = 2 + 2\ii}$.
+    (c) The Wigner function of a single-photon state. Negative values occur.
     (d) The Wigner function of $(\ket{\alpha = 2 + 2 \ii} + \ket{\alpha = - 2 - 2 \ii}) / \sqrt{2}$.
     (e) The Wigner function of $S(\ee^{\ii \frac{\pi}{3}}) \ket{0}$.
     (f) Schematic illustration of the Wigner function of a squeezed vacuum state
@@ -287,6 +293,44 @@ and is somehow ``blurred'':
 this is a visualization of \eqref{eq:re-im-fluctuation}.
 Not all two-variable functions can be a Wigner function:
 they cannot have too strong ``spatial resolution''.
+The vacuum state is a specific case of the family of \concept{coherent states}.
+A coherent state labeled by the complex parameter $\alpha$ is defined as 
+\begin{equation}
+    \ket{\alpha} = D(\alpha) \ket{0} = \ee^{\alpha a - \alpha^* a^\dagger} \ket{0},
+\end{equation}
+which is the quantum counterpart of a classical electric field $\vb*{E} = \alpha \vb*{f} \ee^{- \ii \omega t} + \text{c.c.}$,
+where $\vb*{f}$ is the mode function.
+\prettyref{fig:wigner-example}(d) is an example of a coherent state with $\alpha \neq 0$.
+\prettyref{fig:wigner-example}(c) and (d) 
+are Wigner functions of a Fock state (i.e. an eigenstate of $n = a^\dagger a$)
+and a superposition state of two coherent states.
+We have $\expval*{\vb*{E}} = 0$ for a Fock state,
+because $\expval*{a}{n} = 0$,
+but $\expval*{\vb*{E}^2} \neq 0$.
+\prettyref{fig:wigner-example}(d) is a prototypical ``cat'' state.
+Therefore both of them are all far from classical states,
+and correspondingly the Wigner functions of them have negative values,
+which is impossible for a classical probability distribution.
+\prettyref{fig:wigner-example}(e) is a ``squeezed vacuum''.
+To squeeze a state with the complex parameter $\xi$ means to apply 
+\begin{equation}
+    S(\xi) = \ee^{\frac{1}{2} (\xi^* a^2 - \xi (a^\dagger)^2)}
+\end{equation}
+to that state.
+The schematic Wigner function of a squeezed vacuum state 
+with parameter $\xi = r \ee^{\ii \theta}$
+is illustrated in \prettyref{fig:wigner-example}(f).
+It can be seen that with $S(\xi) \ket{0}$, 
+we have \cite{scully1999quantum}
+\begin{equation}
+    \Delta \left( \cos \frac{\theta}{2} \Re a  + \sin \frac{\theta}{2} \Im a \right)  = \frac{1}{2} \ee^{-r},
+    \label{eq:min-op-squeeze}
+\end{equation} 
+while 
+\begin{equation}
+    \Delta \left( \sin \frac{\theta}{2} \Re a - \cos \frac{\theta}{2} \Im a \right) = \frac{1}{2} \ee^{r}.
+\end{equation}
+
 
 \section{Quantum noise in the Mach-Zehnder interferometer}\label{sec:interferometer}
 
@@ -298,7 +342,7 @@ they cannot have too strong ``spatial resolution''.
 \end{figure}
 
 To have a concrete example of quantum noise, 
-let us move to the \concept{Mach-Zehnder interferometer},
+let us move to the \concept{Mach-Zehnder interferometer} \cite{caves_quantum-mechanical_1981},
 illustrated in \prettyref{fig:mz-inter}.
 The interferometer contains two beam splitters, 
 two ideal mirrors, 
@@ -383,41 +427,43 @@ So it can be seen that the relative uncertainty of the measurement is
     \frac{\Delta n_{b_2}}{\expval{n_{b_2}}} = \frac{1}{\abs{\alpha} \sin \varphi} = \frac{1}{\sqrt{n_{b_2}}}.
     \label{eq:relvar-n2}
 \end{equation}
-It can be seen from \eqref{eq:stdvar-n2} that this standard error comes from the commutation relation 
-\begin{equation}
-    \comm*{b_2}{b_2^\dagger} = 1,
-\end{equation}
+It can be seen from \eqref{eq:stdvar-n2} that this standard error comes from 
+the commutation relation $\comm*{b_2}{b_2^\dagger} = 1$,
 which, eventually, comes from the fact that $\vb*{E}$ and $\vb*{A}$ in electromagnetism don't commute.
 This is therefore a quantum noise.
 
-Of course, \eqref{eq:relvar-n2} can be systematically reduced by using stronger and stronger laser beams,
+Of course, \eqref{eq:relvar-n2} can be systematically reduced by increasing laser intensity,
 but then another problem occurs:
 in a real measurement setting,
 the detecting laser beam of course perturbs the sample,
-introducing another source of error.
-(For example, if the sample is an additional optical path,
+introducing another source of noise.
+For example, if the sample is an additional optical path,
 which is the case in gravitational wave detection,
 then the mirrors used will be heated
-and begin to have thermal vibration.)
+and begin to have thermal vibration as is described by the Langevin equation.
 In a classical theory,
-we can always use weaker and weaker laser beams to do the measurement,
-and do an extrapolation for the measured results
-to systematically reduce the perturbation of measurement to the system
-and get results as accurate as we want,
-but in the quantum theory,
-this results in stronger quantum noise.
+we can successively weaken the laser beam 
+and get an (in principle infinite) sequence of measurements,
+each term in which has smaller perturbation of the system,
+and the true value of the observable in question is the limit of this sequence.
+In the quantum theory,
+such a procedure no longer improves precision unboundedly:
+quantum noise is present even when experimental disturbance is ignorable \cite{scully_quantum_1991},  
+and weakened laser beam means higher relative error 
+introduced by the quantum noise.
 
 This leads to an astonishing fact:
 when quantum noise is present, 
 even in principle, 
-we still can't find a way to reduce the error as much as we want.
-There is a non-zero minimum error,
+arbitrarily reducing the noise is not possible.
+There is a non-zero minimum noise,
 which is met when $\abs{\alpha}$ strikes a balance 
 between the thermal fluctuation caused by large $\abs{\alpha}$
-and quantum noise caused by small $\abs{\alpha}$.
-This actually makes sense,
-or otherwise we are faced with the problem 
-that an infinitely accurate continuous degree of freedom can store infinite bits of information.
+and quantum noise caused by small $\abs{\alpha}$ \cite{caves_quantum-mechanical_1981}.
+
+%This actually makes sense,
+%or otherwise we are faced with the problem 
+%that an infinitely accurate continuous degree of freedom can store infinite bits of information.
 
 \section{The quantum noise as the fluctuation of the dark port}\label{sec:dark-port-analysis}
 
@@ -441,23 +487,14 @@ so we have
     \ket{\psi} = D_{a_1}(\alpha) f(a_2, a_2^\dagger) \ket{0},
     \label{eq:coherent-plus-squeeze}
 \end{equation}
-and squeezing $\Delta{n_{b_2}}$ therefore reduces to squeezing the quantum error of some operator in mode $a_2$.
+and squeezing $\Delta{n_{b_2}}$ therefore reduces to squeezing the quantum noise of some operator in mode $a_2$.
 
 From \eqref{eq:b-def-by-a}, we have 
 \begin{equation}
     n_{b_2} = b_2^\dagger b_2 = 
     \sin^2 \varphi a_1^\dagger a_1 + \cos^2 \varphi a_2^\dagger a_2
-    - \ii \sin \varphi \cos \varphi (a_1^\dagger a_2 - a_2^\dagger a_1),
+    - \ii \sin \varphi \cos \varphi (a_1^\dagger a_2 - a_2^\dagger a_1).
     \label{eq:nb2-a}
-\end{equation}
-and therefore 
-\begin{equation}
-    \begin{aligned}
-        n_{b2}^2 &= \sin^4 \varphi (a_1^\dagger a_1)^2 + \cos^4 \varphi (a_2^\dagger a_2)^2 - \sin^2 \varphi \cos^2 \varphi (a_1^\dagger a_2 - a_2^\dagger a_1)^2 + 2 \sin^2 \varphi \cos^2 \varphi a_1^\dagger a_1 a_2^\dagger a_2 \\
-        &\quad - \ii \sin \varphi \cos^3 \varphi \acomm*{a_2^\dagger a_2}{(a_1^\dagger a_2 - a_2^\dagger a_1)}
-        - \ii \sin^3 \varphi \cos \varphi \acomm*{a_1^\dagger a_1}{(a_1^\dagger a_2 - a_2^\dagger a_1)}.
-    \end{aligned}
-    \label{eq:nb2-sq-def}
 \end{equation}
 If we are sure the wave function takes the form of \eqref{eq:coherent-plus-squeeze},
 then all $a_1$ can be replaced by $\alpha$ in the above two equations.
@@ -465,7 +502,7 @@ Strictly speaking, before that we should first complete normal ordering of $a_1$
 because otherwise the non-trivial commutation relation of $a_1$ is ignored,
 and thus the quantum fluctuation of the $a_1$ mode is ignored.
 This however involves highly complicated calculation,
-because we need to do normal ordering for \eqref{eq:nb2-sq-def}.
+because we need to do normal ordering for $n_{b_2}^2$.
 
 A huge simplification 
 (and hence a neat explanation of the nature of the quantum noise in the interferometer) 
@@ -513,8 +550,8 @@ and again due to the non-trivial commutation relation, we have
         - \expval*{(\alpha^* a_2 - \alpha a_2^\dagger)}^2} } \\
         &= \sqrt{
             \abs{\alpha}^2 \expval*{a_2 a_2^\dagger}
-        } \\
-        &= \abs{\alpha} \sqrt{ 1 + \expval*{a^\dagger_2 a_2} } = \abs{\alpha},
+        } 
+        = \abs{\alpha} \sqrt{ 1 + \expval*{a^\dagger_2 a_2} } = \abs{\alpha},
     \end{aligned}
 \end{equation}
 so 
@@ -532,7 +569,8 @@ Note that \eqref{eq:nb2-single-mode} can also be written as
     \end{aligned}
 \end{equation}
 The third line has a direct graphic meaning:
-it is proportion to the projection of the ``light spot'' in $W(\beta, \beta^*)$
+it has the form of \eqref{eq:min-op-squeeze}
+and is proportion to the projection of the ``light spot'' in $W(\beta, \beta^*)$
 on the axis 
 \begin{equation}
     \cos \varphi \Re \beta + \sin \varphi \Im \beta = 0.
@@ -568,15 +606,17 @@ breaking one of the two conditions used to derive \eqref{eq:nb2-single-mode}.
 This is illustrated in \prettyref{fig:squeezing},
 where $\alpha = 2$, $\varphi = \pi / 10$,
 and \eqref{eq:optimal-angle} is followed.
-The initial difference between two plots arises because of the error between $\varphi$ and $\sin \varphi$;
+The initial difference between two plots arises because of the difference between $\varphi$ and $\sin \varphi$;
 it can be seen that as $r$ exceeds 0.15,
 the shapes of the two curves becomes different,
-and in reality, increasing $r$ further actually increases the relative error on $n_{b_2}$.
+and in reality, increasing $r$ further actually increases the noise of $n_{b_2}$.
+Full treatments of the output noise when the dark port receives a squeezed vacuum
+can be found in \cite{walls_quantum_2008,pezze_mach-zehnder_2008} and references therein.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{plots/squeezing-error-measure-cutoff-30-phi-pi-10-alpha-2.pdf}
-    \caption{Example of squeezed quantum error: at $r = 0$ we have the standard quantum error.
+    \caption{Example of squeezed quantum noise: at $r = 0$ we have the standard quantum limit.
     Figure plotted using \texttt{QuantumOptics.jl} \cite{kramer2018quantumoptics}.
     In the ``real'' plot, 
     we calculate $\Delta n_{b_2}$ strictly by definition, 
@@ -588,11 +628,19 @@ and in reality, increasing $r$ further actually increases the relative error on 
     \label{fig:squeezing}
 \end{figure}
 
-\section{Conclusion}
+\section{Discussion}
 
-This report 
+Squeezing of quantum noise has already been demonstrated experimentally \cite{xiao_precision_1987},
+and the breakdown of the squeezing scheme outlined above 
+can be avoided by extracting information from the fluctuation pattern of the output signal 
+\cite{pezze_mach-zehnder_2008}. 
+However, there is a further $1 / N$ ($\simeq 1 / \abs{\alpha}^2$) 
+quantum limit restricting the precision of interferometer:
+the Heisenberg limit \cite{giovannetti_quantum_2006}.
+Despite often being depicted as the ultimate quantum limit,
+by so-called nonlinear measurement, measurements beyond the Heisenberg limit are possible 
+\cite{napolitano_interaction-based_2011}.
 
-\bibliographystyle{plain}
-\bibliography{squeezing}
+\printbibliography
 
 \end{document}
