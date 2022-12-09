@@ -1,0 +1,167 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+%\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage[labelformat=simple]{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{dmft.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+%\preauthor{\vspace{-10pt}\begin{center}}
+%\postauthor{\par\end{center}}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\polylog}{\mathrm{Li}}
+\DeclareMathOperator{\arctanh}{\mathrm{arctanh}}
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\renewcommand\thesubfigure{(\alph{subfigure})}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newrefformat{subfig}{Fig.~\ref{#1}(\subref{#1})}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\title{DMRG overview}
+\author{Jinyuan Wu}
+
+\begin{document}
+    
+\maketitle
+
+\section{Introduction}
+
+Suppose we are to find the single-particle Green function 
+of a condensed matter system.
+The standard procedure is to find the irreducible self-energy $\Sigma$
+by Feynman diagram resummation
+(although there are subtleties 
+concerning the well-definedness and uniqueness of Feynman diagram resummation techniques 
+\cite{gunnarsson2017breakdown}).
+In strongly correlated systems,
+deciding diagrams with most contributions is generally hard,
+and brutal-force resummation proves intractable.
+
+If, however, it is found that the self-energy 
+(or two-particle vertex, or similar ``$n$-particle self-energy diagrams'')
+is highly local, 
+then in principle,
+it can be replicated in a \emph{few-body} model:
+suppose, for example, that $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
+when $\abs{\vb*{i} - \vb*{j}} \leq n$,
+then we can just choose a patch of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
+and integrate out the rest of electron modes,
+and in the resulting few-body model,
+$\Sigma_{\vb*{i} \vb*{j}}$ is exactly the same as in the original model.
+The main obstacle now is to decide the parameters in this new few-body model,
+which can be solved by adopting a self-consistent scheme:
+$\Sigma_{\vb*{i} \vb*{j}}$, together with the free part of the original model,
+decides the one-particle Green function,
+which then can be used to fit the parameters in the few-body model,
+and then the few-body model can be solved to update the self-energy.
+
+It can be seen that diagrammatically speaking, 
+this idea is also a resummation strategy,
+though here we pick up diagrams according to their locality,
+and \emph{all} diagrams, as long as they are local enough
+and fit in the ansatz of the form of the few-body model,
+are included when we solve the few-body model.
+This can also be seen as a mean-field approach,
+just like many other self-consistent Feynman diagram resummation strategies.
+Since the parameters in the few-body model may contain time explicitly,
+we may say what we are doing is a \emph{dynamic} mean-field theory.
+
+This report reviews 
+
+\section{DMFT for the Hubbard model}
+
+\printbibliography
+
+\end{document}
