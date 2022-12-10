@@ -109,7 +109,24 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
-\title{DMRG overview}
+% Displaying math, etc in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Dynamic mean-field theory and the like}
 \author{Jinyuan Wu}
 
 \begin{document}
@@ -136,7 +153,7 @@ then in principle,
 it can be replicated in a \emph{few-body} model:
 suppose, for example, that $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
 when $\abs{\vb*{i} - \vb*{j}} \leq n$,
-then we can just choose a patch of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
+then we can just choose a cluster of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
 and integrate out the rest of electron modes,
 and in the resulting few-body model,
 $\Sigma_{\vb*{i} \vb*{j}}$ is exactly the same as in the original model.
@@ -168,6 +185,9 @@ The single-site model can be instantiated by replacing $\mathcal{G}$ by a bath o
 and we get an Anderson impurity model.
 TODO: whether this is actually done in real calculation
 
+This approximation is exact in an infinite lattice \cite{PhysRevB.45.6479}.
+
+
 For Hubbard model, the interaction term in the few-body problem is exactly $U n_{\uparrow} n_{\downarrow}$,
 because it is strictly local and is not corrected 
 when electrons on other sites are integrated out.
@@ -182,21 +202,33 @@ a possible way is to use a Hubbard-Stratonovich transformation
 and use an auxiliary boson field to introduce the interaction.
 The resulting single-site model 
 is in an itinerant electron bath 
-and a bosonic bath.
+and a bosonic bath \cite{sun_extended_2002}.
 
-
-This approximation is exact in an infinite lattice \cite{PhysRevB.45.6479}.
-
-\section{Going beyond DMFT: the D$\Gamma$A}
-
-Unfortunately, in some scenarios the original DMFT is bound to fail.
+Unfortunately, in some scenarios the original single-site DMFT is bound to fail.
 This is exemplified in phrase transition,
 in which long-wavelength behaviors are highly important,
 and a strictly local $\Sigma$ cannot be the case.
 A possible direction of improvement is 
-to assume that $\Sigma$ is not local,
+to use a few-body dual Hamiltonian -- essentially a many-body impurity model
+-- involving a larger cluster of states 
+\cite{kotliar_cellular_2001,park_cluster_2008}.
+The main problem of this approach is the speed:
+the impurity model concerning a large impurity cluster has to be solved with high accuracy,
+and this is demanding for existing solvers 
+\cite{potthoff_cluster_2018,gull_continuous-time_2011}.
+Improvement can also be made by relaxing the strict locality condition for the self-energy,
+which leads to the dynamic vertex approximation approach introduced in the next section.
+
+\section{Going beyond DMFT: the D$\Gamma$A}
+
+In the dynamic vertex approximation (D$\Gamma$A),
+we assume that $\Sigma$ is not local,
 but the 2-particle vertex $\Gamma$ is local.
 The spatial-varying self-energy can then be calculated from $\Gamma$ by TODO
+
+\section{DMFT in \textit{ab initio} calculation}
+
+\section{Conclusion}
 
 \printbibliography
 
