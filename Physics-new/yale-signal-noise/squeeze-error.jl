@@ -4,8 +4,8 @@ using Plots
 using ProgressMeter
 using LaTeXStrings
 
-a1_space = FockBasis(30)
-a2_space = FockBasis(30)
+a1_space = FockBasis(50)
+a2_space = FockBasis(50)
 whole_space = a1_space ⊗ a2_space
 
 a1 = destroy(a1_space) ⊗ identityoperator(a2_space)
@@ -28,7 +28,7 @@ res = Float64[]
 
 rs = LinRange(0, 0.6, 100)
 
-α = 2 
+α = 5 
 
 @showprogress for r in rs
     ψ = S(polar(r, θ), a2, at2) * (coherentstate(a1_space, α) ⊗ coherentstate(a2_space, 0))
@@ -45,4 +45,5 @@ xlims!(p, (min(rs...), max(rs...)))
 xlabel!(p, L"r")
 ylabel!(p, L"\Delta n_{b_2} / \langle n_{b_2} \rangle")
 plot!(xs, 1 / (α * ϕ) * exp.(-xs), label = "approx.")
-#savefig(p, "squeezing-error-measure-cutoff-30-phi-pi-10-alpha-2.pdf")
+ylims!(p, (0, 1.1 * max(res...)))
+savefig(p, "squeezing-error-measure-cutoff-50-phi-pi-10-alpha-5.pdf")

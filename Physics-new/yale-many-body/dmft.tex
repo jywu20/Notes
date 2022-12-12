@@ -150,10 +150,10 @@ If, however, it is found that the self-energy
 (or two-particle vertex, or similar ``$n$-particle self-energy diagrams'')
 is highly local, 
 then in principle,
-it can be replicated in a \emph{few-body} model:
-suppose, for example, that $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
-when $\abs{\vb*{i} - \vb*{j}} \leq n$,
-then we can just choose a cluster of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
+it can be replicated in a \emph{few-body} model.
+Suppose, for example, that the real space self-energy $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
+when $\abs{\vb*{i} - \vb*{j}} \leq n$.
+Then we can just choose a cluster of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
 and integrate out the rest of electron modes,
 and in the resulting few-body model,
 $\Sigma_{\vb*{i} \vb*{j}}$ is exactly the same as in the original model.
@@ -166,33 +166,116 @@ and then the few-body model can be solved to update the self-energy.
 
 It can be seen that diagrammatically speaking, 
 this idea is also a resummation strategy,
-though here we pick up diagrams according to their locality,
+though here we pick up diagrams according to their \emph{locality} instead of structures,
 and \emph{all} diagrams, as long as they are local enough
-and fit in the ansatz of the form of the few-body model,
+(and fit in the ansatz of the few-body model),
 are included when we solve the few-body model.
 This can also be seen as a mean-field approach,
-just like many other self-consistent Feynman diagram resummation strategies.
+just like other self-consistent Feynman diagram resummation strategies.
 Since the parameters in the few-body model may contain time explicitly,
 we may say what we are doing is a \emph{dynamic} mean-field theory.
 
-This report reviews 
+This report reviews the development of dynamic mean-field theory (DMFT).
+The term \emph{dynamic mean-field theory} is usually reserved for 
+the most coarse approximation with a single-site cluster
+and a completely space-independent self-energy
+discussed in \prettyref{sec:dmft}.
+In \prettyref{sec:more}, we move beyond the simplest DMFT scheme 
+and increase the number of sites 
+and loose the locality requirement for the self-energy.
+\prettyref{sec:ab-initio}
+is about combining DMFT and \textit{ab initio} methods together.
 
-\section{DMFT for the Hubbard model}
+\section{DMFT for the Hubbard model}\label{sec:dmft}
 
-We map the 
+In this section we discuss DMFT for the Hubbard model
+\begin{equation}
+    H = - t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} c^\dagger_{\vb*{i} \sigma} c_{\vb*{j} \sigma} + \text{h.c.}
+    + U \sum_{\vb*{i}} n_{\vb*{i} \uparrow} n_{\vb*{j} \downarrow} - \mu N.
+\end{equation}
+The free part results in the imaginary time Green function
+\begin{equation}
+    G_{0}(\ii \omega_n, \vb*{k} \sigma) = G_0(\ii \omega_n, \vb*{k}) , 
+    \quad G_0(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}}},
+\end{equation}
+where $\varepsilon_{\vb*{k}}$ is the band structure of the tight-binding model part.
+Now we map the Hubbard model to a few-body theory.
+We keep only one site in the few-body theory
+and integrate out the rest, 
+and the final effective theory looks like
+\begin{equation}
+    S_{\text{single site}} = \int \dd{\tau} \dd{\tau'} 
+    \bar{c}(\tau) \mathcal{G}^{-1}(\tau - \tau') c(\tau') + U n_{\uparrow} n_{\downarrow}.
+\end{equation}
+The Green function $\mathcal{G}(\tau)$ is 
+$G_{0, \vb*{i} \vb*{i}}(\tau)$ corrected by the integrated out electronic degrees of freedom;
+the local interaction $U n_{\uparrow} n_{\downarrow}$ is not included in $\mathcal{G}$.
 
-The single-site model can be instantiated by replacing $\mathcal{G}$ by a bath of non-interactive electrons,
+The single-site model can be instantiated 
+by replacing $\mathcal{G}$ by a bath of non-interactive electrons,
 and we get an Anderson impurity model.
 TODO: whether this is actually done in real calculation
 
-This approximation is exact in an infinite lattice \cite{PhysRevB.45.6479}.
+We use $G_{\text{imp}}$ to refer to the interaction-corrected Green function in the impurity model.
+Note that by definition of the mapping, we have 
+$G_{\text{imp}}(\ii \omega_n) = G_{\vb*{i} \vb*{i}}(\ii \omega_n)$,
+and therefore 
+\begin{equation}
+    \frac{1}{\mathcal{G}(\ii \omega_n)^{-1} - \Sigma_{\text{imp}}} 
+    = {G}_{\text{imp}}(\ii \omega_n) = G_{\vb*{i} \vb*{i}}(\ii \omega_n)
+    = \frac{1}{N} \sum_{\vb*{k}} G(\ii \omega_n, \vb*{k})
+    = \frac{1}{N} \sum_{\vb*{k}} \frac{1}{\ii \omega_n - \epsilon_{\vb*{k}} - \Sigma(\ii \omega_n, \vb*{k})}.
+\end{equation}
+where $G$ is the fully corrected Green function in the Hubbard model.
 
+The above is all tautology and introduces no physical approximation.
+Now we impose the locality condition of the self-energy mentioned in the introduction:
+we assume the Hubbard model self-energy $\Sigma(\ii \omega_n, \vb*{k})$ 
+is highly localized in the real space,
+and therefore involves no $\vb*{k}$-dependence,
+and thus we immediately get 
+\begin{equation}
+    \Sigma_{\text{imp}} = \Sigma(\ii \omega_n \vb*{k}).
+\end{equation}
+This approximation is exact in an infinite lattice \cite{PhysRevB.45.6479},
+and therefore expectedly works better for bulk materials than monolayer materials.
+
+The cutoff gives us a self-consistent calculation scheme:
+first using $G_0$ (known) and $\Sigma_{\text{imp}}$ (from last iteration), we have 
+\begin{equation}
+    G(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}} - \Sigma_{\text{imp}}(\ii \omega_n)},
+\end{equation}
+and then we calculate $G_{\vb*{i} \vb*{i}}$ (essentially $G_{\text{imp}}$) by 
+\begin{equation}
+    G_{\vb*{i} \vb*{i}}(\ii \omega_n) = \frac{1}{N} \sum_{\vb*{k}} G(\ii \omega_n, \vb*{k}),
+\end{equation}
+and then $\mathcal{G}$ can be found by 
+\begin{equation}
+    \mathcal{G}(\ii \omega_n)^{-1} = G_{\vb*{i} \vb*{i}}(\ii \omega_n)^{-1} + \Sigma_{\text{imp}}(\ii \omega_n).
+\end{equation}
+Now the impurity model is fully determined,
+and with $U$ and $\mathcal{G}(\ii \omega_n)$, we solve the model and get $G_{\text{imp}}$.
+So now $G_{\text{imp}}$ is updated,
+and we can then find the updated $\Sigma_{\text{imp}}$, 
+and we go back to the starting point of the loop.
+
+Note that here $\Sigma_{\text{imp}}$ is \emph{not} calculated 
+using diagrammatic resummation techniques.
+Instead, we find $G_{\text{imp}}$ without explicitly mentioning $\Sigma_{\text{imp}}$ 
+in the impurity solver step, 
+and $\Sigma_{\text{imp}}$ is found \emph{after} $G_{\text{imp}}$ (and $\mathcal{G}$) is known.
+This guarantees enough accuracy of $\Sigma_{\text{imp}}$:
+if it is evaluated in the same way with, say, the $GW$ method,
+infinite diagrams are thrown away,
+but here \emph{all} Feynman diagrams contributing to $\Sigma_{\text{imp}}$ 
+-- and therefore $\Sigma(\ii \omega_n, \vb*{k})$ -- are taken into account;
+what is ignored is just their spatial independent parts.
 
 For Hubbard model, the interaction term in the few-body problem is exactly $U n_{\uparrow} n_{\downarrow}$,
 because it is strictly local and is not corrected 
 when electrons on other sites are integrated out.
 For models with nearest-neighbor interaction,
-this is no longer exact,
+this is no longer correct,
 because now integrating out other electron modes 
 means screening of the interaction.
 An even more important fact about models with repulsion between electrons from different sites 
@@ -203,6 +286,10 @@ and use an auxiliary boson field to introduce the interaction.
 The resulting single-site model 
 is in an itinerant electron bath 
 and a bosonic bath \cite{sun_extended_2002}.
+
+
+
+\section{Going beyond DMFT}\label{sec:more}
 
 Unfortunately, in some scenarios the original single-site DMFT is bound to fail.
 This is exemplified in phrase transition,
@@ -216,17 +303,46 @@ The main problem of this approach is the speed:
 the impurity model concerning a large impurity cluster has to be solved with high accuracy,
 and this is demanding for existing solvers 
 \cite{potthoff_cluster_2018,gull_continuous-time_2011}.
+
+\begin{figure}
+    \centering
+    \input{feynman/dga.tex}
+    \caption{
+        Finding the self-energy from the reducible vertex function \cite{bickers1991conserving}.
+        A diagram in the self-energy always starts with a Coulomb interaction vertex,
+        so all self-energy diagrams can be seen as a Coulomb vertex plus a 
+        four-leg diagram (a).
+        Here grey lines are external lines, 
+        which do not contribute propagator factors and merely provides a momentum value 
+        when the diagram is evaluated;
+        bold lines are lines with interaction correction,
+        like self-energy correction for electron lines.
+        When the four-leg diagram is disconnected, we only have two diagrams that are logically possible,
+        and we can find they are just the Hartree diagram and the Fock diagram,
+        and the propagators inside are modified by self-energy correction (b).
+        When there is at least one Coulomb interaction line connecting the upper lines and the lower lines 
+        of the four-leg diagram, the four legs have to be linked to four self-energy-corrected electron lines,
+        or otherwise the diagram is not well-formed.
+        Thus we find the sum of all diagrams besides diagrams in (b) 
+        is proportion to the reducible two-particle vertex diagram (c),
+        and (a) = (b) + (c) \cite{bickers1991conserving}.
+        Specifically, inserting (d) and (e) into the grey box in (c), 
+        we get a term in the screening correction 
+        (i.e. correction of the interaction line, or ``vacuum polarization'' in terms of particle physics)
+        and a term in the vertex correction.
+    }
+    \label{fig:dga}
+\end{figure}
+
 Improvement can also be made by relaxing the strict locality condition for the self-energy,
-which leads to the dynamic vertex approximation approach introduced in the next section.
-
-\section{Going beyond DMFT: the D$\Gamma$A}
-
+which leads to the dynamic vertex approximation.
 In the dynamic vertex approximation (D$\Gamma$A),
 we assume that $\Sigma$ is not local,
 but the 2-particle vertex $\Gamma$ is local.
-The spatial-varying self-energy can then be calculated from $\Gamma$ by TODO
+The spatial-varying self-energy can then be calculated from $\Gamma$
+(\prettyref{fig:dga}). 
 
-\section{DMFT in \textit{ab initio} calculation}
+\section{DMFT in \textit{ab initio} calculation}\label{sec:ab-initio}
 
 \section{Conclusion}
 

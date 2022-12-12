@@ -109,11 +109,122 @@
     
 \maketitle
 
-\paragraph{Lecture 21 Exercise 4} 
+\paragraph{Lecture 21 Exercise 1}
 
-\paragraph{Solution} That's not a paradox,
-because for the accumulated distribution for shots to be Gaussian,
-we need the probability distribution of the shots to be independent to each other.
-But this is not the case for a 
+\paragraph{Solution} The cumulants of te Poisson distribution can be found by 
+using the characteristic function.
+It is 
+\begin{equation}
+    \begin{aligned}
+        \varphi(t) = \expval{\ee^{\ii t n}} &= 
+        \sum_{n \geq 0} \ee^{\ii t n} \exp(-\expval{n}) \frac{\expval{n}^n}{n!}  \\
+        &= \exp(-\expval{n}) \sum_{n \geq 0} \frac{1}{n!} (\expval{n} \ee^{\ii t})^n  \\
+        &= \exp(-\expval{n}) \exp(\ee^{\ii t} \expval{n}) 
+        = \exp((\ee^{\ii t} - 1) \expval{n}),
+    \end{aligned}
+\end{equation}
+and therefore we have 
+\begin{equation}
+    \log \expval{\ee^{\ii t n}} = (\ee^{\ii t} - 1) \expval{n} = 
+    \expval{n} \ii t  + \expval{n} \frac{(\ii t)^2}{2!} + \expval{n} \frac{(\ii t)^3}{3!} + \cdots,
+\end{equation}
+and the $n$-th cumulant is the factor before $(\ii t)^n / n!$,
+so we find every cumulant of the Poisson distribution is $\expval{n}$.
+Specifically, we have $C_3 = C_4 = \expval{n}$.
+
+\paragraph{Lecture 21 Exercise 4} Isn't it a paradox that shot noise is not Gaussian noise despite the fact the distribution of shots in a long time interval tends towards a Gaussian distribution?
+
+\paragraph{Solution} This is not a paradox.
+What makes the construction of a Poisson distribution is 
+it can be seen as the sum of the number of photon between $t=0$ and $t = \Delta t$,
+the number of photon between $t = \Delta t$ and $t = 2 \Delta t$, \dots,
+and each term has a binominal distribution,
+so it seems we are summing up lots of independent variables 
+and should get a a Gaussian result.
+The problem here is the distribution of each term involves $\Delta t$:
+as $\Delta t = \text{total time} / N$ goes smaller,
+the probability that there is a photon occurring between $t = n \Delta t$ and $t = (n+1) \Delta t$ 
+also goes smaller.
+This breaks the condition of the central limit theorem,
+because the central limit theorem is about the sum 
+of ``fully encapsulated'' random variables which do not vary as we take the $N \to \infty$ limit.
+
+\paragraph{Lecture 22 Exercise 3}
+
+\paragraph{Solution} For method 2: 
+now by writing down the scattering matrix, we have
+\begin{equation}
+    \pmqty{A_1 \\ A_2} = \pmqty{\epsilon & - \ii  \\ - \ii  & \epsilon} 
+    \pmqty{ \dmat{\ee^{\ii \phi}, 1} } 
+    \pmqty{ \epsilon & \ii  \\ \ii  & \epsilon } \pmqty{A \\ B},
+\end{equation}
+and we have 
+\begin{equation}
+    A_1 = A + \ii \epsilon (\ee^{\ii \phi} - 1) B, \quad 
+    A_2 = - \ii \epsilon (\ee^{\ii \phi} - 1) A + \ee^{\ii \phi} B.
+\end{equation}
+% and therefore
+% \begin{equation}
+%     A_1^\dagger A_1 = A^\dagger A + \ii \epsilon (\ee^{\ii \phi} - 1) A^\dagger B + \text{h.c.},
+% \end{equation}
+% \begin{equation}
+%     A_2^\dagger A_2 = \ii \epsilon (1 - \ee^{\ii \phi}) A^\dagger B + \text{h.c.} + {B^\dagger} B,
+% \end{equation}
+% \begin{equation}
+%     D = A_1^\dagger A_1 - A_2^\dagger A_2 = A^\dagger A + 2 \ii \epsilon (\ee^{\ii \phi} - 1) A^\dagger B + \text{h.c.} - B^\dagger B,
+% \end{equation}
+% and 
+% \begin{equation}
+%     A_1^\dagger A_1 + A_2^\dagger A_2 = A^\dagger A + B^\dagger B.
+% \end{equation}
+Since $B$ mode is in vacuum, 
+the only operator that carries enough information about $\phi$
+is the amplitude of $A_2$.
+So there is no loss of information.
+The phase of $A_2$ is mainly determined by the $\ee^{\ii \phi} B$ part,
+and since $B$ is in vacuum,
+measuring it would be impossible.
+The amplitude and phase of $A_1$ are mainly determined by the $A$ part, 
+which tell nothing about $\phi$.
+
+For method 3: here the wave function of the system is just 
+\begin{equation}
+    \ket{\psi} = A^\dagger \ket{0} = \ii \ee^{\ii \phi / 2} 
+    \left( \sin \frac{\phi}{2} A_1^\dagger + \cos \frac{\phi}{2} A_2^\dagger \right)  \ket{0}.
+\end{equation}
+In the lecture we have already seen that measuring $I_1 + I_2$ tells nothing about $\phi$,
+and since a Fock state is ``squeezed in the particle number direction'',
+two phase-related operators in $A_1$ and $A_2$ modes also tell nothing about $\phi$.
+So there is no loss of information.
+
+\paragraph{Lecture 23 Exercise 1} 
+
+\paragraph{Solution} The relation between output and input quadratures is 
+\begin{equation}
+    \begin{aligned}
+        \frac{1}{\sqrt{2}} (a_{\text{out}} + a^\dagger_{\text{out}}) 
+        &= \frac{1}{\sqrt{2}} (a_{\text{in}} + a^\dagger_{\text{in}}) \cdot G, \\
+        \frac{1}{\sqrt{2} \ii} (a_{\text{out}} - a^\dagger_{\text{out}}) 
+        &= \frac{1}{\sqrt{2} \ii} (a_{\text{in}} - a^\dagger_{\text{in}}) \cdot \frac{1}{G}, \\
+    \end{aligned}
+\end{equation}
+and therefore 
+\begin{equation}
+    a_{\text{out}} = \frac{1}{2} \left( G + \frac{1}{G} \right) a_{\text{in}}
+    + \frac{1}{2} \left( G - \frac{1}{G} \right) a_{\text{in}}^\dagger,
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \comm*{a_{\text{out}}}{a^\dagger_{\text{out}}} 
+        &= \frac{1}{4} \left( G + \frac{1}{G} \right)^2 \comm{a_{\text{in}}}{a^\dagger_{\text{in}}} 
+        + \frac{1}{4} \left( G - \frac{1}{G} \right)^2 \comm{a_{\text{in}}^\dagger}{a_{\text{in}}} \\
+        &= \frac{1}{4} \cdot 4 = 1,
+    \end{aligned}
+\end{equation}
+and therefore an amplifier that amplifies one quadrature
+and desamplifies another is at least logically consistent,
+without the need to introduce another mode -- the noise -- coupled to $a$.
+So in principle such an amplifier can be noiseless.
 
 \end{document}
