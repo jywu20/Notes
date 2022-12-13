@@ -4,8 +4,9 @@ using Plots
 using ProgressMeter
 using LaTeXStrings
 
-a1_space = FockBasis(50)
-a2_space = FockBasis(50)
+cutoff_dim = 30
+a1_space = FockBasis(cutoff_dim)
+a2_space = FockBasis(cutoff_dim)
 whole_space = a1_space ⊗ a2_space
 
 a1 = destroy(a1_space) ⊗ identityoperator(a2_space)
@@ -13,7 +14,8 @@ at1 = create(a1_space) ⊗ identityoperator(a2_space)
 a2 = identityoperator(a1_space) ⊗ destroy(a2_space)
 at2 = identityoperator(a1_space) ⊗ create(a2_space)
 
-ϕ = π / 10
+ϕ_dividor = 10
+ϕ = π / ϕ_dividor
 bt1 = cos(ϕ) * at1 - im * sin(ϕ) * at2
 bt2 = im * sin(ϕ) * at1 - cos(ϕ) * at2
 b2 = -im * sin(ϕ) * a1 - cos(ϕ) * a2
@@ -21,14 +23,14 @@ nb2 = bt2 * b2
 
 S(ξ, a, at) = exp(dense(ξ' * a^2 - ξ * at^2) / 2)
 
-θ = 2ϕ - π 
+θ = 2ϕ + π 
 polar(r, θ) = r * cos(θ) + im * r * sin(θ)
 
 res = Float64[]
 
 rs = LinRange(0, 0.6, 100)
 
-α = 5 
+α = 3 
 
 @showprogress for r in rs
     ψ = S(polar(r, θ), a2, at2) * (coherentstate(a1_space, α) ⊗ coherentstate(a2_space, 0))
@@ -46,4 +48,4 @@ xlabel!(p, L"r")
 ylabel!(p, L"\Delta n_{b_2} / \langle n_{b_2} \rangle")
 plot!(xs, 1 / (α * ϕ) * exp.(-xs), label = "approx.")
 ylims!(p, (0, 1.1 * max(res...)))
-savefig(p, "squeezing-error-measure-cutoff-50-phi-pi-10-alpha-5.pdf")
+#savefig(p, "squeezing-error-measure-cutoff-$cutoff_dim-phi-pi-$ϕ_dividor-alpha-$α.pdf")
