@@ -42,10 +42,15 @@ rs = LinRange(0, 0.6, 100)
 end
 
 xs = rs |> collect
-p = plot(xs, res, label = "real")
+p = plot(xs, res, label = "real", 
+    xtickfontsize = 18,
+    ytickfontsize = 18,
+    legendfontsize = 18,
+    legend = :bottomleft,
+    foreground_color_legend = nothing)
 xlims!(p, (min(rs...), max(rs...)))
-xlabel!(p, L"r")
-ylabel!(p, L"\Delta n_{b_2} / \langle n_{b_2} \rangle")
+xlabel!(p, L"r", xguidefontsize = 20)
+ylabel!(p, L"\Delta n_{b_2} / \langle n_{b_2} \rangle", yguidefontsize = 20)
 plot!(xs, 1 / (α * ϕ) * exp.(-xs), label = "approx.")
 ylims!(p, (0, 1.1 * max(res...)))
-#savefig(p, "squeezing-error-measure-cutoff-$cutoff_dim-phi-pi-$ϕ_dividor-alpha-$α.pdf")
+savefig(p, "squeezing-error-measure-cutoff-$cutoff_dim-phi-pi-$ϕ_dividor-alpha-$α.pdf")
