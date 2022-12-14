@@ -33,9 +33,11 @@ p = heatmap(Reαs, Imαs, wigner_sampled,
     c = cmap, 
     clim = (-0.3, 0.3), 
     aspect_ratio=:equal, 
-    xlim = (Reα_min, Reα_max))
-xlabel!(p, L"\mathrm{Re} \alpha")
-ylabel!(p, L"\mathrm{Im} \alpha")
+    xlim = (Reα_min, Reα_max),
+    xtickfontsize = 18,
+    ytickfontsize = 18)
+xlabel!(p, L"\mathrm{Re} \alpha", xguidefontsize = 19)
+ylabel!(p, L"\mathrm{Im} \alpha", yguidefontsize = 19)
 
 savefig(p, "fock-state.pdf")
 
@@ -66,9 +68,11 @@ p = heatmap(Reαs, Imαs, wigner_sampled,
     c = cmap, 
     clim = (-0.3, 0.3), 
     aspect_ratio=:equal,
-    xlim = (Reα_min, Reα_max),)
-xlabel!(p, L"\mathrm{Re} \alpha")
-ylabel!(p, L"\mathrm{Im} \alpha")
+    xlim = (Reα_min, Reα_max),
+    xtickfontsize = 18,
+    ytickfontsize = 18)
+xlabel!(p, L"\mathrm{Re} \alpha", xguidefontsize = 19)
+ylabel!(p, L"\mathrm{Im} \alpha", yguidefontsize = 19)
 
 savefig(p, "coherent-state.pdf")
 
@@ -102,9 +106,11 @@ p = heatmap(Reαs, Imαs, wigner_sampled,
     c = cmap, 
     clim = (-0.3, 0.3), 
     aspect_ratio=:equal,
-    xlim = (Reα_min, Reα_max),)
-xlabel!(p, L"\mathrm{Re} \alpha")
-ylabel!(p, L"\mathrm{Im} \alpha")
+    xlim = (Reα_min, Reα_max),
+    xtickfontsize = 18,
+    ytickfontsize = 18)
+xlabel!(p, L"\mathrm{Re} \alpha", xguidefontsize = 19)
+ylabel!(p, L"\mathrm{Im} \alpha", yguidefontsize = 19)
 
 savefig(p, "coherent-state2.pdf")
 
@@ -136,9 +142,11 @@ p = heatmap(Reαs, Imαs, wigner_sampled,
     c = cmap, 
     clim = (-0.3, 0.3), 
     aspect_ratio=:equal,
-    xlim = (Reα_min, Reα_max),)
-xlabel!(p, L"\mathrm{Re} \alpha")
-ylabel!(p, L"\mathrm{Im} \alpha")
+    xlim = (Reα_min, Reα_max),
+    xtickfontsize = 18,
+    ytickfontsize = 18)
+xlabel!(p, L"\mathrm{Re} \alpha", xguidefontsize = 19)
+ylabel!(p, L"\mathrm{Im} \alpha", yguidefontsize = 19)
 
 savefig(p, "squeezed-state.pdf")
 
@@ -169,9 +177,11 @@ p = heatmap(Reαs, Imαs, wigner_sampled,
     c = cmap, 
     clim = (-0.3, 0.3), 
     aspect_ratio=:equal,
-    xlim = (Reα_min, Reα_max),)
-xlabel!(p, L"\mathrm{Re} \alpha")
-ylabel!(p, L"\mathrm{Im} \alpha")
+    xlim = (Reα_min, Reα_max),
+    xtickfontsize = 18,
+    ytickfontsize = 18)
+xlabel!(p, L"\mathrm{Re} \alpha", xguidefontsize = 19)
+ylabel!(p, L"\mathrm{Im} \alpha", yguidefontsize = 19)
 
 savefig(p, "coherent-state-composition.pdf")
 

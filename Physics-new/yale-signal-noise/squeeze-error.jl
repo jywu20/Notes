@@ -4,7 +4,7 @@ using Plots
 using ProgressMeter
 using LaTeXStrings
 
-cutoff_dim = 30
+cutoff_dim = 50
 a1_space = FockBasis(cutoff_dim)
 a2_space = FockBasis(cutoff_dim)
 whole_space = a1_space ⊗ a2_space
@@ -30,7 +30,7 @@ res = Float64[]
 
 rs = LinRange(0, 0.6, 100)
 
-α = 3 
+α = 5 
 
 @showprogress for r in rs
     ψ = S(polar(r, θ), a2, at2) * (coherentstate(a1_space, α) ⊗ coherentstate(a2_space, 0))
