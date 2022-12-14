@@ -150,29 +150,32 @@ If, however, it is found that the self-energy
 (or two-particle vertex, or similar ``$n$-particle self-energy diagrams'')
 is highly local, 
 then in principle,
-it can be replicated in a \emph{few-body} model.
+it can be replicated in a \emph{few-body} model,
+although as we are going to see below,
+it is just formally few-body:
+its most natural form is better described as a \emph{many-body impurity model}.
 Suppose, for example, that the real space self-energy $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
 when $\abs{\vb*{i} - \vb*{j}} \leq n$.
 Then we can just choose a cluster of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
 and integrate out the rest of electron modes,
-and in the resulting few-body model,
+and in the resulting impurity model,
 $\Sigma_{\vb*{i} \vb*{j}}$ is exactly the same as in the original model.
-The main obstacle now is to decide the parameters in this new few-body model,
+The main obstacle now is to decide the parameters in this new impurity model,
 which can be solved by adopting a self-consistent scheme:
 $\Sigma_{\vb*{i} \vb*{j}}$, together with the free part of the original model,
 decides the one-particle Green function,
-which then can be used to fit the parameters in the few-body model,
-and then the few-body model can be solved to update the self-energy.
+which then can be used to fit the parameters in the impurity model,
+and then the impurity model can be solved to update the self-energy.
 
 It can be seen that diagrammatically speaking, 
 this idea is also a resummation strategy,
 though here we pick up diagrams according to their \emph{locality} instead of structures,
-and \emph{all} diagrams, as long as they are local enough
-(and fit in the ansatz of the few-body model),
-are included when we solve the few-body model.
+and the local parts of \emph{all} diagrams, 
+as long as they fit in the ansatz of the impurity model,
+are included when we solve the impurity model.
 This can also be seen as a mean-field approach,
 just like other self-consistent Feynman diagram resummation strategies.
-Since the parameters in the few-body model may contain time explicitly,
+Since the parameters in the impurity model may contain time explicitly,
 we may say what we are doing is a \emph{dynamic} mean-field theory.
 
 This report reviews the development of dynamic mean-field theory (DMFT).
@@ -188,6 +191,8 @@ is about combining DMFT and \textit{ab initio} methods together.
 
 \section{DMFT for the Hubbard model}\label{sec:dmft}
 
+\subsection{Duality between the Hubbard model and the Anderson impurity model}
+
 In this section we discuss DMFT for the Hubbard model
 \begin{equation}
     H = - t \sum_{\pair{\vb*{i}, \vb*{j}}, \sigma} c^\dagger_{\vb*{i} \sigma} c_{\vb*{j} \sigma} + \text{h.c.}
@@ -196,25 +201,67 @@ In this section we discuss DMFT for the Hubbard model
 The free part results in the imaginary time Green function
 \begin{equation}
     G_{0}(\ii \omega_n, \vb*{k} \sigma) = G_0(\ii \omega_n, \vb*{k}) , 
-    \quad G_0(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}}},
+    \quad G_0(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}} + \mu},
 \end{equation}
 where $\varepsilon_{\vb*{k}}$ is the band structure of the tight-binding model part.
-Now we map the Hubbard model to a few-body theory.
-We keep only one site in the few-body theory
+Now we map the Hubbard model to an impurity theory.
+We keep only one site in the impurity theory
 and integrate out the rest, 
 and the final effective theory looks like
 \begin{equation}
-    S_{\text{single site}} = \int \dd{\tau} \dd{\tau'} 
-    \bar{c}(\tau) \mathcal{G}^{-1}(\tau - \tau') c(\tau') + U n_{\uparrow} n_{\downarrow}.
+    S_{\text{single site}} = 
+    - \int \dd{\tau} \int \dd{\tau'} \bar{c}(\tau) \mathcal{G}^{-1}(\tau - \tau') c(\tau') 
+    + \int \dd{\tau} U n_{\uparrow}(\tau) n_{\downarrow}(\tau).
+    \label{eq:single-site}
 \end{equation}
 The Green function $\mathcal{G}(\tau)$ is 
 $G_{0, \vb*{i} \vb*{i}}(\tau)$ corrected by the integrated out electronic degrees of freedom;
 the local interaction $U n_{\uparrow} n_{\downarrow}$ is not included in $\mathcal{G}$.
 
-The single-site model can be instantiated 
+Note that $\mathcal{G}$ can also be seen as a single-particle Green function 
+with self-energy correction,
+and therefore has the same structure of 
+a self-energy-corrected single-particle Green function,
+although its value is different from $G_{\vb*{i} \vb*{i}}$,
+because its self-energy is different from the self-energy of the whole Hubbard system,
+since the former only considers sites beside $\vb*{i}$
+while the latter considers all sites.
+Assuming the self-energy of $\mathcal{G}$ is well-behaved
+for Hilbert transformation \cite{georges1996dynamical},
+we write the structure of $\mathcal{G}$ as  
+\[
+    \mathcal{G}(\ii \omega_n)^{-1} = 
+    \ii \omega_n + \text{const.} + \int \dd{\epsilon} g(\epsilon) \frac{1}{\ii \omega_n - \epsilon},
+\]
+and this means the single-site model can be instantiated 
 by replacing $\mathcal{G}$ by a bath of non-interactive electrons,
-and we get an Anderson impurity model.
-TODO: whether this is actually done in real calculation
+the dispersion relations of which 
+are decided by poles of $\mathcal{G}$,
+and we get an Anderson impurity model
+\begin{equation}
+    H_{\text{Anderson}} = 
+    \underbrace{
+        \epsilon_0 \sum_\sigma c_{\sigma}^\dagger c_{\sigma}
+        + \sum_{\vb*{k}, \sigma} E_{\vb*{k}} d^\dagger_{\vb*{k} \sigma} d_{\vb*{k} \sigma}
+        + \sum_{\vb*{k}} (V_{\vb*{k}} d^\dagger_{\vb*{k} \sigma} c_{\sigma} + \text{h.c.})
+    }_{\simeq c^\dagger \mathcal{G} c}
+    + U n_{\uparrow} n_{\downarrow}.
+\end{equation}
+The structure of $\mathcal{G}$ is therefore 
+\begin{equation}
+    \mathcal{G} (\ii \omega_n) = \frac{1}{\ii \omega_n - \epsilon_0 - \Delta(\ii \omega_n)}, \quad 
+    \Delta(\ii \omega_n) = \sum_{\vb*{k}} \frac{\abs{V_{\vb*{k}}}^2}{\ii \omega_n - E_{\vb*{k}}}.
+\end{equation}
+Note that the influence of $U n_{\uparrow} n_{\downarrow}$ is not 
+accounted for by $\mathcal{G}$.
+Other Hamiltonian realizations of \eqref{eq:single-site} are of course possible
+\cite{georges1996dynamical}.
+Note that here $\Delta$ contains explicitly $\ii \omega_n$
+and therefore has retardation effects 
+in the real space.
+Therefore \eqref{eq:single-site} contains retardation,
+and this is an evidence why it is better to put it into 
+the form of a \emph{many-body} impurity model instead of a single-body model.
 
 We use $G_{\text{imp}}$ to refer to the interaction-corrected Green function in the impurity model.
 Note that by definition of the mapping, we have 
@@ -226,9 +273,15 @@ and therefore
     = \frac{1}{N} \sum_{\vb*{k}} G(\ii \omega_n, \vb*{k})
     = \frac{1}{N} \sum_{\vb*{k}} \frac{1}{\ii \omega_n - \epsilon_{\vb*{k}} - \Sigma(\ii \omega_n, \vb*{k})}.
 \end{equation}
-where $G$ is the fully corrected Green function in the Hubbard model.
+where $G$ is the fully corrected Green function in the Hubbard model,
+$\Sigma$ is the self-energy of the Hubbard model,
+and $\Sigma_{\text{imp}}$ is the self-energy correction to $\mathcal{G}$
+caused by $U n_{\uparrow} n_{\downarrow}$.
 
-The above is all tautology and introduces no physical approximation.
+\subsection{The self-energy locality condition}
+
+The mapping from a Hubbard model to an Anderson impurity model 
+involves no physical approximation.
 Now we impose the locality condition of the self-energy mentioned in the introduction:
 we assume the Hubbard model self-energy $\Sigma(\ii \omega_n, \vb*{k})$ 
 is highly localized in the real space,
@@ -236,14 +289,17 @@ and therefore involves no $\vb*{k}$-dependence,
 and thus we immediately get 
 \begin{equation}
     \Sigma_{\text{imp}} = \Sigma(\ii \omega_n \vb*{k}).
+    \label{eq:locality}
 \end{equation}
 This approximation is exact in an infinite lattice \cite{PhysRevB.45.6479},
 and therefore expectedly works better for bulk materials than monolayer materials.
 
-The cutoff gives us a self-consistent calculation scheme:
+\subsection{The self-consistent loop}
+
+The cutoff \eqref{eq:locality} gives us a self-consistent calculation scheme:
 first using $G_0$ (known) and $\Sigma_{\text{imp}}$ (from last iteration), we have 
 \begin{equation}
-    G(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}} - \Sigma_{\text{imp}}(\ii \omega_n)},
+    G(\ii \omega_n, \vb*{k}) = \frac{1}{\ii \omega_n - \varepsilon_{\vb*{k}} + \mu - \Sigma_{\text{imp}}(\ii \omega_n)},
 \end{equation}
 and then we calculate $G_{\vb*{i} \vb*{i}}$ (essentially $G_{\text{imp}}$) by 
 \begin{equation}
@@ -271,7 +327,7 @@ but here \emph{all} Feynman diagrams contributing to $\Sigma_{\text{imp}}$
 -- and therefore $\Sigma(\ii \omega_n, \vb*{k})$ -- are taken into account;
 what is ignored is just their spatial independent parts.
 
-For Hubbard model, the interaction term in the few-body problem is exactly $U n_{\uparrow} n_{\downarrow}$,
+For Hubbard model, the interaction term in the impurity problem is exactly $U n_{\uparrow} n_{\downarrow}$,
 because it is strictly local and is not corrected 
 when electrons on other sites are integrated out.
 For models with nearest-neighbor interaction,
@@ -296,8 +352,7 @@ This is exemplified in phrase transition,
 in which long-wavelength behaviors are highly important,
 and a strictly local $\Sigma$ cannot be the case.
 A possible direction of improvement is 
-to use a few-body dual Hamiltonian -- essentially a many-body impurity model
--- involving a larger cluster of states 
+to use an impurity dual Hamiltonian involving a larger cluster of states 
 \cite{kotliar_cellular_2001,park_cluster_2008}.
 The main problem of this approach is the speed:
 the impurity model concerning a large impurity cluster has to be solved with high accuracy,
@@ -343,6 +398,22 @@ The spatial-varying self-energy can then be calculated from $\Gamma$
 (\prettyref{fig:dga}). 
 
 \section{DMFT in \textit{ab initio} calculation}\label{sec:ab-initio}
+
+Specifically, Kohn-Sham density functional theory (DFT) 
+can also be formulated in this framework: 
+the Kohn-Sham orbitals are ``wave functions'' 
+appearing in the spectral representation of the one-particle Green function,
+and the exchange-correlation functional 
+is $\Phi$ in terms of the electron number density.
+In principle, 
+this means the exchange-correlation functional used in DFT
+can be improved systematically using Feynman diagrammatic techniques
+\cite{aryasetiawan2002total,gruning2006density},
+although the infamous semiconductor band gap problem
+persists even with an accurate functional,
+because we still need to consider the contribution of 
+energy functional discontinuity
+\cite{gruning2006density}.
 
 \section{Conclusion}
 
