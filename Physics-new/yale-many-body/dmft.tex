@@ -399,8 +399,39 @@ The spatial-varying self-energy can then be calculated from $\Gamma$
 
 \section{DMFT in \textit{ab initio} calculation}\label{sec:ab-initio}
 
+As is mentioned above, 
+DMFT (and even its improved versions)
+assumes strong locality conditions to the system,
+and therefore has inherent difficulties to capture itinerant behaviors.
+Common \textit{ab initio} band structure calculation approaches,
+including DFT and $GW$, 
+on the other hand, 
+do not capture localized behaviors.
+Mixing DFT or $GW$ with DMFT is therefore needed 
+for large-scale \textit{ab initio} simulation 
+of materials involving electron localization,
+or in other words, magnetism.
+
+All electronic structure calculation approaches that use the quasiparticle picture 
+can be summarized as an instance of the minimization problem 
+of the functional 
+\begin{equation}
+    \Omega[\mathbf{G}]= \Phi[\mathbf{G}]+\operatorname{Tr} \ln (-\mathbf{G})-\operatorname{Tr}\left(\left(\mathbf{G}_0^{-1}-\mathbf{G}^{-1}\right) \mathbf{G}\right)
+\end{equation}
+with respect to the matrix form of the renormalized Green function $G$,
+where $\Omega$ is the grand potential
+and equals to $E - \mu N$ at $T = 0$, 
+and the Luttinger-Ward functional $\Phi$ 
+is the sum of of all closed, irreducible, and renormalized skeleton diagrams,
+and we have 
+\begin{equation}
+    \mathbf{\Sigma} = \fdv{\Omega}{\mathbf{G}}, 
+\end{equation}
+so $\Phi$ and $\Omega$ are some kinds of generating functionals
+\cite{PhysRev.118.1417,potthoff2003self}.
+
 Specifically, Kohn-Sham density functional theory (DFT) 
-can also be formulated in this framework: 
+can be formulated in the framework of Luttinger-Ward functional: 
 the Kohn-Sham orbitals are ``wave functions'' 
 appearing in the spectral representation of the one-particle Green function,
 and the exchange-correlation functional 
@@ -410,12 +441,31 @@ this means the exchange-correlation functional used in DFT
 can be improved systematically using Feynman diagrammatic techniques
 \cite{aryasetiawan2002total,gruning2006density},
 although the infamous semiconductor band gap problem
-persists even with an accurate functional,
+persists even with an accurate functional
+(and actually becomes worse because now there is no cancellation of errors),
 because we still need to consider the contribution of 
 energy functional discontinuity
 \cite{gruning2006density}.
 
-\section{Conclusion}
+On the other hand, the DMFT version of $\Phi$ is 
+\begin{equation}
+    \Phi = \sum \Phi[G_{\text{imp}}],
+\end{equation}
+which is exact when $G$ is indeed completely localized.
+Therefore to mix DMFT with DFT, 
+we need to replace the part in $\Phi_{\text{DFT}}$ that could be better described by DMFT,
+and the resulting Luttinger-Ward functional is 
+\begin{equation}
+    \Phi[G] = \Phi_{\text{DFT}}[G] + \Phi_{\text{DMFT}}[G] - \Phi_{\text{DC}}[G],
+\end{equation}
+where DC means double-counting \cite{haule2015free}.
+
+\section{Conclusion and discussion}
+
+The point of DMFT is to fully utilize the locality in strongly-correlated magnetic systems,
+and hence map an intractable problem into 
+a hard yet tractable impurity problem.
+
 
 \printbibliography
 
