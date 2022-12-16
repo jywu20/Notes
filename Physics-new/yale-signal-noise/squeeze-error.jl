@@ -23,7 +23,8 @@ nb2 = bt2 * b2
 
 S(ξ, a, at) = exp(dense(ξ' * a^2 - ξ * at^2) / 2)
 
-θ = 2ϕ + π 
+φ = 0
+θ = 2φ + π 
 polar(r, θ) = r * cos(θ) + im * r * sin(θ)
 
 res = Float64[]
