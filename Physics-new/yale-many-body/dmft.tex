@@ -133,27 +133,38 @@
     
 \maketitle
 
+\begin{abstract}
+    Mapping a highly localized many-body strongly correlated electronic system 
+    to an impurity problem is possible,
+    which motivates the development of DMFT
+    as a numerical approach to such systems.
+    This report reviews the theory foundation of DMFT,
+    its improved versions, and DFT+DMFT and $GW$+DMFT \textit{ab initio} methods.
+\end{abstract}
+
 \section{Introduction}
 
 Suppose we are to find the single-particle Green function 
 of a condensed matter system.
 The standard procedure is to find the irreducible self-energy $\Sigma$
-by Feynman diagram resummation
-(although there are subtleties 
-concerning the well-definedness and uniqueness of Feynman diagram resummation techniques 
-\cite{PhysRevLett.119.056402,PhysRevLett.114.156402}).
+by Feynman diagram resummation.
 In strongly correlated systems,
 deciding diagrams with most contributions is generally hard,
 and brutal-force resummation proves intractable.
+Besides, there are subtleties 
+concerning the well-definedness and uniqueness of Feynman diagram resummation techniques.
+When dealing with truly strongly correlated systems,
+attention should be paid to avoiding going into an unphysical branch 
+\cite{PhysRevLett.119.056402,PhysRevLett.114.156402}.
 
 If, however, it is found that the self-energy 
 (or two-particle vertex, or similar ``$n$-particle self-energy diagrams'')
 is highly local, 
 then in principle,
-it can be replicated in a \emph{few-body} model,
-although as we are going to see below,
-it is just formally few-body:
-its most natural form is better described as a \emph{many-body impurity model}.
+the self-energy can be replicated in a \emph{few-body} model,
+or as we are going to see below,
+a \emph{many-body impurity model}
+in Hamiltonian formalism.
 Suppose, for example, that the real space self-energy $\Sigma_{\vb*{i} \vb*{j}}$ is only important 
 when $\abs{\vb*{i} - \vb*{j}} \leq n$.
 Then we can just choose a cluster of sites satisfying the $\abs{\vb*{i} - \vb*{j}} \leq n$ condition,
@@ -169,7 +180,7 @@ and then the impurity model can be solved to update the self-energy.
 
 It can be seen that diagrammatically speaking, 
 this idea is also a resummation strategy,
-though here we pick up diagrams according to their \emph{locality} instead of structures,
+though here we truncate diagrams according to their \emph{locality} instead of structures,
 and the local parts of \emph{all} diagrams, 
 as long as they fit in the ansatz of the impurity model,
 are included when we solve the impurity model.
@@ -310,7 +321,8 @@ and then $\mathcal{G}$ can be found by
     \mathcal{G}(\ii \omega_n)^{-1} = G_{\vb*{i} \vb*{i}}(\ii \omega_n)^{-1} + \Sigma_{\text{imp}}(\ii \omega_n).
 \end{equation}
 Now the impurity model is fully determined,
-and with $U$ and $\mathcal{G}(\ii \omega_n)$, we solve the model and get $G_{\text{imp}}$.
+and with $U$ and $\mathcal{G}(\ii \omega_n)$, 
+we solve the impurity model by calling an existing impurity solver and get $G_{\text{imp}}$.
 So now $G_{\text{imp}}$ is updated,
 and we can then find the updated $\Sigma_{\text{imp}}$, 
 and we go back to the starting point of the loop.
@@ -363,28 +375,17 @@ and this is demanding for existing solvers
     \centering
     \input{feynman/dga.tex}
     \caption{
-        Finding the self-energy from the reducible vertex function \cite{bickers1991conserving}.
-        A diagram in the self-energy always starts with a Coulomb interaction vertex,
-        so all self-energy diagrams can be seen as a Coulomb vertex plus a 
-        four-leg diagram (a).
+        Finding the self-energy from the reducible vertex function.
         Here grey lines are external lines, 
         which do not contribute propagator factors and merely provides a momentum value 
         when the diagram is evaluated;
         bold lines are lines with interaction correction,
         like self-energy correction for electron lines.
-        When the four-leg diagram is disconnected, we only have two diagrams that are logically possible,
-        and we can find they are just the Hartree diagram and the Fock diagram,
-        and the propagators inside are modified by self-energy correction (b).
-        When there is at least one Coulomb interaction line connecting the upper lines and the lower lines 
-        of the four-leg diagram, the four legs have to be linked to four self-energy-corrected electron lines,
-        or otherwise the diagram is not well-formed.
-        Thus we find the sum of all diagrams besides diagrams in (b) 
-        is proportion to the reducible two-particle vertex diagram (c),
-        and (a) = (b) + (c) \cite{bickers1991conserving}.
-        Specifically, inserting (d) and (e) into the grey box in (c), 
-        we get a term in the screening correction 
-        (i.e. correction of the interaction line, or ``vacuum polarization'' in terms of particle physics)
-        and a term in the vertex correction.
+        (a) The schematic illustration of the structure of all self-energy diagrams.
+        (b) Two simplest self-energy diagrams.
+        (c) The structure of all self-energy diagrams besides the two in (b).
+        The grey box is the two-particle irreducible vertex.
+        (d, e) Two examples of the content of the two-particle irreducible vertex.
     }
     \label{fig:dga}
 \end{figure}
@@ -393,9 +394,28 @@ Improvement can also be made by relaxing the strict locality condition for the s
 which leads to the dynamic vertex approximation.
 In the dynamic vertex approximation (D$\Gamma$A),
 we assume that $\Sigma$ is not local,
-but the 2-particle vertex $\Gamma$ is local.
-The spatial-varying self-energy can then be calculated from $\Gamma$
-(\prettyref{fig:dga}). 
+but the two-particle vertex $\Gamma$ is local.
+The spatial-varying self-energy can then be calculated from $\Gamma$ \cite{bickers1991conserving}.
+Consider \prettyref{fig:dga}(a):  
+a diagram in the self-energy always starts with a Coulomb interaction vertex,
+so all self-energy diagrams can be seen as a Coulomb vertex plus a four-legged diagram.
+When the four-legged diagram is disconnected, we only have two diagrams that are logically possible,
+and we can find they are just the Hartree diagram and the Fock diagram,
+and the propagators inside are modified by self-energy correction (\prettyref{fig:dga}(b)).
+When there is at least one Coulomb interaction line connecting the upper lines and the lower lines 
+of the four-leg diagram, the four legs have to be linked to four self-energy-corrected electron lines,
+or otherwise the diagram is not well-formed.
+Thus we find the sum of all diagrams besides diagrams in (b) 
+is proportion to the reducible two-particle vertex diagram (c),
+and (a) = (b) + (c) \cite{bickers1991conserving}.
+Specifically, the reducible two-particle vertex diagram contains two diagrams (d) and (e), 
+and they correspond to a term in the screening correction 
+(i.e. correction of the interaction line, or ``vacuum polarization'' in terms of particle physics)
+and a term in the vertex correction,
+both of which are expected self-energy diagrams.
+Thus, in D$\Gamma$A, we can self-consistently update the $\Gamma$ function, 
+i.e. the two-particle vertex function, 
+which already contains all the information of the single-electron self-energy.
 
 \section{DMFT in \textit{ab initio} calculation}\label{sec:ab-initio}
 
@@ -439,7 +459,7 @@ is $\Phi$ in terms of the electron number density.
 In principle, 
 this means the exchange-correlation functional used in DFT
 can be improved systematically using Feynman diagrammatic techniques
-\cite{aryasetiawan2002total,gruning2006density},
+\cite{aryasetiawan2002total,gruning2006density,haule2015free},
 although the infamous semiconductor band gap problem
 persists even with an accurate functional
 (and actually becomes worse because now there is no cancellation of errors),
@@ -449,23 +469,68 @@ energy functional discontinuity
 
 On the other hand, the DMFT version of $\Phi$ is 
 \begin{equation}
-    \Phi = \sum \Phi[G_{\text{imp}}],
+    \Phi = \sum_{\vb*{i}} \Phi^U_{\text{single site}}[G_{\text{imp}, \vb*{i}}],
+    \label{eq:phi-dmft-sum}
 \end{equation}
-which is exact when $G$ is indeed completely localized.
+in which we sum over all atoms in the crystal 
+to make $\Phi$ an extensive quantity,
+and indeed, we can show that when $d \to \infty$,
+\eqref{eq:phi-dmft-sum} is exact, 
+in order to justify DMFT in the $d \to \infty$ limit \cite{georges1996dynamical}.
 Therefore to mix DMFT with DFT, 
 we need to replace the part in $\Phi_{\text{DFT}}$ that could be better described by DMFT,
 and the resulting Luttinger-Ward functional is 
 \begin{equation}
-    \Phi[G] = \Phi_{\text{DFT}}[G] + \Phi_{\text{DMFT}}[G] - \Phi_{\text{DC}}[G],
+    \Phi[G] = \Phi_{\text{DFT}}[G] + \Phi_{\text{DMFT}}[G_{\text{loc}}] - \Phi_{\text{DC}}[G],
 \end{equation}
-where DC means double-counting \cite{haule2015free}.
+where the subscript loc means to replace $G_{\vb*{i} \vb*{j}}$ by $G_{\vb*{i} \vb*{i}}$, 
+and $\Phi_{\text{DC}}$ means double-counting and can be evaluated exactly \cite{haule2015exact},
+and the Hubbard $U$ can be calculated 
+by considering the Coulomb interaction screened by 
+electrons not governed by DMFT.
+Similarly, we can also design a $GW$+DMFT scheme,
+where 
+\begin{equation}
+    \Phi[G] = \Phi_{GW}[G] + \Phi_{\text{DMFT}}[G_{\text{loc}}] - \Phi_{\text{Hubbard } GW}[G_{\text{loc}}].
+\end{equation}
+Here the double counting term (the third term) can be evaluated more explicitly,
+because DMFT considers the local, Hubbard-like versions of all $GW$ diagrams,
+so to avoid double counting, 
+we can just skip these diagrams.
+The self-consistent equations can be found by taking the variation of these functionals.
 
 \section{Conclusion and discussion}
 
-The point of DMFT is to fully utilize the locality in strongly-correlated magnetic systems,
-and hence map an intractable problem into 
+Diagrammatic approaches in computational condensed matter physics 
+usually truncate diagrams 
+according to the number of interaction vertices (MP2, MP3) 
+or according to the structure of the diagrams (RPA, GW) \cite{ren2012random,bruneval2021gw}.
+DMFT, on the other hand, 
+utilizes the \emph{locality} condition,
+and hence maps an intractable many-body problem into 
 a hard yet tractable impurity problem.
+This makes it especially important for strongly-correlated magnetic systems,
+where itinerant behaviors are absent.
 
+Despite being a method originally designed for effective models,
+among other numerical approaches to strongly correlated electronic systems,
+DMFT is remarkable for operating well with \textit{ab initio} methods
+(DMRG also appears in \textit{ab initio} calculations, 
+but only for molecules \cite{baiardi2020density}).
+DFT+$U$ is another attempt to mix ideas from effective models to \textit{ab initio} calculation,
+but it only works well when the electrons remain itinerant \cite{pavarini2021solving}.
+DFT+DMFT, on the other hand, is able to capture electron localization.
+
+The bottleneck of DMFT seems to be the impurity solver,
+with new solvers still being reported and discussed
+\cite{weber2012augmented,ganahl2015efficient,PhysRevB.104.035160,de2019quantitative}.
+The existing approaches include 
+exact diagonalization, 
+quantum Monte Carlo, 
+another diagrammatic resummation scheme (this time for the impurity problem),
+and more.
+The development of DMFT is by no means finished,
+and further work is needed for achieving the balance between accuracy and speed.
 
 \printbibliography
 
