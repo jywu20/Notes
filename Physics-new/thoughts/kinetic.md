@@ -11,3 +11,9 @@ in this case what we get is a type of stable density excitations, and there are 
 of the excitations. In this way, the distribution function of the kinetic equation may be viewed
 as the density operator of the excitation, and formally we have quantized the kinetic equation.
 The process is more appropriately called (hydrodynamic) bosonization.
+
+# 2022.12.24
+
+Boltzmann equation in place of DMFT:
+
+https://core.ac.uk/download/pdf/162134219.pdf
