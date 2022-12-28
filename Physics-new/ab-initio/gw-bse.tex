@@ -21,6 +21,7 @@
 \usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{underscore}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
@@ -87,6 +88,12 @@
   keywordstyle=\color{blue}
 }
 
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
 % Reference formatting
 \newrefformat{fig}{Figure~\ref{#1}}
 
@@ -118,6 +125,9 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
 
 \title{$GW$ and BSE methods}
 \author{Jinyuan Wu}
@@ -127,6 +137,9 @@
 \maketitle
 
 \section{Diagrammatics}
+
+This section briefly goes through some tricky aspects of Feynman diagram techniques 
+that may seem puzzling when we do concrete calculations.
 
 \subsection{Infinitesimals}
 
@@ -195,13 +208,93 @@ because now something looking like \eqref{eq:v-light-rel} appears again.
 
 \section{Overview of $GW$}
 
+\subsection{What is $GW$}
 
-\subsection{One-shot $GW$}
+\subsection{Deriving formulas}
 
-In practice, one-shot $GW$ is usually preferred over self-consistent schemes.
-The point here is that GW neglects the vertex,
+\subsection{Discussion: what's missing in the Hartree-Fock approximation, then?}
+
+Note that there \emph{is} screening in self-consistent Hartree-Fock approximation:
+if we forget about the Fock term,
+then the Hartree approximation is essentially the same as Thomas-Fermi screening,
+which considers and only considers screening channels with respect to 
+\emph{density of electrons}, 
+i.e. ring diagrams.
+Then we add the Fock term,
+and in the Fock term, 
+there is still screening in the corrected propagator,
+but there is no screening in the Coulomb interaction line.
+(On the other hand, in the Hartree term,
+there shouldn't be any screening in the Coulomb interaction line,
+or otherwise we have double counting.)
+
+In this perspective, 
+$GW$ is completely natural:
+the next level of correction is just to correct the Coulomb interaction line,
+using the same ring diagrams that appear in the self-consistent Hartree term.
+
+
+\section{Accuracy of $GW$}
+
+\subsection{Diagonal or not}
+
+We know in the momentum space, we have 
+\begin{equation}
+    E^{\text{QP}}_{n \vb*{k}} = E^{0}_{n \vb*{k}} + \Sigma_{n \vb*{k}} (E^{\text{QP}}).
+    \label{eq:self-energy-correction}
+\end{equation}
+Here since $\Sigma$ depends on the corrected propagator,
+$E^\text{QP}_{n \vb*{k}}$ enters its expression.
+The cost of $GW$ calculation means we need to first do a DFT calculation 
+and feed this as the input of the $GW$ package 
+(the former usually mysteriously called the ``mean field'' step,
+though DFT isn't a mean-field approach -- it just looks like a mean-field one), 
+so \eqref{eq:self-energy-correction} now is 
+\begin{equation}
+    E^{\text{QP}}_{\vb*{k}} = E^{\text{KS}}_{\vb*{k}} + \Sigma_{\vb*{k}} (E^{\text{QP}}) - \Sigma^{\text{KS}}.
+    \label{eq:self-energy-correction-from-band}
+\end{equation}
+Here $\Sigma^{\text{KS}}$ is the so-called DFT self-energy,
+i.e. the Hartree potential plus the exchange-correlation potential.
+Note that here I don't insert band indices into the equation,
+because $\Sigma_{\vb*{k}}$ may mix different bands together,
+and \eqref{eq:self-energy-correction-from-band} is an equation about matrices,
+essentially a single-electron Schrodinger equation.
+It's first order approximation is
+\begin{equation}
+    E^{\text{QP}}_{n \vb*{k}} = E^{\text{KS}}_{n \vb*{k}} + 
+    \mel{\psi^{\text{KS}}_{n \vb*{k}}}{\Sigma (E^{\text{QP}}_{n \vb*{k}}) - \Sigma^{\text{KS}}}{\psi^{\text{KS}}_{n \vb*{k}}}.
+    \label{eq:self-energy-first-order}
+\end{equation}
+
+\subsection{Self-consistent or not}
+
+There are three iterative schemes.
+The first is the eigenvalue self-consistent scheme:
+It's just a self-consistent solver of \eqref{eq:self-energy-first-order}.
+In this case, we don't need off-diagonal elements,
+because they are not used in \eqref{eq:self-energy-first-order}.
+This scheme is mentioned in Section 3.3 in \cite{berkeleygw}.
+The second scheme takes the change of eigenvalues into account,
+and thus iteratively solves \eqref{eq:self-energy-correction-from-band}.
+In this case we need to take non-diagonal elements seriously \cite{faleev2004all,aguilera2013g}.
+In the third scheme, the form of $\Sigma$ itself is changed:
+Recall that we need an \shortcode{epsilon} step to calculate $\epsilon$ 
+and thus the screened interaction potential $W$, 
+and $\Sigma = \ii G W$. 
+This in general is not recommended,
+because we know $GW$ tends to widen the band gap,
+and sometimes as we iteratively update the band gap,
+it becomes too large.
+The origin of this overestimation of band gap is 
+that GW neglects the vertex,
 so iterative $GW$ only leads us towards the more and more inaccurate way. 
-Still, this only explains why iterative $GW$ is band 
+
+The non-self-consistent $G_0 W_0$ calculation proves to be a better choice empirically,
+if the initial DFT input is of good quality -- 
+and here there is another empirical observation that 
+sometimes LDA functional together with $G_0 W_0$ provides better results.
+Still, the argumentation provided above only explains why iterative $GW$ is bad, 
 but doesn't explain why one-shot $GW$ is good. 
 In other words, we need to know how certain factors 
 in the one-shot $GW$ scheme somehow makes up for 
@@ -216,15 +309,7 @@ The question, then, is why LDA in some cases works as well as BSE.
 The reason for this is because of the relation between the derivative discontinuity in DFT and electron-hole interaction kernel
 TODO: the relation with \cite{perdew1982density}
 
-
-\subsection{Deriving formulas}
-
-\subsection{Discussion: what's missing in the Hartree-Fock approximation, then?}
-
-
-\section{Accuracy of $GW$}
-
-\subsection{On so-called failure of $GW$}
+\subsection{On so-called failure of $GW$ and convergence issues}
 
 Some (weak-correlated, of course) materials are claimed to be impossible 
 to be characterized correctly using $GW$,
@@ -232,9 +317,163 @@ or at least $G^0 W^0$.
 \cite{shih2010quasiparticle} refutes such a claim, 
 at least for \ce{ZnO}.
 
-\subsection{Convergence issues}
+The root for this seems to be poor convergence test:
+people often use insufficient number of bands, etc.
 
 See https://www.nersc.gov/assets/Uploads/ConvergenceinBGW.pdf
+
+\section{The QuantumESPRESSO-BerkeleyGW work flow}
+
+\subsection{Input and output of \shortcode{pw}}
+
+\subsection{Input and output of \shortcode{epsilon}}
+
+\section{Standard operation procedures}
+
+\subsection{Insulator}
+
+\subsection{When we get a semimetal in the DFT step but it should be an insulator \dots}
+
+Naively feeding the semimetal result into BerkeleyGW 
+may result in errors in 
+\prettyref{sec:semimetal-error-1} and \prettyref{sec:segment-fault-1}.
+
+\section{Performance tricks}
+
+\subsection{Choosing cutoff energies wisely}
+
+\subsection{\shortcode{pseudobands}}
+
+\section{Trouble shooting in QuantumEspresso}
+
+\subsection{\shortcode{Error in routine allocate_fft (1): wrong ngms}}
+
+I'm still not quite sure what causes this error,
+but it seems to be related to parallelization:
+in a run with 2240 MPI tasks, 
+the error occurred,
+but when I used 320 MPI tasks,
+the error disappeared.
+
+\subsection{\shortcode{Error reading attribute index : expected integer , found *}}
+
+This error occurs when we use a pseudopotential 
+that is obtained by converting another pseudopotential in a different format
+(see \href{https://lists.quantum-espresso.org/pipermail/users/2021-February/046995.html}{here}). 
+Usually we don't need to ``correct'' it.
+
+\subsection{\shortcode{cdiaghg (159): eigenvectors failed to converge}}
+
+Usually by changing \shortcode{diagonalization} to \shortcode{cg},
+this can be solved; 
+\shortcode{cg} is more stable but much slower.
+
+\subsection{\shortcode{Error in routine  cdiaghg (1052):  problems computing cholesky}}
+
+This also seems to be a convergence problem 
+that can be solved by changing \shortcode{diagonalization} to \shortcode{cg}.
+
+\section{Trouble shooting in \shortcode{epsilon} and \shortcode{sigma}}
+
+\subsection{\shortcode{Error in routine PW2BGW(19):input pw2bow}}
+
+Usually this occurs when something else happens between a \shortcode{bands} run 
+and a \shortcode{pw2bgw} run for it.
+A complete \shortcode{bands}-\shortcode{pw2bgw} run has to be redone.
+
+\subsection{\shortcode{Selected number of bands breaks degenerate subspace.}}
+
+Run \shortcode{degeneracy_check.x WFN} to see degeneracy-allowed number of bands.
+This error occurs when one band in a degeneracy subspace is considered 
+but others are not.
+Also, the \shortcode{band_index_min} and \shortcode{band_index_max} parameters
+shouldn't be too close to \shortcode{vxc_diag_min} and \shortcode{vxc_diag_max}, 
+or the error occurs.
+
+\subsection{\shortcode{WFN ifmin/ifmax fields are inconsistent}}\label{sec:semimetal-error-1}
+
+The full message is 
+\begin{lstlisting}
+    WFN ifmin/ifmax fields are inconsistent:
+     - there is a valence state above the middle energy
+     - there is a conduction state below the middle energy
+    Possible causes are:
+    (1) Your k-point sampling is too coarse and cannot resolve the Fermi energy.
+     Try to carefully inspect your mean-field energies, and consider using a finer 
+    k-grid.
+    (2) You are using eqp.dat and the QP corrections change the character of some s
+    tates
+     from valence<->conduction. In this case, you should use another mean-field the
+    ory
+     that gives the same ground state as your GW calculation.
+    (3) You are running inteqp, but you are either shifting the Fermi energy or usi
+    ng 
+     restricted transformation.   
+\end{lstlisting}
+This occurs when BerkeleyGW expects an insulator but gets a metal.
+TODO: so what to do???
+
+\subsection{\shortcode{Segmentation fault: address not mapped to object at address}}\label{sec:segment-fault-1}
+
+The root of this error differs from case to case.
+If we see 
+\begin{lstlisting}
+    q-pt      2: Head of Epsilon         =                       NaN                      NaN    
+    q-pt      2: Epsilon(2,2)            =                       NaN                      NaN    
+\end{lstlisting}
+usually this means a ``divided-by-zero'' error occurs.
+
+\subsection{\shortcode{eqpcor mean-field energy mismatch}}
+
+This error happens when we try to do an eigenvalue self-consistent calculation,
+and \shortcode{epsilon} finds the DFT energies given in \shortcode{eqp.dat} 
+are different from the energies in \shortcode{WFN}.
+This sometimes is a technical problem 
+(the Rydberg energy definitions used in QuantumESPRESSO and BerkeleyGW are slightly different),
+and can be solved by increasing \shortcode{TOL_eqp} in the source code of BerkeleyGW.
+The error may also be reported 
+when the DFT energies in \shortcode{eqp.dat} are mistakenly changed
+(we should only change the column corresponding to the corrected energy).
+
+
+\subsection{\shortcode{ERROR: occupations (ifmax field) inconsistent between WFN and WFNq files.}}
+
+\begin{lstlisting}
+    ERROR: occupations (ifmax) inconsistent between WFN and WFNq files.
+    Remember that you should NOT use WFNq for metals and graphene.  
+\end{lstlisting}
+
+\section{Checklist for unexpected results}
+
+Sometimes the calculation ends successfully,
+but the result seems strange.
+Below are some checklists.
+
+\subsection{Band symmetry higher than the space group shown at the beginning of \shortcode{bands.out}}
+
+\begin{itemize}
+    \item Usually this is because of an approximate symmetry,
+    which is ignored by QuantumESPRESSO because its tolerance is very low.
+    \item Are all steps in the DFT calculation using the same crystal structure?
+\end{itemize}
+
+\subsection{Band structure looks strange}
+
+\begin{itemize}
+    \item Check the crystal structure: if it comes from relaxation,
+    does it converges?
+    \item For 2D materials, 
+    when we change the vacuum distance
+    and use crystal coordinates for atomic positions at the same time, 
+    always double check whether we scale the atomic positions correctly.
+    The formula is 
+    \begin{equation}
+        \text{new $z$ coordinate} = \frac{\text{old vacuum distance}}{\text{new vacuum distance}} \times \text{old $z$ coordinate}.
+    \end{equation}
+    \item Are all steps in the DFT calculation using the same crystal structure?
+    \item Is the Fermi energy correct? 
+    Sometimes we change the band structure but forget to change the Fermi energy used to plot bands.
+\end{itemize}
 
 \bibliographystyle{plain}
 \bibliography{gw,dft}

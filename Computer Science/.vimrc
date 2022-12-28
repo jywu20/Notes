@@ -27,7 +27,6 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
-" All of your Plugins must be added before the following line
 
 Plugin 'JuliaEditorSupport/julia-vim'
 
@@ -43,11 +42,22 @@ Plugin 'jistr/vim-nerdtree-tabs'
 
 Plugin 'vim-airline/vim-airline-themes'
 
+Plugin 'SirVer/ultisnips'
 
+Plugin 'miyakogi/conoline.vim'
+
+" Plugin 'rkulla/pydiction'
+
+" Plugin 'SirVer/ultisnips'
+
+" Plugin 'honza/vim-snippets'
+
+
+" All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
-colo desert
-syntax on
+
+
 " To ignore plugin indent changes, instead use:
 "Filetype plugin on
 "
@@ -61,11 +71,11 @@ syntax on
 " Put your non-Plugin stuff after this line
 "
 
-" Plugin 'rkulla/pydiction'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Plugin 'SirVer/ultisnips'
+colo desert    " Color scheme that works well in visual model
+syntax on
 
-" Plugin 'honza/vim-snippets'
 
 set number
 
@@ -75,9 +85,14 @@ autocmd VimEnter * NERDTree
 autocmd VimEnter * NERDTreeTabsOpen
 autocmd VimEnter * wincmd p
 
+" Make the cursor move to the next line/the previous line 
+" when it arrives at the end/the initial of this line
 set whichwrap+=<,>,h,l,[,]
 
-
+" Use up and down keys to move between 
+" lines in a soft-wrapped physical line
+nnoremap <expr> <Up>  (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> <Down> (v:count == 0 ? 'gj' : 'j')
 
 " Configurations for airline
 " @airline
@@ -96,3 +111,18 @@ let g:airline_theme='bubblegum' " theme
 let g:airline#extensions#tabline#fnamemod = ':.'
 let g:airline#extensions#tabline#fnamecollapse = 0
 let g:airline#extensions#tabline#fnamemod = ':t' " Show file name only in tabs
+
+
+" Configurations for code snippets
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+" let g:UltiSnipsEditSplit="vertical"
+
+" Highlighting the current line
+let g:conoline_color_normal_dark = 'guibg=#333333 guifg=#dddddd gui=None '
+                           \. 'ctermbg=black ctermfg=white'
+let g:conoline_color_insert_dark = 'guibg=black guifg=white gui=bold '
+                           \. 'ctermbg=grey ctermfg=white'
