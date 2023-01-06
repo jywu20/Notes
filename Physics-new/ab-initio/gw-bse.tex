@@ -264,7 +264,7 @@ Similarly, we define the corrected interaction line as
 because in this way, when there is no interaction corrections,
 we have 
 \begin{equation}
-    W = \frac{e^2}{r}.
+    W = \frac{e^2}{r} \eqqcolon v.
 \end{equation}
 
 \subsubsection{About ``antiparticles''}
@@ -501,6 +501,8 @@ and then fit the $H_{\text{eff}}$ according to the strength of scattering.
 
 \subsection{What is $GW$}
 
+\subsubsection{$GW$ is screened Hartree-Fock approximation}
+
 In short, $GW$ means 
 \begin{equation}
     \Sigma = \ii G W,
@@ -508,7 +510,7 @@ In short, $GW$ means
 where $G$ is the renormalized Green function,
 and $W$ is the renormalized (i.e. screened) Coulomb interaction.
 
-\subsection{Discussion: what's missing in the Hartree-Fock approximation, then?}
+\subsubsection{Discussion: what's missing in the Hartree-Fock approximation, then?}
 
 Note that there \emph{is} screening in self-consistent Hartree-Fock approximation:
 if we forget about the Fock term,
@@ -541,7 +543,7 @@ TODO:
     \end{equation}
     \item Why we say $\Sigma = V_{\text{xc}} + \Sigma - V_{\text{xc}}$?
     (see \cite{berkeleygw} p. 1271)
-    \item 
+    \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
 \end{itemize}
 
 \section{Accuracy of $GW$}
@@ -585,6 +587,9 @@ It's first order approximation is
     \mel{\psi^{\text{KS}}_{n \vb*{k}}}{\Sigma (E^{\text{QP}}_{n \vb*{k}}) - \Sigma^{\text{KS}}}{\psi^{\text{KS}}_{n \vb*{k}}}.
     \label{eq:self-energy-first-order}
 \end{equation}
+
+TODO: when doing iterative calculation, $V_{\text{H}}$ may no longer be the same between DFT and $GW$??
+So when doing iterative calculation, should we calculate ``the $GW$ $V_{\text{H}}$''?
 
 \subsection{Self-consistent or not}
 
@@ -659,22 +664,7 @@ while diagonalizing it is done in another step (\shortcode{absorption}).
 
 \subsection{\shortcode{epsilon}}
 
-\subsubsection{Output files}
-
-The \shortcode{epsilon} program generates the files mentioned in 
-\href{http://manual.berkeleygw.org/2.0/epsilon-overview/}{this page}.
-Note that \shortcode{eps0mat.h5} is \emph{not} $\epsilon$ from DFT orbitals!
-In steps after \shortcode{epsilon},
-screening obtained from DFT orbitals are not used;
-we only use $\epsilon$ from $GW$ orbitals.
-The file \shortcode{eps0mat.h5} is the $\epsilon$ around the $\Gamma$ point.
-Thus, in principle,
-we can calculate \shortcode{eps0mat.h5} and \shortcode{epsmat.h5}
-in two runs,
-and indeed this is the case when we deal with a metallic system
-(\prettyref{sec:metal-sop}).
-
-\subsubsection{Procedure and speed}
+\subsubsection{Procedure and speed}\label{sec:epsilon.procedure-speed}
 
 What \shortcode{epsilon} does, 
 as its name implies, is to calculate $\epsilon$ --
@@ -743,7 +733,7 @@ the time cost scales like $N^2$.
 The time cost of the third step -- the matrix inversion step -- 
 scales like $N^3$.
 
-\subsubsection{Divergence problems}
+\subsubsection{Divergence problems when $\vb*{q} \to 0$}
 
 When calculating $\epsilon_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega = 0)$,
 we notice that when $\vb*{G} = \vb*{G}' = 0$,
@@ -773,6 +763,56 @@ TODO: whether this is a numerical artifact or not
 To decide the constant $C$,
 very find description of the Fermi surface is needed,
 so we need a very fine $\vb*{k}$-grid.
+On the other hand, 
+we don't really need many bands,
+because for the metal $\epsilon_{\vb*{0} \vb*{0}} (\vb*{q} \to \vb*{0}, \omega = 0)$,
+most of the relevant transitions are inter-band ones.
+
+\subsubsection{Console output}
+
+The console output of \shortcode{epsilon} has the following structure:
+\begin{enumerate}
+    \item Initialization
+    \item Iterating over the $\vb*{q}$-grid. For each $\vb*{q}$-point,
+    \begin{enumerate}
+        \item  The output starts with something like
+        \begin{lstlisting}
+====================================================================== 
+ 13:59:21   Dealing with q =  0.000000  0.500000  0.000000      5 / 35
+======================================================================
+
+This is a regular non-zero q-point.
+        \end{lstlisting}
+        \item Then we can see lines about 
+        \shortcode{Rank of the polarizability matrix},
+        \shortcode{BLACS processor grid},
+        and \shortcode{Number of k-points in the irreducible BZ(q) (nrk)}.
+        \item Now we enter the first step mentioned in \prettyref{sec:epsilon.procedure-speed}.
+        The start line looks like
+        \begin{lstlisting}
+Started calculation of matrix elements with 324 transition(s) at 13:59:21.
+        \end{lstlisting}
+        \item TODO: what's the corresponding step of the following line:
+        \begin{lstlisting}
+Started building polarizability matrix with 320 processor(s) at 13:59:30.
+        \end{lstlisting}
+    \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Other output files}
+
+The \shortcode{epsilon} program generates the files mentioned in 
+\href{http://manual.berkeleygw.org/2.0/epsilon-overview/}{this page}.
+Note that \shortcode{eps0mat.h5} is \emph{not} $\epsilon$ from DFT orbitals!
+In steps after \shortcode{epsilon},
+screening obtained from DFT orbitals are not used;
+we only use $\epsilon$ from $GW$ orbitals.
+The file \shortcode{eps0mat.h5} is the $\epsilon$ around the $\Gamma$ point.
+Thus, in principle,
+we can calculate \shortcode{eps0mat.h5} and \shortcode{epsmat.h5}
+in two runs,
+and indeed this is the case when we deal with a metallic system
+(\prettyref{sec:metal-sop}).
 
 \subsection{Systems of units}
 
@@ -874,11 +914,11 @@ TODO
             \shortcode{wfng_dk1} to \shortcode{wfng_nk1} $\times$ \shortcode{qx}.
             Indeed, below is a part of the header of a \shortcode{WFN} file in \shortcode{2.2-wfnq}:
             \begin{lstlisting}
-                k-grid:   24  24   1
-                k-shifts:     0.000000    0.024000    0.000000
-                [ifmin = lowest occupied band, ifmax = highest occupied band, for each spin]
-                   Index         Coordinates (crystal)            Weight   Number of G-vectors     ifmin     ifmax
-                       1    0.000000    0.001000    0.000000    0.001736                 36275         1       120                
+k-grid:   24  24   1
+k-shifts:     0.000000    0.024000    0.000000
+[ifmin = lowest occupied band, ifmax = highest occupied band, for each spin]
+   Index         Coordinates (crystal)            Weight   Number of G-vectors     ifmin     ifmax
+       1    0.000000    0.001000    0.000000    0.001736                 36275         1       120                
             \end{lstlisting}
             It can be seen that the first $\vb*{k}$-point is displaced \shortcode{0.001}
             in the $y$ direction,
@@ -1058,6 +1098,10 @@ The standard operation procedure is listed here:
 \subsubsection{BSE level}
 
 \section{Performance tricks}
+
+\subsection{Parallelization}
+
+TODO: Do more MPI tasks already result in faster speed?
 
 \subsection{Choosing cutoff energies wisely}
 
@@ -1298,6 +1342,17 @@ Below are some checklists.
     (which may come from, say, wrong unit), 
     then naturally there is no band in the plot.
 \end{itemize}
+
+\subsection{Band plot is not continuous}
+
+This sometimes comes from BerkeleyGW's occasional misidentification of band index.
+That's to say, BerkeleyGW sometimes identifies the 100th band as the 101st band,
+the 101st band as the 102nd band, etc.
+To see whether this is the case,
+do a band plot using the DFT level data in \shortcode{2-sigma/inteqp/eqp.dat},
+and if discontinuity also appears here 
+(the scatter plot should be fine),
+then the problem of misidentification of band index occurs.
 
 \subsection{The size of band gap}\label{sec:band-gap-problem}
 
