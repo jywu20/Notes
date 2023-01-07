@@ -531,7 +531,13 @@ $GW$ is completely natural:
 the next level of correction is just to correct the Coulomb interaction line,
 using the same ring diagrams that appear in the self-consistent Hartree term.
 
-\subsection{Deriving formulas}
+\subsection{Relativistic effects}
+
+BerkeleyGW supports SOC calculation, 
+with the so-called fully relativistic mode 
+and the scalar relativistic mode \cite{barker2022spinor}.
+
+\subsection{Deriving important formulae}
 
 TODO: 
 \begin{itemize}
@@ -649,6 +655,9 @@ See https://www.nersc.gov/assets/Uploads/ConvergenceinBGW.pdf
 \section{The QuantumESPRESSO-BerkeleyGW ecosystem}
 
 \subsection{Overview of the pipeline}
+
+TODO: whether and how BerkeleyGW supports HSE06.
+See https://groups.google.com/a/berkeleygw.org/g/help/c/Pha8n4hyayo
 
 Note that the division of labor is different in the $GW$ step and the BSE step.
 The \shortcode{sigma} program doesn't really do diagonalization,
@@ -768,6 +777,19 @@ we don't really need many bands,
 because for the metal $\epsilon_{\vb*{0} \vb*{0}} (\vb*{q} \to \vb*{0}, \omega = 0)$,
 most of the relevant transitions are inter-band ones.
 
+\subsubsection{Frequency dependence of $\epsilon$}
+
+The $\epsilon_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$ matrix has frequency dependence.
+The fastest way to handle this is to calculate the $\omega = 0$ case only 
+and then find the plasmon frequency,
+and then, the $\epsilon_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$ curve 
+can be fitted using sum rules. TODO 
+
+The spectral function -- used in ARPES simulation -- 
+can't be accurately obtained just by the above mentioned method.
+Thus, \concept{full frequency} treatments are needed.
+A trick called \concept{static subspace} can speed up the process. TODO
+
 \subsubsection{Console output}
 
 The console output of \shortcode{epsilon} has the following structure:
@@ -820,7 +842,26 @@ TODO
 
 \section{Standard operation procedures}
 
-\subsection{Insulator}
+\subsection{Avoid data pollution}
+
+The follows are strongly recommended whenever modifying files:
+\begin{itemize}
+    \item Read out loud the \emph{directory} of the file being modified.
+    Are you mistakenly modify files in another directory?
+    \item When copying file from a folder to another,
+    similarly read out loud the name of the source and the target.
+    \item If a file is going to be overwritten,
+    make sure it's really no longer needed.
+    Whenever you have doubts, 
+    make backups.
+    \item 
+\end{itemize}
+
+\subsection{Structural relaxation}
+
+TODO: Wyckoff positions
+
+\subsection{Insulator DFT+$GW$+BSE}
 
 \subsubsection{The DFT stage}
 
@@ -1017,7 +1058,7 @@ k-shifts:     0.000000    0.024000    0.000000
     \end{enumerate}
 \end{enumerate}
 
-\subsection{Metal}\label{sec:metal-sop}
+\subsection{Metal DFT+$GW$+BSE}\label{sec:metal-sop}
 
 For metals, the $\vb*{q}$-displacement technique can no longer be used.
 The working procedure now is 
@@ -1097,6 +1138,11 @@ The standard operation procedure is listed here:
 
 \subsubsection{BSE level}
 
+\subsection{Energy self-consistent calculation}
+
+The \shortcode{epsilon} code has an option called \shortcode{eqp_corrections},
+which takes the 
+
 \section{Performance tricks}
 
 \subsection{Parallelization}
@@ -1167,7 +1213,7 @@ but the smearing parameter is not set.
 Note that this is \emph{not} restricted to Gaussian smearing:
 all smearing schemes are controlled by the \shortcode{degauss} parameter, 
 and when this parameter is not set, 
-the same error occurs..
+the error occurs.
 
 \subsection{\shortcode{Error in routine  splitwf (36197): wrong size for pwt}}
 
@@ -1231,12 +1277,14 @@ The root of this error differs from case to case.
 
 If we see 
 \begin{lstlisting}
-    q-pt      2: Head of Epsilon         =                       NaN                      NaN    
-    q-pt      2: Epsilon(2,2)            =                       NaN                      NaN    
+    q-pt      2: Head of Epsilon         =   NaN     NaN    
+    q-pt      2: Epsilon(2,2)            =   NaN     NaN    
 \end{lstlisting}
 usually this means a ``divided-by-zero'' error occurs.
-This may occur when the smearing type is \shortcode{code} or \shortcode{gaussian};
-changing the smearing type to, say, \shortcode{fermi-dirac} may solve the problem.
+This may occur when we incorrectly use the insulator procedure to calculate a metallic system 
+(as long as DFT thinks the system is metallic, the error has the potential to occur,
+regardless of whether the system is metallic after $GW$ correction),
+often regardless of the smearing type. 
 
 \subsection{\shortcode{eqpcor mean-field energy mismatch}}
 
@@ -1368,8 +1416,15 @@ DFT is infamous for underestimating the band gap.
 This is similar to \prettyref{sec:band-gap-problem}.
 
 Note that naively feeding the semimetal result into BerkeleyGW 
-may result in errors in 
-\prettyref{sec:semimetal-error-1} and \prettyref{sec:segment-fault-1}. TODO: what to do then
+while still using the insulator procedure
+may result in errors in \prettyref{sec:segment-fault-1}. 
+Naively using the \shortcode{eqp_correction} option 
+and shifting bands near the Fermi surface away from each other 
+leads to \prettyref{sec:semimetal-error-1},
+precisely because 
+``QP corrections'' (i.e. the energy shift manually added by me) 
+change the character of some states from valence to conduction.
+TODO: what to do then
 
 \bibliographystyle{plain}
 \bibliography{gw,dft}
