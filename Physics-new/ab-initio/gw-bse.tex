@@ -145,7 +145,7 @@
 
 \section{Preliminaries}
 
-\subsection{Diagrammatics}
+\subsection{Details in diagrammatics}
 
 This section briefly goes through some tricky aspects of Feynman diagram techniques 
 that may seem puzzling when we do concrete calculations.
@@ -391,17 +391,320 @@ and compared with the ground state, the energy of the hole is
 So, we may say a hole is the antiparticle of an electron,
 but when we talk about the former, 
 the latter is just a part of the background.
-Unlike the case of position,
-where the electron and the position are definitely two things,
+Unlike the case in particle physics,
+where the electron and the positron are definitely two things,
 the hole and the electron are basically two \emph{representations} of the \emph{same} thing.
 (But this doesn't make talking about ``annihilation between an electron and a hole'' nonsense,
-because we can always view a part of the Fermi ball as electrons )
+because in an annihilation-between-electron-and-hole process,
+the $n$ and $\vb*{k}$ numbers of the electron and the hole are different,
+so there is no problem of double counting the same mode in two representations, etc.)
 
 \subsubsection{Normalization}
 
 \begin{equation}
     \int_{-\infty}^\infty \ee^{\ii \omega t} \dd{t} 
 \end{equation}
+
+\subsection{Feynman rules for actual calculation}
+
+\subsubsection{In the free space}\label{sec:free-space}
+
+TODO: $n$ interaction line $\Rightarrow$ $n$ independent momenta,
+not all of which are on Coulomb interaction lines
+
+A large benefit of this formalism
+is it lifts the burden to worry about normalization concerning $\delta$-functions:
+no $\delta$-function appears in the rules now!
+
+\begin{equation}
+    v(\vb*{q}) = \frac{4\pi e^2}{\vb*{q}^2}.
+\end{equation}
+
+\subsubsection{In a crystal}
+
+There are several things that need attention concerning Feynman rules in condensed physics:
+\begin{itemize}
+    \item The propagator is no longer $1 / (\omega - \vb*{k}^2 / 2m)$, but 
+    $\propto \sum_{\vb*{k}} \psi_{n \vb*{k}}(\vb*{r}) \psi^*_{n \vb*{k}} (\vb*{r}') / (\omega - \xi_{n \vb*{k}})$;
+    \item The crystal momentum $\vb*{k}$ appears above. 
+    To carry out Feynman diagrammatic calculations in an actual computer,
+    a cutoff on the density of $\vb*{k}$ points is needed
+    (essentially, a cutoff on the size of the system $V$).
+    This means we should replace $\int \dd[3]{\vb*{k}} / 2\pi $
+    with properly normalized $\sum_{\vb*{k}}$,
+    where $\vb*{k}$ goes over the discretely infinite $\vb*{k}$-grid.
+    \item Usually we limit all momenta to the \concept{first Brillouin zone (1BZ)}, 
+    and therefore a sum over an unbounded momentum variable $\vb*{k}$ or $\vb*{q}$
+    has to be recast into $\sum_{\vb*{G}} \sum_{\vb*{k}} f(\vb*{k} + \vb*{G})$.
+\end{itemize}
+
+Below I describe a set of Feynman rules that are compatible with the notation in \cite{hybertsen1986electron}.
+Note that there is no controversy over 
+normalization in the \emph{real space} Feynman diagrams:
+although the inner structure of $G(1, 2)$ has changed in the presence of the crystal potential, 
+its relation with other diagrammatic components as abstract entities 
+is never changed.
+Thus, starting from the space-in-real-space-and-time-in-frequency-space formalism may be a good idea:
+the free-space momentum formalism 
+however is an important reference for normalization constants.
+In the space-in-real-space-and-time-in-frequency-space formalism,
+in a diagram containing $n$ Coulomb interaction lines,
+the variables summed over are $n$ frequency variables,
+and $2n$ space variables,
+and we just need to do 
+\begin{equation}
+    \int \frac{\dd{\omega}_1}{2\pi} \cdots \int \frac{\dd{\omega}_n}{2\pi} 
+    \int \dd[3]{\vb*{r}_1} \cdots \int \dd[3]{\vb*{r}_{2n}}.
+\end{equation}
+
+We choose a normalization scheme for $\psi_{n \vb*{k}}$ such that 
+\begin{equation}
+    c^\dagger_{n \vb*{k}} = \int \dd[3]{\vb*{r}} 
+    \underbrace{\ee^{\ii \vb*{k} \cdot \vb*{r}} u_{n \vb*{k}}(\vb*{r})}_{\psi_{n \vb*{k}}} 
+    \psi^\dagger(\vb*{r}),
+    \quad \acomm*{c_{n \vb*{k}}}{c^\dagger_{n' \vb*{k}'}} = \delta_{n n'} \delta_{\vb*{k} \vb*{k}'},
+\end{equation}
+where $\psi^\dagger(\vb*{r})$ is the complex conjugate 
+of the non-relativistic electron field operator.
+This leads to the normalization condition 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \psi^*_{n \vb*{k}}(\vb*{r}) \psi_{n' \vb*{k}'}(\vb*{r}) 
+    = \delta_{n n'} \delta_{\vb*{k} \vb*{k}'},
+    \label{eq:orthogonal}
+\end{equation}
+and
+\begin{equation}
+    G(\vb*{r}, \vb*{r}', \omega) = \sum_{n, \vb*{k}} \frac{
+        \psi_{n \vb*{k}}(\vb*{r}) \psi^*_{n \vb*{k}}(\vb*{r}')
+    }{\omega - \xi_{n \vb*{k}} + \ii 0^+ \sgn(\omega)}.
+    \label{eq:green}
+\end{equation}
+In the free-electron case, 
+we expect 
+\begin{equation}
+    \psi_{n \vb*{k}}(\vb*{r}) = \frac{1}{\sqrt{V}} \ee^{\ii (\vb*{k} + \vb*{G}_n) \cdot \vb*{r}},
+\end{equation}
+and therefore (note that the only possibility for $\vb*{G}_n + \vb*{k}$
+to be equal to $\vb*{G}_{n'} + \vb*{k}'$
+is for $\vb*{G}_n$ to be $\vb*{G}_{n'}$
+and $\vb*{k}$ to be $\vb*{k}'$)
+\[
+    \text{LHS of \eqref{eq:orthogonal}} = 
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \ee^{\ii \vb*{r} (
+        - \vb*{G}_n - \vb*{k} + \vb*{G}_{n'} + \vb*{k}'
+    )} = 
+    \frac{1}{V} V \delta_{\vb*{G}_n + \vb*{k}, \vb*{G}_{n'} + \vb*{k}'} 
+    = \delta_{n n'} \delta_{\vb*{k} \vb*{k}'},
+\]
+and 
+\[
+    \begin{aligned}
+        \text{RHS of \eqref{eq:green}} &= 
+        \frac{1}{V} \sum_{n, \vb*{k}} 
+        \ee^{\ii (\vb*{k} + \vb*{G}_n) \cdot (\vb*{r} - \vb*{r}')} 
+        = \frac{1}{V} \sum_{\text{unbounded $\vb*{k}$}} 
+        \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')} \\
+        &= \int \frac{\dd[3]{\vb*{k}}}{(2\pi)^3}
+        \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')}
+        \eqqcolon \text{LHS of \eqref{eq:green}}, 
+    \end{aligned}
+\]
+so \eqref{eq:orthogonal} and \eqref{eq:green}
+go back to the free-space case.
+
+Now we consider what happens when we encounter a Coulomb interaction line.
+The structure in which a Coulomb interaction line is connected to four electron lines 
+gives rise to the following factor in the interpretation of the diagram:
+\begin{equation}
+    M = \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'}
+    \ii G(\vb*{r}_4, \vb*{r}, \omega_1) \ii G(\vb*{r}_3, \vb*{r}', \omega_2)
+    \ii G(\vb*{r}', \vb*{r}_2, \omega_3) \ii G(\vb*{r}, \vb*{r}_1, \omega_4)
+    (- \ii) v(\vb*{r} - \vb*{r}').
+\end{equation}
+Note that here $\omega_4$ is just a shorthand of $\omega_1 + \omega_2 - \omega_3$
+and this condition is \emph{not} imposed by a $\delta$-function factor
+according to the rules listed above for the free-space case
+(if we want to make this expression really symmetric, 
+we should add a $2\pi \delta(\sum \omega)$ factor,
+and let, say, $\int \dd{\omega_4} / 2\pi $ explicitly 
+impose the energy conservation condition for us).
+Inserting \eqref{eq:green} into the above expression,
+and using the definition 
+\begin{equation}
+    v(\vb*{r} - \vb*{r}') = \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} 
+    \ee^{\ii \vb*{p} \cdot (\vb*{r} - \vb*{r}')} v(\vb*{p}),
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        M &= \psi_4(\vb*{r}_4) \psi_3(\vb*{r}_3) \psi_2^*(\vb*{r}_2) \psi_1^*(\vb*{r}_1) \\
+        &\quad\quad \times 
+        \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} 
+        \sum_{1, 2, 3, 4}
+        \frac{\ii}{\omega_1 - \xi_4 + \ii 0^+ \sgn(\omega_1)}
+        \frac{\ii}{\omega_1 - \xi_3 + \ii 0^+ \sgn(\omega_2)} \\
+        &\quad\quad\quad \times 
+        \frac{\ii}{\omega_1 - \xi_2 + \ii 0^+ \sgn(\omega_3)}
+        \frac{\ii}{\omega_1 - \xi_1 + \ii 0^+ \sgn(\omega_4)} \\
+        &\quad\quad\quad \times
+        \int \dd[3]{\vb*{r}}  \psi_4^*(\vb*{r})  \psi_1(\vb*{r})  \ee^{\ii \vb*{q} \cdot \vb*{r}}
+        \int \dd[3]{\vb*{r}'} \psi_3^*(\vb*{r}') \psi_2(\vb*{r}') \ee^{- \ii \vb*{q} \cdot \vb*{r}'}
+        v(\vb*{q}),
+    \end{aligned}
+\end{equation}
+where the label 1, 2, etc. mean $(n_1, \vb*{k}_1), (n_2, \vb*{k}_2)$, etc.,
+which \emph{doesn't} contain $\omega$ variables.
+Since $V$ is always large enough, we have 
+\[
+    \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} = 
+    \frac{1}{V} \sum_{\vb*{G}} \sum_{\vb*{q}},
+\]
+and eventually we get 
+\begin{equation}
+    \begin{aligned}
+        M &= \psi_4(\vb*{r}_4) \psi_3(\vb*{r}_3) \psi_2^*(\vb*{r}_2) \psi_1^*(\vb*{r}_1) \\
+        &\quad\quad \times 
+        \frac{1}{V} \sum_{\vb*{G}} \sum_{\vb*{q}} \sum_{1, 2, 3, 4}
+        \frac{\ii}{\omega_1 - \xi_4 + \ii 0^+ \sgn(\omega_1)}
+        \frac{\ii}{\omega_1 - \xi_3 + \ii 0^+ \sgn(\omega_2)} \\
+        &\quad\quad\quad \times 
+        \frac{\ii}{\omega_1 - \xi_2 + \ii 0^+ \sgn(\omega_3)}
+        \frac{\ii}{\omega_1 - \xi_1 + \ii 0^+ \sgn(\omega_4)} \\
+        &\quad\quad\quad \times 
+        \mel{4}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{1}
+        \mel{3}{\ee^{ -\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{2}
+        v(\vb*{q} + \vb*{G}).
+    \end{aligned}
+\end{equation}
+The structure of this expression reveals the Feynman rules for a crystal:
+\begin{itemize}
+    \item For each external electron line, 
+    according to its direction, write down $\psi(\vb*{r})$ (outgoing)
+    or $\psi^*(\vb*{r})$ (incoming).
+    \item For each inner electron line, i.e. propagator, 
+    write down 
+    \begin{equation}
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+                \path (0,57);\path (86,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+                %Straight Lines [id:da8778734653821205] 
+                \draw    (5,30) -- (76.5,30) ;
+                \draw [shift={(44.55,30)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                % Text Node
+                \draw (40.75,23.5) node [anchor=south] [inner sep=0.75pt]    {$n,k$};
+                \end{tikzpicture}
+        \end{gathered} =
+        \frac{\ii}{\omega - \xi_{n\vb*{k}} + \ii 0^+ \sgn(\omega)} \eqqcolon \ii G_{n \vb*{k}}(\omega),
+    \end{equation}
+    where $k = (\omega, \vb*{k})$.
+    \item For each Coulomb interaction line, write 
+    \begin{equation}
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+                \path (0,57);\path (86,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+                %Straight Lines [id:da7824913889732596] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (5,30) -- (76.5,30) ;
+                % Text Node
+                \draw (40.75,23.5) node [anchor=south] [inner sep=0.75pt]    {$q,\vb*{G}$};
+            \end{tikzpicture}
+        \end{gathered} =
+        - \ii \frac{1}{V} v(\vb*{q} + \vb*{G})
+    \end{equation}
+    When an interaction line appears, 
+    enforce the momentum and energy conservation laws by hand.
+    That's so say, when you see 
+    \[
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+                \path (0,100);\path (116,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+                %Straight Lines [id:da579170844749016] 
+                \draw    (5,6.33) -- (25,51.17) ;
+                \draw [shift={(16.55,32.22)}, rotate = 245.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da5154922323826086] 
+                \draw    (25,51.17) -- (5,96) ;
+                \draw [shift={(13.45,77.05)}, rotate = 294.04] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da7202634438015314] 
+                \draw    (109,6.33) -- (89,51.17) ;
+                \draw [shift={(97.45,32.22)}, rotate = 294.04] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da7683644290809308] 
+                \draw    (89,51.17) -- (109,96) ;
+                \draw [shift={(100.55,77.05)}, rotate = 245.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da6934091808867988] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (25,51.17) -- (89,51.17) ;
+                % Text Node
+                \draw (23.5,6.5) node [anchor=north west][inner sep=0.75pt]    {$1$};
+                % Text Node
+                \draw (81,6.5) node [anchor=north west][inner sep=0.75pt]    {$2$};
+                % Text Node
+                \draw (81,67.5) node [anchor=north west][inner sep=0.75pt]    {$3$};
+                % Text Node
+                \draw (23.5,67.5) node [anchor=north west][inner sep=0.75pt]    {$4$};
+            \end{tikzpicture}  
+        \end{gathered},
+    \]
+    we need to replace $k_4$ by $k_1 + k_2 - k_3$ manually:
+    we just do a find-and-replace operation in the interpretation of this diagram.
+    We \emph{don't} integrate over $k_4$:
+    $k_4$ has already been replaced in every part of the interpretation of this diagram 
+    and is not an integration variable.
+    \item For each vertex -- here I mean 
+    the two-electron-line-one-dotted-line structure,
+    not the four-electron-line structure 
+    (i.e. not the diagrammatic component corresponding to $H_{\text{int}}$),
+    we write $\mel{\vb*{k}_{\text{out}}}{\ee^{\pm \ii (\vb*{q} + \vb*{G})}}{\vb*{k}_{\text{in}}}$.
+    The sign is decided by the direction of $\vb*{q}$.
+    The direction of $\vb*{q}$ doesn't matter:
+    we \emph{don't} sum over the two directions.
+    The value of $\vb*{q}$ is determined by the values of free momentum variables;
+    if $\vb*{q}$ is not selected as a free momentum variable, 
+    it shouldn't be integrated over.
+\end{itemize}
+
+Now we compare the above Feynman rules with 
+the momentum space Feynman rules in \prettyref{sec:free-space}.
+Note that here we distribute the space and time parts of $(2\pi)^4$ differently:
+the space part, $(2\pi)^3$,
+becomes $1/V$, because we replace $\int \dd[3]{\vb*{q}}$ by $\sum_{\vb*{G}} \sum_{\vb*{q}}$.
+
+Since there are $n$ free momentum variables 
+and $n$ Coulomb interaction lines, 
+we can attribute the $1/V$ factor to the interaction line,
+and we can also attribute it to the sum over $\vb*{q}$.
+In \cite{hybertsen1986electron}, 
+the $1/V$ factor comes together with $v(\vb*{q} + \vb*{G})$.
+Indeed, they define 
+\begin{equation}
+    v(\vb*{q} + \vb*{G}) = \frac{4\pi e^2}{V \abs{\vb*{q} + \vb*{G}}^2}.
+\end{equation}
+The time part, $2\pi$,
+now comes with integrations of $\omega$'s.
+Thus, a ring diagram should be interpreted as 
+\begin{equation}
+    \int \frac{\dd{\omega}}{2\pi} 
+    \ii G(\vb*{k}, \omega) \ii G(\vb*{q} - \vb*{k}, \omega_0 - \omega).
+\end{equation}
+
+Another way to make sense of the Feynman rules in this section is 
+to write down the Coulomb interaction Hamiltonian in the 
+crystal momentum representation
+before deriving Feynman rules.
+The interaction Hamiltonian -- the Coulomb repulsion Hamiltonian -- is 
+\begin{equation}
+    H = \sum_{1, 2, 3, 4} c^\dagger_4 c^\dagger_3 H_{4321} c_2 c_1,
+\end{equation}
+\begin{equation}
+    H_{4321} = \frac{1}{2} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'}
+    \braket*{4}{\vb*{r}} \braket*{3}{\vb*{r}'} \braket*{\vb*{r}'}{2} \braket*{\vb*{r}}{1}
+    v(\vb*{r} - \vb*{r}'),
+\end{equation}
+Now again invoking the Fourier transformation from $v(\vb*{r} - \vb*{r}')$ to $v(\vb*{q})$,
+and discretize the integration over $\vb*{q}$,
+the $1/V$ factor appears again.
+The $1/2$ prefactor is canceled in the same way it's canceled in the free-space case.
+
+\subsubsection{Summary of notation differences}
+
+
 
 \subsection{Quasiparticles}
 
@@ -508,7 +811,19 @@ In short, $GW$ means
     \Sigma = \ii G W,
 \end{equation}
 where $G$ is the renormalized Green function,
-and $W$ is the renormalized (i.e. screened) Coulomb interaction.
+and $W$ is the renormalized (i.e. screened) Coulomb interaction,
+which is 
+\begin{equation}
+    W = \frac{v}{\epsilon}.
+\end{equation}
+
+To write down 
+
+So (8) in \cite{berkeleygw} is wrong: 
+it misses the $1/V$ factor. 
+This leads to a ridiculous result: 
+as we increase the density of the $\vb*{k}$-grid,
+$\chi$ becomes larger and larger!
 
 \subsubsection{Discussion: what's missing in the Hartree-Fock approximation, then?}
 
@@ -1269,15 +1584,23 @@ The full message is
      restricted transformation.   
 \end{lstlisting}
 
-This occurs 
-sometimes when the \shortcode{occupation} option 
-in the \shortcode{2.1-wfn} and \shortcode{2.2-wfnq} steps 
-is not correct.
-If \shortcode{fixed} is used for a metal, for example, 
-some positions that should be a part of a hole Fermi pocket 
-are occupied by electrons,
-and therefore the highest occupied state has higher energy than the lowest unoccupied state.
-This usually means the smearing scheme needs to be changed.
+The direct causes of this error are already listed above.
+But it takes some time to see what is the deeper reason, 
+and how to solve it:
+\begin{itemize}
+    \item Sometimes when the \shortcode{occupation} option 
+    in the \shortcode{2.1-wfn} and \shortcode{2.2-wfnq} steps 
+    is not correct.
+    If \shortcode{fixed} is used for a metal, for example, 
+    some positions that should be a part of a hole Fermi pocket 
+    are occupied by electrons,
+    and therefore the highest occupied state has higher energy than the lowest unoccupied state.
+    This usually means the smearing scheme needs to be changed.
+    \item When you shift the occupation in a \shortcode{WFN} file (\prettyref{sec:unexpected-metal}), 
+    but forget to change the \shortcode{ifmax} dataset correspondingly, 
+    this error will also occur,
+    regardless of how you change the \shortcode{eqp.dat}.
+\end{itemize}
 
 \subsection{\shortcode{Segmentation fault: address not mapped to object at address}}\label{sec:segment-fault-1}
 
@@ -1352,9 +1675,38 @@ but forget to add \shortcode{screening_metal} to \shortcode{sigma.inp}.
 
 \subsection{\shortcode{cannot use metallic screening with q=0}}
 
+As the name implies, 
+when doing a metallic calculation,
+we need to make sure that the $\vb*{q} \to 0$ point 
+is the smallest \emph{non-zero} point in the dense $\vb*{k}$-grid 
+(\prettyref{sec:metal-sop}).
+
 \subsection{\shortcode{ERROR: genwf mpi: No match for rkq point}}
 
+\subsection{\shortcode{ERROR: Missing bands in file eqp_co.dat}}
 
+This happens when doing \shortcode{inteqp}.
+The origin of the error is just its name implies.
+Note that this error sometimes occurs for unnoticed reasons:
+\begin{itemize}
+    \item When the pseudopotential is changed, 
+    the number of bands may change,
+    because the orbitals included in the pseudopotentials change.
+    Now if \shortcode{band_index_max} and \shortcode{band_index_min}
+    are set according to the old pseudopotentials,
+    and the Fermi energy happens to fall outside of the range between the two,
+    the error occurs.
+\end{itemize}
+
+\subsection{\shortcode{forrtl: severe (71): integer divide by zero}}
+
+If this happens after \shortcode{Calculation parameters: },
+it may arise from mistakenly setting \shortcode{band_index_max}
+to a value smaller than \shortcode{band_index_min}.
+In this case, 
+the number of bands considered will be zero,
+and thus a divide-by-zero error occurs 
+when \shortcode{sigma.x} tries to distribute computational loads.
 
 \section{Checklist for unexpected results}
 
@@ -1401,6 +1753,10 @@ Below are some checklists.
 
 \subsection{Band plot is not continuous}
 
+TODO: it's $\vb*{k}$-points that are shuffled,
+or the band indices,
+or both???
+
 This sometimes comes from BerkeleyGW's occasional misidentification of band index.
 That's to say, BerkeleyGW sometimes identifies the 100th band as the 101st band,
 the 101st band as the 102nd band, etc.
@@ -1419,20 +1775,26 @@ DFT is infamous for underestimating the band gap.
     \item Let $GW$ correct the band structure. TODO: but how? How to avoid the error in \prettyref{sec:semimetal-error-1}?
 \end{itemize}
 
-\subsection{When we get a semimetal in the DFT step but it should be an insulator}
+\subsection{When we get a semimetal in the DFT step but it should be an insulator}\label{sec:unexpected-metal}
 
 This is similar to \prettyref{sec:band-gap-problem}.
 
 Note that naively feeding the semimetal result into BerkeleyGW 
 while still using the insulator procedure
 may result in errors in \prettyref{sec:segment-fault-1}. 
+
+One way to solve the problem is 
+to manually move the conduction bands and the valence bands away from each other.
 Naively using the \shortcode{eqp_correction} option 
 and shifting bands near the Fermi surface away from each other 
 leads to \prettyref{sec:semimetal-error-1},
 precisely because 
 ``QP corrections'' (i.e. the energy shift manually added by me) 
 change the character of some states from valence to conduction.
-TODO: what to do then
+The \shortcode{mf_header/kpoints/occ} and \shortcode{mf_header/kpoints/ifmax} datasets 
+in the \shortcode{WFN.h5} file 
+have to be modified accordingly.
+TODO: should this be done in \shortcode{2-sigma}?
 
 \bibliographystyle{plain}
 \bibliography{gw,dft}
