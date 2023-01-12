@@ -36,3 +36,5 @@ The key point here, however, is I need to know how to map the collision integral
 to the vertex function, or vice versa.
 
 https://journals.aps.org/pr/pdf/10.1103/PhysRev.168.233 extends the Boltzmann equation
+
+https://www.phys.lsu.edu/~jarrell/Green/lecture2.pdf: again, from Keldysh formalism to Boltzmann equation
