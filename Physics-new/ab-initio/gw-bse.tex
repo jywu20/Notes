@@ -1173,13 +1173,56 @@ a clearer but more cumbersome notation is
 
 Now it comes the evaluation of $\chi_{\vb*{G} \vb*{G}}(q)$.
 We have 
-\[
-    \ii \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega) = 
-    \int \frac{\dd{\omega'}}{2\pi} \sum_{\vb*{k}} \sum_{n, n'}
-    \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n \vb*{k}})} 
-    \frac{\ii}{\omega - \omega' - \xi_{n, \vb*{k} + \vb*{q}}}
-    M_{n n' \vb*{G}} (\vb*{k}, \vb*{q}) M_{nn' \vb*{G}'} (\vb*{k}, \vb*{q}, \vb*{G}') 
-\]
+\begin{equation}
+    \begin{aligned}
+        \ii \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega) &= 
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+                %uncomment if require: \path (0,106); %set diagram left start at 0, and has height of 106
+                
+                %Shape: Circle [id:dp21973504133666855] 
+                \draw  [line width=1.5]  (63.51,59) .. controls (63.51,45.19) and (74.7,34) .. (88.51,34) .. controls (102.32,34) and (113.51,45.19) .. (113.51,59) .. controls (113.51,72.81) and (102.32,84) .. (88.51,84) .. controls (74.7,84) and (63.51,72.81) .. (63.51,59) -- cycle ;
+                %Straight Lines [id:da37559817089176883] 
+                \draw    (88.51,34) -- (91.39,34) ;
+                \draw [shift={(94.39,34)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da755691190930156] 
+                \draw    (93.64,83.5) -- (87.39,83.5) ;
+                \draw [shift={(84.39,83.5)}, rotate = 360] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da8734800214005785] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (37.5,59) -- (63.51,59) ;
+                %Straight Lines [id:da17683013213779142] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (113.51,59) -- (139.52,59) ;
+                %Straight Lines [id:da7454208139341723] 
+                \draw    (37.5,51) -- (53.5,51) ;
+                \draw [shift={(56.5,51)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da8015961496989172] 
+                \draw    (118.5,51) -- (134.5,51) ;
+                \draw [shift={(137.5,51)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                
+                % Text Node
+                \draw (35.5,59) node [anchor=east] [inner sep=0.75pt]    {$q,G$};
+                % Text Node
+                \draw (141.52,59) node [anchor=west] [inner sep=0.75pt]    {$q,G'$};
+                % Text Node
+                \draw (113,82) node [anchor=north west][inner sep=0.75pt]    {$n',k$};
+                % Text Node
+                \draw (56,15) node [anchor=north west][inner sep=0.75pt]    {$n,k+q$};
+                
+                
+                \end{tikzpicture}            
+        \end{gathered} \\
+        &= - \int \frac{\dd{\omega'}}{2\pi} \sum_{\vb*{k}} \sum_{n, n'}
+        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n \vb*{k}})} 
+        \frac{\ii}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
+        &\quad \quad \times M_{n n' } (\vb*{k}, \vb*{q}, \vb*{G}) M_{nn' \vb*{G}'} (\vb*{k}, \vb*{q}, \vb*{G}') ,
+    \end{aligned}
+\end{equation}
+where the minus sign comes from the closed electron loop,
+and to make the final expression agree with \cite{berkeleygw},
+I choose a rather strange direction of the $\vb*{q}$ arrow.
+We therefore have
+
+TODO: occupied, or empty: 
 
 So (8) in \cite{berkeleygw} is wrong: 
 it misses the $1/V$ factor. 
@@ -1695,11 +1738,33 @@ k-shifts:     0.000000    0.024000    0.000000
         \item Prepare \shortcode{kernel.inp}. Do the following checklist:
         \begin{itemize}
             \item Whether the following lines are there:
-            
+            \begin{lstlisting}
+                use_symmetries_coarse_grid
+            \end{lstlisting}
+            \item Whether \shortcode{number_val_bands} and \shortcode{number_cond_bands}
+            are specified.
+            \item If we are dealing with a 2D material,
+            whether \shortcode{cell_slab_truncation} is added.
         \end{itemize}
     \end{enumerate}
-    \item Do a \shortcode{absorption} step. 
+    \item Do an \shortcode{absorption} step. 
     \begin{enumerate}
+        \item Build a denser $\vb*{k}$-grid 
+        and repeat \shortcode{2.1-wfn} and \shortcode{2.2-wfnq} steps.
+        \item Link necessary files.
+        \begin{lstlisting}
+            ln -sf ../2.1-wfn/WFN ./WFN_co
+            ln -sf ../2.2-wfnq/WFN ./WFNq_co
+            ln -sf ..2.1-wfn-dense/WFN ./WFN_fi
+            ln -sf ..2.2-wfnq-dense/WFN ./WFNq_fi
+            ln -sf ../1-epsilon/epsmat.h5 ./
+            ln -sf ../1-epsilon/eps0mat.h5 ./
+            ln -sf ../3-kernel/bsemat.h5 ./ 
+        \end{lstlisting}
+        The \shortcode{bsedmat} and \shortcode{msexmat} files are missing 
+        if HDF5 format is used to generate the output files -- 
+        the documentation of BerkeleyGW says we need the files but it's wrong:
+        When \shortcode{bsemat.h5} is present, the program runs well.
         \item Prepare \shortcode{absorption.inp}. Do the following checklist:
         \begin{itemize}
             \item Whether the following lines are in \shortcode{absorption.inp}:
@@ -1707,6 +1772,15 @@ k-shifts:     0.000000    0.024000    0.000000
                 use_symmetries_fine_grid
                 use_symmetries_coarse_grid
             \end{lstlisting}
+            \item Whether 
+            \begin{lstlisting}
+                number_cond_bands_coarse
+                number_cond_bands_fine
+                number_val_bands_coarse
+                number_val_bands_fine
+            \end{lstlisting}
+            are specified.
+            \item 
         \end{itemize}
     \end{enumerate}
 \end{enumerate}
@@ -1768,9 +1842,11 @@ The working procedure now is
 The Fermi energy is to be found in \shortcode{scf.out}.
 It won't appear in \shortcode{bands.out}.
 
-\subsubsection{$GW$ level}
+\subsubsection{$GW$ level: \shortcode{inteqp}}
 
 The $GW$ level bands can be obtained by the \shortcode{inteqp} program.
+Note that this shouldn't be used for a system 
+considered metallic by DFT (\prettyref{sec:discontinuous-band}).
 The standard operation procedure is listed here:
 \begin{enumerate}
     \item Go to \shortcode{4-path} -- the folder responsible for the DFT level calculation --
@@ -1789,7 +1865,43 @@ The standard operation procedure is listed here:
     \item 
 \end{enumerate}
 
+\subsubsection{$GW$ level: \shortcode{sig2wan}}
+
+The \shortcode{sig2wan} code can extract a Wannier interpolated band structure from 
+output files of the \shortcode{sigma} step.
+An example can be found 
+\href{https://github.com/BerkeleyGW/BerkeleyGW-examples/tree/master/DFT/silicon}{here}.
+
+
 \subsubsection{BSE level}
+
+\subsection{Getting tight-binding models}
+
+Tight-binding models are a more compact way to show the band structure.
+
+\begin{enumerate}
+    \item The first step is to perform a fresh QuantumESPRESSO run.
+    \shortcode{wannier90} requires a full Monkhorst–Pack grid,
+    and to create a \shortcode{bands.in} file, 
+    (don't forget to add the \shortcode{utility} folder to the \shortcode{PATH} environment variable)
+    just prepare a \shortcode{bands.in} file without the \shortcode{K_POINTS} block and run 
+    \begin{lstlisting}
+        kmesh.pl 20 20 1 >> bands.in
+    \end{lstlisting}
+    Replace \shortcode{20 20 1} by the $\vb*{k}$-grid size you want. 
+    \item Prepare a \shortcode{prefix.win} file, 
+    where \shortcode{prefix} is the QuantumESPRESSO prefix used.
+    Examples of this input file can be found by searching 
+    ``wannier90 2007 workshop''
+    and downloading the tutorial files coming together
+    with the web page about this event -- 
+    currently it's \href{http://www.wannier.org/events/cecampsi-k-tutorial-on-wannier90-lyon-2007/}{here}.
+    \item Run
+    \begin{lstlisting}
+        wannier90.x -pp prefix 
+    \end{lstlisting}
+    to get \shortcode{prefix.nnkp}.
+\end{enumerate}
 
 \subsection{Energy self-consistent calculation}
 
@@ -1829,6 +1941,7 @@ TODO: how it works; maybe \cite{del2019large} may provide some hints.
 \section{Trouble shooting in QuantumEspresso}
 
 \subsection{Program frozen}
+
 
 Check whether too much resource is given to a simple task.
 
@@ -2038,6 +2151,16 @@ the number of bands considered will be zero,
 and thus a divide-by-zero error occurs 
 when \shortcode{sigma.x} tries to distribute computational loads.
 
+\section{Trouble shooting in \shortcode{wannier90}}
+
+\subsection{\shortcode{w90_wannier90_readwrite_read: mismatch in WTe2.eig}}
+
+
+
+\section{Trouble shooting in \shortcode{kernel} and \shortcode{absorption}}
+
+\subsection{\shortcode{ERROR: Inconsistent symmetry treatment of the fine and shifted grids with the momentum operator}}
+
 \section{Checklist for unexpected results}
 
 Sometimes the calculation ends successfully,
@@ -2081,20 +2204,35 @@ Below are some checklists.
     then naturally there is no band in the plot.
 \end{itemize}
 
-\subsection{Band plot is not continuous}
+\subsection{Band plot is not continuous}\label{sec:discontinuous-band}
 
 TODO: it's $\vb*{k}$-points that are shuffled,
 or the band indices,
 or both???
 
-This sometimes comes from BerkeleyGW's occasional misidentification of band index.
-That's to say, BerkeleyGW sometimes identifies the 100th band as the 101st band,
-the 101st band as the 102nd band, etc.
-To see whether this is the case,
-do a band plot using the DFT level data in \shortcode{2-sigma/inteqp/eqp.dat},
-and if discontinuity also appears here 
-(the scatter plot should be fine),
-then the problem of misidentification of band index occurs.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{plots/dft-level-bands.pdf}
+    \caption{Example of how \shortcode{inteqp} misidentifies DFT-level bands:
+    the data is from the DFT column of \shortcode{eqp.dat};
+    the colors of points are about the band index.}
+    \label{fig:inteqp-shuffle-band-index-1}
+\end{figure}
+
+If the system is metallic in the DFT level 
+(regardless of what $GW$ says about the material, 
+and the screening model used)
+and \shortcode{inteqp} is used, 
+this is expected:
+somehow, \shortcode{inteqp} assumes the system is an insulator,
+and thus states above the Fermi energy (but not too far from it)
+has to be in one band.
+Thus, if, say, the 120th band has more than one intersection points 
+with the Fermi energy level,
+its part below $\varphi_{\text{F}}$ will be recognized as the 119th band
+in the eyes of \shortcode{inteqp}.
+This can be seen by plotting the DFT column of the \shortcode{eqp.dat} output of \shortcode{inteqp}
+(\prettyref{fig:inteqp-shuffle-band-index-1}).
 
 \subsection{The size of band gap}\label{sec:band-gap-problem}
 
@@ -2125,6 +2263,8 @@ The \shortcode{mf_header/kpoints/occ} and \shortcode{mf_header/kpoints/ifmax} da
 in the \shortcode{WFN.h5} file 
 have to be modified accordingly.
 TODO: should this be done in \shortcode{2-sigma}?
+
+The problem with this method is we don't have \shortcode{eqp_correction} in \shortcode{kernel}. TODO 
 
 \bibliographystyle{plain}
 \bibliography{gw,dft}
