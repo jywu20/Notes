@@ -1,4 +1,4 @@
-\documentclass[hyperref, a4paper]{article}
+\documentclass[hyperref, a4paper]{report}
 
 \usepackage{geometry}
 \usepackage{titling}
@@ -136,12 +136,19 @@
 
 \lstset{style = console}
 
-\title{$GW$ and BSE methods}
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+\title{Manual for DFT+$GW$+BSE and the related matters}
 \author{Jinyuan Wu}
 
 \begin{document}
     
 \maketitle
+
+\chapter{$GW$ and BSE}
 
 \section{Preliminaries}
 
@@ -892,7 +899,34 @@ and
             \draw (43.5,117) node [anchor=east] [inner sep=0.75pt]    {$k+q$};
             \end{tikzpicture}            
     \end{gathered} = M \coloneqq
-    [\mel{n, \vb*{k} + \vb*{q}}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}]_{nn' \vb*{G}}.
+    [\mel{n, \vb*{k} + \vb*{q}}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}]_{nn' \vb*{G}},
+\end{equation}
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+            %uncomment if require: \path (0,162); %set diagram left start at 0, and has height of 162
+            
+            %Straight Lines [id:da200203398607687] 
+            \draw    (45.5,27.33) -- (65.5,72.17) ;
+            \draw [shift={(53.34,44.91)}, rotate = 65.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+            %Straight Lines [id:da642061936562244] 
+            \draw    (65.5,72.17) -- (45.5,117) ;
+            \draw [shift={(57.66,89.74)}, rotate = 114.04] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+            %Straight Lines [id:da4169224489697443] 
+            \draw  [dash pattern={on 0.84pt off 2.51pt}]  (65.5,72.17) -- (105.5,72.17) ;
+            %Straight Lines [id:da035273687574558066] 
+            \draw    (73,63) -- (93.5,63) ;
+            \draw [shift={(96.5,63)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+            
+            % Text Node
+            \draw (84.75,60) node [anchor=south] [inner sep=0.75pt]    {$q$};
+            % Text Node
+            \draw (43.5,27.33) node [anchor=east] [inner sep=0.75pt]    {$k$};
+            % Text Node
+            \draw (43.5,117) node [anchor=east] [inner sep=0.75pt]    {$k+q$};
+            \end{tikzpicture}            
+    \end{gathered} = M^* = 
+    [\mel{n' \vb*{k}}{\ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n, \vb*{k} + \vb*{q}} ]_{n n' \vb*{G}}.
 \end{equation}
 How to contract the indices can be done by following the standard quantum mechanic convention:
 the index of what happens later appears on the left side.
@@ -1090,7 +1124,6 @@ using the same ring diagrams that appear in the self-consistent Hartree term.
 \subsubsection{BSE with the same order of approximation}
 
 
-\subsection{Deriving important formulae}
 
 TODO: 
 \begin{itemize}
@@ -1105,7 +1138,9 @@ TODO:
     \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
 \end{itemize}
 
-\subsubsection{The $\epsilon$ matrix}
+\subsection{The $\epsilon$ matrix}
+
+\subsubsection{Frequency-dependent form}
 
 To build concrete expressions from the above floppy arguments, 
 let's apply the rules in \prettyref{sec:crystal-tensor}.
@@ -1172,6 +1207,8 @@ a clearer but more cumbersome notation is
 \]
 
 Now it comes the evaluation of $\chi_{\vb*{G} \vb*{G}}(q)$.
+Under the quasiparticle assumption,
+that the renormalized Green function can still be written as \eqref{eq:green},
 We have 
 \begin{equation}
     \begin{aligned}
@@ -1212,24 +1249,102 @@ We have
                 \end{tikzpicture}            
         \end{gathered} \\
         &= - \int \frac{\dd{\omega'}}{2\pi} \sum_{\vb*{k}} \sum_{n, n'}
-        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n \vb*{k}})} 
+        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} 
         \frac{\ii}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
-        &\quad \quad \times M_{n n' } (\vb*{k}, \vb*{q}, \vb*{G}) M_{nn' \vb*{G}'} (\vb*{k}, \vb*{q}, \vb*{G}') ,
+        &\quad \quad \times M_{n n' } (\vb*{k}, \vb*{q}, \vb*{G}) M_{nn'}^* (\vb*{k}, \vb*{q}, \vb*{G}') ,
     \end{aligned}
 \end{equation}
 where the minus sign comes from the closed electron loop,
 and to make the final expression agree with \cite{berkeleygw},
 I choose a rather strange direction of the $\vb*{q}$ arrow.
-We therefore have
+The bands and wave functions are all renormalized ones.
+
+The RHS of the equation can be evaluated straightforwardly:
+when $\xi_{n' \vb*{k}} < 0$, $\xi_{n ,\vb*{k} + \vb*{q}} > 0$, 
+we have 
+\[
+    \begin{aligned}
+        &\quad \int \frac{\dd{\omega'}}{2\pi} 
+        \frac{1}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} 
+        \frac{1}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
+        &= \int \frac{\dd{\omega'}}{2\pi} 
+        \frac{1}{\omega' - \xi_{n' \vb*{k}} - \ii 0^+ } 
+        \frac{1}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ } \\
+        &= \frac{2\pi \ii}{2\pi} \frac{1}{\omega
+        + \xi_{n' \vb*{k}} + \ii 0^+ - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ },
+    \end{aligned}
+\]
+where in the third line we complete the integral contour in the upper plane.
+Similarly, when $\xi_{n' \vb*{k}} > 0$, $\xi_{n, \vb*{k} + \vb*{q}} < 0$, 
+we have 
+\[
+    \begin{aligned}
+        &\quad \int \frac{\dd{\omega'}}{2\pi} 
+        \frac{1}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} 
+        \frac{1}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
+        &= \int \frac{\dd{\omega'}}{2\pi} 
+        \frac{1}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ } 
+        \frac{1}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} - \ii 0^+ } \\
+        &= \frac{2\pi \ii}{2\pi} \frac{1}{
+            - \omega + \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ 
+            - \xi_{n' \vb*{k}} + \ii 0^+
+        }
+    \end{aligned}
+\]
+When $\xi_{n' \vb*{k}}$ and $\xi_{n, \vb*{k} + \vb*{q}}$ are both positive or negative, 
+the integral is zero.
+Thus, we find 
+\begin{equation}
+    \begin{aligned}
+        \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega) = \sum_{\vb*{k}} \sum_{n, n'} 
+        &M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) M^*_{nn'} (\vb*{k}, \vb*{q}, \vb*{G}') \\
+        &\times \left(
+            \frac{
+                \theta(- \xi_{n' \vb*{k}}) \theta(\xi_{n, \vb*{k} + \vb*{q}})
+            }{
+                \omega + \xi_{n' \vb*{k}} - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+
+            }
+            + \frac{
+                \theta(\xi_{n' \vb*{k}}) \theta(- \xi_{n, \vb*{k} + \vb*{q}})
+            }{
+                - \omega + \xi_{n, \vb*{k} + \vb*{q}} - \xi_{n' \vb*{k}} + \ii 0^+
+            }
+        \right).
+    \end{aligned}
+\end{equation}
 
 TODO: occupied, or empty: 
 
-So (8) in \cite{berkeleygw} is wrong: 
-it misses the $1/V$ factor. 
-This leads to a ridiculous result: 
+Note that in \cite{berkeleygw},
+the normalization of $\chi$ is the same as here,
+but the definition of $v(\vb*{q})$ doesn't include the $1/V$ factor.
+So (8) in \cite{berkeleygw} is wrong:
+it leads to a ridiculous result: 
 as we increase the density of the $\vb*{k}$-grid,
 $\chi$ becomes larger and larger!
 
+\subsubsection{The static limit and the generalized plasmon-pole model}
+
+In the $\omega \to 0$ limit, 
+we have 
+\begin{equation}
+    \begin{aligned}
+        \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega = 0) = \sum_{\vb*{k}} \sum_{n, n'} 
+        &M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) M^*_{nn'} (\vb*{k}, \vb*{q}, \vb*{G}') \\
+        &\times \left(
+            \frac{
+                \theta(- \xi_{n' \vb*{k}}) \theta(\xi_{n, \vb*{k} + \vb*{q}})
+            }{
+                \varepsilon_{n' \vb*{k}} - \varepsilon_{n, \vb*{k} + \vb*{q}} 
+            }
+            + \frac{
+                \theta(\xi_{n' \vb*{k}}) \theta(- \xi_{n, \vb*{k} + \vb*{q}})
+            }{
+                \varepsilon_{n, \vb*{k} + \vb*{q}} - \varepsilon_{n' \vb*{k}}
+            }
+        \right).
+    \end{aligned}
+\end{equation}
 
 
 \section{Accuracy of $GW$}
@@ -1535,6 +1650,22 @@ and indeed this is the case when we deal with a metallic system
 \subsection{Systems of units}
 
 TODO
+
+\chapter{Tight-binding models}
+
+TODO: from ab initio to models
+
+\section{Wannier functions and tight-binding models}
+
+For an insulator,
+we can construct exponentially decaying Wannier functions 
+if and only if the Chern numbers are zero, 
+and thus all insulators with inversion symmetry 
+have exponentially decaying Wannier functions \cite{brouder2007exponential}
+
+\cite{marzari2012maximally} introduces Maximally localized Wannier functions.
+
+\chapter{Carrying out calculations}
 
 \section{Standard operation procedures}
 
@@ -1865,19 +1996,13 @@ The standard operation procedure is listed here:
     \item 
 \end{enumerate}
 
-\subsubsection{$GW$ level: \shortcode{sig2wan}}
-
-The \shortcode{sig2wan} code can extract a Wannier interpolated band structure from 
-output files of the \shortcode{sigma} step.
-An example can be found 
-\href{https://github.com/BerkeleyGW/BerkeleyGW-examples/tree/master/DFT/silicon}{here}.
-
-
 \subsubsection{BSE level}
 
-\subsection{Getting tight-binding models}
+\subsection{Wannier functions and tight-binding models}
 
 Tight-binding models are a more compact way to show the band structure.
+
+\subsubsection{\shortcode{wannier90} for DFT}
 
 \begin{enumerate}
     \item The first step is to perform a fresh QuantumESPRESSO run.
@@ -1889,6 +2014,8 @@ Tight-binding models are a more compact way to show the band structure.
         kmesh.pl 20 20 1 >> bands.in
     \end{lstlisting}
     Replace \shortcode{20 20 1} by the $\vb*{k}$-grid size you want. 
+    The number of bands in this DFT run \emph{shouldn't} be too large,
+    or otherwise \shortcode{pw2wannier90} will be extremely slow. 
     \item Prepare a \shortcode{prefix.win} file, 
     where \shortcode{prefix} is the QuantumESPRESSO prefix used.
     Examples of this input file can be found by searching 
@@ -1896,12 +2023,56 @@ Tight-binding models are a more compact way to show the band structure.
     and downloading the tutorial files coming together
     with the web page about this event -- 
     currently it's \href{http://www.wannier.org/events/cecampsi-k-tutorial-on-wannier90-lyon-2007/}{here}.
+    Do the following checklist:
+    \begin{itemize}
+        \item Is \shortcode{num_bands} plus the number of excluded bands 
+        the same as \shortcode{nbnd} in the QuantumESPRESSO run
+        (\prettyref{sec:wannier.mismatch-eig})?
+        If you don't want all valence bands in the DFT run, 
+        always decide how many bands to include \emph{before} doing any \shortcode{wannier90.x} run;
+        changing parameters in \shortcode{prefix.win}
+        after a \shortcode{wannier90.x} run may lead to inconsistencies.
+    \end{itemize}
     \item Run
     \begin{lstlisting}
-        wannier90.x -pp prefix 
+        wannier90.x -pp prefix.win
     \end{lstlisting}
     to get \shortcode{prefix.nnkp}.
+    \item Run \shortcode{pw2wannier90.x}.
+    The input file looks like 
+    \begin{lstlisting}
+        &inputpp
+        outdir     =  './'
+        prefix     =  'WTe2'
+        seedname   =  'WTe2'
+        scdm_proj  =  .true.
+        write_amn  =  .true.                                                        
+        write_mmn  =  .true.
+        write_unk  =  .true.
+      /
+    \end{lstlisting}
+    This step should finish in several minutes.
+    If it takes too long, 
+    reduce \shortcode{nbnd} in the QuantumESPRESSO step 
+    and redo the whole procedure.
+    \item Run 
+    \begin{lstlisting}
+        wannier90.x prefix.win
+    \end{lstlisting}
 \end{enumerate}
+
+
+\subsubsection{$GW$ level: \shortcode{sig2wan}}
+
+The \shortcode{sig2wan} code can extract a Wannier interpolated band structure from 
+output files of the \shortcode{sigma} step.
+An example can be found 
+\href{https://github.com/BerkeleyGW/BerkeleyGW-examples/tree/master/DFT/silicon}{here}.
+The routine is almost the same as \shortcode{wannier90} for DFT,
+except for one thing:
+after running \shortcode{pw2wannier90.x},
+we need to replace the \shortcode{perfix.eig} file generated by \shortcode{pw2wannier90.x}
+by the \shortcode{prefix.eig} file generated by \shortcode{sig2wan}.
 
 \subsection{Energy self-consistent calculation}
 
@@ -1937,6 +2108,17 @@ Therefore, in \shortcode{espilon.inp},
 we need to add \shortcode{dont_check_norms}.
 
 TODO: how it works; maybe \cite{del2019large} may provide some hints.
+
+\section{Convergence tests}
+
+\chapter{Trouble shooting}
+
+\section{Trouble shooting in MPI}
+
+\subsection{\shortcode{error parsing parameters}}
+
+This sometimes occurs because you misspell the name of a program 
+to be \shortcode{mpirun}ed.
 
 \section{Trouble shooting in QuantumEspresso}
 
@@ -2153,9 +2335,18 @@ when \shortcode{sigma.x} tries to distribute computational loads.
 
 \section{Trouble shooting in \shortcode{wannier90}}
 
-\subsection{\shortcode{w90_wannier90_readwrite_read: mismatch in WTe2.eig}}
+\subsection{\shortcode{w90_wannier90_readwrite_read: mismatch in WTe2.eig}}\label{sec:wannier.mismatch-eig}
 
+When reading a \shortcode{.eig} file, 
+\shortcode{wannier90} doesn't really look at the band index and $\vb*{k}$-point index.
+Rather, it completely relies on \shortcode{num_bands} and \shortcode{mp_grid}.
+Thus, if the number of \shortcode{nbnd} in the QuantumESPRESSO run -- 
+which decides the number of bands in the \shortcode{.eig} file -- 
+isn't \shortcode{num_bands}, 
+\shortcode{wannier90} finds bands in the \shortcode{.eig} file messed up,
+and the error occurs.
 
+\subsection{\shortcode{WTe2.amn has not the right number of bands}}
 
 \section{Trouble shooting in \shortcode{kernel} and \shortcode{absorption}}
 
@@ -2267,6 +2458,6 @@ TODO: should this be done in \shortcode{2-sigma}?
 The problem with this method is we don't have \shortcode{eqp_correction} in \shortcode{kernel}. TODO 
 
 \bibliographystyle{plain}
-\bibliography{gw,dft}
+\bibliography{gw,dft,wannier}
 
 \end{document}
