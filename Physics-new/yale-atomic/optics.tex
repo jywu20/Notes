@@ -1,0 +1,247 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\title{Atomic physics: theories of laser beams and atoms}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of atoms}
+
+Atomic physics relies on the existence of atoms.
+The idea that matter consists of atoms 
+was seen in ancient Greek,
+probably earlier in ancient India.
+In the West, people usually attribute the idea to Democritus (450 BC),
+who claimed that there are only atoms and ``void''.
+The modern idea of atoms arose to explain the behavior of gases:
+if we assume the basic degrees of freedom of a gas systems are 
+$\vb*{r}_i$'s and $\vb*{p}_i$'s,
+then everything works well -- 
+except we need to use a constant $\hbar$ to decide the correct entropy of the gas:
+\begin{equation}
+    \dd{\Omega} = \frac{\dd[3]{\vb*{r}} \dd[3]{\vb*{p}}}{h^3}, \quad h = 2\pi \hbar.
+\end{equation}
+The origin of $\hbar$ led to the discovery of quantum mechanics.
+
+The quantum nature of atoms is best demonstrated by beam splitters.
+Beam splitters are widely used in optics:
+they can be used to make a Mach-Zehnder interferometer, 
+and the observed intensity takes the form of 
+\[
+    (\cos(\omega t + \phi_1) + \cos(\omega t + \phi_2))^2,
+\]
+and by moving the mirrors, 
+we change $\phi_{1, 2}$,
+and thus peaks and valleys occur in the relation between $I$ and $\phi_{1, 2}$.
+
+\begin{figure}
+    \centering
+
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+    %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+    
+    %Shape: Rectangle [id:dp4592102294328868] 
+    \draw   (242.28,104.79) -- (192.79,154.28) -- (185.72,147.21) -- (235.21,97.72) -- cycle ;
+    %Straight Lines [id:da8168249070848908] 
+    \draw    (110,122) -- (206.83,122) ;
+    \draw [shift={(209.83,122)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+    %Straight Lines [id:da15292644630172703] 
+    \draw    (209.83,122) -- (209.83,39) ;
+    \draw [shift={(209.83,36)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+    %Straight Lines [id:da76766140394506] 
+    \draw    (218.83,128) -- (315.67,128) ;
+    \draw [shift={(318.67,128)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+    %Straight Lines [id:da5571278289677006] 
+    \draw    (218.83,214) -- (218.83,131) ;
+    \draw [shift={(218.83,128)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+    
+    % Text Node
+    \draw (108,122) node [anchor=east] [inner sep=0.75pt]    {$E_{1}$};
+    % Text Node
+    \draw (218.83,217.4) node [anchor=north] [inner sep=0.75pt]    {$E_{2}$};
+    % Text Node
+    \draw (209.83,32.6) node [anchor=south] [inner sep=0.75pt]    {$E_{4}$};
+    % Text Node
+    \draw (320.67,128) node [anchor=west] [inner sep=0.75pt]    {$E_{3}$};
+    
+    
+    \end{tikzpicture}
+    \caption{Beam splitter example}
+    \label{fig:beam-splitter}    
+\end{figure}
+
+NMore generally, in \prettyref{fig:beam-splitter}, we have 
+\begin{equation}
+    \begin{aligned}
+        \abs*{\vb*{E}_3}^2 + \abs{\vb*{E}_4}^2 &= 
+        (t \vb*{E}_1 + r \vb*{E}_2) (t \vb*{E}_1 + r \vb*{E}_2)^*
+        + (t \vb*{E}_2 + r \vb*{E}_1) (t \vb*{E}_2 + r \vb*{E}_1)^* \\
+        &= (\abs*{\vb*{E}_1}^2 + \abs*{\vb*{E}_2}^2) (\abs*{t}^2 + \abs*{r}^2)
+        + (\vb*{E}_1^* \cdot \vb*{E}_2 + \text{h.c.}) (t^* r + r^* t).
+    \end{aligned}
+\end{equation}
+To ensure energy conservation, we get 
+\begin{equation}
+    \abs*{t}^2 + \abs*{r}^2 = 1,
+\end{equation}
+which is expected, and 
+\begin{equation}
+    t^* r + r^* t = 0.
+\end{equation}
+The last equation means there has to be a phase shift caused by the beam splitter. 
+In the \SI{50}{\percent}-\SI{50}{\percent} case, 
+we have $r = t \ee^{\ii \phi}$,
+and solving the above equation, 
+we find $\phi = \SI{90}{\degree}$.
+Thus a \SI{50}{\percent}-\SI{50}{\percent} beam splitter introduces a \SI{90}{\degree} phase difference 
+between the two output beams 
+if one of the input beam is absent, 
+i.e. the corresponding input port is a dark port.
+
+A comment: when we deal with actual light,
+not just atom beams, 
+polarization also influences the phase shift.
+
+\end{document}

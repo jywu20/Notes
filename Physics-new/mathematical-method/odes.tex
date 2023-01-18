@@ -1,0 +1,287 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\title{ODEs}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{First order ODEs}
+
+\subsection{Linear ODEs}
+
+An ODE in the form of 
+\begin{equation}
+    y'(x) + p(x) y(x) = q(x) 
+\end{equation}
+is considered \concept{linear}.
+All linear ODEs can be solved by the following procedure.
+First we have 
+\begin{equation}
+    (y' + py) \ee^{\int p \dd{x}} 
+    = q \ee^{\int p \dd{x}},
+\end{equation}
+and now the LHS is a derivative:
+\begin{equation}
+    \dv{x} \left(
+        y \ee^{\int p \dd{x}}
+    \right) = q \ee^{\int p \dd{x}},
+\end{equation}
+and now we can integrate over $x$ and get 
+\begin{equation}
+    y \ee^{\int p \dd{x}} = 
+    \int q \ee^{\int p \dd{x}} \dd{x},
+\end{equation}
+\begin{equation}
+    y  = \ee^{- \int p \dd{x}}
+    \int q \ee^{\int p \dd{x}} \dd{x} .
+\end{equation}
+
+\subsection{``Energy-conservation lines'' and exact equations}
+
+Another way to represent the solution of an ODE is 
+the form $\phi(x, y) = \const$.
+Note that the RHS contains no variables, and we have 
+\begin{equation}
+    0 = \dv{\phi}{x} = \pdv{\phi}{x} + \pdv{\phi}{y} \dv{y}{x},
+    \label{eq:implicit-derivative}
+\end{equation}
+and thus if 
+\begin{equation}
+    y' = f(x, y)
+\end{equation}
+is algebraically equivalent to \eqref{eq:implicit-derivative},
+the equation is already solved:
+We should find $M, N$ such that 
+\begin{equation}
+    y' = - \frac{M}{N}, \quad
+    M = \pdv{\phi}{x}, \quad
+    N = \pdv{\phi}{y},
+\end{equation}
+and then $\phi(x, y)$ solves the equation.
+In this case we say $y' = - M / N$ is \concept{exact}.
+
+To test for exactness, we only have to test whether
+\begin{equation}
+    \pdv{M}{y} = \pdv{N}{x},
+\end{equation}
+and if so, the existence of $\phi$ is guaranteed.
+(Since we work on a topological trivial space, 
+things like cohomology group will not bother us.)
+We can now use ``partial integral'' to find $\phi$.
+
+Example: suppose in a calculation we find  
+\begin{equation}
+    \pdv{\phi}{x} = 2 y^2 + y \ee^{xy}, \quad 
+    \pdv{\phi}{y} = 4xy + x \ee^{xy} + 2y.
+\end{equation}
+After partial integration, we find 
+\begin{equation}
+    \phi(x, y) = \underbrace{2 xy^2 + \ee^{xy} + h(y)}_{
+        \int \pdv{\phi}{x} \dd{x}
+    }
+    = \underbrace{2 xy^2 + \ee^{xy} + y^2 + g(x)}_{
+        \int \pdv{\phi}{y} \dd{y}
+    },
+\end{equation}
+and we have to choose 
+\begin{equation}
+    h(y) = y^2, \quad g(x) = \const,
+\end{equation}
+and the solution is 
+\begin{equation}
+    \phi(x, y) = 2 xy^2 + \ee^{xy} + y^2 + \const.
+\end{equation}
+
+Note that even when the decomposition $f = - M / N$
+doesn't give an exact equation for us, 
+we can still use the method of exact equations:
+we can multiply a factor $\mu$ to both $M$ and $N$,
+and try to guess the form of $\mu$ so that 
+\begin{equation}
+    \pdv{(\mu M)}{y} = 
+    \pdv{(\mu N)}{x}.
+    \label{eq:generalized-exact-condition}
+\end{equation}
+
+An example can be found in solving 
+\begin{equation}
+    y' = - \frac{1}{3x - \ee^{-2y}}.
+\end{equation}
+We have 
+\[
+    \pdv{1}{y} = 0, \quad 
+    \pdv{(3x- \ee^{-2y})}{x} = 3,
+\]
+so the equation is not exact if we choose $M = 1$ and 
+$N = 3x - \ee^{-2y}$.
+However, \eqref{eq:generalized-exact-condition} 
+can be fulfilled now: 
+it's now 
+\[
+    \pdv{\mu}{y} = 3 \mu + \left(
+        3x - \ee^{-2y}
+    \right) \pdv{\mu}{x},
+\]
+and the most convenient way to solve it 
+(we \emph{don't} need to find all solutions of this equation!)
+is to let $\mu$ contain $y$ only,
+so the tricky term on the RHS disappears,
+and thus we choose $\mu = \ee^{3y}$,
+and we get 
+\[
+    \phi(x, y) = \int \mu M \dd{x} 
+    = \int \ee^{3y} \dd{x} = x \ee^{3y} + u(y),
+\]
+\[
+    \phi(x, y) = \int \mu N \dd{y}
+    = \int (3x \ee^{3y} - \ee^{y} ) \dd{y} 
+    = x \ee^{3y} - \ee^{y} + v(x),
+\]
+so 
+\begin{equation}
+    \phi(x, y) = x \ee^{3y} - \ee^{y} + \const.
+\end{equation}
+
+\end{document}
