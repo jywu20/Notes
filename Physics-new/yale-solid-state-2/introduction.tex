@@ -7,12 +7,12 @@
 % \usepackage{paralist}
 \usepackage{enumitem}
 \usepackage{footnote}
+\usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
-\usepackage{cite}
 \usepackage{graphicx}
-\usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
@@ -20,11 +20,12 @@
 \usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{listings}
-\usepackage{underscore}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\bibliography{squeezing}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -36,15 +37,8 @@
 
 % More compact lists 
 \setlist[itemize]{
-    %itemindent=17pt, 
-    %leftmargin=1pt,
-    listparindent=\parindent,
-    parsep=0pt,
-}
-
-\setlist[enumerate]{
-    %itemindent=17pt, 
-    %leftmargin=1pt,
+    itemindent=17pt, 
+    leftmargin=1pt,
     listparindent=\parindent,
     parsep=0pt,
 }
@@ -71,7 +65,6 @@
 \usetikzlibrary{arrows,shapes,positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{decorations.markings}
-\usetikzlibrary{calc}
 \tikzstyle arrowstyle=[scale=1]
 \tikzstyle directed=[postaction={decorate,decoration={markings,
     mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
@@ -95,14 +88,8 @@
   keywordstyle=\color{blue}
 }
 
-\lstdefinestyle{console}{
-    basicstyle=\footnotesize\ttfamily,
-    breaklines=true,
-    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
-}
-
 % Reference formatting
-\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
@@ -113,79 +100,32 @@
 \newtcbtheorem[number within=section]{info}{Info}%
   {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
 
-% Displaying texts in bookmarkers
-
-\pdfstringdefDisableCommands{%
-  \def\\{}%
-  \def\ce#1{<#1>}%
-}
-
-\pdfstringdefDisableCommands{%
-  \def\texttt#1{<#1>}%
-  \def\mathbb#1{#1}%
-}
-\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
-
-\makeatletter
-\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
-\makeatother
-
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
-\newcommand{\shortcode}[1]{\texttt{#1}}
-
-\lstset{style = console}
-
-\title{Boltzmann equation and the like}
+\title{Introduction}
 \author{Jinyuan Wu}
 
 \begin{document}
 
 \maketitle
 
-\section{Boltzmann equation for electrons in a crystal}
+\section{Band theory}
 
-We define
-\[
-    \text{\# of band $n$ electrons in $\Delta \Omega, \Delta V$}
-    = \frac{\Delta V}{V} \sum_{\vb*{k} \in \Delta \Omega} f_{n} (\vb*{r}, \vb*{k}, t),
-    = \Delta V \int_{\Delta \Omega} \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} f_n (\vb*{r}, \vb*{k}, t),
-\]
-and therefore when the $\vb*{k}$-grid is dense enough, i.e. when $V \to \infty$, we have 
-\begin{equation}
-    \text{\# of band $n$ electrons in $\dd[3]{\vb*{r}} \dd[3]{\vb*{k}}$} 
-    = f_n(\vb*{r}, \vb*{k}, t) \dd[3]{\vb*{r}} \frac{\dd[3]{\vb*{k}}}{(2\pi)^3}.
-\end{equation}
+To arrive at the band theory, we assume:
+\begin{itemize}
+    \item No relativistic effects
+    (except when deriving pseudopotentials or calculating SOC);
+    \item Born-Oppenheimer approximation: 
+    putting electron-phonon interaction aside
+    \item Electrons don't talk to each other:
+    leaving the Coulomb correction aside 
+\end{itemize}
 
-The Boltzmann equation can be derived from the following intuitive notion:
-\[
-    \dv{t} \frac{\Delta V}{V} f_n (\vb*{r}, \vb*{k}, t) 
-    = \sum_{\text{initial states}} \Gamma_{\text{initial states} \to n \vb*{k}} 
-    - \sum_{\text{final states}} \Gamma_{n, \vb*{k} \to \text{final states}} ,
-\]
-where we have (according to Fermi golden rule)
-\begin{equation}
-    \Gamma_{1 \to 2} = \frac{2\pi}{\hbar} 
-    \abs*{\mel{2}{H_{\text{int}}}{1}}^2 
-    \delta()
-\end{equation}
+Fermions in solid state physics include electrons
+and what derive from them, including 
+holes and polarons.
 
-TODO: the real part of the self-energy enters the diffusion part in the equation;
-the imaginary part contributes to the collision integral.
-It should be noted that the imaginary part is present with $T = 0$.
-The physical picture is, 
-the eigenstates of a Coulomb-interactive electron gas 
-are all compositions of Fock states with varying electron distributions, 
-and therefore any single-particle description of the system 
-suffers from the loss of information to 2-electron, 3-electron, etc. subspaces,
-which is effectively modeled as a finite lifetime of the particle.
-This doesn't come from any thermal fluctuation.
-Note that this also means the ground state of the system is ``boiling''
-in the independent-electron picture;
-we therefore may say ``electrons are scattering each other even at the ground state''.
-Note, however, that this scattering rate decreases as $\tau \sim 1/(k - k_{\text{F}})^2$ in RPA,
-and the single-electron picture 
-at least works good enough for bands near the Fermi surface 
-in systems for which $GW$ works.
+
+\section{Green functions}
 
 \end{document}
