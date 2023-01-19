@@ -1,5 +1,6 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
+set mouse=a
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -44,7 +45,13 @@ Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'SirVer/ultisnips'
 
-Plugin 'miyakogi/conoline.vim'
+Plugin 'rafi/awesome-vim-colorschemes' 
+
+" Plugin 'dkarter/bullets.vim'
+
+" Plugin 'vim-scripts/Conque-Shell'
+
+" Plugin 'miyakogi/conoline.vim'
 
 " Plugin 'rkulla/pydiction'
 
@@ -73,7 +80,8 @@ filetype plugin indent on    " required
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-colo desert    " Color scheme that works well in visual model
+"colo desert    " Color scheme that works well in visual model
+colo deus
 syntax on
 
 
@@ -122,7 +130,11 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " let g:UltiSnipsEditSplit="vertical"
 
 " Highlighting the current line
-let g:conoline_color_normal_dark = 'guibg=#333333 guifg=#dddddd gui=None '
-                           \. 'ctermbg=black ctermfg=white'
-let g:conoline_color_insert_dark = 'guibg=black guifg=white gui=bold '
-                           \. 'ctermbg=grey ctermfg=white'
+"let g:conoline_color_normal_dark = 'guibg=#333333 guifg=#dddddd gui=None '
+"                          \. 'ctermbg=black ctermfg=white'
+"let g:conoline_color_insert_dark = 'guibg=black guifg=white gui=bold '
+"                           \. 'ctermbg=grey ctermfg=white'
+set cursorline
+"hi CursorLine ctermbg=18 term=none cterm=none
+"hi CursorLine   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
+
