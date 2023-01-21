@@ -191,7 +191,7 @@ so we can construct an integration contour in the upper plane,
 in which there is no pole, 
 and 
 \[
-    \int_{\abs{\omega} = R \gg 1} \frac{\dd{\omega}}{2\pi} 
+    \int_{\abs{\omega} = R \gg 1} \ee^{\ii \omega 0^+} \frac{\dd{\omega}}{2\pi} 
     \frac{\ii}{ \omega - \xi_{\vb*{k}} + \ii 0^+ \sgn(\xi_{\vb*{k}})} = 0.
 \]
 
@@ -202,6 +202,14 @@ because the Coulomb interaction isn't really spontaneous
 and there is a small time retardation.
 In the frequency space,
 we need to assume that there is an infinite amount of energy on the interaction line,
+TODO: the problem is, the amount of energy on the interaction line 
+is actually \emph{arbitrary} -- 
+so why do we need things like 
+\begin{equation}
+    \Sigma(1, 2) = \ii G(1, 2) W(1^+, 2).
+\end{equation}
+TODO: to make sense of this expression, 
+it's necessary to find a discussion on the self-energy of a free-electron system
 
 For bare Coulomb interaction this is rarely needed,
 because we don't have $\omega$ dependence in the potential,
@@ -941,6 +949,9 @@ and non-electron-like fermionic modes like spinons are simply absent
 (we are studying weakly correlated systems, anyway),
 so this terminology creates no confusion.
 
+Fermi liquid: the relation between diagrammatic components and the $\varepsilon$, $f$ functions 
+are given in \cite{hedin1965new}
+
 \subsection{Light-matter interaction}
 
 \subsubsection{Interaction Hamiltonian}
@@ -1138,7 +1149,7 @@ TODO:
     \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
 \end{itemize}
 
-\subsection{The $\epsilon$ matrix}
+\subsection{The $\epsilon$ matrix}\label{sec:gw-bse.overview-gw.epsilon}
 
 \subsubsection{Frequency-dependent form}
 
@@ -1344,7 +1355,146 @@ we have
             }
         \right).
     \end{aligned}
+    \label{eq:static-epsilon}
 \end{equation}
+
+A frequently used way to obtain some degree of frequency dependence 
+is the \concept{generalized plasmon pole model (GPP)}.
+The logic is like this.
+We know $D = \epsilon E$;
+although in this note $\epsilon$ relates 
+the bare \emph{scalar potential} and the screened \emph{scalar potential},
+the physical picture is the same.
+This means $1/\epsilon$ can be seen as the response 
+(in the Feynman diagrammatic sense;
+I'm not saying $1/\epsilon$ is a response function 
+in linear response theory; 
+indeed its pole structure is the same with time-ordered Green function,
+not a response function) 
+of $E$ to an externally introduced charge,
+which looks like this:
+\[
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+    %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+    
+    %Shape: Circle [id:dp9547132007370212] 
+    \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (134,128) .. controls (134,114.19) and (145.19,103) .. (159,103) .. controls (172.81,103) and (184,114.19) .. (184,128) .. controls (184,141.81) and (172.81,153) .. (159,153) .. controls (145.19,153) and (134,141.81) .. (134,128) -- cycle ;
+    %Curve Lines [id:da4224241216982587] 
+    \draw    (179,113) .. controls (201,88) and (227,98) .. (240,125) ;
+    %Curve Lines [id:da07143179889536055] 
+    \draw    (181,139) .. controls (203,164) and (227,152) .. (240,125) ;
+    %Straight Lines [id:da4398750229808517] 
+    \draw    (213,99) ;
+    \draw [shift={(213,99)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+    %Straight Lines [id:da25703305779579977] 
+    \draw    (207,152) -- (200,152) ;
+    \draw [shift={(198,152)}, rotate = 360] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (12,-3) -- (0,0) -- (12,3) -- cycle    ;
+    %Straight Lines [id:da6796744681944953] 
+    \draw  [dash pattern={on 4.5pt off 4.5pt}]  (240,125) -- (269.83,125) ;
+    %Straight Lines [id:da5281624830799356] 
+    \draw  [dash pattern={on 4.5pt off 4.5pt}]  (112.83,128) -- (134,128) ;
+    \end{tikzpicture}  
+\]
+So of course, $1/\epsilon$ can also be seen as unity plus the sum of Green functions of 
+electron density modes. 
+We haven't introduce any approximation yet, 
+so now let's introduce a rather strong approximation:
+\emph{$1/\epsilon - 1$ only contains the plasmon mode,
+the dispersion relation of which is completely flat}.
+We know this approximation is far from accurate: 
+we always have electron-hole pairs and also excitons besides the plasmon,
+and the dispersion relation of the plasmon is not strictly flat; 
+but anyway let's just take this as the starting point:
+in cases where what's important concerning $\epsilon$ 
+is only a handful of parameters obtained from it
+(like $\omega_{\text{p}}$), 
+our rather coarse model should work well.
+In other parts of condensed matter physics, 
+we encounter similar rather coarse models, like the Debye model, 
+which however are (semi-)quantitative.
+
+The structure of $1/\epsilon$, therefore, becomes 
+\begin{equation}
+    \frac{1}{\epsilon} - 1 = \const. \times \frac{1}{\omega^2 - \omega_0^2 + \ii 0^+},
+\end{equation}
+where $\omega_0$ is the ``plasmon frequency'' 
+which is assumed to be the same when we change
+the plasmon wave vector $\vb*{q}$.
+This equation can be rewritten into 
+\begin{equation}
+    \frac{1}{\epsilon} - 1 = \frac{\Omega^2}{2 \tilde{\omega}} \left(
+        \frac{1}{\omega - \tilde{\omega} + \ii 0^+}
+        - \frac{1}{\omega + \tilde{\omega} - \ii 0^+}
+    \right).
+\end{equation}
+This is just the GPP; 
+we call it \emph{generalized} plasmon pole model, 
+because $\tilde{\omega}$ isn't necessarily the plasmon frequency 
+obtained with the free-electron approximation: 
+\begin{equation}
+    \omega_{\text{p}} = \sqrt{\frac{n e^2}{m \epsilon_0}}.
+\end{equation}
+When $\tilde{\omega} = \Omega = \omega_{\text{p}}$,
+we just get the Drude-like 
+\begin{equation}
+    \epsilon = 1 - \frac{\omega_{\text{p}}^2}{\omega^2}.
+\end{equation}
+
+The next question is how to find $\Omega$ and $\tilde{\omega}$.
+Of course we need two constraints, 
+and the first is of course obtained from \eqref{eq:static-epsilon}.
+The second constraint is the $f$-sum rule: TODO
+Putting the two constraints together, 
+we are able to fix $\epsilon(\omega)$ once $\epsilon(0)$ is found 
+by calculating \eqref{eq:static-epsilon}.
+
+The GPP also justifies why we need to write $G(1, 2) W(1^+, 2)$: 
+in the frequency domain, 
+this is equivalent to adding a $\ee^{\ii 0^+ \omega}$ factor,
+where $\omega$ is the frequency on the Coulomb interaction line.
+Thus the $GW$ self-energy is proportion to the following factor:
+\[
+    \int \dd{\omega'} \ee^{\ii 0^+ \omega'} 
+    \frac{1}{\omega + \omega' - \xi_{n \vb*{k}} + \ii 0^+ \sgn(\xi_{n \vb*{k}})}
+    \left(
+        \frac{1}{\omega' - \tilde{\omega} + \ii 0^+}
+        - \frac{1}{\omega' + \tilde{\omega} - \ii 0^+}
+    \right).
+\]
+When $\xi_{n \vb*{k}} > 0$, we find only the pole of the $1 / (\omega' + \tilde{\omega} - \ii 0^+)$ term  
+contributes to the integral, 
+and the result is proportional to 
+\[
+    \frac{1}{\omega - \tilde{\omega} - \xi_{n \vb*{k}}},
+\]
+which means the singularity is achieved when 
+$\xi_{n \vb*{k}} = \omega - \tilde{\omega}$.
+Note that $\xi_{n \vb*{k}}$ may be seen as the energy of the inner electron line, 
+and $\omega$ is the input energy, 
+so this means the energy of the inner electron 
+is the input energy minus $\tilde{\omega}$,
+which is correct according to the physical picture of screening.
+When $\xi_{n \vb*{k}} < 0$, 
+all terms contribute to the integral, 
+but now the residue of the pole of $\xi_{n \vb*{k}} = \omega - \tilde{\omega}$ 
+cancels with the residue of the pole of the electron propagator,
+and the result is proportional to 
+\[
+    \frac{1}{\xi_{\vb*{k}} - \omega - \tilde{\omega}}.
+\]
+This means $\xi_{\vb*{k}}$ is $\omega$ -- the input energy -- plus $\tilde{\omega}$.
+But note that in this case $\xi_{n \vb*{k}} < 0$,
+so the above expression means $\xi_{n \vb*{k}}$ is less negative than the input energy,
+and thus, the excited hole is closer to the Fermi surface, 
+so the energy of the hole represented by the inner electron propagator 
+is \emph{lower} than $\abs{\omega} = - \omega$,
+which is the energy of the input hole. 
+In both case, the $\ee^{\ii 0^+ \omega}$ factor 
+gives the correct physical picture. 
+TODO: the next question is, where does this factor come from?
+
+\subsubsection{The static subspace approach}
+
 
 
 \section{Accuracy of $GW$}
@@ -1490,7 +1640,8 @@ What \shortcode{epsilon} does,
 as its name implies, is to calculate $\epsilon$ --
 and since $\epsilon$ is used to find $W$,
 we need $\epsilon^{-1}$.
-The relative equations are (8-10) in \cite{berkeleygw}.
+The relative equations are (8-10) in \cite{berkeleygw};
+relative discussions can be found in \prettyref{sec:gw-bse.overview-gw.epsilon}.
 There are three steps in \shortcode{epsilon}:
 \begin{enumerate}
     \item Calculate $M_{nn'}(\vb*{k}, \vb*{q}, \vb*{G})$;
@@ -1689,6 +1840,34 @@ the hopping between $d$ bands and $r$ bands is more tricky,
 TODO: why RPA for them is acceptable
 
 \chapter{Carrying out calculations}
+
+\section{Details in installation}
+
+\subsection{QuantumESPRESSO}\label{sec:qe-install}
+
+What I write below is about QuantumESPRESSO 6.7Max; 
+the names of compilation options and tags may change, 
+but the overall idea is the same. 
+
+To enable OpenMP, 
+the option \shortcode{--enable-openmp} has to be added 
+when we run \shortcode{./configure}.
+MPI parallelization however can't be obtained with adding this tag only: 
+we need a MPI-wrapped compiler,
+as well as appropriately linked libraries like ScaLAPACK. 
+The last time I tried this on Cori, 
+the key point is to load module \shortcode{impi} 
+(i.e. IntelMPI) before running \shortcode{./configure}.
+It seems following \href{https://docs.nersc.gov/applications/quantum-espresso/}{this documentation page}
+complicates matters 
+(but probably they will update this page, and it then becomes useful;
+anyway, what to be remembered is we need MPI compilers 
+to get the fully parallelized version).
+
+Whether an MPI compiler is present can be checked by looking at \shortcode{make.inc}; 
+alternatively, you may pay attention to whether the message 
+\shortcode{WARNING: parallel and serial compiler are the same}
+appears in the output of \shortcode{make}.
 
 \section{Standard operation procedures}
 
@@ -2138,12 +2317,27 @@ TODO: how it works; maybe \cite{del2019large} may provide some hints.
 
 \section{Trouble shooting in MPI}
 
+\subsection{\shortcode{srun: fatal: Can not execute }}
+
+This error may come from an error in compilation,
+but it can also occur because the directory to the program is misspelt,
+or an environment variable involved in the directory is not defined, etc. 
+
 \subsection{\shortcode{error parsing parameters}}
 
 This sometimes occurs because you misspell the name of a program 
 to be \shortcode{mpirun}ed.
 
+\subsection{Each process is run serially and doesn't communicate with others}
+
+A possibility is when compiling the program to be launched in parallel,
+you choose the serial version (\prettyref{sec:qe-install}).
+
 \section{Trouble shooting in QuantumEspresso}
+
+\subsection{\shortcode{Intel MKL FATAL ERROR: Cannot load symbol MKLMPI_Get_wrappers.}}
+
+
 
 \subsection{Program frozen}
 
@@ -2500,6 +2694,6 @@ TODO: should this be done in \shortcode{2-sigma}?
 The problem with this method is we don't have \shortcode{eqp_correction} in \shortcode{kernel}. TODO 
 
 \bibliographystyle{plain}
-\bibliography{gw,dft,wannier,hubbard}
+\bibliography{gw,dft,wannier,hubbard,quasiparticle}
 
 \end{document}

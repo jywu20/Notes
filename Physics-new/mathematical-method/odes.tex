@@ -149,7 +149,7 @@
 
 \section{First order ODEs}
 
-\subsection{Linear ODEs}
+\subsection{Linear ODEs}\label{sec:1st.linear}
 
 An ODE in the form of 
 \begin{equation}
@@ -283,5 +283,184 @@ so
 \begin{equation}
     \phi(x, y) = x \ee^{3y} - \ee^{y} + \const.
 \end{equation}
+
+\subsection{Bernoulli equation}
+
+Consider the following \concept{Bernoulli equation}  
+\begin{equation}
+    y' + P(x) y = R(x) y^\alpha.
+\end{equation}
+When $\alpha = 0, 1$, 
+the equation can be solved by the standard methods 
+for linear first order ODEs.
+When this is not the case, 
+we may do the substitution 
+\begin{equation}
+    v = y^\beta,
+\end{equation}
+and then the equation becomes 
+\[
+    \frac{1}{\beta} v^{1/\beta - 1} v' + P(x) v^{1/\beta} 
+    = R(x) v^{\alpha / \beta},
+\]
+\begin{equation}
+    v' + P(x) v = R(x) v^{1 + \frac{\alpha - 1}{\beta}}.
+\end{equation}
+The next step is to choose a good beta so that 
+the equation gets simplified.
+We may want to make to exponent to be zero, 
+and this means we should choose 
+\begin{equation}
+    \beta = 1 - \alpha,
+\end{equation}
+and the ODE is now 
+\begin{equation}
+    v' + Pu = R,
+\end{equation}
+which can then be solved by the method in  
+\prettyref{sec:1st.linear}.
+
+\section{Second order ODEs}
+
+\subsection{Linear 2nd order ODE with initial values}
+
+A linear second order ODE has the following form:
+\begin{equation}
+    y'' + p(x) y' + q(x) y = f(x).
+    \label{eq:linear-2nd-ode-1}
+\end{equation}
+It usually comes with initial value conditions 
+\begin{equation}
+    y(x_0) = A, \quad y'(x_0) = B.
+\end{equation}
+This course is about concrete calculations,
+but knowing what we are doing makes sense is important.
+Here is an existence and uniqueness theorem:
+if $p(x), q(x)$, and $f(x)$ are continuous 
+over an interval $I$,
+and $x_0 \in I$, 
+then a unique solution exists for \eqref{eq:linear-2nd-ode-1}
+with the initial conditions given above.
+
+Usually, we start by looking at 
+the \concept{homogeneous} second order ODE 
+\begin{equation}
+    y'' + p(x) y' + q(x) y = 0.
+    \label{eq:2nd-order-ode-homogeneous}
+\end{equation}
+The influence of $f(x)$ can be included as the 
+``response'' of the LHS.
+The full solution of \eqref{eq:2nd-order-ode-homogeneous}
+takes the form 
+\begin{equation}
+    y = c_1 y_1 + c_2 y_2,
+\end{equation}
+where $c_1, c_2$ are constants to be decided 
+by initial conditions,
+and $y_1$ and $y_2$ are linearly independent solutions 
+of \eqref{eq:2nd-order-ode-homogeneous}.
+The \concept{Wronskian} is defined as 
+\begin{equation}
+    W(x) = 
+    \begin{vmatrix}
+        y_1 & y_2 \\ y_1' & y_2'
+    \end{vmatrix}.
+\end{equation} 
+By checking if it is non-zero at most points,
+we can find whether $y_1$ and $y_2$ are truly linearly independent to each other.
+
+There is a method to arrive at $y_2$ from $y_1$:
+we can always take the ansatz 
+\begin{equation}
+    y2 = y_1 u, 
+\end{equation}
+and therefore we get 
+\[
+    (u'' y_1 + 2 u' y_1' + u y_1'')
+    + p (u' y_1 + u y_1')
+    + q u y_1 = 0,
+\]
+and the condition that $y_1$ is a solution to 
+\eqref{eq:2nd-order-ode-homogeneous} means 
+\begin{equation}
+    u'' + \underbrace{\frac{2y_1' + p y_1}{y_1}}_{g(x)} u' = 0,
+\end{equation}
+which is essentially a first order ODE, 
+because we can replace $u'$ by $v$,
+and then we find 
+\[
+    \ln v = - \int g(x) \dd{x},
+\]
+and 
+\begin{equation}
+    u(x) = \int \ee^{- \int g(x) \dd{x}} \dd{x}.
+\end{equation}
+
+\subsection{Constant coefficients}
+
+The equation 
+\begin{equation}
+    y'' + A y + By = 0
+\end{equation}
+can be solved directly by the following construction:
+\begin{equation}
+    y = c_1 \ee^{\lambda_1 x} + c_2 \ee^{\lambda_2 x},
+\end{equation}
+where $\lambda_1, \lambda_2$ are solutions of 
+\begin{equation}
+    \lambda^2 + A \lambda + B = 0.
+    \label{eq:character-eq}
+\end{equation}
+
+For example, to solve the equation 
+\begin{equation}
+    y'' - 2 y' + 10 y = 0,
+\end{equation}
+we just solve 
+\[
+    \lambda^2 - 2 \lambda + 10 = 0,
+\]
+which gives us 
+\begin{equation}
+    \lambda = 1 \pm 3 \ii,
+\end{equation}
+and therefore a general solution is 
+\begin{equation}
+    y = \ee^{x} (c_1 \ee^{3 \ii x} + c_2 \ee^{- 3 \ii x}).
+\end{equation}
+It should be noted that $c_1, c_2$ can be complex,
+even when we restrict $y$ in $\mathbb{R}$:
+we can let the imaginary part of $y$ vanish 
+as long as we impose some constraints over $c_1, c_2$.
+If we are determined to work in the real space, 
+two alternative linearly independent solutions can be used:
+\begin{equation}
+    y_1(x) = \ee^{x} \cos(3x), \quad 
+    y_2(x) = \ee^{x} \sin(3x).
+\end{equation}
+Although we can immediately say 
+they are linearly independent,
+we can use them as a demonstration of the 
+Wronskian method: 
+now we have 
+\begin{equation}
+    W(x) = y_1(x) y_2'(x) - y_2(x) y_1'(x) = 3 \ee^{2x},
+\end{equation}
+which of course isn't constantly zero.
+
+\eqref{eq:character-eq} is faced with the problem 
+of having only one solution 
+when $A^2 - 4B = 0$.
+In this case we need to go back to the standard procedure 
+to get $y_2$ from $y_1$.
+An example is 
+\begin{equation}
+    y'' + 6y + 9 = 0,
+\end{equation}
+for which \eqref{eq:character-eq} only gives 
+\begin{equation}
+    y_1 = \ee^{-3x}.
+\end{equation}
+Suppose $y_2 = u \ee^{-3x}$, we have 
 
 \end{document}
