@@ -372,7 +372,8 @@ we can find whether $y_1$ and $y_2$ are truly linearly independent to each other
 There is a method to arrive at $y_2$ from $y_1$:
 we can always take the ansatz 
 \begin{equation}
-    y2 = y_1 u, 
+    y_2 = y_1 u, 
+    \label{eq:from-y1-to-y2}
 \end{equation}
 and therefore we get 
 \[
@@ -461,6 +462,168 @@ for which \eqref{eq:character-eq} only gives
 \begin{equation}
     y_1 = \ee^{-3x}.
 \end{equation}
-Suppose $y_2 = u \ee^{-3x}$, we have 
+Suppose $y_2 = u \ee^{-3x}$, we have TODO 
+
+\subsection{Euler equation}
+
+A \concept{Euler equation} has the following form:
+\begin{equation}
+    x^2 y'' + A x y' + B y = 0,
+    \label{eq:euler}
+\end{equation}
+where $A, B$ are constants.
+One solution can be immediate found: it always looks like 
+\begin{equation}
+    y = x^a.
+\end{equation}
+We then find 
+\begin{equation}
+    a(a-1) + A a + B = 0.
+\end{equation}
+If there are two solutions of the equation, 
+\eqref{eq:euler} has already been solved.
+If not, we can use the trick \eqref{eq:from-y1-to-y2}.
+
+An example: let's solve 
+\begin{equation}
+    x^2 y'' + 3x y' + y = 0.
+\end{equation}
+The equation about $a$ is now 
+\[
+    a(a-1) + 3a + 1 = 0,
+\]
+and it only has one solution $a = -1$.
+Therefore we have 
+\[
+    y_1 = \frac{1}{x}.
+\]
+Suppose 
+\[
+    y_2 = u y_1,
+\]
+we get 
+\[
+    x^2 \left(
+        \frac{u''}{x^2} - \frac{2 u'}{x} + \frac{2u}{x^2}
+    \right)
+    + 3 x \left(
+        \frac{u'}{x} - \frac{u}{x^2}
+    \right)
+    + \frac{u}{x} = 0,
+\]
+which is equivalent to 
+\[
+    v' x + v = 0, \quad v = u'
+\]
+the solution of which is 
+\[
+    \ln v + \ln x = \const,
+\]
+and therefore 
+\[
+    v = \frac{C'}{x}, \quad 
+    u = C' \ln x + C,
+\]
+\[
+    y_2 = \frac{1}{x} (C' \ln x + C).
+\]
+This essentially gives \emph{all} solutions we need: 
+for $y_1$, we just have $u = 1$,
+which corresponds to $C = 1$.
+So now the equation is completely solved.
+
+\subsection{Non-homogeneous cases or how to find the linear response}
+
+Now we discuss how to solve 
+\begin{equation}
+    y'' + p(x) y' + q(x) y = f(x).
+    \label{eq:2nd-ode-nonhomogeneous}
+\end{equation}
+A general solution is 
+\begin{equation}
+    y(x) = y_{\text{p}}(x) + y_{\text{h}}(x),
+\end{equation}
+where the subscript p means a particular solution,
+and the subscript h means the general solution of the corresponding homogeneous equation.
+
+We need some common sense to find a particular solution.
+To solve 
+\begin{equation}
+    y'' - y' - 2y = 2 x^2 + 5,
+\end{equation}
+we don't expect $y$ to be, say, $\cos(2x)$:
+instead, it's usually the case that $y$ is a polynomial.
+An ansatz is 
+\[
+    y = A x^2 + Bx + C.
+\]
+We don't want a $x^3$ term because it doesn't appear on RHS.
+The equation then becomes 
+\[
+    2 A - (2 A x + B x) - 2 (A x^2 + Bx + C) = 2 x^2 + 5, 
+\]
+\[
+    -2 A = 2, \quad - 2A - 2 B = 0, \quad 2 A - B - 2 C = 5,
+\]
+and therefore $A = -1, B = 1, C = - 4$.
+Therefore we get a particular solution: 
+\begin{equation}
+    y_{\text{p}} = - x^2 + x - 4.
+\end{equation}
+
+A particular solution may also be determined as 
+a ``linear combination'' of homogeneous solutions,
+although now the coefficients have temporal variation.
+That's to say, we take the ansatz 
+\begin{equation}
+    y_{\text{p}}(x) = u(x) y_1(x) + v(x) y_2(x).
+    \label{eq:2nd-ode-change-coefficients}
+\end{equation}
+This is quite similar to the procedure introduced in \prettyref{sec:1st.linear}.
+After substituting $y$ with \eqref{eq:2nd-ode-change-coefficients} 
+in \eqref{eq:2nd-ode-nonhomogeneous},
+we get 
+\begin{equation}
+    u' y_1' + v' y_2' = f.
+\end{equation}
+Introducing the constraint 
+\begin{equation}
+    u' y_1 + v' y_2 = 0,
+\end{equation}
+we have 
+\begin{equation}
+    \pmqty{y_1 & y_2 \\ y_1' & y_2'} 
+    \pmqty{u' \\ v'} = \pmqty{0 \\ f},
+\end{equation}
+from which we find $u', v'$ and hence $u, v$.
+The Wronskian -- the determinant of the matrix on LHS -- 
+is non-zero, so the equation always has a solution.
+
+Example: let's solve 
+\begin{equation}
+    y'' + y = \tan x. 
+\end{equation}
+We have 
+\[
+    y_1 = \cos x, \quad y_2 = \sin x,
+\]
+and therefore 
+\[
+    W(x) = y_1 y_2' - y_2 y_1' = 1.
+\]
+So 
+\[
+    \begin{aligned}
+        u' &= - \int \frac{y_2 f}{W(x)} \dd{x} = - \int \frac{\sin^2 x}{\cos x} \dd{x} 
+        = - \int \frac{1 - \cos^2 x}{\cos x} \dd{x} \\
+        &= - \frac{1}{2} \ln \abs{
+            \frac{1 + \sin x}{1 - \sin x}
+        } + \sin x,
+    \end{aligned}
+\]
+and similarly we have 
+\[
+    v = 
+\]
 
 \end{document}

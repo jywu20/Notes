@@ -159,15 +159,26 @@ that may seem puzzling when we do concrete calculations.
 
 \subsubsection{Infinitesimals}
 
-Note that here we need to add some convergence factors.
-The first is about the value of the propagator 
-to ensure that when $t = 0$, $\timeorder \expval*{c(t) c^\dagger(0)}$ is the particle number 
+There are some infinitesimals in Feynman rules that are often ignored.
+The first is about the illdefinedness
+of $\timeorder \expval*{c(t) c^\dagger(0)}$ 
+when $t = 0$.
+We want to make the propagator to be the particle number 
 (so that if we evaluate the tadpole diagram, 
-we get the Hartree term), 
-the contribution of an electron line is actually 
+we get the Hartree term). 
+Therefore, the contribution of an electron line is  
 \begin{equation}
     \begin{aligned}
-        \timeorder \expval*{c_{\vb*{k}}(t) c_{\vb*{k}}^\dagger(0)} 
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+                \path (0,48);\path (95.33333587646484,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+                %Straight Lines [id:da8873009977937396] 
+                \draw    (18.53,25) -- (75.83,25) ;
+                \draw [shift={(50.98,25)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                % Text Node
+                \draw (47.18,26.7) node [anchor=north] [inner sep=0.75pt]    {$k$};
+            \end{tikzpicture}
+        \end{gathered}
         &\coloneqq 
         \timeorder \expval*{c_{\vb*{k}}(t - 0^+) c_{\vb*{k}}^\dagger(0)}  \\
         &= \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega (t - 0^+)} 
@@ -176,7 +187,17 @@ the contribution of an electron line is actually
         }_{\ii G_0(\omega, \vb*{k})}
         = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} \ee^{\ii \omega 0^+} \ii G_0(\omega, \vb*{k}) .
     \end{aligned} 
+    \label{eq:green-time-delay}
 \end{equation}
+In the notation used here, 
+$G(t, 0)$ is proportional to $\timeorder \expval*{c(t) c^\dagger(0)}$
+and therefore is not well-defined when $t = 0$; 
+the infinitesimal therefore is introduced explicitly by 
+adding the $\ee^{\ii \omega 0^+}$ factor;
+some may \emph{define} that $\ii G$ is the correct propagator,
+and the $\ee^{\ii \omega 0^+}$ factor or the small time displacement 
+is embedded into the definition of $G$.
+
 The necessity of this $\ee^{\ii \omega 0^+}$ factor 
 can also be seen by explicitly doing the integration:
 when $t = 0$, if we ignore the $\ee^{\ii \omega 0^+}$ factor, 
@@ -195,23 +216,10 @@ and
     \frac{\ii}{ \omega - \xi_{\vb*{k}} + \ii 0^+ \sgn(\xi_{\vb*{k}})} = 0.
 \]
 
-Another mini-regularization is when necessary, 
-for a real space interaction line -- screened or unscreened -- 
-we should assume the ``out-time'' is the ``in-time'' plus $0^+$,
-because the Coulomb interaction isn't really spontaneous
-and there is a small time retardation.
-In the frequency space,
-we need to assume that there is an infinite amount of energy on the interaction line,
-TODO: the problem is, the amount of energy on the interaction line 
-is actually \emph{arbitrary} -- 
-so why do we need things like 
-\begin{equation}
-    \Sigma(1, 2) = \ii G(1, 2) W(1^+, 2).
-\end{equation}
-TODO: to make sense of this expression, 
-it's necessary to find a discussion on the self-energy of a free-electron system
-
-For bare Coulomb interaction this is rarely needed,
+Note that an interaction line should also receive the same mini-regularization 
+outlined for Green functions, 
+because it's obtained by integrating out some intermediate states. 
+For bare Coulomb interaction this is not needed,
 because we don't have $\omega$ dependence in the potential,
 and it makes no sense to discuss the poles when we change $\omega$.
 It does make sense to talk about retardation 
@@ -225,12 +233,16 @@ as the denominator, and we get
     V(q) = \frac{4\pi e^2}{\vb*{q}^2 - \omega^2 - \ii 0^+}.
     \label{eq:v-light-rel}
 \end{equation}
-
-For screened Coulomb interaction, however, 
+Also, for screened Coulomb interaction, 
 the correct retardation is important,
 because now something looking like \eqref{eq:v-light-rel} appears again.
 
-\subsubsection{The position of imaginary units}
+The $1^+$ in $\Sigma(1, 2) = \ii W(1^+, 2) G(1, 2)$ 
+seems to be from the infinitesimal in the electronic Green function 
+instead of the infinitesimal in the Coulomb interaction line
+(\prettyref{sec:gw-bse.overview-gw.infinitesimal}).
+
+\subsubsection{The expression of $\Sigma$ and $W$}\label{sec:gw-bse.preliminaries.diagram.corrections}
 
 In this section I only consider how many imaginary units there are in front of 
 Green functions, self energies, etc.
@@ -256,16 +268,42 @@ It's then a good idea to define
     %Shape: Circle [id:dp046942194255674474] 
     \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (8.54,37.54) .. controls (8.54,27.35) and (16.81,19.08) .. (27,19.08) .. controls (37.19,19.08) and (45.46,27.35) .. (45.46,37.54) .. controls (45.46,47.74) and (37.19,56) .. (27,56) .. controls (16.81,56) and (8.54,47.74) .. (8.54,37.54) -- cycle ;
     \end{tikzpicture},
+    \label{eq:sigma-diagram}
 \end{equation}
 because in this case, we have 
 \begin{equation}
     G = G_0 + G G_0 \Sigma,
+    \label{eq:dyson-green}
 \end{equation}
 and therefore 
 \begin{equation}
     \underbrace{\omega - \xi^0_{\vb*{k}}}_{{1}/{G_0}} = \underbrace{\omega - \xi_{\vb*{k}}}_{1 / G} + \Sigma,
 \end{equation}
 which agrees with the definition of the self energy as the shift of single-particle energy from the free dispersion.
+
+It should be noted that the derivations above are 
+mainly about how to set the position of $\ii$ correctly:
+I left the $\ee^{\ii \omega 0^+}$ factor (which can be found in \eqref{eq:green-time-delay}) out.
+After taking these factors into account, 
+we find \eqref{eq:dyson-green} becomes 
+\begin{equation}
+    \ee^{\ii \omega 0^+} \ii G =  
+    \ee^{\ii \omega 0^+} \ii G_0 + 
+    \ee^{\ii \omega 0^+} \ii G_0 \times
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,75);\path (56,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Shape: Circle [id:dp046942194255674474] 
+        \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (8.54,37.54) .. controls (8.54,27.35) and (16.81,19.08) .. (27,19.08) .. controls (37.19,19.08) and (45.46,27.35) .. (45.46,37.54) .. controls (45.46,47.74) and (37.19,56) .. (27,56) .. controls (16.81,56) and (8.54,47.74) .. (8.54,37.54) -- cycle ;
+    \end{tikzpicture}
+    \times \ee^{\ii \omega 0^+} \ii G.
+\end{equation}
+We can eliminate the common $\ii \ee^{\ii \omega 0^+}$ factor
+(note that the magnitude of $0^+$ doesn't matter, 
+so a finite product of $\ee^{\ii \omega 0^+}$ collapses into a single $\ee^{\ii \omega 0^+}$),
+and thus we get \eqref{eq:sigma-diagram} again;
+but note that for the same ``collapse of finite product of $\ee^{\ii \omega 0^+}$'' reason outlined above, 
+the $\ee^{\ii \omega 0^+}$ factor in the RHS of \eqref{eq:sigma-diagram},
+if any, can also be removed. 
 
 Similarly, we define the corrected interaction line as 
 \begin{equation}
@@ -413,14 +451,117 @@ the hole and the electron are basically two \emph{representations} of the \emph{
 because in an annihilation-between-electron-and-hole process,
 the $n$ and $\vb*{k}$ numbers of the electron and the hole are different,
 so there is no problem of double counting the same mode in two representations, etc.)
+Once we choose the picture in which there are holes, 
+the electron modes corresponding to the holes should be be considered.
 
-\subsubsection{Normalization}
+\subsubsection{The direction of momentum on the interaction line}
 
+What is demonstrated in the last section, essentially, 
+is ``changing the direction of momentum line attached to a propagator in a diagram
+doesn't create a new diagram''.
+The same works for the bare interaction line: 
+changing the 4-momentum from $p$ to $-p$ doesn't create a new diagram.
+Thus, the two diagrams below are actually \emph{one} diagram,
+and only one of them should be calculated, 
+or otherwise we have double counting:
+\[
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+        %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+        %Straight Lines [id:da04278684905484598] 
+        \draw    (100,110) -- (207.14,109.93) ;
+        \draw [shift={(157.37,109.96)}, rotate = 179.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+        %Shape: Arc [id:dp3733972072386109] 
+        \draw  [draw opacity=0][dash pattern={on 0.84pt off 2.51pt}] (100.01,110.09) .. controls (100.6,78.39) and (124.36,52.89) .. (153.57,52.89) .. controls (182.74,52.89) and (206.47,78.3) .. (207.14,109.93) -- (153.57,111.31) -- cycle ; \draw  [dash pattern={on 0.84pt off 2.51pt}] (100.01,110.09) .. controls (100.6,78.39) and (124.36,52.89) .. (153.57,52.89) .. controls (182.74,52.89) and (206.47,78.3) .. (207.14,109.93) ;  
+        %Shape: Arc [id:dp008366148377647153] 
+        \draw  [draw opacity=0] (133.64,63.69) .. controls (139.69,60.59) and (146.44,58.86) .. (153.57,58.86) .. controls (161.61,58.86) and (169.17,61.06) .. (175.79,64.95) -- (153.57,109.97) -- cycle ; \draw   (133.64,63.69) .. controls (139.69,60.59) and (146.44,58.86) .. (153.57,58.86) .. controls (161.61,58.86) and (169.17,61.06) .. (175.79,64.95) ;  
+        %Straight Lines [id:da6916386425464982] 
+        \draw    (170.61,62.53) -- (173.07,63.68) ;
+        \draw [shift={(175.79,64.95)}, rotate = 205.07] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+        %Straight Lines [id:da468255656187889] 
+        \draw    (242.67,110.36) -- (349.8,110.29) ;
+        \draw [shift={(290.93,110.33)}, rotate = 359.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+        %Shape: Arc [id:dp37350661028763366] 
+        \draw  [draw opacity=0][dash pattern={on 0.84pt off 2.51pt}] (242.68,110.45) .. controls (243.27,78.75) and (267.02,53.24) .. (296.24,53.24) .. controls (325.41,53.24) and (349.13,78.66) .. (349.8,110.29) -- (296.24,111.67) -- cycle ; \draw  [dash pattern={on 0.84pt off 2.51pt}] (242.68,110.45) .. controls (243.27,78.75) and (267.02,53.24) .. (296.24,53.24) .. controls (325.41,53.24) and (349.13,78.66) .. (349.8,110.29) ;  
+        %Shape: Arc [id:dp9656860676888983] 
+        \draw  [draw opacity=0] (276.31,64.05) .. controls (282.35,60.95) and (289.11,59.21) .. (296.23,59.21) .. controls (304.27,59.21) and (311.84,61.42) .. (318.45,65.31) -- (296.23,110.32) -- cycle ; \draw   (276.31,64.05) .. controls (282.35,60.95) and (289.11,59.21) .. (296.23,59.21) .. controls (304.27,59.21) and (311.84,61.42) .. (318.45,65.31) ;  
+        %Straight Lines [id:da09992917684885771] 
+        \draw    (313.28,62.89) -- (315.74,64.04) ;
+        \draw [shift={(318.45,65.31)}, rotate = 205.07] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+        
+        % Text Node
+        \draw (154.6,46.97) node [anchor=south] [inner sep=0.75pt]    {$p '$};
+        % Text Node
+        \draw (153.57,113.37) node [anchor=north] [inner sep=0.75pt]    {$p - p'$};
+        % Text Node
+        \draw (297.26,47.33) node [anchor=south] [inner sep=0.75pt]    {$p'$};
+        % Text Node
+        \draw (296.23,113.72) node [anchor=north] [inner sep=0.75pt]    {$p + p'$};
+        \end{tikzpicture}        
+\]
+
+If we write down the expressions of these diagrams, 
+we get 
+\[
+    \int \frac{\dd[4]{p'}}{(2\pi)^4} G(p + p') W(p'),
+\] 
+and 
+\[
+    \int \frac{\dd[4]{p'}}{(2\pi)^4} G(p - p') W(p')
+    = \int \frac{\dd[4]{p'}}{(2\pi)^4} G(p + p') W(- p').
+\]
+To make the two diagrams equal to each other, 
+what we need is $W(p) = W(- p)$.
+This is of course true for the unscreened Coulomb interaction,
+and this directionless feature eventually originates from 
+the directionless feature of the photon propagator;
+the problem is whether it holds for an effective interaction line.
+
+The reason for this equivalence, then, is $H_{\text{int}}$ has time reversal symmetry.
+It's possible to have a term that doesn't have time reversal symmetry in $H_{\text{int}}$,
+but then the complex conjugate of the aforementioned complex term 
+appears in another diagram,
+and changing the direction of the momentum line 
+merely swaps two diagrams.
+
+Some comments are needed when we put the time variable in the frequency space 
+but keep the spatial coordinates in the real space.
+The time reversal transformation swaps $p$ and $-p$,
+and thus $W(\vb*{p}, \omega)$ equals to $W(- \vb*{p}, - \omega)$;
+although the time reversal operation doesn't change $\vb*{r}$ and $t$,
+it changes the \emph{order} of the coordinates:
+thus, $W(\vb*{r}, \vb*{r}', \omega)$ equals to $W(\vb*{r}', \vb*{r}, -\omega)$ 
+-- the difference between the two is just the order you read the labels on a propagator line.
+
+TODO: the problem here is, time reversal symmetry \emph{doesn't} change $\omega$:
+this can be explicitly verified for the Green function.
+We have 
 \begin{equation}
-    \int_{-\infty}^\infty \ee^{\ii \omega t} \dd{t} 
+    \psi(\vb*{x}, t) \stackrel{T}{\longrightarrow} \ii \psi^\dagger (\vb*{x}, -t),
 \end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \timeorder \expval*{\psi(\vb*{x}, t) \psi^\dagger(\vb*{x}', 0)} 
+        &\stackrel{T}{\rightarrow} 
+        \timeorder \expval*{\ii \psi^\dagger(\vb*{x}, - t) \ii \psi(\vb*{x}', 0)} \\
+        &= - \timeorder \expval*{\psi^\dagger(\vb*{x}, - t) \psi(\vb*{x}', 0)} \\
+        &= \timeorder \expval*{\psi(\vb*{x}', 0) \psi^\dagger(\vb*{x}, - t)}.
+    \end{aligned}
+\end{equation}
+When the time translational symmetry is present, 
+the last line becomes 
+$\timeorder \expval*{\psi(\vb*{x}', t) \psi^\dagger(\vb*{x}, 0)}$.
+This can be explained quite intuitively:
+after time reversal operation,
+a process in which the electron moves from $\vb*{x}'$ to $\vb*{x}$
+becomes a process in which the electron from $\vb*{x}$ to $\vb*{x}'$,
+costing exactly the same amount of time.
+The problem then is how $W(\vb*{r}, \vb*{r}', t)$ transforms.
 
-\subsection{Feynman rules for actual calculation}
+\subsection{``Quantitative'' Feynman rules}
+
+The above discussions are all pretty loose; 
+in this section I will deal with Feynman diagrams more ``quantitatively'' and rigorously.
 
 \subsubsection{In the free space}\label{sec:free-space}
 
@@ -1042,7 +1183,25 @@ and then fit the $H_{\text{eff}}$ according to the strength of scattering.
 
 \subsubsection{$GW$ is screened Hartree-Fock approximation}
 
-In short, $GW$ means 
+In short, $GW$ means to consider the Hartree term and the screened Fock term 
+\begin{equation}
+    \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+            %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+            %Straight Lines [id:da7351295606763149] 
+            \draw [line width=1.5]    (140.23,115.61) -- (247.36,115.54) ;
+            \draw [shift={(187.29,115.58)}, rotate = 359.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (9.91,-4.76) -- (0,0) -- (9.91,4.76) -- (6.58,0) -- cycle    ;
+            %Shape: Arc [id:dp34593327249404604] 
+            \draw  [draw opacity=0][dash pattern={on 1.69pt off 2.76pt}][line width=1.5]  (140.24,115.7) .. controls (140.83,83.99) and (164.58,58.49) .. (193.8,58.49) .. controls (222.97,58.49) and (246.69,83.91) .. (247.36,115.54) -- (193.8,116.91) -- cycle ; \draw  [dash pattern={on 1.69pt off 2.76pt}][line width=1.5]  (140.24,115.7) .. controls (140.83,83.99) and (164.58,58.49) .. (193.8,58.49) .. controls (222.97,58.49) and (246.69,83.91) .. (247.36,115.54) ;  
+            
+            % Text Node
+            \draw (249.36,118.54) node [anchor=north west][inner sep=0.75pt]   [align=left] {2};
+            % Text Node
+            \draw (138.23,118.61) node [anchor=north east] [inner sep=0.75pt]   [align=left] {1};
+            \end{tikzpicture}        
+    \end{gathered}
+\end{equation}
+as self-energy diagrams. Thus, apart from the Hartree term, we have 
 \begin{equation}
     \Sigma = \ii G W,
 \end{equation}
@@ -1111,6 +1270,90 @@ The \emph{dielectric matrix} used to connect vector $\vb*{E}$ and $\vb*{D}$
 is related to $\epsilon_{\vb*{G} \vb*{G}'}$ (TODO: how?)
 but they are not simply equal. 
 
+\subsubsection{Infinitesimal displacement of time in $GW$}\label{sec:gw-bse.overview-gw.infinitesimal}
+
+Suppose $1$ means the output state of an electron 
+and $2$ the input state
+(so that $\Sigma(1, 2)$ is the self-energy for an electron propagating from 2 to 1,
+and therefore we follow the quantum mechanic convention that 
+the input state is on the right while the output state is on the left), 
+we actually have 
+\begin{equation}
+    \Sigma(1, 2) = \ii W(1^+, 2) G(1, 2),
+\end{equation}
+instead of the schematic $\Sigma = \ii W G$.
+This expression can be seen in several places,
+including Wikipedia and \cite{hedin1965new,berger2020potential}.
+The necessity of this infinitesimal displacement on $t_1$
+can be found in \prettyref{sec:gw-bse.epsilon.gpp}.
+
+The question, then, is where this displacement on $t_1$ comes from. TODO: verify 
+My tentative conclusion is that the original interpretation of the screened Fock diagram 
+is actually $\ii W(1, 2) G(1^-, 2)$, 
+where the $-$ superscript comes from \eqref{eq:green-time-delay};
+since we can leave out the $\ee^{\ii \omega 0^+}$ factor in the self-energy 
+(\prettyref{sec:gw-bse.preliminaries.diagram.corrections}),
+in the time domain,
+we can adjust the out time in $G$ from $1^-$ to $1$;
+but since the relation between the out times of $W$ and $G$ is absolute, 
+we also have to push the out time of $W$ slightly forward, 
+and the resulting expression of the $GW$ self-energy becomes 
+$\ii W(1^+, 2) G(1, 2)$.
+
+In the frequency domain we can see this more clearly.
+We have 
+\[
+    \begin{aligned}
+    - \ii \Sigma(\omega, \vb*{r}, \vb*{r}', \omega) = \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+            %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+            %Straight Lines [id:da468255656187889] 
+            \draw [line width=1.5]    (242.67,110.36) -- (349.8,110.29) ;
+            \draw [shift={(289.73,110.33)}, rotate = 359.96] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (9.91,-4.76) -- (0,0) -- (9.91,4.76) -- (6.58,0) -- cycle    ;
+            %Shape: Arc [id:dp37350661028763366] 
+            \draw  [draw opacity=0][dash pattern={on 1.69pt off 2.76pt}][line width=1.5]  (242.68,110.45) .. controls (243.27,78.75) and (267.02,53.24) .. (296.24,53.24) .. controls (325.41,53.24) and (349.13,78.66) .. (349.8,110.29) -- (296.24,111.67) -- cycle ; \draw  [dash pattern={on 1.69pt off 2.76pt}][line width=1.5]  (242.68,110.45) .. controls (243.27,78.75) and (267.02,53.24) .. (296.24,53.24) .. controls (325.41,53.24) and (349.13,78.66) .. (349.8,110.29) ;  
+            %Shape: Arc [id:dp9656860676888983] 
+            \draw  [draw opacity=0] (284.59,61.52) .. controls (288,60.28) and (291.64,59.61) .. (295.42,59.61) .. controls (299.59,59.61) and (303.58,60.42) .. (307.27,61.91) -- (295.42,97.02) -- cycle ; \draw   (284.59,61.52) .. controls (288,60.28) and (291.64,59.61) .. (295.42,59.61) .. controls (299.59,59.61) and (303.58,60.42) .. (307.27,61.91) ;  
+            %Straight Lines [id:da09992917684885771] 
+            \draw    (305.04,61.61) -- (307.16,62.45) ;
+            \draw [shift={(309.95,63.56)}, rotate = 201.6] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+            
+            % Text Node
+            \draw (297.26,47.33) node [anchor=south] [inner sep=0.75pt]    {$\omega '$};
+            % Text Node
+            \draw (296.23,113.72) node [anchor=north] [inner sep=0.75pt]    {$\omega +\omega '$};
+            % Text Node
+            \draw (240.67,113.76) node [anchor=north east] [inner sep=0.75pt]    {$\vb*{r}$};
+            % Text Node
+            \draw (351.8,113.69) node [anchor=north west][inner sep=0.75pt]    {$\vb*{r}'$};
+            \end{tikzpicture}            
+    \end{gathered} = \int \frac{\dd{\omega'}}{2\pi} 
+    \ii G(\vb*{r}, \vb*{r}', \omega + \omega')  \ee^{\ii (\omega + \omega') 0^+}
+    (- \ii) W(\vb*{r}, \vb*{r}', \omega'),
+    \end{aligned}
+\]
+and since the input and output frequency is $\omega$ (as can be seen by energy conservation),
+according to the discussion in \prettyref{sec:gw-bse.preliminaries.diagram.corrections},
+we remove the $\ee^{\ii \omega 0^+}$ factor on RHS and have 
+\begin{equation}
+    \Sigma(\vb*{r}, \vb*{r}', \omega)
+    = \ii \int \frac{\dd{\omega}'}{2\pi}
+    \ee^{\ii \omega' 0^+}
+    G(\vb*{r}, \vb*{r}', \omega + \omega')
+    W(\vb*{r}, \vb*{r}', \omega').
+\end{equation}
+This is exactly Eq. (4a) in \cite{berger2020potential}.
+
+Here is a tricky point: 
+the sign of the exponent in $\ee^{\ii \omega' 0^+}$
+depends on the sign of $\omega'$ dependence in the $G$ factor,
+not the sign of $\omega'$ in the $W$ factor:
+the fact that $\epsilon$ is real (TODO: time reversal!) means $W(\omega') = W(- \omega')$,
+so whether there is a minus sign in the $W$ factor makes no difference.
+This is consistent with the aforementioned fact that the minus superscript in $W(1^+, 2)$,
+although appearing in the $W$ factor, 
+eventually comes from a rule concerning $G$.
+
 \subsubsection{$GW$ compared with the Hartree-Fock approximation}
 
 Note that there \emph{is} screening in self-consistent Hartree-Fock approximation:
@@ -1149,7 +1392,7 @@ TODO:
     \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
 \end{itemize}
 
-\subsection{The $\epsilon$ matrix}\label{sec:gw-bse.overview-gw.epsilon}
+\subsection{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
 \subsubsection{Frequency-dependent form}
 
@@ -1334,7 +1577,7 @@ it leads to a ridiculous result:
 as we increase the density of the $\vb*{k}$-grid,
 $\chi$ becomes larger and larger!
 
-\subsubsection{The static limit and the generalized plasmon-pole model}
+\subsubsection{The static limit and the generalized plasmon-pole model}\label{sec:gw-bse.epsilon.gpp}
 
 In the $\omega \to 0$ limit, 
 we have 
@@ -1491,9 +1734,13 @@ is \emph{lower} than $\abs{\omega} = - \omega$,
 which is the energy of the input hole. 
 In both case, the $\ee^{\ii 0^+ \omega}$ factor 
 gives the correct physical picture. 
-TODO: the next question is, where does this factor come from?
+The origin of this factor is discussed in \prettyref{sec:gw-bse.overview-gw.infinitesimal}.
 
 \subsubsection{The static subspace approach}
+
+\subsection{The self-energy matrix $\Sigma$}
+
+\subsubsection{COHSEX approximation}
 
 
 
@@ -2694,6 +2941,6 @@ TODO: should this be done in \shortcode{2-sigma}?
 The problem with this method is we don't have \shortcode{eqp_correction} in \shortcode{kernel}. TODO 
 
 \bibliographystyle{plain}
-\bibliography{gw,dft,wannier,hubbard,quasiparticle}
+\bibliography{gw,dft,wannier,hubbard,quasiparticle,cohsex}
 
 \end{document}
