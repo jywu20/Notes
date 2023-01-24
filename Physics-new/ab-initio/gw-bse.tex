@@ -106,12 +106,40 @@
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
-\newtcbtheorem[number within=section]{warning}{Warning}%
-  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
-\newtcbtheorem[number within=section]{note}{Note}%
-  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
-\newtcbtheorem[number within=section]{info}{Info}%
-  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
 
 % Displaying texts in bookmarkers
 
@@ -456,6 +484,22 @@ the electron modes corresponding to the holes should be be considered.
 
 \subsubsection{The direction of momentum on the interaction line}
 
+\begin{infobox}{Convention when defining Fourier transformation}{fourier-convention}
+    In this note, when we define the Fourier transformation for a function,
+    we always do the integral over the \emph{variable name}.
+    That's to say, 
+    since we have 
+    \[
+        W(\omega) = \int \dd{t} \ee^{\ii \omega t} W(t),
+    \]
+    the Fourier integral of $W(-t)$ is 
+    \[
+        \int \dd{t} \ee^{\ii \omega t} W(-t).
+    \]
+    Thus, we can say ``changing $t$ to $-t$ means changing $\omega$ to $- \omega$''.
+    This convention makes doing actual calculation easier.
+\end{infobox}
+
 What is demonstrated in the last section, essentially, 
 is ``changing the direction of momentum line attached to a propagator in a diagram
 doesn't create a new diagram''.
@@ -510,29 +554,72 @@ and
     = \int \frac{\dd[4]{p'}}{(2\pi)^4} G(p + p') W(- p').
 \]
 To make the two diagrams equal to each other, 
-what we need is $W(p) = W(- p)$.
-This is of course true for the unscreened Coulomb interaction,
+what we need is $W(p) = W(- p)$ \dots or do we?
+It should be noted that if we replace 
+$W(\vb*{p}, \omega)$ with $W(- \vb*{p}, - \omega)$,
+the physical rules of the system \emph{always} remains the same,
+as long as we have translational symmetries for time and space 
+(if $\vb*{p}$ is a lattice momentum,
+then we only need translational symmetry for the lattice).
+This is \emph{not} due to the time reversal symmetry!
+Instead, this is due to the fact that $W(\vb*{p}, \omega)$
+only makes sense in 
+\[
+    S_{\text{int}} = \sum_{p_1, p_2, q} 
+    c^\dagger_{p_1 + q } c^\dagger_{p_2 - q} W(q) c_{p_2} c_{p_1}.
+\]
+By manipulating the variables, we easily find 
+\[
+    \begin{aligned}
+        S_{\text{int}} &= 
+        \sum_{p_1, p_2, q} 
+        c^\dagger_{p_1 - q } c^\dagger_{p_2 + q} W(-q) c_{p_2} c_{p_1} \\
+        &= \sum_{p_1, p_2, q} 
+        c^\dagger_{p_2 + q} c^\dagger_{p_1 - q } W(-q) c_{p_1} c_{p_2} \\
+        &= \sum_{p_1, p_2, q} 
+        c^\dagger_{p_1 + q} c^\dagger_{p_2 - q } W(-q) c_{p_2} c_{p_1},
+    \end{aligned}
+\]
+where in the first line, 
+we change $q$ into $-q$,
+and in the second line, we swap the order of the operators, 
+and get a $(-1)^2 = 1$ factor,
+and in the third line, 
+we swap the dummy variables $p_1$ and $p_2$.
+Thus we can see $W(q)$, although not necessarily \emph{equal} to $W(-q)$,
+is always \emph{equivalent} to $W(-q)$.
+$W(q) = W(-q)$ is of course true for the unscreened Coulomb interaction,
 and this directionless feature eventually originates from 
 the directionless feature of the photon propagator;
-the problem is whether it holds for an effective interaction line.
+but it doesn't have to be true 
+if we want to replace $W(q)$ with $W(-q)$:
+indeed, this means if $W(q) \neq W(-q)$,
+maybe it's a good idea to \emph{symmetrize} $W(q)$.
 
-The reason for this equivalence, then, is $H_{\text{int}}$ has time reversal symmetry.
-It's possible to have a term that doesn't have time reversal symmetry in $H_{\text{int}}$,
-but then the complex conjugate of the aforementioned complex term 
-appears in another diagram,
-and changing the direction of the momentum line 
-merely swaps two diagrams.
-
-Some comments are needed when we put the time variable in the frequency space 
+Some additional comments are needed when we put the time variable in the frequency space 
 but keep the spatial coordinates in the real space.
-The time reversal transformation swaps $p$ and $-p$,
-and thus $W(\vb*{p}, \omega)$ equals to $W(- \vb*{p}, - \omega)$;
-although the time reversal operation doesn't change $\vb*{r}$ and $t$,
-it changes the \emph{order} of the coordinates:
-thus, $W(\vb*{r}, \vb*{r}', \omega)$ equals to $W(\vb*{r}', \vb*{r}, -\omega)$ 
--- the difference between the two is just the order you read the labels on a propagator line.
+The $W(q)$-equivalent-to-$W(-q)$ conclusion 
+now is that $W(\vb*{r}, \vb*{r}', \omega)$ equals to 
+$W(\vb*{r}', \vb*{r}, - \omega)$.
+We don't need to add a minus sign to $\vb*{r}$ or $\vb*{r}'$,
+but we need to swap them,
+so that 
+\[
+    \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{p} \cdot (\vb*{r} - \vb*{r}')} W(\vb*{r}', \vb*{r}, - \omega)
+    = W(- \vb*{p}, - \omega) ,
+\]
+while 
+\[
+    \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{p} \cdot (\vb*{r} - \vb*{r}')} W(\vb*{r}, \vb*{r}', \omega)
+    = W(\vb*{p}, \omega).
+\]
 
-TODO: the problem here is, time reversal symmetry \emph{doesn't} change $\omega$:
+The question, then, is what corresponds to the time reversal symmetric.
+Although the time reversal operation doesn't change $\vb*{r}$ and $t$,
+it changes the \emph{order} of the coordinates:
+thus, $W(\vb*{r}, \vb*{r}', \omega)$ equals to $W(\vb*{r}', \vb*{r}, \omega)$.
+Note that time reversal symmetry doesn't change $\omega$, 
+if we swaps $\vb*{r}$ and $\vb*{r}'$:
 this can be explicitly verified for the Green function.
 We have 
 \begin{equation}
@@ -556,7 +643,60 @@ after time reversal operation,
 a process in which the electron moves from $\vb*{x}'$ to $\vb*{x}$
 becomes a process in which the electron from $\vb*{x}$ to $\vb*{x}'$,
 costing exactly the same amount of time.
-The problem then is how $W(\vb*{r}, \vb*{r}', t)$ transforms.
+Thus after time reversal operation, 
+we need to replace $G(\vb*{x}, t; \vb*{x}', 0)$
+with $G(\vb*{x}', t; \vb*{x}, 0)$,
+and therefore we need to replace 
+$G(\vb*{r}, \vb*{r}', \omega)$ 
+with $G(\vb*{r}', \vb*{r}, \omega)$.
+
+You may ask: so why can't we just replace $t$ with $-t$?
+We can, actually: but now we \emph{shouldn't} change the order of $\vb*{r}$ and $\vb*{r}'$!
+Let's have a look at what it means to change $t$ to $-t$:
+\[
+    \begin{aligned}
+        W(\vb*{r}, t; \vb*{r}', 0) 
+        &\stackrel{t \to -t}{\longrightarrow} W(\vb*{r}, -t; \vb*{r}', 0) \\
+        &\simeq  W(\vb*{r}', 0; \vb*{r}, -t) \\
+        &=       W(\vb*{r}', t; \vb*{r}, 0)  .
+    \end{aligned}
+\]
+The second line comes from the aforementioned fact that 
+the initial and end labels in $W$ can be swapped, 
+which may change the value 
+but doesn't influence the final result;
+the third line comes from time translational symmetry.
+So we see keeping $\vb*{r}$ and $\vb*{r}'$ untouched 
+and changing $t$ to $-t$ 
+is equivalent to 
+keeping $t$ untouched 
+and swap $\vb*{r}$ and $\vb*{r}'$.
+Both representations of the time reversal operation are good:
+but remember only to do one of them -- don't do both of them!
+
+In the $(\vb*{r}, \vb*{r}', \omega)$ representation,
+if we take the first representation of the time reversal operation,
+we have 
+\begin{equation}
+    W(\vb*{r}, \vb*{r}', \omega) 
+    \stackrel{T}{\longrightarrow} W(\vb*{r}', \vb*{r}, \omega),
+\end{equation}
+while if we take the second representation, we get 
+\begin{equation}
+    W(\vb*{r}, \vb*{r}', \omega) 
+    \stackrel{T}{\longrightarrow} W(\vb*{r}, \vb*{r}', - \omega).
+\end{equation}
+Note that $W(\vb*{r}, \vb*{r}', \omega)$ is always equivalent to $W(\vb*{r}', \vb*{r}, -\omega)$,
+but the former is only equivalent to $W(\vb*{r}', \vb*{r}, \omega)$
+when we have time reversal symmetry.
+
+The above discussion is about a time reversal symmetry in a single term 
+in the interaction Hamiltonian.
+It's possible to have a term that doesn't have time reversal symmetry in $H_{\text{int}}$,
+but then the complex conjugate of the aforementioned complex term 
+appears in another diagram,
+and changing the direction of the momentum line 
+merely swaps two diagrams.
 
 \subsection{``Quantitative'' Feynman rules}
 
@@ -1789,7 +1929,7 @@ It's first order approximation is
 TODO: when doing iterative calculation, $V_{\text{H}}$ may no longer be the same between DFT and $GW$??
 So when doing iterative calculation, should we calculate ``the $GW$ $V_{\text{H}}$''?
 
-\subsection{Self-consistent or not}
+\subsection{Self-consistent or not}\label{sec:gw-bse.accuracy.self-consistent}
 
 There are three iterative schemes.
 The first is the eigenvalue self-consistent scheme:
@@ -1797,7 +1937,7 @@ It's just a self-consistent solver of \eqref{eq:self-energy-first-order}.
 In this case, we don't need off-diagonal elements,
 because they are not used in \eqref{eq:self-energy-first-order}.
 This scheme is mentioned in Section 3.3 in \cite{berkeleygw}.
-The second scheme takes the change of eigenvalues into account,
+The second scheme takes the change of eigenstates into account,
 and thus iteratively solves \eqref{eq:self-energy-correction-from-band}.
 In this case we need to take non-diagonal elements seriously \cite{faleev2004all,aguilera2013g}.
 In the third scheme, the form of $\Sigma$ itself is changed:
@@ -2523,10 +2663,28 @@ after running \shortcode{pw2wannier90.x},
 we need to replace the \shortcode{perfix.eig} file generated by \shortcode{pw2wannier90.x}
 by the \shortcode{prefix.eig} file generated by \shortcode{sig2wan}.
 
-\subsection{Energy self-consistent calculation}
+\subsection{Self-consistent $GW$}
+
+Self-consistent schemes in $GW$ are listed in \prettyref{sec:gw-bse.accuracy.self-consistent}.
+In this section, 
+I talk about how to do them.
+
+\subsubsection{Energy self-consistent calculation in $GW$}
 
 The \shortcode{epsilon} code has an option called \shortcode{eqp_corrections},
 which takes the 
+
+\subsubsection{Eigenstate self-consistent calculation in $GW$}
+
+Eigenstate self-consistent $GW$ 
+-- in other words, diagonalizing $\Sigma$ instead of taking into account only the diagonal elements -- 
+is realized by \shortcode{scGWtool.py}.
+
+\subsection{Topological band testing}
+
+The error \shortcode{ValueError: The given WCC are not degenerate Kramers pairs at the edges of the surface}
+occurs because one topological band and a trivial band appear in the \shortcode{bands} option 
+of \shortcode{z2pack.tb.System}.
 
 \section{Performance tricks}
 
