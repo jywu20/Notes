@@ -168,6 +168,7 @@
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
+\newcommand*{\abinitio}{\textit{ab initio}}
 
 \title{Manual for DFT+$GW$+BSE and the related matters}
 \author{Jinyuan Wu}
@@ -482,7 +483,7 @@ so there is no problem of double counting the same mode in two representations, 
 Once we choose the picture in which there are holes, 
 the electron modes corresponding to the holes should be be considered.
 
-\subsubsection{The direction of momentum on the interaction line}
+\subsubsection{The direction of momentum on the interaction line}\label{sec:gw-bse.preliminaries.diagram.direction-line}
 
 \begin{infobox}{Convention when defining Fourier transformation}{fourier-convention}
     In this note, when we define the Fourier transformation for a function,
@@ -1222,7 +1223,7 @@ the index of what happens later appears on the left side.
 
 \subsection{Quasiparticles}
 
-In the context of \textit{ab initio} calculations,
+In the context of \abinitio{} calculations,
 the term quasiparticle usually means 
 renormalized band electrons and holes.
 Bosonic modes are just called ``excitations'',
@@ -1230,8 +1231,72 @@ and non-electron-like fermionic modes like spinons are simply absent
 (we are studying weakly correlated systems, anyway),
 so this terminology creates no confusion.
 
-Fermi liquid: the relation between diagrammatic components and the $\varepsilon$, $f$ functions 
-are given in \cite{hedin1965new}
+In most \abinitio{} tasks, 
+we expect the single-electron Green function 
+to look like a ``broadened'' version of the free electron Green function.
+In this case, 
+since $G \sim 1 / E - H$,
+we say $H$ is the single quasiparticle Hamiltonian,
+and the poles of the single-electron Green function 
+are said to reflect the dispersion curve $\varepsilon_{n \vb*{k}}$ of quasiparticles.
+The correction to the $\varepsilon_{n \vb*{k}}$ 
+is the most salient influence of Coulomb repulsion.
+
+This however doesn't mean the spectrum of the system 
+\emph{only} contains quasiparticles: 
+for example, as is demonstrated in RPA of the empty-lattice model,
+we always have the plasmon mode besides quasiparticles; 
+in insulators, 
+the bound state of an electron and a hole is called an \concept{exciton},
+again something not a quasiparticle but a legit component of the system's spectrum. 
+
+Even for quasiparticles, 
+the effective single-electron energy 
+is still dependent to the particle number distribution,
+and quasiparticle states have finite lifetime -- 
+they are not eigenstates of the system, after all.
+It should be noted in the full quantum treatment of the system,
+even when $T = 0$,
+we can still talk about damping:
+many-body wave functions containing a single quasiparticle 
+are not strictly eigenstates of the system, 
+so if we start with a single quasiparticle state, 
+we will find that because of unitarity, 
+probabilistic weight is ``dissipated'' into states we are not interested in or even can't describe. 
+A physical picture is that quantum fluctuation
+makes scattering possible when $T = 0$.
+
+\begin{theorybox}{Quantum fluctuation}{quantum-fluctuation-lifetime}
+    A more rigorous formulation of the idea is the follows: 
+    ``quantum fluctuation'' is a fancy word for ``non-commuting terms in Hamiltonian''. 
+    Each term has to be, of course, meaningful in a basis that has direct physical meaning:
+    in the basis of the eigenstates of the total Hamiltonian,
+    nothing is non-commutative; 
+    but in the basis of, say, Fock states, 
+    we have two terms in the total Hamiltonian, 
+    the single electron term and the Coulomb repulsion term, 
+    each of which has direct meaning but doesn't commute with the other. 
+    This non-commutation means 
+    an eigenstate of the system can never be a Fock state, 
+    but a mix of Fock states. 
+    Thus $\braket*{\text{quasiparticle $n, \vb*{k}$}}{\text{ground state}} \neq 1$,
+    and an initial state containing one quasiparticle 
+    always evolves away,
+    and we say ``quantum fluctuation enables scattering''.
+\end{theorybox}
+
+The \concept{Fermi liquid theory} describes the behavior of these (semi-)well-defined, 
+bare electron or hole-like quasiparticles, if any.  
+TODO: derive the follows 
+\begin{equation}
+    E = \varepsilon_{n \vb*{k}} n_{n \vb*{k}} + f n n.
+\end{equation}
+The relation between diagrammatic components and the $\varepsilon$, $f$ functions 
+are given in \cite{hedin1965new}.
+
+\subsubsection{Spectral density}
+
+
 
 \subsection{Light-matter interaction}
 
@@ -1441,7 +1506,10 @@ and the resulting expression of the $GW$ self-energy becomes
 $\ii W(1^+, 2) G(1, 2)$.
 
 In the frequency domain we can see this more clearly.
-We have 
+Assuming we have time reversal symmetry 
+so that the order of $\vb*{r}$ and $\vb*{r}'$ doesn't really matter 
+(\prettyref{sec:gw-bse.preliminaries.diagram.direction-line}),
+we have 
 \[
     \begin{aligned}
     - \ii \Sigma(\omega, \vb*{r}, \vb*{r}', \omega) = \begin{gathered}
@@ -1487,9 +1555,14 @@ This is exactly Eq. (4a) in \cite{berger2020potential}.
 Here is a tricky point: 
 the sign of the exponent in $\ee^{\ii \omega' 0^+}$
 depends on the sign of $\omega'$ dependence in the $G$ factor,
-not the sign of $\omega'$ in the $W$ factor:
-the fact that $\epsilon$ is real (TODO: time reversal!) means $W(\omega') = W(- \omega')$,
-so whether there is a minus sign in the $W$ factor makes no difference.
+not the sign of $\omega'$ in the $W$ factor.
+This can be seen in Eq. (10) in \cite{hybertsen1986electron}.
+Indeed, we know that replacing $W(\omega')$ by $W(- \omega')$ 
+doesn't change the value of any diagram after integrating over all internal variables
+(\prettyref{sec:gw-bse.preliminaries.diagram.direction-line}),
+so whether there is a minus sign in the $W$ factor makes no difference
+-- thus any sign dependence has to be about the sign of variables involved in the $G$ part 
+instead of the $W$ part.
 This is consistent with the aforementioned fact that the minus superscript in $W(1^+, 2)$,
 although appearing in the $W$ factor, 
 eventually comes from a rule concerning $G$.
@@ -2557,10 +2630,16 @@ The working procedure now is
 
 \subsection{Band plot}
 
-\subsubsection{DFT level}
+\subsubsection{DFT level: $\vb*{k}$-path}\label{sec:calculation.sop.bands.dft-path}
 
-The Fermi energy is to be found in \shortcode{scf.out}.
-It won't appear in \shortcode{bands.out}.
+To plot the bands, 
+just do a \shortcode{bands} calculation 
+where the \shortcode{K_POINTS} block is in \shortcode{crystal_b} mode.
+
+Note that when plotting the band structure,
+the Fermi energy is to be found in \shortcode{scf.out}
+or in a \shortcode{nscf} run.
+It won't appear in a \shortcode{bands} run.
 
 \subsubsection{$GW$ level: \shortcode{inteqp}}
 
@@ -2584,6 +2663,12 @@ The standard operation procedure is listed here:
     \end{lstlisting}
     \item 
 \end{enumerate}
+
+\subsubsection{$GW$ level: using \shortcode{WFN_outer}}
+
+It's possible to do the same thing in \prettyref{sec:calculation.sop.bands.dft-path} 
+with BerkeleyGW:
+we can 
 
 \subsubsection{BSE level}
 
@@ -2737,6 +2822,17 @@ to be \shortcode{mpirun}ed.
 
 A possibility is when compiling the program to be launched in parallel,
 you choose the serial version (\prettyref{sec:qe-install}).
+
+\section{Trouble shooting in Python}
+
+\subsection{\shortcode{AttributeError: 'Dataset' object has no attribute 'value'}}
+
+This error comes from an update of \shortcode{hdf5} 
+which deprecated the \shortcode{.value} attribute.
+To solve the problem, 
+either downgrade the library 
+or change the statements using \shortcode{.value}.
+This error is known in \shortcode{scGWtool.py}.
 
 \section{Trouble shooting in QuantumEspresso}
 
