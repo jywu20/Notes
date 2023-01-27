@@ -2346,9 +2346,36 @@ The follows are strongly recommended whenever modifying files:
     \item 
 \end{itemize}
 
-\subsection{Structural relaxation}
+\subsection{Finding the structure}
 
-TODO: Wyckoff positions
+\subsubsection{From open data}
+
+Sometimes the atomic positions are given with the help of Wyckoff positions:
+an example can be found in \cite{mar1992metal}.
+In this case, 
+the number of atomic positions given is \emph{less} than 
+the total numbers of atoms in a primitive unit cell.
+The difference between the two can be found 
+according to the multiplicity of 
+the Wyckoff positions involved -- 
+in the case of \cite{mar1992metal},
+all atomic positions given are in the 2a position, 
+the multiplicity of which is two, 
+and 6 atomic positions are given, 
+so we have $2 \times 6 = 12$ atoms per primitive cell. 
+But then the primitive cell mentioned in the experimental paper 
+may be a primitive cell in the bulk 
+while it's possible that we only want a layer in the bulk material 
+(i.e. we are dealing with the monolayer version),
+and then we should only pick the atoms that are close enough to each other 
+in the $z$ direction.
+
+\subsubsection{Comparing existing structures for the same material}
+
+One good idea is to first find some high symmetry points 
+(the inversion center, the reflection mirror, etc.) 
+and then compare the relative relations of these positions 
+in the two structures.
 
 \subsection{Insulator DFT+$GW$+BSE}
 
@@ -2636,6 +2663,23 @@ To plot the bands,
 just do a \shortcode{bands} calculation 
 where the \shortcode{K_POINTS} block is in \shortcode{crystal_b} mode.
 
+The results can be processed by the \shortcode{bands.x} utility.
+An example of the input file:
+\begin{lstlisting}
+    &BANDS
+    prefix = 'WTe2'
+    outdir = './'
+    filband = 'WTe2_bands.dat' 
+    lsigma(1) = .true.
+    lsigma(2) = .true.
+    lsigma(3) = .true.
+    lsym = .false.                                                        
+    /
+\end{lstlisting}
+Here the \shortcode{lsigma} options are only available for a full SOC calculation.
+A script used to read the output file 
+can be found \href{./scripts/electron-band/qe-spin-texture.jl}{here}.
+
 Note that when plotting the band structure,
 the Fermi energy is to be found in \shortcode{scf.out}
 or in a \shortcode{nscf} run.
@@ -2805,6 +2849,16 @@ TODO: how it works; maybe \cite{del2019large} may provide some hints.
 
 \chapter{Trouble shooting}
 
+\section{Unexpected units}
+
+\subsection{Band energy output of \shortcode{pw.x}}
+
+When invoked in the \shortcode{bands} or \shortcode{nscf} modes, 
+\shortcode{pw.x} gives a list of $\vb*{k}$-points 
+and the corresponding band energies. 
+The unit of the $\vb*{k}$ points is the momentum space version of \shortcode{alat},
+which is \emph{not} based on the crystal coordinates.
+
 \section{Trouble shooting in MPI}
 
 \subsection{\shortcode{srun: fatal: Can not execute }}
@@ -2853,6 +2907,7 @@ in a run with 2240 MPI tasks,
 the error occurred,
 but when I used 320 MPI tasks,
 the error disappeared.
+The error can occur with \shortcode{pw.x} or \shortcode{bands.x}.
 
 \subsection{\shortcode{Error reading attribute index : expected integer , found *}}
 
@@ -2894,6 +2949,10 @@ A complete \shortcode{bands}-\shortcode{pw2bgw} run has to be redone.
 Usually this occurs when something else happens between a \shortcode{bands} run 
 and a \shortcode{pw2bgw} run for it.
 A complete \shortcode{bands}-\shortcode{pw2bgw} run has to be redone.
+
+\subsection{\shortcode{Error in routine PW2BGW (19): input_pw2bgw}}
+
+This can occur when you misspell one option in \shortcode{pw2bgw.in}.
 
 \subsection{\shortcode{stress for hybrid functionals not available with pools}}
 
@@ -3190,11 +3249,12 @@ change the character of some states from valence to conduction.
 The \shortcode{mf_header/kpoints/occ} and \shortcode{mf_header/kpoints/ifmax} datasets 
 in the \shortcode{WFN.h5} file 
 have to be modified accordingly.
+A procedure to do so can be found \href{./scripts/wfn-editing/move-occupation.jl}{here}.
 TODO: should this be done in \shortcode{2-sigma}?
 
 The problem with this method is we don't have \shortcode{eqp_correction} in \shortcode{kernel}. TODO 
 
 \bibliographystyle{plain}
-\bibliography{gw,dft,wannier,hubbard,quasiparticle,cohsex}
+\bibliography{gw,dft,wannier,hubbard,quasiparticle,cohsex,structure}
 
 \end{document}
