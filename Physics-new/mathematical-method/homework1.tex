@@ -1,0 +1,377 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\title{Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    1+e^{y / x}-\frac{y}{x} e^{y / x}+e^{y / x} y^{\prime}=0 , \quad  y(1)=-5.
+\end{equation}
+
+\paragraph*{Solution} The equation is equivalent to 
+\[
+    \ee^{y/x} \dd{y} + 
+    \left(
+        1 + \ee^{y/x} - \frac{y}{x} \ee^{y/x} 
+    \right) \dd{x} = 0,
+\]
+and we have 
+\[
+    \pdv{x} \ee^{y/x} = \pdv{y} \left(
+        1 + \ee^{y/x} - \frac{y}{x} \ee^{y/x} 
+    \right) = - \frac{y}{x^2} \ee^{y/x},
+\]
+so the equation is exact. 
+Suppose the solution is $\phi(x, y) = C$, and we have 
+\[
+    \phi(x, y) = \int \dd{y} \ee^{y/x} = x \ee^{y/x} + f(x),
+\] 
+and therefore 
+\[
+    1 + \ee^{y/x} - \frac{y}{x} \ee^{y/x}  = \pdv{\phi}{x} 
+    = \ee^{y/x} + x \cdot \frac{-y}{x^2} \ee^{y/x} + \pdv{f}{x}
+    \Rightarrow f(x) = x + \const.  
+\]
+So the solution is 
+\begin{equation}
+    \phi(x, y) = x \ee^{y/x} + x = C. 
+\end{equation}
+When $x = 1$, $y = -5$, 
+so we find $C = 1 + \ee^{-5}$,
+and the final solution is 
+\begin{equation}
+    y = x \ln \left(
+        \frac{1 + \ee^{-5}}{x} - 1
+    \right).
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    y^{\prime}=\frac{1}{2 x} y^2-\frac{1}{x} y-\frac{4}{x}.
+\end{equation}
+
+\paragraph*{Solution} We have 
+\[
+    \dv{y}{x} = \frac{y^2 - 2y - 8}{2 x}, 
+\]
+and therefore
+\[
+    \int \frac{\dd{x}}{2x} = \int \frac{\dd{y}}{y^2 - 2y - 8} 
+    = \frac{1}{6} \int \dd{y} \left(
+        \frac{1}{y-4} - \frac{1}{y+2}
+    \right) , 
+\]
+\[
+    \ln x = \frac{1}{3} (\ln (y - 4) - \ln (y + 2)) + C.
+\]
+Solving out $y$, we get 
+\begin{equation}
+    y = -2 + \frac{6}{1 - C x^3}.
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    y^{\prime \prime}(x)-6 y^{\prime}(x)+13 y=-e^x , \quad y(0)=-1, \quad y^{\prime}(0)=1.
+\end{equation}
+
+
+\paragraph*{Solution} The solutions of the homogeneous equation is given by
+\[
+    y = \ee^{\lambda x}, 
+\]
+\[
+    \lambda^2 - 6 \lambda + 13 = 0 \Rightarrow
+    \lambda = 3 \pm 2 \ii,
+\]
+and therefore a linear combination of the solutions corresponding to the two $\lambda$'s gives 
+\begin{equation}
+    y_1 = \ee^{3x} \cos(2x), \quad 
+    y_2 = \ee^{3x} \sin(2x).
+\end{equation}
+Now we need to find a particular solution. 
+Using the ansatz $y = A \ee^{x}$, 
+we have 
+\[
+    A - 6 A + 13 A= - 1 \Rightarrow A = -\frac{1}{8}.
+\]
+So the general solution is 
+\begin{equation}
+    y = A \ee^{3x} \cos(2x) + B \ee^{3x} \sin(2x) - \frac{1}{8} \ee^{x}.
+\end{equation}
+The initial conditions mean
+\[
+    A - \frac{1}{8} = -1, \quad 
+    3 A + 2 B - \frac{1}{8} = 1
+    \Rightarrow A = - \frac{7}{8}, \quad B = \frac{15}{8},
+\]
+so 
+\begin{equation}
+    y = - \frac{7}{8} \ee^{3x} \cos(2x) + \frac{15}{8} \ee^{3x} \sin(2x) - \frac{1}{8} \ee^{x}.
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    y^{\prime \prime}+2 y^{\prime}-3 y=0 , \quad y(0)=6, \quad y^{\prime}(0)=-2.
+\end{equation}
+
+\paragraph*{Solution} Following the same recipe above, we try to solve 
+\[
+    \lambda^2 + 2 \lambda - 3 = 0,
+\]
+and we find $\lambda = 1, -3$, so 
+\begin{equation}
+    y = A \ee^{x} + B \ee^{-3x},
+\end{equation}
+and 
+\[
+    A + B = 6, \quad A - 3 B = -2 \Rightarrow
+    A = 4, \quad B = 2.
+\]
+So we get 
+\begin{equation}
+    y = 4 \ee^{x} + 2 \ee^{-3x}.
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    y^{\prime \prime}-y^{\prime}-6 y=8 e^{2 x}.
+\end{equation}
+
+\paragraph*{Solution} Again following the same procedure: 
+the general solutions of the homogeneous equation is 
+\[
+    y = A \ee^{3x} + B \ee^{-2x},
+\]
+and taking the ansatz $y = A \ee^{2x}$ to find a particular solution, we have 
+\[
+    A - A - 6 A = 8 \Rightarrow A = - \frac{4}{3},
+\]
+so the general solution is 
+\begin{equation}
+    y = A \ee^{3x} + B \ee^{-2x} - \frac{4}{3} \ee^{2x}.
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    x^2 y^{\prime \prime}+x y^{\prime}-4 y=0.
+\end{equation}
+
+\paragraph*{Solution} This is a Euler equation. 
+We use the ansatz $y = x^a$ to find a particular solution:
+we have 
+\[
+    a(a-1) + a - 4 = 0 \Rightarrow a = \pm 2.
+\]
+So the general solution is 
+\begin{equation}
+    y = A x^2 + \frac{B}{x^2}.
+\end{equation}
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    y^{\prime \prime}+x y^{\prime}+x y=0.
+\end{equation}
+
+\paragraph*{Solution} Since the polynomials before $y, y', y''$ are all analytic, 
+the general form of a solution is 
+\[
+    y = \sum_{n=0}^\infty c_n x^n,
+    \quad xy = \sum_{n=1}^{\infty} c_{n-1} x^n,
+\]
+and therefore 
+\[
+    y' = \sum_{n=1}^{\infty} c_n n x^{n-1} , \quad 
+    x y' = \sum_{n=1}^{\infty} c_n n x^n,
+\]
+and 
+\[
+    y'' = \sum_{n=2}^{\infty} c_n n (n-1) x^{n-2}
+    = \sum_{n=0}^{\infty} c_{n+2} (n+2) (n+1) x^n.
+\]
+So the equation becomes 
+\[
+    \begin{aligned}
+        0 &= \sum_{n=0}^{\infty} c_{n+2} (n+2) (n+1) x^n 
+        + \sum_{n=1}^{\infty} c_n n x^n
+        + \sum_{n=1}^{\infty} c_{n-1} x^n \\
+        &= c_2 + \sum_{n=1}^\infty x^n \left(
+            c_{n+2} (n+2) (n+1) + c_n n + c_{n-1}
+        \right)
+    \end{aligned},
+\]
+and we get 
+\begin{equation}
+    c_2 = 0, \quad (n+2) (n+1) c_{n+2} + n c_n + c_{n-1} = 0.
+\end{equation}
+
+To pick up two particular solutions, we can set $c_0 = 1, c_1 = 0$, and vice versa. 
+When $c_1 = 0, c_0 = 1$, we have 
+\[
+    6 c_3 + c_1 + c_0 = 0 \Rightarrow c_3 = - \frac{1}{6},
+\]
+and 
+\[
+    12 c_4 + 2 c_2 + c_1 = 0 \Rightarrow c_4 = 0.
+\]
+So 
+
+\section{}
+
+\paragraph*{Problem} \begin{equation}
+    4 x y^{\prime \prime}+2 y^{\prime}+2 y=0.
+\end{equation}
+
+\paragraph*{Solution} 
+
+\end{document}
