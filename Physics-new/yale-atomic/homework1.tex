@@ -164,32 +164,33 @@ we have
 \end{equation}
 The unitary condition means 
 \begin{equation}
-    M M^\dagger = I,
+    M^\dagger M = I,
 \end{equation}
 which in turns means 
 \[
     \begin{aligned}
-        I &= \frac{1}{2} \pmqty{
-            \ee^{\ii \phi_{ta}} & \ee^{\ii \phi_{rb}} \\
-            \ee^{\ii \phi_{ra}} & \ee^{\ii \phi_{tb}} 
-        } 
+        I &= \frac{1}{2} 
         \pmqty{
             \ee^{- \ii \phi_{ta}} & \ee^{-\ii \phi_{ra}} \\
             \ee^{- \ii \phi_{rb}} & \ee^{-\ii \phi_{tb}} 
+        } 
+        \pmqty{
+            \ee^{\ii \phi_{ta}} & \ee^{\ii \phi_{rb}} \\
+            \ee^{\ii \phi_{ra}} & \ee^{\ii \phi_{tb}} 
         } \\ 
         &= \frac{1}{2} \pmqty{
-            2 & \ee^{\ii (\phi_{ta} - \phi_{ra})} + \ee^{\ii (\phi_{rb} - \phi_{tb})} \\
-            \ee^{- \ii (\phi_{ta} - \phi_{ra})} + \ee^{- \ii (\phi_{rb} - \phi_{tb})} & 2
+            2 & \ee^{\ii (\phi_{rb} - \phi_{ta})} + \ee^{\ii (\phi_{tb} - \phi_{ra})} \\
+            \ee^{\ii (\phi_{ta} - \phi_{rb})} + \ee^{\ii (\phi_{ra} - \phi_{tb})} & 2
         },
     \end{aligned}
 \]
 and this is equivalent to 
 \[
-    \ee^{\ii (\phi_{ta} - \phi_{ra})} + \ee^{\ii (\phi_{rb} - \phi_{tb})} = 0,
+    \ee^{\ii (\phi_{rb} - \phi_{ta})} + \ee^{\ii (\phi_{tb} - \phi_{ra})} = 0,
 \]
 or in other words 
 \begin{equation}
-    \phi_{ta} - \phi_{ra} = \phi_{rb} - \phi_{tb} + \pi n, \quad \text{$n$ odd}.
+    \phi_{rb} - \phi_{ta} = \phi_{tb} - \phi_{ra} + \pi n, \quad \text{$n$ odd}.
 \end{equation}
 
 \section{Problem 2: Interferometers}
@@ -332,23 +333,105 @@ so
     \end{aligned}
 \end{equation}
 
-Here the notation $u_\omega$ may be slightly confusing,
-because it's just the energy density (spatial density) of \emph{one} photon mode with frequency $\omega$, 
+Here the notation $u_\omega$ may be slightly confusing.
+What we want is 
+\begin{equation}
+    u = \int \dd{\omega} u_\omega.
+\end{equation}
+If we interpret it as 
+the energy density (spatial density) of \emph{one} photon mode with frequency $\omega$, 
 and the energy density contributed by \emph{all} photon modes 
 with the frequency being between $\omega$ and $\omega + \dd{\omega}$
 is $n(\omega) \dd{\omega} \cdot u_\omega$,
 where $n(\omega)$ is the density of states. 
+In this way, we get the expressions in the beginning of \prettyref{sec:correlation.energy.density}.
 
-The expression of $\vb*{E}_\omega$ is 
+We can also define $\vb*{E}_\omega$ according to the standard 
+time-domain Fourier transformation:
 \begin{equation}
-    \vb*{E}_{\vb*{k} \sigma \omega} =  , \quad
+    \vb*{E}_{\omega} = \int \ee^{\ii \omega t} \vb*{E}(\vb*{r}, t) \dd{t} , \quad
     \vb*{E}(\vb*{r}, t) = \sum_{\vb*{k}, \sigma = 1, 2}
     \ii \sqrt{\frac{\hbar \omega_{\vb*{k}}}{2 \epsilon_0 V}} 
     a_{\vb*{k} \sigma} \vu*{e}_\sigma \ee^{\ii \vb*{k} \cdot \vb*{r} - \ii \omega_{\vb*{k}} t} + \text{h.c.},
 \end{equation}
-and 
+and we have 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\vb*{E}(\vb*{r}, 0) \cdot \vb*{E}(\vb*{r}, t)} &= 
+        \int \frac{\dd{\omega'}}{2\pi} \int \frac{\dd{\omega}}{2\pi}
+        \expval*{\vb*{E}(\vb*{r}, \omega') \cdot \vb*{E}(\vb*{r}, \omega)}
+        \ee^{- \ii \omega t}.
+    \end{aligned}
+\end{equation}
+Under this definition, 
+we have two $2\pi \delta (\omega - \omega_{\vb*{k}})$ factors in the RHS;
+one of them may be understood as imposing the energy conservation condition $\omega + \omega' = 0$,
+which is then canceled by the integration $\int \dd{\omega'} / 2\pi$, 
+and another of them becomes the density of states, 
+because there are more than one $(\vb*{k}, \sigma)$ pair with which  
+$\omega_{\vb*{k} \sigma} = \omega$, 
+and we sum over all $\vb*{k}$'s and $\sigma$'s.
+(Note that due to the momentum conservation condition 
+and the orthogonal relation concerning $\vu*{e}_\sigma$,
+although in the RHS we have two sums over $\vb*{k}$ and $\sigma$,
+only one of them is kept.)
+So the eventual expression of the correlation function looks like 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\vb*{E}(\vb*{r}, 0) \cdot \vb*{E}(\vb*{r}, t)}
+        &= \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} \int \frac{\dd{\omega'}}{2\pi} 
+        \underbrace{S({\omega}) 2\pi \delta(\omega + \omega') }_{
+            \expval*{\vb*{E}(\vb*{r}, \omega') \cdot \vb*{E}(\vb*{r}, \omega)}
+        } \\ 
+        &= \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} S(\omega),
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        S(\omega) &= 
+        \frac{1}{\epsilon_0} \cdot 
+        \underbrace{\frac{1}{V} \sum_{\vb*{k}, \sigma} 2\pi \delta(\omega - \omega_{\vb*{k} \sigma})}_{
+            \text{density of states per volume}
+        }
+        \hbar \omega_{\vb*{k}} 
+        \cdot \underbrace{\frac{1}{2}  \expval*{a_{\vb*{k} \sigma} a^\dagger_{\vb*{k} \sigma} + \text{h.c.}}}_{
+            n_{\vb*{k} \sigma} + \frac{1}{2}
+        } \\
+        &= \frac{1}{\epsilon_0} 2\pi n(\omega) \hbar \omega \cdot \left(
+            f(\omega) + \frac{1}{2}
+        \right),
+    \end{aligned}
+\end{equation}
+where $f(\omega)$ is the occupation on energy level $\omega$,
+which is the Bose-Einstein distribution in an equilibrium state. 
+Putting these together, we get 
+\begin{equation}
+    \expval*{\vb*{E}(\vb*{r}, 0) \cdot \vb*{E}(\vb*{r}, t)} = 
+    \frac{1}{\epsilon_0} \int \dd{t} \ee^{- \ii \omega t} \underbrace{
+        n(\omega) \cdot \hbar {\omega} \left(
+        f(\omega) + \frac{1}{2}
+        \right)
+    }_{\eqqcolon u_\omega}.
+    \label{eq:u-omega-to-correlation}
+\end{equation}
+Multiplying $\epsilon_0$ on both sides of the equation and 
+take $t = 0$, 
+and we arrive at the desired expression of $u_\omega$. 
+Its relation with $\expval*{\vb*{E}(\vb*{r}, \omega') \cdot \vb*{E}(\vb*{r}, \omega)}$ however 
+involves some normalization factors: 
+what we do have is 
+\begin{equation}
+    \expval*{\vb*{E}(\vb*{r}, \omega') \cdot \vb*{E}(\vb*{r}, \omega)} = 2 \pi \delta(\omega + \omega') S(\omega), \quad 
+    S(\omega) = \frac{2\pi}{\epsilon_0} u_\omega.  
+\end{equation}
+But this doesn't create much trouble: 
+we can always find $u_\omega$ 
+using the density of states and the occupation, 
+and then the correlation find is known
+after a Fourier transformation. 
 
-\subsubsection{Energy density}
+\subsubsection{Energy density}\label{sec:correlation.energy.density}
 
 Now we derive the energy at $\omega$.
 Between $\omega$ and $\omega + \dd{\omega}$, we have 
@@ -450,10 +533,69 @@ The same applies for $R_{yz}$ or $R_{zx}$.
 According to \prettyref{sec:correlation.energy.mode}, 
 we have 
 \begin{equation}
-    u = \epsilon_0 \abs*{\vb*{E}}^2 = 
+    u = \epsilon_0 \abs*{\vb*{E}}^2 .
 \end{equation}
+To relate $\expval*{E_x^2}$ to $\expval*{\vb*{E}^2}$, note that 
+\[
+    \expval{\vb*{E}^2} \propto {\vu*{e}_1}^2 + {\vu*{e}_2}^2 = 2, 
+\]
+and 
+\[
+    \expval{E_x^2} \propto (\vu*{e}_1 \cdot \vu*{x})^2 +  (\vu*{e}_2 \cdot \vu*{x})^2
+    = 1 - (\vu*{k} \cdot \vu*{x})^2.
+\]
+The coordinates needed to determine $\vu*{k}$, $\vu*{e}_1$, and $\vu*{e}_2$ 
+are the polar angle $\theta$ and the azimuthal angle $\varphi$ of $\vu*{k}$.
+To go over all possible polarizations,
+we need an additional parameter $\psi$ specifying the direction of $\vu*{e}_1$,
+and once $\vu*{k}$ and $\vu*{e}_1$ are determined,
+we can get the orientation of $\vu*{e}_2$.
+To go over \emph{independent} polarization modes, 
+no further parameter is needed.
+So we have 
+\[
+    \begin{aligned}
+        \frac{\expval{E_x^2}}{\expval{\vb*{E}^2}}
+        &= \frac{
+            \int \dd{\Omega} (1 - (\vu*{k} \cdot \vu*{x})^2)
+        }{ \int \dd{\Omega} \times 2 } = \frac{1}{8\pi} \int \sin \theta \dd{\theta} \dd{\varphi} 
+        \left(
+            1 - \sin^2 \theta \cos^2 \varphi
+        \right) \\
+        &= \frac{1}{8\pi} \left(
+            4\pi - \int_0^\pi \sin^3 \theta \dd{\theta} \int_0^{2\pi} \cos^2 \varphi \dd{\varphi}
+        \right) \\
+        &= \frac{1}{3},
+    \end{aligned}
+\]
+and therefore 
 \begin{equation}
-    R_{xx}(0) = \expval{E_x(0)^2} = 
+    R_{xx}(0) = \expval{E_x(0)^2} = \frac{1}{3 \epsilon_0} u,  
 \end{equation}
+and similarly 
+\begin{equation}
+    R_{xx}(0) = R_{yy}(0) = R_{zz}(0) = \frac{1}{3 \epsilon_0} u.
+\end{equation}
+
+Following \eqref{eq:u-omega-to-correlation} and the last equation, we have 
+\begin{equation}
+    R_{xx} (t) = \frac{1}{3 \epsilon_0} \int \dd{t}  \ee^{- \ii \omega t} u_\omega,
+\end{equation}
+
+\subsection{Properties of 300 K black body field}
+
+Since 
+\begin{equation}
+    \expval{I} = \sigma T^4 = \frac{1}{4} c \epsilon_0 \vb*{E}^2,
+\end{equation}
+when $T = \SI{300}{K}$, we have 
+$I = \SI{459}{W/m^2}$,
+and $\abs{\vb*{E}} = \SI{832}{V/m}$.
+Although SI{100}{V/m} can cause an electric shock,
+this ``field strength'' can't really be felt,
+because the strength and direction of $\vb*{E}$ is constantly changing 
+and a stable electric field toward a static direction is never established.
+
+
 
 \end{document}
