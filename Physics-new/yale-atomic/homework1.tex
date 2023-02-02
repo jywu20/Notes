@@ -453,9 +453,12 @@ Now since the total energy in the cavity is
 \end{equation}
 the total energy density -- the amount of energy per $\dd[3]{\vb*{r}}$ -- is 
 \begin{equation}
-    u = \int \dd{\omega} \frac{\hbar \omega^3}{\pi^2 c^3} 
+    u = \int_0^\infty \dd{\omega} \frac{\hbar \omega^3}{\pi^2 c^3} 
     \frac{1}{\ee^{\hbar \omega / \kB T} - 1}.
 \end{equation}
+Note that here we choose $\omega \geq 0$,
+because when $\omega < 0$, 
+the density of states vanishes. 
 Using 
 \[
     \int_0^\infty \frac{x^3 \dd{x}}{\ee^{x} - 1} = \frac{\pi^4}{15}, 
@@ -579,8 +582,30 @@ and similarly
 
 Following \eqref{eq:u-omega-to-correlation} and the last equation, we have 
 \begin{equation}
-    R_{xx} (t) = \frac{1}{3 \epsilon_0} \int \dd{t}  \ee^{- \ii \omega t} u_\omega,
+    R_{xx} (t) = \frac{1}{3 \epsilon_0} \int \dd{\omega}  \ee^{- \ii \omega t} u_\omega
+    = \frac{\hbar}{3 \epsilon_0 \pi^2 c^3} 
+    \left(\frac{\kB T}{\hbar}\right)^4
+    \int_0^\infty \dd{x} x^3 
+    \frac{
+        \ee^{- x \left(1 + \ii t \frac{\kB T}{\hbar} \right)}
+    }{1 - \ee^{-x}} .
 \end{equation}
+Again, we choose $\omega \geq 0$,
+or otherwise $n(\omega)$ is zero and $u_\omega$ therefore vanishes.
+Since we have 
+\begin{equation}
+    \psi^{(m)}(z)=(-1)^{m+1} \int_0^{\infty} \frac{t^m e^{-z t}}{1-e^{-t}} \mathrm{~d} t,
+\end{equation}
+where $\psi^{(m)}(z)$ is the so-called polygamma function, 
+we have 
+\begin{equation}
+    R_{xx}(t) = \frac{\hbar}{3 \epsilon_0 \pi^2 c^3} 
+    \left(\frac{\kB T}{\hbar}\right)^4
+    \psi^{(m)}\left(
+        1 + \ii t \frac{\kB T}{\hbar}
+    \right).
+\end{equation}
+
 
 \subsection{Properties of 300 K black body field}
 
@@ -591,11 +616,35 @@ Since
 when $T = \SI{300}{K}$, we have 
 $I = \SI{459}{W/m^2}$,
 and $\abs{\vb*{E}} = \SI{832}{V/m}$.
-Although SI{100}{V/m} can cause an electric shock,
+Although \SI{100}{V/m} can cause an electric shock,
 this ``field strength'' can't really be felt,
 because the strength and direction of $\vb*{E}$ is constantly changing 
 and a stable electric field toward a static direction is never established.
 
-
+The position of the peak of blackbody radiation 
+depends on whether we are working with 
+the frequency spectrum or the wavelength spectrum. 
+When we are working with the frequency spectrum,
+from 
+\[
+    \dv{u_\omega}{\omega} = 0 
+\]
+we get 
+\begin{equation}
+    \frac{\hbar \omega}{3 \kB T} = 1- \ee^{- \frac{\hbar \omega}{\kB T}},
+\end{equation}
+so 
+\begin{equation}
+    \frac{\hbar \omega}{\kB T} = 2.82, 
+\end{equation}
+and therefore when $T = \SI{300}{K}$,
+we get $\nu = \omega / 2\pi = \SI{1.76e13}{Hz}$,
+and therefore $\lambda = c / \nu = \SI{1.7e-5}{m}$.
+If we are working with the wavelength spectrum, 
+the nonlinear scaling factor $\dv*{\omega}{\lambda}$ changes the equation into 
+\begin{equation}
+    \frac{\hbar \omega}{5 \kB T} = 1- \ee^{- \frac{\hbar \omega}{\kB T}},
+\end{equation}
+and the same procedure can be repeated again. 
 
 \end{document}

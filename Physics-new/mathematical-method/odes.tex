@@ -766,7 +766,7 @@ The \concept{Laplace transformation} is defined for a function $f(t)$ as
 for every $s$ where the integral converges. 
 It's easy to see that $\mathcal{L}$ is linear, 
 
-\subsection{Some examples}
+\subsection{Laplace transforms of basic elementary functions}
 
 The simplest Laplace transform is 
 \begin{equation}
@@ -808,6 +808,24 @@ we have
 Similarly we have 
 \begin{equation}
     \laplace[\sin(at)] = \frac{a}{s^2 + a^2}.
+\end{equation}
+
+Consider a pulse signal 
+\begin{equation}
+    f(t) = \begin{cases}
+        0, &\quad t < a \text{ or } t > b, \\
+        1, &\quad a \leq t \leq b.
+    \end{cases}
+\end{equation}
+This can be easily implemented by the Heaviside function: 
+we have 
+\begin{equation}
+    f(t) = H(t-a) - H(t-b).
+\end{equation}
+So the Laplace transform is 
+\begin{equation}
+    \laplace[f(t)] = \ee^{-sa} \laplace[1] - \ee^{- sb} \laplace[1]
+    = \frac{1}{s} (\ee^{-sa} - \ee^{-sb}).
 \end{equation}
 
 \subsection{Laplace transform of differential equations}
@@ -888,7 +906,39 @@ we just extend the region of allowed $s$ as large as we can,
 solve the algebraic equation in the Laplace space, 
 and then go back. 
 
-\subsection{More rules}
+We can repeat the procedure in the last example 
+for a system of ODEs. 
+Consider for example 
+\begin{equation}
+    x' - 2y' = 1, \quad x' - x + y = 0, \quad x(0) = y(0) = 0.
+\end{equation}
+For the first equation, Laplace transform gives 
+\[
+    s X(s) - x(0) - 2 (s Y(s) - y(0)) = \laplace[1] = \frac{1}{s},
+\]
+and for the second equation we have 
+\[
+    s X(s) - x(0) - X(s) + Y(s) = 0.
+\]
+Solving this linear equation system, we get 
+\[
+    X(s) = \frac{1}{s^2 (2s - 1)}, \quad 
+    Y(s) = - \frac{s-1}{s^2 (2s - 1)}.
+\]
+Since 
+\[
+    X(s) = - \frac{2}{s} - \frac{1}{s^2} + 2 \frac{1}{s-1/2},
+\]
+we have 
+\begin{equation}
+    x(t) = - 2 - t + 2 \ee^{t/2}.
+\end{equation}
+Similarly, 
+\begin{equation}
+    y(t) = -1 + \ee^{t/2} - t.
+\end{equation}
+
+\subsection{Shifting of $s$ and $t$}
 
 Laplace transform of an integral can also be found. 
 Here we investigate into things like 
@@ -932,5 +982,89 @@ We have
     \laplace[t^2 \ee^{-t}] = \laplace[t^2] |_{s \to s + 1}
     = \frac{2}{(s+1)^3}.
 \end{equation}
+
+\subsection{Convolution}
+
+The \concept{convolution integral} of $f(t)$ and $g(t)$ is defined as 
+\begin{equation}
+    f \otimes g = \int_0^t f(t') g(t-t') \dd{t'}.
+\end{equation}
+This can be found very frequently in science: 
+it appears when we deal with interaction:
+for example, the $t - t'$ time may come from indirect interaction 
+(where $t'$ is the time an intermediate step happens).
+
+A way around the reasonable but hard to calculate convolution integral 
+is taking its Laplace transform. 
+We have 
+\begin{equation}
+    \begin{aligned}
+        \laplace[f \otimes g]
+        &= \int_{0}^{\infty} \ee^{-st} \int_{0}^{t} f(t') g(t-t') \dd{t'} \dd{t}  \\
+        &= \int_{0}^{\infty} f(t') \int_{t'}^{\infty} g(t-t') \ee^{-st} \dd{t} \dd{t'} \\
+        &= \int_{0}^{\infty} f(t') \int_{0}^{\infty} g(t'') \ee^{- s (t'' + t')} \dd{t''} \dd{t'} \\
+        &= \int_{0}^{\infty} f(t') \ee^{-st'} \int_{0}^{\infty} g(t'') \ee^{- s t''} \dd{t''} \\
+        &= \laplace[f] \laplace[g].
+    \end{aligned}
+\end{equation}
+The second line uses another way to see the integration region: 
+by saying $0 < t < \infty$, $0 < t' < t$, 
+we also mean $0 < t' < \infty$, $t' < t < \infty$.
+The third line replaces $t - t'$ with $t''$.
+The final result no longer contains convolution.
+
+One application of this fact is shown in the following example.
+Consider 
+\[
+    \frac{1}{s^2 - a^2} = \underbrace{\frac{1}{s-a}}_{G(s)} \cdot \underbrace{\frac{1}{s+a}}_{F(s)}.
+\]
+What's its inverse Laplace transform?
+By shifting theorem, we have 
+\[
+    f(t) = \ee^{-at}, \quad g(t) = \ee^{at}, 
+\]
+and therefore 
+\begin{equation}
+    \laplace^{-1}\left[
+        \frac{1}{s^2 - a^2}
+    \right] = \int_{0}^{t} \ee^{-at'} \ee^{a(t-t')} \dd{t'} = 
+    \ee^{at} \int_{0}^{t} \ee^{-2at'} \dd{t'} = \frac{1}{a} \sinh (at). 
+\end{equation}
+
+We can also use the convolution theorem to give solutions to very generic equations. 
+Consider the following ODE problem: 
+\begin{equation}
+    y'' - 5y' + 6y = f(t), \quad f(0) = f'(0) = 0.
+\end{equation}
+The point here is we \emph{don't} know what is $f(t)$,
+but still want to give a template of the solution.
+So we just do Laplace transform:
+\[
+    (s^2 - 5 s + 6) Y(s) = F(s). 
+\]
+To find the Laplace transform of $1 / (s^2 - 5s + 6)$, we have 
+\[
+    \laplace^{-1} \left[
+        \frac{1}{(s^2 - 5s + 6)}
+    \right]
+    = \laplace^{-1} \left[
+        \frac{1}{s-3} - \frac{1}{s-2} 
+    \right] = \ee^{3t} - \ee^{2t}, 
+\]
+and 
+\begin{equation}
+    \begin{aligned}
+        y(t) &= \laplace^{-1}[Y(s)] = \laplace^{-1} \left[
+            \frac{1}{(s^2 - 5s + 6)} F(s)
+        \right] \\
+        &= \laplace^{-1} \left[
+            \frac{1}{(s^2 - 5s + 6)}
+        \right] \otimes f(t) \\
+        &= \int_{0}^{t} f(t) (\ee^{3(t - t')} - \ee^{2 (t - t')}) \dd{t'}.
+    \end{aligned}
+\end{equation}
+
+
+
 
 \end{document}
