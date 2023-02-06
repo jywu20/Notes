@@ -177,6 +177,8 @@
     
 \maketitle
 
+\tableofcontents
+
 \chapter{$GW$ and BSE}
 
 \section{Preliminaries}
@@ -2332,6 +2334,13 @@ TODO: why RPA for them is acceptable
 
 \chapter{Carrying out calculations}
 
+List of technical issues:
+\begin{itemize}
+    \item Band mode of BerkeleyGW
+    \item Wannier ``oscillation''
+    \item 
+\end{itemize}
+
 \section{Details in installation}
 
 \subsection{QuantumESPRESSO}\label{sec:qe-install}
@@ -2839,12 +2848,56 @@ which takes the
 Eigenstate self-consistent $GW$ 
 -- in other words, diagonalizing $\Sigma$ instead of taking into account only the diagonal elements -- 
 is realized by \shortcode{scGWtool.py}.
+The procedure is listed below: 
+\begin{enumerate}
+    \item Perform a DFT run, with \emph{non-diagonal} \shortcode{VXC} in the \shortcode{pw2bgw} step. 
+        An example of the part of \shortcode{pw2bgw.in} concerning \shortcode{VXC}:
+        \begin{lstlisting}
+        vxcg_flag = .true.
+        vxc_diag_nmax    = 1000
+        vxc_offdiag_nmax = 1000 
+        \end{lstlisting}
+        Note that here we are using \shortcode{VXC} instead of \shortcode{vxc.dat} 
+        as the output format of $V_{\text{xc}}$.
+        Whenever weird errors occur with the \shortcode{pw2bgw} step, 
+        redo the \shortcode{bands} step 
+        and do \shortcode{pw2bgw} in exactly the same parallelization environment.
+    \item Run \shortcode{sigma} with the options 
+        \begin{lstlisting}
+        sigma_matrix -1 0
+        dont_use_vxcdat
+        \end{lstlisting}
+        and rename the output file \shortcode{sigma_hp.log} to \shortcode{sigma_hp_col.log}.
+    \item Run \shortcode{sigma} with the options 
+        \begin{lstlisting}
+        sigma_matrix -2 0
+        dont_use_vxcdat
+        \end{lstlisting}
+        and rename the output file \shortcode{sigma_hp.log} to \shortcode{sigma_hp_row.log}.
+        TODO: understand what's going on in this step; 
+        the explanation involving ``the lower triangle and the upper triangle''
+        doesn't seem to agree with the official documentation
+    \item Rename (or link, or whatever) the \shortcode{WFN_inner.h5} file used in the last steps
+        as \shortcode{wfn_old.h5}. 
+        If the last two steps are not done with 
+        the HDF5 format (i.e. they are done with the Fortran binary format),
+        a \shortcode{wfn2hdf.x} run is needed. 
+    \item Run \shortcode{scGWtools.py} to build and diagonalize the quasiparticle Hamiltonian.
+        The output files are \shortcode{vxc_new.dat} and \shortcode{wfn_new.h5}. 
+    \item Rename the output files into \shortcode{vxc.dat} and \shortcode{WFN.h5}. 
+        Run \shortcode{sigma} with \shortcode{use_wfn_hdf5} 
+        and remove the \shortcode{dont_use_vxcdat} option.
+\end{enumerate}
 
-\subsection{Topological band testing}
+\subsection{Topological invariants with \shortcode{z2pack}}
 
 The error \shortcode{ValueError: The given WCC are not degenerate Kramers pairs at the edges of the surface}
 occurs because one topological band and a trivial band appear in the \shortcode{bands} option 
 of \shortcode{z2pack.tb.System}.
+
+\subsection{Band projection}
+
+
 
 \section{Performance tricks}
 
@@ -2878,6 +2931,33 @@ TODO: how it works; maybe \cite{del2019large} may provide some hints.
 
 \section{Convergence tests}
 
+Here, the term \concept{convergence test} means 
+to make sure the parameters that control the size of the problem 
+are large enough. 
+The parameters included are: 
+\begin{itemize}
+    \item The $\vb*{k}$- (and therefore $\vb*{q}$-)grid
+        this is defined in the \shortcode{2.1-wfn} step;
+    \item The cutoff energy in DFT; 
+    \item The number of empty bands given to \shortcode{epsilon}; 
+    \item The cutoff energy in \shortcode{epsilon}; 
+    \item TODO: what's number in CH summation? Possibly just \shortcode{number_bands}.
+\end{itemize}
+
+TODO: problem: do high bands require more $\vb*{G}$ vectors, 
+or do low bands require more $\vb*{G}$ vectors?
+
+List of theoretical problems: 
+\begin{itemize}
+    \item Wavefunction cutoff only affects bare exchange 
+    significantly, can be treated separately; 
+    large $\vb*{G}$'s only contribute to bare exchange. 
+    \item 
+\end{itemize}
+
+More theoretical reading is needed to understand
+https://www.nersc.gov/assets/Uploads/ConvergenceinBGW.pdf
+
 \chapter{Trouble shooting}
 
 \section{Unexpected units}
@@ -2907,6 +2987,11 @@ to be \shortcode{mpirun}ed.
 
 A possibility is when compiling the program to be launched in parallel,
 you choose the serial version (\prettyref{sec:qe-install}).
+
+\subsection{\shortcode{nsufficient virtual memor}}
+
+Try to reduce the number of MPI processes per node 
+and increase the number of OpenMP threads per MPI process.
 
 \section{Trouble shooting in Python}
 
@@ -2990,6 +3075,14 @@ This can occur when you misspell one option in \shortcode{pw2bgw.in}.
 As the error message implies,  
 turning \shortcode{tstress} to \shortcode{.false.} (or simply deleting anything about this option)
 solves the problem.
+
+\subsection{\shortcode{Error in routine projwave (1): Cannot project on zero atomic wavefunctions!}}
+
+This occurs when running \shortcode{projwfc.x}. 
+It occurs when atomic wave functions are not shipped together with the pseudopotentials used. 
+This is the case for some types of pseudopotentials, 
+including ONCV TODO: full list.
+
 
 \section{Trouble shooting in \shortcode{epsilon} and \shortcode{sigma}}
 
@@ -3147,6 +3240,10 @@ the number of bands considered will be zero,
 and thus a divide-by-zero error occurs 
 when \shortcode{sigma.x} tries to distribute computational loads.
 
+\subsection{\shortcode{ERROR: screened Coulomb cutoff is bigger than epsilon cutoff}}
+
+
+
 \section{Trouble shooting in \shortcode{wannier90} and \shortcode{pw2wannier90}}
 
 \subsection{\shortcode{w90_wannier90_readwrite_read: mismatch in WTe2.eig}}\label{sec:wannier.mismatch-eig}
@@ -3259,6 +3356,16 @@ DFT is infamous for underestimating the band gap.
 \begin{itemize}
     \item Use hybrid functionals like HSE.
     \item Let $GW$ correct the band structure. TODO: but how? How to avoid the error in \prettyref{sec:semimetal-error-1}?
+\end{itemize}
+
+\subsection{SOC effects are too strong}
+
+When SOC effects are much stronger than expected: 
+\begin{itemize}
+    \item Are you using relativistic pseudopotentials for a non-SOC run?
+        This is \emph{not} correct 
+        (and unfortunately QuantumESPRESSO never tells us when this happens).
+    \item TODO: 
 \end{itemize}
 
 \subsection{When we get a semimetal in the DFT step but it should be an insulator}\label{sec:unexpected-metal}
