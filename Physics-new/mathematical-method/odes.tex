@@ -1064,7 +1064,198 @@ and
     \end{aligned}
 \end{equation}
 
+\section{Fourier analysis}
 
+\subsection{Definition of Fourier series}
 
+Consider a real, integrable function $f(x)$ on $- L \leq x \leq L$.
+The Fourier series of it is 
+\begin{equation}
+    f(x) = \frac{1}{2} a_0 + \sum_{n=1}^{\infty} \left(
+        a_n \cos(\frac{n \pi x}{L})
+        + b_n \sin(\frac{n \pi x}{L})
+    \right).
+\end{equation}
+This form has a very intuitive physical picture: 
+any sound can be obtained by mixing a series of 
+simple harmonic oscillations. 
+
+The coefficients can be obtained by integrating from $-L$ to $L$. 
+Since 
+\begin{equation}
+    \int_{-L}^{L} \sin(\frac{n \pi x}{L}) \dd{x} = 
+    \int_{-L}^{L} \cos(\frac{n \pi x}{L}) \dd{x} = 0,
+\end{equation}
+we have 
+\begin{equation}
+    \frac{1}{L} \int_{-L}^{L} f(x) \dd{x} = a_0,
+\end{equation}
+and similarly since 
+\begin{equation}
+    \int_{L}^{-L} \cos(\frac{n \pi x}{L}) \cos(\frac{m \pi x}{L}) = 
+    \int_{L}^{-L} \sin(\frac{n \pi x}{L}) \sin(\frac{m \pi x}{L}) = 
+    \begin{cases}
+        0, \quad n \neq m, \\
+        L, \quad n = m,
+    \end{cases}
+\end{equation}
+and the cross term 
+\begin{equation} 
+    \int_{L}^{-L} \sin(\frac{n \pi x}{L}) \cos(\frac{m \pi x}{L}) = 0,
+\end{equation}
+we find 
+\begin{equation}
+    a_m = \frac{1}{L} \int_{-L}^{L} f(x) \cos(\frac{m \pi x}{L}) \dd{x}, 
+\end{equation}
+\begin{equation}
+    b_m = \frac{1}{L} \int_{-L}^{L} f(x) \sin(\frac{m \pi x}{L}) \dd{x}.
+\end{equation}
+Note that the first equation also covers the $m = 0$ case. 
+The $1 / L$ normalization factor can be found by considering the $f(x) = 1$ case. 
+
+Strictly speaking, 
+the above equations only make sense when we can define the integrals. 
+And another question 
+-- whether the Fourier series really \emph{converges} to the original function $f(x)$ -- 
+is a question needing investigation.
+Another question is whether we can have Fourier series for discontinuous functions, 
+or in other words, 
+how can a stepwise function be simulated by a series of sine waves. 
+Another problem is it seems at $x = \pm L$,
+the Fourier series have to converge to the \emph{save} value,
+because every term has the same value at $x = \pm L$.
+
+To lay a rigorous foundation for Fourier series, 
+we state the following theorem:
+if $f(x)$ is piecewise smooth on $[-L, L]$, 
+then the Fourier series of $f(x)$ converges to 
+$(f(x^+) + f(x^-)) / 2$ at each $x \in (-L, L)$, 
+and to $(f(-L) + f(L)) / 2$ at $x = \pm L$. 
+Here the term \concept{piecewise smooth} means 
+that the function may have jumps in $[-L, L]$, 
+but there may be one or more point 
+at which $f(x^+)$ and $f(x^-)$ are different. 
+At such points of confusion, 
+we just take an average of the two options. 
+
+As an example, let's try Fourier series on 
+\begin{equation}
+    f(x) = \begin{cases}
+        1, \quad & 0 \leq x \leq L \\
+        -1, \quad & - L \leq x < 0.
+    \end{cases}
+\end{equation}
+So 
+\[
+    a_0 = \frac{1}{L} (-L + L) = 0,
+\] 
+and indeed $a_m = 0$ for all $m$'s: 
+the function in question is odd, 
+and all the $a$ terms are even,
+so automatically they all vanish. 
+For the odd terms, we have 
+\[
+    \begin{aligned}
+        b_n &= \frac{1}{L} \int_{-L}^{L} f(x) \sin(\frac{n \pi x}{L}) \dd{x} \\
+        &= \frac{1}{L} \left(
+            - \int_{-L}^{0} \sin(\frac{n \pi x}{L}) \dd{x} 
+            + \int_{0}^{L} \sin(\frac{n \pi x}{L}) \dd{x} 
+        \right) \\
+        &= \frac{1}{n \pi} (2 - 2 \cos (n \pi)),
+    \end{aligned}
+\]
+and therefore 
+\begin{equation}
+    b_n = \begin{cases}
+        \frac{4}{n \pi} , &\quad n = 1, 3, 5, \dots,\\
+        0, &\quad \text{otherwise},
+    \end{cases}
+\end{equation}
+and 
+\begin{equation}
+    f(x) = \frac{4}{\pi} \sum_{n=1}^{\infty} \frac{1}{2n-1} \sin(\frac{(2n-1) \pi x}{L}).
+\end{equation}
+
+\subsection{Parseval's theorem}
+
+We have 
+\[
+    \int_{-L}^{L} f(x)^2 \dd{x} 
+    = \frac{1}{2} a_0 \int_{-L}^{L} f(x) \dd{x}
+    + \sum_{n=1}^{\infty} \left(
+        a_n \int_{-L}^{L} \cos(\frac{n \pi x}{L}) f(x) \dd{x}
+        + b_n \int_{-L}^{L} \sin(\frac{n \pi x}{L}) f(x) \dd{x}
+    \right),
+\]
+and the integral in each term again gives a Fourier coefficient,
+and in the end we get 
+\begin{equation}
+    \frac{1}{L} \int_{-L}^{L} f(x)^2 \dd{x}
+    = \frac{1}{2} a_0 
+    + \sum_{n=1}^{\infty} (a_n^2 + b_n^2). 
+\end{equation}
+This is called \concept{Parseval's theorem}. 
+
+\subsection{Complex Fourier series}
+
+We can also change the way we show the Fourier series into the follows: 
+\begin{equation}
+    f(x) = \sum_{n=-\infty}^{\infty} d_n \ee^{\ii n \pi x / L}.
+\end{equation}
+This is merely a linear combination of the original definition in terms of $\sin$ and $\cos$.
+Repeating the integral over $[-L, L]$, we get 
+\[
+    \begin{aligned}
+        \int_{-L}^{L} f(x) \ee^{- \ii m \pi x / L} \dd{x} 
+        &= \sum_{n=-\infty}^{\infty} d_n
+        \int_{-L}^{L}  \ee^{\ii (n - m) \pi x / L} \dd{x} \\
+        &= \sum_{n=-\infty}^{\infty} d_n
+        \frac{2 L }{(n - m) \pi} \sin (n - m) \pi. 
+    \end{aligned}
+\] 
+When $n \neq m$, the RHS is zero; 
+when $n = m$, we need to take the $n - m \to 0$ limit and get 
+\[
+    \frac{2 L }{(n - m) \pi} \sin (n - m) \pi = 2 L.  
+\]
+So the conclusion is 
+\begin{equation}
+    d_m = \frac{1}{2L} 
+        \int_{-L}^{L} f(x) \ee^{- \ii m \pi x / L} \dd{x} .
+\end{equation}
+
+This version of Fourier series immediately leads to Fourier transform when $L \to \infty$:
+We define 
+\begin{equation}
+    \omega_n = \frac{n \pi}{L}, 
+\end{equation}
+and we get 
+\begin{equation}
+    \Delta \omega = \frac{\pi}{L}.
+\end{equation}
+Therefore 
+\[
+    \begin{aligned}
+        f(x) &= \sum_{n=-\infty}^{\infty} \ee^{\ii n \pi x / L} \cdot \frac{1}{2L} 
+            \int_{-L}^{L} f(x') \ee^{- \ii n \pi x' / L} \dd{x'} \\
+            &= \sum_{n=-\infty}^{\infty} \frac{\Delta \omega}{2\pi} \ee^{\ii \omega_n x} \cdot  
+            \int_{-L}^{L} f(x') \ee^{- \ii \omega_n x' } \dd{x'} \\
+            &= \int_{-\infty}^{\infty} \frac{\dd{\omega}}{2\pi} \ee^{\ii \omega x} \cdot 
+            \int_{-\infty}^{\infty} f(x') \ee^{- \ii \omega x'} \dd{x'}.
+    \end{aligned}
+\]
+So we can just define 
+\begin{equation}
+    F(\omega) = \int_{-\infty}^{\infty} f(x') \ee^{- \ii \omega x'} \dd{x'},
+\end{equation}
+and 
+\begin{equation}
+    f(x) =\int_{-\infty}^{\infty} \frac{\dd{\omega}}{2\pi} \ee^{\ii \omega x} F(\omega).
+\end{equation}
+
+As an example, we evaluate the Fourier transform of 
+\begin{equation}
+    f(x) = x \ee^{- \abs*{x}}.
+\end{equation}
 
 \end{document}
