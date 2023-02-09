@@ -1384,7 +1384,7 @@ we first calculate quantum jump channels (i.e. scattering)
 and then fit the $H_{\text{eff}}$ according to the strength of scattering.
 
 
-\section{Overview of $GW$+BSE}
+\section{Overview of $GW$}
 
 \subsection{What is $GW$}
 
@@ -1569,7 +1569,7 @@ This is consistent with the aforementioned fact that the minus superscript in $W
 although appearing in the $W$ factor, 
 eventually comes from a rule concerning $G$.
 
-\subsubsection{$GW$ compared with the Hartree-Fock approximation}
+\subsubsection{$GW$ compared with the Hartree-Fock approximation}\label{sec:gw.hf}
 
 Note that there \emph{is} screening in self-consistent Hartree-Fock approximation:
 if we forget about the Fock term,
@@ -1957,7 +1957,159 @@ The origin of this factor is discussed in \prettyref{sec:gw-bse.overview-gw.infi
 
 \subsubsection{COHSEX approximation}
 
+\section{Overview of BSE}
 
+\subsection{From $GW$ to BSE}
+
+Suppose we want to find the electromagnetic response of a system. 
+What we want is something looking like $\fdv*[n]{n(\vb*{r})}{V(\vb*{r}')}$.
+With the influence of $V(\vb*{r})$ taken into account, 
+$n(\vb*{r}, t)$ is given by the following diagram: 
+\[
+    \protect\input{feyn/density-response-1.tex}.
+\]
+Since the coupling Hamiltonian between the external field with electrons 
+is just ordinary Coulomb interaction, 
+the first vertex a line from an external field encounters 
+is a vertex with one interaction line and two electron lines.
+The $n$th-order response, therefore, is given by 
+\[
+    \protect\input{feyn/respose-correlation-density-1.tex}.
+\]
+We can easily see that to find the $n$th-order response,
+it's necessary to find the $n$th-order correlation function.
+So we have two equivalent ways to deal with electromagnetic response: 
+the first is to use Green function equations of motion 
+and find $n(\vb*{r}, t)$ explicitly,
+and then divide it with $V$;
+the other is to calculate all correlation functions;
+note that if we want not only the response, 
+we shouldn't pair incoming and outgoing lines 
+and fix the coordinates of each two of them to the same value:
+we should wipe out the solid dots in the last diagram.
+
+Now suppose we want to work with the single-electron Green function $G$ only
+in the first approach,
+and the $GW$ self-energy plus the electromagnetic coupling 
+are used to build the effective Hamiltonian. 
+In other words, we are doing \concept{time-dependent $GW$}.
+The density $n(\vb*{r}, t)$ is obtained by $G(\vb*{r}, t; \vb*{r}, t)$,
+or in other words, 
+by connecting the incoming and outgoing lines to the $(\vb*{r}, t)$ point.
+Note that $\Sigma^{GW}$ depends on $G$,
+and when deciding what happens at $t + \Delta t$,
+we use $\Sigma^{GW}[G(t)]$.
+Here in order to make the Hamiltonian-based time evolution possible, 
+we actually need to do the COHSEX approximation or something similar 
+to eliminate the retardation effects in $\Sigma^{GW}$,
+or otherwise $\Sigma^{GW}$ doesn't lead to a well-defined Hamiltonian,
+and therefore the screened Coulomb interaction line is no longer 
+simply described by RPA
+-- but anyway it relies on $G$.
+The question then is, 
+what's the corresponding first-order response function?
+What diagrams are included in the latter? 
+
+To answer this question, 
+we need to list all diagrams that 
+contain \emph{one and only one} external field line. 
+For the sake of convenience, 
+below we use grey lines to refer to 
+the electron propagator corrected by $\Sigma^{GW}$
+and use black lines to refer to 
+the electron propagator corrected by both $\Sigma^{GW}$ and 
+electromagnetic coupling.
+Thus we have 
+\begin{equation}
+    \protect\input{feyn/electromagnetic-after-gw.tex}
+\end{equation}
+In the first-order response theory,
+we only keep the first two terms. 
+Now the first several terms in the completely corrected Green function are listed below:
+\[
+    \protect\input{feyn/dynamic-gw-diagrams-1.tex}.
+\]
+We can then wipe out the $\otimes$ symbol and the interaction line connected to it, 
+and, as is mentioned above, 
+to generalize things a little and separate 
+the two electron lines connected to the interaction line introduced by the external field. 
+The resulting diagrams are listed below:
+\[
+    \protect\input{feyn/dynamic-gw-diagrams-2.tex}.
+\]
+Collecting the diagrams and summing over them, 
+we find they are simply 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-1.tex}.
+\end{equation}
+The diagrams included here are essentially self-energy diagrams of 
+the two-body Green function; 
+in other words, 
+the diagrams are self-energy diagrams of 
+the electron-hole propagating.
+The corresponding self-energy diagrams -- or, following the more common terminology,
+\concept{kernel} diagrams -- 
+are 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-2.tex}.
+    \label{eq:bse.kernel}
+\end{equation}
+The first term is associated with the screened Fock term in $GW$, 
+because it comes from erasing one external field line 
+in a Fock diagram; 
+the second term corresponds to the Hartree term in $GW$.
+Note that the first term is screened and the second term is not: 
+the reason is the same as the reason in \prettyref{sec:gw.hf}.
+
+So the conclusion is,
+if we first do $GW$ correction (without external field) to the electron propagator,
+and then feed the corrected electron propagator and \eqref{eq:bse.kernel} 
+to 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-sum.tex},
+    \label{eq:bse.sum-general}
+\end{equation}
+then the electromagnetic response calculated using this method
+is the same as the weak-field approximation of 
+the time-dependent $GW$ calculation.
+
+\begin{infobox}{The term `time-dependent'}{time-dependent-gw}
+    The term ``time-dependent'' may be confusing:
+    in a frequency-dependent $GW$ calculation 
+    (generalized plasmon model, or full-frequency calculation),
+    the time domain $G(t)$ is also time-dependent,
+    but it can't capture electromagnetic response.
+    On the other hand, in ``time-dependent $GW$'',
+    the term ``time-dependent''
+    means the Hamiltonian of the system is time-dependent,
+    which is equivalent to say coupling with the external field 
+    is taken into account. 
+\end{infobox}
+
+\eqref{eq:bse.sum-general} can be written in a way 
+quite similar to single-electron self-energy correction,
+called the \concept{Bethe-Salpeter equation (BSE)},
+although in the context of \abinitio{} study, 
+BSE usually refers to \eqref{eq:bse.sum-general} \emph{plus} \eqref{eq:bse.kernel}:
+the vertex correction, again, is simply ignored.
+
+The corrected two-body Green function i.e. corrected propagator of the electron-hole pair 
+can be seen as generated by 
+an effective two-body Hamiltonian,
+which contains the kinetic energy of the electron and the hole,
+as well as terms in \eqref{eq:bse.kernel}.
+The renormalized electron-hole pair 
+is called the \concept{exciton},
+and the effective two-body Hamiltonian is the Hamiltonian of the exciton. 
+BSE -- either in the general meaning or in the meaning of \eqref{eq:bse.kernel} -- 
+is essentially analyzing excitons.
+
+The time-dependent $GW$ method 
+can capture exciton effects to electromagnetic response of the system,
+because in the weak field limit 
+it is equivalent to BSE.
+Thus the time-dependent $GW$ method outlined above 
+is also sometimes called the \concept{time-dependent $GW$}, 
 
 \section{Accuracy of $GW$}
 
