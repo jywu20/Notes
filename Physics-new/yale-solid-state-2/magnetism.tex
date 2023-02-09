@@ -94,12 +94,57 @@
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
-\newtcbtheorem[number within=section]{warning}{Warning}%
-  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
-\newtcbtheorem[number within=section]{note}{Note}%
-  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
-\newtcbtheorem[number within=section]{info}{Info}%
-  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newtcbtheorem[number within=section]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=section, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=section, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
@@ -107,6 +152,7 @@
 \newcommand*{\sA}{\text{A}}
 \newcommand*{\sB}{\text{B}}
 \newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
 
 \title{Magnetism}
 \author{Jinyuan Wu}
@@ -144,21 +190,70 @@ Landau diamagnetism, and more (TODO: ref).
 
 \subsection{The magnetic moment}
 
-TODO: lecture on the Friday; Hund's rule 
+The coupling between any object and an external field 
+is usually captured by the following Hamiltonian:
+\begin{equation}
+    H = - \vb*{\mu} \cdot \vb*{B}, 
+\end{equation}
+where $\vb*{\mu}$, whatever it is, is called the \concept{magnetic moment}. 
+From QED it can be shown that for electrons, 
+there are two major contributions to $\vb*{\mu}$, 
+the \concept{orbital magnetic moment} 
+\begin{equation}
+    \vb*{\mu}_L = - \frac{e}{2m} \vb*{L},
+\end{equation}
+and the \concept{spin magnetic moment} 
+\begin{equation}
+    \vb*{\mu}_S = - \frac{e}{m} \vb*{S}.
+\end{equation}
+It should be noted that here 
+\begin{equation}
+    \vb*{S} = \frac{\sigma}{2} \vb*{\sigma} 
+\end{equation}
+is the \emph{spin angular momentum}; 
+in the rest part of this note, 
+we may occasionally use $\vb*{S}$ to refer to 
+the spin vector $\vb*{\sigma} / 2$, 
+without $\hbar$.
+Thus the coupling Hamiltonian between the spin and the external magnetic field is 
+\begin{equation}
+    H_{\text{spin-mag}} = \underbrace{\frac{e \hbar}{2 m}}_{\muB} \vb*{\sigma} \cdot \vb*{B}.
+\end{equation}
+Sometimes we see people adding a minus sign before this Hamiltonian,
+which happens when they take $e = - \abs*{e}$
+to be the charge carried by each electron, 
+instead of its absolute value.
+After defining the \concept{Bohr magneton} $\muB$, 
+we have 
+\begin{equation}
+    \vb*{\mu} = - \frac{\muB}{\hbar} (\vb*{L} + 2 \vb*{S}).
+\end{equation}
 
-The total angular
+\begin{infobox}{Anomalous magnetic dipole moment}{anomalous-magnetic-moment}
+    To be more accurate, we have 
+    \begin{equation}
+        \vb*{\mu}_s = \frac{e}{m} \left( 1 + \frac{\alpha}{2\pi} \right) \vb*{S},
+    \end{equation}
+    where $\alpha$ is the fine-structure constant. 
+    This is due to the vertex correction to 
+    electron-external magnetic field interaction 
+    which can be calculated from QED. 
+\end{infobox}
+
+For orbital and spin magnetic moments, 
+
 
 \subsection{Electromagnetic effective theory}
 
 TODO: $\chi, M$
 
-\subsection{Paramagnetism of itinerant electrons}
+\subsection{Pauli paramagnetism: paramagnetism of itinerant electrons}
 
 \begin{equation}
     M = \mu_{B} (n_\uparrow - n_\downarrow) = \mu_B^2 B \rho(\efermi),
 \end{equation}
 
-\subsection{Landau diamagnetism}
+\subsection{Landau diamagnetism: diamagnetism of itinerant electrons}
 
 We can see the magnitude of itinerant paramagnetism usually dominates that of Landau diamagnetism,
 and therefore most metals are paramagnetic. 
@@ -178,6 +273,10 @@ since they repulse magnetic field completely
 magnetic levitation can be easily observed.
 
 \subsection{Van Vleck paramagnetism}
+
+\subsection{Hund's rules}
+
+
 
 \section{Some easy-to-explain localized magnetic ground states}
 

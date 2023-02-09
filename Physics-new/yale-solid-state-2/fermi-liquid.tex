@@ -1,0 +1,269 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\bibliography{squeezing}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+
+\title{Fermi liquid}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Free electron gas}
+
+A free electron gas is described by%
+\footnote{
+    For some reason, 
+    when talking about Fermi liquid, 
+    people like to use $\vb*{p}$ instead of $\vb*{k}$.
+}
+\begin{equation}
+    H = \sum_i \frac{\vb*{p}_i^2}{2m},
+\end{equation}
+and we get a Fermi sphere in the momentum space 
+containing all occupied states, 
+and a Fermi momentum $\pfermi$.
+After we add a periodic potential $V(\vb*{r})$ to the model, 
+we get \concept{bands}: 
+parabolic bands are displaced periodically 
+according to the $\vb*{G}$-grid, 
+and the crossing points of these curves 
+undergo degeneracy breaking,
+and the spectrum, eventually, 
+becomes several bands confined in the first Brillouin zone. 
+Despite this correction, 
+the number of filled electrons never changes.
+
+For a free electron gas, we have well-known observables like 
+the density of states at $\efermi$ 
+(here $\omega = \varepsilon - \efermi$)
+\begin{equation}
+    N(\omega = 0) = \frac{m}{\pi^2} \frac{\pfermi}{\hbar^3}, 
+    \label{eq:free-electron.dos}
+\end{equation}
+the electronic specific heat 
+\begin{equation}
+    C_v = \underbrace{\frac{\pi^2 \kB^2}{3} N(\omega = 0)}_{\text{Sommerfield $\gamma$}} \cdot \ T, 
+    \label{eq:free-electron.specific-heat}
+\end{equation}
+and the magnetic susceptibility 
+\begin{equation}
+    \chi = \mu_0  \muB^2 \cdot N(\omega = 0).
+\end{equation}
+
+\hethree{} atoms are fermions: 
+we have two electrons, two protons, and only one neutron
+in one \hethree{} atom, 
+and therefore there are odd fermions inside 
+and the composite state is a fermion. 
+In a \hethree{} liquid, 
+since the distance between the atoms is drastically reduced, 
+we can expect the effect of repulsion is much stronger 
+than the case in the gas phase. 
+This is a cold atom model of electrons in solids: 
+we can easily measure the specific heat, etc. 
+of the liquid \hethree.
+
+The $C_V$-$T$ curve measured looks like TODO: fig 1 
+As is expected, 
+when $T \to 0$, 
+we see a $C_V \propto T$ behavior, 
+qualitatively agreeing with \eqref{eq:free-electron.specific-heat}.
+The coefficient however is not what is predicted by 
+\eqref{eq:free-electron.dos} and
+\eqref{eq:free-electron.specific-heat}.
+Now if we apply pressure to liquid \hethree, 
+$C_v / T$ clearly increases. 
+
+For a fermion gas, 
+we can measure the mass according to \eqref{eq:free-electron.specific-heat}
+and \eqref{eq:free-electron.dos}. 
+Now if we calculate the ``mass'' of \hethree according to the two equations, 
+we get a pressure-dependent 
+(quite surprising because the density of liquids almost stays the same when we press it)
+``effective mass''
+that is never the same as the bare mass of \hethree.
+
+The next question, then, 
+is whether liquid \hethree -- 
+a system with known strong interaction -- 
+can be equivalently described 
+by something with the effective mass. 
+
+\section{Assumptions of Fermi liquid theory}
+
+\subsection{Motivation: scattering changes the distribution of electrons}
+
+The general form of Hamiltonian of fermionic systems 
+that is found in condensed matter physics looks like 
+\begin{equation}
+    H = \sum_i \frac{\vb*{p}_i^2}{2m} + 
+    \sum_{i, j} V(\abs{\vb*{r}_i - \vb*{r}_j}).
+\end{equation}
+When we deal with a two-body problem with this dynamics, 
+the collision behavior is completely described
+by the scattering cross-section. 
+If we extend this picture to a many-body system, 
+we immediately see scattering changes 
+the momentum distribution of particles, 
+because the final states of scattering 
+can obviously be over the Fermi surface, 
+and therefore there is still some distribution above $\pfermi$ now. 
+
+\subsection{Assumption: correspondence between interactive corrected states and uncorrected states}
+
+\begin{figure}
+    \centering
+    \input{electron/fermi-liquid-distribution.tex}
+    \caption{Two types of interaction correction to the electron distribution.
+    (a) The Fermi liquid case: there is still a stepwise change of $n$ with respect to the energy.
+    (b) The non-Fermi liquid case: the change of $n$ is smooth.}
+    \label{fig:fermi-liquid-distribution}
+\end{figure}
+
+We assume that we still have ``states labeled by $\vb*{p}$, $n$, etc.'' 
+in a Fermi liquid,
+and the ground state and the first several excited states 
+can be totally labeled by $\var{n(\vb*{p})}$,
+which is $n(\vb*{p})$ -- some sort of ``filling'' on these states -- 
+minus $n_0(\vb*{p})$ -- the Fermi gas filling. 
+We further assume $\var{n}$ is small, so that what we get is \prettyref{fig:fermi-liquid-distribution}(a),
+instead of \prettyref{fig:fermi-liquid-distribution}(b).
+This agrees with the observed fact that the $C_v \propto T$ relation is still true,
+so Fermi liquid should be somehow similar to the Fermi gas. 
+Also, we assume the total number of electrons 
+should change considerably:
+\begin{equation}
+    \var{N} = \sum_{\vb*{p}} \var{n(\vb*{p})} \ll \sum_{\vb*{p}} n(\vb*{p}). 
+\end{equation}
+
+\subsection{Energy change}
+
+We define $E$ to be 
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}} \varepsilon(\vb*{p}) \var{n(\vb*{p})} + 
+    \bigO(\var{n}^2).
+\end{equation}
+The chemical potential can be immediately decided:
+\begin{equation}
+    \mu \coloneqq \eval{\fdv{E}{n(\vb*{p})}}_{\text{Fermi surface}} = \varepsilon(\pfermi).
+\end{equation}
+
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}} \varepsilon_{\vb*{p}} \var{n(\vb*{p})}
+    + \frac{1}{2} \sum_{\vb*{p}, \vb*{p}'}
+    f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p})} \var{n(\vb*{p}')} + \bigO(\var{n}^3).
+\end{equation}
+
+\end{document}
