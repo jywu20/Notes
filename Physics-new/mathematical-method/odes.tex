@@ -1258,4 +1258,219 @@ As an example, we evaluate the Fourier transform of
     f(x) = x \ee^{- \abs*{x}}.
 \end{equation}
 
+\section{Sturm-Liouville equations}
+
+A \concept{Sturm-Liouville} equation has the form 
+\begin{equation}
+    (ry')' + (q + \lambda p) y = 0
+    \label{eq:sl.scheme}
+\end{equation}
+on an interval $[a, b]$. 
+$r, q, p$ are known functions and $\lambda$ is a constant which is not known.
+The goal is to find values of $\lambda$ 
+for which the equation has non-trivial solutions.
+This is essentially an eigenvalue problem. 
+
+There are three types of boundary conditions that frequently appear. 
+A \concept{regular} boundary condition looks like 
+\begin{equation}
+    A_1 y(a) + A_2 y'(a) = 0, \quad 
+    B_1 y(b) + B_2 y'(b) = 0.
+\end{equation}
+TODO 
+
+Here we state the following theorem:
+if $\lambda_n$ and $\lambda_m$ are two eigenvalues with eigenfunctions $\phi_n$ and $\phi_m$,
+then we have the orthogonal condition
+\begin{equation}
+    \int_{a}^{b} p(x) \phi_n(x) \phi_m(x) \dd{x} = 0.
+    \label{eq:sl.orthogonal}
+\end{equation}
+To prove the theorem, we start with 
+\[
+    (r \phi_n')' \phi_m + (q + \lambda_n p) \phi_n \phi_m = 0,
+\]
+and 
+\[
+    (r \phi_m') \phi_n + (q + \lambda_m p) \phi_m \phi_n = 0,
+\]
+so we have 
+\[
+    (r \phi_n')' \phi_m 
+    - (r \phi_m')' \phi_n 
+    + (\lambda_n - \lambda_m) p \phi_m \phi_n = 0.
+\]
+So by integration by parts, we have 
+\[
+    \begin{aligned}
+        &\quad (\lambda_n - \lambda_m) \int_{a}^{b} \dd{x} p \phi_m \phi_n   \\
+        &= \int_{a}^{b} ((r \phi_n')' \phi_m 
+        - (r \phi_m')' \phi_n ) \dd{x} \\
+        &= \eval{
+            ((r \phi_n') \phi_m 
+            - (r \phi_m') \phi_n )
+        }_a^b - 
+        \int_{a}^{b} ((r \phi_n') \phi_m'
+        - (r \phi_m') \phi_n' ) \dd{x} \\
+        &= \eval{
+            ((r \phi_n') \phi_m 
+            - (r \phi_m') \phi_n )
+        }_a^b.
+    \end{aligned}
+\]
+We can easily verify that the RHS vanishes at $x = a, b$
+for all reasonable boundary conditions 
+(listed above). 
+Therefore the LHS has to be zero, 
+and since $\lambda_n \neq \lambda_m$,
+the conclusion has to be that 
+\eqref{eq:sl.orthogonal} is correct. 
+
+The orthogonality property means we can express functions on $[a, b]$ 
+as series expansions in $\{\phi_n\}$: 
+we have 
+\begin{equation}
+    f(x) = \sum_{n=1}^{\infty} c_n \phi_n(x),
+    \label{eq:sl.expansion}
+\end{equation}
+where 
+\begin{equation}
+    c_m = \frac{
+        \int_{a}^{b} f(x) \phi_m(x) \dd{x}
+    }{
+        \int_{a}^{b} \phi_m(x)^2 \dd{x}
+    }.
+\end{equation}
+Note that here $f(x)$ should follow the boundary conditions used to decide $\{\phi_m\}$;
+however, there is no guarantee that 
+the RHS of \eqref{eq:sl.expansion} is continuous at $x = a, b$:
+it's usually the case that the value of the RHS at $x = a^+$
+equals to $f(a)$.
+Therefore, in practical calculation, 
+we can disregard the boundary condition requirement of $f(x)$,
+and do \eqref{eq:sl.expansion} to \emph{all} $f(x)$,
+as long as we only rely on the RHS 
+in $(a, b)$ where $f(x)$ is continuous.
+Here we encounter the same case in Fourier series.
+If we only take finite terms in \eqref{eq:sl.expansion}, 
+then the RHS may have wavy features around these discontinuous points, 
+which is an indication of the subtleties concerning discontinuity.
+
+Indeed, the Fourier series is just a specific case of 
+the orthogonality theorem in Sturm-Liouville theory. 
+Consider the problem 
+\begin{equation}
+    y'' + \lambda y = 0, \quad 
+    y(-L) = y(L) = 0.
+\end{equation}
+The general solution of the differential equation is 
+\[
+    y(x) = A \cos \sqrt{\lambda} x + B \sin \sqrt{\lambda} x.
+\]
+When $B = 0$, 
+the boundary condition means 
+\begin{equation}
+    \sqrt{\lambda} L = \left( n - \frac{1}{2} \right) \pi,
+\end{equation}
+and when $A = 0$, 
+we have 
+\begin{equation}
+    \sqrt{\lambda} L = n \pi.
+\end{equation}
+
+There are other Sturm-Liouville problems that may be useful in physics. 
+One is the \concept{Laguerre equation} 
+\begin{equation}
+    x y'' + (1 - x) y' + \lambda y = 0,
+    \label{eq:sl.laguerre}
+\end{equation}
+and another is the \concept{Hermite equation} 
+\begin{equation}
+    y'' - 2 x y' + \lambda y = 0.
+    \label{eq:sl.hermite}
+\end{equation}
+Note that although \eqref{eq:sl.laguerre} and \eqref{eq:sl.hermite} 
+don't fit in the scheme of \eqref{eq:sl.scheme},
+they indeed are Sturm-Liouville problems.
+For \eqref{eq:sl.hermite}, 
+we can multiply a factor $h$ to it and get 
+\[
+    h y'' - 2 x h y' + \lambda h y = 0,
+\]
+and dictate that 
+\[
+    h' = - 2 x h.
+\]
+Then we see we can just take 
+\[
+    h = \ee^{- x^2},
+\]
+so \eqref{eq:sl.hermite} is a Sturm-Liouville problem with 
+\begin{equation}
+    r(x) = \ee^{-x^2}, \quad p(x) = \ee^{-x^2}, \quad q(x) = 0.
+\end{equation}
+For \eqref{eq:sl.laguerre} we can do the same and get 
+\begin{equation}
+    r(x) = x \ee^{-x}, \quad 
+    p(x) = \ee^{-x}, \quad 
+    q(x) = 0.
+\end{equation}
+
+Another important equation is the \concept{Legendre} equation, 
+which is 
+\begin{equation}
+    (1 - x^2) y'' - 2 x y + \lambda y = 0,
+\end{equation}
+We can demonstrate how to solve the equation using series expansion. 
+Suppose 
+\begin{equation}
+    y(x) = \sum_{n=0}^{\infty} a_n x^n,
+\end{equation}
+we have 
+\[
+    (1 - x^2) \sum_{n=2}^{\infty} n(n-1) a_n x^{n-2}
+    - 2x \sum_{n=1}^{\infty} n a_n x^{n-1}
+    + \lambda \sum_{n=0}^{\infty} a_n x^n = 0,
+\]
+which is equivalent to 
+\[
+    2 a_2 + \lambda a_0 = 0, 
+\]
+\[
+    6 a_3 - 2 a_1 + \lambda a_1 = 0,
+\]
+and 
+\[
+    (n+2)(n+1) a_{n+2} - n(n-1) a_n - 2 n a_n + \lambda a_n = 0.
+\]
+So we find 
+\[
+    a_2 = - \frac{\lambda}{2} a_0, \quad   
+    a_3 = \frac{2 - \lambda}{6} a_1, 
+\]
+and by repeating this we find 
+\begin{equation}
+    a_{n+2} = \frac{
+        n(n+2) - \lambda
+    }{
+        (n + 2) (n + 1)
+    } a_n.
+\end{equation}
+So we find 
+\begin{equation}
+    a_{2k} = - \frac{
+        \lambda (3 \cdot 2 - \lambda) \cdots ((2k-1)(2k-2) - \lambda)
+    }{
+        (2k)!
+    } a_0,
+\end{equation}
+and 
+\begin{equation}
+    a_{2k+1} = \frac{
+        (2 - \lambda) (4 \cdot 3 - \lambda) \cdots (2k \cdot (2k - 1) - \lambda)
+    }{
+        (2 k + 1)!
+    } a_1.
+\end{equation}
+
 \end{document}
