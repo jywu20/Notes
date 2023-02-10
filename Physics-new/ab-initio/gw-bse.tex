@@ -188,7 +188,7 @@
 This section briefly goes through some tricky aspects of Feynman diagram techniques 
 that may seem puzzling when we do concrete calculations.
 
-\subsubsection{Infinitesimals}
+\subsubsection{Infinitesimals}\label{sec:cond.infinitesimal}
 
 There are some infinitesimals in Feynman rules that are often ignored.
 The first is about the illdefinedness
@@ -1551,6 +1551,7 @@ we remove the $\ee^{\ii \omega 0^+}$ factor on RHS and have
     \ee^{\ii \omega' 0^+}
     G(\vb*{r}, \vb*{r}', \omega + \omega')
     W(\vb*{r}, \vb*{r}', \omega').
+    \label{eq:gw.sigma-gw}
 \end{equation}
 This is exactly Eq. (4a) in \cite{berger2020potential}.
 
@@ -1957,6 +1958,72 @@ The origin of this factor is discussed in \prettyref{sec:gw-bse.overview-gw.infi
 
 \subsubsection{COHSEX approximation}
 
+One way to simply $\Sigma^{GW}$ is the 
+\concept{Coulomb hole-screened exchange (COHSEX)} approximation.
+In this approximation, 
+we assume $W(\vb*{r}, t; \vb*{r}', 0)$ doesn't show strong retardation,
+and therefore in the frequency domain, 
+$W(\vb*{r}, \vb*{r}', \omega)$ shouldn't be far from $W(\vb*{r}, \vb*{r}', 0)$.
+Therefore, \eqref{eq:gw.sigma-gw} is approximately 
+\[
+    \begin{aligned}
+        \Sigma(\vb*{r}, \vb*{r}', \omega) &\approx \ii 
+        \int \frac{\dd{\omega'}}{2\pi} \int \dd{t} \ee^{\ii (\omega + \omega') t} 
+        G(\vb*{r}, t; \vb*{r}', 0) W(\vb*{r}, \vb*{r}', \omega = 0) \\
+        &= \ii \int \ee^{\ii \omega t} \delta(t) G(\vb*{r}, t; \vb*{r}', 0) W(\vb*{r}, \vb*{r}', \omega = 0) \\
+        &= \ii G(\vb*{r}, t = 0; \vb*{r}', 0) W(\vb*{r}, \vb*{r}', \omega = 0).
+    \end{aligned}
+\]
+But note that $G(t = 0)$ is not well-defined: 
+at $t = 0$ there is a stepwise jump (\prettyref{sec:cond.infinitesimal}).
+We know Fourier transformation 
+always correct $f(t)$ to $(f(t + 0^+) + f(t - 0^+)) / 2$,
+and therefore what we get is essentially 
+\begin{equation}
+    \begin{aligned}
+        &\quad \Sigma^{GW}(\vb*{r}, \vb*{r}', \omega) \approx
+        \Sigma^{\text{COHSEX}} (\vb*{r}, \vb*{r}', \omega) \\
+        &= \frac{\ii}{2} (
+            G(\vb*{r}, t = 0^+; \vb*{r}', 0) + 
+            G(\vb*{r}, t = 0^-; \vb*{r}', 0)
+        ) W(\vb*{r}, \vb*{r}', \omega = 0),
+    \end{aligned}
+\end{equation}
+which doesn't really have $\omega$ dependence.
+The time domain version is 
+\begin{equation}
+    \Sigma^{\text{COHSEX}} = \frac{\ii}{2}
+    W(\vb*{r}, \vb*{r}', \omega = 0)
+    G(\vb*{r}, t; \vb*{r}', 0)
+    (\delta(t + 0^+) + \delta(t - 0^+)).
+\end{equation}
+
+Until now, we still don't see 
+why we call this Coulomb-hole plus screened exchange.
+However, note that 
+\[
+    \begin{aligned}
+        &\quad G(\vb*{r}, t = 0^+; \vb*{r}', 0) + 
+        G(\vb*{r}, t = 0^-; \vb*{r}', 0) \\
+        &= - \ii \expval*{\psi(\vb*{r}) \psi^\dagger(\vb*{r}) - \psi^\dagger(\vb*{r}') \psi(\vb*{r})}{\Psi} \\
+        &= - \ii (\delta(\vb*{r} - \vb*{r}') - 
+        2 \expval*{\psi^\dagger(\vb*{r}') \psi(\vb*{r})}{\Psi}),
+    \end{aligned}
+\]
+and therefore we have 
+\begin{equation}
+    \Sigma^{\text{COHSEX}} = \Sigma^{\text{COH}} + \Sigma^{\text{SEX}},
+\end{equation}
+\begin{equation}
+    \Sigma^{\text{COH}} = \frac{1}{2} \delta(\vb*{r} - \vb*{r}') 
+    W(\vb*{r}, \vb*{r}', \omega = 0), 
+\end{equation}
+\begin{equation}
+    \Sigma^{\text{SEX}} = - \expval*{\psi^\dagger(\vb*{r}') \psi(\vb*{r})}{\Psi}
+    W(\vb*{r}, \vb*{r}', \omega = 0).
+\end{equation}
+
+
 \section{Overview of BSE}
 
 \subsection{From $GW$ to BSE}
@@ -2109,7 +2176,12 @@ can capture exciton effects to electromagnetic response of the system,
 because in the weak field limit 
 it is equivalent to BSE.
 Thus the time-dependent $GW$ method outlined above 
-is also sometimes called the \concept{time-dependent $GW$}, 
+is also sometimes called the \concept{time-dependent BSE}.
+Both flavors of BSE have been implemented:
+the exciton Hamiltonian approach is realized by BerkeleyGW;
+the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
+but its accuracy has been verified by comparison with the exciton Hamiltonian approach
+\cite{attaccalite2011real}.
 
 \section{Accuracy of $GW$}
 
@@ -2209,7 +2281,6 @@ to be characterized correctly using $GW$,
 or at least $G^0 W^0$.
 \cite{shih2010quasiparticle} refutes such a claim, 
 at least for \ce{ZnO}.
-
 The root for this seems to be poor convergence test:
 people often use insufficient number of bands, etc.
 
@@ -3510,6 +3581,9 @@ its part below $\varphi_{\text{F}}$ will be recognized as the 119th band
 in the eyes of \shortcode{inteqp}.
 This can be seen by plotting the DFT column of the \shortcode{eqp.dat} output of \shortcode{inteqp}
 (\prettyref{fig:inteqp-shuffle-band-index-1}).
+
+Another type of band plot non-continuity is described in \cite{berger2020potential} 
+and can be solved by COHSEX??? TODO
 
 \subsection{The size of band gap}\label{sec:band-gap-problem}
 
