@@ -1303,9 +1303,11 @@ are given in \cite{hedin1965new}.
 
 \subsection{Interaction Hamiltonian}
 
-The non-relativistic minimal coupling is 
+The non-relativistic minimal coupling is given by replacing $\vb*{p}$ with $\vb*{p} - q \vb*{A}$.
+For electrons in a local potential field $V(\vb*{r})$, 
+the Hamiltonian 
 \begin{equation}
-    H = \frac{(\vb*{p} - q \vb*{A})^2}{2m} = \frac{(\vb*{p} + e \vb*{A})^2}{2m},
+    H = \frac{(\vb*{p} - q \vb*{A})^2}{2m} + V(\vb*{r}) = \frac{(\vb*{p} + e \vb*{A})^2}{2m} + V(\vb*{r}),
 \end{equation}
 and therefore the full light-matter interaction Hamiltonian is 
 \begin{equation}
@@ -1314,10 +1316,36 @@ and therefore the full light-matter interaction Hamiltonian is
 Usually, the double-photon process is ignored, and we get 
 \begin{equation}
     H_{\text{light-matter}} = \frac{e \vb*{p} \cdot \vb*{A}}{m}.
+    \label{eq:light-matter.linear}
 \end{equation}
-Note that here $\vb*{p}$ is the original momentum operator, i.e. $- \ii \grad$.
+Note that here $\vb*{p}$ is the original momentum operator, i.e. $- \ii \grad$,
+and not the lattice momentum.
 
-The dipole approximation is 
+For pseudopotential calculations, 
+as well as some self-energy methods, 
+however, the potential field is no longer local.
+That's to say $V(\vb*{r}, \vb*{r}')$ is not diagonal in the coordinate representation.
+If we stick to writing the Hamiltonian in $(\vb*{x}, \vb*{p})$,
+then essentially this means we have $\vb*{p}$ in $V$:
+the minimal coupling therefore changes $V$
+(and this is quite reasonable,
+since $V$ includes the influence of inner electronic orbitals,
+which of course are also influenced by the external field),
+and now the light-matter interaction Hamiltonian 
+contains infinite $\vb*{A}^n$ terms,
+and even the lowest term is not as simple as \eqref{eq:light-matter.linear}.
+
+\subsection{Dipole approximation}
+
+Fortunately, usually we only work with light fields 
+that are weak enough,
+and even when we talk about nonlinear response,
+usually it comes from \emph{multiple appearance} of the external field line in one Feynman diagram,
+instead of \emph{multiple-photon vertices}.
+Moreover, usually the external field is smooth enough 
+compared with the characteristic length of the system, i.e. lattice constants.
+This leads to the \concept{dipole approximation}.
+The Hamiltonian is 
 \begin{equation}
     H_{\text{light-matter}} = - \vb*{d} \cdot \vb*{E}.
 \end{equation}
@@ -1327,31 +1355,39 @@ With the above two approximations,
 we can attribute the light-matter interaction to 
 \begin{equation}
     H_{\text{light-matter}} = q \varphi \approx \const + q \vb*{r} \cdot \grad{\varphi}
-    \simeq \underbrace{q \vb*{r}}_{- \vb*{d}} \cdot \vb*{E}.
+    \simeq \underbrace{q \vb*{r}}_{- \vb*{d}} \cdot \vb*{E}
+    = - e \vb*{r} \cdot \vb*{E}.
 \end{equation}
 Of course, when magnetic response of the system is important, 
 we also need to add a magnetic dipole interaction term, etc. 
 
-Another light-matter interaction Hamiltonian is 
+The dipole approximation has another form
+\begin{equation}
+    H_{\text{light-matter}} = \frac{1}{2} e (\vb*{v} \cdot \vb*{A} + \vb*{A} \cdot \vb*{v}),
+\end{equation}
+or, when we are in radiation gauge $\div{\vb*{A}} = 0$,
 \begin{equation}
     H_{\text{light-matter}} = e \vb*{v} \cdot \vb*{A}.
 \end{equation}
-The problem with this Hamiltonian is,
-when the potential term is not $V(\vb*{r})$,
+When the potential term is not $V(\vb*{r})$,
 we have 
 \begin{equation}
     \vb*{v} = \frac{1}{\ii} \comm*{\vb*{r}}{H} 
     = \frac{\vb*{p}}{m} 
     + \frac{1}{\ii} \underbrace{\comm*{\vb*{r}}{V}}_{\neq 0}.
 \end{equation}
-TODO: then why it works?
+This is an illustration of 
+why \eqref{eq:light-matter.linear} itself 
+doesn't suffice as the whole light-matter interaction Hamiltonian, 
+even when the field is weak.
 
 \subsection{How to capture absorption}
 
 Absorption is usually modeled by the imaginary part of $\epsilon$,
 and it's usually calculated by Fermi golden rule.
 There seems to be a contradiction here:
-Fermi golden rule looks ``discrete'',
+Fermi golden rule looks ``discrete'': 
+it gives the probability of photon absorption,
 while $\Im \epsilon$ gives us a continuous damping.
 
 Recall how we treat spontaneous radiation using a quantum jump formalism:
@@ -2313,7 +2349,7 @@ being ``fully relativistic'' means using \emph{Dirac equation}.
 
 \section{Input and output of \shortcode{pw}}
 
-\section{\shortcode{epsilon}}
+\section{The \shortcode{epsilon} step}
 
 \subsection{Procedure and speed}\label{sec:epsilon.procedure-speed}
 
