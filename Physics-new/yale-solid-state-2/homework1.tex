@@ -164,7 +164,7 @@
 
 \section{Hund’s rule and magnetic exchange as a result of Coulomb interactions}
 
-\subsection{Why Coulomb interaction is stronger than magnetic dipole coupling?}
+\subsection{Why Coulomb interaction is stronger than magnetic dipole coupling?}\label{sec:hund.magnitude}
 
 The magnetic dipole-dipole interaction Hamiltonian is 
 \begin{equation}
@@ -256,6 +256,7 @@ Therefore, from the single-site Hamiltonian in the Heisenberg model
 \begin{equation}
     H = - 2 z J \vb*{S}_{\vb*{i}} \cdot \vb*{S}_{\vb*{j}} 
     = - \frac{2 z J}{g^2 \muB^2} \vb*{m}_i \cdot \frac{\vb*{M}}{n},
+    \label{eq:heisenberg.mf-ham}
 \end{equation}
 and therefore we get 
 \begin{equation}
@@ -417,6 +418,149 @@ and therefore the volume needed is (note that we are working with cgs units)
 \]
 and the density of \ce{Cu} is \SI{8.96}{g/cm^3},
 so we need \SI{0.54}{g} cooper.
+
+\section{Mean-field solution of 1D Ising model}
+
+\subsection{Mean-field approximation}
+
+The Ising model 
+\begin{equation}
+    H = - J \sum_{\pair{\vb*{i}, \vb*{j}}} s_{\vb*{i}} s_{\vb*{j}} - h \sum_{\vb*{i}} s_{\vb*{i}}
+\end{equation}
+is defined on a lattice,
+each site of which has $q$ nearest neighbors.
+Assuming the spins have minimal fluctuation, 
+and we have $\expval{s_{\vb*{i}}} = m$, 
+we have 
+\[
+    s_{\vb*{i}} s_{\vb*{j}} \approx 
+    \expval{s_{\vb*{i}}} s_{\vb*{j}} + s_{\vb*{i}} \expval{s_{\vb*{j}}} 
+    - \expval{s_{\vb*{i}}} \expval{s_{\vb*{j}}} = 
+    m (s_{\vb*{i}} + s_{\vb*{j}}) - m^2,
+\]
+and therefore (the $1/2$ factor comes from the fact that a site is counted twice 
+if we go over all bonds)
+\begin{equation}
+    \begin{aligned}
+        H &= - J m q \sum_{\vb*{i}} s_{\vb*{i}} 
+        + \frac{N q}{2} \cdot J m^2 - h \sum_{\vb*{i}} s_{\vb*{i}} \\
+        &= - \underbrace{(h + Jmq)}_{h_{\text{eff}}} \sum_{\vb*{i}} s_{\vb*{j}} 
+        + \frac{NqJm^2}{2} .
+    \end{aligned}
+\end{equation}
+
+This essentially is the Weiss molecular field approximation.
+The $m^2$ term is absent in \eqref{eq:heisenberg.mf-ham}, 
+but this doesn't matter: 
+when calculating $\expval{s_{\vb*{i}}}$, 
+$m$ is a constant and is not summed over, 
+so the $m^2$ term can be seen as a constant 
+and we have 
+\[
+    H \simeq - \underbrace{(h + Jmq)}_{h_{\text{eff}}} \sum_{\vb*{i}} s_{\vb*{j}} ,
+\]
+which is just \eqref{eq:heisenberg.mf-ham}.
+The only difference is that in \prettyref{sec:hund.magnitude},
+we have taken the high temperature limit, 
+while here we do not.
+
+(Another way to get this approximation is 
+by integrate out microscopic $s_{\vb*{i}}$ degrees of freedom, 
+and get a theory $f(m)$ about $\sum_{\vb*{i}} s_{\vb*{i}} / N$, 
+and then find the $m$ that minimizes $f(m)$.
+This last method can in principle be systematically improved 
+because we can include more fluctuation around this minimum.) 
+
+\subsection{The partition function}
+
+As is said in the last section, 
+we can just ignore the $m^2$ term, 
+and the partition function is 
+\begin{equation}
+    \begin{aligned}
+        Z &= \sum_{\{s_{\vb*{i}}\}} \ee^{ \beta h_{\text{eff}} \sum_{\vb*{i}} s_{\vb*{i}}} \\
+        &= \prod_{\vb*{i}} \sum_{s_{\vb*{i}} = \pm 1} 
+        \ee^{\beta h_{\text{eff}} s_{\vb*{i}}} = \prod_{\vb*{i}} 2 \cosh (\beta h_{\text{eff}}) \\
+        &= 2^N \cosh^N (\beta h_{\text{eff}}). 
+    \end{aligned} 
+\end{equation}
+
+\subsection{Find the total magnetization}
+
+The total magnetic moment can be obtained using 
+\begin{equation}
+    \sum_{\vb*{i}} \expval{s_{\vb*{i}}} = \frac{1}{\beta} \frac{1}{Z} \pdv{Z}{h} , 
+\end{equation}
+which, in our case, is 
+\[
+    \begin{aligned}
+        \sum_{\vb*{i}} \expval{s_{\vb*{i}}} &= \frac{1}{\beta} \frac{1}{Z} \pdv{Z}{h_{\text{eff}}} \\
+        &= \frac{1}{\beta} \frac{1}{2^N \cosh^N (\beta h_{\text{eff}})} 
+        2^N N \cosh^{N-1} (\beta h_{\text{eff}}) \cdot \beta \sinh(\beta h_{\text{eff}}) \\
+        &= N \tanh (\beta h_{\text{eff}}), 
+    \end{aligned}
+\]
+and therefore 
+\[
+    m = \frac{1}{N} \sum_{\vb*{i}} \expval{s_{\vb*{i}}}
+    = \tanh(\beta h_{\text{eff}}),
+\]
+and we eventually get the self-consistent equation 
+\begin{equation}
+    m = \tanh(\frac{h + Jq m}{\kB T}).
+    \label{eq:ising.scf}
+\end{equation}
+
+\subsection{The critical temperature}
+
+In the $T \to \infty$ limit, we have the Curie-Weiss law 
+\begin{equation}
+    m = \frac{h + Jqm}{\kB T} \Rightarrow 
+    m = \frac{h / \kB}{T - \Tc}, \quad 
+    \Tc = \frac{Jq}{\kB}.
+    \label{eq:ising.curie}
+\end{equation}
+This estimation of $\Tc$ is actually accurate in the level of \eqref{eq:ising.scf}: 
+the condition to have non-zero solution of \eqref{eq:ising.scf} 
+is that the slope of $\tanh$ is larger than 1 (the LHS of \eqref{eq:ising.scf}), 
+so that when $T \to 0$, 
+the RHS of \eqref{eq:ising.scf} goes to a constant, 
+and a cross point occurs between the two parts of \eqref{eq:ising.scf}.
+When $h = 0$, the slope of $\tanh$ is one, if and only if 
+\[
+    m = \frac{J q m}{\kB T} \Rightarrow T = \frac{J q}{\kB},
+\]
+which is just $\Tc$ in \eqref{eq:ising.curie}.
+
+\subsection{Critical exponent of $m$}
+
+When $h = 0$ and $T$ is near $\Tc$, 
+$m$ is small,
+but the first-order Taylor expansion in \eqref{eq:ising.curie} 
+can't give the relation between $m$ and $T$ when $h = 0$, 
+so we need to take the next term into consideration. 
+We have 
+\[
+    m = \frac{J q m}{\kB T} - \frac{1}{3} \left(
+        \frac{J q m}{\kB T}
+    \right)^3 + \cdots, 
+\]
+or in other words 
+\[
+    m \approx \frac{\Tc}{T} m - \frac{1}{3} \left(
+        \frac{\Tc}{T} m
+    \right)^3,
+\]
+and we find 
+\begin{equation}
+    m \approx \pm \sqrt{
+        \frac{3 T^2 (\Tc - T)}{\Tc^3} 
+    } \approx \pm \sqrt{
+        \frac{3 (\Tc - T)}{\Tc} 
+    }.
+\end{equation}
+So we find $m \propto (\Tc - T)^{1/2}$, 
+and therefore the critical exponent $\beta = 1/2$.
 
 \section{Spin waves}
 
