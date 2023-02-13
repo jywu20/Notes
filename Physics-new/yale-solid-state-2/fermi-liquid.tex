@@ -107,6 +107,7 @@
 \newcommand*{\muB}{\mu_{\text{B}}}
 \newcommand*{\efermi}{E_{\text{F}}}
 \newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
 \newcommand*{\sA}{\text{A}}
 \newcommand*{\sB}{\text{B}}
 \newcommand*{\Tc}{T_{\text{c}}}
@@ -238,6 +239,10 @@ and the ground state and the first several excited states
 can be totally labeled by $\var{n(\vb*{p})}$,
 which is $n(\vb*{p})$ -- some sort of ``filling'' on these states -- 
 minus $n_0(\vb*{p})$ -- the Fermi gas filling. 
+These states labeled by $\vb*{p}$, $n$, etc. 
+are essentially the ``single-electron wave function''
+in the single-electron Green function, 
+and the ground state $n(\vb*{p})$ is essentially the spectral function.
 We further assume $\var{n}$ is small, so that what we get is \prettyref{fig:fermi-liquid-distribution}(a),
 instead of \prettyref{fig:fermi-liquid-distribution}(b).
 This agrees with the observed fact that the $C_v \propto T$ relation is still true,
@@ -248,22 +253,205 @@ should change considerably:
     \var{N} = \sum_{\vb*{p}} \var{n(\vb*{p})} \ll \sum_{\vb*{p}} n(\vb*{p}). 
 \end{equation}
 
-\subsection{Energy change}
+Note that although we are talking about ``partial occupation''
+or even ``quasiparticle decaying'' (see the follows), 
+Fermi liquid theory is still a \emph{pure state} theory; 
+as is shown by Green function theory, 
+partial occupation and even decaying can happening 
+in the zero-temperature case, 
+due to quantum fluctuation.
+A single-electron state can evolve into a multiple-electron state, 
+and therefore the ground state is a mixture of single-electron, double-electron, etc. states, 
+and if we insist on a single-electron theory,
+certain dissipation channels appear.
+The Fermi liquid theory, essentially, 
+is assuming that the single-particle picture still works well enough.
 
-We define $E$ to be 
+\subsection{The energy functional}
+
+The energy of state $\{\var{n}_{\vb*{p}}\}$, $E$, reads 
 \begin{equation}
-    \var{E} = \sum_{\vb*{p}} \varepsilon(\vb*{p}) \var{n(\vb*{p})} + 
+    E = E_0 + \var{E}, \quad 
+    \var{E}  = \sum_{\vb*{p}} \varepsilon_0(\vb*{p}) \var{n(\vb*{p})} + 
     \bigO(\var{n}^2).
+    \label{eq:fermi-liquid.linear-energy}
+\end{equation}
+Here $E_0$ is the ground state energy of the free electron gas, 
+\prettyref{eq:fermi-liquid.linear-energy} doesn't contain any many-body correction; 
+a more accurate form of the energy of the system is 
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}} \varepsilon_{\vb*{p}} \var{n(\vb*{p})}
+    + \frac{1}{2 V} \sum_{\vb*{p}, \vb*{p}'}
+    f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p})} \var{n(\vb*{p}')} + \bigO(\var{n}^3).
+\end{equation}
+This means an electron in a Fermi liquid now receives a (almost trivial) self-energy correction 
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}} \varepsilon(\vb*{p}) \var{n(\vb*{p})} , 
+    \quad \varepsilon(\vb*{p}) = \varepsilon_0(\vb*{p}) 
+    + \frac{1}{V} \sum_{\vb*{p}} f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p}')}.
 \end{equation}
 The chemical potential can be immediately decided:
 \begin{equation}
     \mu \coloneqq \eval{\fdv{E}{n(\vb*{p})}}_{\text{Fermi surface}} = \varepsilon(\pfermi).
 \end{equation}
 
+For condensed matter systems, 
+we have to make a further modification to the energy functional shown above: 
+we need to introduce spins. 
+So the full theory is 
 \begin{equation}
-    \var{E} = \sum_{\vb*{p}} \varepsilon_{\vb*{p}} \var{n(\vb*{p})}
-    + \frac{1}{2} \sum_{\vb*{p}, \vb*{p}'}
-    f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p})} \var{n(\vb*{p}')} + \bigO(\var{n}^3).
+    \var{E} = \sum_{\vb*{p}, \sigma} \varepsilon_{0 \sigma} (\vb*{p}) \var{n_\sigma(\vb*{p})}
+    + \frac{1}{2V} \sum_{\vb*{p}, \vb*{p}', \sigma, \sigma'}
+    f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n_{\sigma}(\vb*{p})} \var{n_{\sigma'} (\vb*{p}')}.
 \end{equation}
+When there is no outside spin polarizing factors 
+like a magnetic field, 
+we just have 
+\begin{equation}
+    f_{\uparrow \uparrow} = f_{\downarrow \downarrow}, \quad 
+    f_{\uparrow \downarrow} = f_{\downarrow \uparrow}, \quad 
+    \varepsilon_{0 \uparrow} = \varepsilon_{0 \downarrow} = \varepsilon_0,
+\end{equation}
+and therefore we have 
+\[
+    \begin{aligned}
+        &\quad \sum_{\vb*{p}, \vb*{p}', \sigma, \sigma'} 
+        f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n_{\sigma}(\vb*{p})} \var{n_{\sigma'} (\vb*{p}')} \\
+        &= \sum_{\vb*{p}, \vb*{p}'} \frac{1}{2} (f_{\uparrow \uparrow} + f_{\downarrow \uparrow})
+        \var{n(\vb*{p})} \var{{n}(\vb*{p})}
+        + \sum_{\vb*{p}, \vb*{p}'} \frac{1}{2} (f_{\uparrow \uparrow} - f_{\downarrow \uparrow})
+        \var{\tilde{n}(\vb*{p})} \var{\tilde{n}(\vb*{p})},
+    \end{aligned}
+\]
+where 
+\begin{equation}
+    \var{n(\vb*{p})} = \var{n_\uparrow(\vb*{p})} + \var{n_\downarrow(\vb*{p})}, \quad 
+    \var{\tilde{n}(\vb*{p})} = \var{n_\uparrow(\vb*{p})} - \var{n_\downarrow(\vb*{p})}.
+\end{equation}
+We define 
+\begin{equation}
+    2f^{\text{S}} = f_{\uparrow \uparrow} + f_{\downarrow \uparrow}, \quad 
+    2f^{\text{A}} = f_{\uparrow \uparrow} - f_{\downarrow \uparrow}, 
+\end{equation}
+and the interaction part of the energy functional then is 
+\begin{equation}
+    \sum_{\vb*{p}, \vb*{p}'} \left(
+        f^{\text{S}}_{\vb*{p} \vb*{p}'} \var{n(\vb*{p})} \var{{n}(\vb*{p})}
+    + f^{\text{A}}_{\vb*{p} \vb*{p}'} \var{\tilde{n}(\vb*{p})} \var{\tilde{n}(\vb*{p})}
+    \right).
+\end{equation}
+
+Now we can make some symmetric arguments.
+When we calculate physical quantities that only involves $\var{n}$, 
+like the specific heat capacity, 
+there is no need to deal with $\var{\tilde{n}}$;
+when calculating the spin response the case is the opposite. 
+We can do the angular momentum expansion 
+\begin{equation}
+    f^{\text{S/A}}_{\vb*{p} \vb*{p}'} = \sum_{l=0}^{\infty} f^{\text{S/A}}_l \legpoly_l(\cos \theta), 
+    \label{eq:landau-liquid.angular-expansion}
+\end{equation}
+TODO: only the angle $\theta$ between $\vb*{p}$ and $\vb*{p}'$ matters. 
+When we talk about an isotropic excitation mode, 
+only the $l = 0$ term matters, 
+while if we impose a magnetic field along one axis, 
+then usually the $l = 1$ term has the strongest contribution. 
+
+The expansion \prettyref{eq:landau-liquid.angular-expansion} 
+also implies one way Landau Fermi liquid theory breaks: 
+if high $l$ terms have very strong contribution to $\var{E}$, 
+then even when we still have well-defined $\var{n(\vb*{p})}$, 
+Landau Fermi liquid theory will be of limited use. 
+Fortunately this is almost never the case. 
+
+We usually define dimensionless Landau parameters 
+\begin{equation}
+    F^{\text{S/A}} = N(\omega = 0) f^{\text{S/A}},
+\end{equation}
+where $N(\omega = 0)$ is the density of states at $\efermi$.
+
+\subsection{Some observables}
+
+Following the procedure in electron gas, 
+we define 
+\begin{equation}
+    \vfermi = \grad_{\vb*{p}} \varepsilon(\vb*{p}) |_{\pfermi}, 
+\end{equation}
+and 
+\begin{equation}
+    m^* = \frac{\pfermi}{\vfermi}.
+\end{equation}
+The density of states therefore is given by 
+\begin{equation}
+    N(\omega = 0) = m^* \frac{\pfermi}{\pi^2 \hbar^3}.
+\end{equation}
+
+This is of course related to the specific heat; 
+let's derive the latter. 
+Suppose we put a Fermi liquid under a finite temperature $T$.
+The specific heat capacity can be found by 
+\begin{equation}
+    C_V = T \eval{\pdv{S}{T}}_V.
+\end{equation}
+The entropy is 
+\begin{equation}
+    S = - \kB \ln \Omega 
+    = - \kB \frac{1}{V} \sum_{\vb*{p}, \sigma}
+    (n_\sigma(\vb*{p}) \ln n_{\sigma}(\vb*{p})
+    + (1 - n_\sigma(\vb*{p})) \ln (1 - n_{\sigma}(\vb*{p}))) ,
+\end{equation} 
+where now due to thermal fluctuation, 
+we have 
+\begin{equation}
+    n_\sigma(\vb*{p}) = \frac{1}{
+        1 + \ee^{(\varepsilon_\sigma(\vb*{p}) - \mu) / \kB T}
+    },
+\end{equation}
+and we find 
+\begin{equation}
+    \var{S} = - \frac{1}{TV} \sum_{\vb*{p}, \sigma}
+    (\varepsilon_{\sigma}(\vb*{p}) - \mu)
+    \var{n_\sigma(\vb*{p})}
+    = - \frac{1}{TV} \sum_{\vb*{p}, \sigma}
+    (\varepsilon_{\sigma}(\vb*{p}) - \mu)
+    \left(
+        \pdv{n_\sigma(\vb*{p})}{\varepsilon_\sigma(\vb*{p})} \var{\epsilon_\sigma(\vb*{p})}
+        + \pdv{n_\sigma(\vb*{p})}{T} \var{T}
+    \right).
+\end{equation}
+TODO: eventually we find 
+\begin{equation}
+    \var{S} = - \frac{1}{TV} \int \dd{\varepsilon} N(\omega) 
+    (\varepsilon - \mu) \frac{\varepsilon - \mu}{T} \dd{T},
+\end{equation}
+and 
+\begin{equation}
+    C_V = \frac{\pi^3}{3} N(\omega = 0) \kB^2 T.
+\end{equation}
+
+The next question is what's $m^*$.
+There is actually a constraint imposed by 
+the translational symmetry. 
+Suppose we add a very small velocity $\vb*{v}$ globally. 
+This means 
+\begin{equation}
+    \vb*{p} \to \vb*{p}' = \vb*{p} - m \vb*{v}, \quad 
+    E \to E' = E - \vb*{p} \cdot \vb*{v} + \frac{1}{2} m v^2.
+\end{equation}
+Taylor expansion tells us
+\begin{equation}
+    \varepsilon(\vb*{p} - m \vb*{v}) = 
+    \varepsilon(\vb*{p}) - \left(
+        \frac{m}{m^*} - 1
+    \right) \vb*{p} \cdot \vb*{v}, 
+\end{equation}
+and this has to agree with the 
+TODO: 
+
+\begin{equation}
+    \frac{m^*}{m} = 1 + \frac{F^{\text{S}}_1}{3}.
+\end{equation}
+This means the effective mass only carries information about 
+the symmetric part of $f_{\vb*{p} \vb*{p}' \sigma \sigma'}$.
 
 \end{document}
