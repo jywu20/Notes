@@ -141,6 +141,7 @@
 \setcounter{tocdepth}{4}
 
 \newcommand*{\laplace}{\mathcal{L}}
+\newcommand*{\fourier}{\mathcal{F}}
 \newcommand*{\zerotoinf}{\int_{0}^{\infty}}
 \newcommand*{\inftoinf}{\int_{-\infty}^{\infty}}
 
@@ -988,6 +989,7 @@ We have
 The \concept{convolution integral} of $f(t)$ and $g(t)$ is defined as 
 \begin{equation}
     f \otimes g = \int_0^t f(t') g(t-t') \dd{t'}.
+    \label{eq:laplace-conv}
 \end{equation}
 This can be found very frequently in science: 
 it appears when we deal with interaction:
@@ -1196,7 +1198,7 @@ and in the end we get
 \end{equation}
 This is called \concept{Parseval's theorem}. 
 
-\subsection{Complex Fourier series}
+\subsection{Complex Fourier series}\label{sec:fourier-series.complex}
 
 We can also change the way we show the Fourier series into the follows: 
 \begin{equation}
@@ -1472,5 +1474,159 @@ and
         (2 k + 1)!
     } a_1.
 \end{equation}
+
+\section{Fourier transformation}
+
+In \prettyref{sec:fourier-series.complex} we have already seen that the continuous limit 
+of Fourier series gives us Fourier transformation.
+Here we repeat the definition: 
+the \concept{Fourier transform} of $f(t)$ is given by 
+\begin{equation}
+    \fourier [f(t)] = \hat{f}(\omega) = \int_{-\infty}^{\infty} f(t) \ee^{- \ii \omega t} \dd{t}.
+\end{equation}
+This loos very similar to the Laplace transform: 
+the two differences are the lower bound of the integral 
+is now $-\infty$, instead of zero, 
+and the parameter is $\omega$.
+
+Similar to Laplace transform, 
+Fourier transform is a linear operator, 
+and we have time shifting theorem 
+\begin{equation}
+    \fourier [f(t - t_0)] = \int_{-\infty}^{\infty} f(t') \ee^{- \ii \omega (t' + t_0)} \dd{t'} 
+    = \ee^{- \ii \omega t_0} \fourier[f(t)].
+\end{equation}
+Similarly we have frequency-shifting theorem 
+\begin{equation}
+    \fourier[\ee^{\ii \omega_0 t} f(t)]
+    = \int_{-\infty}^{\infty} f(t) \ee^{- \ii (\omega - \omega_0) t} \dd{t} 
+    = \hat{f}(\omega - \omega_0),
+\end{equation}
+and the scaling theorem 
+\begin{equation}
+    \fourier [f(at)] = \frac{1}{\abs*{a}} \hat{f}(\omega / a).
+\end{equation}
+This is reasonable because $\omega$ is just inverse time 
+and the scaling factor of $\omega$ just appears to be 
+the inverse of the scaling factor of $t$.
+Note that the outside $1 / \abs*{a}$ factor comes from 
+the change of the measure of the integral
+and always has the absolute value symbol with it. 
+
+The next theorem is a special case of the convolution theorem, 
+and is known as the \concept{Modulation} theorem: 
+we have 
+\begin{equation}
+    \fourier [f(t) \cos \omega_0 t] = 
+    \inftoinf f(t) \frac{\ee^{\ii \omega_0 t} + \ee^{- \ii \omega_0 t}}{2} 
+    \ee^{- \ii \omega t} \dd{t} 
+    = \frac{1}{2} ( \hat{f}(\omega - \omega_0) + \hat{f}(\omega + \omega_0) ).
+\end{equation}
+Similarly, we have 
+\begin{equation}
+    \fourier [f(t) \sin \omega_0 t] = \frac{\ii}{2} (
+        \hat{f}(\omega + \omega_0)
+        - \hat{f}(\omega - \omega_0)
+    ).
+\end{equation}
+The more general convolution theorem is 
+\begin{equation}
+    \begin{aligned}
+        \fourier[f \otimes g] &= 
+        \inftoinf \ee^{- \ii \omega t} 
+            \inftoinf f(t') g(t - t') \dd{t'}
+        \dd{t} \\
+        &= \inftoinf f(t') \ee^{- \ii \omega t'} 
+        \inftoinf g(t - t') \ee^{- \ii \omega (t - t')} \dd{t} \dd{t'} \\
+        &= \inftoinf f(t') \ee^{- \ii \omega t'} 
+        \inftoinf g(t'') \ee^{- \ii \omega (t'')} \dd{t''} \dd{t'} \\
+        &= \fourier[f(t)] \fourier[g(t)].
+    \end{aligned}
+\end{equation}
+Here we define 
+\begin{equation}
+    f \otimes g = \int_{-\infty}^{\infty} f(t') g(t - t') \dd{t'}, 
+\end{equation}
+which is \emph{not} \eqref{eq:laplace-conv}.
+Correspondingly, we have 
+\begin{equation}
+    \fourier[f(t) g(t)] = \frac{1}{2\pi} \hat{f} \otimes \hat{g},
+\end{equation}
+where 
+\begin{equation}
+    \hat{f} \otimes \hat{g} = \inftoinf \hat{f}(\omega') \hat{g}(\omega - \omega') \dd{\omega'}.
+\end{equation}
+This can be proved as follows: 
+we have 
+\[
+    \begin{aligned}
+        \frac{1}{2\pi} \hat{f} \otimes \hat{g} 
+        &= \frac{1}{2\pi} \inftoinf \inftoinf f(t) \ee^{- \ii \omega' t} \dd{t} 
+        \inftoinf g(t') \ee^{- \ii (\omega - \omega') t'} \dd{t'} \dd{\omega} \\
+        &= \inftoinf \inftoinf f(t) g(t')
+        \cdot \frac{1}{2\pi} \inftoinf \ee^{- \ii \omega' (t - t')} \dd{\omega}
+        \ee^{- \ii \omega t'} \dd{t} \dd{t'} \\
+        &= \inftoinf \inftoinf f(t) g(t') \delta(t - t') \ee^{- \ii \omega t'} \dd{t} \dd{t'} \\
+        &= \inftoinf f(t) g(t) \ee^{- \ii \omega t} \dd{t}.
+    \end{aligned}
+\]
+
+We also have theorems regarding the Fourier transform
+and the derivative: 
+\begin{equation}
+    \dv{\hat{f}(\omega)}{\omega} = 
+    \inftoinf f(t) (- \ii t) \ee^{- \ii \omega t} \dd{t} 
+    = - \ii \fourier[t f(t)],
+\end{equation}
+and in general we have 
+\begin{equation}
+    \dv[n]{\hat{f}}{\omega} = (- \ii)^n \fourier[t^n f(t)].
+\end{equation}
+We can also find the Fourier transform
+of a derivative: 
+\begin{equation}
+    \begin{aligned}
+        \fourier\left[
+            \dv{f}{t}
+        \right] &= 
+        \int_{-\infty}^{\infty} \dd \left( f \ee^{- \ii \omega t} \right) 
+        - \inftoinf f(t) \dd \ee^{- \ii \omega t} \\
+        &= \ii \omega \inftoinf f(t) \ee^{- \ii \omega t} \dd{t} \\
+        &= \ii \omega \fourier[f].
+    \end{aligned}
+\end{equation}
+The first term in the RHS of the first line vanishes
+because we assume $f(t)$ goes to zero quickly enough 
+when $t \to \pm \infty$.
+Repeating this, we have 
+\begin{equation}
+    \fourier\left[\dv[n]{f}{t}\right] = 
+    (\ii \omega)^n \fourier[f(t)].
+\end{equation}
+
+In physics, usually $\hat{f}(\omega)$ damps quickly enough when $\omega \to \pm \infty$,
+because a system can't response to external driving forces with arbitrarily high frequency.
+We say a function $f(t)$ is \concept{band limited} if 
+$\hat{f}(\omega)$ is zero for $\abs{\omega} > L$.
+For this function, we have 
+\begin{equation}
+    f(t) = \frac{1}{2\pi} \inftoinf \hat{f}(\omega) \ee^{\ii \omega t} \dd{\omega}
+    = \frac{1}{2\pi} \int_{-L}^{L} \hat{f}(\omega) \ee^{\ii \omega t} \dd{\omega}.
+\end{equation}
+The fact that $\hat{f}(\omega)$ is constrained to a interval 
+means we can find its Fourier series representation:
+\begin{equation}
+    \hat{f}(\omega) = \sum_{n = -\infty}^{\infty}
+    c_n \ee^{\ii n \pi \omega / L},
+\end{equation}
+and 
+\begin{equation}
+    c_n = \frac{1}{2L} \int_{-L}^{L} \hat{f}(\omega) \ee^{- \ii n \pi \omega / L} \dd{\omega}
+    = \frac{\pi}{L} f\left(
+        t = - \frac{n \pi}{L}
+    \right).
+\end{equation}
+This means we can rebuild the whole function over $(-\infty, \infty)$
+from a discrete (although still infinite) group of sample points.
 
 \end{document}
