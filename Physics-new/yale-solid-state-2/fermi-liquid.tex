@@ -94,12 +94,41 @@
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
-\newtcbtheorem[number within=section]{warning}{Warning}%
-  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
-\newtcbtheorem[number within=section]{note}{Note}%
-  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
-\newtcbtheorem[number within=section]{info}{Info}%
-  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
@@ -280,7 +309,7 @@ Here $E_0$ is the ground state energy of the free electron gas,
 \prettyref{eq:fermi-liquid.linear-energy} doesn't contain any many-body correction; 
 a more accurate form of the energy of the system is 
 \begin{equation}
-    \var{E} = \sum_{\vb*{p}} \varepsilon_{\vb*{p}} \var{n(\vb*{p})}
+    \var{E} = \sum_{\vb*{p}} \varepsilon_0(\vb*{p}) \var{n(\vb*{p})}
     + \frac{1}{2 V} \sum_{\vb*{p}, \vb*{p}'}
     f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p})} \var{n(\vb*{p}')} + \bigO(\var{n}^3).
 \end{equation}
@@ -288,7 +317,8 @@ This means an electron in a Fermi liquid now receives a (almost trivial) self-en
 \begin{equation}
     \var{E} = \sum_{\vb*{p}} \varepsilon(\vb*{p}) \var{n(\vb*{p})} , 
     \quad \varepsilon(\vb*{p}) = \varepsilon_0(\vb*{p}) 
-    + \frac{1}{V} \sum_{\vb*{p}} f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p}')}.
+    + \frac{1}{V} \sum_{\vb*{p}'} f_{\vb*{p} \vb*{p}'} \var{n(\vb*{p}')}.
+    \label{eq:fermi-liquid.quasiparticle-energy}
 \end{equation}
 The chemical potential can be immediately decided:
 \begin{equation}
@@ -401,14 +431,40 @@ The entropy is
     + (1 - n_\sigma(\vb*{p})) \ln (1 - n_{\sigma}(\vb*{p}))) ,
 \end{equation} 
 where now due to thermal fluctuation, 
-we have (TODO: $\varepsilon$ has $\var{n}$ dependence, 
-so what will happen in the Fermi-Dirac distribution?)
+we have TODO: $\varepsilon$ has $\var{n}$ dependence, 
+so what will happen in the Fermi-Dirac distribution?
+A tentative solution: 
+by summing over $n_\sigma(\vb*{p}')$ ($\vb*{p} \neq \vb*{p}'$) first, 
+we have 
+\[
+    n_\sigma(\vb*{p}) = \frac{
+        \expval{\ee^{- (\varepsilon_\sigma(\vb*{p}) - \mu) / \kB T}}
+    }{
+        1 + \expval{\ee^{- (\varepsilon_\sigma(\vb*{p}) - \mu) / \kB T}}
+    },
+\]
+where the expectation brackets mean 
+to average over non-$\vb*{p}$ degrees of freedom, 
+and since for fermions $n^2 = n$, 
+we can move the expectation brackets into the exponent,
+and thus we have the self-consistent Fermi-Dirac distribution
 \begin{equation}
     n_\sigma(\vb*{p}) = \frac{1}{
         1 + \ee^{(\varepsilon_\sigma(\vb*{p}) - \mu) / \kB T}
     },
 \end{equation}
-and we find 
+where $\varepsilon_\sigma(\vb*{p})$ 
+is decided by \eqref{eq:fermi-liquid.quasiparticle-energy}, 
+where the $\var{n_\sigma(\vb*{p})}$ in \eqref{eq:fermi-liquid.quasiparticle-energy} 
+is just in the Fermi-Dirac distribution.
+This can also be confirmed by 
+thinking about the Hartree term 
+in imaginary time field theory:
+$n_\sigma(\vb*{p})$ can be obtained from the single-electron Green function
+in the same way in the free electron gas,
+and the loop electron line in the Hartree diagram 
+gives exactly (the temperature-dependent) $n_{\sigma}(\vb*{p})$.
+
 \begin{equation}
     \var{S} = - \frac{1}{TV} \sum_{\vb*{p}, \sigma}
     (\varepsilon_{\sigma}(\vb*{p}) - \mu)
@@ -429,6 +485,26 @@ and
 \begin{equation}
     C_V = \frac{\pi^3}{3} N(\omega = 0) \kB^2 T.
 \end{equation}
+
+\begin{theorybox}{What is really $n_{\sigma}(\vb*{p})$?}{the-meaning-of-n}
+    When I first learned Fermi liquid theory, 
+    what puzzled me the most is 
+    what exactly is $n_{\sigma}(\vb*{p})$:
+    is it a quantum operator
+    (and thus a label of the many-body wave function), 
+    or is it the single-electron Fermi-Dirac distribution
+    (which is stored in the single-electron Matsubara Green function)?
+    From the above discussion, 
+    we can find \emph{both} views are correct.
+    This is a trivial instance of the fact that 
+    Feynman diagram components, like the single-electron self-energy 
+    or the double-electron kernel, 
+    do have counterparts in the wave-function-plus-operator language
+    (often referred to as second quantization, 
+    although technically second quantization is used everywhere, 
+    including Feynman diagram techniques),
+    to which we can do everything we do for ordinary quantum operators.
+\end{theorybox}
 
 The next question is what's $m^*$.
 There is actually a constraint imposed by 
