@@ -1,0 +1,398 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand*{\laplace}{\mathcal{L}}
+\newcommand*{\fourier}{\mathcal{F}}
+\newcommand*{\zerotoinf}{\int_{0}^{\infty}}
+\newcommand*{\inftoinf}{\int_{-\infty}^{\infty}}
+
+\title{PDEs}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The linear heat equation}
+
+\subsection{Homogeneous boundary condition}
+
+Consider one-dimensional heat equation 
+\begin{equation}
+    \pdv{u}{t} = K \pdv[2]{u}{x}.
+    \label{eq:heat.homogeneous.bulk}
+\end{equation}
+As an example, we consider the case where 
+the boundaries of the string in question are kept to zero temperature, 
+and the boundary and initial conditions are 
+\begin{equation}
+    u(0, t) = u(L, t) = 0, \quad 
+    u(x, 0) = f(x).
+    \label{eq:heat.homogeneous.boundary}
+\end{equation}
+By separation of variables
+\begin{equation}
+    u(x, t) = X(x) T(t), 
+\end{equation}
+we find 
+\[
+    \frac{T'}{K T} = \frac{X''}{X},
+\]
+which can therefore only be a constant, 
+because otherwise it's impossible for something that only depends on $t$ 
+and something that only depends on $x$
+to be equal to each other constantly.
+So we have 
+\[
+    X'' = \lambda X, \quad T' = K \lambda T.
+\]
+When $\lambda > 0$, we find 
+\[
+    X(x) = A \ee^{\sqrt{\lambda} x} + B \ee^{- \sqrt{\lambda} x}, 
+\] 
+and therefore the boundary conditions mean 
+\[
+    X(0) = 0 \Rightarrow A + B = 0, 
+\]
+\[
+    X(L) = 0 \Rightarrow A (\ee^{\sqrt{\lambda} x} - \ee^{- \sqrt{\lambda} x}) = 0 \Rightarrow A = B = 0,
+\]
+which gives a trivial solution.
+Similarly $\lambda = 0$ gives a trivial solution.
+So we find we should only consider $\lambda < 0$.
+So now we replace $\lambda$ by $- \lambda$, 
+and from 
+\[
+    X'' = - \lambda X
+\]
+we find 
+\[
+    X(x) = A \cos(\sqrt{\lambda} x) + B \sin(\sqrt{\lambda} x).
+\]
+The boundary condition $X(0) = 0$ means $A = 0$, 
+and we should then keep $B$ to be non-zero.
+Then $X(L) = 0$ means 
+\[
+    \sqrt{\lambda} L = n \pi, \quad n = 1, 2, 3, \dots
+\]
+So now $\lambda$ is completely determined, 
+and the next step is to find $T$, 
+which is trivial: 
+\[
+    T(t) \propto \ee^{- \lambda t}.
+\]
+So the final solution is 
+\begin{equation}
+    u(x, t) = \sum_{n=1}^{\infty} 
+        c_n T_n(t) X_n(x), 
+\end{equation}
+where 
+\begin{equation}
+    T_n(t) = \ee^{- \frac{n^2 \pi^2 K t}{L^2}}, 
+\end{equation}
+and 
+\begin{equation}
+    X_n(x) = \sin(\frac{n \pi x}{L}).
+\end{equation}
+The constants $\{c_n\}$ then can be solved from the initial condition: 
+\[
+    f(x) = \sum_{n=1}^{\infty} c_n \sin (\frac{n \pi x}{L}) ,
+\]
+which is just a Fourier series, so 
+\begin{equation}
+    c_n = \frac{2}{L} \int_{0}^{L} f(x) \sin (\frac{n \pi x}{L}) \dd{x}.
+\end{equation}
+
+\subsection{Inhomogeneous boundary condition}
+
+We can consider another problem: 
+now the boundaries are still isothermal, 
+but the temperatures there are no longer zero.
+The conditions are 
+\begin{equation}
+    u(0, t) = T_1, \quad 
+    u(L, t) = T_2.
+\end{equation}
+Note that the temperatures can be different, 
+and when $t \to \infty$, the stable solution may still be non-zero. 
+Linearity guarantees the validity of the following decomposition:
+\begin{equation}
+    u(x, t) = u_0(x, t) + \psi(x),
+\end{equation}
+where $\psi(x)$ satisfies 
+\begin{equation}
+    \psi''(x) = 0, \quad 
+    \psi(0, t) = T_1, \quad 
+    \psi(L, t) = T_2,
+\end{equation}
+so that $u_0(x, t)$ satisfies 
+the problem \eqref{eq:heat.homogeneous.bulk} plus \eqref{eq:heat.homogeneous.boundary} 
+just solved above -- 
+but note that $f$ in \eqref{eq:heat.homogeneous.boundary}
+should be replaced by $f(x) - \psi(x)$.
+Now $\psi(x)$ can be found easily: 
+it's just 
+\begin{equation}
+    \psi(x) = \frac{T_2 - T_1}{L} x + T_1.
+\end{equation}
+
+\subsection{Heat conduction in an infinite medium}
+
+Now we consider 
+\begin{equation}
+    \pdv{u}{t} = K \pdv[2]{u}{x}, \quad -\infty < x < \infty, \quad u(x, 0) = f(x).
+\end{equation}
+The problem can be solved by Laplace transform as well as Fourier transform; 
+or we can do Fourier transform in $x$ 
+and Laplace transform in $t$.
+We have (here we are using $\omega$ to refer to the frequency of $x$, not $t$)
+\[
+    \fourier \left[\pdv{u}{t}\right] = \pdv{t} \hat{u}(\omega, t),
+\]
+and 
+\[
+    \fourier\left[\pdv[2]{u}{x}\right] 
+    = (\ii \omega)^2 \hat{u}(\omega, t).
+\]
+The bulk equation now is 
+\[
+    \pdv{\hat{u}(\omega, t)}{t} = - K \omega^2 \hat{u}(\omega, t) ,
+\]
+and we have 
+\[
+    \hat{u}(\omega , t) = \ee^{- K \omega^2 t} \underbrace{\hat{u}(\omega, 0)}_{\hat{f}(\omega)}.
+\] 
+So we find 
+\begin{equation}
+    u(x, t) = \frac{1}{2\pi} \inftoinf \hat{u}(\omega, t) \ee^{\ii \omega x} \dd{\omega}
+    = \frac{1}{2\pi} \inftoinf \hat{f}(\omega) \ee^{- K \omega^2 t} \ee^{\ii \omega x} \dd{\omega}.
+    \label{eq:heat.infinite.general}
+\end{equation}
+
+A common initial condition is 
+\begin{equation}
+    u(x, 0) = \delta(x),
+\end{equation}
+which means when $t = 0$, 
+all heat is concentrated in a rather small region.
+Then 
+\[
+    \hat{f}(\omega) = 1,
+\]
+and \eqref{eq:heat.infinite.general} tells us 
+\begin{equation}
+    u(x, t) = \frac{1}{2\pi} \inftoinf \ee^{- K \omega^2 t + \ii \omega x} \dd{\omega} 
+    = \frac{1}{2 \sqrt{\pi K t}}  \ee^{- \frac{x^2}{4 K t}} .
+\end{equation}
+Here the integral can be calculated as 
+\[
+    \begin{aligned}
+        \inftoinf \ee^{- K \omega^2 t + \ii \omega x} \dd{\omega} 
+        &= \ee^{- \frac{x^2}{4 K t}} \inftoinf 
+            \ee^{- K t \left(
+                \omega - \frac{\ii x}{2 K t}
+            \right)^2 } \dd{\omega} \\
+        &= \sqrt{\frac{\pi}{Kt}} \ee^{- \frac{x^2}{4 K t}} .
+    \end{aligned}
+\]
+The solution is always Gaussian, 
+but as time goes by, 
+it becomes wider and wider.
+
+\subsection{Heat conduction on a semi-infinite domain}
+
+Let's then consider the following boundary and initial conditions:
+\begin{equation}
+    u(x, 0) = T, \quad 
+    u(0, t) = 0.
+\end{equation}
+This means we first heat the material 
+and establish a homogeneous temperature field inside it, 
+and then touch it with a colder point.
+Since this is a half-infinite problem, 
+we can use Laplace transform on the time $t$.
+We have 
+\[
+    \laplace\left[\pdv{u}{t}\right]
+    = s U(x, s) - u(x, 0) = s U(x, s) - T, 
+\]
+and 
+\[
+    \laplace\left[\pdv[2]{u}{x}\right] = \pdv[2]{U(x, s)}{x}.
+\]
+The bulk equation then becomes 
+\[
+    s U(x, s) - T = K \pdv[2]{U(x, s)}{x}, 
+\]
+\[
+    \pdv[2]{U(x, s)}{x} - \frac{s}{K} U = - \frac{T}{K}.
+\]
+The homogeneous solution of this equation is just (note that $A$ and $B$ may have $s$ dependence)
+\[
+    U = A \ee^{\sqrt{s / K} x} + B \ee^{- \sqrt{s / K} x} .
+\] 
+A specific solution is 
+\[
+    U = \frac{T}{s}.
+\]
+$A$ has to be zero, 
+because $u(x, t)$ should be finite when $x \to \infty$.
+So we find 
+\[
+    U = \frac{T}{s} + B(s) \ee^{- \sqrt{s / K} x}.
+\]
+We still need to use the condition $u(0 , t) = 0$, 
+which, after Laplace transform, is $U(0, s) = 0$,
+and we find 
+\[
+    U = \frac{T}{s} (1 - \ee^{- \sqrt{s / K} x}).
+\]
+So 
+\begin{equation}
+    u(x, t) = \laplace^{-1} \left[
+        \frac{T}{s} (1 - \ee^{- \sqrt{s / K} x})
+    \right] = T \mathrm{erf} \left(
+        \frac{x}{2 \sqrt{Kt}}
+    \right).
+\end{equation}
+
+\end{document}

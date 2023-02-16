@@ -477,11 +477,24 @@ so we need \SI{0.54}{g} cooper.
 
 \subsection{Itinerant magnetism in 2D}
 
-The Pauli paramagnetism susceptibility keeps its form in 3D:
+Since the derivation of Pauli paramagnetism 
+and Landau diamagnetism basically 
+doesn't involve anything dependent to the dimension,
+we still have 
 \begin{equation}
     \chi_{\text{Pauli}} = 2 \mu_0 \muB^2 \rho_0(\efermi),
+    \chi_{\text{Landau}} = - \frac{1}{3} \chi_{\text{Pauli}}
 \end{equation}
-but the density of states will change. 
+for a free 2D electron gas. 
+However, when the influence of the band structure is taken into account, 
+from the derivation it can be seen that 
+$\chi_{\text{Pauli}}$ relies on the effective mass $m^*$
+while $\chi_{\text{Landau}}$ relies on the bare mass $m$
+(the crystal periodic potential is never coupled to 
+the electromagnetic field), 
+and by adjusting $m^* / m$ 
+we can let $\abs{\chi_{\text{Landau}}} > \abs{\chi_{\text{Pauli}}}$.
+So both a paramagnetic total response and a diamagnetic total response are possible.
 
 
 \section{Mean-field solution of 1D Ising model}
@@ -641,7 +654,7 @@ has dimension dependence.
 When $d = 2$, $\beta = 1/8$, 
 and when $d = 3$, $\beta = 0.326$.
 
-\subsection{Critical exponents for other quantities}
+\subsection{Critical exponents for other quantities when $h = 0$}
 
 For the free energy, we have 
 \begin{equation}
@@ -658,6 +671,7 @@ so the correct free energy is
     F = - \kB T N \ln 2 - N \kB T \ln \cosh (
         \frac{h + Jq m}{\kB T}
     ) + \frac{1}{2} N q J m^2.
+    \label{eq:ising.full-mf-free-energy}
 \end{equation}
 
 Here we consider the $h = 0$ case. 
@@ -668,8 +682,8 @@ When $T > \Tc$, $m = 0$, so
 When $T < \Tc$, 
 Taylor expansion gives 
 \[
-    F = - \kB T N \ln 2 + \frac{N \kB \Tc}{2} m^2 - \frac{N \kB \Tc^2}{2 T} m^2
-    + \frac{N \kB \Tc^4}{12 T^3} m^4. 
+    F = \frac{N \kB \Tc}{2} m^2 - \kB T N \ln 2 - \frac{N \kB \Tc^2}{2 T} m^2
+    + \frac{N \kB \Tc^4}{12 T^3} m^4 + \cdots. 
 \]
 $m$ is given by \eqref{eq:ising.mf.m}, 
 so near $\Tc$, we have (note that since $m \propto (\Tc - T)^{1/2}$, 
@@ -678,7 +692,7 @@ if we only want the first several term in the expansion over $\Tc - T$).
 The eventual result is 
 \begin{equation}
     F = \begin{cases}
-        0 &, T > \Tc, \\
+        - \kB T N \ln 2 &, T > \Tc, \\
         - \kB T N \ln 2 - \frac{3 \kB N (T - \Tc)^2}{4\Tc} &, T < \Tc. 
     \end{cases}
 \end{equation}
@@ -695,20 +709,46 @@ The total energy, when $h = 0$, is (again we insert the $m^2$ term in \eqref{eq:
         U &= - h_{\text{eff}} \sum_{\vb*{i}} \expval{s_{\vb*{i}}} + \frac{1}{2} N q J m^2
         = - Jqm \cdot N m + \frac{1}{2} N q J m^2 = - \frac{1}{2} N q J m^2  \\
         &= \begin{cases}
-            - \frac{3 \kB N (T - \Tc)^2}{2 \Tc} &, T < \Tc, \\
+            - \frac{3 \kB N (\Tc - T)}{2} &, T < \Tc, \\
             0 &,  T > \Tc.
         \end{cases} 
     \end{aligned}
 \end{equation}
+
 The entropy is 
 \begin{equation}
-    S = \frac{U - F}{T} \approx \kB \ln 2 - \begin{cases}
-        \frac{3 \kB N (T - \Tc)^2}{4 \Tc^2 } &, T < \Tc, \\
+    S = \frac{U - F}{T} \approx \kB N \ln 2 - \begin{cases}
+        \frac{3 \kB N (\Tc - T)}{2 \Tc } &, T < \Tc, \\
         0 &,  T > \Tc
     \end{cases}.
 \end{equation}
+Here we only keep the lowest order dependence of $\Tc - T$. 
+This expression can also be obtained by calculating $- \pdv{F}{T}$.
 
+The heat capacity per site can be found from $U$:
+\begin{equation}
+    c = - \frac{1}{N} T \pdv[2]{F}{T} = \begin{cases}
+        0 &, T > \Tc, \\
+        \frac{3}{2} \kB &, T < \Tc.
+    \end{cases}
+\end{equation}
+So indeed this is a second-order phase transition.
+It can also be found using $- T \pdv[2]{F}{T}$.
 
+\subsection{Phase transition by tuning $h$}
+
+For the sake of convenience let's assume $T$ is very close to zero.
+In this way, Mathematica tells us \eqref{eq:ising.scf} has to solutions: $m = \pm 1$.
+So when $h > 0$, 
+the $- h \sum_{\vb*{i}} s_{\vb*{i}}$ term 
+means $m = 1$, 
+and when $h < 0$, 
+$m = -1$.
+
+Since now the order parameter 
+(instead of its derivative with respect to one of the coordinates of the phase diagram) 
+flips without a smooth transition, 
+The phase transition is a first-order one.
 
 \subsection{Fluctuation beyond the mean-field solution}
 
