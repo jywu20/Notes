@@ -9,8 +9,12 @@
 \usepackage{siunitx}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage[version=4]{mhchem}
 \usepackage{amssymb}
 \usepackage{textcomp, gensymb}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 \usepackage{tabularx}
 \usepackage{extarrows}
 \usepackage{booktabs}
@@ -19,8 +23,9 @@
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
 \usepackage[style=verbose,backend=bibtex]{biblatex}
-\addbibresource{arpes.bib}
-\addbibresource{green.bib}
+\addbibresource{wannier.bib}
+\addbibresource{hubbard.bib}
+\renewcommand{\footnotesize}{\scriptsize}
 \usepackage{listings}
 \usepackage{hyperref}
 
@@ -49,7 +54,7 @@
 
 \end{frame}
 
-\section{The theory}
+\section{General idea}
 
 \begin{frame}
 \frametitle{Motivation}
@@ -81,12 +86,12 @@ But should all electrons be included?
 
 Screening by $d$ and $r$ = first screened by $r$ and then $d$
 
-Effective interaction:
 \begin{equation}
     W = (1 - v P)^{-1} v = (1 - W_r P_d)^{-1} W_r, \quad 
     W_r = (1 - v P_r)^{-1} v,
 \end{equation}
 \begin{itemize}
+    \item $W$ is effective interaction 
     \item where $P_d$ is the polarization within $d$ subspace,
     \item and $P_r = P - P_d$
 \end{itemize}
@@ -103,7 +108,8 @@ Effective interaction:
 \begin{itemize}
     \item $P_d$ hard to obtain $\Rightarrow$ we left it to an effective interaction 
     without doing resummation for it
-    \item $P_r$ can be done by \shortcode{epsilon}
+    \item $P_r$ can be done by \shortcode{epsilon} $\Rightarrow$
+        $W_r$ can be obtained by \shortcode{epsilon}
     \item But 
     \begin{center}
         \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6]
@@ -180,8 +186,107 @@ Uncontrolled approximation: does RPA work for
         \end{tikzpicture}        
 \end{center}
 
+The hopping between $d$ electrons is small $\Rightarrow$ it's safe to do so 
+\footcite{aryasetiawan2004frequency}
+
 \end{frame}
 
-\section{Existing studies}
+\section{The problem of dynamic Hubbard model}
+
+\begin{frame}
+\frametitle{Dynamic interaction in Hubbard model}
+
+Recall that $W = W(\vb*{r}, \vb*{r}, \textcolor{red}{\omega} )$
+$\Rightarrow$ 
+$U_{\vb*{i} \vb*{j} \vb*{k} \vb*{l}}(\omega)$
+$\Rightarrow$
+retarded interaction! 
+
+\begin{itemize}
+    \item Hamiltonian form: interactions are always immediate 
+    (bosonic auxiliary field required to create retardation)
+    \item \dots or path integral formalism is to be used 
+    \item Either it, it's slow!!! 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Dynamic interaction in Hubbard model}
+
+Is it possible to just enforce $\omega = 0$ \dots
+But it's not accurate!\footcite{aryasetiawan2004frequency}
+
+\begin{center}
+    \includegraphics[width=0.45\textwidth]{plots/ni-re-sigma-1.PNG}
+    \includegraphics[width=0.45\textwidth]{plots/ni-im-sigma-1.PNG}
+\end{center}
+
+\ce{Ni} self-energy, from static Hubbard $U = W_r(\omega = 0)$,
+and from full $W(\omega)$ 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Dynamic interaction in Hubbard model}
+
+\textbf{Why $\Im \Sigma$ is better captured by static $U$ than $\Re \Sigma$?}
+
+Because $\Im \Sigma \propto \text{DOS}$ TODO: why??
+
+And then high-frequency electrons contribute to low-frequency $\Re \Sigma$ 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Possible way to make the Hubbard model static}
+
+\textbf{Key point: correct the single-electron Hamiltonian using the retarded interaction}
+
+\begin{itemize}
+    \item Def: $G_d$ = Green function for $d$ electrons; 
+        $\tilde{G}_d$ = Green function for $d$ electrons corrected by $W - W_d$; 
+        $W$ = RPA screened Coulomb interaction; 
+        $W_d$ = static Hubbard $U$ screened by $G_d$; 
+        $\tilde{W}_d$ = static Hubbard $U$ screened by $\tilde{G}_d$;
+    \item Ignoring hopping between $d$ and $r$ subspaces caused by $W$
+        (so the $\ii W (G - G_d)$ term is irrelevant for $d$ electrons), we have 
+        \begin{equation}
+            \tilde{G}_d^{-1} - \ii \tilde{G}_d \tilde{W}_d = 
+            G_d^{-1} - \ii G_d W_d - \ii G_d (W - W_d).
+        \end{equation}
+    \item  From
+    \begin{equation}
+        W = (1 - UP)^{-1} U, \quad P = - \ii G G \Rightarrow
+        G^{-1} - \ii GW = (1 - UP)^{-1} G^{-1} 
+    \end{equation} 
+    we get the final equation: 
+    (here $\tilde{P}_d = - \ii \tilde{G}_d \tilde{G}_d$, 
+    $P_d = - \ii G_d G_d$)
+    \begin{equation}
+            (1 - U \tilde{P}_d)^{-1} \tilde{G}_d^{-1}
+            = (1 - U P_d^{-1})^{-1} G_d^{-1}
+            - \ii G_d  (W -W_d).
+        \end{equation}
+\end{itemize}
+
+\end{frame}
+
+\section{Existing implementations}
+
+\begin{frame}
+\frametitle{Existing implementations}
+
+\begin{itemize}
+    \item \textbf{VASP}    
+    \shortcode{ALGO=CRPA} selects constrained RPA calculations, 
+    available as of VASP.6.4
+    \item \textbf{ABINIT} 
+    \shortcode{ucrpa} before version 9, 
+    as an option in \href{https://docs.abinit.org/variables/gw/\#ucrpa}{the RPA module}
+    \item \textbf{BerkeleyGW} \xmark Unfortunately \dots
+\end{itemize}
+
+\end{frame}
 
 \end{document}
