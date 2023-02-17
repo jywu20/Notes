@@ -1357,27 +1357,66 @@ With the above two approximations,
 we can attribute the light-matter interaction to 
 \begin{equation}
     H_{\text{light-matter}} = q \varphi \approx \const + q \vb*{r} \cdot \grad{\varphi}
-    \simeq \underbrace{q \vb*{r}}_{- \vb*{d}} \cdot \vb*{E}
-    = - e \vb*{r} \cdot \vb*{E}.
+    \simeq - \underbrace{q \vb*{r}}_{\vb*{d}} \cdot \vb*{E}
+    = e \vb*{r} \cdot \vb*{E}.
+    \label{eq:light-matter.dipole-1}
 \end{equation}
 Of course, when magnetic response of the system is important, 
 we also need to add a magnetic dipole interaction term, etc. 
 
 The dipole approximation has another form
 \begin{equation}
-    H_{\text{light-matter}} = \frac{1}{2} e (\vb*{v} \cdot \vb*{A} + \vb*{A} \cdot \vb*{v}),
+    H_{\text{light-matter}} = e \vb*{v} \cdot \vb*{A}, 
+    \quad \vb*{v} = \frac{1}{\ii \hbar} \comm*{\vb*{r}}{H} 
 \end{equation}
-or, when we are in radiation gauge $\div{\vb*{A}} = 0$,
+in radiation gauge $\div{\vb*{A}} = 0$.
+This can be derived as follows. 
+In \eqref{eq:light-matter.dipole-1}, 
+we attribute the electric field to $\varphi$, 
+and assume $\vb*{A}$ is small (and thus the magnetic coupling can be ignored).
+But of course we can take the \emph{radiational gauge} 
 \begin{equation}
-    H_{\text{light-matter}} = e \vb*{v} \cdot \vb*{A}.
+    \varphi = 0, \quad \div{\vb*{A}} = 0,
+\end{equation} 
+and this means 
+\begin{equation}
+    \vb*{E} = - \pdv{\vb*{A}}{t}.
+    \label{eq:light-matter.e-from-a}
 \end{equation}
-When the potential term is not $V(\vb*{r})$,
-we have 
+Note that this is valid only when 
+the charges creating the electromagnetic field 
+is not in the spatial region we are dealing with,
+or otherwise the two conditions conflict with each other: 
+the $\varphi = 0$ condition leads to \eqref{eq:light-matter.e-from-a}, 
+but \eqref{eq:light-matter.e-from-a} immediately leads to $\pdv{t} \div{\vb*{E}} = 0$, 
+which generally doesn't hold if the source of the electric field 
+is within the system in question; 
+in condensed matter physics however this is definitely true, 
+because the light source is always outside the sample.
+When the potential term is non-local, 
+we can always rewrite $V(\vb*{r}, \vb*{r}')$
+into $V(\vb*{r}, \vb*{p})$,
+and with appropriate normal ordering, we have 
+\[
+    \pdv{\vb*{p}} V(\vb*{r}, \vb*{p}) = \frac{1}{\ii \hbar} \comm*{\vb*{r}}{V}.
+\]
+Therefore the single-body Hamiltonian after electromagnetic coupling is 
+\[
+    \begin{aligned}
+        H &= \frac{(\vb*{p} + e \vb*{A})^2}{2m} 
+            + V(\vb*{r} , \vb*{p} + e \vb*{A}) \\
+        &\approx H|_{\vb*{A} = 0} + 
+            e \vb*{A} \cdot \pdv{H}{\vb*{p}} \\
+        &= \frac{\vb*{p}^2}{2m} + V(\vb*{r}, \vb*{p}) + e \vb*{A} \cdot \dot{\vb*{r}},
+    \end{aligned}
+\]
+where 
 \begin{equation}
-    \vb*{v} = \frac{1}{\ii} \comm*{\vb*{r}}{H} 
+    \dot{\vb*{r}} = \vb*{v} = \frac{1}{\ii \hbar} \comm*{\vb*{r}}{H} 
     = \frac{\vb*{p}}{m} 
-    + \frac{1}{\ii} \underbrace{\comm*{\vb*{r}}{V}}_{\neq 0}.
+    + \frac{1}{\ii \hbar} \underbrace{\comm*{\vb*{r}}{V}}_{\neq 0}.
 \end{equation}
+So we get 
 This is an illustration of 
 why \eqref{eq:light-matter.linear} itself 
 doesn't suffice as the whole light-matter interaction Hamiltonian, 
@@ -1387,6 +1426,29 @@ even when the field is weak.
 
 Absorption is usually modeled by the imaginary part of $\epsilon$,
 and it's usually calculated by Fermi golden rule.
+In this section, we assume the incident light 
+has a determined wave length and polarization.
+The general form of $\vb*{A}$ is 
+\begin{equation}
+    \vb*{A} = \sum_{\vb*{k}, \sigma}
+        \sqrt{\frac{\hbar}{2 \omega_{\vb*{k} \sigma} \epsilon_0 V}}
+        (
+            a_{\vb*{k} \sigma} \vu*{e}_{\vb*{k} \sigma} 
+            \ee^{\ii \vb*{k} \cdot \vb*{r} - \ii \omega_{\vb*{k} \sigma} t}
+            + \text{h.c.}
+        ),
+\end{equation}
+and here we are only considering one $\vb*{k}, \sigma$ mode; 
+from then on we use $\vb*{q}$ to refer to the momentum of the mode,
+and $\omega$ becomes a shorthand for $\omega_{\vb*{k} \sigma}$.
+Similarly, $n$ and $\vu*{e}$ mean 
+$n_{\vb*{q} \sigma}$ and $\vu*{e}_{\vb*{q} \sigma}$.
+The reason for us to use a discrete momentum grid 
+is that normalization is more convenient -- 
+and a numerical implementation of light-matter interaction
+of course is most easily carried out 
+on a discrete momentum grid.
+
 We do the usual real and imaginary refractive index decomposition
 \begin{equation}
     \sqrt{\epsr} = n + \ii \kappa,
@@ -1394,12 +1456,48 @@ We do the usual real and imaginary refractive index decomposition
 and therefore (TODO: metal)
 \begin{equation}
     \epsr = n^2 - \kappa^2 + 2 \ii n \kappa 
-    \approx n^2 + 2 \ii n \kappa.
+    \approx n^2 + 2 \ii \kappa.
 \end{equation}
 Here we assume $\epsr$ is not far from one, 
 and therefore $n$ is close to one and $\kappa$ is small.
 A beam of light therefore propagates as 
+\[
+    \vb*{E} \propto \ee^{\ii \vb*{k} \cdot \vb*{r}} \ee^{- \ii \omega t}
+    \propto \ee^{\ii (n + \ii \kappa) \frac{\omega}{c} r} 
+    = \ee^{\ii \frac{n \omega}{c} r} \ee^{- \frac{\kappa \omega}{c} r}.
+\]
+This means the intensity is like 
+\[
+    I \propto \abs*{\vb*{E}}^2 \propto \ee^{- 2 \kappa \frac{\omega}{c} r}.
+\]
+If we know $\alpha$  in
+\begin{equation}
+    I = I_0 \ee^{- \alpha r}, 
+    \label{eq:light-matter.decay}
+\end{equation}
+then 
+\[
+    2 \kappa \frac{\omega}{c} = \alpha,
+\]
+and therefore 
+\begin{equation}
+    \Im \epsr = 2 \kappa = \frac{c}{\omega} \alpha.
+\end{equation}
 
+The next question is what is $\alpha$. 
+\eqref{eq:light-matter.decay} means in the distance of $\dd{r}$, 
+the photon number loss is proportional to
+\[
+    I(r) - I(r + \dd{r}) = I(r) \alpha \dd{r}.
+\] 
+This means 
+\begin{equation}
+    \alpha \dd{r} = \frac{
+        \text{photons absorbed per unit volume per second} \cdot \dd{r}
+    }{
+        \text{photons incident per unit area per second}
+    }.
+\end{equation}
 
 \begin{theorybox}{Capturing decaying of photon with a continuous theory?}{photon-damping-epsilonk}
     There seems to be a contradiction here:
@@ -1435,6 +1533,91 @@ A beam of light therefore propagates as
     we first calculate quantum jump channels (i.e. scattering)
     and then fit the $H_{\text{eff}}$ according to the strength of scattering.
 \end{theorybox}
+
+The numerator is now given by Fermi golden rule: 
+\[
+    \begin{aligned}
+        &\quad \text{photons absorbed per unit volume per second} \\
+        &= \frac{1}{V} \cdot \text{photons absorbed per second} \\
+        &= \frac{1}{V} \cdot \frac{2\pi}{\hbar} \sum_{S} 
+            \abs*{\mel**{S, n - 1}{e \vb*{v} \cdot \vb*{A}}{0, n}}^2 
+            \delta(\omega - \Omega_S ) \\
+        &= \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
+            \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+            \abs*{\mel**{S, n - 1}{\vb*{v} \cdot a_{\vb*{k} \sigma} \vu*{e} \ee^{\ii \vb*{k} \cdot \vb*{r}}}{0, n}}^2 
+            \delta(\omega - \Omega_S )  \\
+        &\approx  \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
+        \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+        \abs*{\mel**{S, n - 1}{\vb*{v} \cdot a_{\vb*{k} \sigma} \vu*{e}}{0, n}}^2 
+        \delta(\omega - \Omega_S )  \\
+        &= \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
+        \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+        \abs*{\vb*{v} \cdot \vu*{e} \sqrt{n} \braket*{S, n - 1}{0, n - 1}}^2 
+        \delta(\omega - \Omega_S ) \\
+        &= \frac{\pi e^2 n}{\omega \epsilon_0 V^2} 
+            \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S), 
+    \end{aligned}
+\] 
+where we have used the condition 
+that the momentum of the incident photon is usually very small 
+compared with the momentum of other excitations in a solid.
+The denominator is 
+\[
+    \text{photons incident per unit area per second} = \frac{n c}{V}.
+\]
+So putting everything together, we get 
+\begin{equation}
+    \alpha = \frac{\pi e^2}{\omega \epsilon_0 c V} \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
+\end{equation}
+and 
+\begin{equation}
+    \Im \epsr = \frac{\pi e^2}{\omega^2 \epsilon_0 V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+    \label{eq:light-matter.epsilon-img}
+\end{equation}
+
+The relation \eqref{eq:light-matter.epsilon-img} is derived under SI. 
+In Gaussian system of units, 
+the form of $\epsr$ remains unchanged. 
+This can be seen by 
+\[
+    \left\{
+        \begin{aligned}
+            &F = \frac{(e^{\text{I}})^2}{4 \pi \epsilon_0 r^2} = \frac{(e^{\text{G}})^2}{r^2}, \quad 
+            \vb*{F} = e^{\text{I}} \vb*{E}^{\text{I}} 
+            = e^{\text{G}} \vb*{E}^{\text{G}}, \\
+            &\vb*{D}^{\text{I}} = \epsr^{\text{I}} \epsilon_0 \vb*{E}^{\text{I}}, \quad 
+            \vb*{D}^{\text{G}} = \epsr^{\text{G}} \vb*{E}^{\text{G}}, \\
+            &\div{\vb*{D}}^{\text{I}} = \rho^{\text{I}}, \quad 
+            \div{\vb*{D}}^{\text{G}} = 4\pi \rho^{\text{G}}
+        \end{aligned}
+    \right. \Rightarrow
+    \epsr^{\text{I}} = \epsr^{\text{G}}.
+\]
+So in Gaussian system of units, 
+we have 
+\begin{equation}
+    \Im \epsr = \frac{4 \pi^2 e^2}{\omega^2  V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+    \label{eq:light-matter.epsilon-img-2}
+\end{equation}
+
+The expression of $\Im \epsr$ sees great variance in literature. 
+Eq. (8) in \cite{del1993optical} is almost the same as \eqref{eq:light-matter.epsilon-img-2},
+except it misses the factor $1 / V$. 
+\cite{berkeleygw} claims the equation should be 
+\[
+    \epsilon_2 = \Im \epsilon = \frac{16 \pi^2 e^2}{\omega^2 } 
+    \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+\]
+The LHS here is shown as it is in \cite{berkeleygw}; 
+since the system of units used is never explicitly mentioned in this article, 
+we don't know the true meaning of $\epsilon$ here;
+the origin of the $4\pi$ factor is also mysterious.
+This version of \eqref{eq:light-matter.epsilon-img-2} seems to have an early origin:
+it appears in \cite{rohlfing2000electron},
+which refers us to \cite{adolph1996nonlocality}
+which doesn't seem to contain something like \eqref{eq:light-matter.epsilon-img-2}.
 
 \chapter{$GW$ and BSE}
 
@@ -1650,11 +1833,6 @@ using the same ring diagrams that appear in the self-consistent Hartree term.
 TODO: 
 \begin{itemize}
     \item Truncated Coulomb interaction
-    \item Derive \begin{equation}
-        \Im \epsilon = \frac{16 \pi^2 e^2}{\omega^2} \sum_S 
-        \abs*{\vu*{e} \cdot \mel**{0}{\vb*{v}}{S}}^2
-        \delta(\omega - \Omega^S).
-    \end{equation}
     \item Why we say $\Sigma = V_{\text{xc}} + \Sigma - V_{\text{xc}}$?
     (see \cite{berkeleygw} p. 1271)
     \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
@@ -2602,7 +2780,8 @@ usual Feynman diagram resummation schemes fail for them,
 but $r$ bands are dispersive and extended enough 
 for a diagrammatic resummation scheme like $GW$ to work.
 Thus, the part concerning only $r$ electrons in $P_r$ can be reliably 
-obtained using, say, RPA;
+obtained using, say, RPA, 
+which can be done using existing \abinitio{} codes;
 the hopping between $d$ bands and $r$ bands is more tricky,
 TODO: why RPA for them is acceptable
 
@@ -3699,6 +3878,6 @@ while using \shortcode{WFN},
 then of course the calculation is severely under-converged.
 
 \bibliographystyle{plain}
-\bibliography{gw,dft,wannier,hubbard,quasiparticle,cohsex,structure,phonon}
+\bibliography{gw,dft,wannier,hubbard,quasiparticle,cohsex,structure,phonon,light-matter}
 
 \end{document}
