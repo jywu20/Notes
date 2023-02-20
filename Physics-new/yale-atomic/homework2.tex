@@ -1,0 +1,580 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+
+\title{Homework 2}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Polarization of electromagnetic field}
+
+\subsection{The general form of a pure state}
+
+We have  (assuming $\vu*{k} = \vu*{z}$)
+\[
+    \vb*{E} = E_x \pmqty{1 \\ 0} + E_y \pmqty{0 \\ 1}
+    = \sqrt{\abs*{E_x}^2 + \abs*{E_y}^2} \ee^{\ii \varphi_x}
+    \pmqty{
+        \frac{\abs*{E_x}}{\sqrt{\abs*{E_x}^2 + \abs*{E_y}^2}} \\
+        \ee^{\ii (\varphi_y - \varphi_x)} \frac{\abs*{E_y}}{\sqrt{\abs*{E_x}^2 + \abs*{E_y}^2}}
+    }, 
+\]
+and by defining 
+\begin{equation}
+    E_0 = \sqrt{\abs*{E_x}^2 + \abs*{E_y}^2} \ee^{\ii \varphi_x}, 
+\end{equation}
+\begin{equation}
+    \cos \theta = \frac{\abs*{E_x}}{\sqrt{\abs*{E_x}^2 + \abs*{E_y}^2}} ,
+\end{equation}
+and 
+\begin{equation}
+    \phi = \varphi_ y - \varphi_x, 
+\end{equation}
+we find 
+\begin{equation}
+    \vb*{E} = E_0 \pmqty{\cos \theta \\ \ee^{\ii \phi} \sin \theta}.
+\end{equation}
+We have 
+\begin{equation}
+    \ket*{H} = \pmqty{1 \\ 0}, \quad 
+    \ket*{V} = \pmqty{0 \\ 1},
+\end{equation}
+and therefore after normalization, we have 
+\begin{equation}
+    \rho = (\cos \theta \ket*{H} + \ee^{\ii \phi} \sin \theta \ket*{V})
+    (\cos \theta \bra*{H} + \ee^{- \ii \phi} \sin \theta \bra*{V})
+    = \pmqty{
+        \cos^2 \theta & \ee^{- \ii \phi} \sin \theta \cos \theta \\
+        \ee^{\ii \phi} \sin \theta \cos \theta & \sin^2 \theta
+    }.
+\end{equation}
+
+\subsection{The pure state $\rho^2 = \rho$ condition}
+
+We can prove the pure state condition $\rho^2 = \rho$ explicitly:
+\begin{equation}
+    \begin{aligned}
+        \rho^2 &= \pmqty{
+            \cos^4 \theta + \sin^2 \theta \cos^2 \theta &
+            \ee^{- \ii \phi} \sin \theta \cos^3 \theta + 
+            \ee^{- \ii \phi} \sin^3 \theta \cos \theta \\
+            \ee^{\ii \phi} \sin \theta \cos^3 \theta + 
+            \ee^{\ii \phi} \sin^3 \theta \cos \theta &
+            \sin^2 \theta \cos^2 \theta + \sin^4 \theta 
+        }  \\
+        &= \pmqty{
+            \cos^2 \theta & \ee^{- \ii \phi} \sin \theta \cos \theta \\
+            \ee^{\ii \phi} \sin \theta \cos \theta & \sin^2 \theta
+        } = \rho.
+    \end{aligned}
+\end{equation}
+
+\subsection{Mixed state}
+
+The condition that $\rho$ is Hermite means it can be written as 
+\[
+    \rho = R (\sigma^0 + x \sigma^x + y \sigma^y + z \sigma^z), 
+\]
+where $R, x, y, z \in \mathbb{R}$, 
+because the $\sigma$ matrices constitute a basis 
+for all Hermite matrices in $\mathbb{C}^{2 \times 2}$.
+Since $\sigma^{x, y, z}$ are traceless, 
+from the condition $\trace \rho = 1$, we have 
+\[
+    1 = \trace \rho = R \trace \sigma^0 = 2 R \Rightarrow R = \frac{1}{2},
+\]
+so 
+\[
+    \rho = \frac{1}{2} (\sigma^0 + x \sigma^x + y \sigma^y + z \sigma^z).
+\]
+In the matrix form, we have 
+\[
+    \rho = \pmqty{
+        \frac{1 + z}{2} & \frac{x - \ii y}{2} \\
+        \frac{x + \ii y}{2} & \frac{1 - z}{2}
+    },
+\]
+and by substitution of variables 
+(this is a three variables to three variables mapping, 
+and therefore is valid)
+\[
+    \frac{1}{2} (1 - p) + p \cos^2 \theta = \frac{1 + z}{2}, 
+    \quad x = p \cos \phi \sin 2 \theta, \quad y = p \sin \phi \sin 2 \theta,
+\]
+we get 
+\[
+    \frac{1 - z}{2} = \frac{1}{2} (1 - p) + p \sin^2 \theta, 
+\]
+and therefore
+\begin{equation}
+    \rho = (1 - p) \pmqty{\dmat{\frac{1}{2}, \frac{1}{2}}} + p \pmqty{
+        \cos^2 \theta & \ee^{- \ii \phi} \sin \theta \cos \theta \\
+        \ee^{\ii \phi} \sin \theta \cos \theta & \sin^2 \theta
+    }.
+    \label{eq:general-light-polarization}
+\end{equation}
+
+\subsection{Jones parameters and Stokes formalism}
+
+
+
+\subsection{Transformation and measurement}
+
+We have 
+\begin{equation}
+    \begin{aligned}
+        |45\rangle & =\frac{1}{\sqrt{2}}\left(\begin{array}{l}
+        1 \\
+        1
+        \end{array}\right) \\
+        |\text{rcp} \rangle & =\frac{1}{\sqrt{2}}\left(\begin{array}{c}
+        1 \\
+        -\ii
+        \end{array}\right)
+        \end{aligned}.
+\end{equation}
+The correspond density matrices are 
+\begin{equation}
+    \rho_{45} = \frac{1}{2} \pmqty{1 & 1 \\ 1 & 1},
+\end{equation}
+and 
+\begin{equation}
+    \rho_{\text{rcp}} = \frac{1}{2} \pmqty{ 1 & \ii \\ - \ii & 1 }.
+\end{equation}
+
+The operator 
+\begin{equation}
+    U_{\text{rcp}} = \pmqty{
+        \dmat{1 , - \ii}
+    }
+\end{equation}
+then turns $\rho_{45}$ to $\rho_{\text{rcp}}$: 
+\begin{equation}
+    U_{\text{rcp}} \rho_{45} U_{\text{rcp}}^\dagger 
+    = \frac{1}{2} \pmqty{\dmat{1, - \ii}}
+    \pmqty{1 & 1 \\ 1 & 1}
+    \pmqty{\dmat{1, \ii}}
+    = \frac{1}{2} \pmqty{
+        1 & \ii \\ - \ii & 1
+    } = \rho_{\text{rcp}}.
+\end{equation}
+
+The horizontal polarizer operator 
+\begin{equation}
+    \mathcal{O} = \pmqty{
+        1 & 0 \\ 0 & 0
+    }
+\end{equation}
+is not unitary, because it has non-unitary eigenvalue $0$.
+It is a projection operator: 
+it takes in a beam polarized light 
+and returns its $x$ component. 
+It also represents a measurement:
+we can use it in a projective measurement setting.
+In a projective measurement with operator $\mathcal{O}$, 
+$\trace (\rho \mathcal{O})$
+is the probability that after measurement, 
+the final state of the system falls into the subspace determined by $\mathcal{O}$.
+In our case, the subspace determined by $\mathcal{O}$ 
+is the subspace of horizontal polarization, 
+so $\trace (\rho \mathcal{O})$ is the probability 
+that after measurement, we find $\rho$ to be a horizontally polarized state.
+
+Application of $\mathcal{O}$ on \eqref{eq:general-light-polarization} is 
+\begin{equation}
+    \mathcal{O} \rho \mathcal{O}^\dagger 
+    = (1 - p) \pmqty{\frac{1}{2} & 0 \\ 0 & 0}
+    + p \pmqty{
+        \cos^2 \theta & 0 \\ 0 & 0
+    }
+    = \left( \frac{1}{2} + \frac{p}{2} \cos 2 \theta \right) \mathcal{O}.
+\end{equation}
+So after the application of $\mathcal{O}$, 
+we get a horizontally polarized state, as is expected. 
+The result is not normalized; 
+the factor before $\mathcal{O}$ is just $\trace(\rho \mathcal{O})$,
+which is the probability that 
+after measurement, we find $\rho$ to be horizontally polarized.
+When $p = 0$, it's $1/2$, 
+which is expected for the unpolarized state; 
+when $p = 1$, 
+it's $\cos^2 \theta$, again the correct answer. 
+
+\section{The $\rho^2 = \rho$ condition for pure states}
+
+Suppose 
+\begin{equation}
+    \rho = \dyad{\psi}, \quad \ket*{\psi} = \sum_m a_m \ket*{m}.
+\end{equation}
+We have 
+\begin{equation}
+    \begin{aligned}
+        \rho^2 & =\sum_{m, n} a_m^* a_n \ket*{n} \bra*{m} \sum_{j, k} a_j^* a_k \ket*{k} \bra*{j} \\
+        & =\sum_{m, n, j, k} a_m^* a_n a_j^* \ket*{n} \braket*{m}{k} \bra*{j} \\
+        & =\sum_{m, n, j, k} a_m^* a_n a_j^* a_k \dyad*{n}{j} \delta_{m k} \\
+        & = \underbrace{\sum_m a_m^* a_m}_{= \braket*{\psi}{\psi} = 1} \sum_{n, j} a_n a_j^* \dyad*{n}{j} \\ 
+        &= \sum_{n, j} a_n a_j^* \dyad*{n}{j} = \rho.
+    \end{aligned}
+\end{equation}
+
+\section{Ammonia molecule}
+
+The Hamiltonian of the two low-energy states of ammonia is 
+\begin{equation}
+    H = \pmqty{
+        0 & \Delta / 2 \\
+        \Delta / 2 & 0
+    },
+\end{equation}
+where we set 
+\begin{equation}
+    \ket*{L} = \pmqty{1 \\ 0}, \quad
+    \ket*{R} = \pmqty{0 \\ 1}.
+\end{equation}
+This Hamiltonian is just a scaled $\sigma^x$ matrix, 
+and its eigenstates are straightforwardly given by 
+\begin{equation}
+    \ket*{+} = \frac{1}{\sqrt{2}} (\ket*{L} + \ket*{R}), \quad 
+    \ket*{-} = \frac{1}{\sqrt{2}} (\ket*{L} - \ket*{R}),
+\end{equation}
+and the energies are 
+\begin{equation}
+    E_+ = \Delta / 2, \quad E_- = - \Delta / 2.
+\end{equation}
+
+After an electric field is added, 
+in $\ket*{L}$ we have an additional energy contribution, 
+and since the molecular configuration in $\ket*{R}$ is the opposite 
+of the one in $\ket*{L}$, 
+we have 
+\begin{equation}
+    H = \pmqty{
+        dE / 2 & \Delta / 2 \\
+        \Delta / 2 & -dE / 2
+    }.
+\end{equation}
+Solving 
+\[
+    \det \pmqty{
+        dE / 2 - \lambda & \Delta / 2 \\
+        \Delta / 2 & -dE / 2 - \lambda
+    }    = 0, 
+\]
+we get 
+\begin{equation}
+    E_\pm = \pm \frac{1}{2} \sqrt{\Delta^2 + d^2 E^2}, 
+\end{equation}
+and hence 
+\begin{equation}
+    \ket*{-} = \frac{dE - \sqrt{d^2 E^2 + \Delta^2}}{\sqrt{
+        \Delta^2 + (\sqrt{d^2 E^2 + \Delta^2} - d E)^2
+    }} \ket*{L} 
+    + \frac{\Delta}{\sqrt{
+        \Delta^2 + (\sqrt{d^2 E^2 + \Delta^2} - d E)^2}
+    } \ket*{R}, 
+\end{equation}
+and 
+\begin{equation}
+    \ket*{+} = \frac{dE + \sqrt{d^2 E^2 + \Delta^2}}{\sqrt{
+        \Delta^2 + (\sqrt{d^2 E^2 + \Delta^2} + d E)^2
+    }} \ket*{L} 
+    + \frac{\Delta}{\sqrt{
+        \Delta^2 + (\sqrt{d^2 E^2 + \Delta^2} + d E)^2}
+    } \ket*{R}.
+\end{equation}
+
+When $E$ is large, 
+we have 
+\[
+    d E - \sqrt{d^2 E^2 + \Delta^2} \approx 0, 
+\]
+\[
+    d E + \sqrt{d^2 E^2 + \Delta^2} \approx 2 d E,   
+\]
+and therefore 
+\begin{equation}
+    E_+ = \frac{1}{2} d E, \quad 
+    \ket*{+} = \ket*{L},
+\end{equation}
+and 
+\begin{equation}
+    E_- = - \frac{1}{2} d E, \quad 
+    \ket*{-} = \ket*{R}.
+\end{equation}
+This is expected, because when $E d\gg \Delta$, 
+the non-diagonal terms in the Hamiltonian can be safely ignored. 
+
+\section{Kaptiza’s pendulum}
+
+\subsection{Integrating out the fast variable}
+
+In the $\omega \to \infty$, $F_0 \to 0$ limit, 
+the high-frequency part and the low-frequency part of 
+the solution of 
+\begin{equation}
+    m R \ddot{\theta}=\left(-m g+F_0 \sin \omega t\right) \sin \theta
+    \label{eq:kapitza-eq}
+\end{equation}
+are not strongly coupled and the high-frequency degree of freedom can be integrated out 
+to get an effective theory of the low-frequency part. 
+We do the decomposition 
+\begin{equation}
+    \theta = \theta_f + \theta_s, 
+\end{equation}
+where $\theta_f$ is the fast variable. 
+Observing \eqref{eq:kapitza-eq}, 
+we find the EOM of $\theta_f$ should be 
+\begin{equation}
+    mR \ddot{\theta}_f = F_0 \sin \omega t \sin (\theta_f + \theta_s),
+    \label{eq:fast-part-exact}
+\end{equation}
+because the first term on the RHS of \eqref{eq:kapitza-eq} 
+has a much lower frequency magnitude compared with $\omega$.
+We take the first order approximation of \eqref{eq:fast-part-exact} 
+and ignore the $\theta_f$ dependency on the RHS,
+and this gives 
+\begin{equation}
+    \theta_f = - \frac{F_0}{m R \omega^2} \sin \theta_s \sin \omega t.
+\end{equation}
+Putting this back to \eqref{eq:kapitza-eq}, 
+we get 
+\[
+    \begin{aligned}
+        m R \left(
+            \frac{F_0}{mR} \sin \theta_s \sin \omega t + \ddot{\theta}_s
+        \right) &= 
+        (- mg + F_0 \sin \omega t) 
+        \sin(
+            \theta_s - \frac{F_0}{m R \omega^2} \sin \theta_s \sin \omega t
+        ) \\
+        &= (- mg + F_0 \sin \omega t) 
+        \left(
+            \sin \theta_s - \cos \theta_s \cdot \frac{F_0}{m R \omega^2} \sin \theta_s \sin \omega t
+        \right).
+    \end{aligned}
+\]
+Now we average over all high-frequency time dependencies. 
+The first term on the LHS averages zero, 
+and so do the $- mg \sin \omega t$ term and 
+the $F_0 \sin \omega t \sin \theta_s$ term on the RHS. 
+On the other hand, 
+the $\sin^2 \omega t$ term on the RHS averages 
+\[
+    - \frac{F_0^2}{m R \omega^2} \sin \theta_s \cos \theta_s \expval{\sin^2 \omega t}
+    = - \frac{1}{2} \frac{F_0^2}{m R \omega^2} \sin \theta_s \cos \theta_s,
+\]
+so the final EOM for $\theta_s$ is 
+\begin{equation}
+    m R \ddot{\theta}_s = - m g \sin \theta_s 
+    - \frac{1}{2} \frac{F_0^2}{m R \omega^2} \sin \theta_s \cos \theta_s.
+    \label{eq:theta-s-eq}
+\end{equation}
+
+\subsection{Stable positions of $\theta_s$}
+
+We let the LHS of \eqref{eq:theta-s-eq} be zero, 
+and the equation becomes 
+\[
+    \sin \theta_s \left(
+        mg + \frac{1}{2} \frac{F_0^2}{m R \omega^2} \cos \theta_s
+    \right) = 0.
+\]
+Since $F_0 \to 0$, the second factor on the LHS can't be zero, 
+so the equation becomes 
+\begin{equation}
+    \sin \theta_s = 0 \Rightarrow \theta_s = 0, \pi.
+\end{equation}
+
+Around $\theta_s = 0$, \eqref{eq:theta-s-eq} is approximately 
+\[
+    m R \ddot{\theta}_s = - mg \theta_s - \frac{1}{2} \frac{F_0^2}{m R \omega^2} \theta_s, 
+\]
+and therefore 
+\begin{equation}
+    \omega_{\theta = 0} = \sqrt{
+        \frac{g}{R} + \frac{F_0^2}{m^2 R^2 \omega^2}
+    }.
+\end{equation}
+This is always real, and therefore the $\theta_s = 0$ position is always stable.
+
+Around $\theta_s = \pi$, we rewrite \eqref{eq:theta-s-eq} in terms of $\theta_s' = \pi - \theta_s$, 
+and get 
+\[
+    - m R \ddot{\theta}'_s = mg \theta'_s - \frac{1}{2} \frac{F_0^2}{m R \omega^2} \theta_s' = 0,
+\]
+and 
+\begin{equation}
+    \omega_{\theta_s = \pi} = \sqrt{\frac{1}{2} \frac{F_0^2}{m^2 R^2 \omega^2} - \frac{g}{R}}.
+\end{equation}
+It can be seen that when $F_0 = 0$, 
+the frequency is imaginary and therefore $\theta_s = \pi$ 
+is not a stable position. 
+However, when 
+\begin{equation}
+    \frac{1}{2} \frac{F_0^2}{m^2 R^2 \omega^2} \geq \frac{g}{R},
+\end{equation}
+we do have oscillation behavior around $\theta_s = \pi$.
+
+\section{Relaxation of a spin polarization due to an electric field}
+
+The magnetic field felt by an electron wit velocity $\vb*{v}$ 
+when an electric field $\vb*{E}$ is present is 
+\begin{equation}
+    \vb*{B}=-\vb*{v} \times \vb*{E} / c^2.
+\end{equation}
+From 
+\begin{equation}
+    H = - \vb*{\mu} \cdot \vb*{B}, \quad \vb*{\mu} = - g \muB \vb*{S},
+\end{equation}
+we have 
+\begin{equation}
+    \dv{\vb*{S}}{t} = \frac{g \muB}{\hbar} \vb*{B} \times \vb*{S}
+    = \frac{g \muB}{\hbar} \vb*{S} \times \frac{\vb*{v} \times \vb*{E}}{c^2} .
+\end{equation}
+
+
+\end{document}
