@@ -395,4 +395,209 @@ So
     \right).
 \end{equation}
 
+\section{The linear wave equation}
+
+\subsection{Homogeneous boundary condition}
+
+Now we use the same procedure above the solve 
+\begin{equation}
+    \pdv[2]{y}{t} = c^2 \pdv[2]{y}{x}.
+\end{equation}
+The boundary conditions are 
+\begin{equation}
+    y(0, t) = y(L, t) = 0, 
+\end{equation}
+and the initial condition is 
+\begin{equation}
+    y(x, 0) = f(x), \quad y'(x, 0) = 0.
+\end{equation}
+
+We do a separation of variables 
+\begin{equation}
+    y(x, t) = T(t) X(x), 
+\end{equation}
+and we have 
+\begin{equation}
+    X T '' = c^2 T X'' \Rightarrow \frac{T''}{c^2 T} = \frac{X''}{X} = - \lambda.
+\end{equation}
+We can check that in order for $X$ to be bounded at $x = 0, L$, 
+$\lambda$ has to be positive. 
+So the solution for the $X$ equation is 
+\[
+    X(x) = A \cos \sqrt{\lambda} x + B \sin \sqrt{\lambda} x.
+\]
+Then the boundary conditions means 
+\[
+    A = 0, 
+\]
+and 
+\[
+    \sin \sqrt{\lambda} L = 0 \Rightarrow \sqrt{\lambda} L = n \pi, \quad 
+    n = 1, 2, 3, \ldots.
+\]
+So we eventually get 
+\begin{equation}
+    X_n(x) = B \sin \sqrt{\lambda_n} x, \quad \lambda_n = \frac{n^2 \pi^2}{L^2}.
+\end{equation}
+The $T$ equation is 
+\[
+    T_n'' + \lambda_n c^2 T_n = 0, 
+\]
+and we have 
+\begin{equation}
+    T_n(t) = A_n \cos \frac{n \pi c t}{L} + B_n \sin \frac{n \pi c t}{L}.
+\end{equation}
+
+Now we can impose the initial condition.
+From the condition that $y'$ is zero everywhere when $t = 0$, 
+we find 
+\[
+    0 = \sum_{n = 1}^{\infty} \left(- \frac{n \pi c}{L} B_n \right) \sin \frac{n \pi}{L} 
+    \Rightarrow B_n = 0,
+\]
+and therefore 
+\[
+    y(x, t) = \sum_{n = 1}^{\infty}
+    c_n \cos \frac{n \pi c t}{L} \sin \frac{n \pi x}{L}.
+\]
+Then we find 
+\[
+    f(x) = y(x, t = 0) 
+    = \sum_{n = 1}^{\infty}
+    c_n \sin \frac{n \pi x}{L}.
+\]
+This means 
+\[
+    \int_{0}^{L} f(x) \sin \frac{m \pi x}{L} \dd{x}
+    = c_m \int_{0}^{L} \sin^2\left(\frac{m \pi x}{L}\right) \dd{x} 
+    = c_m \frac{L}{2},
+\]
+and we get 
+\begin{equation}
+    y(x, t) = \sum_{n=1}^{\infty} 
+    \frac{2}{L} \left(\int_{0}^{L} f(x') \sin \frac{n \pi x'}{L} \dd{x'}\right)
+    \cos \frac{n \pi c t}{L} \sin \frac{n \pi x}{L} .
+\end{equation}
+
+\subsection{On unbounded interval}
+
+Now we want to simulate how a wave packet propagate to infinities.
+The boundary conditions are now 
+\begin{equation}
+    y(x, t), \pdv{y}{x} \to \infty \quad \text{as $x \to \pm \infty$},
+\end{equation}
+and the initial conditions are 
+\begin{equation}
+    y(x, 0) = f(x), \quad 
+    \pdv{y}{t} (x, 0) = g(x).
+\end{equation}
+
+The good convergence behaviors of $y$ means we can use Fourier transform 
+to solve for it.
+We do the transform in $x$ variable: 
+\[
+    \fourier \left[
+        \pdv[2]{y}{t}
+    \right] = \pdv[2]{\hat{y} (\omega, t)}{t},
+\]
+and 
+\[
+    \fourier \left[
+        \pdv[2]{y}{x}
+    \right] = - \omega^2 \hat{y}(\omega, t).
+\]
+Note that the second step has already used the boundary conditions, 
+because to show $\fourier y' = - \ii \omega \hat{y}$, 
+we have used the condition 
+\[
+    \inftoinf \dd \left(
+        \pdv{y}{x} \ee^{- \ii \omega x}
+    \right) = 0,
+\]
+which means $y(x = \infty, t) = 0$ and $y(x = -\infty, t) = 0$.
+The wave equation after Fourier transform is 
+\[
+    \pdv[2]{\hat{y}}{t} = - c^2 \omega^2 \hat{y},
+\]
+and we have 
+\[
+    \hat{y}(\omega, t) = A(\omega) \cos \omega c t + B(\omega) \sin \omega c t.
+\]
+We can do Fourier transform to $f$ and $g$ as well, 
+and this immediately gives 
+\[
+    \hat{y}(\omega, t = 0) = A(\omega) = \hat{f}(\omega),
+\]
+and 
+\[
+    \pdv{\hat{y}}{t}(\omega, t = 0) = \omega c B(\omega) = \hat{g}(\omega).
+\]
+So we find 
+\[
+    \hat{y}(\omega, t) = \hat{f}(\omega) \cos \omega c t + \frac{\hat{g}}{\omega c} \sin \omega c t.
+\]
+The inverse Fourier transform of this equation tells us 
+\begin{equation}
+    y(x, t) = \frac{1}{2\pi} \inftoinf \ee^{\ii \omega x} \left(
+        \hat{f}(\omega) \cos \omega c t + \frac{\hat{g}(\omega)}{\omega c} \sin \omega c t
+    \right) \dd{\omega}.
+\end{equation}
+
+\subsection{The d'Alembert's solution}
+
+We define 
+\begin{equation}
+    \xi = x - ct, \quad \eta = x + ct.
+\end{equation}
+The two variables are paths in which a wave may move.
+So we have 
+\[
+    \pdv{t} = \pdv{\xi}{t} \pdv{\xi} + \pdv{\eta}{t} \pdv{\eta}
+    = - c \pdv{\xi} + c \pdv{\eta} , 
+\]
+and 
+\[
+    \pdv{x} = \pdv{\xi}{x} \pdv{\xi} + \pdv{\eta}{t} \pdv{\eta}
+    = \pdv{\xi} + \pdv{\eta}.
+\]
+So we find 
+\[
+    \pdv[2]{x} - \frac{1}{c^2} \pdv[2]{t} = 
+    4 \pdv{\xi} \pdv{\eta},
+\]
+So the wave equation now reads 
+\[
+    \pdv{\xi} \pdv{\eta} y = 0,
+\]
+and therefore 
+\begin{equation}
+    y(\xi, \eta) = F(\xi) + G(\eta)
+    = F(x - ct) + G(x + ct).
+\end{equation}
+So now from the initial conditions, we get 
+\[
+    y(x, 0) = f(x) = F + G, \quad 
+    \eval{\pdv{y}{t}}_{x, 0} = g(x) = - c F' + c G'.
+\]
+Note that the $F'$ symbol in the second equation
+can be understood as putting $x - ct$ into $\pdv*{F}{\xi}$,
+as well as $\pdv*{F(x - ct)}{x}$.
+This means we have 
+\[
+    \int_{0}^{x} g(x') \dd{x'} = - c F + c G,
+\]
+and note that we are currently at $t = 0$, we get 
+\[
+    F(x) = \frac{1}{2} f(x) - \frac{1}{2c} \int_{0}^{x} g(x') \dd{x'}, 
+\]
+and 
+\[
+    G(x) = \frac{1}{2} f(x) + \frac{1}{2c} \int_{0}^{x} g(x') \dd{x'},
+\]
+and eventually
+\begin{equation}
+    y(x, t) = \frac{1}{2} f(x - ct) + \frac{1}{2} f(x + ct)
+    + \frac{1}{2c} \int_{x - ct}^{x + ct} g(x') \dd{x'}.
+\end{equation}
+
 \end{document}
