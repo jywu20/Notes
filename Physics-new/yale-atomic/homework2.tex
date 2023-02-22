@@ -651,7 +651,7 @@ We define
 and the commutation relations are 
 \begin{equation}
     \comm*{\sigma_+}{\sigma_-} =  \sigma_z, \quad 
-    \comm*{\sigma^z}{\sigma_\pm} = 2 \sigma_\pm.
+    \comm*{\sigma^z}{\sigma_\pm} = \pm 2 \sigma_\pm.
 \end{equation}
 The Hamiltonian is then 
 \begin{equation}
@@ -661,6 +661,7 @@ where
 \begin{equation}
     b = \frac{1}{2} g \muB (B_x + \ii B_y), \quad 
     b_z = \frac{1}{2} g \muB B_z.
+    \label{eq:b-def}
 \end{equation}
 
 \subsection{Eliminating the static magnetic field}
@@ -668,11 +669,36 @@ where
 The magnetic field felt by an electron wit velocity $\vb*{v}$ 
 when an electric field $\vb*{E}$ is present is 
 \begin{equation}
-    \vb*{B}=-\vb*{v} \times \vb*{E} / c^2.
+    \vb*{B}_1 =-\vb*{v} \times \vb*{E} / c^2.
     \label{eq:motion-magnetic}
 \end{equation}
-We also have a static magnetic field point towards $\vu*{z}$.
-
+We also have a static magnetic field $\vb*{B}_0$ pointing towards $\vu*{z}$.
+Here we assume $\vb*{B}_0$ and the motion magnetic field 
+are orthogonal to each other, 
+and this means the Hamiltonian is 
+\begin{equation}
+    H = b^* \sigma_+ + b \sigma_- + \frac{1}{2} \hbar \gamma B_0
+    = b^* \sigma_+ + b \sigma_- + \underbrace{\frac{1}{2} \hbar \omega_0 \sigma_z}_{H_0}.
+\end{equation}
+The time evolution corresponding to that $\omega_0$ term is trivial, 
+and using the interaction picture we can get rid of it. 
+We have 
+\begin{equation}
+    \ee^{\ii H_0 t / \hbar} = \pmqty{
+        \dmat{
+            \ee^{\ii \omega_0 t / 2}, 
+            \ee^{- \ii \omega_0 t / 2}
+        }
+    }.
+\end{equation}
+The new Hamiltonian is now 
+\begin{equation}
+    \begin{aligned}
+        H &= \ee^{\ii H_0 t / \hbar} (b^* \sigma_+ + b \sigma_-) \ee^{- \ii H_0  t/ \hbar} \\
+        &= \ee^{\ii \omega_0 t} b^* \sigma_+ + \ee^{- \ii \omega_0 t} b \sigma_-.
+    \end{aligned}
+\end{equation}
+We will work with this Hamiltonian later.
 
 \subsection{Time evolution}
 
@@ -689,6 +715,48 @@ We again do decomposition
 \begin{equation}
     \rho = \frac{1}{2} \sigma_0 + \rho_+ \sigma_+ + \rho_- \sigma_- + \rho_z \sigma_z,
 \end{equation}
+and we have (here $b'$ and $b'^*$ are values taken at $t - t'$)
+\[
+    \comm*{H(t - t')}{\rho(t)}
+    = - \rho_+ \ee^{- \ii \omega_0 (t - t')} b' \sigma_z 
+    + \rho_- \ee^{\ii \omega_0 (t - t')} b'^* \sigma_z 
+    - 2 \rho_z \ee^{\ii \omega_0 (t - t')} b'^* \sigma_+ 
+    + 2 \rho_z \ee^{- \ii \omega_0 (t - t')} b' \sigma_-,
+\]
+and by component, we get 
+\begin{equation}
+    \dot{\rho}_{+} = - \frac{1}{\hbar^2} \int_{0}^{t} \dd{t'} \left(
+        2 \rho_+ \ee^{\ii \omega_0 t'} b' b^* 
+        - 2 \rho_- \ee^{2 \ii \omega_0 t - \ii \omega_0 t'} b^* b'^*
+    \right),
+\end{equation}
+\begin{equation}
+    \dot{\rho}_{-} = - \frac{1}{\hbar^2} \int_{0}^{t} \dd{t'} \left(
+        2 \rho_- \ee^{- \ii \omega_0 t'} b b'^* 
+        - 2 \rho_+ \ee^{- 2 \ii \omega_0 t + \ii \omega_0 t'} b b'
+    \right),
+\end{equation}
 and 
+\begin{equation}
+    \dot{\rho}_z = - \frac{1}{\hbar^2} \int_{0}^{t} \dd{t'} \left(
+        2 \rho_z \ee^{- \ii \omega_0 t'} b b'^* 
+        + 2 \rho_z \ee^{\ii \omega_0 t'} b^* b'
+    \right).
+\end{equation}
+
+\subsection{Statistical average}
+
+We now need to average the above three equations 
+over all possible $b(t)$ configurations. 
+Since we have \eqref{eq:b-def},
+we find 
+\[
+    \expval*{b b'} \propto \expval*{B_x B_x'} - \expval*{B_y B_y'} + 2 \ii \expval*{B_x B_y' + B_y B_x'}.
+\]
+The imaginary part of this vanishes, 
+because there is no correlation between orthogonal directions, 
+and the real part also vanishes 
+because of spatial rotational symmetry.
+On the other hand, we have 
 
 \end{document}
