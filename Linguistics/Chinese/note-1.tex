@@ -28,13 +28,11 @@
 \usepackage{multirow}
 \usepackage[figuresright]{rotating}
 \usepackage{acro}
-\usepackage[round]{natbib} 
-\usepackage{nameref,zref-xr}
-\zxrsetup{toltxlabel}
-\zexternaldocument*[cgel-]{../English/cambridge}[cambridge.pdf]
-\zexternaldocument*[alignment-]{../alignment/alignment}[alignment.pdf]
-\zexternaldocument*[exercise1-]{../Exercise/2021-3}[2021-3.pdf]
-\zexternaldocument*[method-]{../methodology/glossing}[glossing.pdf]
+\usepackage[citestyle=authoryear,backend=bibtex,natbib=true,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{references/grammars.bib}
+\addbibresource{references/aspects.bib}
+\addbibresource{references/general-typology.bib}
+\addbibresource{references/controversy.bib}
 \usepackage{prettyref}
 
 \geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
@@ -156,6 +154,7 @@
 \newcommand{\ala}{à la}
 \newcommand{\translate}[1]{`#1'}
 \newcommand{\vP}{\textit{v}P}
+\newcommand*{\category}[1]{\textsc{#1}}
 
 % Make subsubsection labeled
 \setcounter{secnumdepth}{4}
@@ -164,8 +163,11 @@
 \counterwithin{exx}{chapter} 
 
 % Reference formats
-\renewcommand{\bibname}{References}
-\setcitestyle{aysep={}} 
+\renewcommand*{\nameyeardelim}{\space} % No comma between year and name
+\DeclareNameAlias{sortname}{family-given} % Putting the family name before the given name
+\DeclareNameAlias{default}{family-given} 
+\DeclareFieldFormat{labelnumberwidth}{} % No number label like [12] in the reference list
+\setlength{\biblabelsep}{0pt} % No space for these labels
 
 \title{Mandarin Chinese notes}
 \author{Jinyuan Wu}
@@ -210,7 +212,7 @@ TODO
 \subsection{Mandarin in the functional-typological tradition}
 
 Mandarin also gains much attention in the functional-typological tradition.
-\citet{li1989mandarin} is a ``functional'' reference grammar of Mandarin, TODO
+\citet{li1989mandarin} is a ``functional'' reference grammar of Mandarin, TODO: more references
 The reason for Mandarin's popularity seems to be the fact that 
 it breaks many previous typological generalizations about isolating languages and constituent orders
 \citep[\citechap{8}]{paul2014new}.
@@ -368,7 +370,14 @@ as many typologists may do.
 
 \section{Remarkable features of Mandarin}
 
-\subsection{Lack of morphology?}
+\subsection{The overwhelming influence of prosody}
+
+One distinct feature of Mandarin is its morphosyntax relies strongly on \emph{prosody} \citep{feng2000}. 
+Other components in phonology, strikingly, 
+doesn't have much influence on Chinese morphosyntax,
+and it will be largely skipped in this note.
+
+\subsection{Lack of word (and therefore morphology)?}
 
 Despite of lack of inflection
 and lack of contextual alternation of morphemes,
@@ -402,13 +411,6 @@ and therefore syntax and morphology:
 It's possible for a phrase to undergo 
 rearrangement without clear syntax motivation
 that usually happens within a word.
-
-\subsection{The overwhelming influence of prosody}
-
-One distinct feature of Mandarin is its morphosyntax relies strongly on \emph{prosody} \citep{feng2000}. 
-Other components in phonology, strikingly, 
-doesn't have much influence on Chinese morphosyntax,
-and it will be largely skipped in this note.
 
 \subsection{The so-called serial verb constructions}
 
@@ -480,7 +482,7 @@ In 副总经理,
 we have two prosodic words,
 副总 and 经理,
 while the morphosyntactic structure of the word is [[副] [总 [经理]]]
-(TODO: ref to what the structures are).
+(\prettyref{sec:pos.noun.adj-modify}).
 This is similar to the case in English and Latin poems,
 where the prosody arrangement of sentences does not have to respect word boundaries:
 \corpus{arma vi\textbar rumque ca\textbar no}.
@@ -501,6 +503,41 @@ Certain forms are therefore ruled out
 not by morphosyntactic reasons but for prosodic reasons.
 
 \section{Chinese characters}\label{sec:chinese-character}
+
+The preferred writing system of Mandarin is the Chinese character system.
+Except some characters made in early modern ages,
+like 兛 \translate{kilogram} or 砼 \translate{concrete (lit. human-labor stone)},
+a Chinese character corresponds to a syllable.
+However, Chinese characters don't just represent the sound.
+Putting some quirky cases aside,
+Chinese characters are often good indicators of morphemes
+(\prettyref{sec:pos.morpheme.primitive}).
+There are, for example, at least seven morphemes sounding \corpus{xi\={a}n},
+and there happens to be seven Chinese characters corresponding to each of them:
+仙, 先, 籼, 掀, 锨, 鲜, and 纤.
+
+Like all writing systems, 
+Chinese characters do not completely faithfully represent 
+the underlying linguistic structure.
+Some characters do not mean anything -- 
+they are simply the designated characters representing syllables 
+in certain polysyllabic morphemes.
+The character 萄 as in 葡萄, for example, 
+means nothing more than the syllable \corpus{t\'{a}o},
+but it only appears in the morpheme 葡萄 and 葡萄牙 \translate{Portuguese}.
+The same is for the character 葡.
+Some characters have regular morpheme meanings
+but also have merely phonetic meaning in certain words.
+The character 登 in 摩登 regularly means \translate{climb},
+but in the word 摩登, only its phonetic value \corpus{d\={e}ng} is preserved.
+Certain morphemes can be denoted by more than one character.
+The \ac{sfp} \corpus{ba} can be written as 吧 or 罢,
+the latter hinting its etymology but is now rarely used.
+Certain characters denote more than one morpheme.
+The character 会 may mean \translate{conference} or \translate{be able to do}. 
+
+Thus, Chinese characters provide clues on what is a morpheme,
+but they are not decisive \citep[1.1.4]{zhudexigrammar}.
 
 \chapter{Parts of speech}
 
@@ -539,16 +576,16 @@ of an utterance,
 finding the morphemes -- instead of grammatical words recognized in \prettyref{sec:pos.word} -- 
 is the first step.
 
-\subsubsection{Primitive morphemes}\label{sec:pos.morpheme.primitive}
+\subsubsection{Primitive content morphemes}\label{sec:pos.morpheme.primitive}
 
-Most native primitive morphemes 
+Most native primitive content morphemes 
 are monosyllabic, examples of which include 红, 大, 你, etc.
 (\prettyref{sec:pos.word.monosyllabic}).
-Polysyllabic primitive morphemes,
+Polysyllabic primitive content morphemes,
 like 葡萄, 巧克力, 哥斯达黎加 etc., 
 are mostly borrowed words
 in different historical stages.
-There do exist seemingly native polysyllabic primitive morphemes,
+There do exist seemingly native polysyllabic primitive content morphemes,
 like TODO: historical analysis of 轱辘, etc.
 
 Only a subset of the monosyllabic morphemes are able to serve as grammatical words.
@@ -570,12 +607,79 @@ nor does it undergo delimitative reduplication of verbs
     \end{xlist}
 \end{exe}
 
+It should be noted that bound morphemes are not a homogenous class.
+Specifically, that a unit contains a bound morpheme as its immediate constituent
+doesn't mean that unit is a grammatical word.
+\citet[\citesec{8.3.2}]{zhudexigrammar} notes that 
+despite 亏 is a bound morpheme and 饭 is a free morpheme,
+verb-object constructions 吃饭 and 吃亏 has largely similar morphosyntactic behaviors,
+in which the object 亏 may be modified just like any other \acs{np}, 
+as in 吃了个大亏.
+We can even move 亏 out of the verb-object structure
+and topicalize it (\prettyref{ex:pos.morpheme.chikui}; 
+\citet{zhudexigrammar} seems to be unaware of this fact).
+Thus, we reject the analysis given by \citet[\citesec{8.3.2}]{zhudexigrammar} himself
+that 吃亏 is a verb because it contains a bound morpheme, 
+and conclude that 吃亏 is to be regarded 
+as a usual \acs{vp},
+enjoying the same status of 吃饭.%
+\footnote{
+    Still, this doesn't answer the question whether disyllabic verb-object structures 
+    have something significantly different 
+    from longer verb-object structures. TODO
+}
+Cross-linguistically, 
+it's quite common for some words to appear mainly in idioms, 
+but this doesn't mean syntactically
+these idioms are words.
+
+\begin{exe}
+    \ex\label{ex:pos.morpheme.chikui} \begin{xlist}
+        \ex 我吃了这个亏
+        \ex 这个亏我今天吃了
+    \end{xlist}
+\end{exe}
+
+The boundary between free and bound primitive content morphemes 
+seems to vary among registers and conversational context. 
+(\prettyref{ex:pos.morpheme.kui-2}) is usually not acceptable,
+but if the idiom \acs{vp} 吃亏 has appeared frequently enough, 
+it gradually becomes acceptable.
+(And in this case, the fact that 亏 usually doesn't appear as a noun 
+even has a focusing effect.)
+(\prettyref{ex:pos.morpheme.quan}) is not acceptable in daily conversation,
+because the morpheme 犬 is usually a bound morpheme 
+and should be displaced by the more colloquial 狗.
+The sentence however is perfectly fine in 
+a police officer's recollection of a detective story involving K-9 dogs.
+Thus the professional background licenses 犬 as a free morpheme.
+
+\begin{exe}
+    \ex\label{ex:pos.morpheme.kui-2} 
+    ? 这个亏让我记了一辈子
+    \ex\label{ex:pos.morpheme.quan} 
+    ? 当时我的犬发现现场的气味有点不对劲
+\end{exe}
+
+\begin{infobox}{The notion of \term{free morphemes}}{free-morpheme}
+    Free morphemes are morphemes that can be words themselves.
+    Of course, this involves the question what is a word. 
+    We will see 
+
+    Another definition seen in \citet[\citesec{1.1.2}]{zhudexigrammar}
+    is that a free morpheme is a morpheme that may appear as an utterance.
+    This definition contradicts with other discussions in \citet{zhudexigrammar},
+    because most function words never appear as a single utterance.
+    So this definition shouldn't be taken seriously.
+\end{infobox}
+
 An overwhelmingly portion of polysyllabic morphemes 
 are able to constitute one-morpheme word and also one-word phrase.
 There exist however a small number of polysyllabic morphemes 
 that seem to be unable to be words themselves. 
 The root 日耳曼 (from \corpus{German}) 
-appears in compound nouns like 日耳曼人 or 日耳曼血统, 
+appears in compound nouns like 日耳曼人 \translate{Germanic people} 
+or 日耳曼血统 \translate{Germanic descent}, 
 but almost never appears as a noun itself; 
 similarly, 达达 in 达达主义 also never appears as a word itself.
 
@@ -585,15 +689,46 @@ A lot of words have internal structures parallel to
 those observed in syntax \citep[\citesec{2.6}]{zhudexigrammar},
 but the structures have already completely fossilized, 
 so they may be synchronically regarded as containing only one morpheme.
+
 A completely fossilized structure 
 may be historically created with an obsolete syntactic device, 
 or be not in the expected part of speech inferred from its etymological
 (i.e. it appears in syntactic environments that are not expected 
 for its inner structure).
-
-The word 例如 \translate{an example is like \dots}
+The verb 关心 has an internal verb-object structure, 
+but is able to take an object.
+Since well-attested double object constructions in Mandarin
+are all unable to cover this usage,
+we conclude 关心 has already been fossilized into one single synchronic morpheme.%
+\footnote{
+    It's still possible for 关心 to be split, 
+    but this happens without considering the internal structure of the verb
+    (\prettyref{sec:verb-splitting}).
+}
+Some words with fossilized phrasal origin 
+contain gap inside, 
+indicating that at some early stages 
+they were parts of formulaic speeches 
+and were later reanalyzed as words.
+The word 例如 \translate{for example}
 is a connective adverb, 
-but it has a subject-predicate with a gap.
+but it has a subject-predicate with a gap,
+and likely arose from a reanalysis of the formula 
+[[例]_{\text{subject}} 如 [\dots]_{\text{object}}]_{\text{clause}}
+\translate{an example is like \dots}.
+This also explains why it appears predominantly at the start of a clause.
+
+\begin{theorybox}{No generative rule in the lexicon}{no-generative-rule-lexicon}
+    Those insisting on a universal word-phrase distinction 
+    may say ``fossilized structures are assembled in the lexicon before syntax''.
+    The position of this note, however, is if something is assembled synchronically,
+    then it has to have something to do with syntax:
+    syntax is the only productive engine.
+    If a morphological device is completely invisible to the rest of the grammar,
+    it is likely to have lost productivity and becomes historical; 
+    its products are therefore synchronically morphemes, 
+    instead of words with inner structures.
+\end{theorybox}
 
 \subsubsection{Abbreviation}\label{sec:pos.morpheme.abbreviation}
 
@@ -613,18 +748,6 @@ and trisyllabic abbreviations also exist.
 The majority of them are three-morpheme coordination structures like 数理化, 
 which is the abbreviation of 
 数学物理化学 \translate{math, physics, and chemistry}.
-
-\begin{theorybox}{No generative rule in the lexicon}{no-generative-rule-lexicon}
-    Those insisting on a universal word-phrase distinction 
-    may say ``fossilized structures are assembled in the lexicon before syntax''.
-    The position of this note, however, is if something is assembled synchronically,
-    then it has to have something to do with syntax:
-    syntax is the only productive engine.
-    If a morphological device is completely invisible to the rest of the grammar,
-    it is likely to have lost productivity and becomes historical; 
-    its products are therefore synchronically morphemes, 
-    instead of words with inner structures.
-\end{theorybox}
 
 \subsubsection{Function items and semi-function items} 
 
@@ -659,7 +782,7 @@ than it's a bound function morpheme.
 But there seems to be no particularly strong correlation 
 between whether a function item is grammatically a function word
 and whether it is phonologically a word: 
-a suffix in a long grammatical word can be a phonological word (TODO: Basque example?), 
+a suffix in a long grammatical word can be a phonological word, 
 while a function item, like the Latin \corpus{-que}, that is an immediate constituent of a phrase 
 may be glued to another phonological word. 
 In general, the meaning of \term{function word} is not well-defined, 
@@ -709,6 +832,8 @@ and their exact status is of no descriptive and comparative interest.
 
 \subsection{The existence of words as mini-constituents}\label{sec:pos.word}
 
+\subsubsection{Comparing grammatical wordhood and phonological wordhood}\label{sec:pos.word.phonological}
+
 A question causing endless controversy and confusion 
 is ``what is a word''. 
 \ac{blt} spends a whole chapter (\citechap{10}) on this topic.
@@ -718,29 +843,35 @@ with no level of grammatical words.
 This claim is factually flawed, 
 since in Chinese, there \term{are} distinction between 
 productive morphemes and words.
-What should be noted are the split between phonological words and grammatical words % TODO: ref
-and the subtleties concerning word-phrase distinction. % TODO: 类似于幽了他一默这种形态变化导致词变成短语
+What should be noted are
+that demarcation of phonological words does not always follow morphosyntactic structures
+(\prettyref{sec:prosody-structure}),
+and that there are subtleties concerning word-phrase distinction. 
 These are introduced in the following sections.
-
-\subsubsection{Monosyllabic words}\label{sec:pos.word.monosyllabic}
-
-Some words 
-TODO: 蛇、雨
-
-\subsubsection{Linking prosodic words to morphosyntactic words}\label{sec:pos.word.phonological}
 
 We expect a grammatical word to be a mini-constituent, 
 which is therefore easily subject to conventionalization, 
-and has limited interaction with the syntactic environment 
-(although definitely not absolutely no interaction -- 
+and has limited interaction with the syntactic environment,
+although definitely not absolutely no interaction -- 
 even in English, we have things like \corpus{pre- and post-processing}, 
 in which a phrasal structure -- coordination -- interacts 
 with the inner structures of two bare nouns, 
 and therefore a clear boundary between word or phrase 
-or between morphology and syntax is in principle impossible 
-(\prettyref{sec:pos.morpheme-to-clause.blur-line-word-phrase})).
+or between morphology and syntax is in principle impossible.
+Thus, comparing morphosyntactic levels 
+and \emph{phonological} wordhood 
+may be a good idea for us to draw a boundary 
+between words and phrases.
+This boundary has no significance in morphosyntactic analysis, 
+but since a definition of wordhood 
+that uses both morphosyntactic and phonological standards 
+often agrees with native speakers' intuition 
+about the smallest unit in natural (i.e. non-linguistic, not in language games, etc.) conversation,
+which strongly influences how new words are created 
+or how borrowing happens, etc. (\prettyref{sec:pos.word.perception}).
 
-A phonological word (\prettyref{sec:prosody-structure})
+A phonological word,
+which in Mandarin is defined by prosody (\prettyref{sec:prosody-structure}),
 may be a single-morpheme with a definite part of speech tag (\prettyref{sec:pos.morpheme}),
 like 幽默 and relatively rare trisyllabic cases like 加拿大,
 or a mini-constituent 
@@ -751,55 +882,68 @@ the constituency-based analysis is not a grammatical unit
 but does package highly related items
 (\prettyref{sec:pos.architecture.word-confusing.constituent}), 
 like 交给 (TODO: ref: verbal complex).
-But of course it's possible that a phonological word 
+It's of course possible that a phonological word 
 has no morphosyntactic significance at all.
 
-This then raises the question
+The next question is 
 whether all prosodic words that are also morphosyntactic units 
 are small enough, 
 or some of them are actually phrases.
-This question can never be answered satisfactorily 
-(\prettyref{sec:pos.morpheme-to-clause.blur-line-word-phrase}).
-The observed fact that the morphosyntactic interpretations of phonological words 
+This question is hard to answer for 
+disyllabic verb-object constructions,
+but the tentative conclusion of this note 
+is they can be regarded as grammatical words
+(\prettyref{sec:pos.verb.idiomatic-verb-object}).
+In other cases, prosodic words with morphosyntactic significance
 are all small units and either have conventionalized meanings 
-or are unable to be extended infinitely
-urges me to use the term \term{grammatical words} for them,
-although the definition of the latter is admittedly subjective,
-although the hierarchical structure of the grammar reflected by the definition(s) is not.
-Indeed, sometimes it's the phonological wordhood 
-that settles down 
-whether a sequence is recognized as a word in everyday use or not
+or are unable to be extended infinitely.
+Thus, I recognize them as \term{grammatical words},
+fixing the boundary between words and phrases in a way 
+that is somehow subjective but consistent with 
+the standard employed in many other world languages
 (\prettyref{sec:pos.architecture.word-confusing.constituent}).
 
-There are also non-prosodic words in Mandarin,
-including polysyllabic words like 哥斯达黎加 
+There are also non-prosodic grammatical words in Mandarin,
+including monosyllabic words and polysyllabic words like 哥斯达黎加 
 (\prettyref{sec:pos.morpheme.primitive})
 and complex non-prosodic words like 
 总工程师 (\prettyref{sec:pos.word.complex}).
 Thus I call prosodic words with morphosyntactic significance \concept{morphosyntactic prosodic words}.
+
+\subsubsection{Monosyllabic words: grammatical words, but not prosodic words}\label{sec:pos.word.monosyllabic}
+
+As is said in \prettyref{sec:pos.morpheme.primitive}, 
+some -- although by no means all -- monosyllabic morphemes 
+are free morphemes and
 
 \subsubsection{Disyllabic mini-constituent words}\label{sec:pos.architecture.word.mini-constituent}
 
 There are disyllabic units in Chinese 
 that have conventionalized meanings and its inner structure is invisible 
 to any other morphosyntactic rules 
-(\prettyref{sec:pos.noun.fossilized-structure}).
+(\prettyref{sec:pos.morpheme.fossilization},
+\prettyref{sec:pos.noun.fossilized-structure},
+\prettyref{sec:pos.verb.fossilized-structure}).
+Other disyllabic word are made up by two morphemes with a synchronically available device.
+
+A controversy is whether some disyllabic prosodic words that have morphosyntactic significance
+are actually phrases,
+in which the two syllables may be analyzed 
+as two grammatical words
+instead of two morphemes or two meaningless syllables.
+This is usually not the case for nouns, 
+but is indeed true for verbs
+(\prettyref{sec:pos.verb.idiomatic-verb-object}).
 Examples of them include 念佛, 军训, 体操 etc. 
 
-Many of these disyllabic word are made up by two morphemes with a synchronically available device.
-Thus, the two morphemes may be analyzed as both grammatical words and morphemes.
 Then it's possible that the morphosyntactic prosodic word can be extended into a phrase 
 by inserting more phrasal dependents 
 or by adjoining modifiers to one of the two morphemes.
-This is usually not the case for nouns, 
-but is indeed true for verbs
-(\prettyref{sec:pos.verb.fossilized}), 
-raising questions concerning their wordhood.
 But note that similar processes are possible even for 
 disyllabic verbs without analyzable inner structures,
 which are surely grammatical words (\prettyref{sec:verb-splitting}).
 
-\subsubsection{Prosodic words with questionable constituenthood}\label{sec:pos.architecture.word-confusing.constituent}
+\subsubsection{Psosodic words with semi-inflection}\label{sec:pos.architecture.word-confusing.constituent}
 
 The standard for a constituent varies,
 and so does the definition of a mini-constituent.
@@ -817,7 +961,7 @@ in practice we refrain from doing so
 because \corpus{explored} is a \emph{phonological} word 
 (\prettyref{sec:pos.word.phonological}),
 and this urges us to recognize it also as a morphosyntactic unit
-(essentially, by redefining what is a unit).
+(essentially, by \emph{redefining} what is a unit).
 The longer sequence \corpus{have explored} 
 has a parallel structure, 
 but is not a phonological unit, 
@@ -833,7 +977,7 @@ The definition of the term \term{word}
 therefore in principle carries no assertion regarding 
 the nature of the language in question; 
 we do need to choose the definition carefully enough, though, 
-to avoid confusing people.
+to avoid possible confusion.
 
 In Mandarin, although prototypical inflection is absent, 
 in verbal complement constructions 
@@ -845,7 +989,7 @@ What is the status of 爬上 in 他笨手笨脚地爬上信号塔?
 A word (created by a productive verb compounding rule), 
 a phrase (a verb-complement structure),
 or just a word sequence without structural significance?
-Here I follow the opinion in \citep[\citepage{86}]{feng2000} and \citep{tham2015resultative}
+Here I follow the opinion in \citep[\citepage{86}]{feng2000} and \citet{tham2015resultative}
 and call it a word,
 because a sequence like 爬上 is extended in a highly limited way 
 (the only possibilities being 爬得上 and 爬不上),
@@ -884,30 +1028,6 @@ but it has already gained a fixed meaning
 and its parts are never taken out,
 despite both 美利坚 and 合众国 can serve as grammatical words.
 
-\subsection{The blurred boundary between words and phrases}\label{sec:pos.morpheme-to-clause.blur-line-word-phrase}
-
-\subsubsection{Fossilized phrasal structures}\label{sec:pos.morpheme-to-clause.fossilized}
-
-One peculiar feature of Chinese is 
-grammatical relations in morphology often have syntactic counterparts,
-with the same constituent order
-(\prettyref{sec:pos.verb.fossilized}).
-Some still have synchronically analyzable inner structures, as in 念佛,
-while others have already lose inner structures (as in [关心]她, 
-where 关系 has collapsed into a single morpheme synchronically).
-
-\subsubsection{Splitting of word}
-
-One thing that makes the concept of word somehow puzzling 
-is even words \emph{without} synchronically morphosyntactic internal structures 
-can sometimes be split and extended
-with phrasal dependents injected,
-though not everyone will accept such usages.
-The only attested case is in the clause structure, 
-where the main verb may be split or ionized into two parts
-(\prettyref{sec:verb-splitting}),
-even when the verb does \emph{not} have a inner verb-object structure
-(\prettyref{sec:pos.verb.fossilized}).
 
 \subsection{Phrases}
 
@@ -926,8 +1046,6 @@ and thus are able to be used as one-word phrases,
 though they themselves are not sufficient to build one-word predicate \ac{vp}s. TODO: really???
 Certain grammatical words,
 like some verbal complement structures 
-recognized as grammatical words (\prettyref{sec:pos.architecture.word-confusing.constituen}),
-are not phrases on their own.
 
 \begin{exe}
     \ex\label{ex:transitive-verb-phrase-disyllabic} 
@@ -982,7 +1100,7 @@ and therefore they may say it's a phrase
     \input{tables/pos-size.tex}
 \end{sidewaystable}
 
-\subsection{Perception of basic units in Mandarin}
+\subsection{Perception of basic units in Mandarin}\label{sec:pos.word.perception}
 
 In English there is a group of clearly defined and largely homogenous morphosyntactic units 
 lying between morphemes and phrases
@@ -995,7 +1113,7 @@ the length of an article is measured by counting words, not letters, for example
 
 In Chinese, however, despite the fact that 
 we can still identify grammatical words,
-that grammatical words have much larger overlapping with morphemes and phrases
+the much larger overlap between grammatical words and morphemes and phrases
 means Chinese characters -- representation of syllables in polysyllabic morphemes 
 and rough representation of monosyllabic morphemes -- 
 are recognized as basic units of the language.
@@ -1182,6 +1300,13 @@ but is regarded as a pre-compiled phrase. TODO:
 
 \subsection{Compound nouns}\label{sec:pos.noun.compound}
 
+From \eqref{ex:nominal-modifier-1} and \eqref{ex:nominal-modifier-2},
+it can be seen in certain morphosyntax units,
+a bare noun may serve as a (restrictive) modifier.
+The constituent of Chinese \ac{np}s is Dem Num A N,
+and this bare noun modifier position seems to be more internal than the adjective position,
+as is illustrated by \eqref{ex:meiguo-hongse-pinguo} and \eqref{ex:hongse-meiguo-pinguo}.
+
 \begin{exe}
     \ex 
     \begin{xlist}
@@ -1191,12 +1316,7 @@ but is regarded as a pre-compiled phrase. TODO:
         \ex\label{ex:hongse-meiguo-pinguo} 红色的美国苹果
     \end{xlist}
 \end{exe}
-From \eqref{ex:nominal-modifier-1} and \eqref{ex:nominal-modifier-2},
-it can be seen in certain morphosyntax units,
-a bare noun may serve as a (restrictive) modifier.
-The constituent of Chinese \ac{np}s is Dem Num A N,
-and this bare noun modifier position seems to be more internal than the adjective position,
-as is illustrated by \eqref{ex:meiguo-hongse-pinguo} and \eqref{ex:hongse-meiguo-pinguo}.
+
 Furthermore, the bare noun position cannot be filled by an \ac{np}.
 The following examples demonstrate this:
 \begin{exe}
@@ -1211,11 +1331,20 @@ It cannot fill the slot of 美国 in 美国苹果.
 So the bare noun modifier position is a function label existing in a unit smaller than the \ac{np}
 -- and it has to be the word.
 
+The modifier position can also be filled by 
+a disyllabic 
+
+\begin{exe}
+    \ex 染发行业
+    \ex *染头发行业
+\end{exe}
+
+\subsection{Adjectival modification in complex noun}\label{sec:pos.noun.adj-modify}
+
 \section{Verbs}
 
-\subsection{Verbs that are fossilized verb-object structures}\label{sec:pos.verb.fossilized}
+\subsection{Verbs with fossilized internal structures}\label{sec:pos.verb.fossilized-structure}
 
-Verbs, for example, may have inner predicator-object structures.
 The verb 关心 \translate{care for} is certainly analyzable 
 as a predicator-object structure,
 but it takes objects just like any other verbs:
@@ -1224,17 +1353,28 @@ but it takes objects just like any other verbs:
 \end{exe}
 This means 关心 is not a VP but a grammatical word,
 or otherwise it is impossible to take another object since there is no valency changing device in use.
-The verb 关心 itself poses no threat to the word-phrase distinction,
-but certain examples of these ``words with internal syntax'' can be tested to be words,
-while they indeed have phrasal counterparts.
-Compare the two examples below:
-\begin{exe}
-    \ex 
-    \begin{xlist}
-        \ex\label{ex:nianfo-tang} {} [念佛] 堂 
-        \ex\label{ex:nianfo-split} 老太太 [念了这么久佛]_{\text{VP1}}，却不知道自己在[念哪一尊佛]_{\text{VP2}}
-    \end{xlist}
-\end{exe}
+
+\subsection{Idiomatic disyllabic verb-object structures}\label{sec:pos.verb.idiomatic-verb-object}
+
+Unlike the case of \prettyref{sec:pos.verb.fossilized-structure}, 
+there exist some disyllabic prosodic words 
+which are verbal constituents 
+and are often recognized as words. 
+Examples of them include 看书, 做饭, etc.
+These disyllabic verb-object structures 
+behave just like ordinary \acs{vp}s 
+when the object is modified by, say, adjectival or nominal attributives;
+when a semi-object is inserted between the verb and the object,
+they also follow the same pattern observed in 
+ordinary \acs{vp}s (\prettyref{sec:verb-phrase.ionization.similar}).
+However, disyllabic verb-object structures 
+do seem to have one thing different with longer \acs{vp}s:
+they can appear in compound nouns,
+while the latter can't (\prettyref{sec:pos.noun.compound}).
+Thus, the morphosyntactic tests outlined in this note decide 
+that they are both words and phrases.
+
+(\prettyref{ex:pos.verb.verb-object.nianfo-1}) gives an example of this duality.
 The verb 念佛 in the first example is similar to 美国 in \eqref{ex:nominal-modifier-2}:
 it serves as a bare modifier 
 (since in Chinese verbal constituents can fill argument slots directly,
@@ -1245,20 +1385,24 @@ Then consider \eqref{ex:nianfo-split}.
 In VP1, a temporal semi-object is injected between the verb 念 and the object 佛,
 while in VP2, an interrogative phrase 哪一尊 is inserted into 佛 
 and an \ac{np} object is now taken by the verb 念.
-So here is the problem:
-what if 念佛 is \emph{always} a VP,
-and what \eqref{ex:nianfo-tang} demonstrates is 
-the bare noun (or verb) modifier may be sometimes filled by a phrase?
 
-One solution -- the solution taken by \citet[\citesec{1.2.6}]{zhudexigrammar} -- 
+\begin{exe}
+    \ex\label{ex:pos.verb.verb-object.nianfo-1}
+    \begin{xlist}
+        \ex\label{ex:nianfo-tang} {} [念佛] 堂 
+        \ex\label{ex:nianfo-split} 老太太 [念了这么久佛]_{\text{VP1}}，却不知道自己在[念哪一尊佛]_{\text{VP2}}
+    \end{xlist}
+\end{exe}
+
+The solution used in this note 
 is to regard 念佛 in \eqref{ex:nianfo-tang} as a word,
 while the two \acs{vp}s in \eqref{ex:nianfo-split} as phrases.
 念佛 as in 老太太经常念佛 can be interpreted as a word or as a phrase
 without making any difference.
 念佛 as a word is something like \corpus{Buddha-praying},
 while 念佛 as a verb is something like \corpus{pray to Buddha}.
-In the account of \citet[\citepage{82}]{feng2000},
-念佛 is a morphosyntactic word
+This agrees with the account of \citet[\citepage{82}]{feng2000},
+in which 念佛 is a morphosyntactic word
 (the original term being a 句法词 \translate{syntactic word}),
 which is created by morphosyntactic rules 
 and has a inner structure that is (partially) transparent 
@@ -1268,22 +1412,48 @@ while 关心 is a \translate{lexical word}
 which means words that are not a part of the grammar),
 which is taken out of the lexicon directly
 and has no synchronically analyzable inner structure.
-This also seems to be the analysis of \cite{zhudexigrammar}, 
-although less explicitly: 
-he recognizes three classes of grammatical structures, 
-组合式 \translate{composition-style}, 粘合式 \translate{gluing-style}, 
-and 复合词式 \translate{compound word-style},
-the first two being syntactic while the last class being morphological
-(\citesec{2.6.1})
-while recognizing that sometimes it's hard to draw a line between the latter two 
-(\citepages{128-129}). 
-A gluing-up-style structure, in his definition, 
-seems to be a regularly formed structure 
-containing elements smaller than usual phrases 
--- bare grammatical words? --
-and yet is a phrase itself,
-while a compound structure is within a grammatical word.
-So in this way a 
+This also agrees with the claim in \prettyref{sec:pos.word.phonological}
+that all prosodic words with morphosyntactic significance 
+are indeed grammatical words 
+and not phrases.
+
+\begin{infobox}{Notes on one previous analysis}{zhu-verb-object-idiom-analysis}
+    The solution here is a generalization of 
+    the solution taken by \citet[\citesec{1.2.6}]{zhudexigrammar}.
+    \citet{zhudexigrammar} recognizes three classes of grammatical structures, 
+    组合式 \translate{composition-style}, 粘合式 \translate{gluing-style}, 
+    and 复合词式 \translate{compound word-style}.
+    (TODO: ref) 
+    A gluing-up-style structure, in his definition, 
+    seems to be a regularly formed structure 
+    containing elements smaller than usual phrases 
+    -- bare grammatical words? --
+    and yet is a phrase itself,
+    while a compound structure is within a grammatical word.
+    Thus, in his analysis, 
+    吃饭 and 念佛 are gluing-up structures 
+    and are phrases. 
+    This analysis is based on the idea that 
+    if a structure contains a bound morpheme as one of its immediate constituent, 
+    it has to be a grammatical word, 
+    while if a structure contains free morphemes 
+    and doesn't have a highly established meaning, 
+    then it has to be a phrase; 
+    the first idea has been refuted in \prettyref{sec:pos.morpheme.primitive}, 
+    while the second idea confuses 
+    the parameter of syntactic size 
+    and the parameter of established meaning, 
+    which are almost orthogonal to each other. 
+    So his analysis is not valid, 
+    and his gluing-up structure should be merged with 
+    the compound word structure
+    (but we need to note that in the context in this box, 
+    the term \term{compound word}
+    refers to words with synchronically analyzable internal structures, 
+    \emph{not} words in \prettyref{sec:pos.verb.fossilized-structure}).
+    Indeed, he recognizes that the syntactic behaviors of the two are highly close to each other 
+    (\citepages{128-129}).
+\end{infobox}
 
 \section{Locational words}\label{sec:pos.locational}
 
@@ -1329,17 +1499,32 @@ Dem-Num-A-N type,
 with the classifier residing between Num and A. 
 
 
-\chapter{The verbal complex}\label{chap:verbal-complex}
+\chapter{The verbal complex and the verb phrase}\label{chap:verbal-complex}
 
 \section{Introduction}
 
+\subsection{The verbal complex}
+
 Mandarin is generally regarded as a prototypical analytic language,
-without traditionally acknowledged verb inflections.
-Indeed it will be weird to posit something like a paradigm in Mandarin,
-but it doesn't mean there is no such thing as verbal affixation that are active
-in the morphosyntax 
-(instead of not fully productive and arguably historical derivations).
-Some items involved here however may have partial mobility.
+without traditionally acknowledged verb inflections,
+but several highly productive (as opposed to arguable historical derivation) 
+verbal affixation devices have been attested.
+I use the term \term{verbal complex} to cover 
+the main verb and the suffixes.
+
+There are roughly three subsystems in the verbal complex.
+The first is the uncontroversial derivation system,
+like 化 \translate{-ize}.
+The second is the verbal complement system,
+which includes three subsystems:
+the resultative complements, the directional complements, 
+and the potential complements (\prettyref{sec:verbal-complement}).
+The third is the aspectual system (\prettyref{sec:aspectual}).
+
+The linear order between the aspect marker and the verbal complement, if any, 
+is not completely fixed \eqref{ex:movable-suffix}.
+This means verbal complements have limited mobility and therefore are not strictly affixes.
+
 Consider \eqref{ex:movable-suffix}:
 In the first sentence, 
 了 is an aspectual suffix (\prettyref{sec:aspectual}),
@@ -1366,18 +1551,6 @@ in which 过来 moves to the end of the sentence.
     \label{ex:movable-suffix}
 \end{exe}
 
-To avoid the useless quarrelling about what is a word and whether a grammar point is morphology
-(which isn't that important in non-lexicalist generative theories, anyway),
-I use the term \term{verbal complex} to cover 
-the main verb and the  ``suffixes'' in \eqref{ex:movable-suffix}.
-There are roughly three systems in the verbal complex.
-The first is the uncontroversial derivation system,
-like 化 \translate{-ize}.
-The second is the verbal complement system,
-which includes three subsystems:
-the resultative complements, the directional complements, 
-and the potential complements (\prettyref{sec:verbal-complement}).
-The third is the aspectual system (\prettyref{sec:aspectual}).
 
 \begin{infobox}{On the notion of \term{complements}}{complement-name}
     The Chinese term 补语 corresponding to my \term{verbal complement}
@@ -1409,7 +1582,7 @@ that verb shouldn't be too heavy unless it appears at the end of a clause
 
 Besides the systems shown in \eqref{ex:hua-wan-le-1},
 the separation of a verb further complicates the behavior of the verbal complex 
-(\prettyref{sec:separable-verbs}).
+(\prettyref{sec:verb-splitting}).
 
 You may note the so-called serial verb constructions aren't mentioned here.
 \citet{paul2008serial} and \citet[\citesec{9.4}]{deng2010formal} 
@@ -1420,7 +1593,6 @@ they can all be described in terms of the usual complement clause constructions,
 purpose clause constructions, etc. 
 that are well attested cross-linguistically (\prettyref{sec:no-serial-verb}).
 
-\section{Verbal derivations}
 
 \section{Verbal complements}\label{sec:verbal-complement}
 
@@ -1454,10 +1626,137 @@ or otherwise we are unable to explain why
 in the first example, 着 can never appear, 
 while in the second example, 着 can appear.
 
-\section{Separable verbs}\label{sec:separable-verbs}
+\section{Semi-objects and verb ionization}\label{sec:verb-splitting}
 
-It's sometimes possible to split a verb and inject some clausal dependents into it.
-The interaction between this separation operation and the structure of the verbal complex is of some interest.
+\subsection{Types of verb ionization structures}
+
+It's sometimes possible to split a verb 
+and inject some clausal dependents into it
+(\prettyref{ex:junwanlexun}, \prettyref{ex:youmo}, \prettyref{ex:guanshenmexin}).
+This phenomenon is known as 
+\concept{verb separation} or \concept{verb ionization} \citet[\citesec{6.5.8}]{chao1965grammar}.
+The injected clausal dependent is usually 
+a resultative complement (\prettyref{ex:junwanlexun}) 
+or a semi-object
+(\prettyref{ex:guanshenmexin}, \prettyref{ex:verb-phrase.separation.xuexi}), 
+but in marginal cases, 
+an object personal pronoun is also possible
+beside a short semi-object (\prettyref{ex:guanshenmexin}). 
+
+\begin{exe}
+    \ex\label{ex:junwanlexun} 
+    \gll \% [军 完 了 训]_{\text{\acs{vp}}} 以后 才 可以 去 请 护照 \\
+    {} military finish \category{asp} training after only.after(TODO) can go ask.for passport \\
+    \glt \translate{(We) can only apply for a passport after finishing military training.} 
+    \citet[\citesec{6.5.8}]{chao1965grammar}
+    \ex\label{ex:youmo} \% 还 [幽了他一默]_{\text{\acs{vp}}}
+    \ex\label{ex:guanshenmexin} 这件事情你 [关什么心]_{\text{\acs{vp}}} 啊
+    \ex\label{ex:verb-phrase.separation.xuexi} 我[学了两个小时的习]_{\text{\acs{vp}}}
+\end{exe}
+
+Whenever a semi-object is inserted, 
+the resulting structure is uncontroversially an \acs{vp}
+(\prettyref{ex:youmo}, \prettyref{ex:guanshenmexin}, \prettyref{ex:verb-phrase.separation.xuexi}).
+Insertion of a resultative complement 
+seems to be only available when the verb is intransitive,
+so the resulting structure is also an \acs{vp} on its own.%
+\footnote{
+    And therefore whether 军完了训 is directly a \ac{vp} or is first a verb complex 
+    and then a \ac{vp} is not of much importance.
+}
+It's usually possible to move the inserted constituent out
+(\prettyref{ex:verb-phrase.separation.junxun-2},
+\prettyref{ex:verb-phrase.separation.guanxin-2},
+\prettyref{ex:verb-phrase.separation.xuexi-2}), 
+except in (\prettyref{ex:youmo}, TODO: general condition).
+When this is possible, 
+the resulting structure has exactly the same meaning 
+with the verb separation structure.
+
+\begin{exe}
+    \ex\label{ex:verb-phrase.separation.junxun-2} 军训完了以后才可以去请护照
+    \ex\label{ex:verb-phrase.separation.guanxin-2} 这件事你关心什么啊
+    \ex\label{ex:verb-phrase.separation.xuexi-2} 我学习了两个小时
+\end{exe}
+
+\subsubsection{Motivation of verb ionization}
+
+The splitting of the verbs clearly origins 
+by analogy with \ac{vp}s containing morphosyntactic words.
+军完了训 is apparently created by analogy with 
+[[吃完了]_{\text{predicator:verb complex}} [饭]_{\text{object:N}}]_{\text{VP}}.
+The motivation of this analogy seems to be prosody: 
+splitting words into phrases is only observed in \ac{vp}s,
+and \ac{vp}s are subject to the prosodic constraint 
+that the neither the verb nor the final complement can be too light.
+Splitting the verb may help to reduce the ``weight'' of the verb 
+so the resulting utterance meets the prosodic constraint better.
+
+The phenomenon of verb ionization
+looks just like infixing,
+in which a word is split even when it has no analyzable morphosyntactic inner structure.
+Here, however, this infixing operation creates an \acs{vp} instead of a grammatical word.
+This justifies the assumption taken at the end of \prettyref{sec:theory}
+that there is no clear boundary between words and phrases 
+and therefore syntax and morphology:
+It's possible for a phrase to undergo 
+rearrangement without clear syntax motivation
+that usually happens within a word.
+
+\begin{theorybox}{The two faces of the term \term{morphology}}{morphology-meaning}
+    When the term \term{morphology} is used, 
+    people use it to refer to two things:
+    the first is what happens within a grammatical word, 
+    the second is phenomena that involve high localized
+    operations that don't look like syntax 
+    but are also not prototypically phonological on the other hand. 
+    
+    Verb ionization involves 
+    splitting a word,
+    and is therefore of course morphological (in a highly non-trivial way)
+    in the second sense.
+    However, what is injected in after splitting the verb are phrasal dependents 
+    and the resulting morphosyntactic unit is a phrase,
+    so verb ionization is syntactic and not morphological in the first sense.
+    What I want to emphasize here is surface realization of a unit 
+    and its abstract constituency/dependency structure
+    may be not always the same, 
+    although the latter strongly influences the former.
+\end{theorybox}
+
+\subsubsection{Comparison with similar constructions}\label{sec:verb-phrase.ionization.similar}
+
+It should be noted that some so-called verb ionization examples 
+seem to be analyzable as 
+trivially extending the object: 
+compare 看书 and 看了三本书.
+Some verbs with verb-object inner structures 
+contain an internal object that usually doesn't appear as a full \acs{np}, 
+but that is not absolute: 
+洗了一个舒服的澡 and 一个舒服的澡对睡眠有好处.
+These constructions are excluded from the category of verb ionization,
+although as is shown above, 
+they may historically motivate the emergence of verb ionization.
+
+Other verbal items that are prosodic words
+seem to be extendable by 
+both modification within the object 
+and verb ionization.
+The prosodic word 念佛 may be extended into 念阿弥陀佛 (extending the object)
+as well as 念三声佛 (inserting a semi-object, verb ionization).
+This happens for 染发 as well: 
+we have both 染了一头蓝发 (extending the object) 
+and 染了一次头发.
+Since the semi-object can also intervene
+between the verb and the direct object in uncontroversial \acs{vp}s 
+(\prettyref{ex:verb-phrase.separation.nianfo-full-vp}), 
+it seems disyllabic (and therefore prosodic) verb-object structures 
+have the same behaviors with 
+longer verb-object structures.
+
+\begin{exe}
+    \ex\label{ex:verb-phrase.separation.nianfo-full-vp} 老太太念了十多年的阿弥陀佛，却说不清阿弥陀佛是谁
+\end{exe}
 
 \chapter{Verb and arguments}
 
@@ -1612,63 +1911,6 @@ the sentence is again ruled out. % TODO: ref
 
 \subsection{There is no serial-verb construction or complex predicate}\label{sec:no-serial-verb}
 
-\section{Splitting of the verb}\label{sec:verb-splitting}
-
-\citet[\citesec{6.5.8}]{chao1965grammar} records the first two non-standard examples of the phenomenon
-in the follows,
-while the third example is more widely accepted:
-\begin{exe}
-    \ex\label{ex:word-splitting} \begin{xlist}
-        \ex\label{ex:junwanlexun} \% [军完了训] 以后才可以去请护照
-        \ex\label{ex:youmo} \% 还 [幽了他一默]
-        \ex\label{ex:guanshenmexin} 这件事情你 [关什么心] 啊
-    \end{xlist}
-\end{exe}
-The bracketed constituents in \eqref{ex:youmo} and \eqref{ex:guanshenmexin} 
-are both uncontroversially \acs{vp}s:
-\eqref{ex:youmo} contains the object 他 and a temporal semi-object 一, % TODO: ref
-while in \eqref{ex:guanshenmexin}, 什么心 as an \ac{np} is the object.
-The splitting of the verbs clearly origins 
-by analogy with \ac{vp}s containing morphosyntactic words 
-The bracketed constituent in \eqref{ex:junwanlexun} is equivalent to 军训完了,
-the latter being a verb complex, % TODO: ref
-but 军完了训 is apparently created by analogy with 
-[[吃完了]_{\text{predicator:verb complex}} [饭]_{\text{object:N}}]_{\text{VP}}.
-Anyway, whether 军完了训 is directly a \ac{vp} or is first a verb complex 
-and then a \ac{vp} is not of much importance:
-similar construction never when an object is present.
-What can be seen from \eqref{ex:word-splitting}, then, 
-is uncontroversial grammatical words can also be split and extended into phrases 
-in the same way phrase-like words like 念佛 do in 
-\prettyref{sec:pos.morpheme-to-clause.blur-line-word-phrase}.
-
-Splitting a word is of course morphological,
-and is of a nontrivial type,
-but here in Chinese, what is injected in after splitting the verb are phrasal dependents 
-and the resulting morphosyntactic unit is a phrase,
-so what we find here is syntax seems to rely on morphological devices.
-Without prejudice, this is not quite shocking,
-since what are said to be head movements 
-also involve fusion in Distributed Morphology 
-and therefore may be described as morphological.
-
-The motivation of this phenomenon seems to be prosody: 
-splitting words into phrases is only observed in \ac{vp}s,
-and \ac{vp}s are subject to the prosodic constraint 
-that the neither the verb nor the final complement can be too light.
-Splitting the verb may help to reduce the ``weight'' of the verb 
-so the resulting utterance meets the prosodic constraint better.
-
-It should be noted that some verb ionization examples 
-seem to be analyzable as 
-trivially extending the object: 
-compare 看书 and 看了三本书.
-Some verbs with verb-object inner structures 
-contain an internal object that usually doesn't appear as a full \acs{np}, 
-but that is not absolute: 
-洗了一个舒服的澡 and 一个舒服的澡对睡眠有好处.
-Prototypical verb ionization seems to be restricted 
-to semi-objects (TODO: ref) 理了三次发. 
 
 \section{Negation}\label{sec:negation}
 
@@ -1896,7 +2138,8 @@ Mandarin Chinese has usual clause linker devices (\prettyref{chap:clause-linking
 as well as complement clauses (\prettyref{sec:complement-clause})
 and relative clauses (TODO: ref). TODO: what else?
 
-\bibliographystyle{plainnat}
-\bibliography{references/grammars,references/aspects,references/general-typology,references/controversy}
+\chapter{A tentative summary}
+
+\printbibliography[title=References]
 
 \end{document}
