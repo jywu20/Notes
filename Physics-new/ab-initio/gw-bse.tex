@@ -250,7 +250,25 @@ Usually we just choose the normalization of the field operators to satisfy
 \begin{equation}
     \acomm*{\psi(\vb*{x})}{\psi^\dagger(\vb*{x}')} = \delta(\vb*{x} - \vb*{x}').
 \end{equation}
-Under this 
+Under this convention, 
+if we define 
+\begin{equation}
+    \psi_{\vb*{k}} = \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}},
+\end{equation}
+we find 
+\begin{equation}
+    \acomm*{c_{\vb*{k}_1}}{c^\dagger_{\vb*{k}_2}} = \delta_{\vb*{k}_1 \vb*{k}_2}.
+\end{equation}
+This convention should be kept in mind in the rest of this note.
+A large benefit of this convention 
+is it lifts the burden to worry about normalization concerning $\delta$-functions:
+no $\delta$-function appears in the rules now!
+To carry out Feynman diagrammatic calculations in an actual computer,
+a cutoff on the density of $\vb*{k}$ points is needed
+(essentially, a cutoff on the size of the system $V$).
+This means we should replace $\int \dd[3]{\vb*{k}} / 2\pi $
+with properly normalized $\sum_{\vb*{k}}$,
+where $\vb*{k}$ goes over the discretely infinite $\vb*{k}$-grid.
 
 \section{Details in diagrammatics}
 
@@ -777,16 +795,76 @@ in this section I will deal with Feynman diagrams more ``quantitatively'' and ri
 
 \subsection{In the free space}\label{sec:free-space}
 
+
+The Coulomb interaction Hamiltonian, 
+in the momentum space, is 
+\begin{equation}
+    H_{\text{e-e}} = \frac{1}{2} \sum_{\{\vb*{k}_i\}, \{\sigma_i\}} \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'}
+    \mel**{\vb*{k}_1 \sigma_1, \vb*{k}_2 \sigma_2}%
+    {\frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}}}%
+    {\vb*{k}_3 \sigma_2, \vb*{k}_4 \sigma_4}
+    c^\dagger_{\vb*{k}_1 \sigma_1} c^\dagger_{\vb*{k}_2 \sigma_2}
+    c_{\vb*{k}_3 \sigma_3} c_{\vb*{k}_4 \sigma_4}.
+\end{equation}
+By definition (if you are unsure about how $\vb*{k}_i$'s correspond to $\vb*{r}$ and $\vb*{r}'$,
+rewrite everything in terms of creation and annihilation operators)
+we have 
+\[
+\begin{aligned}
+    &\quad \mel**{\vb*{k}_1 \sigma_1, \vb*{k}_2 \sigma_2}%
+    {\frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}}}%
+    {\vb*{k}_3 \sigma_3, \vb*{k}_4 \sigma_4} \\
+    &= \frac{\ee^{- \ii \vb*{k}_1 \cdot \vb*{r}}}{\sqrt{V}}
+    \frac{\ee^{- \ii \vb*{k}_2 \cdot \vb*{r}'}}{\sqrt{V}}
+    \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}}
+    \frac{\ee^{\ii \vb*{k}_3 \cdot \vb*{r}'}}{\sqrt{V}}
+    \frac{\ee^{\ii \vb*{k}_4 \cdot \vb*{r}}}{\sqrt{V}} 
+    \delta_{\sigma_2 \sigma_3} \delta_{\sigma_1 \sigma_4},
+\end{aligned}
+\]
+and then we need to integrate over $\vb*{r}$ and $\vb*{r}'$.
+By redefining the variables, 
+we have 
+\[
+    \begin{aligned}
+        &\quad \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'}
+        \mel**{\vb*{k}_1 \sigma_1, \vb*{k}_2 \sigma_2}%
+         {\frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}}}%
+        {\vb*{k}_3 \sigma_2, \vb*{k}_4 \sigma_4} \\
+        &= \frac{1}{V^2} \delta_{\sigma_2 \sigma_3} \delta_{\sigma_1 \sigma_4}
+        \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'}
+        \ee^{- \ii (\vb*{k}_1 + \vb*{k}_2 - \vb*{k}_3 - \vb*{k}_4) \cdot \vb*{r}'}
+        \ee^{- \ii (\vb*{k}_1 - \vb*{k}_4) \cdot (\vb*{r} - \vb*{r}')}
+        \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}} \\
+        &= \frac{1}{V} \delta_{\sigma_2 \sigma_3} \delta_{\sigma_1 \sigma_4}
+        \cdot \delta_{\vb*{k}_1 + \vb*{k}_2, \vb*{k}_3 + \vb*{k}_4}
+        \int \dd[3]{\vb*{r}} \ee^{- \ii (\vb*{k}_1 - \vb*{k}_4) \cdot \vb*{r}} \frac{e^2}{\abs*{\vb*{r}}} .
+    \end{aligned}
+\]
+We can define 
+\begin{equation}
+    \vb*{q} = \vb*{k}_1 - \vb*{k}_4 = \vb*{k}_3 - \vb*{k}_2,
+\end{equation}
+and we find 
+\begin{equation}
+    H = \frac{1}{2V} \sum_{\vb*{k}, \vb*{k}', \vb*{q}, \sigma, \sigma'}
+    c^\dagger_{\vb*{k} + \vb*{q}, \sigma} c^\dagger_{\vb*{k}' - \vb*{q}, \sigma'}
+    V(\vb*{q}) c_{\vb*{k}' \sigma'} c_{\vb*{k} \sigma}, 
+    \label{eq:e-e-momentum}
+\end{equation}
+where 
+\begin{equation}
+    V(\vb*{q}) = \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} \underbrace{\frac{e^2}{\abs*{\vb*{r}}}}_{V(\vb*{r})} = \frac{4\pi e^2}{\vb*{q}^2}.
+\end{equation}
+Note that the above formula can be generalized: 
+we can change $V(\vb*{r})$, 
+and still get the momentum space Hamiltonian with the same shape of \eqref{eq:e-e-momentum}.
+
+What's the Feynman rules corresponding to the 
 TODO: $n$ interaction line $\Rightarrow$ $n$ independent momenta,
 not all of which are on Coulomb interaction lines
 
-A large benefit of this formalism
-is it lifts the burden to worry about normalization concerning $\delta$-functions:
-no $\delta$-function appears in the rules now!
-
-\begin{equation}
-    v(\vb*{q}) = \frac{4\pi e^2}{\vb*{q}^2}.
-\end{equation}
+TODO: the $V \to \infty$ limit.
 
 \subsection{In a crystal}\label{sec:crystal}
 
@@ -794,13 +872,6 @@ There are several things that need attention concerning Feynman rules in condens
 \begin{itemize}
     \item The propagator is no longer $1 / (\omega - \vb*{k}^2 / 2m)$, but 
     $\propto \sum_{\vb*{k}} \psi_{n \vb*{k}}(\vb*{r}) \psi^*_{n \vb*{k}} (\vb*{r}') / (\omega - \xi_{n \vb*{k}})$;
-    \item The crystal momentum $\vb*{k}$ appears above. 
-    To carry out Feynman diagrammatic calculations in an actual computer,
-    a cutoff on the density of $\vb*{k}$ points is needed
-    (essentially, a cutoff on the size of the system $V$).
-    This means we should replace $\int \dd[3]{\vb*{k}} / 2\pi $
-    with properly normalized $\sum_{\vb*{k}}$,
-    where $\vb*{k}$ goes over the discretely infinite $\vb*{k}$-grid.
     \item Usually we limit all momenta to the \concept{first Brillouin zone (1BZ)}, 
     and therefore a sum over an unbounded momentum variable $\vb*{k}$ or $\vb*{q}$
     has to be recast into $\sum_{\vb*{G}} \sum_{\vb*{k}} f(\vb*{k} + \vb*{G})$.
@@ -1019,7 +1090,7 @@ The structure of this expression reveals the Feynman rules for a crystal:
     the two-electron-line-one-dotted-line structure,
     not the four-electron-line structure 
     (i.e. not the diagrammatic component corresponding to $H_{\text{int}}$),
-    we write $\mel{{\text{out}}}{\ee^{\pm \ii (\vb*{q} + \vb*{G})}}{{\text{in}}}$:
+    we write $\mel{{\text{out}}}{\ee^{\pm \ii \vb*{r} \cdot (\vb*{q} + \vb*{G})}}{{\text{in}}}$:
     \begin{equation}
         \begin{gathered}
             \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
@@ -1081,6 +1152,16 @@ The structure of this expression reveals the Feynman rules for a crystal:
     if $\vb*{q}$ is not selected as a free momentum variable, 
     it shouldn't be integrated over.
 \end{itemize}
+
+The $\mel*{\text{out}}{\ee^{\pm \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{\text{in}}$
+are there to replace the real space integral 
+\[
+    \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} 
+    \psi_m^*(\vb*{r}) \psi^*_{n}(\vb*{r}')
+    \frac{e^2}{\abs*{\vb*{r} - \vb*{r}'}}
+    \psi_r(\vb*{r}') \psi_s(\vb*{r}),
+\]
+which incorporates the influence of the crystal potential field.
 
 Now we compare the above Feynman rules with 
 the momentum space Feynman rules in \prettyref{sec:free-space}.
@@ -2860,6 +2941,64 @@ which can be done using existing \abinitio{} codes;
 the hopping between $d$ bands and $r$ bands is more tricky,
 TODO: why RPA for them is acceptable
 
+\section{Interaction channels}
+
+Several interaction channels with clear physical pictures 
+can be identified from the tight-binding (screened) Coulomb repulsion
+TODO: $1/2N$ or ?
+\begin{equation}
+    H = \sum_{\sigma, \sigma'} \sum_{m, n, r, s} 
+    U_{mnrs} c^\dagger_{m \sigma} c^\dagger_{n \sigma'} c_{r \sigma'} c_{s \sigma'}.
+\end{equation}
+The \concept{direct density-density interaction} is 
+\begin{equation}
+    \sum_{m, n} \underbrace{U_{mnnm}}_{V_{mn}} n_m n_n, \quad n_m = \sum_\sigma c^\dagger_{m \sigma} c_{n \sigma}.
+\end{equation}
+Specifically, we have \concept{on-site repulsion}
+\begin{equation}
+    \sum_{m} U_{mmmm} c^\dagger_{m \sigma} c^\dagger_{m \sigma'} c_{m \sigma'} c_{m \sigma}
+    = \sum_{m} \underbrace{U_{mmmm}}_U n_{m \uparrow} n_{m \downarrow}.
+\end{equation}
+This is just the Hubbard-$U$ term.
+If we can attribute the influence of other interaction channels to
+band structure self-energy correction,
+we just get the \concept{Hubbard models}
+\begin{equation}
+    H = - \sum_{m, n, \sigma} t_{mn} c^\dagger_{m \sigma} c_{n \sigma}
+    + U \sum_m n_{m \uparrow} n_{m \downarrow}.
+\end{equation}
+This deceptively simple model
+takes people more than half of a century to solve 
+-- and probably more, 
+because even today, 
+there is still no generalized way to find its ground state 
+even on a 2D lattice.
+
+The \concept{exchange interaction} is 
+\begin{equation}
+    \sum_{m \neq n, \sigma, \sigma'}
+    U_{mnmn} c^\dagger_{m \sigma} c^\dagger_{n \sigma'} c_{r \sigma'} c_{s \sigma'}
+    = - 2 \sum_{m \neq n} \underbrace{U_{mnmn}}_{J_{mn}} \left(
+        \vb*{S}_m \cdot \vb*{S}_n + \frac{1}{4} n_m n_n
+    \right).
+\end{equation}
+Here we have used the formula 
+\begin{equation}
+    \vb*{\sigma}_{\alpha \beta} \cdot \vb*{\sigma}_{\gamma \delta}
+    = 2 \delta_{\alpha \beta} \delta_{\beta \gamma} - \delta_{\alpha \beta} \delta_{\delta \gamma}.
+\end{equation}
+We call this the exchange interaction, 
+because the way we find it 
+is mathematically identical to 
+splitting the expectation of Coulomb interaction
+into the direct and the exchange terms 
+using first quantization.
+The exchange interaction supports the first Hund's rule: 
+if spins align with each other, 
+the total energy can be reduced 
+(it's more likely that $U_{mnmn} > 0$ because Coulomb interaction is repulsive),
+and therefore the total spin is to be maximized.
+
 \chapter{Standard operation procedures}
 
 List of technical issues:
@@ -3542,6 +3681,10 @@ This error is known in \shortcode{scGWtool.py}.
 
 
 Check whether too much resource is given to a simple task.
+
+\subsection{Electron convergence not achieved}
+
+This is related to smearing, TODO 
 
 \subsection{\shortcode{Error in routine allocate_fft (1): wrong ngms}}\label{sec:ngms}
 
