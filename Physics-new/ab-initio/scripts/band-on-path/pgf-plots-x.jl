@@ -88,6 +88,7 @@ function zero_energy_line!(band_axis, nkp)
         {
             color = colorant"grey",
             no_marks,
+            dotted,
             forget_plot
         },
         Coordinates(

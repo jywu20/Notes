@@ -76,6 +76,25 @@ function sum_dos(dos_data)
 end
 
 """
+`dos_data` should be the return value of, say, `read_proj_pdos_atm`.
+The energy grid and the summed DOS are returned.
+`indices` indicates what components in `dos_data` should be sum over; 
+the relation between the indices and the `WTe2.pdos_atm#` files 
+follows the convention in [`read_proj_pdos_atm`](@ref) and [`list_proj_pdos_filenames`](@ref).
+"""
+function sum_dos(dos_data, indices)
+    energy_grid = dos_data[1][:, 1]
+    
+    summed_dos = zeros(length(energy_grid))
+    for i in indices
+        dos_data_in_one_atom = dos_data[i]
+        summed_dos += dos_data_in_one_atom[:, 2]
+    end
+    
+    (energy_grid, summed_dos)
+end
+
+"""
 Map the DOS data stored in `dos` 
 to each state in `ε_kn`.
 """
