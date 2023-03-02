@@ -151,13 +151,137 @@
 
 \section{Hydrogen}
 
+The energy unit Hartree is defined as twice of $E_1$.
+That's to say, one Hartree is equal to \SI{27.6}{eV},
+and if the Hartree unit is used, 
+then the energy levels of the hydrogen atom are 
+$1 / 2n^2$.
+
 \subsection{Stability}
 
 The hydrogen atom is bound together by Coulomb potential $1 / r$.
 From Virial theorem, we will find not all attractive potentials lead to stable bound states. 
 Specifically, $1 / r^2$ or $1 / r^3$ doesn't give us bound states in 3D.
-This can be shown by calculating $T + V$: 
+This can be shown by explicitly calculating $T + V$: 
 if it's greater than zero for the whole spectrum, 
 then of course we don't have stable bound states. 
+
+\subsection{Spin-orbital coupling}
+
+The first order perturbation of the SOC Hamiltonian is 
+\[
+    E^{(1)} = \frac{e^2}{8 \pi \epsilon_0} \frac{1}{m^2 c} \expval{\frac{\vb*{L} \cdot \vb*{S}}{r^3}}.
+\]
+Note that $\vb*{L} \cdot \vb*{S}$ extracts information about $m$ and $m_s$
+(which are good quantum numbers)
+in the wave function:
+we have 
+\begin{equation}
+    \vb*{L} \cdot \vb*{S} = \frac{\hbar^2}{2} (j (j + 1) - l (l + 1) - s (s + 1)).
+\end{equation}
+So the energy perturbation is just 
+\[
+    E^{(1)} = \frac{e^2}{8 \pi \epsilon_0} \frac{1}{m^2 c} \expval{\frac{1}{r^3}} \cdot 
+    \frac{\hbar^2}{2} (j (j + 1) - l (l + 1) - s (s + 1)).
+\]
+Now we just add $E^{(1)}$ to $T + V$, 
+and we find the influence of SOC can be seen as adding 
+\begin{equation}
+    H = \frac{e^2}{8 \pi \epsilon_0} \frac{1}{m^2 c} \expval{\frac{1}{r^3}} \vb*{L} \cdot \vb*{S},
+\end{equation}
+to the total Hamiltonian, where 
+\begin{equation}
+    \expval{\frac{1}{r^3}} = \frac{1}{l (l + 1/2) (l + 1) n^3}.
+\end{equation}
+Formally, this means we have averaged over $1 / r^3$ only;
+but note that strictly speaking $\vb*{L}$ is no longer 
+the old $\vb*{L}$ obtained from $V + T$, 
+because after perturbation of SOC, 
+the eigenstates themselves are changed, 
+and so is $L_z = \sum m \dyad*{n, l, m, m_s}{n, l, m, m_s}$.
+
+We can estimate the magnitude of SOC correction: 
+we have 
+\begin{equation}
+    \frac{\var{E_n}}{E_n} = \frac{E_n}{m c^2} = \frac{10^{-5} Z^2}{n^2}.
+\end{equation}
+
+\subsection{Going into the nucleus}
+
+When $r$ is \emph{smaller} than the radius of the nucleus, 
+it can be verified by Gauss's theorem that 
+\begin{equation}
+    V(r) = \frac{1}{2} \frac{r^2}{R_{\text{n}}^3} - \frac{3}{2 R_{\text{n}}}.
+\end{equation}
+To see why, just calculate the force using this potential 
+and check the force obtained by 
+\begin{equation}
+    4 \pi r^2 \cdot F(r) = \int_{0}^{r} \frac{Z e}{\frac{4}{3} \pi R_{\text{n}}^3} \cdot 4 \pi r'^2 \dd{r'}.
+\end{equation}
+The constant term is there 
+to guarantee continuity at $r = R_{\text{n}}$.
+So 
+\begin{equation}
+    V(r) = \begin{cases}
+        - \frac{1}{r}, &r > R_{\text{n}}, \\
+        \frac{1}{2} \frac{r^2}{R_{\text{n}}^3} - \frac{3}{2 R_{\text{n}}}, & r < R_{\text{n}}.
+    \end{cases}
+\end{equation}
+So, we find the existence of a finite-size nucleus means 
+we have a perturbation Hamiltonian 
+\begin{equation}
+    V(r) - V_0(r) = \frac{1}{r} + \frac{1}{2} \frac{r^2}{R_{\text{n}}^3} - \frac{3}{2 R_{\text{n}}}.
+\end{equation}
+The first-order energy correction can therefore be determined.
+The magnitude is $\num{1.6e-10} E_{\text{H}}$.
+It's small, but is already observable using existing spectrography techniques.
+
+\subsection{Relativistic kinetic energy}
+
+Another relativistic effect, apart from SOC, 
+is the kinetic energy of an electron is actually 
+\begin{equation}
+    T = \sqrt{m^2 c^4 + p^2 c^2},
+\end{equation}
+and not just $p^2 / 2m$. 
+So now we have a perturbation term in the kinetic energy.
+The Taylor expansion gives 
+\begin{equation}
+    T = m c^2 + \frac{p^2}{2m} - \frac{p^4}{8 m^3 c^2} + \cdots,
+\end{equation}
+and the first relativistic correction is 
+\begin{equation}
+    H = - \frac{p^4}{8 m^3 c^2}.
+\end{equation}
+Its expectation can be found using the following trick:
+\begin{equation}
+    \begin{aligned}
+        \expval*{H}{\psi} &\propto (\bra*{\psi} p^2) (p^2 \ket*{\psi}) \\
+        &= \bra*{\psi} 2 (E - V(r)) \cdot 2 (E - V(r)) \ket*{\psi} ,
+    \end{aligned}
+\end{equation}
+and this can be further simplified using Virial's theorem 
+\begin{equation}
+    2 \expval{T} = \expval{\vb*{r} \cdot \vb*{v} V},
+\end{equation}
+which, in the Coulomb case, means for \emph{all} eigenstates 
+(and not just the ground state), we have 
+\begin{equation}
+    \expval{T} = - E_n, \quad \expval{V} = 2 E_n.
+\end{equation}
+The $\expval{V^2}$ term can be evaluated using Feynman-Hellmun theorem
+\begin{equation}
+    \pdv{E_n(\lambda)}{\lambda} = \expval{\pdv{H(\lambda)}{\lambda}}{\psi(\lambda)}. 
+\end{equation}
+Recall that there is a 
+\[
+    \frac{l (l + 1)}{2 r^2}
+\]
+term in the Hamiltonian, 
+and we find 
+\begin{equation}
+    \pdv{l} \left( - \frac{1}{(n_r + l)^2} \right)^2 = \expval{\frac{2l + 1}{r^2}},
+\end{equation} 
+and $\expval{1 / r^2}$ can then be found by taking the derivative of $E_{n} = E_{n_r + l}$.
 
 \end{document}
