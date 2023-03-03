@@ -92,6 +92,9 @@
 \newcommand{\soliddoc}{\href{../solid/solid.pdf}{this note}}
 \newcommand{\lastlec}{\href{./2022-3-15.pdf}{the last lecture}}
 
+% Reference formatter
+\newrefformat{fig}{Fig.~\ref{#1}}
+
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
 \newtcbtheorem[number within=section]{warning}{Warning}%
@@ -346,7 +349,7 @@ and
 \]
 and indeed we find \eqref{eq:dirac-ham-1} has time reversal symmetry.
 
-\section{Broken symmetry and Chern insulator}
+\section{Adding the mass terms; the phase diagram}
 
 \subsection{Introducing mass terms}
 
@@ -530,7 +533,9 @@ and verify that there are indeed boundary states
     \input{structure/parameter-change-boundary-setting.tex}
     \caption{A thought experiment: 
     smoothly changing $m_1, m_2$ in the transitional area between 
-    two phases}
+    two phases.
+    The yellow block is in a topological phase, 
+    while the green block is in a CDW phase.}
     \label{fig:change-parameter-boundary}
 \end{figure}
 
@@ -543,23 +548,181 @@ because the periodic condition is broken near $y = 0$.
 Since now $k_y$ is now well-defined, 
 \eqref{eq:model-ham} should be rewritten as 
 \begin{equation}
-    H = \mu^z \tau^x - \ii \tau^y \partial_y + (m_1 + \mu^z m_2) \tau^z.
+    H = \mu^z \tau^x k_x  - \ii \tau^y \partial_y + \underbrace{(m_1 + \mu^z m_2)}_{\eqqcolon m(y)} \tau^z.
 \end{equation}
 Since $\mu^z$ commutes with the Hamiltonian, 
-it can just be regarded as a constant.
-Considerable quantum fluctuation however is seen in $\tau$.
+it can just be regarded as a constant,
+and we will work in the $\mu^z = \pm 1$ subspaces, 
+each of which are two-dimensional;
+in each subspace, then, 
+$\tau^i$ can be seen as $\sigma^i$.
+Considerable quantum fluctuation however is seen in $\tau^{x, y, z}$.
+But we don't need to find the \emph{full} spectrum: 
+we only need to find \emph{one} eigenfunction.
+With this in mind, let's tentatively consider a $\psi(x, y)$
+that is an eigenfunction of $\tau^x$.
+Then, since 
+\[
+    \ii \tau^y = \tau^z \tau^x,
+\]
+the stationary Schrodinger equation for \emph{that} $\psi(x, y)$ 
+that is an eigenvector of $\tau^x$ is 
+\[
+    \mu^z \tau^x k_x \psi_{k_x} (y) + \tau^z (- \tau^x \partial_y + m(y)) \psi_{k_x}(y) 
+    = \varepsilon_{k_x} \psi_{k_x}(y).
+\]
+Again, we only need to find \emph{one} solution to this equation, 
+and we can just stipulate that 
+\begin{equation}
+    \varepsilon_{k_x} = \mu^z \tau^x k_x,
+    \label{eq:boundary-dispersion}
+\end{equation}
+and 
+\begin{equation}
+    (- \tau^x \partial_y + m(y)) \psi_{k_x}(y) = 0.
+    \label{eq:boundary-state-eq}
+\end{equation}
+In the two equations above, $\tau^x$ and $\mu^z$ are all $\pm 1$
+and are not operators.
+When $\tau_x = 1$, we have 
+\[
+    \psi_{k_x}(y) = \text{something about $y$} \cdot \pmqty{1 \\ 1},
+\]
+and when $\tau_x = -1$, we have 
+\[
+    \psi_{k_x}(y) = \text{something about $y$} \cdot \pmqty{1 \\ - 1}.
+\]
 
+The next step is to impose the boundary conditions 
+pertaining to boundary states, i.e. 
+\begin{equation}
+    \psi_{k_x}(y) \to 0, \quad y \to \pm \infty.
+    \label{eq:boundary-state-condition}
+\end{equation}
+Since $(\tau^x)^2 = 1$, \eqref{eq:boundary-state-eq} is equivalent to 
+\begin{equation}
+    \partial_y \psi_{k_x} = \tau^x m(y) \psi_{k_x}.
+\end{equation}
+In the $y \to \infty$ limit, the equation becomes 
+\begin{equation}
+    \partial_y \psi_{k_x} = \tau^x \mu^z m_2 \psi_{k_x},
+\end{equation}
+and in the $y \to - \infty$ limit, the equation becomes 
+\begin{equation}
+    \partial_y \psi_{k_x} = \tau^x m_1 \psi_{k_x}.
+\end{equation}
+Then the boundary conditions \eqref{eq:boundary-state-condition} means 
+\begin{equation}
+    \tau^x \mu^z m_2 < 0, \quad \tau^x m_1 > 0.
+\end{equation}
+We then find, when 
+\begin{equation}
+    \tau^x = \sgn(m_1), \quad \sgn(\mu^z) = - \sgn(m_1) \sgn(m_2),
+\end{equation}
+a boundary state has already been constructed. 
+Since $\tau^x = \pm 1$, $\mu^z = \pm 1$, 
+these conditions can always be achieved. 
+\eqref{eq:boundary-dispersion} then is 
+\begin{equation}
+    \varepsilon_{k_x} = - \sgn(m_2) k_x.
+\end{equation}
+Thus, there exists a boundary state on the $y = 0$ surface, 
+and it has linear dispersion relation.
 
-\subsection{Laughling's argument}
+If we switch the position of the topological area and the trivial area 
+in \prettyref{fig:change-parameter-boundary}, 
+we can just change the direction of the $x$ axis
+and rotate and system to get back to \prettyref{fig:change-parameter-boundary}.
+Therefore, for a sample in a topological phase 
+surrounded by an environment in the trivial phase, 
+we get two surface states
+on the two opposite surfaces (\prettyref{fig:total-spectrum}).
 
-The symmetric classification of Chern insulator is the same as IQHE,
-and many qualitative arguments can be transferred 
-between the two systems.
-In this section 
+\begin{figure}
+    \centering
+    \input{plot/total-spectrum.tex}
+    \caption{(a) The spectrum of a system in a topological phase surrounded by trivial environment.
+    (b) Boundary states on the upward and the downward surfaces.
+    (c) The complete band diagram.
+    Note that the bulk branches are continuous even when $k_x$ is fixed,
+    because we still have another variable: $k_y$.}
+    \label{fig:total-spectrum}
+\end{figure}
+
+TODO: why air is in the trivial phase?
+
+\subsection{Properties of the boundary states}
+
+We can write an effective theory about a boundary state, which reads 
+\begin{equation}
+    H = \int \dd{x} \psi^\dagger (- \ii \partial_x) \psi.
+    \label{eq:boundary-theory}
+\end{equation}
+This theory works around $k_{x} = 0$, 
+and not around regions where the boundary states go into bulk states.
+This fact leads to an astonishing fact about the boundary modes.
+If we apply an electric field in the $x$ direction, 
+which comes from the vector potential 
+\begin{equation}
+    \vb*{A} = A_x \vu*{x}, \quad A_x = - E_x t,
+\end{equation}
+and by minimal coupling, \eqref{eq:boundary-theory} becomes 
+\begin{equation}
+    H = \int \dd{x} \psi^\dagger (- \ii \partial_x + e A_x) \psi.
+\end{equation}
+If the chemical potential is fixed, 
+this leads to \prettyref{fig:chiral-anomaly}:
+after the external field is applied, 
+the total occupation number of the boundary band changes,
+and therefore electron number conservation breaks.
+
+\begin{figure}
+    \centering
+    \input{plot/move-band.tex}
+    \caption{Chiral anomaly: when the chemical potential is fixed, 
+    and an external field is applied to move the band, 
+    the total electron number changes}
+    \label{fig:chiral-anomaly}
+\end{figure}
+
+Of course, the particle number conservation law isn't really broken:
+electrons can go into and out of the bulk modes.
+Note that if we have two surface bands, 
+chiral anomaly isn't a thing: 
+after an $A_x$ field is applied, 
+one band is moved upward, 
+and another band is moved downward, 
+so the total electron occupation is fixed.
+Thus we call the broken charge conservation law in \eqref{eq:boundary-theory}
+\concept{chiral anomaly}:
+if only one chiral mode is considered,
+then an anomaly occurs.
+
+\section{Linear response: quantum Hall conductance from the boundary states}
+
+\subsection{Laughlin's argument}
+
+\begin{figure}
+    \centering
+    \input{structure/laughlin.tex}
+    \caption{Laughlin's argument: when an external field is }
+\end{figure}
+
+The existence of boundary states can be shown in a more macroscopic way.
 
 \section{Band topology}
 
+The boundary states and the phase diagram don't come out of no where.
+In the general theory of classification of fermionic systems with no interaction, 
+the symmetric classification of Chern insulator is the same as IQHE,
+and many qualitative arguments can be transferred 
+between the two systems
+(like Laughling argument discussed above).
+In this section we discuss how to use a topological index 
+to demonstrate what is different 
+between CDW phases and topological phases. 
 
+\section{Numerical simulation}
 
 \bibliographystyle{plain}
 \bibliography{topo-band}
