@@ -152,8 +152,8 @@ and the tight-binding Hamiltonian is
 \begin{equation}
     H = - t \sum_{\vb*{i}}(
         c^\dagger_{\vb*{i} \text{A}} c_{\vb*{i} \text{B}}
-        + c^\dagger_{\vb*{i} + \vu*{x}, \text{A}} c_{\vb*{i} \text{B}}
-        + c^\dagger_{\vb*{i} + \vu*{y}, \text{A}} c_{\vb*{i} \text{B}}
+        + c^\dagger_{\vb*{i} + \vu*{a}_1, \text{A}} c_{\vb*{i} \text{B}}
+        + c^\dagger_{\vb*{i} + \vu*{a}_2, \text{A}} c_{\vb*{i} \text{B}}
     ) + \text{h.c.}
 \end{equation}
 Here $\vb*{i}$ labels unit cells and not atoms.
@@ -710,7 +710,92 @@ then an anomaly occurs.
 
 The existence of boundary states can be shown in a more macroscopic way.
 
-\section{Band topology}
+\subsection{Derivation of the TKKN formula}
+
+In this section we derive the zero temperature conductance 
+in the DC limit.
+
+\subsubsection{Step 1: current response at $T = 0$}
+
+We know if a perturbation term $V$ is introduced into the Hamiltonian,
+then the linear response would be 
+\begin{equation}
+    \expval{A} = \expval{A}_0 - \ii \int_{-\infty}^{t} \dd{t'} 
+    \expval{\comm*{A(t)}{V(t')}}.
+    \label{eq:general-response}
+\end{equation}
+In the radiation gauge, there is no $\varphi$, 
+and we take the dipole approximation and assume no spatial variance 
+of the electromagnetic fields, 
+and therefore the electromagnetic coupling Hamiltonian is 
+\begin{equation}
+    V = - \vb*{J} \cdot \vb*{A}, \quad 
+    \vb*{J} = \sum_i q_i \vb*{v}_i.
+\end{equation}
+If an external electric field 
+\begin{equation}
+    \vb*{E} = \vb*{E}_0 \ee^{- \ii \omega t} 
+\end{equation}
+is applied, the corresponding vector potential would be 
+\begin{equation}
+    \vb*{A} = \frac{1}{\ii \omega} \vb*{E}_0 \ee^{- \ii \omega t}.
+\end{equation}
+Putting everything together, the current response to $\vb*{E}$ is 
+\begin{equation}
+    \begin{aligned}
+        \expval*{J^i}(t) &= \frac{E_{0j}}{\omega} \int_{-\infty}^{t} \dd{t'} \expval*{\comm*{J^i(t)}{J^j(t')}} \ee^{- \ii \omega t'} \\
+        &= \frac{E_{0j} \ee^{- \ii \omega t}}{\omega} 
+        \int_{-\infty}^{t} \dd{t'} \expval*{\comm*{J^i(t)}{J^j(t')}} 
+        \ee^{- \ii \omega (t' - t)} \\
+        &= - \frac{E_j}{\omega} \int_{0}^{\infty} \dd{t''} \expval*{\comm*{J^i(t'')}{J^j(0)}} \ee^{\ii \omega t''}.
+    \end{aligned} 
+    \label{eq:response-2}
+\end{equation}
+Here we have used the time translational symmetry, 
+and $t'' = t - t'$.
+In \eqref{eq:general-response}, 
+the time dependence of operators 
+comes from the Heisenberg picture time evolution of these operators,
+and we therefore get
+\[
+    J^i(t'') = \ee^{\ii H t''} J^i(0) \ee^{- \ii H t''},
+\] 
+and therefore 
+\[
+    \begin{aligned}
+        \expval*{\comm*{J^i(t'')}{J^j(0)}} &= 
+        \sum_{\alpha} \mel{0}{\ee^{\ii H t''} J^i(0) \ee^{- \ii H t''} \dyad*{\alpha}{\alpha} J^j(0) }{0}
+        - (i \leftrightarrow j) \\
+        &= \sum_{\alpha} \ee^{\ii (E_0 - E_\alpha) t''}
+        \mel**{0}{J^i(0)}{\alpha} \mel**{\alpha}{J^j(0)}{0} - (i \leftrightarrow j)
+        \ee^{- \ii (E_0 - E_\alpha) t''}.
+    \end{aligned}
+\]
+Here we use $\ket*{0}$ to represent the ground state 
+Integrating over $t''$, we get 
+\[
+    \begin{aligned}
+        &\quad \int_{0}^{\infty} \dd{t''} \expval*{\comm*{J^i(t'')}{J^j(0)}} \ee^{\ii \omega t''} \\
+        &= \sum_\alpha \frac{\mel**{0}{J^i(0)}{\alpha} \mel**{\alpha}{J^j(0)}{0}}{\ii (\omega + E_0 - E_\alpha + \ii 0^+)}
+        - \sum_\alpha \frac{\mel**{0}{J^j(0)}{\alpha} \mel**{\alpha}{J^i(0)}{0}}{\ii (\omega - E_0 + E_\alpha + \ii 0^+)},
+    \end{aligned}
+\]
+where the $0^+$ terms are there to make sure 
+the the integral is well-defined when its upper bound goes to $\infty$.
+Inserting this back into \eqref{eq:response-2}, 
+we get 
+\begin{equation}
+    \frac{\expval*{J^i}(t)}{E_j(t)} = \frac{\ii}{\omega} \sum_\alpha \left(
+        \frac{\mel**{0}{J^i(0)}{\alpha} \mel**{\alpha}{J^j(0)}{0}}{ \omega + E_0 - E_\alpha + \ii 0^+}
+        - \frac{\mel**{0}{J^j(0)}{\alpha} \mel**{\alpha}{J^i(0)}{0}}{\omega - E_0 + E_\alpha + \ii 0^+}
+    \right).
+\end{equation}
+
+\subsubsection{Step 2: the two-dimensional case}
+
+
+
+\subsection{Band topology}
 
 The boundary states and the phase diagram don't come out of no where.
 In the general theory of classification of fermionic systems with no interaction, 
@@ -723,6 +808,8 @@ to demonstrate what is different
 between CDW phases and topological phases. 
 
 \section{Numerical simulation}
+
+
 
 \bibliographystyle{plain}
 \bibliography{topo-band}
