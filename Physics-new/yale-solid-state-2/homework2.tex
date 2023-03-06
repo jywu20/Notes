@@ -1,0 +1,308 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{data.bib}
+\addbibresource{experiments.bib}
+\addbibresource{theory.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=section]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=section, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=section, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\kB}{k_{\text{B}}}
+
+\title{Homework 2}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Quasiparticle weight in Landau Fermi liquid}
+
+\subsection{Quasiparticle weight in \ce{Na}}
+
+From Table 2.3 in A\&M, in \ce{Na}, 
+$m^* / m = 1.3$, 
+so $Z = m / m^* = 0.77$.
+Here $m^*$ is obtained by thermodynamic measurement:
+the Sommerfield model tells us 
+\begin{equation}
+    C_V = \frac{\pi^2}{2} \frac{\kB T}{\efermi} n \kB, \quad 
+    \efermi = \frac{\hbar^2}{2m} \left(\frac{3 \pi^2 N}{V}\right)^{3/2},
+\end{equation}
+and therefore 
+\begin{equation}
+    \frac{C_{V, \text{measured}}}{C_{V, \text{free electron}}} = \frac{m^*}{m}.
+\end{equation}
+
+\subsection{Direct observation of occupation discontinuity}
+
+From \cite{huotari2010momentum}, 
+a direct measurement of the electron occupation 
+tells us the experimental result for \ce{Na}: $Z = 0.58$.
+This is much smaller than the value found in the thermodynamic measurement.
+
+
+\section{Exotic phenomena in a Landau Fermi liquid}
+
+\subsection{Heavy fermion systems}
+
+Signatures of heavy fermion materials include 
+a low-temperature heat capacity that is, say, 1000 times 
+of the free electron heat capacity,
+low conductivity, 
+and flat bands that come across the Fermi energy.
+
+
+\subsection{Zero sound}
+
+Zero sound is a 
+
+the interaction between particles has 
+a short characteristic length scale in the real space,
+which means the corresponding form in the momentum space 
+doesn't show strong dependence on the exchanged momentum $\vb*{q}$.
+Thus, after renormalization, the interaction between $\var{n}_{\vb*{p}}(\vb*{r})$
+and $\var{n}_{\vb*{p}'} (\vb*{r}')$
+-- essentially Wigner transforms of $c^\dagger_{\vb*{p} + \vb*{q}} c_{\vb*{p}}$ --
+has no large differences with 
+$f_{\vb*{p} \vb*{p}'} \var{n}_{\vb*{p}} \var{n}_{\vb*{p}'}$,
+because $\vb*{q}$ dependence is not important when $\vb*{q}$ is small 
+(or in other words, when the $\vb*{r}$-dependence of $\var{n_{\vb*{p}}}(\vb*{r})$
+is smooth enough, which is always required if we want a reasonable Boltzmann equation).
+This explains why when deriving the kinetic equation of Fermi liquid, 
+we just insert $\var{n}_{\vb*{p}}(\vb*{r})$ in place of $\var{n}_{\vb*{p}}$:
+this works only when the interaction is short-range
+\cite{pines2018theory}.
+
+\begin{figure}
+    \centering
+    \input{feyn/vertex-fermi-liquid-1.tex}
+    \caption{Skeleton diagrams that decide Landau parameters 
+    (a) The vertex function decides the single electron self-energy; 
+    in other words, $f$ appears in $\varepsilon$.
+    (b) The vertex function appears as the effective interaction channel; 
+    in other words, $f$ appears in the energy functional i.e. the effective Hamiltonian.
+    (c) Hartree-Fock approximation in the vertex function.
+    The left one is the Hartree term ($\propto V(\vb*{q} = 0)$).
+    The right one is the Fock term ($\propto V(\vb*{q} = \vb*{p} - \vb*{p}')$).}
+    \label{fig:hf-vertex}
+\end{figure}
+
+It should be noted that kind of zero sound described by the original theory of Landau 
+only exists in charge-neutral systems, 
+such as $^3$\ce{He};
+in electron systems,
+the zero sound is essentially the plasmon, 
+which receives a gap $\omega_{\text{p}}$.
+This originates from the long-range property of Coulomb interaction,
+which means at $\vb*{q} = 0$ we have a singularity, 
+and this breaks the aforementioned condition 
+that in the kinetic equation, 
+the quasiparticle-interaction assumes no significant change when $\vb*{q}$ is changed. 
+Essentially, this means the $f_{\vb*{p} \vb*{p}'}$ function is also not well-defined.
+This can be explicitly checked by naively repeating the procedure 
+to derive $f_{\vb*{p} \vb*{p}'}$ from the microscopic particle interaction potential:
+if we use the Hartree-Fock approximation to find $f_{\vb*{p} \vb*{p}'}$, 
+we get 
+\begin{equation}
+    f(\vb*{p}, \vb*{p}') = 
+    V(\vb*{q} = 0) - \frac{1}{2} V(\abs*{\vb*{p} - \vb*{p}'}) (1 + \vb*{\sigma} \vb*{\sigma}'),
+\end{equation}
+with the first term being the Hartree term 
+and the second term being the Fock term
+(\prettyref{fig:hf-vertex}).
+This expression gives an infinite result for Coulomb interaction, 
+because $V(\vb*{q}) = 4 \pi e^2 / \vb*{q}^2$ now diverges at $\vb*{q} = 0$ \cite{silin1958theory}.%
+\footnote{
+    Note that we \emph{can't} correct the Hartree term with screened Coulomb potential!
+    The $\var{n}_{\vb*{p} \sigma}(\vb*{r})$ variable used in the Hartree term 
+    comes from the renormalized Green function, 
+    which already contains, say, the ring diagrams that may appear 
+    in the middle of a Coulomb interaction line.
+    If we correct the Coulomb interaction line in the Hartree term, 
+    double counting occurs. 
+}
+
+One way to work around this singularity 
+is to analyze the Hartree term in the real space, 
+while still attributing other corrections in \prettyref{fig:hf-vertex}
+to $f_{\vb*{p} \vb*{p}'}$.
+Thus, the kinetic equations for Fermi liquid in a metal 
+now include three equations: 
+\begin{itemize}
+    \item A quantum Boltzmann equation coupled to a electrostatic field $\varphi$
+    created by $\var{n}_{\vb*{p} \sigma}(\vb*{r})$.
+    \item The effective single-electron energy equation 
+    \begin{equation}
+        \varepsilon_{\vb*{p} \sigma}(\vb*{r}) = \varepsilon^0_{\vb*{p} \sigma} 
+        + \frac{1}{V} \sum_{\vb*{p}', \sigma'} 
+        f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n}_{\vb*{p}' \sigma'}(\vb*{r}).
+    \end{equation}
+    \item The Poisson equation 
+    \begin{equation}
+        \laplacian \varphi = \frac{e}{\epsilon_0} \sum_{\vb*{p}, \sigma} \var{n}_{\vb*{p} \sigma}(\vb*{r}).
+    \end{equation}
+\end{itemize}
+The presence of the Poisson equation 
+and the Hartree self-consistent field $\varphi$
+means when $\vb*{q} \to 0$, 
+we see plasma oscillations at frequency $\omega_{\text{p}}$.
+The physical picture on the electron side 
+is still the same: 
+distortion of the Fermi surface propagating around,
+creating a density mode in the momentum space instead of the real space.
+
+\section{Particle number conservation}
+
+\subsection{Proof of particle number conservation}
+
+\printbibliography
+
+\end{document}
