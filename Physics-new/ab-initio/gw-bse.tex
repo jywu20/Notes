@@ -3589,17 +3589,67 @@ unless we have reasons against this practice.
 
 \subsection{\shortcode{pseudobands}}
 
+One observation is that the exact dispersion relations of high-energy bands required in $GW$ 
+aren't that important:
+these bands are there mainly because 
+we need to make the normalization correct
+(TODO: citation needed).
+This fact can be exploited to speed up calculation.
+
+\prettyref{fig:pseudobands} shows one way to do this: 
+we need two parameters, $E_1$ and $\lambda$.
+We leave all bands whose average energies over $\vb*{k}$ points 
+are below $E_1$ untouched (we say they are protected).
+Then we divide bands whose average energies are above $E_1$ 
+according to the following procedure.
+Bands whose average values are between $E_1$ and $E_1 + \lambda E_1$ 
+are placed into block 1;
+Bands whose average values are between $E_2 = E_1 + \lambda E_1$ and $\lambda E_2$
+are placed into block 2 \dots
+Repeating this until every band is placed in one block.
+Then, each block is replaced by an averaged band,
+whose energy is the average of all bands in that block, 
+and whose wave function is the sum of all bands in that block.
+Note that $E_1$ starts from the (quite arbitrary) energy zero-point,
+instead of the Fermi energy,
+and therefore it's required to check 
+the magnitude of the Fermi energy 
+and make $E_1$ much larger than that.
+Using \shortcode{pseudobands} thus breaks the norm conserving condition.
+Therefore, in \shortcode{espilon.inp},
+we need to add \shortcode{dont_check_norms}.
+
+This method seems to appear in \cite{del2019large},
+where they mention something called ``stochastic pseudobands''.
+The meaning of the term ``stochastic'' is not clear.
+
+\begin{figure}
+    \centering
+    \input{plots/pseudobands-1.tex}
+    \caption{One way to average over high-energy bands. 
+    Note that the $x$ axis represents the energy zero-point, 
+    and not $\mu$.
+    Which block a band is in is decided by its average value.}
+    \label{fig:pseudobands}
+\end{figure}
+
+The usage of \shortcode{pseudobands} is shown below:
 \begin{lstlisting}
     wfn2hdf.x BIN WFN WFN.h5
     pseudobands.py WFN.h5 WFNo.h5 0.7 0.02
     hdf2wfn.x BIN WFNo.h5 WFNo
 \end{lstlisting}
+Here \shortcode{0.7} is $E_1$ (in Rydberg), 
+and \shortcode{0.02} is $\lambda$.
 
-Using \shortcode{pseudobands} breaks the norm conserving condition.
-Therefore, in \shortcode{espilon.inp},
-we need to add \shortcode{dont_check_norms}.
-
-TODO: how it works; maybe \cite{del2019large} may provide some hints.
+Details in the code: 
+\begin{itemize}
+    \item \shortcode{en_min} and \shortcode{en_max} are not $E_{\text{min}}$ or $E_{\text{max}}$:
+        they are just the average energy of bands with the first spin direction.
+        It seems \shortcode{h5py} transposes the input HDF5 file 
+        so make it closer to the C/Python convention.
+    \item \shortcode{nb_fixed}: indices of bands that are to be averaged over 
+\end{itemize}
 
 \section{Convergence tests}
 
