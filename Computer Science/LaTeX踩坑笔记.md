@@ -2,6 +2,8 @@
 
 hyperref之类的包最好放在最后，xr-hyper包应该放在hyperref前面
 
+underscore包和含有下划线的cite似乎是冲突的。
+
 # 蜜汁实现方式导致的错误
 
 ## physics
