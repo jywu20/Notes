@@ -40,7 +40,7 @@ function check_insulator_2D(path::AbstractString, n_val::Integer, mode::Symbol)
     
     #region Plotting 
     
-    p = plot(legend = false, framestyle = :box)
+    p = plot(legend = false, framestyle = :box, aspect_ratio = :equal)
     xlims!(p, (-0.6, 0.6))
     ylims!(p, (-0.6, 0.6))
     

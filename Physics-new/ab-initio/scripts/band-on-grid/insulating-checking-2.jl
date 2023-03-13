@@ -10,7 +10,9 @@ mode = :gw
 
 val_band, cond_band, unexpected_empty_state_indices, unexpected_filled_state_indices, p = 
     check_insulator_2D(path, n_val, mode)
-    
+
+xlims!(p, (-0.1, 0.6))
+ylims!(p, (-0.1, 0.6))
 savefig(p, "insulating-check-grid.pdf")
 
 E_max = max(val_band...)
