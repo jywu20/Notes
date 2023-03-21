@@ -11,6 +11,47 @@ color_to_tuple(c::RGB) = (
     c.b * 255 |> Int
 )
 
+"""
+Create a PGFPlotsX band plot withoutcolormap on each band.
+`nkp` is the number of k-points in the k-path. 
+"""
+function pgf_band_plot(nkp, kpoint_positions, 
+    kpoint_labels, ε_min, ε_max; 
+    background_fill = colorant"white",
+    ylabel = L"$\xi_{\mathbf{k}}$ / eV")
+    band_axis = @pgf Axis({
+        ylabel = ylabel,
+        xmin = 1,
+        xmax = nkp,
+        ymin = ε_min,
+        ymax = ε_max,
+        fill = colorant"white", 
+        fill_opacity = 0.8, 
+        draw_opacity = 1,
+        text_opacity = 1,
+        legend_style = "draw=none",
+        xtick = kpoint_positions,
+        xticklabels = kpoint_labels,
+        "axis background/.style" = { fill = background_fill }
+    })
+
+    for kpt_idx in eachindex(kpoint_positions)
+        vertical_line = @pgf Plot(
+            {
+                color = colorant"grey",
+                no_marks,
+                forget_plot
+            },
+            Coordinates(
+                [kpoint_positions[kpt_idx], kpoint_positions[kpt_idx]], 
+                [ε_min, ε_max]
+            )
+        )
+        push!(band_axis, vertical_line)
+    end
+    
+    band_axis 
+end
 
 """
 Create a PGFPlotsX band plot with colormap on each band.
@@ -24,8 +65,7 @@ function pgf_band_plot_colormap(nkp, kpoint_positions,
         colormap = "{}{$(join(map(c -> "rgb255=$(color_to_tuple(c))", spin_colors), ", "))}",
         colorbar,
         colorbar_style = {
-            ytick= [1, 120], # TODO: where does this 120 come from?? Possibly it's just length(kpoint_numbers),
-            # because the color bar maps x coordinate to color
+            ytick= [1, nkp], 
             yticklabels= [min_Sz, max_Sz],
         },
         ylabel = L"$\xi_{\mathbf{k}}$ / eV",
@@ -59,6 +99,21 @@ function pgf_band_plot_colormap(nkp, kpoint_positions,
     end
     
     band_axis 
+end
+
+function pgf_plot_band!(band_axis, ε_k; color = colorant"grey", k_path = 1 : length(ε_k))
+    curve = @pgf Plot(
+        {
+            thick,
+            color = color,
+            no_marks,
+            forget_plot,
+            point_meta = "x", # Ensure that the color map is applied from teh left to the right 
+        },
+        Coordinates(k_path, ε_k)
+    )
+
+    push!(band_axis, curve)
 end
 
 function pgf_plot_band_with_color!(band_axis, ε_k, band_spin_colors)

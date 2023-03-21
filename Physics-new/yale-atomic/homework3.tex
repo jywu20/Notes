@@ -1,0 +1,297 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+
+\title{Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+
+\subsection{}
+
+In order to keep the matrix elements invariant, 
+in the Heisenberg picture we have 
+\begin{equation}
+    O_H = \ee^{\ii H t / \hbar} O_S \ee^{- \ii H t / \hbar}, 
+\end{equation}
+so that 
+\begin{equation}
+    {}_H \mel{\psi'}{O_H}{\psi}_H = {}_S \mel{\psi'}{O_S}{\psi}_S.
+\end{equation}
+The differential time evolution equation is
+\begin{equation}
+    \dv{O_H}{t} = \frac{\ii}{\hbar} H O_H - O_H \cdot \frac{\ii}{\hbar} H
+    + \ee^{\ii H t /\hbar} \pdv{O_S}{t} \ee^{- \ii H t / \hbar},
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \dv{\expval{O}}{t} &= \frac{1}{\ii \hbar} \expval{\comm*{O_H}{H}}{\psi_H}
+        + \expval*{\ee^{\ii H t /\hbar} \pdv{O_S}{t} \ee^{- \ii H t / \hbar}}{\psi_H} \\
+        &= \frac{1}{\ii \hbar} \expval{\comm*{O_H}{H}}{\psi_H}
+        + \expval*{\pdv{O_S}{t}}{\psi_S} \\
+        &= \frac{1}{\ii \hbar} \expval{\comm*{O}{H}} + \expval{\pdv{O}{t}}. 
+    \end{aligned}
+\end{equation}
+Note: here we assume $H$ has no time dependence,
+and thus the time evolution operator assumes the simple form $\ee^{- \ii H t / \hbar}$.
+The condition that $H$ has no time dependence 
+also means in the Heisenberg picture, $H_H(t) = H_H(0)$,
+and on the other hand, $H_H(t)$ can be obtained from $H_H(0)$
+by replacing the values of all operators at $t = 0$
+to the corresponding values at $t$,
+and therefore the commutation relation $\comm*{O_H(t)}{H}$
+can be obtained by replacing the occurrences of all operators  
+in $\comm*{O_H(t=0)}{H} = \comm*{O_S}{H}$
+with their values at $t$.
+That's why in the third line, 
+we omit the Heisenberg/Schrodinger picture labels.
+
+\subsection{}
+
+Since the Hamiltonian 
+\begin{equation}
+    H = \frac{p^2}{2m} + V 
+\end{equation}
+is real (and not just Hermitian), 
+we can always obtain real eigenfunctions.
+Thus
+\[
+    \begin{aligned}
+        \int \dd{x} \psi^* x (- \ii \hbar) \partial_x \psi 
+        &= - \ii \hbar \eval{\psi^* x \psi}^{\infty}_{x = - \infty}
+        + \ii \hbar \int \dd{x} \partial_x (\psi^* x) \psi \\
+        &= \ii \hbar \int \dd{x} \partial_x(x \psi) \psi 
+        = \ii \hbar \int \dd{x} \psi^2 + \ii \hbar \int \dd{x} x (\partial_x \psi) \psi \\
+        &= \ii \hbar \int \dd{x} \abs{\psi}^2 
+        - \int \dd{x} \psi^* x (- \ii \hbar \partial_x) \psi ,
+    \end{aligned}
+\]
+and therefore 
+\[
+    2 \int \dd{x} \psi^* x p \psi = \ii \hbar ,
+\]
+\begin{equation}
+    \expval{x p} =  \ii \hbar / 2.
+\end{equation}
+Therefore 
+\[
+    0 = \dv{t} \expval{xp}
+    = \frac{1}{\ii \hbar} \expval{\comm*{xp}{H}}.
+\]
+The commutation relation can be evaluated as 
+(note the correspondence between Poisson brackets 
+and commutators)
+\[
+    \begin{aligned}
+        \comm*{xp}{H} &= \frac{1}{2m} \comm*{xp}{p^2} + \comm*{xp}{V(x)} \\
+        &= \frac{1}{2m} \comm*{x}{p^2} p + x \comm*{p}{V(x)} \\
+        &= \frac{1}{2m} \cdot 2 \ii \hbar p \cdot p 
+        - x \cdot \ii \hbar \pdv{V(x)}{x},
+    \end{aligned}
+\]
+so we find 
+\[
+    0 = \ii \hbar \expval{\frac{p^2}{m}} - \ii \hbar \expval{x \pdv{V(x)}{x}},
+\]
+and therefore
+\begin{equation}
+    2 \expval{T} = \expval{x \pdv{V(x)}{x}}.
+\end{equation}
+
+\subsection{}
+
+
+
+\subsection{}
+
+When $V = - 1 / r$, we have 
+\begin{equation}
+    E = \expval{V} + \frac{1}{2} \expval{r \pdv{V}{r}} 
+    = - \expval{\frac{1}{r}} + \frac{1}{2} \expval{r \cdot \frac{1}{r^2}}
+    = - \frac{1}{2} \expval{\frac{1}{r}} < 0,
+\end{equation}
+and therefore bound states are possible.
+When $V = - 1 / r^2$, however, we have 
+\begin{equation}
+    E = \expval{V} + \frac{1}{2} \expval{r \pdv{V}{r}} 
+    = - \expval{\frac{1}{r^2}} + \frac{1}{2} \expval{r \cdot \frac{2}{r^3}} = 0,
+\end{equation} 
+which causes a contradiction:
+if a bound state exists, then its energy is not below $E = 0$.
+Thus the potential $V(r) = - 1 / r^2$ doesn't assume bound states.
+
+\section{}
+
+
+
+\section{}
+
+\subsection{}
+
+The dipole interaction matrix is 
+\begin{equation}
+    H = - e r \mathcal{E} \cos \theta .
+\end{equation}
+When the initial state is 
+\begin{equation}
+    \psi_0(\vb*{r}) = \frac{1}{\sqrt{\pi}} \ee^{- r},
+\end{equation}
+we have 
+\begin{equation}
+    E_0^{(1)} =  \propto \int \dd{\Omega} r^2 \dd{r} \ee^{- 2 r} r 
+    \propto \int_{0}^{\infty} r^3 \ee^{- 2 r} 
+    = 0
+\end{equation}
+by integration by parts.
+
+\subsection{}
+
+
+
+\end{document}
