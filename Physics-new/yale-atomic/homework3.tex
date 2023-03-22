@@ -376,15 +376,17 @@ where $E_0 = \SI{13.6}{eV}$.
 
 \subsection{}
 
-The dipole interaction matrix is 
+When the electric field $\vb*{E}$ is along the $z$ axis, 
+the dipole interaction matrix is 
 \begin{equation}
     H = - e r \mathcal{E} \cos \theta .
+    \label{eq:dipole}
 \end{equation}
 When the initial state is 
 \begin{equation}
     \psi_0(\vb*{r}) = \frac{1}{\sqrt{\pi}} \ee^{- r},
 \end{equation}
-we have 
+the first-order energy correction is
 \begin{equation}
     E_0^{(1)} \propto \int \dd{\Omega} r^2 \dd{r} \ee^{- 2 r} r 
     \propto \int_{0}^{\infty} r^3 \ee^{- 2 r} 
@@ -394,6 +396,119 @@ by integration by parts.
 
 \subsection{}
 
+We have (note that $\psi_0(\vb*{r})$ has no $\theta$ or $\varphi$ dependence)
+\begin{equation}
+    \begin{aligned}
+        \mel{n l m}{e \vb*{r} \cdot \vb*{E}}{0} 
+        &\propto \int \dd[3]{\vb*{r}} \psi_{n l m}^*(\vb*{r}) r \cos \theta \psi_0(\vb*{r}) \\
+        &\propto \int_{0}^{\pi} \sin \theta \dd{\theta} \int_{0}^{2\pi} \dd{\varphi}
+        \ee^{- \ii m \varphi} \legpoly_l^{\abs{m}}(\cos \theta) \cos \theta .
+    \end{aligned}
+\end{equation}
+The radial part always has a non-zero contribution, 
+since the $r$ factor is not in the $\{R_{nl}\}$ basis 
+and therefore 
+\[
+    \int_{0}^{\infty} r^2 \dd{r} R_{00}(r)^* r R_{nl}(r)
+\]
+doesn't vanish because the orthogonal conditions 
+are not available here.
+So in order to know when the transition is not possible,
+we only need to focus on the $\theta$ and $\varphi$ parts.
+For the $\varphi$ part
+\[
+    \int_{0}^{2\pi} \ee^{- \ii m \varphi} \dd{\varphi}
+\]
+obviously vanishes except when $m = 0$.
+When $m = 0$, the $\theta$ part is 
+\[
+    \int_{0}^{\pi} \sin \theta \dd{\theta} \legpoly_l^{\abs{m}}(\cos \theta) \cos \theta 
+    = \int_{-1}^{1} x \legpoly_l(x) \dd{x} ,
+\]
+and since $\legpoly_1(x) = x$, 
+due to orthogonal relations, only when $l = 1$, 
+the above expression has a non-zero value.
+Thus if a static electric field is added along the $z$ axis, 
+the only possible final state
+is $\psi_{n = 1, m = 0}$.
 
+\subsection{}
+
+We want to use the Dalgarno-Lewis method and solve 
+\begin{equation}
+    \left(H_0-E_n^{(0)}\right)\left|n^{(1)}\right\rangle=-\left(H^{\prime}-E_n^{(1)}\right)\left|n^{(0)}\right\rangle, \quad 
+    E_n^{(2)}=\left\langle n^{(0)}\left|H^{\prime}\right| n^{(1)}\right\rangle-E_n^{(1)}\left\langle n^{(0)} \mid n^{(0)}\right\rangle
+\end{equation}
+for the hydrogen ground state,
+where $H'$ is given by \eqref{eq:dipole}.
+Since we work in the Hartree atomic units, 
+we can set $e = - 1$,
+and ground state energy is 
+\begin{equation}
+    E_0^{(0)} = - \frac{1}{2}.
+\end{equation}
+Therefore the PDE about $\psi_0^{(1)}$ is 
+\begin{equation}
+    \left(
+        - \frac{\laplacian}{2} - \frac{1}{r} + \frac{1}{2}
+    \right) \psi_0^{(1)} = 
+    - r \mathcal{E} \cos \theta \psi^{(0)} (r)
+    = - r \mathcal{E} \cos \theta \frac{1}{\sqrt{\pi}} \ee^{- r}.
+\end{equation}
+Taking the ansatz 
+\begin{equation}
+    \psi^{(1)}_0(\vb*{r}) = (A + B r + C r^2) \ee^{-r} \cos \theta,
+\end{equation}
+we have 
+\[
+    \text{LHS} = \ee^{-r} \cos \theta \frac{A + (B - 2C) r^2 + 2 C r^3}{r^2}.
+\]
+Comparing this with the RHS, we find 
+\[
+    A = 0, \quad B - 2 C = 0, \quad 2 C = - \mathcal{E} \frac{1}{\sqrt{\pi}},
+\]
+and therefore 
+\begin{equation}
+    \psi^{(1)}_0(\vb*{r}) = - \frac{\mathcal{E}}{2 \sqrt{\pi}} (r^2 + 2 r) \ee^{-r} \cos \theta.
+\end{equation}
+Since $E_n^{(1)}$ vanishes, 
+the second-order perturbation of the energy is 
+\begin{equation}
+    \begin{aligned}
+        E_0^{(2)} &= \int \dd[3]{\vb*{r}} \frac{1}{\sqrt{\pi}} \ee^{- r} 
+        \cdot (r \mathcal{E} \cos \theta)
+        \cdot \frac{- \mathcal{E}}{2 \sqrt{\pi}} (r^2 + 2 r) \ee^{-r} \cos \theta \\
+        &= - \frac{\mathcal{E}^2}{2 \pi} \cdot 2\pi \cdot 
+        \int_{0}^{\infty} r^2 \dd{r} (r^2 + 2 r) \ee^{-2r} \cdot 
+        \int_{0}^{\pi} \sin \theta \dd{\theta} \cos^2 \theta \\
+        &= - \frac{\mathcal{E}^2}{2 \pi} \cdot 2\pi \cdot \frac{3}{2} \cdot \frac{2}{3} 
+        = - \mathcal{E}^2.
+    \end{aligned}
+\end{equation}
+This expression is a specific case of 
+\begin{equation}
+    E^{(2)} = - \frac{1}{2} \alpha_{\text{p}} \mathcal{E}^2.
+    \label{eq:energy-alpha}
+\end{equation}
+The expression can be shown by the following argument:
+due to selection rules (generalization of last section)
+for any atomic orbital, $E_n^{(1)} = 0$,
+and therefore 
+\begin{equation}
+    E^{(2)} = \mel*{nlm^{(0)}}{ r \mathcal{E} \cos \theta}{nlm^{(1)}},
+\end{equation}
+while we have 
+\begin{equation}
+    d = \expval{- e r \cos \theta}{nlm}
+    \approx (\bra*{nlm^{(0)}} + \bra*{nlm^{(1)}}) (- e r \cos \theta) (\ket*{nlm^{(0)}} + \ket*{nlm^{(1)}})
+    \eqqcolon \alpha_{\text{p}} \mathcal{E}. 
+\end{equation}
+Ignoring the second order terms, 
+and employing the condition that the eigenfunctions are all real,
+we find 
+\[
+    \mel*{nlm^{(0)}}{ r\cos \theta}{nlm^{(1)}} = - \alpha_{\text{p}} \mathcal{E},
+\]
+and thus \eqref{eq:energy-alpha}.
 
 \end{document}
