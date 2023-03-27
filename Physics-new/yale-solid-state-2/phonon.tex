@@ -174,6 +174,8 @@
 
 \section{Electron-phonon coupling}
 
+\subsection{First principles}
+
 Recall that the total Hamiltonian of a condensed system is 
 \begin{equation}
     H = \sum_{i} \frac{\vb*{p}_i^2}{2m} 
@@ -270,6 +272,8 @@ But for semiconductors with small band gaps or metals,
 this condition breaks, 
 and the full Hamiltonian involving inter-band scattering has to be used. 
 
+\subsection{Nearly free electron and phonons}
+
 Similar to the case of electron-electron Coulomb scattering, 
 several interaction channels with clear physical pictures can be recognized,
 and effective models have been proposed to capture the major behaviors of them.
@@ -287,14 +291,13 @@ where
     g_{\vb*{k} \vb*{q}} = \sqrt{\frac{\hbar}{2 m \omega_{\vb*{q}}}} \vb*{q} \cdot \vu*{\epsilon} V_{\vb*{q}}, 
     \quad \omega_{\vb*{q}} = v_{\text{s}} \abs*{\vb*{q}}, 
 \end{equation}
-and $V_{\vb*{q}}$ is the screened Coulomb potential.
+and $V_{\vb*{q}}$ is the screened Coulomb potential
+(or the unscreened Coulomb potential 
+when screening is not that strong).
 This means as the system becomes metallic, 
 the phonon line width should be smaller, 
 because the potential is now screened 
 and the scattering rate decreases.
-Note that if the electrons are not near-free (i.e. localized), 
-we no longer work in the $\vb*{k}$-representation, 
-and that leads to TODO
 
 Note that $\vb*{q}$ is the crystal momentum of phonons
 plus a reciprocal lattice vector, 
@@ -312,5 +315,284 @@ This can be understood in the continuous limit,
 where electrons interact with the charge density of the lattice,
 and transverse phonon modes don't 
 disrupt the density.
+
+\subsection{Localized electrons and phonons}
+
+If the electrons are not near-free (i.e. localized), 
+we no longer work in the $\vb*{k}$-representation, 
+and that leads to a change of the form of the effective model 
+of electron-phonon interaction. 
+\concept{Holstein Hamiltonian} captures a scenario in this case,
+where the coupling between electrons and phonons is highly localized, 
+and the phonons are approximately Einstein phonons (TODO: why?).
+The Hamiltonian is
+\begin{equation}
+    H = - \sum_{\vb*{i}, \vb*{j}} t_{\vb*{i} \vb*{j}} c^\dagger_{\vb*{i}} c_{\vb*{j}}
+    + \omega_0 \sum_{\vb*{i}} b^\dagger_{\vb*{i}} b_{\vb*{i}}
+    + g \sum_{\vb*{i}} c^\dagger_{\vb*{i}} c_{\vb*{i}} (b^\dagger_{\vb*{i}} + b_{\vb*{i}}).
+\end{equation}
+The interaction term essentially is $g X_{\vb*{i}} n_{\vb*{i}}$, 
+the physical of which is that 
+atomic displacement at a particular point creates
+a change in the density of positive charges,
+and therefore an electrostatic field is established 
+and is felt by the electron density.
+
+The Holstein Hamiltonian is a toy model for structural distortion:
+we can arrange the electron density and $X_{\vb*{i}}$
+to change periodically so that at each site 
+the electron-phonon interaction term is negative 
+and by spontaneous reduction of symmetry,
+we get a state with lower energy.
+
+We can also generalize the Holstein model 
+by considering interaction between $n_{\vb*{i}}$ and $X_{\vb*{j}}$.
+This happens especially when Coulomb screening is weak, 
+and long-range interaction is therefore possible.
+When this condition -- that the Coulomb interaction between electrons and charge fluctuation of the lattice is long-range --
+and the electron density is small, 
+the Holstein model is just the Frohlich model.
+
+\subsection{Structural distortion's influence on electron bands (and what interaction channel is needed to do this)}
+
+Permanently displaced atoms due to electron-phonon coupling 
+also changes the wave function overlap of band electrons,
+and the latter can be captured by a mean-field Hamiltonian 
+in which the fluctuation of atomic positions is ignored.
+People may also call this \concept{Peierls Hamiltonian},
+because the structural change is usually known as 
+\concept{Peierls transition}.
+It's originally developed for polyacetylene,
+in which the alternating hopping coefficients 
+is due to electronic structures instead of atomic positions,
+but it works well for systems with Peierls transition.
+The Hamiltonian is 
+\begin{equation}
+    H = - \sum_{\pair{\vb*{i}, \vb*{j}}} 
+    t_{\vb*{i} \vb*{j}} c^\dagger_{\vb*{i}} c_{\vb*{j}},
+\end{equation}
+where by Taylor series, we have
+\begin{equation}
+    t_{\vb*{i} \vb*{j}} = \underbrace{t(\vb*{R}_{\vb*{i}}^{(0)} - \vb*{R}^{(0)}_{\vb*{j}})}_{t_0} 
+    (1 \pm \alpha (\vb*{X}_{\vb*{i}} - \vb*{X}_{\vb*{j}}) + \cdots),
+    \quad \vb*{R}_{\vb*{i}} = \vb*{R}^{(0)}_{\vb*{i}} + \vb*{X}_{\vb*{i}}.
+\end{equation}
+
+In 1D systems, a toy-model capturing this is the 
+\concept{Su-Schrieffer-Heege (SSH) model}.
+This model considers the simplest case of the influence of Peierls transition to electron band,
+which only considers nearest-neighbor hopping.
+If the material before Peierls transition only has nearest-neighbor hopping, 
+then usually after Peierls transition, 
+nearest-neighbor hopping is also enough,
+except when some exotic interaction channels 
+intermediate long-range hopping.
+So the model now (note that we are in 1D) is 
+\begin{equation}
+    H = \sum_{\pair{m, n}} t_0 \alpha (X_{n} - X_m) c^\dagger_m c_n.
+\end{equation}
+This Hamiltonian comes from the following electron-phonon interaction channel:
+\begin{equation}
+    H_{\text{electron-phonon coupling}}
+    = - g \sum_{n} (c^\dagger_n c_{n+1} + c^\dagger_{n+1} c_n) (b^\dagger_{n} + b_n - b).
+\end{equation}
+The type of phonon involved in forming the SSH model 
+is called a \concept{bond phonon},
+because it changes the length of chemical bonds between atoms.
+The interaction channel sketched above involving bond phonons 
+is the third important type of electron-phonon coupling.
+Note that it's not simply a density coupling.
+
+\section{Corrections brought by electron-phonon coupling}
+
+\subsection{Correction to single-electron spectrum}
+
+Usually the influence of electron-phonon coupling can be treated as a perturbation,
+because $g_{\vb*{k} \vb*{q}}$ is usually much smaller than both $\varepsilon_{\vb*{k}}$ and $\omega_{\vb*{q}}$
+($\sim \SI{1}{meV}$ to $\SI{50}{meV}$),
+and then $\varepsilon_{\vb*{k}}$ is much larger than $\omega_{\vb*{q}}$.
+
+We first consider the correction to a single-electron state 
+by the presence of phonons.
+We also work under a very low temperature,
+so that there is no thermal phonon in the system
+(otherwise we need to consider thermally corrected -- and broadened -- 
+single-electron spectrum, and things can be much more complicated). 
+We do perturbative calculation up to second order.
+Here we do an old-fashioned perturbation theory: 
+\begin{equation}
+    \tilde{\varepsilon}_{\vb*{k}} = \varepsilon_{\vb*{k}}^0 
+    + \mel*{0}{c_{\vb*{k}} H_{\text{epc}} c^\dagger_{\vb*{k}}}{0}
+    + \mel*{0}{c_{\vb*{k}} H_{\text{epc}} \frac{1 - c^\dagger_{\vb*{k}} \dyad*{0}{0} c_{\vb*{k}}}{\varepsilon^0_{\vb*{k}} - H_0} H_{\text{epc}} c^\dagger_{\vb*{k}} }{0}.
+    \label{eq:phonon-perturbation-energy}
+\end{equation}
+The first-order term is proportional to $n_{\vb*{q} = 0}$,
+and the non-existence of phonons in the ground state 
+means this term vanishes.
+The $\dyad{0}$ part in the second-order term vanishes
+for the same reason the first-order term vanishes.
+Then it's easy to see that 
+\begin{equation}
+    \tilde{\varepsilon}_{\vb*{k}} = \varepsilon_{\vb*{k}}^{0} - \frac{1}{N} \sum_{\vb*{q}} \frac{g_{\vb*{q}}^2}{\varepsilon^0_{\vb*{k} + \vb*{q}} + \omega_{-\vb*{q}} - \varepsilon_{\vb*{k}}^0}.
+    \label{eq:electron-spectrum-phonon}
+\end{equation}
+This can also be obtained using self-energy correction 
+(and this is expected because of the equivalence 
+between Goldstone diagrams and Feynman diagrams).
+
+As a rudimentary demonstration of what \eqref{eq:electron-spectrum-phonon} means, 
+we assume the electron is nearly free 
+and the phonon is Einstein phonon,
+and this means 
+\[
+    \varepsilon_{\vb*{k}}^0 = \frac{\vb*{k}^2}{2m},
+\]
+and therefore
+\begin{equation}
+    \begin{aligned}
+        \tilde{\varepsilon}_{\vb*{k}} &= \varepsilon^0_{\vb*{k}} - \frac{1}{N} \sum_{\vb*{q}} \frac{g_{\vb*{q}}^2}{\omega_0 + \frac{\vb*{q}^2}{2m} + \frac{\vb*{k} \cdot \vb*{q}}{m}} \\
+        &= \varepsilon^0_{\vb*{k}} - \frac{1}{N} \sum_{\vb*{q}} \frac{g_{\vb*{q}}^2}{\omega_0 + \varepsilon^0_{\vb*{q}}} \left(
+            1 + \frac{\vb*{k} \cdot \vb*{q}}{m (\omega_0 + \varepsilon_{\vb*{q}}^0)} + 
+            \left(
+                \frac{\vb*{k} \cdot \vb*{q}}{m (\omega_0 + \varepsilon_{\vb*{q}}^0)}
+            \right)^2 + \cdots
+        \right) ,
+    \end{aligned}
+\end{equation}
+Here the $m$ parameter may be corrected by the crystal potential 
+and/or electron-electron scattering (as in Fermi liquid).
+Replacing the sum over the $\vb*{q}$ grid by an integral, 
+we have 
+\begin{equation}
+    \begin{aligned}
+        \tilde{\varepsilon}_{\vb*{k}} &= \varepsilon^0_{\vb*{k}}
+        - V_{\text{u.c.}} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{g_{\vb*{q}}^2}{\omega_0 + \varepsilon^0_{\vb*{q}}} \left(
+            1 + 
+            \left(
+                \frac{\vb*{k} \cdot \vb*{q}}{m (\omega_0 + \varepsilon_{\vb*{q}}^0)}
+            \right)^2 + \cdots
+        \right) \\
+        &= \varepsilon^0_{\vb*{k}} - V_{\text{u.c.}} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{g_{\vb*{q}}^2}{\omega_0 + \varepsilon^0_{\vb*{q}}} 
+        - V_{\text{u.c.}} \cdot \frac{\vb*{k}^2}{2m} \cdot \frac{2}{3m} \int \frac{\dd[3]{\vb*{q}}}{(2\pi)^3} \frac{g_{\vb*{q}}^2 }{\omega_0 + \varepsilon^0_{\vb*{q}}} .
+    \end{aligned}
+\end{equation}
+Here we have used the fact that the $\vb*{k} \cdot \vb*{q}$ term vanishes in the integration, 
+and that 
+\begin{equation}
+    \int \dd[3]{\vb*{q}} f(\abs{\vb*{q}}) (\vb*{k} \cdot \vb*{q})^2 = 
+    \frac{1}{3} \vb*{k}^2 \cdot \int \dd[3]{\vb*{q}} f(\abs{\vb*{q}}) \vb*{q}^2.
+\end{equation}
+The corrected single-electron energy then becomes 
+\begin{equation}
+    \tilde{\varepsilon}_{\vb*{k}} = (1 - \lambda) \frac{\vb*{k}^2}{2m} - \Delta E,
+\end{equation}
+where $\Delta E, \lambda \sim g^2$.
+Since $g$ is small, we find the dispersion relation can be rewritten as 
+\begin{equation}
+    \tilde{\epsilon}_{\vb*{k}} = -\Delta E + \frac{\vb*{k}^2}{2 m^*}, \quad m^* = (1 + \lambda) m.
+\end{equation}
+
+So we find the existence of phonons -- essentially \emph{virtual} phonons -- 
+makes the mass of electrons heavier.
+Or should we call the quasiparticle in question here ``electrons''?
+The single-particle wave function is now 
+\begin{equation}
+    \begin{aligned}
+        \ket*{\psi_{\vb*{k}}} &= c^\dagger_{\vb*{k}} \ket*{0}
+        + \frac{1}{\sqrt{N}} \sum_{\vb*{q}} \frac{g_{\vb*{q}}}{\varepsilon^0_{\vb*{k} + \vb*{q}} + \omega_{-\vb*{q}} - \omega^0_{\vb*{k}}} (b^\dagger_{\vb*{-q}} + b_{\vb*{q}}) c^\dagger_{\vb*{k} + \vb*{q}} \ket*{0} \\
+        &= c^\dagger_{\vb*{k}} \ket*{0}
+        + \frac{1}{\sqrt{N}} \sum_{\vb*{q}} \frac{g_{\vb*{q}}}{\epsilon^0_{\vb*{k} + \vb*{q}} + \omega_0 - \epsilon^0_{\vb*{k}}} b^\dagger_{- \vb*{q}} c^\dagger_{\vb*{k} + \vb*{q}} \ket*{0}.
+    \end{aligned}
+    \label{eq:polaron-wave-function}
+\end{equation}
+So there is a small component in the wave function of this quasiparticle 
+in which a phonon comes together with the electron.
+This is like the picture in Fermi liquid:
+the wave function of a quasiparticle 
+have a predominant single-electron component, 
+but other components in which there are an electron and several electron-hole pairs 
+are also included.
+If we display the components in the wave function as fluctuating configurations, 
+then we can say when phonon coupling exists, 
+an electron is surrounded by a cloud of virtual phonons.
+The quasiparticle described by \eqref{eq:polaron-wave-function} is called \concept{polaron}.
+
+\subsection{What happens in a Fermi liquid ground state}
+
+Any real condensed matter system contains a soup of electrons.
+The question then is what phonons do to the Fermi liquid ground state.
+Now in \eqref{eq:phonon-perturbation-energy}, 
+the second order term needs one modification:
+the electron-phonon interaction vertex 
+involves creation of another electron, 
+which is only possible when the end state is outside of the Fermi sea.
+The corrected single-electron energy then is 
+\begin{equation}
+    \tilde{\varepsilon}_{\vb*{k}} = \varepsilon_{\vb*{k}}^{0} - \frac{1}{N} \sum_{\vb*{q}} \frac{g_{\vb*{q}}^2}{\varepsilon^0_{\vb*{k} + \vb*{q}} + \omega_{-\vb*{q}} - \varepsilon_{\vb*{k}}^0} (1 - \expval{n_{\vb*{k} + \vb*{q}}}).
+    \label{eq:polaron-in-fl}
+\end{equation}
+This means the phonon correction is only important when $\abs{\varepsilon_{\vb*{k}} - \varepsilon_{\text{F}}} \lesssim \omega_{\vb*{q}}$;
+specifically, the imaginary part of \eqref{eq:polaron-in-fl} (obtained by adding an infinitesimal imaginary part of the denominator) 
+is only non-zero when there exists a phonon mode such that $\abs{\varepsilon_{\vb*{k}} - \varepsilon_{\text{F}}} \leq \omega_{\vb*{q}}$.
+A kink therefore can be observed in the electron spectral function:
+above $\varepsilon_{\text{F}} - \omega_0$ (where $\omega_0$ is the maximal phonon frequency)
+and below $\varepsilon_{\text{F}}$, 
+we see a more broadened, less dispersive (because of the increased mass) band, 
+which is the phonon-corrected electron band i.e. the polaron band;
+below $\varepsilon_{\text{F}} - \omega_0$ however phonon correction is very weak,
+and the electron band all of a sudden becomes more dispersive.
+This prediction has been directly verified using ARPES.
+
+\subsection{Effective attraction interaction and BCS}
+
+In a superconductor, for some reason electrons in the Fermi sea attract each other, 
+so the Fermi surface becomes instable 
+and are completely destroyed,
+and the low-energy excitations become electron pairs and not single electrons.
+
+Phonon-induced effective Hamiltonian can be found in the same way we calculate electron energy renormalization.
+It is 
+\begin{equation}
+    \begin{aligned}
+        V_{\vb*{k} \vb*{k}' \vb*{q}} &= \mel*{0}{c_{\vb*{k}' - \vb*{q}} c_{\vb*{k} + \vb*{q}} H_{\text{epc}} \frac{1}{E_0 - H_0} H_{\text{epc}} c^\dagger_{\vb*{k}} c^\dagger_{\vb*{k}'}}{0} \\
+        &= 2 \abs{g_{\vb*{q}}}^2 \left(
+            \frac{1 - \expval{n_{\vb*{k} + \vb*{q}}}}{\varepsilon^0_{\vb*{k}} - \varepsilon^0_{\vb*{k} + \vb*{q}} - \omega_{- \vb*{q}}}
+            + \frac{1 - \expval{n_{\vb*{k}' - \vb*{q}}}}{\varepsilon^0_{\vb*{k}'} - \varepsilon^0_{\vb*{k}' - \vb*{q}} - \omega_{\vb*{q}}}
+        \right).
+    \end{aligned}
+\end{equation}
+Again we pick up the approximation that $\omega_{\vb*{q}} = \omega_0$.
+TODO: attraction condition
+
+\subsection{Phonon softening and Kohn anomaly}
+
+Similarly we can do self-energy correction to the phonons.
+The frequency change is 
+\begin{equation}
+    \begin{aligned}
+        \tilde{\omega}_{\vb*{q}} &= \omega^0_{\vb*{q}} + \frac{1}{N} \sum_{\vb*{k}} \abs{g_{\vb*{q}}}^2 \left(
+            \frac{\expval{n_{\vb*{k}} (1 - n_{\vb*{k} + \vb*{q}})}}{\omega^0_{\vb*{q}} + \varepsilon^0_{\vb*{k}} - \varepsilon^0_{\vb*{k} + \vb*{q}}}
+            + \frac{\expval{n_{\vb*{k}} (1 - n_{\vb*{k} - \vb*{q}})}}{\varepsilon^0_{\vb*{k}} - \varepsilon^0_{\vb*{k} - \vb*{q}} - \omega^0_{\vb*{q}}}
+        \right) \\
+        &= \omega^0_{\vb*{q}} + \frac{\abs{g_{\vb*{q}}}^2}{N} \sum_{\vb*{k}} 
+        \frac{\expval{n_{\vb*{k}}} - \expval{n_{\vb*{k} + \vb*{q}}}}{\varepsilon^0_{\vb*{k}} - \varepsilon^0_{\vb*{k} + \vb*{q}} + \omega_{\vb*{q}}}.
+    \end{aligned}
+\end{equation}
+Here we see something similar to the polaron-electron kink:
+in order for the correction to be huge, 
+we need to have $\abs*{\varepsilon^0_{\vb*{k}} - \varepsilon^0_{\vb*{k} + \vb*{q}}} \lesssim \omega^0_{\vb*{q}}$.
+One way to do so is to let $\vb*{k}$ approach $k_\text{F}$ in one direction,
+and let $\vb*{k} + \vb*{q}$ to approach $k_{\text{F}}$ in the opposite direction.
+Then, we find $\abs{\vb*{q}} \sim 2 k_{\text{F}}$.
+When this happens, we have a large negative correction to the phonon frequency 
+(if $n_{\vb*{k}} = 1$, $n_{\vb*{k} + \vb*{q}} = 0$, then $\varepsilon^0_{\vb*{k}} < \varepsilon^0_{\vb*{k} + \vb*{q}}$).
+This softening of phonon dispersion relation 
+is called \concept{Kohn anomaly}.
+
+If we manage to make $\tilde{\omega}_{\vb*{q}} = 0$ when $\abs{\vb*{q}} \sim 2 k_{\text{F}}$,
+then it costs no energy to add one phonon, 
+and at the ground state we have a phonon condensation phase at $q = 2 k_{\text{F}}$,
+which means the lattice is distorted.
+This is \concept{Peierls transition}.
 
 \end{document}
