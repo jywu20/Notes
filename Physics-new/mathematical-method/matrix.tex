@@ -1,0 +1,245 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\newcommand*{\mat}[1]{\vb{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand*{\laplace}{\mathcal{L}}
+\newcommand*{\fourier}{\mathcal{F}}
+\newcommand*{\zerotoinf}{\int_{0}^{\infty}}
+\newcommand*{\inftoinf}{\int_{-\infty}^{\infty}}
+
+\title{Matrices}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Homogeneous linear equation systems}
+
+Consider the set of linear equations 
+\begin{equation}
+    \begin{aligned}
+        &x_1 + x_3 + x_4 = 0, \\
+        &x_3 + 2 x_4 = 0, \\
+        &x_1 + 2 x_3 + 3 x_4 = 0.
+    \end{aligned}
+\end{equation}
+The equivalent matrix form is 
+\begin{equation}
+    \underbrace{\pmqty{
+        1 & 0 & 1 & 1 \\
+        0 & 0 & 1 & 2 \\
+        1 & 0 & 2 & 3
+    }}_{\mat{A}} \underbrace{\pmqty{x_1 \\ x_2 \\ x_3 \\ x_4}}_{\vb{x}} = \pmqty{0 \\ 0 \\ 0}.
+\end{equation}
+
+We use the row reduction method to solve the equations.
+First we keep the first row unchanged,
+but subtract the first row from the third row, and we get 
+\[
+    \pmqty{
+        1 & 0 & 1 & 1 \\
+        0 & 0 & 1 & 2 \\
+        0 & 0 & 1 & 2
+    }.
+\]
+Then we can just set the third row to zeros 
+because it duplicates with the second line.
+Then we can subtract the second line from the first line, and get 
+\begin{equation}
+    \pmqty{
+        1 & 0 & 0 & -1 \\
+        0 & 0 & 1 & 2 \\
+        0 & 0 & 0 & 0
+    }.
+    \label{eq:reduced-form-1}
+\end{equation}
+This is in row echelon form.
+Now we get the reduced form of $\mat{A}$,
+and from this, we find 
+\begin{equation}
+    x_4 = x_1, \quad x_3 = - 2 x_4,
+\end{equation}
+and $x_2$ can be anything.
+The general solution is therefore found to be 
+\begin{equation}
+    \vb{x} = \pmqty{
+        x_4 \\ x_2 \\ - x_4 \\ x_4
+    } = x_2 \pmqty{0 \\ 1 \\ 0 \\ 0}
+    + x_4 \pmqty{1 \\ 0 \\ -2 \\ 1}.
+    \label{eq:general-solution-1}
+\end{equation}
+So we found there are two independent solutions, 
+which is expected because \eqref{eq:reduced-form-1} has only two non-zero rows,
+so it's rank is 2, 
+and the number of independent variables is the number of columns minus the rank,
+so we should have $4 - 2 = 2$ independent variables, 
+i.e. 2 independent solutions 
+(one independent variable controls the weight of one independent solution).
+We define the \concept{row space} of a matrix 
+as the space of spanned by the non-zero row vectors 
+of its reduced matrix.
+The dimension of the row space is the rank of the matrix.
+
+We can also get \eqref{eq:general-solution-1} by looking at \eqref{eq:reduced-form-1}.
+First we need to switch $x_2$ and $x_3$ so that the non-zero lines of \eqref{eq:reduced-form-1}
+have the form of $\pmqty{\mat{I} & \mat{B}}$,
+and the non-zero columns of $\mat{B}$ are 
+$\pmqty{0 & 0}^\top$ and $\pmqty{-1 & 2}^\top$.
+Now we concatenate the opposites of the two columns 
+with $\pmqty{1 & 0}^\top$ and $\pmqty{0 & 1}^\top$, respectively,
+and we get 
+\[
+    \pmqty{0 \\ 0 \\ 1 \\ 0}, \quad \pmqty{1 \\ -2 \\ 0 \\ 1},
+\]
+which are solutions for $(x_1, x_3, x_2, x_4)$,
+and then we switch $x_2$ and $x_3$ again and get 
+\[
+    \pmqty{0 \\ 1 \\ 0 \\ 0}, \quad \pmqty{1 \\ 0 \\ -2 \\ 1}.
+\]
+
+\section{Determinant}
+
+
+
+\end{document}
