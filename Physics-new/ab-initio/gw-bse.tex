@@ -1664,12 +1664,13 @@ has a determined wave length and polarization.
 The general form of $\vb*{A}$ is 
 \begin{equation}
     \vb*{A} = \sum_{\vb*{k}, \sigma}
-        \sqrt{\frac{\hbar}{2 \omega_{\vb*{k} \sigma} \epsilon_0 V}}
+        \sqrt{\frac{\hbar}{2 \omega_{\vb*{k} \sigma} \epsilon V}}
         (
             a_{\vb*{k} \sigma} \vu*{e}_{\vb*{k} \sigma} 
             \ee^{\ii \vb*{k} \cdot \vb*{r} - \ii \omega_{\vb*{k} \sigma} t}
             + \text{h.c.}
         ),
+    \label{eq:a-and-photon}
 \end{equation}
 and here we are only considering one $\vb*{k}, \sigma$ mode; 
 from then on we use $\vb*{q}$ to refer to the momentum of the mode,
@@ -1686,19 +1687,17 @@ We do the usual real and imaginary refractive index decomposition
 \begin{equation}
     \sqrt{\epsr} = n + \ii \kappa,
 \end{equation}
-and therefore (TODO: metal)
+and therefore 
 \begin{equation}
-    \epsr = n^2 - \kappa^2 + 2 \ii n \kappa 
-    \approx n^2 + 2 \ii \kappa.
+    \epsr = n^2 - \kappa^2 + 2 \ii n \kappa .
 \end{equation}
-Here we assume $\epsr$ is not far from one, 
-and therefore $n$ is close to one and $\kappa$ is small.
 A beam of light therefore propagates as 
-\[
+\begin{equation}
     \vb*{E} \propto \ee^{\ii \vb*{k} \cdot \vb*{r}} \ee^{- \ii \omega t}
     \propto \ee^{\ii (n + \ii \kappa) \frac{\omega}{c} r} 
     = \ee^{\ii \frac{n \omega}{c} r} \ee^{- \frac{\kappa \omega}{c} r}.
-\]
+    \label{eq:light-propagating}
+\end{equation}
 This means the intensity is like 
 \[
     I \propto \abs*{\vb*{E}}^2 \propto \ee^{- 2 \kappa \frac{\omega}{c} r}.
@@ -1714,7 +1713,8 @@ then
 \]
 and therefore 
 \begin{equation}
-    \Im \epsr = 2 \kappa = \frac{c}{\omega} \alpha.
+    \Im \epsr = 2 n \kappa = \frac{c n}{\omega} \alpha.
+    \label{eq:imaginary-epsilon-alpha}
 \end{equation}
 
 The next question is what is $\alpha$. 
@@ -1767,7 +1767,9 @@ This means
     and then fit the $H_{\text{eff}}$ according to the strength of scattering.
 \end{theorybox}
 
-The numerator is now given by Fermi golden rule: 
+The numerator is now given by Fermi golden rule.
+In the below equation we use $n$ to refer to the number of photons.
+We have
 \[
     \begin{aligned}
         &\quad \text{photons absorbed per unit volume per second} \\
@@ -1776,31 +1778,79 @@ The numerator is now given by Fermi golden rule:
             \abs*{\mel**{S, n - 1}{e \vb*{v} \cdot \vb*{A}}{0, n}}^2 
             \delta(\omega - \Omega_S ) \\
         &= \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
-            \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+            \frac{\hbar e^2}{2 \omega \epsilon V} \cdot
             \abs*{\mel**{S, n - 1}{\vb*{v} \cdot a_{\vb*{k} \sigma} \vu*{e} \ee^{\ii \vb*{k} \cdot \vb*{r}}}{0, n}}^2 
             \delta(\omega - \Omega_S )  \\
         &\approx  \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
-        \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+        \frac{\hbar e^2}{2 \omega \epsilon V} \cdot
         \abs*{\mel**{S, n - 1}{\vb*{v} \cdot a_{\vb*{k} \sigma} \vu*{e}}{0, n}}^2 
         \delta(\omega - \Omega_S )  \\
         &= \frac{1}{V} \frac{2\pi}{\hbar} \sum_{S} 
-        \frac{\hbar e^2}{2 \omega \epsilon_0 V} \cdot
+        \frac{\hbar e^2}{2 \omega \epsilon V} \cdot
         \abs*{\vb*{v} \cdot \vu*{e} \sqrt{n} \braket*{S, n - 1}{0, n - 1}}^2 
         \delta(\omega - \Omega_S ) \\
-        &= \frac{\pi e^2 n}{\omega \epsilon_0 V^2} 
+        &= \frac{\pi e^2 n}{\omega \epsilon V^2} 
             \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S), 
     \end{aligned}
 \] 
 where we have used the condition 
 that the momentum of the incident photon is usually very small 
 compared with the momentum of other excitations in a solid.
+Here the corrected dielectric constant $\epsilon = \epsilon_{\text{r}} \epsilon_0$
+enters the expression because it appears in \eqref{eq:a-and-photon}.
+When absorption is strong, 
+we need to replace $\epsilon_{\text{r}}$ with $n^2$.
+This can be verified by considering the energy flow in the material:
+when \eqref{eq:light-propagating} is true
+(or, to be exact, when the electric field is \eqref{eq:light-propagating} 
+plus its complex conjugate: 
+$\vb*{E}$ is a real field and should stay so when we are dealing with energy, etc.;
+the damping plain wave ansatz \eqref{eq:light-propagating} only works when we solve linear equations), 
+we always have
+\begin{equation}
+    \vb*{S} = \vb*{E} \times \vb*{H} = \frac{1}{\mu_0} \vb*{E} \times \left(
+        \frac{\vb*{k}}{\omega} \times \vb*{E}
+    \right) 
+    = \frac{\vb*{E}^2}{\mu_0 \omega} \vb*{k}, 
+    \expval{\vb*{S}} = \frac{1}{2} \frac{\vb*{E}_0^2}{\mu_0 \omega} \vb*{k}.
+\end{equation}
+The real part of this is the ``real'' energy flow,
+which is now proportional to the imaginary part of $\vb*{k}$, 
+because as is said above, $\vb*{E}$ now is real.
+We still want this to still be 
+the energy density times the speed of light ($c / n$),
+and thus we find the energy density should be 
+\begin{equation}
+    w = \frac{1}{2} \epsilon_0 n^2 \vb*{E}_0^2 = \epsilon_0 n^2 \expval{\vb*{E}^2}.
+    \label{eq:density-energy-with-absorption}
+\end{equation}
+This means we need to replace $\epsilon_0$ in \eqref{eq:a-and-photon}
+with $n^2$,
+so that from \eqref{eq:a-and-photon} we are able to get \eqref{eq:density-energy-with-absorption}.
+So we find (below we change the symbol for the photon number 
+back to $n_{\text{photon}}$)
+\begin{equation}
+    \text{photons absorbed per unit volume per second} 
+    = \frac{\pi e^2 n_{\text{photon}}}{\omega \epsilon_0 n^2 V^2} 
+    \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+\end{equation}
+
 The denominator is 
 \[
-    \text{photons incident per unit area per second} = \frac{n c}{V}.
+    \text{photons incident per unit area per second} = \frac{n_{\text{photon}} c / n}{V}.
 \]
+Here we need to put the refractive index into 
+the expression of energy flow;
+we can verify this by again explicit evaluating $\vb*{E} \times \vb*{H}$
+with an electromagnetic plain wave: 
+the wave vector enters the expression 
+because $\vb*{H}$ is proportional to $\curl{\vb*{E}}$,
+and its relation with $\omega$ contains 
+the speed of light in the material,
+which is corrected by the refractive index.
 So putting everything together, we get 
 \begin{equation}
-    \alpha = \frac{\pi e^2}{\omega \epsilon_0 c V} \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
+    \alpha = \frac{\pi e^2}{\omega \epsilon_0 n c V} \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
 \end{equation}
 and 
 \begin{equation}
@@ -1808,6 +1858,17 @@ and
         \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
     \label{eq:light-matter.epsilon-img}
 \end{equation}
+It can be seen that the refractive index dependence in $\alpha$ 
+is mysteriously canceled by \eqref{eq:imaginary-epsilon-alpha}.
+This shouldn't be surprising 
+because the dielectric constant has the Feynman diagrammatic meaning of 
+``vacuum polarization'',
+and its imaginary part can be obtained via the optical theorem
+and is directly proportional to the scattering rate 
+and has no refractive index dependence.
+This means to directly calculate $\Im \epsilon_{\text{r}}$ is actually easier 
+than to directly calculate $\alpha$,
+and the former is the usual scheme used in \abinitio{} calculations.
 
 The relation \eqref{eq:light-matter.epsilon-img} is derived under SI. 
 In Gaussian system of units, 
