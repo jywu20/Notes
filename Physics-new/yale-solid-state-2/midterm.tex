@@ -61,6 +61,7 @@
 \DeclareMathOperator{\bigO}{\mathcal{O}}
 
 % TikZ setting
+\usetikzlibrary{calc}
 \usetikzlibrary{arrows,shapes,positioning}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{decorations.markings}
@@ -320,7 +321,7 @@ The model Hamiltonian is
     \begin{aligned}
         H &= \sum_k \varepsilon_k^{\text{c}} c_k^\dagger c_k + 
         \sum_k \varepsilon_k^{\text{v}} f_k^\dagger f_k
-        + \sum_q \omega_q b^\dagger_q b_q \\
+        + \sum_q \hbar \omega_q b^\dagger_q b_q \\
         &\quad + \frac{1}{L} \sum_{k, k', q} V_q c^\dagger_{k+q} f^\dagger_{k'-q} f_{k'} c_{k} \\
         &\quad + \frac{1}{\sqrt{L}} \sum_{k, q} g_{kq} c^\dagger_{k+q} b_{q} f_{k} + \text{h.c.} \\
         &\quad - \mu N,
@@ -342,21 +343,150 @@ needs the additional energy from an existing phonon.
 
 \subsection{}
 
-Since 
+We consider a case in which phonons are ``frozen'' into a mean field, 
+and the $\vb*{q}$ of that mean field is small compared 
+wit the momenta of electrons.
+We have
+\begin{equation}
+    X_i = \frac{1}{\sqrt{N}} \sum_q \ee^{\ii q a j} X_q , \quad 
+    X_q = \sqrt{\frac{\hbar}{2 M \omega_q}} (b_q + b_{-q}^\dagger).
+\end{equation}
+Since $q$ involved here is small, 
+in the system we have a lattice displacement field 
+of a macroscopic wave length,
+and the displacement field is almost constant in the eyes 
+of electrons in a small region.
+So if we use $X$ to refer to the displacement field in a small region, 
+then we have 
+\begin{equation}
+    X = \frac{1}{\sqrt{N}} \sqrt{\frac{\hbar}{2 M \omega_0}} (b + b^*),
+\end{equation}
+where now $b$ is the (complex) mean field 
+representing the phonon mean field.
+Since $X$ is an intensive property,
+it can be seen that $b \propto \sqrt{N}$.
+
+The Hamiltonian is now 
+(since the $U(1)$ symmetry is still kept, 
+the chemical potential term has trivial behavior in diagonalization 
+and can be left aside)
+\begin{equation}
+    \begin{aligned}
+        H &= \sum_k \varepsilon^{\text{c}}_k c^\dagger_k c_k
+        + \sum_k \varepsilon^{\text{v}}_k f^\dagger_k f_k 
+        + \frac{g_0}{\sqrt{L}} \sum_k (b c^\dagger_k f_k + b^* f^\dagger_k c_k) \\
+        &= \sum_k \pmqty{
+            c^\dagger_k & f_k^\dagger
+        } \pmqty{
+            \varepsilon^{\text{c}}_k & \frac{g_0}{\sqrt{L}} b \\
+            \frac{g_0}{\sqrt{L}} b^* & \varepsilon^{\text{v}}_k
+        } \pmqty{
+            c_k \\ f_k
+        } .
+    \end{aligned}
+\end{equation}
+Diagonalization of this Hamiltonian gives
+\begin{equation}
+    \varepsilon_k^{\text{c}', \text{v}'} = \frac{
+        \varepsilon^{\text{c}}_k + \varepsilon^{\text{v}}_k 
+        \pm \sqrt{
+            (\varepsilon^{\text{c}}_k - \varepsilon^{\text{v}}_k)^2 
+            + \frac{4 g_0^2}{L} \abs{b}^2
+        }
+    }{2}.
+    \label{eq:diag-energy}
+\end{equation}
+It can be easily verified that 
+the distance between the conduction band and the valence band is increased,
+because when the square root in the expression is positive, 
+it's larger than $\varepsilon^{\text{c}}_k - \varepsilon^{\text{v}}_k$.
+Note that since $b \propto \sqrt{N} \propto \sqrt{L}$,
+the above equation contains only intensive quantities 
+and has no real $L$ dependence.
+
+The ground state total energy is then 
+\begin{equation}
+    \begin{aligned}
+        E' &= \sum_k \frac{
+            \varepsilon^{\text{c}}_k + \varepsilon^{\text{v}}_k 
+            - \sqrt{
+                (\varepsilon^{\text{c}}_k - \varepsilon^{\text{v}}_k)^2 
+                + \frac{4 g_0^2}{L} \abs{b}^2
+            }
+        }{2} + \hbar \omega_0 \abs{b}^2 \\
+        &\approx \underbrace{\sum_k \varepsilon^{\text{v}}_k}_{E} 
+        - \sum_k \frac{g_0^2}{(\varepsilon^{\text{c}} - \varepsilon^{\text{v}}_k) L} \abs{b}^2
+        + \hbar \omega_0 \abs{b}^2.
+    \end{aligned}
+    \label{eq:ground-state-phonon}
+\end{equation}
+The second line only considers the $X^2$ term.
+So whether creating a phonon coherent state in the ground state can save energy 
+depends on the competition between 
+the energy saving from dressing the electron 
+with a phonon cloud 
+and the energy cost to create some phonons.
+
+The above results 
+can also be found by many-body perturbation theory.
+In the language of Feynman diagrams,
+the irreducible self-energy diagram has exactly 
+one $f^\dagger c$ vertex and one $c^\dagger f$ vertex, 
+and we have 
+\begin{equation}
+    - \ii \Sigma_{k}^{\text{v}} (\omega)
+    =\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.7,xscale=0.7, baseline=(XXXX.south) ]
+    \path (0,100);\path (180.6666717529297,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Straight Lines [id:da48824437516573016] 
+    \draw    (23.33,29.33) -- (68.83,29.33) ;
+    \draw [shift={(49.88,29.33)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+    %Straight Lines [id:da2397809827455355] 
+    \draw    (68.83,29.33) -- (114.33,29.33) ;
+    \draw [shift={(95.38,29.33)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+    %Straight Lines [id:da5914746819325563] 
+    \draw    (114.33,29.33) -- (159.83,29.33) ;
+    \draw [shift={(140.88,29.33)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+    %Straight Lines [id:da3532907307090305] 
+    \draw  [dash pattern={on 0.84pt off 2.51pt}]  (68.83,29.33) -- (68.83,69.52) ;
+    \draw [shift={(68.83,69.52)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da06939704075217423] 
+    \draw  [dash pattern={on 0.84pt off 2.51pt}]  (114.33,29.33) -- (114.33,69.52) ;
+    \draw [shift={(114.33,69.52)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    % Text Node
+    \draw (46.08,30.83) node [anchor=north] [inner sep=0.75pt]   [align=left] {$\displaystyle k$,v};
+    % Text Node
+    \draw (91.58,30.83) node [anchor=north] [inner sep=0.75pt]   [align=left] {$\displaystyle k$,c};
+    % Text Node
+    \draw (137.08,30.83) node [anchor=north] [inner sep=0.75pt]   [align=left] {$\displaystyle k$,v};
+    \end{tikzpicture}
+    = \frac{- \ii g_0 b}{\sqrt{L}} \cdot \frac{\ii}{\omega - \varepsilon^{\text{c}}_k + \mu}
+    \cdot \frac{- \ii g_0 b^*}{\sqrt{L}},
+\end{equation}
+\begin{equation}
+    \Sigma^{\text{v}}_k(\omega) = \frac{g_0^2}{L} \abs*{b}^2 \frac{1}{\omega - \varepsilon^{\text{c}}_k}.
+\end{equation}
+Note that this self-energy is \emph{exact}.
+Now the dispersion relation is given by
+\begin{equation}
+    \omega - \varepsilon^{\text{v}}_k + \mu - \frac{g_0^2 \abs*{b}^2}{(\omega - \varepsilon^{\text{c}}_k + \mu) L} = 0.
+\end{equation}
+It's equivalent to \eqref{eq:diag-energy}.
 
 \subsection{}
 
-TODO 
-This can also be found by perturbation theory:
-it requires one $f^\dagger c$ vertex and one $c^\dagger f$ vertex 
-to complete an energy correction to the $f$ band or the $c$ band,
-and therefore the first correction to the free energy 
+The first correction to the free energy 
 caused by phonons 
 is proportional to $b^2 \sim X^2$,
-and it's negative because of aforementioned energy saving.
-So this negative $X^2$ term is to be merged with the $(T - T_{\text{c}}) X^2$ term  
-and now $T_{\text{c}}$ is higher, 
-and therefore electron-phonon coupling enhances the existing structural instability.
+and it's sign depends on the competition 
+between the two terms in \eqref{eq:ground-state-phonon}.
+This term is to be merged with the $(T - T_{\text{c}}) X^2$ term.
+So if \eqref{eq:ground-state-phonon} saves energy in the end,
+$T_{\text{c}}$ is higher, 
+and therefore electron-phonon coupling enhances the existing structural instability;
+if the opposite case is true -- \eqref{eq:ground-state-phonon} is greater than 
+the old band theory ground state $E$ -- 
+then $T_{\text{c}}$ goes down and it's more difficult for the structural instability to happen.
 
 \printbibliography
 
