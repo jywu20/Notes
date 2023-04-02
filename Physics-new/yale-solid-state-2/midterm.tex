@@ -234,18 +234,92 @@ because in both of them, only the 3d orbital is open.
 $\alpha$-\ce{Fe} has a bcc structure;
 and the lattice constant is \SI{2.86}{\angstrom}
 (this can be found with MaterialProject).
-So there are nearest atoms for each iron atom.
-The distance between two nearest neighbor iron atoms
-is 
+So there are 8 nearest atoms for each iron atom.
+The distance between two nearest neighbor iron atoms is 
 \[
     \SI{2.86}{\angstrom} \cdot \frac{\sqrt{3}}{2} = \SI{2.48}{\angstrom}.
 \]
 
 \subsection{}
 
+We work in Hartree atomic units.
+Since the exact many-body wave function of a iron atom is hard to obtain,
+as an estimation of magnitude, 
+we place only one electron on each iron atom,
+the wave function of which is 
+\begin{equation}
+    \varphi(\vb*{r}) = A r^2 \ee^{-r/2}.
+\end{equation}
+The wave function is normalized as 
+\begin{equation}
+    A^2 \cdot 4 \pi \cdot \int_{0}^{\infty} r^2 \dd{r} r^4 \ee^{-r} = 1 \Rightarrow
+    A = \frac{1}{24 \sqrt{5\pi}}.
+\end{equation}
+Suppose $a$ is the distance between two iron atoms.
+We have 
+\begin{equation}
+    \begin{aligned}
+        J &= \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} 
+        \varphi^*_2(\vb*{r}_1) \varphi_1(\vb*{r}_1) 
+        \frac{1}{\abs*{\vb*{r}_1 - \vb*{r}_2}} 
+        \varphi_1^*(\vb*{r}_2) \varphi_2(\vb*{r}_2) \\
+        &= \int \dd[3]{\vb*{r}_1} \int \dd[3]{\vb*{r}_2} 
+        \varphi(\vb*{r}_1 - a \vu*{x} / 2) \varphi(\vb*{r}_1 + a \vu*{x} / 2) 
+        \frac{1}{\abs*{\vb*{r}_1 - \vb*{r}_2}} 
+        \varphi(\vb*{r}_2 + a \vu*{x} / 2) \varphi(\vb*{r}_2 - a \vu*{x} / 2) ,
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \varphi_2(\vb*{r}) = \varphi(\vb*{r} - a \vu*{x} / 2), \quad 
+    \varphi_1(\vb*{r}) = \varphi(\vb*{r} + a \vu*{x} / 2)
+\end{equation}
+are single-electron wave functions localized around two nearest iron atoms.
+In Hartree atomic units, \SI{2.48}{\angstrom} is \SI{4.69}{au}.
+
+\texttt{overlap-integral.jl} is a naive code 
+to calculate this integral;
+the convergence is poor though;
+if we increase the density of the real space mesh, 
+$J$ decreases;
+when the mesh is a $30 \times 30 \times 30$ one 
+we have $J = \SI{0.027}{Hartree}$;
+but that's of course not reliable \dots
+
 \subsection{}
 
+We suppose that the magnetic moment at one iron atom is $2.22 \muB$, 
+no matter what this non-integer value means.
+The effective $j$, if we assume $g_J = 2$ (see above), is $1.11$.
+We use $J = \SI{7.5}{meV}$ for the Heisenberg interaction 
+between the magnetic moments between two nearest atoms.
+Then we have 
+\begin{equation}
+    T_{\text{c}} = \frac{2 z J}{3 \kB} j(j+1)
+    = \frac{2 z J}{3 \kB} j(j+1) = \SI{1087}{K}.
+\end{equation}
+This has the same order of magnitude 
+of the observed temperature \SI{1043}{K}.
 
+\subsection{}
+
+If the iron atoms are arranged into a 1D chain 
+and the lattice constant is the same as the iron-iron distance 
+in $\alpha$-\ce{Fe},
+the Heisenberg interaction strength $J$ won't change.
+So we can put $J$ directly into the 1D magnon dispersion relation 
+\begin{equation}
+    \hbar \omega_k = 4 J S (1 - \cos ka) .
+\end{equation}
+Here $S$ should be replaced by $j = 1.11$.
+The speed is 
+\begin{equation}
+    \dv{\omega_k}{k} = \frac{4 J S a}{\hbar} \sin ka.
+\end{equation}
+When $k = \SI{10}{\percent} \cdot 2 \pi / a$, we have 
+\begin{equation}
+    v = \frac{4 J S a}{\hbar} \sin \frac{\pi}{5} = \SI{6.6e3}{m/s}.
+\end{equation}
 
 \section{Problem 2}
 
@@ -303,13 +377,39 @@ is likely due to Fermi surface instability.
 This is explained in \cite{kee2005itinerant} with a toy model.
 The effect or the coupling between the electron magnetic moment 
 and the external magnetic field 
-is modifying the chemical potential for 
+is to modify the chemical potential differently for spin-up and spin-down electrons.
+Suppose the magnetic field is along $-\vu*{z}$,
+and thus the energy of spin-down electrons is lifted 
+and the energy of spin-up electrons is pushed downwards.
+So the Fermi surface of the latter expands, 
+while the Fermi surface of the former shrinks.
+When the spin-up Fermi surface is large enough
+and exceeds a von Hove singularity, 
+it becomes unstable and 
+undergoes a symmetry breaking process 
+and becomes connected to the boundaries of the first Brillouin zone 
+on one direction (either $x$ or $y$).
+So now the translational symmetry 
+of the electronic transportation behavior 
+is broken (see Fig. 2(b) in \cite{kee2005itinerant}), 
+and we get an electronic nematic state,
+and since the shapes of the spin-up/down Fermi surfaces 
+have radical differences, 
+we are now in an itinerant ferromagnetic phase. 
+This is just the metamagnetic transition.
 
-This also explains why nematic electron fluid 
+When the external magnetic field is stronger, 
+the spin-up Fermi surface keeps expanding, 
+and finally it's connected to all the four boundaries of the 1BZ, 
+and now the previously lost translational symmetry is restored 
+(see Fig. 2(c) in \cite{kee2005itinerant}).
+This explains why nematic electron fluid 
 is only observed near the so-called quantum critical point 
 $\mu_0 H = \SI{7.9}{T}$:
-because when the external magnetic field is stronger, 
-the 
+when the magnetic field grows larger, 
+the restored translational symmetry kills the nematic phase.
+Since now the shape of the two Fermi surfaces are still drastically different, 
+we are still in an itinerant ferromagnetic phase.
 
 
 \section{Problem 3}
@@ -340,6 +440,39 @@ needs the additional energy from an existing phonon.
 \subsection{}
 
 
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{plot/dos-insulator.png}
+        \subcaption{}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{plot/dos-metal.png}
+        \subcaption{}
+    \end{subfigure}
+    \caption{Density of state plots (a) Insulator (b) Metal}
+    \label{fig:dos}
+\end{figure}
+
+When the conduction and valence bands are upward and downward dispersing parabolas 
+centered around $\Gamma$,
+the evolution of the DOS when we close the gap 
+can be seen in \prettyref{fig:dos}.
+In the insulating phase, 
+there is a period where the DOS is exactly zero;
+in the metal phase, 
+there is a bump in the DOS curve 
+corresponding to the overlap between the two bands.
+
+In the insulating phase there is no conductivity,
+because there is no active carrier:
+the conduction band is completely empty;
+the valence band contains no hole.
+In the metallic phase we have 
+\begin{equation}
+    \sigma = \frac{n_{\text{e}} e^2 \tau_{\text{e}}}{m_{\text{e}}}
+    + \frac{n_{\text{h}} e^2 \tau_{\text{h}}}{m_{\text{h}}}.
+\end{equation}
 
 \subsection{}
 
