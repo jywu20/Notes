@@ -1452,7 +1452,7 @@ TODO: derive the follows
 The relation between diagrammatic components and the $\varepsilon$, $f$ functions 
 are given in \cite{hedin1965new}.
 
-\subsection{The structure of single-electron Green function}
+\subsection{The single-electron Green function}
 
 When Coulomb interaction is turned off, 
 the single-electron Green function 
@@ -1530,7 +1530,63 @@ to $i_1, \ldots, i_n$.
 We can now apply the Wick theorem to a time ordered operator, 
 and 
 
+The free electron Green function can be derived as follows:
+The ground state is the vacuum state 
+and we have 
+\begin{equation}
+    \begin{aligned}
+        G^{(0)}_{\vb*{k} \sigma}(t - t') &= - \ii \expval*{\timeorder c_{\vb*{k} \sigma} (t) c^\dagger_{\vb*{k} \sigma} (t')}{0} \\
+        &= - \ii \theta(t - t') \ee^{- \ii \varepsilon_{\vb*{k}} (t - t')},
+    \end{aligned}
+\end{equation}
+because when $t < t'$, the time ordered operator in the bracket 
+is $c^\dagger c$, 
+and therefore vanishes after we take the expectation.
+Now we can do Fourier transform and get 
+\begin{equation}
+    G^{(0)}_{\vb*{k} \sigma}(\omega) = 
+    \int_{-\infty}^{\infty} \ee^{\ii (\omega + \ii \eta) (t - t')} \cdot G^{(0)}_{\vb*{k} \sigma}(t - t') \dd{t}
+    = \frac{1}{\omega - \varepsilon_{\vb*{k}} + \ii \eta},
+\end{equation}
+where $\eta$ is an infinitesimal quantity used to make the integral converge -- 
+here it should be $0^+$.
+
+We can also work with a ground state containing a Fermi sea: 
+in this case we have 
+\begin{equation}
+    G^{(0)}_\sigma(\vb*{k}, t - t')
+    = - \ii \theta(t - t') \theta(k - k_{\text{F}}) \ee^{- \ii \varepsilon_{\vb*{k}} (t - t')}
+    + \ii \theta(t' - t) \theta(k_{\text{F}} - k)  \ee^{- \ii \varepsilon_{\vb*{k}} (t - t')}.
+\end{equation}
+The second term, when applied Fourier transform,
+also requires a convergence factor but not it should be $0^-$
+because we are evolving backwards to $-\infty$.
+So in the end we get 
+(note that the notation is changed for a form comparable to the notation in particle physics)
+\begin{equation}
+    G^{(0)}_\sigma(\vb*{k}, \omega) = 
+    \frac{\theta(k - k_{\text{F}})}{\omega - \varepsilon_{\vb*{k}} + \ii 0^+}
+    + \frac{\theta(k_{\text{F}} - k)}{\omega - \varepsilon_{\vb*{k}} - \ii 0^+}.
+\end{equation}
+
 \subsection{Spectral density}
+
+When the interaction is turned off, 
+the electron spectrum can be obtained by 
+\begin{equation}
+    \rho(\vb*{k}, \omega) = - \frac{1}{\pi} \sgn(k - k_{\text{F}}) \Im G_{\sigma}(\vb*{k}, \omega)
+    = \delta(\omega - \xi_{\vb*{k}}).
+\end{equation}
+This means we can define 
+\begin{equation}
+    A_{\sigma}(\vb*{k}, \omega) = - \frac{1}{\pi} \sgn(k - k_{\text{F}}) \Im G_{\sigma}(\vb*{k}, \omega)
+\end{equation}
+even when the interaction is turned on;
+if what Coulomb interaction does is merely self-energy correction,
+we can capture the self-energy corrected dispersion relation;
+if we end up in a strongly corrected system,
+the fact that no clear peak can be identified in $A_\sigma(\vb*{k}, \sigma)$
+gives us numerical evidence for that.
 
 \section{System of units}
 
@@ -2626,7 +2682,9 @@ So when doing iterative calculation, should we calculate ``the $GW$ $V_{\text{H}
 
 There are three iterative schemes.
 The first is the eigenvalue self-consistent scheme:
-It's just a self-consistent solver of \eqref{eq:self-energy-first-order}.
+It's just a self-consistent solver of \eqref{eq:self-energy-first-order}
+-- self-consistency is needed 
+because the RHS contains $E$ dependence.
 In this case, we don't need off-diagonal elements,
 because they are not used in \eqref{eq:self-energy-first-order}.
 This scheme is mentioned in Section 3.3 in \cite{berkeleygw}.
