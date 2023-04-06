@@ -302,4 +302,159 @@ as the columns.
 If $\mat{A}$ has $n$ distinct eigenvalues, 
 then the eigenvectors are linearly independent.
 
+\section{Adjoin structures}
+
+We have 
+\begin{equation}
+    (\mat{A} \mat{B})^* = \mat{A}^* \mat{B}^*.
+\end{equation}
+We can also define the \concept{transpose} of a matrix: 
+\begin{equation}
+    (\mat{A}^\top)_{ij} = \mat{A}_{ji}.
+\end{equation}
+For matrix transpose, we have 
+\begin{equation}
+    (\mat{A} \mat{B})^\top = \mat{B}^\top \mat{A}^\top.
+\end{equation}
+We can also combine the two operations;
+indeed we have 
+\begin{equation}
+    (\mat{A}^*)^\top = (\mat{A}^\top)^*.
+\end{equation}
+So we can define 
+\begin{equation}
+    \mat{A}^\dagger = (\mat{A}^*)^\top.
+\end{equation}
+
+An astonishing property of the transpose is 
+\begin{equation}
+    (\mat{A}^{-1})^\top = (\mat{A}^\top)^{-1}.
+    \label{eq:transpose-inverse}
+\end{equation}
+This can be easily proved by noticing 
+\begin{equation}
+    \mat{A} \mat{A}^{-1} = \mat{I} = \mat{I}^\top = (\mat{A}^{-1})^\top \mat{A}^\top,
+\end{equation}
+and the final equation proves \eqref{eq:transpose-inverse}.
+
+If $\vb{e}$ is an eigenvector of a unitary matrix $\mat{U}$, 
+which means 
+\begin{equation}
+    \mat{U} \mat{U}^\dagger = \mat{I},
+\end{equation}
+we have
+\begin{equation}
+    \vb{e}^\dagger \mat{U}^\dagger = \lambda^* \vb{e}^\dagger.
+\end{equation}
+So we find 
+\begin{equation}
+    \abs*{\lambda}^2 \vb{e}^\dagger \vb{e} 
+    = \lambda^* \vb{e}^\dagger \cdot \lambda \vb{e}
+    = \vb{e}^\dagger \mat{U}^\dagger \mat{U} \vb{e}
+    = \vb{e}^\dagger \vb{e} 
+    \Rightarrow \abs*{\lambda}^2 = 1.
+\end{equation}
+
+\section{System of linear first order differential equations}
+
+We can write a system of linear first order differential equations 
+into the following concise form:
+\begin{equation}
+    \vb{x}' = \mat{A} \vb{x}.
+\end{equation}
+Inspired by the scalar case 
+\begin{equation}
+    x(t) = x(0) \ee^{a t},
+\end{equation}
+and considering the eigenvalue decomposition of $\mat{A}$, 
+we have 
+\begin{equation}
+    \vb{x} (t) = \ee^{\mat{A} t} \vb{x}(0).
+\end{equation}
+We can put an eigenvector as the initial value, 
+and this means 
+\begin{equation}
+    \mat{x}(t) = \ee^{\mat{A} t} \vb{e} = \ee^{\lambda t} \vb{e}.
+\end{equation}
+So now we can write the real initial condition as a linear combination 
+of eigenvectors of $\mat{A}$
+and have 
+\begin{equation}
+    \vb{x}(0) = \sum_i c_i \vb{e}_i,
+\end{equation}
+and the solution is 
+\begin{equation}
+    \vb{x}(t) = \sum_i c_i \vb{e}_i \ee^{\lambda_i t}.
+\end{equation}
+We can also use a matrix form to represent this: 
+\begin{equation}
+    \begin{aligned}
+        \vb{x}(t) &= \pmqty{
+            \ee^{\lambda_1 t} \vb{e}_1 & 
+            \ee^{\lambda_2 t} \vb{e}_2 &
+            \cdots &
+            \ee^{\lambda_n t} \vb{e}_n
+        } \pmqty{
+            c_1 \\ \vdots \\ c_n
+        } \\
+        &= \mat{P} \mat{D}(t) \mat{C}, 
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \mat{P} = \pmqty{
+        \vb{e}_1 & \cdots & \vb{e}_n
+    }, \quad 
+    \mat{D} = \pmqty{
+        \dmat{
+            \ee^{\lambda_1 t}, \cdots, \ee^{\lambda_n t}
+        }
+    }, \quad 
+    \mat{C} = \pmqty{
+        c_1 \\ \vdots \\ c_n
+    },
+\end{equation}
+and eventually, $\mat{C}$ can be found by 
+\begin{equation}
+    \mat{P} \mat{C} = \vb{x}(0),
+\end{equation}
+so we have 
+\begin{equation}
+    \vb{x}(t) = \mat{P} \mat{D}(t) \mat{P}^{-1} \vb{x}(0).
+\end{equation}
+This is just the eigenvalue decomposition of $\ee^{\lambda \mat{A}}$.
+
+It's possible that we want to work in $\mathbb{R}$ 
+but $\mat{A}$ doesn't have $n$ independent real eigenvectors.
+Suppose there are $m$ independent eigenvectors.
+Then we need to find $n - m$ other vectors so that
+\begin{equation}
+    \vb{x}(0) = \sum_{i=1}^{m} c_i \vb{e}_i + \sum_{i=m+1}^{n} c_i \vb{k}_i.
+\end{equation}
+Usually we want to find $\vb{k}$'s such that $\ee^{\mat{A} t} \vb{k}$ truncates.
+That's to say, we want to find $\lambda$ and $n$ such that 
+\begin{equation}
+    \begin{aligned}
+        \ee^{\mat{A} t} \vb{k} &= 
+        \ee^{\lambda t \mat{I}} \ee^{\mat{A} t - \lambda t \mat{I}} \vb{k} \\
+        &= \ee^{\lambda t \mat{I}} \left(
+            \mat{I} + (\mat{A} - \lambda \mat{I}) t 
+            + \frac{1}{2!} (\mat{A} - \lambda \mat{I})^2 t^2 + \cdots 
+        \right) \vb{k} \\
+        &= \ee^{\lambda t \mat{I}} \left(
+            \mat{I} + (\mat{A} - \lambda \mat{I}) t 
+            + \frac{1}{2!} (\mat{A} - \lambda \mat{I})^2 t^2 + \cdots + 
+            \frac{1}{(n-1)!} (\mat{A} - \lambda \mat{I})^{n-1} t^{n-1}
+        \right) \vb{k}.
+    \end{aligned}
+\end{equation}
+Note that since $\mat{I}$ commutes with every matrix, 
+the first equation is always true;
+the second line is also always true;
+the third line comes from the definition of a truncated series;
+so what we want is summarized as 
+\begin{equation}
+    (\mat{A} - \lambda \mat{I})^n = 0.
+\end{equation}
+
 \end{document}
