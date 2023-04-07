@@ -25,6 +25,7 @@
 \usepackage[style=verbose,backend=bibtex]{biblatex}
 \addbibresource{wannier.bib}
 \addbibresource{hubbard.bib}
+\addbibresource{pt.bib}
 \renewcommand{\footnotesize}{\scriptsize}
 \usepackage{listings}
 \usepackage{hyperref}
@@ -223,6 +224,33 @@ retarded interaction!
 \end{frame}
 
 \begin{frame}
+\frametitle{Comment: frequency dependence in effective models}
+
+This actually reflects something deep about downfolding \dots 
+
+\begin{itemize}
+    \item \concept{Hamiltonian effective theory; Rayleigh-Schrodinger perturbation theory.}
+        In $1 / (E - H)$, 
+        $E$ is unperturbed energy 
+    \item \concept{Feynman diagram resummation}.  
+        After splitting $G$ into $G^+$ and $G^-$,
+        it's equivalent to Brillouin-Wigner perturbation theory;
+        In $1 / (E - H)$, 
+        $E$ is the \emph{perturbed} energy
+    \item An item in BWPT splits into an infinite series in RSPT!\footcite{brueckner1955many}
+        \begin{equation}
+            \begin{aligned}
+                E^{GW} &\simeq E^{\text{DFT}} + \ii W \frac{1}{E^{GW} - E^{\text{DFT}}} \\
+                &= E^{\text{DFT}} + \ii W \frac{1}{E^{\text{DFT}} - E^{\text{DFT (other bands)}}}
+                + \cdots
+            \end{aligned}
+        \end{equation}
+        $\Rightarrow$ why we need eigenvalue self-consistency
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Dynamic interaction in Hubbard model}
 
 Is it possible to just enforce $\omega = 0$ \dots
@@ -243,16 +271,30 @@ and from full $W(\omega)$
 
 \textbf{Why $\Im \Sigma$ is better captured by static $U$ than $\Re \Sigma$?}
 
-Because $\Im \Sigma \propto \text{DOS}$ TODO: why??
+Because $\Im \Sigma \propto \text{DOS}$ %TODO: why??
 
 And then high-frequency electrons contribute to low-frequency $\Re \Sigma$ 
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Possible way to make the Hubbard model static}
+\frametitle{Making the Hubbard model static: method 1}
+    
+Key point: correct the single-electron Hamiltonian using the retarded interaction
 
-\textbf{Key point: correct the single-electron Hamiltonian using the retarded interaction}
+\begin{itemize}
+    \item Find static non-interactive $\tilde{G}_d$ such that --
+    \item With the same static $U$, $\tilde{G}_d$ leads to 
+        an interactive Green function close enough 
+        to the real one
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Making the Hubbard model static: method 1}
+
+\textbf{Method 1: correct the single-electron Hamiltonian using the retarded interaction}
 
 \begin{itemize}
     \item Def: $G_d$ = Green function for $d$ electrons; 
@@ -280,6 +322,16 @@ And then high-frequency electrons contribute to low-frequency $\Re \Sigma$
             - \ii G_d  (W -W_d).
         \end{equation}
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Making the Hubbard model static: method 2}
+
+Key point: introducing a bosonic field 
+to ``carry'' the frequency-dependent $W(\omega)$.\footcite{PhysRevLett.109.126408}
+
+(Similar techniques are used in DMFT)
 
 \end{frame}
 
@@ -361,7 +413,25 @@ the energy of $\textcolor{red}{H^{dd}}$ is now bounded
     \shortcode{ucrpa} before version 9, 
     as an option in \href{https://docs.abinit.org/variables/gw/\#ucrpa}{the RPA module}
     \item \textbf{BerkeleyGW} \xmark Unfortunately \dots
+    \item \textbf{RESPACK} \footcite{nakamura2021respack}: from Quantum ESPRESSO
 \end{itemize}
+
+\end{frame}
+
+\section{Example: \ce{Fe}-based superconductor}
+
+
+\begin{frame}
+\frametitle{Example: \ce{Fe}-based superconductor}
+
+The cRPA-to-Hubbard methodology has already been applied to \ce{Fe}-based SC\footcite{nakamura2008ab}\footcite{Miyake2010}
+
+Some claim that they can obtain the correct doping concentration 
+required for SC \footcite{misawa2014superconductivity}
+
+\begin{center}
+    \includegraphics[width=0.3\textwidth]{plots/fe-sc-hubbard-phase-1.png}
+\end{center}
 
 \end{frame}
 
