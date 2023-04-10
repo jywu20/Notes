@@ -3245,7 +3245,7 @@ the total energy can be reduced
 (it's more likely that $U_{mnmn} > 0$ because Coulomb interaction is repulsive),
 and therefore the total spin is to be maximized.
 
-\chapter{Standard operation procedures}
+\chapter{Carrying out calculations}
 
 List of technical issues:
 \begin{itemize}
@@ -3821,7 +3821,27 @@ Also, DOS calculation is extremely sensitive to TODO: both energy grid and $\vb*
 
 \subsection{Parallelization}
 
-TODO: Do more MPI tasks already result in faster speed?
+When virtual thread is not enabled, we have 
+\begin{equation}
+    \text{\# of MPI tasks} \times 
+    \text{\# of OpenMP threads}
+    = \text{\# of nodes} \times 
+    \text{\# of cores per node}.
+\end{equation}
+It's a good idea to have the number of MPI tasks 
+divisible by the number of nodes, 
+since grouping CPUs from different nodes under one MPI task 
+means we need to let threads from different nodes communicate with each other frequently,
+which is highly .
+
+Increasing the number of OpenMP threads per MPI task 
+gives an MPI task more resources, 
+but 
+
+QuantumESPRESSO uses a parallelization technique called momentum pool: 
+$\vb*{k}$-points are grouped into ``pools''
+which are parallelized over; 
+$\vb*{k}$-points in the same pool however are evaluated one by one.
 
 \subsection{Choosing cutoff energies wisely}
 
