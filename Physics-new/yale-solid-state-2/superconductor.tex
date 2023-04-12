@@ -214,17 +214,7 @@ instead,
     \pdv{\vb*{j}}{t} = \frac{n_\text{s} e^2}{m} \vb*{E}
 \end{equation}
 is used as the response of a superconductor.
-This equation then means 
-\begin{equation}
-    \pdv{t} \curl{\vb*{j}} = \frac{n_\text{s} e^2}{m} \curl{\vb*{E}}
-    = - \frac{n_\text{s} e^2}{m} \pdv{\vb*{B}}{t}
-    \Rightarrow \curl{\vb*{j}} + \frac{n_\text{s} e^2}{m} \vb*{B} = 0,
-\end{equation}
-and since 
-\begin{equation}
-    \curl{\vb*{B}} = \mu_0 \vb*{j},
-\end{equation}
-we find the magnetic field decays exponentially at the boundary. 
+This correctly predicts the absence of magnetic field in the superconductor.
 
 In 1938 another exotic phenomenon was discovered: superfluidity.
 A superfluid has no viscosity, 
@@ -270,8 +260,6 @@ But at the middle of the $I$-$V$ curve,
 we have a contribution caused by tunneling of Cooper pairs, 
 not gapped electrons and holes: 
 
-\subsection{High-$T_{\text{c}}$ superconducting} 
-
 After BCS people used to think that superconductivity was completely explained.
 But then in 1986, \ce{BaLaCuO} -- 
 an oxide that is essentially an \emph{insulator} in its normal state -- 
@@ -281,5 +269,162 @@ with $T_{\text{c}}$ being as high as \SI{120}{K}.
 Unfortunately the expected large scale industrial usage of these materials didn't happen,
 since these materials are not metals and are hard to shape, 
 they are highly anisotropic 
+
+\section{London equations}
+
+We know the Ohm's law can be derived from the Drude model: 
+we have 
+\begin{equation}
+    \expval{\vb*{v}} = \frac{e \vb*{E} \tau}{m}.
+\end{equation}
+The appearance of $\tau$ in this expression tells us 
+it comes from electron collision;
+and indeed the Ohm's law leads to dissipation in Maxwell equations.
+
+The Drude model assumes constant equilibrium of electron motion.
+In a superconductor we assume that there is no collision 
+of whatever carries the charge current,
+and now the current response is 
+\begin{equation}
+    \dv{\vb*{p}}{t} = - e \vb*{E} \Rightarrow 
+    \pdv{\vb*{j}}{t} = \frac{n e^2}{m} \vb*{E}. 
+    \label{eq:current-response-sc}
+\end{equation}
+Now the question is why the superconducting carriers 
+can't be accelerated infinitely;
+the answer is in an equilibrium superconductor,
+there is no electric field.
+
+To avoid ambiguity we use subscript $_{\text{s}}$ to represent 
+quantities related to the superconducting current.
+\eqref{eq:current-response-sc} -- \concept{London's first equation} -- means 
+\begin{equation}
+    \pdv{t} \curl{\vb*{j}} = \frac{n_\text{s} e^2}{m} \curl{\vb*{E}}
+    = - \frac{n_\text{s} e^2}{m} \pdv{\vb*{B}}{t}
+    \Rightarrow \partial_t(\curl{\vb*{j}} + \frac{n_\text{s} e^2}{m} \vb*{B}) = 0,
+\end{equation}
+and thus we have 
+\begin{equation}
+    \curl{\vb*{j}} + \frac{n_\text{s} e^2}{m} \vb*{B} = \text{something depending on $\vb*{x}$ only}.
+\end{equation}
+Using London's first equation that's all we can get. 
+But then we can \emph{manually} impose a stronger equation: 
+we assume \concept{London's second equation}
+\begin{equation}
+    \curl{\vb*{j}} + \frac{n_\text{s} e^2}{m} \vb*{B} = 0.
+\end{equation}
+This gives the spatial dependence of the superconducting current $\vb*{j}$.
+Then, using 
+\begin{equation}
+    \curl{\vb*{B}} = \mu_0 \vb*{j},
+\end{equation}
+we find 
+\[
+    \curl{(\curl{\vb*{B}})} = \grad{(\div{\vb*{B}})} - \laplacian \vb*{B}
+    = \mu_0 \curl{\vb*{j}} = - \mu_0 \frac{n_\text{s} e^2}{m} \vb*{B} ,
+\]
+\begin{equation}
+    \laplacian \vb*{B} = \mu_0 \frac{n_\text{s} e^2}{m} \vb*{B}.
+\end{equation}
+Astonishing, we have already get rid of time dependence 
+in an equation governing $\vb*{B}$.
+(This doesn't mean $\vb*{B}$ can't change of course.)
+
+We consider the case in which the superconductor has a rotational symmetry 
+and the equation gives us 
+\begin{equation}
+    \vb*{B}(r) = \vb*{B}_0 \ee^{- r / \lambda_{\text{L}}}, \quad 
+    \lambda_{\text{L}} = \sqrt{\frac{m}{\mu_0 n_{\text{s}} e^2}}.
+\end{equation}
+we find the magnetic field decays exponentially at the boundary. 
+The length scale $\lambda_{\text{L}}$ is called \concept{London penetration depth}.
+We can see the more superconducting carriers are, 
+the shorter the penetration depth is, 
+and the stronger the diamagnetic effect is.
+Outside of the superconductor, 
+the magnetic field is more concentrated, 
+since magnetic field lines don't break 
+and thus the superconductor squeezes magnetic field lines around it,
+giving rise to a stronger magnetic field.
+Thus, although the magnetic field's not going into the superconductor 
+saves energy \emph{within} the superconductor, 
+it increases the energy \emph{outside} the superconductor.
+So if we have a very strong magnetic field 
+or a very large but thin superconductor, 
+the magnetic field will still go into the superconductor
+to save energy (or otherwise the magnetic field concentration near the boundary is too strong);
+the superconducting state is then killed in the equilibrium.
+
+Another effect that can be found using London equations is
+the skin current effect.
+We can immediately find 
+\begin{equation}
+    \vb*{j} = \frac{1}{\mu_0} \curl{\vb*{B}}
+    = - \frac{1}{\lambda_{\text{L}}} \abs{\vb*{B}_0} \vb*{B}_0 \times \vb*{r} \ee^{- r / \lambda_{\text{L}}}.
+\end{equation}
+Somehow strangely, we get equations that look like equations governing AC 
+but we are working with DC. 
+
+The superconducting carrier concentration $n_{\text{s}}$
+has temperature dependence;
+now we know superconducting carriers are just Cooper pairs, 
+and when the temperature is high, 
+they are broken into ordinary electrons,
+and therefore the lower the temperature is, 
+the stronger the skin effect is.
+
+There is also an electromagnetic gauge called \concept{London gauge}.
+We have 
+\begin{equation}
+    \partial_t \vb*{j} = \frac{1}{\lambda_{\text{L}}^2 \mu_0} \vb*{E}, \quad 
+    \curl{\vb*{j}} = - \frac{1}{\lambda_{\text{L}}^2 \mu_0} \vb*{B}.
+\end{equation}
+Recalling that 
+\begin{equation}
+    \vb*{E} = - \grad{\phi} - \pdv{\vb*{A}}{t}, \quad 
+    \vb*{B} = \curl{\vb*{B}},
+\end{equation}
+we have 
+\begin{equation}
+    \partial_t \left(
+        \vb*{j} + \frac{1}{\lambda_{\text{L}}^2 \mu_0} \vb*{A}
+    \right) = \curl{
+        \left(
+        \vb*{j} + \frac{1}{\lambda_{\text{L}}^2 \mu_0} \vb*{A}
+        \right)
+    } = 0.
+\end{equation}
+This tempts us to choose the following gauge 
+\begin{equation}
+    \vb*{j} + \frac{1}{\lambda_{\text{L}}^2 \mu_0} \vb*{A} = 0,
+\end{equation}
+from which we find 
+\begin{equation}
+    \div{\vb*{A}} = 0, \quad A_{\bot} = 0.
+\end{equation}
+
+\section{Ginzburg-Landau theory}
+
+Ginzburg-Landau theory is a theory based on Landau's (general) theory of phase transition.
+We can first look at a similar theory describing superfluidity:
+we introduce a complex order parameter $\psi_{\text{s}}$ 
+(sometimes called the macroscopic wave function 
+since it can be used to find some macroscopic physical quantities),
+and we have 
+\begin{equation}
+    n = \frac{1}{V} \int \dd[3]{\vb*{r}} \abs{\psi_{\text{s}}(\vb*{r})}^2,
+\end{equation}
+and to extract information about inhomogeneity of $n_{\text{s}}$, 
+$\abs{\grad{\psi_{\text{s}}}}^2$ is also needed.
+The free energy is therefore 
+\begin{equation}
+    F[\psi] = \int \dd[3]{\vb*{r}} \left(
+        \alpha \abs{\psi}^2 + \frac{1}{2} \beta \abs*{\psi}^4 + \gamma \abs*{\grad{\psi}}^2
+    \right).
+\end{equation}
+The minimum of this free energy can be obtained by taking the functional variation:
+\begin{equation}
+    \alpha \psi_0 + \beta \abs{\psi_0}^2 \psi_0 - \gamma \laplacian{\psi_0} = 0.
+\end{equation}
 
 \end{document}
