@@ -143,7 +143,7 @@
 
 \maketitle
 
-\section{Boltzmann equation for electrons in a crystal}
+\section{Boltzmann equation and Fermi golden rule}
 
 We define
 \[
@@ -151,7 +151,9 @@ We define
     = \frac{\Delta V}{V} \sum_{\vb*{k} \in \Delta \Omega} f_{n} (\vb*{r}, \vb*{k}, t),
     = \Delta V \int_{\Delta \Omega} \frac{\dd[3]{\vb*{k}}}{(2\pi)^3} f_n (\vb*{r}, \vb*{k}, t),
 \]
-and therefore when the $\vb*{k}$-grid is dense enough, i.e. when $V \to \infty$, we have 
+and therefore when the $\vb*{k}$-grid is dense enough, i.e. when $V \to \infty$, '
+the single-electron distribution function $f(\vb*{r}, \vb*{k}, t)$ is 
+normalized as
 \begin{equation}
     \text{\# of band $n$ electrons in $\dd[3]{\vb*{r}} \dd[3]{\vb*{k}}$} 
     = f_n(\vb*{r}, \vb*{k}, t) \dd[3]{\vb*{r}} \frac{\dd[3]{\vb*{k}}}{(2\pi)^3}.
@@ -167,11 +169,22 @@ where we have (according to Fermi golden rule)
 \begin{equation}
     \Gamma_{1 \to 2} = \frac{2\pi}{\hbar} 
     \abs*{\mel{2}{H_{\text{int}}}{1}}^2 
-    \delta()
+    \delta(E_2 - E_1).
 \end{equation}
 
-TODO: the real part of the self-energy enters the diffusion part in the equation;
-the imaginary part contributes to the collision integral.
+\section{Relation with Green function EOM}
+
+Note that in order to obtain a well-defined 
+quasiparticle distribution function $f(\vb*{r}, \vb*{k}, t)$,
+we assume that the Green function of the system 
+is almost without dissipation,
+but then there is the collision integral
+which clearly introduces dissipation. 
+So the real approximation we made here is that
+only the real part of the self-energy 
+is important in the the diffusion term on the LHS, 
+while the main effect of the imaginary part is the collision integral.
+
 It should be noted that the imaginary part is present with $T = 0$.
 The physical picture is, 
 the eigenstates of a Coulomb-interactive electron gas 
@@ -187,5 +200,82 @@ Note, however, that this scattering rate decreases as $\tau \sim 1/(k - k_{\text
 and the single-electron picture 
 at least works good enough for bands near the Fermi surface 
 in systems for which $GW$ works.
+
+\section{From quantum Boltzmann equation to classical Boltzmann equation}
+
+\begin{equation}
+    \left(\pdv{f}{t}\right)_{\text{c}} = 2\pi 
+    \sum_{\vb*{k}, \vb*{q}} \frac{\abs*{V(q)}^2}{V^2} 
+    \delta\left(
+        \frac{
+            (\vb*{k} - \vb*{q})^2 + (\vb*{k}_1 + \vb*{q})^2 
+            - \vb*{k}_1^2 - \vb*{k}^2
+        }{2m}
+    \right) \cdot (f_{\vb*{k}} f_{\vb*{k}_1} - f_{\vb*{k} - \vb*{q}} f_{\vb*{k}_1 + \vb*{q}})
+\end{equation}
+
+\[
+    (\vb*{k} - \vb*{q})^2 + (\vb*{k}_1 + \vb*{q})^2 
+    - \vb*{k}_1^2 - \vb*{k}^2
+    = 2 q^2 + \vu*{e}_{\vb*{k}_1 - \vb*{k}} \cdot \vu*{q} \abs*{\vb*{k} - \vb*{k}_1} q
+\]
+
+\[
+    \frac{1}{V^2} \sum_{\vb*{k}, \vb*{q}} \longrightarrow 
+    \frac{1}{(2\pi)^6} \int \dd[3]{\vb*{k}} \int \dd[3]{\vb*{q}},
+\]
+
+\begin{equation}
+    \begin{aligned}
+        &\quad \left(\pdv{f}{t}\right)_{\text{c}} \\
+        &= \frac{1}{(2\pi)^5 } \int \dd[3]{\vb*{k}_1} \int \dd{\Omega_{\vb*{q}}} q^2 \dd{q}  
+        \abs*{V(q)}^2 \delta \left(
+            \frac{2 q^2 + \vu*{e}_{\vb*{k}_1 - \vb*{k}} \cdot \vu*{q} \cdot \abs*{\vb*{k} - \vb*{k}_1} q}{m} 
+        \right) (f_1' f' - f_1 f) \\
+        &= \frac{1}{(2\pi)^5 } \int \dd[3]{\vb*{k}_1} \int \dd{\Omega_{\vb*{q}}} q^2 \cdot \abs*{V(q)}^2 (f_1' f' - f_1 f)  \cdot \eval{\frac{m}{4 q + \vu*{e}_{\vb*{k}_1 - \vb*{k}} \cdot \vu*{q} 
+        \abs*{\vb*{k} - \vb*{k}_1}} }_{2 q^2 + \vu*{e}_{\vb*{k}_1 - \vb*{k}} \cdot \vu*{q} \cdot \abs*{\vb*{k} - \vb*{k}_1} q = 0} \\
+        &= \frac{1}{(2\pi)^5 } \int \dd[3]{\vb*{k}_1} \int \dd{\Omega_{\vb*{q}}} \abs*{V(q)}^2 
+        \cdot \frac{q}{2} m (f_1' f' - f_1 f) |_{2 q = - \vu*{e}_{\vb*{k}_1 - \vb*{k}} \cdot \vu*{q} \cdot \abs*{\vb*{k} - \vb*{k}_1}},
+    \end{aligned}
+\end{equation}
+
+\begin{equation}
+    \sigma = \left(\frac{m V}{2\pi}\right)^2 \abs*{V(q)}^2 
+\end{equation}
+and since 
+
+\begin{equation}
+    \frac{1}{(2\pi)^5} \int \dd[3]{\vb*{k}_1} \int \dd{\Omega_{\vb*{q}}} \sigma 
+    \cdot \frac{(2\pi)^2}{m^2} \cdot m \cdot \vu*{e}_{\vb*{k} - \vb*{k}_1} \cdot \vu*{q} \abs*{\vb*{k} - \vb*{k}_1}
+\end{equation}
+
+Now we choose $\vu*{e}_{\vb*{k} - \vb*{k}_1}$ as the direction of the $z$ axis; 
+the direction of $\vb*{k}' - \vb*{k}_1'$ is described by $(\theta, \varphi)$.
+
+\begin{equation}
+    \dd{\Omega_{\vb*{q}}} = \dd{\varphi} \sin \frac{\pi + \theta}{2} \dd \frac{\pi + \theta}{2} 
+    = \dd{\varphi} \cdot \frac{1}{4} \cdot \frac{\sin \theta}{\vu*{e}_{\vb*{k} - \vb*{k}'} \cdot \vu*{q}} \dd{\theta}
+    = \frac{1}{4} \frac{1}{\vu*{e}_{\vb*{k} - \vb*{k}'} \cdot \vu*{q}} \dd{\Omega}
+\end{equation}
+
+so now we arrive at the usual classical Boltzmann equation, 
+where $\dd{\Omega}$ corresponds to the direction of $\vb*{k}' - \vb*{k}'_1$.
+
+But now we have a 1/16 factor \dots
+
+\section{Phonon}
+
+The vertex of electron-phonon interaction has the form $\abs*{g / \sqrt{V}}^2$,
+where $g$ is a volume independent quantity;
+the collision integral is therefore 
+\begin{equation}
+    \left(\pdv{f}{t}\right)_{\text{c}} = 
+    \frac{2\pi}{V} \sum_{\vb*{k}, \lambda} \abs*{g}^2 
+\end{equation}
+Similarly, for Coulomb scattering, 
+the vertex looks like $V(q) / V$, where the $V(q)$ factor 
+is the $4 \pi e^2 / q^2$ interaction potential, 
+and the Fermi golden rule -- and therefore the collision integral -- 
+has a $1/ V^2$ factor.
 
 \end{document}
