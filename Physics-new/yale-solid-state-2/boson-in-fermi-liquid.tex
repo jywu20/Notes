@@ -1,0 +1,287 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{theory.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+
+\title{Bosonic modes in Fermi liquid}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The Fermi liquid theory can be justified by diagrammatic resummation: 
+
+But interaction channels beside forward scattering 
+that come from Coulomb interaction do not just disappear;
+they are still a part of the Hamiltonian
+and will contribute to the specific heat 
+when the system is heated up.
+Thus, it can be expected that a real condensed matter system 
+that is said to be in a Fermi liquid phase 
+contains more than electron-like quasiparticles. 
+
+Characterization of the full spectrum of a system is 
+generally only possible for exactly solvable systems. 
+This report is constrained on bosonic modes in Fermi liquid,%
+\footnote{
+    There is a terminological confusion here: 
+    the term \term{Fermi liquid} may refer to 
+    a system whose Hamiltonian is exactly in the shape of 
+    Fermi liquid energy functional,
+    or it may refer to a system 
+    in which the behavior of electron Green function 
+    follows the Fermi liquid theory, 
+    but may contain other excitations.
+    This note uses the latter definition;
+    thus the phrase ``a Fermi liquid'' 
+    is a shorthand for ``a real-world condensed matter system 
+    demonstrating Fermi liquid behaviors in its single-electron part''.
+}
+or to be specific, on excitations that are oscillation modes of 
+operators with the shape of $c^\dagger_{\vb*{k} + \vb*{q} / 2} c_{\vb*{k} - \vb*{q} / 2}$.
+Three-electron behaviors do exist TODO: trion 
+but is beyond the scope of this report.
+
+\section{Landau kinetic equation of neutral Fermi liquid}
+
+
+Boltzmann equation can be derived using 
+
+The most generalized derivation involves Keldysh field theory 
+and is beyond the scope of this note; 
+we only emphasize here that the derivation 
+depends on gradience expansion 
+and that the quasiparticle picture works well in the system 
+so that the spectral function is approximately 
+\begin{equation}
+    A(\vb*{k}, \omega) = \delta(\omega - \Re \Sigma(\vb*{k}, \omega)),
+\end{equation}
+where the imaginary part of the self-energy is ignored 
+in the spectral function,
+but appears in the collision integral on the RHS.
+The second assumption is by definition satisfied with a Fermi liquid;
+the first assumption assumes everything in the system changes slowly 
+in the $\vb*{x}_1 - \vb*{x}_2$ direction 
+and imposes a fundamental constraint 
+on the coverage of the quantum Boltzmann equation
+(\prettyref{sec:microscopic-bosonic-modes}). 
+
+It should be noted that the aforementioned procedure 
+does not impose any constraint on $\Re \Sigma$;
+specifically, it does not dictate that $\Re \Sigma$
+cannot have explicit dependence on $G(\vb*{r}, \vb*{r}', t, t')$, 
+and hence $f(\vb*{r}, \vb*{p}, t)$.
+We can then insert 
+\begin{equation}
+    \varepsilon_{\vb*{p} \sigma} = \varepsilon^0_{\vb*{p} \sigma} + 
+    \frac{1}{V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n}_{\vb*{p}' \sigma'}
+    \label{eq:landau-eq-assumption}
+\end{equation}
+into the quantum Boltzmann equation;
+the resulting equation system is called \term{Landau equation}.
+Note that in order to get \eqref{eq:landau-eq-assumption},
+
+In the 
+
+When the temperature is non-zero,
+$\tau \propto 1 / T^2$ is finite 
+and zero sound faces strong damping 
+when its frequency is too slow.
+However, in the low frequency region another bosonic mode is possible:
+ordinary sound or ``first sound'',
+which is a density 
+
+It should be noted that the spectrum of first sound 
+is connected to the spectrum of zero sound:
+In this sense we may say first sound is 
+zero sound with finite temperature correction, 
+but this correction is so severe that the qualitative physical picture 
+is radically changed. 
+
+\section{Damping mechanisms}
+
+
+
+\section{Charged Fermi liquid and the plasmon}
+
+\section{Microscopic bosonic modes beyond the Landau equation}\label{sec:microscopic-bosonic-modes}
+
+Not all bosonic modes can be obtained 
+by observing oscillation modes of quantum Boltzmann equation,
+since the latter only works for 
+excitations with a large characteristic length scale 
+in the $\vb*{x}_1 - \vb*{x}_2$ variable,
+or in other words, when $\vb*{k}$ is small enough.
+Now consider an exiton in a homogeneous electron liquid;
+the structure of the exciton follows the same equations 
+as those governing the hydrogen atom,
+and the characteristic length scale between the electron and the hole 
+is of atomic magnitude,
+which breaks the ``slow variation in $\vb*{x}_1 - \vb*{x}_2$'' condition 
+in the gradience expansion step used to derive the quantum Boltzmann equation,%
+\footnote{
+    When an electric field is applied to an exciton, 
+    it influences $\vb*{x}_1 - \vb*{x}_2$, not $(\vb*{x}_1 + \vb*{x}_2) / 2$;
+    accordingly, it influences $\vb*{k}$, 
+    which is now to be understood as the \emph{relative} momentum 
+    between the electron and the hole 
+    (absence of an electron with momentum $\vb*{k}$ 
+    is equivalent to existence of a hole with momentum $- \vb*{k}$).
+    In an exciton $\vb*{k}$ is highly uncertain, 
+    which breaks the condition that $\vb*{k}$ is small.
+    Note that since 
+}
+and hence cannot be captured appropriately by the latter 
+\cite{pines2018theory}.
+We may say zero sound/plasmon is a \emph{hydrodynamic} mode,
+
+The existence of 
+
+\section{Conclusion}
+
+\printbibliography
+
+\end{document}
