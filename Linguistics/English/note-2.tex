@@ -1,0 +1,743 @@
+\documentclass[UTF8, a4paper, oneside, scheme=plain]{ctexrep}
+
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[alignment-]{../alignment/alignment}[alignment.pdf]
+\zexternaldocument*[exercise1-]{../Exercise/2021-3}[2021-3.pdf]
+\zexternaldocument*[method-]{../methodology/glossing}[glossing.pdf]
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Shorthands
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\newcommand{\deictictime}{T$_{\text{d}}$}
+\newcommand{\referredtime}{T$_{\text{r}}$}
+\newcommand{\orientationtime}{T$_{\text{o}}$}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, and mood}, short = TAM}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+\DeclareAcronym{coca}{long = Corpus of Contemporary American English, short = COCA}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+\newcommand{\category}[1]{\textsc{#1}}
+\newcommand{\formcat}[1]{\textsc{#1}}
+\newcommand{\emptymorpheme}{$\emptyset$}
+\newcommand*{\fromto}[2]{\langle {#1}, {#2} \rangle}
+
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand{\bibname}{References}
+\setcitestyle{aysep={}} 
+
+% List format
+\setlist[enumerate,1]{label=\alph*\upshape)}
+
+\title{Aspects of English morphosyntax}
+\author{Jinyuan Wu}
+
+\begin{document}
+    
+\maketitle
+
+\automath
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{The language and the speakers}
+
+\section{Theoretical orientation}
+
+
+
+\chapter{Parts of speech}
+
+\chapter{Noun phrase}
+
+\chapter{Verb phrase}
+
+\section{The verbal complex}
+
+\subsection{The structure of the regular verbal complex}
+
+Now we can combine everything in the verbal complex together.
+When there is no auxiliary needed,
+the tense feature is lowered to the main verb. 
+In other cases, the highest auxiliary -- the first auxiliary -- 
+is lifted to the tense position,
+before negation and the default position of many adverbs.
+
+\subsection{Regular lexical verbs}
+
+\begin{theorybox}{Inflectional forms are about realization and not underlying structure}{morphological-form}
+    Traditional grammars usually have a large paradigm
+    with its row and column headers being grammatical categories.
+    (When there are too many categories 
+    -- and in this case the language in question is usually agglutinative -- 
+    the paradigm will be unbearably large, 
+    and another way -- like the School Grammar of Japanese -- is needed to cover verb inflection.
+    Still, partial paradigms are useful in this case.) 
+    This is a morphosyntactic way to represent the inflection of a word, 
+    but if we are talking purely about the \emph{morphological} part
+    (i.e. how grammatical relations and categories are realized),
+    then it's sometimes not necessary to recognize so many forms:
+    If a verb appears exactly the same in two different syntactic environments,
+    then we say there is only one \emph{inflectional form} of that verb.
+    For languages like Latin, 
+    the traditional large-paradigm way is handy,
+    while for English, we can zip the paradigm severely \citep[\citechapsec{3}{1.2}]{cgel}.
+\end{theorybox}
+
+Modern English has already lost most of its verb inflection.
+Following the analysis of \citet[\citechapsec{3}{1.1}]{cgel},
+for lexical verbs,
+there are six remaining inflectional forms: 
+the past form, the plain present form, 
+the 3sg present form,
+the plain form, the \formcat{ing}-participle,
+and the \formcat{ed}-participle.
+The two present forms and the past form appear solely 
+with trivial aspectual values and trivial modality.
+They are \concept{primary} forms:
+They already have all \acs{tam} categories marked on them.
+The plain form and the two participles are \concept{secondary} forms:
+They usually appear after auxiliaries 
+in a periphrastic construction to have full \acs{tam} marking,
+though a subjunctive clause may sometimes get rid of any auxiliary verb,
+as in \form{he suggests that she [complete] this task first} (\prettyref{sec:complement.subjunctive}).
+
+Examples of these forms are illustrated in \prettyref{tbl:lexical-inflection}. 
+This is a copy of [1] in \citet[\citesec{1.1}]{cgel}.
+It can be noticed that the plain form is usually the same as the plain present form.
+However, since modal verbs (see below) have no plain form,
+and that the syntactic environments of the plain form and the present plain form are too different,
+if \prettyref{tbl:lexical-inflection} is to be regarded as a paradigm
+-- that is, to be incorporated with morphosyntactic information -- 
+then the two forms should occupy two cells.
+
+\begin{table}[H]
+    \caption{Paradigms of lexical verbs}
+    \label{tbl:lexical-inflection}
+    \centering
+    \begin{tabular}{@{}llllll@{}}
+    \toprule
+    \multicolumn{1}{l}{}       &                               &       & \form{take}   & \form{want}    & \form{hit}     \\ \midrule
+    \multirow{3}{*}{Primary}   & past form                     &       & \form{took}   & \form{wanted}  & \form{hit}     \\
+                               & \multirow{2}{*}{present form} & 3sg   & \form{takes}  & \form{wants}   & \form{hits}    \\
+                               &                               & plain & \form{take}   & \form{want}    & \form{hit}     \\ \midrule
+    \multirow{3}{*}{Secondary} & plain form                    &       & \form{take}   & \form{want}    & \form{hit}     \\
+                               & \formcat{ing}-participle       &       & \form{taking} & \form{wanting} & \form{hitting} \\
+                               & \formcat{ed}-participle        &       & \form{taken}  & \form{wanted}  & \form{hit}     \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{infobox}{The name of the forms}{verb-form-name}
+    Here I deviate from the practice in \citep[\citechap{3}]{cgel} 
+    and pick up the more common names for some of the forms. 
+
+    The \formcat{ing}-participle is frequently called the \term{gerund},
+    because it now has the function of both a gerund and an active participle.
+    \citet{cgel} call it the \term{gerund-participle}.
+    Some grammars use the term \term{present participle}.
+    Since in Modern English,
+    the \formcat{ing}-participle no longer carries any tense information,
+    the historical term \term{present participle} is abandoned in this note.
+
+    The traditional name \term{past participle} for the \formcat{ed}-participle makes more sense,
+    because it's morphologically related to the past form for regular verbs 
+    and it still has some sense of ``past'':
+    It is strongly related to the \category{perfect} and therefore has some sense of the past,
+    though it doesn't carry the past tense.
+    A better term would be the one in Latin grammar: the \term{perfect passive participle},
+    but this is in conflict with the name of the \form{having been done} construction.
+
+    A usual name for the plain form is the infinitive form,
+    which I reject here because the morphological marking of 
+    the main verb after modal auxiliary verbs  
+    (\form{would [like]}),
+    the verb in a subjunctive clause 
+    (\form{he suggests that she [complete] this task first}),
+    and the verb in a real infinitive clause are all the same,
+    and therefore it makes no sense to use the term \term{infinitive} 
+    to cover the \emph{morphological} form of all the three.
+\end{infobox}
+
+The \formcat{ing}-participle is regularly formed by adding \form{-ing} to the end of the plain form
+(TODO: -tt- in splitting).
+The \formcat{ed}-participle and the past form are usually obtained 
+by adding \form{-ed} to the end of the plain form,
+but for irregular verbs they can't be inferred from the plain form.
+Thus English verbs have three \concept{principal forms}:
+the plain form, the past form, and the \formcat{ed}-participle.
+We may also say there are three stems in English:
+the plain form, the past form, and the \formcat{ed}-participle,
+with only the first one being productive for further morphological processes.
+
+\subsection{Types of irregular verbs}
+
+As is mentioned above, for a number of irregular verbs,
+the \category{ed}-participle and the past form can't be inferred from the plain form.
+Whether there are still some patterns between the three,
+or in other words,
+the formation of the principal parts,
+is investigated in detail in \citet[\citepages{105-120}]{quirk1985}.
+
+\subsection{Auxiliary verbs}\label{sec:verb-inflection.auxiliary}
+
+English also has a number of auxiliary verbs (\prettyref{sec:auxiliaries}).
+All auxiliary verbs have tense-dependent forms,
+because all of them may appear as the first word in an auxiliary chain,
+and the tense category is to be marked on the highest i.e. the first of them (\prettyref{sec:auxiliary-chain}).
+Thus, we say English auxiliaries also have primary forms.
+Modal auxiliaries don't have a separate 3sg present form,
+but \form{do}, \form{have} and \form{be} (when used as auxiliary verbs) do.
+It should be noted that the past forms of many auxiliary verbs don't just appear in past clauses:
+They may have distinct meanings (\prettyref{sec:verb-inflection.modal-use}).
+
+Modal auxiliaries don't have secondary forms,
+probably because they never appear after another auxiliary verb 
+or in nonfinite clauses,
+but \form{do}, \form{have} and \form{be} do.
+
+English auxiliary verbs also have negative forms,
+which are obtained by attaching \form{-nt} to the end of auxiliary.
+The \form{-nt} is a contraction form of the negator \form{not},
+but in modern English the negative suffix moves together with the auxiliary in
+subject-auxiliary inversion (\prettyref{sec:sai}).
+Thus, it's recognized as a part of the auxiliary \citep[\citepage{91}]{cgel}.
+This seems to be purely about phonetic realization:
+There seems to be no large morphosyntactic differences 
+between auxiliary-\form{not} and the negative auxiliary
+besides subject-auxiliary inversion.
+All auxiliaries don't have secondary negative forms,
+though \form{do}, \form{have} and \form{be} have primary negative forms.
+
+Since auxiliary verbs are a part of the grammar,
+here I list the paradigms TODO
+
+\begin{infobox}{Auxiliary constructions are single-clause ones}{auxiliary-single-clause}
+    \citet{cgel} treat auxiliary verbs as verbs taking complement clauses 
+    (as in, say, [11] in \citepage{782}).
+    This is not the position of this note:
+    Here I follow the standard practice in generative syntax (probably also American structuralism) 
+    and assume auxiliary verb constructions are always single-clause constructions.
+    \emph{Historically}, auxiliaries may origin from complement-taking verbs,
+    but now \emph{synchronically}, they have the same function of inflectional affixations.
+    Complement clause constructions may (or may not) have the same \emph{semantics} of 
+    auxiliary verb constructions and inflectional affixations,
+    but they never have the same \emph{structure}.
+
+    The main reasons \citet{cgel} analyze auxiliary verbs as complement-taking verbs or
+    \term{concatenative verbs} in their terms 
+    are shown in their \citechapsec{14}{4.2.2}.
+    However, these arguments are based on interpretation of constituency trees like
+    \form{[would [like to do]]} as complement clause constructions,
+    which doesn't necessarily hold.
+    They also confuse lexical heads and (PF realization of) functional heads.
+    They therefore bring in much inconsistency when they argue that 
+    the complementizer \form{that} isn't a head.
+    In this note, I follow \acs{blt}'s standard of headhood
+    while fully being aware of the generative functional head analysis.
+
+    Evidences supporting my claim that auxiliary constructions are indeed single-clauses ones 
+    can be obtained by observing how auxiliaries interact with clausal dependents.
+    If \citet{cgel} are correct on their claim that English auxiliary verbs take bare infinitive clauses,
+    then we expect the verbal phrase after an auxiliary verb to receive any modification 
+    that's acceptable for a bare infinitive clause.
+    However, as we see in \prettyref{sec:verb-inflection.adverb-auxiliary-chain},
+    there is a strong tendency for adverbs to appear after the first auxiliary,
+    which can be easily explained by assuming the first auxiliary 
+    undergoes some kind of fronting (\prettyref{sec:verb-inflection.negation}),
+    or after all auxiliaries and before the main verb,
+    and the functions of adverbs in the two positions 
+    have clear correlation with the positions.
+    This pattern are hard to account for 
+    when we assume auxiliary verb constructions are complement clause constructions,
+    because nothing motivates it.
+    If, on the other hand, 
+    auxiliary verb constructions are single-clause constructions,
+    then we can say the distribution of adverbs and auxiliaries
+    show is just the surface reflection of a deep functional hierarchy,
+    just like the subject is somehow higher than the object.
+\end{infobox}
+
+
+\subsection{Minimal auxiliary chain}\label{sec:auxiliary-chain}
+
+In a declarative finite clause,  
+the order of auxiliaries is constantly given by \prettyref{tbl:auxiliary-chain}.
+\prettyref{tbl:auxiliary-chain} is a part of the larger picture of clause structure:
+The auxiliary \form{do} (\prettyref{sec:verb-inflection.do}), 
+adverbs (\prettyref{sec:verb-inflection.adverb-auxiliary-chain})
+and the negator (\prettyref{sec:verb-inflection.negation})
+may be inserted into somewhere between two auxiliaries.
+Other types of clauses still largely follow the scheme but 
+may undergo subject-auxiliary inversion (\prettyref{sec:sai}).
+
+The auxiliaries positions can be filled by the corresponding auxiliaries or be just left blank,
+without creating ungrammatical constructions.
+The \category{modal} slot may be filled by a modal auxiliary.
+The \category{perfect} slot may be filled by the auxiliary version of \form{have} with the correct inflection,
+and the \category{progressive} and \form{passive} slots 
+may be filled by the auxiliary version of \form{be} with the correct inflection.
+
+The rules of inflection are the follows.
+The tense category is always marked on the first auxiliary
+(not necessarily one of the slots in \prettyref{tbl:auxiliary-chain}
+-- it may be an inserted \form{do}),
+and when there is no auxiliary,
+it's marked on the main verb.
+Note that it isn't true that if the first auxiliary is in the past form,
+it always means a past event (\prettyref{sec:verb-inflection.modal-use}).
+The modal auxiliary is always followed by a plain form,
+and the progressive marking \form{be} is always followed by an \formcat{ing}-participle,
+and the perfect marking \form{have} is always followed by an \formcat{ed}-participle,
+and so is the passive marking \form{be}.
+When the clause is finite and the tense is \category{present},
+and the \category{modal} slot is empty,
+if the subject is 3sg in number,
+then the first non-empty slot in \prettyref{tbl:auxiliary-chain}
+is in the 3sg present form,
+which means for verbs other than \form{be}, the \form{-s} suffix is attached to it;
+for \form{be} the correct form is \form{is}.
+This is the only case subject-verb agreement happens in English 
+other than the case of \form{be} (\prettyref{ex:verb-inflection.3sg-1}).
+For \form{be}, the tense is still  TODO: subjunctive 
+
+In nonfinite forms, the \category{modal} slot has to go;
+the rest are still there, following the same inflectional pattern as is described above
+(\prettyref{ex:verb-inflection.infinitive-1}).
+Note that the subject-verb agreement is missing in all nonfinite clauses,
+be it the third person singular \form{-s} or inflectional forms of \form{be}.
+
+\begin{table}[H]
+    \caption{The order of auxiliaries and some examples}
+    \label{tbl:auxiliary-chain}
+    \centering
+    \begin{tabular}{@{}lllll@{}}
+    \toprule
+    \category{modal}      & \category{perfect}      & \category{progressive}        & \category{passive}            & main verb    \\ \midrule
+    \form{}           & \form{}             & \form{}                   & \form{}                   & \form{takes}  \\
+    \form{}           & \form{}             & \form{}                   & \form{am/are/is/was/were} & \form{taken}  \\
+    \form{}           & \form{}             & \form{am/are/is/was/were} & \form{}                   & \form{taking} \\
+    \form{}           & \form{have/has/had} & \form{}                   & \form{}                   & \form{taken}  \\
+    \form{}           & \form{have/has/had} & \form{been}               & \form{being}              & \form{taken}  \\
+    \form{will/would} & \form{have}         & \form{been}               & \form{being}              & \form{taken}  \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{exe}
+    \ex\label{ex:verb-inflection.3sg-1} \begin{xlist}
+        \ex I [like] this.
+        \ex He [likes] this.
+    \end{xlist}
+    \ex\label{ex:verb-inflection.infinitive-1} 
+    The award is reported [to have been being taken]_{\text{complement clause: \formcat{to}-infinitive}} 
+    \ex\label{ex:verb-inflection.infinitive-2} 
+\end{exe}
+
+
+
+\subsection{\form{Do} insertion}\label{sec:verb-inflection.do}
+
+\subsubsection{Obligatory \form{do} insertion}
+
+\form{Do} insertion happens in two circumstances.
+The first is we need an auxiliary but there isn't one.
+This is the case when we negate a clause with no auxiliary verb
+(\prettyref{sec:verb-inflection.negation}),
+and the case when subject-auxiliary inversion happens but there is no auxiliary verb
+(\prettyref{sec:sai}).
+In both cases, \form{do} is inserted before the main verb,
+and is regarded as an auxiliary,
+which carries the tense feature and the subject-verb agreement information
+and is inflected accordingly
+(\prettyref{ex:verb-inflection.do-1}, \prettyref{ex:verb-inflection.do-2}).
+
+We may say the \form{do} is the default realization of the tense category and the agreement 
+when these can't find an appropriate host.
+It's roughly in the same position of \category{modal} in \prettyref{tbl:auxiliary-chain}.
+Then, expectedly, adverbs can be inserted between \form{do} and the main verb
+(\prettyref{ex:verb-inflection.do-3}).
+
+\begin{exe}
+    \ex\label{ex:verb-inflection.do-1} I do not like the gift. I don't like the gift.
+    \ex\label{ex:verb-inflection.do-2} Did he enter the room that night?
+    \ex\label{ex:verb-inflection.do-3} I do not particularly like that kind of flower.
+\end{exe}
+
+\subsubsection{\form{Do} for emphasis} 
+
+Unlike (\prettyref{ex:verb-inflection.do-1}, 
+\prettyref{ex:verb-inflection.do-2}, 
+\prettyref{ex:verb-inflection.do-3}),
+we can also just insert \form{do} to emphasize on the action,
+and in this case the inserted \form{do} receives stress.
+The morphology of \form{do} is the same as the obligatory \form{do} insertion,
+and so is the distribution of adverbs.
+
+\begin{exe}
+    \ex Your company [\emph{do}]_{\text{\form{do} insertion}} [have]_{\text{main verb}} lots of rules!
+\end{exe}
+
+\subsection{Adverbs in the auxiliary chain}\label{sec:verb-inflection.adverb-auxiliary-chain}
+
+The adverbs mentioned in this section are 
+manner-like adverbs, \acs{tam}-related adverbs and speech act-related adverbs 
+(\prettyref{sec:valency.overview.dependents}),
+instead of adverbial peripheral arguments.
+Adverbs are never inserted between the first auxiliary (if any) and the negator.
+TODO: what else?
+
+\begin{exe}
+    \ex\label{ex:auxiliary-chain-breaking-1} 
+    He [is]_{\text{\category{progressive}}} [vigorously]_{\text{TODO:}} [doing]_{\text{main verb}} [his job]_{\text{object}}. 
+\end{exe}
+
+\subsection{Negation in the auxiliary chain}\label{sec:verb-inflection.negation}
+
+The rule of the negator \form{not} is close to the rule of adverbs: 
+If \form{not} is used, it is \emph{always} after the first auxiliary
+(while adverbs can appear before the first auxiliary in marked cases), 
+which may be the inserted \form{do} (\prettyref{ex:auxiliary-chain-breaking-2}).
+Any auxiliary-\form{not} sequence may be replaced by the negative form of that auxiliary
+if there is one (\prettyref{ex:auxiliary-chain-breaking-4}, \prettyref{ex:auxiliary-chain-breaking-3}).
+
+\begin{exe}
+    \ex\label{ex:auxiliary-chain-breaking-2}
+    He [does]_{\text{\form{do} inserted, pres, 3sg}} [not]_{\text{negation}} love his job.
+    \ex\label{ex:auxiliary-chain-breaking-4}
+    He doesn't love his job.
+    \ex\label{ex:auxiliary-chain-breaking-3}
+    He isn't vigorously doing his job.
+\end{exe}
+
+It should be noted the surface position of the negator doesn't determine the scope of negation
+\citep[\citepage{668}]{cgel}.
+See, for example, the ambiguity of (\prettyref{ex:verb-inflection.negation-ambiguity-1}).
+Here the ambiguity is an indicator that 
+there are at least two available syntactic position of the reason clause (TODO: ref).
+Another ambiguity arises when negation appears together with modality
+(\prettyref{ex:verb-inflection.negation-ambiguity-2}, \prettyref{ex:verb-inflection.negation-ambiguity-3}).
+This means the negator-after-first-auxiliary rule is about \emph{realization} 
+and not about the underlying syntactic structure (\prettyref{sec:morphology-meaning}),
+if we assume the semantic difference has structural significance.
+This, together with the fact that auxiliaries have negative forms
+and that the existence of \form{not} blocks subject-auxiliary inversion 
+of the main verb,
+may lead to the conclusion that the negator \form{not} is a quasi-verbal clitic
+which is always attached after the highest verbal element.
+We, however, shouldn't rush to such a conclusion,
+because it's also possible that 
+the rule is actually the highest verbal element is always moved \emph{before} the negator.
+Note that 
+
+TODO: the Tense - Negation - Modality - Perfect - ... sequence
+
+\begin{exe} 
+    \ex\label{ex:verb-inflection.negation-ambiguity-1} 
+    I don't appoint him because he is my son. \\
+    \translate{I appoint him, but because of his talent, not because his relation with me. / 
+    I don't appoint him, because he's my son and I don't want to appoint him and  
+    leave a bad impression on my colleagues.}
+    \ex\label{ex:verb-inflection.negation-ambiguity-2}
+    He shouldn't play football in the streets. \\
+    \translate{It's required that he doesn't play football in the streets./
+    *It's not required that he plays football in the streets,
+    but he can if he wants to.} 
+    \ex\label{ex:verb-inflection.negation-ambiguity-3}
+    He can't play football. \\
+    \translate{It's not possible/permitted that he plays football./
+    *He can suppress the desire to play football.}
+\end{exe}   
+
+
+\subsection{Subject-auxiliary inversion}\label{sec:sai}
+
+In interrogative sentences and in other cases (\prettyref{sec:clause-template}),  
+the first auxiliary in the chain undergoes leftward movement,%
+\footnote{
+    Note that this is head movement and are often attributed to post-syntactic operations 
+    in Distributed Morphology,
+    making the operation kind of ``morphological''.
+    See \prettyref{sec:morphology-meaning} for theoretical issues concerning this.
+}
+often to the initial position but may be preceded by preposed constituents (\prettyref{sec:clause-template}). 
+This is called \concept{subject-auxiliary inversion}.
+When there is no auxiliary, 
+the correct form of \form{do} carrying the tense and agreement features is inserted.
+
+\begin{exe}
+    \ex {} [Do]_{\text{inverted auxiliary}} [you see my umbrella]_{\text{nucleus}}
+    \ex Only then do we cook
+\end{exe}
+
+
+\subsection{Semi-auxiliaries}\label{sec:semi-auxiliary}
+
+\subsection{Comparability with moods}\label{sec:tam-mood-compatibility}
+
+\section{Clausal dependents and verb frames}
+
+\subsection{Overview}
+
+\subsection{Prepositional object}
+
+Verb-preposition constructions and verb-particle constructions
+can be classified according to the following parameters:
+\begin{enumerate*}
+    \item whether it's a transitive preposition or a particle 
+    (an intransitive preposition, or something else),
+    \item whether the construction can be interpreted in a compositional way or 
+    has already gained an established (idiomatic) meaning,
+    \item how the choice of preposition/particle is restricted by the verb,  
+    \item the mobility of the preposition/particle 
+    in, say, \formcat{wh}-movements, and 
+    \item complement-related properties of the associated \acs{np} coming with the preposition/particle,
+    like whether it can be passivized
+\end{enumerate*}
+\citep[\citepages{272-274}]{cgel}.
+
+\begin{infobox}{Intransitive prepositions}{intrans-prep}
+    The term \term{particle} here covers intransitive prepositions;
+    the term \term{preposition} is used to cover transitive prepositions.
+    Although strictly speaking, 
+    this terminology confuses form and function 
+    (prepositions are a word class, 
+    and can be used intransitively in some cases),
+    I choose to do so to keep the notation consistent with 
+    the current grammar writing practice.
+\end{infobox}
+
+Concerning verbs coming with a single preposition,
+trivially, if a verb doesn't specify the preposition following it, 
+the preposition is always mobile.
+Thus we have a three-fold classification:
+\begin{enumerate*}
+    \item verbs with non-specified prepositions,
+    \item verbs with specified but mobile prepositions 
+    (\concept{preposition verbs with mobile prepositions}; \citealp[\citepage{273}]{cgel}), and 
+    \item verbs with specified and fixed prepositions 
+    (\concept{fossilized preposition verbs}; \citealp[\citepage{277}]{cgel}).
+\end{enumerate*}
+Note that a non-specified prepositional phrase is still a complement \citep[\citepage{273}]{cgel}.
+
+The parameters of established meaning and complement properties
+are largely independent to the classification made above.
+Passivization is completely not predictable 
+from the classification made above \citep[\citepage{276} {[11]}]{cgel}.
+Fossilized verb-preposition constructions are usually idioms,
+but some, like \form{break with}, 
+still have largely inferrable meaning;
+the same applies for verbs with specified prepositions
+(indeed, the presence of a specified preposition introduces a sense of 
+directed volition \citep[\citepage{293}]{dixon2005semantic});
+verbs with non-specified prepositions usually are less idiom-like,
+but this is because if they are idiomatic enough,
+we will recognize them as verbs with specified prepositions.
+
+The classification of verb-preposition constructions,
+therefore, is given in \prettyref{tbl:verb-prep-construction}.
+The examples used in the table is based on \citet[\citepage{278}, {[17]}]{cgel}.
+
+\begin{table}[H]
+    \centering
+    \caption{Classification of verb-single-preposition constructions}
+    \label{tbl:verb-prep-construction}
+    \begin{tabular}{lllll}
+    \toprule
+    &       &       & \multicolumn{2}{c}{specified preposition} \\ \cmidrule(l){4-5} 
+    \multirow{-2}{*}{\begin{tabular}[c]{@{}l@{}}passivization of NP \\ after preposition\end{tabular}} & \multirow{-2}{*}{idiom} & \multirow{-2}{*}{\begin{tabular}[c]{@{}l@{}}non-specified \\ preposition\end{tabular}} & mobile             & fixed                \\ \midrule
+                                                                                                       & yes                     & \cellcolor[HTML]{C0C0C0}\form{}                                                      & \form{call on?}          & \form{see to}      \\
+    \multirow{-2}{*}{yes}                                                                              & no                      & \form{sleep in}                                                                      & \form{refer to}  & \form{fuss over}            \\
+                                                                                                       & yes                     & \cellcolor[HTML]{C0C0C0}\form{}                                                      & \form{stand for} & \form{come across} \\
+    \multirow{-2}{*}{no}                                                                               & no                      & \form{fly to/from}                                                                   & \form{feel for}          & \form{come into}            \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+Beside the classification given by \prettyref{tbl:verb-prep-construction},
+another parameter is the origin of preposition verb constructions.
+Some of them are similar to verbs licensing oblique cases
+(found in languages with rich case morphology, like Latin),
+like \form{refer to},
+the verb parts of which rarely appear alone or with other prepositions.
+For others, like \form{see to},
+the verb part of the construction (usually a simple, monosyllabic one)
+does appear alone or with other prepositions.
+In the first case,
+the ``idiom-or-not'' parameter is actually not so important,
+because we can consider the preposition as a part of the verb lexeme,
+while in the second case,
+the parameter is important,
+because \form{stand at the door} is of course not idiomatic,
+while \form{stand for} has an established meaning.
+
+The complement introduced by the preposition of a preposition verb 
+is object-like (TODO: ref),
+and therefore preposition verbs are transitive
+(\citealt[\citepage{291}, \citepage{297}]{dixon2005semantic};
+\citealt[\citepage{277}]{cgel}).
+
+\section{Agreement}
+
+If you take a closer look to how native speakers of English do subject-verb agreement,
+you'll find some more subtle details than 
+the textbook rule that when the tense is \acl{present}
+and the subject is 3sg, 
+\form{-s} is added to the first auxiliary or the main verb
+\citep[\citechap{5}, \citesec{18}]{cgel}.
+
+\chapter{Simple clause}
+
+\bibliographystyle{plainnat}
+\bibliography{cambridge}
+
+\end{document}
