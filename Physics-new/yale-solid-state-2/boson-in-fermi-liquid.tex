@@ -233,7 +233,7 @@ but further simplification is possible.
 For a direct connection between physical observables and the Green function,
 we work with the so-called \emph{lesser Green function}
 \begin{equation}
-    G^<(\vb*{r}_1, t_1, \vb*{r}_2, t_2) = \ii \expval{\psi^\dagger(2) \psi(1)}.
+    G^<(\vb*{x}_1, t_1, \vb*{x}_2, t_2) = \ii \expval{\psi^\dagger(2) \psi(1)}.
 \end{equation}
 Wigner transform of the lesser Green function reads
 \begin{equation}
@@ -271,6 +271,7 @@ The two assumptions are sufficient to lead to the \emph{quantum Boltzmann equati
     \pdv{f}{T} + \grad_{\vb*{p}} \xi \cdot \grad_{\vb*{R}} f 
     - \grad_{\vb*{R}} \xi \cdot \grad_{\vb*{p}} f 
     = \left(\pdv{f}{t}\right)_{\text{c}}, 
+    \label{eq:quantum-boltzmann}
 \end{equation}
 where the collision integral on the right-hand side is decided by Fermi golden rule 
 and is 
@@ -285,14 +286,76 @@ by the fact that the collision integral depends on $\vb*{R}$ only;
 also note that the imaginary part of the self-energy is ignored 
 in the spectral function
 but is picked up back to the collision integral.
-Below, we replace $\vb*{R}$ by $\vb*{r}$ for the sake of convenience.
-The most generalized derivation involves Keldysh field theory 
+Below, we replace $\vb*{R}$ by $\vb*{r}$ 
+and $T$ by $t$
+for the sake of convenience.
+
+The most generalized derivation of \eqref{eq:quantum-boltzmann} 
+involves Keldysh field theory 
 \cite{RevModPhys.58.323}
-and is beyond the scope of this report;
-as a proof of concept, 
-the collision-free quantum Boltzmann equation can be derived 
+and is beyond the scope of this report.
+As a proof of concept,
+a collision-free linearized quantum Boltzmann equation can be derived 
 using random phase approximation (RPA) 
-from the equation of motion of $n_{\vb*{k} \vb*{q}}$:
+from the equation of motion of the electron-hole pair creation operator
+\begin{equation}
+    n_{\vb*{k} \vb*{q}}^\dagger = c^\dagger_{\vb*{k} + \vb*{q}} c_{\vb*{k}},
+\end{equation}
+where $\vb*{q}$ is the total momentum of the pair 
+and $\vb*{k}$ is the ``internal'' or relative momentum;
+recall that $c_{\vb*{k}}$ creates a hole with momentum $- \vb*{k}$.
+By ignoring $\bigO(n^3)$ terms in the equation of motion of $n_{\vb*{k} \vb*{q}}$
+and switching the equation to the frequency domain
+we have \cite{pines2018theory}
+\begin{equation}
+    - \ii \dot{n}_{\vb*{p} \vb*{q}}^\dagger
+    = (\epsilon_{\vb*{p} + \vb*{q}} - \epsilon_{\vb*{p}}) n^\dagger_{\vb*{p} \vb*{q}}
+    + \sum_{\vb*{k}} n_{\vb*{k}} (V_{\vb*{k} - \vb*{p}} - V_{\vb*{k} - \vb*{p} - \vb*{q}}) n^\dagger_{\vb*{p} \vb*{q}}
+    - \sum_{\vb*{k}} (V_{\vb*{q}} - V_{\vb*{k} - \vb*{p}})
+    (n_{\vb*{p} + \vb*{q}} - n_{\vb*{p}})
+    n^\dagger_{\vb*{k} \vb*{q}}.
+    \label{eq:eom-density}
+\end{equation}
+Note that 
+\begin{equation}
+    \begin{aligned}
+        \int \dd[3]{\vb*{x}} \ee^{- \ii \vb*{p} \cdot \vb*{x}} \psi^\dagger(\vb*{x}_2) \psi(\vb*{x}_1) 
+        &= \int \dd[3]{\vb*{x}} \ee^{- \ii \vb*{p} \cdot \vb*{x}}
+        \frac{1}{\sqrt{V}} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot (\vb*{X} - \vb*{x} /2 )} c_{\vb*{k}}^\dagger
+        \cdot \frac{1}{\sqrt{V}} \sum_{\vb*{k}'} \ee^{\ii \vb*{k}' \cdot (\vb*{X} + \vb*{x} / 2)} c_{\vb*{k}'} \\
+        &= \sum_{\vb*{k}, \vb*{k}'} \ee^{\ii \vb*{X} \cdot (\vb*{k}' - \vb*{k})}
+        \delta_{\vb*{p}, \frac{\vb*{k} + \vb*{k}'}{2}} c^\dagger_{\vb*{k}} c_{\vb*{k}'},
+    \end{aligned}
+\end{equation}
+and therefore%
+\footnote{
+    $\int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} f(\vb*{r}, \vb*{p}, t)$ 
+    is also proportional to the 
+    $\ket*{\text{electron at $\vb*{p} + \vb*{q} / 2$}, \text{hole at $\vb*{p} - \vb*{q} / 2$}}$,
+    the EOM of the latter being the same as 
+    the \emph{annihilation operator} of the electron-hole pair,
+    and therefore there is nothing wrong with the equation below.
+}
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} f(\vb*{r}, \vb*{p}, t)
+    \simeq \expval*{c^\dagger_{\vb*{k} - \vb*{q} / 2} c_{\vb*{k} + \vb*{q} / 2}} .
+\end{equation}
+The gradient expansion condition is equivalent to the condition that 
+the characteristic length scale of $f$ with respect to the $\vb*{r}$ variable is large,
+which then is equivalent to the condition that $\vb*{q}$ is small.
+Then, by noticing 
+\begin{equation}
+    \xi_{\vb*{p}}(\vb*{r}) = \varepsilon^0_{\vb*{p}}
+    + \sum_{\vb*{k}} (V_{0} - V_{\vb*{k} - \vb*{p}} ) n_{\vb*{k}}(\vb*{r}) - \mu,
+    \label{eq:simple-fermi-liquid-xi}
+\end{equation}
+taking the $\vb*{q} \to 0$ limit and keep only the $\bigO(q)$ term in all Taylor expansions 
+with respect to $\vb*{q}$
+and noticing that 
+\[
+    \ii \vb*{q} \simeq \pdv{\vb*{r}},
+\]
+we get a linearized quantum Boltzmann equation with a vanishing collision integral.
 
 Classical Boltzmann equation can be derived using 
 BBGKY hierarchy,
@@ -323,15 +386,28 @@ faces a fundamental constraint in multi-band systems.
 
 \section{Landau kinetic theory of neutral Fermi liquid and zero sound} 
 
-The assumptions made in the last section 
-do not impose any constraint on $\Re \Sigma$;
-specifically, they do not dictate that $\Re \Sigma$
-cannot have explicit dependence on $G(\vb*{r}, \vb*{r}', t, t')$
-i.e. $f(\vb*{r}, \vb*{p}, t)$.
-We can then insert the Fermi liquid effective energy
+\begin{figure}
+    \centering
+    \input{feyn/fermi-liquid-vertex-1.tex}
+    \caption{Deriving the quasiparticle interaction function.
+    In the first-order correction the TODO.
+    As long as the corrected vertex is well-defined in the $\vb*{q} \to 0$ limit, 
+    we can simply set $\vb*{q} = 0$ when $\vb*{q}$ appears 
+    in any of the internal interaction lines;
+    the corrected interaction vertex therefore only depends on $\vb*{p} - \vb*{k}$,
+    as is shown in the figure above.
+    The vertex then can be seen as an interaction channel 
+    that keeps the total momentum $\vb*{q}$ of an electron-hole pair 
+    but constantly changes its internal momentum $\vb*{p}$.}
+\end{figure}
+
+$\Re \Sigma$ can have explicit dependence on $G(\vb*{r}, \vb*{r}', t, t')$
+i.e. $f(\vb*{r}, \vb*{p}, t)$,
+as is shown in \eqref{eq:simple-fermi-liquid-xi}.
+For a general Fermi liquid we can insert
 \begin{equation}
-    \varepsilon_{\vb*{p} \sigma} = \varepsilon^0_{\vb*{p} \sigma} + 
-    \frac{1}{V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n}_{\vb*{p}' \sigma'}
+    \varepsilon_{\vb*{p} \sigma}(\vb*{r}) = \varepsilon^0_{\vb*{p} \sigma} + 
+    \frac{1}{V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'} \var{n}_{\vb*{p}' \sigma'} (\vb*{r})
     \label{eq:landau-eq-assumption}
 \end{equation}
 into the quantum Boltzmann equation;
@@ -344,6 +420,23 @@ is due to external electromagnetic driving,
 which at the linear level does not change
 the momentum conservation condition 
 where an interaction line meets with two electron lines.
+Note that \eqref{eq:landau-eq-assumption} is already beyond 
+the Fermi liquid energy functional
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}, \sigma} \varepsilon^0_{\vb*{p}} \var{n}_{\vb*{p} \sigma}
+    + \frac{1}{2V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'}
+    \var{n}_{\vb*{p} \sigma} \var{n}_{\vb*{p}' \sigma'},
+\end{equation}
+since the energy functional is unable to change the internal relative momentum
+i.e. $\vb*{p}$ for an electron-hole pair,
+but that is exactly what happens in \eqref{eq:landau-eq-assumption}.
+\eqref{eq:landau-eq-assumption}, then, implicitly assumes 
+that the evolution of $\vb*{p}$ is irrelevant to the value of $\vb*{q}$;
+since we are working in the small-$\vb*{q}$ region where Boltzmann equation holds,
+as long as we have a well-defined $f_{\vb*{p} \vb*{p}'}$ function 
+in the first place.
+Unscreened Coulomb interaction however breaks this condition
+(\prettyref{sec:charged-fermi-liquid}).
 
 The inclusion of the Fermi liquid self-energy correction 
 immediately leads to an important consequence 
@@ -365,8 +458,8 @@ The first sound can be derived
 by calculating mechanical properties of the Fermi liquid in question 
 and inserting the compressibility 
 into $v = \sqrt{\pdv*{p}{\rho}}$ \cite{lifshitz2013statistical}.
-This approach assumes the usual framework of hydrodynamics 
-works for Fermi liquid; 
+This approach assumes the usual framework of near-equilibrium hydrodynamics 
+works for Fermi liquid when the frequency is low enough; 
 a direct verification can be found in \cite{belitz2022soft}.
 The spectrum of first sound 
 is connected to the spectrum of zero sound:
@@ -409,9 +502,14 @@ The sound spectrum of Fermi liquid is therefore summarized in \prettyref{fig:sou
 
 
 
-\section{Charged Fermi liquid and the plasmon}
+\section{Charged Fermi liquid and the plasmon}\label{sec:charged-fermi-liquid}
 
-One more mechanism 
+If we try to calculate $f_{\vb*{p} \vb*{p}'}$ by 
+comparing \eqref{eq:landau-eq-assumption} and \eqref{eq:simple-fermi-liquid-xi}
+in a real condensed matter system,
+we immediately find that the Hartree term $V_0$ diverges.
+This radically long-range nature of the Hartree term therefore 
+is better captured by 
 
 \section{Microscopic bosonic modes beyond the Landau equation}\label{sec:microscopic-bosonic-modes}
 
@@ -443,7 +541,8 @@ Second, it rules out the possibility
 for the naive quantum Boltzmann equation to faithfully represent 
 inter-band phenomena.
 In the multi-band case the band Hamiltonians 
-$H_1$ and $H_2$ (TODO: ref) should be compared directly,
+$\varepsilon_{\vb*{p} + \vb*{q}}$ and $\varepsilon_{\vb*{p}}$ 
+in \eqref{eq:eom-density} should be compared directly,
 both of which have atomic characteristic length scale 
 and gradience expansion fails.
 Another perspective to see the infeasibility to have 
@@ -464,11 +563,10 @@ and exciton formation is modeled as
 a three-particle vertex \cite{klimontovich1981quantum},
 while 
 
-\cite{pines2018theory}.
 We may say zero sound/plasmon is a \emph{hydrodynamic} mode,
 
 
-\section{Conclusion}
+\section{Discussion}
 
 \printbibliography
 
