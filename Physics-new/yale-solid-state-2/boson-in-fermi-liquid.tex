@@ -135,7 +135,7 @@
 
 \newcommand*{\kB}{k_{\text{B}}}
 \newcommand*{\muB}{\mu_{\text{B}}}
-\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\efermi}{\varepsilon_{\text{F}}}
 \newcommand*{\pfermi}{p_{\text{F}}}
 \newcommand*{\vfermi}{v_{\text{F}}}
 \newcommand*{\sA}{\text{A}}
@@ -416,6 +416,8 @@ where $f_{n n'}$ and $\varepsilon_{n n'}$
 are seen as matrices (but the commutator does not count $\vb*{r}$ and $\vb*{p}$ as 
 quantum operators, since the corresponding effects are already considered 
 by existing terms in \eqref{eq:quantum-boltzmann}).
+The rest of the terms on the left-hand side of \eqref{eq:quantum-boltzmann}
+should also be replaced by corresponding matrix forms.
 
 \section{Landau kinetic theory of neutral Fermi liquid and zero sound} 
 
@@ -439,7 +441,14 @@ i.e. $f(\vb*{r}, \vb*{p}, t)$,
 as is shown in \eqref{eq:simple-fermi-liquid-xi}.
 Below we change the notation once again and use $n_{\vb*{p}}(\vb*{r})$ 
 to refer to the distribution function in place of $f(\vb*{r}, \vb*{p})$
-to follow the established convention in Fermi liquid theory.
+to follow the established convention in Fermi liquid theory,
+and also to imply that 
+the normalization scheme of the Boltzmann distribution function $n_{\vb*{p}}(\vb*{r})$
+follows the same scheme of the density operator $n_{\vb*{p}}$:
+at the ground state, we have 
+\begin{equation}
+    n_{\vb*{p}}(\vb*{r}) = \theta(\efermi - \varepsilon_{\vb*{p} \sigma}).
+\end{equation}
 For a general Fermi liquid we can insert
 \begin{equation}
     \varepsilon_{\vb*{p} \sigma}(\vb*{r}) = \varepsilon^0_{\vb*{p} \sigma} + 
@@ -450,20 +459,24 @@ into the quantum Boltzmann equation;
 the resulting equation system is called \term{Landau equation}.
 Since now $\var{n}$ has both $\vb*{p}$ and $\vb*{r}$ dependence,
 $\varepsilon_{\vb*{p}}$ also has $\vb*{r}$ dependence.
+The $1/V$ factor comes from the normalization constant 
+of a two-body interaction, 
+as is seen in 
+\begin{equation}
+    \var{E} = \sum_{\vb*{p}, \sigma} \varepsilon^0_{\vb*{p}} \var{n}_{\vb*{p} \sigma}
+    + \frac{1}{2V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'}
+    \var{n}_{\vb*{p} \sigma} \var{n}_{\vb*{p}' \sigma'}.
+    \label{eq:fermi-liquid-energy}
+\end{equation}
 No spatial dependence (i.e. $\vb*{q}$ dependence) 
-is added to $f_{\vb*{p} \vb*{p}'}$, however:
+is added to $f_{\vb*{p} \vb*{p}'}$:
 the fact that $n_{\vb*{k} \vb*{q}}$ has a non-zero value when $\vb*{q} \neq 0$
 is due to external electromagnetic driving, 
 which at the linear level does not change
 the momentum conservation condition 
 where an interaction line meets with two electron lines.
 Note that \eqref{eq:landau-eq-assumption} is already beyond 
-the Fermi liquid energy functional
-\begin{equation}
-    \var{E} = \sum_{\vb*{p}, \sigma} \varepsilon^0_{\vb*{p}} \var{n}_{\vb*{p} \sigma}
-    + \frac{1}{2V} \sum_{\vb*{p}', \sigma'} f_{\vb*{p} \vb*{p}' \sigma \sigma'}
-    \var{n}_{\vb*{p} \sigma} \var{n}_{\vb*{p}' \sigma'},
-\end{equation}
+the Fermi liquid energy functional \eqref{eq:fermi-liquid-energy},
 since the energy functional is unable to change the internal relative momentum
 i.e. $\vb*{p}$ for an electron-hole pair,
 but that is exactly what happens in \eqref{eq:landau-eq-assumption}.
@@ -553,9 +566,12 @@ putting the Hartree term to the
 \emph{spatial} dependence of the corrected single-electron energy 
 instead of the momentum dependence.
 The complete kinetic theory therefore involves three instead of two equations:
-the Hartree correction
+the Hartree correction (below $e > 0$)
 \begin{equation}
-    \laplacian \varphi = \frac{e}{\epsilon_0} \sum_{\vb*{p}, \sigma} \var{n}_{\vb*{p} \sigma}(\vb*{r}),
+    \laplacian \varphi = \frac{e}{\epsilon_0} 
+    \cdot \underbrace{
+        \frac{1}{V} \sum_{\vb*{p}, \sigma} \var{n}_{\vb*{p} \sigma}(\vb*{r})
+    }_{\rho(\vb*{r}) / (-e)},
 \end{equation}
 the single-electron energy corrected by 
 the short-range part of the self-energy
@@ -571,19 +587,29 @@ and the quantum Boltzmann equation
     - \pdv{\var{n}_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{(\varepsilon_{\vb*{p} \sigma} - e \varphi)}{\vb*{r}} = 0.
 \end{equation}
 The equation system is known as \emph{Landau-Silin equation}.
+Frequently, the $-e \varphi$ term is the \emph{only} term 
+considered in a classical picture of charged electrons:
+$f_{\vb*{p} \vb*{p}'}$ contains the Fock term,
+which does not have a clear classical picture.
 
-\section{Microscopic bosonic modes beyond the Landau equation}\label{sec:microscopic-bosonic-modes}
+TODO: plasmon only occurs with a divergent interaction
 
-Not all bosonic modes can be obtained 
-by observing oscillation modes of quantum Boltzmann equation,
-since the latter only works for 
-excitations with a large characteristic length scale 
-in the $\vb*{x}_1 - \vb*{x}_2$ variable.
-This constraint has two consequences.
+\section{Excitons}\label{sec:microscopic-bosonic-modes}
 
-First, it requires that $\vb*{q}$ is small enough.
+Excitons exist in multi-band systems.
+When the energy of two bands are different, 
+a $\comm*{\varepsilon}{f}$ term should be added to the quantum Boltzmann equation.
+In a homogeneous electron gas 
+we only have a spin-up band and a spin-down band, 
+and we can apply an external magnetic field to create a band gap,
+and then a new type of spin wave -- essentially an exciton mode 
+between the spin-up band and the spin-down band -- emerges \cite{lifshitz2013statistical}.
+This concept can be generalized to other discrete indices, 
+like the band index in a realistic condensed matter system.
 
-
+It can be seen that the quantum Boltzmann equation of electrons 
+does not provide us with any approximation scheme on top of TODO:
+it is just the gradient expansion version of (TODO).
 This does not mean the quantum Boltzmann equation is useless for excitons:
 excitons are usually modeled as independent particles themselves
 \emph{besides} electrons,
@@ -591,6 +617,12 @@ and exciton formation is modeled as
 a three-particle vertex \cite{klimontovich1981quantum},
 while 
 
+In this way we can handle exciton-phonon interaction with an acceptable time cost 
+and
+
+Of course, the validity of this is only guaranteed 
+when the exciton lifetime is long enough, 
+exciton distribution is smooth in space, etc. 
 
 \section{Discussion}
 
@@ -610,11 +642,16 @@ a more complicated formalism,
 like dynamic mean-field theory (DMFT) \cite{georges1996dynamical}.
 To go beyond the small-$\vb*{q}$ conditions,
 a single-time (i.e. with respect to $T = (t_1 + t_2) / 2$)
-single-electron Green function equation of motion is needed,
+single-electron Green function equation of motion
+(usually known as the \emph{Kadanoff-Baym equation}) is needed,
 which is equivalent to a single-electron density matrix equation of motion
 \cite{attaccalite2011real}
 and reduces to the quantum Boltzmann equation with \eqref{eq:g-to-f} 
 and gradient expansion.
+Neither formalisms may be face problems when the frequency 
+(with respect to $T$) is too high;
+in this case retardation may be important 
+and the complete double-time Green function equation of motion is needed.
 
 When the temperature is moderately high 
 so that zero sound is suppressed,
