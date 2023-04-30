@@ -10,7 +10,6 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
-\usepackage{cite}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{physics}
@@ -23,6 +22,8 @@
 \usepackage{underscore}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{boltzmann.bib}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
@@ -142,6 +143,175 @@
 \begin{document}
 
 \maketitle
+
+\section{Kadanoff-Baym equation}
+
+In the non-equilibrium case, 
+we still have 
+\begin{equation}
+    \begin{aligned}
+        \expval{A_{\text{H}}} &= \expval{  U(-\infty, t) A_{\text{I}}(t) U(t, -\infty) }_{0} \\
+        &= \expval*{  \underbrace{U(-\infty, \infty)}_{S^{-1}} U(\infty, t) A_{\text{I}}(t) U(t, -\infty) }_0 \\
+        &= \expval*{S^{-1} \timeorder_t ( S A_{\text{I}}(t) )}_0,
+    \end{aligned}
+\end{equation}
+where the subscript $_0$ means the initial state.
+Therefore we can still define the time-ordered Green function 
+\begin{equation}
+    \ii G_{12} = \expval*{S^{-1} \timeorder_t (\psi_1 \psi_2^\dagger S) },
+\end{equation}
+in hope of building something similar to the equilibrium field theory.
+In the equilibrium case, 
+we can always alternate $S$ into such a time evolution operator 
+in which the interaction is turned off when $t = \pm \infty$,
+and is only turned on near $t_{1,2}$,
+and since the initial state is the ground state, 
+we expect 
+\begin{equation}
+    S \ket*{\text{unperturbed GS}} = \ee^{\ii \cdot \text{some factor}} \ket*{\text{unperturbed GS}},
+\end{equation}
+and therefore we can get $S^{-1}$ out of the expectation brackets 
+and collect its contribution into vacuum bubble diagrams.
+In the non-equilibrium case, however,
+the initial state may be a mixed state, 
+which contains some components of excited states, 
+and if we apply $S$ to such an state, 
+the result is a mixture of several excited states 
+due to scattering.
+Thus, after Wick theorem is established, 
+we need to deal with contributions from both $S$ and $S^{-1}$.
+Contributions from $S^{-1}$ essentially involve 
+\emph{anti}-time ordering,
+and contraction between terms in $S^{-1}$ and $S$ also appears, 
+which involves no time ordering.
+Thus in the field theory pertaining to the non-equilibrium case, 
+we need \emph{four} kinds of propagators:
+the time ordered Green function, 
+the anti-time ordered Green function,
+and the ``lesser'' and ``greater'' Green functions,
+which are proportional to $\expval*{\psi_2^\dagger \psi_1}$ and $\expval*{\psi_1 \psi_2^\dagger}$;
+to label these Green functions, 
+we just need to add an additional $\pm$ label 
+at each end of the propagator.
+
+So now the Dyson equation looks like 
+\begin{equation}
+    G = G_0 + G_0 \Sigma G, 
+\end{equation}
+where 
+\begin{equation}
+    G = \pmqty{
+        G^{--} & G^{-+} \\ 
+        G^{+-} & G^{++}
+    }   ,
+\end{equation}
+and $G^{--}$ is the time-ordered Green function,
+$G^{++}$ the anti-time ordered Green function,
+$G^{-+}$ the lesser Green function,
+and $G^{+-}$ the greater Green function.
+Note that an interaction vertex is either completely connected to $-$ ends
+or completely connected to to $+$ ends:
+the former comes from $S$,
+and the letter comes from $S^{-1}$;
+we can also expect they differ with their signs.
+The input line of $\Sigma_{+-}$ must bear the label $-$,
+and the output end must bear the label $+$.
+
+Now we can further simply the above scheme by working on 
+not the physical time axis from $-\infty$ to $\infty$,
+but the Keldysh contour that goes from $-\infty$ to $\infty$ 
+and then goes back \cite{kremp2005quantum}.
+We give the branch from $-\infty$ to $\infty$ an infinitesimal \emph{positive} imaginary part,
+and the branch from $\infty$ to $-\infty$ an infinitesimal \emph{negative} imaginary part.
+Now the information in $G$ is faithfully reconstructed by 
+\begin{equation}
+    \ii G = \expval*{S^{-1} \timeorder_{\mathcal{C}} \psi_1 \psi_2^\dagger},
+\end{equation}
+where $\timeorder_{\mathcal{C}}$ does time ordering on the Keldysh contour,
+not the physical time axis:
+we can show that 
+\begin{equation}
+    G^{--}_{12} = G(t_1^+, t_2^+), 
+\end{equation}
+and so on.
+So now we can also obtain the Dyson equation for this new $G_{12}$,
+in which the convolution between two diagrammatic components 
+involves complex integral on the Keldysh contour 
+and not just the physical time axis.
+Based on the complex contour and the complex time order operator,
+we are able to prove the Lengreth theorem:
+\begin{equation}
+    (AB)^< = A^{\text{R}} B^< + A^< B^{\text{A}}, \quad 
+    (AB)^> = A^{\text{R}} B^> + A^> B^{\text{A}}, \quad 
+    (AB)^{\text{R}} = A^{\text{R}} B^{\text{R}}, \quad 
+    (AB)^{\text{A}} = A^{\text{A}} B^{\text{A}},
+\end{equation}
+where 
+\begin{equation}
+    A^>(t_1, t_2) = A(t_1^+, t_2^-), \quad 
+    A^<(t_1, t_2) = A(t_1^-, t_2^+), \quad 
+    A^{\text{R}}(t_1, t_2) = \theta(t_1 - t_2) (A^> - A^<),
+    \label{eq:def-l-g-a-r}
+\end{equation}
+following the usual definition in equilibrium field theory 
+(just replace $A$ by $G$ and all equations make sense).
+In each of the four equations above, 
+the product in the LHS corresponds to 
+convolution on the Keldysh contour,
+and the product in the RHS corresponds to 
+convolution on the physical time axis.
+
+Note that the Lengreth theorem is a rather non-trivial result: 
+it means, for example, we have 
+\begin{equation}
+    G^{\text{A}} = G^{ \text{A}} + G_0^{ \text{A}} \Sigma^{\text{A}} G^{\text{A}},
+\end{equation}
+and both $G^{\text{A}}$ and $\Sigma^{\text{A}}$
+can be constructed using the equation in \eqref{eq:def-l-g-a-r} about $A^<$.
+This can be explicitly verified by 
+doing a linear transform to the matrix version of the Dyson equation 
+\cite{rammer1986quantum}.
+Specifically, we have Eq. (2.71) in \cite{rammer1986quantum}.
+
+By applying the Lengreth theorem to the Dyson equation, we get 
+\begin{equation}
+    G^< = G^<_0 + G^<_0 \Sigma^{\text{A}} G^{\text{A}}
+    + G_0^{\text{R}} \Sigma^{\text{R}} G^< 
+    + G_0^{\text{R}} \Sigma^{<} G^\text{A} ,
+\end{equation}
+and if we apply (note that different Green functions are reduced to 
+the choices used in contour integral when doing Fourier transform of $1 / (E - H_0)$)
+\begin{equation}
+    G_0^{-1} = \ii \pdv{t} - H
+\end{equation}
+to the above equation, we get 
+\begin{equation}
+    G_0^{-1} G^< = \Sigma^{\text{R}} G^< + \Sigma^< \Sigma^{\text{A}},
+\end{equation}
+since $G_0^{-1}$ kills $G^<$ and $G^>$.
+A similar equation can be obtained for $G^>$.
+As for $G^{\text{A}}$, we have 
+\begin{equation}
+    G^{\text{A}} = G^{\text{A}}_0 + G^{\text{A}}_0 \Sigma^{\text{A}} G^{\text{A}}.
+\end{equation}
+Thus we have already gotten EOMs for non-equilibrium Green functions 
+which are always right
+and form a close system of equations
+when the self-energy contains no higher correlation: 
+$\Sigma^{\text{A}, \text{R}}$ can all be obtained from $\Sigma^{<,>}$,
+which then can be obtained from $G^{<, >}$.
+Of course, numerically solving the equation system can be tedious. 
+Having an approximate self-energy that is good enough
+is also not a trivial task and is not possible 
+when higher-order electron correlation is important.
+
+Usually several further approximations -- apart from 
+the condition that no higher correlation is taken into account --
+are needed to simplify the equations.
+One major approximation is to discard all retardation effects in the self-energy,
+and the EOMs then only contain one time variable,
+instead of two.
+This of course breaks when the external driving frequency is high.
 
 \section{Boltzmann equation and Fermi golden rule}
 
@@ -281,5 +451,7 @@ the vertex looks like $V(q) / V$, where the $V(q)$ factor
 is the $4 \pi e^2 / q^2$ interaction potential, 
 and the Fermi golden rule -- and therefore the collision integral -- 
 has a $1/ V^2$ factor.
+
+\printbibliography
 
 \end{document}

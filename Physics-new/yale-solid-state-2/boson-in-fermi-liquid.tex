@@ -262,11 +262,17 @@ so that the peak in the spectral function is sharp enough, and we have
 \begin{equation}
     G^<(\vb*{X}, \vb*{p}, T, \omega) = - 2 \pi \ii \delta(\omega - \xi(\vb*{X}, \vb*{p})) \cdot 
     f(\vb*{X}, \vb*{p}, T),
+    \label{eq:spectral-peak}
 \end{equation}
 where $\xi(\vb*{X}, \vb*{p})$ is the 
 single-electron Hamiltonian plus the real part of the self-energy 
 and thus is not necessarily diagonal in the momentum space 
 and has thus undergone Wigner transform.
+Note that $\xi$ is corrected by the self-energy,
+which may contain $T$ since the system may be subject to an external driving field;
+thus, in order for \eqref{eq:spectral-peak} to make sense, 
+we should also stipulate that the driving frequency 
+is small compared to the internal time scale of the system.
 The two assumptions are sufficient to lead to the \emph{quantum Boltzmann equation}
 \begin{equation}
     \pdv{f}{T} + \grad_{\vb*{p}} \xi \cdot \grad_{\vb*{R}} f 
@@ -334,17 +340,21 @@ Note that
 \end{equation}
 and therefore%
 \footnote{
-    $\int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} f(\vb*{r}, \vb*{p}, t)$ 
-    is also proportional to the 
+    The EOM of the weight of 
     $\ket*{\text{electron at $\vb*{p} + \vb*{q} / 2$}, \text{hole at $\vb*{p} - \vb*{q} / 2$}}$,
-    the EOM of the latter being the same as 
+    is the same as 
     the \emph{annihilation operator} of the electron-hole pair,
     and therefore there is nothing wrong with the equation below.
 }
 \begin{equation}
-    \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} f(\vb*{r}, \vb*{p}, t)
-    \simeq \expval*{c^\dagger_{\vb*{k} - \vb*{q} / 2} c_{\vb*{k} + \vb*{q} / 2}} .
+    \begin{aligned}
+        \int \dd[3]{\vb*{r}} \ee^{- \ii \vb*{q} \cdot \vb*{r}} f(\vb*{r}, \vb*{p}, t)
+        &\simeq \expval*{c^\dagger_{\vb*{k} - \vb*{q} / 2} c_{\vb*{k} + \vb*{q} / 2}} \\
+        &\simeq \braket*{\text{electron at $\vb*{p} + \vb*{q} / 2$}, \text{hole at $\vb*{p} - \vb*{q} / 2$}}{\text{single excitation}} .
+    \end{aligned}
 \end{equation}
+The last equation can be verified by comparing 
+the EOM in Schr\"{o}dinger picture \cite{egri1985excitons} and in Heisenberg picture.
 The gradient expansion condition is equivalent to the condition that 
 the characteristic length scale of $f$ with respect to the $\vb*{r}$ variable is large,
 which then is equivalent to the condition that $\vb*{q}$ is small.
@@ -362,15 +372,6 @@ and noticing that
 \]
 we get a linearized quantum Boltzmann equation with a vanishing collision integral.
 
-Classical Boltzmann equation can be derived using 
-BBGKY hierarchy,
-if we make the assumption that $n$-th order correlation functions ($n > 2$) 
-are ignorable; 
-here a similar procedure is applied in the quantum region, 
-giving us the equation of motion 
-of two-point (i.e. single-electron) Green function;
-it is the further two conditions that
-finally leads to the quantum Boltzmann equation.
 The second assumption is by definition satisfied for a Fermi liquid.
 The first assumption -- that gradient expansion works -- is at the first glance 
 broken in condensed matter systems, 
@@ -447,7 +448,12 @@ the normalization scheme of the Boltzmann distribution function $n_{\vb*{p}}(\vb
 follows the same scheme of the density operator $n_{\vb*{p}}$:
 at the ground state, we have 
 \begin{equation}
-    n_{\vb*{p}}(\vb*{r}) = \theta(\efermi - \varepsilon_{\vb*{p} \sigma}).
+    n_{\vb*{p}}(\vb*{r}) = \theta(\efermi - \varepsilon_{\vb*{p} \sigma}),
+\end{equation}
+and it is easy to verify that 
+\begin{equation}
+    \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} \int \dd[3]{\vb*{r}} n_{\vb*{p}}(\vb*{r})  = 
+    \text{\# of occupied states} = N.
 \end{equation}
 For a general Fermi liquid we can insert
 \begin{equation}
@@ -582,9 +588,9 @@ the short-range part of the self-energy
 \end{equation}
 and the quantum Boltzmann equation 
 \begin{equation}
-    \pdv{t} \var{n}_{\vb*{p} \sigma} 
-    + \pdv{\varepsilon_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{\var{n}_{\vb*{p} \sigma}}{\vb*{r}}
-    - \pdv{\var{n}_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{(\varepsilon_{\vb*{p} \sigma} - e \varphi)}{\vb*{r}} = 0.
+    \pdv{{n}_{\vb*{p} \sigma}}{t}  
+    + \pdv{\varepsilon_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{{n}_{\vb*{p} \sigma}}{\vb*{r}}
+    - \pdv{{n}_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{(\varepsilon_{\vb*{p} \sigma} - e \varphi)}{\vb*{r}} = 0.
 \end{equation}
 The equation system is known as \emph{Landau-Silin equation}.
 Frequently, the $-e \varphi$ term is the \emph{only} term 
@@ -592,7 +598,92 @@ considered in a classical picture of charged electrons:
 $f_{\vb*{p} \vb*{p}'}$ contains the Fock term,
 which does not have a clear classical picture.
 
-TODO: plasmon only occurs with a divergent interaction
+The Landau-Silin equation, compared with the Landau equation 
+for neutral Fermi liquid, 
+introduces an energy gap to the zero sound mode, 
+and since this radically changes the properties of the mode 
+in the long wavelength limit, 
+the established terminology is to name 
+this corrected zero sound mode the \emph{plasmon}.
+Repeating the linearization procedure used before, we have
+\begin{equation}
+    \pdv{t} \var{n}_{\vb*{p} \sigma} 
+    + \pdv{\varepsilon_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{\var{n}_{\vb*{p} \sigma}}{\vb*{r}}
+    - \pdv{{n}^0_{\vb*{p} \sigma}}{\vb*{p}} \cdot \pdv{(\var \varepsilon_{\vb*{p} \sigma} - e \var \varphi)}{\vb*{r}} = 0,
+\end{equation}
+For simplicity, here we do not attempt to find the full dispersion relation 
+but rather constrain ourself to the long wavelength limit, 
+where $\var{\varphi}$ dominates the last term.
+Ignoring $\var{\varepsilon}_{\vb*{p} \sigma} \propto f$ 
+and switching to Fourier space, we have 
+(note that the $\vb*{q} \cdot \vb*{v} \var{n}_{\vb*{p} \sigma}$ term 
+has to be kept or otherwise transportational behaviors 
+are completely eliminated)
+\begin{equation}
+    - \ii \omega \var{n_{\vb*{p} \sigma}} + \ii \vb*{q} \cdot \vb*{v} \var{n_{\vb*{p} \sigma}} + \pdv{{n}_{\vb*{p} \sigma}}{\vb*{p}} \cdot (- e \vb*{E}) = 0,
+    \label{eq:e-to-linear-var-n}
+\end{equation}
+\begin{equation}
+    \ii \vb*{q} \cdot \vb*{E} = \frac{1}{\epsilon_0} (-e) \cdot \frac{1}{V} \sum_{\vb*{p} , \sigma}
+    \var{n}_{\vb*{p} \sigma}.
+    \label{eq:var-n-to-e}
+\end{equation}
+Putting \eqref{eq:e-to-linear-var-n} into \eqref{eq:var-n-to-e}, we get 
+\begin{equation}
+    \vb*{q} \cdot \vb*{E} = \vb*{E}  \cdot \frac{e^2}{\epsilon_0} \cdot \frac{1}{V} \sum_{\vb*{p}, \sigma}
+    \frac{1}{\vb*{q} \cdot \vb*{v} - \omega} \pdv{n_{\vb*{p} \sigma}}{\vb*{p}}.
+\end{equation}
+Note that since 
+\[
+    \vb*{E} = - \grad{\varphi} = - \ii \vb*{q} \varphi,
+\]
+$\vb*{q}$ is parallel to $\vb*{E}$, and thus we get 
+an implicit expression of $\omega$:
+\begin{equation}
+    \begin{aligned}
+        q &= \vu*{q} \cdot \frac{e^2}{\epsilon_0} \sum_\sigma \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} 
+        \frac{1}{\vb*{q} \cdot \vb*{v} - \omega} \pdv{n_{\vb*{p} \sigma}}{\vb*{p}} \\
+        &= - \frac{e^2}{\epsilon_0} \sum_\sigma \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} 
+        n_{\vb*{p} \sigma}
+        \vu*{q} \cdot \pdv{\vb*{p}} \frac{1}{\vb*{q} \cdot \vb*{v} - \omega} \\
+        &= \frac{e^2}{\epsilon_0} \sum_\sigma \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} 
+        n_{\vb*{p} \sigma}
+        \frac{\vu*{q} \cdot \vb*{q}}{m} \frac{1}{(\vb*{q} \cdot \vb*{v} - \omega)^2} ,
+    \end{aligned}
+\end{equation}
+and therefore
+\begin{equation}
+    1 = \frac{e^2}{m \epsilon_0} \sum_\sigma \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} 
+    n_{\vb*{p} \sigma}
+    \frac{1}{(\vb*{q} \cdot \vb*{v} - \omega)^2}
+\end{equation}
+Here we have used the relation $\vb*{p} = m \vb*{v}$;
+for a generalized condensed matter system this is not correct, 
+but frequently what matters is only the dispersion relation around $k_{\text{F}}$,
+where we can do parabolic expansion 
+and define an effective mass.
+We now take the $\vb*{q} \to 0$ limit thoroughly, and we get 
+\begin{equation}
+    1 = \frac{e^2}{m \epsilon_0} \sum_{\sigma} \int \frac{\dd[3]{\vb*{p}}}{(2\pi)^3} n_{\vb*{p} \sigma}
+    \cdot \frac{1}{\omega^2}
+    = \frac{e^2}{m \epsilon_0 \omega^2} \cdot n,
+\end{equation} 
+where $n = N / V$ is the number density of electrons.
+This means when $\vb*{q} = 0$, the frequency of zero sound is 
+\begin{equation}
+    \omega_{\text{p}} = \sqrt{\frac{e^2 n}{m \epsilon_0}}.
+\end{equation}
+
+
+Strictly speaking, the above derivation may not be quantitatively correct, 
+since the quantum Boltzmann equation assumes 
+a retardation-free self-energy 
+and does not work when the frequency is too high, 
+and whether at the region of $\omega_{\text{p}}$
+the quantum Boltzmann equation is still quantitatively correct 
+is at least not universally justified.
+
+It can be seen that plasmon only occurs with a divergent interaction potential.
 
 \section{Excitons}\label{sec:microscopic-bosonic-modes}
 
@@ -635,9 +726,11 @@ that we can have a close equation (or system of equation) about
 the single-electron Green function,
 that the characteristic length scale of how things change is 
 small compared to the atomic length scale, 
-and that we have well-defined quasiparticles.
+and that the peaks in the spectral function are sharp enough.
 The last condition blocks strong frequency dependence (i.e. retardation) of $\Sigma$;
-capturing all frequency-dependent effects requires 
+such a strong frequency dependence may come from 
+a large external driving frequency as well as strong correlation;
+capturing frequency-dependent effects of the latter requires 
 a more complicated formalism, 
 like dynamic mean-field theory (DMFT) \cite{georges1996dynamical}.
 To go beyond the small-$\vb*{q}$ conditions,
@@ -652,6 +745,27 @@ Neither formalisms may be face problems when the frequency
 (with respect to $T$) is too high;
 in this case retardation may be important 
 and the complete double-time Green function equation of motion is needed.
+
+Note that we can find counterparts of the conditions 
+in the derivation of classical Boltzmann equation:
+classical Boltzmann equation can be derived from 
+truncating the BBGKY hierarchy,
+which corresponds to the close-equation condition;
+the validity of classical Boltzmann equation 
+also depends on that the characteristic length scale 
+of $f(\vb*{r}, \vb*{p} , t)$ and the external driving field 
+is small compared with the microscopic scales,
+or otherwise the collision integral cannot be localized 
+at one spatial site; 
+classical Boltzmann equation also breaks 
+when the external driving frequency is comparable
+to the scattering time.
+The main difference between the classical and the quantum case, 
+therefore, is whether $f(\vb*{r}, \vb*{p}, t)$ is positive everywhere;
+in the classical case this is true, 
+while in the quantum case, 
+the space of possible $f(\vb*{r}, \vb*{p}, t)$
+is just the space of possible Wigner functions. 
 
 When the temperature is moderately high 
 so that zero sound is suppressed,
