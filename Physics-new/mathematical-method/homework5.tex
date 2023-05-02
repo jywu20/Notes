@@ -1,0 +1,364 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, esint, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand*{\laplace}{\mathcal{L}}
+\newcommand*{\fourier}{\mathcal{F}}
+\newcommand*{\zerotoinf}{\int_{0}^{\infty}}
+\newcommand*{\inftoinf}{\int_{-\infty}^{\infty}}
+\newcommand*{\mat}[1]{\vb{#1}}
+
+\title{Homework 5}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+
+For the surface 
+\begin{equation}
+    z - x^2 - y^2 = 0,
+\end{equation}
+the direction of normal vectors is given by 
+\begin{equation}
+    \grad(z - x^2 - y^2)
+    = (-2x, -2y, 1),
+\end{equation} 
+and a normal vector at $(-1, 1, 2)$ is $(2, -2, 1)$.
+The corresponding normal line equation is therefore 
+\begin{equation}
+    \frac{x + 1}{2} = \frac{y - 1}{-2} = \frac{z - 2}{1},
+\end{equation}
+and the tangent plane is given by 
+\begin{equation}
+    2 (x + 1) - 2 (y - 1) + (z - 2) = 0
+\end{equation}
+or in other words 
+\begin{equation}
+    2 x - 2y + z = -2.
+\end{equation}
+
+\section{}
+
+The equation governing streamlines is 
+\begin{equation}
+    \dv{x}{t} = F_x, \quad \dv{y}{t} = F_y, \quad \dv{z}{t} = F_z,
+\end{equation}
+and therefore 
+\begin{equation}
+    \dv{x}{t} = \cos y, \quad \dv{y}{t} = \sin x, \quad \dv{z}{t} = 0
+    \Rightarrow z = \const.
+\end{equation}
+The equation about $x, y$ is 
+\begin{equation}
+    \frac{\dd{x}}{\cos y} = \frac{\dd{y}}{\sin x} \Rightarrow
+    \sin x \dd{x} = \cos y \dd{y} \Rightarrow
+    - \cos x = \sin y + \const.
+\end{equation}
+So the streamline equation is 
+\begin{equation}
+    \cos x + \sin y = C_1, \quad z = C_2.
+\end{equation}
+
+\section{}
+
+Since $\mathbf{F}=\cos x \mathbf{i}-y \mathbf{j}+x z \mathbf{k}$ 
+and $\mathbf{R}=t \mathbf{i}-t^2 \mathbf{j}+\mathbf{k}$,
+and $0 \leq t \leq 3$, we have 
+\begin{equation}
+    \int_C \vb*{F} \cdot \dd{\vb*{R}}
+    = \int_{0}^{3} (\cos x + y \cdot 2 t )  \dd{t}
+    = \int_{0}^{3} (\cos t - 2 t^3) \dd{t}
+    = \sin 3 - \frac{81}{2}.
+\end{equation}
+
+\section{}
+
+$C$ is the circle of radius 4 about $(1, 3)$. 
+$\mathbf{F}=2 y \mathbf{i}-x \mathbf{j}$ so 
+\begin{equation}
+    \pdv{F_y}{x} - \pdv{F_x}{y} = -3,
+\end{equation}
+and 
+\begin{equation}
+    \oint_{\partial C} \vb*{F} \cdot \dd{\vb*{R}} = \int_C \left(
+        \pdv{F_y}{x} - \pdv{F_x}{y}
+    \right) \dd{x} \dd{y}
+    = - 3 \cdot \int_C \dd{x} \dd{y} = - 3 \cdot \pi \cdot 4^2 = - 48 \pi.
+\end{equation}
+
+\section{}
+
+The equation of the surface is equivalent to 
+\begin{equation}
+    z = \frac{1}{10} (25 - 4x - 8y).
+\end{equation}
+The integral is therefore 
+\begin{equation}
+    \begin{aligned}
+        \iint_\Sigma (x + y) \dd{\sigma} &= 
+        \iint_{\Sigma'} (x + y) \sqrt{
+            1 + \left(\pdv{z}{x}\right)^2 + \left(\pdv{z}{y}\right)^2
+        } \dd{x} \dd{y} \\
+        &= \iint_{\Sigma'} \frac{3}{5} \sqrt{5} (x + y) \dd{x} \dd{y},
+    \end{aligned}
+\end{equation}
+where $\Sigma'$ is the triangle between $(0, 0)$, $(1, 0)$ and $(1, 1)$.
+Then 
+\begin{equation}
+    \iint_{\Sigma'} (x + y) \dd{x} \dd{y}
+    = \int_{0}^{1} \dd{x} \int_{0}^{x} \dd{y} (x + y)
+    = \int_{0}^{1} \left(x^2 + \frac{x^2}{2}\right) \dd{x}
+    = \frac{1}{2},
+\end{equation}
+so the final result is 
+\begin{equation}
+    \iint_\Sigma (x + y) \dd{\sigma} = \frac{3}{10}\sqrt{5}.
+\end{equation}
+
+\section{}
+
+$\mathbf{F}=x^3 \mathbf{i}+y^3 \mathbf{j}+z^3 \mathbf{k}$ and $\Sigma$ is the sphere of radius 1 about the origin.
+So 
+\begin{equation}
+    \oiint_\Sigma\vb*{F} \cdot \vb*{n} \dd{\sigma}
+    = \iiint \div{\vb*{F}} \dd{V}
+    = \iiint 3 (x^2 + y^2 + z^2) \dd{V}
+    = 3 \cdot 4 \pi \int_{0}^{1} r^2 \cdot r^2 \dd{r}
+    = \frac{12}{5} \pi.
+\end{equation}
+
+\section{}
+
+We have 
+\begin{equation}
+    \log z = \log \abs*{z} \ee^{\ii \theta}
+    = \log \abs*{z} + \ii \arg(z),
+\end{equation}
+where $\arg(z)$ is multi-valued.
+When $z = 1 + 5 \ii$, we have 
+\begin{equation}
+    \log z = \log \sqrt{26} + \ii \arg(z)
+    = \log \sqrt{26} + \ii \arccos \frac{1}{\sqrt{26}} + 2 \pi n \ii, \quad 
+    n \in \mathbb{Z}.
+\end{equation}
+
+\section{}
+
+No singularities are present and we have 
+\begin{equation}
+    \int_\gamma \ii z^2 \dd{z} = \ii \eval{\frac{z^3}{3} }^{3 + \ii}_{1 + 3 \ii}
+    = \ii (44 + 44 \ii) = - 44 + 44 \ii.
+\end{equation}
+
+\section{}
+
+Suppose $z = r \ee^{\ii \theta}$. 
+Since $\gamma$ is a circle of radius 5 about the origin,
+we have 
+\begin{equation}
+    \oint_\gamma \frac{1}{\bar{z}} \dd{z} 
+    = \oint_\gamma \frac{1}{r \ee^{- \ii \theta}} \dd{(r \ee^{\ii \theta})}
+    = \oint_\gamma \frac{1}{r \ee^{- \ii \theta}} r \dd{ \ee^{\ii \theta}}
+    = \oint_\gamma \frac{1}{r \ee^{- \ii \theta}} r  \ee^{\ii \theta} \cdot \ii \dd{\theta}
+    = \ii \int_{0}^{2\pi} \ee^{2 \ii \theta} \dd{\theta}
+    = 0.
+\end{equation}
+
+\section{}
+
+The function
+\begin{equation}
+    f(z) = \frac{\cos (z - \ii)}{(z + 2 \ii)^3}
+\end{equation}
+has a third-order pole at $z = - 2 \ii$,
+and therefore the residue is 
+\begin{equation}
+   \begin{aligned}
+    \res_{z = - 2 \ii} f(z) &= \frac{1}{2!} \lim_{z \to - 2 \ii} \dv[2]{z}
+    (z + 2 \ii)^3 f(z) \\
+    &= \frac{1}{2} \eval{\dv[2]{\cos(z - \ii)}{z}}_{z = - 2 \ii} 
+    = - \frac{1}{2} \cos (- 3 \ii) = - \frac{1}{4} (\ee^{3} + \ee^{-3}).
+   \end{aligned}
+\end{equation}
+The integral is 
+\begin{equation}
+    \oint_{\text{near $- 2 \ii$}} f(z) \dd{z} = 2 \pi \ii \cdot - \frac{1}{4} (\ee^{3} + \ee^{-3})
+    = - \frac{\ii}{2}  (\ee^{3} + \ee^{-3}).
+\end{equation}
+
+\section{}
+
+We apply the ratio test to $\sum_{n=0}^{\infty}\left(\frac{2 i}{5+i}\right)^n(z+3-4 i)^n$:
+\begin{equation}
+    \abs{\left(\frac{2 i}{5+i}\right)(z+3-4 i)} < 1 \Rightarrow
+    \abs{z + 3 - 4 \ii} < \frac{\abs{5 + \ii}}{\abs{2 \ii}} = \frac{\sqrt{26}}{2}.
+\end{equation}
+The convergence radius is $\sqrt{26} / 2$; 
+the open disk of convergence is a circle with radius $\sqrt{26} / 2$ 
+about $- 3 + 4 \ii$.
+
+\section{}
+
+$\gamma$ is the square of side length 3 and sides parallel to the axes, centered at $-2 \mathrm{i}$,
+and therefore it doesn't contain the $2 \ii$ pole.
+Therefore 
+\begin{equation}
+    \oint_\gamma \frac{\cos z}{4+z^2} \dd{z}
+    = 2 \pi \ii \res_{z = - 2 \ii} \frac{\cos z}{4+z^2} 
+    = 2 \pi \ii \lim_{z \to - 2 \ii} (z + 2 \ii) \frac{\cos z}{4+z^2} 
+    = 2 \pi \ii \frac{\cos(-2 \ii)}{- 4 \ii}
+    = - \frac{\pi}{4} (\ee^{2} + \ee^{-2}).
+\end{equation}
+
+\section{}
+
+Only the pole $2$ is in $\gamma$ the circle of radius 2 about 2.
+Thus 
+\begin{equation}
+    \oint_\gamma \frac{(1-z)^2}{z^3-8} \dd z = 
+    2 \pi \ii \lim_{z \to 2} \frac{(1-z)^2}{z^3-8} (z - 2)
+    = \frac{\pi \ii}{6}.
+\end{equation}
+
+\end{document}
