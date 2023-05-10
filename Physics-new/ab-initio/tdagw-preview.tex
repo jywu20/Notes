@@ -1,0 +1,178 @@
+\documentclass{beamer}
+\usepackage{physics}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{mathdots}
+\usepackage{yhmath}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{textcomp, gensymb}
+\usepackage{tabularx}
+\usepackage{extarrows}
+\usepackage{booktabs}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes}
+\usepackage[style=verbose,backend=bibtex]{biblatex}
+\addbibresource{boltzmann.bib}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\newcommand{\pair}[1]{\langle #1 \rangle}
+\DeclareMathOperator{\ee}{e}
+\DeclareMathOperator{\ii}{i}
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+
+\newcommand{\concept}[1]{\textbf{#1}}
+
+%region Theme
+\usetheme{Madrid}
+
+% Show section in foot
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+
+%endregion
+
+%Information to be included in the title page:
+\title{Time-dependent adiabatic $GW$}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+\section{Kadanoff-Baym equations}
+
+\begin{frame}
+\frametitle{Keldysh formalism}
+
+\textbf{Motivation} 
+
+\begin{equation}
+    \expval*{A} = \expval*{S^{-1} \timeorder_t ( S A_{\text{I}}(t) )}, \quad S = U(\infty, -\infty)
+\end{equation}
+Non-equilibrium state: not pure; contains excited state components;
+
+$\ket*{\Psi_n}$ is excited state $\Rightarrow$ $S \ket*{\Psi_n} \neq \ee^{\ii \alpha} \ket*{\Psi_n}$
+$\Rightarrow$ we can't peel the $S^{-1}$ off!!
+
+\vspace{0.5cm}
+
+\textbf{Solution} Four (instead of one) types of propagators: (note $S^{-1}$ is \emph{anti}-time ordered)
+
+\begin{center}
+    \small
+    \input{formula/non-equi-green-1.tex}    
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Keldysh formalism}
+
+\textbf{Four types of (fermionic) propagators}
+
+\begin{equation}
+    \begin{aligned}
+        \ii G^{--} &= \ii G^{\text{c}} = \expval*{\timeorder \psi_1 \psi_2^\dagger}, \quad 
+        \ii G^{++} = \ii G^{\text{a}} = \expval*{\tilde{\timeorder} \psi_1 \psi_2^\dagger}, \\
+        \ii G^{+-} &= \ii G^{>} = \expval*{\psi_1 \psi_2^\dagger},   \quad 
+        \ii G^{-+} = \ii G^{<} = - \expval*{\psi_2^\dagger \psi_1}.
+    \end{aligned}
+\end{equation}    
+
+\vspace{0.5cm}
+
+\textbf{Diagrams} 
+
+\begin{center}
+    \input{feyn/keldyshi-components-1.tex}
+\end{center}
+
+\textbf{Self-energy} 
+
+\begin{equation}
+    G = \pmqty{
+        G^{--} & G^{-+} \\ 
+        G^{+-} & G^{++}
+    }   , \quad 
+    \Sigma = \pmqty{
+        \Sigma^{--} & \Sigma^{-+} \\ 
+        \Sigma^{+-} & \Sigma^{++}
+    } , \quad 
+    G = G_0 + G_0 \Sigma G.
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Alternative formulation: Keldysh contour}
+
+\textbf{Keldysh contour} The information in the $G$ matrix can be alternatively stored 
+in a time-ordered Green function on \emph{Keldysh contour}
+
+\begin{center}
+    \input{plots/keldyshi-contour-1.tex}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Green function EOM}
+
+\textbf{From Keldysh contour to physical contour} Lengreth theorem: 
+
+\begin{equation}
+    \begin{aligned}
+        (AB)^< &= A^{\text{R}} B^< + A^< B^{\text{A}}, \quad 
+        (AB)^> = A^{\text{R}} B^> + A^> B^{\text{A}}, \quad \\
+        (AB)^{\text{R}} &= A^{\text{R}} B^{\text{R}}, \quad 
+        (AB)^{\text{A}} = A^{\text{A}} B^{\text{A}},
+    \end{aligned}
+\end{equation}
+\begin{equation}
+    \begin{aligned}
+        &A^>(t_1, t_2) = A(t_1^+, t_2^-), \quad 
+        A^<(t_1, t_2) = A(t_1^-, t_2^+), \quad \\
+        &A^{\text{R}}(t_1, t_2) = \theta(t_1 - t_2) (A^> - A^<),
+    \end{aligned}
+\end{equation}
+
+
+\end{frame}
+
+\section{Kadanoff-Baym equation}
+
+\begin{frame}
+\frametitle{Derivation of EOM of $G^{<,>}$ and $G^{\text{A}}$}
+
+\cite{vspivcka2005long} 
+
+\end{frame}
+
+\end{document}
