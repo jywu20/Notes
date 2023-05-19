@@ -1,0 +1,256 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[sorting=none]{biblatex}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+
+\title{Elasticity}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The theoretical framework}
+
+\subsection{The displacement field}
+
+We use $\vb*{r}$ to refer to the position vector of a position in a continuum,
+and $\vb*{r}'(\vb*{r}, t)$ its corresponding position at time $t$.
+The displacement field is therefore 
+\begin{equation}
+    \vb*{u}(\vb*{r}, t) = \vb*{r}'(\vb*{r}, t) - \vb*{r}.
+\end{equation}
+
+A rough estimation of the number of degrees of freedom 
+implies that all information about the material -- the position of each atom -- 
+has already been stored in $\vb*{u}(\vb*{r}, t)$.
+To see why, note that we can do Fourier transform to $\vb*{u}(\vb*{r}, t)$ 
+in variable $\vb*{r}$.
+Suppose the size of the system is $\sim L^d$,
+where $d$ is the dimension of the system,
+and the microscopic length scale of the system is $\sim a$.
+The wave vector components of $k_{x, y, z}$ therefore are
+confined to the sequence that starts with $0$ and ends with $2\pi / a$ 
+(the microscopic cutoff),
+with a step of $2\pi / L$;
+the total length of this sequence is $\simeq L / a$,
+and thus the total number of possible wave vectors is $(L / a)^d$.
+Thus the number of real number variables included in the field variable $\vb*{u}(\vb*{r}, t)$ 
+at a given time step 
+is $d \cdot (L / a)^d$:
+the prefactor $d$ comes from the $d$ components of $\vb*{u}$.
+
+On the other hand, there are $\simeq (L / a)^d$ atoms in the system,
+and each of them has $d$ directions of motion,
+and therefore, we find that number of real number variables included in $\vb*{u}(\vb*{r}, t)$
+is the same as the number of real number variables of the atoms,
+and thus $\vb*{u}(\vb*{r}, t)$ contains all the information contained in the system.
+This should not be surprising:
+that we have a wave vector cutoff $\simeq 2\pi /a$ 
+means we have a real space resolution of $\simeq a$,
+so at each time step $t$, $\vb*{u}(\vb*{r}, t)$ 
+can be completely described by a real space grid with 
+the separation between the sample points being $\simeq a$ -- 
+and the points in the grid is just equivalent to the initial positions of the atoms.
+
+There are however some subtleties in the above argument.
+If the material is not a crystal,
+when $k \simeq 2\pi / a$,
+the translational symmetry is already broken,
+and therefore the wave vector is not well-defined any more;
+thus the wave vector cutoff should be set to a much lower value.
+If the system is an insulator, 
+we can take $a$ to be the length scale of the primitive unit cell,
+and $2\pi / a$ is the magnitude of the width of the first Brillouin zone.
+If there is only one kind of atom,
+then indeed $\vb*{u}(\vb*{r}, t)$ contains all information in the system;
+but often we have more than one kind of atoms 
+(two atoms that are not connected by any symmetry operations 
+should be considered to be two kinds of atoms,
+even when they are of the same species),
+and then $\vb*{u}(\vb*{r}, t)$ only contains the acoustic phonon modes.
+
+So in conclusion, 
+the displacement field $\vb*{u}(\vb*{r}, t)$ only contains 
+the acoustic modes,
+both in crystals and non-crystals;
+in both cases there may be additional hidden microscopic degrees of freedom.
+
+Below we often use $u_i$ to represent $\vb*{u}$, 
+since we are going to deal with tensors frequently 
+and it's a good idea to keep the notation the same
+as that of higher order tensors.
+
+\subsection{The kinetics of deformation}
+
+Laws governing the time evolution of $\vb*{u}(\vb*{r}, t)$
+are to be written in terms of $\partial_{\vb*{r}} \vb*{u}$,
+$\partial_t \vb*{u}$, etc.
+But there is a problem: 
+
+
+TODO: transport theorem, etc.
+
+TODO: from microscopic theory to this
+
+\subsection{Dynamics of perfect elasticity}
+
+We assume $u_i$ and its conjugate momentum are the only dynamic variables;
+thus, once 
+
+TODO: degree of freedom counting: does $u_i$ include optical phonons?
+
+\subsection{Dissipation}
+
+Dissipation comes from two sources.
+The first kind of dissipation involves the aforementioned hidden degrees of freedom 
+that we lose track of.
+
+
+\subsection{Finite temperature}
+
+The theory of elasticity at $T = 0$ is just 
+the low-energy effective field theory about phonons.
+
+When 
+
+\end{document}
