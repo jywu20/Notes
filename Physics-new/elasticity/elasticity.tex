@@ -24,7 +24,8 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
-\usepackage[sorting=none]{biblatex}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -153,8 +154,9 @@
 
 \subsection{The displacement field}
 
-We use $\vb*{r}$ to refer to the position vector of a position in a continuum,
+For now, we use $\vb*{r}$ to refer to the position vector of a position in a continuum,
 and $\vb*{r}'(\vb*{r}, t)$ its corresponding position at time $t$.
+After the discussion below we will need to change the meaning of $\vb*{r}$ to $\vb*{r}'$.
 The displacement field is therefore 
 \begin{equation}
     \vb*{u}(\vb*{r}, t) = \vb*{r}'(\vb*{r}, t) - \vb*{r}.
@@ -214,13 +216,299 @@ the displacement field $\vb*{u}(\vb*{r}, t)$ only contains
 the acoustic modes,
 both in crystals and non-crystals;
 in both cases there may be additional hidden microscopic degrees of freedom.
+These hidden degrees of freedom, 
+like dislocation,
+can be treated by introducing various discontinuities to $\vb*{u}(\vb*{r})$.
 
 Below we often use $u_i$ to represent $\vb*{u}$, 
 since we are going to deal with tensors frequently 
 and it's a good idea to keep the notation the same
 as that of higher order tensors.
 
-\subsection{The kinetics of deformation}
+\subsection{General guidelines of elastic dynamics}
+
+Let's now move to the following question
+of what the dynamics of an elastic solid system looks like.
+In this section we progressively introduce assumptions on this topic.
+
+\subsubsection{Dynamic variables: $u_i$ only}
+
+The first assumption we introduce 
+is \emph{the dynamics of the system should be able to be cast into a form that is only about 
+$u_i$ and its conjugate momentum}. 
+Note that even when more dynamic variables are involved, 
+we still can use, say, Mori-Zwanzig formalism 
+to get a theory about $u_i$ only,
+and thus in order for this approximation 
+to be truly restrictive, 
+we need to impose some implicit constraints on 
+the formalism used when modeling the dynamics.
+If we constrain the formalism to be Hamiltonian dynamics 
+plus some dissipation terms,
+then essentially we are assuming that the material is elastic (\prettyref{sec:elasticity-def}).
+
+This assumption means the system we are investigating into 
+doesn't have typical fluid behavior:
+in Navier-Stokes equation, 
+the density $\rho(\vb*{r}, t)$ is also a dynamic variable 
+which can be used to decide $p$ on the RHS of the equation;%
+\footnote{
+    When the fluid is incompressible, 
+    $p$ needs to be used in place of $\rho$ as a dynamic variable.
+}
+this isn't necessary in solid mechanics: 
+even when we do have $\rho$ dependence in the EOMs, 
+it should be able to be decided explicitly by, say, $\div{\vb*{u}}$.%
+\footnote{
+    Note that solid-like dynamics is not the logical opposition of fluid-like dynamics:
+    it's possible to have systems with both solid-like and fluid-like behaviors.
+    These materials are studied in rheology.
+}
+
+In other words, when $T = 0$, the Hamiltonian of the system is basically a Hamiltonian of phonons.
+The quantum Hamiltonian of fluid,
+on the other hand,
+involves $\rho$ and $\vb*{v}$ (and a strange commutation relation between them) \cite{wiegmann2005}.
+
+Sometimes we do need corrections to this assumption:
+it's possible that long-range electromagnetic fields are created,
+and in this case $\vb*{E}$ and $\vb*{B}$ should also be included into 
+the dynamic variables (or otherwise we have memory effects, retardation effects, etc.).
+The approximation therefore may be loosened to 
+\emph{no degree of freedom other that $u_i$ that is about the atomic positions in the system 
+is needed in the dynamics}.
+
+\subsubsection{Elasticity: statelessness and immediate response}\label{sec:elasticity-def}
+
+Elasticity is sometimes defined as the follows:
+\emph{when we stop applying force to the system,
+it always goes back to one equilibrium shape}.
+In other words, 
+if we push the system and then stop,
+the system bounces back.
+
+This definition is too weak:
+it may be possible that after a loading-unloading process,
+although the system goes back to its original shape,
+its inner structure has changed 
+and its reaction to another round of loading and unloading 
+is different from that of the previous round.
+So we need to impose a stronger formulation of elasticity:
+\emph{the deformation of the system has nothing to do 
+with its history 
+and is completely decided by the force applied to it}.
+This formulation implies the weaker version:
+when no load is present,
+the system has one and only one configuration. 
+
+The above formulation however has some ambiguity.
+In experiments usually the force applied to the system 
+is changed very slowly,
+and the system is quasi-static.
+In dynamics, however, we may be interested in oscillation,
+where the force applied changes quickly,
+and now it's possible that the response of the system is retarded;%
+\footnote{
+    Note that as is known in effective field theory,
+    the response of the system to external driving force 
+    and internal force should be the same,
+    as long as the external driving force is coupled to the 
+    deformation of the system in the same way 
+    internal forces are coupled to the deformation system,
+    and since we call external forces ``force'' 
+    this should be true.
+}
+if we go to frequency space,
+we may find that the response of the system has frequency dependence.
+This is of course possible,
+and we may still say that 
+the deformation of the system is decided by the force applied to it.
+Often, we make a even stronger assumption:
+\emph{the deformation of the system in a particular moment 
+is complete decided by the force applied to it in that very moment}.
+This means the system has immediate response to the force applied to it.
+
+\subsubsection{Dissipation and finite temperature effects}
+
+When $T = 0$, we may want to use a Hamiltonian formalism 
+(a quantum many-body theory for phonons, actually)
+to describe the elastic system;
+this however is usually not sufficient 
+since we have various dissipations:
+it's inevitable that some weight 
+flows into the hidden degrees of freedom
+that we lose track of.%
+\footnote{
+    It's still possible that even the system does have a 
+    dissipation-less Hamiltonian description,
+    there is still damping behavior for a single mode,
+    when the mixing between modes is too severe 
+    (as in, say, Landau damping).
+    Since all degrees of freedom are well kept track of,
+    this is ``dissipation-less damping''.
+}
+An accurate formalism for dissipation is hard 
+since it involves quantum master equation of the density matrix 
+and dissipative quantum jump channels;
+but in ordinary elastic theory,
+usually we don't care about  what happens to the quantum many-body wave function,
+and all we want to know is $\expval{u_i}$,
+ignoring its higher order correlations.
+Thus usually dissipation is just modeled 
+by adding a term like $\partial_t u_i$ to the EOM.
+
+Another issue is finite temperature effects. 
+Here we do \emph{local equilibrium approximation}:
+we assume that when $T \neq 0$,
+there can be $T$ gradience in the system,
+but at each given point, 
+we have local equilibrium with the local temperature, the force and the deformation
+being thermodynamic coordinates,
+and the relaxation time is ignored.
+Local equilibrium approximation is equivalent to the 
+condition that \emph{$\omega \tau \ll 1$,
+where $\omega$ is the characteristic frequency scale of the dynamic
+and $\tau$ the relaxation time}.
+This corresponds to the $\omega \tau \ll 1$ limit in Fermi liquid kinetics,
+where we have ordinary hydrodynamics and ordinary sound mode \cite{belitz2022soft}.
+Again, the most accurate treatment of finite temperature effects involves 
+quantum kinetic theory,
+but in the $\omega \tau \ll 1$ limit 
+the quantum kinetic theory is reduced to local thermodynamics.
+
+\subsubsection{The form of EOM}
+
+The variables $u_i$ and the internal force density $f_i$ are not thermalized;
+as \cite{belitz2022soft} says, 
+they are subject to conservation laws,
+and from momentum conservation we get Newton's second and third laws, 
+so the EOM of the system looks like 
+\begin{equation}
+    \rho \pdv[2]{u_i}{t} = \fdv{F[\vb*{u}]}{u_i} + f^{\text{dissipation}}_i(\partial_t \vb*{u}, \partial_t^2 \vb*{u}, \ldots),
+    \label{eq:eom-general-1}
+\end{equation}
+where $F$ is the free energy,
+and the functional derivative is taken by keeping the temperature variable constant. 
+But this formalism works even when the temperature changes:
+the change of the temperature is reflected by the temperature dependence
+of $\fdv*{F[\vb*{u}]}{u_i}$ after we take the derivative.
+When $T \to 0$, $F$ becomes the total energy of the system 
+and we go back to Hamiltonian dynamics.
+
+It's kind of silly to spend so much time 
+to get \eqref{eq:eom-general-1},
+but we have seen that for many frequently seen materials,
+we need to go beyond \eqref{eq:eom-general-1}:
+when the system has strong fluid-like behavior,
+when we have plastic deformation,
+and when there is retardation.
+
+\subsection{Stress}
+
+\subsubsection{There are only surface forces}
+
+For real elastic systems, 
+the form of the EOM often can be further constrained.
+First, \emph{$F[\vb*{u}]$ is usually local},
+and thus we have 
+\begin{equation}
+    \fdv{F[\vb*{u}]}{u_i} = \pdv{f}{u_i}, \quad F = \int \dd[d]{\vb*{r}} f,
+\end{equation}
+where $f$ is the volume density of free energy;
+in the rest of this note we simply use $F$ to refer to 
+the volume density of free energy,
+because $f$ may be confused with ``force''.
+Moreover, we can assume that the length scale of the interaction 
+between atoms 
+is very small -- 
+if we have an interaction channel with a large length scale 
+then we just introduce the relevant part of electromagnetic field 
+into dynamic variables -- 
+and since the spatial resolution of $\vb*{u}$ is taken to be much larger than $a$,
+effectively we can assume that 
+\emph{the internal forces are all surface forces},
+and therefore 
+\begin{equation}
+    \rho \pdv[2]{u_i}{t} = \partial_{j} \sigma_{ji} + f_i^{\text{dissipation}},
+\end{equation}
+that's to say, the total force on a volume is 
+\begin{equation}
+    \int_V \dd[d]{\vb*{r}} \partial_j \sigma_{ji}
+    = \int_{\partial V} \dd[d-1]{s_j} \sigma_{ji}.
+    \label{eq:surface-force}
+\end{equation}
+We can alternatively get $\sigma_{ji}$ by 
+writing down the conservation equation of the momentum.
+We call $\sigma_{ij}$ the \concept{stress tensor}.
+
+From \eqref{eq:surface-force} we immediately get 
+the boundary condition about force passing:
+if the force acting on a surface element $\dd[d-1]{s_i}$ is 
+$p_{i} \dd[d-1]{s_i}$,
+then at the position of the surface element, we have 
+\begin{equation}
+    p_i = n_j \sigma_{ji},
+\end{equation}
+where $n_j$ is the $j$th component of the normal vector $\vb*{n}$ of 
+the surface element $\dd[d-1]{s_i}$,
+and we have 
+\begin{equation}
+    \dd[d-1]{s_i} = n_i \dd{s}.
+\end{equation}
+
+\subsubsection{Is the stress tensor symmetric?}
+
+An additional constraint on $\sigma_{ij}$ that is not necessary 
+but works for most elastic bodies is that 
+\emph{$\sigma_{ij}$ is symmetric}.
+This constraint is equivalent to the condition 
+that \emph{there is no body torsion}:
+the torsion on a volume is 
+\begin{equation}
+    \begin{aligned}
+        M_{ij} &= \int \dd[d]{\vb*{r}} 
+        \left(
+            r_i \partial_k \sigma_{kj} - \partial_k \sigma_{ki} r_j
+        \right) \\
+        &= \int \dd[d]{\vb*{r}} \left(
+            \partial_k(r_i \sigma_{kj}) - \sigma_{kj} \delta_{ik}
+            - \partial_k (r_j \sigma_{ki}) + \sigma_{ki} \delta_{jk}
+        \right) \\
+        &= \int \dd[d-1]{s_k} (r_i \sigma_{kj} - r_j \sigma_{ki})
+        - \int \dd[d]{\vb*{r}} (\sigma_{ij} - \sigma_{ji}),
+    \end{aligned}
+\end{equation}
+and it can be seen that the first term is just the torsion caused 
+by the forces applied to the surface of this volume;
+if we assume that there is no body torsion,
+then the second term should always be zero regardless 
+of the exact shape and position of the volume,
+and this condition is equivalent to 
+\begin{equation}
+    \sigma_{ij} = \sigma_{ji}.
+    \label{eq:sigma-sym}
+\end{equation}
+
+Of course, we don't have body torsion in an equilibrium system,
+since if we have, 
+then a part of the system will begin to rotate.
+However we do have body torsion sometimes: 
+in a liquid crystal system, for example, 
+if a group of rod-like molecules get an angle difference 
+from the rods near them,
+they will be pulled back, 
+and in this \emph{transient} process a torsion is created.
+
+Since this note is about quasi-static behaviors of ordinary elastic materials,
+we will just adopt the assumption \eqref{eq:sigma-sym}.
+
+\subsubsection{Stress and free energy}
+
+
+
+\subsection{Strain}
+
+\subsubsection{The kinematics of deformation}
 
 Laws governing the time evolution of $\vb*{u}(\vb*{r}, t)$
 are to be written in terms of $\partial_{\vb*{r}} \vb*{u}$,
@@ -232,25 +520,14 @@ TODO: transport theorem, etc.
 
 TODO: from microscopic theory to this
 
-\subsection{Dynamics of perfect elasticity}
+\subsubsection{}
 
-We assume $u_i$ and its conjugate momentum are the only dynamic variables;
-thus, once 
+TODO: in $\vb*{r}$ or $\vb*{r}'$
 
-TODO: degree of freedom counting: does $u_i$ include optical phonons?
+\section{Linear elasticity for bulk system}
 
-\subsection{Dissipation}
+\section{Statics of boards}
 
-Dissipation comes from two sources.
-The first kind of dissipation involves the aforementioned hidden degrees of freedom 
-that we lose track of.
-
-
-\subsection{Finite temperature}
-
-The theory of elasticity at $T = 0$ is just 
-the low-energy effective field theory about phonons.
-
-When 
+\printbibliography
 
 \end{document}
