@@ -3611,6 +3611,33 @@ The working procedure now is
     \end{enumerate}
 \end{enumerate}
 
+\subsection{Hartree-Fock calculation}
+
+The \shortcode{sigma} code can also be used to do Hartree-Fock calculation.
+No \shortcode{epsilon} run is needed for this kind of calculation.
+The standard operation procedure is like the follows:
+\begin{enumerate}
+    \item \shortcode{WFN_inner}, \shortcode{vxc.dat} and \shortcode{RHO} 
+    need to be linked; 
+    \shortcode{epsmat.h5} and \shortcode{eps0mat.h5} 
+    are not needed.
+    \item The \shortcode{sigma.inp} file should be changed in the following way:
+    \begin{itemize}
+        \item Add a line: \shortcode{frequency_dependence -1}
+        \item Copy an insulator-style \shortcode{qpoints}
+            to \shortcode{sigma.inp}:
+            the \shortcode{is_q0} flag for the $\Gamma$ point with displacement 
+            should be set to \shortcode{1};
+            the \shortcode{is_q0} flag for other points is \shortcode{0}.
+        \item Add a \shortcode{qgrid} line,
+            giving the size of the full first Brillouin zone, 
+            like \shortcode{10 10 1}.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
 \subsection{Band plot}
 
 \subsubsection{DFT level: $\vb*{k}$-path}\label{sec:calculation.sop.bands.dft-path}
@@ -4313,6 +4340,11 @@ In \shortcode{sigma}, we may see a warning message like this:
 \shortcode{You have q0vec=0 but a metal!!},
 and then the error in the caption occurs. 
 This is due to 
+
+\subsection{\shortcode{_int_malloc: Assertion `(unsigned long) (size) >= (unsigned long) (nb)' failed.}}
+
+This occurs when running \shortcode{sigma} 
+in the Hartree-Fock mode.
 
 \section{Trouble shooting in \shortcode{wannier90} and \shortcode{pw2wannier90}}
 

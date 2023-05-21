@@ -10,6 +10,7 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{textcomp, gensymb}
 \usepackage{tabularx}
 \usepackage{extarrows}
@@ -75,7 +76,7 @@
 \section{Kadanoff-Baym equations}
 
 \begin{frame}
-\frametitle{Keldysh formalism}
+\frametitle{Non-equilibrium Green function}
 
 \textbf{Motivation} 
 
@@ -177,41 +178,167 @@ Mapping an equation on Keldysh contour to its counterpart on the physical time a
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[allowframebreaks]
 \frametitle{Derivation of EOM of $G^{<,>}$ and $G^{\text{A}}$}
 
-\textbf{Recommended references} The following series
+\textbf{Recommended references} The following series:
+\begin{itemize}
+    \item \cite{vspivcka2005long} 
+    \item \cite{rammer1986quantum}
+\end{itemize}
 
-\cite{vspivcka2005long} 
+\vspace{0.25cm}
+
+\framebreak
+
+\textbf{From self-energy correction to EOM} From Lengreth theorem:
+\begin{equation}
+    G = G_0 + G_0 \Sigma G \Rightarrow 
+    G^< = G^<_0 + G^<_0 \Sigma^{\text{A}} G^{\text{A}}
+    + G_0^{\text{R}} \Sigma^{\text{R}} G^< 
+    + G_0^{\text{R}} \Sigma^{<} G^\text{A} ,
+    \label{eq:lesser-eom-1}
+\end{equation}
+\begin{equation}
+    G = G_0 + G \Sigma G_0 \Rightarrow 
+    G^< = G^<_0 + G^{\text{R}}_0 \Sigma^{\text{R}} G^{<}_0
+    + G^{\text{R}} \Sigma^{<} G^{\text{A}}_0 
+    + G^{<} \Sigma^{\text{A}} G^\text{A} ,
+    \label{eq:lesser-eom-2}
+\end{equation}
+\begin{equation}
+    G^{\text{A}} = G^{\text{A}}_0 + G^{\text{A}}_0 \Sigma^{\text{A}} G^{\text{A}}, \quad 
+    G^{\text{R}} = G^{\text{R}}_0 + G^{\text{R}}_0 \Sigma^{\text{R}} G^{\text{R}}.
+\end{equation}
+
+\vspace{0.25cm}
+
+\textbf{Getting rid of $G_0$} We define 
+\begin{equation}
+    G_0^{-1} \coloneqq \ii \partial_t - H_0,
+\end{equation}
+and 
+\begin{equation}
+    G_0^{-1} G_0^{\text{A}, \text{R}} = I, \quad 
+    G_0^{-1} G_0^{<,>} = 0.
+\end{equation}
+Taking complex conjugate of the def. of $G^{<,>}_0$ we find 
+(left arrow = apply $\partial_t$ and $H_0$ to the second index of $G_0^{<,>}$)
+\begin{equation}
+    G_0^{<,>} (- \ii \overleftarrow{\partial_{t_2}} - H_0) = 0.
+\end{equation}
+
+\framebreak
+
+\textbf{The Schr\"{o}dinger-like EOM} Applying $G_0^{-1}$
+to the left of \eqref{eq:lesser-eom-1} and to the right of \eqref{eq:lesser-eom-2}:
+\begin{equation}
+    (\ii \partial_{t_1} - H_0) G^<(1,2) = \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}},
+\end{equation}
+\begin{equation}
+    - \ii \partial_{t_2} G^<(1, 2) - G^< H_0 = G^{\text{R}} \Sigma^< + G^< \Sigma^{\text{A}},
+\end{equation}
+\begin{equation}
+    \Rightarrow \ii (\partial_{t_1} + \partial_{t_2}) G^< - \comm*{H_0}{G^<} = 
+    \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}} - G^{\text{R}} \Sigma^< - G^< \Sigma^{\text{A}}.
+\end{equation}
+
+\vspace{0.25cm}
+
+\textbf{Mixed coordinates} We define ``average time'' and ``relative time'':
+\begin{equation}
+    T = \frac{t_1 + t_2}{2}, \quad t = t_1 - t_2,
+\end{equation}
+\begin{equation}
+    \Rightarrow \pdv{T} = \pdv{t_1} + \pdv{t_2}.
+\end{equation}
+We then do Fourier transform over $t$: 
+similar to the equilibrium case. 
+($T$ $\simeq$ driving, $t$ $\simeq$ internal time evolution)
+
 
 \end{frame}
 
-\begin{frame}
-    \frametitle{Reconstruction of $G^<$}
 
-    
-
-\end{frame}
 
 \section{Towards a single-time formalism}
 
 \begin{frame}
-    \frametitle{Overview}
+    \frametitle{Towards a single-time formalism}
+    
+    \textbf{Summary up to now} \begin{itemize}
+        \item \emph{Accurate} EOMs about $G^{\text{A}, \text{R}}$, and EOM of $G^<$: 
+        \begin{equation}
+            \ii \partial_T G^< - \comm*{H_0}{G^<} = 
+            \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}} - G^{\text{R}} \Sigma^< - G^< \Sigma^{\text{A}}.
+        \end{equation}
+        The RHS contains $t$ (or $\omega$) and $G^<$.
+        \item Note: we can actually put the $t=0$ part of $\Sigma$ into $H_0$!
+            $\Rightarrow$ Example: COHSEX TD-aGW
+    \end{itemize}
 
-    \textbf{Goal} obtaining quantum kinetics: 
+    \vspace{0.25cm}
+
+    \textbf{Goal} Obtaining quantum kinetics: 
     \begin{itemize}
         \item Quantum master equation (QME), i.e. EOM of $\rho(\vb*{r}_1, \vb*{r}_2, t)$,
         \item and its long wave length limit, the quantum Boltzmann equation (QBE)
     \end{itemize} 
     
-    
+    \vspace{0.25cm}
+
+    \textbf{Problem} Both LHS and RHS contain $\omega$: problem too large. 
+
+    \textbf{What we want} Obtaining a close form EOM about $G^<(T, t=0)$
 
 \end{frame}
+
+\begin{frame}
+    \frametitle{Reconstruction of $G^<$}
+    
+    \textbf{Reduced density  matrix} Single-electron density matrix:
+    \begin{equation}
+        \ii \rho(T) = G^<(T, t = 0) = \int \frac{\dd{\omega}}{2\pi}  G^<(T, \omega)
+    \end{equation}
+    
+    \vspace{0.25cm}
+
+    \textbf{What we want} Two types of reduction:
+    \begin{itemize}
+        \item Reducing $\Sigma$ to an easy function of $G$, ideally $G^<$
+        \item Reducing $G^<$ to $\rho(T)$
+    \end{itemize} 
+    
+    \vspace{0.25cm}
+
+    \textbf{Reducing $\Sigma$} 
+
+\end{frame}
+
 
 \begin{frame}
     \frametitle{Gradient expansion: from QME to QBE}
 
     
+
+\end{frame}
+
+\begin{frame}
+\frametitle{A radical move: quantum Boltzmann equation}
+
+\textbf{Approximations leading to QBE} \begin{itemize}
+    \item Gradient expansion: smooth $U_{\text{ext}}$:
+    \begin{equation}
+        \comm*{H_0}{\rho} 
+    \end{equation}
+    \item Quasiparticle approx.
+    \begin{equation}
+        G^<(\vb*{x}, \vb*{p}, T, \omega) = 2 \pi \delta(\omega - )
+    \end{equation}
+    Immediate problem: 
+\end{itemize}    
+
+TODO: how to get the Fermi golden rule??? 
 
 \end{frame}
 
