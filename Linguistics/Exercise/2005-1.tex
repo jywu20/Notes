@@ -1,0 +1,264 @@
+\documentclass[12pt]{article}
+
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{multicol} 
+\usepackage{footnote}
+\usepackage{marginnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citefootnote}[1]{footnote~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{infobox}{Box~\ref{#1}}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand*{\form}[1]{\emph{#1}}
+\newcommand{\translate}[1]{`#1'}
+
+\newcommand*{\vP}{\textit{v}P}
+
+\DeclareAcronym{plural}{short = PL, long = plural}
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence final particle, short = SFP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{what}{long = \term{wh}-pronoun, short = WH}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = NEG}
+\DeclareAcronym{tame}{long = {Tense, Aspect, Mood, Evidentiality}, short = TAME}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{future}{long = future, short = FUT}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Solving Problem 1 in the Third International Linguistics Olympiad (2005)}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\automath
+
+\maketitle
+
+\section{Introduction}
+
+The Tzotzil language belongs to the Mayan family,
+and its grammar is the focus of the first problem 
+in the third International Linguistic Olympiad.
+15 translated sentences are given.
+In this note I give a bottom-up description 
+based on information available in the texts given
+in the framework of \ac{blt}.
+
+Wordhood is taken for granted in the discussion below;
+fortunately in the texts given,
+no compound words or similar constructions appears, 
+and therefore the definition of wordhood 
+is a purely realizational issue.
+
+
+
+\section{Parts of speech}
+
+\subsection{Nouns}
+
+\begin{exe}
+    \ex\label{ex:n-school} \form{chan-vun} \translate{school} 
+    \begin{xlist}
+        \ex `Oy [chan-vun] ta batz'i k'op ta Jobel. \\
+        \translate{There is a Tzotzil school in San Cristobal.} (Line 5)
+        
+        \ex Mi `oy `ox [chan-vun] ta Jobel junabi? \\
+        \translate{Was there a school in San Cristobal last year?} (Line 9)
+        
+        \ex K'usi `oy `ox ta [achan-vun] volje? \\
+        \translate{What did you have at school yesterday?} (Line 13)
+    \end{xlist}
+
+    \ex\label{ex:n-speech} \form{k'op} \translate{speech}
+    \begin{xlist}
+        \ex `Oy chan-vun ta batz'i [k'op] ta Jobel. \\
+        \translate{There is a Tzotzil school (lit. school in Tzotzil talk) in San Cristobal.}
+        
+        \ex Bu `oy `ox [k'op] nax? \\
+        \translate{Where was the talk today?}
+    \end{xlist}
+    
+    \ex \form{`ixim} \translate{corn}
+    \begin{xlist}
+        \ex `Oy `ox [`ixim] ta ana nax. \\
+        \translate{You had corn at home today.} (Line 1)
+        
+        \ex Mi `oy [`ixim] ta p'in lavie? \\
+        \translate{Is there corn in his pot?} (Line 10)
+    \end{xlist}
+
+    \ex \form{na} \translate{house, home} 
+    \begin{xlist}
+        \ex `Oy `ox `ixim ta [ana] nax. \\
+        \translate{You had corn at home today.} (Line 1)
+        
+        \ex `Oy `ox jlekii [na] po'ot. \\
+        \translate{I will soon have a good house.}
+    \end{xlist}
+\end{exe}
+
+The orthography convention 
+requires that proper names are capitalized,
+which makes interpreting the sentences much easier.
+
+\subsection{Adverbs}
+
+Adverbs can be found at the end of a sentence.
+
+\begin{exe}
+    \ex \form{junbai} \translate{last year}
+    \begin{xlist}
+        \ex Mi `oy `ox chan-vun ta Jobel [junabi]? \\
+        \translate{Was there a school in San Cristobal last year?} (Line 9)
+        \ex Ch'abal `ox schi'il li Romin e [junbai]. \\
+        \translate{Last year Domingo had no friend.} (Line 15)
+    \end{xlist}
+
+    \ex \form{lavie} \translate{from now on today}
+    \begin{xlist}
+        \ex `Oy `ox lekil vob ta k'in [lavie]. \\
+        \translate{There will be good music at the party today.} (Line 12)
+        \ex Mi `oy `ixim ta p'in lavie? \\
+        \translate{Is there corn in his pot?} (Line 10)
+    \end{xlist}
+    
+    \ex \form{nax} \translate{earlier today}
+    \begin{xlist}
+        \ex `Oy `ox `ixim ta ana [nax]. \\
+        \translate{You had corn at home today.} (Line 1)
+        \ex Bu `oy `ox k'op [nax]? \\
+        \translate{Where was the talk today?} (Line 14)
+    \end{xlist}
+
+    \ex \form{po`ot} \translate{soon} 
+
+    \ex \form{`ok'ob} \translate{tomorrow}
+\end{exe}
+
+\subsection{Verbs} 
+
+It seems the word \form{'ox} appearing frequently after \form{`oy} 
+is a tense marker of the non-present tense,
+including both past and future.
+
+\subsection{Particles}
+
+\form{ta}
+
+\section{The nominal system}
+
+\subsection{Prepositions}
+
+\begin{exe}
+    \ex \gll `Oy [chan-vun ta batz'i k'op] [ta [Jobel]_{\text{proper name}}]. \\
+    {} school in {} talk in San.Cristobal \\
+    \glt \translate{There is a Tzotzil school in San Cristobal.} (Line 5;
+    also see \ref{ex:n-school}, \ref{ex:n-speech})
+    \ex 
+\end{exe}
+
+\section{The verbal system}
+
+
+
+\section{Annotated texts}
+
+\end{document}

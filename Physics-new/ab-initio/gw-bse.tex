@@ -4032,7 +4032,7 @@ to be \shortcode{mpirun}ed.
 A possibility is when compiling the program to be launched in parallel,
 you choose the serial version (\prettyref{sec:qe-install}).
 
-\subsection{\shortcode{nsufficient virtual memor}}
+\subsection{\shortcode{insufficient virtual memor}}
 
 Try to reduce the number of MPI processes per node 
 and increase the number of OpenMP threads per MPI process.
@@ -4049,6 +4049,10 @@ or change the statements using \shortcode{.value}.
 This error is known in \shortcode{scGWtool.py}.
 
 \section{Trouble shooting in QuantumEspresso}
+
+\subsection{\shortcode{Fatal error in PMPI_Comm_free: Invalid communicator}}
+
+This happens sometimes when doing \shortcode{2.1-wfn}.
 
 \subsection{\shortcode{Intel MKL FATAL ERROR: Cannot load symbol MKLMPI_Get_wrappers.}}
 
@@ -4345,6 +4349,16 @@ This is due to
 
 This occurs when running \shortcode{sigma} 
 in the Hartree-Fock mode.
+The reason seems to be inappropriate setting of \shortcode{number_bands}:
+it shouldn't be greater than \shortcode{band_index_max}.
+Somehow mysteriously,
+when such an inappropriate configuration does happen,
+a warning message like ``the number of bands is changed to 
+that is needed for calculating exchange''
+will be given,
+but the error still occurs.
+
+
 
 \section{Trouble shooting in \shortcode{wannier90} and \shortcode{pw2wannier90}}
 
