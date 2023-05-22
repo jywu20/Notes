@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[t]{beamer}
 \usepackage{physics}
 \usepackage{amsmath}
 \usepackage{tikz}
@@ -368,15 +368,15 @@ and $G^<$ is reconstructed from $G^\text{A}$ and $G^{\text{R}}$ and $\rho$.
 
 \textbf{Mixed coordinates}
 \begin{equation}
-    \tilde{\rho}(\vb*{k}, \vb*{r}, t) = \int \dd{x} 
-    \ee^{- \ii \vb*{k} \cdot \vb*{r}} \rho\left(
-        \vb*{r} + \frac{\vb*{x}}{2}, \vb*{r} - \frac{\vb*{x}}{2}, t
+    \tilde{\rho}(\vb*{p}, \vb*{X}, t) = \int \dd{x} 
+    \ee^{- \ii \vb*{p} \cdot \vb*{x}} \rho\left(
+        \vb*{X} + \frac{\vb*{x}}{2}, \vb*{X} - \frac{\vb*{x}}{2}, t
     \right),
 \end{equation}    
 \begin{equation}
     \frac{1}{\ii} \widetilde{\comm*{H_0}{\rho}} = 
-    \pdv{\epsilon}{\vb*{p}} \cdot \pdv{\tilde{\rho}}{\vb*{r}}
-    - \pdv{\epsilon}{\vb*{r}} \cdot \pdv{\tilde{\rho}}{\vb*{p}} + \cdots
+    \pdv{\epsilon}{\vb*{p}} \cdot \pdv{\tilde{\rho}}{\vb*{X}}
+    - \pdv{\epsilon}{\vb*{X}} \cdot \pdv{\tilde{\rho}}{\vb*{p}} + \cdots
 \end{equation}
 
 \vspace{0.25cm}
@@ -387,7 +387,7 @@ assuming no higher dependence
 \end{frame}
 
 \begin{frame}
-\frametitle{Issue: the def. of $G_0$ and $\Sigma$}
+\frametitle{Issue: the definitions of $G_0$ and $\Sigma$}
 
 \textbf{Ambiguity in the meaning of $\Sigma$}
 \begin{itemize}
@@ -404,6 +404,8 @@ assuming no higher dependence
     \item When impurities are rare: they appear in collision integral
     \item When impurities are abundant: they lead to an impurity band \dots
         and appear in the diffusion term?
+    \item In QBE: 
+        it depends on the shape of the spectral function \dots
 \end{itemize}
 
 \vspace{0.25cm}
@@ -417,22 +419,93 @@ assuming no higher dependence
 
 \section{Quantum Boltzmann equation}
 
-\begin{frame}
-\frametitle{A radical move: quantum Boltzmann equation}
+\begin{frame}[allowframebreaks]
+\frametitle{A radical move towards quantum Boltzmann equation}
 
 \textbf{Approximations leading to QBE} \begin{itemize}
-    \item Gradient expansion: smooth $U_{\text{ext}}$:
+    \item Gradient expansion $\Leftarrow$ smooth $U_{\text{ext}}$:
     \begin{equation}
-        \comm*{H_0}{\rho} 
+        \comm*{H_0}{\rho} \longrightarrow \ii \left(
+            \pdv{\epsilon}{\vb*{p}} \cdot \pdv{\tilde{\rho}}{\vb*{X}}
+            - \pdv{\epsilon}{\vb*{X}} \cdot \pdv{\tilde{\rho}}{\vb*{p}} + \cdots
+        \right).
     \end{equation}
-    \item Quasiparticle approx.
+    \item Quasiparticle approx. $\Leftarrow$ weak-correlated states:
     \begin{equation}
-        G^<(\vb*{x}, \vb*{p}, T, \omega) = 2 \pi \delta(\omega - )
+       G^<(\vb*{X}, \vb*{p}, T, \omega) = 2 \pi \delta(\omega - \xi_{\vb*{k}} + \mu - U(\vb*{X}, T)) f(\vb*{p}, \vb*{X}, T).
     \end{equation}
-    Immediate problem: 
+    \item Gradient expansion in time domain $\Rightarrow$ Markovian collision integral
 \end{itemize}    
 
-TODO: how to get the Fermi golden rule??? 
+\framebreak
+
+\textbf{Note} \begin{itemize}
+    \item The conditions are sufficient, but not necessary: 
+        in the formalism above, mass renormalization
+        (as in electron-phonon interaction) is not included, 
+        but by correcting the collision term 
+        (essentially, a mild breakdown of Fermi golden rule),
+        a Boltzmann equation can still be established.
+    \item The first condition and the rest two conditions are orthogonal:
+        the first condition can also be used in QME: 
+        it gives the diffusion part of QBE
+    \item The second and third conditions are used to 
+        simply the interactive RHS into 
+        the collision integral
+\end{itemize} 
+
+\framebreak
+
+\textbf{Convolution in Green function EOM} 
+\begin{equation}
+    AB \coloneqq \int \dd{2} A(1, 2) B(2, 3).
+\end{equation}
+
+\textbf{Gradient expansion, in $\vb*{r}$ and $t$} 
+By def. and taking Taylor expansion in the $(\vb*{r}, t)$
+\begin{equation}
+    \begin{aligned}
+        AB|_{\vb*{X}, \vb*{p}, T, \omega} &= A_{\vb*{X}, \vb*{p}, T, \omega} B_{\vb*{X}, \vb*{p}, T, \omega} \\
+        &+ \frac{\ii}{2} \left(
+            \pdv{A}{\vb*{X}} \cdot \pdv{B}{\vb*{p}}
+            - \pdv{A}{\vb*{p}} \cdot \pdv{B}{\vb*{X}}
+            - \pdv{A}{T} \pdv{B}{\omega}
+            + \pdv{A}{\omega} \pdv{B}{T}
+        \right) + \cdots
+    \end{aligned}
+    \label{eq:gradient-expansion-final-version}
+\end{equation}
+We only keep the terms shown above. 
+
+$\Rightarrow$ hence the commutator $\comm*{G^<}{H_0}$ can be reduced to the diffusion term seen in QBE
+
+\vspace{0.25cm}
+
+\textbf{Multi-band, spin index, etc.} When we have discrete labels in $A, B, \dots$,
+quantities in \eqref{eq:gradient-expansion-final-version} 
+are matrices with these discrete indices
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Obtaining the collision integral}
+
+Keeping only the first term in gradient expansion \eqref{eq:gradient-expansion-final-version}:
+\begin{equation}
+    \begin{aligned}
+        &\quad \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}} - G^{\text{R}} \Sigma^< - G^< \Sigma^{\text{A}}\\
+        &\stackrel{\text{gradient exp.}}{\approx} G^<(\Sigma^{\text{R}} - \Sigma^{\text{A}}) 
+        - (G^{\text{R}} - G^{\text{A}}) \Sigma^< \\
+        &\stackrel{\text{QP approx.}}{\approx} \ii A f (\vb*{p}) \Im \Sigma
+        - 
+    \end{aligned}
+\end{equation}    
+Here from the quasiparticle approximation of $G^<$,
+we also assume that $G^{\text{A}, \text{R}}$ assume 
+the same forms as their equilibrium versions;
+thus the ``out'' part of the equation above $\propto \Im \Sigma$
+(in the most general non-equilibrium case $\Im \Sigma$ is even not well-defined)
+
 
 \end{frame}
 
