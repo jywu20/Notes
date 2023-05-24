@@ -1,0 +1,226 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{td-agw.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+\title{Time-dependent adiabatic $GW$}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{From Keldysh formalism to quantum master equation}
+
+Existing researches \cite{chan2021giant} utilizing TD-aGW carry out the calculation 
+within the framework of quantum master equation (QME)
+\begin{equation}
+    \dot{\rho} + \ii \comm*{\rho}{H} = \int_{-\infty}^{t} \dd{t'} F[\rho(t')]
+\end{equation}
+which is the equation of motion of the 
+reduced single-electron density matrix 
+\begin{equation}
+    \rho(\vb*{r}, \vb*{r}', t) = \expval{\psi^\dagger(\vb*{r}') \psi(\vb*{r})}
+    = - \ii G^<(\vb*{r}, t; \vb*{r}', t).
+\end{equation}
+QME has clear physical meaning 
+when the system contains well-defined quasiparticles.
+The generality of QME and the flow from the most generalized Keldysh formalism 
+to quantum kinetic theories is discussed in 
+\cite{rammer1986quantum,vspivcka2005long,vspivcka2005long2,vspivcka2005long3}.
+In this section we give a brief summary of the derivation 
+and coverage as well as possible simplifications of QME.
+
+In Keldysh formalism we still have the Dyson equation
+\begin{equation}
+    G = G_0 + G_0 \Sigma G = G_0 + G \Sigma G_0,
+    \label{eq:keldysh-sigma}
+\end{equation}
+although now $G$, $G_0$ and $\Sigma$
+are $2 \times 2$ matrices
+due to the need of anti-time-ordered, lesser and greater Green functions 
+besides the time-ordered Green function 
+in deriving a diagrammatic perturbation theory 
+for non-equilibrium Green functions \cite{lifschitz1983physical};
+alternatively they can be defined on the Keldysh contour \cite{haug2008quantum}.
+Note that the choice of $H_0$ has some arbitrariness at this point:
+we may split the full many-body self-energy correction $\Sigma^{\text{full}}$
+into an ``effective field'' which has no retardation and is inserted into $H_0$
+and a ``real'' interaction part $\Sigma$.
+By Lengreth's rules \cite{haug2008quantum},
+we reduce \eqref{eq:keldysh-sigma} on the Keldysh contour 
+into the following equation on the physical time axis:
+\begin{equation}
+    G^< = G^<_0 + G^{\text{R}}_0 \Sigma^{\text{R}} G^{<}_0
+    + G^{\text{R}} \Sigma^{<} G^{\text{A}}_0 
+    + G^{<} \Sigma^{\text{A}} G^\text{A} , \quad 
+    G^{\text{A}, \text{R}} = G^{\text{A}, \text{R}}_0 + G^{\text{A}, \text{R}}_0 \Sigma^{\text{A}, \text{R}} G^{\text{A}, \text{R}}.
+\end{equation}
+By applying 
+\begin{equation}
+    \overleftarrow{G}_0^{-1} = - \ii \overleftarrow{\partial}_t - H_0 , \quad 
+    \overrightarrow{G}_0^{-1} = \ii \overrightarrow{\partial}_t - H_0
+\end{equation}
+to the left and right hand sides of the equation about $G^<$
+and utilizing the fact that $G_0^< \overleftarrow{G}_0^{-1} = \overrightarrow{G}_0^{-1} G_0^< = 0$,
+we obtain 
+\begin{equation}
+    \ii \partial_T G^< - \comm*{H_0}{G^<} = 
+    \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}} - G^{\text{R}} \Sigma^< - G^< \Sigma^{\text{A}},
+    \label{eq:gkb}
+\end{equation}
+where we have redefined the time variables as 
+\begin{equation}
+    T = \frac{t_1 + t_2}{2}, \quad t = t_1 - t_2.
+\end{equation}
+Roughly speaking, $T$ is related to the time variance 
+of the external driving field or the relaxation of the system,
+while $t$ corresponds to the time variable 
+in equilibrium Green function,
+and often Fourier transform is done in $t$,
+and thus $G^< = G^<(T, \omega)$. 
+
+\eqref{eq:gkb} is already very close to QME,
+its left hand side being the left hand side of QME 
+after integrating over $\omega$.
+Three approximations are needed however to close the equation:
+the explicit form of $\Sigma[G]$,
+representation of $G^{\text{A}, \text{R}}$ with $G^<$ and $\Sigma^{\text{A}, \text{R}}$,
+and reconstruction of $G^<$ using $\rho(T)$ i.e. $G^<(t_1 = t_2 = T)$.
+It can be proved that the last is always possible \cite{vspivcka2005long},
+with the lowest order approximation being the 
+Generalized Kadanoff–Baym Ansatz,
+and a closed QME can therefore be obtained \cite{vspivcka2005long2,haug2008quantum}.
+Note that in principle this procedure does not require 
+the system to have well-defined electron-like quasiparticle.
+
+Two further approximations reduce QME to quantum Boltzmann equation (QBE)
+\cite{rammer1986quantum,haug2008quantum}.
+Under the assumption that well-defined quasiparticles always exist and hence we have 
+\begin{equation}
+    G^<(\vb*{X}, \vb*{p}, T, \omega) = 2\pi \delta(\omega - E_{\vb*{p}}(\vb*{X})) f(\vb*{X}, \vb*{p}, T),
+\end{equation}
+where Wigner transform has been applied.
+Using the condition of smooth external driving force,
+by gradient expansion, the left hand side of QME becomes 
+the usual form of collisionless Boltzmann equation.
+With both the quasiparticle assumption the right hand side of QME 
+becomes the Fermi golden rule, 
+which is prevalently used as the collision integral \cite{chen2022first}.
+Deviations from the quasiparticle approximation,
+e.g. strong electron-phonon interaction-induced renormalization, 
+may still lead to QBE,
+although with modified collision integral \cite{rammer1986quantum,wais2018quantum}.
+
+\section{The COHSEX approximation} 
+
+\printbibliography
+
+\end{document}
