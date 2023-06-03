@@ -161,6 +161,24 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+\newcommand{\literature}[1]{\textit{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
 \newcommand{\shortcode}[1]{\texttt{#1}}
 
 \lstset{style = console}
@@ -270,6 +288,14 @@ a cutoff on the density of $\vb*{k}$ points is needed
 This means we should replace $\int \dd[3]{\vb*{k}} / 2\pi $
 with properly normalized $\sum_{\vb*{k}}$,
 where $\vb*{k}$ goes over the discretely infinite $\vb*{k}$-grid.
+Also, this convention means the inner product is to be defined as 
+\begin{equation}
+    \braket{\psi}{\varphi} = \int \dd[3]{\vb*{r}} \psi^*(\vb*{r}) \varphi(\vb*{r}),
+\end{equation}
+where $\vb*{r}$ goes over every point in the sample, and 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \cdot 1 = V.   
+\end{equation} 
 
 \section{Details in diagrammatics}\label{sec:details-in-diagram}
 
@@ -1119,7 +1145,9 @@ The structure of this expression reveals the Feynman rules for a crystal:
                 % Text Node
                 \draw (43.5,117) node [anchor=east] [inner sep=0.75pt]    {$n, k-q$};
                 \end{tikzpicture}
-        \end{gathered} = \mel{n, \vb*{k} - \vb*{q}}{\ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}},
+        \end{gathered} = \mel{n, \vb*{k} - \vb*{q}}{\ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}
+        \eqqcolon M_{n' n}(\vb*{k} - \vb*{q}, \vb*{q}, \vb*{G})^* ,
+        \label{eq:crystal-coulomb-vertex-1}
     \end{equation}
     and 
     \begin{equation}
@@ -1147,11 +1175,18 @@ The structure of this expression reveals the Feynman rules for a crystal:
                 \draw (43.5,117) node [anchor=east] [inner sep=0.75pt]    {$n, k+q$};
                 \end{tikzpicture}                
         \end{gathered} = 
-        \mel{n, \vb*{k} + \vb*{q}}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}.
+        \mel{n, \vb*{k} + \vb*{q}}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}
+        \eqqcolon M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) .
     \end{equation}
     The sign is decided by the direction of $\vb*{q}$.
-    The direction of $\vb*{q}$ doesn't matter:
-    we \emph{don't} sum over the two directions.
+    The direction of $\vb*{q}$ only matters 
+    when deciding the signs of momenta in momentum conservation:
+    we \emph{don't} sum over the two directions;
+    thus, the above two Feynman rules 
+    are actually one rule,
+    and this fact can be easily checked explicitly:
+    \eqref{eq:crystal-coulomb-vertex-1}, for example, 
+    can also be written as $M_{nn'}(\vb*{k}, - \vb*{q}, - \vb*{G})$.
     The value of $\vb*{q}$ is determined by the values of free momentum variables;
     if $\vb*{q}$ is not selected as a free momentum variable, 
     it shouldn't be integrated over.
@@ -2219,9 +2254,9 @@ $GW$ is completely natural:
 the next level of correction is just to correct the Coulomb interaction line,
 using the same ring diagrams that appear in the self-consistent Hartree term.
 
-\subsection{BSE with the same order of approximation}
 
 
+\section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
 TODO: 
 \begin{itemize}
@@ -2230,8 +2265,6 @@ TODO:
     (see \cite{berkeleygw} p. 1271)
     \item What should be symmetric? (11) and (12) in \cite{berkeleygw}???
 \end{itemize}
-
-\section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
 \subsection{Frequency-dependent form}
 
@@ -2579,7 +2612,7 @@ The origin of this factor is discussed in \prettyref{sec:gw-bse.overview-gw.infi
 
 \section{The self-energy matrix $\Sigma$}
 
-\subsection{COHSEX approximation}
+\subsection{COHSEX approximation}\label{sec:cohsex-approx-1}
 
 One way to simply $\Sigma^{GW}$ is the 
 \concept{Coulomb hole-screened exchange (COHSEX)} approximation.
@@ -2640,12 +2673,329 @@ and therefore we have
 \begin{equation}
     \Sigma^{\text{COH}} = \frac{1}{2} \delta(\vb*{r} - \vb*{r}') 
     W(\vb*{r}, \vb*{r}', \omega = 0), 
+    \label{eq:sigma-coh-general}
 \end{equation}
 \begin{equation}
     \Sigma^{\text{SEX}} = - \expval*{\psi^\dagger(\vb*{r}') \psi(\vb*{r})}{\Psi}
     W(\vb*{r}, \vb*{r}', \omega = 0).
+    \label{eq:sigma-sex-general}
 \end{equation}
 
+\subsection{The COHSEX decomposition for $\Re \Sigma$}
+
+The real part of $\Sigma_n(\vb*{k}, \omega)$ corrects the quasiparticle spectrum 
+and decides the high intensity region of, say, the ARPES spectrum.
+In this section I prove that 
+similar to the case in last section, 
+for the generic $GW$ self-energy, 
+we are still able to split $\Sigma^{GW}_n(\vb*{k}, \omega)$
+into two parts, 
+corresponding to the so-called COH and SEX terms above. 
+To make the notation less cumbersome,
+below I temporarily omit the $\vb*{r}$ and $\vb*{r}'$ variables.
+Thus the spectral representation of the time-ordered Green function is 
+\begin{equation}
+    G(\omega) = \int \dd{\omega'} \frac{A(\omega')}{\omega - \omega' + \ii \sgn(\omega' - \mu)}.
+\end{equation}
+Note that $A(\omega')$ is defined on the real axis 
+and is completely analytic;
+the denominator in the above equation contains all the singularities of $G(\omega)$.
+Here we slightly misuse the notation 
+and use $\Re A(\omega)$ 
+to refer to $\Re A(\vb*{k}, \omega)$,
+possibly with a representation transform;
+thus, in this section, $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ 
+is not really real: 
+since $\Re \Sigma(\vb*{k}, \omega)$ is real, 
+and $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ is its Fourier transform,
+we find $\Re \Sigma(\vb*{r}, \vb*{r}', \omega) \sim \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')}$
+and obligatory has an imaginary part. 
+Also, since $A(\vb*{k}, \omega)$ is always real, 
+we say ``$A$ is completely real'',
+even though after Fourier transform, 
+$\Im A$ is non-zero.
+
+The ``real part'' of the $GW$ self-energy then is 
+\begin{equation}
+    \begin{aligned}
+        \Re \Sigma(\omega) &= \Re \ii G W
+        = - \Im \int \frac{\dd{\omega'}}{2\pi} 
+        \ee^{- \ii 0^+ \omega'} G(\omega - \omega') W(\omega') \\
+        &= - \Im \int \frac{\dd{\omega'}}{2\pi}
+        \ee^{- \ii 0^+ \omega'} W(\omega')
+        \underbrace{
+            \int \dd{\omega''} \frac{A(\omega'')}{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}
+        }_{G(\omega - \omega')}.
+    \end{aligned}
+\end{equation}
+Now we know there are poles in the factor $W(\omega')$;
+this can be done by doing a spectral decomposition for $W(\omega')$.
+As for the contribution from the $(\omega - \omega' - \omega'')$ denominator
+of the Green function,
+we have 
+\[
+    \begin{aligned}
+        &\quad [\Re \Sigma(\omega)]_{\text{from $G$}}\\ 
+        &= - \Im \int \dd{\omega''} A(\omega'')
+        \int \frac{\dd{\omega'}}{2\pi} 
+        \frac{
+            \ee^{- \ii 0^+ \omega'} W(\omega')
+        }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)} \\
+        &= - \Im \int \dd{\omega''} A(\omega'') \times \\
+        &\quad \quad \quad \quad  \begin{cases}
+            0, &\quad \omega'' > \mu, \\
+            \frac{1}{2\pi} \cdot (- 2 \pi \ii) 
+            \lim_{\omega' \to \omega - \omega''} (\omega' - \omega - \omega'') \cdot 
+            \frac{
+                \ee^{- \ii 0^+ \omega'} W(\omega')
+            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}, &\quad \omega'' \leq \mu
+        \end{cases} \\
+        &= - \Im \int^\mu_{-\infty} \dd{\omega''} A(\omega'') \ii W(\omega - \omega'') \\
+        &= - \int^\mu_{-\infty} \dd{\omega''} A(\omega'') \Re W(\omega - \omega'').
+    \end{aligned}
+\]
+Note that the $\ee^{- \ii 0^+ \omega'}$ factor 
+means if we want to use the residue theorem 
+and contour integration to evaluate this expression, 
+we should go around the lower half plane;
+when $\omega'' > \mu$, 
+we get a pole outside of this integral contour, 
+and thus the integral vanishes. 
+
+If we are doing Hartree-Fock approximation,
+and thus $W$ is actually the bare Coulomb interaction $v$,
+then this is all we have: 
+$W$, in this case, contains no pole, 
+and therefore $\Re \Sigma$ comes completely from the poles of the Green function part,
+and is just the whole exchange-correlation energy.
+So when $W$ is the screened Coulomb potential, 
+$[\Re \Sigma]_{\text{from $G$}}$ can be obtained by simply 
+replacing $v$ in Hartree-Fock exchange-correlation energy by $W(\omega)$.
+Thus we name this term the \concept{screened exchange-correlation energy}, 
+or SEX in short.
+
+Now we move to the part of $\Re \Sigma$ coming from poles in $W$.
+The usual spectral expansion like the follows: 
+\begin{equation}
+    W(\omega) = v + \int_{0}^{\infty} \dd{\omega'}
+    \frac{2 \omega'}{\omega^2 - (\omega' - \ii 0^+)^2} B(\omega'),
+    \label{eq:screened-coulomb-spectral-representation}
+\end{equation}
+from which we find 
+\begin{equation}
+    \Im W(\omega) = - \pi B(\omega).
+\end{equation}
+Since we assume the system to have time reversal symmetry, 
+we have $W(\vb*{r}, \vb*{r}', \omega) = W(\vb*{r}, \vb*{r}', - \omega)$,
+and therefore $W(\omega)$ is an even function, 
+and the Kramers–Kronig relation now reads 
+\[
+    \Re W(\omega) = - \frac{1}{\pi} \int_{0}^{\infty} \dd{\omega'}
+    \frac{2 \omega'}{\omega'^2 - \omega^2} \Im W(\omega),
+\] 
+and since $W(\omega)$ is to be time-ordered, 
+just like its building blocks, i.e. the time-ordered Green functions, 
+positive poles of $W(\omega)$ should have negative infinitesimal imaginary parts, 
+while negative poles of $W(\omega)$ should have positive infinitesimal imaginary parts, 
+and thus we get \eqref{eq:screened-coulomb-spectral-representation}.
+From the spectral representation \eqref{eq:screened-coulomb-spectral-representation} we have 
+\[
+    \begin{aligned}
+        &\quad [\Re \Sigma(\omega)]_{\text{from $W$}}\\
+        &= - \Im \eval{
+            \int \frac{\dd{\omega'}}{2\pi} W(\omega') \ee^{- \ii 0^+ \omega'}
+            \int \dd{\omega''} 
+            \frac{
+                 A(\omega'')
+            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}
+        }_{\text{no pole from $G$}} \\
+        &= - \Im \frac{- 2 \pi \ii \Res_{\text{$\omega'$ in lower plane}}}{2\pi}
+        \int_{0}^{\infty} \dd{\omega'''}
+        \frac{
+            2 \omega''' B(\omega''')
+        }{
+            \omega'^2 - (\omega''' - \ii 0^+)^2
+        } \times \\
+        &\quad \quad \int \dd{\omega''} \frac{
+            A(\omega'')
+        }{
+            \omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)
+        } \\
+        &= \Re \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''} 
+        \lim_{\omega' \to \omega''' - \ii 0^+}
+        \frac{
+            (\omega' - \omega''' + \ii 0^+)
+        }{
+            \omega'^2 - (\omega''' - \ii 0^+)^2
+        }
+        \frac{
+            2\omega''' A(\omega'') B(\omega''')
+        }{
+            \omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)
+        }  \\
+        &= \Re \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''}
+        \frac{
+            A(\omega'') B(\omega''')
+        }{
+            \omega - \omega''' - \omega'' + \ii \sgn(\omega'' - \mu)
+        } \\
+        &= \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''}
+        \primevalue \frac{
+            A(\omega'') B(\omega''')
+        }{
+            \omega - \omega''' - \omega'' 
+        } .
+    \end{aligned}
+\]
+Here we have omitted the $v$ term in the expression of $W$,
+because it contains no pole,
+and therefore its contribution is already considered in the SEX part.
+We call the above contribution from poles in $W$ 
+the \concept{Coulomb-hole part}, 
+or COH in short. 
+
+In conclusion, we are able to split $\Re \Sigma^{GW}$ into two parts, namely 
+\begin{equation}
+    \Re \Sigma^{GW} = \Sigma^{\text{COH}} + \Sigma^{\text{SEX}},
+\end{equation}
+where 
+\begin{equation}
+    \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}', \omega)
+    = - \int^\mu_{-\infty} \dd{\omega'} A(\vb*{r}, \vb*{r}', \omega') 
+    \Re W(\vb*{r}, \vb*{r}', \omega - \omega'),
+\end{equation}
+and 
+\begin{equation}
+    \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
+    = \int_{0}^{\infty} \dd{\omega''} \int_{-\infty}^\infty \dd{\omega'}
+    \primevalue \frac{
+        A(\vb*{r}, \vb*{r}', \omega') B(\vb*{r}, \vb*{r}', \omega'')
+    }{
+        \omega - \omega' - \omega'' 
+    } .
+\end{equation}
+There is a sign difference in (13b) in \cite{hybertsen1986electron};
+but it seems they made a mistake there, 
+since (17b) in \cite{hybertsen1986electron}
+agrees well with my result.
+
+When the behavior of the system is Fermi liquid-like, 
+we can approximately have \eqref{eq:green} even for interactive Green function,
+and therefore 
+\begin{equation}
+    G(\vb*{r}, \vb*{r}', \omega)
+    = \sum_{n, \vb*{k}} \frac{
+        \phi_{n \vb*{k}}(\vb*{r}) \phi^*_{n \vb*{k}}(\vb*{r}')
+    }{
+        \omega - \xi_{n \vb*{k}} + \ii 0^+ \sgn(\xi_{n \vb*{k}})
+    }, \quad 
+\end{equation}
+\begin{equation}
+    A(\vb*{r}, \vb*{r}', \omega)
+    = \sum_{n, \vb*{k}} \delta(\omega - \xi_{n \vb*{k}})
+    \phi_{n \vb*{k}}(\vb*{r}) \phi^*_{n \vb*{k}}(\vb*{r}'),
+\end{equation}
+and hence 
+\begin{equation}
+    \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}', \omega)
+    = - \sum_{n, \vb*{k}}^{\text{occ}}
+    \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}') 
+    \Re W(\vb*{r}, \vb*{r}', \omega - \xi_{n \vb*{k}}), 
+    \label{eq:sigma-sex-fermi-liquid}
+\end{equation}
+\begin{equation}
+    \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
+    = \sum_{n, \vb*{k}} \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}')
+    \primevalue \int_{0}^{\infty} \dd{\omega'}
+    \frac{B(\vb*{r}, \vb*{r}', \omega')}{\omega - \xi_{n \vb*{k}} - \omega'}.
+\end{equation}
+
+
+
+When we sum over $n, \vb*{k}$,
+$\xi_{n \vb*{k}}$ varies, 
+and so does $\omega - \xi_{n \vb*{k}}$.
+This, of course, means $\Sigma^{\text{COH}}$ has frequency dependence.
+However, when the peak frequency of $B(\omega')$ 
+is much larger than this frequency dependence,
+we have 
+\[
+    \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
+    = \sum_{n, \vb*{k}} \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}')
+    \primevalue \int_{0}^{\infty} \dd{\omega'}
+    \frac{B(\vb*{r}, \vb*{r}', \omega')}{- \omega'}.
+\]
+The RHS of this equation can be seen by setting $\omega$ to zero in 
+\eqref{eq:screened-coulomb-spectral-representation}:
+we have 
+\[
+    W(\omega = 0) = v + \int_{0}^{\infty} \dd{\omega'} \frac{2 \omega'}{- \omega'^2 + \ii 0^+} B(\omega'),
+\]
+and thus 
+\begin{equation}
+    \begin{aligned}
+        \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}')
+        &= \sum_{n, \vb*{k}} \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}') \cdot 
+        \frac{1}{2} \Re (W(\vb*{r}, \vb*{r}', \omega = 0) - v(\vb*{r}, \vb*{r}')) \\
+        &= \frac{1}{2} \delta(\vb*{r} - \vb*{r}') 
+        \Re (W(\vb*{r}, \vb*{r}', \omega = 0) - v(\vb*{r}, \vb*{r}')) .
+    \end{aligned}
+\end{equation}
+TODO: why in Louie (19) there is a $-v$ term in the COH term 
+
+TODO: the name ``Coulomb hole''
+
+Similarly, we can replace $\omega - \xi_{n \vb*{k}}$ by zero in \eqref{eq:sigma-sex-fermi-liquid},
+and thus we get 
+\begin{equation}
+    \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}')
+    = - \sum_{n, \vb*{k}}^{\text{occ}}
+    \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}') 
+    \Re W(\vb*{r}, \vb*{r}', \omega = 0). 
+    \label{eq:sigma-sex-fermi-liquid-static}
+\end{equation}
+So now, by replacing $\omega - \xi_{n \vb*{k}}$ by zero, 
+or in other words, 
+by getting rid of the frequency dependence,
+which is the approximation used in \eqref{sec:cohsex-approx-1},
+we get \eqref{eq:sigma-coh-general} and \eqref{eq:sigma-sex-general}
+Note that since we can easily prove that 
+\[
+    \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}') = 
+    (\Sigma^{\text{SEX}}(\vb*{r}', \vb*{r}))^*,
+\]
+$\Sigma^{\text{SEX}}$ is ``real'' in the sense of 
+being real in the momentum space
+(see the start of this section),
+and we also have 
+\begin{equation}
+    \expval*{\psi^\dagger(\vb*{r}') \psi(\vb*{r})}{\Psi}
+    = \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}'),
+\end{equation}
+which is also ``real'' in this sense, 
+and thus \eqref{eq:sigma-sex-fermi-liquid-static} is the ``real part'' of \eqref{eq:sigma-sex-general}.
+
+TODO: COHSEX for time-dependent $GW$ can't be obtained 
+using the spectral representation techniques in this section?
+
+In conclusion, what is done in \prettyref{sec:cohsex-approx-1} 
+should better be called \emph{static} COHSEX;
+even the full $GW$ self-energy can be decomposed in this manner.
+The static COHSEX approximation only makes use of 
+the $\omega = 0$ component of $W$, 
+or in other words $\epsilon$:
+it involves no frequency dependence of screening at all, 
+while GPP (\prettyref{sec:gw-bse.epsilon.gpp}) 
+takes some frequency dependence into account, 
+although in a rather crude way. 
+
+\subsection{From dielectric matrix to self-energy}
+
+In the last section there is still one problem left: 
+we need to find an explicit form of the $B(\vb*{r}, \vb*{r}', \omega)$ function.
+
+
+\section{Self-consistency modes}
 
 \subsection{Diagonal or not}
 
