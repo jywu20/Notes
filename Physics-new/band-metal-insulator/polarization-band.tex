@@ -1,0 +1,601 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+
+\title{Polarization in band theory}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Ill-definedness of $\vb*{P}$ using $\rho(\vb*{r})$}
+
+A tempting definition of the polarization vector is 
+\begin{equation}
+    \vb*{P}_{\text{dip}} = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r}) \dd[3]{\vb*{r}},
+\end{equation}
+where $\rho(\vb*{r})$ includes the charge distribution 
+of both electrons and atoms.
+Despite its clear physical meaning of ``total dipole moment'',
+this definition depends on the choice of the primitive unit cell. 
+To see why, note that if we do an infinitesimal change of $\vb*{P}$,
+then according to the charge conservation equation, 
+which may be seen as a constraint on the variance, 
+we have 
+\begin{equation}
+    \begin{aligned}
+        \var{\vb*{P}}_{\text{dip}} &= 
+        \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \var{\rho}(\vb*{r}) \dd[3]{\vb*{r}} \\
+        &= \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} (- \var{t} \div{\vb*{j}}) \dd[3]{\vb*{r}} \\
+        &= - \frac{\var{t}}{V_{\text{u.c.}}} \int_{\partial(\text{u.c.})} \vb*{r} (\dd{\vb*{S}} \cdot \vb*{j})
+        + \frac{\var{t}}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j} \dd[3]{\vb*{r}}.
+    \end{aligned}
+\end{equation}
+The last term is the average current,
+which does have a clear definition: 
+\begin{equation}
+    \vb*{J}(t) = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j}(\vb*{r}, t) \dd[3]{\vb*{r}},
+\end{equation}
+which is \emph{not} dependent to the spatial position of the primitive unit cell, 
+since at the ground state, 
+$\rho(\vb*{r})$ is strictly periodic:
+the atomic part is of course periodic,
+and the electronic part $- e \sum_{n, \vb*{k}} \abs*{\psi_{n \vb*{k}}}^2$,
+since $\abs*{\psi_{n \vb*{k}}}^2 = \abs*{u_{n \vb*{k}}}^2$,
+the latter being periodic, 
+is also periodic.
+So we find the variance of $\vb*{P}_{\text{dip}}$ 
+equals to one term that is not dependent to the primitive unit cell 
+and another term that is highly dependent to the surface 
+of the primitive unit cell. 
+On the other hand, from physical intuition we expect to see 
+\begin{equation}
+    \var{\vb*{P}(t)} = \vb*{J} \var{t}.
+    \label{eq:j-is-derivative-of-p}
+\end{equation}
+Thus $\vb*{P}_{\text{dip}}$ can't be a good definition of $\vb*{P}$.
+
+One way to make up for the loss is to average $\vb*{P}_{\text{dip}}$ 
+over possible positions of the primitive unit cell.
+This however gives a constantly vanishing value, 
+since now 
+\[
+    \bar{\vb*{P}}_{\text{dip}} 
+    \propto \int_{\text{u.c.}} \dd[3]{\vb*{r}'} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r} - \vb*{r}') \dd[3]{\vb*{r}}  ,
+\]
+where instead of moving the primitive unit cell,
+we equivalently move the charge distribution.
+But then due to charge neutrality, 
+we find $\int \dd[3]{\vb*{r}'} \rho(\vb*{r} - \vb*{r}') = 0$,
+so the whole equation vanishes. 
+
+We may also want to try to define $\vb*{P}$ for a supercell, 
+possibly the crystal itself,
+and if the surface-dependent term vanishes, 
+we now at least have a macroscopic definition of $\vb*{P}$.
+But then note that $\vb*{r} \sim L$ 
+while $\dd{\vb*{S}} \sim L^2$,
+and $1 / V \sim 1 / L^3$,
+so this doesn't seem to be possible for a generic crystal.
+
+\section{A dynamic definition} 
+
+An alternative way to define $\vb*{P}$
+is to integrate \eqref{eq:j-is-derivative-of-p}.
+That's to say, we first need an expression of $\partial_\lambda \vb*{P}$.
+
+\subsection{Review of some quantum mechanic results}
+
+Before doing that let's show some general formalism in quantum mechanics. 
+Suppose we have Hamiltonian $H(\lambda)$,
+and thus 
+\begin{equation}
+    \partial_\lambda \expval{O}_n = 
+    \mel{\partial_\lambda n}{O}{n} 
+    + \mel{n}{O}{\partial_\lambda n}
+    = 2 \Re \mel{n}{O}{\partial_\lambda n}
+    = 2 \Re \mel{\partial_\lambda n}{O}{n},
+\end{equation}
+and it can be proved that we have the following Sternheimer equation
+\begin{equation}
+    \ket{\partial_\lambda n} = - \ii A_n \ket*{n} 
+    + \sum_{m \neq n} \frac{\dyad{m}}{E_n - E_m} \partial_\lambda H \ket*{n},
+    \label{eq:sternheimer}
+\end{equation}
+where 
+\begin{equation}
+    A_n = \ii \braket{n}{\partial_\lambda n}
+    \label{eq:berry-phase}
+\end{equation}
+is the Berry connection, 
+the integral of which is the Berry phase.
+Note that the only $\ket*{n}$ component of $\ket*{\partial_\lambda n}$ 
+is the $- \ii A_n$ term, 
+and therefore from the norm conservation condition, 
+we find that $A_n$ is always real. 
+
+We define 
+\begin{equation}
+    T_n = \sum_{m \neq n} \frac{\dyad{m}}{E_n - E_m}.
+\end{equation}
+Again, since the only $\ket*{n}$ component in $\ket*{\partial_\lambda n}$ is the Berry phase term, 
+we have 
+\begin{equation}
+    Q_n \ket*{\partial_\lambda n} = T_n \partial_\lambda H \ket*{n},
+    \label{eq:q-t-lambda}
+\end{equation}
+where 
+\begin{equation}
+    Q_n = \sum_{m \neq n} \dyad{m},
+\end{equation}
+which removes the $\ket*{n}$ component from a wave function.
+\eqref{eq:sternheimer} then becomes 
+\begin{equation}
+    Q_n \ket*{\partial_\lambda n} = T_n \partial_\lambda H \ket*{n}.
+\end{equation}
+Since in 
+\[
+    \mel{n}{O}{\partial_n n} = 
+    - \ii A_n \mel{n}{O }{n}
+    + \mel{n}{O Q_n}{n},
+\]
+the first term is always imaginary, we have 
+\begin{equation}
+    \partial_\lambda \expval{O}_n = 2 \Re \mel{n}{O Q_n}{\partial_\lambda n}
+    = 2 \Re \mel{\partial_\lambda n}{Q_n O}{n}.
+\end{equation}
+
+Now if we are in a many-body fermionic system with very weak interaction between particles,
+we have 
+\begin{equation}
+    \partial_\lambda \expval{O} = \sum_{n}^{\text{occ}} \partial_\lambda \expval{O}_n
+    = 2 \Re \sum_{n}^{\text{occ}} \mel{n}{O Q_n}{\partial_\lambda n}
+    = 2 \Re \sum_{n}^{\text{occ}} \mel{\partial_\lambda n}{Q_n O}{n}.
+    \label{eq:pdv-O-lambda-1}
+\end{equation}
+This expression can be further simplified:
+after defining 
+\begin{equation}
+    Q = \sum_{n}^{\text{unocc}} \dyad{n} = 1 - \sum_{n}^{\text{occ}} \dyad{n},
+\end{equation}
+we have
+\[
+    \begin{aligned}
+        2\Re \sum_{n}^{\text{occ}} \mel{n}{O (Q_n - Q)}{\partial_\lambda n}
+        &= 2\Re \sum_{n}^{\text{occ}}  \left(
+            \sum_{m \neq n} 
+            - \sum_{m}^{\text{unocc}}
+        \right)
+        \mel{n}{O}{m} \braket{m}{\partial_\lambda n}  \\
+        &= 2\Re \sum_{n}^{\text{occ}} \sum_{m \neq n}^{\text{occ}}
+        \mel{n}{O}{m} \braket{m}{\partial_\lambda n} \\
+        &= \sum_{n}^{\text{occ}} \sum_{m \neq n}^{\text{occ}}
+        (
+            \mel{n}{O}{m} \braket{m}{\partial_\lambda n}
+            + \mel{m}{O}{n} \braket{\partial_\lambda n}{m}
+        ).
+    \end{aligned}
+\]
+Since $\braket{n}{m}$ doesn't change no matter how you adjust $\lambda$,
+we have 
+\begin{equation}
+    0 = \partial_\lambda \braket{n}{m} 
+    = \braket*{\partial_\lambda n}{m} 
+    + \braket*{n}{\partial_\lambda m},
+    \label{eq:switch-partial}
+\end{equation}
+and thus 
+\[
+    \begin{aligned}
+        2\Re \sum_{n}^{\text{occ}} \mel{n}{O (Q_n - Q)}{\partial_\lambda n}
+        &= \sum_{n}^{\text{occ}} \sum_{m \neq n}^{\text{occ}}
+        (
+            \mel{n}{O}{m} \braket{m}{\partial_\lambda n}
+            - \mel{m}{O}{n} \braket*{n}{\partial_\lambda m}
+        ) \\
+        &= 0,
+    \end{aligned}
+\]
+and thus \eqref{eq:pdv-O-lambda-1} becomes 
+\begin{equation}
+    \partial_\lambda \expval{O} 
+    = 2 \Re \sum_{n}^{\text{occ}} \mel{\partial_\lambda n}{Q O}{n}
+    = 2 \Re \sum_{n}^{\text{occ}} \mel{n}{O Q}{\partial_\lambda n}.
+    \label{eq:pdv-O-lambda-2}
+\end{equation}
+This is the formula that's going to be used 
+to evaluate $\partial_\lambda \vb*{P}$.
+
+\subsection{The change of polarization}
+
+In band theory, different $\vb*{k}$ points don't 
+influence each other, 
+and therefore $\vb*{k}$ can be thought of 
+as an instance of $\lambda$.
+Suppose $H = T + V$ is the single electron Hamiltonian,
+which acts on Bloch states 
+\begin{equation}
+    \psi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii \vb*{k} \cdot \vb*{r}} u_{n \vb*{k}}(\vb*{r}),
+\end{equation}
+and we find the Hamiltonian acting on $u_{n \vb*{k}}$ is 
+\begin{equation}
+    H_{\vb*{k}} = \ee^{- \ii \vb*{k} \cdot \vb*{r}} H \ee^{\ii \vb*{k} \cdot \vb*{r}},
+\end{equation}
+and we have 
+\begin{equation}
+    H_{\vb*{k}} u_{n \vb*{k}} = E_{n \vb*{k}} u_{n \vb*{k}}.
+\end{equation}
+Since we are going to work with $u_{n \vb*{k}}$, 
+we need to modify the normalization convention.
+Usually, the inner product is defined as 
+\begin{equation}
+    \int \dd[d]{\vb*{r}} \psi^*_{n' \vb*{k}'}(\vb*{r}) \psi_{n \vb*{k}}(\vb*{r})
+    = \delta_{n n'} \delta_{\vb*{k} \vb*{k}'},
+\end{equation}
+in which we integrate over the whole sample $V$.
+Thus, in empty lattice, we have 
+\begin{equation}
+    \psi_{n \vb*{k}}(\vb*{r}) = \ee^{\ii \vb*{k} \cdot \vb*{r}}
+    \underbrace{
+        \frac{1}{\sqrt{V}} \ee^{\ii \vb*{G}_n \cdot \vb*{r}}
+    }_{u_{n \vb*{k}}}.
+\end{equation}
+However, for TODO 
+
+Formally, the polarization is 
+\begin{equation}
+    \vb*{P} = \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} \expval{- e \vb*{r}}{\psi_{n \vb*{k}}},
+\end{equation}
+and thus 
+\begin{equation}
+    \begin{aligned}
+        \partial_\lambda \expval{\vb*{P}} &= 
+        - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \partial_\lambda \expval{\vb*{r}}_{\vb*{k}} \\
+        &= - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \cdot 2 \Re \sum_{n}^{\text{occ}} \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{\vb*{k}} \vb*{r}}{u_{n \vb*{k}}}.
+    \end{aligned}
+    \label{eq:change-of-p-1}
+\end{equation}
+Note that here $Q_{\vb*{k}}$ is not $Q_{n}$ in \eqref{eq:pdv-O-lambda-1},
+but $Q$ in \eqref{eq:pdv-O-lambda-2}: 
+here $\vb*{k}$ is considered an ``external'' parameter.
+What we want to do is to eliminate any $\vb*{r}$ in the expression 
+to avoid ambiguity mentioned above. 
+We define 
+\begin{equation}
+    \vb*{v}_{\vb*{k}} = \frac{1}{\ii \hbar} \comm*{\vb*{r}}{H_{\vb*{k}}}
+    = \ee^{- \ii \vb*{k} \cdot \vb*{r}} v \ee^{\ii \vb*{k} \cdot \vb*{r}},
+    \label{eq:v-k-def}
+\end{equation}
+which is the counterpart of $\vb*{v}$ 
+in the quantum mechanics about $\{u_{n \vb*{k}}\}$,
+and we can then find 
+\begin{equation}
+    \vb*{v}_{\vb*{k}} = \frac{1}{\hbar} \pdv{H_{\vb*{k}}}{\vb*{k}},
+    \label{eq:v-is-pdv-h-k}
+\end{equation}
+since 
+\[
+    \pdv{H_{\vb*{k}}}{\vb*{k}}
+    = (- \ii \vb*{r}) \ee^{- \ii \vb*{k} \cdot \vb*{r}}  H \ee^{\ii \vb*{k} \cdot \vb*{r}}
+    + \ee^{- \ii \vb*{k} \cdot \vb*{r}} H \ee^{\ii \vb*{k} \cdot \vb*{r}} \cdot \ii \vb*{r}
+    = - \ii \comm*{\vb*{r}}{H_{\vb*{k}}} .
+\]
+Then from \eqref{eq:v-k-def}, we find 
+\[
+    \mel{u_{m \vb*{k}}}{\vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}}
+    = \frac{1}{\ii \hbar} \mel{u_{m \vb*{k}}}{\vb*{r} H_{\vb*{k}} - H_{\vb*{k}} \vb*{r}}{u_{n \vb*{k}}}
+    = \frac{1}{\ii \hbar} (E_{n \vb*{k}} - E_{m \vb*{k}}) 
+    \mel{u_{m \vb*{k}}}{\vb*{r}}{u_{n \vb*{k}}},
+\]
+\[
+    \mel{u_{m \vb*{k}}}{\vb*{r}}{u_{n \vb*{k}}} = \frac{\ii \hbar}{E_{n \vb*{k}} - E_{m \vb*{k}}}
+    \mel{u_{m \vb*{k}}}{\vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}},
+\]
+and therefore 
+\[
+    \underbrace{\sum_{m \neq n} \dyad{u_{m \vb*{k}}}}_{Q_{n \vb*{k}}} \vb*{r} \ket{u_{n \vb*{k}}}
+    = \ii \hbar \underbrace{
+        \sum_{m \neq n} \frac{\dyad{u_{m \vb*{k}}}}{E_{n \vb*{k}} - E_{m \vb*{k}}} 
+    }_{T_{n \vb*{k}}}
+    \vb*{v}_{\vb*{k}} \ket{u_{n \vb*{k}}},
+\]
+and the RHS of \eqref{eq:change-of-p-1} becomes 
+(note that according to \eqref{eq:pdv-O-lambda-1} and \eqref{eq:pdv-O-lambda-2},
+$Q_{n \vb*{k}}$ and $Q_{\vb*{k}}$ 
+can be used in place of each other in the expression)
+\begin{equation}
+    \begin{aligned}
+        \partial_\lambda \expval{\vb*{P}}
+        &= - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \cdot 2 \Re \sum_{n}^{\text{occ}} 
+        \mel{\partial_\lambda u_{n \vb*{k}}}{\ii \hbar T_{n \vb*{k}} \vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}} \\
+        &= e \hbar \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \cdot 2 \Im \sum_{n}^{\text{occ}} 
+        \mel{\partial_\lambda u_{n \vb*{k}}}{T_{n \vb*{k}} \vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}}.
+    \end{aligned}
+\end{equation}
+Further, using \eqref{eq:v-is-pdv-h-k} and \eqref{eq:q-t-lambda}, we have 
+\[
+    T_{n \vb*{k}} \vb*{v}_{\vb*{k}} \ket*{u_{n \vb*{k}}}
+    = \frac{1}{\hbar} T_{n \vb*{k}} \pdv{H_{\vb*{k}}}{\vb*{k}} \ket*{u_{n \vb*{k}}}
+    = \frac{1}{\hbar} Q_{n \vb*{k}} \ket*{\partial_{\vb*{k}} u_{n \vb*{k}}},
+\]
+and thus 
+\begin{equation}
+    \begin{aligned}
+        \partial_{\lambda} \expval{\vb*{P}}
+        &= e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \cdot 2 \Im \sum_{n}^{\text{occ}} 
+        \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}} \\
+        &= e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \cdot 2 \Im \sum_{n}^{\text{occ}} 
+        \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{\vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}}.
+    \end{aligned}
+    \label{eq:change-of-p-2}
+\end{equation}
+The derivation from \eqref{eq:change-of-p-1} to \eqref{eq:change-of-p-2}
+can be heuristically done by replacing $\vb*{r}$ by $\ii \partial_{\vb*{k}}$,
+where we identify $\vb*{k}$ and real momentum $\vb*{p}$;
+this however is not always true, 
+since the commutation relation between $\vb*{r}$ and 
+the operator corresponding to $\vb*{k}$ is not clear.
+The last step is to get rid of $Q_{\vb*{k}}$.
+To see why, note that 
+\[
+    \sum_{n}^{\text{occ}} \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{\vb*{k}}}{u_{n \vb*{k}}}
+    = \sum_{n}^{\text{occ}} \braket{\partial_\lambda u_{n \vb*{k}}}{u_{n \vb*{k}}}
+    - \sum_{n}^{\text{occ}} \sum_{m}^{\text{occ}}
+    \braket{\partial_{\lambda} u_{n \vb*{k}}}{u_{m \vb*{k}}}
+    \braket{u_{m \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}},
+\]
+and since we have \eqref{eq:switch-partial}, the complex conjugate of the second term is 
+\[
+    \sum_{n}^{\text{occ}} \sum_{m}^{\text{occ}}
+    \braket{u_{m \vb*{k}}}{\partial_{\lambda} u_{n \vb*{k}}}
+    \braket{\partial_{\vb*{k}} u_{n \vb*{k}}}{u_{m \vb*{k}}}
+    = \sum_{n}^{\text{occ}} \sum_{m}^{\text{occ}}
+    (- \braket{\partial_{\lambda} u_{n \vb*{k}}}{u_{m \vb*{k}}})
+    (- \braket{u_{m \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}})
+\]
+and is the same as the original form, 
+and thus we find that the second term is always real, 
+and thus 
+\begin{equation}
+    \partial_{\lambda} \expval{\vb*{P}} = e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+    \cdot 2 \Im \sum_{n}^{\text{occ}} 
+    \braket{\partial_\lambda u_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}}.
+    \label{eq:change-of-p-3}
+\end{equation}
+Thus, the change of the polarization vector 
+is rewritten into a rather elegant form.
+
+\subsection{Berry phase and polarization}
+
+The next problem is what's the RHS of \eqref{eq:change-of-p-3}.
+We will find it's Berry curvature. 
+Here again we first review the general formalism of Berry phase in quantum mechanics.
+Recall that we have \eqref{eq:sternheimer} and \eqref{eq:berry-phase}, 
+and from the equations we find in adiabatic evolution, 
+we have 
+\begin{equation}
+    \ket*{n(\lambda)} = \ee^{\text{some other dynamic factor}} \ee^{- \ii \int_{0}^{\lambda} A_n \dd{\lambda} } \ket*{n(\lambda = 0)}.
+\end{equation}
+The notation $A_n \dd{\lambda}$ actually is 
+$A_{n, \mu} \dd{\lambda^\mu}$, 
+since there may be more than one turning parameter in the Hamiltonian.
+So $A_n$ is just a \emph{connection} in differential geometry,
+where the underlying manifold is the range of $\lambda$,
+and at each point in the manifold we have a vector space,
+the index of which is $n$,
+and the parallel transport is adiabatic evolution.
+Thus, the status of $A_n$ is comparable to 
+the vector potential in electromagnetism,
+or Christoffel symbols in general relativity.
+Then we may ask whether the Berry connection is ``inherently curved'',
+i.e. whether if we slowly change $\lambda$ 
+and ultimately turn it back, 
+we get a non-zero phase factor before $\ket*{n}$.
+In electromagnetism this means we need to calculate $\vb*{B} = \curl{\vb*{A}}$;
+in general relativity this means we need to calculate the Riemann curvature tensor. 
+In the general formalism of quantum mechanics 
+this means we need to calculate \emph{Berry curvature};
+note that in an experimental setting 
+where particles are confined in a very small range compared with 
+the length scale of the variance of the magnetic field, 
+we can change $\lambda$ to $\vb*{r}$,
+and the Berry phase is just the phase factor induced by the vector potential.
+The Berry curvature is then 
+\begin{equation}
+    \Omega_{n, \mu \nu} = \partial_{\mu} A_{n, \nu} - \partial_{\nu} A_{n, \mu}.
+\end{equation}
+Here $\mu, \nu$, etc. are indices of $\lambda$.
+Since 
+\begin{equation}
+    A_{n, \mu} = \ii \braket{n}{\partial_\mu n}, 
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        \Omega_{n, \mu \nu} &= \partial_{\mu} A_{n, \nu} - \partial_{\nu} A_{n, \mu} \\
+        &= \ii \braket{\partial_{\mu} n}{\partial_{\nu} n}
+        - \ii \braket{\partial_{\nu} n}{\partial_{\mu} n} \\
+        &= - 2 \Im \braket{\partial_{\mu} n}{\partial_{\nu} n}.
+    \end{aligned}
+\end{equation}
+Suppose $C$ is a closed routine in the space of possible $\lambda$, 
+and the Berry phase accumulated 
+by moving $\lambda$ around this routine is equal to 
+\begin{equation}
+    \ee^{- \ii \oint_C A_{n, \mu} \dd{\lambda^\mu}}
+    = \ee^{- \ii \int_S \Omega_{n, \mu \nu} \dd{x^\mu} \dd{x^\nu}},
+\end{equation}
+where $S$ is a surface in the parameter space whose boundary is $C$.
+$A_{n, \mu}$ changes when we add an arbitrary phase factor before wave functions; 
+but $\Omega_{n, \mu \nu}$ is invariant under such a gauge transformation.
+There, of course, is a subtlety about whether $\Omega$ is well-defined within $S$:
+it's possible that $\Omega$ has some kind of spikes within $C$,
+which may be due to gauge choice in the wave function phase 
+and is reflected by the $2\pi n$ degree of freedom on the LHS.
+
+Now we find the RHS of \eqref{eq:change-of-p-3} is just the Berry curvature:
+we then have 
+\begin{equation}
+    \partial_\lambda \expval{\vb*{P}}
+    = - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \sum_{n}^{\text{occ}} \Omega_{n, \lambda \vb*{k}}.
+\end{equation}
+
+\section{Wannier function and charge center}
+
+
+
+\end{document}
