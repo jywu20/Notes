@@ -156,11 +156,14 @@
 
 \maketitle
 
+This article is a reading note of the relevant chapters in Berry Phases in Electronic Structure Theory
+by David Vanderbilt.
+
 \section{Ill-definedness of $\vb*{P}$ using $\rho(\vb*{r})$}
 
 A tempting definition of the polarization vector is 
 \begin{equation}
-    \vb*{P}_{\text{dip}} = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r}) \dd[3]{\vb*{r}},
+    \vb*{P}_{\text{dip}} = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r}) \dd[d]{\vb*{r}},
 \end{equation}
 where $\rho(\vb*{r})$ includes the charge distribution 
 of both electrons and atoms.
@@ -173,16 +176,17 @@ we have
 \begin{equation}
     \begin{aligned}
         \var{\vb*{P}}_{\text{dip}} &= 
-        \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \var{\rho}(\vb*{r}) \dd[3]{\vb*{r}} \\
-        &= \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} (- \var{t} \div{\vb*{j}}) \dd[3]{\vb*{r}} \\
+        \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} \var{\rho}(\vb*{r}) \dd[d]{\vb*{r}} \\
+        &= \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{r} (- \var{t} \div{\vb*{j}}) \dd[d]{\vb*{r}} \\
         &= - \frac{\var{t}}{V_{\text{u.c.}}} \int_{\partial(\text{u.c.})} \vb*{r} (\dd{\vb*{S}} \cdot \vb*{j})
-        + \frac{\var{t}}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j} \dd[3]{\vb*{r}}.
+        + \frac{\var{t}}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j} \dd[d]{\vb*{r}}.
     \end{aligned}
+    \label{eq:naive-def-problem}
 \end{equation}
 The last term is the average current,
 which does have a clear definition: 
 \begin{equation}
-    \vb*{J}(t) = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j}(\vb*{r}, t) \dd[3]{\vb*{r}},
+    \vb*{J}(t) = \frac{1}{V_{\text{u.c.}}} \int_{\text{u.c.}} \vb*{j}(\vb*{r}, t) \dd[d]{\vb*{r}},
 \end{equation}
 which is \emph{not} dependent to the spatial position of the primitive unit cell, 
 since at the ground state, 
@@ -209,12 +213,12 @@ This however gives a constantly vanishing value,
 since now 
 \[
     \bar{\vb*{P}}_{\text{dip}} 
-    \propto \int_{\text{u.c.}} \dd[3]{\vb*{r}'} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r} - \vb*{r}') \dd[3]{\vb*{r}}  ,
+    \propto \int_{\text{u.c.}} \dd[d]{\vb*{r}'} \int_{\text{u.c.}} \vb*{r} \rho(\vb*{r} - \vb*{r}') \dd[d]{\vb*{r}}  ,
 \]
 where instead of moving the primitive unit cell,
 we equivalently move the charge distribution.
 But then due to charge neutrality, 
-we find $\int \dd[3]{\vb*{r}'} \rho(\vb*{r} - \vb*{r}') = 0$,
+we find $\int \dd[d]{\vb*{r}'} \rho(\vb*{r} - \vb*{r}') = 0$,
 so the whole equation vanishes. 
 
 We may also want to try to define $\vb*{P}$ for a supercell, 
@@ -388,19 +392,78 @@ Thus, in empty lattice, we have
         \frac{1}{\sqrt{V}} \ee^{\ii \vb*{G}_n \cdot \vb*{r}}
     }_{u_{n \vb*{k}}}.
 \end{equation}
-However, for TODO 
-
-Formally, the polarization is 
+The main problem of this normalization convention of $u_{n \vb*{k}}$ is 
+it makes the definition of the inner product of $u_{n \vb*{k}}$ hard, 
+since what we want is 
 \begin{equation}
-    \vb*{P} = \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} \expval{- e \vb*{r}}{\psi_{n \vb*{k}}},
+    \braket{u_{n \vb*{k}}}{u_{n' \vb*{k}}}
+    = \int_{\text{u.c.}} \dd[d]{\vb*{r}} u_{n \vb*{k}}(\vb*{r})^* u_{n' \vb*{k}'}(\vb*{r}),
 \end{equation}
-and thus 
+but under this definition we have 
+$\braket*{u_{n \vb*{k}}}{u_{n \vb*{k}}} = V_{\text{u.c.}} / V = 1 / N$,
+where $N$ is the total number of primitive unit cells. 
+It can be verified that the correct normalization convention 
+should be the follows: 
+\begin{equation}
+    \psi_{n \vb*{k}} = \frac{1}{\sqrt{N}} u_{n \vb*{k}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad 
+    \psi_{n \vb*{k}} \simeq \frac{1}{\sqrt{V}} \ee^{\ii \vb*{k} \cdot \vb*{r}}, \quad 
+    u_{n \vb*{k}} \simeq \frac{1}{\sqrt{V_{\text{u.c.}}}},
+\end{equation}
+and under this convention, for periodic quantity $Q(\vb*{r})$,
+we have 
+\begin{equation}
+    \expval{Q(\vb*{r})}{\psi_{n \vb*{k}}} = \expval{Q(\vb*{r})}{u_{n \vb*{k}}}.
+    \label{eq:periodic-from-psi-to-u}
+\end{equation}
+
+\eqref{eq:periodic-from-psi-to-u} can't be directly used for $- e \vb*{r}$,
+since $\vb*{r}$ of course is not periodic.
+However, we have 
+\begin{equation}
+    \begin{aligned}
+        \vb*{P} &\coloneqq 
+        \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} \expval{- e \vb*{r}}{\psi_{n \vb*{k}}} \\
+        &= \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} 
+        \sum_{\vb*{R}} \int_{\text{u.c. at $\vb*{R}$}}  \dd[d]{\vb*{r}}
+        \frac{1}{N} u^*_{n \vb*{k}}(\vb*{r}) (- e \vb*{r}) u_{n \vb*{k}}(\vb*{r}) \\
+        &= \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}}
+        \frac{1}{N} \sum_{\vb*{R}} 
+        \int_{\text{one u.c.}} \dd[d]{\vb*{r}} u^*_{n \vb*{k}}(\vb*{r})
+        (- e \vb*{r} - e \vb*{R}) u_{n \vb*{k}}(\vb*{r}) \\
+        &= \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} 
+        \left(\int_{\text{one u.c.}} \dd[d]{\vb*{r}} u^*_{n \vb*{k}}(\vb*{r}) (- e \vb*{r}) u_{n \vb*{k}}(\vb*{r})
+        - e \frac{1}{N}\sum_{\vb*{R}} \vb*{R} \right),
+    \end{aligned}
+\end{equation}
+where in the third line, 
+we use the periodic condition of $u_{n \vb*{k}}$,
+and since the first term in the third line contains no dependence on $\vb*{R}$,
+the $1/N$ factor cancels with the summation over $\vb*{R}$,
+while in the second term, 
+the dependence on $u_{n \vb*{k}}$ is just the normalization condition.
+Now the physical meaning of the second term is clear: 
+it's important when the system we are working with 
+is a part of an electric dipole 
+together with another system.
+Thus, formally, we have reconfirmed that the polarization is 
+\begin{equation}
+    \vb*{P} = \frac{1}{V} \sum_{\vb*{k}} \sum_{n}^{\text{occ}} \expval{- e \vb*{r}}{u_{n \vb*{k}}}
+    = \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+    \underbrace{
+        \sum_n^{\text{occ}}
+        \expval{- e \vb*{r}}{u_{n \vb*{k}}}
+    }_{- e \expval{\vb*{r}}_{\vb*{k}}} .
+    \label{eq:polarization-naive-def}
+\end{equation}
+
+We have already shown that \eqref{eq:polarization-naive-def} can't be taken literally, 
+and to proceed we evaluate its time derivative, and get 
 \begin{equation}
     \begin{aligned}
         \partial_\lambda \expval{\vb*{P}} &= 
-        - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        - e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \partial_\lambda \expval{\vb*{r}}_{\vb*{k}} \\
-        &= - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        &= - e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \cdot 2 \Re \sum_{n}^{\text{occ}} \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{\vb*{k}} \vb*{r}}{u_{n \vb*{k}}}.
     \end{aligned}
     \label{eq:change-of-p-1}
@@ -456,10 +519,10 @@ can be used in place of each other in the expression)
 \begin{equation}
     \begin{aligned}
         \partial_\lambda \expval{\vb*{P}}
-        &= - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        &= - e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \cdot 2 \Re \sum_{n}^{\text{occ}} 
         \mel{\partial_\lambda u_{n \vb*{k}}}{\ii \hbar T_{n \vb*{k}} \vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}} \\
-        &= e \hbar \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        &= e \hbar \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \cdot 2 \Im \sum_{n}^{\text{occ}} 
         \mel{\partial_\lambda u_{n \vb*{k}}}{T_{n \vb*{k}} \vb*{v}_{\vb*{k}}}{u_{n \vb*{k}}}.
     \end{aligned}
@@ -474,10 +537,10 @@ and thus
 \begin{equation}
     \begin{aligned}
         \partial_{\lambda} \expval{\vb*{P}}
-        &= e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        &= e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \cdot 2 \Im \sum_{n}^{\text{occ}} 
         \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}} \\
-        &= e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        &= e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
         \cdot 2 \Im \sum_{n}^{\text{occ}} 
         \mel{\partial_\lambda u_{n \vb*{k}}}{Q_{\vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}}.
     \end{aligned}
@@ -511,7 +574,7 @@ and is the same as the original form,
 and thus we find that the second term is always real, 
 and thus 
 \begin{equation}
-    \partial_{\lambda} \expval{\vb*{P}} = e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+    \partial_{\lambda} \expval{\vb*{P}} = e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
     \cdot 2 \Im \sum_{n}^{\text{occ}} 
     \braket{\partial_\lambda u_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}}.
     \label{eq:change-of-p-3}
@@ -567,9 +630,13 @@ we have
 \begin{equation}
     \begin{aligned}
         \Omega_{n, \mu \nu} &= \partial_{\mu} A_{n, \nu} - \partial_{\nu} A_{n, \mu} \\
-        &= \ii \braket{\partial_{\mu} n}{\partial_{\nu} n}
-        - \ii \braket{\partial_{\nu} n}{\partial_{\mu} n} \\
-        &= - 2 \Im \braket{\partial_{\mu} n}{\partial_{\nu} n}.
+        &= \ii \braket{\partial_{\mu} n}{\partial_{\nu} n} 
+        + \ii \braket*{n}{\partial_\mu \partial_\nu n}
+        - \ii \braket{\partial_{\nu} n}{\partial_{\mu} n}
+        - \ii \braket*{n}{\partial_\nu \partial_\mu n} \\
+        &= - 2 \Im \braket{\partial_{\mu} n}{\partial_{\nu} n}
+        = \ii \braket{\partial_{\mu} n}{\partial_{\nu} n} 
+        - \ii \braket{\partial_{\nu} n}{\partial_{\mu} n}.
     \end{aligned}
 \end{equation}
 Suppose $C$ is a closed routine in the space of possible $\lambda$, 
@@ -591,11 +658,137 @@ Now we find the RHS of \eqref{eq:change-of-p-3} is just the Berry curvature:
 we then have 
 \begin{equation}
     \partial_\lambda \expval{\vb*{P}}
-    = - e \int \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \sum_{n}^{\text{occ}} \Omega_{n, \lambda \vb*{k}}.
+    = - e \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \sum_{n}^{\text{occ}} \Omega_{n, \lambda \vb*{k}}.
 \end{equation}
+From this equation, 
+we can do partial integral over the variable $\lambda$, 
+and then we find 
+\begin{equation}
+    \Delta \expval{\vb*{P}}
+    = - e \sum_{n}^{\text{occ}}
+    \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \int_{\lambda_{\text{i}}}^{\lambda_{\text{f}}}    
+    (\partial_\lambda A_{n \vb*{k}} - \partial_{\vb*{k}} A_{n \lambda}).
+\end{equation}
+The integrant in the first term becomes $\Delta A_{n \vb*{k}}$;
+the second term vanishes because of the periodic boundary condition 
+of the first Brillouin zone -- 
+the $d = 1$ case illustrates this clearly, 
+since $k = 0$ is equivalent to $k = 2 \pi / a$.
+Thus we find 
+\begin{equation}
+    \Delta \expval{\vb*{P}}
+    = - e \sum_{n}^{\text{occ}} \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} (
+        \vb*{A}_{n \vb*{k}}(\lambda = \lambda_{\text{f}})
+        - \vb*{A}_{n \vb*{k}}(\lambda = \lambda_{\text{i}})).
+\end{equation}
+Here we have changed the symbol of the Berry connection to the bold $\vb*{A}$ 
+to remind ourself that due to the vector nature of $\vb*{k}$,
+this quantity is a vector, namely 
+\begin{equation}
+    \vb*{A}_{n \vb*{k}} = \ii \braket*{u_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}} .
+\end{equation}
+A natural definition of $\expval{\vb*{P}}$, then, seems to be 
+\begin{equation}
+    \expval{\vb*{P}} = - e \sum_{n}^{\text{occ}} \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} 
+        \vb*{A}_{n \vb*{k}},
+    \label{eq:polarization-good-def-1}
+\end{equation}
+since $\lambda$ in principle contains all information about 
+the band structure, 
+and $\expval{\vb*{P}}$ should be a function of $\lambda$;
+now if we add a constant at $\lambda = \lambda_{\text{i}}$ to $\expval{\vb*{P}}$,
+it can't change when $\lambda$ changes, 
+leading to the question about its origin.
 
 \section{Wannier function and charge center}
 
+Although \eqref{eq:polarization-good-def-1} looks elegant, 
+its derivation doesn't have a clear physical meaning.
+In this section we assign an interpretation of this equation 
+using Wannier charge centers. 
 
+Recall that the main problem for the naive spatial averaging definition 
+\eqref{eq:polarization-naive-def}
+is that $\vb*{r}$ is an unbounded operator, 
+and summing over the whole space 
+creates ambiguity \eqref{eq:naive-def-problem}.
+An alternative way to evaluate \eqref{eq:polarization-naive-def} 
+is to first recast the expression 
+in Wannier representation, 
+and then average over the expectation of $\vb*{r}$ 
+in each Wannier function.
+
+The first step is to find what is the charge center of a Wannier function.
+At the current state, 
+we define Wannier functions for a given band, 
+although it's possible that to reach maximally localized Wannier functions, 
+we need to remix several bands.
+The Wannier function for a given band is therefore 
+\begin{equation}
+    \phi_{n \vb*{R}}(\vb*{r}) = \frac{1}{\sqrt{N}} \sum_{\vb*{k}} \ee^{- \ii \vb*{k} \cdot \vb*{R}} \psi_{n \vb*{k}}(\vb*{r}) = \frac{1}{N} \sum_{\vb*{k}} \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{R})} u_{n \vb*{k}}(\vb*{r}),
+\end{equation}
+and therefore 
+\begin{equation}
+    u_{n \vb*{k}}(\vb*{r}) = \sum_{\vb*{R}} \ee^{\ii \vb*{k} \cdot (\vb*{R} - \vb*{r})} \phi_{n \vb*{R}},
+\end{equation}
+and the Berry connection is given by 
+\begin{equation}
+    \begin{aligned}
+        \vb*{A}_{n \vb*{k}} &= \ii \braket*{u_{n \vb*{k}}}{\partial_{\vb*{k}} u_{n \vb*{k}}}  \\
+        &= \ii \int_{\text{u.c.}} \dd[d]{\vb*{r}} 
+        \sum_{\vb*{R}, \vb*{R}'} 
+        \ee^{- \ii \vb*{k} \cdot (\vb*{R} - \vb*{r})} 
+        \phi^*_{n \vb*{R}}(\vb*{r}) 
+        \cdot \ii (\vb*{R} - \vb*{r}) \cdot 
+        \ee^{\ii \vb*{k} \cdot (\vb*{R}' - \vb*{r})} 
+        \phi_{n \vb*{R}'}(\vb*{r}) \\
+        &= \sum_{\vb*{R}, \vb*{R}'} \int_{\text{u.c.}} \dd[d]{\vb*{r}}
+        \ee^{\ii \vb*{k} \cdot (\vb*{R}' - \vb*{R})}
+        \cdot (\vb*{r} - \vb*{R}) \cdot 
+        \phi_{n \vb*{R}}^*(\vb*{r}) \phi_{n \vb*{R}'}(\vb*{r}) .
+    \end{aligned}
+\end{equation} 
+This equation looks highly complicated, 
+but note that we can set $\vb*{R}$ to $\vb*{R}'$ by integrating over $\vb*{k}$:
+we have 
+\begin{equation}
+    \begin{aligned}
+        \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} A_{n \vb*{k}} 
+        &= \sum_{\vb*{R}, \vb*{R}'} \int_{\text{u.c.}} \dd[d]{\vb*{r}}
+        \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} \ee^{\ii \vb*{k} \cdot (\vb*{R} - \vb*{R}')}
+        \cdot (\vb*{r} - \vb*{R}) \cdot 
+        \phi_{n \vb*{R}}^*(\vb*{r}) \phi_{n \vb*{R}'}(\vb*{r}) \\
+        &= \sum_{\vb*{R}, \vb*{R}'} \int_{\text{u.c.}} \dd[d]{\vb*{r}}
+        \frac{1}{V_{\text{u.c.}}} \delta_{\vb*{R} \vb*{R}'} 
+        \cdot (\vb*{r} - \vb*{R}) \cdot 
+        \phi_{n \vb*{R}}^*(\vb*{r}) \phi_{n \vb*{R}'}(\vb*{r}) \\
+        &= \frac{1}{V_{\text{u.c.}}} \sum_{\vb*{R}} \int_{\text{u.c.}} \dd[d]{\vb*{r}}
+        \abs{\phi_{n \vb*{R}}(\vb*{r})}^2 
+        (\vb*{r} - \vb*{R}) \\
+        &= \frac{1}{V_{\text{u.c.}}} \sum_{\vb*{R}} \int_{\text{u.c.}} \dd[d]{\vb*{r}}
+        \abs{\phi_{n, \vb*{R} = 0}(\vb*{r} - \vb*{R})}^2 
+        (\vb*{r} - \vb*{R}) \\
+        &= \frac{1}{V_{\text{u.c.}}} \int \dd[d]{\vb*{r}}
+        \abs{\phi_{n, \vb*{R} = 0}(\vb*{r})}^2 \cdot \vb*{r} = \frac{1}{V_{\text{u.c.}}} \expval{\vb*{r}}_{\phi_{n, \vb*{R} = 0}} ,
+    \end{aligned}
+\end{equation}
+and it can be seen that the expectation of the position operator 
+under a Wannier state (which is well-defined, since Wannier functions are localized)
+is related to the Berry phase via the following elegant equation: 
+\begin{equation}
+    \expval{\vb*{r}}_{\phi_{n, \vb*{R} = 0}}  
+    = V_{\text{u.c.}} \int_{\text{1BZ}} \frac{\dd[d]{\vb*{k}}}{(2\pi)^d} A_{n \vb*{k}} .
+\end{equation}
+Inserting this equation to \eqref{eq:polarization-good-def-1}, 
+we find 
+\begin{equation}
+    \expval{\vb*{P}} = \frac{1}{V_{\text{u.c.}}} \sum_{n}^{\text{occ}} \expval{- e \vb*{r}}_{\phi_{n, \vb*{R} = 0}}.
+\end{equation}
+So now we can make sense of \eqref{eq:polarization-good-def-1}:
+if we first find Wannier functions and then find the charge centers 
+(i.e. $\expval{\vb*{r}}$, 
+since charge density is just $-e$ times $\abs*{\phi_{n \vb*{R} = 0}}^2$),
+and then define the polarization vector according to the charge centers, 
+we just get \eqref{eq:polarization-good-def-1}.
 
 \end{document}

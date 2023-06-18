@@ -9,3 +9,10 @@ Installing WSL on a non-system driver: https://kontext.tech/article/308/how-to-i
 
 Usually this is because of denied permission. 
 Run `chmod`  to solve the problem.
+
+## VSCode configuration 
+
+Be mindful of setting override: 
+it's possible that a reasonable configuration in 
+"setting in WSL" is overridden 
+by an unreasonable configuration in "user setting".
