@@ -2098,7 +2098,7 @@ So putting everything together, we get
 \end{equation}
 and 
 \begin{equation}
-    \Im \epsr = \frac{\pi e^2}{\omega^2 \epsilon_0 V} 
+    \epsilon_2 \coloneqq \Im \epsr = \frac{\pi e^2}{\omega^2 \epsilon_0 V} 
         \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
     \label{eq:light-matter.epsilon-img}
 \end{equation}
@@ -2139,6 +2139,15 @@ we have
         \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
     \label{eq:light-matter.epsilon-img-2}
 \end{equation}
+Here we replace $e^2 / \varepsilon_0$ in SI 
+by $4 \pi e^2$ in Gaussian units, 
+since the two system of units agree with each other 
+in the unit of force, 
+and we have 
+\[
+    \frac{e_{\text{SI}}^2}{4 \pi \epsilon_0 r^2} = F_{\text{SI}}
+    = F_{\text{Gaussian}} = \frac{e_{\text{Gaussian}}^2}{r^2}.
+\]
 
 The expression of $\Im \epsr$ sees great variance in literature. 
 Eq. (8) in \cite{del1993optical} is almost the same as \eqref{eq:light-matter.epsilon-img-2},
@@ -2151,11 +2160,49 @@ except it misses the factor $1 / V$.
 The LHS here is shown as it is in \cite{berkeleygw}; 
 since the system of units used is never explicitly mentioned in this article, 
 we don't know the true meaning of $\epsilon$ here;
-the origin of the $4\pi$ factor is also mysterious.
+the origin of the $4$ factor is also mysterious.
 This version of \eqref{eq:light-matter.epsilon-img-2} seems to have an early origin:
 it appears in \cite{rohlfing2000electron},
 which refers us to \cite{adolph1996nonlocality}
 which doesn't seem to contain something like \eqref{eq:light-matter.epsilon-img-2}.
+Some of these variances are typos; 
+others are just notational varieties. 
+The procedure used to calculate $\epsilon_2$
+when electron-hole interaction is ignored 
+(and $\Omega_S$ is just $\varepsilon_{\text{c}} - \varepsilon_{\text{v}}$) 
+can be found in 
+\shortcode{absp0} in \shortcode{BSE/absp0.f90} in BerkeleyGW's source code;
+some comments regarding the correct form of $\epsilon_2$
+are attached before the definition of the subroutine.
+From the codes and the attached comments, 
+it can be seen that 
+the missing of $1/V$ is not correct;
+half of the factor $4$ comes from Rydberg atomic units, 
+where $e^2 = 2$
+(and thus the expression $16 \pi^2 e^2$ is misleading -- 
+it should be $16 \pi^2$, 
+since $e^2$ is already absorbed into the $16$ factor);
+half of the factor $4$ comes from spin degeneracy,
+and when the two spins are considered separately 
+(either when the spin index is treated explicitly as a good quantum number, 
+or in spinor calculation where we have SOC),
+the $16$ factor should be reduced to $8$
+(note that since the light is assumed to be linearly polarized, 
+the spin of an electron remains the same 
+before and after electron-photon scattering, 
+and therefore the degeneracy factor is 2 instead of 4). 
+So the formula used in BerkeleyGW 
+-- which also agrees with \eqref{eq:light-matter.epsilon-img-2} -- 
+is 
+\begin{equation}
+    \varepsilon_2 = \frac{16 \pi^2}{\omega^2 N_{\text{spin-degeneracy}}} 
+    \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
+\end{equation}
+where $N_{\text{spin-degeneracy}}$ is $1$ 
+when there is indeed spin degeneracy and only the orbit parts
+of the wave functions enter the calculation, 
+and is $2$ otherwise. 
+TODO: the $1 / \omega^2$ factor
 
 \chapter{DFT}
 
@@ -3629,6 +3676,10 @@ we can calculate \shortcode{eps0mat.h5} and \shortcode{epsmat.h5}
 in two runs,
 and indeed this is the case when we deal with a metallic system
 (\prettyref{sec:metal-sop}).
+
+\section{Absorption}
+
+\subsection{}
 
 \section{Systems of units}
 
