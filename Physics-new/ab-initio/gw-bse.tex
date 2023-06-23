@@ -2352,7 +2352,7 @@ so that the order of $\vb*{r}$ and $\vb*{r}'$ doesn't really matter
 we have 
 \[
     \begin{aligned}
-    - \ii \Sigma(\omega, \vb*{r}, \vb*{r}', \omega) = \begin{gathered}
+    - \ii \Sigma(\omega, \vb*{r}, \vb*{r}', \omega) &= \begin{gathered}
         \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
             %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
             %Straight Lines [id:da468255656187889] 
@@ -2375,7 +2375,8 @@ we have
             % Text Node
             \draw (351.8,113.69) node [anchor=north west][inner sep=0.75pt]    {$\vb*{r}'$};
             \end{tikzpicture}            
-    \end{gathered} = \int \frac{\dd{\omega'}}{2\pi} 
+    \end{gathered} \\
+    &= \int \frac{\dd{\omega'}}{2\pi} 
     \ii G(\vb*{r}, \vb*{r}', \omega + \omega')  \ee^{\ii (\omega + \omega') 0^+}
     (- \ii) W(\vb*{r}, \vb*{r}', \omega'),
     \end{aligned}
@@ -2429,7 +2430,169 @@ $GW$ is completely natural:
 the next level of correction is just to correct the Coulomb interaction line,
 using the same ring diagrams that appear in the self-consistent Hartree term.
 
+\subsection{From $GW$ to BSE}
 
+Suppose we want to find the electromagnetic response of a system. 
+What we want is something looking like $\fdv*[n]{n(\vb*{r})}{V(\vb*{r}')}$.
+With the influence of $V(\vb*{r})$ taken into account, 
+$n(\vb*{r}, t)$ is given by the following diagram: 
+\[
+    \protect\input{feyn/density-response-1.tex}.
+\]
+Since the coupling Hamiltonian between the external field with electrons 
+is just ordinary Coulomb interaction, 
+the first vertex a line from an external field encounters 
+is a vertex with one interaction line and two electron lines.
+The $n$th-order response, therefore, is given by 
+\[
+    \protect\input{feyn/respose-correlation-density-1.tex}.
+\]
+We can easily see that to find the $n$th-order response,
+it's necessary to find the $n$th-order correlation function.
+So we have two equivalent ways to deal with electromagnetic response: 
+the first is to use Green function equations of motion 
+and find $n(\vb*{r}, t)$ explicitly,
+and then divide it with $V$;
+the other is to calculate all correlation functions;
+note that if we want not only the response, 
+we shouldn't pair incoming and outgoing lines 
+and fix the coordinates of each two of them to the same value:
+we should wipe out the solid dots in the last diagram.
+
+Now suppose we want to work with the single-electron Green function $G$ only
+in the first approach,
+and the $GW$ self-energy plus the electromagnetic coupling 
+are used to build the effective Hamiltonian. 
+In other words, we are doing \concept{time-dependent adiabatic $GW$} 
+(for the meaning of ``adiabatic'', see below).
+The density $n(\vb*{r}, t)$ is obtained by $G(\vb*{r}, t; \vb*{r}, t)$,
+or in other words, 
+by connecting the incoming and outgoing lines to the $(\vb*{r}, t)$ point.
+Note that $\Sigma^{GW}$ depends on $G$,
+and when deciding what happens at $t + \Delta t$,
+we use $\Sigma^{GW}[G(t)]$.
+Here in order to make the Hamiltonian-based time evolution possible, 
+we actually need to do the static COHSEX approximation or something similar 
+to eliminate the retardation effects in $\Sigma^{GW}$,
+or otherwise $\Sigma^{GW}$ doesn't lead to a well-defined Hamiltonian,
+and therefore the screened Coulomb interaction line is no longer 
+simply described by RPA
+-- but anyway it relies on $G$.
+Also, the locality of the static COHSEX Hamiltonian in time 
+means we need to approximate $G(\vb*{r}, t; \vb*{r}', t')$
+by $G(\vb*{r}, t; \vb*{r}', t)$,
+and therefore we can use an effective single-electron density matrix 
+to replace the Green function.
+That's why we say the approach is \emph{adiabatic}.
+The question then is, 
+what's the corresponding first-order response function?
+What diagrams are included in the latter? 
+
+To answer this question, 
+we need to list all diagrams that 
+contain \emph{one and only one} external field line. 
+For the sake of convenience, 
+below we use grey lines to refer to 
+the electron propagator corrected by $\Sigma^{GW}$
+and use black lines to refer to 
+the electron propagator corrected by both $\Sigma^{GW}$ and 
+electromagnetic coupling.
+Thus we have 
+\begin{equation}
+    \protect\input{feyn/electromagnetic-after-gw.tex}
+\end{equation}
+In the first-order response theory,
+we only keep the first two terms. 
+Now the first several terms in the completely corrected Green function are listed below:
+\[
+    \protect\input{feyn/dynamic-gw-diagrams-1.tex}.
+\]
+We can then wipe out the $\otimes$ symbol and the interaction line connected to it, 
+and, as is mentioned above, 
+to generalize things a little and separate 
+the two electron lines connected to the interaction line introduced by the external field. 
+The resulting diagrams are listed below:
+\[
+    \protect\input{feyn/dynamic-gw-diagrams-2.tex}.
+\]
+Collecting the diagrams and summing over them, 
+we find they are simply 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-1.tex}.
+\end{equation}
+The diagrams included here are essentially self-energy diagrams of 
+the two-body Green function; 
+in other words, 
+the diagrams are self-energy diagrams of 
+the electron-hole propagating.
+The corresponding self-energy diagrams -- or, following the more common terminology,
+\concept{kernel} diagrams -- 
+are 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-2.tex}.
+    \label{eq:bse.kernel}
+\end{equation}
+The first term is associated with the screened Fock term in $GW$, 
+because it comes from erasing one external field line 
+in a Fock diagram; 
+the second term corresponds to the Hartree term in $GW$.
+Note that the first term is screened and the second term is not: 
+the reason is the same as the reason in \prettyref{sec:gw.hf}.
+
+So the conclusion is,
+if we first do $GW$ correction (without external field) to the electron propagator,
+and then feed the corrected electron propagator and \eqref{eq:bse.kernel} 
+to 
+\begin{equation}
+    \protect\input{feyn/bse-diagrams-sum.tex},
+    \label{eq:bse.sum-general}
+\end{equation}
+then the electromagnetic response calculated using this method
+is the same as the weak-field approximation of 
+the time-dependent $GW$ calculation.
+
+\begin{infobox}{The term `time-dependent'}{time-dependent-gw}
+    The term ``time-dependent'' may be confusing:
+    in a frequency-dependent $GW$ calculation 
+    (generalized plasmon model, or full-frequency calculation),
+    the time domain $G(t)$ is also time-dependent,
+    but it can't capture electromagnetic response.
+    On the other hand, in ``time-dependent $GW$'',
+    the term ``time-dependent''
+    means the Hamiltonian of the system is time-dependent,
+    which is equivalent to say coupling with the external field 
+    is taken into account. 
+\end{infobox}
+
+\eqref{eq:bse.sum-general} can be written in a way 
+quite similar to single-electron self-energy correction,
+called the \concept{Bethe-Salpeter equation (BSE)},
+although in the context of \abinitio{} study, 
+BSE usually refers to \eqref{eq:bse.sum-general} \emph{plus} \eqref{eq:bse.kernel}:
+the vertex correction, again, is simply ignored.
+
+The corrected two-body Green function i.e. corrected propagator of the electron-hole pair 
+can be seen as generated by 
+an effective two-body Hamiltonian,
+which contains the kinetic energy of the electron and the hole,
+as well as terms in \eqref{eq:bse.kernel}.
+The renormalized electron-hole pair 
+is called the \concept{exciton},
+and the effective two-body Hamiltonian is the Hamiltonian of the exciton. 
+BSE -- either in the general meaning or in the meaning of \eqref{eq:bse.kernel} -- 
+is essentially analyzing excitons.
+
+The time-dependent $GW$ method 
+can capture exciton effects to electromagnetic response of the system,
+because in the weak field limit 
+it is equivalent to BSE.
+Thus the time-dependent $GW$ method outlined above 
+is also sometimes called the \concept{time-dependent BSE}.
+Both flavors of BSE have been implemented:
+the exciton Hamiltonian approach is realized by BerkeleyGW;
+the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
+but its accuracy has been verified by comparison with the exciton Hamiltonian approach
+\cite{attaccalite2011real}.
 
 \section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
@@ -2550,8 +2713,8 @@ We have
                 \end{tikzpicture}            
         \end{gathered} \\
         &= - \int \frac{\dd{\omega'}}{2\pi} \sum_{\vb*{k}} \sum_{n, n'}
-        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} 
-        \frac{\ii}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
+        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} \\
+        &\quad \quad \times \frac{\ii}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
         &\quad \quad \times M_{n n' } (\vb*{k}, \vb*{q}, \vb*{G}) M_{nn'}^* (\vb*{k}, \vb*{q}, \vb*{G}') ,
     \end{aligned}
 \end{equation}
@@ -2612,9 +2775,85 @@ Thus, we find
             }
         \right).
     \end{aligned}
+    \label{eq:chi-original}
 \end{equation}
 
-TODO: occupied, or empty: 
+When the system has time-reversal symmetry -- 
+that's to say, we don't have magnetic fields 
+or magnetic disorders or a ferromagnetic order -- 
+the above equation can be further simplified. 
+When the system is spinless 
+(when no SOC exists, the electronic problem can be reduced to this circumstance), 
+we have 
+\begin{equation}
+    \mathcal{T} \psi_{n \vb*{k}} \coloneqq \psi_{n \vb*{k}}^* = \sum_{m} U_{nm}(\vb*{k}) \psi_{m, - \vb*{k}},
+    \label{eq:spinless-tr}
+\end{equation}
+where $U_{mn}$ is a unitary matrix; 
+thus we have 
+\begin{equation}
+    \mathcal{T}^2 = 1  \Rightarrow U(-\vb*{k}) U(\vb*{k})^* = 1 
+    \Rightarrow U^{-1}(- \vb*{k}) = U^*(\vb*{k}).
+\end{equation}
+Note that $\mathcal{T}$ applies to the $U_{nm}$ factor as well 
+if we apply another $\mathcal{T}$ to \eqref{eq:spinless-tr}. 
+So now we have 
+\begin{equation}
+    \psi_{n \vb*{k}} = \sum_{m} U^{-1}_{nm} (- \vb*{k}) \psi^*_{m, - \vb*{k}}
+    = \sum_{m} U_{nm}^* (\vb*{k}) \psi^*_{m, - \vb*{k}}.
+\end{equation}
+Now we inspect the structure of the 
+$M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) M^*_{nn'} (\vb*{k}, \vb*{q}, \vb*{G}')$ 
+factor (Einstein summation convention is used): 
+\begin{equation}
+    \begin{aligned}
+        &\quad M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) M^*_{nn'} (\vb*{k}, \vb*{q}, \vb*{G}') \\
+        &= \int \dd[3]{\vb*{r}} 
+        \psi^*_{n, \vb*{k} + \vb*{q}} (\vb*{r})
+        \ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}} 
+        \psi_{n' \vb*{k}}(\vb*{r})
+        \int \dd[3]{\vb*{r}'} 
+        \psi_{n, \vb*{k} + \vb*{q}} (\vb*{r}')
+        \ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}'} 
+        \psi_{n' \vb*{k}}^*(\vb*{r}') \\
+        &= \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} 
+        \ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}} 
+        \ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}'} \\
+        &\quad \quad \times U_{n m} (\vb*{k} + \vb*{q}) \psi_{m, - \vb*{k} - \vb*{q}} (\vb*{r})
+        U_{n' p}^*(\vb*{k}) \psi^*_{p, - \vb*{k}}(\vb*{r}) \\
+        &\quad \quad \times U_{n r}^*(\vb*{k} + \vb*{q}) \psi_{r, - \vb*{k} - \vb*{q}}^*(\vb*{r}') 
+        U_{n' s} \psi_{s}(\vb*{k}) \psi_{s, - \vb*{k}}(\vb*{r}') \\
+        &= \int \dd[3]{\vb*{r}} \int \dd[3]{\vb*{r}'} 
+        \ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}} 
+        \ee^{- \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}'} \\
+        &\quad \quad \times \psi_{m, - \vb*{k} - \vb*{q}} (\vb*{r}) 
+        \psi^*_{p, - \vb*{k}}(\vb*{r}) 
+        \psi^*_{m, - \vb*{k} - \vb*{q}}(\vb*{r}')
+        \psi_{p, - \vb*{k}}(\vb*{r}') \\
+        &= 
+    \end{aligned}
+\end{equation}
+
+When the system is spin-$1/2$, i.e. when we are in the so-called spinor mode, 
+we have 
+\begin{equation}
+    \mathcal{T} \psi_{n \vb*{k}} \coloneqq - \ii \sigma^y \psi^*_{n \vb*{k}}
+    = \sum_{m } U_{nm} \psi_{m \vb*{k}},
+\end{equation}
+and thus we also have 
+\begin{equation}
+    \psi^*_{n \vb*{k}} = \sum_{m } U_{nm} \psi_{m \vb*{k}},
+\end{equation}
+although the definition of $U_{nm}$ should be changed -- 
+but it's still unitary; 
+similarly we can build the relation between $U(\vb*{k})$ and $U(- \vb*{k})$ from 
+\begin{equation}
+    \mathcal{T}^2 = - 1 \Rightarrow U(- \vb*{k}) U(\vb*{k}) = -1 
+    \Rightarrow U(- \vb*{k}) = - U^\dagger(\vb*{k}).
+\end{equation}
+Here that all $\psi_{m \vb*{k}}$ states 
+are in the same degeneracy space of the $\psi_{n \vb*{k}}$ state. 
+
 
 Note that in \cite{berkeleygw},
 the normalization of $\chi$ is the same as here,
@@ -2856,10 +3095,8 @@ and therefore we have
     \label{eq:sigma-sex-general}
 \end{equation}
 
-\subsection{The COHSEX decomposition for $\Re \Sigma$}
+\subsection{The COHSEX decomposition of $\Sigma$}
 
-The real part of $\Sigma_n(\vb*{k}, \omega)$ corrects the quasiparticle spectrum 
-and decides the high intensity region of, say, the ARPES spectrum.
 In this section I prove that 
 similar to the case in last section, 
 for the generic $GW$ self-energy, 
@@ -2870,36 +3107,32 @@ To make the notation less cumbersome,
 below I temporarily omit the $\vb*{r}$ and $\vb*{r}'$ variables.
 Thus the spectral representation of the time-ordered Green function is 
 \begin{equation}
-    G(\omega) = \int \dd{\omega'} \frac{A(\omega')}{\omega - \omega' + \ii \sgn(\omega' - \mu)}.
+    G(\omega) = \int \dd{\omega'} \frac{A(\omega')}{\omega - \omega' + \ii \sgn(\omega')}.
 \end{equation}
+Some papers use $\omega$ to refer to the ``absolute energy'' of the electron, 
+which is $\omega + \mu$ in this note; 
+under their convention, we have 
+\begin{equation}
+    G(\omega) = \int \dd{\omega'} \frac{A(\omega')}{\omega - \omega' + \ii \sgn(\omega' - \mu)},
+\end{equation}
+and the fact that the electron is above the Fermi energy 
+is equivalent to the inequality $\omega > \mu$, 
+not $\omega > 0$.
 Note that $A(\omega')$ is defined on the real axis 
 and is completely analytic;
 the denominator in the above equation contains all the singularities of $G(\omega)$.
-Here we slightly misuse the notation 
-and use $\Re A(\omega)$ 
-to refer to $\Re A(\vb*{k}, \omega)$,
-possibly with a representation transform;
-thus, in this section, $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ 
-is not really real: 
-since $\Re \Sigma(\vb*{k}, \omega)$ is real, 
-and $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ is its Fourier transform,
-we find $\Re \Sigma(\vb*{r}, \vb*{r}', \omega) \sim \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')}$
-and obligatory has an imaginary part. 
-Also, since $A(\vb*{k}, \omega)$ is always real, 
-we say ``$A$ is completely real'',
-even though after Fourier transform, 
-$\Im A$ is non-zero.
 
-The ``real part'' of the $GW$ self-energy then is 
+
+The $GW$ self-energy then is 
 \begin{equation}
     \begin{aligned}
-        \Re \Sigma(\omega) &= \Re \ii G W
-        = - \Im \int \frac{\dd{\omega'}}{2\pi} 
+        \Sigma(\omega) &= \ii G W
+        = \ii \int \frac{\dd{\omega'}}{2\pi} 
         \ee^{- \ii 0^+ \omega'} G(\omega - \omega') W(\omega') \\
-        &= - \Im \int \frac{\dd{\omega'}}{2\pi}
+        &= \ii \int \frac{\dd{\omega'}}{2\pi}
         \ee^{- \ii 0^+ \omega'} W(\omega')
         \underbrace{
-            \int \dd{\omega''} \frac{A(\omega'')}{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}
+            \int \dd{\omega''} \frac{A(\omega'')}{\omega - \omega' - \omega'' + \ii \sgn(\omega'')}
         }_{G(\omega - \omega')}.
     \end{aligned}
 \end{equation}
@@ -2910,23 +3143,23 @@ of the Green function,
 we have 
 \[
     \begin{aligned}
-        &\quad [\Re \Sigma(\omega)]_{\text{from $G$}}\\ 
-        &= - \Im \int \dd{\omega''} A(\omega'')
+        &\quad [\Sigma(\omega)]_{\text{from $G$}}\\ 
+        &= \ii \int \dd{\omega''} A(\omega'')
         \int \frac{\dd{\omega'}}{2\pi} 
         \frac{
             \ee^{- \ii 0^+ \omega'} W(\omega')
-        }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)} \\
-        &= - \Im \int \dd{\omega''} A(\omega'') \times \\
-        &\quad \quad \quad \quad  \begin{cases}
-            0, &\quad \omega'' > \mu, \\
+        }{\omega - \omega' - \omega'' + \ii \sgn(\omega'')} \\
+        &= \ii \int \dd{\omega''} A(\omega'')  \\
+        &\quad \quad \quad \quad \times \begin{cases}
+            0, &\quad \omega'' > 0, \\
             \frac{1}{2\pi} \cdot (- 2 \pi \ii) 
             \lim_{\omega' \to \omega - \omega''} (\omega' - \omega - \omega'') \cdot 
             \frac{
                 \ee^{- \ii 0^+ \omega'} W(\omega')
-            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}, &\quad \omega'' \leq \mu
+            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'')}, &\quad \omega'' \leq 0
         \end{cases} \\
-        &= - \Im \int^\mu_{-\infty} \dd{\omega''} A(\omega'') \ii W(\omega - \omega'') \\
-        &= - \int^\mu_{-\infty} \dd{\omega''} A(\omega'') \Re W(\omega - \omega'').
+        &= \ii \int^{0}_{-\infty} \dd{\omega''} A(\omega'') \cdot \ii W(\omega - \omega'') \\
+        &= - \int^{0}_{-\infty} \dd{\omega''} A(\omega'') W(\omega - \omega'').
     \end{aligned}
 \]
 Note that the $\ee^{- \ii 0^+ \omega'}$ factor 
@@ -2941,15 +3174,15 @@ If we are doing Hartree-Fock approximation,
 and thus $W$ is actually the bare Coulomb interaction $v$,
 then this is all we have: 
 $W$, in this case, contains no pole, 
-and therefore $\Re \Sigma$ comes completely from the poles of the Green function part,
+and therefore $\Sigma$ comes completely from the poles of the Green function part,
 and is just the whole exchange-correlation energy.
 So when $W$ is the screened Coulomb potential, 
-$[\Re \Sigma]_{\text{from $G$}}$ can be obtained by simply 
+$[\Sigma]_{\text{from $G$}}$ can be obtained by simply 
 replacing $v$ in Hartree-Fock exchange-correlation energy by $W(\omega)$.
 Thus we name this term the \concept{screened exchange-correlation energy}, 
 or SEX in short.
 
-Now we move to the part of $\Re \Sigma$ coming from poles in $W$.
+Now we move to the part of $\Sigma$ coming from poles in $W$.
 The usual spectral expansion like the follows: 
 \begin{equation}
     W(\omega) = v + \int_{0}^{\infty} \dd{\omega'}
@@ -2959,7 +3192,22 @@ The usual spectral expansion like the follows:
 from which we find 
 \begin{equation}
     \Im W(\omega) = - \pi B(\omega).
+    \label{eq:screened-coulomb-spectral-b}
 \end{equation}
+Here we slightly misuse the notation 
+apply the $\Re$ and $\Im$ operators 
+only to contributions of poles, 
+i.e. real and imaginary parts that come from the analytic structure 
+with respect to the variable $\omega$; 
+thus, in this section, $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ 
+is not really real.
+In free space, since $\Re \Sigma(\vb*{k}, \omega)$ is real, 
+and $\Re \Sigma(\vb*{r}, \vb*{r}', \omega)$ is its Fourier transform,
+we find $\Re \Sigma(\vb*{r}, \vb*{r}', \omega) \sim \ee^{\ii \vb*{k} \cdot (\vb*{r} - \vb*{r}')}$
+and obligatory has an imaginary part. 
+Also, after $GW$ correction, we actually have possible non-diagonal terms in  
+$\Sigma_{n n'}(\vb*{k}, \omega)$, 
+and these non-diagonal terms are not necessarily real. 
 Since we assume the system to have time reversal symmetry, 
 we have $W(\vb*{r}, \vb*{r}', \omega) = W(\vb*{r}, \vb*{r}', - \omega)$,
 and therefore $W(\omega)$ is an even function, 
@@ -2976,15 +3224,15 @@ and thus we get \eqref{eq:screened-coulomb-spectral-representation}.
 From the spectral representation \eqref{eq:screened-coulomb-spectral-representation} we have 
 \[
     \begin{aligned}
-        &\quad [\Re \Sigma(\omega)]_{\text{from $W$}}\\
-        &= - \Im \eval{
+        &\quad [\Sigma(\omega)]_{\text{from $W$}}\\
+        &= \ii \eval{
             \int \frac{\dd{\omega'}}{2\pi} W(\omega') \ee^{- \ii 0^+ \omega'}
             \int \dd{\omega''} 
             \frac{
                  A(\omega'')
-            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)}
+            }{\omega - \omega' - \omega'' + \ii \sgn(\omega'')}
         }_{\text{no pole from $G$}} \\
-        &= - \Im \frac{- 2 \pi \ii \Res_{\text{$\omega'$ in lower plane}}}{2\pi}
+        &= \ii \frac{- 2 \pi \ii \Res_{\text{$\omega'$ in lower plane}}}{2\pi}
         \int_{0}^{\infty} \dd{\omega'''}
         \frac{
             2 \omega''' B(\omega''')
@@ -2994,9 +3242,9 @@ From the spectral representation \eqref{eq:screened-coulomb-spectral-representat
         &\quad \quad \int \dd{\omega''} \frac{
             A(\omega'')
         }{
-            \omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)
+            \omega - \omega' - \omega'' + \ii \sgn(\omega'')
         } \\
-        &= \Re \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''} 
+        &= \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''} 
         \lim_{\omega' \to \omega''' - \ii 0^+}
         \frac{
             (\omega' - \omega''' + \ii 0^+)
@@ -3006,20 +3254,14 @@ From the spectral representation \eqref{eq:screened-coulomb-spectral-representat
         \frac{
             2\omega''' A(\omega'') B(\omega''')
         }{
-            \omega - \omega' - \omega'' + \ii \sgn(\omega'' - \mu)
+            \omega - \omega' - \omega'' + \ii \sgn(\omega'')
         }  \\
-        &= \Re \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''}
+        &= \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''}
         \frac{
             A(\omega'') B(\omega''')
         }{
-            \omega - \omega''' - \omega'' + \ii \sgn(\omega'' - \mu)
-        } \\
-        &= \int_{0}^{\infty} \dd{\omega'''} \int \dd{\omega''}
-        \primevalue \frac{
-            A(\omega'') B(\omega''')
-        }{
-            \omega - \omega''' - \omega'' 
-        } .
+            \omega - \omega''' - \omega'' + \ii \sgn(\omega'')
+        }  .
     \end{aligned}
 \]
 Here we have omitted the $v$ term in the expression of $W$,
@@ -3029,24 +3271,24 @@ We call the above contribution from poles in $W$
 the \concept{Coulomb-hole part}, 
 or COH in short. 
 
-In conclusion, we are able to split $\Re \Sigma^{GW}$ into two parts, namely 
+In conclusion, we are able to split $\Sigma^{GW}$ into two parts, namely 
 \begin{equation}
-    \Re \Sigma^{GW} = \Sigma^{\text{COH}} + \Sigma^{\text{SEX}},
+    \Sigma^{GW} = \Sigma^{\text{COH}} + \Sigma^{\text{SEX}},
 \end{equation}
 where 
 \begin{equation}
     \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}', \omega)
-    = - \int^\mu_{-\infty} \dd{\omega'} A(\vb*{r}, \vb*{r}', \omega') 
-    \Re W(\vb*{r}, \vb*{r}', \omega - \omega'),
+    = - \int^0_{-\infty} \dd{\omega'} A(\vb*{r}, \vb*{r}', \omega') 
+    W(\vb*{r}, \vb*{r}', \omega - \omega'),
 \end{equation}
 and 
 \begin{equation}
     \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
     = \int_{0}^{\infty} \dd{\omega''} \int_{-\infty}^\infty \dd{\omega'}
-    \primevalue \frac{
+    \frac{
         A(\vb*{r}, \vb*{r}', \omega') B(\vb*{r}, \vb*{r}', \omega'')
     }{
-        \omega - \omega' - \omega'' 
+        \omega - \omega' - \omega'' + \ii \sgn(\omega')
     } .
 \end{equation}
 There is a sign difference in (13b) in \cite{hybertsen1986electron};
@@ -3075,17 +3317,18 @@ and hence
     \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}', \omega)
     = - \sum_{n, \vb*{k}}^{\text{occ}}
     \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}') 
-    \Re W(\vb*{r}, \vb*{r}', \omega - \xi_{n \vb*{k}}), 
+    W(\vb*{r}, \vb*{r}', \omega - \xi_{n \vb*{k}}), 
     \label{eq:sigma-sex-fermi-liquid}
 \end{equation}
 \begin{equation}
     \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
     = \sum_{n, \vb*{k}} \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}')
-    \primevalue \int_{0}^{\infty} \dd{\omega'}
-    \frac{B(\vb*{r}, \vb*{r}', \omega')}{\omega - \xi_{n \vb*{k}} - \omega'}.
+    \int_{0}^{\infty} \dd{\omega'}
+    \frac{B(\vb*{r}, \vb*{r}', \omega')}{\omega - \xi_{n \vb*{k}} - \omega' + \ii \sgn(\xi_{n \vb*{k}})}.
+    \label{eq:sigma-coh-fermi-liquid}
 \end{equation}
 
-
+\subsubsection{Going back to static COHSEX}
 
 When we sum over $n, \vb*{k}$,
 $\xi_{n \vb*{k}}$ varies, 
@@ -3167,7 +3410,15 @@ although in a rather crude way.
 \subsection{From dielectric matrix to self-energy}
 
 In the last section there are two problems left.
-First, we need to find an explicit form of the $B(\vb*{r}, \vb*{r}', \omega)$ function.
+First, we need to find an explicit form of the $B(\vb*{r}, \vb*{r}', \omega)$ function;
+this actually is already done in \eqref{eq:screened-coulomb-spectral-b}, 
+and is reduced to finding the ``imaginary part'' of the dielectric constant
+(note that in \eqref{eq:screened-coulomb-spectral-b}
+the symbol $\Im$ ignores imaginary parts coming from wave functions, etc., 
+and so-called $\Im \epsilon$ isn't necessarily a real number): 
+\begin{equation}
+    B(\omega) = - \frac{1}{\pi} \Im \epsilon^{-1}(\omega) v.
+\end{equation}
 Second, we need to rewrite the equations in the 
 crystal momentum space. 
 We can do this by definition,
@@ -3181,33 +3432,73 @@ still keep the linear contraction structure
 shown in \eqref{eq:crystal-coulomb-vertex-1}.
 We label the variables in the screened Fock diagram as the follows: 
 \[
-    \protect\input{feyn/cohsex-diagra.-1.tex},
+    \protect\input{feyn/cohsex-diagra.-1.tex}.
 \]
-and then we can immediately find 
-\begin{equation}
-    \mel{n \vb*{k}}{\Sigma^{\text{SEX}}}{n' \vb*{k}}
-    = - \sum_{n''}^{\text{occ}} \sum_{\vb*{q}, \vb*{G}, \vb*{G}'}
-    M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G})  
-    \epsilon^{-1}_{\vb*{G} \vb*{G}'} v(\vb*{q} + \vb*{G}') 
-    M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}'),
-\end{equation}
-and 
+Then, from \eqref{eq:sigma-sex-fermi-liquid}, 
+we can immediately find 
 \begin{equation}
     \begin{aligned}
-        \mel{n \vb*{k}}{\Sigma^{\text{COH}}}{n' \vb*{k}}
+        \mel{n \vb*{k}}{\Sigma^{\text{SEX}}(\omega)}{n' \vb*{k}}
+        &= - \sum_{n''}^{\text{occ}} \sum_{\vb*{q}, \vb*{G}, \vb*{G}'}
+        M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G})  \\
+        &\quad\quad \times  \epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega - \xi_{n'', \vb*{k} - \vb*{q}}) 
+        v(\vb*{q} + \vb*{G}') \\
+        &\quad\quad \times M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}'),
+    \end{aligned}
+\end{equation}
+where we have already integrated out the $m'', \vb*{k} - \vb*{q}$ propagator 
+and therefore the frequency on the Coulomb interaction line 
+is $\omega - \xi_{n'', \vb*{k} - \vb*{q}}$.
+Similarly from \eqref{eq:sigma-coh-fermi-liquid}, we have 
+\begin{equation}
+    \begin{aligned}
+        \mel{n \vb*{k}}{\Sigma^{\text{COH}}(\omega)}{n' \vb*{k}}
         &= \sum_{n''} \sum_{\vb*{q}, \vb*{G}, \vb*{G}'}
         M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G})   \\
         &\quad \quad \times \int_{0}^{\infty} \dd{\omega'} 
         \left(
             - \frac{1}{\pi}
         \right)
-        \frac{1}{\omega - \xi_{n \vb*{k}} - \omega' + \ii \sgn(\xi_{n \vb*{k}})}
-        \Im \epsilon^{-1}_{\vb*{G} \vb*{G}'} v(\vb*{q}+\vb*{G}') \\
-        &\quad \quad \times M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}'),
+        \frac{
+            \Im \epsilon^{-1}_{\vb*{G} \vb*{G}'} (\vb*{q}, \omega') v(\vb*{q}+\vb*{G}')
+        }{\omega - \xi_{n \vb*{k}} - \omega' + \ii \sgn(\xi_{n \vb*{k}})} \\
+        &\quad \quad \times M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}').
+    \end{aligned}
+    \label{eq:sigma-coh-fermi-liquid-eps-1}
+\end{equation}
+The ``imaginary part'' of the time-ordered dielectric function $\epsilon_{\vb*{G} \vb*{G}'}^{-1}$
+can be obtained from the advanced and retarded dielectric functions.
+First, we notice that the difference between the advanced and retarded dielectric functions 
+is just changing the sign of the imaginary parts of the poles, 
+and by Taylor expansion we can explicitly verify that 
+\[
+    \frac{1}{a + b \ii}  - \frac{1}{a - b \ii}
+    = 2 \ii \Im \frac{1}{a + b \ii}, 
+\]
+where $a, b$ are considered to be real in the eye of the $\Im$ operator.
+We also know that when $\omega' > 0$, 
+$\epsilon(\omega')$ should be same as $\epsilon^{\text{r}}(\omega')$.
+Thus we find when $\omega' > 0$, 
+we always have 
+\begin{equation}
+    \Im \epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega')
+    = \Im [\epsilon^{\text{r}}_{\vb*{G} \vb*{G}'}]^{-1}(\vb*{q}, \omega')
+    = \frac{[\epsilon^{\text{r}}_{\vb*{G} \vb*{G}'}]^{-1}(\vb*{q}, \omega') - 
+    [\epsilon^{\text{a}}_{\vb*{G} \vb*{G}'}]^{-1}(\vb*{q}, \omega')}{2\ii}  .
+\end{equation}
+\eqref{eq:sigma-coh-fermi-liquid-eps-1} thus becomes 
+\begin{equation}
+    \begin{aligned}
+        \mel{n \vb*{k}}{\Sigma^{\text{COH}}(\omega)}{n' \vb*{k}}
+        &= \frac{\ii}{2\pi} \sum_{n''} \sum_{\vb*{q}, \vb*{G}, \vb*{G}'}
+        M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G})  M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}') \\
+        &\quad \quad \times \int_{0}^{\infty} \dd{\omega'} 
+        \frac{
+            [\epsilon^{\text{r}}_{\vb*{G} \vb*{G}'}]^{-1} (\vb*{q}, \omega')
+            - [\epsilon^{\text{a}}_{\vb*{G} \vb*{G}'}]^{-1} (\vb*{q}, \omega') 
+        }{\omega - \xi_{n \vb*{k}} - \omega' + \ii \sgn(\xi_{n \vb*{k}})} v(\vb*{q}+\vb*{G}') .
     \end{aligned}
 \end{equation}
-
-TODO: $\sgn(\omega - \mu)$, or otherwise
 
 \section{Self-consistency modes}
 
@@ -3295,169 +3586,7 @@ The question, then, is why LDA in some cases works as well as BSE.
 The reason for this is because of the relation between the derivative discontinuity in DFT and electron-hole interaction kernel
 TODO: the relation with \cite{perdew1982density}
 
-\section{From $GW$ to BSE}
 
-Suppose we want to find the electromagnetic response of a system. 
-What we want is something looking like $\fdv*[n]{n(\vb*{r})}{V(\vb*{r}')}$.
-With the influence of $V(\vb*{r})$ taken into account, 
-$n(\vb*{r}, t)$ is given by the following diagram: 
-\[
-    \protect\input{feyn/density-response-1.tex}.
-\]
-Since the coupling Hamiltonian between the external field with electrons 
-is just ordinary Coulomb interaction, 
-the first vertex a line from an external field encounters 
-is a vertex with one interaction line and two electron lines.
-The $n$th-order response, therefore, is given by 
-\[
-    \protect\input{feyn/respose-correlation-density-1.tex}.
-\]
-We can easily see that to find the $n$th-order response,
-it's necessary to find the $n$th-order correlation function.
-So we have two equivalent ways to deal with electromagnetic response: 
-the first is to use Green function equations of motion 
-and find $n(\vb*{r}, t)$ explicitly,
-and then divide it with $V$;
-the other is to calculate all correlation functions;
-note that if we want not only the response, 
-we shouldn't pair incoming and outgoing lines 
-and fix the coordinates of each two of them to the same value:
-we should wipe out the solid dots in the last diagram.
-
-Now suppose we want to work with the single-electron Green function $G$ only
-in the first approach,
-and the $GW$ self-energy plus the electromagnetic coupling 
-are used to build the effective Hamiltonian. 
-In other words, we are doing \concept{time-dependent adiabatic $GW$} 
-(for the meaning of ``adiabatic'', see below).
-The density $n(\vb*{r}, t)$ is obtained by $G(\vb*{r}, t; \vb*{r}, t)$,
-or in other words, 
-by connecting the incoming and outgoing lines to the $(\vb*{r}, t)$ point.
-Note that $\Sigma^{GW}$ depends on $G$,
-and when deciding what happens at $t + \Delta t$,
-we use $\Sigma^{GW}[G(t)]$.
-Here in order to make the Hamiltonian-based time evolution possible, 
-we actually need to do the static COHSEX approximation or something similar 
-to eliminate the retardation effects in $\Sigma^{GW}$,
-or otherwise $\Sigma^{GW}$ doesn't lead to a well-defined Hamiltonian,
-and therefore the screened Coulomb interaction line is no longer 
-simply described by RPA
--- but anyway it relies on $G$.
-Also, the locality of the static COHSEX Hamiltonian in time 
-means we need to approximate $G(\vb*{r}, t; \vb*{r}', t')$
-by $G(\vb*{r}, t; \vb*{r}', t)$,
-and therefore we can use an effective single-electron density matrix 
-to replace the Green function.
-That's why we say the approach is \emph{adiabatic}.
-The question then is, 
-what's the corresponding first-order response function?
-What diagrams are included in the latter? 
-
-To answer this question, 
-we need to list all diagrams that 
-contain \emph{one and only one} external field line. 
-For the sake of convenience, 
-below we use grey lines to refer to 
-the electron propagator corrected by $\Sigma^{GW}$
-and use black lines to refer to 
-the electron propagator corrected by both $\Sigma^{GW}$ and 
-electromagnetic coupling.
-Thus we have 
-\begin{equation}
-    \protect\input{feyn/electromagnetic-after-gw.tex}
-\end{equation}
-In the first-order response theory,
-we only keep the first two terms. 
-Now the first several terms in the completely corrected Green function are listed below:
-\[
-    \protect\input{feyn/dynamic-gw-diagrams-1.tex}.
-\]
-We can then wipe out the $\otimes$ symbol and the interaction line connected to it, 
-and, as is mentioned above, 
-to generalize things a little and separate 
-the two electron lines connected to the interaction line introduced by the external field. 
-The resulting diagrams are listed below:
-\[
-    \protect\input{feyn/dynamic-gw-diagrams-2.tex}.
-\]
-Collecting the diagrams and summing over them, 
-we find they are simply 
-\begin{equation}
-    \protect\input{feyn/bse-diagrams-1.tex}.
-\end{equation}
-The diagrams included here are essentially self-energy diagrams of 
-the two-body Green function; 
-in other words, 
-the diagrams are self-energy diagrams of 
-the electron-hole propagating.
-The corresponding self-energy diagrams -- or, following the more common terminology,
-\concept{kernel} diagrams -- 
-are 
-\begin{equation}
-    \protect\input{feyn/bse-diagrams-2.tex}.
-    \label{eq:bse.kernel}
-\end{equation}
-The first term is associated with the screened Fock term in $GW$, 
-because it comes from erasing one external field line 
-in a Fock diagram; 
-the second term corresponds to the Hartree term in $GW$.
-Note that the first term is screened and the second term is not: 
-the reason is the same as the reason in \prettyref{sec:gw.hf}.
-
-So the conclusion is,
-if we first do $GW$ correction (without external field) to the electron propagator,
-and then feed the corrected electron propagator and \eqref{eq:bse.kernel} 
-to 
-\begin{equation}
-    \protect\input{feyn/bse-diagrams-sum.tex},
-    \label{eq:bse.sum-general}
-\end{equation}
-then the electromagnetic response calculated using this method
-is the same as the weak-field approximation of 
-the time-dependent $GW$ calculation.
-
-\begin{infobox}{The term `time-dependent'}{time-dependent-gw}
-    The term ``time-dependent'' may be confusing:
-    in a frequency-dependent $GW$ calculation 
-    (generalized plasmon model, or full-frequency calculation),
-    the time domain $G(t)$ is also time-dependent,
-    but it can't capture electromagnetic response.
-    On the other hand, in ``time-dependent $GW$'',
-    the term ``time-dependent''
-    means the Hamiltonian of the system is time-dependent,
-    which is equivalent to say coupling with the external field 
-    is taken into account. 
-\end{infobox}
-
-\eqref{eq:bse.sum-general} can be written in a way 
-quite similar to single-electron self-energy correction,
-called the \concept{Bethe-Salpeter equation (BSE)},
-although in the context of \abinitio{} study, 
-BSE usually refers to \eqref{eq:bse.sum-general} \emph{plus} \eqref{eq:bse.kernel}:
-the vertex correction, again, is simply ignored.
-
-The corrected two-body Green function i.e. corrected propagator of the electron-hole pair 
-can be seen as generated by 
-an effective two-body Hamiltonian,
-which contains the kinetic energy of the electron and the hole,
-as well as terms in \eqref{eq:bse.kernel}.
-The renormalized electron-hole pair 
-is called the \concept{exciton},
-and the effective two-body Hamiltonian is the Hamiltonian of the exciton. 
-BSE -- either in the general meaning or in the meaning of \eqref{eq:bse.kernel} -- 
-is essentially analyzing excitons.
-
-The time-dependent $GW$ method 
-can capture exciton effects to electromagnetic response of the system,
-because in the weak field limit 
-it is equivalent to BSE.
-Thus the time-dependent $GW$ method outlined above 
-is also sometimes called the \concept{time-dependent BSE}.
-Both flavors of BSE have been implemented:
-the exciton Hamiltonian approach is realized by BerkeleyGW;
-the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
-but its accuracy has been verified by comparison with the exciton Hamiltonian approach
-\cite{attaccalite2011real}.
 
 \section{Accuracy of $GW$}
 
@@ -5015,6 +5144,22 @@ This MPI issue is sometimes an indication of too much IO:
 for example, if it appears after \shortcode{ Polarization: b3 Sum rule (BSE)}, 
 maybe the eigenvector file of all excitons 
 is simply too large for the supercomputer. 
+
+\subsection{\shortcode{could not get a validated dataspace from file_space_id}}
+
+The full message looks like this: 
+\begin{lstlisting}
+    Started interpolating BSE kernel with 32 block(s) at 13:16:41.
+    HDF5-DIAG: Error detected in HDF5 (1.10.4) MPI-process 0:
+      #000: H5Dio.c line 185 in H5Dread(): could not get a validated dataspace from file_space_id
+        major: Invalid arguments to routine
+        minor: Bad value
+      #001: H5S.c line 254 in H5S_get_validated_dataspace(): selection + offset not within extent
+        major: Dataspace
+        minor: Out of range
+\end{lstlisting}
+This happens when the number of bands given in \shortcode{bsemat.h5} 
+is smaller than the number of bands required in \shortcode{absorption}.
 
 \section{Checklist for unexpected results}
 
