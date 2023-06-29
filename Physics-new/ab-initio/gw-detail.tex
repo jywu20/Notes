@@ -126,15 +126,30 @@ where $W$ is the RPA-screened potential.
     \end{equation}
 \end{itemize}
 
+\textbf{``Antiparticles''} You can treat holes as antiparticles 
+(negative energy, $\ii \sgn(\xi_{n \vb*{k}})$ in time-ordered Green function)
+but then corresponding electron modes have to be ignored. 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Other tricky details in diagrammatics}
+
 \textbf{Imaginary unit} 
 \begin{equation}
     \protect\input{feyn/self-energy-general-1.tex}
     \Rightarrow G = \frac{1}{\omega - E^0 - \Sigma}.
+\end{equation}    
+\begin{equation}
+    \protect\input{feyn/effective-interaction-general-1.tex}
+    \Rightarrow W = \epsilon^{-1} v, \quad \epsilon = 1 - v \chi.
 \end{equation}
 
-\textbf{``Antiparticles''} You can treat holes as antiparticles 
-(negative energy, $\ii \sgn(\xi_{n \vb*{k}})$ in time-ordered Green function)
-but then corresponding electron modes have to be ignored. 
+\textbf{Minus sign} 
+
+Note that when a closed fermionic loop is formed, 
+a $-1$ factor is needed. Example: the loop in the Hartree term
+$\simeq (-1) \expval{\psi \psi^\dagger} \simeq \psi^\dagger \psi \simeq \text{number of particle}$.
 
 \end{frame}
 
@@ -203,6 +218,7 @@ One set of rules that work:
         \end{gathered} = 
         \mel{n, \vb*{k} + \vb*{q}}{\ee^{\ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{n' \vb*{k}}
         \eqqcolon M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) .
+        \label{eq:m-def}
     \end{equation}
     Note that the momentum arrow attached to the interaction line only controls 
     the sign before $\vb*{q}$ and $\vb*{G}$; 
@@ -243,7 +259,8 @@ One set of rules that work:
     no $(2\pi)^3$ factor is needed. 
 
     \item For internal lines, 
-    sum over $\vb*{k}, n, \vb*{G}$; no additional normalization factors are needed. 
+    sum over $\vb*{k}, n, \vb*{G}$; no additional $1 / (2\pi)^3$ factors are needed. 
+    For frequency, do $\int \dd{\omega} / 2 \pi$.
     \item For external lines:
         $
         \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6, baseline=(XXXX.south) ]
@@ -269,7 +286,7 @@ One set of rules that work:
         \end{tikzpicture}$ is $\phi^*_{n \vb*{k}}(\vb*{r})$, as in: 
         \begin{equation}
             G(\vb*{r}, \vb*{r}', \omega) = \sum_{n, \vb*{k}}
-            \frac{\phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}(\vb*{r})^*}{\omega - \xi_{n \vb*{k}} 
+            \frac{\phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}(\vb*{r}')^*}{\omega - \xi_{n \vb*{k}} 
             + \ii \sgn(\xi_{n \vb*{k}})} ,
         \end{equation}
         where $\vb*{r}$ is the outgoing index and $\vb*{r}'$ is the incoming index.
@@ -290,10 +307,241 @@ One set of rules that work:
 \section{$GW$ without $G$}
 
 \begin{frame}
-\frametitle{$GW$ without $G$}
+\frametitle{The structure of $G$}
 
-To avoid directly dealing with poles, 
-we choose to 
+\begin{itemize}
+    \item We \emph{always} have Lehmann self-energy representations:
+    \begin{equation}
+        G(\vb*{r}, \vb*{r}', \omega) = \sum_n \frac{
+            \mel{\Omega}{\phi(\vb*{r})}{n} \mel{n}{\phi^\dagger(\vb*{r}')}{\Omega}
+        }{
+            \omega - E_n + \ii 0^+ \sgn(\omega)
+        }  
+        = \sum_{n, \vb*{k}} 
+        \frac{\phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}(\vb*{r}')^*}{
+            \omega - \Re \xi_{n \vb*{k}} - \ii \Im \xi_{n \vb*{k}}
+        }.
+    \end{equation}
+    $\vb*{k}$ not necessarily good quantum number; 
+    no orthogonal conditions. 
+    \item In a Fermi liquid: since $\tau \propto 1 / T^2$ near $\mu$, 
+    for bands near the Fermi surface, 
+    approximately $\Im \xi_{n \vb*{k}}$ is small and $\{\phi_{n \vb*{k}}\}$ is a good basis. 
+    \item Note: this only means $\ket*{\Omega}$ and $\ket*{n}$ look like 
+        Fock states when tested with $G^{(2)}$ 
+        (hence clear-cut $\mu$ in simulated ARPES spectrum, etc.); 
+        when tested with $G^{(4)}$, correlated effects still exist 
+        ($\Rightarrow$ de-excitation terms in exciton $\chi_S(\vb*{r}, \vb*{r}')$) 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The structure of $G$}
+
+To avoid directly dealing with poles numerically 
+(and getting stuck by things like how small $\ii 0^+$ should really be), 
+we choose to carry out $\ii GW$ analytically. 
+
+\textbf{Assumption: well-defined quasiparticles} So we assume 
+\begin{equation}
+    G(\vb*{r}, \vb*{r}', \omega) 
+    = \sum_{n, \vb*{k}} \frac{
+        \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}')
+    }{
+        \omega - \xi_{n \vb*{k}} + \ii \sgn(\xi_{n \vb*{k}})
+    }.
+\end{equation}
+
+\textbf{Spectral function} \begin{equation}
+    A(\vb*{r}, \vb*{r}', \omega)
+    = \sum_{n, \vb*{k}} \delta(\omega - \xi_{n \vb*{k}})
+    \phi_{n \vb*{k}}(\vb*{r}) \phi^*_{n \vb*{k}}(\vb*{r}').
+\end{equation}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The structure of $W$}
+
+\textbf{Time reversal symmetry} We assume
+\begin{equation}
+    W(\vb*{r}, \vb*{r}', \omega) = W(\vb*{r}, \vb*{r}', - \omega).
+\end{equation}
+
+\textbf{The explicit expression in terms of $\phi_{n \vb*{k}}$} (The $-1$ factor comes from the fermion loop)
+
+\begin{equation}
+    \begin{aligned}
+        \ii \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega) &= 
+        \begin{gathered}
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6]
+                %uncomment if require: \path (0,106); %set diagram left start at 0, and has height of 106
+                
+                %Shape: Circle [id:dp21973504133666855] 
+                \draw  [line width=1.5]  (63.51,59) .. controls (63.51,45.19) and (74.7,34) .. (88.51,34) .. controls (102.32,34) and (113.51,45.19) .. (113.51,59) .. controls (113.51,72.81) and (102.32,84) .. (88.51,84) .. controls (74.7,84) and (63.51,72.81) .. (63.51,59) -- cycle ;
+                %Straight Lines [id:da37559817089176883] 
+                \draw    (88.51,34) -- (91.39,34) ;
+                \draw [shift={(94.39,34)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da755691190930156] 
+                \draw    (93.64,83.5) -- (87.39,83.5) ;
+                \draw [shift={(84.39,83.5)}, rotate = 360] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da8734800214005785] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (37.5,59) -- (63.51,59) ;
+                %Straight Lines [id:da17683013213779142] 
+                \draw  [dash pattern={on 0.84pt off 2.51pt}]  (113.51,59) -- (139.52,59) ;
+                %Straight Lines [id:da7454208139341723] 
+                \draw    (37.5,51) -- (53.5,51) ;
+                \draw [shift={(56.5,51)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                %Straight Lines [id:da8015961496989172] 
+                \draw    (118.5,51) -- (134.5,51) ;
+                \draw [shift={(137.5,51)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- (5.93,0) -- cycle    ;
+                
+                % Text Node
+                \draw (35.5,59) node [anchor=east] [inner sep=0.75pt]    {$q,G$};
+                % Text Node
+                \draw (141.52,59) node [anchor=west] [inner sep=0.75pt]    {$q,G'$};
+                % Text Node
+                \draw (100,82) node [anchor=north west][inner sep=0.75pt]    {$n',k$};
+                % Text Node
+                \draw (56,8) node [anchor=north west][inner sep=0.75pt]    {$n,k+q$};
+                
+                
+                \end{tikzpicture}            
+        \end{gathered} \\
+        &= - \int \frac{\dd{\omega'}}{2\pi} \sum_{\vb*{k}} \sum_{n, n'}
+        \frac{\ii}{\omega' - \xi_{n' \vb*{k}} + \ii 0^+ \sgn(\xi_{n' \vb*{k}})} \\
+        &\quad \quad \times \frac{\ii}{\omega + \omega' - \xi_{n, \vb*{k} + \vb*{q}} + \ii 0^+ \sgn(\xi_{n, \vb*{k} + \vb*{q}})} \\
+        &\quad \quad \times M_{n n' } (\vb*{k}, \vb*{q}, \vb*{G}) M_{nn'}^* (\vb*{k}, \vb*{q}, \vb*{G}') .
+    \end{aligned}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The structure of $W$}
+
+After long and tedious contour integration \dots
+\begin{equation}
+    \begin{aligned}
+        \chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)
+        &= \sum_{\vb*{k}} \sum_{n}^{\text{occ}} \sum_{n'}^{\text{emp}} 
+        M_{n n'} (\vb*{k}, \vb*{q}, \vb*{G}) M^*_{nn'} (\vb*{k}, \vb*{q}, \vb*{G}') \\
+        &\times \left(
+        \frac{
+            1
+        }{
+            \omega + \xi_{n, \vb*{k} + \vb*{q}} - \xi_{n' \vb*{k}} + \ii 0^+
+        }
+        + \frac{
+            1
+        }{
+            - \omega + \xi_{n, \vb*{k} + \vb*{q}} - \xi_{n' \vb*{k}} + \ii 0^+
+        }
+        \right).
+    \end{aligned}
+    \label{eq:chi-full}
+\end{equation}
+
+Sketch of steps: 
+\begin{itemize}
+    \item When the signs of $\xi_{n, \vb*{k} + \vb*{q}}$ and $\xi_{n' \vb*{k}}$
+        are different, 
+        the poles of the two propagators don't cancel.
+    \item Time reversal symmetry allows 
+        swapping $n$ and $n'$ and adding necessary minus signs to momenta 
+    \item So now we can fix $n$ to the occupied band 
+        and $n'$ to the empty band 
+        and still have the shared $M M^*$ factor for the two terms. 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Non-static COHSEX decomposition}
+
+\textbf{Analytic structure of $GW$} Below $\vb*{r}$ and $\vb*{r}'$ indices are hidden;
+$\Im$ treats $\phi_{n \vb*{k}}$ as real numbers;
+positivity conditions are assumed for 
+weight functions in spectral representations:
+\begin{equation}
+    \Sigma(\omega) = \ii \int \frac{\dd{\omega'}}{2\pi} 
+    \ee^{- \ii 0^+ \omega'} G(\omega - \omega') W(\omega') ,
+\end{equation}
+\begin{equation}
+    G(\omega) = \int \dd{\omega'} \frac{A(\omega')}{\omega - \omega' + \ii \sgn(\omega)}, 
+    \quad A(\omega) = - \frac{1}{\pi} \abs{\Im G(\omega)},
+\end{equation}
+\begin{equation}
+    W(\omega) = v + \int_{0}^{\infty} \dd{\omega'}
+    \frac{2 \omega'}{\omega^2 - (\omega' - \ii 0^+)^2} B(\omega'), \quad 
+    \Im W(\omega) = - \pi B(\omega).
+\end{equation}
+
+\textbf{The decomposition} So in $G(\omega - \omega')$ and $W(\omega')$
+we both have poles \dots
+\begin{itemize}
+    \item $\Sigma^{\text{COH}}$ = $\Sigma^{GW}$ from poles of $W$ 
+    \item $\Sigma^{\text{SEX}}$ = $\Sigma^{GW}$ from poles of $G$
+\end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Non-static COHSEX decomposition}
+
+\textbf{Screened exchange term: $\Sigma^{\text{SEX}}$} 
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+\frametitle{A brief summary of full frequency, one-shot $GW$}
+
+\textbf{Key assumptions} \begin{itemize}
+    \item Well-defined quasiparticles labeled by $\vb*{k}$ and $n$
+    (Fermi liquid theory; used everywhere)
+    \item Time-reversal symmetry (used when deriving $\chi$ and doing spectral representation of $W$)
+\end{itemize}
+
+\textbf{Input} $\{\phi_{n \vb*{k}}\}$, $\{\varepsilon_{n \vb*{k}}\}$, 
+occupation (from which $\mu$ and hence $\xi_{n \vb*{k}} = \varepsilon_{n \vb*{k}} - \mu$
+are decided)
+
+\textbf{Main procedures} \begin{itemize}
+    \item \shortcode{epsilon}: input $\{\phi_{n \vb*{k}}\}$ and $\{\varepsilon_{n \vb*{k}}\}$, 
+    output $\epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$
+    \begin{enumerate}
+        \item From $\{\phi_{n \vb*{k}}\}$ 
+        to $M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G})$ using \eqref{eq:m-def}.
+        \item From $\varepsilon_{n \vb*{k}}$ to $\chi_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$ using \eqref{eq:chi-full}.
+        \item From $\chi$ to $\epsilon$.
+        \item Finding $\epsilon^{-1}$.
+    \end{enumerate}
+
+    \item \shortcode{sigma}: input $\phi_{n \vb*{k}}$, $V_{\text{xc}}$ and $\epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$,
+    output $\varepsilon_{n \vb*{k}}^{GW}$ 
+    \begin{enumerate}
+        \item From $\{\phi_{n \vb*{k}}\}$ 
+        to $M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G})$ using \eqref{eq:m-def}.
+        \item 
+    \end{enumerate}
+\end{itemize}
+
+\textbf{Cutoff parameters} \begin{itemize}
+    \item In $\phi_{n \vb*{k}}$: 
+    \begin{itemize}
+        \item $N_{\text{bands}}$ (i.e. max $n$), 
+        \item $\vb*{k}$-grid density, 
+        \item $E_{\text{cut}}$ (i.e. $\vb*{G}$-grid size, i.e. spatial resolution)
+    \end{itemize}
+
+    \item In $\epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$:
+    \begin{itemize}
+        \item $N_{\text{bands}}$ and $\vb*{k}$-grid from $\{\phi_{n \vb*{k}}\}$
+        \item  
+    \end{itemize}
+\end{itemize}
 
 \end{frame}
 
