@@ -23,10 +23,8 @@
 \usetikzlibrary{patterns}
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
-\usepackage[style=verbose,backend=bibtex]{biblatex}
-\addbibresource{wannier.bib}
-\addbibresource{hubbard.bib}
-\addbibresource{pt.bib}
+\usepackage[style=authoryear,backend=bibtex]{biblatex}
+\addbibresource{gw.bib}
 \renewcommand{\footnotesize}{\scriptsize}
 \usepackage{listings}
 \usepackage{hyperref}
@@ -458,7 +456,7 @@ Sketch of steps:
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[allowframebreaks]
 \frametitle{Non-static COHSEX decomposition}
 
 \textbf{Analytic structure of $GW$} Below $\vb*{r}$ and $\vb*{r}'$ indices are hidden;
@@ -486,17 +484,109 @@ we both have poles \dots
     \item $\Sigma^{\text{SEX}}$ = $\Sigma^{GW}$ from poles of $G$
 \end{itemize} 
 
-\end{frame}
-
-\begin{frame}
-\frametitle{Non-static COHSEX decomposition}
-
 \textbf{Screened exchange term: $\Sigma^{\text{SEX}}$} 
+
+\begin{itemize}
+    \item When $\ii \sgn(\omega') < 0$ in $G(\omega)$,
+        we have one pole in the lower plane, 
+        otherwise no pole exists. 
+        We need to integrate on the lower plane 
+        (due to $\ee^{- \ii 0^+ \omega'}$ factor). Thus:
+        \begin{equation}
+            \begin{aligned}
+                \Sigma^{\text{SEX}}(\vb*{r}, \vb*{r}', \omega) 
+                &= - \int^0_{-\infty} \dd{\omega'} A(\vb*{r}, \vb*{r}', \omega') 
+                W(\vb*{r}, \vb*{r}', \omega - \omega') \\
+                &= - \sum_{n, \vb*{k}}^{\text{occ}}
+                \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}') 
+                W(\vb*{r}, \vb*{r}', \omega - \xi_{n \vb*{k}}).
+            \end{aligned}
+        \end{equation}
+    \item Inserting the definition of $W$, 
+        and switching to the $n, \vb*{k}$ basis: 
+        \begin{equation}
+            \begin{aligned}
+                &\quad \mel{n \vb*{k}}{\Sigma^{\text{SEX}}(\omega)}{n' \vb*{k}} \\
+                &= - \sum_{n''}^{\text{occ}} \sum_{\vb*{q} \vb*{G} \vb*{G}'}
+                M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G}) M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}') \\
+                &\quad\quad \times  \epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega - \xi_{n'', \vb*{k} - \vb*{q}}) 
+                v(\vb*{q} + \vb*{G}') .
+            \end{aligned}
+            \label{eq:sex}
+        \end{equation}
+\end{itemize}
+
+\textbf{Comments}
+
+\begin{itemize}
+    \item $\Sigma^{\text{SEX}}$ is the only term in Hartree-Fock approx. 
+    \item Easy to understand: ``screened repulsive opens the band gap''
+\end{itemize}
+
+\framebreak
+
+\textbf{Coulomb hole term: $\Sigma^{\text{COH}}$} 
+\begin{itemize}
+    \item Consider the poles from $W$, 
+        and insert the definition of $A$: 
+    \begin{equation}
+        \begin{aligned}
+            \Sigma^{\text{COH}}(\vb*{r}, \vb*{r}', \omega)
+            &= \int_{0}^{\infty} \dd{\omega''} \int_{-\infty}^\infty \dd{\omega'}
+            \frac{
+                A(\vb*{r}, \vb*{r}', \omega') B(\vb*{r}, \vb*{r}', \omega'')
+            }{
+                \omega - \omega' - \omega'' + \ii \sgn(\omega')
+            } \\ 
+            &= \sum_{n, \vb*{k}} \phi_{n \vb*{k}}(\vb*{r}) \phi_{n \vb*{k}}^*(\vb*{r}')
+            \int_{0}^{\infty} \dd{\omega'}
+            \frac{- \Im W(\vb*{r}, \vb*{r}', \omega') / \pi}{\omega - \xi_{n \vb*{k}} - \omega' + \ii \sgn(\xi_{n \vb*{k}})}.
+        \end{aligned}
+    \end{equation}
+    \item Here the $\epsilon^{-1}$ factor in $W$ 
+        is always the same as $\epsilon^{-1}_{\text{r}}$ since $\omega' > 0$.
+    \item We can verify (recall that here $\Im$ treats $\phi_{n \vb*{k}}$ as a real number 
+    and only considers the positions of the poles)
+        \[
+            2 \ii \Im \frac{1}{a + b \ii} = \frac{1}{a + b \ii} - \frac{1}{a - b \ii}
+            \Rightarrow \Im \epsilon^{-1}(\omega')
+            = \frac{1}{2\ii} (\epsilon^{-1}_{\text{r}} - \epsilon^{-1}_{\text{a}}).
+        \]
+    \item Switching to the $n, \vb*{k}$ basis: 
+    \begin{equation}
+        \begin{aligned}
+            &\quad \mel{n \vb*{k}}{\Sigma^{\text{COH}}(\omega)}{n' \vb*{k}} \\
+            &= \frac{\ii}{2\pi} \sum_{n''} \sum_{\vb*{q}, \vb*{G}, \vb*{G}'} 
+            M^*_{n'' n} (\vb*{k}, - \vb*{q}, - \vb*{G})  M_{n'' n'} (\vb*{k}, - \vb*{q},  -\vb*{G}') \\
+            & \times \int_{0}^{\infty} \dd{\omega'} 
+            \frac{
+                [\epsilon^{\text{r}}_{\vb*{G} \vb*{G}'}]^{-1} (\vb*{q}, \omega')
+                - [\epsilon^{\text{a}}_{\vb*{G} \vb*{G}'}]^{-1} (\vb*{q}, \omega') 
+            }{\omega - \xi_{n \vb*{k}} - \omega' + \ii 0^+ \sgn(\xi_{n \vb*{k}})} v(\vb*{q}+\vb*{G}') .
+        \end{aligned}
+        \label{eq:coh}
+    \end{equation}
+\end{itemize}
+
+\textbf{Comments} \begin{itemize}
+    \item TODO: why the name?
+    \item Now we switching back to the normal definition of the operator $\Im$ -- 
+        note that 
+        \[
+            \Im \epsilon_{\text{r}}^{-1} = \frac{1}{2\ii} (\epsilon^{-1}_{\text{r}} - \epsilon^{-1}_{\text{a}}) 
+        \]
+        is only true for systems with inversion symmetry 
+        (real wave function, etc.).
+    \item In \cite{berkeleygw}, $\Sigma^{\text{COH}}$ and $\Sigma^{\text{SEX}}$
+        are actually the retarded version 
+        (note that in \eqref{eq:sex} $\epsilon$ is replaced by $\epsilon_{\text{r}}$,
+        and in \eqref{eq:coh}) $\ii \sgn(\xi_{n \vb*{k}}) 0^+$ is replaced by $\ii 0^+$.
+\end{itemize}
 
 \end{frame}
 
 \begin{frame}[allowframebreaks]
-\frametitle{A brief summary of full frequency, one-shot $GW$}
+\frametitle{A brief summary of full frequency, non-diagonal $GW$}
 
 \textbf{Key assumptions} \begin{itemize}
     \item Well-defined quasiparticles labeled by $\vb*{k}$ and $n$
@@ -520,11 +610,14 @@ are decided)
     \end{enumerate}
 
     \item \shortcode{sigma}: input $\phi_{n \vb*{k}}$, $V_{\text{xc}}$ and $\epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$,
-    output $\varepsilon_{n \vb*{k}}^{GW}$ 
+    output $\mel{n \vb*{k}}{\Sigma^GW(E)}{n' \vb*{k}}$ and $\varepsilon_{n \vb*{k}}^{GW}$ 
     \begin{enumerate}
         \item From $\{\phi_{n \vb*{k}}\}$ 
         to $M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G})$ using \eqref{eq:m-def}.
-        \item 
+        \item From $M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G})$ to 
+        $\mel{n \vb*{k}}{\Sigma^{\text{COH}, \text{SEX}}}{n' \vb*{k}}$
+        using TODO 
+        \item Finding $Z$ using TODO
     \end{enumerate}
 \end{itemize}
 
@@ -538,8 +631,11 @@ are decided)
 
     \item In $\epsilon^{-1}_{\vb*{G} \vb*{G}'}(\vb*{q}, \omega)$:
     \begin{itemize}
-        \item $N_{\text{bands}}$ and $\vb*{k}$-grid from $\{\phi_{n \vb*{k}}\}$
-        \item  
+        \item $\vb*{k}$-grid from $\{\phi_{n \vb*{k}}\}$
+        \item $N_{\text{bands}}$ (i.e. max $n$ in summation in \eqref{eq:chi-full}) 
+        \item $E_{\text{cut}}$ (used to reduce the $\vb*{G}$-grid in $\{\phi_{n \vb*{k}}\}$, 
+        which may be too large)
+        \item $\omega$-grid 
     \end{itemize}
 \end{itemize}
 
@@ -559,7 +655,43 @@ Three levels of frequency dependence:
 
 \end{frame}
 
-\section{Partial sum}
+\section{Calculating absorption}
+
+\begin{frame}[allowframebreaks]
+\frametitle{The expression of $\epsilon_2$}
+
+\begin{itemize}
+    \item The SI version: 
+    \begin{equation}
+        \epsilon_2 \coloneqq \Im \epsilon_{\text{r}} = \frac{\pi e^2}{\omega^2 \epsilon_0 V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+    \end{equation}
+    \item The Gaussian units version: 
+    \begin{equation}
+        \epsilon_2 = \frac{4 \pi^2 e^2}{\omega^2  V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+    \end{equation}
+    The value of $\epsilon$ doesn't change in unit conversion, 
+    but $e^2 / \epsilon_0$ should be replaced by $4 \pi e^2$. 
+    \item With spin degeneracy we have an additional 2 factor 
+    (magnetic field not strong, no mechanism of spin splitting, 
+    so the input and output spins are the same)
+    \item In Rydberg units, $e^2 = 2$
+    \item So with spin degeneracy we have  
+    \begin{equation}
+        \epsilon_2 = \frac{16 \pi^2 }{\omega^2  V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
+    \end{equation}
+    \item  and without spin degeneracy 
+    (or when SOC is strong and the spin index has been incorporated into $S$) we have 
+    \begin{equation}
+        \epsilon_2 = \frac{8 \pi^2 }{\omega^2  V} 
+        \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+    \end{equation}
+    \item This is the actual formula used in \shortcode{absp0.f90}.
+\end{itemize}
+
+\end{frame}
 
 \section{Building the kernel}
 
@@ -577,12 +709,14 @@ Three levels of frequency dependence:
 
 \end{frame}
 
-\section{Calculating absorption}
 
-\begin{frame}
-\frametitle{The expression of $\epsilon_2$}
 
-    
+\section{References}
+
+\begin{frame}[allowframebreaks]
+\frametitle{References}
+
+\printbibliography
 
 \end{frame}
 
