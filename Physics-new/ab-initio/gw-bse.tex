@@ -3641,8 +3641,6 @@ we always have
 
 \section{Self-consistency modes}
 
-\subsection{Diagonal or not}
-
 We know in the momentum space, we have 
 \begin{equation}
     E^{\text{QP}}_{n \vb*{k}} = E^{0}_{n \vb*{k}} + \Sigma_{n \vb*{k}} (E^{\text{QP}}).
@@ -3653,7 +3651,8 @@ $E^\text{QP}_{n \vb*{k}}$ enters its expression.
 The cost of $GW$ calculation means we need to first do a DFT calculation 
 and feed this as the input of the $GW$ package 
 (the former usually mysteriously called the ``mean field'' step,
-though we may also say $GW$ is a mean-field method;
+though we may also say $GW$ is a mean-field method,
+although a more elaborated one;
 on the other hand, in principle -- though of course not in practice -- 
 DFT is able to decide everything about the system), 
 so \eqref{eq:self-energy-correction} now is 
@@ -3667,15 +3666,69 @@ Note that here I don't insert band indices into the equation,
 because $\Sigma_{\vb*{k}}$ may mix different bands together,
 and \eqref{eq:self-energy-correction-from-band} is an equation about matrices,
 essentially a single-electron Schrodinger equation.
-It's first order approximation is
+
+The problem then is how to solve this highly complicated equation. 
+There are two non-trivial aspects: 
+the first is that the RHS depends on $E^{\text{QP}}$;
+the second is that the equation is a matrix equation. 
+We are going to discuss different levels of approximations 
+regarding these aspects. 
+
+\subsection{Diagonal $G_0 W_0$}
+
+The non-diagonal feature of \eqref{eq:self-energy-correction-from-band} 
+is also what is frequently encountered in single-electron quantum mechanics: 
+a perturbation remixes several eigenstates of the unperturbed system, 
+and when the perturbation is small, 
+perturbation expansion can be used.
+In the first order approximation, 
+only the eigenvalues are updated; 
+the wave function remains the same. Thus we have 
 \begin{equation}
     E^{\text{QP}}_{n \vb*{k}} = E^{\text{KS}}_{n \vb*{k}} + 
     \mel{\psi^{\text{KS}}_{n \vb*{k}}}{\Sigma (E^{\text{QP}}_{n \vb*{k}}) - \Sigma^{\text{KS}}}{\psi^{\text{KS}}_{n \vb*{k}}}.
     \label{eq:self-energy-first-order}
 \end{equation}
 
+The non-diagonal properties are completely ignored here; 
+we still need to deal with the frequency dependence on the RHS. 
+The most naive approximation is 
+\begin{equation}
+    E^{\text{QP, 0}}_{n \vb*{k}} = E^{\text{KS}}_{n \vb*{k}} + 
+    \mel{\psi^{\text{KS}}_{n \vb*{k}}}{\Sigma (E^{\text{KS}}_{n \vb*{k}}) - \Sigma^{\text{KS}}}{\psi^{\text{KS}}_{n \vb*{k}}}.
+\end{equation}
+This however is usually not good enough; 
+one way to slightly improve the accuracy is outlined in the follows. 
+We have 
+\[
+    \begin{aligned}
+        E^{\text{QP}}_{n \vb*{k}} &\approx 
+        E^{\text{KS}}_{n \vb*{k}} + 
+        \mel{\psi^{\text{KS}}_{n \vb*{k}}}{\Sigma (E^{\text{KS}}_{n \vb*{k}}) + 
+        \eval{\pdv{\Sigma}{E}}_{E_{\text{KS}}} (E^{\text{QP}}_{n \vb*{k}} - E^{\text{KS}}_{n \vb*{k}}) 
+        - \Sigma^{\text{KS}}}{\psi^{\text{KS}}_{n \vb*{k}}} \\
+        &= E^{\text{QP}, 0}_{n \vb*{k}} 
+        + (E^{\text{QP}}_{n \vb*{k}} - E^{\text{KS}}_{n \vb*{k}}) 
+        \cdot \pdv{E} \expval*{\Sigma}{\psi^{\text{KS}}_{n \vb*{k}}} ,
+    \end{aligned}
+\]
+from which we find 
+\begin{equation}
+    E^{\text{QP}, 1}_{n \vb*{k}}
+    = E^{\text{QP}, 0}_{n \vb*{k}}
+    + \frac{
+        \dv*{\Sigma}{E}
+    }{
+        1 - \dv*{\Sigma}{E}
+    } (E^{\text{QP}, 0}_{n \vb*{k}} - E^{\text{KS}}_{n \vb*{k}}),
+\end{equation}
+where $\dv*{\Sigma}{E}$ means $\pdv{E} \expval*{\Sigma}{\psi^{\text{KS}}_{n \vb*{k}}}$
+at $E = E^{\text{KS}}_{n \vb*{k}}$.
+
 TODO: when doing iterative calculation, $V_{\text{H}}$ may no longer be the same between DFT and $GW$??
 So when doing iterative calculation, should we calculate ``the $GW$ $V_{\text{H}}$''?
+
+
 
 \subsection{Self-consistent or not}\label{sec:gw-bse.accuracy.self-consistent}
 
