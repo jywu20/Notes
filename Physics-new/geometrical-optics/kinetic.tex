@@ -1,0 +1,476 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{soulutf8}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage[backend=bibtex,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{gw.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+% \setlist[itemize]{itemindent=17pt, leftmargin=1pt}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{T}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\id}{id}
+
+% TikZ setting
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+\DeclareMathOperator{\im}{im}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\newcommand{\soliddoc}{\href{../solid/solid.pdf}{this note}}
+\newcommand{\lastlec}{\href{./2022-3-15.pdf}{the last lecture}}
+
+% Reference formatter
+\newrefformat{fig}{Fig.~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Disable unsupported commands in bookmark titles 
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\title{Photon transferring}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Heuristic derivation of the light transportation equation}
+
+In this section we derive the light transportation equation 
+in a way inspired by the quantum Boltzmann equation (QBE).
+We know in an isotropic medium, the dispersion relation of light is always 
+in the form of 
+\begin{equation}
+    \omega = c k,  
+\end{equation}
+where $c$ is the effective speed of light in the medium, 
+and therefore 
+\begin{equation}
+    \grad_{\vb*{k}} = c \vu*{k} \eqqcolon c \vu*{s},
+\end{equation}
+where $\vu*{s}$ is the direction of the photon momentum, 
+i.e. the direction of light propagation.
+Thus, for photons in an \ul{isotropic and uniform medium}, 
+In the LHS of QBE, we have 
+\begin{equation}
+    \begin{aligned}
+        \text{LHS} &= \pdv{f}{t} + \pdv{\omega}{\vb*{k}} \cdot \pdv{f}{\vb*{r}}
+        - \pdv{\omega}{\vb*{r}} \cdot \pdv{f}{\vb*{k}} \\
+        &= \pdv{f}{t} + c \vu*{s} \cdot \pdv{f}{\vb*{r}}.
+    \end{aligned}
+\end{equation}
+\ul{Ignoring non-linear processes}, due to conservation of energy, 
+the magnitude of the $\vb*{k}$ vector is conserved, 
+and therefore we may confine ourselves to 
+a small segment of $f(\vb*{r}, \vb*{k}, t)$
+where $\abs*{\vb*{k}}$ is a given constant.
+We name the resulting distribution function $L(\vb*{r}, \vu*{s}, t)$
+\concept{radiance}, 
+where the degree of freedom $\vb*{k}$ 
+is reduced to its direction.
+We choose the following normalization scheme: 
+\begin{equation}
+    I(\vb*{r}, t) = \int \dd{\Omega'} L(\vb*{r}, \vu*{s}, t),
+\end{equation}
+where $I$ is the radiation intensity at $\vb*{r}, t$. 
+There of course has to be some kind of normalization constant 
+between $f$ and $L$; 
+currently, however, since we are only working with single-photon processes, 
+and all scattering events can be thought of as 
+scattering with some kind of ``disorders'' in the medium, 
+the collision integral in QBE, obtained from Fermi golden rule, 
+is linear with respect to $f$: 
+it always takes the form of 
+\[
+    - 2\pi \sum_{\vb*{k'}} \abs*{M(\vb*{k} \to \vb*{k}')}^2 (f(\vb*{r}, \vb*{k} , t) - f(\vb*{r}, \vb*{k}', t) )
+    \delta(\omega_{\vb*{k}} - \omega_{\vb*{k}'}),
+\] 
+where the quantum corrections to the incoming and the outgoing terms 
+cancel each other. 
+Applying this fact to the isotropic, uniform and linear case 
+mentioned above, we find the collision integral in the 
+Boltzmann of photon is 
+\begin{equation}
+    \begin{aligned}
+        \text{RHS} &= c \mu_{\text{s}} \int \dd{\Omega'} (L(\vb*{r}, \vu*{s}', t) - L(\vb*{r}, \vu*{s}, t)) P(\vu*{s}, \vu*{s}') \\
+        &= c \mu_{\text{s}} \int \dd{\Omega'} L(\vb*{r}, \vu*{s}', t)  P(\vu*{s}, \vu*{s}')
+        - c \mu_{\text{s}} L(\vb*{r}, \vu*{s}, t) ,
+    \end{aligned}
+\end{equation}
+where we have decomposed the scattering matrix 
+into an overall strength $c \mu_{\text{s}}$ 
+(the $c$ factor will cancel with the $c$ factor in the second term of LHS), 
+and a function $P(\vu*{s}, \vu*{s}')$ measuring how anisotropic the scattering process is, 
+and the normalization condition is 
+\begin{equation}
+    \int \dd{\Omega'} P(\vu*{s}, \vu*{s}') = 1,
+\end{equation}
+and when the scattering process is also completely isotropic, we have 
+\begin{equation}
+    P(\vu*{s}, \vu*{s}') = \frac{1}{4 \pi}.
+\end{equation}
+The QBE of photons therefore becomes the following 
+\concept{radiation transfer equation (RTE)}: 
+\begin{equation}
+    \frac{1}{c} \pdv{L}{t} + \vu*{s} \cdot \grad_{\vb*{r}} L = 
+    - \mu_{\text{s}} L + \mu_{\text{s}} \int \dd{\Omega'} 
+    L(\vb*{r}, \vu*{s}', t) P(\vu*{s}, \vu*{s}').
+    \label{eq:rad-transfer-1}
+\end{equation}
+The conditions of the validity of the above equation 
+includes the aforementioned assumptions that 
+\ul{the medium is uniform and isotropic, 
+and there is no nonlinear process in the system,} 
+and also the fundamental validity condition of QBE: 
+\ul{the validity of gradient expansion of the effective density matrix 
+in the Wigner representation}.
+Physically speaking, this means the system should allow 
+the formation of defined wave pockets, 
+which has well-defined positions 
+but also looks like a plane wave when we zoom in on it. 
+
+The next step is to find the true meaning of $\mu_{\text{s}}$. 
+Assuming a clean background and a stationary configuration, 
+the second term in the RHS of \eqref{eq:rad-transfer-1} vanishes, 
+and we know $I \propto L$, 
+and we find 
+\[
+    \dv{I}{z} = - \mu_{\text{s}} I, 
+\]
+where $z$ is the propagation length. 
+So we find $1 / \mu_{\text{s}}$ is roughly 
+the mean path $l_{\text{s}}$ between two scattering incidents, 
+and \eqref{eq:rad-transfer-1} can also be alternatively written as 
+\begin{equation}
+    \frac{1}{c} \pdv{L}{t} + \vu*{s} \cdot \grad_{\vb*{r}} L = 
+    \frac{1}{l_{\text{s}}} \int \dd{\Omega'} 
+    (L(\vb*{r}, \vu*{s}', t) - L(\vb*{r}, \vu*{s}, t)) P(\vu*{s}, \vu*{s}'),
+    \label{eq:rad-transfer-2}
+\end{equation}
+from which we have 
+\begin{equation}
+    \dv{I}{z} + \frac{1}{l_{\text{s}}} I = 0 
+\end{equation}
+when the system reaches the stationary state. 
+
+Some scattering processes turn the photons into other degrees of freedom, 
+and in the foreseeable future they will not come back; 
+these processes are just absorption processes, 
+and we can just add them to \eqref{eq:rad-transfer-1} 
+using the relaxation time approximation, and get 
+\begin{equation}
+    \begin{aligned}
+        \frac{1}{c} \pdv{L}{t} + \vu*{s} \cdot \grad_{\vb*{r}} L &= 
+        - \mu_{\text{a}} L +
+        \underbrace{\frac{1}{l_{\text{s}}}}_{\mu_{\text{s}}} \int \dd{\Omega'} 
+        (L(\vb*{r}, \vu*{s}', t) - L(\vb*{r}, \vu*{s}, t)) P(\vu*{s}, \vu*{s}') \\
+        &= - \underbrace{(\mu_{\text{a}} + \mu_{\text{s}})}_{\mu_{\text{t}}} L 
+        + \mu_{\text{s}} \int \dd{\Omega'} 
+        L(\vb*{r}, \vu*{s}', t) P(\vu*{s}, \vu*{s}') ,
+    \end{aligned}
+    \label{eq:rte-final}
+\end{equation}
+where $\mu_{\text{t}}$ is known as the extinction coefficient. 
+
+A final correction to RTE is the spatial non-uniformity of optical properties, 
+including scattering and change of light speed. 
+This means both $\mu_{\text{a/s}}$ and $P(\vu*{s}, \vu*{s}')$ 
+may have spatial variance, 
+and so does $c$; 
+of course, this variance shouldn't break the validity of QBE. 
+In this case even though the correct generalization of RTE contains, say, 
+$\grad_{\vb*{r}} (c L)$, 
+due to the slow spatial variance of $c$, 
+we can still rewritten it as $c \grad_{\vb*{r}} L$, 
+and get back to \eqref{eq:rte-final}.
+
+\section{From RTE to the diffusion equation}
+
+Under the following assumptions, RTE is reduced to the diffusion equation: 
+\begin{itemize}
+    \item \ul{The radiance is nearly isotropic 
+    -- and therefore if we do spherical harmonic expansion to it, 
+    only the $l = 0, 1$ components need to be kept.} 
+    This happens when scattering is strong enough 
+    so that the direction of light propagation 
+    is randomized; 
+    to be exact, this means \ul{scattering is much stronger than absorption}:
+    $1 / c \mu_{\text{a}}$ is the time scale of 
+    how long radiation lasts in the system before being dampened by absorption, 
+    and scattering should randomized the directions of light propagation 
+    within this period of time. 
+    \item \ul{The change of current density is much slower 
+    than the speed photons pass the mean free path.}
+    \item \ul{The scattering property has rotational symmetry (although not completely isotropic)}:
+        thus $P(\vu*{s}, \vu*{s}') = P(\vu*{s} \cdot \vu*{s}')$.
+        This can be seen as included in the second approximation, 
+        since otherwise it's not likely that the radiance finally converges to 
+        an isotropic solution.
+\end{itemize}
+
+If we only keep the first two spherical harmonic components of $L$
+(here the first approximation is used), 
+i.e. the $\vu*{s}$ dependence of $L$ 
+is either trivial 
+or is proportional to something dot $\vu*{s}$, 
+then we have
+\begin{equation}
+    L(\vb*{r}, \vu*{s}, t) = \frac{1}{4 \pi} \Phi(\vb*{r}, t) 
+    + \frac{3}{4 \pi} \vb*{J} \cdot \vu*{s},
+\end{equation}
+where 
+\begin{equation}
+    \vb*{J}(\vb*{r}, t) = \int \dd{\Omega} \vu*{s} L(\vb*{r}, \vu*{s}, t)
+\end{equation}
+is recognized as the current density; 
+this seems intuitive from the microscopic meaning of $L$,
+and we are also going to explicitly show that $\vb*{J}$
+appears in its expected position in the diffusion equation.
+We can explicitly verify that the normalization conditions are correct: 
+for example, we have 
+\begin{equation}
+    \int \dd{\Omega} \frac{3}{4 \pi} \vb*{J} \cdot \vu*{s} \cdot \underbrace{\cos \theta}_{\hat{s}_z} = 
+    J_z, 
+\end{equation} 
+where the $J_{x, y}$ terms, since they contain a $\sin \varphi$ or $\cos \varphi$ factor, 
+vanish under the integral over $\dd \Omega$. 
+
+Now, by applying $\int \dd{\Omega}$ to \eqref{eq:rte-final}, the LHS becomes 
+\begin{equation}
+    \text{LHS} = \frac{1}{c} \pdv{\Phi}{t} 
+    + \int \dd{\Omega} \vu*{s} \cdot \grad_{\vb*{r}} L(\vb*{r}, \vu*{s}, t)
+    = \frac{1}{c} \pdv{\Phi}{t} 
+    + \div \underbrace{
+        \int \dd{\Omega} \vu*{s}  L(\vb*{r}, \vu*{s}, t) 
+    }_{\vb*{J}}, 
+\end{equation}
+where we have used the condition 
+\begin{equation}
+    \div(\vu*{s} L) = \vu*{s} \cdot \grad L
+    \label{eq:move-grad-1}
+\end{equation} 
+since $\vu*{s}$ has no spatial dependence, 
+while the RHS becomes 
+\begin{equation}
+    \begin{aligned}
+        \text{RHS} &= - \mu_{t} \Phi 
+        + \mu_{\text{s}} \int \dd{\Omega'} L(\vb*{r}, \vu*{s}', t) \int \dd{\Omega} P(\vu*{s}, \vu*{s}') \\
+        &= - \mu_{t} \Phi 
+        + \mu_{\text{s}} \int \dd{\Omega'} L(\vb*{r}, \vu*{s}', t) \\
+        &= - \mu_{t} \Phi 
+        + \mu_{\text{s}} \Phi = - \mu_{\text{a}} \Phi ,
+    \end{aligned}
+\end{equation}
+and thus we have 
+\begin{equation}
+    \frac{1}{c} \pdv{\Phi}{t} + \div{\vb*{J}} + \mu_{\text{a}} \Phi = 0.
+\end{equation}
+Now we see $\vb*{J}$ indeed is the current density.
+
+Then, we apply $\int \dd{\Omega} \vu*{s}$ to \eqref{eq:rte-final}.
+This time the calculation will be slightly more non-trivial.
+The LHS now is 
+\begin{equation}
+    \text{LHS} = \frac{1}{c} \pdv{\vb*{J}}{t} + 
+    \div \int \dd{\Omega} \vu*{s} \vu*{s} L, 
+\end{equation}
+where we again use the condition \eqref{eq:move-grad-1}. 
+A direct evaluation tells us 
+\begin{equation}
+    \frac{1}{4\pi} \int \dd{\Omega} \vu*{s} \vu*{s} \Phi = \frac{1}{3} \Phi,
+\end{equation}
+and the contribution from the $\vb*{J}$ part is zero. 
+The $(z, z)$ component of $\int \dd{\Omega} \vu*{s} \vu*{s}$, for example, is 
+\[
+    \int \dd{\Omega} \cos^2 \theta = 
+    \int_{0}^{\pi} \sin \theta \dd{\theta} \cos^2 \theta \cdot 2 \pi 
+    = \frac{2}{3} \cdot 2 \pi,
+\]
+and hence the $1/3$ factor. 
+On the other hand, the $(x, z)$ or $(y, z)$ components suffer from 
+the existence of a vanishing $\int \dd{\varphi} \sin\varphi$ or $\cos \varphi$ factor, 
+and for the $(x, y)$ component, $\int \dd{\varphi} \sin \varphi \cos \varphi$ is still zero. 
+So now we find the full expression of the LHS: 
+\begin{equation}
+    \text{LHS} = \frac{1}{c} \pdv{\vb*{J}}{t} + \frac{1}{3} \grad{\Phi}.
+\end{equation}
+As for the RHS, we have 
+\begin{equation}
+    \text{RHS} = - \mu_{\text{t}} \vb*{J} + \mu_{\text{s}} \int \dd{\Omega'} 
+    L(\vb*{r}, \vu*{s}', t) \int \dd{\Omega} \vu*{s} P(\vu*{s} \cdot \vu*{s}').
+\end{equation}
+We use $\vu*{s}'$ as the $z$ axis, and then $P(\vu*{s} \cdot \vu*{s}') = P(\cos \theta)$, 
+and therefore $\int \dd{\Omega} \vu*{s} P(\vu*{s} \cdot \vu*{s}')$ 
+is always parallel to $\vu*{s}'$, 
+since the $x$ and $y$ components contain 
+$\int \dd{\varphi} \sin \varphi$ and $\int \dd{\varphi} \cos \varphi$
+and therefore vanish.
+We therefore write 
+\begin{equation}
+    \int \dd{\Omega} \vu*{s} P(\vu*{s} \cdot \vu*{s}') = g \vu*{s}',
+\end{equation}
+where $g$ is an unknown factor.
+The RHS therefore becomes 
+\begin{equation}
+    \text{RHS} = - \mu_{\text{t}} \vb*{J} 
+    + \mu_{\text{s}} g \int \dd{\Omega'} \vu*{s}' L(\vb*{r}, \vu*{s}', t) 
+    = - \mu_{\text{t}} \vb*{J} 
+    + \mu_{\text{s}} g \vb*{J}.
+\end{equation}
+So we have 
+\begin{equation}
+    \frac{1}{c} \pdv{\vb*{J}}{t} + \frac{1}{3} \grad{\Phi}
+    = - \mu_{\text{t}} \vb*{J} 
+    + \mu_{\text{s}} g \vb*{J}
+    = - (\mu_{\text{a}} + \mu_{\text{s}}') \vb*{J}, 
+    \quad \mu_{\text{s}}' = (1 - g) \mu_{\text{s}}.
+\end{equation}
+Now we invoke the condition that the change of the current is slow 
+compared with $c \mu_{\text{t}}$, 
+and we approximately, we have 
+\begin{equation}
+    \frac{1}{3} \grad{\Phi}
+    = - \mu_{\text{t}} \vb*{J} 
+    + \mu_{\text{s}} g \vb*{J}
+    = - (\mu_{\text{a}} + \mu_{\text{s}}') \vb*{J}, 
+    \quad \mu_{\text{s}}' = (1 - g) \mu_{\text{s}}.
+\end{equation}
+This gives the constitutive relation between the current density 
+and the gradient of radiance. 
+
+Thus, we find with the three -- or two -- assumptions listed at the start of this section, 
+we have 
+\begin{equation}
+    \frac{1}{c} \pdv{\Phi}{t} + \div{\vb*{J}} + \mu_{\text{a}} \Phi = 0, \quad 
+    \vb*{J} = - D \grad{\Phi},
+\end{equation}
+where 
+\begin{equation}
+    D = \frac{1}{3 (\mu_{\text{a}} + \mu_{\text{s}}')}, \quad 
+    \mu_{\text{s}}' = (1 - g) \mu_{\text{s}}, 
+\end{equation}
+and 
+\begin{equation}
+    \int \dd{\Omega} \vu*{s} P(\vu*{s} \cdot \vu*{s}') = g \vu*{s}'
+    \Rightarrow 2 \pi \int_{0}^{\theta} \sin \theta \dd{\theta} \cdot \cos \theta P(\theta)
+    = g .
+\end{equation}
+Now we find RTE has been completely reduced to a diffusion equation.
+
+\section{The rendering equation}
+
+In most everyday cases, the time evolution of $L$ can be ignored: 
+the system reaches equilibrium as soon as ``the light is turned on'', 
+since the speed of light is very fast. 
+It's also frequently assumed that $c$ is 
+\ul{one hundred percent uniform in space
+and not just very slow in its spatial change}. 
+In these cases, we get 
+\begin{equation}
+    \begin{aligned}
+        \vu*{s} \cdot \grad_{\vb*{r}} L &= 
+        - \mu_{\text{a}} L +
+        \underbrace{\frac{1}{l_{\text{s}}}}_{\mu_{\text{s}}} \int \dd{\Omega'} 
+        (L(\vb*{r}, \vu*{s}', t) - L(\vb*{r}, \vu*{s}, t)) P(\vu*{s}, \vu*{s}') \\
+        &= - \underbrace{(\mu_{\text{a}} + \mu_{\text{s}})}_{\mu_{\text{t}}} L 
+        + \mu_{\text{s}} \int \dd{\Omega'} 
+        L(\vb*{r}, \vu*{s}', t) P(\vu*{s}, \vu*{s}') .
+    \end{aligned}
+    \label{eq:se-final}
+\end{equation}
+The time evolution term is thrown away. 
+This equation is sometimes known as the \concept{scattering equation}.
+
+The main problem then becomes how to treat the boundaries appropriately.
+
+The exact theory (under the aforementioned premises) of light propagation 
+in this case turns out to be what is known as the \concept{rendering equation}. 
+
+\end{document}
