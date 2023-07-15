@@ -187,7 +187,8 @@ Boltzmann of photon is
 where we have decomposed the scattering matrix 
 into an overall strength $c \mu_{\text{s}}$ 
 (the $c$ factor will cancel with the $c$ factor in the second term of LHS), 
-and a function $P(\vu*{s}, \vu*{s}')$ measuring how anisotropic the scattering process is, 
+and a function $P(\vu*{s}, \vu*{s}')$ -- for some reason called the \concept{phase function} -- 
+measuring how anisotropic the scattering process is, 
 and the normalization condition is 
 \begin{equation}
     \int \dd{\Omega'} P(\vu*{s}, \vu*{s}') = 1,
@@ -286,6 +287,11 @@ Under the following assumptions, RTE is reduced to the diffusion equation:
     how long radiation lasts in the system before being dampened by absorption, 
     and scattering should randomized the directions of light propagation 
     within this period of time. 
+    Note that this also means that if the radiance starts with a highly 
+    anisotropic configuration, 
+    then there is already a (although short) period of time in the beginning 
+    during which the diffusion equation is not a good description 
+    of the dynamics of the system. 
     \item \ul{The change of current density is much slower 
     than the speed photons pass the mean free path.}
     \item \ul{The scattering property has rotational symmetry (although not completely isotropic)}:
@@ -439,7 +445,7 @@ where
 and 
 \begin{equation}
     \int \dd{\Omega} \vu*{s} P(\vu*{s} \cdot \vu*{s}') = g \vu*{s}'
-    \Rightarrow 2 \pi \int_{0}^{\theta} \sin \theta \dd{\theta} \cdot \cos \theta P(\theta)
+    \Rightarrow 2 \pi \int_{0}^{\pi} \sin \theta \dd{\theta} \cdot \cos \theta P(\cos \theta)
     = g .
 \end{equation}
 Now we find RTE has been completely reduced to a diffusion equation.
@@ -468,9 +474,125 @@ In these cases, we get
 The time evolution term is thrown away. 
 This equation is sometimes known as the \concept{scattering equation}.
 
-The main problem then becomes how to treat the boundaries appropriately.
 
-The exact theory (under the aforementioned premises) of light propagation 
-in this case turns out to be what is known as the \concept{rendering equation}. 
+\begin{figure}
+    \centering
+    \input{optical-path/surface-scattering-1.tex}
+    \caption{The boundary modeled as a region (the green rectangle) where scattering events are frequent}
+    \label{fig:boundary-scattering}
+\end{figure}
+
+If we are not modeling things like clouds, 
+and are interested in, say, the image of a cup or an apple, 
+the bulk solution of the scattering equation is easy;
+the main problem then becomes how to treat the boundaries appropriately.
+
+We can think the boundary of an object as a region where 
+scattering is particularly strong, 
+as in \prettyref{fig:boundary-scattering}.
+On one side of the region, 
+the radiance takes its value at the edge of the bulk, 
+and on the other side of the region, 
+the radiance decreases to zero. 
+Suppose the thickness of the region is $l$.
+
+Now we extend the $\vu*{s}$ line shown in \prettyref{fig:boundary-scattering}
+opposite its direction, until we reach the $L=0$ side of the scattering region.
+We call this path $C$,
+and the length of this path is $l / \cos \theta$.
+We integrate the scattering equation \eqref{eq:se-final} along this path, 
+and get 
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) = - \mu_{\text{t}} \int_C \dd{l} L(\vb*{r}', \vu*{s})
+    + \mu_{\text{s}} \int \dd{\Omega'} P(\vu*{s}, \vu*{s}') \int_C \dd{l} L(\vb*{r}', \vu*{s}') .
+    \label{eq:re-1}
+\end{equation}
+$L(\vb*{r}', \vu*{s})$ is a linear functional of 
+the radiance distribution around the surface. 
+(It has to be linear, since the scattering equation is a linear equation.)
+In the simplest case, the reflected light on one point ($L(\vb*{r}, \vu*{s})$)
+mainly comes from incoming light at the same point; 
+thus $L(\vb*{r}', \vu*{s})$ and $L(\vb*{r}', \vu*{s}')$ on path $C$ 
+can be rewritten as some kind of damping function of $\abs*{\vb*{r} - \vb*{r}'}$ 
+times $L(\vb*{r}, \vu*{s})$ and $L(\vb*{r}, \vu*{s}')$, 
+and we have 
+\[
+    \mu_{\text{s}} \int_C \dd{l} L(\vb*{r}', \vu*{s}') 
+    = g(\vu*{s}, \vu*{s}') \frac{\mu_{\text{s}} l}{\cos \theta} L(\vb*{r}, \vu*{s}),
+\]
+where $g(\vu*{s}, \vu*{s}')$ comes from 
+the properties of the scattering layer, 
+and from time reversal symmetry we can assume that it's symmetric, 
+since the phase function is symmetric. 
+This means 
+\begin{equation}
+    \begin{aligned}
+        \mu_{\text{s}} \int \dd{\Omega'} P(\vu*{s}, \vu*{s}') \int_C \dd{l} L(\vb*{r}', \vu*{s}')
+        &= \mu_{\text{s}} l \int \dd{\Omega'} P(\vu*{s}, \vu*{s}') 
+        g(\vu*{s}, \vu*{s}') \frac{1}{\cos \theta} L(\vb*{r}, \vu*{s}) \\
+        &= \mu_{\text{s}} l \int \cos \theta' \dd{\Omega'} 
+        \underbrace{
+            P(\vu*{s}, \vu*{s}') 
+            g(\vu*{s}, \vu*{s}') \frac{1}{\cos \theta \cos \theta'}
+        }_{\text{symmetric}} L(\vb*{r}, \vu*{s})  .
+    \end{aligned}
+\end{equation}
+Similarly, we have 
+\begin{equation}
+    \begin{aligned}
+        \mu_{\text{t}} \int_C \dd{l} L(\vb*{r}', \vu*{s})
+        &= \mu_{\text{t}} g(\vu*{s}, \vu*{s}) \frac{l}{\cos \theta} L(\vb*{r}, \vu*{s}) \\
+        &= \mu_{\text{t}} l \int \cos \theta' \dd{\Omega'} 
+        \underbrace{
+            \delta(\vu*{s}, \vu*{s}') \frac{1}{\cos \theta \cos \theta'}
+        }_{\text{symmetric}} L(\vb*{r}, \vu*{s}'),
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \delta(\vu*{s}, \vu*{s}') = \frac{1}{\sin \theta} \delta(\theta - \theta') \delta(\varphi - \varphi'). 
+\end{equation}
+So finally, from \eqref{eq:re-1} we get 
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) = \int f(\vu*{s}, \vu*{s}') L(\vb*{r}, \vu*{s}') \cos \theta' \dd{\Omega'}, 
+    \quad f(\vu*{s}, \vu*{s}') = f(\vu*{s}', \vu*{s}).
+    \label{eq:re-2}
+\end{equation}
+We find the exact theory (under the aforementioned premises) of light propagation 
+in this case turns out to be \eqref{eq:re-2},
+which is known as the \concept{rendering equation}. 
+In the rendering equation we have the symmetric function $f(\vu*{s}, \vu*{s}')$,
+called the \concept{bidirectional reflectance distribution function (BRDF)}. 
+We can always readjust the BRDF so that it is only non-zero 
+when $\vu*{s} \cdot \vu*{n}$ and $\vu*{s}' \cdot \vu*{n}$
+have different signs. 
+This can be seen by noticing that an outgoing (i.e. $\vu*{s} \cdot \vu*{n} > 0$) radiance 
+always comes from an ingoing radiance, 
+and therefore its effect can be alternatively attributed to the latter. 
+This means we can rewrite \eqref{eq:re-2} to
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) = \int_{\vu*{s}' \cdot \vu*{n} < 0} 
+    f(\vu*{s}, \vu*{s}') L(\vb*{r}, \vu*{s}') \cos \theta' \dd{\Omega'}, \quad 
+    \vu*{s} \cdot \vu*{n} > 0,
+    \label{eq:re-final}
+\end{equation}
+with the BRDF defined appropriately.
+The photon number conservation condition (essentially the energy conservation condition, 
+since we don't have any frequency changing mechanism) is 
+\begin{equation}
+    \int f(\vu*{s}, \vu*{s}') \cos \theta' \dd{\Omega'}  \leq 1.
+\end{equation}
+This is an inequality, because absorption is also included in the BRDF.
+
+\eqref{eq:re-final} can be derived in a more straightforward way 
+from energy conservation, 
+where we define 
+\begin{equation}
+    \dd{L(\vb*{r}, \vu*{s})} = L(\vb*{r}, \vu*{s}') \cos \theta' f(\vu*{s}, \vu*{s}') \dd{\Omega'},
+\end{equation}
+where the $\cos \theta'$ factor can be obtained intuitively 
+by considering the fact that if a beam of light 
+is incident on the material with an angle $\theta'$, 
+the effective cross section of the beam is reduced by a factor of $\cos \theta'$.
 
 \end{document}
