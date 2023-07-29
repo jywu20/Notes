@@ -38,3 +38,8 @@ to the vertex function, or vice versa.
 https://journals.aps.org/pr/pdf/10.1103/PhysRev.168.233 extends the Boltzmann equation
 
 https://www.phys.lsu.edu/~jarrell/Green/lecture2.pdf: again, from Keldysh formalism to Boltzmann equation
+
+# The influence of the structure of the Bloch function to the QBE
+
+- Introduce Berry phase in a rather phenomenological way: treating it as a magnetic field https://studenttheses.uu.nl/bitstream/handle/20.500.12932/32903/thesis.pdf?sequence=2 
+- 
