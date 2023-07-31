@@ -1,0 +1,352 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage[sorting=none]{biblatex}
+\addbibresource{boltzmann.bib}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+\newtcbtheorem[number within=section]{warning}{Warning}%
+  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
+\newtcbtheorem[number within=section]{note}{Note}%
+  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
+\newtcbtheorem[number within=section]{info}{Info}%
+  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+\title{Bloch wave function in quantum Boltzmann equation}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+There are several ways to build QBE in a crystal: 
+\begin{enumerate}
+    \item The most naive way is to insert the 
+    band structure $\epsilon_{n \vb*{k}}$ into the LHS of QBE: 
+    thus we get corrected velocity.
+    The main problem of this approach is it  
+    ignores the influence of the Bloch wave function; 
+    since the eigenstates in the crystal are no longer plane waves, 
+    defining a distribution function about $\vb*{r}$ and $\vb*{k}$
+    can't be done by naively doing Wigner transform.
+    \item One way to improve the situation is to 
+    start from the so-called Bloch semi-classic EOM about $\vb*{r}$ and $\vb*{k}$; 
+    we insert $\dot{\vb*{r}}$ and $\dot{\vb*{k}}$ given by the Bloch equations 
+    into the LHS of QBE. 
+
+    This level of approximation is equivalent to building the QBE 
+    based on the effective Hamiltonian about the wave packet envelope. 
+    However, it doesn't include the effects of the Bloch wave functions 
+    to the collision term. 
+
+    \item How to incorporate the effects of the Bloch wave functions into the collision term?
+    Some kind of ``wave packet envelope'' seems to be needed, 
+    or otherwise gradient expansion is ill-defined; 
+    should we work in this basis (mapping Bloch state to plane waves, etc.)?
+
+    \item Further questions: hopping between bands 
+        (how frequent are they? Do we need $f_{n_1 n_2}(\vb*{r}, \vb*{k}, t)$? etc.)
+\end{enumerate}
+
+\section{Describing the wave packet in one band}
+
+In this section we ignore Coulomb scattering.
+Also, below we consider wave packet in one band first; 
+the band index $n$ is therefore fixed and not summed over.
+
+\subsection{No electric field coupling}
+
+Suppose we have a wave packet 
+\begin{equation}
+    \psi(\vb*{r}, t) = \sum_{\vb*{k}} c_{\vb*{k}}(t) \psi_{n \vb*{k}}(\vb*{r}).
+    = \sum_{\vb*{k}} c_{\vb*{k}}(t) u_{n \vb*{k}}(\vb*{r}) \ee^{\ii \vb*{k} \cdot \vb*{r}}.
+\end{equation}
+We consider the information of the spatial structure of $\psi$
+within a primitive unit cell as unimportant; 
+in other words, we consider Fourier components with 
+the wave vector being outside the 1BZ as unimportant.
+This filtering means the envelope of the wave packet is 
+\begin{equation}
+    \psi^{\text{envelope}}(\vb*{r}, t)
+    = \sum_{\vb*{k}} c_{\vb*{k}}(t) \ee^{\ii \vb*{k} \cdot \vb*{r}}, 
+\end{equation}
+where formally we set $u_{n \vb*{k}}$ to unity.
+
+We first deal with the case with no external driving electric field. 
+In this case the total Hamiltonian is just the band Hamiltonian, 
+and we have 
+\begin{equation}
+    \ii \partial_t \psi = H \psi \Rightarrow
+    \ii \partial_t c_{\vb*{k}} = \varepsilon_{n \vb*{k}} c_{\vb*{k}} \Rightarrow
+    \ii \partial_t \psi^{\text{envelope}} = \varepsilon_{n \vb*{k}}(\vb*{k} \to - \ii \grad) \psi^{\text{envelope}} .
+\end{equation}
+The last line can be proved by properties of Fourier transform.
+Thus the effective Hamiltonian of the envelope function 
+can be obtained by replacing $\vb*{k}$ with $- \ii \grad$ 
+in the band energy $\varepsilon_{n \vb*{k}}$.
+Thus, we conclude that when scattering is not considered 
+and the effects of the external driving field is small, 
+the naive approach of treating $\vb*{k}$ as the real momentum 
+and replacing $\vb*{k}^2 / 2m$ by $\varepsilon_{n \vb*{k}}$
+is accurate enough.
+
+\subsection{Electric field coupling}
+
+When we do have electric field coupling things are different, 
+since the coupling term $e \vb*{r} \cdot \vb*{E}$%
+\footnote{
+    Here the convention is $e > 0$, 
+    and thus 
+    \begin{equation}
+        q \varphi \approx q \vb*{r} \cdot \grad \varphi 
+        = - q \vb*{r} \cdot \vb*{E} = e \vb*{r} \cdot \vb*{E}.
+    \end{equation}
+}
+doesn't necessarily appear to be the same 
+in the effective Hamiltonian of the wave packets. 
+The Schrodinger equation now is 
+\begin{equation}
+    \ii \partial_t \psi = H^{\text{band}} \psi + e \vb*{r} \cdot \vb*{E} \psi
+    \Rightarrow \ii \partial_t c_{\vb*{k}} = \varepsilon_{n \vb*{k}} c_{\vb*{k}}
+    + \sum_{\vb*{k}'} e \vb*{E} \cdot 
+    \mel**{\psi_{n \vb*{k}}}{\vb*{r}}{\psi_{n \vb*{k}'}} c_{\vb*{k}'},
+\end{equation}
+where we have assumed that $\vb*{E}$ changes slowly enough 
+so it can be extracted out of the expectation brackets;
+this condition is needed for Boltzmann transportation anyway, 
+or otherwise gradient expansion fails. 
+The second term in the RHS of the second equation 
+is notorious for being ill-defined:
+searching for a sensible definition of this term 
+gave rise to the theory of band topology.
+To make things easier at the first step, 
+let's do decomposition 
+\begin{equation}
+    \vb*{r} \to \vb*{r}^{\text{envelope}} + \vb*{x},
+\end{equation}
+where $\vb*{r}^{\text{envelope}}$ is the center of the wave packet. 
+So we have 
+\begin{equation}
+    \sum_{\vb*{k}'} e \vb*{E} \cdot 
+    \mel**{\psi_{n \vb*{k}}}{\vb*{r}}{\psi_{n \vb*{k}'}} c_{\vb*{k}'}
+    = e \vb*{E} \cdot \vb*{r}^{\text{envelope}} c_{\vb*{k}}
+    + \sum_{\vb*{k}'} e \vb*{E} \cdot 
+    \mel**{\psi_{n \vb*{k}}}{\vb*{x}}{\psi_{n \vb*{k}'}} c_{\vb*{k}'},
+\end{equation}
+where only the first term is non-zero in the free electron case.
+Since the $\vb*{x}$ term vanishes in a free electron gas, 
+we can evaluate this term using the same techniques 
+used when establishing relation between 
+polarization and Berry curvature. 
+We also change the normalization convention so that 
+\begin{equation}
+    \psi_{n \vb*{k}} = \frac{1}{\sqrt{N}} \ee^{\ii \vb*{k} \cdot \vb*{r}} u_{n \vb*{k}}.
+\end{equation}
+We have 
+\begin{equation}
+    \begin{aligned}
+        \mel**{\psi_{n \vb*{k}}}{\vb*{x}}{\psi_{n \vb*{k}'}}
+        &= \frac{1}{N} \sum_{\vb*{R}} \int_{\text{u.c.}} \dd[d]{\vb*{x}} 
+        \ee^{- \ii \vb*{k} \cdot (\vb*{x} + \vb*{R})} u^*_{n \vb*{k}}(\vb*{x})
+        \cdot (\vb*{x} + \vb*{R}) \cdot 
+        \ee^{\ii \vb*{k}' \cdot (\vb*{x} + \vb*{R})} u_{n \vb*{k}'}(\vb*{x}) \\
+        &= \frac{1}{N} \sum_{\vb*{R}} \ee^{\ii \vb*{R} \cdot (\vb*{k}' - \vb*{k})}
+        \int_{\text{u.c.}} \dd[d]{\vb*{x}} 
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        \cdot (\vb*{x} + \vb*{R}) \cdot 
+        \ee^{\ii \vb*{k}' \cdot \vb*{x} } u_{n \vb*{k}'}(\vb*{x})  .
+    \end{aligned}
+    \label{eq:erE-inter-1}
+\end{equation}
+The first line is obtained by expanding $\vb*{x}$ into $\vb*{x} + \vb*{R}$, 
+where $\vb*{x}$ is confined in the primitive unit cell. 
+The integral over $\vb*{x}$ can be split into one term with
+an $\vb*{x}$ factor and another with $\vb*{R}$. 
+The $\vb*{R}$ term has to vanish TODO: why? 
+
+The $\vb*{x}$ part in \eqref{eq:erE-inter-1} is therefore the only non-zero part, 
+and it reads 
+\begin{equation}
+    \begin{aligned}
+        \mel**{\psi_{n \vb*{k}}}{\vb*{x}}{\psi_{n \vb*{k}'}}
+        &= \delta_{\vb*{k} \vb*{k}'} \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        u_{n \vb*{k}'}(\vb*{x})
+        \cdot (- \ii \partial_{\vb*{k}'})
+        \ee^{\ii \vb*{k}' \cdot \vb*{x} }   \\
+        &= \delta_{\vb*{k} \vb*{k}'} \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        \cdot (- \ii \partial_{\vb*{k}'})
+        u_{n \vb*{k}'}(\vb*{x}) \ee^{\ii \vb*{k}' \cdot \vb*{x} }  \\
+        &\quad + \delta_{\vb*{k} \vb*{k}'} \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        \cdot \ee^{\ii \vb*{k}' \cdot \vb*{x} }  (\ii \partial_{\vb*{k}'})
+        u_{n \vb*{k}'}(\vb*{x}) \\
+        &= \delta_{\vb*{k} \vb*{k}'} (- \ii \partial_{\vb*{k}'}) 
+        \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        \cdot 
+        u_{n \vb*{k}'}(\vb*{x}) \ee^{\ii \vb*{k}' \cdot \vb*{x} }  \\
+        &\quad + \delta_{\vb*{k} \vb*{k}'} \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+         u^*_{n \vb*{k}}(\vb*{x})
+        \cdot   (\ii \partial_{\vb*{k}})
+        u_{n \vb*{k}}(\vb*{x}).  \\
+    \end{aligned}
+\end{equation}
+The first term may be non-zero, but it vanishes once placed in a sum over $\vb*{k}'$:
+we have 
+\[
+    \sum_{\vb*{k}'} c_{\vb*{k}'} 
+    \delta_{\vb*{k} \vb*{k}'} (- \ii \partial_{\vb*{k}'}) 
+        \int_{\text{u.c.}} \dd[d]{\vb*{x}}
+        \ee^{- \ii \vb*{k} \cdot \vb*{x} } u^*_{n \vb*{k}}(\vb*{x})
+        \cdot 
+        u_{n \vb*{k}'}(\vb*{x}) \ee^{\ii \vb*{k}' \cdot \vb*{x} } 
+\]
+TODO 
+
+The final conclusion is we have 
+\begin{equation}
+    \ii \partial_t c_{\vb*{k}}
+    = \varepsilon_{n \vb*{k}} c_{\vb*{k}}
+    + e \vb*{E} \cdot (\vb*{r}^{\text{envelope}} + A_{n \vb*{k}}), \quad 
+    A_{n \vb*{k}} = \ii \mel**{u_{n \vb*{k}}}{\partial_{\vb*{k}}}{u_{n \vb*{k}}},
+\end{equation}
+and the effective Hamiltonian is now 
+\begin{equation}
+    H^{\text{envelope}} = (\varepsilon_{n \vb*{k}} 
+    + (\vb*{r}^{\text{envelope}} + \vb*{A}_{n \vb*{k}}) \cdot \vb*{E})|_{\vb*{k} \to - \grad}.
+\end{equation}
+This agrees with the effective Hamiltonian obtained 
+from path integral formalism; 
+in the latter, however, we don't know if the ``position'' variable 
+is indeed the center of the wave packet, 
+while here we explicitly show that the center of the wave packet 
+does look like a position variable in quantum mechanics.
+
+\end{document}
