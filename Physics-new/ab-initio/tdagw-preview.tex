@@ -177,7 +177,8 @@ where
     \begin{aligned}
         &A^>(t_1, t_2) = A(t_1^+, t_2^-), \quad 
         A^<(t_1, t_2) = A(t_1^-, t_2^+), \quad \\
-        &A^{\text{R}}(t_1, t_2) = \theta(t_1 - t_2) (A^> - A^<).
+        &A^{\text{R}}(t_1, t_2) = \theta(t_1 - t_2) (A^> - A^<), \quad \\
+        &A^{\text{A}}(t_1, t_2) = - \theta(t_1 - t_2) (A^> - A^<).
     \end{aligned}
 \end{equation}
 
@@ -433,17 +434,29 @@ assuming no higher dependence
 \frametitle{A radical move towards quantum Boltzmann equation}
 
 \textbf{Approximations leading to QBE} \begin{itemize}
-    \item Gradient expansion $\Leftarrow$ smooth $U_{\text{ext}}$:
+    \item Smooth $U_{\text{ext}}$ $\Rightarrow$ Gradient expansion:
     \begin{equation}
         \comm*{H_0}{\rho} \longrightarrow \ii \left(
             \pdv{\epsilon}{\vb*{p}} \cdot \pdv{\tilde{\rho}}{\vb*{X}}
             - \pdv{\epsilon}{\vb*{X}} \cdot \pdv{\tilde{\rho}}{\vb*{p}} + \cdots
         \right).
     \end{equation}
-    \item Quasiparticle approx. $\Leftarrow$ weak-correlated states:
+    \item Weakly correlated states $\Rightarrow$ Quasiparticle approx.: 
     \begin{equation}
-       G^<(\vb*{X}, \vb*{p}, T, \omega) = 2 \pi \delta(\omega - \xi_{\vb*{k}} + \mu - U(\vb*{X}, T)) f(\vb*{p}, \vb*{X}, T).
+       G^<(\vb*{X}, \vb*{p}, T, \omega) = 
+       \ii \underbrace{2 \pi \delta(\omega - \xi_{\vb*{p}} + \mu - U(\vb*{X}, T))}_{A(\vb*{X}, \vb*{p}, T, \omega)} 
+       f(\vb*{p}, \vb*{X}, T),
+       \label{eq:qpa}
     \end{equation}
+    \begin{equation}
+        G^>(\vb*{X}, \vb*{p}, T, \omega) = - \ii A(\vb*{X}, \vb*{p}, T, \omega)
+        (1 - f(\vb*{p}, \vb*{X}, T)).
+    \end{equation}
+    This makes sense: we then have 
+    \begin{equation}
+        A = \ii (G^{\text{R}} - G^{\text{A}}) = \ii (G^> - G^<).
+    \end{equation}
+
     \item Gradient expansion in time domain $\Rightarrow$ Markovian collision integral
 \end{itemize}    
 
@@ -455,7 +468,8 @@ assuming no higher dependence
         (as in electron-phonon interaction) is not included, 
         but by correcting the collision term 
         (essentially, a mild breakdown of Fermi golden rule),
-        a Boltzmann equation can still be established.
+        a Boltzmann equation can still be established
+        (with necessary corrections).
     \item The first condition and the rest two conditions are orthogonal:
         the first condition can also be used in QME: 
         it gives the diffusion part of QBE
@@ -472,7 +486,7 @@ assuming no higher dependence
 \end{equation}
 
 \textbf{Gradient expansion, in $\vb*{r}$ and $t$} 
-By def. and taking Taylor expansion in the $(\vb*{r}, t)$
+Taking Taylor expansion in $(\vb*{r}, t)$
 \begin{equation}
     \begin{aligned}
         AB|_{\vb*{X}, \vb*{p}, T, \omega} &= A_{\vb*{X}, \vb*{p}, T, \omega} B_{\vb*{X}, \vb*{p}, T, \omega} \\
@@ -487,7 +501,7 @@ By def. and taking Taylor expansion in the $(\vb*{r}, t)$
 \end{equation}
 We only keep the terms shown above. 
 
-$\Rightarrow$ hence the commutator $\comm*{G^<}{H_0}$ can be reduced to the diffusion term seen in QBE
+$\Rightarrow$ $\comm*{G^<}{H_0}$ reduces to the diffusion term seen in QBE
 
 \vspace{0.25cm}
 
@@ -495,27 +509,95 @@ $\Rightarrow$ hence the commutator $\comm*{G^<}{H_0}$ can be reduced to the diff
 quantities in \eqref{eq:gradient-expansion-final-version} 
 are matrices with these discrete indices
 
-\end{frame}
+\framebreak
 
-\begin{frame}
-\frametitle{Obtaining the collision integral}
-
+\textbf{Prototype of the collision integral}
 Keeping only the first term in gradient expansion \eqref{eq:gradient-expansion-final-version}:
 \begin{equation}
     \begin{aligned}
         &\quad \Sigma^{\text{R}} G^< + \Sigma^< G^{\text{A}} - G^{\text{R}} \Sigma^< - G^< \Sigma^{\text{A}}\\
         &\stackrel{\text{gradient exp.}}{\approx} G^<(\Sigma^{\text{R}} - \Sigma^{\text{A}}) 
         - (G^{\text{R}} - G^{\text{A}}) \Sigma^< \\
-        &\stackrel{\text{QP approx.}}{\approx} \ii A f (\vb*{p}) \Im \Sigma
+        &= G^< \Sigma^> - G^> \Sigma^< \\
+        &\stackrel{\text{QP approx.}}{\approx}  \ii A f (\vb*{p}) \Im \Sigma
         - \text{incoming terms} 
     \end{aligned}
 \end{equation}    
-Here in order to be consistent with the quasiparticle approximation of $G^<$,
-we also assume that $G^{\text{A}, \text{R}}$ assume 
-the same forms as their equilibrium versions;
-thus the ``out'' part of the equation above $\propto \Im \Sigma$
-(in the most general non-equilibrium case $\Im \Sigma$ is even not well-defined)
+\begin{itemize}
+    \item Second line: the commutator terms assume  
+    the same form as that of \eqref{eq:gradient-expansion-final-version},
+    but are an order of magnitude smaller than it.
+    \item Third line: from $A^{\text{R}} - A^{\text{A}} = A^> - A^<$
+    \item The quasiparticle approximation \eqref{eq:qpa} $\Rightarrow$ introduction of $f(\vb*{p})$;
+    the ``out'' part $\propto \Im \Sigma$
+    ($\Im \Sigma$ generally is even not well-defined)
+\end{itemize}
 
+\framebreak
+
+\textbf{Obtaining the collision integral} 
+
+\begin{equation}
+    \text{LHS} = \ii \partial_T G^< 
+    - \ii \left(
+        \pdv{H_0}{\vb*{X}} \cdot \pdv{G^<}{\vb*{p}}
+        - \pdv{H_0}{\vb*{p}} \cdot \pdv{G^<}{\vb*{X}}
+    \right),
+\end{equation}
+where the $- \pdv{H_0}{T} \pdv{G^<}{\omega}
++ \pdv{H}{\omega} \pdv{G^<}{T}$ terms vanish 
+when $H_0$ contains no strong time dependence.
+\begin{equation}
+    \begin{aligned}
+        \text{RHS} = G^< \Sigma[\ii G^>] - G^> \Sigma[\ii G^<].
+    \end{aligned}
+\end{equation}
+$G^<$ appears in the LHS once, 
+so there is a $2\pi \ii \delta(\omega - H)$ factor in the LHS; 
+in the RHS suppose $\Sigma \sim G^n$, 
+then the normalization factor coming with $G$ is $(2\pi \ii \delta(\omega - H))^{n+1}$; 
+but since there are $n$ propagators in $\Sigma$,
+we have $n - 1$ frequency integrals connecting them 
+to the ``skeleton'' of $\Sigma$, each with a factor of $1 / 2\pi$, 
+so finally there is a $2 \pi \delta(\omega - H)$ factor in the RHS, 
+which exactly is the factor seen in Fermi golden rule. 
+The imaginary units always cancel each other finally.
+
+\textbf{Example: disorder self-energy} The self-energy is 
+\begin{equation}
+    - \ii \Sigma(\vb*{p}, \omega) =\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,53);\path (90.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Straight Lines [id:da34110112918304614] 
+    \draw [line width=1.5]    (11.33,45.33) -- (76.17,45.33) ;
+    \draw [shift={(48.75,45.33)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (9.91,-4.76) -- (0,0) -- (9.91,4.76) -- (6.58,0) -- cycle    ;
+    %Straight Lines [id:da28599487657289924] 
+    \draw  [dash pattern={on 0.84pt off 2.51pt}]  (11.33,45.33) -- (42.17,10.94) ;
+    %Straight Lines [id:da30643444691024047] 
+    \draw  [dash pattern={on 0.84pt off 2.51pt}]  (76.17,45.33) -- (42.17,10.94) ;
+    %Straight Lines [id:da46568468657695483] 
+    \draw    (42.17,10.94) ;
+    \draw [shift={(42.17,10.94)}, rotate = 45] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    \end{tikzpicture}
+    = \sum_{\vb*{q}} - \frac{1}{V} c \abs*{v(\vb*{q} - \vb*{p})}^2 \cdot \ii G(\vb*{q}, \omega),
+\end{equation}
+where each dotted line corresponds to $- \ii g v (\vb*{q} - \vb*{p}) / \sqrt{V}$,
+and $c$ comes from averaging over the distribution of disorders.
+
+The equation becomes 
+\begin{equation}
+    \begin{aligned}
+        &\quad \ii \partial_T G^< 
+        - \ii \left(
+            \pdv{H_0}{\vb*{X}} \cdot \pdv{G^<}{\vb*{p}}
+            - \pdv{H_0}{\vb*{p}} \cdot \pdv{G^<}{\vb*{X}}
+        \right)  \\
+        &= \frac{1}{V} \sum_{\vb*{q}} c \abs*{v(\vb*{p} - \vb*{q})}^2 
+        ( \ii G^<(\vb*{p}) \cdot G^>(\vb*{q})
+        - \ii G^>(\vb*{p}) \cdot G^<(\vb*{q}) ),
+    \end{aligned}
+\end{equation}
+and thus 
 
 \end{frame}
 
