@@ -1191,6 +1191,23 @@ The structure of this expression reveals the Feynman rules for a crystal:
     if $\vb*{q}$ is not selected as a free momentum variable, 
     it shouldn't be integrated over.
     Here the normalization of the wave functions should be \eqref{eq:orthogonal}.
+
+    We can go further and rewrite $M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G})$ 
+    in the $\vb*{G}$-space, instead of the real space. 
+    It can be verified that under the following normalization 
+    \begin{equation}
+        \psi_{n \vb*{k}}(\vb*{r}, \sigma) = \ee^{\ii \vb*{k} \cdot \vb*{r}} \cdot 
+        \underbrace{
+            \frac{1}{\sqrt{V}} \sum_{\vb*{G}} c_{n \vb*{k}}(\vb*{G}, \sigma) \ee^{\ii \vb*{G} \cdot \vb*{r}}
+        }_{u_{n \vb*{k}}(\vb*{r}, \sigma)} , 
+    \end{equation}
+    we have 
+    \begin{equation}
+        M_{n n'}(\vb*{k}, \vb*{q}, \vb*{G}) = 
+        \sum_{\vb*{G}', \sigma} 
+        c^*_{n, \vb*{k} + \vb*{q}}(\vb*{G}', \sigma) 
+        c_{n' \vb*{k}} (\vb*{G}' - \vb*{G}, \sigma).
+    \end{equation}
 \end{itemize}
 
 The $\mel*{\text{out}}{\ee^{\pm \ii (\vb*{q} + \vb*{G}) \cdot \vb*{r}}}{\text{in}}$
@@ -3637,6 +3654,7 @@ we always have
             - [\epsilon^{\text{a}}_{\vb*{G} \vb*{G}'}]^{-1} (\vb*{q}, \omega') 
         }{\omega - \xi_{n \vb*{k}} - \omega' + \ii 0^+ \sgn(\xi_{n \vb*{k}})} v(\vb*{q}+\vb*{G}') .
     \end{aligned}
+    \label{eq:ch-sum-final}
 \end{equation}
 
 \section{Self-consistency modes}
@@ -4116,11 +4134,8 @@ we note that
 and therefore if $\vb*{G} = \vb*{n} \cdot 1 / a_0$, we have 
 \begin{equation}
     \frac{\hbar^2 \vb*{G}^2}{2m} \leq E_{\text{cut}} \Leftrightarrow
-    \vb*{n}^2 \leq E_{\text{cut}} / \unit{Ry}.
+    \left(\frac{2\pi a_0}{a}\right)^2 n_x^2 + \left(\frac{2 \pi a_0}{b}\right)^2 n_y^2 + \left(\frac{2 \pi a_0}{c}\right)^2 n_z^2 \leq E_{\text{cut}} / \unit{Ry}.
 \end{equation}
-Thus, the $\vb*{G}$ vectors are usually stored 
-TODO: but the unit of $\vb*{G}$ should naturally be $2 \pi / a$,
-where $a$ is the lattice constant?
 
 \chapter{Tight-binding models}
 
@@ -4997,11 +5012,18 @@ are large enough.
 The parameters included are: 
 \begin{itemize}
     \item The $\vb*{k}$- (and therefore $\vb*{q}$-)grid
-        this is defined in the \shortcode{2.1-wfn} step;
-    \item The cutoff energy in DFT; 
+        this is defined in the \shortcode{2.1-wfn} step,
+        which influences the accuracy of the dielectric matrix;
+    \item The cutoff energy in DFT, 
+        which influences the accuracy of DFT, 
+        and therefore is relevant in the accuracy of both 
+        $\varepsilon_{n \vb*{k}}$ and $c_{n \vb*{k}}(\vb*{G}, \sigma)$,
+        hence the accuracy of $M_{nn'}(\vb*{k}, \vb*{q}, \vb*{G})$;
     \item The number of empty bands given to \shortcode{epsilon}; 
-    \item The cutoff energy in \shortcode{epsilon}; 
-    \item TODO: what's number in CH summation? Possibly just \shortcode{number_bands}.
+    \item The cutoff energy in \shortcode{epsilon}, 
+        or in other words the screened cutoff energy; 
+    \item The number of bands in CH summation \eqref{eq:ch-sum-final},
+        i.e. the number of bands in \shortcode{sigma}. 
 \end{itemize}
 
 TODO: problem: do high bands require more $\vb*{G}$ vectors, 

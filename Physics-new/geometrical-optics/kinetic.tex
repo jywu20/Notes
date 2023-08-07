@@ -213,9 +213,12 @@ and also the fundamental validity condition of QBE:
 \ul{the validity of gradient expansion of the effective density matrix 
 in the Wigner representation}.
 Physically speaking, this means the system should allow 
-the formation of defined wave pockets, 
+the formation of defined wave packets, 
 which has well-defined positions 
-but also looks like a plane wave when we zoom in on it. 
+but also looks like a plane wave when we zoom in on it.
+Specifically, this means diffraction shouldn't be an important factor here;
+but if a structure with strong diffraction can be modeled as a scattering process, 
+diffraction in this case can still be captured by the collision integral.
 
 The next step is to find the true meaning of $\mu_{\text{s}}$. 
 Assuming a clean background and a stationary configuration, 
@@ -260,6 +263,38 @@ using the relaxation time approximation, and get
 \end{equation}
 where $\mu_{\text{t}}$ is known as the extinction coefficient. 
 
+Until now, we have only discussed about ``scalar light'':
+$L$ contains no discrete index.
+This works when all photons in the system 
+are polarized in one direction; 
+this however is not a realistic assumption in actual optical systems.
+Thus, in \eqref{eq:rte-final}, 
+we need to replace $L$ and $P$ by $2 \times 2$ matrices;
+$L_{\alpha \beta}$ can be seen as the single-photon reduced density matrix 
+when the spatial indices are fixed:
+the full single-photon reduced density matrix is 
+$L_{\alpha \vb*{k}, \beta \vb*{k}'}$,
+and $\vb*{k}$ and $\vb*{k}'$ are recast into $\vb*{k}$ and $\vb*{r}$ 
+when we derive the Boltzmann equation.
+Now \eqref{eq:rte-final} is 
+\begin{equation}
+    \frac{1}{c} \pdv{L_{\alpha \beta}}{t} + \vu*{s} \cdot \grad_{\vb*{r}} L_{\alpha \beta}
+    = - \underbrace{(\mu_{\text{a}} + \mu_{\text{s}})_{\alpha \gamma}}_{\mu_{\text{t}}} L_{\gamma \beta} 
+    + \mu_{\text{s}} \int \dd{\Omega'} 
+    P_{\alpha \gamma}(\vu*{s}, \vu*{s}') L_{\gamma \beta}(\vb*{r}, \vu*{s}', t)  .
+\end{equation} 
+The detected intensity is $\trace L$.
+It's however possible that $P_{\alpha \gamma}$ randomly 
+turns one polarization to another, 
+and if this polarization relaxation process is fast enough 
+that long before $L$ reaches equilibrium, 
+$L_{\alpha \beta}$ is almost unpolarized,
+\eqref{eq:rte-final} can still be taken literally, 
+since 
+\begin{equation}
+    L_{\alpha \beta} = \delta_{\alpha \beta} L / 2.
+\end{equation}
+
 A final correction to RTE is the spatial non-uniformity of optical properties, 
 including scattering and change of light speed. 
 This means both $\mu_{\text{a/s}}$ and $P(\vu*{s}, \vu*{s}')$ 
@@ -300,6 +335,10 @@ Under the following assumptions, RTE is reduced to the diffusion equation:
         since otherwise it's not likely that the radiance finally converges to 
         an isotropic solution.
 \end{itemize}
+
+In this section we ignore polarization;
+that's to say, we assume that scattering events 
+relax polarization quickly enough.
 
 If we only keep the first two spherical harmonic components of $L$
 (here the first approximation is used), 
@@ -473,7 +512,7 @@ In these cases, we get
 \end{equation}
 The time evolution term is thrown away. 
 This equation is sometimes known as the \concept{scattering equation}.
-
+Again, for polarized light, $L P$ should be replaced by $P_{\alpha \gamma} L_{\gamma \beta}$.
 
 \begin{figure}
     \centering
@@ -482,7 +521,7 @@ This equation is sometimes known as the \concept{scattering equation}.
     \label{fig:boundary-scattering}
 \end{figure}
 
-\section{Surface rendering}
+\section{Surface rendering: reflection}
 
 If we are not modeling things like clouds, 
 and are interested in, say, the image of a cup or an apple, 
@@ -597,5 +636,60 @@ where the $\cos \theta'$ factor can be obtained intuitively
 by considering the fact that if a beam of light 
 is incident on the material with an angle $\theta'$, 
 the effective cross section of the beam is reduced by a factor of $\cos \theta'$.
+
+\section{More about surface}
+
+
+One thing that is hard to place this into the framework 
+of scattering of photons in a 3D space
+is transmission, 
+since now we have two bulk areas with different optical properties,
+and the Boltzmann transportation approach needs to be corrected 
+to capture this scenario.
+We still consider TODO: Fabry–Pérot interferometer??? We know a crystal ball also has internal electromagnetic modes, which can only be derived with full wave optics; 
+also multiple reflection/transmission, 
+without polarization relaxation,
+can also create phenomenon that can't be captured by scalar \eqref{eq:rte-final}??
+
+A even more complicated case is when there indeed is 
+a very thing intermediate layer between the two bulk spaces; 
+in this case we need \concept{bidirectional scattering-surface reflectance distribution function (BSSRDF)}
+and \concept{bidirectional scattering-surface transmittance distribution function (BSSTDF)},
+which includes the possibility that light comes into the surface in one position 
+but goes out in another.
+
+There is a major notation difference between the notation above that is more familiar to physicists
+and the standard notation in computer graphics:
+in CG, the direction unit vector is usually represented as $\omega$, 
+and $\dd{\Omega}$ is often written as $\dd{\Omega}$;
+thus the rendering equation now reads 
+\begin{equation}
+    L(\omega_{\text{o}}) = \int f(\omega_{\text{o}}, \omega_{\text{i}}) L(\omega_{\text{i}}) \abs{\cos \theta_{\text{i}}} \dd{\omega_{\text{i}}},
+\end{equation}
+where $f(\omega_{\text{o}}, \omega_{\text{i}})$ 
+is the sum of BRDF and BTDF; 
+of course polarization may still be important above, 
+and it's also possible that we have BSSTDF and BSSTDF 
+so another integral in the position variable is needed.
+
+\section{Example of BDSF: boundary between two dielectrics}
+
+In this section we derive the 
+
+\begin{equation}
+    f_{\text{r}} = F_{\text{r}} \frac{\delta(\vu*{s}_\text{i}, \vu*{s}_{\text{r}})}{\abs*{\cos \theta_{\text{r}}}}
+\end{equation}
+
+For reflected light, we have 
+\begin{equation}
+    \begin{aligned}
+        \abs*{\vb*{E}_{\text{t}}}^2 = \abs*{t}^2 \abs*{\vb*{E}_{\text{i}}}^2 
+        &\Rightarrow \epsilon_{\text{t}} \abs*{\vb*{E}_{\text{t}}}^2 
+        = \frac{\epsilon_{\text{t}}}{\epsilon_{\text{i}}} \abs*{t}^2 \epsilon_{\text{i}} \abs*{\vb*{E}_{\text{i}}}^2 \\
+        &\Rightarrow L_{\text{t}}(\vb*{r}, \vu*{s}_{\text{t}}) 
+        = \frac{n_{\text{t}}^2}{n_{\text{i}}^2} \abs*{t}^2 L_{\text{i}}(\vb*{r}, \vu*{s}_{\text{i}}).
+    \end{aligned}
+\end{equation}
+
 
 \end{document}
