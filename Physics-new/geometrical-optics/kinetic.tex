@@ -349,6 +349,7 @@ then we have
 \begin{equation}
     L(\vb*{r}, \vu*{s}, t) = \frac{1}{4 \pi} \Phi(\vb*{r}, t) 
     + \frac{3}{4 \pi} \vb*{J} \cdot \vu*{s},
+    \label{eq:diffusion-radiance}
 \end{equation}
 where 
 \begin{equation}
@@ -475,11 +476,13 @@ we have
 \begin{equation}
     \frac{1}{c} \pdv{\Phi}{t} + \div{\vb*{J}} + \mu_{\text{a}} \Phi = 0, \quad 
     \vb*{J} = - D \grad{\Phi},
+    \label{eq:diffusion}
 \end{equation}
 where 
 \begin{equation}
     D = \frac{1}{3 (\mu_{\text{a}} + \mu_{\text{s}}')}, \quad 
     \mu_{\text{s}}' = (1 - g) \mu_{\text{s}}, 
+    \label{eq:diffusion-property}
 \end{equation}
 and 
 \begin{equation}
@@ -511,7 +514,8 @@ In these cases, we get
     \label{eq:se-final}
 \end{equation}
 The time evolution term is thrown away. 
-This equation is sometimes known as the \concept{scattering equation}.
+This equation is sometimes known as the \concept{scattering equation}
+or \concept{volume rendering equation}.
 Again, for polarized light, $L P$ should be replaced by $P_{\alpha \gamma} L_{\gamma \beta}$.
 
 \begin{figure}
@@ -521,7 +525,7 @@ Again, for polarized light, $L P$ should be replaced by $P_{\alpha \gamma} L_{\g
     \label{fig:boundary-scattering}
 \end{figure}
 
-\section{Surface rendering: reflection}
+\section{Surface boundary condition: reflection}
 
 If we are not modeling things like clouds, 
 and are interested in, say, the image of a cup or an apple, 
@@ -690,6 +694,98 @@ For reflected light, we have
         = \frac{n_{\text{t}}^2}{n_{\text{i}}^2} \abs*{t}^2 L_{\text{i}}(\vb*{r}, \vu*{s}_{\text{i}}).
     \end{aligned}
 \end{equation}
+
+\section{Several trivial cases of volume rendering}
+
+The last piece needed to render a system with trivial bulk properties 
+where all interesting things happen at the boundaries 
+is how to link $L(\vb*{r}, \vu*{s})$ at the boundaries 
+with $L(\vb*{r}, \vu*{s})$ in the space. 
+
+Let's start with the example of the point source.
+Intuitively, the radiance around a point source assumes the form of 
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) \propto \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}),
+    \label{eq:ideal-inverse-square}
+\end{equation}
+when there is no scattering or absorption in the space,
+which is the inverse-square law. 
+We can verify this solution explicitly: 
+when there is no scattering and absorption, 
+the volume rendering equation reads 
+\begin{equation}
+    \vu*{s} \cdot \grad_{\vb*{r}} L = 0,
+\end{equation}
+and indeed we have  
+\begin{equation}
+    \begin{aligned}
+        \vu*{s} \cdot \grad_{\vb*{r}} \left(\frac{1}{r^2} \delta(\vu*{r}, \vu*{s})\right) &= 
+        \grad_{\vb*{r}} \cdot \left(
+            \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}) \vu*{s}
+        \right) 
+        = \grad_{\vb*{r}} \cdot \left(
+            \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}) \vu*{r}
+        \right) \\
+        &= \frac{1}{r^2} \pdv{r} \left(
+            r^2 \cdot \frac{1}{r^2} \delta(\vu*{r}, \vu*{s})
+        \right) = 0.
+    \end{aligned}
+\end{equation}
+Here the second line makes use of the fact 
+that $\delta(\vu*{r}, \vu*{s})$ involves no radial dependence.
+
+It's instructive to compare this solution with 
+the expression of $L$ obtained from Maxwell equations.
+TODO: absence of diffraction
+
+When we do have absorption and/or scattering in the system, 
+intuitively we have 
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) \propto \frac{\ee^{- \mu_{\text{t}} r}}{r^2},
+    \label{eq:dampened-inverse-square-law}
+\end{equation}
+which goes back to \eqref{eq:ideal-inverse-square}
+when $\mu_{\text{t}} = 0$.
+Again this can be verified, under the assumption that 
+we can ignore the amount of light going back (TODO: illustration):
+now the volume rendering equation becomes 
+\begin{equation}
+    \vu*{s} \cdot \grad_{\vb*{r}} L = - \mu_{\text{t}} L,
+\end{equation}
+and the LHS evaluates into 
+\begin{equation}
+    \begin{aligned}
+        \vu*{s} \cdot \grad_{\vb*{r}} \left(
+            \frac{\ee^{- \mu_{\text{t}} r}}{r^2}
+        \right) &= 
+        \grad_{\vb*{r}} \left(
+            \frac{\ee^{- \mu_{\text{t}} r}}{r^2} 
+            \delta(\vu*{r}, \vu*{s}) \vu*{r}
+        \right)  \\
+        &= \delta(\vu*{r}, \vu*{s}) \cdot \frac{1}{r^2} \pdv{r} \left(
+            r^2 \cdot \frac{\ee^{- \mu_{\text{t}} r}}{r^2} 
+        \right) \\
+        &= \delta(\vu*{r}, \vu*{s}) \cdot \frac{1}{r^2} 
+        (- \mu_{\text{r}}) \ee^{- \mu_{\text{t}} r} = \text{RHS}.
+    \end{aligned}
+\end{equation}
+Interestingly, although the $\ee^{- \mu_{\text{t}} r}$ factor 
+looks diffusional, 
+it's different with the diffusion coefficient given in 
+\eqref{eq:diffusion} and \eqref{eq:diffusion-property},
+and this can be expected: for a point source, 
+the structure of the radiance is rather different with 
+the assumption in \eqref{eq:diffusion-radiance}.
+
+\eqref{eq:ideal-inverse-square} and \eqref{eq:dampened-inverse-square-law}
+work as well for finite, spherical sources,
+of which the wave vector of radiation at the boundary 
+is parallel to the normal vector.
+We want to extend the $1/r^2$ law to a more generalized boundary.
+
+
+\section{Path sampling, ray tracing, and the like}
+
 
 
 \end{document}
