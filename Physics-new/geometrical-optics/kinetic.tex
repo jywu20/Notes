@@ -95,12 +95,18 @@
 
 % Color boxes
 \tcbuselibrary{skins, breakable, theorems}
-\newtcbtheorem[number within=section]{warning}{Warning}%
-  {colback=orange!5,colframe=orange!65,fonttitle=\bfseries, breakable}{warn}
-\newtcbtheorem[number within=section]{note}{Note}%
-  {colback=green!5,colframe=green!65,fonttitle=\bfseries, breakable}{note}
-\newtcbtheorem[number within=section]{info}{Info}%
-  {colback=blue!5,colframe=blue!65,fonttitle=\bfseries, breakable}{info}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
 
 % Disable unsupported commands in bookmark titles 
 \pdfstringdefDisableCommands{%
@@ -769,9 +775,43 @@ and indeed we have
             r^2 \cdot \frac{1}{r^2} \delta(\vu*{r}, \vu*{s})
         \right) = 0.
     \end{aligned}
+    \label{eq:inverse-square-is-solution}
 \end{equation}
 Here the second line makes use of the fact 
 that $\delta(\vu*{r}, \vu*{s})$ involves no radial dependence.
+
+\begin{infobox*}{Another way to derive \eqref{eq:inverse-square-is-solution}}
+    We can also do \eqref{eq:inverse-square-is-solution} in a more straightforward way.
+    We use $(\theta_0, \varphi_0)$ to refer to the spherical coordinates of $\vu*{s}$,
+    and use $(r, \theta, \varphi)$ to refer to the spherical coordinates of $\vb*{r}$.
+    Thus 
+    \begin{equation}
+        \grad_{\vb*{r}} = \vu*{r} \pdv{r} + \vu*{\theta} \frac{1}{r} \pdv{\theta} 
+        + \vu*{\varphi} \frac{1}{r \sin \theta} \pdv{\varphi},
+    \end{equation}
+    \begin{equation}
+        \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}) = \frac{1}{r^2}
+        \frac{1}{\sin \theta} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0)
+        = \frac{1}{r^2} \frac{1}{\sin \theta_0} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0),
+    \end{equation}
+    and 
+    \begin{equation}
+        \begin{aligned}
+            \vu*{s} \cdot \vu*{\theta} &= \sin \theta_0 \cos \varphi_0 \cos \theta \cos \varphi
+            + \sin \theta_0 \sin \varphi_0 \cos \theta \sin \varphi 
+            - \cos \theta_0 \sin \theta, \\ 
+            \vu*{s} \cdot \vu*{\varphi} &= - \sin \theta_0 \cos \varphi_0 \sin \varphi 
+            + \sin \theta_0 \sin \varphi_0 \cos \varphi.
+        \end{aligned}
+    \end{equation}
+    Using the fact that 
+    \begin{equation}
+        \delta'(x) f(x) = \delta'(x) f(0) - \delta(x) f'(0),
+    \end{equation}
+    we are able to show that all $\delta'(\theta - \theta_0)$ and $\delta'(\varphi - \varphi_0)$
+    terms vanish, and indeed we have \eqref{eq:inverse-square-is-solution}.
+\end{infobox*}
+
 Then we proceed to decide the constant $C$.
 We have 
 \begin{equation}
@@ -802,7 +842,7 @@ intuitively we have
 which goes back to \eqref{eq:ideal-inverse-square}
 when $\mu_{\text{t}} = 0$.
 Again this can be verified, under the assumption that 
-we can ignore the amount of light going back (TODO: illustration):
+we can ignore scattered light that comes back:
 now the volume rendering equation becomes 
 \begin{equation}
     \vu*{s} \cdot \grad_{\vb*{r}} L = - \mu_{\text{t}} L,
@@ -853,7 +893,12 @@ has a clear physical meaning: it's the equation of the ray
 in the direction $\vu*{s}$ that passes $\vb*{r}$.
 Thus, we find that along a ray, 
 the radiance in the direction of the ray doesn't change. 
-TODO: conflict with inverse square law 
+TODO: conflict with inverse square law: 
+it seems the problem with the inverse square law is that 
+first doing $\vu*{s} \cdot \grad_{\vb*{r}}$ 
+and then applying it to $L$ 
+is somehow different with first doing $\grad_{\vb*{r}} L$
+and then multiply $\vu*{s}$ to it. 
 
 \section{Path sampling, ray tracing, and the like}
 
