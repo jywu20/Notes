@@ -127,7 +127,9 @@
 
 \maketitle
 
-\section{Heuristic derivation of the light transportation equation}
+\section{Kinetics of photons}
+
+\subsection{Heuristic derivation of the light transportation equation}
 
 In this section we derive the light transportation equation 
 in a way inspired by the quantum Boltzmann equation (QBE).
@@ -339,7 +341,7 @@ due to the slow spatial variance of $c$,
 we can still rewritten it as $c \grad_{\vb*{r}} L$, 
 and get back to \eqref{eq:rte-final}.
 
-\section{From RTE to the diffusion equation}
+\subsection{From RTE to the diffusion equation}
 
 Under the following assumptions, RTE is reduced to the diffusion equation: 
 \begin{itemize}
@@ -528,7 +530,7 @@ and
 \end{equation}
 Now we find RTE has been completely reduced to a diffusion equation.
 
-\section{Volume rendering}
+\subsection{Volume rendering}
 
 In most everyday cases, the time evolution of $L$ can be ignored: 
 the system reaches equilibrium as soon as ``the light is turned on'', 
@@ -561,7 +563,7 @@ Again, for polarized light, $L P$ should be replaced by $P_{\alpha \gamma} L_{\g
     \label{fig:boundary-scattering}
 \end{figure}
 
-\section{Surface boundary condition: reflection}
+\subsection{Surface boundary condition: reflection}
 
 If we are not modeling things like clouds, 
 and are interested in, say, the image of a cup or an apple, 
@@ -656,7 +658,6 @@ This means we can rewrite \eqref{eq:re-2} to
     L(\vb*{r}, \vu*{s}) = \int_{\vu*{s}' \cdot \vu*{n} < 0} 
     f(\vu*{s}, \vu*{s}') L(\vb*{r}, \vu*{s}') \cos \theta' \dd{\Omega'}, \quad 
     \vu*{s} \cdot \vu*{n} > 0,
-    \label{eq:re-final}
 \end{equation}
 with the BRDF defined appropriately.
 The photon number conservation condition (essentially the energy conservation condition, 
@@ -666,20 +667,34 @@ since we don't have any frequency changing mechanism) is
 \end{equation}
 This is an inequality, because absorption is also included in the BRDF.
 
+In real materials, the optical properties of the boundary 
+usually observes some spatial variance,
+but when the variance is usually slow enough so that 
+the above derivation illustrated in \eqref{fig:boundary-scattering} still works  
+at a particular spatial point, 
+without any interference or diffraction effects, 
+and in this case we have 
+\begin{equation}
+    L(\vb*{r}, \vu*{s}) = \int_{\vu*{s}' \cdot \vu*{n} < 0} 
+    f(\vb*{r}, \vu*{s}, \vu*{s}') L(\vb*{r}, \vu*{s}') \cos \theta' \dd{\Omega'}, \quad 
+    \vu*{s} \cdot \vu*{n} > 0.
+    \label{eq:re-final}
+\end{equation}
+
 \eqref{eq:re-final} can be derived in a more straightforward way 
 from energy conservation, 
 where we define 
 \begin{equation}
     \underbrace{\dd{L(\vb*{r}, \vu*{s})}}_{\text{outgoing radiance}} 
     = \underbrace{L(\vb*{r}, \vu*{s}') \cos \theta' \dd{\Omega'}}_{\text{incoming radiance}} 
-    \cdot \underbrace{f(\vu*{s}, \vu*{s}')}_{\text{response}} ,
+    \cdot \underbrace{f(\vb*{r}, \vu*{s}, \vu*{s}')}_{\text{response}} ,
 \end{equation}
 where the $\cos \theta'$ factor can be obtained intuitively 
 by considering the fact that if a beam of light 
 is incident on the material with an angle $\theta'$, 
 the effective cross section of the beam is reduced by a factor of $\cos \theta'$.
 
-\section{More about surface}
+\subsection{More about surface}
 
 
 One thing that is hard to place this into the framework 
@@ -718,7 +733,9 @@ of course polarization may still be important above,
 and it's also possible that we have BSSTDF and BSSTDF 
 so another integral in the position variable is needed.
 
-\section{Example of BDSF: boundary between two dielectrics}
+\section{Describing the boundary}
+
+\subsection{Example of BDSF: boundary between two dielectrics}
 
 In this section we derive the 
 
@@ -737,12 +754,13 @@ For reflected light, we have
     \end{aligned}
 \end{equation}
 
-\section{Several trivial cases of volume rendering}
+\section{Path sampling, ray tracing, and the like}
 
-The last piece needed to render a system with trivial bulk properties 
-where all interesting things happen at the boundaries 
-is how to link $L(\vb*{r}, \vu*{s})$ at the boundaries 
-with $L(\vb*{r}, \vu*{s})$ in the space. 
+After obtaining enough information about all boundaries and surfaces in the system,
+and \ul{assuming that the bulk properties of the system are completely homogeneous},
+we can move to boundary rendering. 
+
+\subsection{Examples of light source: point source}
 
 Let's start with the example of the point source.
 Intuitively, when there is no scattering or absorption in the space,
@@ -780,37 +798,36 @@ and indeed we have
 Here the second line makes use of the fact 
 that $\delta(\vu*{r}, \vu*{s})$ involves no radial dependence.
 
-\begin{infobox*}{Another way to derive \eqref{eq:inverse-square-is-solution}}
-    We can also do \eqref{eq:inverse-square-is-solution} in a more straightforward way.
-    We use $(\theta_0, \varphi_0)$ to refer to the spherical coordinates of $\vu*{s}$,
-    and use $(r, \theta, \varphi)$ to refer to the spherical coordinates of $\vb*{r}$.
-    Thus 
-    \begin{equation}
-        \grad_{\vb*{r}} = \vu*{r} \pdv{r} + \vu*{\theta} \frac{1}{r} \pdv{\theta} 
-        + \vu*{\varphi} \frac{1}{r \sin \theta} \pdv{\varphi},
-    \end{equation}
-    \begin{equation}
-        \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}) = \frac{1}{r^2}
-        \frac{1}{\sin \theta} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0)
-        = \frac{1}{r^2} \frac{1}{\sin \theta_0} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0),
-    \end{equation}
-    and 
-    \begin{equation}
-        \begin{aligned}
-            \vu*{s} \cdot \vu*{\theta} &= \sin \theta_0 \cos \varphi_0 \cos \theta \cos \varphi
-            + \sin \theta_0 \sin \varphi_0 \cos \theta \sin \varphi 
-            - \cos \theta_0 \sin \theta, \\ 
-            \vu*{s} \cdot \vu*{\varphi} &= - \sin \theta_0 \cos \varphi_0 \sin \varphi 
-            + \sin \theta_0 \sin \varphi_0 \cos \varphi.
-        \end{aligned}
-    \end{equation}
-    Using the fact that 
-    \begin{equation}
-        \delta'(x) f(x) = \delta'(x) f(0) - \delta(x) f'(0),
-    \end{equation}
-    we are able to show that all $\delta'(\theta - \theta_0)$ and $\delta'(\varphi - \varphi_0)$
-    terms vanish, and indeed we have \eqref{eq:inverse-square-is-solution}.
-\end{infobox*}
+We can also do \eqref{eq:inverse-square-is-solution} in a more straightforward way.
+We use $(\theta_0, \varphi_0)$ to refer to the spherical coordinates of $\vu*{s}$,
+and use $(r, \theta, \varphi)$ to refer to the spherical coordinates of $\vb*{r}$.
+Thus 
+\begin{equation}
+    \grad_{\vb*{r}} = \vu*{r} \pdv{r} + \vu*{\theta} \frac{1}{r} \pdv{\theta} 
+    + \vu*{\varphi} \frac{1}{r \sin \theta} \pdv{\varphi},
+\end{equation}
+\begin{equation}
+    \frac{1}{r^2} \delta(\vu*{r}, \vu*{s}) = \frac{1}{r^2}
+    \frac{1}{\sin \theta} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0)
+    = \frac{1}{r^2} \frac{1}{\sin \theta_0} \delta(\theta - \theta_0) \delta(\varphi - \varphi_0),
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \vu*{s} \cdot \vu*{\theta} &= \sin \theta_0 \cos \varphi_0 \cos \theta \cos \varphi
+        + \sin \theta_0 \sin \varphi_0 \cos \theta \sin \varphi 
+        - \cos \theta_0 \sin \theta, \\ 
+        \vu*{s} \cdot \vu*{\varphi} &= - \sin \theta_0 \cos \varphi_0 \sin \varphi 
+        + \sin \theta_0 \sin \varphi_0 \cos \varphi.
+    \end{aligned}
+\end{equation}
+Using the fact that 
+\begin{equation}
+    \delta'(x) f(x) = \delta'(x) f(0) - \delta(x) f'(0),
+    \label{eq:delta-prime-def}
+\end{equation}
+we are able to show that all $\delta'(\theta - \theta_0)$ and $\delta'(\varphi - \varphi_0)$
+terms vanish, and indeed we have \eqref{eq:inverse-square-is-solution}.
 
 Then we proceed to decide the constant $C$.
 We have 
@@ -836,7 +853,7 @@ TODO: absence of diffraction
 When we do have absorption and/or scattering in the system, 
 intuitively we have 
 \begin{equation}
-    L(\vb*{r}, \vu*{s}) = \Phi \frac{\ee^{- \mu_{\text{t}} r}}{r^2},
+    L(\vb*{r}, \vu*{s}) = \Phi \frac{\ee^{- \mu_{\text{t}} r}}{4 \pi r^2} \delta(\vu*{s}, \vu*{r}),
     \label{eq:dampened-inverse-square-law}
 \end{equation}
 which goes back to \eqref{eq:ideal-inverse-square}
@@ -881,25 +898,199 @@ of which the wave vector of radiation at the boundary
 is parallel to the normal vector.
 We want to extend the $1/r^2$ law to a more generalized boundary.
 
+\subsection{Tracing the radiance along rays}
+
+The last piece needed to render a system with trivial bulk properties 
+where all interesting things happen at the boundaries 
+is how to link $L(\vb*{r}, \vu*{s})$ at the boundaries 
+with $L(\vb*{r}, \vu*{s})$ in the space. 
+
 The integral form of \eqref{eq:trivial-bulk-re} is 
 \begin{equation}
     L(\vb*{r}, \vu*{s}) = L(\vb*{r} + \vu*{s} t , \vu*{s}),
+    \label{eq:intensity-invariance}
 \end{equation}
 where $t$ is a parameter; the equation 
 \begin{equation}
     \vb*{x} = \vb*{r} + \vu*{s} t 
 \end{equation}
-has a clear physical meaning: it's the equation of the ray 
+has a clear physical meaning: it's the equation of the \concept{ray} 
 in the direction $\vu*{s}$ that passes $\vb*{r}$.
 Thus, we find that along a ray, 
 the radiance in the direction of the ray doesn't change. 
-TODO: conflict with inverse square law: 
-it seems the problem with the inverse square law is that 
-first doing $\vu*{s} \cdot \grad_{\vb*{r}}$ 
-and then applying it to $L$ 
-is somehow different with first doing $\grad_{\vb*{r}} L$
-and then multiply $\vu*{s}$ to it. 
 
-\section{Path sampling, ray tracing, and the like}
+It should be noted that the coverage of \eqref{eq:intensity-invariance}
+is narrower than the original differential volume rendering equation; 
+specifically, it can be easily seen that it conflicts with inverse square law
+\eqref{eq:ideal-inverse-square}
+when $\vu*{s}$ is set to $\vu*{r}$.
+The root cause is we can't always freely change 
+the order of the partial derivative $\vu*{s} \cdot \grad_{\vb*{r}}$
+and the substitution of the variables with concrete values
+when the function following the derivative operator 
+contains $\delta$ functions.
+When deriving \eqref{eq:intensity-invariance},
+what we do is choose a small $t$ and argue that 
+\begin{equation}
+    \eqref{eq:intensity-invariance} \Leftrightarrow
+    L(\vb*{r} + \vu*{s} t) - L(\vb*{r}, \vu*{s}) = t \underbrace{(\vu*{s} \cdot \grad_{\vb*{r}}) L}_{=0},
+\end{equation} 
+where $\vu*{s} \cdot \grad_{\vb*{r}}$ 
+is seen as a one-dimensional gradient operator.
+This, of course, is wrong for \eqref{eq:ideal-inverse-square}: 
+if we set $\vu*{s} = \vu*{r}$, we get 
+\begin{equation}
+    (\vu*{s} \cdot \grad_{\vb*{r}}) L = \vu*{r} \cdot \left(
+        \vu*{r} \pdv{r} + \vu*{\theta} \frac{1}{r} \pdv{\theta} 
+    + \vu*{\varphi} \frac{1}{r \sin \theta} \pdv{\varphi}
+    \right) L = \pdv{r} L = - \frac{\Phi}{2 \pi r^3} \delta(\vu*{s}, \vu*{r}) \neq 0.
+\end{equation}
+On the other hand, if we apply $\grad_{\vb*{r}}$ to $L$ first, 
+we get $\delta'(\theta - \theta_0)$ and $\delta'(\varphi - \varphi_0)$ factors,
+and since now $\vu*{s} \cdot \vu*{\theta}$ and $\vu*{s} \cdot \vu*{\varphi}$
+haven't been evaluated under the assumption that $\vu*{s} = \vu*{r}$, 
+they still have $\theta, \varphi$ dependence, 
+and then \eqref{eq:delta-prime-def} 
+gives us a $\partial_\theta (\vu*{s} \cdot \vu*{\theta})$ term 
+and a $\partial_\varphi (\vu*{s} \cdot \vu*{\varphi})$ term, 
+which, even when $\vu*{r} = \vu*{s}$,
+are still non-zero.
+Usually, when dealing with PDEs, 
+we don't really need to consider such corner cases, 
+since $\delta$ functions usually appear as a ``source'' 
+and the field to be solved has reasonable behaviors 
+even with such a $\delta$ function source. 
+\eqref{eq:ideal-inverse-square} is indeed a very rare case 
+in physics in which we need to seriously consider 
+the unusual properties of $\delta$ function. 
+The corner case of \eqref{eq:ideal-inverse-square} however 
+doesn't need any specific treatment in real world problems: 
+we can always approximate $\delta(\vu*{r}, \vu*{s})$ 
+by a, say, gaussian peak, or a stepwise function like 
+\begin{equation}
+    \delta(\vu*{r}, \vu*{s}) \approx \frac{1}{\Delta \theta \Delta \varphi \sin \theta} 
+    \theta(\Delta \theta / 2 - \abs*{\theta - \theta_0})
+    \theta(\Delta \varphi / 2 - \abs*{\varphi - \varphi_0}) .
+\end{equation}
+Suppose that the light source is actually a small sphere with radius $a$
+placed at $\vb*{r}_0$,
+and that at the light source, 
+the spot size of the radiance in the $\vu*{s}$-space at $\vb*{r}_0$ is $\Delta \Omega_0$
+(see \prettyref{fig:approx-point-source});
+due to momentum conservation, 
+photons that arrive at an imaginary sphere with radius $r$ around $\vb*{r}_0$ 
+are still distributed in a solid angle of $\Delta \Omega_0$, 
+but not all of them comes to $\vb*{r}_0 + r \vu*{s} $: 
+if we only look at the flux at $\vb*{r}_0 + r \vu*{s}$
+though $\dd{A}$, 
+the spot size in the $\vu*{s}$-space becomes 
+\begin{equation}
+    \Delta \Omega = \frac{a^2}{r^2} \Delta \Omega_0.
+\end{equation} 
+When we give an approximation of $\delta(\vu*{r}, \vu*{s})$ at $\vb*{r}_0 + r \vu*{s}$,
+we use $\Delta \Omega$, not $\Delta \Omega_0$,
+and therefore there is a $r^2$ factor in the approximation of $\delta(\vu*{r}, \vu*{s})$;
+that's to say, 
+if at the light source, the $\delta$ function is only an approximate one, 
+then at each space position, 
+the $\delta$ function should also be an approximation one, 
+and the approximation depends on the space point 
+to get us a solution of \eqref{eq:trivial-bulk-re}.
+thus the radiance becomes a constant along a ray, 
+and we have 
+\begin{equation}
+    \begin{aligned}
+        L(\vb*{r}, \vu*{s}) &= \frac{\Phi}{4 \pi r^2} \cdot \frac{1}{\sin \theta \Delta \Omega} 
+        \theta(\Delta \theta / 2 - \abs*{\theta - \theta_0})
+        \theta(\Delta \varphi / 2 - \abs*{\varphi - \varphi_0})  \\
+        &= \frac{\Phi}{4 \pi a^2} \frac{1}{\Delta \Omega_0 \sin \theta} 
+        \theta(\Delta \theta / 2 - \abs*{\theta - \theta_0})
+        \theta(\Delta \varphi / 2 - \abs*{\varphi - \varphi_0}) .
+    \end{aligned}
+\end{equation}
+Indeed this is a constant along a ray: 
+if we go along a ray, $\theta$ and $\varphi$ don't change, 
+and hence $L(\vb*{r}, \vu*{s})$ is a constant; 
+the inverse square behavior can still be obtained if we integrate over $\vu*{s}$,
+while $L(\vb*{r}, \vu*{s})$ satisfies \eqref{eq:intensity-invariance} well.
+Of course, when we come far away from the light source, 
+the spot size will finally be reduced to a rather small value, 
+and \eqref{eq:ideal-inverse-square} eventually is reached.
+
+\begin{figure}
+    \centering
+    \input{optical-path/approx-point-source.tex}
+    \caption{An approximate point source. The orange circle is the surface of the light source; 
+    $\Delta \Omega$ is the width of the angular distribution of $L$. 
+    The grey lines are rays. 
+    When the uncertainty of $\vu*{s}$ distribution at the light source $\vb*{r}_0$ is 
+    given by $\Delta \Omega_0$,
+    it's given by $\Delta \Omega$ at $\vb*{r}_0 + r \vu*{s}$; 
+    this means the approximation of $\delta(\vu*{r}, \vu*{s})$ actually 
+    has spatial dependence.}
+    \label{fig:approx-point-source}
+\end{figure}
+
+\subsection{Rendering as a path summation}
+
+\begin{figure}
+    \centering
+    \input{optical-path/light-path-integral.tex}
+    \caption{An illustration of a surface rendering problem. }
+    \label{fig:surface-rendering-example}
+\end{figure}
+
+Now we have \eqref{eq:intensity-invariance}, 
+and after we get the emission spectrum of all light sources in the system, 
+we are able to decide the radiance in the whole space. 
+The problem is shown in \prettyref{fig:surface-rendering-example}: 
+for a spatial point $\vb*{r}$ (represented by the camera), 
+we enumerate over all possible paths from light sources to it;
+a path contains several rays, 
+connected by reflection and/or refraction.
+Note that we don't impose Snell's law or law of reflection 
+at the boundaries, 
+since it might be the case that we have diffuse reflection or refraction 
+and hence the BSDF doesn't 
+dictate the angle of the outgoing ray, 
+but rather gives a distribution of radiance 
+over the outgoing ray angle.
+We use 
+\begin{equation}
+    L(\vb*{x} \to \vb*{x}') \coloneqq L(\vb*{x}, \widehat{\vb*{x'} - \vb*{x}})
+    = L(\vb*{x}', \widehat{\vb*{x'} - \vb*{x}})
+\end{equation}
+to refer to the radiance of the ray going from $\vb*{x}$ to $\vb*{x}'$, 
+i.e. the radiance at $\vb*{x}$ (or $\vb*{x}'$ -- they are the same, since we have \eqref{eq:intensity-invariance})
+in the direction $\widehat{\vb*{x'} - \vb*{x}}$.
+To connect the radiances of two rays connected at a boundary, 
+we use the rendering equation: 
+the equation now reads 
+\begin{equation}
+    L(\vb*{r}' \to \vb*{r}) = L_{\text{emit}} + L_{\text{scatter}} , \quad L_{\text{scatter}}(\vb*{r}' \to \vb*{r})
+    = \int \dd{\Omega'} f(\vb*{r}'' \to \vb*{r}' \to \vb*{r} ) 
+    L(\vb*{r}'' \to \vb*{r}') \abs*{\cos \theta'} ,
+\end{equation}
+where $L_{\text{emit}}$ refers to the radiance emitted exactly by something at $\vb*{r}'$
+in the direction $\vb*{r}' \to \vb*{r}$, 
+$\vb*{r}''$ is a point on the ray 
+determined by $\vb*{r}'$ and the incoming direction $\vu*{s}'$, 
+and 
+\begin{equation}
+    f(\vb*{r}'' \to \vb*{r}' \to \vb*{r} ) 
+    \coloneqq f(\vb*{r}', \vb*{s} = \widehat{\vb*{r}' - \vb*{r}''}, \vu*{s}' = \widehat{\vb*{r} - \vb*{r}'}).
+\end{equation}
+Since $\vb*{r}''$ is arbitrary, 
+we can push it away until we reach the other side of the 
+$\vb*{r}'' \to \vb*{r}'$ ray, 
+and now $\vb*{r}''$ is on the boundary 
+which the $\vb*{r}'' \to \vb*{r}'$ ray comes from,
+and we find 
+\begin{equation}
+    \dd{\Omega'} = \frac{\cos \theta'' \dd{A''}}{\abs*{\vb*{r}'' - \vb*{r}'}^2}.
+\end{equation}
+Putting the equations above together, 
+we have already explicitly constructed 
+a systematic way to decide $L(\vb*{r}, \vu*{s})$.
 
 \end{document}
