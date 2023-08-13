@@ -1,63 +1,154 @@
 # 类型系统
 
-有必要注意Julia的类型系统具有如下特点：
-- 就类型本身而言，Julia的类型和主流类型论中的类型有所不同（虽然理论上仍然可以看成某种类型论的一个特例）。例如，subtyping在Julia的类型系统中是重要且自然的，虽然它在类型论中是一个相当棘手的feature；又比如Julia允许轻易地创建“只含有一个元素的类型”，可以很容易地做类型的union等。- Julia的类型系统和集合论也是不同的。由于类型本身也是对象，我们同时有`Any <: Any`以及`Any :: Any`；如果想将Julia的类型解释为通常的集合论的集合，那么不能将`::`简单地理解为$\in$。
-- 要注意Julia是nominal typing的（见下文）。
+## 概况
+
+- 就类型本身而言，Julia的类型和主流类型论中的类型有所不同（虽然理论上仍然可以看成某种类型论的一个特例）。例如，subtyping在Julia的类型系统中是重要且自然的，虽然它在类型论中是一个相当棘手的feature；又比如Julia允许轻易地创建“只含有一个元素的类型”，可以很容易地做类型的union等。
+- 但是Julia的类型系统和集合论也是不同的。由于类型本身也是对象，我们同时有`Any <: Any`以及`Any :: Any`；如果想将Julia的类型解释为通常的集合论的集合，那么不能将`::`简单地理解为$\in$；除去这一点，抽象类型可以大致视为集合。
+- 要注意Julia是nominal typing的而不是structural的；这和类型用于决定多重派发怎么做有关。
+  直观地说，这意味着Julia类型描述“一个对象是准备用来干什么的”，而不是“一个对象的内部结构是什么”。
+  这可能也和Julia是科学计算语言这件事有关。
 - 就静态-动态的区分而言，Julia的类型系统是动态类型的：类型不是变量的一部分，而是值的一部分，类型不兼容导致的不是程序被直接拒绝，而是运行时错误
-- 就类型系统的作用而言，Julia的类型的主要用处是用于决定多重派发怎么做，而不是保证程序的正确性；挪用静态类型的术语，这意味着Julia的类型是intrinsic的，因为类型是语义的一部分。当然，一定程度的正确性保证也是有的，比如说把一个字符串传给一个没对`String`定义过方法的函数，肯定就报错了。
-- Julia的类型系统是nominal的而不是structural的；这个参数当然也和类型用于决定多重派发怎么做有关
+- 就类型系统的作用而言，Julia的类型直接决定多重派发怎么做，而不仅仅是保证程序的正确性；挪用静态类型的术语，这意味着Julia的类型是intrinsic的，因为类型是语义的一部分。当然，正确性保证也是有的，比如说把一个字符串传给一个没对`String`定义过方法的函数，肯定就报错了。
 
 
-## Julia的类型宇宙
+## Julia中会出现的各种类型
 
 - 每一个对象都有一个最准确的类型，即`typeof(x)`，它返回一个concrete type。
-  - 如果`x`是某个primitive type的元素，那么`typeof(x)`就是该primitive type。
-  - 如果`x`是通过下面的方式创建的，那么`typeof(x)`是`DataType`：
-    - `primitive type ... end`块，此时`isprimitivetype(x)`求值为`true`，否则为`false`
-    - `abstract type ... end`块，此时`isabstracttype(x)`求值为`true`，否则为`false`
-    - `struct ... end`块和`mutable struct ... end`块，此时`isstructtype(x)`求值为`true`，否则为`false`
-  - 如果`x`是通过`Union{...}`创建的那么`typeof(x)`是`Union`；
-  - 如果`x`是通过`... where {...}`创建的那么`typeof(x)`是`UnionAll`。
-- Julia类型可以看作集合。
-  - Julia允许的从小的集合获得更大的集合的方法包括：
-    - 将一个具体数据类型`T`声明为某个抽象数据类型`T'`的子类型。一个程序中，抽象类型`T'`是所有被声明为`T <: T'`的`T`的并集。
-    - `Union{T1, T2, ...}`，即$\cup_{i} T_i$
-    - `... where {...}`表达式，即集合$\{\cdots | \cdots \}$
-  - Julia支持的其它集合运算包括：
-    - `typeintersect`，交集
-    - 
-- `::`和`<:`的一些定义如下：
-  - `A <: B`求值为`true`，当且仅当$A \subset B$
-  - `::`关系稍微复杂一些
-    - `x :: T`在$x \in T$时求值为`x`。
-      - 如果`typeof(x)`是`T`并且$T \sube T'$，则`x::T'`求值为`x`。
-      - 如果`x :: DataType`求值为`true`，则`x :: Type{x}`求值为`x`
-    - `DataType`和`Any`的一些特殊情况：
-      - `DataType :: DataType`求值为`DataType`
-      - `Any :: Any`求值为`Any`
-      - `Any :: DataType`求值为`Any`
-    - 其余情况下`x::T`求值时抛出一个`TypeError`
-- 以下是几个集合或者说类型的定义：
-  - `DataType`是所有可能是`typeof`输出的东西的集合。它包括：
-    - 全体primitive types（或者说，`DataType`的元素中有`Int64, AbstractFloat`这些东西）
-    - 全体structs和mutable structs
-    - 全体unions
-    - 全体UnionAll
-  - `Any`是以下集合的并集：
-    - 全体primitive types（或者说，`Any`的元素中有1, 2, 3, 'a', 1.3这些东西）
-    - `DataType`
-    - `Type{DataType}`
-  - 按照上面的做法，`Any`本身是一个合法的类型，从而是Julia中的对象，但是它自己无法确定类型。所以我们只能让`Any::Any`。
-  这样一来，`::`就不再是$\in$了。类似的，`DataType::DataType`也必须是正确的，否则只能让`typeof(DataType)`求值为`Any`，但是一个具体的对象的类型不应该是`Any`。
 
-Julia的编程范式让一件事变得不可能：给函数确定类型，因为这要求我们能够对任意一个指向函数的名称`func`确定类型，但是`func`名下可以有多个方法。
+### 具体类型
 
-`where`表达式实际上同时支持了generic type和existential type。这和通常的（涉及较多具体计算的那种）数学中的做法是一样的：A where B一方面给出了一个函数关系，一方面给出了全体满足B的变量取值下A构成的集合
+- 如果`x`是某个primitive type的元素，那么`typeof(x)`就是该primitive type。
+- 如果`x`是通过下面的方式创建的，那么`typeof(x)`是`DataType`：
+  - `primitive type ... end`块，此时`isprimitivetype(x)`求值为`true`，否则为`false`
+  - `abstract type ... end`块，此时`isabstracttype(x)`求值为`true`，否则为`false`
+  - `struct ... end`块和`mutable struct ... end`块，此时`isstructtype(x)`求值为`true`，否则为`false`
+- 如果`x`是通过`Union{...}`创建的那么`typeof(x)`是`Union`；
+- 如果`x`是通过`... where {...}`创建的那么`typeof(x)`是`UnionAll`。
+- 所有可能是`typeof`输出的东西都具有类型`DataType`。它包括：
+  - 全体primitive types（或者说，`DataType`的元素中有`Int64, AbstractFloat`这些东西）
+  - 全体structs和mutable structs
+  - 全体unions
+  - 全体UnionAll
+- `Any`是以下东西的类型：
+  - 全体primitive types（或者说，`Any`的元素中有1, 2, 3, 'a', 1.3这些东西）
+  - `DataType`
+  - `Type{DataType}`
+- 按照上面的做法，`Any`本身是一个合法的类型，从而是Julia中的对象，但是它自己无法确定类型。所以我们只能让`Any::Any`。
+这样一来，`::`就不再是$\in$了。类似的，`DataType::DataType`也必须是正确的，否则只能让`typeof(DataType)`求值为`Any`，但是一个具体的对象的类型不应该是`Any`。
 
-### 数据类型的代数
+### Union
 
 有时需要根据输入值的不同，产生不同类型的输出值（例如，如果输入值是ATGC四个字母组成的字符串那么输出一个表示DNA序列的结构体，否则输出原本的字符串）。
 Union在这里就有用了。
+
+应当注意，Union类型不是nominal的；这点和Rust中的Union就是完全不一样的，后者中如果一个值属于`Option<T>`类型，它就不可能属于`T`类型。
+此外，即使两个struct的结构一样，只要它们的名字不一样，就是不同的类型；可是对Union，我们有如下结果：
+```
+julia> A = Union{Int, Float64}
+Union{Float64, Int64}
+
+julia> B = Union{Int, Float64}
+Union{Float64, Int64}
+
+julia> A == B
+true
+
+julia> 1::A
+1
+
+julia> 1::B
+1
+```
+进一步，Union无视构造它时的嵌套结构：
+```
+julia> Union{Union{Float64, Int}, Float32}
+Union{Float32, Float64, Int64}
+```
+这意味着Union倒是确实可以看成集合： `Union{T1, T2, ...}`可以看成$\cup_{i} T_i$。
+
+应注意Union不被视为具体类型，可是也不被视为抽象类型：
+```
+julia> isabstracttype(Union{Int, Float64})
+false
+
+julia> isconcretetype(Union{Int, Float64})
+false
+```
+
+Julia支持的其它集合运算包括：`typeintersect`，交集；`typejoin`。
+`where`表达式也可以用于构造union类型：
+```
+julia> Union{Int64, X} where X <: AbstractFloat
+Union{Int64, X} where X<:AbstractFloat
+
+julia> 1 :: Union{Int64, X} where X <: AbstractFloat
+1
+
+julia> Float16(0.1) :: Union{Int64, X} where X <: AbstractFloat
+Float16(0.1)
+```
+
+### 抽象类型的声明
+
+我们可以将将一个具体数据类型`T`声明为某个抽象数据类型`T'`的子类型。抽象类型的主要用处是用来做多重派发。
+
+
+### `where`表达式
+
+`where`表达式和数学中的习惯记号是一样的：A where B一方面给出了一个函数关系，一方面给出了全体满足B的变量取值下A构成的集合。
+后者之前已经讨论过了，前者就是类型构造器；不过前者的类型在Julia中并不能定出来（见下）。
+
+### 函数无法定typed $\lambda$ calculus中的类型
+
+Julia的编程范式让一件事变得不可能：给函数确定类型，因为这要求我们能够对任意一个指向函数的名称`func`确定类型，但是`func`名下可以有多个方法。
+更进一步，我们可以定义这样的方法：
+```
+julia> function (x::Float64)(y)
+       x + y
+       end
+
+julia> a = 1.0
+1.0
+
+julia> a(2)
+3.0
+```
+所以在Julia中，函数只能定singleton类型：
+```
+julia> typeof(sin)
+typeof(sin) (singleton type of function sin, subtype of Function)
+```
+这相当于是在获取*名称*`sin`的类型，而它除了一个singleton以外不可能是别的东西。
+
+类似的，带类型参数的struct本身的类型也没有什么意义：
+```
+julia> struct A1{T}
+       x::T
+       end
+
+julia> typeof(A1)
+UnionAll
+```
+因此Julia的`typeof`的语义并不是typed $\lambda$ calculus描述的。
+
+### Julia的类型作为集合
+
+总之，Julia的具体类型首要地应当视为指明如何使用它们包含的对象的标签；于是，一个Float64和两个Float32组成的二元组究竟还是不同的，因为两者和不同的方法关联在一起。
+具体类型以上的类型，包括抽象类型和union，可以视为多个具体类型的并集；`A <: B`求值为`true`，当且仅当`A`是`B`的子集。
+一个变量是不是被声明为属于某个抽象类型和union*不影响*多重派发；
+只有这个变量的值的具体类型，以及函数签名中的类型（具体，抽象，union）影响多重派发。
+
+`::`的定义稍微复杂一些
+- `x :: T`在$x \in T$时求值为`x`。
+  - 如果`typeof(x)`是`T`并且$T \sube T'$，则`x::T'`求值为`x`。
+  - 如果`x :: DataType`求值为`true`，则`x :: Type{x}`求值为`x`
+- `DataType`和`Any`的一些特殊情况：
+  - `DataType :: DataType`求值为`DataType`
+  - `Any :: Any`求值为`Any`
+  - `Any :: DataType`求值为`Any`
+- 其余情况下`x::T`求值时抛出一个`TypeError`
+
+话又说回来，由于Julia没有提供概括规则，这样是不会弄出罗素悖论的。
 
 ## 动态类型系统和强类型
 
@@ -119,7 +210,8 @@ MethodError(convert, (Int64, ""), 0x00000000000082b7)
 
 ### 关于类型系统的一般的评论
 
-以上讨论实际上说明了一件事：实用的语言的类型系统其实更适合理解成它的operational semantics的一部分，而未必要使用类型论的那种（语法的）方式理解；一个弱的类型系统允许没有类型标注的值，一个强的类型系统不允许。
+以上讨论实际上说明了一件事：实用的语言的类型系统其实更适合理解成它的operational semantics的一部分，而未必要使用类型论的那种（语法的）方式理解；实际上，前者的数学性质也[常常并不好](#函数无法定typed-calculus中的类型)。
+所谓弱的类型系统允许没有类型标注的值，一个强的类型系统不允许。
 类型标注的主要目的是函数派发；例如，尽管一个字符串也可以看成一个数，可是如果`a`和`b`被标记为了字符串，那我们就希望`a * b`是字符串拼接，如果`a`和`b`被标记为了数，则`a * b`就是乘法。
 
 这样，与其说动态类型语言是只有一个类型的静态类型语言，不如说每个静态类型语言都可以看成某个动态类型语言的能够通过静态分析推导出变量类型并且确定不会报类型错误的子集。

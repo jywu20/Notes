@@ -115,3 +115,75 @@ depending on how we get to the $\phi$ node.
 In the example above, `%7  = φ (#2 => %4, #3 => %6)::Any`
 retrieves the value of `y` after the `if` block.
 
+The SSA Julia IR corresponding to a loop 
+inevitably involves multiple assignments 
+when the code is actually run.
+However, if we just look at the listing,
+we still only find one assignment for each variable,
+although this assignment is executed 
+for several times due to the control flow.
+
+```julia
+function test2(n)
+    x = 0
+    while x <= n
+        x += 1
+    end
+    x
+end
+```
+
+```
+julia> code_typed(test2)
+1-element Vector{Any}:
+ CodeInfo(
+1 ─      nothing::Nothing
+2 ┄ %2 = φ (#1 => 0, #3 => %5)::Int64
+│   %3 = (%2 <= n)::Any
+└──      goto #4 if not %3
+3 ─ %5 = Base.add_int(%2, 1)::Int64
+└──      goto #2
+4 ─      return %2
+) => Int64
+```
+
+```
+julia> code_typed(test2, (Int,))
+1-element Vector{Any}:
+ CodeInfo(
+1 ─      nothing::Nothing
+2 ┄ %2 = φ (#1 => 0, #3 => %5)::Int64
+│   %3 = Base.sle_int(%2, n)::Bool
+└──      goto #4 if not %3
+3 ─ %5 = Base.add_int(%2, 1)::Int64
+└──      goto #2
+4 ─      return %2
+) => Int64
+```
+In this simple case, if the input type is specified, 
+the corresponding relation between the LLVM code and the typed IR code is clear:
+```
+julia> code_llvm(test2, (Int,))
+;  @ REPL[50]:1 within `test2`
+define i64 @julia_test2_886(i64 signext %0) #0 {
+top:
+  br label %L2
+
+L2:                                               ; preds = %L2, %top
+  %value_phi = phi i64 [ 0, %top ], [ %1, %L2 ]
+;  @ REPL[50]:3 within `test2`
+; ┌ @ int.jl:488 within `<=`
+   %.not = icmp sgt i64 %value_phi, %0
+; └
+;  @ REPL[50]:4 within `test2`
+; ┌ @ int.jl:87 within `+`
+   %1 = add i64 %value_phi, 1
+; └
+;  @ REPL[50]:3 within `test2`
+  br i1 %.not, label %L7, label %L2
+
+L7:                                               ; preds = %L2
+;  @ REPL[50]:6 within `test2`
+  ret i64 %value_phi
+}
+```
