@@ -127,6 +127,82 @@
 
 \maketitle
 
-Pharr et al. chap. 14 is about light propagation.
+\section{What a renderer does}
+
+A completely accurate surface renderer does the following:
+\begin{itemize}
+    \item It takes the following input: 
+        \begin{itemize}
+            \item The positions and shapes of boundaries in the system;
+            \item BSDF or BSSDF of each boundaries;
+            \item Positions and directional distributions of light sources.
+        \end{itemize}
+    \item It aims to calculate the radiance $L(\vb*{r}, \omega)$
+        for given $\vb*{r}$ and $\omega$;%
+        \footnote{
+            Here I use the notation in computer graphics: 
+            $\omega$ is the direction of the wave vector, 
+            and $\dd{\omega}$ is the solid angle element 
+            surrounding the direction $\omega$;
+            we define 
+            \begin{equation}
+                \delta(\omega - \omega') = \frac{1}{\sin \theta} \delta(\theta - \theta') \delta(\varphi - \varphi').
+            \end{equation}
+        }
+        at boundaries that allow transmission 
+        we need to distinguish between $L(\vb*{r}, \omega)$
+        on the two sides of the boundary;
+        we can use $L_{\text{i}}$ and $L_{\text{o}}$ 
+        to refer to them.
+
+        Since the radiance is conserved along a ray (Pharr et al. chap. 14),
+        we can also use $L(\vb*{r} \to \vb*{r}')$ to refer to the radiance, 
+        if we are able to find some $\vb*{r}$ and $\vb*{r}'$ on boundaries,%
+        \footnote{
+            Often we need to deal with lights from infinity,
+            but at least in theory we can model ``infinity''
+            by a large light source at a distance.
+        }
+        and $\widehat{\vb*{r}' - \vb*{r}} = \omega$.
+        With this notation, the i and o subscripts are no longer necessary.
+    \item It enumerates all possible light paths that ends with a specific point $\vb*{r}$.
+        For each path, 
+        \begin{itemize}
+            \item If it comes directly from a light source $\vb*{r}'$, 
+                then it contributes $L_{\text{e}}(\vb*{r}' \to \vb*{r})$ to $L(\vb*{r}, \omega)$,
+                where $L_{\text{e}}$ is the emission radiance of the light source.
+            \item If reflection or transmission happens at $\vb*{r}'$, 
+                the contribution of $\vb*{r}'' \to \vb*{r}' \to \vb*{r}$ is 
+                \begin{equation}
+                    \begin{aligned}
+                        \dd{L}(\vb*{r}' \to \vb*{r})
+                        &= f(\vb*{r}', \widehat{\vb*{r}' - \vb*{r}''}, \widehat{\vb*{r} - \vb*{r}'})
+                        \abs*{\cos \theta } L(\vb*{r}'' \to \vb*{r}') \dd{\omega''} \\
+                        &= f(\vb*{r}', \widehat{\vb*{r}' - \vb*{r}''}, \widehat{\vb*{r} - \vb*{r}'})
+                        \abs*{\cos \theta } L(\vb*{r}'' \to \vb*{r}')
+                        \frac{\dd{A}''}{\abs*{\vb*{r}'' - \vb*{r}'}^2},
+                    \end{aligned}
+                    \label{eq:three-point-re}
+                \end{equation} 
+                where 
+                \begin{equation}
+                    \cos \theta = \vu*{n}' \cdot \widehat{\vb*{r}' - \vb*{r}''},
+                \end{equation}
+                and $\vu*{n}'$ is the normal vector at $\vb*{r}'$.
+                
+                Of course, now the problem is how to find $L(\vb*{r}'' \to \vb*{r}')$;
+                if $\vb*{r}''$ is on a light source, 
+                \eqref{eq:three-point-re} is already evaluated, 
+                and if not, 
+                we need to evaluate $L(\vb*{r}'' \to \vb*{r}')$
+                on the LHS of \eqref{eq:three-point-re}.
+        \end{itemize}
+    \item $L(\vb*{r}, \omega)$ is then used together with a camera model 
+        to create a ``photon'' of the system.
+\end{itemize}
+Since we need to sum over all rays determined by geometrical optics, 
+this is known as ray tracing.
+
+\section{Camera model}
 
 \end{document}
