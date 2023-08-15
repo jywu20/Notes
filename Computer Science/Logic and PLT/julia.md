@@ -88,6 +88,32 @@ julia> Float16(0.1) :: Union{Int64, X} where X <: AbstractFloat
 Float16(0.1)
 ```
 
+在多重派发中，Union的优先级比抽象类型高：
+```
+julia> f(x::AbstractFloat) = "abstract"
+f (generic function with 1 method)
+
+julia> f(x::Union{Float64,Int}) = "64bit"
+f (generic function with 2 methods)
+
+julia> f(1.0)
+"64bit"
+```
+当然，不应该滥用Union：
+```
+julia> f(x::Union{Float64, Float32}) = "float"
+f (generic function with 3 methods)
+
+julia> f(1.0)
+ERROR: MethodError: f(::Float64) is ambiguous.
+
+Candidates:
+  f(x::Union{Float64, Int64})
+    @ Main REPL[60]:1
+  f(x::Union{Float32, Float64})
+    @ Main REPL[63]:1
+```
+
 ### 抽象类型的声明
 
 我们可以将将一个具体数据类型`T`声明为某个抽象数据类型`T'`的子类型。抽象类型的主要用处是用来做多重派发。
