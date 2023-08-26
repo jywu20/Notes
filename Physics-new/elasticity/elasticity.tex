@@ -384,32 +384,48 @@ quantum kinetic theory,
 but in the $\omega \tau \ll 1$ limit 
 the quantum kinetic theory is reduced to local thermodynamics.
 
-\subsubsection{The form of EOM}
+\subsubsection{The form of EOM with local equilibrium}
 
+Local equilibrium gives us well-defined 
+local thermodynamic variables like the entropy density or the temperature;
+still, we need to find some way to incorporate them 
+into a dynamic theory.
 The variables $u_i$ and the internal force density $f_i$ are not thermalized;
-as \cite{belitz2022soft} says, 
-they are subject to conservation laws,
-and from momentum conservation we get Newton's second and third laws, 
-so the EOM of the system looks like%
-\footnote{
-    Note that formally, 
-    what we are doing here is to insert the free energy into the Lagrangian
-    as the potential energy;
-    of course this raises the doubt about 
-    mixing mixed state and pure state formalisms,
-    but it turns out to be correct.
-} 
+adding them into the thermodynamic potential 
+in the local equilibrium state, and taking its variance, we get 
 \begin{equation}
-    \rho \pdv[2]{u_i}{t} = \fdv{F[\vb*{u}]}{u_i} + f^{\text{dissipation}}_i(\partial_t \vb*{u}, \partial_t^2 \vb*{u}, \ldots),
+    \rho \pdv[2]{u_i}{t} = - \fdv{\Phi[\vb*{u}]}{u_i} + f^{\text{dissipation}}_i(\partial_t \vb*{u}, \partial_t^2 \vb*{u}, \ldots),
     \label{eq:eom-general-1}
 \end{equation}
-where $F$ is the free energy,
-and the functional derivative is taken by keeping the temperature variable constant. 
-But this formalism works even when the temperature changes:
-the change of the temperature is reflected by the temperature dependence
-of $\fdv*{F[\vb*{u}]}{u_i}$ after we take the derivative.
+where $\Phi$ is the thermodynamic potential,
+and the functional derivative is taken by 
+assuming the conditions that make $\Phi$ the appropriate thermodynamic potential
+(like, when $\Phi$ is $U$, 
+we need to assume an adiabatic process, 
+while when $\Phi$ is $F$,
+we are working with an isothermal process).
+Choosing the appropriate thermodynamic potential is important:
+for statics, we usually assume local isothermal evolution,
+while for things like sound propagation,
+we assume local adiabatic evolution.
 When $T \to 0$, $F$ becomes the total energy of the system 
 and we go back to Hamiltonian dynamics.
+
+Formally, here we insert the free energy into the Lagrangian
+as the potential energy;
+of course this raises the doubt about 
+mixing mixed state and pure state formalisms,
+but the formalism turns out to be correct
+if we reason like above.
+
+From a microscopic perspective, 
+\eqref{eq:eom-general-1} can also be derived from a kinetic theory; 
+as \cite{belitz2022soft} says, for example, 
+conservation laws can be obtained from the quantum Boltzmann equation of Fermi liquid,
+from which we get Navier-Stokes equations
+or similar equations,
+where the internal forces of the system 
+can be obtained by taking the derivatives of certain thermodynamic potentials. 
 
 It's kind of silly to spend so much time 
 to get \eqref{eq:eom-general-1},
@@ -487,7 +503,7 @@ and $\vb*{r}$ is kept unchanged when we change $t$
 (recall that $\vb*{r}$ is actually the continuous version 
 of the index of atoms in the system).
 On the RHS, however, what I call $\vb*{r}$ is actually $\vb*{r}'$!
-this can be easily found by looking at \eqref{eq:force-boundary-cond}:
+This can be easily found by looking at \eqref{eq:force-boundary-cond}:
 definitely the direction of $\vb*{u}$ is decided 
 by the surface \emph{after} deformation,
 not before deformation.
@@ -507,7 +523,9 @@ We say we are working with \concept{Lagrangian}%
 \footnote{
     Not to be confused with Lagrangian $\mathcal{L}$.
 }
-description of the system if we work with $\vb*{r}$ and $t$,
+description of the system if we work with $\vb*{r}$
+(i.e. the coordinates that are attached to the 
+unstrained system) and $t$,
 and \concept{Eulerian} description of the system 
 if we work with $\vb*{r}'$ and $t$.
 
@@ -574,6 +592,8 @@ We can alternatively describe everything within the Lagrangian framework
 and get rid of the $\vb*{v}$ variable,
 but this means we need another stress tensor defined in the Lagrangian framework
 that's different from the Cauchy stress tensor
+(which is defined in the Eulerian framework -- 
+see the comments at the end of the last section)
 which is hard to conceptualize intuitively,
 so I just skip this part.
 In practice, however, the above formalisms are almost useless for elastic theory,
@@ -774,15 +794,19 @@ and their conditions.
     terms like $\vb*{v}$ can be removed in the equations.
 \end{itemize}
 
-All underlined sentences have well-known counterexamples.
-In a liquid the density is a very important dynamic variable.
-Plastic deformation is common.
-Non-equilibrium behaviors can be seen in, say, 
-zero sound modes of Fermi liquid.
-We may work in a very small length scale 
-where the internal forces in a system can no longer be described 
-as surface forces.
-Large deformation does exist.
+All underlined sentences above have well-known counterexamples.
+\begin{itemize}
+    \item In a liquid the density is a very important dynamic variable,
+    so it's quite common that $\vb*{u}$ isn't the only dynamic variable.
+    \item Plastic deformation is common: 
+    the deformation history changes the internal degrees of freedom of the system. 
+    \item Non-equilibrium behaviors can be seen in, say, 
+    zero sound modes of Fermi liquid.
+    \item We may work in a very small length scale 
+    where the internal forces in a system can no longer be described 
+    as surface forces.
+    \item Large deformation does exist.
+\end{itemize}
 
 \section{Linear elasticity for bulk system}
 
@@ -795,6 +819,24 @@ is usually linear and therefore can be decided completely by symmetry.
 
 
 \section{Statics of boards}
+
+One subtlety is we've never used the concept of moment of force
+when establishing a theory about the bulk state; 
+the appearance of the moment in a board seems strange. 
+The reason is, the force density $f$ along the edge 
+is not enough to characterize the small-scale force distribution at the edge: 
+besides $f$, which should be multiplied by a $\delta$ function 
+when understood as a \emph{bulk} force density, 
+we can also have terms proportional to $\delta'(\vb*{r} \cdot \vu*{n})$.
+The latter case just gives us the boundary condition about the moment.
+We can derive the boundary condition about the moment 
+by putting the force density proportional to $\delta'$ 
+into the bulk elastic equations; 
+alternatively we can insert the $\delta'$ term into the free energy change, 
+where we transfer the derivative to $\var{\zeta}$,
+and therefore get a $\var{\pdv*{\zeta}{n}}$ term 
+in the variance of the free energy, 
+which again gives the boundary condition about the moment.
 
 \subsection{Föppl–von Kármán equations for  large deflections of thin flat plates}
 
