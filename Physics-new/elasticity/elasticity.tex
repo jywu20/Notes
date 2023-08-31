@@ -7,7 +7,6 @@
 % \usepackage{paralist}
 \usepackage{enumitem}
 \usepackage{footnote}
-\usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
@@ -390,9 +389,17 @@ Local equilibrium gives us well-defined
 local thermodynamic variables like the entropy density or the temperature;
 still, we need to find some way to incorporate them 
 into a dynamic theory.
-The variables $u_i$ and the internal force density $f_i$ are not thermalized;
-adding them into the thermodynamic potential 
-in the local equilibrium state, and taking its variance, we get 
+The variables $u_i$ and the internal force density $f_i$ are not thermalized
+and are dynamic variables;
+if we focus on a small volume element of the system 
+and use a coordinate frame attached to that volume,
+the $\rho \pdv*[2]{u_i}{t}$ term can be seen as an external field, 
+and thus from balance of forces we have 
+\[
+    \fdv{\Phi[\vb*{u}]}{u_i} =
+    - \rho \pdv[2]{u_i}{t} + f^{\text{dissipation}}_i(\partial_t \vb*{u}, \partial_t^2 \vb*{u}, \ldots),
+\]
+and thus 
 \begin{equation}
     \rho \pdv[2]{u_i}{t} = - \fdv{\Phi[\vb*{u}]}{u_i} + f^{\text{dissipation}}_i(\partial_t \vb*{u}, \partial_t^2 \vb*{u}, \ldots),
     \label{eq:eom-general-1}
@@ -407,7 +414,9 @@ we are working with an isothermal process).
 Choosing the appropriate thermodynamic potential is important:
 for statics, we usually assume local isothermal evolution,
 while for things like sound propagation,
-we assume local adiabatic evolution.
+we usually assume local adiabatic evolution
+(although a serious treatment of the process 
+also needs modeling of, say, heat transportation).
 When $T \to 0$, $F$ becomes the total energy of the system 
 and we go back to Hamiltonian dynamics.
 
@@ -415,9 +424,7 @@ Formally, here we insert the free energy into the Lagrangian
 as the potential energy;
 of course this raises the doubt about 
 mixing mixed state and pure state formalisms,
-but the formalism turns out to be correct
-if we reason like above.
-
+and a microscopic justification of it should be done.
 From a microscopic perspective, 
 \eqref{eq:eom-general-1} can also be derived from a kinetic theory; 
 as \cite{belitz2022soft} says, for example, 
@@ -425,7 +432,13 @@ conservation laws can be obtained from the quantum Boltzmann equation of Fermi l
 from which we get Navier-Stokes equations
 or similar equations,
 where the internal forces of the system 
-can be obtained by taking the derivatives of certain thermodynamic potentials. 
+can be obtained by taking the derivatives of certain thermodynamic potentials;
+actually this line of reasoning is exactly 
+the opposite of the equilibrium-to-near-equilibrium line of reasoning above: 
+if we start from a microscopic kinetic theory, 
+we derive the whole thermodynamics 
+at the end of our derivation,
+where we ignore all time evolution.
 
 It's kind of silly to spend so much time 
 to get \eqref{eq:eom-general-1},
@@ -731,36 +744,137 @@ besides the global translation,
 the global rotation component of $\partial_k u_i$, if any, is also trivial;
 to get rid of these we can simply require that $\vb*{u} = 0$ at $\infty$.
 
-\subsection{Strain}
+\subsection{Deformation and strain}
+
+Above we have assumed that $\vb*{u}$ is the only dynamic variable; 
+the actual number of variables may even be smaller: 
+when there is no electric field in the space, for example, 
+the absolute value of $\vb*{u}$ is never important; 
+what is important is its gradient.
 
 \subsubsection{Decomposition of deformation gradient}
 
-\begin{equation}
-    E_{ij} =
-\end{equation}
+Let's first focus on the gradient of the displacement field;
+we choose to do so because 
+\[
+    \dd{\vb*{r}} \cdot \grad \vb*{u} \simeq \vb*{u}_{i + 1} - \vb*{u}_i,
+\]
+and if the interaction between particles in the system 
+is localized enough, we should expect 
+that \ul{the dynamics of the system is mainly about $\grad{\vb*{u}}$}.
+This is an approximation that is always adopted 
+in the following discussion. 
 
-It should be noted that there is no guarantee 
+We can decompose the deformation gradient -- 
+the gradient of the displacement field -- as follows:
+\begin{equation}
+    E_{ij} = \pdv{u_i}{x_j} = \underbrace{u_{ij}}_{\text{symm.}} + \underbrace{a_{ij}}_{\text{asymm.}} ,
+\end{equation}
+\begin{equation}
+    u_{ij} = \frac{1}{2} \left(
+        \pdv{u_i}{x_j} + \pdv{u_j}{x_i}
+    \right) , \quad 
+    a_{ij} = \frac{1}{2} \left(
+        \pdv{u_i}{x_j} - \pdv{u_j}{x_i}
+    \right) .
+    \label{eq:deformation-gradient-decomposition}
+\end{equation}
+When we work in the Lagrangian framework,
+the meaning of $u_{ij}$ is quite clear: 
+if the displacement is very small,
+we can easily verify that 
+\begin{equation}
+    \dd{V'} = \dd{V} (1 + u_{ii}),
+\end{equation}
+and we can also verify that $a_{ij}$ gives us the local rotation 
+of a volume element.
+
+Intuitively, we may assume that $u_{ij}$ 
+contains the main components of $E_{ij}$
+that are relevant in elasticity.
+But there is no guarantee 
 that the antisymmetric component of $\partial_i u_j$ is not involved 
 in the expression of $F$.
 For example, if we analyze the deformation by 
 analyzing the change of the metric,
-we may want to define another type of stress: 
+we may want to study the following tensor: 
 \begin{equation}
-    u_{ij} = \pdv{u_i}{x_j} + \pdv{u_j}{x_i} + \pdv{u_l}{x_i} \pdv{u_l}{x_j}
+    u_{ij} = \frac{1}{2} \left(
+        \pdv{u_i}{x_j} + \pdv{u_j}{x_i} + \pdv{u_l}{x_i} \pdv{u_l}{x_j}
+    \right) ,
+    \label{eq:nonlinear-strain}
 \end{equation}
-and its third term can only be obtained by using $a_{il} a_{jl}$.
-What we can say is the symmetric component of the deformation gradient,
-when appearing in $F$,
-is able to have an order that is lower than 
-any other components.
+and we can verify that when the displacement is small, we have 
+\begin{equation}
+    \dd{l'}^2 = \dd{l}^2 + 2 u_{ij} \dd{x_i} \dd{x_j}.
+\end{equation}
+The third term of $u_{ij}$ can only be obtained by using $a_{il} a_{jl}$
+in \eqref{eq:deformation-gradient-decomposition}.
 
-TODO: transport theorem, etc.
+The case can be even more complicated. 
+When we are dealing with the most generic case, 
+$u_{i}$ is no longer always small, 
+and now distinguishing between the Lagrangian and Eulerian descriptions 
+becomes important.
+And indeed $u_{i}$ can be large \emph{without} a large external field: 
+we can for example rotate the system globally, 
+or we can add a load to a thin but large layer 
+and have a rather large displacement at the loading position
+even when the force applied is very small.
 
-TODO: from microscopic theory to this
+The most generic theory is beyond the scope of this note; 
+note that it requires a full theory of transportation, 
+as is seen in fluid dynamics.
+In solid mechanics,
+usually it's same to assume that 
+\ul{regardless of the absolute magnitude of $u_i$, 
+the deformation gradient is always small}.
+Note that if this is true in Lagrangian description,
+it's also true in Eulerian description,
+and the opposite is also true.
+Now \eqref{eq:deformation-gradient-decomposition} and 
+\eqref{eq:nonlinear-strain} are essentially the same.
+Thus, we call $u_{ij}$ the \concept{strain} of the system; 
+$\sigma_{ij}$ now is a function of the strain.
 
-\subsubsection{}
+When we have large deformation,
+the deformation gradient might appear large at the first glance: 
+for 
+\begin{equation}
+    \vb*{u} = \pmqty{
+        \cos \theta & - \sin \theta \\
+        \sin \theta & \cos \theta
+    } \pmqty{x \\ y} - \pmqty{x \\ y},
+\end{equation} 
+we have 
+\begin{equation}
+    \pdv{u_i}{x_j} = \pmqty{
+        \cos \theta - 1 & - \sin \theta \\ 
+        \sin \theta & \cos \theta - 1
+    },
+    \label{eq:superficial-deformation}
+\end{equation}
+which is by no means small when $\theta \sim \pi / 2$.
+But if \ul{each segment of the system is ``flat'' enough so that 
+we can attach a coordinate frame to it 
+and then evaluate the energy of that fragment 
+in the small strain limit}, 
+we are able to get the energy functional (or free energy functional, etc.) 
+to derive all equations we need. 
+Specifically, phenomena like a global displacement or rotation of the system 
+are simply resolved by changing the coordinate frame 
+(and adding terms like Coriolis force into the EOMs as external fields).
+In the most generic theory, 
+this means any reasonable definition of the strain 
+should be able to remove ``superficial'' components of the deformation gradient,
+as is shown in \eqref{eq:superficial-deformation}; 
+this note however will just skip this topic. 
+Note that although the free energy is still linear in the strain, 
+nonlinearity can enter the theory via geometric factors, 
+as will be seen in the theory of, say, rod.
 
-TODO: in $\vb*{r}$ or $\vb*{r}'$
+\subsubsection{From a microscopic perspective}
+
 
 \subsection{Summary}
 
@@ -818,7 +932,11 @@ Therefore, the elastic theory of three-dimensional systems
 is usually linear and therefore can be decided completely by symmetry.
 
 
-\section{Statics of boards}
+\section{Statics of boards: the small deflection theory}
+
+Landau chap. 2
+
+\subsection{Boundary conditions}
 
 One subtlety is we've never used the concept of moment of force
 when establishing a theory about the bulk state; 
@@ -830,20 +948,27 @@ when understood as a \emph{bulk} force density,
 we can also have terms proportional to $\delta'(\vb*{r} \cdot \vu*{n})$.
 The latter case just gives us the boundary condition about the moment.
 We can derive the boundary condition about the moment 
-by putting the force density proportional to $\delta'$ 
+by putting the force density proportional to $\delta'(\vb*{r} \cdot \vu*{n})$ 
 into the bulk elastic equations; 
-alternatively we can insert the $\delta'$ term into the free energy change, 
+alternatively we can insert the $\delta'(\vb*{r} \cdot \vu*{n})$ term into the free energy change, 
 where we transfer the derivative to $\var{\zeta}$,
 and therefore get a $\var{\pdv*{\zeta}{n}}$ term 
 in the variance of the free energy, 
 which again gives the boundary condition about the moment.
+
+We thus see why it's usually not necessary to talk about the moment density 
+in a three dimensional theory:
+the appearance of $\delta(\vb*{r} \cdot \vu*{n})$ and $\delta'(\vb*{r} \cdot \vu*{n})$
+is only possible when we are dealing with boundary conditions,
+and when they don't appear, 
+talking about the force density is already enough.
 
 \subsection{Föppl–von Kármán equations for  large deflections of thin flat plates}
 
 A brief overview of Föppl–von Kármán equations can be found 
 in \citesec{14} in \cite{landau1986theory}.
 The theory is based on the following assumptions,
-many of which are faced with questions:
+many of which are problematic physically:
 \begin{itemize}
     \item \ul{The von Kármán strain is linearly linked to the stress tensor.}
     One may expect this to be true since 
@@ -857,6 +982,29 @@ many of which are faced with questions:
     and experimental demonstration of this constitutive relation 
     is hard to carry out.
 \end{itemize}
+
+\section{Statics of rod: the Euler–Bernoulli theory}
+
+Here is an overview of what we are going to do:
+\begin{enumerate}
+    \item Finding a way to describe the deformation of rod; 
+        writing down the form of the free energy 
+        when the deformation is not too strong; 
+    \item Analyzing two deformation modes of a rod; 
+        deciding the free energy 
+        under the small strain assumption.
+    \item Deciding the free energy
+        by considering the two deformation modes 
+        as specific cases of the general theory; 
+        nonlinearity enters the free energy 
+        when we write the geometric properties of the deformed cross section 
+        as a function of the deformation of the rod.
+    \item Take the small deflection approximation.
+\end{enumerate}
+
+\subsection{Description of deformation}
+
+
 
 \printbibliography
 
