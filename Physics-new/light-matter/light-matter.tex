@@ -7,6 +7,7 @@
 % \usepackage{paralist}
 \usepackage{enumitem}
 \usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
@@ -147,6 +148,8 @@
 \newcommand*{\Tc}{T_{\text{c}}}
 \newcommand*{\hethree}{$^3$He}
 \newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
 
 \title{Light-matter interaction}
 \author{Jinyuan Wu}
@@ -161,6 +164,254 @@ TODO:
     (i.e. the velocity that connects $\vb*{s}$ and $u$) 
     is not the same as group velocity;
     for example in metal wave guide?
+    \item From the current response of an external field to $\epsr$.
+    (That's to say, 
+    from TD-aGW to dielectric function.)
+    \item Specifically, noise exists when there is damping. 
+    Could this be modeled by some sort of non-equilibrium field theory?
+    (I think I asked this question before \dots)
 \end{itemize}
 
+\section{Coarse-grained description of medium}
+
+A linearly polarized medium can be described by 
+\begin{equation}
+    \vb*{D} = \epsilon_0 \vb*{E} + \vb*{P}
+    = \epsilon_0 \vb*{E} + \epsilon_0 \chi_{\text{e}} \vb*{E} 
+    = \epsilon_0 \underbrace{(1 + \chi_\text{e})}_{\eqqcolon \epsilon_{\text{r}}} \vb*{E}.
+\end{equation}
+Similarly we can deal with magnetization, 
+although here the notation, due to historical reasons, needs to be altered slightly.
+Now we have 
+\begin{equation}
+    \vb*{B} = \mu_0 (\vb*{H} + \vb*{M})
+    = \mu_0 \underbrace{(1 + \chi_{\text{m}})}_{\mu_{\text{r}}} \vb*{H},
+\end{equation}
+as if $\vb*{B}$ has the same status of $\vb*{D}$,
+although it's $\vb*{H}$ that is the auxiliary field.
+
+From the fourth Maxwell equation we directly find
+that time oscillation of polarization stimulates a magnetic field, 
+which is correct since $\partial_t \vb*{P}$
+can be understood as a current: 
+charges have to be rearranged 
+so that the orientation of a dipole changes,
+which then give us a current.
+
+The Poynting's theorem now reads 
+\begin{equation}
+    \div{\vb*{S}} + \vb*{H} \cdot \pdv{\vb*{B}}{t} + \vb*{E} \cdot \pdv{\vb*{D}}{t} 
+    + \vb*{J}_{\text{free}} \cdot \vb*{E} = 0.
+\end{equation}
+This is the conservation equation of energy 
+only when the material is linear, 
+where we can redefine the electromagnetic energy as 
+\begin{equation}
+    u = \frac{1}{2} (\vb*{E} \cdot \vb*{D} + \vb*{B} \cdot \vb*{H}),
+\end{equation} 
+which includes the energy stored in the medium.
+What we \emph{always} have is 
+\begin{equation}
+    \div{\vb*{S}} + \pdv{t} \left(
+        \frac{\epsilon_0}{2} \vb*{E}^2 
+        + \frac{\mu_0}{2} \vb*{H}^2
+    \right) + 
+    \left(
+        \vb*{E} \cdot \pdv{\vb*{P}}{t} 
+        + \mu_0 \vb*{H} \cdot \pdv{\vb*{M}}{t}
+        + \vb*{J}_{\text{free}} \cdot \vb*{E}
+    \right) = 0,
+\end{equation} 
+which is the conservation equation for the ``pure'' electromagnetic energy, 
+e.g. the energy stored in the electromagnetic field.
+Of course, the internal degrees of freedom of the medium 
+may contain microscopic electromagnetic field modes, 
+so by ``the energy stored in the electromagnetic field''
+we mean ``the energy stored in the electromagnetic modes we care''.
+
+\section{A more generalized description of linear response}
+
+The $\vb*{D} = \epsilon_0 \epsilon_{\text{r}} \vb*{E}$ case is almost trivial: 
+they respond instantaneously and they don't absorb energy.
+In this section we still assume that the response is linear,
+but don't assume that the response is spontaneous.
+Thus 
+\begin{equation}
+    \vb*{P}(t) = \int_{-\infty}^{\infty} \alpha(t - \tau) \vb*{E}(\tau) \dd{\tau}.
+\end{equation}
+Thus the polarization field is the convolution 
+of the response function and the electric field.
+In principle things can be even more complicated: 
+$\alpha$ can have momentum dependence in the Fourier space, 
+and the consequence is that the response is non-local:
+this is important in, say, plasmon, 
+where long-range Coulomb interaction requires a non-local description of the response.
+
+The wave equation now is 
+\begin{equation}
+    \curl{\curl{\vb*{E}}} = - \mu_0 \epsilon_0 \pdv[2]{t}
+    \epsr \otimes \vb*{E},
+\end{equation}
+where $\otimes$ means convolution.
+This equation is more clearly illustrated by its form in the frequency space: 
+\begin{equation}
+    \curl{\curl{\vb*{E}}} = \mu_0 \epsilon_0 \omega^2 \epsr(\omega) \vb*{E}(\omega),
+    \label{eq:freq-space-time-retardation-wave-eq}
+\end{equation}
+where 
+\begin{equation}
+    \epsr(\omega) = \int_{-\infty}^\infty \epsr(t) \ee^{\ii \omega t} \dd{t},
+\end{equation}
+and from the fact that $\epsr(t)$ is real, 
+\begin{equation}
+    \epsr(-\omega) = \epsr(\omega)^*.
+\end{equation}
+For clarity we may want to use $\tilde{\epsilon}_{\text{r}}$ 
+to refer to $\epsr(\omega)$.
+The damping behavior of $\epsr(t)$ in the time domain 
+is represented by the imaginary part of $\epsr(\omega)$ in the frequency domain.
+
+\eqref{eq:freq-space-time-retardation-wave-eq} tells us an important point:
+if the input is time harmonic, 
+so is the output.
+Indeed we can measure $\epsr(\omega)$ in this way.
+
+The plane wave mode with a frequency-dependent $\epsr(\omega)$ 
+has the following dispersive relation:
+\begin{equation}
+    \left(
+        \vb*{k}^2 - \frac{\omega^2}{c^2} \epsr(\omega)
+    \right) \vb*{E} = 0 \Rightarrow
+    \vb*{k} = \pm \frac{\omega \tilde{n}(\omega)}{c} \vu*{k}, 
+\end{equation}
+where 
+\begin{equation}
+    \tilde{n}(\omega) = \sqrt{\epsr(\omega)}.
+\end{equation}
+From the dispersive relation 
+we can define phase velocity and group velocity.
+
+It should be noted that $n$ -- and hence $\vb*{k}$ -- 
+is allowed to have an imaginary part,
+which tells us absorption in the material. 
+Defining 
+\begin{equation}
+    \tilde{n}(\omega) = n(\omega) + \ii \kappa(\omega),
+\end{equation}
+we find 
+\begin{equation}
+    \vb*{E}(\vb*{r}, t) = \ee^{
+        - \frac{\omega}{c} \kappa(\omega) \vu*{k} \cdot \vb*{r}
+    }
+    \ee^{
+        \ii \frac{\omega}{c} n(\omega) \vu*{k} \cdot \vb*{r}
+        - \ii \omega t
+    } E \vu*{e},
+\end{equation}
+and therefore the decaying coefficient is  
+\begin{equation}
+    \alpha(\omega) = \frac{\omega}{c} \kappa(\omega),  
+\end{equation}
+from which we find 
+\begin{equation}
+    \expval{S(z)} = \frac{1}{2} \abs*{
+        \Re \vb*{E}^* \times \vb*{H}
+    } \propto \ee^{- 2 \alpha z}.
+\end{equation}
+
+We can also evaluate the impact of imaginary part of $\epsr$ 
+-- equivalently, of $\chi_{\text{e}}$ -- 
+from the perspective of the energy of the electromagnetic field.
+Consider a region with no energy flow into or out of it.
+We have 
+\begin{equation}
+    \begin{aligned}
+        &\div{\vb*{S}} + \pdv{u}{t} = - \vb*{E} \cdot \vb*{J} \\
+        \Rightarrow& \dv{t} \int \expval{u} \dd[d]{\vb*{r}} 
+        = - \int \dd[d]{\vb*{r}} \frac{1}{2} \Re \vb*{E}^* \cdot \vb*{J}   
+        = - \frac{1}{2} \int \dd[d]{\vb*{r}} \omega \epsilon_0 \Im \chi(\omega) \abs*{\vb*{E}}^2.
+    \end{aligned}
+\end{equation}
+Thus, when $\chi_2$ is positive, 
+the field loses energy, 
+and when $\chi_2$ is negative, 
+the field gets energy.
+
+\section{Microscopic model of dispersive media: the harmonic oscillator model}
+
+The harmonic oscillator is often used as a simplistic model of the atom.
+The physical picture seems wrong at the first glance, 
+but if we regard the displacement in the harmonic oscillator
+as the dipole of the atom, 
+then things begin to make sense; 
+indeed, the ``classical'' model of harmonic oscillator 
+can be shockingly accurate in certain limits.
+
+The EOM is  
+\begin{equation}
+    m \ddot{\vb*{r}} = - m \Omega^2 \vb*{r} - m \gamma \dot{\vb*{r}}
+    + q \vb*{E},
+\end{equation}
+or in other words 
+\begin{equation}
+    \ddot{\vb*{p}} + \gamma \dot{\vb*{p}} + \Omega^2 \vb*{p}
+    = \frac{q^2}{m} \vb*{E}(t),
+\end{equation}
+where $\vb*{p} = q \vb*{r}$ is the dipole.
+\todo{Whether a more realistic atom model reduces to the above EOM 
+requires further investigation.}%
+The polarizability can be routinely found as 
+\begin{equation}
+    \vb*{p}(\omega) = \underbrace{
+        \frac{q^2 / m}{\Omega^2 - \omega^2 - \ii \omega \gamma}
+    }_{\alpha(\omega)} \vb*{E}(\omega).
+\end{equation}
+This leads to expected limit cases: 
+when $\omega \ll \Omega$, 
+$\vb*{E}$ is parallel to $\vb*{p}$,
+while when $\omega \gg \Omega$,
+$\vb*{E}$ is in the opposite direction to $\vb*{p}$.
+\todo{Light trapping???}
+
+Now consider an assembly of atoms, 
+and we find the total polarization field is now 
+\begin{equation}
+    \vb*{P} = \left(
+        \frac{N}{V}
+    \right) \cdot \vb*{p},
+\end{equation}
+and therefore the behavior of the media, 
+in terms of quantities in the theory of electromagnetism, is now 
+\begin{equation}
+    (\ddot{\vb*{P}} + \gamma \dot{\vb*{P}} + \Omega^2 \vb*{P})
+    = \frac{N}{V} \frac{q^2}{m} \vb*{E}.
+\end{equation}
+Recall that from Maxwell's equations we also have 
+\begin{equation}
+    \curl \curl \vb*{E} = 
+    - \mu_0 \epsilon_0 \pdv[2]{t} \vb*{E}
+    - \mu_0 \pdv[2]{t} \vb*{P}.
+\end{equation}
+The coupled EOMs, in the strong coupling regime, 
+are a simple model of \concept{polariton}.
+\todo{
+    Is it possible to use solely $\epsr$ to capture the 
+    behaviors of a polariton?
+    Note that with $\epsr$ we still only have one mode 
+    but here we actually have two modes, 
+    EM field and polarization mode.
+    
+    Also, how could, say, phonon, be modeled as $\vb*{P}$.
+}
+\todo{the state of the material is changed after radiation happens 
+(and the coupling between matter and the optical field 
+also means the state of the material is a mixed state??
+This question always puzzles me.)
+Specifically, what will Fermi golden rule give us in this exactly solvable case?}
+
+Real materials have more than one internal modes, 
+and the relation between the polarizability and the electric field becomes 
+\todo{TRK sum rule}
+
+ 
 \end{document}

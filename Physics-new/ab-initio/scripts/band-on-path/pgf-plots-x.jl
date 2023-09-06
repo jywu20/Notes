@@ -101,17 +101,28 @@ function pgf_band_plot_colormap(nkp, kpoint_positions,
     band_axis 
 end
 
-function pgf_plot_band!(band_axis, ε_k; color = colorant"grey", k_path = 1 : length(ε_k))
+function pgf_plot_band!(band_axis, ε_k; 
+    color = colorant"grey", 
+    k_path = 1 : length(ε_k), 
+    legend = false,
+    options = nothing)
     curve = @pgf Plot(
         {
             thick,
             color = color,
             no_marks,
-            forget_plot,
             point_meta = "x", # Ensure that the color map is applied from teh left to the right 
         },
         Coordinates(k_path, ε_k)
     )
+    
+    if !legend
+        curve["forget_plot"] = nothing
+    end
+    
+    if options !== nothing
+        merge!(curve, options)
+    end
 
     push!(band_axis, curve)
 end
