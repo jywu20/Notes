@@ -21,8 +21,8 @@ function pgf_band_plot(nkp, kpoint_positions,
     ylabel = L"$\xi_{\mathbf{k}}$ / eV")
     band_axis = @pgf Axis({
         ylabel = ylabel,
-        xmin = 1,
-        xmax = nkp,
+        xmin = kpoint_positions[1],
+        xmax = kpoint_positions[end],
         ymin = ε_min,
         ymax = ε_max,
         fill = colorant"white", 
@@ -149,7 +149,7 @@ function linear_colormap(spin_colors, spin_z_at_n, min_Sz, max_Sz)
     map(Sz_to_color, spin_z_at_n)
 end
 
-function zero_energy_line!(band_axis, nkp)
+function zero_energy_line!(band_axis, nkp::Integer)
     push!(band_axis, @pgf Plot(
         {
             color = colorant"grey",
@@ -159,6 +159,21 @@ function zero_energy_line!(band_axis, nkp)
         },
         Coordinates(
             [1, nkp], 
+            [0, 0]
+        ) 
+    ))
+end
+
+function zero_energy_line!(band_axis, path::AbstractArray)
+    push!(band_axis, @pgf Plot(
+        {
+            color = colorant"grey",
+            no_marks,
+            dotted,
+            forget_plot
+        },
+        Coordinates(
+            [path[firstindex(path)], path[lastindex(path)]], 
             [0, 0]
         ) 
     ))
