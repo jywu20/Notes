@@ -1911,8 +1911,11 @@ in a more arbitrary way,
 since we no longer have first Brillouin zones 
 and hence $\vb*{G}$ vectors. 
 
-The next question, then, is in which case we are able to go back to the Clausius-Mossotti relation.
-
+The next question, then, is in which case we are able to 
+go back to the Clausius-Mossotti relation.
+\cite{wider63} says for tightly bound electrons 
+and the cubic lattice, 
+the relation always hold.
 
 \section{Absorption}
 
@@ -5220,7 +5223,8 @@ for a small number of $\vb*{k}$-points.
 \subsection{\shortcode{S matrix not positive definite}}
 
 This usually happens when there are too many empty bands
-(when, say, compared with the cutoff energy).
+compared with the cutoff energy.
+The cutoff energy should be increased.
 If this is what is needed in BerkeleyGW, 
 \shortcode{parabands} may be one way to work around it.
 
@@ -5298,6 +5302,18 @@ and how to solve it:
     but forget to change the \shortcode{ifmax} dataset correspondingly, 
     this error will also occur,
     regardless of how you change the \shortcode{eqp.dat}.
+    \item When you shift the energy levels near the Fermi surface  
+        in a \shortcode{WFN} file
+        according to, say, self-consistent $GW$,
+        or equivalently, replace the bands near the Fermi surface 
+        by their counterparts in a self-consistent $GW$ calculation,
+        by mindful of the overall energy zero point shift: 
+        if the Fermi energies in the self-consistently updated bands 
+        and the rest of the bands are not consistent, 
+        a higher conduction band may have lower energies 
+        in the update \shortcode{WFN} or \shortcode{eqp.dat}, 
+        and when it's even lower than the highest valence band, 
+        the error is reported.
 \end{itemize}
 
 \subsection{\shortcode{Segmentation fault: address not mapped to object at address}}\label{sec:segment-fault-1}
@@ -5537,11 +5553,19 @@ The full message looks like this:
 This happens when the number of bands given in \shortcode{bsemat.h5} 
 is smaller than the number of bands required in \shortcode{absorption}.
 
+\subsection{\shortcode{ERROR: Momentum and Finite_q are incompatible}}
+
+This happens when we are doing a finite $\vb*{Q}$ calculation 
+but is using the \shortcode{use_momentum} option.
+BerkeleyGW expects \shortcode{use_velocity} 
+whenever finite $\vb*{Q}$ is specified.
+
 \section{Checklist for unexpected results}
 
 Sometimes the calculation ends successfully,
 but the result seems strange.
-Below are some checklists.
+Below we discuss some frequently encountered cases, 
+together with possible causes and solutions. 
 
 \subsection{Band symmetry higher than the space group shown at the beginning of \shortcode{bands.out}}
 

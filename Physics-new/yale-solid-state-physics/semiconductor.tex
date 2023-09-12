@@ -6,6 +6,7 @@
 % No longer needed, since we will use enumitem package
 % \usepackage{paralist}
 \usepackage{enumitem}
+\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{footnote}
 \usepackage{enumerate}
 \usepackage{amsmath, amssymb, amsthm}
@@ -119,6 +120,8 @@
 \newcommand{\Nd}{N_{\text{d}}}
 \newcommand{\pa}{p_{\text{a}}}
 \newcommand{\Na}{N_{\text{a}}}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\epszero}{\epsilon_0}
 
 %endregion
 
@@ -442,15 +445,127 @@ and
 
 \section{Spatial inhomogeneity}
 
-It should be noted that in an equilibrium diode, 
-assuming a space-dependent chemical potential 
-and assuming a space-dependent band structure 
+\subsection{The theoretical framework}
+
+Suppose we are going to study a heterostructure
+containing two concatenated bulk systems.
+Below we take the usual assumptions required by Boltzmann equation 
+and assume that the spatial changes 
+of the material properties are smooth enough, etc. 
+so we can have well-defined $\vb*{r}$ and $\vb*{k}$
+at the same time and don't need to worry about, say, interference.
+
+The charge density is 
+\begin{equation}
+    \rho(\vb*{r}) = - e n (\vb*{r}) + e p (\vb*{r}),
+\end{equation}
+and we have 
+\begin{equation}
+    \laplacian \phi = - \frac{1}{\epsilon_0 \epsr} \rho(\vb*{r}).
+\end{equation}
+Since we have picked up the Boltzmann assumptions, 
+$n(\vb*{r})$ and $p(\vb*{r})$
+can be decided from the bulk band structure 
+$\varepsilon_{\text{c}}$ and $\varepsilon_{\text{v}}$, 
+$\mu$ and $\phi(\vb*{r})$,
+and thus we obtain a set of self-consistent equilibrium equations,
+which are stationary cases 
+of the whole Boltzmann transportation problem.
+
+Actually, in order to make the Boltzmann assumptions correct, 
+we need to assume a smooth transition region 
+between the two types of material
+where the electronic structure is somehow a mixture 
+of $\varepsilon_{\text{c}}$ and $\varepsilon_{\text{v}}$,
+and indeed such a region exists,
+with a length scale of $\simeq \SI{10}{\angstrom}$;
+but in analytic analysis, 
+this region is usually ignored, 
+and we still work with a stepwise change of electronic structure.
+
+\subsection{Example: junction between two metals}
+
+\begin{figure}
+    \centering
+    \input{bands/two-metal.tex}
+    \caption{Two metals are placed together; 
+    since there is only one chemical potential in a system, 
+    the charge distribution changes.}
+    \label{fig:two-metal}
+\end{figure}
+
+The case of a metal-metal junction is shown in \prettyref{fig:two-metal}.
+Here we define the energy zero point to be the vacuum energy 
+(i.e. the energy of the first electronic state going out of the material),
+and therefore the work function -- 
+the minimal energy needed to go out of the material -- 
+is just $\abs*{\mu}$.
+
+After charge redistribution,
+we see that there are more electrons on the left side, 
+and more holes on the right side.
+Thus, as a very crude model, we may assume that 
+\begin{equation}
+    \rho(x) = \begin{cases}
+        - n_1, & \quad - d_1 < x < 0, \\
+        n_2  , & \quad 0 < x < d_2,   \\ 
+        0,     & \quad \text{otherwise}.
+    \end{cases}
+\end{equation}
+The potential $\phi$ can be immediately solved from $\rho(x)$:
+noticing that $\phi(\pm \infty)$ are not infinite, 
+and hence when $x < - d_1$ and $x < d_2$,
+$\phi$ is a constant and can't have linear dependence on $x$,
+we have 
+\begin{equation}
+    \phi(x) = \begin{cases}
+        \phi(- \infty), & \quad x < - d_1, \\
+        \phi(\infty),   & \quad x > d_2,   \\ 
+        \phi(- \infty) + \frac{n_1 e}{2 \epsilon_1} (x + d_1)^2 , & \quad - d_1 < x < 0, \\
+        \phi(\infty)   - \frac{n_2 e}{2 \epsilon_2} (x - d_2)^2,  & \quad 0 < x < d_2. 
+    \end{cases}
+\end{equation}
+By continuity condition and that $n_1 d_1 = n_2 d_2$, 
+we are able to find $n_1, n_2$;
+as an estimation of order of magnitude, 
+when $\epsilon_1 = \epsilon_2 = \epsilon$, we get 
+\begin{equation}
+    d_1 = \sqrt{\frac{2 \epsilon \Delta}{e} \frac{n_2 / n_1}{n_1 + n_2}} ,
+\end{equation}
+and 
+\begin{equation}
+    d_2 = \sqrt{\frac{2 \epsilon \Delta}{e} \frac{n_1 / n_2}{n_1 + n_2}} .
+\end{equation}
+From usual properties of metals, \todo{What?} 
+usually $n_1 n_2 \sim \SI{1e22}{cm^{-3}}$,
+while $d_1 \sim \SI{1}{\angstrom}-\SI{3}{\angstrom}$.
+Note that here we deliberately don't specify that $\phi(\infty) = \phi(-\infty)$:
+the values obtained above work 
+even when a voltage is applied to the junction.
+Note that $d$ is within the aforementioned \SI{10}{\angstrom} mixed electronic structure region,
+which means the Boltzmann theory may fail for 
+metal-metal junction;
+for semiconductor junctions however usually 
+the $d \sim \SI{100}{\angstrom}$,
+and there is no problem with that.
+
+Since the distribution of $n$ and $p$ always look like something times 
+$\ee^{- (E -e \phi - \mu) / \kB T}$,
+we can attract $- e \phi$ into the band structure, 
+and get $\varepsilon_{\vb*{k}}(\vb*{r})$;
+alternatively we can attract it into the chemical potential.
+In an equilibrium junction, 
+the perspective of space-dependent chemical potential 
+and the perspective of space-dependent band structure 
 are \emph{equivalent}:
 once one of them is chosen,
 the other has to be given up.
+
 On the other hand, 
 when an external electric field is applied,
 we should allow spatial dependence of \emph{both} $\mu$ and $\varphi_{n \vb*{k}}$.
+\todo{What was I talking about???
+This paragraph is weird.}
 The point here is in when a diode is made,
 the charge density distribution deviates from 
 the distribution in homogeneous p- or n-type materials,
@@ -461,6 +576,43 @@ to model the decrease/increase of energy barrier,
 but then the chemical potential also has to have spatial dependence
 or otherwise the fact that 
 the electron distributions in the p-part and n-part are the same can't be reflected.
+
+
+\subsection{Semiconductor-semiconductor p-n junction}
+
+Now consider a p-n junction,
+i.e. the junction between a p-semiconductor and an n-semiconductor.
+Similar to the case of metals, 
+around the interface of the two, 
+electrons and holes recombine,
+and when equilibrium is established,
+we have positive charge distribution on one side 
+and negative charge distribution on the other side.
+The main difference between the p-n junction
+and the metal-metal junction is 
+the former is always gapped; 
+therefore, in the charge redistribution region,
+although we have non-zero charge distributions
+and an electric field is present,
+they are localized ones (like donor nucluei or attractor ions): 
+we \emph{no longer} have carriers.
+Thus the region is rightfully called the \concept{depletion region}.
+Inside the depletion region we see band bending 
+due to the electrostatic field established (\prettyref{fig:p-n}).
+
+\begin{figure}
+    \centering
+    \input{bands/p-n.tex}
+    \caption{A p-n junction; the dotted line box is the depletion area.
+    Note that since positive charges are accumulated on the left side 
+    in the depletion area,
+    $\phi$ is higher on the left side, 
+    and thus $- e \phi$ is lower, 
+    and hence the shape of the bands.}
+    \label{fig:p-n}
+\end{figure}
+
+\subsection{The p-n junction in circuit theory}
 
 It should be noted that the way of thinking is different in classical circuit analysis
 from the way in condensed matter physics:
