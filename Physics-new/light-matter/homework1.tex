@@ -1,0 +1,365 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{\vb*{E}}}
+\newcommand{\Dfreq}{\tilde{\vb*{D}}}
+\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+
+\title{Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Maxwell's equations in dielectrics, Lorentz oscillators, and complex notation}
+
+\subsection{Time-Average Quantities in Complex Notation}
+
+It is often important to be able to compute time-averaged quantities, such as the potential energy of a harmonic oscillator $U_{p e}=\frac{k}{2}\left\langle x^2\right\rangle$ or the electric field energy density $U_{\mathrm{el}}=\frac{\varepsilon_0}{2}\left\langle\mathbf{E}^2\right\rangle$. Here, the time-average of a function, $f(t)$, is defined as, $\langle f(t)\rangle=(1 / T) \int_{t-T / 2}^{t+T / 2} d t^{\prime} f\left(t^{\prime}\right)$, where $T$ is defined as either the characteristic period of the oscillating system (i.e., $T=2 \pi / \omega)$ or infinity. Such time averaging is drastically simplified by using complex notation.
+
+To see this, suppose that we have any two functions $A(t)$ and $B(t)$, both of which take on a time harmonic form. Without loss of generality, we assume that $A(t)=A_0 \cos (\omega t+\phi)$, and $B(t)=B_0 \cos (\omega t+\theta)$, where $\phi$ and $\theta$ are arbitrary phase factors.
+
+\subsubsection{}
+
+We have 
+\begin{equation}
+    \begin{aligned}
+        \expval{A(t) B(t)} &= 
+        \frac{1}{T} \int_{t - T/2}^{t + T/2} \dd{t'} 
+            A_0 \cos(\omega t' + \phi) 
+            B_0 \cos (\omega t' + \theta) \\
+        &= A_0 B_0 \frac{1}{T} \int_{t - T/2}^{t + T/2} \dd{t'} 
+            \frac{1}{2} (
+                \cos(\omega t' + \phi + \omega t' + \theta) 
+                + \cos (\omega t' + \phi - \omega t' - \theta)
+            ) \\
+        &= \frac{1}{2} A_0 B_0 \cos (\phi - \theta).
+    \end{aligned}
+\end{equation}
+Here we have used the condition that $T = 2 \pi / \omega$ 
+so that the first term vanishes.
+
+\subsubsection{}
+
+We have 
+\begin{equation}
+    A(t) = \tilde{A}_0 \ee^{- \ii \omega t} , \quad 
+    B(t) = \tilde{B}_0 \ee^{- \ii \omega t} , \quad 
+    \tilde{A}_0 = A_0 \ee^{- \ii \phi}, \quad 
+    \tilde{B}_0 = B_0 \ee^{- \ii \theta},
+\end{equation}
+and therefore 
+\begin{equation}
+    \Re \tilde{A}_0 B_0 = \Re A_0 \tilde{B}_0 = 
+    \Re A_0 B_0 \ee^{\ii (\phi - \theta)}
+    = A_0 B_0 \cos(\phi - \theta),
+\end{equation}
+and hence 
+\begin{equation}
+    \expval{A(t) B(t)} = \frac{1}{2} \Re \tilde{A}_0 B_0 
+    = \frac{1}{2} \Re A_0 \tilde{B}_0 .
+\end{equation}
+
+We can also straightforwardly do the follows. 
+We have 
+\begin{equation}
+    \begin{aligned}
+        \expval{A(t) B(t)} &= \expval{
+            \frac{1}{2} (\tilde{A}(t) + \tilde{A}^*(t))
+            \cdot \frac{1}{2} (\tilde{B}(t) + \tilde{B}^*(t))
+        } \\
+        &= \frac{1}{4} \expval{
+            \tilde{A}_0 \tilde{B}_0 \ee^{- 2 \ii \omega t} + 
+            \tilde{A}_0 \tilde{B}_0^* + 
+            \tilde{A_0}^* \tilde{B}_0^* \ee^{2 \ii \omega t} 
+            + \tilde{A}_0^* \tilde{B}_0
+        } \\
+        &= \frac{1}{4} \expval{A_0^* B_0 + \text{c.c.}} \\
+        &= \frac{1}{2} A_0^* B_0 = \frac{1}{2} A_0 B_0^*.
+    \end{aligned}
+\end{equation}
+
+\subsubsection{}
+
+When 
+\begin{equation}
+    \vb*{E} = \vu*{x} \Re \tilde{E}_0 \ee^{- \ii (\omega t - k z)},
+\end{equation}
+from 
+\begin{equation}
+    \curl{\vb*{E}} = - \pdv*{\vb*{B}}{t}
+\end{equation}
+we obtain 
+\begin{equation}
+    \begin{aligned}
+        &\ii \vb*{k} \times \vb*{E} = - (- \ii \omega) \vb*{B}  \\
+        \Rightarrow& \vb*{B} = \frac{1}{\omega} k \vu*{z} \times \vb*{E}
+        = \frac{k}{\omega} \vu*{y} \Re \tilde{E}_0 \ee^{- \ii (\omega t - k z)},
+    \end{aligned}
+\end{equation}
+and therefore 
+\begin{equation}
+    \expval{\vb*{S}} = \frac{1}{\mu_0} \expval{\vb*{E} \times \vb*{B}}
+    = \frac{1}{\mu_0}  \cdot \frac{1}{2} \Re 
+    \underbrace{\vu*{x} \tilde{E}_0 \ee^{\ii k z}}_{\Efreq_0} \times 
+    \underbrace{\frac{k}{\omega} \vu*{y} \tilde{E}_0^* \ee^{- \ii k z}}_{\tilde{\vb*{B}}_0}
+    = \frac{k}{2 \mu_0 \omega} \abs*{\tilde{E}_0}^2 \vu*{z},
+\end{equation}
+and since the refraction index is $n$, 
+we eventually get 
+\begin{equation}
+    \omega = k \cdot \frac{c}{n}
+\end{equation}
+and therefore 
+\begin{equation}
+    \expval{\vb*{S}} = \frac{n}{2} \sqrt{\frac{\epsilon_0}{\mu_0}} \abs*{\tilde{E}_0}^2 \vu*{z}.
+\end{equation}
+The direction of the energy flow is parallel to the $z$ axis.
+
+\subsubsection{}
+
+The expected value of the electric energy density is 
+\begin{equation}
+    \expval{u_e} = \frac{1}{2} \epsilon_0 \epsr \expval{\vb*{E}^2}
+    = \frac{1}{2} \epsilon_0 n^2 \cdot \frac{1}{2} \abs*{\tilde{E}_0}^2 
+    = \frac{1}{4} \epsilon_0 n^2 \abs*{\tilde{E}}^2,
+\end{equation}
+and the expected value of the magnetic energy density is 
+\begin{equation}
+    \expval{u_m} = \frac{1}{2 \mu_0} \expval{\vb*{B}^2} 
+    = \frac{1}{2 \mu_0} \cdot \frac{1}{2} \frac{k^2}{\omega^2} \abs*{\tilde{E}_0}^2 
+    = \frac{1}{4} \frac{n^2}{c^2 \mu_0} \abs{\tilde{E}_0}^2 
+    = \frac{1}{4} \epsilon_0 n^2 \abs{\tilde{E}_0}^2.
+\end{equation}
+So we find 
+\begin{equation}
+    \frac{\expval{u_e}}{\expval{u_m}} = 1.
+\end{equation}
+
+\section{Lorentz oscillator in an AC field and optical forces}
+
+\subsection{Optical response of an ensemble of Lorentz oscillators}
+
+Consider a dilute ensemble of Lorentz oscillators, uniformly distributed over space with number density $N$, in an $\mathrm{AC}$ electric field given by $\mathbf{E}=\operatorname{Re}\left[\tilde{\mathbf{E}}_0 e^{-i \omega t}\right]$. Each oscillator is driven by the local electric field according to the equation of motion given by
+$$
+\ddot{\mathbf{p}}+\gamma \dot{\mathbf{p}}+\Omega^2 \mathbf{p}=\frac{q^2}{m} \mathbf{E}(\mathbf{r}),
+$$
+where $\mathbf{r}, m$, and $q$ are the respective oscillator position, reduced mass, and charge.
+
+\subsubsection{}
+
+The polarization density is 
+\begin{equation}
+    \vb*{P} = N \vb*{p}.
+\end{equation}
+The EOM for $\vb*{P}$ is 
+\begin{equation}
+    \ddot{\vb*{P}} + \gamma \dot{\vb*{P}} + \Omega^2 \vb*{P} = \frac{N q^2}{m} \vb*{E}.
+\end{equation}
+We can switch to the Fourier representation.
+Thus we have 
+\begin{equation}
+    ((-\ii \omega)^2 + \gamma (- \ii \omega) + \Omega^2) \tilde{\vb*{P}} = \frac{N q^2}{m} \Efreq,
+\end{equation}
+and from 
+\begin{equation}
+    \vb*{D} = \epsilon_0 \vb*{E} + \vb*{P}
+\end{equation}
+we get 
+\begin{equation}
+    \Dfreq = \epsilon_0 \underbrace{\left(
+        1 + \frac{N q^2}{m \epsilon_0} \frac{1}{- \omega^2 - \ii \gamma \omega + \Omega^2}
+    \right)}_{\epsr} \Efreq.
+\end{equation}
+So we already get $\epsr$; it has explicit dependence on $\omega$,
+but not $\vb*{k}$.
+
+\subsubsection{}
+
+The phase velocity is given by 
+\begin{equation}
+    v = \frac{c}{\sqrt{\epsr}} = \frac{c}{
+        \sqrt{
+            1 + \frac{N q^2}{m \epsilon_0} \frac{1}{- \omega^2 - \ii \gamma \omega + \Omega^2}
+        }
+    }.
+\end{equation}
+As for the group velocity, we have 
+\begin{equation}
+    \begin{aligned}
+        &\quad \omega^2 = \frac{c^2 k^2}{\epsr} \\
+        &\Rightarrow 2 \omega \dd{\omega} = 
+        \frac{2 c^2 k \dd{k}}{\epsr} 
+        - c^2 k^2 \frac{\dd{\epsr}}{\epsr^2} \\
+        &\Rightarrow v_{\text{g}} = 
+        \frac{2 c^2 k}{\epsr} \frac{1}{
+            2 \omega + \frac{c^2 k^2}{\epsr^2} \dv{\epsr}{\omega}
+        },
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \dv{\epsr}{\omega} = \frac{N q^2}{m \epsilon_0}
+    \frac{2 \omega + \ii \gamma}{(- \omega^2 - \ii \gamma \omega + \Omega^2)^2}.
+\end{equation}
+
+\subsubsection{}
+
+\todo{General relation between energy velocity and group velocity and phase velocity }
+
+\subsection{Optical Tweezers}
+
+\todo{}
+
+
+\end{document}

@@ -1,0 +1,271 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{\vb*{E}}}
+\newcommand{\Dfreq}{\tilde{\vb*{D}}}
+\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+
+\title{Floquet theory}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The fundamental formalism}
+
+Consider a time-periodic Hamiltonian with period $T = 2 \pi / \omega$.
+Such a Hamiltonian is usually an effective Hamiltonian
+when the system (hereafter ``matter'')
+is coupled with another degree of freedom
+which doesn't change much in the time evolution;
+the latter is hereafter called ``light'',
+since in condensed matter systems, 
+periodic driving is usually achieved by 
+shedding a beam of light to the matter; 
+it's however possible to use light to stimulate 
+some long-lived degrees of freedom in a solid 
+and let it drive the rest of the system, 
+which sometimes is known as ``self-driving''.
+From the Floquet theory of differential equation, 
+we know it's possible to expand an arbitrary state that 
+evolves according to $H$ into 
+a linear combination (the coefficients are constants) of 
+$\{\ket*{\psi_n(t)}\}$ where 
+\begin{equation}
+    \ket*{\psi_n (t + T)} = \ee^{- \ii \varepsilon_n t / \hbar} \ket*{\Phi_n(t)},
+    \quad \ket*{\Phi_n(t + T)} = \ket*{\Phi_n(t)}.
+\end{equation}
+By discrete periodicity of $\ket*{\Phi_n(t)}$ we make Fourier expansion 
+\begin{equation}
+    \ket*{\Phi_n(t)} = \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m)}},
+    \label{eq:big-phi-to-extended-hilbert}
+\end{equation}
+where $m$ goes over all integers.
+Note that here $\ket*{\phi_n^{(m)}}$
+are \emph{Fourier coefficients} and are not eigenstates of anything; 
+there is no normalization or orthogonality condition.
+Using $i$ to label the eigenstates of the matter, 
+we have 
+\begin{equation}
+    \ket*{\Phi_n(t)} = \sum_{i} \sum_{m}
+    \ee^{- \ii m \omega t} \braket*{i}{\phi_n(m)} \ket*{i}.
+\end{equation}
+\emph{This}, not \eqref{eq:big-phi-to-extended-hilbert}, 
+is the expansion of $\ket*{\Phi}$ in a 
+complete, orthogonal basis.
+The meaning of these vectors can be seen immediately below.
+
+The Schrodinger equation now reads 
+\begin{equation}
+    (\varepsilon_n + m \hbar \omega) \ket*{\phi_n^{(m)}} 
+    = \sum_{m'} H^{(m - m')} \ket*{\phi_n^{(m')}},
+\end{equation}
+where 
+\begin{equation}
+    H(t) = \sum_{m} \ee^{- \ii m \omega t} H^{(m)}.
+\end{equation}
+Thus we find that if we use $i$ to label the eigenstates of the matter part, 
+we have 
+\begin{equation}
+    \varepsilon_n \braket*{i}{\phi^{(m)}_n}
+    = \sum_{m'} (
+        H^{(m - m')} - m \hbar \omega \delta_{m m'}
+    ) \braket*{i}{\phi^{(m')}_{n}}.
+\end{equation}
+
+It doesn't take long to realize that the matrix elements on the RHS 
+are exactly the matrix elements of 
+\begin{equation}
+    H^{\text{light$\otimes$matter}} = 
+    H \otimes 1_{\text{light}} + 1_{\text{matter}} \otimes \hbar \left(
+        b^\dagger b + \frac{1}{2} 
+    \right) 
+    + \underbrace{
+        b V + b^\dagger V^\dagger  
+    }_{H_{\text{light-matter coupling}}} 
+\end{equation}
+under the basis $\ket*{i} \otimes \ket*{m}$,
+where $m$ refers to the photon number. 
+When the dynamics is almost completely decided by the matter part of the system,
+and we can map the light-matter wave function 
+to the wave function of the matter part only by applying 
+\begin{equation}
+    P: \ket*{\psi} \otimes \ket*{\text{whatever the light is}} \mapsto \ket*{\psi},
+\end{equation} 
+which means 
+\begin{equation}
+    \braket*{i, m}{\psi_n} \otimes \ket*{m} \mapsto \braket*{i}{\phi^{(m)}_n}.
+\end{equation}
+Now we see the true meaning of $\phi^{(m)_n}$:
+we are just grouping the components of the complete matter-light wave function 
+$\ket*{\phi_n} \otimes \ket*{\text{light}}$
+with the same photon number $m$
+into a vector $\phi_n^{(m)}$.
+
+As an example, when the light field is approximately always in a coherent state
+$\ket*{\alpha \ee^{- \ii \omega t}}$
+($\alpha$ should be large enough so that the matter part 
+doesn't significantly change the state of the light part), 
+approximately we have 
+\begin{equation}
+    H_{\text{light-matter coupling}} \approx
+    \alpha V \ee^{- \ii \omega t} + \text{h.c.},
+\end{equation}
+and the effective Hamiltonian for the matter part is then  
+\begin{equation}
+    H = H_{\text{matter}} + \alpha V \ee^{- \ii \omega t} + \text{h.c.}.
+\end{equation}
+
+
+
+\end{document}
