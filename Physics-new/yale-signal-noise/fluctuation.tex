@@ -152,6 +152,7 @@
 \newcommand{\chie}{\chi_{\text{e}}}
 \newcommand{\cf}{c_{\text{F}}}
 \newcommand{\fn}{F_{\text{N}}}
+\newcommand{\ff}{F_{\text{f}}}
 
 \title{Fluctuation}
 \author{Jinyuan Wu}
@@ -161,7 +162,9 @@
 
 \maketitle
 
-\section{Motivation: Langevin equation}
+\section{Motivation}
+
+\subsection{Brownian motion in a fluid}
 
 The experimental motivation to study fluctuation is 
 probably the Brownian motion: 
@@ -208,7 +211,20 @@ in the fluid surrounding the particle,
 and the second problem is about the mathematical treatment 
 of stochastic processes.
 
-\section{Quantum circuit}
+The two problems are actually two specific cases 
+of the underlying quantum non-equilibrium theory.
+\cite{sieberer2016keldysh} contains a neat review of it; 
+the most generic formalism however is not necessary 
+in most of the cases, 
+and this note would rather focus on more concrete cases.
+Also, phenomena described by the Langevin equation 
+are also described by various master equations,
+classical or quantum;
+the two formalisms are also equivalent to each other
+\cite{van1997langevin,coppola2023lindblad}.
+The details however are also emitted.
+
+\subsection{Quantum circuit}
 
 The formalism of Langevin equation is not limited to soft condensed matter systems:
 since formally Newton's second law 
@@ -284,23 +300,26 @@ We define
 \begin{equation}
     S_{BA}(\omega) = \int \ee^{\ii \omega t} \expval{B(0) A(t)} \dd{t}.
 \end{equation}
-\todo{Heisenberg description of the system: from density matrix to??? What is $A(t)$ when we have noise in the system?}
 This is known as the greater Green function or the lesser Green function 
 when $A$ and $B$ are field operators.
-We now state the following \concept{fluctuation-dissipation theorem}:
+We now state the following \concept{fluctuation-dissipation theorem},
+which links the near-equilibrium lesser Green function 
+and the response function (i.e. the retarded function):
 for a classical system, we have 
 \begin{equation}
     \expval*{\dot{A}(0) B(t)} \theta(t) = \kB T \chi_{BA}(t),
 \end{equation}
 and in the frequency domain, 
+if we assume that the response function 
+is even under time reversal operation, we get 
 \begin{equation}
-    S_{\dot{A} B} (\omega) = 2 \kB T \Re \chi(\omega).
+    S_{\dot{A} B} (\omega) = 2 \kB T \Re \chi_{BA}(\omega).
 \end{equation}
-Replacing $\dot{A}$ by $A$, we get a $1 / (- \ii \omega)$ factor,
 and the equation becomes 
 \begin{equation}
     S_{AB}(\omega) = \frac{2 \kB T}{\omega} \Im \chi_{AB}(\omega).
 \end{equation}
+\todo{Details about time reversal; the point is how to get rid of $\theta(t)$}
 In the quantum case we have 
 \begin{equation}
     S_{AB}(\omega) = \frac{2\hbar}{1 - \ee^{- \hbar \omega / \kB T}} \Im \chi_{AB}(\omega).
@@ -319,26 +338,201 @@ i.e. when in the pure state theory.
 
 \section{Analysis of common noises}
 
+\todo{Topic: what does noise do to a signal?}
+
 \section{Langevin equation revisited}
 
-Now we can see that although the details of $\fn(t)$ and $\cf$
+\subsection{Correlation function of the noise}
+
+In the light of fluctuation-dissipation theorem, 
+we see that although the details of $\fn(t)$ and $\cf$
 are still largely unknown,
 if $\fn(t)$ and $\cf$ ``naturally'' appear 
-by coupling with the bosonic bath, \todo{Derive $\fn$ as correlation function, $\cf$ as response}
+by coupling with the bosonic bath, 
 the properties of $\fn(t)$ and $\cf$ in 
 \begin{equation}
     M \ddot{X} + \cf \dot{X} + \pdv{U}{X} = \fn(t)
 \end{equation}
-follow the relation 
+have to follow the fluctuation-dissipation theorem.
+We know the force applied by the fluid to the particle is 
 \begin{equation}
-    \expval{\fn(0) \fn(t)} = 2 \kB T \cf \delta(t),
-\end{equation}
-or, to be accurate, $\delta(t)$ should be replaced by something like
+    \ff = - k v + \fn(t),
+\end{equation} 
+and the coupling Hamiltonian between the particle and the fluid is 
 \begin{equation}
-    \frac{1}{\tau} \ee^{- \abs*{t} / \tau}
+    H_{\text{int}} = - x \ff(t).
 \end{equation}
-if the environment degrees of freedom are ``free'' \todo{Being more clear here}
-and therefore are Gaussian variables.
+Thus we choose $A$ and $B$ to be both $\ff$,
+and fluctuation-dissipation theorem tells us 
+\begin{equation}
+    \expval*{\dot{F}(t') F(t)} \theta(t - t') = \kB T \chi_{\ff(t') \to \ff(t)} (t - t').
+\end{equation}
+Here we have gone back to the double-time formalism 
+since we want to eventually get rid of the time derivative acting 
+on the first $F$ in the correlation function 
+and writing the time of the first $F$ 
+makes the derivation less confusing. 
+Also, note that we are applying the fluctuation-dissipation theorem 
+\emph{to the fluid} (the particle doesn't have linear response anyway)
+and therefore now $x$ should be regarded as the external field.
+Given the form of the interaction Hamiltonian, 
+we find 
+\begin{equation}
+    \chi_{\ff(t') \to \ff(t)} (t - t') = 
+    \fdv{\ff(t)}{x(t')} ,
+\end{equation}
+and therefore we want to rephrase the proportional relation 
+between $\ff$ and $v$
+as a functional between $\ff(t)$ and $x(t')$.
+This is done by the follows:
+\begin{equation}
+    \ff(t) = - \cf v = - \int \dd{t'} \cf \delta(t - t') \dv{x}{t'}
+    = \int \dd{t'} x(t') \cf \dv{t'} \delta(t - t') .
+\end{equation}
+The definition of the $\delta(t - t')$ function however involves a subtlety:
+in reality, $t$ should always be slightly larger than $t'$ 
+or otherwise causality is broken,
+and $\delta(t - t')$ therefore should be understood as 
+$\delta(t - t' - 0^+)$.
+The fluctuation-dissipation theorem now reads 
+\begin{equation}
+    \expval*{\dot{F}(t') F(t)} \theta(t - t') = \kB T \chi_{\ff(t') \to \ff(t)} (t - t')
+    = \kB T \cdot \cf \dv{t'} \delta(t - t' - 0^+) .
+\end{equation}
+In other words, we have 
+(note that in the equation below, 
+there should be no infinitesimal time shift in $\delta$ and stepwise functions)
+\begin{equation}
+    \begin{aligned}
+        \dv{t'} (
+            \expval*{F(t') F(t)} \theta(t - t')
+        ) &= \expval*{\dot{F}(t') F(t)} \theta(t - t')
+        - \expval*{F(t') F(t)} \delta(t - t') \\
+        &= \kB T \cf \dv{t'} \delta(t - t') 
+        - \expval*{F(t') F(t)} \delta(t - t'),
+    \end{aligned}
+\end{equation}
+and we can then integrate over the equation on the both sides over $t'$ and get 
+\begin{equation}
+    \expval*{F(t') F(t)} \theta(t - t') = \kB T \cf \delta(t - t'),
+\end{equation}
+where since the $\delta$ function in $\expval*{F(t') F(t)}$
+contains an infinitesimal positive shift, 
+when $t$ is \emph{exactly} $t'$ it should be zero.
+(Or, to be more rigorous, we can always replace 
+$\delta(t - t' - 0^+)$ by a smooth function that 
+vanishes when $t < t'$, 
+and we can check that the equations above are all correct.)
+The correlation function in fluctuation-dissipation theorem 
+is evaluated when the fluid is at rest,
+and therefore $\ff(t) = \fn(t)$, and we find 
+\begin{equation}
+    \expval*{\fn(t') \fn(t)} \theta(t - t') = \kB T \cf \delta(t - t').
+    \label{eq:proto-langevin-correlation}
+\end{equation}
+The $\delta(t - t')$ function in \eqref{eq:proto-langevin-correlation}
+is double-sided: it looks like a Gaussian peak,
+and therefore 
+\begin{equation}
+    \theta(t - t') \delta(t - t') = \frac{1}{2} \delta(t - t'),
+\end{equation}
+and eventually, the correlation function of $\fn$ reads 
+\begin{equation}
+    \expval{\fn(0) \fn(t)} = 2 \kB T \cf \delta(t).
+\end{equation}
+
+In conclusion, if we are sure that the damping force from the fluid 
+is in the form of $F = - k v$,
+then the EOM of a particle in the fluid always takes the form of 
+\begin{equation}
+    M \ddot{X} + \cf \dot{X} + \pdv{U}{X} = \fn(t), \quad 
+    \expval{\fn(0) \fn(t)} = 2 \kB T \cf \delta(t).
+\end{equation} 
+Thanks to the fluctuation-dissipation theorem,
+we now find that the statistical properties of the noise 
+is related to the damping coefficient.
+
+\subsection{An implementation: fluid as a number of harmonic oscillators}
+
+In principle higher order non-trivial correlations are possible; 
+but in most of the systems that are experimentally feasible,
+the environment can be very effectively modeled as 
+a heat bath containing lots of harmonic oscillators.
+In this case $\fn(t)$ should be a Gaussian noise.
+Thus, the smooth, realistic form of the double-sided $\delta(t)$ is something like 
+\begin{equation}
+    \frac{1}{\tau} \ee^{- \abs*{t} / \tau}.
+\end{equation}
+
+In this section we explicitly show how this can be done.
+If the fluid can be modeled as a pool of harmonic oscillators, 
+the EOMs are 
+\begin{equation}
+    M \ddot{X} = - \pdv{U}{X} + \sum_{i} k_i (x_i - X), \quad 
+    m_i \ddot{x}_i = - k_i (x_i - X) \Rightarrow 
+    \ddot{x}_i + \omega^2 x_i = \omega^2 X ,
+\end{equation}
+where 
+\begin{equation}
+    \omega_i = \sqrt{\frac{k_i}{m_i}}.
+\end{equation}
+We can directly verify that 
+\begin{equation}
+    x_i(t) = a_i \sin(\omega_i t + \phi_i) 
+    + \int_{-\infty}^{t} \dd{\tau} \cos(\omega_i (t - \tau)) \dot{X}(\tau)
+    + X(\tau),
+\end{equation}
+and therefore the effective EOM for the particle is 
+\begin{equation}
+    M \ddot{X} = - \pdv{U}{X} + 
+    \int_{-\infty}^{t} \underbrace{
+        \sum_i k_i \cos(\omega_i (t - \tau))
+    }_{K(t - \tau)} \dot{X}(\tau)
+    + \underbrace{
+        \sum_i k_i a_i \sin(\omega_i t + \phi_i)
+    }_{\fn(t)} .
+\end{equation}
+Now we assume $\{x_i\}$ to be in thermal equilibrium;
+this is somehow a self-conflicting assumption 
+since we have assumed no interaction between the oscillators 
+and they simply won't thermalize; 
+but we can always assume that the oscillators are coupled 
+with some external reservoir and hence are thermalized,
+or that there is weak interaction among them,
+which is weak enough to have no strong correction to the energy 
+but strong enough to lead to thermalization.
+The energy of each oscillator is 
+\begin{equation}
+    E = \frac{p_i^2}{2m_i} + \frac{1}{2} m_i \omega_i^2 x^2_i
+    = m_i \omega_i^2 a_i^2,
+\end{equation}
+and from the equipartition theorem we find 
+\begin{equation}
+    \expval{E} = \kB T \Rightarrow \expval*{a_i^2} = \frac{2\kB T}{m_i \omega_i^2},
+\end{equation}
+while 
+\begin{equation}
+    \expval*{a_i a_j} = 0 \quad i \neq j.
+\end{equation}
+We thus find 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\fn(0) \fn(t)} &= 
+        \sum_{i, j} \expval*{a_i a_j} k_i k_j \sin \phi_i \sin(\omega_j t + \phi_j) \\
+        &= \sum_i \frac{2 \kB T}{m_i \omega_i^2} k_i^2 \sin \phi_i \sin (\omega_i t + \phi_i) \\
+        &= \kB T \sum_{i} 2 k_i \sin \phi_i \sin(\omega_i t + \phi_i) \\
+        &= \kB T \sum_i k_i (\cos(\omega_i t) - \cos(\omega_i t + 2 \phi_i)) \\
+        &\approx \kB T \sum_i k_i \cos (\omega_i t),
+    \end{aligned}
+\end{equation}
+where in the last line we have assumed that 
+there are so many oscillators and their phases are random,
+so the second term in the last second line vanishes.
+Thus we find 
+\begin{equation}
+    \expval*{\fn(0) \fn(t)} = \kB T K(t).
+\end{equation}
+Now we get 
 
 \section{Fokker-Planck equation}
 
@@ -366,14 +560,50 @@ The classical tunneling rate is \todo{derivation}
 
 \section{Transmission line and resistance}
 
-We can also check the fluctuation-dissipation theorem on the infinite transmission line.
+We can also study the infinite transmission line,
+the counterpart of the infinite harmonic oscillator array 
+attached to the particle,
+from the perspective of linear response -- 
+and show why it looks like a resistor.
+This time we proceed in the frequency domain,
+and we will see it makes many things simpler. 
 
 \begin{equation}
     Y_m(\omega) = \left(
         - \ii \omega L_m + \frac{1}{- \ii \omega C}
     \right)^{-1} 
-    = - 
+    = \ii \frac{y_m \omega_m \omega}{
+        \omega^2 - \omega_m^2
+    }. 
 \end{equation}
+where 
+\begin{equation}
+    \omega_m = \frac{1}{\sqrt{L_m C_m}}, \quad 
+    y_m = \sqrt{\frac{C_m}{L_m}}
+\end{equation}
+This is supposed to be a response function,
+so let's add a little imaginary part to $\omega$ 
+so that all poles are on the lower plane,
+and we get 
+\begin{equation}
+    Y_m(\omega) = \left(
+        - \ii \omega L_m + \frac{1}{- \ii \omega C}
+    \right)^{-1} 
+    = \ii y_m \omega_m \frac{ \omega}{
+        (\omega + \ii 0^+)^2 - \omega_m^2
+    } = \chi_{I Q}(\omega). 
+\end{equation}
+The real part of 
+
+On the other hand, the current going into the main circuit is 
+\begin{equation}
+    I(t) = \sum_m I_m(t),
+\end{equation}
+and the 
+\begin{equation}
+    S_{II}(\omega) = 2 \kB T \Re \chi_{I Q} (\omega),
+\end{equation}
+where $A = Q$ and $B = I$.
 
 \printbibliography
 
