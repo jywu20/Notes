@@ -1,0 +1,380 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{nonequilibrium.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\cf}{c_{\text{F}}}
+\newcommand{\fn}{F_{\text{N}}}
+
+\title{Fluctuation}
+\author{Jinyuan Wu}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Motivation: Langevin equation}
+
+The experimental motivation to study fluctuation is 
+probably the Brownian motion: 
+in this specific case, 
+large particles in fluid feel the fluctuation of the fluid,
+and undergo random motion.
+There are three length scales and three time scales 
+in a typical experimental setting:
+\begin{itemize}
+    \item The molecule scales: \SI{1e-10}{m}, \SI{1e-12}{s};
+    \item The particle scales: typically \SI{1e-6}{m}, \SI{1e-3}{s};
+    \item The enclosure (i.e. container of the fluid) scales: 
+    at least \SI{1e-2}{m}, \SI{1e2}{s}.
+\end{itemize}
+The separation between the molecule scales and the particle scales 
+justifies treating the fluid as a continuum,
+while the separation between the particle scales 
+and the enclosure scales 
+justifies treating the configuration space of the particles 
+as an infinite one.
+There actually should be another scale: 
+the mean distance between particles;
+if this is large enough, 
+then particles are independent to each other; 
+but we may want to consider this as the enclosure scales.
+
+When the aforementioned conditions of separation of scales are all true, 
+the behavior of a particle independent to others is described 
+by the \concept{Langevin equation} 
+\begin{equation}
+    M \dv[2]{X}{t} + \pdv{U}{X} = - c_{\text{F}} \dot{X} + F_{\text{N}}(t),
+    \label{eq:langevin}
+\end{equation}
+the terms on the LHS being effects about the particle itself,
+the terms on the RHS being the deterministic damping term 
+and the stochastic Langevin force, accordingly.
+
+Solving \eqref{eq:langevin}, therefore, involves two steps:
+finding reliable descriptions of $c_{\text{F}}$ and $F_{\text{N}}$,
+and solving \eqref{eq:langevin} as a stochastic differential equation.
+The first problem is essentially about establishing a theory 
+of fluctuation ($F_{\text{N}}$) and response ($\gamma$) 
+in the fluid surrounding the particle,
+and the second problem is about the mathematical treatment 
+of stochastic processes.
+
+\section{Quantum circuit}
+
+The formalism of Langevin equation is not limited to soft condensed matter systems:
+since formally Newton's second law 
+is analogous to circuit theory,
+fluctuation and damping in a circuit immersed in 
+a sea of smaller circuits can also be described in Langevin's formalism.
+Indeed this is how resistance comes into being \todo{Ref.}
+In circuit analysis we have another problem:
+now the Langevin equation should be \emph{quantum},
+since although no one would perform a Brownian motion experiment 
+in a low temperature quantum liquid,
+we indeed can perform quantum circuit experiments 
+at a very low temperature.
+
+\todo{Commutation relations?}
+
+\section{Correlation, response, and fluctuation-dissipation theorem} 
+
+In this section we briefly review the linear response theory.
+In general, a driven Hamiltonian assumes the following form: 
+\begin{equation}
+    H = H_0(x_1, \ldots, x_n, p_1, \ldots, p_n) - A(x_1, \ldots, x_n, p_1, \ldots, p_n) F_A(t),
+\end{equation}
+where we have assumed that degrees of freedom in the system 
+follow the canonical commutation relation;
+this assumption of course is frequently broken
+(as in, say, a magnetic spin model),
+but in this note let's focus on the most familiar case. 
+We can readily have two examples: 
+the first is 
+\begin{equation}
+    H = \frac{p^2}{2m} + \frac{1}{2} k x^2 - x F(t),
+\end{equation}
+of which the EOM is 
+\begin{equation}
+    \dot{p} = - kx + F(t), \quad 
+    \dot{x} = \frac{p}{m} ,
+\end{equation}
+as is expected.
+The second is 
+\begin{equation}
+    H = \frac{\Phi^2}{2L} + \frac{Q^2}{2L} - Q V,
+\end{equation}
+\todo{Commutation relations: cQED?}
+Here we intentionally leave the discussion of damping;
+it can't be directly treated in the Hamiltonian formalism 
+and will be modeled by an infinite bath of other degrees of freedom.
+Suppose we have another physical quantity $B$ 
+which is also a polynomial of $x_1, \ldots, x_n$
+and $p_1, \ldots, p_n$.
+When the external driving force $F(t)$ is applied, 
+we get 
+\begin{equation}
+    \var{B}(t) \coloneqq B(t) - B_0 
+    = \int_{-\infty}^\infty \dd{t_1} \chi_{BA}(t, t_1) F_A(t_1) 
+    + B_{\text{noise}} + \bigO{(F_A^2)}.
+\end{equation}
+The first term equals to the linear term in $\expval{\var{B}(t)}$;
+the noise term contains information about correlation of $B$
+with other variables -- or maybe itself.
+It can be statistical noise (noise in classical probability theory)
+when there is a bath (see below);
+but even if we are dealing with a pure state theory,
+$B_{\text{noise}} = B - \expval{B}$ will still bring some ``quantum noise''.
+The response function is 
+\begin{equation}
+    \chi_{BA}(t, t_1) = \chi_{BA}(t - t_1)
+\end{equation}
+when $H_0$ is time-independent.
+
+Now we turn to another aspect: correlation.
+We define 
+\begin{equation}
+    S_{BA}(\omega) = \int \ee^{\ii \omega t} \expval{B(0) A(t)} \dd{t}.
+\end{equation}
+\todo{Heisenberg description of the system: from density matrix to??? What is $A(t)$ when we have noise in the system?}
+This is known as the greater Green function or the lesser Green function 
+when $A$ and $B$ are field operators.
+We now state the following \concept{fluctuation-dissipation theorem}:
+for a classical system, we have 
+\begin{equation}
+    \expval*{\dot{A}(0) B(t)} \theta(t) = \kB T \chi_{BA}(t),
+\end{equation}
+and in the frequency domain, 
+\begin{equation}
+    S_{\dot{A} B} (\omega) = 2 \kB T \Re \chi(\omega).
+\end{equation}
+Replacing $\dot{A}$ by $A$, we get a $1 / (- \ii \omega)$ factor,
+and the equation becomes 
+\begin{equation}
+    S_{AB}(\omega) = \frac{2 \kB T}{\omega} \Im \chi_{AB}(\omega).
+\end{equation}
+In the quantum case we have 
+\begin{equation}
+    S_{AB}(\omega) = \frac{2\hbar}{1 - \ee^{- \hbar \omega / \kB T}} \Im \chi_{AB}(\omega).
+\end{equation}
+To save space the proof of the theorem is not shown here; 
+a straightforward derivation can be found in section 9.4 in \cite{coleman2015introduction}.
+Note that in the $T \to 0$ limit, 
+classically $S_{AB}$ vanishes,
+but in the quantum case we still have a non-vanishing remaining correlation
+as long as we see a response of $A$ to $B$
+which is known as quantum noise:
+if $A$ responds to the $- B f(t)$ term in the Hamiltonian,
+$A$ and $B$ don't commute (or otherwise we don't have non-trivial time evolution),
+and thus $S_{AB}$ is definitely not zero when $T \to 0$
+i.e. when in the pure state theory.
+
+\section{Analysis of common noises}
+
+\section{Langevin equation revisited}
+
+Now we can see that although the details of $\fn(t)$ and $\cf$
+are still largely unknown,
+if $\fn(t)$ and $\cf$ ``naturally'' appear 
+by coupling with the bosonic bath, \todo{Derive $\fn$ as correlation function, $\cf$ as response}
+the properties of $\fn(t)$ and $\cf$ in 
+\begin{equation}
+    M \ddot{X} + \cf \dot{X} + \pdv{U}{X} = \fn(t)
+\end{equation}
+follow the relation 
+\begin{equation}
+    \expval{\fn(0) \fn(t)} = 2 \kB T \cf \delta(t),
+\end{equation}
+or, to be accurate, $\delta(t)$ should be replaced by something like
+\begin{equation}
+    \frac{1}{\tau} \ee^{- \abs*{t} / \tau}
+\end{equation}
+if the environment degrees of freedom are ``free'' \todo{Being more clear here}
+and therefore are Gaussian variables.
+
+\section{Fokker-Planck equation}
+
+The Langevin equation in the last section is a specific case of the following SDE 
+\begin{equation}
+    \dot{X} = A W + F, \quad 
+    \expval{F_i(0) F_j(t)} = B_{ij} \delta(t),
+\end{equation}
+the time evolution of the probabilistic distribution $W(X_1, X_2, \ldots, X_n)$ 
+can be rewritten into  
+\begin{equation}
+    \pdv{W}{t} = \underbrace{
+        - \div{A W}
+    }_{\text{drift}} + 
+    \underbrace{
+        \frac{1}{2} \div \div (B W)
+    }_{\text{diffusion}} . 
+\end{equation}
+This equation is known as the \concept{Fokker-Planck equation}.
+
+The classical tunneling rate is \todo{derivation}
+\begin{equation}
+    \Gamma = \frac{\omega_0}{2\pi} \ee^{- \Delta U / \kB T}
+\end{equation}
+
+\section{Transmission line and resistance}
+
+We can also check the fluctuation-dissipation theorem on the infinite transmission line.
+
+\begin{equation}
+    Y_m(\omega) = \left(
+        - \ii \omega L_m + \frac{1}{- \ii \omega C}
+    \right)^{-1} 
+    = - 
+\end{equation}
+
+\printbibliography
+
+\end{document}
