@@ -51,6 +51,7 @@
 \DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sinc}{sinc}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -475,6 +476,19 @@ For example, the EOM of a harmonic oscillator is now
 \end{equation}
 which means the toy model of driven harmonic oscillator 
 is in fact quantitatively correct.
+Indeed, the condition of the dipole approximation is 
+\begin{equation}
+    \frac{\omega}{c} a \ll 1,
+\end{equation}
+which can be justified either by Taylor expansion 
+or by the physical intuition that the atom should not see 
+the variance of the electric field.
+The dipole approximation is usually correct, 
+but caveats are needed for Rydberg atoms
+($a$ is too large for ordinary wave length)
+and cases with artificially enhanced strong electric variance 
+as in, say, a very thin tip near a molecule 
+(wave length too small for ordinary $a$).
 
 One thing that can be immediately noticed is that 
 the dipole moment expectation is always constant 
@@ -544,5 +558,117 @@ We can organize the perturbed coefficients in the scattering matrix formalism:
 \end{equation}
 and the scattering matrix $S_{kn(t)}$ can be obtained from the 
 aforementioned series of equations.
+
+The time evolution caused by dipole coupling 
+\begin{equation}
+    H = \underbrace{
+        - \vb*{\mu} \cdot \vb*{E}_0
+    }_{ \eqqcolon W_{kn}} \cos \omega t
+\end{equation}
+therefore is 
+\begin{equation}
+    \begin{aligned}
+        \dv{\gamma_k^{(1)}}{t} &= \frac{1}{\ii \hbar} 
+        \sum_n \gamma^{(0)}_n W_{kn} \ee^{\ii \omega_{kn}} \cos \omega t  \\
+        &= \frac{1}{2 \ii \hbar} \sum_n 
+        W_{kn} \gamma_n^{(0)} (
+            \ee^{\ii (\omega_{kn} + \omega) t} 
+            + \ee^{\ii (\omega_{kn} - \omega) t }
+        ),
+    \end{aligned}
+\end{equation}
+and the equation can then be solved directly 
+since $\gamma_n^{(0)}$ is a constant.
+An important approximation is 
+\concept{rotating wave approximation (RWA)},
+in which we ignore the term $\ee^{\ii (\omega + \omega_{kn}) t}$;
+this is a good approximation
+when 
+\begin{equation}
+    \abs*{\omega + \omega_{kn}} \gg \abs*{\omega + \omega_{kn}},
+\end{equation}
+or in other words when 
+the pumping $\vb*{E} = \vb*{E}_0 \cos \omega t$ 
+is nearly resonant.
+Basically, in RWA we are extracting the \emph{envelope} 
+of $\gamma_k^{(1)}$, 
+since ignoring the fast oscillating term in a function $f(t)$
+is equivalent to replacing $f(t)$ by 
+\begin{equation}
+    \tilde{f}(t) = \frac{1}{T} \int_{t - T/2}^{t + T/2} f(t') \dd{t'},
+\end{equation}
+where $T$ is much larger than the period of the fast oscillation.
+
+Now after RWA, we find 
+\begin{equation}
+    \begin{aligned}
+        \gamma^{(1)}_{k}(T) &= \frac{1}{2 \ii \hbar} 
+            \sum_n W_{kn} \gamma^{(0)}_n
+            \frac{1}{\ii (\omega_{kn} - \omega)}
+            \eval{
+                \ee^{\ii (\omega_{kn} - \omega) t} 
+            }_{0}^T  \\
+        &= T \cdot \frac{1}{\ii \hbar} \sum_n 
+            W_{kn} \gamma^{(0)}_n \ee^{\ii \Delta \omega T / 2} 
+            \sinc(\Delta \omega T / 2),
+    \end{aligned} 
+\end{equation}
+where 
+\begin{equation}
+    \omega = \omega_k - \omega_n - \omega.
+\end{equation}
+Therefore we find the probability to s
+\begin{equation}
+    P_{n \to k}(t) = 
+\end{equation}
+The final result is the famous Fermi golden rule
+\begin{equation}
+    P_{n \to k} (t) = t \cdot \frac{2\pi}{\hbar} \abs*{W_{kn}}^2 (\gamma^{(0)}_n)^2 
+    \delta_T(\omega_k - \omega_n - \omega).
+\end{equation}
+We see expectedly that the transition probability reaches its maximum  
+when the pumping is resonant.
+The fact that we have a sinc function profile of the transition probability 
+comes from the finite length of the driving field:
+from the mathematical uncertainty relation,
+when the pumping pulse has a finite length, 
+we don't have a completely well-defined $\omega$,
+and the sinc shape comes from the  
+Fourier transform of the finite length sine wave.
+
+Now we consider radiation from the atom.
+This means we should consider the $\omega < 0$ term 
+which contributes to the amplitude of states with lower energies.
+We do a reverse RWA and ignore the $\ee^{\ii (\omega_{kn} - \omega) t}$ term.
+
+The dipole can also be evaluated from the perturbed wave function.
+We have 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\vb*{\mu}}{\psi} &= 
+            (\bra*{\psi^{(0)}} + \lambda \bra*{\psi^{(1)}} + \lambda^2 \bra*{\psi^{(2)}} + \cdots)
+            \vb*{\mu} (\ket*{\psi^{(0)}} + \lambda \ket*{\psi^{(1)}} + \lambda^2 \ket*{\psi^{(2)}} + \cdots) \\
+        &= \underbrace{
+            \expval*{\vb*{\mu}}{\psi^{(0)}}
+        }_{\expval{\vb*{\mu}}^{(0)}}  + 
+        \underbrace{
+            \mel*{\psi^{(0)}}{\vb*{\mu}}{\psi^{(1)}} + \text{c.c.}
+        }_{\expval*{\vb*{\mu}}^{(1)}} + \cdots,
+    \end{aligned}
+\end{equation} 
+and we can then find the response of the atom dipole to the electric field.
+When we are doing this actually we already have to 
+slightly deviate from the standard semiclassical coupling theory,
+or otherwise when $\omega = \omega_{\text{eg}}$, 
+the response is infinite.
+The physical answer is spontaneous radiation.
+
+The above procedure can also be seen as a procedure 
+to integrate out the atomic degrees of freedom and  
+obtain an effective theory of the light field.
+
+\todo{Study dissipation and noise here; todo: spontaneous radiation; 
+what's the difference between spontaneous radiation and 
+the radiation shown here?}
 
 \end{document}
