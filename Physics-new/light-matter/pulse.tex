@@ -1,0 +1,361 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\omegap}{\omega_{\text{p}}}    
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{\vb*{E}}}
+\newcommand{\Dfreq}{\tilde{\vb*{D}}}
+\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+
+\title{Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{The energy velocity}
+
+Since $\epsr$ has frequency dependence,
+the relation between $\vb*{E}(t)$ and $\vb*{D}(t)$ 
+is not localized in the time domain,
+and therefore although we still know that 
+the energy would be a quadratic form of $\vb*{E}$ or $\vb*{D}$,
+since 
+\begin{equation}
+    \pdv{\vb*{E}}{t} \cdot \vb*{D} \neq \pdv{\vb*{D}}{t} \cdot \vb*{E},
+\end{equation}
+the simple relation 
+\[
+    u_e = \frac{1}{2} \vb*{D} \cdot \vb*{E} 
+\]
+no longer holds.
+Instead, we should start from the most generic theory 
+and utilize 
+\begin{equation}
+    \pdv{u_e}{t} = \vb*{E} \cdot \pdv{\vb*{D}}{t}.
+    \label{eq:change-of-ue}
+\end{equation} 
+To use this equation to get an expression of $u_e$,
+we should no longer work with plane waves, 
+or otherwise $u_e$ is a constant and 
+we don't see any change of $u_e$ at all.
+Below we work with a wave packet centered at $\pm \omega_0$.
+For the wave packet, the electric field is 
+\begin{equation}
+    \vb*{E}(t) = \ee^{- \ii \omega_0 t} \cdot 
+        \underbrace{
+            \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t}
+            \Efreq(\omega)
+        }_{\eqqcolon \vb*{E}_0(t)},
+\end{equation}
+\begin{equation}
+    \vb*{D}(t) = \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t}
+            \varepsilon(\omega) \Efreq(\omega) .
+\end{equation}
+By Taylor expansion of $\varepsilon$ we have 
+\begin{equation}
+    \begin{aligned}
+        \pdv*{\vb*{D}}{t} &= 
+        \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        (-\ii \omega) \left(
+            \varepsilon(\omega_0) + 
+            (\omega - \omega_0) \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+            + \cdots 
+        \right) \\
+        &\approx \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        \left(
+            - \ii \omega_0 \varepsilon(\omega_0) 
+            - \ii (\omega - \omega_0) \varepsilon(\omega)_0 
+            - \ii (\omega - \omega_0) \omega 
+                \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+        \right) \\
+        &\approx \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        \Bigg(
+            - \ii \omega_0 \varepsilon(\omega_0) 
+            \underbrace{
+                - \ii (\omega - \omega_0) \varepsilon(\omega)_0 
+                - \ii (\omega - \omega_0) \omega_0  
+                    \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+            }_{
+                = - \ii (\omega - \omega_0) 
+                \eval{\dv{(\omega \varepsilon)}{\omega}}_{\omega = \omega_0} 
+            }
+        \Bigg) \\
+        &= \ee^{- \ii \omega_0 t} \underbrace{
+            \left(
+                - \ii \omega_0 \varepsilon(\omega_0) \vb*{E}_0(t)
+                + \dv{(\omega \varepsilon)}{\omega} 
+                \pdv{\vb*{E}_0}{t}  
+            \right)
+        }_{\eqqcolon \vb*{D}_0(t)} .
+    \end{aligned}
+    \label{eq:pdv-d-t-derivation}
+\end{equation}
+In the second line we throw away the higher order Taylor terms;
+in the third line we only keep terms linear to $(\omega - \omega_0)$.
+These approximations require the wave packet 
+to be focused enough.
+We use $\expval{\cdots}$ to refer to 
+averaging over the fast oscillations;
+thus, $\vb*{E}_0(t)$ and $\vb*{D}_0(t)$ above 
+can be regarded as constants when applying $\expval{\cdots}$,
+and hence we find 
+\begin{equation}
+    \begin{aligned}
+        \expval{\pdv{u_e}{t}} &= \expval{\vb*{E} \cdot \pdv{\vb*{D}}{t}}
+        = \frac{1}{2} \cdot \frac{1}{4} \Re (
+            \vb*{D}_0^*(t) \cdot \vb*{E}_0(t)
+            + \vb*{D}_0(t) \cdot \vb*{E}_0^*(t)
+        ) \\
+        &\approx \frac{1}{4} \Re \left(
+            \left(
+                \omega_0 \varepsilon_2(\omega_0) 
+                + \dv{(\omega \varepsilon_1)}{\omega} 
+            \right)
+                \pdv{\vb*{E}_0^*}{t} \cdot \vb*{E}_0 
+            + \left(
+                \omega_0 \varepsilon_2(\omega_0)
+                + \dv{(\omega \varepsilon_1)}{\omega} 
+            \right)
+            \vb*{E}_0^* \cdot \pdv{\vb*{E}_0}{t} 
+        \right) \\
+        &= \frac{1}{4} \left(
+            \omega_0 \varepsilon_2(\omega_0) +
+            \dv{(\omega \varepsilon_1)}{\omega}
+        \right) \pdv{\abs*{\vb*{E}_0}^2}{t} .
+    \end{aligned}
+\end{equation}
+In the second line we have considered 
+both the real and imaginary parts of $\epsilon$.%
+\footnote{
+    Note that $\epsilon(\omega) = \epsilon(- \omega)^*$
+    comes from the fact that $\epsilon$ is real in the time domain;
+    it says nothing about whether the system is Hermitian;
+    the Hermitian condition is $\epsilon(\omega) = \epsilon(\omega)^*$.
+} 
+Since $u_e$ contains no fast oscillation, we have 
+\begin{equation}
+    \pdv{\expval{u_e}}{t} = \expval{\pdv{u_e}{t}} 
+    = \frac{1}{4} \left(
+        \omega_0 \varepsilon_2(\omega_0) +
+        \dv{(\omega \varepsilon_1)}{\omega}
+    \right)  
+    \pdv{\abs*{\vb*{E}_0}^2}{t} .
+\end{equation}
+Similarly we have 
+\begin{equation}
+    \pdv{\expval{u_m}}{t} = \expval{\pdv{u_m}{t}} 
+    = \frac{1}{4} \left(
+        \omega_0 \mu_2(\omega_0) +
+        \dv{(\omega \mu_1)}{\omega}
+    \right) 
+    \pdv{\abs*{\vb*{H}_0}^2}{t} .
+\end{equation}
+When the matter is modeled by harmonic oscillators, 
+$\mu$ doesn't undergo any correction, 
+but let's work with a slightly generalized case.
+Eventually we have 
+\begin{equation}
+    \expval{u} = \expval{u_e + u_m} 
+    = \frac{1}{4} \left(
+        \omega_0 \varepsilon_2(\omega_0) +
+        \dv{(\omega \varepsilon_1)}{\omega}
+    \right)  
+    \abs*{\vb*{E}_0}^2 + 
+    \frac{1}{4} \left(
+        \omega_0 \mu_2(\omega_0) +
+        \dv{(\omega \mu_1)}{\omega}
+    \right) 
+    \abs*{\vb*{H}_0}^2.
+\end{equation}
+In the case of the Lorentz oscillator,
+$\mu$ is real, and we have 
+\begin{equation}
+    \expval{u_m} = \frac{1}{4} \mu_0 \abs*{\vb*{H}_0}^2 
+    = \frac{1}{4} \mu_0 \cdot \frac{\abs*{\varepsilon}}{\mu_0} \abs*{\vb*{E}_0}^2
+    = \frac{1}{4} \abs{\varepsilon} \abs*{\vb*{E}_0}^2.
+\end{equation}
+
+The evaluation of the time averaged Poynting vector is more straightforward:
+since 
+\begin{equation}
+    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} \Rightarrow
+    \ii \vb*{k} \times \vb*{E} = - (- \ii \omega) \vb*{B},
+\end{equation}
+we just have 
+\begin{equation}
+    \begin{aligned}
+        \expval{\vb*{S}} &= \frac{1}{\mu} \expval{\vb*{E} \times \vb*{B}} \\
+        &= \frac{1}{\mu} \cdot \frac{1}{4} \Re \left(
+            \vb*{E}^*_0 \times \vb*{B}_0 + \vb*{E}_0 \times \vb*{B}^*_0 
+        \right) \\
+        &= \frac{1}{2 \mu} \frac{\Re \vb*{k}}{\omega} \abs*{\vb*{E}_0}^2
+        = \frac{1}{2} \Re \sqrt{\frac{\varepsilon}{\mu}} \abs*{\vb*{E}_0}^2 \vu*{k} ,
+    \end{aligned}
+\end{equation}
+where we have used the condition $\vb*{k} \cdot \vb*{E} = 0$,
+and in the third line we have used the condition that 
+the directions of the real and imaginary parts of $\vb*{k}$
+are the same, and therefore 
+from $\vb*{k} \cdot \vb*{E}_0 = 0$ we also have 
+$\vb*{k}^* \cdot \vb*{E} = 0$.
+The energy velocity is therefore 
+\begin{equation}
+    v_{E} = \frac{\abs*{\expval{\vb*{S}}}}{\expval{u_e + u_m}}
+    = 
+\end{equation}
+
+\end{document}
