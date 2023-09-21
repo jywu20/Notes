@@ -138,6 +138,7 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
+\newcommand*{\omegap}{\omega_{\text{p}}}    
 \newcommand*{\kB}{k_{\text{B}}}
 \newcommand*{\muB}{\mu_{\text{B}}}
 \newcommand*{\efermi}{E_{\text{F}}}
@@ -317,40 +318,43 @@ and from
 \end{equation}
 we get 
 \begin{equation}
-    \Dfreq = \epsilon_0 \underbrace{\left(
-        1 + \frac{N q^2}{m \epsilon_0} \frac{1}{- \omega^2 - \ii \gamma \omega + \Omega^2}
-    \right)}_{\epsr} \Efreq.
+    \Dfreq = \epsilon_0 \epsr \Efreq, \quad 
+    \epsr(\vb*{k}, \omega) = 1 + \frac{\omegap^2}{- \omega^2 - \ii \gamma \omega + \Omega^2}, \quad 
+    \omegap^2 = \frac{N q^2}{m \epsilon_0}.
 \end{equation}
 So we already get $\epsr$; it has explicit dependence on $\omega$,
 but not $\vb*{k}$.
 
 \subsubsection{}
 
+The form of a propagating plane wave in the free space is 
+\begin{equation}
+    \vb*{E} = \vb*{E}_0 \ee^{\ii (\vb*{k} \cdot \vb*{r} - \omega t)} + \text{c.c.}, \quad 
+    \vb*{k} = k \vu*{k}, \quad k = \frac{\sqrt{\epsr} \omega}{c} = \frac{n \omega}{c}.
+\end{equation}
+Note that it's possible that $k$ has an imaginary part 
+and $n$ is the complex refraction index.
+The direction of $\Re \vb*{k}$ and $\Im \vb*{k}$ 
+is assumed to be the same.
 The phase velocity is given by 
 \begin{equation}
-    v = \frac{c}{\sqrt{\epsr}} = \frac{c}{
-        \sqrt{
-            1 + \frac{N q^2}{m \epsilon_0} \frac{1}{- \omega^2 - \ii \gamma \omega + \Omega^2}
+    v = \frac{\omega}{\Re k} = \frac{c}{\Re n} = \frac{c}{\Re \sqrt{\epsr}}
+    = \frac{c}{
+        \Re \sqrt{
+            1 + \frac{\omegap^2}{- \omega^2 - \ii \gamma \omega + \Omega^2}
         }
     }.
 \end{equation}
-As for the group velocity, we have 
+The group velocity is 
 \begin{equation}
-    \begin{aligned}
-        &\quad \omega^2 = \frac{c^2 k^2}{\epsr} \\
-        &\Rightarrow 2 \omega \dd{\omega} = 
-        \frac{2 c^2 k \dd{k}}{\epsr} 
-        - c^2 k^2 \frac{\dd{\epsr}}{\epsr^2} \\
-        &\Rightarrow v_{\text{g}} = 
-        \frac{2 c^2 k}{\epsr} \frac{1}{
-            2 \omega + \frac{c^2 k^2}{\epsr^2} \dv{\epsr}{\omega}
-        },
-    \end{aligned}
-\end{equation}
-where 
-\begin{equation}
-    \dv{\epsr}{\omega} = \frac{N q^2}{m \epsilon_0}
-    \frac{2 \omega + \ii \gamma}{(- \omega^2 - \ii \gamma \omega + \Omega^2)^2}.
+    v_{\text{g}} = \frac{\dd{\omega}}{\dd{\Re k}}
+    = c \left(
+        \dv{
+            \Re \sqrt{
+                1 + \frac{\omegap^2}{- \omega^2 - \ii \gamma \omega + \Omega^2}
+            }
+        }{\omega}
+    \right)^{-1}.
 \end{equation}
 
 \subsubsection{}
@@ -373,6 +377,7 @@ Instead, we should start from the most generic theory
 and utilize 
 \begin{equation}
     \pdv{u_e}{t} = \vb*{E} \cdot \pdv{\vb*{D}}{t}.
+    \label{eq:change-of-ue}
 \end{equation} 
 To use this equation to get an expression of $u_e$,
 we should no longer work with plane waves, 
@@ -450,7 +455,7 @@ and hence we find
             \vb*{D}_0^*(t) \cdot \vb*{E}_0(t)
             + \vb*{D}_0(t) \cdot \vb*{E}_0^*(t)
         ) \\
-        &\approx \frac{1}{4} \left(
+        &\approx \frac{1}{4} \Re \left(
             \left(
                 \omega_0 \varepsilon_2(\omega_0) 
                 + \dv{(\omega \varepsilon_1)}{\omega} 
@@ -511,12 +516,19 @@ Eventually we have
     \right) 
     \abs*{\vb*{H}_0}^2.
 \end{equation}
+In the case of the Lorentz oscillator,
+$\mu$ is real, and we have 
+\begin{equation}
+    \expval{u_m} = \frac{1}{4} \mu_0 \abs*{\vb*{H}_0}^2 
+    = \frac{1}{4} \mu_0 \cdot \frac{\abs*{\varepsilon}}{\mu_0} \abs*{\vb*{E}_0}^2
+    = \frac{1}{4} \abs{\varepsilon} \abs*{\vb*{E}_0}^2.
+\end{equation}
 
 The evaluation of the time averaged Poynting vector is more straightforward:
 since 
 \begin{equation}
     \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} \Rightarrow
-    \ii \vb*{k} \cdot \vb*{E} = - (- \ii \omega) \vb*{B},
+    \ii \vb*{k} \times \vb*{E} = - (- \ii \omega) \vb*{B},
 \end{equation}
 we just have 
 \begin{equation}
@@ -525,10 +537,16 @@ we just have
         &= \frac{1}{\mu} \cdot \frac{1}{4} \Re \left(
             \vb*{E}^*_0 \times \vb*{B}_0 + \vb*{E}_0 \times \vb*{B}^*_0 
         \right) \\
-        &= \frac{1}{2 \mu} \frac{\vb*{k}}{\omega} \abs*{\vb*{E}_0}^2,
+        &= \frac{1}{2 \mu} \frac{\Re \vb*{k}}{\omega} \abs*{\vb*{E}_0}^2
+        = \frac{1}{2} \Re \sqrt{\frac{\varepsilon}{\mu}} \abs*{\vb*{E}_0}^2 \vu*{k} ,
     \end{aligned}
 \end{equation}
-where we have used the condition $\vb*{k} \cdot \vb*{E} = 0$.
+where we have used the condition $\vb*{k} \cdot \vb*{E} = 0$,
+and in the third line we have used the condition that 
+the directions of the real and imaginary parts of $\vb*{k}$
+are the same, and therefore 
+from $\vb*{k} \cdot \vb*{E}_0 = 0$ we also have 
+$\vb*{k}^* \cdot \vb*{E} = 0$.
 The energy velocity is therefore 
 \begin{equation}
     v_{E} = \frac{\abs*{\expval{\vb*{S}}}}{\expval{u_e + u_m}}
@@ -537,7 +555,296 @@ The energy velocity is therefore
 
 \subsection{Optical Tweezers}
 
-\todo{}
+\subsubsection{}
 
+\subsection{A simple derivation of electrostrictive pressure}
+
+\paragraph{(a)}
+The interaction energy between electromagnetic field and the matter is 
+\begin{equation}
+    U_{\text{int}} = - \vb*{P} \cdot \vb*{E}
+    = - \epsilon_0 (\epsr - 1) \vb*{E} \cdot \vb*{E},
+\end{equation}
+and therefore 
+\begin{equation}
+    \expval{U_{\text{int}}} = - \epsilon_0 
+\end{equation}
+
+\subsection{Fourier-Domain Treatment of the Wave Equation}
+
+\paragraph{(a)} Separation of variables fails whenever 
+formally carrying out the separation of variable procedure 
+\emph{doesn't} lead to good Sturm-Liouville eigenvalue problems.
+This happens in several cases.
+Maybe the structure of the equation is not good, e.g. 
+when the problem is to find how the density change 
+with a given but complicated velocity distribution:
+\begin{equation}
+    \pdv{\rho}{t} + \div{\rho \vb*{v}} = 0,
+\end{equation}
+from which separation of variable simply can't proceed. 
+Another case is when the boundary condition is very complicated 
+or simply has a weird geometrical shape.
+
+\paragraph{(b)}
+From the 1D wave equation 
+\begin{equation}
+    \partial^2_x E(x, t) - \frac{\varepsilon}{c^2} \partial_t^2 E(x, t) = 0,
+\end{equation}
+and the ansatz 
+\begin{equation}
+    E(x, t) = \bar{E} (x) f(t), \quad 
+    \bar{E}(x) = \int \dd{k} \tilde{E}(k) \ee^{\ii k x} , \quad 
+    f(t) = \int \dd{\omega} \tilde{f}(\omega) \ee^{- \ii \omega t}
+\end{equation}
+we get 
+\begin{equation}
+    \int \dd{\omega} \int \dd{k}
+        \left(
+            (-\ii k)^2 - \frac{\varepsilon}{c^2} (- \ii \omega)^2
+        \right) 
+        \ee^{\ii (kx - \omega t)} \tilde{f}(\omega) \tilde{E}(k) = 0,
+\end{equation}
+and therefore the equation in frequency domain is 
+\begin{equation}
+    \left(
+        k^2 - \frac{\varepsilon \omega^2}{c^2}
+    \right) \tilde{f}(\omega) \tilde{E}(k) = 0. 
+\end{equation}
+
+\paragraph{(c)}
+The dispersion relation is 
+\begin{equation}
+    k = \pm \sqrt{\varepsilon} \frac{\omega}{c}.
+\end{equation}
+Since $\varepsilon$ is a constant, 
+this means the equation has no dispersion.
+The solution of the equation therefore can be 
+rewritten as (we here redefine $\tilde{E}$) 
+\begin{equation}
+    E(x, t) = \int \frac{\dd{\omega}}{2\pi} \left(
+        \tilde{E}_1(\omega) \ee^{\ii \left(
+            \sqrt{\varepsilon} \frac{\omega}{c} x - \omega t
+        \right)} + 
+        \tilde{E}_2(\omega) \ee^{\ii \left(
+            - \sqrt{\varepsilon} \frac{\omega}{c} x - \omega t
+        \right)}
+    \right)  . 
+\end{equation}
+So there are two solutions corresponding to each $\omega$;
+by linear recombination of the solutions, 
+the two are left-going and right-going, correspondingly.
+
+\paragraph{(d)} We define the complex refraction index as 
+\begin{equation}
+    \tilde{n} = \sqrt{\varepsilon} = n + \ii \kappa,
+\end{equation}
+and 
+\begin{equation}
+    k = \frac{\omega}{c} (n + \ii \kappa).
+\end{equation}
+If we let $k$ be complex, we have 
+\begin{equation}
+    \begin{aligned}
+        E(x, t) &= E_0 \ee^{\ii (kx - \omega t)} + \text{c.c.} \\
+        &= E_0 \ee^{- \kappa \frac{\omega}{c} x} \ee^{\ii \left(
+            n \frac{\omega}{c} x - \omega t
+        \right)} + \text{c.c.},
+    \end{aligned}
+    \label{eq:damping-case-1}
+\end{equation} 
+and the decay length is 
+\begin{equation}
+    l = \frac{1}{\kappa \frac{\omega}{c}}
+    = \frac{c}{\omega \kappa}  .
+    \label{eq:damping-length-1}
+\end{equation}
+
+On the other hand, if we let $\omega$ be complex, 
+we have 
+\begin{equation}
+    \omega = \frac{ck}{n} = \frac{ck}{n^2 + \kappa^2} (n - \ii \kappa),
+\end{equation}
+and the wave looks like 
+\begin{equation}
+    E(x, t) = E_0 \ee^{
+        - k c \frac{\kappa}{n^2 + \kappa^2} t 
+    } \ee^{
+        \ii \left(
+            kx - k c \frac{n}{n^2 + \kappa^2} t
+        \right)
+    } + \text{c.c.}
+\end{equation}
+This solution can be achieved by injecting a plane wave into the medium 
+and removing the pumping source, 
+letting the wave ``cooling down'' within the medium,
+while the first solution \eqref{eq:damping-case-1}, where $k$ is complex, 
+describes the field configuration where at the boundary of the medium 
+the field strength is fixed, 
+probably because of a strong and stable source outside.
+Now the time scale of damping is 
+\begin{equation}
+    \tau = \frac{n^2 + \kappa^2}{\kappa} \frac{1}{kc},
+\end{equation}
+and in this ``homogeneously cooling down'' case, 
+the speed of the light becomes 
+\begin{equation}
+    v = \frac{n}{n^2 + \kappa^2} c,
+\end{equation}
+not just the $c / n$ in \eqref{eq:damping-case-1}.
+Now the decay length can be found from $\tau$ as 
+\begin{equation}
+    l = v \tau = \frac{n}{\kappa k}.
+    \label{eq:damping-length-2}
+\end{equation}
+If we make identification $c / n = \omega / k$,
+we find \eqref{eq:damping-length-1} and \eqref{eq:damping-length-2} are the same.
+\todo{But I have no idea why we don't make identification $\omega = kc n / (n^2 + \kappa^2)$}
+
+\subsubsection{Non-instantaneous material response}
+
+The most general relation between $D$ and $E$ is 
+\begin{equation}
+    D(x, t) = \varepsilon_0 \int_{-\infty}^{\infty} \dd{t'} 
+    \int_{-\infty}^{\infty} \dd{x'} 
+    \epsr(x - x', t - t') E(x', t').
+\end{equation}
+
+\paragraph{(a)} When we have locality and causality, 
+$\epsr(x - x', t - t')$ should be proportional to 
+$\delta(x - x')$ and $\theta(t - t')$,
+and thus 
+\begin{equation}
+    D(x, t) = \varepsilon_0 \int_{-\infty}^{t} \dd{t'} 
+    \epsr(t - t') E(x, t'), 
+\end{equation}
+\begin{equation}
+    \epsr(t - t') = \epsr(t - t') \theta(t - t').
+\end{equation}
+Here $\epsr(x - x', t - t')$ shouldn't have any space dependence 
+other than $\delta(x - x')$ or it's not a function of $x - x'$.
+
+\paragraph{(b)} The 1D electro-magnetic wave function then
+is the consequence of the following equation systems
+in the 1D case:
+\begin{equation}
+    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} , \quad 
+    \curl{\vb*{H}} = \pdv{\vb*{D}}{t}, \quad 
+    \vb*{B} = \mu_0 \vb*{H}, \quad 
+    \vb*{D}(x, t) = \varepsilon_0 \int_{-\infty}^{\infty} \dd{t'} 
+    \epsr(t - t') \vb*{E}(x, t').
+\end{equation}
+Here we have assumed that $\epsr$ doesn't map $E_x$ to $D_y$, etc.,
+or otherwise the problem can't be restricted to the 1D case,
+and thus from $\div{\vb*{D}} = 0$ we get $\div{\vb*{E}} = 0$.
+Hence 
+\begin{equation}
+    \begin{aligned}
+        - \laplacian \vb*{E} = \curl{(\curl{\vb*{E}})} = 
+        - \mu_0 \pdv{t} \curl{\vb*{H}}
+        = - \mu_0 \pdv[2]{t} \vb*{D},
+    \end{aligned}
+\end{equation}
+and therefore the final wave equation is 
+\begin{equation}
+    \partial_x^2 E(x, t) = \frac{1}{c^2} \pdv[2]{t} 
+    \int_{-\infty}^{\infty} \dd{t'} \epsr(t - t') E(x, t').
+    \label{eq:wave-eq-retarded}
+\end{equation}
+
+\paragraph{(c)} We do Fourier transform 
+\begin{equation}
+    E(x, t) = \int \frac{\dd{\omega} \dd{k}}{(2\pi)^2}
+    \ee^{\ii (kx - \omega t)} \tilde{E}(k, \omega), \quad 
+    \varepsilon(t - t') = \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii \omega t} 
+    \tilde{\varepsilon}_{\text{r}}(\omega),
+\end{equation}
+and LHS of \eqref{eq:wave-eq-retarded} becomes 
+\begin{equation}
+    \int \frac{\dd{\omega} \dd{k}}{(2\pi)^2} (\ii k)^2
+    \ee^{\ii (kx - \omega t)} \tilde{E}(k, \omega),
+\end{equation}
+and the RHS becomes 
+\begin{equation}
+    \begin{aligned}
+        &\frac{1}{c^2} \pdv[2]{t} \int \dd{t'} 
+        \int \frac{\dd{\omega'}}{2\pi} \int \frac{\dd{\omega} \dd{k}}{(2\pi)^2} 
+        \tilde{\varepsilon}_{\text{r}}(\omega') \ee^{-\ii \omega' (t - t')} 
+        \tilde{E}(k, \omega) \ee^{\ii (kx - \omega t')} \\
+        =& \frac{1}{c^2} \int \frac{\dd{\omega'}}{2\pi} \frac{\dd{\omega}}{2\pi} \frac{\dd{k}}{2\pi}
+        (- \ii \omega)^2 \tilde{\varepsilon}_{\text{r}}(\omega') \tilde{E}(k, \omega) 
+        \ee^{\ii k x} \int \dd{t'} \ee^{\ii (\omega' - \omega) t'} \\
+        =&  \frac{1}{c^2} \int \frac{\dd{\omega'}}{2\pi} \frac{\dd{\omega}}{2\pi} \frac{\dd{k}}{2\pi}
+        (- \ii \omega)^2 \tilde{\varepsilon}_{\text{r}}(\omega') \tilde{E}(k, \omega) 
+        \ee^{\ii k x - \ii \omega' t} \cdot 2\pi \delta(\omega - \omega') \\
+        =& \frac{1}{c^2} \int \frac{\dd{\omega} \dd{k}}{(2\pi)^2}
+        \ee^{\ii k x - \ii \omega t} (- \ii \omega)^2 \tilde{\varepsilon}_{\text{r}}(\omega) \tilde{E}(k, \omega) .
+    \end{aligned}
+\end{equation}
+The final equation therefore becomes 
+\begin{equation}
+    \left(
+        k^2 - \tilde{\varepsilon}_{\text{r}}(\omega) \frac{\omega^2}{c^2}
+    \right) \tilde{E}(k, \omega) = 0.
+\end{equation}
+
+\paragraph{(d)} The dispersion relation now is
+\begin{equation}
+    \omega = \frac{c \abs*{k}}{\sqrt{\tilde{\varepsilon}_{\text{r}}(\omega)}} .
+\end{equation}
+
+\subsubsection{Energy absorption}
+
+\paragraph{(a)} In the specific case of 
+\begin{equation}
+    E(x, t) = \bar{E}(x) \ee^{- \ii \omega t} + \bar{E}^*(x) \ee^{\ii \omega t},
+\end{equation}
+we have 
+\begin{equation}
+    \begin{aligned}
+        D(x, t) &= \int \dd{t'} \varepsilon(t - t') (
+            \bar{E}(x) \ee^{- \ii \omega t'} + \bar{E}^*(x) \ee^{\ii \omega t'}
+        ) \\
+        &= \bar{E}(x) \ee^{- \ii \omega t} \int \dd{t'} 
+        \ee^{\ii \omega (t - t')} \varepsilon(t - t') 
+        + \bar{E}^*(x) \ee^{\ii \omega t} \int \dd{t'} 
+        \ee^{- \ii \omega (t - t')} \varepsilon(t - t' ) \\
+        &= \bar{E}(x) \ee^{- \ii \omega t} \tilde{\varepsilon}(\omega)
+        + \bar{E}^*(x) \ee^{\ii \omega t} \tilde{\varepsilon}(- \omega).
+    \end{aligned}
+\end{equation}
+Since $\varepsilon(t)$ is real, we can rewrite 
+\begin{equation}
+    \tilde{\varepsilon}(- \omega) = \tilde{\varepsilon}(\omega)^*.
+\end{equation}
+
+\paragraph{(b)} Following the practice in \eqref{eq:change-of-ue}, we have 
+\begin{equation}
+    \begin{aligned}
+        \pdv{u_e}{t} &= E \cdot \pdv{D}{t} \\
+        &= (
+            \bar{E}(x) \ee^{- \ii \omega t} + \bar{E}^*(x) \ee^{\ii \omega t}
+        ) \cdot (
+            (- \ii \omega) \bar{E}(x) \ee^{- \ii \omega t} \tilde{\varepsilon}(\omega)
+            + (\ii \omega) \bar{E}^*(x) \ee^{\ii \omega t} \tilde{\varepsilon}(- \omega)
+        ) \\
+        &= - 2 \omega \abs*{\bar{E}(\omega)}^2 \varepsilon_2(\omega)
+        + \bar{E}(x)^2 (- \ii \omega) \ee^{- 2 \ii \omega t} \tilde{\varepsilon}(\omega)
+        + \text{c.c.}
+    \end{aligned}
+\end{equation}
+Here $\varepsilon_1$ and $\varepsilon_2$ 
+are real and imaginary parts of $\varepsilon$, respectively.
+The sum of the second and third terms is a sine function; 
+it oscillates and has zero average value.
+The first term gives the damping.
+Thus, the energy absorption rate is 
+\begin{equation}
+    \partial_t \expval{u_e} = - 2 \omega \abs*{\bar{E}(\omega)}^2 \varepsilon_2(\omega).
+\end{equation}
+
+\paragraph{(c)} The energy absorbed is proportional to the imaginary part 
+of the Fourier transform of the dielectric constant, 
+which is expected since it's related to the imaginary part of the energy spectrum.
 
 \end{document}
