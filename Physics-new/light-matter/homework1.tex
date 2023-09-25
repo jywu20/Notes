@@ -26,7 +26,7 @@
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
 \usepackage[backend=bibtex]{biblatex}
-\addbibresource{elasticity.bib}
+\addbibresource{electrodynamics.bib}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -320,6 +320,7 @@ we get
     \Dfreq = \epsilon_0 \epsr \Efreq, \quad 
     \epsr(\vb*{k}, \omega) = 1 + \frac{\omegap^2}{- \omega^2 - \ii \gamma \omega + \Omega^2}, \quad 
     \omegap^2 = \frac{N q^2}{m \epsilon_0}.
+    \label{eq:harmonic-oscillator-epsilon}
 \end{equation}
 So we already get $\epsr$; it has explicit dependence on $\omega$,
 but not $\vb*{k}$.
@@ -335,8 +336,9 @@ and $n$ is the complex refraction index.
 The direction of $\Re \vb*{k}$ and $\Im \vb*{k}$ 
 is assumed to be the same.
 The phase velocity is given by 
+(following the definition in \cite{bolda1994optical} Eq. (5))
 \begin{equation}
-    v = \frac{\omega}{\Re k} = \frac{c}{\Re n} = \frac{c}{\Re \sqrt{\epsr}}
+    v_{\text{p}} = \frac{\omega}{\Re k} = \frac{c}{\Re n} = \frac{c}{\Re \sqrt{\epsr}}
     = \frac{c}{
         \Re \sqrt{
             1 + \frac{\omegap^2}{- \omega^2 - \ii \gamma \omega + \Omega^2}
@@ -354,32 +356,259 @@ The group velocity is
         }{\omega}
     \right)^{-1}.
 \end{equation}
-
-\paragraph{(c)} I'm confused by what the problem is about.
-If it's about the evaluating $\expval{S}$ and $\expval{u}$ 
-in a plane wave by definition, 
-then the answer is simply the phase velocity;
-but we need to assume that damping isn't huge 
-or otherwise the first term in \eqref{eq:ue-change} 
-can't be ignored and $v_E$ has time/space dependence.
-
-If, as the name \term{energy velocity} more frequently means, 
-the problem is about the speed of energy of a wave packet, 
-and $\expval{u_{EM}}$ is understood as 
-\[
-    \int \dd{t} \expval{\pdv{u_{EM}}{t}},
-\]
-then when damping is small, 
-by considering a wave packet whose frequency dependence is around $\omega$ 
-we will find 
+The expression is complicated, but in the $\omega \to 0$ limit it's just 
+the phase velocity, 
+since 
 \begin{equation}
-    \expval{u_{e}} = \frac{1}{4} \varepsilon_0 \pdv{(\omega \epsr)}{\omega} 
+    v_{\text{g}}(\omega \to 0) = \left(
+        \dv{\Re k}{\omega}
+    \right)^{-1} 
+    =  \eval{
+    c \left(
+        n + \omega \pdv{n}{\omega}
+    \right)^{-1}
+    }_{\omega \to 0} = v_{\text{p}}(\omega = 0).
 \end{equation}
-and the resulting energy velocity will be the group velocity;
-but again this only works when the damping is small;
-when this is not the case, 
-$\expval*{\pdv*{u_e}{t}}$ is not a total derivative of $t$,
-and a neat expression of $\expval{u_e}$ can't be found.
+
+\paragraph{(c)} In order to get a good definition of 
+the energy velocity we have to focus on a wave packet, 
+or otherwise $\expval{\vb*{S}} / \expval{u}$ is just 
+trivially the phase velocity.
+Following the procedure in \cite{jackson1999classical} Sec. 6.8,
+Since $\epsr$ has frequency dependence,
+the relation between $\vb*{E}(t)$ and $\vb*{D}(t)$ 
+is not localized in the time domain,
+and therefore although we still know that 
+the energy would be a quadratic form of $\vb*{E}$ or $\vb*{D}$,
+since 
+\begin{equation}
+    \pdv{\vb*{E}}{t} \cdot \vb*{D} \neq \pdv{\vb*{D}}{t} \cdot \vb*{E},
+\end{equation}
+the simple relation 
+\[
+    u_e = \frac{1}{2} \vb*{D} \cdot \vb*{E} 
+\]
+no longer holds.
+Instead, we should start from the most generic theory 
+and utilize \todo{
+    But $\vb*{E} \cdot \partial_t \vb*{D}$ 
+    is just $\partial_t u_e^{\text{vac}}$  plus
+    the increase of the energy in the medium; 
+    but then the $- \vb*{P} \cdot \vb*{E}$ interaction energy is ignored.
+    But $1/2 \cdot \vb*{D} \cdot \vb*{E}$ 
+    seems reasonable because of the correct optical response. 
+    What's a good definition of EM energy if we integrate out the medium 
+    is a question worth discussion. 
+}
+\begin{equation}
+    \pdv{u_e}{t} = \vb*{E} \cdot \pdv{\vb*{D}}{t}.
+    \label{eq:change-of-ue}
+\end{equation} 
+To use this equation to get an expression of $u_e$,
+we should no longer work with plane waves, 
+or otherwise $u_e$ is a constant and 
+we don't see any change of $u_e$ at all.
+Below we work with a wave packet centered at $\pm \omega_0$.
+For the wave packet, the electric field is 
+\begin{equation}
+    \vb*{E}(t) = \ee^{- \ii \omega_0 t} \cdot 
+        \underbrace{
+            \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t}
+            \Efreq(\omega)
+        }_{\eqqcolon \vb*{E}_0(t)},
+\end{equation}
+\begin{equation}
+    \vb*{D}(t) = \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t}
+            \varepsilon(\omega) \Efreq(\omega) .
+\end{equation}
+By Taylor expansion of $\varepsilon$ we have 
+\begin{equation}
+    \begin{aligned}
+        \pdv*{\vb*{D}}{t} &= 
+        \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        (-\ii \omega) \left(
+            \varepsilon(\omega_0) + 
+            (\omega - \omega_0) \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+            + \cdots 
+        \right) \\
+        &\approx \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        \left(
+            - \ii \omega_0 \varepsilon(\omega_0) 
+            - \ii (\omega - \omega_0) \varepsilon(\omega)_0 
+            - \ii (\omega - \omega_0) \omega 
+                \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+        \right) \\
+        &\approx \ee^{- \ii \omega_0 t} \cdot 
+        \int \frac{\dd{\omega}}{2\pi} \ee^{- \ii (\omega - \omega_0) t} \Efreq(\omega) 
+        \Bigg(
+            - \ii \omega_0 \varepsilon(\omega_0) 
+            \underbrace{
+                - \ii (\omega - \omega_0) \varepsilon(\omega)_0 
+                - \ii (\omega - \omega_0) \omega_0  
+                    \eval{\dv{\varepsilon}{\omega}}_{\omega = \omega_0}
+            }_{
+                = - \ii (\omega - \omega_0) 
+                \eval{\dv{(\omega \varepsilon)}{\omega}}_{\omega = \omega_0} 
+            }
+        \Bigg) \\
+        &= \ee^{- \ii \omega_0 t} \underbrace{
+            \left(
+                - \ii \omega_0 \varepsilon(\omega_0) \vb*{E}_0(t)
+                + \dv{(\omega \varepsilon)}{\omega} 
+                \pdv{\vb*{E}_0}{t}  
+            \right)
+        }_{\eqqcolon \vb*{D}_0(t)} .
+    \end{aligned}
+    \label{eq:pdv-d-t-derivation}
+\end{equation}
+In the second line we throw away the higher order Taylor terms;
+in the third line we only keep terms linear to $(\omega - \omega_0)$.
+These approximations require the wave packet 
+to be focused enough.
+We use $\expval{\cdots}$ to refer to 
+averaging over the fast oscillations;
+thus, $\vb*{E}_0(t)$ and $\vb*{D}_0(t)$ above 
+can be regarded as constants when applying $\expval{\cdots}$,
+and hence we find 
+\begin{equation}
+    \begin{aligned}
+        \expval{\pdv{u_e}{t}} &= \expval{\vb*{E} \cdot \pdv{\vb*{D}}{t}}
+        = \frac{1}{2} \cdot \frac{1}{4} \Re (
+            \vb*{D}_0^*(t) \cdot \vb*{E}_0(t)
+            + \vb*{D}_0(t) \cdot \vb*{E}_0^*(t)
+        ) \\
+        &\approx \frac{1}{4} \Re \left(
+            \left(
+                \ii \omega_0 \varepsilon(\omega_0) \vb*{E}_0^* 
+                + \dv{(\omega \varepsilon)}{\omega} \pdv{\vb*{E}_0^*}{t}
+            \right)
+             \cdot \vb*{E}_0 
+            + \left(
+                - \ii \omega_0 \varepsilon (\omega_0) \vb*{E}_0
+                + \dv{(\omega \varepsilon)}{\omega} \pdv{\vb*{E}_0}{t} 
+            \right)
+            \cdot \vb*{E}_0^* 
+        \right) \\
+        &\approx \frac{1}{4} \dv{(\omega \varepsilon_1)}{\omega} \pdv{\abs*{\vb*{E}_0}^2}{t} .
+    \end{aligned}
+\end{equation}
+In the second line we have considered 
+both the real and imaginary parts of $\epsilon$,
+\footnote{
+    Note that $\epsilon(\omega) = \epsilon(- \omega)^*$
+    comes from the fact that $\epsilon$ is real in the time domain;
+    it says nothing about whether the system is Hermitian;
+    the Hermitian condition is $\epsilon(\omega) = \epsilon(\omega)^*$.
+} 
+but in the third line we ignore the imaginary part of $\epsilon$ altogether, 
+or otherwise obviously we can't make the RHS of the equation 
+the time derivative of a neat expression; 
+and this is justified anyway since in a strongly absorptive medium 
+the wave packet can't go long enough 
+for us to talk about its velocity.
+Since $u_e$ contains no fast oscillation, we have 
+\begin{equation}
+    \pdv{\expval{u_e}}{t} = \expval{\pdv{u_e}{t}} 
+    = \frac{1}{4} \dv{(\omega \varepsilon_1)}{\omega}
+    \pdv{\abs*{\vb*{E}_0}^2}{t} .
+\end{equation}
+Similarly we have 
+\begin{equation}
+    \pdv{\expval{u_m}}{t} = \expval{\pdv{u_m}{t}} 
+    = \frac{1}{4} \dv{(\omega \mu_1)}{\omega}
+    \pdv{\abs*{\vb*{H}_0}^2}{t} .
+\end{equation}
+When the matter is modeled by harmonic oscillators, 
+$\mu$ doesn't undergo any correction, 
+but let's work with a slightly generalized case.
+Eventually we have 
+\begin{equation}
+    \expval{u} = \expval{u_e + u_m} 
+    = \frac{1}{4} \dv{(\omega \varepsilon_1)}{\omega}
+    \abs*{\vb*{E}_0}^2 + 
+    \frac{1}{4} \dv{(\omega \mu_1)}{\omega}
+    \abs*{\vb*{H}_0}^2.
+\end{equation}
+In the case of the Lorentz oscillator, we have trivial magnetic response,
+and $\mu$ is just $\mu_0$, and we have 
+\begin{equation}
+    \expval{u_m} = \frac{1}{4} \mu_0 \abs*{\vb*{H}_0}^2 
+    = \frac{1}{4} \mu_0 \cdot \frac{\abs*{\varepsilon}}{\mu_0} \abs*{\vb*{E}_0}^2
+    = \frac{1}{4} \abs{\varepsilon} \abs*{\vb*{E}_0}^2.
+\end{equation}
+
+The evaluation of the time averaged Poynting vector is more straightforward:
+since 
+\begin{equation}
+    \begin{aligned}
+        \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} &\Rightarrow
+        \ii \vb*{k} \times \vb*{E} = - (- \ii \omega) \vb*{B} \\
+        %&\Rightarrow \abs*{\vb*{H}}
+        %= \frac{1}{\abs*{\mu}} \abs*{\vb*{B}}
+        %= \frac{1}{\abs*{\mu}} \cdot \frac{\abs*{\vb*{k}}}{\omega} \abs*{\vb*{E}}
+        %= \abs{
+        %    \sqrt{\frac{\epsilon}{\mu}}
+        %} \abs*{\vb*{E}} ,
+    \end{aligned}
+\end{equation}
+we just have 
+\begin{equation}
+    \begin{aligned}
+        \expval{\vb*{S}} &= \frac{1}{\mu} \expval{\vb*{E} \times \vb*{B}} \\
+        &= \frac{1}{\mu} \cdot \frac{1}{4} \Re \left(
+            \vb*{E}^*_0 \times \vb*{B}_0 + \vb*{E}_0 \times \vb*{B}^*_0 
+        \right) \\
+        &= \frac{1}{2 \mu} \frac{\vb*{k}}{\omega} \abs*{\vb*{E}_0}^2
+        = \frac{1}{2} \sqrt{\frac{\varepsilon}{\mu}} \abs*{\vb*{E}_0}^2 \vu*{k} ,
+    \end{aligned}
+\end{equation}
+where we have used the condition $\vb*{k} \cdot \vb*{E} = 0$,
+and in the third line we have used the condition that 
+the directions of the real and imaginary parts of $\vb*{k}$
+are the same, and therefore 
+from $\vb*{k} \cdot \vb*{E}_0 = 0$ we also have 
+$\vb*{k}^* \cdot \vb*{E} = 0$.
+Although $\vb*{k}$ is complex, 
+we can't use $\Re$ to remove its imaginary part, 
+because here $\Re$ only applies to the imaginary part 
+brought by phasor product;
+but since we have assumed that damping is not that strong, 
+the imaginary part of $\vb*{S}$ should be ignored 
+since the imaginary part is not truly about ``propagating''.
+The energy velocity is therefore 
+\begin{equation}
+    v_{E} = \frac{\abs*{\expval{\vb*{S}}}}{\expval{u_e + u_m}}
+    = \frac{
+        2 \Re \sqrt{\varepsilon / \mu_0}
+    }{
+        \abs*{\epsilon} + \dv{(\omega \varepsilon_1)}{\omega}
+    }.
+\end{equation}
+The final result, if we substitute \eqref{eq:harmonic-oscillator-epsilon} 
+into the above equation, becomes 
+a very complicated expression;
+a full derivation can be found in \cite{bolda1994optical}, Appendix A. 
+Note that in this reference the expansion of $\epsilon$ in \eqref{eq:pdv-d-t-derivation}
+is not performed and therefore the obtained $v_E$
+is slightly different from the expression obtained here; 
+the $(\omega^2 + \Omega^2)$ factor in \cite{bolda1994optical}
+is equivalent to the solution obtained here
+only by taking the $\gamma \to 0$ limit.
+
+When damping is truly very weak, $\varepsilon_1 \approx \varepsilon$,
+and we have 
+\begin{equation}
+    \frac{1}{v_E} = \frac{1}{2} \sqrt{\frac{\mu_0}{\epsilon}} 
+    \left(
+        \dv{(\varepsilon \omega)}{\omega} + \varepsilon
+    \right) 
+    = \sqrt{\varepsilon \mu_0} + \omega \sqrt{\mu} \cdot \frac{1}{2 \sqrt{\epsilon}} \pdv{\epsilon}{\omega}
+    = \dv{k}{\omega} = \frac{1}{v_{\text{g}}},
+\end{equation}
+and therefore the energy velocity is the same as the group velocity.
 
 \paragraph{(d)} The extinction coefficient is 
 \begin{equation}
@@ -766,5 +995,7 @@ Thus, the energy absorption rate is
 \paragraph{(c)} The energy absorbed is proportional to the imaginary part 
 of the Fourier transform of the dielectric constant, 
 which is expected since it's related to the imaginary part of the energy spectrum.
+
+\printbibliography
 
 \end{document}
