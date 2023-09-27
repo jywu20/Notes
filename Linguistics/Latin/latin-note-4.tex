@@ -1,0 +1,2589 @@
+\documentclass[a4paper, oneside, 12pt]{report}
+
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,citecolor=purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\zexternaldocument*[alignment-]{../alignment/alignment}[alignment.pdf]
+\zexternaldocument*[exercise1-]{../Exercise/2021-3}[2021-3.pdf]
+\zexternaldocument*[general-]{../methodology/glossing}[glossing.pdf]
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+\newcommand*{\category}[1]{\textsc{#1}}
+
+%region Acronym
+
+% Theory
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+
+% History
+
+\DeclareAcronym{pie}{long = proto-Indo-European, short = PIE}
+
+% Roles
+
+\DeclareAcronym{sfp}{long = sentence final particle, short = SFP}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{adjp}{long = adjective phrase, short = AdjP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, mood}, short = TAM}
+\DeclareAcronym{tame}{long = {Tense, Aspect, Mood, Evidentiality}, short = TAME}
+\DeclareAcronym{copula}{long = copula, short = COP}
+
+% Pronouns 
+
+\DeclareAcronym{dist}{long = distal, short = \textsc{dist}}
+\DeclareAcronym{prox}{long = proximate, short = \textsc{prox}}
+\DeclareAcronym{dem}{long = demonstrative, short = \textsc{dem}}
+
+% TAME, negative
+
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{past}{long = \textsc{past}, short = \textsc{pst}}
+\DeclareAcronym{imperfect}{long = \textsc{imperfect}, short = \textsc{impf}}
+\DeclareAcronym{present}{long = \textsc{present}, short = \textsc{pres}}
+\DeclareAcronym{perfect}{long = \textsc{perfect}, short = \textsc{perf}}
+\DeclareAcronym{future}{long = \textsc{future}, short = \textsc{fut}}
+\DeclareAcronym{pluperfect}{long = \textsc{pluperfect}, short = \textsc{plup}}
+\DeclareAcronym{future perfect}{long = \textsc{future perfect}, short = \textsc{fut.perf}}
+\DeclareAcronym{passive}{long = passive, short = PASS}
+\DeclareAcronym{indicative}{long = \textsc{indicative}, short = \textsc{ind}}
+\DeclareAcronym{subjunctive}{long = \textsc{subjunctive}, short = \textsc{sjv}}
+\DeclareAcronym{imperative}{long = \textsc{imperative}, short = \textsc{imp}}
+
+
+%endregion
+
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+
+\newcommand{\cgel}{\href{../English/cambridge.pdf}{my notes about CGEL}}
+\newcommand{\latin}{\href{../Latin/latin-notes.pdf}{my notes about Latin}}
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\general}{\href{../methodology/glossing.pdf}{this note}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+\newcommand{\classify}[1]{{\textsc{#1}}}
+\newcommand{\literature}[1]{\textit{#1}}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+\renewcommand{\bibname}{References}
+
+\title{Note on Latin Grammar}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\automath
+
+\maketitle
+
+\chapter{Introduction}
+
+\section{The language and the speaker}
+
+\subsection{Latin as a classical language}
+
+Latin was the language of the Romans
+and the official language of both the Roman Republic and the Roman Empire,
+and hence the official language of the Catholic Church, 
+which was \emph{the} church for the Western Roman Empire. 
+The international nature of the Roman Empire made Latin 
+the international language around the Mediterranean Sea at that time -- 
+indeed, \form{Mare Nostrum} \translate{our sea} in Latin,
+and its importance in science, arts, law, religion, and literature 
+lent it more than one thousand of years of life 
+as a common literary language and a sacred language in western Europe
+after the collapse of the Western Roman Empire 
+and the emergence of the Romance language family.
+
+As recently as the nineteen century,
+Latin was still fluently used by scholars and in the Catholic Mass. 
+A decline in the popularity of Latin was observed after that.
+The rapid development of English (at first, also French and German and sometimes Russian)
+as the language of science 
+largely replaced the status of Latin as a scholar language.
+After Vatican allowed vernacular languages being used in liturgies, 
+Latin also largely lose its position in the daily use in the Catholic church. 
+
+This note is about \concept{Classical Latin} -- the Latin of classical Latin writers -- 
+and \concept{Ecclesiastical Latin} -- the kind of Latin of the Catholic church.
+That's to say Old Latin, vulgar Latin (with prototypes of Romance articles), etc.
+are not discussed in detail in this note.
+Still, some historical knowledge is important for us to understand 
+why Latin is the way it is. 
+
+\subsection{Latin in ancient Mediterranean world}
+
+The historical and contemporary importance of Latin 
+of course doesn't endorse it as a inherently superior language. 
+Indeed, Latin used to be TODO: other languages were more important
+
+We only have a handful of Latin texts before 600BC; 
+as a comparison, there are about 150 pre-600BC Etruscan texts.
+Even in the period between 600BC and 100BC, 
+during which we have around 3000 Latin texts,
+we have about 9000 Etruscan texts, 
+which is three times as many as their Latin counterparts. 
+
+
+\section{Previous studies}
+
+\section{About this note}
+
+This note roughly follows the example of 
+
+Of course, it's still possible to carry out grammatical description in different ways.  
+For example, generally we shouldn't separate morphology and syntax categorically.
+For a heavily inflected language like Latin, however, 
+it's an appealing idea 
+to start a chapter named ``verbal morphology''
+and cover all \acs{tame} marking in it, 
+both the abstract concepts and the concrete paradigms. 
+
+\section{Texts}
+
+TODO: classical writers
+
+\section{Typological parameters}
+
+Some typological parameters and peculiar points of Latin 
+are listed here for the impatient,
+as well as some remarks on Latin in a more theoretical perspective.
+For a bottom-up overview, 
+see \prettyref{chap:pos}.
+
+\subsection{Morphology}
+
+Latin is well known for its rich morphology,
+which enables a rather free -- but still not completely arbitrary (\prettyref{sec:clause.order})
+-- constituent order.
+Good agreement is shown between phonological and grammatical wordhood,
+with exceptions like the clitic \form{-que}.
+
+A stem can be well defined for both verbal and nominal morphology in Latin,
+enabling a clear derivation-inflection distinction:
+prototypical derivational processes that are considered 
+to be a part of the head noun/verb 
+and not the surrounding \acs{np}/clause
+are morphologically realized strictly 
+before prototypical inflection processes,
+forming the stem 
+(\prettyref{sec:noun.paradigm.introduction},
+\prettyref{sec:verb.finite.paradigm}) to which 
+inflection processes are applied,
+with possible contextual allomorphs
+(\prettyref{sec:phonology.morphological}). 
+Latin inflection is always suffixal,
+while derivation is predominantly prefixal.
+Despite its richness, 
+a large portion of instances of Latin derivation are historical,
+with meanings of derived forms 
+having significantly shifted and no longer regularly inferrable.
+
+A general tendency in the stem structure 
+is modification affixes usually are prefixes,
+while affixes bearing grammatical information 
+(like change of part of speech) 
+are usually suffixes
+(\prettyref{sec:np.noun}, TODO: ref).
+Apart from affixation,
+Latin does use compounding, as in \form{aequilibrium} 
+(\form{aequ-i-libr-ium}, \translate{even-balance-\category{sg.nom}, equilibrium};
+\citealt[\citesec{92}]{smith2016greek}),
+but compounding was already less productive -- if not completely obsolete --
+in the Classical period.
+
+Concatenative morphology (affixation and compounding) 
+is prominent but isn't the only morphological device.
+Reduplication is attested in 
+formation of the perfect stem (TODO: ref);
+this however is largely historical 
+and is no longer productive.
+Dropping of first-conjugation stem-final vowel (\prettyref{sec:tense-mood-marking})
+may be analyzed as subtraction,
+although it can be seen as due to morphophonological rules.
+The imperfect \form{-ba-} is sometimes said to be an infix 
+(as well as its counterparts like \form{-bi-}),
+though it fits in a concatenative picture of verbal morphology.
+
+\begin{infobox}{Advices when reading}{reading-advice}
+    The morphological richness (and the scrambled constituent order)
+    makes Latin hard to read 
+    especially for people whose first languages are, say, 
+    English or Mandarin. 
+    Whenever unsure about a sentence, do the follows: 
+    \begin{enumerate}
+        \item Skim over the words and label the stems that can be easily recognized.  
+        \item Skim over and circle uncontroversial grammatical items,  
+            like inflectional endings and prepositions. 
+            It's OK to be unable to interpret them immediately (and we need the steps below).
+        \item Choose a grammatical item and tentatively give a list of possible features it carries.  
+            For example, seeing \form{-v-} in a verb usually means
+            it's based on the perfect stem
+            (\prettyref{sec:verb-inflection.stem.perfect});
+            \form{-um} may be second declension accusative,
+            but there are other possibilities
+            (\prettyref{tbl:declension-ending-nouns-list}). 
+        \item Use constraints like 
+            ``the preposition \form{in} licenses the accusative case or the ablative case'' 
+            to narrow the possibilities identified above.
+        \item Draw unfinished dependency arrows:
+            for a verb, draw arrows pointing to the subject and/or the object; 
+            for a nominative adjective, draw an arrow pointing to the modified head noun. 
+            But note that it's possible that the subject is dropped, 
+            or there is no head noun (compare English \form{the poor}).
+            Then try to pair the arrows.
+    \end{enumerate}
+    Repeat the above procedure and finally the sentence can be understood. 
+    This procedure is demonstrated in \prettyref{sec:text.vulgate.john}.
+\end{infobox}
+
+\subsection{The nominal system}
+
+Lack of determiner
+
+TODO: other IE languages
+
+\subsection{The verbal system}
+
+Most clausal grammatical categories are marked on the verbal morphology.
+In English we have infinitive clauses,
+but strictly speaking, there is no such thing as ``infinitive verb'':
+the head verb of an infinitive clause 
+has exactly the same form of a non-third person singular present tense verb.
+In Latin however, the head verb of a infinitive clause in Latin 
+indeed has a separate position in the paradigm.
+Thus, the most salient clausal grammatical categories can be enumerated  
+by observing verbal inflection (\prettyref{chap:verb}).
+
+
+\subsection{Clausal dependents and alignment}
+
+Latin is a clear nominative-accusative language.
+
+(\prettyref{sec:core-argument-marking}).
+In 
+
+
+There is no serial verb constructions in Latin 
+and thus semantic functions like location or instrument 
+are always realized by typical peripheral arguments
+attached to the core argument structure.
+These peripheral argument positions sometimes can be filled by adverbs,
+which also reveals an origin of adverbs: fossilized case forms.
+
+\subsection{Clause combining}
+
+In Latin there is no serial verb constructions.
+Subordination strategies can be neatly summarized into 
+complement clauses, relative clauses and adverbial clauses.
+
+
+\chapter{Phonology and the writing system}
+
+\section{Phonemes and the alphabet}
+
+Although the phoneme inventory of a language 
+often is not accurately reflected by its preferred system, 
+since Latin is a classical language 
+and no ancient Roman is alive today, 
+its phonology has to be inferred from known texts. 
+
+The most accepted writing system of Latin developed into 
+what we call \concept{Latin letters} -- or the \concept{Roman alphabet} -- today, 
+which is the most widely used writing system in the world.
+\concept{Old Italic scripts},
+used by Early Old Latin inscriptions 
+as well as neighbor languages,
+show a larger degree of variation, 
+which clearly derived from Greek letters.
+The standard Latin alphabet derived from old Italic scripts.
+Note that ancient Romans only used the big letters;
+the small letters was invented during the era of Charlemange.
+
+The letter \form{J} was not used by ancient Romans, 
+although we sometimes see \form{I} appearing at the start of a word 
+and therefore possibly represents the semivowel /j/.
+The letters \form{U} and \form{W} are also not used.
+Similar to the case of \form{I},
+the letter \form{V} is used to represent 
+what appears to be the semivowel /w/ 
+as well as the vowel /u/. 
+The letter \form{K} is an archaic one 
+and only appears before \form{A} in a small number of words
+\citep[\citechap{2}]{oniga2014latin}.
+The letters \form{Y} and \form{Z} are used to spell Greek words that 
+include TODO: Y and the voiced dental affricate, respectively.
+
+The Latin consonant inventory is therefore given by \citet[\citetable{3.1}]{oniga2014latin}.
+Note that the letter \form{X} is a double consonant: 
+it means /ks/ or /gs/.
+
+Two semivowels -- /j/ and /w/ -- can be recognized,
+which appear as \form{i} or \form{u}.
+
+The vowels are given by \citet[\citetable{3.2}]{oniga2014latin}.
+Each vowel has a long variety and a short variety.
+
+\section{Prosody}
+
+
+
+\section{Morphophonological rules}\label{sec:phonology.morphological}
+
+Some phonological rules in Latin are sensitive to morpheme boundaries.
+We can therefore assert that at least in a historical stage, 
+Latin speakers had a clear sense of morphemes 
+as real phonological objects,
+instead of mere theoretical models.
+
+\subsection{Vowel deletion}\label{sec:phonology.rule.deletion}
+
+Short vowels \form{a}, \form{o} and \form{e} 
+become zero before a morpheme boundary or another vowel
+\citep[\citesec{8.3}]{oniga2014latin}.
+This rule is exemplified by the absence 
+of the thematic vowel in both declension (TODO: rosis)
+and conjugation (TODO).
+
+\subsection{Vowel shortening}\label{sec:phonology.rule.shortening}
+
+A long vowel before another vowel or morpheme boundary 
+is not deleted, but shortened.
+Again this is exemplified (\prettyref{sec:tense-mood-marking}, TODO: ref)
+
+Also, in the final syllable of a phonological word,
+a long vowel before a consonant except \form{s} is also shortened.
+Counterexamples when the vowel is not in the final syllable exist,
+like \form{b\={a}ris} \translate{a type of flat-bottomed freighter used on the Nile in Ancient Egypt}.
+
+A long vowel is generally shortened before a sequence 
+containing a liquid or nasal and a following stop consonant,
+like \form{nt}.
+This rule comes from an older Indo-European sound law: 
+the Osthoff's Law
+\citep[\citepage{55}]{oniga2014latin}.
+
+\subsection{Vowel weakening}
+
+When a short syllable is in a medial, open syllable,
+and a morpheme boundary occurs immediately before, within or after the syllable,
+it becomes \form{i} 
+(\citealt[\citepage{55}]{oniga2014latin}; TODO: ref).
+
+\subsection{Vowel lengthening}
+
+A vowel is always \emph{lengthened} before \form{nf} and \form{ns}
+\citep[\citepage{55}]{oniga2014latin}.
+
+\chapter{Parts of speech}\label{chap:pos}
+
+\section{Overview}
+
+\subsection{Wordhood}
+
+In this note I follow the traditional definition of Latin wordhood,
+which is easily done using phonological criteria,
+or, to be more accurate, orthographical criteria: 
+what was documented by ancient Romans as a word 
+is recognized as a word.
+Latin is heavily inflectional,
+and the grammatical categories seen in nominal and verbal morphology 
+already reflect the most salient grammatical categories
+in \acs{np}s and clauses;
+words without inflectional morphology (so-called \concept{particles}) 
+usually lack any synchronically active internal structures at all.
+Thus, we can also say the traditional notion of Latin words 
+indeed has morphosyntactic significance
+and should be kept in use.
+
+\subsection{Part of speech division}
+
+Latin word classes can be defined easily via morphology
+and these classes prove to have uniform morphosyntactic behaviors.
+Non-particle words can be divided into two large classes:
+those with similar morphology of prototypical nouns (i.e. \concept{declension}) are \concept{nominals},
+while words with similar morphology of prototypical verbs (i.e. \concept{conjugation})
+form a uniform class rightfully called \concept{verbs}.
+Nominals include \concept{nouns} and \concept{adjectives},
+the distinction between the two can also be defined morphologically.
+
+Latin particles include \concept{prepositions}, \concept{adverbs},
+\concept{interjections}, and \concept{conjunctions}.
+The adverb class and the preposition class have a large overlap:
+often a preposition has an intransitive counterpart,
+which is similar to a prototypical adverb.
+Conjunctions may be seen as ``prepositions for clauses''.
+The functions and etymologies of particles are highly diverse.
+
+Latin nouns, verbs, and adjectives are all open categories.
+They are able to head constituents,
+and so are correlatives (though correlatives can be listed in the grammar).
+The preposition class is closed and is a part of the grammar,
+just like conjunctions.
+However, conjunctions are purely functional,
+while certain prepositions may be argued to head attributive expressions:
+though prepositions are often said to be markers of a periphrastic case system,
+the semantics carried by certain Latin prepositions are too complicated for a case system.
+This is also the case of adverbs:
+some adverbs seem to be periphrastic markers of \acs{tame} categories
+and therefore may be considered as a part of the grammar,
+while others seem to carry ``real'' meanings.
+\prettyref{fig:latin-word-class} is a visualization of the classification of Latin word classes.
+
+\begin{sidewaysfigure}
+    \centering
+    \input{arrow-box/word-class.tex}
+    \caption{Latin word classes}
+    \label{fig:latin-word-class}
+\end{sidewaysfigure}
+
+Articles (English \form{a} or \form{the}), 
+despite prevalent in other Indo-European languages,
+are missing in Latin.
+This, together with the fact that Classical Sanskrit and Old Persian didn't have articles 
+and the Slavic languages still don't,
+is a strong indicator that \ac{pie} didn't have articles. 
+Note that the fact that Latin lacks articles 
+doesn't mean the determiner syntactic function doesn't exist:
+there are evidences suggesting certain aspects of the behavior of Latin \acs{np}s 
+are just like English \citep{giusti2014split}.
+
+\section{Nouns}
+
+The structure of nouns and their phrases is introduced in \prettyref{sec:np.noun}.
+They are declined for case and number (\prettyref{sec:regular-noun-declension}),
+and the features also spread to other nominals in the \acs{np} by agreement.
+According to their meanings and ability to license \acs{np} dependents, 
+Latin nouns can be classified into TODO 
+
+\section{Verbs}\label{sec:pos.verb}
+
+Classification parameters of the Latin verb include 
+the conjugation class (\prettyref{sec:finite-paradigm}),
+the syntactic and semantic argument structure
+(\prettyref{sec:verb-phrase.verb-frame}), 
+the event structure (TODO: Compatability with \acs{tame}),
+
+\section{Pro-forms}
+
+Pro-forms can be divided into pronouns and correlatives.
+The former are discussed in \prettyref{sec:np.pronoun}.
+The latter can be classified in \prettyref{tbl:correlatives};
+the rows correspond to their immediate roles,
+while the columns correspond to their meaning and/or 
+relation with a more precedent in a higher position.
+
+\begin{sidewaystable}
+    \centering
+    \caption{Classification of Latin correlatives}
+    \label{tbl:correlatives}
+    {\small \input{tables/correlatives.tex}}
+\end{sidewaystable}
+
+\chapter{Noun and noun phrase}\label{chap:np}
+
+\section{The structure of noun}\label{sec:np.noun}
+
+Latin nouns are declined for case and number,
+which is agreed upon by other nominal words in the \acs{np}.
+The structure of the Latin noun is just
+the stem plus inflectional ending 
+with the case and number categories fused into one suffix
+(\prettyref{sec:regular-noun-declension}).
+There are five declension classes in Latin.
+
+Inside the stem we find a list of 
+
+\section{Declension of regular nouns}\label{sec:regular-noun-declension}
+
+\subsection{The paradigm}\label{sec:noun.paradigm.introduction}
+
+There exists a discrepancy in recognizing the stem of a noun.
+One approach is to find the common part 
+of all case forms of one nominal lexeme;
+thus \form{rosam} \translate{rose-\category{sg}.\category{acc}}
+is analyzed as \form{ros-am}, 
+with \form{ros-} being the stem.
+\citet[\citepage{17}]{allen1903allen} documents the paradigms of all the five declension classes 
+in this approach.
+The full list of attested noun endings is \prettyref{tbl:declension-ending-nouns-list}.
+The list is still not the full picture of Latin nominal inflection:
+stem alternation is seen in the third declension
+(\prettyref{sec:np.inflection.3}).
+
+\begin{table}[H]
+    \caption{Declension endings; Roman numerals are declension classes}
+    \label{tbl:declension-ending-nouns-list}
+    \centering
+    \input{tables/declension-noun.tex}
+\end{table}
+
+\begin{infobox}{Frequent confusions when analyzing noun endings}{noun-ending-confusion}
+    The ending sequence \form{-io} can'be be found in \prettyref{tbl:declension-ending-nouns-list}
+    and we may hurry to the conclusion 
+    that it's the third declension abstract noun ending \form{-io} 
+    in the nominative or accusative case.
+    Not necessarily -- 
+    it can also be \form{-ium} in the dative or ablative case 
+    (when the macron symbol for long vowels are not used).
+\end{infobox}
+
+Another approach -- informed by historical comparison with other Indo-European languages -- 
+make use of the thematic vowel 
+in declension endings that can also be found in
+\prettyref{tbl:declension-ending-nouns-list}
+\citep[\citepages{45, 63}]{oniga2014latin}.
+Thus, the first conjugation singular accusative ending \form{-am} 
+is \form{-a-m}, 
+with \form{-a-} being the thematic vowel;
+we may also attach the thematic vowel back to the stem in the narrow sense \form{ros-} 
+and redefine the complex \form{ros-a-} as the stem of \form{rosam}.
+The table is shown 
+
+\subsection{The third declension}\label{sec:np.inflection.3}
+
+The third declension is a big tent containing several subclasses.
+Nominative singular endings attested in the third declension
+include \form{-s}, \form{-t}, \form{-x} (i.e. \form{-cs}) \citep[\citesec{53}]{allen1903allen}.
+
+\section{The structure of the noun phrase}
+
+Although Latin lacks the article 
+
+\subsection{Attributives}
+
+This section only discusses adjective or numeral attributives in detail.
+For in-depth discussion of relative clauses, see \prettyref{chap:relative-clause}.
+
+
+\subsection{The possessive construction}
+
+\subsection{Numerals in the noun phrase}
+
+\section{Minor categories}
+
+Some \acs{np}s contain only one word and can't accept any modification or complementation.
+They are also referred to instances of pronouns.
+
+\subsection{Personal pronouns}\label{sec:np.pronoun}
+
+Latin pronouns are complete \acs{np} themselves:
+no attributives should be attached to them. 
+Pronouns are declined for case, gender and number,
+and they also can be governed by prepositions.
+
+\subsection{Reflexive pronouns}
+
+It can be seen that \form{se} lacks nominative forms.
+In some circumstances, 
+the reflexive \form{se} looks like the subject;
+but these cases are more appropriately analyzed 
+as reflexive usages of transitive verbs
+(\ref{ex:np.minor.reflexive.1}).
+
+\begin{exe}
+    \ex\label{ex:np.minor.reflexive.1} \gll \dots necessarium est primo investigare de ipsa sacra doctrina, 
+    qualis sit, et ad quae [se extendat]  \\
+    \\
+    \glt \translate{It is necessary to first investigate into this sacred doctrine, 
+    of what kind it would be, 
+    and what it would extend itself to (i.e. its nature and extent).} (\literature{Summa}, I q. 1 pr.)
+\end{exe}
+
+\subsection{Demonstratives}
+
+Latin has proximate, medial, and distal demonstratives:
+the first refers to something close to the speaker, 
+the last refers to something far away,
+and the second refers to something in between,
+probably near the listener.
+
+\subsection{Interrogative and relative pronouns}
+
+
+
+\section{Case and preposition}
+
+After discussing the internal structure of \acs{np}s, 
+we investigate the interaction of \acs{np}s 
+with their syntactic functions.
+This is done by two systems: 
+the case system and the preposition system.
+
+
+\subsection{Distribution of the cases}\label{sec:np.case-distribution}
+
+The roles of the five cases are not symmetric.
+Being nominative simply means being the subject in a finite clause or something agreeing to it 
+and nothing else: 
+the subject may be in a passive clause and is not agentive at all.
+The nominative case and the accusative case received by the direct object 
+are \emph{structural} cases: 
+they are purely decided by the syntactic environment 
+and don't have much semantic significance.
+
+On the other hand, the rest cases are \emph{inherent} cases:
+they are similar to prepositions, having direct semantic interpretations
+-- ``source'' or ``target'' or \dots -- themselves,
+and once an inherent case is assigned to an \acs{np},
+the latter is ``sealed'' just like a prepositional phrase:
+the change of the outside syntactic environment 
+doesn't change anything inside.
+
+\subsubsection{The nominative}
+
+\subsubsection{The accusative}\label{sec:accusative-distribution}
+
+The accusative case has both structural and inherent uses
+\citep[\citepage{238}]{oniga2014latin}: 
+
+\subsubsection{The genitive}\label{sec:genitive-distribution}
+
+Although in most teaching materials, the genitive case is considered 
+to mark the possessor (and is thus an inherent case), 
+a complete overview of its distribution reveals that 
+it's actually a structural case 
+representing \emph{any} type of nominal dependency 
+and not just possession 
+and also sometimes assigned by certain types of verbs;
+some of the nominal dependencies can be 
+metaphorically understood as possession, 
+but others can't \citep[\citepage{244}]{oniga2014latin}:
+it's hard to explain genitive of quality 
+in terms of possession.
+This is comparable to English \form{of}
+in \form{a man of great talent} and \form{it's so kind of you},
+which seems to be a purely structural phenomenon
+and is not based on metaphor;
+and indeed what is considered as prototypical possession 
+also has strong cross-linguistic variation 
+\citep[\citepages{262-263}]{dixon2010basic2}.
+
+\subsubsection{The dative}\label{sec:dative-distribution}
+
+The dative case is an inherent case assigned to the benefactive, the experiencer, and the purpose
+\citep[\citepage{251}]{oniga2014latin};
+thus it's the case assigned to the indirect object (\prettyref{sec:vp.complement.indirect-object})
+as well as many adjuncts TODO
+
+\subsubsection{The ablative}
+
+The ablative case is an inherent case assigned to 
+the source and the instrument;
+so its distribution is similar to the dative case: 
+it appears in source and instrument indirect objects (TODO) 
+as well as various adjuncts.
+A source argument
+can be the position from which something moves 
+(\concept{ablative of source})
+or the source in a separation event 
+(\concept{ablative of separation}: \translate{remove}, \translate{deprive}),
+or the place where something comes into being 
+(\concept{ablative of material}, \translate{birth}, \translate{origin}), 
+or the cause of something (``the source of the event'', \concept{ablative of cause});
+the agent in the passive voice possibly 
+comes from one of the figurative use of the ablative as well.
+
+\subsection{Prepositions}
+
+\section{Constituent order and information structure}
+
+Similar to the case in clause structure (\prettyref{sec:clause.order}),
+the internal constituent order of \acs{np}s are strongly influenced by 
+information structure.
+The default constituent order is attributive-before-head noun
+\citep[\citepage{396}]{allen1903allen}.
+
+\chapter{Adjectives and adverbs}
+
+The adjective class and the adverb class are linked together by several factors:
+the adjective phrase and the adverb phrase are both prototypical modifiers,
+often with parallel structures;
+they both have the category of degree; 
+adverbs can be formed regularly from adjectives.
+
+\section{Declension of regular adjectives}
+
+Peripheral arguments may also be regarded as adverbials.
+This chapter, however, is mainly about mean, TODO
+
+\section{Arguments of adjectives}
+
+\subsection{Dative}
+
+\begin{exe}
+    \ex \gll \dots {} consubstantialem Patri \dots \\
+    {} consubstantial-\category{sg.acc} Father-\category{sg.dat} \\
+    \glt \translate{consubstantial with Father} (Nicene Creed)
+\end{exe}
+
+\section{Comparative construction}
+
+\form{tam quam}
+
+TODO: structure of some prepositions
+
+
+\chapter{Verb morphology}\label{chap:verb}
+
+\section{The structure of the paradigm}
+
+\subsection{The verb template of the finite paradigm}\label{sec:verb.finite.paradigm}
+
+Some inflected Latin verbs and their parts are shown in \prettyref{fig:latin-verb}.
+Traditionally, the verb is divided 
+into the \concept{stem} and the \concept{ending}.
+Derivation in Latin is predominantly preverbal,
+and hence the conjugation is mostly about the final lexical morpheme in the verb stem,
+which is represented as the root in \prettyref{fig:latin-verb}.
+There may be a perfect suffix after the root.
+Components of the verb ending include 
+the \concept{tense and mood suffix} (also known as the \concept{tense suffix}),
+and the person, number and voice marker,
+which is called the \concept{personal ending} here, 
+following the terminology in \citet[\citesec{165}]{allen1903allen}.
+
+\begin{figure}[H]
+    \centering
+    \input{tables/verb-template.tex}
+    \caption{The template of Latin verbs.
+    Indentation means linear order and not necessarily constituency structure.}
+    \label{fig:latin-verb}
+\end{figure}
+
+The core stem assumes semi-regular alternations.
+The perfect marker is often but not always \form{-v-} (\prettyref{sec:verb-inflection.stem.perfect}).
+Although the aspect marker is a part of the \acs{tam} marking
+(\prettyref{sec:verb-inflection.finite-template.tame}),
+it somehow is much more closely attached to the root 
+in the morphophonological realization of the verbal system:
+how it is realized is not completely predictable,
+and therefore the two finite stem forms -- 
+the present stem and the perfect stem -- 
+are both required for complete characterization of the paradigm of a regular verb.
+To fully decide the paradigm 
+we still need a further stem, the supine stem
+(\prettyref{sec:three-latin-stem}).
+
+Contextual allomorphs also exist for other morphemes in \prettyref{fig:latin-verb}
+\citep[\citepage{11}]{embick2005status},
+as can be observed in \prettyref{tbl:latin-finite-verbs}.
+The most salient change is that 
+an alternating vowel may appear between the root and the aspect suffix (if any),
+which is also known as the \concept{thematic vowel}.
+It is the residue of the \ac{pie} ablaut
+and labels the conjugation class
+(\prettyref{sec:verb-morphology.stem.conjugation}),
+and is subject to morphophonological contextual alternation
+(\prettyref{sec:tense-mood-marking}).
+The tense affix is determined by ``tense'' in the sense of traditional Latin grammar, 
+i.e. both tense and aspect (\prettyref{tbl:tense-suffix}),
+and has dependence on the conjugation class (TODO: ref).
+The \category{perfect} tense also has its own personal endings (\prettyref{tbl:personal-ending-perfect}).
+
+\begin{infobox}{More than one thematic vowel?}{thematic-vowel}
+    Phenomena similar to the thematic vowel -- vowel alternation with no morphosyntactic significance 
+    between two morphemes -- can be observed 
+    between the tense suffix and the personal ending 
+    (as in \form{am\={a}b\textbf{u}ntur}; \prettyref{sec:verb-morphology.1c}) as well.
+    We may go further and say that
+    the \form{-imus} ending seen in first person active indicative perfect,
+    as opposed to \form{-mus} observed in other cases, 
+    contains a thematic vowel \form{i} after the perfect marker \form{-v-}.
+    Some generalize the concept of thematic vowel and 
+    stipulate a thematic vowel position after \emph{every} morpheme
+    \cite{embick2003latin}.
+    This is also motivated by evidences from some descendants of Latin 
+    \citep{oltra1999notion,oltra2005stress}.
+    Whether this is needed for describing Latin however is 
+\end{infobox}
+
+\begin{sidewaystable}
+    \centering
+    \caption{Examples of Latin finite verbs}
+    \label{tbl:latin-finite-verbs}
+    \input{tables/verb-examples.tex}    
+\end{sidewaystable}
+
+Below I discuss the subsystems in \prettyref{fig:latin-verb}.
+
+\subsection{Voice}
+
+Latin doesn't have rich valency changing devices:
+there is only one clause-wide valency decreasing device -- passivization -- 
+and there is no valency increasing device.
+Causative constructions are realized by complement clauses,
+not any change in the argument structure.
+A verb (and hence the clause headed by it) is therefore either in \concept{active voice},
+or in \concept{passive voice}.
+Some verbs are deponent (\prettyref{sec:deponent-verbs}),
+which means they only have morphological passive forms.
+
+\subsection{\acs{tame} categories}\label{sec:verb-inflection.finite-template.tame}
+
+The categories of primary tense (past or not; future or not),
+secondary tense (perfect tense -- or aspect -- or not),
+imperfective-perfective distinction 
+and realis-irrealis distinction 
+are marked by the Latin tense and mood suffix in \prettyref{fig:latin-verb}.
+The parameter of primary tense has three values: 
+present, past and future;
+the past future tense seen in English 
+is absent in Latin.
+The imperfective-perfective distinction and the secondary tense 
+are fused into one category,
+with three possible values: 
+plain, imperfect, and perfect. 
+The ``progressive perfect'' category (\form{have being doing} in English)
+is missing in Latin.
+TODO: Some say the imperfective/perfective distinction 
+(for example the \form{be doing} construction in English)
+is not syntactically coded in Latin?
+What's perfect, then?
+The realis-irrealis distinction is discussed below as \emph{mood}.
+
+The composition of present, past and future tenses
+and plain, imperfect and perfect ``aspects''
+gives nine options,
+but in Latin, 
+the past simple and the present perfect are identified with each other,
+for obvious semantic closeness;
+the imperfect and simple ``aspects'' are fused 
+when the primary tense is present or future.
+Thus there are only six morphologically distinguished options,
+as is shown in \prettyref{tbl:latin-tense-aspect}. 
+In the Latin grammatical tradition, 
+the term \concept{tense} 
+usually refers to these six options,
+instead of the past/present/future system.
+
+
+\begin{table}[H]
+    \caption{Latin tenses}
+    \label{tbl:latin-tense-aspect}
+    \centering
+    \input{tables/tense-aspect.tex}    
+\end{table}
+
+\begin{infobox}{Mismathc between \ac{tame} constructions and fine-grained categories}{tame}
+    Note that semantic \ac{tame} features are different from 
+    syntactic \ac{tame} features,
+    and the two are in turn different from packaged \ac{tame} marking constructions
+    that can be easily identified in surface-orientated analyses.
+    This is illustrated in \prettyref{tbl:latin-tense-aspect}.
+    Following the example in \citet{grimm2021grammar},
+    in this note, I use small capitals for the names of attested surface realizations of \ac{tame}
+    and the default font for \ac{tame} values.
+    (Some other grammars, like \citet{jacques2021grammar,friesen2017grammar}, 
+    use initial capitals for the former.)
+\end{infobox}
+
+Similar fusion between categories is shown in the category of \concept{mood}.%
+\footnote{
+    \citet{dixon2009basic1} only calls the category of clause type \term{mood}.
+    \citet{cgel}, on the other hand, 
+    calls syntactic modality mood 
+    and uses the term \term{modality} for pure semantics.
+    Different linguists use the term \term{mood} and \term{modality} in radically different ways.
+    In this note I just focus on the common practice in Latin grammar study.
+    In terms of general linguistics, 
+    the Latin \term{mood} is a mixture of clause type (the real mood)
+    and modality.
+}
+It's the fusion of morphologically marked clause type 
+(declarative and imperative)
+and morphologically marked modality.
+The verb morphology of interrogative clauses is exactly the same as declarative clauses:
+the interrogative clause type is marked by the existence of interrogative \term{pro}-forms.
+Thus, there are three moods in finite clauses in Latin:
+\acl{indicative}, \acl{subjunctive}, and \acl{imperative}.
+The \acl{indicative} is the fusion of 
+the declarative/interrogative clause type and the realis modality.
+The \acl{subjunctive} mood is the fusion of 
+the declarative/interrogative clause type and the irrealis modality.
+The \acl{imperative} is basically the imperative clause type:
+it doesn't allow modality marking.
+Sometimes people say the infinitive is the fourth mood,
+though it's a non-finite clause.
+
+
+\subsection{Agreement}\label{sec:agreement-abs}
+
+Latin is a typical nominative-accusative language,
+both morphologically and syntactically.
+In finite clauses, 
+there is subject-verb agreement:
+the number and person of the subject is marked on the main verb.
+In the case of periphrastic conjugation,
+the features are marked on the copula.
+
+\subsection{Compatability of categories}
+
+There is no \acl{future} tense and \acl{future perfect} tense in subjunctive clauses,
+probably for the semantic reason
+that the future tense already contains certain sense of modality
+(an event predicted to happen),
+and thus is not compatible with the \acl{subjunctive} mood.
+The \acl{imperative} mood is not compatible with other \ac{tame} markings
+except the \acl{present} tense and the \acl{future} tense.
+It's still compatible with the voice category,
+and allowed persons are 
+second person singular/plural with the \acl{present} tense,
+and second/third person singular/plural with the \acl{future} tense.
+The absence of first person is also probably from semantic origin.
+
+In conclusion, the categories involved in the finite verb paradigm of Latin 
+are shown in \prettyref{fig:paradigm-finite-verb}.
+Here mood and tense are realized in one morpheme,
+and voice, person and number are realized in one morpheme.
+The paradigm is realized synthetically in all circumstances 
+except in passive voice and perfect tense.
+In that case, the verb conjugation is realized like the English passive,
+i.e. via a copula and the perfect passive participle.
+
+\begin{figure}[H]
+    \centering
+    \input{tables/finite-table.tex}
+    \caption{Categories in the finite paradigm}
+    \label{fig:paradigm-finite-verb}
+\end{figure}
+
+\begin{infobox}{Recording verb inflectional forms}{conjugation-form}
+    
+\end{infobox}
+
+\subsection{The non-finite paradigm}\label{sec:non-finite-abs}
+
+According to the morphology,
+Latin non-finite verb forms can be classified into the infinitives (\prettyref{sec:infinitives})
+and the nominal forms (\prettyref{sec:nominal-form}),
+the latter having noun-like or adjective-like morphology.
+Non-finite verb forms don't agree with the subjects they take,
+so there is no number or person category marked on them in the same way as \prettyref{fig:paradigm-finite-verb},
+though for nominal verb forms there are number and person categories 
+marked in the same way as the nominal morphology.
+
+The infinitives include present active, present passive, perfect active, 
+perfect passive, future active, and future passive infinitives.
+The latter three are realized periphrastically (\prettyref{fig:stem-to-form}).
+
+The nominal verb forms include 
+the \concept{simple active}, 
+the \concept{perfect passive} (often just called the perfect participle), 
+and the \concept{future active} participles,
+the \concept{gerund}, 
+the \concept{gerundive} which is also known as the \concept{future passive} participle, 
+and two supine forms.
+The \concept{first supine} is identical in the form to the singular neutral accusative perfect participle,
+without any reference to the number category of any argument it takes.
+The \concept{second supine} is identical to the singular neutral ablative or dative past participle,
+also with no inflection with respect to the number category of any argument it takes.
+The gerund is morphologically the singular neutral of the gerundive
+(\prettyref{sec:verb-inflection.non-finite.future-passive}).
+
+\begin{infobox}{Whether to keep supine as a verb form}{supine-verb-form}
+    The idea of the stingy linguist may lead one to reject the notion of supine in Latin grammar
+    (\prettyref{sec:conjugation-form}).
+    However, for the same reason the infinitive 
+    (or the ``plain form'', since the infinitive is actually a label of clauses 
+    -- see the discussion and the separation principle in \prettyref{sec:conjugation-form}) 
+    is recognized as a form 
+    independent from the present form in English in \citet[\citepage{74}]{cgel},
+    the status of supine as a separate form is recognized in this note.
+    The reasons include TODO
+\end{infobox}
+
+In Classical Latin, the gerund and participle forms are significantly more noun-like 
+than their counterparts in English,
+and this also justifies the term \term{nominal form},
+because they are not far from prototypically nominalization:
+although they are still modified by adverbs,
+they are unable to take arguments.
+In Ecclesiastical Latin, 
+the so-called nominal forms are more verb-like (TODO: ref),
+being able to take arguments,
+and are therefore no longer ``nominal''.
+
+\section{Formation of stems}\label{sec:verb-inflection.stem}
+
+\subsection{The three verb stems}\label{sec:three-latin-stem}
+
+Latin shows stem alternation that is not completely predictable.
+All verb forms can be obtained by three stems \citep[\citesec{164}]{allen1903allen},
+if the verb is regular:
+\begin{itemize}
+    \item The \concept{present stem}, which, after attached with proper endings, forms
+    \begin{itemize}
+        \item The \acl{present}, \acl{imperfect}, and future forms, 
+        regardless of whether they are indicative or subjunctive,
+        active or passive. (There is no future or future perfect subjunctive).
+        \item All the imperatives.
+        \item The present infinitives, active and passive.
+        \item The present participle, the gerundive, and the gerund.
+    \end{itemize}
+    \item The \concept{perfect stem}, which, after attached with proper endings, forms 
+    \begin{itemize}
+        \item The perfect, pluperfect, and future perfect active, indicative or subjunctive.
+        Again, there is no future or future perfect subjunctive.
+        Note that the passives are \emph{not} formed by the perfect stem.
+        \item The perfect active infinitive. 
+        (Or the perfective infinitive active, since infinitive is considered as a mood by some people.)
+    \end{itemize}
+    Note that the perfect passive participle is \emph{not} obtained from the perfect stem.
+    \item The \concept{supine stem}, 
+    which, after attached with proper endings or used together with proper forms of \form{sum},
+    forms 
+    \begin{itemize}
+        \item The perfect passive participle, which, by being used with proper forms of \form{sum}, forms
+        \begin{itemize}
+            \item The perfect, pluperfect, and future perfect passive forms, indicative or subjunctive.
+            Again, there is no future or future perfect subjunctive.
+            This is periphrastic conjugation: it is done by using proper forms of \form{sum}
+            with the perfect passive participle.
+            \item The perfect infinitive passive.
+        \end{itemize}
+        \item The future active participle, which, used together with \form{esse},
+        makes the future active infinitive.
+        \item The future passive infinitive, by being used together with \form{īrī}.
+    \end{itemize}
+\end{itemize}
+This process is summarized in \prettyref{fig:stem-to-form}.
+
+In a dictionary, 
+typically the stems are not directly given 
+-- which are given are representative verb forms,
+from which the stems and the conjugation class can be inferred.
+The reasons are the follows.
+First, for fluent users,
+recording actually attested word forms is easier
+compared with the morpheme-based ``anatomized'' approach.
+Second, Latin has four conjugation types,
+and hence the three stems themselves aren't sufficient to decide how to conjugate the verb:
+more information is needed, 
+and by storing already conjugated verb forms,
+the conjugation class can be decided by observing the endings.
+What are stored are the following \concept{principal forms},
+from which the three stems and the conjugation class can be solved out
+\citep[\citesec{172}]{allen1903allen}:
+\begin{enumerate}
+    \item \emph{The first-person present active indicative}: formed from the present stem.
+    \item \emph{The present infinitive}: formed from the present stem. 
+    By observing its ending, the conjugation class can be decided,
+    and by comparing with the first principal form, 
+    the present stem is obtained.
+    \item \emph{The first-person perfect active indicative}: showing the perfect stem.
+    \item \emph{The neutral accusative past participle}, i.e. the form of supine: showing the supine stem.
+\end{enumerate}
+The ways to obtain the stems from the principal forms are:
+\begin{itemize}
+    \item \emph{The present stem} can be found by dropping \form{-re} in the 
+    \category{present infinitive}
+    \citep[\citesec{175}]{allen1903allen}.
+    \item \emph{The perfect stem} can be found from the third principal part:
+    just remove \form{-ī}.
+    \item \emph{The supine stem} can be found by dropping \form{-um} in the supine
+    i.e. the fourth principal form
+    \citep[\citesec{178}]{allen1903allen}.
+\end{itemize}
+
+Note that in Medieval Latin, often,
+instead of \form{iri} plus the first supine,
+\form{fore} plus the perfect participle is used to form the future passive infinitive.
+TODO: find a reference https://www.nationalarchives.gov.uk/latin/stage-2-latin/lessons/lesson-24-infinitives-accusative-and-infinitive-clause/
+
+\begin{sidewaysfigure}
+    \centering
+    {\small \input{arrow-box/conjugation.tex}}
+    \caption{How to get all conjugation forms from the three stems}
+    \label{fig:stem-to-form}
+\end{sidewaysfigure}
+
+\subsection{Formation of the present stem}
+
+
+\subsection{Formation of the perfect stem}\label{sec:verb-inflection.stem.perfect}
+
+\subsection{Conjugation classes}\label{sec:verb-morphology.stem.conjugation}
+
+Depending on the way realization of the paradigm for a verb,
+Latin verbs are traditionally divided into 
+four conjugations classes
+according to the thematic vowel of the stem:
+if the stem ends in \form{a}, 
+it's a first conjugation verb (\prettyref{sec:verb-morphology.1c});
+if it ends in \form{e} 
+then we have a second conjugation verb (\prettyref{sec:verb-morphology.2c});
+TODO.
+The conjugation classes however can't be reduced to 
+the thematic vowel, 
+since there are some contextual allomorphs that can't be explained synchronically
+in this way
+(\prettyref{sec:tense-mood-marking}, \prettyref{tbl:tense-suffix}).
+There are a handful of irregular verbs (\prettyref{sec:irregular-verbs})
+that can't be inflected using rules pertaining to the four regular conjugations.
+
+Another aspect of the inflectional behavior of the verb
+is whether it's deponent;
+this also has some implications on 
+the argument structure (\prettyref{sec:deponent-verbs}).
+
+\section{The finite paradigm}\label{sec:finite-paradigm}
+
+Due to morphophonological rules, 
+morpheme division inevitably involves controversies.
+This section follows the analysis in \citet[\citechap{14}]{oniga2014latin}.
+
+\subsection{Marking of tense and mood}\label{sec:tense-mood-marking}
+
+The contextual alternation of the tense and mood marker is listed in
+\prettyref{tbl:tense-suffix}.
+They are subject to phonological rules 
+and have allomorphs in different conjugation classes. 
+A long vowel after the suffix,
+if any, is shortened before \form{-m}, \form{-r}, \form{-t}, and \form{-nt}
+due to vowel shortening in the final syllable before a consonant,
+and also before \form{-ntur} due to Osthoff's Law 
+(\prettyref{sec:phonology.rule.shortening}; 
+\citealt[\citepage{130}]{oniga2014latin}).
+The present indicative doesn't add a suffix after the stem, 
+so the thematic vowel at the end of the stem 
+is directly exposed to the personal ending,
+and vowel changes in \prettyref{sec:phonology.morphological} happen.
+
+The perfect and pluperfect subjunctive suffixes 
+are only used for the active voice.
+For the passive voice,
+periphrastic conjugation with the perfect passive participle is used.
+
+\begin{table}[H]
+    \caption{Tense and mood suffixes}
+    \label{tbl:tense-suffix}
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        Suffix & Mood and tense & Note \\
+        \midrule
+        $\emptyset$         & Present indicative        & With change on thematic vowel\\
+        \form{-b\={a}-}, \form{-eb\={a}-}    & Imperfect indicative      & Possibly shortened \\
+        \form{-be-}         & Future indicative         & For 1c, 2c; 
+        Allomorphs: \form{-b-}, \form{-bi-}, \form{-bu-} \\
+        \midrule
+        $\emptyset$         & Perfect indicative        & With its own personal endings \\ 
+        \form{-er\={a}-}    & Pluperfect indicative     & Possibly shortened \\
+        \form{-eri-}        & Future perfect indicative & Allomorph: \form{-er-} (\category{1sg}) \\ 
+        \midrule
+        \form{-\={e}-}      & Present subjunctive       & Allomorphs: \form{-a-}, \form{-\={a}-},
+        \form{-e-} \\ 
+        \form{-r\={e}-}     & Imperfect subjunctive     & Possibly shortened \\
+        \midrule
+        \form{-eri-}        & Perfect subjunctive       & For active only \\
+        \form{-iss\={e}-}   & Pluperfect subjunctive    & For active only; possibly shortened  \\ \bottomrule
+        \end{tabular}
+\end{table}
+
+\begin{infobox}{Shortening or lengthening?}{shorten-or-prolong-ba}
+    If we just restrict ourselves to the verbal paradigm, 
+    it may be attempting as well to consider \form{-ba-} as 
+    the indicative imperfect suffix,
+    since \form{-b\={a}-} does not outnumber it.
+    But prolonging is rare in phonology:
+    shortening, due to physiological motion control factors
+    (some sound sequences are easier to pronounce), 
+    is more frequent.
+    The same line of argumentation can be applied to justify the status of \form{-r\={e}-}
+    as the somehow canonical subjunctive imperfect suffix.
+\end{infobox}
+
+Perfect indicative active verb forms have their own set of personal endings
+(\prettyref{tbl:personal-ending-perfect}).
+The plural part of the personal endings still contains 
+the usual \form{-mus}, \form{-tis}, \form{-nt} endings, 
+and thus alternatively, we may analyze the verb endings for the \category{perfect} tense 
+as the follows: 
+the tense suffix is \form{-ī-}
+for first-person singular, third-person singular and first-person plural,
+\form{-is-} for second-person singular and second-person plural,
+and \form{-\={e}ru-} for third-person plural;
+the first person singular ending is empty,
+and the second person singular ending is \form{-tī},
+and the rest of personal endings are the same as those of other tenses.
+
+\begin{table}[H]
+    \centering
+    \caption{Personal endings for the \category{perfect}}
+    \label{tbl:personal-ending-perfect}
+    \begin{tabular}{ll}
+        \toprule
+        Suffix & Person and number \\
+        \midrule
+        \form{-ī    } & \category{1sg} \\
+        \form{-istī } & \category{2sg} \\
+        \form{-it   } & \category{3sg} \\
+        \form{-imus } & \category{1pl} \\
+        \form{-istis} & \category{2pl} \\
+        \form{-\={e}runt} & \category{3pl} \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item The indicative:
+    \begin{itemize}
+        \item Future: 
+        \begin{itemize}
+            \item For first and second conjugation verbs, 
+            the tense-mood morpheme is \form{-bi-}, except for 
+            first-person singular (which is \form{-b-})
+            and third-person plural (which is \form{-bu-}).
+            \item For third and fourth conjugation verbs, change stem-final stem.
+        \end{itemize}
+        \item Future perfect: 
+        \begin{itemize}
+            \item \form{-eri-} for all cases except first person singular.
+            \item \form{-er-} for first-person singular.
+        \end{itemize}
+    \end{itemize}
+    \item The subjunctive:
+    \begin{itemize}
+        \item Present: no suffixation, but there is regular change on the stem-final vowel:
+        \begin{itemize}
+            \item For first conjugation verbs, .
+            \item For second conjugation verbs, \form{} $\to$ \form{e\={a}-}.
+            \item For third conjugation verbs, $\to$ \form{\={a}-}.
+            \item For fourth conjugation verbs, $\to$ \form{i\={a}-}.
+        \end{itemize}
+        These alternations apply for both active and passive verbs,
+        so they have nothing to do with polarity, and this is why I put them in this section.
+        \item Imperfect: \form{-r\={e}-}, possibly shortened.
+    \end{itemize}
+\end{itemize}
+
+\subsection{The personal ending}
+
+Possible personal endings are listed in \prettyref{tbl:personal-ending}.
+In the active voice, 
+\form{-\={o}} is used with present indicative, 
+future indicative (first and second conjugations only), 
+future perfect indicative,
+and \form{-m} is used with imperfect indicative, 
+future indicative (third and fourth conjugations only),
+pluperfect indicative,
+and the subjunctive mood regardless of tense.
+The \category{perfect} tense has its own personal endings:
+in the alternative analysis outlined in the last section,
+the first person perfect indicative ends with \form{-ī},
+and the second person perfect indicative ends with \form{-tī}.
+
+The ending \form{-re} is alternative form of second-person singular compatible 
+with all non-periphrastic tenses and moods.
+If this personal ending is used, then the tense and mood marking is none.
+Note that the resulting verb form is the same as the infinitive principal part
+(\prettyref{sec:three-latin-stem}).
+
+The \form{-or} version of the passive first person ending 
+is seen in present indicative and future indicative
+in the first and second conjugations;
+the latter has the deep form \form{-be-or},
+then then is realized as \form{-bor} because of vowel deletion 
+(\prettyref{sec:phonology.rule.deletion}).
+
+\begin{table}[H]
+    \caption{Personal endings}
+    \label{tbl:personal-ending}
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        Suffix & Person and voice & Note \\
+        \midrule
+        \form{-\={o}}, \form{-m} & active, \category{1sg} & Depend on tense \\ 
+        \form{-s}                & active, \category{2sg} & \\ 
+        \form{-t}                & active, \category{3sg} & \\ 
+        \form{-mus}              & active, \category{1pl} & \\
+        \form{-tis}              & active, \category{2pl} & \\
+        \form{-nt}               & active, \category{3pl} & \\ \midrule 
+        \form{-r}, \form{-or}    & passive, \category{1sg} & \form{-or} for present and future indicative only \\ 
+        \form{-ris}              & passive, \category{2sg} & Allomorph: \form{-re} (without tense suffix) \\
+        \form{-tur}              & passive, \category{3sg} & Non-perfect tenses \\
+        \form{-mur}              & passive, \category{1pl} & Non-perfect tenses \\
+        \form{-minī}             & passive, \category{2pl} & Non-perfect tenses \\
+        \form{-ntur}             & passive, \category{3pl} & Non-perfect tenses \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item The passive:
+    \begin{itemize}
+        \item First-person singular: 
+        \begin{itemize}
+            \item \form{-r}: compatible with all tenses and moods, except the present indicative.
+            \item \form{-or}: present indicative.
+            Also, note that the future indicative (first and second conjugations only) ending is \form{-bor},
+            which may be analyzed as .
+        \end{itemize}
+        \item Second-person singular:
+        \begin{itemize}
+            \item \form{-ris}: compatible with all non-periphrastic tenses and moods.
+            \item
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\begin{infobox}{Parsing a finite verb}{finite-parsing}
+    Follow these steps to parse a finite verb:
+    \begin{itemize}
+        \item First see whether the aspect is perfect (by looking at the stem part)
+            and the personal ending.
+        \item Then TODO 
+    \end{itemize}
+\end{infobox}
+
+\subsection{The first conjugation}\label{sec:verb-morphology.1c}
+
+Attested thematic vowel alternations include:
+\begin{itemize}
+    \item In first person singular present forms, 
+    the final \form{\={a}} is dropped, 
+    because the personal ending is \form{-\={o}} or \form{-or}
+    and the thematic vowel is subject to vowel deletion.
+    \item In active subjunctive  \form{\={a}-} $\to$ \form{\={e}-}.
+\end{itemize}
+
+\subsection{The second conjugation}\label{sec:verb-morphology.2c}
+
+Attested thematic vowel alternations include:
+\begin{itemize}
+    \item In active indicative present forms, \form{\={e}} $\to$ \form{e}.
+\end{itemize}
+
+\subsection{The third conjugation}
+
+The third conjugation has two subclasses:
+the thematic vowel-less case, 
+and the \form{i}-thematic case.
+
+\subsection{Periphrastic conjugations}
+
+An auxiliary verb construction is a structure 
+that contains one or more auxiliaries apart from the main verb, 
+and yet is mono-clausal and is not a complement clause construction,
+and the auxiliaries are realizations of the verbal system 
+surrounding the main verb, and not independent lexical verbs.
+Auxiliary verb constructions realizing grammatical categories 
+that are usually realized by inflectional endings in a paradigm
+should be seen as a part of that paradigm,
+and therefore are known as periphrastic conjugations.
+
+\section{Non-finite forms}
+
+\subsection{The infinitives}\label{sec:infinitives}
+
+\subsection{The gerund and participles}\label{sec:nominal-form}
+
+\subsubsection{The gerund}\label{sec:gerund-morphology}
+
+The gerund is morphologically a neutral singular noun.
+The stem is formed by 
+adding \form{-nd-} to the present stem;
+in other words, 
+the accusative form of the gerund of the verb 
+is obtained by removing the final \form{s} 
+of the present active participle 
+and adding \form{dum}.
+Note that the nominative case is missing -- 
+when a non-finite clause is required in the subject position,
+it's always an infinitive.
+
+\subsubsection{The present active participle}
+
+The present active participle (i.e. the present participle) 
+is morphologically a third declension adjective (TODO: gender).
+The stem of the present active participle 
+is obtained by adding \form{-nt} to the present stem.
+Equivalently, the nominative singular form -- the citation form --
+is obtained by replace the \form{-re} ending of the present active infinitive by \form{-ns}
+(or in other words, add \form{-ns} to the present stem).
+
+\subsubsection{The perfect passive participle}
+
+The perfect passive participle (i.e. the perfect participle or the past participle)
+can be found by declining the neutral accusative past participle, 
+i.e. the fourth principal part.
+
+\subsubsection{The future active participle}
+
+To get the future active participle (i.e. the future participle), add \form{-turus} to the supine stem.
+
+\subsubsection{The future passive participle}\label{sec:verb-inflection.non-finite.future-passive}
+
+The future passive participle, 
+or in other words the gerundive,
+can be obtained by declining the gerund 
+as if it's an adjective (TODO: declension class);
+in other words the gerund is morphologically the singular neutral of the gerundive.
+
+\section{Deponent verbs}\label{sec:deponent-verbs}
+
+\concept{Deponent verbs} are verbs that are in the passive voice realizationally,
+either with the corresponding morphological marking (\ref{ex:verb-morphology.deponnet.2})
+or periphrastic marking (\ref{ex:verb-morphology.deponent.1}),
+but still have active meaning.
+An observed tendency is that 
+so-called ``unaccusative'' verbs
+seem to be deponent verbs in Latin,
+which means the passive voice essentially is the 
+``non-agentive'' voice (\prettyref{sec:verb-phrase.arguments.compatibility}).
+
+\begin{exe}
+    \ex\label{ex:verb-morphology.deponnet.2} \gll 
+    [Confiteor] unum baptisma in remissionem peccatorum \dots \\
+    confess-\category{ind}.\category{pres}.\category{pass}.\category{1sg}
+    one-\category{sg.acc} baptism-\category{sg.acc}
+    into/towards/about remission-\category{sg.acc}
+    sin-\category{pl.gen} \\
+    \glt{\translate{I confess one baptism for the remission of sins \dots} (Nicene Creed)}
+    
+    \ex\label{ex:verb-morphology.deponent.1} \gll \dots {} qui [locutus est] per prophetas \dots \\
+    {} who speek.\category{aprt}-\category{sg.nom} 
+    \category{be}.\category{ind}.\category{pres}.\category{act}.\category{3sg}
+    through prophet-\category{pl.acc} \\
+    \glt{\translate{\dots who has spoken through the prophets \dots} (Nicene Creed)}
+\end{exe}
+
+\section{Irregular verbs}\label{sec:irregular-verbs}
+
+\subsection{The verb \form{sum}}\label{sec:sum-morphology}
+
+\subsubsection{Overview}
+
+The verb \form{sum} has lots of uses in Latin grammar (\prettyref{sec:sum}),
+and its inflection is (unfortunately but expectedly) highly irregular.
+It's also defective: 
+it has no passive forms, either finite or nonfinite.
+The principal parts (\prettyref{sec:three-latin-stem}) are 
+\form{sum}, \form{esse}, \form{fuī}, 
+with the supine form being absent -- usually replaced by the future active participle \form{futūrus}.
+
+From the principal parts, 
+we find the perfect stem is \form{fu-}, 
+and the supine stem -- if we insist on defining it -- 
+is the same, 
+although the perfect passive participle is absent and so is the supine,
+and therefore the supine stem only appears in the future active participle.
+
+The present stem is not well-defined:
+the second principal form \form{esse}
+doesn't have the regular infinitive ending \form{-re},
+though we can roughly recognize something like \form{es-} or \form{e-};
+the first principal form \form{sum} gives \form{su-} or \form{s-}.
+The two stems appear in the finite paradigm in an unpredictable manner, 
+also with irregular though still recognizable endings.
+Besides \form{s-} and \form{es-},
+there is also \form{fo-} seen in one variant of the future active infinitive
+(\prettyref{sec:verb-inflection.irregular.sum.nonfinite}),
+which also appears in variants in
+the subjunctive active imperfect part of the finite paradigm.
+
+\subsubsection{The nonfinite paradigm}\label{sec:verb-inflection.irregular.sum.nonfinite}
+
+The only nominal form is the future active participle \form{futūrus}.
+The three active infinitives forms are all attested.
+The present active infinitive is \form{esse}.
+The perfect active infinitive is \form{fuisse}, 
+regularly formed by the perfect stem \form{fu-}.
+
+The future active infinitive can be regularly formed by adding \form{esse} 
+to the future active participle,
+and therefore is \form{futūrum esse}.
+There is also a free variant \form{fore}.
+
+\subsubsection{The perfect system}
+
+The perfect forms -- finite forms and the perfect active infinitive -- 
+of \form{sum} can be formed regularly (\prettyref{sec:finite-paradigm})
+according to the perfect stem \form{fu-}.
+
+\subsubsection{The imperative system}
+
+The present imperative system, 
+which is known for reflecting the present stem,
+is formed regularly using \form{es-}:
+the singular second person present imperative is \form{es}
+and the plural second person present imperative is \form{este}.
+
+\subsubsection{The present system}
+
+The imperfect forms of \form{sum} are highly irregular,
+though patterns can still be found.
+In the indicative part (\prettyref{tbl:indicative-sum}): 
+\begin{itemize}
+    \item The \category{present} forms show no pattern
+    except the personal endings.
+    Note that here \form{-m} instead of \form{-\={o}}
+    is used for the first person singular form.
+    \item The \category{imperfect} forms are formed 
+    by adding the standard personal endings 
+    (\form{-m}, \form{-s}, \form{-t}, 
+    \form{-mus}, \form{-tis}, \form{-nt})
+    to \form{er\={a}},
+    the vowel \form{\={a}} of which 
+    undergoes shortening according to rules in \prettyref{sec:tense-mood-marking}.
+    \item The \category{future} forms are formed by 
+    the same personal endings seen in the first and the second conjugations,
+    although the tense marker isn't the same: 
+    the stem-tense marker complex is \form{er-}
+    instead of the stem plus \form{-b-}.
+\end{itemize}
+
+\begin{table}[H]
+    \caption{The indicative paradigm of \form{sum}}
+    \label{tbl:indicative-sum}
+    \centering
+    \begin{tabular}{lll}
+    \toprule
+    \category{present} & \category{imperfect}  & \category{future}  \\
+    \midrule
+    \form{sum}     & \form{eram}       & \form{er\={o}} \\
+    \form{es}      & \form{er\={a}s}   & \form{eris}    \\
+    \form{est}     & \form{erat}       & \form{erit}    \\
+    \form{sumus}   & \form{er\={a}mus} & \form{erimus}  \\
+    \form{estis}   & \form{er\={a}tis} & \form{eritis}  \\
+    \form{sunt}    & \form{erant}      & \form{erunt}   \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+In the subjunctive paradigm (\prettyref{tbl:subjunctive-sum}),
+we find that in the \category{present} system, 
+the stem-tense marker complex is fused into \form{sī-},
+and in the \category{imperfect} system,
+the stem-tense marker complex is fused into \form{ess\={e}-} or \form{for\={e}-},
+both of which are then attached to the standard \form{-m}, \form{-s}, etc. 
+personal endings, 
+and the vowel shortening rule in \prettyref{sec:tense-mood-marking} works.
+
+\begin{table}[H]
+    \caption{The subjunctive paradigm of \form{sum}}
+    \centering
+    \label{tbl:subjunctive-sum}
+    \begin{tabular}{ll}
+    \toprule
+    \category{present}   & \category{imperfect}   \\ \midrule
+    \form{sim}       & \form{essem}, \form{forem}       \\
+    \form{sīs}   & \form{ess\={e}s}, \form{for\={e}s}   \\
+    \form{sit}       & \form{esset}, \form{foret}       \\
+    \form{sīmus} & \form{ess\={e}mus}, \form{for\={e}mus} \\
+    \form{sītis} & \form{ess\={e}tis}, \form{for\={e}tis} \\
+    \form{sint}      & \form{essent}, \form{forent}     \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{The verb \form{faci\={o}}}
+
+The verb \form{faci\={o}} looks pretty regular
+regarding the endings, 
+except for one thing: 
+its \emph{stem} alternates according to the voice.
+
+\section{Auxiliary verb constructions}
+
+Latin is usually perceived as a language with few analytic properties;
+the only example of periphrastic conjugation 
+being the \form{sum} plus perfect passive participate construction.
+A deeper look however reveals 
+there might be more 
+
+\chapter{Verb frames}\label{chap:verb-frame}
+
+This chapter is mainly about verbs that don't take complement clauses as arguments.
+The phenomena discussed in this chapter mostly apply to complement clause constructions as well,
+but complement clause constructions have their own peculiarities 
+(\prettyref{sec:complement-clause-construct-overview}).
+
+
+\section{Argument positions and verb frames}\label{sec:core-argument-marking}
+
+
+
+\subsection{Prototypical intransitive verbs}\label{sec:prototypical-intransitive}
+
+\subsubsection{The \classify{motion} type}
+
+
+\subsection{Prototypical transitive verbs}\label{sec:prototypical-transitive}
+
+With complement-taking verbs temporarily excluded,
+a prototypical transitive verb is more or less close to the \classify{affect} type,
+with an A argument which is the causer of the event 
+
+\subsection{Copular verbs}
+
+\subsubsection{The verb \form{sum}}\label{sec:sum}
+
+It's also possible to use \form{sum} with an indirect object, 
+and the meaning because \translate{something be to [someone]_{\text{indirect object}}}.
+In this case we get the possessive dative construction
+\citep[\citesec{373}]{allen1903allen}.
+
+TODO: 
+
+\begin{exe}
+    \ex \gll Nono, utrum uti debeat metaphoricis vel symbolicis locutionibus. \\
+    tenth whether at.any.rate owe-\category{subj}.\category{pres}-\category{3sg}.\category{act}  
+    metaphoric-\category{pl.dat/abl} or symbolic-\category{pl.dat/abl} 
+    speech-\category{pl.dat/abl} \\
+    \glt \translate{Whether (it) at any rate uses metaphoric or symbolic speech.} (\literature{Summa}, I q. 1 pr.)
+\end{exe}
+
+\chapter{Clause structure}
+
+The clause appears as a single utterance 
+(and is a \concept{sentence}%
+\footnote{
+    Some authors use the term \term{sentence}
+    as a synonym of \term{utterance}.
+    Although this is the convention many Latinists use, 
+    it is not followed in this note.
+
+    In some languages a clause that qualifies as an utterance 
+    contains more grammatical categories than 
+    a minimal subject-predicate construction 
+    (like sentence-final particles possibly missing in embedded clauses),
+    and a distinction between the sentential clause and a nucleus clause 
+    has to be made.
+    This is not the case in Latin.
+}
+in this case),
+either declarative or interrogative,
+as a complement of a verb (complement clause construction),
+as an adverbial of another clause
+(i.e. modifier in the verbal system),
+and as a relative clause 
+(i.e. modifier in the nominal system).
+
+
+Descriptive parameters of clausal structure include 
+the argument positions, deep and surface, 
+availability and interpretation of \acs{tame} marking, 
+the availability and interpretation of  
+grammatical categories higher than \acs{tame} categories
+including topicalization and focusing,
+which in the case of Latin determine the constituent order, 
+and, in the embedded clause case, 
+the licensing environment
+and the inside \form{wh}-forms.
+
+\section{The nucleus clause}
+
+\subsection{Complements and adjuncts}
+
+This section examines the verb, complements%
+\footnote{
+    In \citet{cgel} the term \term{complement} means a 
+    clausal dependent position that has a closer relation with the lexical head;
+    the boundary between complements and adjuncts is sometimes hard to draw (see below).    
+    A clausal dependent position is an all-in-one label concerning several grammatical relations
+    (see the main text):
+    the label \term{subject}, for example, 
+    covers both the pivot role in the nucleus clause 
+    (i.e. ``SpecTP'' in generative grammar) 
+    and the most external, agentive role in the argument structure
+    (i.e. ``Spec\vP'' or ``SpecVoiceP'' in generative grammar).
+
+    In traditional Latin grammar, however, \term{complement} means the copular complement. 
+    This note follows the terminology used in most descriptive grammars,
+    so use the term \term{copular complement} to refer to the \ac{cgel} \term{predicative complement}.
+
+    A further confusion, as is seen in \prettyref{sec:core-argument-marking}, 
+    is due to the term \term{complement-taking verb}, 
+    i.e. a verb that take a complement clause 
+    or something semantically equivalent to a complement clause
+    as one of its arguments.
+}
+and adjunct positions in Latin clauses. 
+Parameters used in the classification include 
+\begin{itemize}
+    \item their internal structures (case, preposition, \acs{np} or clause, etc.),
+    \item their correspondence with semantic roles 
+    (\citealt[\citesec{4.2}]{cgel}),%
+    \footnote{
+        We still need to distinguish between the abstract, 
+        essentially syntactic concepts like agent, patient, source, etc.
+        which are meaningful in syntactic devices like valency changing
+        and are represented as generalized semantic roles (see below),
+        and truly semantic and more numerous role listed in 
+        \citet{dixon2005semantic}.
+    }
+    \item their behaviors in valency alternation,
+    \item their behaviors in reflective constructions,
+    \item agreement,
+    \item and extracting properties in e.g. relativization.
+\end{itemize}
+The first three properties about mainly about 
+deep generalized semantics roles, 
+i.e. \emph{deep} \category{S}, \category{A}, \category{P} (or \category{O})
+etc. in \citet{dixon2009basic1}.
+Valency alternation devices 
+may highly dependent on properties of the verb (TODO: ref),
+or a more high-level and uniform one  
+usually known as \emph{voice} (TODO: ref);
+both of them are well attested in Latin.
+The last two properties are mainly about clausal-level grammatical relations
+or ``surface argument position'' in \citet{dixon2009basic1},
+which can be labeled as \emph{surface} \category{S}, \category{A}, \category{P};
+details of possible surface argument positions,
+including possible identification of \category{S} and \category{A} or \category{P} 
+and split of \category{S},
+is specified in the alignment typology of the language.
+Latin is a nominative-accusative language, 
+with clear \category{S}=\category{A} identification 
+and therefore a well-defined subject (TODO: ref).
+
+
+Beside the subject, various types of objects, and copular complements,
+there are more clause dependents
+corresponding to less frequently seen semantic roles 
+like purpose, direction, location, etc.
+They may be licensed or even required by the verb 
+(\concept{oblique argument}, 
+corresponding to the E argument in \citet[\citepage{116}]{dixon2010basic2}),
+or they may be modifying the whole clause and therefore are usually optional 
+(\concept{peripheral argument}, or ``adjuncts'').
+Besides clauses and \ac{np}s (with or without prepositions),
+their categories also include \ac{advp}s,
+a majority of the latter originating from case forms.
+
+A clear complement-adjunct distinction 
+-- telling peripheral arguments from core arguments or oblique arguments --
+is hard to establish in Latin.
+Below I assess several parameters usually used to draw the distinction
+listed in \citet[\citesec{4.1.2}]{cgel}:
+\begin{itemize}
+    \item \emph{Content of clausal dependent.} Latin peripheral arguments do not necessarily have prepositions.
+    \item \emph{Easiness of topicalization, etc.} Latin is highly free-ordered and therefore all clause dependents 
+    can leave their base positions.
+    \item \emph{Obligatoriness.} Latin is also highly \term{pro}-drop,
+    and even uncontroversial core arguments can be omitted.
+    \item \emph{Licensing by verb.} Oblique arguments are frequent in Latin,
+    as is the case in English 
+    (consider \form{run away from} or \form{get into}).
+    \item \emph{Identification of core verb phrase.} Latin doesn't have systematic way to replace the core predicate (i.e. without adjuncts) by an anaphora.
+\end{itemize}
+Selection, licensing, and obligatoriness tests 
+can still be used in more subtle ways
+(e.g. reference in discourse to identify omitted argument)
+
+these criteria are however hard to use for a classical language. 
+
+Thus, despite I'm fully aware that  
+clausal dependents concerning place, instrument, mean, etc. 
+may be licensed by both the argument structure of the verb 
+and by clausal adjunct positions 
+and may have clear structural differences in other languages 
+(as in English), 
+currently no distinction between the two cases is made.
+Following the traditional notion,
+the subject, several kinds of objects,
+the copular complement (\cite{cgel} calls it \term{predicative complement}) 
+are identified as complements.
+
+\subsection{The subject}
+
+Latin is an accusative language.
+A \concept{subject} can be identified for all clauses, 
+though it is frequently omitted.
+Grammatical behaviors of the subject are summarized in the follows.
+
+\begin{itemize}
+    \item \emph{Coding of semantic role}: In an active clause, 
+    the subject 
+    is the S argument in a prototypical intransitive argument structure 
+    and the A argument in a prototypical transitive argument structure.
+    It's often said that the subject is usually the most agentive argument,
+    but for so-called unaccusative intransitive verbs, 
+    the subject is patientive,
+    which can be demonstrated by the semantics 
+    and the fact that when the causer of the event is present as an argument, 
+    the patientive S argument in the intransitive verb frame
+    becomes the O argument in the transition verb frame.
+    In a passive clause, 
+    the subject corresponds to the ``promoted argument'' (\prettyref{sec:passive}).  
+    \item \emph{Case marking}: 
+    Subjects are always nominative for finite clauses,
+    whenever the case system is in action,
+    i.e. whenever the subject is an \ac{np} or a gerund. 
+    Nonfinite clauses may be argued to be subjectless in the surface form 
+    (a reasonable claim, since they have deficient TP layers, 
+    and hence it is possible that no canonical subject position exists),
+    but in accusative-infinitive constructions, % TODO: control or ECM or ... ?
+    the accusative may be seen as the non-canonical subject of the infinitive.
+    \item \emph{Agreement}: 
+    the number and person features on the subject leave marking on the verb complex.
+    Latin does not have verbal agreement with arguments other than the agreement with the subject.
+    \item \emph{Category}: a subject is an \ac{np}  
+    or a complement clause (\prettyref{sec:complement-clause-construct-overview}), 
+    usually an infinitive but never a gerund (\prettyref{sec:gerund-morphology}).
+    This constraint isn't seen in any other clausal complement types.
+\end{itemize}
+
+
+\subsection{The direct object}\label{sec:vp.complement.direct-object}
+
+Here is a list of grammatical properties of the direct object:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: In a prototypical transitive argument structure, 
+    the direct object is the P argument, i.e. the most patientive argument. 
+
+    \item \emph{Case marking}: Direct objects are always accusative when it makes sense to talk about case -- 
+    but not all accusative arguments are direct objects (\prettyref{sec:accusative-distribution}).
+    \item \emph{Passivization}: If an argument is coded as the direct object, 
+    then it can regularly be promoted to the subject position in a passive clause (\prettyref{sec:passive}). 
+    Secondary objects are less frequently promoted in passivization (\prettyref{sec:accusative-distribution}).
+\end{itemize}
+
+\subsection{The indirect object and the secondary object}\label{sec:vp.complement.indirect-object}
+
+Latin also has two complement positions named as object:
+the indirect object and the secondary object.
+The indirect object is distinguished by the following grammatical properties:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: in a AGT-type argument structure, 
+    the indirect object is usually the G argument.
+    Intransitive clauses sometimes also have indirect objects, 
+    and an indirect object, in this case, is also a G argument.
+    \item \emph{Case marking}: indirect objects are always dative
+    (\prettyref{sec:dative-distribution}).
+    \item \emph{Passivization}: indirect objects are always retained in passive clauses. 
+    They are never promoted to subjects in passivization.
+    % TODO: category
+\end{itemize}
+
+The secondary object is distinguished by the following grammatical properties:
+\begin{itemize}
+    \item \emph{Coding of semantic role}: in an AGT-type argument structure
+    that is always about information flowing,
+    the T argument (i.e. the thing asked about or taught about) is the secondary object.
+    The G argument (i.e. the person who is asked or taught) is the direct object.
+    Sometimes the G argument is ablative, and in this case, 
+    there is only one accusative argument: the secondary object.
+    Another place where secondary objects appear is 
+    clauses headed by a verb with a compounded accusative preposition. % TODO: SAO typology
+    \item \emph{Case marking}: secondary objects are always accusative.
+    \item \emph{Passivization}: secondary objects can be passivized, but much more rarely than direct objects.
+    \item % TODO: category
+\end{itemize}
+
+The distributions of the secondary object and the indirect object 
+are mutually exclusive.
+This means for ditransitive verbs of type \classify{giving}, 
+Latin shows a clear and strong tendency to identify the T argument with the monotransitive O,
+while for ditransitive verbs about teaching,
+the inverse is true.
+
+\begin{infobox}{Comparison with English}{english-indirect-object}
+    It can be found that the Latin indirect object has more similarity with the English \form{to}-PP,
+    which is also called the indirect object in some grammars, but not \ac{cgel}.
+    The Latin indirect object differs from the English (accusative) indirect object in passivization.
+    Since in Latin, verbs with AGT-type argument structure do not have alternation of complementation pattern
+    -- in English we have \form{give sth. to sb.} and \form{give sb. sth.}, 
+    while in Latin there is only the former one, but \form{to sb.} is replaced by a dative,
+    (always with no preposition) --
+    the G argument is identified with the E argument,
+    and the T argument is identified with the P argument.
+    In other words, in Latin, there is only 
+    the \form{John gave [goods]_{\text{T}} to [charity]_{\text{G}}} pattern:
+    the double-object \form{John gave charity goods} pattern is absent.
+    
+    Therefore, for typical ditransitive verbs, i.e. verbs like \form{give}, 
+    Latin shows a clear and strong tendency to identify the T argument with the monotransitive O,
+    which is more typical than English%
+    \footnote{
+        In English, in the \form{give sb. sth.} construction, it is the person i.e. the G argument that is passivized,
+        while the T argument i.e. \form{sth.} cannot, though the latter is identified with monotransitive O
+        according to other criteria. 
+    },
+    but for verbs with meaning of \category{teach} or \category{ask},
+    there is also a clear and strong tendency to identify the G argument with the monotransitive O.
+    The term \term{secondary object} is coined to cover this grammatical position.
+\end{infobox}
+
+\subsection{Copular complements}
+
+Latin also has copular complements.
+A copular complement, just like its counterpart in English,
+basically can be viewed as a displaced attributive or appositive 
+(and hence is prototypically filled by an \ac{np} or an \acs{adjp})
+but is a little more peripheral (manner, state, factitive, etc.) 
+in its meaning than an attributive or appositive.
+
+Latin has nominative predicate and accusative predicate:
+as hinted by their names, 
+the nominative predicate gives a property of the subject and agrees with it,
+and the accusative predicate gives a property of the direct object and agrees with it.
+In passivization of the direct object,
+the accusative predicate becomes the nominative predicate.
+
+Other types of copular complements without agreeing with the subject exist.
+TODO: ablative of quality, price, etc. 
+The syntactic status of copular complements here are closer to \acs{pp}s:
+we may say they receive \emph{inherent cases},
+while the nominative and accusative copular complements 
+receive \emph{structural cases} 
+(\prettyref{sec:np.case-distribution}).
+
+\subsection{(Change of) location}
+
+TODO: considering moving this section to the case section
+
+Various semantic roles can be summarized as \category{source}, 
+and the source clausal dependents -- adjunct or complement -- have the following properties.
+Note that we are dealing with a \emph{group} of clausal dependents.
+\begin{itemize}
+    \item \emph{Coding of semantic role}: 
+        
+    \item \emph{Case marking}: a source argument is in the ablative case.
+        It may come together with the prepositions \form{ex} or \form{ab}.
+    \item \emph{Passivization}: not available.
+\end{itemize}
+
+\subsection{Others}
+
+There are other clausal dependents with semantic roles and case/preposition markings 
+different from any other type mentioned above;
+they are skipped here for brevity.
+A full list of these clausal dependent slots can be found by checking the usage of each preposition. 
+
+\section{Voice}\label{sec:passive}
+
+\section{Preverbs and other verbal derivations}
+
+\section{Verb frames}\label{sec:verb-phrase.verb-frame}
+
+\subsection{Overview}\label{sec:verb-phrase.arguments.compatibility}
+
+In this section I consider the correspondence between  
+semantics of verbs and their syntactic properties.
+Attested combinations of the argument slots include 
+
+TODO: deponent, unaccusative
+
+It can be seen that unaccusative verbs are all deponent
+\citep[\citepages{308-309}]{oniga2014latin}
+
+On the semantic side,
+I follow the semantic classification by 
+\citet[Part B]{dixon2005semantic},
+\citet[\citesec{18.5}]{dixon2010basic2},
+and \citet[\citesec{3.3}]{dixon2009basic1}.
+Verbs are classified semantically into three subgroups:
+\begin{enumerate}
+    \item Primary-A, which contains verbs that 
+    don't take arguments with meanings similar to those of complement clauses,
+    \item Primary-B, which are semantically \concept{complement-taking}%  
+    \footnote{
+        Here the term means ``semantically equivalent to a complement clause construction''.
+    }
+    and \concept{lexical},
+    which have arguments that are semantically equivalent to complement clauses 
+    (but not necessarily syntactically coded as complement clauses)
+    and have meanings more complicated then what's expected for grammatical items, and 
+    \item Secondary, members of which have the same \emph{meaning} 
+    of certain grammatical constructions in the verbal system,
+    but not the same syntactic properties
+    (for example, they may just take complement clauses instead of being auxiliary verbs).
+\end{enumerate}
+Note that the valency class of the verb 
+is strongly related to but is not determined by the semantics of the verb.
+
+
+I will generally follow the classification in \citet[\citechap{4}]{Pinkster1};
+some verb classes enumerated by Pinkster are discussed in more details 
+in \prettyref{chap:complement-clause-construct},
+since a full account of their behaviors is closely related to the structure of complement clauses.
+
+\section{Finite declarative sentences: indicative and subjunctive}
+
+
+
+
+\subsection{Constituent order and the information structure}\label{sec:clause.order}
+
+Patterns in Latin constituent order are often overlook in traditional grammar.
+Still, fine-grained constituency is demonstrated by 
+the relation between \form{non} and the auxiliary 
+(\prettyref{sec:constituent-order.aux-neg}),
+radical change of VO/OV frequency when structural ambiguity is controlled
+(\prettyref{sec:constituent-order.history}),
+and usual constituency tests 
+(\citealt[\citesec{1.6}]{danckaert2017development}; TODO: ref to my own analysis in conjunction).
+The \form{non}-before-auxiliary condition implies 
+a auxiliary hierarchy just like the one in English, 
+although it's not as developed as the latter 
+since Latin is inflectionally rich.
+The constituency tests hint on 
+at least the subject-\acs{vp} binary branching.
+The fact that superficial VO/OV orders may have structural ambiguity 
+means it's likely that some of the constituent orders 
+are comparable to
+English poetry in imitation of Latin \citep[\citesec{600}]{allen1903allen},
+Japanese scrambling and topicalization (TODO: ref).
+
+Available evidence supports the tradition in existing secondary literatures that
+Latin is thus better described as a discourse-configurational language,
+with multiple topicalization and focusing structures
+(\citealt[\citepage{189}]{oniga2014latin}; 
+\citealt[\citepage{77}]{danckaert2017development}; 
+\citealt{devine2006latin}, among others).
+Initial positions in clauses clearly bear information structure functions. 
+Constituents that are able to move to the positions 
+include almost everything: 
+arguments, adverbials, the negator \form{non}, 
+and also the verb (TODO: aux) 
+\citep[\citesec{598}]{allen1903allen}. 
+TODO: is it possible for the main verb to move to the initial point only?
+Note that fronting of the verb may be used 
+to focus the verb root or the \emph{tense}
+\citep[\citepage{397}]{allen1903allen};
+this means preposing of the verb is comparable to 
+stressing the verb in English.
+
+Apart from the information structure, 
+prosody is also an important factor TODO
+
+Pragmatically unmarked sentences have the arguments as pragmatic topics 
+and the rest of the \acs{vp} are the focus:
+\translate{we already know Baebius, his army, and Pinarius (topics);
+the piece of new information is that 
+a transferring process happens involving the three}.
+This kind of sentences, known as ``broad scope focus'' sentences 
+in \citet[\citepage{15}]{devine2006latin}
+because the scope of focusing is broad
+and not restricted to a single argument,
+demonstrates a preferred constituent order 
+\citep[\citepage{79}]{devine2006latin},
+which may be referred as the \concept{neutral order} in Latin,
+although its frequency -- without controlling the information structure -- 
+isn't significant higher than other constituent orders.
+This order clearly isn't a faithful representation 
+of the argument structure, 
+since the direct object -- the argument that is supposed to be the closest one to the main verb -- 
+appears far from the main verb. 
+The reason is likely to be that the ``neutral order'' also marks 
+the aforementioned ``unmarked'' information structure, 
+in which the arguments are by default topicalized 
+
+In periphrastic conjugation,
+the constituent order is subject + object + verb + \form{sum}.
+This may also show a mismatch between the dependency structure and the linear order,
+since if we consider the auxiliary \form{sum} to be 
+the analytic counterpart of the inflectional suffix 
+and has a higher position compared to the main verb (i.e. the participle),
+then since the subject and topicalized constituents usually appear on the left side, 
+it also should appear on the left side compared with the participle under it.
+But the case may just be that the participle is focused and is moved leftward by default, 
+just like the topicalized direct object,
+so the auxiliary then appears at the end of the clause in the neutral order.
+
+\subsection{Positioning of arguments}
+
+\subsection{Positioning of the verb (without auxiliary)}
+
+\begin{infobox}{Position of the verb}{verb-position}
+    The position of the verb involves a theoretical question:
+    is its appearance away from the unmarked clause-final position
+    due to phrasal movement 
+    (the verb root being moved to a new position, 
+    carrying all suffixal realizations of 
+    TP functional heads together with it),
+    or is it due to being attracted by some sort of functional head
+    (in this case the verb root is just like a head in head movement;
+    similar mechanisms appear in, say, 
+    \form{on the top of the mountain \emph{lies} a small village})?
+    Since this distinction is hard to test, 
+    I refrain from picking up one explanation.
+\end{infobox}
+
+\subsection{Positioning of auxiliary and negation}\label{sec:constituent-order.aux-neg}
+
+One piece of evidence suggesting the grammatical status of \form{sum} 
+is somehow different from a lexical verb 
+is that its position has non-trivial interaction 
+with the position of \form{non}.
+The negator \form{non} usually appears before the verb 
+(\citealt[\citesec{1.5}]{danckaert2017development}, TODO: or aux?),
+and apparent violations seem to be constituent negation 
+as opposed to sentential negation \citep[\citepage{43}]{danckaert2017development}.
+
+\subsection{On so-called postposing constructions}
+
+Whether postposing exists as an information structure marking device 
+is still not completely clear. 
+It's said that postposing is never used for emphasis \citep[\citepage{395}]{allen1903allen},
+and apparent counterexamples are all ``afterthoughts'' TODO;
+but 
+
+The postponed subject is likely to be an afterthought, 
+coindexed with a zero pronominal 
+in the rest of the sentence before it
+\citet[\citepage{87}]{devine2006latin},
+comparable to English \form{it kills three people, the wandering puma}.
+
+\subsection{Notes on some typologically rare constituent orders}
+
+
+\subsection{Historical evolution}\label{sec:constituent-order.history}
+
+Without sentences in which the OV/VO alternation 
+can be alternatively analyzed as topicalization,
+VO frequency no longer shows significant change as time went by,
+indicating a well-defined extended verb phrase \citep[\citesec{1.5}, \citepage{29}]{danckaert2017development}.
+
+\section{Information packaging constructions}
+
+\subsection{Existential clause}\label{sec:clause.exist}
+
+In the existential construction,
+the \form{sum} verb always appears first
+\citep[\citepage{396}]{allen1903allen}.
+
+\subsection{Cleft construction}
+
+nequitia est quae te non sinit esse senem
+
+\section{Question formation}
+
+\section{Small clauses}
+
+Some constructions may be analyzed as ``small clauses'', 
+which are smaller than usual clauses 
+and lack real \acs{tame} marking;
+they are therefore not ``real'' clauses, 
+but still appear frequently in Latin texts.
+(\ref{ex:clause.small-clause.1}) is a formula used frequently in Catholic Church 
+and is an example of a small clause 
+as a single and complete utterance.
+The fact that \form{gratias} is not in the nominative or the vocative case 
+means (\ref{ex:clause.small-clause.1}) is 
+neither a finite construction nor a single-\acs{np} utterance.
+
+
+\begin{exe}
+    \ex \gll De-o grati-as \\
+    God-\category{sg}.\category{dat} thank-\category{pl}.\category{acc} \\
+    \glt \translate{(May) thanks be to God.}
+    \label{ex:clause.small-clause.1}
+\end{exe}
+
+Since English -- and a lot of other languages -- 
+bans small clauses appearing as complete utterances,
+translation of these constructions may map them into full clauses in the target language. 
+
+\begin{infobox}{Why small clauses}{small-clause}
+    Alternatively, small clause constructions can be analyzed 
+    as a full clause (for example, a copular clause) with the verb deleted.
+    The main problem of this analysis is if this is true, 
+    we need to explain why prototypical transitive clauses 
+    never see their verbs omitted.
+    It's therefore better to say 
+    that a copular clause is a small clause \emph{plus} the copular,
+    and that a giving or receiving ditransitive verb 
+    takes a small clause as its internal complement,
+    which doesn't involve a questionable verb deleting process
+    and also captures the intuition that 
+    a small clause is a full clause minus the verb.
+\end{infobox}
+
+
+
+\chapter{Adverbial clauses}
+
+
+
+\chapter{Complement clause constructions}\label{chap:complement-clause-construct}
+
+\section{Overview}\label{sec:complement-clause-construct-overview}
+
+\subsection{Infinitives}
+
+\subsubsection{\form{Accusativus cum infinitivo}, or the autonomous infinitive}
+
+Despite the superficial resemblance to the English object raising constructions,
+Latin complement infinitives with accusative subjects 
+are licensed even after complete nominalization
+of the complement-taking verb.
+Therefore the accusative subject of the complement clause 
+can't be seen as an object of the complement-taking verb, 
+since the nominalized verb no longer takes object in Latin.
+Therefore, the \form{accusativus cum infinitivo} construction 
+is comparable to English \form{for sb. to do sth.},
+where the subject of the complement clause is autonomous;
+the accusative case here is the case assigned to 
+the subject of an non-finite clause where the nominative case is not available.
+This is not completely unexpected, 
+since even absence of an explicit complementizer 
+is observed in the \form{ut} clause as well
+\citep[\citepages{290-292}]{oniga2014latin}.
+
+\chapter{Relative constructions}\label{chap:relative-clause}
+
+\section{Agreement properties}\label{sec:relative-clause.overview.agreement}
+
+The case of a relative pronoun is determined 
+by its syntactic position in the relative clause, 
+and \emph{not} the case of the antecedent,
+though the number and gender categories 
+are determined by agreement with the antecedent.
+
+\chapter{Coordination}
+
+Latin coordination in the nominal system and the verbal system 
+shows strong correspondence,
+with most conjunction words being shared
+by the two systems.
+
+
+\chapter{Texts}
+
+Below are some examples of Latin texts, 
+in an order from the easiest to the hardest,
+with remarks on their vocabulary and grammar. 
+
+\section{Liturgy texts}
+
+\subsection{Short formulae in the Roman Mass}
+
+Examples in this section are short formulae found in the Roman Mass
+in the order of their appearance.
+In (\prettyref{ex:text.mass.1}, \prettyref{ex:text.mass.2}),
+\form{nomine} and \form{patris} are third declension nouns, 
+while \form{spiritus} is a fourth declension noun. 
+
+\begin{exe}
+    \ex\label{ex:text.mass.1} \gll In Nomine Patris, et Filii, et Spiritus Sancti. \\
+    in name-\category{sg}.\category{abl} Father-\category{sg}.\category{gen} 
+    and Son-\category{sg}.\category{gen} 
+    and \category{spirit}(\category{m})-\category{sg}.\category{gen}
+    holy-\category{m}.\category{sg}.\category{gen} \\
+    \glt \translate{In the name of the Father, and of the Son, and of the Holy Spirit.}
+
+    \ex\label{ex:text.mass.2} \gll -- Dominus vobiscum. -- Et cum spiritu tuo. \\
+    {} Lord(\category{m})-\category{sg}.\category{nom} 
+    \category{2pl}.\category{abl} 
+    {} and with spirit(\category{m})-\category{sg}.\category{abl} 
+    your-\category{m}.\category{sg}.\category{abl} \\
+    \glt \translate{-- The Lord be with you. -- And with your spirit.}
+    
+    \ex 
+\end{exe}
+
+\subsection{Nicene Creed}
+
+\begin{exe}
+    \ex \gll Credo in unum Deum, Patrem omnipotentem, \\
+    believe-\category{ind}.\category{pres}.\category{1sg} in 
+    one-\category{m}.\category{sg}.\category{acc} 
+    God(\category{m})-\category{sg}.\category{acc} 
+    father(\category{m})-\category{sg}.\category{acc}
+    omnipotent-\category{m}.\category{sg}.\category{acc} \\
+    \glt \translate{I believe in one God, (the) omnipotent Father,} 
+    \ex \gll factorem caeli et terrae, visibilium omnium et \\ 
+    maker- \\
+    \glt \translate{maker of}
+\end{exe}
+
+\section{Vulgate bible}
+
+\subsection{Excerpts in John 1}\label{sec:text.vulgate.john}
+
+\begin{exe}
+    \ex\label{ex:text.john.1.1} 
+    \gll in principio erat Verbum et Verbum erat apud Deum et Deus erat Verbum \\
+    in {} be.\acs{imperfect}  \\
+    \glt \translate{In the beginning} (John 1:1)
+    
+    \ex\label{ex:text.john.1.3}
+    \gll omnia per ipsum facta sunt 
+    et sine ipso factum est nihil quod factum est \\
+    all-\category{n}.\category{pl}.\category{nom} through \category{dem}-\category{acc}
+    make.\category{pprt}-\category{n}.\category{pl}.\category{nom} 
+    be.\category{ind}.\acs{present}.\category{3pl} 
+    and without \category{dem}.\category{abl} 
+    make.\category{pprt}-\category{n}.\category{sg}.\category{nom} 
+    be.\category{ind}.\acs{present}.\category{3sg}
+    nothing.\category{nom}
+    \category{rel}.\category{n}.\category{3sg}
+    make.\category{pprt}-\category{n}.\category{sg}.\category{nom} 
+    be.\category{ind}.\acs{present}.\category{3sg} \\
+    \glt \translate{All have been made through exactly this (i.e. the Word of Lord),
+    and without exactly this, nothing that has been made has been made.} (John 1:3)
+\end{exe}
+
+As an example, 
+below I show how
+(\prettyref{ex:text.john.1.3}) can be parsed.
+First we can see a \form{et} dividing the sentence into two branches.
+\begin{enumerate} 
+    \item For the first branch, 
+        we know \form{omni-} is a quantifier meaning \form{all},
+        and morphologically it's a twin-termination third declension adjective; 
+        then from \prettyref{tbl:declension-ending-nouns-list}
+        and the fact that we are dealing with a third declension word, 
+        the ending \form{-a} means neutral and \category{pl}.\category{nom}/\category{acc}/\category{voc}. 
+        The vocative case is of course impossible here. 
+    \item The word \form{per} is a preposition taking an accusative object. 
+        \form{Ipsum} is a basic identity demonstrative, 
+        with the meaning of ``exactly this''. 
+        Since it follows \form{per}, 
+        the ending \form{-um} here seems to be the accusative case marker, 
+        instead of a neutral nominative case marker. 
+    \item The sequence \form{facta sunt} contains 
+        the indicative perfect 3pl copula \form{sunt}, 
+        and in \form{facta}, we see the supine stem \form{fact-} 
+        of the verb \form{faci\={o}} \translate{make}. 
+        The second fact means 
+        \form{facta} should be the perfect passive participle in a certain inflection form.
+        Then \form{facta sunt}, collectively, 
+        is the indicative passive perfect 3pl form of \form{faci\={o}}.
+        (Here we are fortunate: 
+        it's possible that \form{facta} and \form{sunt} get scattered to different places.)
+        The \form{-a} ending can again be looked up for in \prettyref{tbl:declension-ending-nouns-list}:
+        the possibilities are \category{pl}.\category{nom}/\category{acc}/\category{voc} -- 
+        note that the first declension singular possibilities 
+        are excluded by the fact that \form{sunt} is in plural form. 
+        We expect \form{facta} to be nominative 
+        because it has to agree with the subject, which is always nominative 
+        and it turns to be possible. 
+        \item Now we should link things together. 
+            The open ends are: 
+            the case of \form{omnia}, 
+            and the (3pl) subject of \form{facta sunt}.
+            Then quite obviously, 
+            we find \form{omnia} should be in the subject position, 
+            and therefore everything works well. 
+        \item We can also check gender agreements to make sure our reading is correct.
+\end{enumerate}
+The second half is done in similar manners. The structure of the text looks like this: 
+\begin{exe}
+    \sn {} [[omnia]_{\text{subject}} [per ipsum]_{\text{instrument:\acs{pp}}} [facta sunt]_{\text{verbal complex}}]_{\text{coord}} 
+    et [[sine ipso]_{\text{adverbial:\acs{pp}}} [factum est]_{\text{verbal complex}} [nihil [quod factum est]_{\text{rel}}]_{\text{subject}}]_{\text{coord}}
+\end{exe}
+
+\section{\literature{Aeneid}}
+
+\subsection{Introduction}
+
+
+
+\begin{exe}
+    \ex\label{ex:text.aeneid.1.1} \gll Arma virumque cano, Troiae qui primus ab oris
+    Italiam, fato profugus, Laviniaque venit litora, 
+    multum ille et terris iactatus et alto
+    vi superum saevae memorem Iunonis ob iram;
+    multa quoque et bello passus, dum conderet urbem,  
+    inferretque deos Latio, genus unde Latinum,
+    Albanique patres, atque altae moenia Romae. \\
+    weapon(\category{n})-\category{pl}.\category{acc} 
+    man(\category{m})-\category{sg}.\category{acc}=and 
+    sing-\category{ind}.\category{pres}.\category{1sg}
+    Troy-\category{sc}.\category{gen} 
+    \category{rel}.\category{m}.\category{sg}.\category{nom}
+    first-\category{m}.\category{sg}.\category{nom} 
+    from shore(\category{f})-\category{pl}.\category{abl} 
+    Italy(\category{f})-\category{sg}.\category{acc} 
+    fate(\category{n})-\category{sg}.\category{abl} 
+    exiled-\category{m}.\category{sg}.\category{nom} 
+    Lavinia-TODO=and  
+    go.to-\category{ind}.\category{pres}.\category{3sg} 
+    shore(\category{n})-\category{pl}.\category{acc} \\
+    \glt \translate{I sing weapons and a man, 
+    who was the first from the shores of Troy to Italy, 
+    was by fate exiled, 
+    and }
+\end{exe}
+
+In (\prettyref{ex:text.aeneid.1.1}),
+it should be noted that \form{arma} is in plural only.
+The \form{qui} clause is an example of the rule 
+that the relative pronoun doesn't agree in case 
+with the antecedent (\prettyref{sec:relative-clause.overview.agreement}).
+The copula is omitted in the \form{qui} clause.
+
+\section{\literature{Summa Theologiae}}
+
+\subsection{Introduction}
+
+Thomas Aquinas, a theologian and philosopher, 
+was recognized by the Catholic Church 
+as one of the Doctors of the Church,
+usually known as \form{Doctor Angelicus} 
+(doctor-\category{sg.nom} angle-\category{adj}-\category{sg.nom}, 
+\translate{Angelic Doctor}).
+\literature{Summa Theologiae}
+(summary-\category{sg.nom} theology-\category{sg.gen}, \translate{Summary of Theology}) 
+or \literature{Summa Theologica} 
+(summary-\category{sg.nom} theology-\category{adj}-\category{sg.nom.f}),
+usually abbreviated as \literature{Summa},
+is probably his most known work.
+As its name implies, the book is a summary of Catholic theology,
+containing necessary information for 
+beginning theological students 
+and for arguing against frequently seen heresies. 
+Apart from its great value within and out of Christianity, 
+the book is a good example of 
+what Medieval Latin looks like.
+
+One salient feature of \literature{Summa} is 
+it's written in a rather strict and even dull format.
+The work is divided into three Parts,
+each containing many Questions.
+Each Question (i.e. a topic, like ``the nature and extent of this sacred doctrine'') 
+is divided into several Articles 
+(i.e. a specific question, like whether the sacred doctrine is a science).
+Each Article starts with a sentence like (\ref{ex:text.summa.intro.1}) indicating its index 
+within the Question it belongs to,
+and then several Objections are raised 
+to support an unorthodox idea;
+then the accepted doctrine contrary to the above heretical claims is given
+(\ref{ex:text.summa.intro.2}),
+followed by a comment by Thomas on this Article (\ref{ex:text.summa.intro.3}).
+
+
+\begin{exe}
+    \ex\label{ex:text.summa.intro.1} Ad primum sic proceditur. 
+    
+    \ex\label{ex:text.summa.intro.2} 
+    \gll Sed contra est quod dicitur II ad Tim. III \dots \\ 
+    but contrarily be.\category{ind}.\category{pres}.\category{act}.\category{3sg} 
+    what.\category{r}.\category{sg.n} 
+    say-\category{ind.pres}-\category{3sg.pass} two to(TODO) \category{name} three \\
+    \glt \translate{But on the contrary there is what is said in 2 Timothy 3 \dots} 
+    (\literature{Summa}, I q. 1 s.c.)
+
+    \ex\label{ex:text.summa.intro.3} 
+    \gll Respondeo dicendum quod \dots \\
+    respond-\category{ind.pres}-\category{1sg.act} \\
+    \glt \translate{I respond to what is said that \dots}
+\end{exe}
+
+\bibliographystyle{plainnat}
+\bibliography{latin,theory}
+
+\end{document}

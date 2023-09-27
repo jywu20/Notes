@@ -5353,6 +5353,7 @@ often regardless of the smearing type.
 This error happens when we try to do an eigenvalue self-consistent calculation,
 and \shortcode{epsilon} finds the DFT energies given in \shortcode{eqp.dat} 
 are different from the energies in \shortcode{WFN}.
+
 This sometimes is a technical problem 
 (the Rydberg energy definitions used in QuantumESPRESSO and BerkeleyGW are slightly different),
 and can be solved by increasing \shortcode{TOL_eqp} in the source code of BerkeleyGW.
@@ -5360,6 +5361,21 @@ The error may also be reported
 when the DFT energies in \shortcode{eqp.dat} are mistakenly changed
 (we should only change the column corresponding to the corrected energy).
 
+A $\vb*{k}$-point appearing in \shortcode{eqp.dat} twice can also cause the problem.
+In the \shortcode{eqpcor} subroutine,
+once the difference between the DFT energy in \shortcode{eqp.dat}
+is verified to be the same as the DFT energy \shortcode{WFN}
+at given $n$ and $\vb*{k}$,
+the $GW$ corrected value in \shortcode{eqp.dat} 
+is assigned to the array element  \shortcode{eqp(ib,kk,is)}
+recording the DFT energy from \shortcode{WFN} in the \shortcode{eqpcor} routine 
+at $n, \vb*{k}$.
+Now if the same $\vb*{k}$-point appears in \shortcode{eqp.dat} again, 
+when comparing the DFT energy in \shortcode{eqp.dat} 
+and the DFT energy in \shortcode{WFN} -- represented by \shortcode{eqp(ib,kk,is)} -- 
+we are actually comparing the DFT energy and the $GW$ energy,
+which are obviously not close to each other. 
+And the error occurs.
 
 \subsection{\shortcode{ERROR: occupations (ifmax field) inconsistent between WFN and WFNq files.}}
 
