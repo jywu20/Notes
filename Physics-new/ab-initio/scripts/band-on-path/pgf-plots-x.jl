@@ -18,7 +18,9 @@ Create a PGFPlotsX band plot withoutcolormap on each band.
 function pgf_band_plot(nkp, kpoint_positions, 
     kpoint_labels, ε_min, ε_max; 
     background_fill = colorant"white",
-    ylabel = L"$\xi_{\mathbf{k}}$ / eV")
+    ylabel = L"$\xi_{\mathbf{k}}$ / eV",
+    show_vertical_lines = true)
+
     band_axis = @pgf Axis({
         ylabel = ylabel,
         xmin = kpoint_positions[1],
@@ -47,7 +49,9 @@ function pgf_band_plot(nkp, kpoint_positions,
                 [ε_min, ε_max]
             )
         )
-        push!(band_axis, vertical_line)
+        if show_vertical_lines
+            push!(band_axis, vertical_line)
+        end
     end
     
     band_axis 
