@@ -164,6 +164,12 @@
 \newcommand*{\mueg}{\mu_{\text{eg}}}
 \newcommand*{\muge}{\mu_{\text{ge}}}
 \newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
 
 \title{Homework 2}
 \author{Jinyuan Wu}
@@ -299,7 +305,8 @@ Since
 \begin{equation}
     E = \frac{1}{2} E_{z0} (\ee^{\ii \omega t} + \ee^{- \ii \omega t}),
 \end{equation}
-the frequency-domain response function from $E$ to $\mu$ is 
+by looking at $\ee^{- \ii \omega t}$ components,
+we find the frequency-domain response function from $E$ to $\mu$ is 
 \begin{equation}
     \begin{aligned}
         \alpha(\omega) &= \frac{\abs*{\mu_{\text{eg}}}^2}{\hbar} \left(
@@ -357,8 +364,9 @@ and therefore power of energy loss is
     \end{aligned}
 \end{equation}
 We need to ignore the high oscillation terms, 
-just as what we did for the harmonic oscillator,
-so 
+because they are sine waves and have zero expectation;
+this is the same as what we did for the harmonic oscillator.
+So 
 \begin{equation}
     \expval{P_{\text{abs}}} = \frac{1}{2} \Gammae \omegaeg \frac{\abs*{\mueg}^2 E_{0z}^2}{\hbar}
     \left(
@@ -474,7 +482,138 @@ the interaction Hamiltonian between it and the electromagnetic field in vacuum i
 \begin{equation}
     H_{\text{dipole}} = - \vb*{\mu} \cdot \vb*{E}.
 \end{equation}
-When the direction of $\vb*{\mu}$ is known to be $\vu*{z}$,
+The electric field, as a quantum operator, is 
+\begin{equation}
+    \vb*{E}(\vb*{r}) = \sum_{\vb*{k}, \sigma}
+    \sqrt{\frac{\hbar \omega_{\vb*{k}}}{2 \epsilon_0 V}}
+    \vu*{\vb*{k} \epsilon}_\sigma \ee^{\ii \vb*{k} \cdot \vb*{r}} a_{\vb*{k} \sigma} 
+    + \text{h.c.}
+\end{equation}
+The term in $H_{\text{dipole}}$ that are relevant to 
+the excited state-to-ground state transition is  
+\begin{equation}
+    \mel**{\text{g}, n_{\vb*{k} \sigma} = 1}{H_{\text{dipole}}}{\text{e}, 0}
+    = - \sqrt{\frac{\hbar \omega_{\vb*{k}}}{2 \epsilon_0 V}} 
+    \muge \ee^{\ii \vb*{k} \cdot \vb*{r}} \cos \theta_{\vb*{k} \sigma}.
+\end{equation}
+By Fermi's golden rule, the spontaneous decay rate is 
+\begin{equation}
+    \begin{aligned}
+        \Gamma_{\text{e} \to \text{g}} &= 
+        \frac{2\pi}{\hbar} \sum_{\vb*{k}, \sigma} 
+        \abs*{
+            \mel**{\text{g}, n_{\vb*{k} \sigma} = 1}{H_{\text{dipole}}}{\text{e}, 0}
+        }^2
+        \delta(\hbar \omegae - \hbar \omegag - \hbar \omega_{\vb*{k} \sigma}) \\
+        &= \frac{2\pi}{\hbar^2} \frac{\hbar}{2 \epsilon_0 V}  \abs*{\mueg}^2 
+        \sum_{\vb*{k}, \sigma} \omega_{\vb*{k}}
+        \cos^2 \theta_{\vb*{k} \sigma} 
+        \delta(\omegaeg - \omega_{\vb*{k} \sigma}) \\
+        &= \frac{2\pi}{\hbar^2} \frac{\hbar}{2 \epsilon_0 V} \abs*{\mueg}^2 
+        \cdot V \int \dd{\omega} \omega D(\omega) \int \frac{\dd{\Omega}}{4\pi} 
+        \omega  \cos^2 \theta
+        \delta(\omegaeg - \omega)  \\
+        &= \frac{2\pi}{\hbar^2} \frac{\hbar}{2 \epsilon_0 V} \abs*{\mueg}^2 
+        \cdot V \cdot \omegaeg D(\omegaeg) \cdot \frac{1}{3} ,
+    \end{aligned}
+\end{equation}
+where we have decomposed the $\vb*{k}$ dependence 
+of the transition matrix element 
+into dependence on $\omega$ and on $\vu*{k}$,
+and by averaging over the latter, 
+the $\cos^2 \theta_{\vb*{k} \sigma}$  factor evaluates to $1/3$.
+The density of state $D(\omega)$ contains a factor of $2$ 
+because of polarization degeneracy;
+for a single polarization the DOS in three-dimensional space is 
+\begin{equation}
+    D_{\text{single polarization}} = \frac{\omega^2}{2 \pi^2 c^3},
+\end{equation}
+so finally we have 
+\begin{equation}
+    \Gamma_{\text{e} \to \text{g}} = \frac{
+        \omegaeg^3 \abs*{\mueg}^2
+    }{
+        3 \pi \hbar \epsilon_0 c^3
+    }.
+\end{equation}
+
+\paragraph{(b)} When the state of the atom is 
+\begin{equation}
+    \ket*{\psi} = \coeffg \ketg + \coeffe \kete
+\end{equation}
+at $t = 0$, the time-dependent wave function is 
+\begin{equation}
+    \ket*{\psi(t)} = \coeffe \ee^{- \ii \omegae t} \kete 
+    + \coeffg \ee^{- \ii \omegag t} \ketg.
+\end{equation}
+Since the dipole operator only has non-zero matrix element 
+between $\ketg$ and $\kete$,
 we have 
+\begin{equation}
+    \expval{\vb*{\mu}}(t) = (\coeffe^* \coeffg \mueg \ee^{\ii \omegaeg t}
+    + \coeffg^* \coeffe \muge \ee^{- \ii \omegaeg t}) \vu*{z}.
+    \label{eq:dipole-expectation-superposition}
+\end{equation}
+
+\paragraph{(c)} From classical electrodynamics 
+(calculating $\vb*{E}$ and $\vb*{B}$ from 
+the retarded potential radiated by a constantly oscillating dipole),
+we have 
+\begin{equation}
+    P_{\text{rad}} = \frac{\mu_0 \omega^4 \abs*{\mu}^2}{12 \pi c},
+\end{equation}
+where the dipole, in the phasor form, is 
+\begin{equation}
+    \tilde{\vb*{\mu}} = \mu \ee^{- \ii \omega t} \vu*{z}.
+\end{equation}
+Applying this to \eqref{eq:dipole-expectation-superposition},
+whose phasor form is 
+\begin{equation}
+    \tilde{\expval{\vb*{\mu}}}(t) =
+    2 \coeffg^* \coeffe \muge \ee^{- \ii \omegaeg t}  \vu*{z},
+\end{equation}
+we find the radiation power of the atom -- 
+if we assume its radiation somehow can be captured by classical electrodynamics --
+is 
+\begin{equation}
+    P_{\text{rad}} = \frac{\mu_0 \omegaeg^4 }{3 \pi c} 
+    \abs*{\coeffg}^2 \abs*{\coeffe}^2 \abs*{\mueg}^2
+    = \frac{\mu_0 \omegaeg^4 }{3 \pi c} 
+    \pope \popg \abs*{\mueg}^2
+    = \frac{\omegaeg^4 }{3 \pi \epsilon_0 c^3} 
+    \pope \popg \abs*{\mueg}^2 .
+    \label{eq:superposition-state-classical-power-loss}
+\end{equation} 
+
+\paragraph{(d)} \eqref{eq:superposition-state-classical-power-loss} 
+naturally leads to the following rate equation:
+\begin{equation}
+    \dv{E}{t} = - P_{\text{rad}}, 
+\end{equation}
+where 
+\begin{equation}
+    E = \hbar \omegae \pope + \hbar \omegaeg \popg, \quad 
+    \pope + \popg = 1.
+\end{equation}
+The rate equation concerning $\pope$ is therefore 
+\begin{equation}
+    \dv{\pope}{t} = - \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \pope \underbrace{
+        (1 - \pope)
+    }_{\popg}.
+\end{equation}
+
+\paragraph{(e)} When $\pope \simeq 1$ and $\popg \ll 1$, 
+and we work in a period of time that's much smaller than the decay time
+(so that the condition that the atom is most likely 
+to be in the excited state is always true),
+from the rate equation, the decay rate is 
+\begin{equation}
+    \Gamma_{\text{e} \to \text{g}}
+    = \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \popg.
+\end{equation}
+
+\section{Oscillator sum rules}
+
+
 
 \end{document}
