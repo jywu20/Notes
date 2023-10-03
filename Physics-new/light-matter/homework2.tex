@@ -155,6 +155,16 @@
 \newcommand{\Dfreq}{\tilde{\vb*{D}}}
 \newcommand{\Pfreq}{\tilde{\vb*{P}}}
 
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+
 \title{Homework 2}
 \author{Jinyuan Wu}
 
@@ -174,17 +184,17 @@ For a plane wave external electric field whose phasor is
 \end{equation}
 the response of $x$, in the form of phasor, is 
 \begin{equation}
-    \tilde{x} = \frac{\tilde{E}}{- \omega^2 + \omega_0^2 - \ii \gamma \omega},
+    \tilde{x} = \frac{q}{m} \frac{\tilde{E}}{- \omega^2 + \omega_0^2 - \ii \gamma \omega},
 \end{equation}
 and therefore 
 \begin{equation}
-    \tilde{\dot{x}} = - \ii \omega \frac{\tilde{E}}{- \omega^2 + \omega_0^2 - \ii \gamma \omega},
+    \tilde{\dot{x}} = - \ii \omega \frac{q}{m} \frac{\tilde{E}}{- \omega^2 + \omega_0^2 - \ii \gamma \omega},
 \end{equation}
 and the time average power of dissipation is 
 \begin{equation}
     \expval{P_\text{abs}} = \expval{F_\text{dissipation} \cdot v} 
-    = - \gamma \expval{v \cdot v} = \gamma \cdot \frac{1}{2} \Re \tilde{\dot{x}}^* \cdot \tilde{\dot{x}}
-    = - \frac{\gamma}{2} \frac{\omega^2 \abs*{\tilde{E}_0}^2}{
+    = - \gamma \expval{v \cdot v} = - \gamma \cdot \frac{1}{2} \Re \tilde{\dot{x}}^* \cdot \tilde{\dot{x}}
+    = - \frac{\gamma q^2}{2 m^2} \frac{\omega^2 \abs*{\tilde{E}_0}^2}{
         (\omega^2 - \omega_0^2)^2 + \gamma^2 \omega^2
     }.
 \end{equation}
@@ -205,6 +215,266 @@ and the time average power of dissipation is
 The absorption coefficient can then be found 
 by multiplying the number density to $\sigma_{\text{abs}}$.
 
-\paragraph{(c)} Now consider a quantum 
+\paragraph{(c)} Now consider a quantum two-level system described by 
+\begin{equation}
+    H = H_0 + H_{\text{dipole}}, \quad 
+    H_0 = \hbar \omegag \dyad{\text{g}}
+    + \hbar \omegae \dyad{\text{e}} , \quad 
+\end{equation}
+where
+\begin{equation}
+    H_{\text{dipole}} = - \vb*{\mu} \cdot \vb*{E} 
+    = - \mu_{\text{eg}} \dyad{\text{e}}{\text{g}} E_{z0} \cos \omega t - \text{h.c.},
+\end{equation}
+and the $z$ direction is set to the direction of $\vb*{\mu}_{\text{eg}}$.
+We start from the ground state in the $t \to - \infty$ limit, 
+and the first order perturbation is 
+\begin{equation}
+    \ket*{\psi(t)} = \ket*{\text{g}} \ee^{- \ii \omegag t} 
+    + \gamma^{(1)}_{\text{g}} \ket*{\text{g}} \ee^{- \ii \omegag t} 
+    + \gamma^{(1)}_{\text{e}} \ket*{\text{e}} \ee^{- \ii \omegae t} ,
+    \label{eq:first-pt-wave-function}
+\end{equation}
+where 
+\begin{equation}
+    \dv{\gamma^{(1)}_{\text{g}}}{t} = \frac{1}{\ii \hbar} \gamma^{(0)}_{\text{g}} \cdot \expval*{H_{\text{dipole}}}{\text{g}} = 0
+\end{equation}
+because dipole transition is only allowed between states with different parities, and 
+\begin{equation}
+    \begin{aligned}
+        &\dv{\gamma_\text{e}^{(1)}}{t} = \frac{1}{\ii \hbar} 
+        \gamma_{\text{g}}^{(0)} \ee^{\ii (\omegae - \omegag) t} 
+        \cdot (- \mu_{\text{eg}} E_{z0} \cos \omega t ) \\
+        \Rightarrow & 
+        \gamma^{(1)}_{\text{e}}(t) - \underbrace{
+            \Gammae^{(1)}(t=0)
+        }_{0} = \ii \frac{\mu_{\text{eg}} E_{z0}}{\hbar} 
+        \int_{- \infty}^{t} \dd{t'} \ee^{\ii (\omegae - \omegag) t}  \cos \omega t  .
+    \end{aligned}
+\end{equation}
+Adding a small imaginary part to $\omegae$ because of spontaneous emission:
+\begin{equation}
+    \omegae \to \omegae - \ii \Gammae,
+\end{equation}
+and by completing this integral 
+and not throwing away the high-frequency term, 
+we get 
+\begin{equation}
+    \gamma^{(1)}_{\text{e}} = \ii \frac{\mu_{\text{eg}} E_{z0}}{\hbar} 
+    \cdot \frac{1}{2} \left(
+        \frac{\ee^{\ii (\omegaeg - \ii \Gammae + \omega) t}}{
+            \ii (\omegaeg + \omega - \ii \Gammae)
+        } + 
+        \frac{\ee^{\ii (\omegaeg - \ii \Gammae - \omega) t}}{
+            \ii (\omegaeg - \omega - \ii \Gammae)
+        }
+    \right), \quad 
+    \omegaeg = \omegae - \omegag.
+\end{equation}
+Here we have thrown away the terms at $t = - \infty$ 
+because when $t \to -\infty$, $\ee^{\Gammae t}$ vanishes.
+$\Gammae^{(1)}$ now explodes when $t \to \infty$
+but this doesn't matter because we still need to multiply 
+$\ee^{- \ii (\omegae - \ii \Gammae) t}$ to it
+because $\omegae$ in \eqref{eq:first-pt-wave-function}
+also needs to be modified by the spontaneous emission rate.
+The expectation value of the dipole is 
+\begin{equation}
+    \begin{aligned}
+        \expval*{\mu}(t) &= \expval*{\mu}{\psi(t)}
+        = \Gammae^{(1)}
+        \ee^{- \ii (\omegaeg - \ii \Gammae) t} \mu_{\text{ge}} + \text{h.c.} \\ 
+        &= \frac{\abs*{\mu_{\text{eg}}}^2 E_{0z}}{\hbar} \cdot \frac{1}{2} \left(
+            \frac{\ee^{\ii \omega t}}{\omegaeg + \omega - \ii \Gammae}
+            + \frac{\ee^{- \ii \omega t}}{\omegaeg - \omega - \ii \Gammae}
+            + \frac{\ee^{- \ii \omega t}}{\omegaeg + \omega + \ii \Gammae}
+            + \frac{\ee^{\ii \omega t}}{\omegaeg - \omega + \ii \Gammae}
+        \right).
+    \end{aligned}
+\end{equation}
+Here is a subtlety: in the above calculation, $\bra*{\psi(t)}$ is calculated using $H_0^\dagger$,
+because strictly speaking, here we are working with a non-Hermitian system 
+because of the $- \ii \Gammae$ correction.
+Since 
+\begin{equation}
+    E = \frac{1}{2} E_{z0} (\ee^{\ii \omega t} + \ee^{- \ii \omega t}),
+\end{equation}
+the frequency-domain response function from $E$ to $\mu$ is 
+\begin{equation}
+    \begin{aligned}
+        \alpha(\omega) &= \frac{\abs*{\mu_{\text{eg}}}^2}{\hbar} \left(
+            \frac{1}{\omegaeg - \omega - \ii \Gammae}
+            + \frac{1}{\omegaeg + \omega + \ii \Gammae}
+        \right) \\
+        &\approx \frac{\abs*{\mu_{\text{eg}}}^2}{\hbar} \cdot 
+        \frac{2\omegaeg}{
+            \omegaeg^2 - \omega^2 - 2 \ii \Gammae \omega
+        }.
+    \end{aligned} 
+    \label{eq:alpha-two-level}
+\end{equation}
+In the last line we have used the $\Gammae \ll \omegae - \omegag$ condition.
+
+\paragraph{(d)} The prefactor in \eqref{eq:alpha-two-level} differs from that 
+in the susceptibility of a harmonic oscillator, 
+and hence the necessity of the $f_i$ factor.
+But the structure of the denominator is the same:
+we have 
+\begin{equation}
+    \omega_0 = \omegaeg , \quad 
+    \gamma = 2 \Gammae.
+\end{equation}
+
+\paragraph{(e)} We need to calculate energy loss due to spontaneous emission.
+Since 
+\begin{equation}
+    \abs*{\gamma_{\text{e}}^{(1)}}^2 \propto \ee^{- 2 \ii \Gammae t},
+\end{equation}
+we find that in time period $\dd{t}$ the probability of spontaneous emission is $2 \Gammae \dd{t}$,
+and therefore power of energy loss is 
+\begin{equation}
+    \begin{aligned}
+        P_{\text{abs}} &=  2 \Gammae \cdot \hbar (\omegae - \omegag) 
+        \braket{\ptwfc{\text{e}}{1}}{\ptwfc{\text{e}}{1}}  \\
+        &= 2 \Gammae \cdot \hbar \omegaeg \cdot 
+        \frac{\abs*{\mu_{\text{eg}}}^2 E_{z0}^2}{\hbar^2} 
+        \cdot \frac{1}{2} \left(
+            \frac{\ee^{\ii (\omegaeg - \ii \Gammae + \omega) t}}{
+                \omegaeg + \omega - \ii \Gammae
+            } + 
+            \frac{\ee^{\ii (\omegaeg - \ii \Gammae - \omega) t}}{
+                \omegaeg - \omega - \ii \Gammae
+            }
+        \right) \cdot 
+        \frac{1}{2} \left(
+            \frac{\ee^{- \ii (\omegaeg - \ii \Gammae + \omega) t}}{
+                \omegaeg + \omega + \ii \Gammae
+            } + 
+            \frac{- \ee^{\ii (\omegaeg - \ii \Gammae - \omega) t}}{
+                \omegaeg - \omega + \ii \Gammae
+            }
+        \right).
+    \end{aligned}
+\end{equation}
+We need to ignore the high oscillation terms, 
+just as what we did for the harmonic oscillator,
+so 
+\begin{equation}
+    \expval{P_{\text{abs}}} = \frac{1}{2} \Gammae \omegaeg \frac{\abs*{\mueg}^2 E_{0z}^2}{\hbar}
+    \left(
+        \frac{1}{(\omegaeg + \omega)^2 + \Gammae^2} + 
+        \frac{1}{(\omegaeg - \omega)^2 + \Gammae^2}
+    \right).
+\end{equation}
+The absorption cross section then is 
+\begin{equation}
+    \sigma_{\text{abs}} = \frac{\expval{P_{\text{abs}}}}{
+        \underbrace{\expval{S}}_{
+            \frac{1}{2} \epsilon_0 c E_{0z}^2
+        }
+    }
+    =  \frac{\abs*{\mueg}^2 \Gammae \omegaeg}{\hbar \epsilon_0 c}
+    \left(
+        \frac{1}{(\omegaeg + \omega)^2 + \Gammae^2} + 
+        \frac{1}{(\omegaeg - \omega)^2 + \Gammae^2}
+    \right).
+\end{equation}
+
+\paragraph{(f)} Now we consider the same system but the initial state is the excited state.
+Correspondingly, the imaginary part of the energy now comes to the ground state, 
+which denotes the probability for the atom to be brought to the excited state due to external pumping.
+Repeating the above procedure but this time 
+replacing $\omegag$ with $\omegag - \ii \Gammag$,
+we have 
+\begin{equation}
+    \begin{aligned}
+        \gamma_{\text{g}}^{(1)}(t) &= 
+        \ii \frac{\muge \Ezzero}{\hbar} \cdot \frac{1}{2} \left(
+            \frac{
+                \ee^{- \ii (\omegaeg + \ii \Gammag + \omega) t}
+            }{
+                - \omegaeg - \omega - \ii \Gammag
+            } + 
+            \frac{
+                \ee^{\ii (- \omegaeg - \ii \Gammag + \omega) t}
+            }{
+                - \omegaeg + \omega - \ii \Gammag
+            }   
+        \right),
+    \end{aligned}
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \alpha(\omega) &= \frac{\abs*{\mueg}^2}{\hbar^2} \left(
+            \frac{1}{- \omegaeg - \omega - \ii \Gammag}
+            + \frac{1}{- \omegaeg + \omega + \ii \Gammag}
+        \right) \\
+        &\approx \frac{\abs*{\mueg}^2}{\hbar^2} \frac{- 2 \omegaeg}{
+            \omegaeg^2 - \omega^2 - 2 \ii \Gammag \omega
+        } .
+    \end{aligned}
+\end{equation}
+This can be obtained by swapping $\ket*{\text{e}}$ and $\ket*{\text{g}}$ in \eqref{eq:alpha-two-level}.
+
+\paragraph{(g)} Again by swapping the two energy levels, we have 
+\begin{equation}
+    \expval{P_{\text{abs}}} = 
+    - \frac{1}{2} \Gammag \omegaeg \frac{\abs*{\mueg}^2 E_{0z}^2}{\hbar}
+    \left(
+        \frac{1}{(\omegaeg + \omega)^2 + \Gammag^2} + 
+        \frac{1}{(\omegaeg - \omega)^2 + \Gammag^2}
+    \right).
+\end{equation}
+The absorption power is negative, 
+because the system is gaining energy, not losing it.
+The stimulated emission cross section then is 
+\begin{equation}
+    \sigma_{\text{st}} = - \frac{\abs*{\mueg}^2 \Gammag \omegaeg}{\hbar \epsilon_0 c}
+    \left(
+        \frac{1}{(\omegaeg + \omega)^2 + \Gammae^2} + 
+        \frac{1}{(\omegaeg - \omega)^2 + \Gammae^2}
+    \right).
+\end{equation}
+
+\paragraph{(h)} Suppose we have a dilute gas containing $N$ atoms per unit volume,
+and the excited and ground state populations are 
+$N_{\text{e}} = N p_{\text{e}}$ and 
+$N_{\text{g}} = N p_{\text{g}}$.
+Since the gas is dilute, we don't need to analyze the interferences of 
+the $\Gammag$ and $\Gammae$ processes, 
+and we have 
+\begin{equation}
+    \begin{aligned}
+        \chi(\omega) &= N_{\text{g}} \alpha_{\text{abs}}(\omega)
+        + N_{\text{e}} \alpha_{\text{st}}(\omega) \\
+        &= N \frac{\abs*{\mu_{\text{eg}}}^2}{\hbar} \cdot 
+        \left(
+            p_{\text{g}} \frac{2\omegaeg}{
+                \omegaeg^2 - \omega^2 - 2 \ii \Gammae \omega
+            } 
+            - p_{\text{e}} \frac{ 2 \omegaeg}{
+                \omegaeg^2 - \omega^2 - 2 \ii \Gammag \omega
+            }
+        \right) .
+    \end{aligned}
+\end{equation}
+We want $\Im \chi < 0$ 
+to have a negative imaginary part in $\vb*{k}$,
+and therefore $\ee^{\ii \vb*{k} \cdot \vb*{r}}$ increases as the light goes forward.
+Assuming $\Gammag = \Gammae$, we find the condition needed is 
+\begin{equation}
+    p_{\text{e}} > p_{\text{g}}.
+\end{equation}
+
+\section{Spontaneous decay rate computed from Fermi's golden rule and Poynting's Theorem}
+
+\paragraph{(a)} For a two-level atom, 
+the interaction Hamiltonian between it and the electromagnetic field in vacuum is 
+\begin{equation}
+    H_{\text{dipole}} = - \vb*{\mu} \cdot \vb*{E}.
+\end{equation}
+When the direction of $\vb*{\mu}$ is known to be $\vu*{z}$,
+we have 
 
 \end{document}
