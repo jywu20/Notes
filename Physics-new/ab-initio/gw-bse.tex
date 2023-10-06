@@ -5513,7 +5513,29 @@ that is needed for calculating exchange''
 will be given,
 but the error still occurs.
 
+\subsection{\shortcode{IndexError: list index out of range}}
 
+This happens when running \shortcode{scGWtool.py}.
+When this happens in the 
+\shortcode{Reading sigma_hp files and constructing Hqp sub-space matrices } step,
+it's likely to be caused by missing lines in
+\shortcode{sigma_hp_row.log} and/or \shortcode{sigma_hp_col.log}.
+This could happen when we divide $\vb*{k}$ points into several jobs,
+and when concatenating \shortcode{sigma_hp_col}s generated, 
+accidentally delete some lines containing data.
+
+For example, \shortcode{readlines} in Julia 
+doesn't consider a final, empty line in a file to be a line
+(and that's self-consistent because 
+saying that there is a final, empty line at the end of a file 
+is equivalent to say that the final ends with \shortcode{\\n},
+which however should be regarded as a part of the second last line).
+But in ordinary text editors the final, empty line 
+is always displayed.
+Thus it's very easy to make mistakes when measuring the size 
+of the footer part of \shortcode{sigma_hp.log},
+and sometimes the last line of the last $\vb*{k}$-block in the file 
+is deleted, resulting in the error.
 
 \section{Trouble shooting in \shortcode{wannier90} and \shortcode{pw2wannier90}}
 

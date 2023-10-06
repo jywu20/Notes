@@ -150,9 +150,10 @@
 \newcommand*{\hethree}{$^3$He}
 \newcommand*{\hefour}{$^4$He}
 \newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
 \newcommand{\chie}{\chi_{\text{e}}}
-\newcommand{\Efreq}{\tilde{\vb*{E}}}
-\newcommand{\Dfreq}{\tilde{\vb*{D}}}
+\newcommand{\Efreq}{\tilde{E}}
+\newcommand{\Dfreq}{\tilde{D}}
 \newcommand{\Pfreq}{\tilde{\vb*{P}}}
 
 \newcommand*{\Gammae}{\Gamma_{\text{e}}}
@@ -178,6 +179,292 @@
 
 \maketitle
 
+\section{Group velocity in dissipative media}
+
+\subsection{Analysing a wave packet}
+
+\paragraph{(a)} The so-called situation of \concept{normal dispersion} 
+is when $\dv*{n}{\omega} > 0$, 
+i.e. when a beam of light that is more blue gets refracted more severely 
+than a beam of reddish light does.
+On the other hand, \concept{anomalous dispersion} happens when $\dv*{n}{\omega} < 0$.
+
+Since $v_{\text{p}} = c / n$,
+in normal dispersion, the red part of the spectrum moves faster, 
+while in anomalous dispersion, the blue part moves faster.
+
+\paragraph{(b)} Consider a wave packet which can be written in the following form:
+\begin{equation}
+    E(t) = \Re \bar{E}(t) \ee^{- \ii \omega t},
+\end{equation}
+where $\bar{E}(t)$ varies much more slowly than $\ee^{- \ii \omega t}$.
+The relation between the Fourier components and $\bar{E}(t)$ is given below:
+\begin{equation}
+    E(\omega') = \int \dd{t} \ee^{\ii \omega' t} E(t)
+    = \frac{1}{2} \int \dd{t} \ee^{\ii (\omega' - \omega) t} \bar{E}(t)
+    + \frac{1}{2} \int \dd{t} \ee^{\ii (\omega' + \omega) t} \bar{E}^*(t).
+\end{equation}
+The response of $D(t)$ to the electric field is therefore 
+\begin{equation}
+    \begin{aligned}
+        D(t) &= \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \epsilon(\omega') E(\omega') \\
+        &= \frac{1}{2} \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \epsilon(\omega') 
+        \int \dd{t'} \ee^{\ii (\omega' - \omega) t'} \bar{E}(t') + 
+        \frac{1}{2} \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \epsilon(\omega') 
+        \int \dd{t'} \ee^{\ii (\omega' + \omega) t'} \bar{E}^*(t').
+    \end{aligned}
+    \label{eq:e-to-d-1}
+\end{equation}
+
+We further assume that the dielectric constant is real and positive, 
+with a frequency dependence that varies slowly 
+compared with spectral band-width of the electric field,
+we can do the following Taylor expansion 
+in the two terms of \eqref{eq:e-to-d-1}:
+\begin{equation}
+    \begin{aligned}
+        &\quad \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \epsilon(\omega') 
+        \int \dd{t'} \ee^{\ii (\omega' - \omega) t'} \bar{E}(t') \\
+        &= \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} 
+        \int \dd{t'} \ee^{\ii (\omega' - \omega) t'} \bar{E}(t')  \left(
+            \epsilon(\omega) + 
+            (\omega' - \omega) \eval{\dv{\epsilon}{\omega'}}_{\omega = \omega}
+            + \cdots 
+        \right) \\
+        &= \epsilon(\omega) \ee^{- \ii \omega t} \bar{E}(t) 
+        + \frac{1}{\ii} \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \int \dd{t'} 
+        \eval{\dv{\epsilon}{\omega'}}_{\omega = \omega} \bar{E}(t') 
+        \dv{t'} \ee^{\ii (\omega' - \omega) t'} \\
+        &= \epsilon(\omega) \ee^{- \ii \omega t} \bar{E}(t) 
+        + \ii \int \frac{\dd{\omega'}}{2\pi} \ee^{- \ii \omega' t} \int \dd{t'} 
+        \eval{\dv{\epsilon}{\omega'}}_{\omega = \omega} 
+        \ee^{\ii (\omega' - \omega) t'}
+        \dv{t'} \bar{E}(t')  \\
+        &= \epsilon(\omega) \ee^{- \ii \omega t} \bar{E}(t) 
+        + \ii \pdv{\epsilon}{\omega} \ee^{- \ii \omega t} \pdv{\bar{E}}{t},
+    \end{aligned}
+    \label{eq:pdv-d-t-derivation}
+\end{equation}
+and by repeating the same procedure for the second term in \eqref{eq:e-to-d-1},
+we eventually find 
+\begin{equation}
+    D(t) = \Re \left(
+        \ee^{- \ii \omega t} \epsilon(\omega) \bar{E}(t) 
+        + \ii \ee^{- \ii \omega t} \pdv{\epsilon}{\omega}  \pdv{\bar{E}}{t}
+    \right).
+    \label{eq:d-final}
+\end{equation}
+
+\paragraph{(c)} From \eqref{eq:d-final} we have 
+\begin{equation}
+    \pdv{D}{t} = \Re \left(
+        - \ii \omega \epsilon(\omega) \ee^{- \ii \omega t} \bar{E}(t)
+        + \ee^{- \ii \omega t} \epsilon(\omega) \pdv{\bar{E}}{t} 
+        + \omega \pdv{\epsilon}{\omega} \pdv{\bar{E}}{t} \ee^{- \ii \omega t} 
+    \right) ,
+\end{equation}
+where we have used the condition that $\bar{E}(t)$ changes slowly enough
+and therefore ignored the $\pdv*[2]{\bar{E}}{t}$ term.
+By doing time averaging in a region that's large enough compared with $1 / \omega$ 
+but is still small compared with the characteristic time scale of $\bar{E}(t)$,
+we find 
+\begin{equation}
+    \begin{aligned}
+        \pdv{u_E}{t} = E \cdot \pdv{D}{t} \Rightarrow
+        \expval{\pdv{u_E}{t}} &= \frac{1}{2} \Re \tilde{E}^* \cdot \widetilde{\pdv{D}{t}} \\
+        &= \frac{1}{2} \Re \bar{E}^*(t) \cdot 
+        \left(
+            \epsilon(\omega) \pdv{\bar{E}}{t} 
+            + \omega \pdv{\epsilon}{\omega} \pdv{\bar{E}}{t} 
+        \right) \\
+        &= \frac{1}{2} \pdv{(\omega \epsilon)}{\omega}
+        \cdot \frac{1}{2} \left(
+            \bar{E}^*(t) \cdot \pdv{E}{t} 
+            + \bar{E} \cdot \pdv{E^*}{t}
+        \right)  \\
+        &= \frac{1}{4} \pdv{(\omega \epsilon)}{\omega} \pdv{t} \abs{\bar{E}}^2.
+    \end{aligned}
+\end{equation}
+So we have found 
+\begin{equation}
+    \expval{\pdv{u_E}{t}} = \frac{1}{4} \pdv{(\omega \epsilon)}{\omega} \pdv{t} \abs{\bar{E}}^2
+    = \frac{1}{4} \left(
+        \epsilon(\omega) + \omega \pdv{\epsilon}{\omega}
+    \right) \pdv{t} \abs{\bar{E}}^2.
+\end{equation}
+
+\paragraph{(d)} Considering the mathematical equivalences between 
+$\vb*{D}$ and $\vb*{B}$ and between $\vb*{E}$ and $\vb*{H}$ in the equations, 
+we immediately find 
+\begin{equation}
+    \expval{\pdv{u_M}{t}} = \expval{H \cdot \pdv{B}{t}} 
+    = \frac{1}{4} \left(
+        \mu(\omega) + \omega \pdv{\mu}{\omega}
+    \right) \pdv{t} \abs{\bar{H}}^2.
+\end{equation}
+Similar to \eqref{eq:d-final}, we also have 
+\begin{equation}
+    B(t) = \Re \left(
+        \ee^{- \ii \omega t} \mu(\omega) \bar{H}(t) 
+        + \ii \ee^{- \ii \omega t} \pdv{\mu}{\omega} \pdv{\bar{H}}{t}
+    \right).
+\end{equation}
+Now we find that due to the imaginary unit in the second term, 
+the contribution of $\pdv*{\mu}{\omega}$ to $\abs*{\bar{B}}^2$
+is $\sim (\pdv*{\mu}{\omega})^2$,
+and thus from the condition that the permeability changes very slowly
+in the band width of the wave packet, approximately we have 
+\begin{equation}
+    \abs*{\bar{H}(t)}^2 = \frac{1}{\mu(\omega)} \abs*{\bar{B}(t)}^2.
+\end{equation} 
+Similarly, from 
+\begin{equation}
+    \curl{\vb*{E}} = - \pdv{\vb*{B}}{t} 
+    = - \Re \left(
+        \pdv{\bar{\vb*{B}}}{t} \ee^{- \ii \omega t} 
+        - \ii \omega \bar{\vb*{B}}(t) \ee^{- \ii \omega t}
+    \right)
+\end{equation}
+and the fact that $\bar{B}(t)$ changes very slowly, approximately we have 
+\begin{equation}
+    \abs*{\bar{E}(t)}^2 = \frac{\omega^2}{k^2} \abs*{\bar{B}}^2
+    = \frac{1}{\epsilon \mu}  \abs*{\bar{B}}^2.
+\end{equation}
+So we find 
+\begin{equation}
+    \begin{aligned}
+        \expval{\pdv{u_M}{t}} 
+        &= \frac{1}{4} \left(
+            \mu(\omega) + \omega \pdv{\mu}{\omega}
+        \right) \pdv{t} \abs{\bar{H}}^2 \\
+        &= \frac{1}{4} \frac{\epsilon}{\mu} \left(
+            \mu(\omega) + \omega \pdv{\mu}{\omega}
+        \right) \pdv{t} \abs*{\bar{E}}^2 \\
+        &= \frac{1}{4} \left(
+            \epsilon(\omega) + \frac{\omega \epsilon}{\mu} \pdv{\mu}{\omega}
+        \right) \pdv{t} \abs*{\bar{E}}^2 \\
+        &= \frac{1}{4} \epsilon_0 \left(
+            \epsr(\omega) + \frac{\omega \epsr}{\mur} \pdv{\mur}{\omega}
+        \right) \pdv{t} \abs*{\bar{E}}^2 
+    \end{aligned}
+\end{equation}
+
+\paragraph{(e)} Assuming no magnetic susceptibility,
+we have 
+\begin{equation}
+    \expval{\pdv{u}{t}} = \expval{\pdv{u_E}{t}} + \expval{\pdv{u_M}{t}}
+    = \frac{1}{4} \left(
+        2 \epsilon(\omega) + \omega \pdv{\epsilon}{\omega}
+    \right) \pdv{t} \abs{\bar{E}}^2.
+\end{equation}
+Thus we have 
+\begin{equation}
+    \expval{u} = \frac{1}{4} \left(
+        2 \epsilon(\omega) + \omega \pdv{\epsilon}{\omega}
+    \right) \abs{\bar{E}}^2.
+\end{equation}
+There are high oscillation terms in $u$ 
+(which can be seen by considering the simplest case of $\bar{E} = \const$),
+and they have large time derivations, 
+but their all average to zero,
+and thus we still have 
+\begin{equation}
+    \pdv{t}\expval{u} \approx \expval{\pdv{u}{t}}.
+\end{equation}
+Deep inside the wave packet (i.e. far from the boundaries), 
+we shouldn't see huge change of $\bar{E}$,
+and thus the expectation value of the Poynting vector 
+can be evaluated as if the wave packet is a plane wave:
+\begin{equation}
+    \abs*{\expval{\vb*{S}}}  = \frac{1}{2} \sqrt{\frac{\epsilon}{\mu_0}} \abs*{\bar{E}(t)}^2.
+\end{equation}
+So the group velocity is 
+\begin{equation}
+    v_{\text{g}} = \frac{\abs*{\expval{\vb*{S}}}}{\expval{u}}
+    = \frac{
+        \frac{1}{2} \sqrt{\frac{\epsilon}{\mu_0}}
+    }{
+        \frac{1}{4} \left(
+        2 \epsilon(\omega) + \omega \pdv{\epsilon}{\omega}
+        \right)
+    }
+    = \frac{1}{\sqrt{\mu_0}} \frac{1}{
+        \sqrt{\epsilon} + \frac{1}{2} \omega \sqrt{\epsilon} \pdv{\epsilon}{\omega}
+    }.
+\end{equation}
+On the other hand, we have 
+\begin{equation}
+    k = \frac{\omega}{c / n} = \omega \sqrt{\epsilon \mu_0} \Rightarrow
+    \pdv{k}{\omega} = \sqrt{\epsilon \mu_0} + \omega \sqrt{\mu_0} \frac{1}{2 \sqrt{\epsilon}} \pdv{\epsilon}{\omega}, 
+\end{equation}
+and therefore 
+\begin{equation}
+    v_{\text{g}} = \frac{1}{\pdv{k}{\omega}} = \pdv{\omega}{k}.
+\end{equation}
+
+\subsection{Energy storage and energy loss}
+
+\paragraph{(a)} When the ``wave packet'' is 
+
+\begin{equation}
+    H = \sum_i \Bigl(
+        \underbrace{
+            \frac{p_i^2}{2m}
+        }_{T_i} 
+        + \underbrace{
+            \frac{1}{2} m \omega_0^2 x_i^2
+        }_{V_i} 
+        - q x_i E
+    \Bigr) + H_{\text{EM}}.
+\end{equation}
+The response of any $x_i$ is 
+\begin{equation}
+    \tilde{x}_i = \frac{q \tilde{E}}{m(- \omega^2 + \omega_0^2)},
+\end{equation}
+and thus 
+\begin{equation}
+    T_i = \expval{\frac{p_i^2}{2m}}
+    = \frac{1}{2m} \cdot \frac{1}{2} \cdot  \abs{- \ii \omega m \tilde{x}}^2 
+    = \frac{1}{2} \frac{\omega^2 q^2 \abs*{\tilde{E}}^2}{
+        2 m (\omega^2 - \omega_0^2)^2
+    },
+\end{equation}
+and 
+\begin{equation}
+    V_i = \expval{\frac{1}{2} m \omega_0^2 x^2}
+    = \frac{1}{2} m \omega_0^2 \cdot \frac{1}{2} \cdot \abs*{\tilde{x}}^2 
+    = \frac{1}{2} \frac{\omega_0^2 q^2 \abs*{\tilde{E}}^2}{
+        2 m (\omega^2 - \omega_0^2)^2
+    },
+\end{equation}
+and 
+\begin{equation}
+    \expval{- q x_i E} = - \frac{q^2}{m (- \omega^2 + \omega_0^2)} \cdot \frac{1}{2} \abs*{\tilde{E}}^2.
+\end{equation}
+
+On the other hand, we have 
+\begin{equation}
+    \begin{aligned}
+        \dv{(\omega \epsr)}{\omega} &= 
+        1 + \frac{N q^2}{\epsilon_0 m} \frac{1}{- \omega^2 + \omega_0^2}
+        + \frac{N q^2}{\epsilon_0 m} \cdot \omega \cdot \frac{2 \omega}{(\omega^2 - \omega_0^2)^2} \\ 
+        &= 1 + \frac{Nq^2}{\epsilon_0 m} \frac{
+            \omega^2 + \omega_0^2
+        }{(\omega^2 - \omega_0^2)^2}. 
+    \end{aligned}
+\end{equation}
+Thus 
+\begin{equation}
+    \frac{1}{4} \epsilon_0 \dv{(\omega \epsr)}{\omega} \abs*{\tilde{E}}^2 
+    = \sum_i (\expval{T_i} + \expval{V_i}) + \underbrace{
+        \frac{1}{4} \epsilon_0 \abs*{\tilde{E}}^2
+    }_{\expval{u_E^{\text{vacuum}}}} .
+\end{equation}
+
+\todo{
+    Why is $- \vb*{P} \cdot \vb*{E}$ not included into $\int \dd{t} \vb*{E} \cdot \pdv*{\vb*{D}}{t}$?
+}
+
 \section{Polarizability, absorption cross-section, stimulated emission, and optical amplification}
 
 \paragraph{(a)} The EOM of a classical atom described by the Drude-Lorentz model is 
@@ -191,6 +478,7 @@ For a plane wave external electric field whose phasor is
 the response of $x$, in the form of phasor, is 
 \begin{equation}
     \tilde{x} = \frac{q}{m} \frac{\tilde{E}}{- \omega^2 + \omega_0^2 - \ii \gamma \omega},
+    \label{eq:x-e-relation}
 \end{equation}
 and therefore 
 \begin{equation}
@@ -535,6 +823,7 @@ so finally we have
     }{
         3 \pi \hbar \epsilon_0 c^3
     }.
+    \label{eq:fermi-golden-spontaneous-emission}
 \end{equation}
 
 \paragraph{(b)} When the state of the atom is 
@@ -592,28 +881,116 @@ naturally leads to the following rate equation:
 \end{equation}
 where 
 \begin{equation}
-    E = \hbar \omegae \pope + \hbar \omegaeg \popg, \quad 
+    E = \hbar \omegae \pope + \hbar \omegag \popg, \quad 
     \pope + \popg = 1.
 \end{equation}
-The rate equation concerning $\pope$ is therefore 
+The rate equation concerning $\popg$ is therefore 
 \begin{equation}
-    \dv{\pope}{t} = - \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \pope \underbrace{
-        (1 - \pope)
-    }_{\popg}.
+    \begin{aligned}
+        \hbar \omegae (- \dot{p}_{\text{g}}) + \hbar \omegag \dot{p}_{\text{g}}
+        &= - \frac{\omegaeg^4 }{3 \pi \epsilon_0 c^3} 
+        \underbrace{(1 - \popg)}_{\pope} \popg \abs*{\mueg}^2 \\
+        \Rightarrow 
+        \dv{\popg}{t} &= \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \popg \underbrace{
+            (1 - \popg)
+        }_{\pope}.
+    \end{aligned}
 \end{equation}
+
 
 \paragraph{(e)} When $\pope \simeq 1$ and $\popg \ll 1$, 
 and we work in a period of time that's much smaller than the decay time
 (so that the condition that the atom is most likely 
 to be in the excited state is always true),
-from the rate equation, the decay rate is 
+from the rate equation, the time evolution of $\popg$ is given by 
 \begin{equation}
-    \Gamma_{\text{e} \to \text{g}}
-    = \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \popg.
+    \begin{aligned}
+        \dv{\popg}{t} &\approx \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2 \popg  \\
+        \Rightarrow \Gamma_{\text{e} \to \text{g}}
+        &= \frac{\omegaeg^3}{3 \pi \epsilon_0 c^3} \abs*{\mueg}^2.
+    \end{aligned}
 \end{equation}
+If we work with the evolution of $\pope$ instead, 
+we have no transition rate at all, but this is due to 
+our fixing $\pope$ to $1$.
+The rate given here is the same as \eqref{eq:fermi-golden-spontaneous-emission}.
 
 \section{Oscillator sum rules}
 
+From \eqref{eq:x-e-relation} we have 
+\begin{equation}
+    \alpha_{\text{H.O.}} = \frac{q^2}{m} \frac{1}{- \omega^2 + \omega_0^2 - \ii \gamma \omega}.
+\end{equation}
+Comparing this with \eqref{eq:alpha-two-level}
+(and noting that $\omega_0$ in the former 
+is $\omegaeg$ in the latter 
+and not the ground state frequency in the discussion below), 
+we find the ``oscillator strength'' of the two-level system is 
+\begin{equation}
+    f_{\text{two-level}} =  \alpha_{\text{two-level}} / \alpha_{\text{H.O.}}
+    = \frac{\abs*{\mueg}^2}{\hbar} \cdot 2 \omegaeg \cdot \frac{m}{q^2}
+    = 2m \frac{\omegae - \omegag}{\hbar} \abs*{\mel**{\text{e}}{x}{\text{g}}}^2.
+\end{equation}
+Now consider a multi-level system,
+the oscillator strength of the ground state $\leftrightarrow$ excited state $\ket*{n}$ pair 
+is 
+\begin{equation}
+    f_{0, n} = 2m \frac{\omega_n - \omega_0}{\hbar} \abs*{\mel**{n}{x}{0}}^2.
+\end{equation}
+What we want to prove is 
+\begin{equation}
+    \sum_n f_{0, n} = \sum_n \frac{2m}{\hbar} (\omega_n - \omega_0) \abs*{\mel**{n}{x}{0}}^2 = 1.
+\end{equation}
 
+We start from 
+\begin{equation}
+    H = \frac{p^2}{2m} + V(x) \Rightarrow \comm*{x}{H} = \frac{\ii \hbar}{m} p,
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \ii \hbar &= \expval*{\comm*{x}{p}}{0} \\
+        &= \frac{m}{\ii \hbar} \expval*{\comm*{x}{\comm*{H}{x}}}{0} \\
+        &= \frac{m}{\ii \hbar} \expval*{
+            x^2 H - 2 xHx + H x^2
+        }{0} \\
+        &= \frac{m}{\ii \hbar} (
+            2 \hbar \omega_0 \expval*{x^2}{0} 
+            - 2 \expval*{x H x}{0}
+        ) ,
+    \end{aligned}
+\end{equation}
+where 
+\begin{equation}
+    \begin{aligned}
+        \expval*{x^2}{0} = \sum_{n} \mel**{0}{x}{n} \mel**{n}{x}{0} 
+        = \sum_n \abs*{\mel**{n}{x}{0}}^2,
+    \end{aligned}
+\end{equation}
+and 
+\begin{equation}
+    \begin{aligned}
+        \expval*{x H x}{0} &= \sum_{m, n} \mel**{0}{x}{m} \hbar \omega_n \delta_{mn} \mel**{n}{x}{0} \\
+        &= \sum_n \hbar \omega_n \abs*{\mel**{n}{x}{0}}^2.
+    \end{aligned}
+\end{equation}
+Thus 
+\begin{equation}
+    \begin{aligned}
+        &\quad \ii \hbar = \frac{2m}{\ii} \sum_n (\omega_0 - \omega_n) \abs*{\mel**{n}{x}{0}}^2 \\
+        &\Rightarrow \sum_n \frac{2m}{\hbar} (\omega_n - \omega_0) \abs*{\mel**{n}{x}{0}}^2 = 1.
+    \end{aligned}
+\end{equation}
+
+\section{Kramers-Kronig relations}
+
+\section{Waves and envelopes}
+
+\begin{equation}
+    a(x, t) = A(\epsilon x, \epsilon t) \alpha(x, t)
+\end{equation}
+\begin{equation}
+    c^2 \partial_x \alpha \partial_{\epsilon x} A - \partial_t \alpha \partial_{\epsilon t} A = 0.
+\end{equation}
 
 \end{document}
