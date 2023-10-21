@@ -1,0 +1,293 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[a4paper, oneside, 12pt]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, citecolor = purple, bookmarksnumbered]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Shorthands
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\newcommand{\deictictime}{T$_{\text{d}}$}
+\newcommand{\referredtime}{T$_{\text{r}}$}
+\newcommand{\orientationtime}{T$_{\text{o}}$}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tame}{long = {tense, aspect, mood, evidentiality}, short = TAME}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+\DeclareAcronym{coca}{long = Corpus of Contemporary American English, short = COCA}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+\newcommand{\category}[1]{\textsc{#1}}
+\newcommand{\formcat}[1]{\textsc{#1}}
+\newcommand{\emptymorpheme}{$\emptyset$}
+\newcommand*{\fromto}[2]{\langle {#1}, {#2} \rangle}
+
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand{\bibname}{References}
+\setcitestyle{aysep={}} 
+
+% List format
+\setlist[enumerate,1]{label=\alph*\upshape)}
+
+% Source of examples 
+\newcommand{\source}[1]{\hspace{\fill}\mbox{}\linebreak[0]\hspace*{\fill}\mbox{(\small #1)}}
+
+\title{Notes about Moloko}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\automath
+
+\maketitle
+
+\chapter{Noun phrase}
+
+Just like what is seen in English and many other languages,
+the Moloko noun phrase can be divided into two regions:
+the inner region containing the head noun 
+and modifiers which together with the head noun 
+describe a certain \emph{property} 
+(or, considering this, the constituents should be called \term{complements}, 
+not \term{modifiers}),
+and the outer region specifying the exact reference of the noun phrase.
+
+In Moloko both regions seem very restricted in complexity.
+the inner region consists of either one single noun or maybe a pronoun, 
+or the so-called permanent attribution construction 
+\citep[\citesec{5.4.2}]{friesen2017grammar},
+in which two nouns -- or one noun and one normalized clause -- 
+are placed together without any markers, 
+and the second noun indicates something about the identity 
+or some permanent attribute of the first noun.
+The two are regarded as a whole by any constructions in the external region.
+
+The external region either takes the form described by  
+\citet[\citepage{145}, \citefig{5.1}]{friesen2017grammar},
+where the ``head noun'' is to be understood as 
+the aforementioned internal region,
+or is a genitive construction \citep[\citesec{5.4.1}]{friesen2017grammar}.
+All constituents in the external region follow the internal region.
+The genitive construction is in conflict with all other constructions in the external region; 
+therefore if any external region modifier appears after the genitive marker \form{a},
+it has to modify the genitive noun, not the head noun
+\citep[\citepage{159}]{friesen2017grammar}.
+This is probably because the genitive noun phrase 
+is regarded as a big fused-function determiner 
+covering functions of all other modifiers in the external region.
+\todo{
+    Is the genitive NP also in conflict with the number clitic?
+}
+In the rest external field constructions, 
+the quantifier is in conflict with the numeral 
+or the derived adjective construction (see below),
+again possibly because the former is a fused-function construction, 
+which is assumed to automatically assign a specific reference to the noun phrase.
+
+The derived adjective construction is a very interesting construction.
+In the most general sense (as in \citet[\citefig{5.1}]{friesen2017grammar}),
+it includes any noun phrase with \form{ga} in the end.
+There are two usages of \form{ga}.
+One is for a sense of definiteness and emphasis \citep[\citesec{5.3.2}]{friesen2017grammar}.
+\todo{
+    Is this usage compatible with genitive or quantifier?
+}
+In the other usage, 
+another noun N_2 is placed before \form{ga} 
+and after all other external region constituents
+after the head noun N_1, 
+and the N_2 \form{ga} sequence becomes an adjective. 
+Only one such adjective position is allowed for each noun phrase; 
+my guess would be that this construction is the semantically drifted version of 
+the construction where \form{ga} 
+licenses a position for N_2 to express
+the is \translate{\emph{the} N_1 that has something to do with N_2}.
+This usage is the derived adjective construction in the narrow sense 
+\citep[\citepages{149-152}]{friesen2017grammar}.
+N_2 appears to be another noun phrase in some cases, 
+and ``the entire noun phrase is adjectivized''
+\citep[\citepage{151, (45)}]{friesen2017grammar}; 
+note however the \translate{monkeys and baboons} 
+noun phrase is actually a nominal predicate, 
+and it's likely that \form{ga} is merely emphasizing it, 
+not adjectivize it; 
+if in contemporary uses, \form{ga} \emph{can't} adjectivize 
+a noun phrase, then the problem of number agreement (see below) 
+is no longer a problem.
+
+The number of the noun phrase modifier before \form{ga} 
+should be consistent with the number of the head noun; 
+whether it is due to semantic reasons  
+(and can be violated in extreme conversation contexts),
+or is due to morphosyntactic reasons is not clear.
+The second explanation is 
+kind of subtle if noun phrases can be adjectivized, 
+but is still possible if the adjectivized noun phrase 
+actually is just a ``nominal'' in the sense of \citet{cgel}
+and needs to get its number feature from somewhere else; 
+but it's unable to explain why in \citet[\citepage{151, (45)}]{friesen2017grammar},
+the two branches in the \translate{monkeys and baboons} phrase are all in plural; 
+this doesn't look like agreement.
+But if we don't analyze this example as adjectivization, 
+then the morphological agreement theory has nothing problematic, 
+although the Moloko adjectivization construction is still somehow unusual 
+in that the adjective formed still automatically contains a determinative meaning, 
+and a noun phrase can't contain two adjectives -- 
+or more exactly, two adjectival-determiners.
+\todo{
+    Whether there are further examples of adjectivization of complex NP.
+}
+
+\bibliographystyle{plainnat}
+\bibliography{moloko.bib}
+
+\end{document}
