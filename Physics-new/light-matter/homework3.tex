@@ -1,0 +1,445 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{autobreak}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{electrodynamics.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\omegap}{\omega_{\text{p}}}    
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{E}}
+\newcommand{\Dfreq}{\tilde{D}}
+\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+
+\allowdisplaybreaks
+
+\title{Homework 3}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Two-photon absorption in a three-level system}
+
+In this problem, we use perturbation theory to investigate two-photon absorption within a three-level atom, with states $|a\rangle,|b\rangle$ and $|c\rangle$ with energy eigenvalues $E_a=\hbar \omega_a, E_b=\hbar \omega_b$, and $E_c=\hbar \omega_c$ such that $E_c>E_b>E_a$; here $|a\rangle$ and $|c\rangle$ are assumed to have even parity and $|b\rangle$ has odd parity. In the problem that follows, we drive this three-level atom with a monochromatic field $E(t)=E_o \cos (\omega t)$ producing an interaction of the form $H_{\text {int }}=-\hat{\mu} \cdot E(t)$, and we use time-dependent perturbation theory to find the evolution of our quantum state of the form $|\psi\rangle=\sum_n \gamma_n e^{-i \omega_n t}|n\rangle$.
+
+\paragraph*{(a)} \textit{
+    Assuming that our atom starts in the ground state (i.e. $\gamma_a^{(0)}=1$ ), use second-order perturbation theory to find $\gamma_c^{(2)}(t)$. Through these calculations, we will assume that states $|b\rangle$ and $|c\rangle$ have finite upper state lifetimes. To emulate population decay, be sure to include a phenomenological damping into your susceptibility by making the replacement $\omega_b \rightarrow \omega_b-i \Gamma_b$ and $\omega_c \rightarrow \omega_c-i \Gamma_c$ where $\Gamma_a$ and $\Gamma_b$ are small compared to the transition frequencies.
+}
+
+The time dependent perturbation theory is summarized as 
+\begin{equation}
+    \braket*{k}{{\psi(t)}} = 
+    \sum_{i=0}^\infty \gamma_k^{(i)} \ee^{- \ii \omega_k t},  
+\end{equation}
+\begin{equation}
+    \gamma^{(0)}_k = \const., \quad 
+    \dv{\gamma^{(i+1)}_k}{t} = \frac{1}{\ii \hbar} \sum_n 
+        H_{kn}^{(1)} \gamma_n^{(i-1)} \ee^{\ii (\omega_k - \omega_n) t}.
+\end{equation}
+In the current case, due to parity conservation in dipole transition, 
+only transitions $a \to b$ and $b \to c$ are possible.
+Therefore in the first order perturbation theory, 
+only $\gamma_b^{(1)}$ is non-zero.
+We have 
+\begin{equation}
+    \dv{\gamma_b^{(1)}}{t} = \frac{1}{\ii\hbar} H^{\text{dipole}}_{ba} \gamma_a^{(0)} \ee^{\ii (\omega_b - \omega_a) t},
+\end{equation}
+\begin{equation}
+    \begin{aligned}
+        \gamma_b^{(1)} &= - \frac{\vb*{\mu}_{ba} \cdot \vb*{E}_0}{\ii\hbar} 
+        \cdot \frac{1}{2} \int_{-\infty}^{t} \dd{t'} \left(
+            \ee^{\ii (\omega + \omega_b - \omega_a) t'}
+            + \ee^{\ii (- \omega + \omega_b - \omega_a) t'}
+        \right) \\
+        &= \frac{\vb*{\mu}_{ba} \cdot \vb*{E}_0}{\hbar} \cdot 
+        \frac{1}{2} \left(
+            \frac{
+                \ee^{\ii (\omega + \omega_b - \omega_a) t} 
+            }{
+                \omega + \omega_b - \omega_a
+            } +
+            \frac{
+                \ee^{\ii (- \omega + \omega_b - \omega_a) t} 
+            }{
+                - \omega + \omega_b - \omega_a
+            } 
+        \right).
+    \end{aligned}
+\end{equation}
+Here since we are interested in the 
+response properties of the three-level system
+under plane waves, 
+not, say, how fast the atom goes away from its initial state, 
+we have pushed the lower bound to $-\infty$, 
+and since each excited state has a finite lifetime, 
+the $- 1 / (\pm \omega + \omega_b - \omega_a)$ term is simply thrown away,
+following the practice in the last homework 
+and in the lectures.
+
+Similarly, from 
+\begin{equation}
+    \dv{\gamma_c^{(2)}}{t} 
+    = \frac{1}{\ii\hbar} H^{\text{dipole}}_{cb} \gamma_b^{(1)} \ee^{\ii (\omega_c - \omega_b) t}
+    = - \frac{1}{\ii\hbar} \cdot \frac{1}{2} \vb*{\mu}_{cb} \cdot \vb*{E}_0 (
+        \ee^{\ii (\omega + \omega_c - \omega_b) t} 
+        + \ee^{\ii (- \omega + \omega_c - \omega_b) t}
+    ) \cdot \gamma_b^{(1)} ,
+\end{equation}
+we get 
+\begin{align}
+    \begin{autobreak}
+        \gamma_c^{(2)} = \frac{\vb*{\mu}_{cb} \cdot \vb*{E}_0}{\hbar} 
+        \frac{\vb*{\mu}_{ba} \cdot \vb*{E}_0}{\hbar} \cdot \frac{1}{4} \Biggl(
+            \frac{
+                \ee^{\ii (2 \omega + \omega_c - \omega_a) t}
+            }{
+                (2\omega + \omega_c - \omega_a) (\omega + \omega_b - \omega_a)
+            } + 
+            \frac{
+                \ee^{\ii (- 2 \omega + \omega_c - \omega_a) t}
+            }{
+                (- 2\omega + \omega_c - \omega_a) (- \omega + \omega_b - \omega_a)
+            } + 
+            \frac{
+                \ee^{\ii (\omega_c - \omega_a) t}
+            }{
+                (\omega_c - \omega_a) (\omega + \omega_b - \omega_a)
+            } + 
+            \frac{
+                \ee^{\ii (\omega_c - \omega_a) t}
+            }{
+                (\omega_c - \omega_a) (- \omega + \omega_b - \omega_a)
+            }
+        \Biggr).
+    \end{autobreak}
+\end{align}
+Since each excited state has finite lifetime, 
+we do the substitution $\omega_{b, c} \to \omega_{b, c} - \ii \Gamma_{b, c}$
+and get 
+\begin{align}
+    \begin{autobreak}
+        \gamma_c^{(2)} = \frac{\vb*{\mu}_{cb} \cdot \vb*{E}_0}{\hbar} 
+        \frac{\vb*{\mu}_{ba} \cdot \vb*{E}_0}{\hbar} \cdot \frac{1}{4} \Biggl(
+            \frac{
+                \ee^{\ii (2 \omega + \omega_c - \omega_a ) t}
+            }{
+                (2\omega + \omega_c - \omega_a - \ii \Gamma_c) 
+                (\omega + \omega_b - \omega_a - \ii \Gamma_b)
+            } + 
+            \frac{
+                \ee^{\ii (- 2 \omega + \omega_c - \omega_a ) t}
+            }{
+                (- 2\omega + \omega_c - \omega_a - \ii \Gamma_c) (- \omega + \omega_b - \omega_a - \ii \Gamma_b)
+            } + 
+            \frac{
+                \ee^{\ii (\omega_c - \omega_a) t}
+            }{
+                (\omega_c - \omega_a - \ii \Gamma_c) (\omega + \omega_b - \omega_a - \ii \Gamma_b)
+            } + 
+            \frac{
+                \ee^{\ii (\omega_c - \omega_a) t}
+            }{
+                (\omega_c - \omega_a - \ii \Gamma_c) (- \omega + \omega_b - \omega_a - \ii \Gamma_b)
+            }
+        \Biggr).
+    \end{autobreak}
+\end{align}
+Here in principle we should also include the imaginary parts of $\omega_{b, c}$
+in the oscillating factors $\ee^{\ii (\cdots) t}$; 
+if we do so, eventually we should multiply $\ee^{\Gamma_c t}$ 
+to the expression above.
+But similar to the case in the last homework, 
+when evaluating $\bra*{\psi}$, 
+we should do the substitution $\omega_{b, c} \to \omega_{b, c} + \ii \Gamma_{b, c}$, 
+and in the $c$ component of $\bra{\psi}$ we get a $\ee^{ \ii (\ii \Gamma_c) t}$ factor, 
+which cancels the $\ee^{ \Gamma_c t}$ factor in $\ket*{\psi}$;
+on the other hand, the imaginary parts in the denominator do not cancel 
+and have real physical consequences when we calculate the expectation values. 
+So we can ignore the $\ee^{\Gamma_c t}$ factor in $\gamma_c^{(2)}$
+and still get everything right. 
+
+\paragraph*{(b)} \textit{
+    Assuming that our energy spacing meets the condition for resonant twophoton absorption (i.e., $\omega_c-\omega_a \cong 2 \omega$ ), perform the rotating wave approximation to simplify your result from part (a). [Hint: all of the terms with fast-oscillating phases should vanish] Use this result find the probability, $P_c$, that the atom occupies state $|c\rangle$. Since this probability, $P_c$, is independent of time it can also be viewed as the steady-state population of state $|c\rangle$.
+}
+
+Since $\omega_c - \omega_a \simeq 2 \omega$, 
+only the $- 2 \omega + \omega_c - \omega_a$ term is the slowly-oscillating term, 
+and by rotating wave approximation 
+\begin{equation}
+    \gamma_c^{(2)} \approx \frac{\vb*{\mu}_{cb} \cdot \vb*{E}_0}{\hbar} 
+    \frac{\vb*{\mu}_{ba} \cdot \vb*{E}_0}{\hbar} \cdot \frac{1}{4} 
+    \frac{
+        \ee^{\ii (- 2 \omega + \omega_c - \omega_a ) t}
+    }{
+        (- 2\omega + \omega_c - \omega_a - \ii \Gamma_c) (- \omega + \omega_b - \omega_a - \ii \Gamma_b)
+    } .
+\end{equation}
+Thus the steady-state population on state $c$ is 
+\begin{equation}
+    P_c = \abs*{\psi_c^{(2)}} = \frac{
+        \abs*{\vb*{\mu}_{cb} \cdot \vb*{E}_0}^2 
+        \abs*{\vb*{\mu}_{ba} \cdot \vb*{E}_0}^2
+    }{16 \hbar^4} 
+    \frac{1}{
+        ((\omega_c - \omega_a - 2 \omega)^2 + \Gamma_c^2 )
+        ((\omega_b - \omega_a - \omega)^2 + \Gamma_b^2)
+    }.
+\end{equation}
+
+\paragraph*{(c)} \textit{
+    Notice that the excited state population satisfies the following rate equation $d P_c / d t=-2 \Gamma_c P_c+R_c$, where $R_c$ is the two-photon absorption rate for the atom. Use this expression to find $R_c$ and the two-photon absorption crosssection, $\sigma_{T P A}(I)$, at steady state; here, $I$ is the intensity of light. For the purposes of this calcluation, assume the atom lives in a material with refractive index $n$. [Hint: $R_c=I \sigma_{T P A}(I) / \hbar \omega$]
+}
+
+When equilibrium hasn't be achieved, since $\psi_c^{(2)} \sim \ee^{- \Gamma_c t} \Rightarrow 
+P_c \sim \ee^{- 2 \Gamma_c t}$, the rate equation for $P_c$ is 
+\begin{equation}
+    \dv{P_c}{t} = - 2 \Gamma_c P_c + R_c,
+\end{equation}
+where $R_c$ is the two-photon absorption rate for the atom. 
+Now since the system is already in equilibrium, 
+we have 
+\begin{equation}
+    R_c = 2 \Gamma_c P_c 
+    = \frac{
+        \abs*{\vb*{\mu}_{cb} \cdot \vb*{E}_0}^2 
+        \abs*{\vb*{\mu}_{ba} \cdot \vb*{E}_0}^2
+    }{8 \hbar^4} 
+    \frac{\Gamma_c}{
+        ((\omega_c - \omega_a - 2 \omega)^2 + \Gamma_c^2 )
+        ((\omega_b - \omega_a - \omega)^2 + \Gamma_b^2)
+    }.
+\end{equation} 
+
+The two-photon absorption (TPA) cross section can be determined by 
+\begin{equation}
+    R_c \cdot \hbar \omega = I \sigma_{\text{TPA}} = \text{energy absorbed per second}.
+\end{equation}
+The intensity is the time average of Poynting vector, 
+\begin{equation}
+    I = \frac{1}{2} \frac{\epsilon_0 c }{n}  \abs*{\vb*{E}_0}^2,
+\end{equation}
+and therefore by replacing $E_0^2$ by $I$, we get 
+\begin{equation}
+    \sigma_{\text{TPA}} = \frac{n^2 \omega I}{2 \epsilon_0 c \hbar^3} 
+    \abs*{\vb*{\mu}_{cb} \cdot \vu*{\epsilon}}^2 
+    \abs*{\vb*{\mu}_{ba} \cdot \vu*{\epsilon}}^2
+    \frac{\Gamma_c}{
+        ((\omega_c - \omega_a - 2 \omega)^2 + \Gamma_c^2 )
+        ((\omega_b - \omega_a - \omega)^2 + \Gamma_b^2)
+    }.
+\end{equation}
+Here $\vu*{\epsilon}$ is the polarization direction of the incident beam.
+
+\paragraph*{(d)} \todo{How to get $\dv{I}{z}$}
+
+\section{Quantum treatment of nonlinear susceptibility}
+
+\paragraph*{(a)} In this section we generalize the procedure in the first problem.
+The external electric field now is  
+\begin{equation}
+    \vb*{E}(t) = \sum_p \vb*{E}_p \ee^{- \ii \omega_p t}.
+\end{equation}
+The zeroth order state is  
+\begin{equation}
+    \gamma^{(0)}_n = \delta_{n, \text{g}} .
+\end{equation}
+Therefore the first order perturbation is determined by 
+\begin{equation}
+    \dv{\gamma_m^{(1)}}{t} = \frac{1}{\ii \hbar} 
+    \underbrace{
+        (- \vb*{\mu}_{m \text{g}} \cdot \sum_p \vb*{E}_p \ee^{- \ii \omega_p t}) 
+    }_{H_{\text{int}}}
+    \ee^{\ii (\omega_m - \omegag) t} ,
+\end{equation}
+and therefore after integration we get 
+\begin{equation}
+    \gamma_m^{(1)}(t) = \frac{1}{\hbar} \sum_p \frac{\vb*{\mu}_{m \text{g}} \cdot \vb*{E}_p}{(\omega_m - \omegag - \omega_p)} \ee^{\ii (\omega_m - \omegag - \omega_p) t}.
+\end{equation}
+The second order perturbation is determined by 
+\begin{equation}
+    \dv{\gamma_m^{(2)}}{t} = \frac{1}{\ii \hbar} \sum_n
+    \underbrace{
+        (- \vb*{\mu}_{m n} \cdot \sum_q \vb*{E}_q \ee^{- \ii \omega_q t}) 
+    }_{H_{\text{int}}}
+    \ee^{\ii (\omega_m - \omega_n) t} 
+    \cdot \underbrace{\frac{1}{\hbar} \sum_p \frac{\vb*{\mu}_{n \text{g}} \cdot \vb*{E}_p}{(\omega_n - \omegag - \omega_p)} \ee^{\ii (\omega_n - \omegag - \omega_p) t}}_{\gamma_n^{(1)}} ,
+\end{equation}
+and after integration we get 
+\begin{equation}
+    \gamma_m^{(2)}(t) = \frac{1}{\hbar^2} \sum_{p, q} \sum_n
+    \frac{
+        (\vb*{\mu}_{mn} \cdot \vb*{E}_q) (\vb*{\mu}_{n \text{g}} \cdot \vb*{E}_p)
+    }{
+        (\omega_m - \omegag - \omega_p - \omega_q)
+        (\omega_n - \omegag - \omega_p)
+    } \ee^{\ii (\omega_m - \omegag - \omega_p - \omega_q) t}.
+\end{equation}
+
+\paragraph*{(b)} The second order polarization is given by 
+
+
+\end{document}
