@@ -2594,7 +2594,8 @@ the time-dependent $GW$ calculation.
 quite similar to single-electron self-energy correction,
 called the \concept{Bethe-Salpeter equation (BSE)},
 although in the context of \abinitio{} study, 
-BSE usually refers to \eqref{eq:bse.sum-general} \emph{plus} \eqref{eq:bse.kernel}:
+BSE usually refers to \eqref{eq:bse.sum-general} \emph{plus} \eqref{eq:bse.kernel}, 
+not just the analytically correct \eqref{eq:bse.sum-general}:
 the vertex correction, again, is simply ignored.
 
 The corrected two-body Green function i.e. corrected propagator of the electron-hole pair 
@@ -2606,7 +2607,15 @@ The renormalized electron-hole pair
 is called the \concept{exciton},
 and the effective two-body Hamiltonian is the Hamiltonian of the exciton. 
 BSE -- either in the general meaning or in the meaning of \eqref{eq:bse.kernel} -- 
-is essentially analyzing excitons.
+is currently the preferred way for analyzing excitons.
+The first term in \eqref{eq:bse.kernel} is known as the \concept{direct term}, 
+while the second term is known as the \concept{exchange term}; 
+note that the terminology may be kind of confusing, 
+since the exciton exchange term actually comes from the $GW$ Hartree term, 
+and the exciton direct term comes from the $GW$ screened-Fock term.
+In analytic works on excitons, 
+usually only the direct term is considered, 
+which is probably the reason for the terminology.
 
 The time-dependent $GW$ method 
 can capture exciton effects to electromagnetic response of the system,
@@ -2619,6 +2628,46 @@ the exciton Hamiltonian approach is realized by BerkeleyGW;
 the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
 but its accuracy has been verified by comparison with the exciton Hamiltonian approach
 \cite{attaccalite2011real}.
+
+\begin{figure}
+    \centering
+    \input{feyn/exciton-electron-pair-comparison.tex}
+    \caption{Comparison between Feynman diagrams for double electrons 
+    and Feynman diagrams for electron-hole pairs.
+    Only the first order perturbation is considered; 
+    the interaction line in the direct terms should be screened.}
+    \label{fig:electron-electron-electron-hole}
+\end{figure}
+
+Two further remarks are needed on the effective Hamiltonian of excitons. 
+First, we note that \eqref{eq:bse.kernel} is only for electron-hole pairs; 
+diagrams for electron-electron pairs are different: 
+there is no exchange term for electron pairs.
+This is illustrated in \prettyref{fig:electron-electron-electron-hole}:
+in the case of two electrons, after doing the contractions,
+we get $t$- and $u$-channels, 
+while in the case of electron-hole pairs, 
+we get the direct term and the exchange term.
+This can be explicitly verified by calculating 
+$\mel*{1, 2}{H_{\text{Coulomb}}}{3, 4}$ by definition.
+Since in the former case, the two input particles are of the same species, 
+the two Coulomb interaction diagrams have to form a $u$-and-$t$ pair, 
+and when we write down the effective Hamiltonian, 
+we only consider the $u$-channel or the $t$-channel, but never both, 
+and thus in the effective Hamiltonian we only have the direct term.
+In the latter case, i.e. the case of excitons, 
+we no longer have the $u$-and-$t$-pair, 
+and we only have one kinetic term anyway.
+If we want to model the exciton by an effective potential, 
+$V_{\text{eff}}(\vb*{r}_1, \vb*{r}_2)$ contains both terms in \eqref{eq:bse.kernel}.
+The second remark is that the effective Hamiltonian obtained from \eqref{eq:bse.kernel}
+is a \emph{two-body} Hamiltonian, \emph{not} a \emph{many-body} Hamiltonian, 
+that's to say, not an effective interaction vertex:
+if we want to find an effective interaction vertex, 
+(a) electron modes appearing at in- and out-lines of \eqref{eq:bse.kernel}
+should not be included in the screened interaction line, and 
+(b) the exchange term should not appear. 
+That's what is done in constrained RPA, but not \eqref{eq:bse.kernel}.
 
 \section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
