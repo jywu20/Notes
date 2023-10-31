@@ -380,11 +380,11 @@ The two-photon absorption (TPA) cross section can be determined by
 \end{equation}
 The intensity is the time average of Poynting vector, 
 \begin{equation}
-    I = \frac{1}{2} \frac{\epsilon_0 c }{n}  \abs*{\vb*{E}_0}^2,
+    I = \frac{1}{2} \epsilon_0 c n \abs*{\vb*{E}_0}^2,
 \end{equation}
 and therefore by replacing $E_0^2$ by $I$, we get 
 \begin{equation}
-    \sigma_{\text{TPA}} = \frac{n^2 \omega I}{2 \epsilon_0 c \hbar^3} 
+    \sigma_{\text{TPA}} = \frac{\omega I}{2 n^2 \epsilon_0^2 c^2 \hbar^3} 
     \abs*{\vb*{\mu}_{cb} \cdot \vu*{\epsilon}}^2 
     \abs*{\vb*{\mu}_{ba} \cdot \vu*{\epsilon}}^2
     \frac{\Gamma_c}{
@@ -394,7 +394,27 @@ and therefore by replacing $E_0^2$ by $I$, we get
 \end{equation}
 Here $\vu*{\epsilon}$ is the polarization direction of the incident beam.
 
-\paragraph*{(d)} \todo{How to get $\dv{I}{z}$}
+\paragraph*{(d)} It takes $\dd{t} = \dd{z} / (c / n)$ for a plane wave beam to propagate $\dd{z}$.
+During this period of time, the energy loss due to second order effect is 
+\begin{equation}
+    \dd{I} = \underbrace{R_c \cdot \hbar \omega}_{\text{energy absorbed per second}} \cdot \dd{t}
+    = \frac{n}{c} R_c \hbar \omega \dd{z}.
+\end{equation}
+The definition of $\beta_2$ is 
+\begin{equation}
+    \dv{I}{z} = - \alpha I - \beta_2 I^2,
+\end{equation}
+and we find 
+\begin{equation}
+    \beta_2 = \frac{1}{I^2} \cdot \frac{n}{c} R_c \hbar \omega
+    = \frac{\omega}{2 n \epsilon_0^2 c^3 \hbar^3} 
+    \abs*{\vb*{\mu}_{cb} \cdot \vu*{\epsilon}}^2 
+    \abs*{\vb*{\mu}_{ba} \cdot \vu*{\epsilon}}^2
+    \frac{\Gamma_c}{
+        ((\omega_c - \omega_a - 2 \omega)^2 + \Gamma_c^2 )
+        ((\omega_b - \omega_a - \omega)^2 + \Gamma_b^2)
+    }.
+\end{equation}
 
 \section{Quantum treatment of nonlinear susceptibility}
 
@@ -453,10 +473,114 @@ and after integration we get
 
 \paragraph*{(b)} The second order polarization is given by 
 \begin{equation}
-    \expval{\vb*{\mu}} = \mel*{\psi^{(2)}}{\vb*{\mu}}{\psi^{(0)}} + 
+    \expval{\vb*{\mu}}^{(2)} = \mel*{\psi^{(2)}}{\vb*{\mu}}{\psi^{(0)}} + 
     \mel*{\psi^{(1)}}{\vb*{\mu}}{\psi^{(1)}}
     + \mel*{\psi^{(0)}}{\vb*{\mu}}{\psi^{(2)}},
 \end{equation}
-and therefore 
+and therefore (note that we still need a $\ee^{- \ii \omega_i t}$ factor 
+besides $\gamma_i$)
+\begin{equation}
+    \begin{aligned}
+        \expval{\vb*{\mu}}^{(2)} &= 
+        \frac{1}{\hbar^2} \sum_{p, q} \sum_{m, n} \ee^{\ii \omega_m t}
+        \frac{
+            (\vb*{\mu}_{nm} \cdot \vb*{E}(- \omega_q)) 
+            (\vb*{\mu}_{\text{g} n} \cdot \vb*{E}(- \omega_p)) 
+            \vb*{\mu}_{m \text{g}}
+        }{
+            (\omega_m^* - \omegag - \omega_p - \omega_q)
+            (\omega_n^* - \omegag - \omega_p)
+        } \ee^{- \ii (\omega_m - \omegag - \omega_p - \omega_q) t} 
+        \ee^{- \ii \omegag t} \\
+        &\quad + \frac{1}{\hbar^2} 
+        \sum_{m, n} \sum_{p, q} \ee^{\ii \omega_m t} \frac{\vb*{\mu}_{\text{g} m} \cdot \vb*{E}(- \omega_p)}{(\omega_m^* - \omegag - \omega_p)} 
+        \ee^{- \ii (\omega_m - \omegag - \omega_p) t} 
+        \vb*{\mu}_{m n} 
+        \frac{\vb*{\mu}_{n \text{g}} \cdot \vb*{E}(\omega_q)}{(\omega_n - \omegag - \omega_q)} \ee^{\ii (\omega_m - \omegag - \omega_p) t} \ee^{- \ii \omega_n t}
+          \\
+        &\quad + 
+        \frac{1}{\hbar^2} \sum_{p, q} \sum_{m, n} \ee^{\ii \omegag t}
+        \frac{
+            (\vb*{\mu}_{mn} \cdot \vb*{E}(\omega_q)) 
+            (\vb*{\mu}_{n \text{g}} \cdot \vb*{E}(\omega_p))
+            \vb*{\mu}_{\text{g} m}
+        }{
+            (\omega_m - \omegag - \omega_p - \omega_q)
+            (\omega_n - \omegag - \omega_p)
+        } \ee^{\ii (\omega_m - \omegag - \omega_p - \omega_q) t} \ee^{- \ii \omega_m t} .
+    \end{aligned}
+\end{equation}
+Here to simply the form of the denominator, 
+we have attract $\ii \Gamma_{m, n}$ into $\omega_{m, n}$.
+After simplification and changing the signs of $\omega_{p, q}$
+(see the discussion at the beginning of problem (a)) we have 
+\begin{equation}
+    \begin{aligned}
+        \expval{\vb*{\mu}}^{(2)} = 
+        \frac{1}{\hbar^2} \sum_{p, q} \sum_{m, n}
+        \ee^{- \ii (\omega_p + \omega_q) t} 
+        \Biggl(
+            \frac{
+                (\vb*{\mu}_{nm} \cdot \vb*{E}(\omega_q)) 
+                (\vb*{\mu}_{\text{g} n} \cdot \vb*{E}(\omega_p)) 
+                \vb*{\mu}_{m \text{g}}
+            }{
+                (\omega_m^* - \omegag + \omega_p + \omega_q)
+                (\omega_n^* - \omegag + \omega_p)
+            } & \\
+            \quad +
+            \frac{
+                (\vb*{\mu}_{\text{g} m} \cdot \vb*{E}(\omega_p)) 
+                (\vb*{\mu}_{n \text{g}} \cdot \vb*{E}(\omega_q)) 
+                \vb*{\mu}_{m n} 
+            }{
+                (\omega_m^* - \omegag + \omega_p) 
+                (\omega_n - \omegag - \omega_q)
+            }& \\
+            +  
+            \frac{
+                (\vb*{\mu}_{mn} \cdot \vb*{E}(\omega_q)) 
+                (\vb*{\mu}_{n \text{g}} \cdot \vb*{E}(\omega_p))
+                \vb*{\mu}_{\text{g} m}
+            }{
+                (\omega_m - \omegag - \omega_p - \omega_q)
+                (\omega_n - \omegag - \omega_p)
+            }& 
+        \Biggr).
+    \end{aligned}
+    \label{eq:mu-second-order}
+\end{equation} 
+After swapping $p$ and $q$ and $m$ and $n$ in some of the terms, 
+we get Boyd (3.2.26).
+The expression can also be obtained in a many-body perturbation theoretic way: 
+we set the chemical potential to somewhere between $\omegag$ 
+and the first excited state, 
+and then \eqref{eq:mu-second-order} can be derived from 
+the two photon in, one photon out electron loop diagram 
+in the same way Lindhard function is derived from the electron-hole loop.
+
+\paragraph*{(c)} $\chi^{(2)}$ is \eqref{eq:mu-second-order} divided by $E(\omega_p)$ and $E(\omega_q)$;
+so it's proportional to $\mu_{mn} \mu_{n \text{g}} \mu_{\text{g} m}$.
+When the system has inversion symmetry 
+and therefore eigenstates in the system are all parts of 
+representations of the inversion operation, 
+and therefore have definite parities,
+in order for this product to be non-zero, we need $\ket*{m}, \ket*{n}, \ket*{\text{g}}$
+to all have different parities.
+But this is not possible: 
+if $\ket*{\text{g}}$ and $\ket*{m}$ have different parities 
+and $\ket*{m}$ and $\ket*{n}$ have different parities, 
+and the parities of $\ket*{\text{g}}$ and $\ket*{n}$
+have to be the same, because the parity of a state is either even or odd: 
+and then $\mu_{n \text{g}}$ is zero.
+So whenever the eigenstates have definite parities 
+(in other words, the system has inversion symmetry), 
+$\chi^{(2)}$ vanishes.
+
+\section{Three-wave interaction} 
+
+\subsection{}
+
+
 
 \end{document}
