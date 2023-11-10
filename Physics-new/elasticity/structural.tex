@@ -1,0 +1,285 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+
+\title{Elasticity in structural mechanics}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Rigid body analysis}
+
+\section{Elastic medium}
+
+\paragraph*{Definition} The deformation $\vb*{u}(t)$ of the system 
+is completely decided by the external loading at $t$.
+Notable counterparts:
+\begin{itemize}
+    \item \emph{Fluid}. $\vb*{u}$ $\Leftarrow$ $\vb*{v}$ $\Leftarrow$ $\vb*{F}$: not elastic.
+    \item \emph{Plastic}. $\vb*{u}$ depends on history: not elastic.
+\end{itemize}
+
+\paragraph*{Degrees of freedom, with infinitesimal deformation} We deal with two sets of variables:
+\begin{itemize}
+    \item \emph{Stress $\sigma_{ij}$}. $\dd{F}_i = \sigma_{ij} \dd{A}_j$.
+    \item \emph{Strain $u_{ij}$}. For small deformation
+    \begin{equation}
+        u_{ij} = \frac{1}{2} \left(
+            \pdv{u_i}{x_j} + \pdv{u_j}{x_i}
+        \right).
+    \end{equation}
+    \item \emph{Constitutive relations}. $\sigma_{ij} = \sigma_{ij}[u_{ij}]$.
+\end{itemize}
+
+\paragraph*{Uniform isotropic linear medium} Constitutive relation  
+\begin{equation}
+    \sigma_{ik} = K u_{ll} \delta_{ik}
+    + 2 \mu \left(
+        u_{ik} - \frac{1}{3} \delta_{ik} u_{ll}
+    \right).
+    \label{eq:constitutive-relation}
+\end{equation}
+
+\paragraph*{Temperature expansion} The strain induced by temperature change:
+\begin{equation}
+    \dv{u}{x} = \alpha (T - T_0),
+\end{equation}
+where $T_0$ is the ``overall'' temperature.
+
+\section{Uniform isotropic linear medium, in experiments} 
+
+\paragraph*{Two modes of strain}
+\begin{itemize}
+    \item \emph{Compression/tension}. Along one direction (for example $z$):
+    \begin{equation}
+        \epsilon = \frac{\delta}{L} = u_{zz}.
+    \end{equation}
+    \item \emph{Shear}. On the $xy$ plane:
+    \begin{equation}
+        \gamma = \theta_{xx'} + \theta_{yy'} = 2 u_{xy}.
+    \end{equation}
+\end{itemize} 
+
+\paragraph*{Young's modulus} Relation between tension and force:
+\begin{equation}
+    E = \frac{P}{\epsilon} = \frac{P L}{\delta} \Rightarrow
+    F = PA = \frac{\delta}{L} \cdot EA.
+\end{equation}
+
+\paragraph*{Poisson's ratio} Relation between transverse strain and axial strain 
+(in Young's modulus experiment):
+\begin{equation}
+    \sigma = \nu = - \dv{\epsilon_{\text{transverse}}}{\epsilon_{\text{axial}}}.
+\end{equation}
+This is how the material becomes thinner when stretched.
+
+\paragraph*{Volume modulus} Relation between pressure and volume:
+\begin{equation}
+    K = - V \dv{P}{V}. 
+\end{equation}
+Here $K$ is that parameter in \eqref{eq:constitutive-relation}.
+
+\paragraph*{Shear modulus} Relation between shear stress and shear strain:
+\begin{equation}
+    \mu = G = \frac{\tau}{\gamma}.
+\end{equation}
+Here $\tau$ is $\sigma_{xy}$ (or $yz$ or $zx$); $\gamma$ is the shear strain.
+
+
+\paragraph*{How many independent parameters?} In isothermal process:  
+\begin{equation}
+    E = \frac{9 K \mu}{3 K + \mu}, \quad 
+    \sigma = \frac{1}{2} \frac{3K - 2 \mu}{3 K + \mu}.
+\end{equation}
+
+\paragraph*{When is the linear elasticity condition broken?} 
+\begin{enumerate}
+    \item Linear region.
+    \item Proportional limit.
+    \item Elastic limit.
+    \item Yield point.
+    \item Ultimate tensile point.
+    \item Breaking point.
+\end{enumerate}
+
+
+\section{Low dimension system: torsion of cylinder-like rod} 
+
+\paragraph*{Reaction of $\varphi$ to torque} Here $T$ is the torque:
+\begin{equation}
+    \dv{\varphi}{z} = \frac{T(z)}{JG}, \quad 
+    T(z) = \int_{0}^{z} \dd{z'} \dv{\ \mathrm{torque}}{z'}.
+\end{equation}
+
+\paragraph*{Relation between torque and stress}
+\begin{equation}
+    \gamma = \gamma_{xz} = \dv{\varphi}{z} r, \quad \tau = G \gamma, 
+\end{equation}
+\begin{equation}
+    \tau_\text{max} = G \dv{\varphi}{z} R 
+    = \frac{T R}{J} .
+\end{equation}
+Here $R$ may also be written as $c$.
+
+\paragraph*{Note on $J$} It's actually not moment of inertia! 
+
+\section{Low dimension system: beam, or rod predominantly bended}
+
+
+
+\section{Problems}
+
+\begin{itemize}
+    \item Using deformation to decide forces (that otherwise can't be determined).
+    \item How fast a shaft can rotate: $P = T \omega$. Then $\tau_{\text{max}}$ can be found.
+\end{itemize}
+
+\end{document}
