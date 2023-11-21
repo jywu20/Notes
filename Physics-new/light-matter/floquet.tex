@@ -200,7 +200,7 @@ Under this assumption, we can project out the electromagnetic degree of freedom 
 where $i$ labels eigenstates of the matter degrees of freedom,
 and this means the Hamiltonian for the matter part is 
 \begin{equation}
-    H_{\text{eff}} = P H_{\text{full}} P = 
+    H_{\text{driven}} = P H_{\text{full}} P = 
     H + \underbrace{\hbar \abs*{\alpha}^2 }_{\const.} + \alpha V \ee^{- \ii \omega t} + \alpha^* V^\dagger \ee^{\ii \omega t},
 \end{equation}
 which indeed evolves with period $2\pi / \omega$.
@@ -212,7 +212,7 @@ evolves according to $H$ into
 a linear combination (the coefficients are constants) of 
 $\{\ket*{\psi_n(t)}\}$ where 
 \begin{equation}
-    \ket*{\psi_n (t + T)} = \ee^{- \ii \varepsilon_n t / \hbar} \ket*{\Phi_n(t)},
+    \ket*{\psi_n (t)} = \ee^{- \ii \varepsilon_n t / \hbar} \ket*{\Phi_n(t)},
     \quad \ket*{\Phi_n(t + T)} = \ket*{\Phi_n(t)}.
     \label{eq:floquet-wave-function}
 \end{equation}
@@ -224,7 +224,7 @@ By discrete periodicity of $\ket*{\Phi_n(t)}$ we make Fourier expansion
 where $m$ goes over all integers.
 Note that here $\ket*{\phi_n^{(m)}}$
 are \emph{Fourier coefficients} and are not eigenstates of anything; 
-there is no normalization or orthogonality condition.
+there is no normalization or orthogonality condition for them.
 Using $i$ to label the eigenstates of the matter, 
 we have 
 \begin{equation}
@@ -256,10 +256,10 @@ Thus we find
     = \sum_{m'} (
         H^{(m - m')} - m \hbar \omega \delta_{m m'}
     ) \ket*{\phi^{(m')}_{n}}.
+    \label{eq:floquet-ham-eigen}
 \end{equation}
-Recall that $\braket*{i}{\phi_n^{(m)}}$ is the 
-$m \omega$-frequency component of $\ket*{\Phi_n(t)}$
-projected on the basis vector $\ket*{i}$.
+Note that this equation is an eigenvalue problem in the \emph{extended Hilbert space}:
+the component $\braket*{i}{\phi_n^{(m)}}$ is labeled by both $m$ and $i$.
 The eigenvalues $\varepsilon_n$ are known as the \emph{Floquet quasienergy} of 
 the \emph{Floquet quasi-stationary state (or quasi-eigenstate)} $\ket*{\Psi_n(t)}$,
 which can be obtained by diagonalizing 
@@ -270,9 +270,11 @@ which can be obtained by diagonalizing
 
 \eqref{eq:floquet-ham} looks like a light-matter interaction Hamiltonian 
 written in operator form for the matter part 
-and in the Fock basis for the light part (labeled by $m$ and $m'$).
-This appearance however is misleading:
-unlike conventional effective Hamiltonians
+and in the Fock basis for the light part (labeled by $m$ and $m'$, which look like photon numbers);
+when a cutoff on $m$ is applied, 
+it appears to be an effective Hamiltonian where photon degrees of freedom 
+have been integrated out.
+However, unlike conventional effective Hamiltonians
 whose eigenstates can in principle be obtained by 
 applying a projection operator on a subset of eigenstates of the full Hamiltonian,
 eigenstates of \eqref{eq:floquet-ham} 
@@ -287,33 +289,77 @@ non-equilibrium self-energy \cite{lubatsch2019evolution,aoki2014nonequilibrium},
 with $m$ and $m'$ being labels of external field lines,
 which is not necessarily an equilibrium effective Hamiltonian.
 
-Moreover, the difference between the Floquet effective Hamiltonian \eqref{eq:floquet-ham}
-and conventional, ``equilibrium'' effective Hamiltonians can be observed 
-by the structure of its eigenstates. 
-The dimension of \eqref{eq:floquet-ham}, fully expanded into its matrix elements,
+Finally, we go on to characterize the structure of the solutions of  \eqref{eq:floquet-ham-eigen}.
+The difference between the Floquet effective Hamiltonian \eqref{eq:floquet-ham}
+and conventional, ``equilibrium'' effective Hamiltonians can also be seen  
+by the structure of its eigenstates, 
+because the dimension of \eqref{eq:floquet-ham}, fully expanded into its matrix elements,
 is the number of the values of $m$ considered 
 times the dimension of the matter Hilbert space,
 and thus \eqref{eq:floquet-ham}'s eigenstates are overcomplete.
 We can actually point out where overcompletion appears:
 note that if $\varepsilon_n$ satisfies \eqref{eq:floquet-wave-function},
 then so does $\varepsilon_n + m \hbar \omega$.
-We call \eqref{eq:floquet-ham} the effective Hamiltonian in the \concept{extended Hilbert space}.
+We can directly prove that if $(\varepsilon, \{\ket*{\phi^{(m)}}\}_m)$ 
+is a solution of \eqref{eq:floquet-ham-eigen},
+then so is $(\varepsilon + \hbar m' \omega, \{\ket*{\phi^{(m + m')}}\}_m)$.
+This fact can also be proved by noticing that  
+\begin{equation}
+    \ket*{\psi_n(t)} = \ee^{- \ii \varepsilon_n t / \hbar} \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m)}}
+    = \ee^{- \ii (\varepsilon + \hbar m' \omega) t / \hbar}
+    \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m + m')}}.
+\end{equation}
+Therefore, the spectrum of \eqref{eq:floquet-ham} has redundancy. 
+There however is no redundant information in $\{\ket*{\phi_n^{(m)}}\}$,
+because $\braket*{i}{\phi_n^{(m)}}$ is the 
+$m \omega$-frequency component of $\ket*{\Phi_n(t)}$
+projected on the basis vector $\ket*{i}$,
+and every $\ket*{\phi_n^{(m)}}$ is needed to determine $\ket*{\Phi_n(t)}$
+and thus $\ket*{\psi_n(t)}$.
 
-In conclusion, a Floquet system has a set of quasi-eigenstates $\{ \ket*{\psi_n} \}$,
+Although there is no generic orthogonal relation pertaining to $\{\ket*{\psi_n(t)}\}$,
+after time averaging an orthogonal relation can be obtained.
+From the fact that \eqref{eq:floquet-ham} is Hermitian, we have 
+\begin{equation}
+    \sum_m \braket*{\phi_n^{(m)}}{\psi_{n'}^{(m)}} = \delta_{nn'},
+\end{equation}
+and therefore the time average of $\braket*{\psi_n(t)}{\psi_{n'}(t)}$ is 
+\begin{equation}
+    \begin{aligned}
+        \overline{\braket*{\psi_n(t)}{\psi_{n'}(t)}} &= 
+        \lim_{T \to \infty} \frac{1}{T} \int_{0}^{T} \dd{t} 
+        \ee^{\ii (\varepsilon_n - \varepsilon_{n'}) t}
+        \sum_{m, m'}  \ee^{\ii (m - m') t}
+        \braket*{\phi_n^{(m)}}{\phi_{n'}^{(m')}} \\
+        &= \sum_{m, m'} \delta_{\varepsilon_n, \varepsilon_{n'}}
+        \delta_{mm'} \braket*{\phi_n^{(m)}}{\phi_{n'}^{(m')}}  \\
+        &= \delta_{\varepsilon_n, \varepsilon_{n'}} \sum_{m} \braket*{\phi_n^{(m)}}{\psi_{n'}^{(m)}}
+        = \delta_{nn'}.
+    \end{aligned}
+    \label{eq:orthogonal}
+\end{equation}
+Therefore, after time averaging, the Floquet quasi-stationary states 
+are orthogonal to each other.
+
+In conclusion, a Floquet system has a set of quasi-eigenstates $\{ \ket*{\psi_n} \}$
+with orthogonality relation \eqref{eq:orthogonal},
 the number of which is the same as 
-the dimension of the Hilbert space;
-but for each quasi-eigenstate,
+the dimension of the Hilbert space 
+(\emph{not} the extended Hilbert space).
+The quasi-eigenstates and their quasi-energies can be found by solving 
+the eigenvalue problem \eqref{eq:floquet-ham-eigen} in the extended Hilbert space
+(\emph{not} the Hilbert space) 
+and then putting the resulting $(\varepsilon_n, \{\phi_n^{(m)}\})$
+into \eqref{eq:floquet-wave-function}.
+For each quasi-eigenstate,
 we have countable infinite quasi-energies,
 the difference between the nearest two being $\hbar \omega$;
 thus all distinct Floquet quasi-eigenstates can be indexed 
 by quasi-energies that are within one ``Floquet-Brillouin zone''.
-\todo{Orthogonal relation between $\ket{\psi_n}$'s?}
 
+\section{Where do Floquet effects appear?}
 
-
-\section{Self-driven Floquet effects}
-
-it is however possible to use light to stimulate 
+It is however possible to use light to stimulate 
 some long-lived degrees of freedom in a solid 
 and let it drive the rest of the system, 
 which sometimes is known as ``self-driving''.
