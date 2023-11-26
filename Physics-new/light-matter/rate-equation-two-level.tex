@@ -1,0 +1,412 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{autobreak}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{electrodynamics.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\omegap}{\omega_{\text{p}}}    
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{E}}
+\newcommand{\Dfreq}{\tilde{D}}
+\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+
+\allowdisplaybreaks
+
+\title{Bloch equation and rate equation in two-level systems}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+Consider Eq. (5.125) in Steck's lecture notes.
+The optical Bloch equations can be derived in a diagrammatic way. 
+Basically, we have the following diagrams:
+for the $\rho_{\text{ee}}$ we have (possibly the directions of the lines are wrong; check later)
+\begin{equation}
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt     
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (110.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da046377729854131466] 
+        \draw    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da24542155198649573] 
+        \draw [line width=1.5]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(82.48,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.75,-4.2) -- (0,0) -- (8.75,4.2) -- (5.81,0) -- cycle    ;
+        %Straight Lines [id:da18856340149280704] 
+        \draw    (55.83,17.83) .. controls (57.5,19.5) and (57.5,21.16) .. (55.83,22.83) .. controls (54.16,24.5) and (54.16,26.16) .. (55.83,27.83) .. controls (57.5,29.5) and (57.5,31.16) .. (55.83,32.83) .. controls (54.16,34.5) and (54.16,36.16) .. (55.83,37.83) .. controls (57.5,39.5) and (57.5,41.16) .. (55.83,42.83) .. controls (54.16,44.5) and (54.16,46.16) .. (55.83,47.83) .. controls (57.5,49.5) and (57.5,51.16) .. (55.83,52.83) -- (55.83,55.15) -- (55.83,55.15) ;
+        \draw [shift={(55.83,55.15)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (53.83,16.33) node [anchor=south east] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (57.83,16.33) node [anchor=south west] [inner sep=0.75pt]   [align=left] {g};
+        \end{tikzpicture}
+        \simeq \frac{1}{\partial _{t}}\frac{\Omega }{2} \rho _{\text{eg}} ,\quad \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (110.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da9990993052852792] 
+        \draw    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(29.48,17.83)}, rotate = 0] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da19159582923833396] 
+        \draw [line width=1.5]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(72.18,17.83)}, rotate = 0] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.75,-4.2) -- (0,0) -- (8.75,4.2) -- (5.81,0) -- cycle    ;
+        %Straight Lines [id:da1694913979940429] 
+        \draw    (55.83,17.83) .. controls (57.5,19.5) and (57.5,21.16) .. (55.83,22.83) .. controls (54.16,24.5) and (54.16,26.16) .. (55.83,27.83) .. controls (57.5,29.5) and (57.5,31.16) .. (55.83,32.83) .. controls (54.16,34.5) and (54.16,36.16) .. (55.83,37.83) .. controls (57.5,39.5) and (57.5,41.16) .. (55.83,42.83) .. controls (54.16,44.5) and (54.16,46.16) .. (55.83,47.83) .. controls (57.5,49.5) and (57.5,51.16) .. (55.83,52.83) -- (55.83,55.15) -- (55.83,55.15) ;
+        \draw [shift={(55.83,55.15)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (53.83,16.33) node [anchor=south east] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (57.83,16.33) node [anchor=south west] [inner sep=0.75pt]   [align=left] {g};
+        \end{tikzpicture}
+        \simeq -\frac{1}{\partial _{t}}\frac{\Omega }{2} \rho _{\text{ge}} ,
+\end{equation}
+and for the $\rho_{\text{eg}}$ part we have 
+\begin{equation}
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt     
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (110.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da11753018701233797] 
+        \draw    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da3195946132664591] 
+        \draw [line width=1.5]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(82.48,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.75,-4.2) -- (0,0) -- (8.75,4.2) -- (5.81,0) -- cycle    ;
+        %Straight Lines [id:da20149642058076367] 
+        \draw    (55.83,17.83) .. controls (57.5,19.5) and (57.5,21.16) .. (55.83,22.83) .. controls (54.16,24.5) and (54.16,26.16) .. (55.83,27.83) .. controls (57.5,29.5) and (57.5,31.16) .. (55.83,32.83) .. controls (54.16,34.5) and (54.16,36.16) .. (55.83,37.83) .. controls (57.5,39.5) and (57.5,41.16) .. (55.83,42.83) .. controls (54.16,44.5) and (54.16,46.16) .. (55.83,47.83) .. controls (57.5,49.5) and (57.5,51.16) .. (55.83,52.83) -- (55.83,55.15) -- (55.83,55.15) ;
+        \draw [shift={(55.83,55.15)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        % Text Node
+        \draw (53.83,16.33) node [anchor=south east] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (57.83,16.33) node [anchor=south west] [inner sep=0.75pt]   [align=left] {g};
+        \end{tikzpicture}
+        \simeq \frac{1}{\partial _{t}}\frac{\Omega }{2} \rho _{\text{gg}} ,\quad \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (110.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da5156777717229821] 
+        \draw [line width=1.5]    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(27.68,17.83)}, rotate = 0] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (8.75,-4.2) -- (0,0) -- (8.75,4.2) -- (5.81,0) -- cycle    ;
+        %Straight Lines [id:da3459479993085457] 
+        \draw [line width=0.75]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(73.98,17.83)}, rotate = 0] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da8154188451232849] 
+        \draw    (55.83,17.83) .. controls (57.5,19.5) and (57.5,21.16) .. (55.83,22.83) .. controls (54.16,24.5) and (54.16,26.16) .. (55.83,27.83) .. controls (57.5,29.5) and (57.5,31.16) .. (55.83,32.83) .. controls (54.16,34.5) and (54.16,36.16) .. (55.83,37.83) .. controls (57.5,39.5) and (57.5,41.16) .. (55.83,42.83) .. controls (54.16,44.5) and (54.16,46.16) .. (55.83,47.83) .. controls (57.5,49.5) and (57.5,51.16) .. (55.83,52.83) -- (55.83,55.15) -- (55.83,55.15) ;
+        \draw [shift={(55.83,55.15)}, rotate = 135] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        % Text Node
+        \draw (53.83,16.33) node [anchor=south east] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (57.83,16.33) node [anchor=south west] [inner sep=0.75pt]   [align=left] {g};
+        \end{tikzpicture}
+        \simeq \frac{1}{\partial _{t}}\frac{\Omega }{2} \rho _{\text{ee}} ,
+\end{equation}
+and also 
+\begin{equation}
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt     
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,38);\path (67.33333587646484,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da2856832892874426] 
+        \draw    (10.33,22.83) -- (54.83,22.83) ;
+        \draw [shift={(35.18,22.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        % Text Node
+        \draw (10.33,21.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (54.83,21.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        \end{tikzpicture}
+        \simeq \frac{1}{\partial_t} \Delta \rho_{\text{eg}} .
+    \label{eq:g-lesser-free-eg}
+\end{equation}
+Here we need to note that we are dealing with lesser Green functions, 
+and therefore the free $G^<_{\text{gg}}$ or $G^<_{\text{ee}}$ is just $1 / \ii \partial_t$;
+on the other hand, we have \eqref{eq:g-lesser-free-eg}.
+This can be illustrated by the following diagrams: 
+\begin{equation}
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,43);\path (115.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da5327526507160516] 
+        \draw [line width=0.75]    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da8400904796600857] 
+        \draw [line width=0.75]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(80.68,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        % Text Node
+        \draw (55.83,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        % Text Node
+        \draw (11.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+        % Text Node
+        \draw (55.83,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {\mbox{-}};
+        % Text Node
+        \draw (100.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {\mbox{-}};
+        \end{tikzpicture}
+        ,\quad \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,43);\path (115.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da28216203396670925] 
+        \draw [line width=0.75]    (11.33,17.83) -- (55.83,17.83) ;
+        \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da6223132732301591] 
+        \draw [line width=0.75]    (55.83,17.83) -- (100.33,17.83) ;
+        \draw [shift={(80.68,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        % Text Node
+        \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {g};
+        % Text Node
+        \draw (55.83,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+        % Text Node
+        \draw (11.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+        % Text Node
+        \draw (55.83,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+        % Text Node
+        \draw (100.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {{-}};
+    \end{tikzpicture}
+\end{equation}
+and we can see that the diagrams for $G^<_{\text{eg}}$, when the external driving field is turned off, 
+contains ``ordinary'' time-ordered and anti-time-ordered Green functions, 
+and after the summation, the difference between the energies of the e state and the g state 
+enters the self-energy of $G^{<}_{\text{eg}}$.
+We can do the same thing for $G^<_{\text{ee}}$ or $G^<_{\text{gg}}$ 
+but this time we just get 
+\begin{equation}
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,43);\path (115.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Straight Lines [id:da6227673593287701] 
+    \draw [line width=0.75]    (11.33,17.83) -- (55.83,17.83) ;
+    \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da25170960008624355] 
+    \draw [line width=0.75]    (55.83,17.83) -- (100.33,17.83) ;
+    \draw [shift={(80.68,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    % Text Node
+    \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (55.83,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (11.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+    % Text Node
+    \draw (55.83,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {\mbox{-}};
+    % Text Node
+    \draw (100.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {\mbox{-}};
+    \end{tikzpicture}
+    ,\quad \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,43);\path (115.66667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Straight Lines [id:da13754447014645366] 
+    \draw [line width=0.75]    (11.33,17.83) -- (55.83,17.83) ;
+    \draw [shift={(36.18,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da10487365181821628] 
+    \draw [line width=0.75]    (55.83,17.83) -- (100.33,17.83) ;
+    \draw [shift={(80.68,17.83)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    % Text Node
+    \draw (11.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (100.33,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (55.83,16.33) node [anchor=south] [inner sep=0.75pt]   [align=left] {e};
+    % Text Node
+    \draw (11.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+    % Text Node
+    \draw (55.83,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {+};
+    % Text Node
+    \draw (100.33,19.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {\mbox{-}};
+    \end{tikzpicture},
+\end{equation}
+and we find that the contributions of time-ordered and anti-time-ordered Green functions
+just cancel each other.
+It should also be noted that $\Delta$ itself contains corrections from external fields
+and is the energy gap minus the external phonon frequency.
+
+Now we turn to how to obtain rate equations -- 
+equations where the transitions between e and g are modeled as ``scattering'' -- 
+from the aforementioned optical Bloch equation, 
+or more generally, quantum master equations.
+The idea is just to first replace $G^<_{\text{eg}}$ by diagrams in terms of $G^<_{\text{ee}, \text{gg}}$,
+and then ignore any frequency dependence in the internal components
+(similar to COHSEX).
+TODO: possible to do something like GPP?
+
+\end{document}

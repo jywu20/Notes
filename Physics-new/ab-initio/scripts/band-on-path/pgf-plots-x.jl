@@ -121,7 +121,7 @@ function pgf_plot_band!(band_axis, ε_k;
     )
     
     if !legend
-        curve["forget_plot"] = nothing
+        curve["forget plot"] = nothing
     end
     
     if options !== nothing
