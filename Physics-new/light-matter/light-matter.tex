@@ -1973,6 +1973,16 @@ So if we perturb the atoms strongly,
 this model is merely a toy model and has no quantitatively value; 
 but in solids, phonon-phonon interaction is usually weak enough, 
 and this model works just fine.
+\todo{
+    For IR-active phonons, the diagram for phonon-photon coupling 
+    is just one photon becoming one phonon; 
+    but then why this is absorption\dots
+    Also, what about Raman scattering? 
+    The diagram of Raman scattering seems to be 
+    one photon in, one photon and one phonon out, or vice versa.
+    This also could happen to acoustic phonons, right?
+    Since acoustic phonons cause density waves which change $\epsilon$.
+}
 
 \section{Raman effect}
 
@@ -2336,5 +2346,105 @@ We can focus on $\vb*{H}$ instead and arrive at
 and this is known as the \concept{master equation}; 
 the name has nothing to do with the master equation about probabilistic distributions; 
 what is handy is the operator on the LHS actually is a Hermitian operator.
+
+\section{Physics of a beam}
+
+A \concept{dispersion surface} is the set of all wave vectors with the same frequency;
+for an isotropic system all dispersion surfaces are spheres.
+For highly anisotropic mediums we have very weird dispersion surfaces.
+
+Consider a beam with a Gaussian radius profile $E(z = \const., r)$.
+Currently we focus on the isotropic case.
+Of course we can do a Fourier transform of $E(z = \const., r)$
+and we find that in $E$ we have Fourier components 
+whose transverse wave vector components are non-zero.
+If the electric field only has one frequency, 
+then $k_\parallel$ is decided by $k_\bot$,
+and therefore the Fourier components do not propagate in the same pace, 
+and hence dispersion happens.
+
+Now consider a \emph{flat} dispersion surface perpendicular 
+to the propagation direction of a beam.
+In this case $k_\parallel$ is fixed, regardless of $k_\bot$; 
+the beam then does not disperse at all!
+The flat dispersion surface can be engineered in a two-dimensional photonic crystal:
+when $\vb*{k}$ is close to the boundary of the first Brillouin zone, 
+in different directions, Bragg interference has different strengths, 
+and eventually we get flat dispersion surfaces at some $\vb*{k}$ points.
+
+To make the theory more quantitative, 
+we study Helmholtz equation. 
+Suppose we have decomposition 
+\begin{equation}
+    \psi(\vb*{r}) = \sum_{\vb*{k}_\bot} u(\vb*{k}_\bot) 
+    \ee^{\ii \vb*{k}_\bot \cdot \vb*{r}_\bot} \ee^{\ii {k}_\parallel (\vb*{k}_\bot) z} .
+\end{equation}
+For an isotropic medium we make the \concept{paraxial approximation}
+\begin{equation}
+    k_\parallel = \sqrt{k_0^2 - k_\bot^2} \approx k_0 \left(
+        1 - \frac{1}{2} \left(\frac{k_\bot}{k_0}\right)^2
+    \right),
+\end{equation}
+which is equivalent to assuming that the intensity 
+is mainly distributed around $\vb*{k} = \vb*{k}_\parallel$.
+More generally we can continue the Taylor expansion.
+Note that in the most general case we can still have $\dv*{k_\parallel}{k_\bot}$
+-- it's just absent in the isotropic case.
+The total (scalar) field is then 
+\begin{equation}
+    \psi(\vb*{r}) = \ee^{\ii k_0 z} \underbrace{
+        \int \dd[2]{\vb*{k}_\bot} u(\vb*{k}_\bot) 
+        \ee^{
+            \ii k_\bot r_\bot - \frac{\ii}{2} \left(\frac{k_\bot}{k_0}\right)^2 z
+        },
+    }_{\text{envelope $f$}},
+\end{equation}
+and therefore we have  
+\begin{equation}
+    f(z = 0) = \psi(z = 0), \quad 
+    u(\vb*{k}_\bot) = \int \frac{\dd[2]{\vb*{r}_\bot}}{(2\pi)^2} f(z = 0),
+\end{equation}
+and eventually 
+\begin{equation}
+    f(\vb*{r}_\bot, z) = \mathcal{F}^{-1} \left(
+        \mathcal{F}_{\vb*{r}_\bot \to \vb*{k}_\bot} f(\vb*{r}_\bot, z = 0) 
+        \ee^{- \frac{\ii}{2} \left(\frac{k_\bot}{k_0}\right)^2 z}
+    \right).
+\end{equation}
+Thus we find that at each $z$, the radius profile of the electric field 
+can be obtained from $f(z=0)$ by double Fourier transforms.
+
+We can verify that the radius profile expands as we go along $z$.
+Near $z = 0$, we have 
+\begin{equation}
+    \begin{aligned}
+        f(\Delta z) &\approx \int u(\vb*{k}_\bot) \ee^{\ii \vb*{k}_\bot \cdot \vb*{r}_\bot}
+        \left(
+            1 - \frac{\ii k_\bot^2}{2k_0} \Delta z
+        \right) \dd[2]{\vb*{k}_\bot} \\
+        &= f(z=0) + \frac{\ii \Delta z}{2 k_0} \laplacian f(\vb*{r}_\bot, z = 0).
+    \end{aligned}
+\end{equation}
+So we find 
+\begin{equation}
+    2 \ii k_0 \partial_z f + \partial_{\bot}^2 f = 0.
+\end{equation}
+This, formally, is similar to the Schrodinger equation.
+Note that this equation is a static description of a beam mode, 
+not truly a dynamic one.
+Also, if we keep track of the peak position of the beam, 
+we will find it develops a curvature as $z$ goes up, 
+and hence the beam diverges:
+we have 
+\begin{equation}
+    f(\vb*{r}_\bot, z + \Delta z) = \ee^{\ii \phi(\vb*{r}_\bot, \Delta z)} f(z), \quad 
+    \phi(\vb*{r}_\bot, \Delta z) = \frac{\Delta z}{2 k_0} \frac{\laplacian_\bot f}{f}.
+\end{equation}
+Now if the dispersion surface is engineered to have a negative curvature at $\vb*{k}$, 
+we will find the beam \emph{concentrate} itself.
+
+Finally we consider what Kerr nonlinearity does to the system.
+Since the Kerr nonlinearity may cancel the curvature caused by the isotropic dispersion relation,
+the beam no longer 
 
 \end{document}
