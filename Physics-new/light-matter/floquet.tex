@@ -23,6 +23,7 @@
 \usepackage{listings}
 \usepackage{autobreak}
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{acro}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
 \usepackage[backend=bibtex,sorting=none]{biblatex}
@@ -138,6 +139,9 @@
 
 \newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
 
+% Shorthands
+\DeclareAcronym{arpes}{long = angle-resolved photoemission spectroscopy, short = ARPES}
+
 \newcommand*{\kB}{k_{\text{B}}}
 \newcommand*{\muB}{\mu_{\text{B}}}
 \newcommand*{\efermi}{E_{\text{F}}}
@@ -150,9 +154,9 @@
 \newcommand*{\hefour}{$^4$He}
 \newcommand{\epsr}{\epsilon_{\text{r}}}
 \newcommand{\chie}{\chi_{\text{e}}}
-\newcommand{\Efreq}{\tilde{\vb*{E}}}
-\newcommand{\Dfreq}{\tilde{\vb*{D}}}
-\newcommand{\Pfreq}{\tilde{\vb*{P}}}
+\newcommand{\Efreq}{\tilde{\vb{E}}}
+\newcommand{\Dfreq}{\tilde{\vb{D}}}
+\newcommand{\Pfreq}{\tilde{\vb{P}}}
 
 \title{Floquet theory}
 \author{Jinyuan Wu}
@@ -161,6 +165,7 @@
 
 \maketitle
 
+\section{Introduction} 
 
 \section{The Floquet formalism: quasienergies and quasi-stationary states}
 
@@ -341,8 +346,9 @@ and therefore the time average of $\braket*{\psi_n(t)}{\psi_{n'}(t)}$ is
 Therefore, after time averaging, the Floquet quasi-stationary states 
 are orthogonal to each other.
 
-In conclusion, a Floquet system has a set of quasi-eigenstates $\{ \ket*{\psi_n} \}$
-with orthogonality relation \eqref{eq:orthogonal},
+In conclusion, a Floquet system is an inherently non-equilibrium system,
+but a set of quasi-eigenstates $\{ \ket*{\psi_n} \}$
+with orthogonality relation \eqref{eq:orthogonal} can still be well defined,
 the number of which is the same as 
 the dimension of the Hilbert space 
 (\emph{not} the extended Hilbert space).
@@ -357,12 +363,62 @@ the difference between the nearest two being $\hbar \omega$;
 thus all distinct Floquet quasi-eigenstates can be indexed 
 by quasi-energies that are within one ``Floquet-Brillouin zone''.
 
-\section{Where do Floquet effects appear?}
+\section{Floquet effects in spectroscopy}
 
-It is however possible to use light to stimulate 
+Ordinary \ac{arpes} spectra 
+\begin{equation}
+    I(\vb{k}, \omega) \propto \sum_{\vb{k}', c} 
+    \abs*{M_{\vb{k} \vb{k}'}^{fc}}^2 \delta(\omega - \epsilon_{c \vb{k}'}) f(\omega),
+    \label{eq:spectral-arpes}
+\end{equation}
+where $(f, \vb{k})$ is the out-coming electron mode, 
+$(c, \vb{k}')$ is an electronic mode within the material 
+and $f(\omega)$ is the Fermi-Dirac distribution,
+are usually calculated by Fermi golden rule \cite{sobota2021angle};
+when the starting state is non-equilibrium, 
+the spectral function should be replaced by the lesser Green function 
+and we get \cite{freericks2009theoretical,rustagi2018photoemission,chan2023giant}
+\begin{equation}
+    I(t, \vb{k}, \omega) \propto - \ii \int_{t_0}^t \dd{t_1} \int_{t_0}^t \dd{t_2} s(t_1) s(t_2) 
+    \abs*{M_{\vb{k} \vb{k}'}^{fc}}^2 G^<_{\vb{k}'}(t_2, t_1) \ee^{\ii \omega (t_1 - t_2)} ,
+    \label{eq:lesser-arpes}
+\end{equation}
+where $s(t)$ is the envelope of the probe pulse.
+When the system indeed stays in equilibrium, 
+and the probe pulse is long enough and 
+hence $s(t)$ can be seen as a constant and $t \to \infty$, 
+it can be directly verified that \eqref{eq:lesser-arpes} reduces to \eqref{eq:spectral-arpes}.
+When the system is Floquet-driven, \eqref{eq:spectral-arpes} is not correct, 
+but in the long probe pulse limit, \eqref{eq:lesser-arpes} becomes 
+\begin{equation}
+    I(t \to \infty, \vb{k}, \omega) \propto
+    - \ii \int \dd{\bar{t}} \int \dd{\tau} G^<_{\vb{k}'}(\bar{t}, \bar{t} + \tau) \ee^{\ii \omega \tau} 
+    = - \ii \expval{\int \dd{\tau} \ee^{\ii \omega \tau}
+    G^<_{\vb{k}'}(\bar{t}, \bar{t} + \tau)}_{\bar{t}},
+\end{equation} 
+or in other words, the Fourier transform of the time-averaged occupied density of states.
+This, then, can be determined by the Floquet quasi-stationary states and quasienergies.
+We have \cite{rudner2020floquet}
+\begin{equation}
+    \bar{\rho}(\Omega) = - \ii \expval{\int \dd{\tau} \ee^{\ii \omega \tau} G^<_{\vb{k}}} 
+    =\sum_{n \vb{k}, m} A_{n \vb{k}}^{(m)} \delta\left(\varepsilon_{n \vb{k}} +m \omega-\Omega\right), 
+    \quad A_{n \vb{k}}^{(m)}= \braket*{\phi_{n \vb{k}}^{(m)}}{\phi_{n \vb{k}}^{(m)}}.
+\end{equation}
+The ARPES spectrum of a Floquet-driven band structure, therefore, 
+is given by all Floquet bands weighted by the magnitude of $\ket*{\phi_{n \vb{k}}^{(m)}}$.
+
+TODO: But then what about non-diagonal terms in Floquet Hamiltonian? Note that $n \neq n'$ are not considered above.
+
+Interestingly, it is possible to use light to stimulate 
 some long-lived degrees of freedom in a solid 
 and let it drive the rest of the system, 
 which sometimes is known as ``self-driving''.
+In \cite{chan2023giant}, it is demonstrated that 
+Floquet renormalization of the band structure can be observed 
+even long after the pump is turned off, 
+which is due to the existence of excitons previously created by the pump.
+TODO: exciton captured by electron self-energy; 
+exciton creates $\Sigma_{cv}$
 
 \printbibliography
 
