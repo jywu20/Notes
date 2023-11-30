@@ -2429,11 +2429,12 @@ Near $z = 0$, we have
 So we find 
 \begin{equation}
     2 \ii k_0 \partial_z f + \partial_{\bot}^2 f = 0.
+    \label{eq:spatial-eq-f}
 \end{equation}
 This, formally, is similar to the Schrodinger equation.
 Note that this equation is a static description of a beam mode, 
 not truly a dynamic one.
-Also, if we keep track of the peak position of the beam, 
+Also, if we keep track of the phase of the beam, 
 we will find it develops a curvature as $z$ goes up, 
 and hence the beam diverges:
 we have 
@@ -2446,6 +2447,87 @@ we will find the beam \emph{concentrate} itself.
 
 Finally we consider what Kerr nonlinearity does to the system.
 Since the Kerr nonlinearity may cancel the curvature caused by the isotropic dispersion relation,
-the beam no longer 
+the beam no longer diverges and the wave fronts are always flat.
+This is known as optical solitons.
+
+\section{Evolution of a pulse in dispersive medium}
+
+\eqref{eq:spatial-eq-f} is a spatial equation.
+If we are able to write down an equation with similar shape 
+but the first-order derivative is $\partial_t$, 
+we have a real Schrodinger equation in optics.
+
+We use slowly varying envelope approximation here.
+Suppose 
+\begin{equation}
+    a(x, t) \approx \ee^{\ii (k_0 x - \omega_0 t)} \bar{a}(x, t),
+\end{equation}
+where the ``envelope'' $\bar{a}(x, t)$ is expected to have slower spatial and temporal variation 
+compared with the ``carrier'' $\ee^{\ii (k_0 x - \omega_0 t)}$.
+In the Fourier space we have 
+\begin{equation}
+    a(x, t) = \int \dd{\omega} \ee^{\ii (k(\omega) x - \omega t)} a(\omega), 
+    \quad \bar{a}(\underbrace{\omega - \omega_0}_{\Delta \omega}) = a(\omega)
+\end{equation}
+Here we have already required that $a(x, t)$ is a solution of the EOM, 
+and that's why in the Fourier space we simply write $a(\omega)$, not $a(\omega, k)$.
+We then find 
+\begin{equation}
+    \bar{a}(x, t) = \int \frac{\dd{\Delta \omega}}{2\pi} \bar{a}(\Delta \omega)
+    \ee^{
+        - \ii \Delta \omega t + \ii (k_0' \Delta \omega + k_0'' \Delta \omega^2 / 2 + \cdots) x
+    },
+    \label{eq:a-bar-explicit}
+\end{equation}
+where $k_0'$ means $\dv*{k}{\omega}$ at $\omega = \omega_0$, etc.
+Let's only keep the $\Delta \omega^2$ term -- 
+it can then be shown that $\bar{a}(x , t + x / v_{\text{g}})$ broadens.
+It can be observed that 
+\begin{equation}
+    \text{frequency chirp} = \text{distance} \times \text{group velocity dispersion} \times \text{pulse bandwith},
+\end{equation}
+where GVD is $\dv*[2]{k}{\omega}$.
+This fact can be seen more easily by taking the spatial derivative of \eqref{eq:a-bar-explicit}:
+$\partial_x$ moves $k_0' \Delta \omega + k_0'' \Delta \omega^2 / 2$ down from the exponent, 
+and then we can replace $\Delta$ by $\ii \partial_t$, and we get 
+\begin{equation}
+    \partial_x \bar{a} = - \frac{1}{v_{\text{g}}} \partial_t \bar{a} 
+    - \frac{\ii}{2} k_0'' \partial_t^2 \bar{a},
+    \label{eq:envelope-eom}
+\end{equation}
+which has Schrodinger equation behaviors (including wave packet broadening), 
+although the positions of $x$ and $t$ are swapped.
+
+Now if there is Kerr nonlinearity, we can expect to see optical solitons again,
+for the phase shift introduced by the nonlinearity and $k_0''$ may cancel each other.
+The main effect of Kerr nonlinearity is to correct $\epsr$,
+and it enters the exponent in \eqref{eq:a-bar-explicit},
+and after $\partial_x$ it just becomes an additional term in \eqref{eq:envelope-eom}; 
+this of course is not always correct: 
+we have implicitly made assumptions like that in $\chi^{(3)} \abs*{\vb{E}} \vb{E}$, 
+$\abs*{\vb{E}}^2$ shouldn't have strong spatial variance, 
+to enable us to treat the nonlinear term in Maxwell equations 
+in a way similar to the say we treat other constants. 
+The EOM of $\bar{a}$ now reads 
+\begin{equation}
+    \partial_x \bar{a} = - \frac{1}{v_{\text{g}}} \bar{a} 
+    - \frac{\ii}{2} k_0'' \partial_t^2 \bar{a} 
+    + \ii \gamma \abs*{\bar{a}}^2 \bar{a}.
+\end{equation}
+We can again redefine $\partial_x$ or $\partial_t$ and get rid of the first term in the RHS; 
+when 
+\begin{equation}
+    A_0 \tau_0 = \sqrt{k_0'' / \gamma},
+\end{equation}
+the follows is an exact solution
+\begin{equation}
+    \bar{a} = A_0 \mathrm{sech} (t / \tau_0) \exp(\ii \gamma \abs*{A_0}^2 x / 2).
+\end{equation}
+It doesn't have any broadening, and we can then make $\tau_0$ extremely small,
+and have an extremely short but stable pulse.
+There are other solutions of the equation;
+some are semi-stable states.
+Solitons may have more complicated dynamics,
+like colliding with each other.
 
 \end{document}

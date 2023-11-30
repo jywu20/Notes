@@ -2617,52 +2617,6 @@ In analytic works on excitons,
 usually only the direct term is considered, 
 which is probably the reason for the terminology.
 
-The time-dependent $GW$ method 
-can capture exciton effects to electromagnetic response of the system,
-because in the weak field limit 
-it is equivalent to BSE.
-For example, by calculating $G^<$ using time-dependent $GW$, 
-we are able to get the ARPES signature that comes from the electron 
-in the exciton created by optical pumping:
-the ARPES signature can be captured by Fermi golden rule, 
-which contains a $\sum_v \abs*{\braket*{c, v}{\text{exciton from light field}}}^2$ factor, 
-and by optical theorem we have (note that we don't put $\Im$ before the RHS, 
-because we are dealing with $G^<$)
-\begin{equation}
-    \protect\input{feyn/g-lesser-transition-prob-1.tex},
-    \label{eq:g-lesser-transition-prob}
-\end{equation}
-where $X$ represents the LHS of \eqref{eq:bse.sum-general} 
-where the kernel in the RHS is \eqref{eq:bse.kernel}; 
-if we think for a while and expand the RHS by definition, 
-we will soon find that the RHS is just the Dyson series with $GW$ approximation
-(note that the propagator in the middle is confined to valence modes, 
-and eventually we find the irreducible self-energy diagram 
-of the RHS is just the $GW$ diagrams, without any double counting).
-Thus the RHS of \eqref{eq:g-lesser-transition-prob} can also be used to 
-evaluate the ARPES spectrum; 
-and indeed for ARPES experimental settings with short probe pulses 
-instead of a continuous plane wave, 
-where we don't have a $\delta$ function factor,
-the $G^<$-based RHS of \eqref{eq:g-lesser-transition-prob} still works, 
-while the LHS is no longer correct since Fermi golden rule fails in this case.
-When Fermi golden rule does work, 
-in kicking out the electron in ARPES,
-the energy conservation relation 
-\begin{equation}
-    E_{S \vb*{Q}} = \omega - \underbrace{\epsilon_{v, \vb*{k} - \vb*{Q}}}_{< 0}
-\end{equation}
-that comes with the LHS in \eqref{eq:g-lesser-transition-prob}
-is equivalent to ``self-driven'' Floquet effect caused by the $\ee^{- \ii E_{S \vb*{Q}} t}$ factor in $G^<$ to $G^<$ in the RHS \cite{chan2023giant}.
-
-Thus the time-dependent $GW$ method outlined above 
-is also sometimes called the \concept{time-dependent BSE}.
-Both flavors of BSE have been implemented:
-the exciton Hamiltonian approach is realized by BerkeleyGW;
-the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
-but its accuracy has been verified by comparison with the exciton Hamiltonian approach
-\cite{attaccalite2011real}.
-
 \begin{figure}
     \centering
     \input{feyn/exciton-electron-pair-comparison.tex}
@@ -2712,6 +2666,72 @@ the diagrams depicting interaction between the hole and one of the electrons
 are the BSE diagrams shown in \eqref{eq:bse.kernel}, 
 while the diagrams about interaction between the electrons 
 are those in the left column in \prettyref{fig:electron-electron-electron-hole}.
+
+We have shown that the time-dependent $GW$ method 
+can capture exciton effects to electromagnetic response of the system,
+because in the weak field limit 
+it is equivalent to BSE.
+Thus the time-dependent $GW$ method outlined above 
+is also sometimes called the \concept{time-dependent BSE},
+although the name is slightly misleading, 
+as if the \emph{four-particle} Green function is the dynamic variable.
+Both flavors of BSE have been implemented:
+the exciton Hamiltonian approach is realized by BerkeleyGW;
+the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
+but its accuracy has been verified by comparison with the exciton Hamiltonian approach
+\cite{attaccalite2011real}.
+As a demonstration of how exciton effects are more conveniently captured by dynamic $GW$, 
+we point out that by calculating $G^<$ using time-dependent $GW$, 
+we are able to get the ARPES signature that comes from the electron 
+in the exciton created by optical pumping.
+This of course can be captured by the more traditional Fermi golden rule approach as well,
+where in the lowest order approximation, we assume that there is only one exciton in the system,
+and the Fermi golden rule contains a $\sum_v \abs*{\braket*{c, v}{\text{exciton from light field}}}^2$ factor. 
+By optical theorem we have (note that we don't put $\Im$ before the RHS, 
+because we are dealing with $G^<$)
+\begin{equation}
+    \protect\input{feyn/g-lesser-transition-prob-1.tex},
+    \label{eq:g-lesser-transition-prob}
+\end{equation}
+where $X$ represents the LHS of \eqref{eq:bse.sum-general} 
+where the kernel in the RHS is \eqref{eq:bse.kernel}; 
+if we think for a while and expand the RHS by definition, 
+we will soon find that the RHS is just the lowest order terms 
+in the Dyson series of $G^<$ under (time-dependent, non-equilibrium) $GW$ approximation,
+and hence the consistency between the Fermi golden rule and the formalism based on $G^<$ is verified.%
+\footnote{
+    Note that here we are considering contributions of $G^<_{nn}$ to the ARPES spectrum
+    \cite{perfetto2016first,rustagi2018photoemission},
+    and we can't have an exciton made by an electron and a hole from the same band mode,
+    in the RHS of \eqref{eq:g-lesser-transition-prob} 
+    there are two exciton diagrams.
+    This can be further verified by the expression of the ARPES spectrum in \cite{rustagi2018photoemission},
+    which contains something like $\mel{\Psi_n}{c^\dagger_{\vb*{k}} U(t_2 , t_1) c_{\vb*{k}}}{\Psi_n}$,
+    where the exciton wave function appears twice.
+}
+Indeed for ARPES experimental settings with short probe pulses 
+instead of a continuous plane wave, 
+where we don't have a $\delta$ function factor,
+the $G^<$-based RHS of \eqref{eq:g-lesser-transition-prob} still works, 
+while the LHS is no longer correct since Fermi golden rule fails in this case.
+
+It's still possible to add even more terms to the RHS of \eqref{eq:g-lesser-transition-prob},
+which in principle can also be traced by correcting the Fermi golden rule.
+When a strong external light pump is turned on for a while and then turned off, 
+excitons proliferate when probing happens, 
+and in this case we have ``self-driven'' Floquet effect,
+caused by the $\ee^{- \ii E_{S \vb*{Q}} t}$ factor in $G^<$ \cite{chan2023giant}.
+The energy conservation relation 
+\begin{equation}
+    E_{S \vb*{Q}} = \omega - \underbrace{\epsilon_{v, \vb*{k} - \vb*{Q}}}_{< 0}
+\end{equation}
+that appears naturally in the LHS in \eqref{eq:g-lesser-transition-prob}
+is equivalent to the $m=1$ Floquet effect; 
+there can be infinite Floquet quasi-bands in principle,
+but the effects of most of them are weak.
+
+
+
 
 \section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 
