@@ -1,0 +1,359 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{acro}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex,sorting=none]{biblatex}
+\addbibresource{floquet.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+% Shorthands
+\DeclareAcronym{arpes}{long = angle-resolved photoemission spectroscopy, short = ARPES}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\Efreq}{\tilde{\vb{E}}}
+\newcommand{\Dfreq}{\tilde{\vb{D}}}
+\newcommand{\Pfreq}{\tilde{\vb{P}}}
+
+\title{Floquet theory}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+
+\paragraph*{Floquet theory in the temporal dimension} 
+\textit{
+    Apply the Floquet theory of differential equation to 
+    how a wave function evolves according to a periodic Hamiltonian.
+    What are counterparts of $\vb{k}$ and $\vb{G}$ vectors in band theory?
+}
+
+we know it is possible to expand an arbitrary state that 
+evolves according to a Hamiltonian $H$ with period $T$ into 
+a linear combination (the coefficients are constants) of 
+$\{\ket*{\psi_n(t)}\}$ where 
+\begin{equation}
+    \ket*{\psi_n (t)} = \ee^{- \ii \varepsilon_n t / \hbar} \ket*{\Phi_n(t)},
+    \quad \ket*{\Phi_n(t + T)} = \ket*{\Phi_n(t)}.
+    \label{eq:floquet-wave-function}
+\end{equation}
+By discrete periodicity of $\ket*{\Phi_n(t)}$ we make Fourier expansion 
+\begin{equation}
+    \ket*{\Phi_n(t)} = \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m)}},
+    \label{eq:big-phi-to-extended-hilbert}
+\end{equation}
+where $m$ goes over all integers.
+The quasienergies $\varepsilon_n$ are comparable to the crystal momentum,
+and $m \omega$ are comparable to $\vb{G}$ vectors.
+Note that here $\ket*{\phi_n^{(m)}}$
+are \emph{Fourier coefficients} and are not eigenstates of anything; 
+there is no normalization or orthogonality condition for them.
+
+\paragraph*{Floquet effective Hamiltonian} 
+\textit{
+    Rewrite the Schrodinger equation 
+    \begin{equation}
+        \ii \hbar \dv{t} \ket*{\psi_n(t)} = H \ket*{\psi_n(t)}
+    \end{equation}
+    in a form that doesn't explicitly contain time. 
+    The resulting matrix is known as the Floquet effective Hamiltonian.
+}
+
+The Schrodinger equation now reads 
+\[
+    \ii \hbar \sum_m (- \ii \varepsilon_n / \hbar - \ii m \omega) 
+    \ee^{- \ii (\varepsilon_n / \hbar + m \omega) t} \ket*{\phi_n^{(m)}}
+    = \sum_{m'} \ee^{- \ii \varepsilon_n / \hbar - \ii m' \omega t} H \ket*{\phi_n^{(m')}},
+\] 
+and by cancelling the $\ee^{- \ii \varepsilon_n t / \hbar}$ factor 
+and doing inverse Fourier transform, we get 
+\begin{equation}
+    (\varepsilon_n + m \hbar \omega) \ket*{\phi_n^{(m)}} 
+    = \sum_{m'} H^{(m - m')} \ket*{\phi_n^{(m')}},
+\end{equation}
+where 
+\begin{equation}
+    H(t) = \sum_{m} \ee^{- \ii m \omega t} H^{(m)}, \quad 
+    H^{(m)} = \frac{1}{N T} \int_{0}^{NT} \dd{t} \ee^{\ii m \omega t} H(t),
+\end{equation}
+$N$ is a large positive integer. Thus we find 
+\begin{equation}
+    \varepsilon_n \ket*{\phi^{(m)}_n}
+    = \sum_{m'} (
+        H^{(m - m')} - m \hbar \omega \delta_{m m'}
+    ) \ket*{\phi^{(m')}_{n}}.
+    \label{eq:floquet-ham}
+\end{equation}
+$\varepsilon_n$ and the structure of $\ket*{\psi_n}$ can then be solved 
+by diagonalizing \eqref{eq:floquet-ham}.
+
+\paragraph*{The non-equilibrium nature of Floquet effective Hamiltonian}
+\textit{
+    Compare the Floquet effective Hamiltonian with an ordinary effective Hamiltonian, 
+    say a two band model or a two-level atom model.
+    Is there any substantial difference?
+}
+
+Although we may want to interpret \eqref{eq:floquet-ham}
+as an effective Hamiltonian where photon degrees of freedom 
+have been integrated out,
+unlike conventional effective Hamiltonians
+whose eigenstates can in principle be obtained by 
+applying a projection operator on a subset of eigenstates of the full Hamiltonian,
+eigenstates of \eqref{eq:floquet-ham} 
+\emph{do not} correspond to any eigenstate of 
+the full, time-independent Hamiltonian that contains both light and matter degrees of freedom.
+If we consider the state of the full Hamiltonian corresponding to 
+an eigenstate of \eqref{eq:floquet-ham},
+we find that the light part of the former is in a coherent state,
+which is far from any eigenstate of the linear electromagnetic Hamiltonian 
+$\hbar \omega (n + \frac{1}{2})$.
+Instead, Floquet formalisms is to be understood in a more generic framework of non-equilibrium physics:
+Floquet Green function can be calculated within the Keldysh formalism,
+and \eqref{eq:floquet-ham} can be understood as the 
+non-equilibrium self-energy \cite{lubatsch2019evolution,aoki2014nonequilibrium}
+and therefore is not necessarily an equilibrium effective Hamiltonian.
+
+\paragraph*{The structure of the eigensystem of the Floquet effective Hamiltonian} 
+\textit{
+It can be seen that even when the dimension of the Hilbert space of matter is finite, 
+the dimension of the Floquet effective Hamiltonian, if written as a matrix, 
+is still infinite,
+as we have the the index of ``photon number''.
+Analyze the structure of the eigensystem of the Floquet effective Hamiltonian; 
+compare it with the eigensystem in a spatially periodic system. 
+}
+
+If $\varepsilon_n$ is a solution of \eqref{eq:floquet-wave-function},
+then so is $\varepsilon_n + m \hbar \omega$.
+As for the relation between quasi-stationary eigenstates corresponding to 
+$\varepsilon_n$ and $\varepsilon_n + m \hbar \omega$, 
+we note that 
+\begin{equation}
+    \ket*{\psi_n(t)} = \ee^{- \ii \varepsilon_n t / \hbar} \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m)}}
+    = \ee^{- \ii (\varepsilon + \hbar m' \omega) t / \hbar}
+    \sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m + m')}}.
+\end{equation}
+Therefore, if $(\varepsilon, \{\ket*{\phi^{(m)}}\}_m)$ 
+is a solution of \eqref{eq:floquet-ham},
+then so is $(\varepsilon + \hbar m' \omega, \{\ket*{\phi^{(m + m')}}\}_m)$.
+This can also be directly shown from the form of \eqref{eq:floquet-ham}.
+
+Although $(\varepsilon, \{\ket*{\phi^{(m)}}\}_m)$ and 
+$(\varepsilon + \hbar m' \omega, \{\ket*{\phi^{(m + m')}}\}_m)$ 
+seem to be independent solutions of \eqref{eq:floquet-ham},
+they correspond to the the \emph{same} $\ket*{\psi_n(t)}$.
+Therefore the fact that a Floquet quasienergy plus an integer times $\omega$
+is also a Floquet quasienergy 
+is not a symmetry of the system, but merely a redundancy.
+Suppose we keep $M_m$ choices of $m$ when diagonalizing \eqref{eq:floquet-ham};
+\eqref{eq:floquet-ham} then has $N_m \times N$ solutions, 
+where $N$ is the dimension of the Hilbert space of the matter degrees of freedom.
+Since one solution of \eqref{eq:floquet-ham} has $N_m - 1$ physically equivalent counterparts, 
+\eqref{eq:floquet-ham} eventually has 
+\[
+    N \times N_m / N_m = N
+\]
+physically independent solutions.
+There however is no redundant information in $\{\ket*{\phi_n^{(m)}}\}$,
+because every $\ket*{\phi_n^{(m)}}$ is needed to determine $\ket*{\Phi_n(t)}$
+and thus $\ket*{\psi_n(t)}$.
+
+In conclusion, for each $\ket*{\psi_n(t)}$ 
+we have countable infinite quasi-energies,
+the difference between the nearest two being $\hbar \omega$;
+thus all distinct Floquet quasi-eigenstates can be indexed 
+by quasi-energies that are within one ``Floquet-Brillouin zone''.
+Unlike the case in solid state physics, 
+the state with quasienergy $\varepsilon_n$ is equivalent to 
+the state with quasienergy $\varepsilon_n + m \hbar \omega$,
+while in solid state physics 
+of course $\ee^{\ii \vb{k} \cdot \vb{r}}$ is \emph{not} equivalent to $\ee^{\ii (\vb{k} + \vb{G}) \cdot \vb{r}}$;
+the number of physically non-equivalent $\ket*{\psi_n(t)}$
+is the same as the dimension of the Hilbert space.
+(And therefore, in the ARPES spectrum of a Floquet system, 
+the signature at $\varepsilon_{n \vb{k}} + \hbar m \omega$
+\emph{does not} correspond to a new band other than the $n$th band: 
+it's just a satellite in the signature of the Floquet-renormalized $n$th band 
+that comes from the $\phi_{n \vb{k}}^{(m)}$ Floquet component of $\ket*{\psi_{n \vb{k}}}(t)$).
+
+\paragraph*{Orthogonal relations} 
+\textit{
+    Under which condition are the Floquet quasi-stationary states orthogonal to each other?
+}
+
+Although there is no generic orthogonal relation pertaining to $\{\ket*{\psi_n(t)}\}$,
+after time averaging an orthogonal relation can be obtained.
+From the fact that \eqref{eq:floquet-ham} is Hermitian, we have 
+\begin{equation}
+    \sum_m \braket*{\phi_n^{(m)}}{\psi_{n'}^{(m)}} = \delta_{nn'},
+\end{equation}
+and therefore the time average of $\braket*{\psi_n(t)}{\psi_{n'}(t)}$ is 
+\begin{equation}
+    \begin{aligned}
+        \overline{\braket*{\psi_n(t)}{\psi_{n'}(t)}} &= 
+        \lim_{T \to \infty} \frac{1}{T} \int_{0}^{T} \dd{t} 
+        \ee^{\ii (\varepsilon_n - \varepsilon_{n'}) t}
+        \sum_{m, m'}  \ee^{\ii (m - m') t}
+        \braket*{\phi_n^{(m)}}{\phi_{n'}^{(m')}} \\
+        &= \sum_{m, m'} \delta_{\varepsilon_n, \varepsilon_{n'}}
+        \delta_{mm'} \braket*{\phi_n^{(m)}}{\phi_{n'}^{(m')}}  \\
+        &= \delta_{\varepsilon_n, \varepsilon_{n'}} \sum_{m} \braket*{\phi_n^{(m)}}{\psi_{n'}^{(m)}}
+        = \delta_{nn'}.
+    \end{aligned}
+    \label{eq:orthogonal}
+\end{equation}
+Therefore, after time averaging, the Floquet quasi-stationary states 
+are orthogonal to each other.
+
+
+
+
+\printbibliography
+
+\end{document}
