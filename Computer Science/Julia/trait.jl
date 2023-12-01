@@ -2,8 +2,8 @@
 # types into ad hoc sets, 
 # which are then used to decide how to do dispatch. 
 # Unlike the typeclass-like Rust trait, 
-# Holy trait doesn't check whether certain methods are implemented for 
-# a type.
+# Holy trait doesn't check whether certain methods are implemented for a type
+# -- although this mechanism can definitely be introduced manually
 
 # Below we show an example of 
 # classifying concrete types into 
@@ -48,3 +48,8 @@ bounds(::Union{Ordinal, Continuous}, xs) = extrema(xs)
 # the control flow is automatically redirected to 
 # bounds(::Normable, xs)
 statqualia(::Type{<:AbstractVector}) = Normable()
+
+# The main problem of this design pattern, in my opinion, 
+# is that its functionality somehow overlaps with that of abstract types.
+# And indeed consider this post:
+# https://discourse.julialang.org/t/why-does-julia-not-support-multiple-traits/5278/9
