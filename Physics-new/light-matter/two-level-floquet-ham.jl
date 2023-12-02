@@ -1,4 +1,5 @@
 using Plots 
+using LaTeXStrings
 using ProgressMeter
 using LinearAlgebra 
 using Statistics
@@ -76,9 +77,9 @@ end
 
 # The Floquet spectrum v.s. the RWA spectrum
 let E = 1.0,
-    Ω = 0.1, 
-    ω = 0.9, 
-    N = 40
+    Ω = 0.4, 
+    ω = 0.7, 
+    N = 80
     
     Δ = E - ω 
     atom = TwoLevelFloquetAtom(Δ, Ω, ω)
@@ -112,14 +113,14 @@ function floquet_rwa_diff(E, Ω, ω, N)
     sqrt(mean((E_floquet - E_RWA).^2) / E) 
 end
 
-let Ω_list = LinRange(0, 1, 20), 
-    ω_list = LinRange(0, 1, 20)
+@profview let Ω_list = LinRange(0, 2, 50), 
+    ω_list = LinRange(0, 2, 50)
     
     sqrt_mse_list = zeros(length(Ω_list), length(ω_list))
     progress = Progress(length(sqrt_mse_list))
     for (Ω_idx, Ω) in enumerate(Ω_list)
         for (ω_idx, ω) in enumerate(ω_list)
-            sqrt_mse_list[Ω_idx, ω_idx] = floquet_rwa_diff(1, Ω, ω, 40)
+            sqrt_mse_list[Ω_idx, ω_idx] = floquet_rwa_diff(1.0, Ω, ω, 40)
             next!(progress)
         end
     end
@@ -130,9 +131,13 @@ let Ω_list = LinRange(0, 1, 20),
     ω_min = minimum(ω_list)
     ω_max = maximum(ω_list)
     Δω    = step(ω_list)
-    heatmap(Ω_list, ω_list, sqrt_mse_list', 
+    p = heatmap(Ω_list, ω_list, sqrt_mse_list', 
         aspect_ratio = :equal,
+        xlabel = L"\Omega",
+        ylabel = L"\omega",
         xlims = (Ω_min - ΔΩ / 2, Ω_max + ΔΩ / 2),
         ylims = (ω_min - Δω / 2, ω_max + Δω / 2), 
         clims = (0, 1))
+    display(p)
+    p
 end
