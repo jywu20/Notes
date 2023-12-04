@@ -2667,6 +2667,8 @@ are the BSE diagrams shown in \eqref{eq:bse.kernel},
 while the diagrams about interaction between the electrons 
 are those in the left column in \prettyref{fig:electron-electron-electron-hole}.
 
+\subsection{Remark on non-equilibrium dynamic $GW$ and equilibrium multi-particle formalisms}
+
 We have shown that the time-dependent $GW$ method 
 can capture exciton effects to electromagnetic response of the system,
 because in the weak field limit 
@@ -2680,12 +2682,18 @@ the exciton Hamiltonian approach is realized by BerkeleyGW;
 the time-dependent $GW$ approach doesn't seem to have mature open source realization (TODO: really?),
 but its accuracy has been verified by comparison with the exciton Hamiltonian approach
 \cite{attaccalite2011real}.
-As a demonstration of how exciton effects are more conveniently captured by dynamic $GW$, 
-we point out that by calculating $G^<$ using time-dependent $GW$, 
+
+Most of the time, BSE (time-independent, of course) is preferred, 
+but there are cases time-dependent $GW$ is good to use.
+Here we provide a demonstration of the equivalence between the non-equilibrium $GW$ formalism 
+and BSE (plus further equilibrium, multi-particle excitation formalisms),
+and how exciton effects are more conveniently captured by dynamic $GW$.
+By calculating $G^<$ using time-dependent $GW$, 
 we are able to get the ARPES signature that comes from the electron 
-in the exciton created by optical pumping.
-This of course can be captured by the more traditional Fermi golden rule approach as well,
-where in the lowest order approximation, we assume that there is only one exciton in the system,
+in the exciton created by optical pumping \cite{perfetto2016first,rustagi2018photoemission},
+and on the other hand,
+this of course can be captured by the more traditional Fermi golden rule approach as well.
+In the lowest order approximation, we assume that there is only one exciton in the system,
 and the Fermi golden rule contains a $\sum_v \abs*{\braket*{c, v}{\text{exciton from light field}}}^2$ factor. 
 By optical theorem we have (note that we don't put $\Im$ before the RHS, 
 because we are dealing with $G^<$)
@@ -2700,8 +2708,7 @@ we will soon find that the RHS is just the lowest order terms
 in the Dyson series of $G^<$ under (time-dependent, non-equilibrium) $GW$ approximation,
 and hence the consistency between the Fermi golden rule and the formalism based on $G^<$ is verified.%
 \footnote{
-    Note that here we are considering contributions of $G^<_{nn}$ to the ARPES spectrum
-    \cite{perfetto2016first,rustagi2018photoemission},
+    Note that here we are considering contributions of $G^<_{nn}$ to the ARPES spectrum,
     and we can't have an exciton made by an electron and a hole from the same band mode,
     in the RHS of \eqref{eq:g-lesser-transition-prob} 
     there are two exciton diagrams.
@@ -2709,15 +2716,9 @@ and hence the consistency between the Fermi golden rule and the formalism based 
     which contains something like $\mel{\Psi_n}{c^\dagger_{\vb*{k}} U(t_2 , t_1) c_{\vb*{k}}}{\Psi_n}$,
     where the exciton wave function appears twice.
 }
-Indeed for ARPES experimental settings with short probe pulses 
-instead of a continuous plane wave, 
-where we don't have a $\delta$ function factor,
-the $G^<$-based RHS of \eqref{eq:g-lesser-transition-prob} still works, 
-while the LHS is no longer correct since Fermi golden rule fails in this case.
-
-It's still possible to add even more terms to the RHS of \eqref{eq:g-lesser-transition-prob},
-which in principle can also be traced by correcting the Fermi golden rule.
-When a strong external light pump is turned on for a while and then turned off, 
+We can further see the consistency between the two descriptions.
+In the $G^<$ formalism,
+when a strong external light pump is turned on for a while and then turned off, 
 excitons proliferate when probing happens, 
 and in this case we have ``self-driven'' Floquet effect,
 caused by the $\ee^{- \ii E_{S \vb*{Q}} t}$ factor in $G^<$ \cite{chan2023giant}.
@@ -2726,12 +2727,138 @@ The energy conservation relation
     E_{S \vb*{Q}} = \omega - \underbrace{\epsilon_{v, \vb*{k} - \vb*{Q}}}_{< 0}
 \end{equation}
 that appears naturally in the LHS in \eqref{eq:g-lesser-transition-prob}
-is equivalent to the $m=1$ Floquet effect; 
+is equivalent to the $m=1$ Floquet effect.
+
+Now we turn to the reason why time-dependent $GW$ is preferred.
+The first reason is that for ARPES experimental settings with short probe pulses 
+instead of a continuous plane wave, 
+where we don't have a $\delta$ function factor,
+the $G^<$-based RHS of \eqref{eq:g-lesser-transition-prob} still works, 
+while the LHS is no longer correct since Fermi golden rule fails in this case.
+Another problem can be seen immediately from the aforementioned Floquet phenomena:
 there can be infinite Floquet quasi-bands in principle,
-but the effects of most of them are weak.
-
-
-
+although the effects of most of them are weak,
+but these signatures are absent in Fermi golden rule; 
+and also in Floquet physics we have band renormalization 
+which is also absent in Fermi golden rule.
+In principle we can capture the effect from some extension of Fermi golden rule:
+the initial state in Fermi golden rule 
+is actually not an exciton state calculated directly from (equilibrium) BSE, 
+but has already been renormalized by the pump, 
+and may contain exciton modes with different frequencies
+and multi-particle excitations.
+Diagrammatically, these high-order Floquet signatures are given by, for example,%
+\footnote{
+    Even when the external pumping is turned off when ARPES measurement happens, 
+    since we are dealing with a non-equilibrium state, 
+    the external field lines in \eqref{eq:g-lesser-transition-prob} are still there; 
+    this is correct, 
+    as we can also conceive the excitons in the system as external driving fields.
+} 
+\[
+    \sum \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,80);\path (70.83333587646484,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Shape: Circle [id:dp8376083329483739] 
+    \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (26.33,36.31) .. controls (26.33,26.49) and (34.29,18.53) .. (44.11,18.53) .. controls (53.93,18.53) and (61.89,26.49) .. (61.89,36.31) .. controls (61.89,46.12) and (53.93,54.08) .. (44.11,54.08) .. controls (34.29,54.08) and (26.33,46.12) .. (26.33,36.31) -- cycle ;
+    %Straight Lines [id:da6229932781806995] 
+    \draw    (4.95,16.95) .. controls (7.14,16.08) and (8.67,16.74) .. (9.54,18.93) .. controls (10.41,21.12) and (11.94,21.78) .. (14.13,20.91) .. controls (16.32,20.04) and (17.85,20.7) .. (18.72,22.89) .. controls (19.59,25.08) and (21.12,25.74) .. (23.31,24.87) .. controls (25.5,24) and (27.03,24.66) .. (27.9,26.85) -- (28.7,27.2) -- (28.7,27.2) ;
+    \draw [shift={(4.95,16.95)}, rotate = 68.34] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da7878426256495519] 
+    \draw    (6.95,55.45) .. controls (7.66,53.2) and (9.13,52.42) .. (11.38,53.13) .. controls (13.63,53.83) and (15.1,53.06) .. (15.81,50.81) .. controls (16.52,48.56) and (17.99,47.79) .. (20.24,48.49) .. controls (22.49,49.2) and (23.96,48.43) .. (24.67,46.18) -- (28.45,44.2) -- (28.45,44.2) ;
+    \draw [shift={(6.95,55.45)}, rotate = 17.38] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da04189419924056259] 
+    \draw    (44.11,3.03) -- (44.11,18.53) ;
+    \draw [shift={(44.11,6.68)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da7911512212058518] 
+    \draw    (44.11,54.08) -- (44.11,69.58) ;
+    \draw [shift={(44.11,57.73)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    % Text Node
+    \draw (46.11,3.03) node [anchor=west] [inner sep=0.75pt]    {$c$};
+    % Text Node
+    \draw (46.11,69.58) node [anchor=west] [inner sep=0.75pt]    {$v$};
+    \end{tikzpicture}
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,80);\path (68.91667175292969,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Shape: Circle [id:dp8199057312773148] 
+    \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (1.33,37.06) .. controls (1.33,27.24) and (9.29,19.28) .. (19.11,19.28) .. controls (28.93,19.28) and (36.89,27.24) .. (36.89,37.06) .. controls (36.89,46.87) and (28.93,54.83) .. (19.11,54.83) .. controls (9.29,54.83) and (1.33,46.87) .. (1.33,37.06) -- cycle ;
+    %Straight Lines [id:da8395259041961769] 
+    \draw    (57.44,37.06) .. controls (55.77,38.73) and (54.11,38.73) .. (52.44,37.06) .. controls (50.77,35.39) and (49.11,35.39) .. (47.44,37.06) .. controls (45.77,38.73) and (44.11,38.73) .. (42.44,37.06) .. controls (40.77,35.39) and (39.11,35.39) .. (37.44,37.06) -- (36.89,37.06) -- (36.89,37.06) ;
+    \draw [shift={(57.44,37.06)}, rotate = 225] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da508066238172763] 
+    \draw    (19.11,3.78) -- (19.11,19.28) ;
+    \draw [shift={(19.11,14.13)}, rotate = 270] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da45894350159140473] 
+    \draw    (19.11,54.83) -- (19.11,70.33) ;
+    \draw [shift={(19.11,65.18)}, rotate = 270] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    % Text Node
+    \draw (21.11,3.78) node [anchor=west] [inner sep=0.75pt]    {$c$};
+    % Text Node
+    \draw (21.11,70.33) node [anchor=west] [inner sep=0.75pt]    {$v$};
+    \end{tikzpicture}
+\]
+The band renormalization effects may be explained by non-diagonal terms in Fermi golden rule, 
+as the final ARPES response is actually given by the follows:
+\[
+    \sum \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+    \path (0,119);\path (143.6666717529297,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+    %Shape: Circle [id:dp5597008091079416] 
+    \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (32.83,74.56) .. controls (32.83,64.74) and (40.79,56.78) .. (50.61,56.78) .. controls (60.43,56.78) and (68.39,64.74) .. (68.39,74.56) .. controls (68.39,84.37) and (60.43,92.33) .. (50.61,92.33) .. controls (40.79,92.33) and (32.83,84.37) .. (32.83,74.56) -- cycle ;
+    %Straight Lines [id:da5732892177885496] 
+    \draw    (11.45,55.2) .. controls (13.64,54.33) and (15.17,54.99) .. (16.04,57.18) .. controls (16.91,59.37) and (18.44,60.03) .. (20.63,59.16) .. controls (22.82,58.29) and (24.35,58.95) .. (25.22,61.14) .. controls (26.09,63.33) and (27.62,63.99) .. (29.81,63.12) .. controls (32,62.25) and (33.53,62.91) .. (34.4,65.1) -- (35.2,65.45) -- (35.2,65.45) ;
+    \draw [shift={(11.45,55.2)}, rotate = 68.34] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da11304843494719341] 
+    \draw    (13.45,93.7) .. controls (14.16,91.45) and (15.63,90.67) .. (17.88,91.38) .. controls (20.13,92.08) and (21.6,91.31) .. (22.31,89.06) .. controls (23.02,86.81) and (24.49,86.04) .. (26.74,86.74) .. controls (28.99,87.45) and (30.46,86.68) .. (31.17,84.43) -- (34.95,82.45) -- (34.95,82.45) ;
+    \draw [shift={(13.45,93.7)}, rotate = 17.38] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da0209365540357922] 
+    \draw    (50.61,41.28) -- (50.61,56.78) ;
+    \draw [shift={(50.61,44.93)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da8432086475371416] 
+    \draw    (50.61,92.33) -- (50.61,107.83) ;
+    \draw [shift={(50.61,95.98)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Shape: Circle [id:dp045936124674031076] 
+    \draw  [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ] (80.72,74.31) .. controls (80.72,64.49) and (88.68,56.53) .. (98.5,56.53) .. controls (108.32,56.53) and (116.28,64.49) .. (116.28,74.31) .. controls (116.28,84.12) and (108.32,92.08) .. (98.5,92.08) .. controls (88.68,92.08) and (80.72,84.12) .. (80.72,74.31) -- cycle ;
+    %Straight Lines [id:da04541533264833486] 
+    \draw    (136.83,74.31) .. controls (135.16,75.98) and (133.5,75.98) .. (131.83,74.31) .. controls (130.16,72.64) and (128.5,72.64) .. (126.83,74.31) .. controls (125.16,75.98) and (123.5,75.98) .. (121.83,74.31) .. controls (120.16,72.64) and (118.5,72.64) .. (116.83,74.31) -- (116.28,74.31) -- (116.28,74.31) ;
+    \draw [shift={(136.83,74.31)}, rotate = 225] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da4676523766724918] 
+    \draw    (98.5,41.03) -- (98.5,56.53) ;
+    \draw [shift={(98.5,51.38)}, rotate = 270] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da7079711897056433] 
+    \draw    (98.5,92.08) -- (98.5,107.58) ;
+    \draw [shift={(98.5,102.43)}, rotate = 270] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da5091809880967384] 
+    \draw    (50.61,41.28) .. controls (48.94,42.95) and (47.28,42.95) .. (45.61,41.28) .. controls (43.94,39.61) and (42.28,39.61) .. (40.61,41.28) .. controls (38.94,42.95) and (37.28,42.95) .. (35.61,41.28) .. controls (33.94,39.61) and (32.28,39.61) .. (30.61,41.28) .. controls (28.94,42.95) and (27.28,42.95) .. (25.61,41.28) -- (25.28,41.28) -- (25.28,41.28) ;
+    \draw [shift={(25.28,41.28)}, rotate = 225] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    %Straight Lines [id:da0626081029752632] 
+    \draw    (50.61,25.78) -- (50.61,41.28) ;
+    \draw [shift={(50.61,29.43)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da014002955307680143] 
+    \draw    (98.5,25.53) -- (98.5,41.03) ;
+    \draw [shift={(98.5,35.88)}, rotate = 270] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+    %Straight Lines [id:da7587381552564627] 
+    \draw    (123.83,41.03) .. controls (122.16,42.7) and (120.5,42.7) .. (118.83,41.03) .. controls (117.16,39.36) and (115.5,39.36) .. (113.83,41.03) .. controls (112.16,42.7) and (110.5,42.7) .. (108.83,41.03) .. controls (107.16,39.36) and (105.5,39.36) .. (103.83,41.03) .. controls (102.16,42.7) and (100.5,42.7) .. (98.83,41.03) -- (98.5,41.03) -- (98.5,41.03) ;
+    \draw [shift={(123.83,41.03)}, rotate = 225] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+    % Text Node
+    \draw (52.61,41.28) node [anchor=west] [inner sep=0.75pt]    {$c_{1}$};
+    % Text Node
+    \draw (52.61,107.83) node [anchor=west] [inner sep=0.75pt]    {$v_{1}$};
+    % Text Node
+    \draw (96.5,41.03) node [anchor=east] [inner sep=0.75pt]    {$c_{2}$};
+    % Text Node
+    \draw (100.5,107.58) node [anchor=west] [inner sep=0.75pt]    {$v_{2}$};
+    % Text Node
+    \draw (50.61,24.28) node [anchor=south] [inner sep=0.75pt]    {$f$};
+    % Text Node
+    \draw (98.5,24.03) node [anchor=south] [inner sep=0.75pt]    {$f$};
+    \end{tikzpicture}.
+\]
+Here the $\delta$ function is harder to write 
+compared with the case in standard Fermi golden rule.
+It can be seen that capturing the Floquet effect is hard -- although still possible -- 
+and therefore the explicit Floquet formalism based on $G^<$ is preferred.
 
 \section{The dielectric matrix $\epsilon$}\label{sec:gw-bse.overview-gw.epsilon}
 

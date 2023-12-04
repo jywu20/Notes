@@ -158,6 +158,22 @@
 \newcommand{\Dfreq}{\tilde{\vb{D}}}
 \newcommand{\Pfreq}{\tilde{\vb{P}}}
 
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+
 \title{Floquet theory}
 \author{Jinyuan Wu}
 
@@ -372,12 +388,89 @@ by quasi-energies that are within one ``Floquet-Brillouin zone''.
 \section{Floquet formalisms compared with conventional treatment of periodic driving}
 
 Periodic driving can also be construed in alternative approaches.
-In this section we review some of them and discuss the advantage 
-of introducing Floquet quasienergies and quasi-stationary states.
+In this section we review two of them and discuss the advantage 
+of explicitly introducing Floquet quasienergies and quasi-stationary states.
 First, periodic driving is in principle well captured by time-dependent perturbation theory.
-TODO: 
+For example, for a two-level system driven by $E = E_0 \cos \omega t$,
+\begin{equation}
+    H = \omegaeg \dyad{\text{e}} - \Omega \dyad*{\text{e}}{\text{g}} \ee^{- \ii \omega t} + \text{h.c.}, 
+    \quad \Omega = - \frac{\mueg E_0}{2 \hbar}, 
+    \label{eq:driven-two-level}
+\end{equation}
+the linear response of the dipole 
+$\vb*{\mu} = \mueg \dyad*{\text{e}}{\text{g}} + \text{h.c.}$
+to the driving field can be straightforwardly calculated 
+in time-dependent perturbation theory; the final result is 
+(for convenience we assume that $\mueg$ and $\Omega$ are all real)
+\begin{equation}
+    \expval{\mu}^{(1)}(t) = \mueg \Omega \left(
+        \frac{\ee^{\ii \omega t}}{\omegaeg + \omega - \ii \Gammae}
+        + \frac{\ee^{- \ii \omega t}}{\omegaeg - \omega - \ii \Gammae}
+        + \frac{\ee^{- \ii \omega t}}{\omegaeg + \omega + \ii \Gammae}
+        + \frac{\ee^{\ii \omega t}}{\omegaeg - \omega + \ii \Gammae}.
+    \right)
+    \label{eq:first-order-response}
+\end{equation}
+The Hamiltonian \eqref{eq:driven-two-level} can also be understood in the framework of Floquet formalism:
+$H^{(0)}$ is just $\omegaeg \dyad{\text{e}}$,
+and $H^{(1)}$ is $\Omega \dyad*{\text{e}}{\text{g}}$.
+Our goal is to understand how the two formalisms are equivalent to each other.
+At the order of \eqref{eq:first-order-response}, 
+where only the $\ee^{\pm \omega t}$ components are considered,
+we can restrict ourselves on the following sub-matrix of the full Floquet Hamiltonian
+(from left to right we display g and e components with $m = -1, 0, 1$):
+\begin{equation}
+    \pmqty{
+        \omega  & 0                  & 0        &-\Omega   & 0        & 0                \\
+        0       & \omegaeg + \omega  &-\Omega   & 0        & 0        & 0                \\
+        0       &-\Omega             & 0        & 0        & 0        &-\Omega           \\
+       -\Omega  & 0                  & 0        & \omegaeg &-\Omega   & 0                \\
+        0       & 0                  & 0        &-\Omega   & - \omega & 0                \\
+        0       & 0                  &-\Omega   & 0        & 0        & \omegaeg - \omega\\
+    },
+\end{equation}
+and moreover, since only linear dependence on $\Omega$ is included in \eqref{eq:first-order-response},
+we also only consider the first-order correction of $\ket*{\text{e}}$ and $\ket*{\text{g}}$
+(recall that the possible number of Floquet quasi-stationary states 
+is the same as the dimension of the Hilbert space, 
+and in this case, is two).
+Below we use $\ket*{\tilde{\text{e}}}$, $\ket*{\tilde{\text{g}}}$
+to refer to the Floquet-corrected states.
+The $m=-$ part of $\ket*{\tilde{\text{g}}}$, 
+because of the position of the $\Omega$ matrix elements, is then solved 
+by time-independent, on-shell perturbation theory
+\begin{equation}
+    \ket*{\phi_\text{g}^{(-1)}} = \frac{- \Omega}{\omega - \omegaeg} \ket*{\text{e}},
+\end{equation}
+and similarly we have 
+\begin{equation}
+    \ket*{\phi_{\text{g}}^{(1)}} = \frac{-\Omega}{- \omega - \omegaeg} \ket*{\text{e}}.
+\end{equation}
+Assuming that $\ket*{\tilde{\text{g}}}$ is the occupied state,
+the corresponding value of $\expval{\mu}$ is 
+\begin{equation}
+    \begin{aligned}
+        \expval{\mu}^{(1)}(t) &= \expval*{\mu}{\tilde{\text{g}}(t)}
+        = \mel*{\text{g}}{\mu}{\phi_\text{g}^{(1)}} \ee^{- \ii \omega t} 
+        + \mel*{\text{g}}{\mu}{\phi_\text{g}^{(-1)}} \ee^{ \ii \omega t} 
+        + \text{h.c.} \\
+        &= \mueg \Omega \left(
+            \frac{\Omega}{\omegaeg - \omega} \ee^{- \ii \omega t}
+            + \frac{\Omega}{\omegaeg + \omega} \ee^{\ii \omega t} + \text{h.c.}
+        \right).
+    \end{aligned}
+\end{equation}
+Ignoring the imaginary parts, this is exactly the same as \eqref{eq:first-order-response}.
+Since the Floquet
+ 
+Therefore, Floquet formalism is beneficial when the period external driving field is strong, 
+and the conventional concept of perturbation expansion 
+of the system's response to the driving field 
+is no longer practically feasible.
 
-In optics, the rotational wave approximation (RWA) is also used when the detuning is small.
+The rotational wave approximation (RWA) is also used 
+when a periodic pumping is present; 
+here we show that it can be seen as a degeneracy case of the Floquet formalism.
 
 \section{Floquet effects in spectroscopy}
 
