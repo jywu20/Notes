@@ -210,9 +210,12 @@ consider the general form of light-matter interaction Hamiltonian
 with only one active photon mode
 \begin{equation}
     H_{\text{full}} = 
-    H \otimes 1_{\text{light}} + 1_{\text{matter}} \otimes \hbar \omega \left(
+    H \otimes 1_{\text{light}} +     
+    \underbrace{
+        1_{\text{matter}} \otimes \hbar \omega \left(
         b^\dagger b + \frac{1}{2} 
-    \right) 
+        \right) 
+    }_{H_{\text{light}}}
     + \underbrace{
         b V + b^\dagger V^\dagger  
     }_{H_{\text{light-matter coupling}}} ,
@@ -227,13 +230,26 @@ Under this assumption, we can project out the electromagnetic degree of freedom 
     \label{eq:from-extended-to-matter}
 \end{equation} 
 where $i$ labels eigenstates of the matter degrees of freedom,
-and this means the Hamiltonian for the matter part is (TODO: the additional term $- \ii \hbar U \partial_t U^\dagger$)
+and this means the Hamiltonian for the matter part is 
 \begin{equation}
-    H_{\text{driven}} = P H_{\text{full}} P^\dagger = 
-    H + \underbrace{\hbar \omega \abs*{\alpha}^2 }_{\const.} + \alpha V \ee^{- \ii \omega t} + \alpha^* V^\dagger \ee^{\ii \omega t},
+    H_{\text{driven}} = P H_{\text{full}} P^\dagger - \ii \hbar P \partial_t P^\dagger = 
+    H + \alpha V \ee^{- \ii \omega t} + \alpha^* V^\dagger \ee^{\ii \omega t},
+    \label{eq:h-eff-matter}
 \end{equation}
-which indeed evolves with period $2\pi / \omega$.
-
+since 
+\[
+    P H_{\text{light}} P^\dagger = \hbar \omega \left(\abs*{\alpha}^2 + \frac{1}{2}\right), 
+\]
+and 
+\[
+    - \ii \hbar P \partial_t P = - \sum_i \dyad{i} \otimes \bra*{\alpha \ee^{- \ii \omega t}} 
+    \sum_j H_{\text{light}} \ket*{\alpha^{-\ii \omega t}} \dyad{j}
+    = - \hbar \omega \left(\abs*{\alpha} + \frac{1}{2}\right) .
+\]
+Here we carefully choose the frequency of the coherent state in \eqref{eq:from-extended-to-matter}
+so that the light part of the wave function indeed evolves according to $H_{\text{light}}$, 
+and $\abs*{\alpha}$ terms cancel each other in the final effective Hamiltonian \eqref{eq:h-eff-matter},
+which expectedly evolves with period $2\pi / \omega$.
 
 From the Floquet theory of differential equation, 
 we know it is possible to expand an arbitrary state that 
@@ -560,39 +576,75 @@ and the conventional concept of perturbation expansion
 of the system's response to the driving field 
 is no longer practically feasible.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{plot/relative-error-rwa.pdf}
+    \caption{Heatmap of relative error of the spectrum given by RWA, 
+    compared to the Floquet quasienergies; 
+    $m \omega$ displacements have been added to the latter 
+    to minimize their differences with the RWA energies.
+    The relative errors of the two energy levels are averaged.
+    The discontinuities in the heatmap appear because the true value used in 
+    evaluating the relative error of an energy level  
+    is the $\varepsilon_n + m \hbar \omega$ 
+    that is closest to the RWA energy level, 
+    and as the parameters change, $m$ demonstrates non-continuous shifts.}
+    \label{fig:rwa-floquet}
+\end{figure}
+
 The rotational wave approximation (RWA) is also used 
 when a periodic pumping is present, 
 and it is not a perturbative theory.
 Here we show that it can be seen as a degeneracy case of the Floquet formalism.
 Let us again work on the two-level atom model.
 
+Quantitatively, the relative error of energies are plotted in \prettyref{fig:rwa-floquet}.
+It can be easily observed that RWA works best when $\omega$ is not too far from $\omegaeg$ and $\Omega$ is not too large.
+These are the usual condition used when deriving RWA.
 
-\section{Floquet effects in spectroscopy}
+\section{Floquet effects in photoemission spectroscopy}
 
-Ordinary \ac{arpes} spectra 
+In the last section, we have shown the advantages of the Floquet formalism 
+in the strong driving regime.
+The physical meanings of the quasi-stationary states and quasienergies however remain unclear:
+are they simply tools for simplification of calculation, 
+or are they comparable to ``real'' energy levels in some aspects?
+In this section we discuss the photoemission spectroscopy of a periodically driven electron band system, 
+and show that the quasi-stationary states contribute to the 
+electron photoemission intensity in a way similar to 
+how conventional band states contribute to the electron photoemission intensity.
+
+Ordinary \ac{arpes} spectra can be captured by Fermi golden rule \cite{sobota2021angle}
 \begin{equation}
     I(\vb{k}, \omega) \propto \sum_{\vb{k}', c} 
     \abs*{M_{\vb{k} \vb{k}'}^{fc}}^2 \delta(\omega - \epsilon_{c \vb{k}'}) f(\omega),
+    \quad M^{fc}_{\vb{k} \vb{k}'} = \mel{f \vb{k}}{H_{\text{dipole}}}{c \vb{k}'},
     \label{eq:spectral-arpes}
 \end{equation}
 where $(f, \vb{k})$ is the out-coming electron mode, 
 $(c, \vb{k}')$ is an electronic mode within the material 
-and $f(\omega)$ is the Fermi-Dirac distribution,
-are usually calculated by Fermi golden rule \cite{sobota2021angle};
-when the starting state is non-equilibrium, 
+and $f(\omega)$ is the Fermi-Dirac distribution.
+When the starting state is non-equilibrium, 
 the spectral function should be replaced by the lesser Green function 
-and we get \cite{freericks2009theoretical,rustagi2018photoemission,chan2023giant} TODO: cross term where $c \neq c'$
+and we get \cite{freericks2009theoretical,rustagi2018photoemission,schuler2021theory,chan2023giant} 
 \begin{equation}
     I(t, \vb{k}, \omega) \propto - \ii \int_{t_0}^t \dd{t_1} \int_{t_0}^t \dd{t_2} s(t_1) s(t_2) 
-    \abs*{M_{\vb{k} \vb{k}'}^{fc}}^2 G^<_{\vb{k}'}(t_2, t_1) \ee^{\ii \omega (t_1 - t_2)} ,
+    \sum_{c_1, c_2}
+    M_{\vb{k} \vb{k}'}^{fc_1} M_{\vb{k} \vb{k}'}^{fc_2 *} 
+    G^<_{\vb{k}' c_2 c_1}(t_2, t_1) \ee^{\ii \omega (t_1 - t_2)} ,
     \label{eq:lesser-arpes}
 \end{equation}
 where $s(t)$ is the envelope of the probe pulse.
-When the system indeed stays in equilibrium, 
+When the system indeed stays in equilibrium when probing starts
+and hence $c_1$ is bound to be equal to $c_2$, 
 and the probe pulse is long enough and 
 hence $s(t)$ can be seen as a constant and $t \to \infty$, 
-it can be directly verified that \eqref{eq:lesser-arpes} reduces to \eqref{eq:spectral-arpes}.
-When the system is Floquet-driven, \eqref{eq:spectral-arpes} is not correct, 
+it can be directly verified that \eqref{eq:lesser-arpes} 
+reduces to the Fermi golden rule \eqref{eq:spectral-arpes}.
+% TODO: I'm not sure about the position of t_1 and t_2; 
+% specifically, I need to check whether the form here agrees with the pure 
+% obtained in the pure state formalism starting from an eigenstate
+When the system is Floquet-driven, this reduction fails;
 but in the long probe pulse limit, \eqref{eq:lesser-arpes} becomes 
 \begin{equation}
     I(t \to \infty, \vb{k}, \omega) \propto
@@ -630,7 +682,22 @@ which are usually small when $\abs*{m}$ is large,
 usually only the $m=1$ Floquet signatures are important,
 which can be calculated from Fermi golden rule in a more conventional way.
 
-TODO: can band renormalization be captured by Fermi golden rule?
+
+\section{Discussion}
+
+In this report,
+we have reviewed the basic theory of Floquet formalism, 
+where in a driven system with a $N$-dimensional Hilbert space, 
+an arbitrary state can be expanded into 
+the linear combination of $N$ quasi-stationary states, 
+whose time evolution is directed by quasienergies,
+and both the quasi-stationary states and quasienergies can be obtained 
+by diagonalizing the Floquet effective Hamiltonian.
+We have also compared the Floquet formalism with the two other approaches often used for driving systems, 
+namely time-dependent perturbation theory and the rotating wave approximation;
+it can be seen that 
+
+Finally, we demonstrate that 
 
 \printbibliography
 

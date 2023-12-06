@@ -112,8 +112,8 @@ end
 # plots of eigensystem
 
 let E = 1.0,
-    Ω = 0.2, 
-    ω = 0.3, 
+    Ω = 1.0, 
+    ω = 0.95, 
     N = 200
     
     Δ = E - ω 
@@ -128,6 +128,26 @@ let E = 1.0,
     p = scatter(E_floquet)
     hline!(p, E_RWA)
     ylims!(p, (0, 1))
+    p
+end
+
+let E = 1.0,
+    Ω = 1.0, 
+    ω = 0.9999999, 
+    N = 200
+    
+    Δ = E - ω 
+    atom = TwoLevelFloquetAtom(Δ, Ω, ω)
+
+    H_floquet = ham_floquet(atom, -N:N - 1)
+    H_RWA     = ham_RWA(atom)
+    
+    E_floquet = sort(eigen(H_floquet).values)
+    E_RWA     = sort(eigen(H_RWA).values)
+    
+    p = scatter(E_floquet)
+    ylims!(p, (E_RWA[1]-5, E_RWA[2]+5))
+    hline!(p, E_RWA)
     p
 end
 
@@ -163,11 +183,14 @@ function floquet_rwa_diff(E, Ω, ω, N; ϵ = 0.01)
     
     #E_average = map(x -> max(x, ϵ), E_average)
     #mean(sqrt.(ΔE.^2) ./ E_average) 
-    sqrt(mean(ΔE² ./ E_RWA.^2)) 
+    E_floquet = map(E_RWA) do E
+        E_floquet[argmin((E_floquet .- E).^2)]
+    end
+    sqrt(mean(ΔE² ./ E_floquet.^2)) 
 end
 
-let Ω_list = LinRange(0, 2, 200), 
-    ω_list = LinRange(0, 2, 200)
+let Ω_list = LinRange(0, 2, 500), 
+    ω_list = LinRange(0, 2, 500)
     
     sqrt_mse_list = zeros(length(Ω_list), length(ω_list))
     progress = Progress(length(sqrt_mse_list))
@@ -190,8 +213,10 @@ let Ω_list = LinRange(0, 2, 200),
         ylabel = L"\omega / \omega_{\mathrm{eg}}",
         xlims = (Ω_min - ΔΩ / 2, Ω_max + ΔΩ / 2),
         ylims = (ω_min - Δω / 2, ω_max + Δω / 2), 
+        clims = (0, 1),
     )
     display(p)
+    savefig(p, "relative-error-rwa.pdf")
     p
 end
 
@@ -201,7 +226,7 @@ end
 ######################################################
 #region Fixed Ω
 
-let Ω_list = [0.2], 
+let Ω_list = [1.0], 
     ω_list = LinRange(0, 2, 5000)
     
     sqrt_mse_list = zeros(length(Ω_list), length(ω_list))
@@ -321,7 +346,7 @@ let Ω_list = LinRange(0, 2, 100),
     p
 end
 
-let Ω_list = LinRange(0, 2, 100),
+let Ω_list = LinRange(0, 2, 200),
     ω_list = LinRange(0, 2, 200),    
     E = 1.0, 
     N = 10
@@ -347,6 +372,49 @@ let Ω_list = LinRange(0, 2, 100),
     ω_max = maximum(ω_list)
     Δω    = step(ω_list)
     p = heatmap(Ω_list, ω_list, gap_list', 
+        aspect_ratio = :equal,
+        xlabel = L"\Omega / \omega_{\mathrm{eg}}",
+        ylabel = L"\omega / \omega_{\mathrm{eg}}",
+        xlims = (Ω_min - ΔΩ / 2, Ω_max + ΔΩ / 2),
+        ylims = (ω_min - Δω / 2, ω_max + Δω / 2), 
+    )
+    display(p)
+    p
+end
+
+#endregion
+######################################################
+
+######################################################
+#region Plot difference between RWA and Floquet 
+
+let Ω_list = LinRange(0, 2, 200),
+    ω_list = LinRange(0, 2, 200),    
+    E = 1.0, 
+    N = 10
+    
+    diff_list = zeros(length(Ω_list), length(ω_list))
+    progress = Progress(length(diff_list))
+    for (Ω_idx, Ω) in enumerate(Ω_list)
+        for (ω_idx, ω) in enumerate(ω_list)
+            Δ = E - ω
+            sys = TwoLevelFloquetAtom(Δ, Ω, ω)
+            H_RWA = ham_RWA(sys)
+            E_RWA = sort(eigen(H_RWA).values) 
+            H_floquet = ham_floquet(sys, -N:N-1)
+            E_floquet = sort(eigen(H_floquet).values)
+            diff_list[Ω_idx, ω_idx] = minimum(abs.(E_floquet .- E_RWA[2])) 
+            next!(progress)
+        end
+    end
+    
+    Ω_min = minimum(Ω_list)
+    Ω_max = maximum(Ω_list)
+    ΔΩ    = step(Ω_list)
+    ω_min = minimum(ω_list)
+    ω_max = maximum(ω_list)
+    Δω    = step(ω_list)
+    p = heatmap(Ω_list, ω_list, diff_list', 
         aspect_ratio = :equal,
         xlabel = L"\Omega / \omega_{\mathrm{eg}}",
         ylabel = L"\omega / \omega_{\mathrm{eg}}",
