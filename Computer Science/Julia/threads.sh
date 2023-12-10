@@ -1,0 +1,1 @@
+julia --threads=4 threads.jl

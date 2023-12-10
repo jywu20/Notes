@@ -410,7 +410,7 @@ of explicitly introducing Floquet quasienergies and quasi-stationary states.
 First, periodic driving is in principle well captured by time-dependent perturbation theory.
 For example, for a two-level system driven by $E = E_0 \cos \omega t$,
 \begin{equation}
-    H = \omegaeg \dyad{\text{e}} - \Omega \dyad*{\text{e}}{\text{g}} \ee^{- \ii \omega t} + \text{h.c.}, 
+    H = \hbar \omegaeg \dyad{\text{e}} - \hbar \Omega \dyad*{\text{e}}{\text{g}} \ee^{- \ii \omega t} + \text{h.c.}, 
     \quad \Omega = - \frac{\mueg E_0}{2 \hbar}, 
     \label{eq:driven-two-level}
 \end{equation}
@@ -437,7 +437,7 @@ where only the $\ee^{\pm \omega t}$ components are considered,
 we can restrict ourselves on the following sub-matrix of the full Floquet Hamiltonian
 (from left to right we display g and e components with $m = -1, 0, 1$):
 \begin{equation}
-    \pmqty{
+    \hbar \pmqty{
         \omega  & 0                  & 0        &-\Omega   & 0        & 0                \\
         0       & \omegaeg + \omega  &-\Omega   & 0        & 0        & 0                \\
         0       &-\Omega             & 0        & 0        & 0        &-\Omega           \\
@@ -445,6 +445,7 @@ we can restrict ourselves on the following sub-matrix of the full Floquet Hamilt
         0       & 0                  & 0        &-\Omega   & - \omega & 0                \\
         0       & 0                  &-\Omega   & 0        & 0        & \omegaeg - \omega\\
     },
+    \label{eq:floquet-matrix}
 \end{equation}
 and moreover, since only linear dependence on $\Omega$ is included in \eqref{eq:first-order-response},
 we also only consider the first-order correction of $\ket*{\text{e}}$ and $\ket*{\text{g}}$
@@ -453,7 +454,7 @@ is the same as the dimension of the Hilbert space,
 and in this case, is two).
 Below we use $\ket*{\tilde{\text{e}}}$, $\ket*{\tilde{\text{g}}}$
 to refer to the Floquet-corrected states.
-The $m=-$ part of $\ket*{\tilde{\text{g}}}$, 
+The $m=-1$ part of $\ket*{\tilde{\text{g}}}$, 
 because of the position of the $\Omega$ matrix elements, is then solved 
 by time-independent, on-shell perturbation theory
 \begin{equation}
@@ -518,7 +519,7 @@ with the diagrammatic (off-shell) many-body perturbation theory.
     \draw    (89.08,35.64) ;
     \draw [shift={(89.08,35.64)}, rotate = 45] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
     % Text Node
-    \draw (30.13,0.75) node [anchor=north] [inner sep=0.75pt]   [align=left] {g};
+    \draw (30.63,5.75) node [anchor=north] [inner sep=0.75pt]   [align=left] {g};
     % Text Node
     \draw (30.63,48.33) node [anchor=north] [inner sep=0.75pt]   [align=left] {e};
     \end{tikzpicture},
@@ -597,9 +598,38 @@ when a periodic pumping is present,
 and it is not a perturbative theory.
 Here we show that it can be seen as a degeneracy case of the Floquet formalism.
 Let us again work on the two-level atom model.
+Turning back to \eqref{eq:floquet-matrix},
+we find that when the driving is nearly resonant, 
+or in other words when $\omegaeg - \omega$ is small, 
+and when $\Omega$ is also small, starting from the $\ket*{\phi_\text{g}^{(0)}}$ state, 
+we are essentially confined in the 
+$\ket*{\phi_\text{g}^{(0)}}, \ket*{\phi_{\text{e}}^{(1)}}$ subspace: 
+since $\Omega$ is small, 
+from $\ket*{\phi_\text{g}^{(0)}}$ it is only possible to jump to 
+$\ket*{\phi_\text{e}^{(\pm 1)}}$, 
+but then the diagonal element in \eqref{eq:floquet-matrix} is $\omegaeg + \omega \gg \abs*{\omegaeg - \omega}$,
+and therefore the transition from $\ket*{\phi_\text{g}^{(0)}}$ to $\ket*{\phi_\text{e}^{(-1)}}$
+is much weaker than the transition to $\ket*{\phi_\text{e}^{(1)}}$.
+The final effective Hamiltonian therefore becomes 
+\begin{equation}
+    H = \pmqty{
+        0 & - \Omega \\ 
+        - \Omega & \underbrace{\omegaeg - \omega}_{\eqqcolon \Delta}
+    } =  \Delta \dyad{\tilde{\text{e}}} - \Omega \dyad{\tilde{\text{e}}}{{\text{g}}}  + \text{h.c.}, 
+\end{equation}
+where $\Delta$ is the detuning and the tilde over e means that 
+the state is actually time-dependent in the usual basis 
+found by diagonalizing the Hamiltonian of the standalone atom; 
+the fact that $\ket*{\tilde{e}}$ is time-dependent is reflected by the fact that 
+the matrix elements of other operators, most importantly the dipole, 
+under $\{\ket*{\text{g}}, \ket*{\tilde{\text{e}}}\}$ are now time-dependent, 
+oscillating at the frequency of $\omega$.
 
-Quantitatively, the relative error of energies are plotted in \prettyref{fig:rwa-floquet}.
-It can be easily observed that RWA works best when $\omega$ is not too far from $\omegaeg$ and $\Omega$ is not too large.
+Quantitatively, the relative error of energies given by RWA compared to the true Floquet quasienergies 
+are plotted in \prettyref{fig:rwa-floquet}; 
+Floquet quasienergies that are closest to the RWA values are picked for comparison.
+It can be easily observed that RWA indeed works best 
+when $\omega$ is not too far from $\omegaeg$ and $\Omega$ is not too large.
 These are the usual condition used when deriving RWA.
 
 \section{Floquet effects in photoemission spectroscopy}
@@ -644,26 +674,28 @@ reduces to the Fermi golden rule \eqref{eq:spectral-arpes}.
 % TODO: I'm not sure about the position of t_1 and t_2; 
 % specifically, I need to check whether the form here agrees with the pure 
 % obtained in the pure state formalism starting from an eigenstate
-When the system is Floquet-driven, this reduction fails;
-but in the long probe pulse limit, \eqref{eq:lesser-arpes} becomes 
+When the system is Floquet-driven, this reduction fails, 
+and there is no guarantee that $c_2$ equals $c_1$ for non-zero terms;
+in other words, there is possible band renormalization in the system.
+The $MM^*$ factor can be regarded as a constant for a rough estimation 
+\cite{freericks2009theoretical,chan2023giant},
+and in the long probe pulse limit, \eqref{eq:lesser-arpes} becomes 
 \begin{equation}
     I(t \to \infty, \vb{k}, \omega) \propto
-    - \ii \int \dd{\bar{t}} \int \dd{\tau} G^<_{\vb{k}'}(\bar{t}, \bar{t} + \tau) \ee^{\ii \omega \tau} 
+    - \ii \int \dd{\bar{t}} \int \dd{\tau} G^<_{\vb{k}' c_2 c_1}(\bar{t}, \bar{t} + \tau) \ee^{\ii \omega \tau} 
     = - \ii \expval{\int \dd{\tau} \ee^{\ii \omega \tau}
-    G^<_{\vb{k}'}(\bar{t}, \bar{t} + \tau)}_{\bar{t}},
+    \sum_{c_1, c_2} G^<_{\vb{k}' c_2 c_1}(\bar{t}, \bar{t} + \tau)}_{\bar{t}},
 \end{equation} 
-or in other words, the time-averaged occupied density of states.
-This, then, can be determined by the Floquet quasi-stationary states and quasienergies.
-We have \cite{rudner2020floquet}
+and if the time averaged $G^<$ is diagonalized under the $c$ basis, 
+we have arrived at a generalized Fermi golden rule.
+We then note that the averaged lesser Green function is indeed diagonalized under the Floquet basis \cite{rudner2020floquet}:
 \begin{equation}
-    \bar{\rho}(\Omega) = - \ii \expval{\int \dd{\tau} \ee^{\ii \omega \tau} G^<_{\vb{k}}} 
+    \bar{\rho}_{\vb{k}}(\Omega) = - \ii \expval{\int \dd{\tau} \ee^{\ii \omega \tau} G^<_{\vb{k}}} 
     =\sum_{n \vb{k}, m} A_{n \vb{k}}^{(m)} \delta\left(\varepsilon_{n \vb{k}} +m \omega-\Omega\right), 
     \quad A_{n \vb{k}}^{(m)}= \braket*{\phi_{n \vb{k}}^{(m)}}{\phi_{n \vb{k}}^{(m)}}.
 \end{equation}
 The ARPES spectrum of a Floquet-driven band structure, therefore, 
 is given by all Floquet bands weighted by the magnitude of $\ket*{\phi_{n \vb{k}}^{(m)}}$.
-
-TODO: But then what about non-diagonal terms in Floquet Hamiltonian? Note that $n \neq n'$ are not considered above.
 
 Interestingly, it is possible to use light to stimulate 
 some long-lived degrees of freedom in a solid 
