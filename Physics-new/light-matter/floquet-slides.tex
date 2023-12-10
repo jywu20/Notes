@@ -1,9 +1,11 @@
-\documentclass{beamer}
+\documentclass[t]{beamer}
 \usepackage{physics}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{mathdots}
 \usepackage{yhmath}
+\usepackage{nicematrix}
 \usepackage{cancel}
 \usepackage{color}
 \usepackage{siunitx}
@@ -23,9 +25,7 @@
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
 \usepackage[style=verbose,backend=bibtex]{biblatex}
-\addbibresource{wannier.bib}
-\addbibresource{hubbard.bib}
-\addbibresource{pt.bib}
+\addbibresource{arpes.bib}
 \renewcommand{\footnotesize}{\scriptsize}
 \usepackage{listings}
 \usepackage{hyperref}
@@ -37,6 +37,23 @@
 \newcommand{\concept}[1]{\textbf{#1}}
 \newcommand*{\abinitio}{\textit{ab initio}}
 \newcommand{\shortcode}[1]{\texttt{#1}}
+
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+
 
 %Information to be included in the title page:
 \title{Floquet physics}
@@ -52,25 +69,740 @@
 \begin{frame}
 \frametitle{Introduction}
 
+\begin{columns}
 
+\begin{column}{0.7\textwidth}
+    Time-dependent perturbation theory, 
+    $\cancel{\omegaeg + \omega}$ $\Rightarrow$ 
+    Fermi golden rule (finite $T$ or not)
+\end{column}
+
+\begin{column}{0.3\textwidth}
+    \vspace{-0.5cm}
+    \begin{center}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.5,xscale=0.5]
+            %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+            
+            %Straight Lines [id:da9549404220987474] 
+            \draw    (46,130) -- (131.83,130) ;
+            %Straight Lines [id:da7720453820939841] 
+            \draw    (46,65) -- (131.83,65) ;
+            %Straight Lines [id:da10412337369479152] 
+            \draw    (55,133) -- (55,194.28) ;
+            \draw [shift={(55,130)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+            %Straight Lines [id:da5381448526802415] 
+            \draw    (124,68.28) -- (124,194.28) ;
+            \draw [shift={(124,65.28)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+            %Straight Lines [id:da7027285839417692] 
+            \draw    (89,68) -- (89,76) .. controls (90.67,77.67) and (90.67,79.33) .. (89,81) .. controls (87.33,82.67) and (87.33,84.33) .. (89,86) .. controls (90.67,87.67) and (90.67,89.33) .. (89,91) .. controls (87.33,92.67) and (87.33,94.33) .. (89,96) .. controls (90.67,97.67) and (90.67,99.33) .. (89,101) .. controls (87.33,102.67) and (87.33,104.33) .. (89,106) .. controls (90.67,107.67) and (90.67,109.33) .. (89,111) .. controls (87.33,112.67) and (87.33,114.33) .. (89,116) .. controls (90.67,117.67) and (90.67,119.33) .. (89,121) .. controls (87.33,122.67) and (87.33,124.33) .. (89,126) -- (89,129.28) -- (89,129.28) ;
+            \draw [shift={(89,65)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+            
+            % Text Node
+            \draw (55,197.28) node [anchor=north] [inner sep=0.75pt]    {$\omega _{i}$};
+            % Text Node
+            \draw (124,197.28) node [anchor=north] [inner sep=0.75pt]    {$\omega _{n}$};
+            % Text Node
+            \draw (87,97.14) node [anchor=east] [inner sep=0.75pt]    {$\omega $};
+            
+            
+            \end{tikzpicture}        
+    \end{center}
+\end{column}
+
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{columns}
+
+\begin{column}{0.7\textwidth}
+    What happens when we consider high order perturbations?
+\end{column}
+
+\begin{column}{0.3\textwidth}
+\begin{center}
+    \vspace{-0.5cm}
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.5,xscale=0.5]
+        %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+        
+        %Straight Lines [id:da9549404220987474] 
+        \draw    (8,142) -- (93.83,142) ;
+        %Straight Lines [id:da7720453820939841] 
+        \draw    (8,77) -- (93.83,77) ;
+        %Straight Lines [id:da10412337369479152] 
+        \draw    (17,145) -- (17,206.28) ;
+        \draw [shift={(17,142)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da5381448526802415] 
+        \draw    (86,80.28) -- (86,206.28) ;
+        \draw [shift={(86,77.28)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da7027285839417692] 
+        \draw    (51,80) -- (51,88) .. controls (52.67,89.67) and (52.67,91.33) .. (51,93) .. controls (49.33,94.67) and (49.33,96.33) .. (51,98) .. controls (52.67,99.67) and (52.67,101.33) .. (51,103) .. controls (49.33,104.67) and (49.33,106.33) .. (51,108) .. controls (52.67,109.67) and (52.67,111.33) .. (51,113) .. controls (49.33,114.67) and (49.33,116.33) .. (51,118) .. controls (52.67,119.67) and (52.67,121.33) .. (51,123) .. controls (49.33,124.67) and (49.33,126.33) .. (51,128) .. controls (52.67,129.67) and (52.67,131.33) .. (51,133) .. controls (49.33,134.67) and (49.33,136.33) .. (51,138) -- (51,141.28) -- (51,141.28) ;
+        \draw [shift={(51,77)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da6808046989140522] 
+        \draw    (51,15.72) -- (51,23.72) .. controls (52.67,25.39) and (52.67,27.05) .. (51,28.72) .. controls (49.33,30.39) and (49.33,32.05) .. (51,33.72) .. controls (52.67,35.39) and (52.67,37.05) .. (51,38.72) .. controls (49.33,40.39) and (49.33,42.05) .. (51,43.72) .. controls (52.67,45.39) and (52.67,47.05) .. (51,48.72) .. controls (49.33,50.39) and (49.33,52.05) .. (51,53.72) .. controls (52.67,55.39) and (52.67,57.05) .. (51,58.72) .. controls (49.33,60.39) and (49.33,62.05) .. (51,63.72) .. controls (52.67,65.39) and (52.67,67.05) .. (51,68.72) .. controls (49.33,70.39) and (49.33,72.05) .. (51,73.72) -- (51,77) -- (51,77) ;
+        \draw [shift={(51,12.72)}, rotate = 90] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        
+        % Text Node
+        \draw (17,209.28) node [anchor=north] [inner sep=0.75pt]    {$\omega _{i}$};
+        % Text Node
+        \draw (86,209.28) node [anchor=north] [inner sep=0.75pt]    {$\omega _{n}$};
+        % Text Node
+        \draw (49,109.14) node [anchor=east] [inner sep=0.75pt]    {$\omega $};
+        % Text Node
+        \draw (53,12.72) node [anchor=west] [inner sep=0.75pt]   [align=left] {???};
+        
+        
+        \end{tikzpicture}        
+\end{center} 
+\end{column}
+
+\end{columns}
+
+\vspace{0.25cm}
+
+\textbf{Inherently non-equilibrium} The state of photons is a coherent state: $\ket*{\Psi}$ far from any eigenstate!
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+
+\begin{itemize}
+    \item From Schrodinger equation to Floquet effective Hamiltonian
+    \item Relation with time-dependent perturbation theory and rotating wave approximation (RWA)?
+    \item Floquet correction to electron band  
+\end{itemize}
 
 \end{frame}
 
 \begingroup
 
-\title{The formalisms}
-\subtitle{``full'' Floquet, perturbation theory, and RWA}
+\title{The Floquet formalism}
+\subtitle{Quasi-stationary states and quasienergies}
 \author{}
 \date{}
 
-\begin{frame}
+\begin{frame}[noframenumbering,plain]
     \titlepage
 \end{frame}
 
 \begin{frame}
-\frametitle{The complete Floquet formalism}
+\frametitle{Periodically driven Hamiltonian: quasi-eigensystem}
 
- 
+\textbf{Floquet theory} $H(t) = H(t + T)$ $\Rightarrow$ 
+for every $\ket*{\psi(t)}$, 
+\begin{equation}
+    \begin{aligned}
+        &\ket*{\psi(t)} = \sum_n \ket*{\psi_n(t)} , \quad 
+        \ket*{\psi_n(t)} = \ee^{- \ii \varepsilon_n t / \hbar} \underbrace{
+            \ket*{\Phi_n(t)}
+        }_\text{period $T$} ,
+    \end{aligned}
+\end{equation}
+\begin{equation}
+    \ket*{\Phi_n(t)} = \underbrace{\sum_m \ee^{- \ii m \omega t} \ket*{\phi_n^{(m)}}}_{\text{discrete Fourier series}} , \quad 
+    \omega = 2\pi / T. 
+\end{equation}
+
+\textbf{Highlights} 
+\begin{itemize}
+    \item $\mathcal{H} \otimes \{m= \ldots, -1, 0, 1, \ldots \}$: \concept{extended Hilbert space}
+    \item $\{\Phi_n(t)\}$: \concept{quasi-stationary states}
+    \item $\{\varepsilon_n\}$: \concept{quasienergies}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Our task} How to  $\{ \phi_n^{(m)} \}$ and $\{ \varepsilon_n \}$? 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet effective Hamiltonian}
+
+\textbf{Our task} A Hamiltonian for $\{ \phi_n^{(m)} \}$ and $\{ \varepsilon_n \}$? 
+
+\[
+    \begin{aligned}
+        &\quad 
+        \underbrace{H(t)}_{\eqqcolon \sum_m \ee^{- \ii m \omega t} H^{(m)}} \ket*{\psi_n(t)} = \ii \hbar \partial_t \ket*{\psi_n(t)} = \varepsilon_n + \ii \hbar \partial_t \ket*{\Phi_n(t)} \\
+        &\Rightarrow \sum_{m'} H^{(m - m')} \ket*{\phi^{(m')}_n} = (\varepsilon_n + m \hbar \omega) \ket*{\phi_n^{(m)}} 
+    \end{aligned}
+\]
+\uncover<2->{
+    \begin{equation}
+        \Rightarrow \boxed{\varepsilon_n \ket*{\phi_n^{(m)}}
+        = \sum_{m'} (H^{(m-m')} - m \hbar \omega \delta_{mm'})  \ket*{\phi_n^{(m')}}.}
+    \end{equation}
+}
+
+\textbf{Floquet effective Hamiltonian} Indeed we have a Hamiltonian!!
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet effective Hamiltonian}
+
+$\varepsilon_n$, $(\cdots , \ket*{\phi_n^{(-1)}} , \ket*{\phi_n^{(0)}} , \ket*{\phi_n^{(1)}} , \cdots)$ are obtained by diagonalizing
+\[
+    \begin{pNiceMatrix}[first-row,first-col]
+        &        & m'=-2 & m'=-1 & m'=0 & m'=1 \\
+        &        &     & \vdots & \vdots & \\
+   m=-2 &        & H^{(0)} + 2 \hbar \omega   & H^{(-1)}   & H^{(-2)}   & H^{(-3)} &  \\
+   m=-1 & \hdots & H^{(1)}   & H^{(0)} + \hbar \omega  & H^{(-1)}   & H^{(-2)} & \hdots \\
+   m=0  & \hdots & H^{(2)}   & H^{(1)}   & H^{(0)}   & H^{(-1)} & \hdots  \\
+   m=1  &        & H^{(3)}   & H^{(2)}   & H^{(1)}   & H^{(0)} - \hbar \omega &  \\
+       &        &     & \vdots & \vdots & \\
+   \end{pNiceMatrix}
+\]
+
+\begin{itemize}
+    \item Each ``element'' is a Hamiltonian on $\mathcal{H}$
+    \item The hole $H^{\text{Floquet}}$ is on the extended Hilbert space 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet Brillouin zone}
+
+\vspace{0.3cm}
+
+\begin{columns}
+
+\begin{column}{0.6\textwidth}
+    \begin{minipage}{\columnwidth}
+        \textbf{Redundancy in $H^{\text{Floquet}}$} The number of independent quasienergies is not really multiplied by Floquet subspaces.
+        \[
+            \ee^{- \ii (\varepsilon_n - m \hbar \omega) t} \underbrace{\ee^{\ii m \hbar \omega t} \ket*{\Phi_n(t)}}_{\text{still periodic!}}
+        \]
+    \end{minipage}
+\end{column}
+
+\begin{column}{0.39\textwidth}
+    \begin{minipage}{\columnwidth}
+        \centering
+        \only<1>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Straight Lines [id:da8729664532403207] 
+                \draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ][fill={rgb, 255:red, 189; green, 16; blue, 224 }  ,fill opacity=1 ][line width=2.25]    (43,232) -- (155.83,232) ;
+                %Straight Lines [id:da26798948442984627] 
+                \draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=2.25]    (43,122) -- (156.25,122) ;
+                %Straight Lines [id:da3856603960762994] 
+                \draw [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,draw opacity=1 ][line width=2.25]    (43.42,37.73) -- (156.25,37.73) ;
+                
+                
+                
+                
+                \end{tikzpicture}
+        }
+        \only<2>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Shape: Rectangle [id:dp7298301359950772] 
+                \draw  [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=0.3 ][fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=0.1 ] (42.92,155.73) -- (206.25,155.73) -- (206.25,227.11) -- (42.92,227.11) -- cycle ;
+                %Straight Lines [id:da9181682037828782] 
+                \draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ][fill={rgb, 255:red, 189; green, 16; blue, 224 }  ,fill opacity=1 ][line width=2.25]    (43,232) -- (155.83,232) ;
+                %Straight Lines [id:da7127792152745307] 
+                \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (155.83,163.61) -- (155.83,171.61) .. controls (157.5,173.28) and (157.5,174.94) .. (155.83,176.61) .. controls (154.16,178.28) and (154.16,179.94) .. (155.83,181.61) .. controls (157.5,183.28) and (157.5,184.94) .. (155.83,186.61) .. controls (154.16,188.28) and (154.16,189.94) .. (155.83,191.61) .. controls (157.5,193.28) and (157.5,194.94) .. (155.83,196.61) .. controls (154.16,198.28) and (154.16,199.94) .. (155.83,201.61) .. controls (157.5,203.28) and (157.5,204.94) .. (155.83,206.61) .. controls (154.16,208.28) and (154.16,209.94) .. (155.83,211.61) .. controls (157.5,213.28) and (157.5,214.94) .. (155.83,216.61) .. controls (154.16,218.28) and (154.16,219.94) .. (155.83,221.61) .. controls (157.5,223.28) and (157.5,224.94) .. (155.83,226.61) .. controls (154.16,228.28) and (154.16,229.94) .. (155.83,231.61) -- (155.83,232) -- (155.83,232) ;
+                \draw [shift={(155.83,160.61)}, rotate = 90] [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da6882390234213356] 
+                \draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=2.25]    (43.5,192) -- (156.33,192) ;
+                %Straight Lines [id:da0739201384454593] 
+                \draw [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,draw opacity=1 ][line width=2.25]    (43.5,180) -- (156.33,180) ;
+                %Straight Lines [id:da9326208918546175] 
+                \draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ][fill={rgb, 255:red, 189; green, 16; blue, 224 }  ,fill opacity=1 ][line width=2.25]    (43,160.61) -- (155.83,160.61) ;
+                %Straight Lines [id:da41986982307748066] 
+                \draw [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=2.25]    (43,122) -- (156.25,122) ;
+                %Straight Lines [id:da8598211610411646] 
+                \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (64,120.61) .. controls (65.67,122.28) and (65.67,123.94) .. (64,125.61) .. controls (62.33,127.28) and (62.33,128.94) .. (64,130.61) .. controls (65.67,132.28) and (65.67,133.94) .. (64,135.61) .. controls (62.33,137.28) and (62.33,138.94) .. (64,140.61) .. controls (65.67,142.28) and (65.67,143.94) .. (64,145.61) .. controls (62.33,147.28) and (62.33,148.94) .. (64,150.61) .. controls (65.67,152.28) and (65.67,153.94) .. (64,155.61) .. controls (62.33,157.28) and (62.33,158.94) .. (64,160.61) .. controls (65.67,162.28) and (65.67,163.94) .. (64,165.61) .. controls (62.33,167.28) and (62.33,168.94) .. (64,170.61) .. controls (65.67,172.28) and (65.67,173.94) .. (64,175.61) .. controls (62.33,177.28) and (62.33,178.94) .. (64,180.61) -- (64,181) -- (64,189) ;
+                \draw [shift={(64,192)}, rotate = 270] [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da011513546790421492] 
+                \draw [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,draw opacity=1 ][line width=2.25]    (43.42,109.11) -- (156.25,109.11) ;
+                %Straight Lines [id:da8767692107987499] 
+                \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (102.83,109.11) .. controls (104.5,110.78) and (104.5,112.44) .. (102.83,114.11) .. controls (101.16,115.78) and (101.16,117.44) .. (102.83,119.11) .. controls (104.5,120.78) and (104.5,122.44) .. (102.83,124.11) .. controls (101.16,125.78) and (101.16,127.44) .. (102.83,129.11) .. controls (104.5,130.78) and (104.5,132.44) .. (102.83,134.11) .. controls (101.16,135.78) and (101.16,137.44) .. (102.83,139.11) .. controls (104.5,140.78) and (104.5,142.44) .. (102.83,144.11) .. controls (101.16,145.78) and (101.16,147.44) .. (102.83,149.11) .. controls (104.5,150.78) and (104.5,152.44) .. (102.83,154.11) .. controls (101.16,155.78) and (101.16,157.44) .. (102.83,159.11) .. controls (104.5,160.78) and (104.5,162.44) .. (102.83,164.11) .. controls (101.16,165.78) and (101.16,167.44) .. (102.83,169.11) -- (102.83,169.5) -- (102.83,177.5) ;
+                \draw [shift={(102.83,180.5)}, rotate = 270] [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da4354918972699331] 
+                \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (102.83,37.73) .. controls (104.5,39.4) and (104.5,41.06) .. (102.83,42.73) .. controls (101.16,44.4) and (101.16,46.06) .. (102.83,47.73) .. controls (104.5,49.4) and (104.5,51.06) .. (102.83,52.73) .. controls (101.16,54.4) and (101.16,56.06) .. (102.83,57.73) .. controls (104.5,59.4) and (104.5,61.06) .. (102.83,62.73) .. controls (101.16,64.4) and (101.16,66.06) .. (102.83,67.73) .. controls (104.5,69.4) and (104.5,71.06) .. (102.83,72.73) .. controls (101.16,74.4) and (101.16,76.06) .. (102.83,77.73) .. controls (104.5,79.4) and (104.5,81.06) .. (102.83,82.73) .. controls (101.16,84.4) and (101.16,86.06) .. (102.83,87.73) .. controls (104.5,89.4) and (104.5,91.06) .. (102.83,92.73) .. controls (101.16,94.4) and (101.16,96.06) .. (102.83,97.73) -- (102.83,98.11) -- (102.83,106.11) ;
+                \draw [shift={(102.83,109.11)}, rotate = 270] [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da5649695485657895] 
+                \draw [color={rgb, 255:red, 184; green, 233; blue, 134 }  ,draw opacity=1 ][line width=2.25]    (43.42,37.73) -- (156.25,37.73) ;
+                %Straight Lines [id:da7954828909315641] 
+                \draw [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,draw opacity=1 ][fill={rgb, 255:red, 189; green, 16; blue, 224 }  ,fill opacity=1 ][line width=2.25]    (43,89.23) -- (155.83,89.23) ;
+                %Straight Lines [id:da6145585950854873] 
+                \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (155.83,92.23) -- (155.83,100.23) .. controls (157.5,101.9) and (157.5,103.56) .. (155.83,105.23) .. controls (154.16,106.9) and (154.16,108.56) .. (155.83,110.23) .. controls (157.5,111.9) and (157.5,113.56) .. (155.83,115.23) .. controls (154.16,116.9) and (154.16,118.56) .. (155.83,120.23) .. controls (157.5,121.9) and (157.5,123.56) .. (155.83,125.23) .. controls (154.16,126.9) and (154.16,128.56) .. (155.83,130.23) .. controls (157.5,131.9) and (157.5,133.56) .. (155.83,135.23) .. controls (154.16,136.9) and (154.16,138.56) .. (155.83,140.23) .. controls (157.5,141.9) and (157.5,143.56) .. (155.83,145.23) .. controls (154.16,146.9) and (154.16,148.56) .. (155.83,150.23) .. controls (157.5,151.9) and (157.5,153.56) .. (155.83,155.23) .. controls (154.16,156.9) and (154.16,158.56) .. (155.83,160.23) -- (155.83,160.61) -- (155.83,160.61) ;
+                \draw [shift={(155.83,89.23)}, rotate = 90] [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                
+                % Text Node
+                \draw (200.75,191.8) node [anchor=east] [inner sep=0.75pt]   [align=left] {1BZ};
+                
+                
+                \end{tikzpicture}               
+        }
+    \end{minipage}
+\end{column}
+
+\end{columns}
+
+\vspace{0.5cm}
+
+\textbf{The number of independent quasi-stationary states $= \dim \mathcal{H}$}
+
+So only \emph{one} energy Brillouin zone is needed.
+
+\vspace{0.5cm}
+
+But all $\phi_n^{(m)}$ are all needed to decide $\ket*{\Phi_n(t)}$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet formalism in hierarchy of approximations}
+
+\textbf{Other ways to describe periodic driving}
+
+\begin{itemize}
+    \item Time-dependent perturbation theory (TD-PT)
+    \item Rotating wave approximation (RWA)
+\end{itemize}
+
+
+\begin{center}
+    \small
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8]
+        %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+        
+        %Straight Lines [id:da3808102939067066] 
+        \draw    (118,88) -- (179.83,88) ;
+        \draw [shift={(182.83,88)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da17889125564532904] 
+        \draw    (210,105) -- (170.27,133.53) ;
+        \draw [shift={(167.83,135.28)}, rotate = 324.32] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da8600528475726741] 
+        \draw    (219.83,103.28) -- (212.25,157.31) ;
+        \draw [shift={(211.83,160.28)}, rotate = 277.99] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da9418458232454647] 
+        \draw    (249.83,88) -- (362.83,88) ;
+        \draw [shift={(365.83,88)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da024612001433695463] 
+        \draw    (438.83,88) -- (503.83,88) ;
+        \draw [shift={(506.83,88)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Curve Lines [id:da020758323785619925] 
+        \draw    (232,106) .. controls (321.38,199.81) and (460.43,187.41) .. (521.91,101.78) ;
+        \draw [shift={(522.83,100.48)}, rotate = 125.1] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        
+        % Text Node
+        \draw (19,78) node [anchor=north west][inner sep=0.75pt]   [align=left] {Keldysh, etc.};
+        % Text Node
+        \draw (191,78) node [anchor=north west][inner sep=0.75pt]   [align=left] {TD-PT};
+        % Text Node
+        \draw (150.42,85) node [anchor=south] [inner sep=0.75pt]    {$T=0$};
+        % Text Node
+        \draw (121,166) node [anchor=north west][inner sep=0.75pt]   [align=left] {various cutoff schemes};
+        % Text Node
+        \draw (307.83,85) node [anchor=south] [inner sep=0.75pt]   [align=left] {periodic, no cutoff};
+        % Text Node
+        \draw (377,77) node [anchor=north west][inner sep=0.75pt]   [align=left] {Floquet};
+        % Text Node
+        \draw (512,77) node [anchor=north west][inner sep=0.75pt]   [align=left] {RWA};
+        % Text Node
+        \draw (472.83,85) node [anchor=south] [inner sep=0.75pt]   [align=left] {small $\displaystyle \Omega ,\Delta $};
+        
+        
+        \end{tikzpicture}        
+\end{center}    
+
+
+\end{frame}
+
+\endgroup
+
+\begingroup
+
+\title{Floquet formalism in eyes of other formalisms}
+\subtitle{``full'' Floquet theory, perturbation theory, and RWA}
+\author{}
+\date{}
+
+\begin{frame}[noframenumbering,plain]
+    \titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet formalism v.s. TD-PT}
+
+Response from time-dependent perturbation theory
+$=$ response from $T=0$ Feynman diagrams. 
+
+\textbf{Example: first-order PT = Lindhard response function}
+\vspace{-0.4cm}
+\[
+    \small
+    \expval*{\mu^{(1)}} = \mueg\underbrace{ \Omega}_{\text{Rabi freq.}} \left(
+        \frac{\Omega}{\omegaeg - \omega} \ee^{- \ii \omega t}
+        + \frac{\Omega}{\omegaeg + \omega} \ee^{\ii \omega t} + \text{h.c.}
+    \right) = \begin{gathered}
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.6,xscale=0.6, baseline=(XXXX.south) ]
+            \draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+            %Shape: Circle [id:dp9093318337648062] 
+            \draw   (33.47,35.64) .. controls (33.47,20.28) and (45.92,7.83) .. (61.28,7.83) .. controls (76.63,7.83) and (89.08,20.28) .. (89.08,35.64) .. controls (89.08,51) and (76.63,63.45) .. (61.28,63.45) .. controls (45.92,63.45) and (33.47,51) .. (33.47,35.64) -- cycle ;
+            %Straight Lines [id:da7974609162256947] 
+            \draw    (58.96,8.03) ;
+            \draw [shift={(56.21,8.03)}, rotate = 360] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+            %Straight Lines [id:da9935047452925077] 
+            \draw    (64.21,63.28) ;
+            \draw [shift={(66.71,63.28)}, rotate = 180] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+            %Straight Lines [id:da661786151633333] 
+            \draw    (33.47,35.64) .. controls (31.8,37.31) and (30.14,37.31) .. (28.47,35.64) .. controls (26.8,33.97) and (25.14,33.97) .. (23.47,35.64) .. controls (21.8,37.31) and (20.14,37.31) .. (18.47,35.64) .. controls (16.8,33.97) and (15.14,33.97) .. (13.47,35.64) -- (10.96,35.64) -- (10.96,35.64) ;
+            \draw [shift={(10.96,35.64)}, rotate = 225] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+            %Straight Lines [id:da28063751054916297] 
+            \draw    (89.08,35.64) ;
+            \draw [shift={(89.08,35.64)}, rotate = 45] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+            \end{tikzpicture}
+    \end{gathered}
+\]
+
+\textbf{$H^{\text{Floquet}}$ $=$ the non-equilibrium self-energy}
+
+\[
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (16.666667938232422,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da9841518915215031] 
+        \draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=2.25]    (7.83,7.11) -- (7.83,56.11) ;
+        \draw [shift={(7.83,23.91)}, rotate = 90] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.36,-4.98) -- (0,0) -- (10.36,4.98) -- (6.88,0) -- cycle    ;
+        \end{tikzpicture}
+        =\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,64);\path (16.666667938232422,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da14865900251827657] 
+        \draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (7.83,7.11) -- (7.83,56.11) ;
+        \draw [shift={(7.83,27.51)}, rotate = 90] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        \end{tikzpicture}
+        +\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+        \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1, baseline=(XXXX.south) ]
+        \path (0,82);\path (94.33333587646484,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+        %Straight Lines [id:da0005960179652220177] 
+        \draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=2.25]    (16.83,38.11) -- (16.83,71.11) ;
+        \draw [shift={(16.83,46.91)}, rotate = 90] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.36,-4.98) -- (0,0) -- (10.36,4.98) -- (6.88,0) -- cycle    ;
+        %Straight Lines [id:da537794110388885] 
+        \draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (16.83,5.11) -- (16.83,38.11) ;
+        \draw [shift={(16.83,17.51)}, rotate = 90] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+        %Straight Lines [id:da5838170117024906] 
+        \draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (16.83,38.11) .. controls (18.5,36.44) and (20.16,36.44) .. (21.83,38.11) .. controls (23.5,39.78) and (25.16,39.78) .. (26.83,38.11) .. controls (28.5,36.44) and (30.16,36.44) .. (31.83,38.11) .. controls (33.5,39.78) and (35.16,39.78) .. (36.83,38.11) .. controls (38.5,36.44) and (40.16,36.44) .. (41.83,38.11) .. controls (43.5,39.78) and (45.16,39.78) .. (46.83,38.11) -- (49.48,38.11) -- (49.48,38.11) ;
+        \draw [shift={(49.48,38.11)}, rotate = 45] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+        %Shape: Rectangle [id:dp4375384855512545] 
+        \draw  [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] (5.33,29.11) -- (65.48,29.11) -- (65.48,49.11) -- (5.33,49.11) -- cycle ;
+        % Text Node
+        \draw (65.48,27.61) node [anchor=south] [inner sep=0.75pt]   [align=left] {$\displaystyle H^{( m\neq 0)}$};
+        \end{tikzpicture}
+    \Rightarrow
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8, baseline=(XXXX.south) ]
+\path (0,70);\path (69.33333587646484,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+%Shape: Circle [id:dp24884250139527841] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=2.25]  (1.47,32.64) .. controls (1.47,17.28) and (13.92,4.83) .. (29.28,4.83) .. controls (44.63,4.83) and (57.08,17.28) .. (57.08,32.64) .. controls (57.08,48) and (44.63,60.45) .. (29.28,60.45) .. controls (13.92,60.45) and (1.47,48) .. (1.47,32.64) -- cycle ;
+%Straight Lines [id:da5411158694039544] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (26.96,5.03) ;
+\draw [shift={(24.21,5.03)}, rotate = 360] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+%Straight Lines [id:da9620266274824838] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (32.21,60.28) ;
+\draw [shift={(34.71,60.28)}, rotate = 180] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+%Straight Lines [id:da020624625889882342] 
+\draw    (57.08,32.64) ;
+\draw [shift={(57.08,32.64)}, rotate = 45] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+\end{tikzpicture}
+=\textcolor[rgb]{0.96,0.65,0.14}{\sum }\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8, baseline=(XXXX.south) ]
+\path (0,76);\path (100,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+%Shape: Circle [id:dp5911774442865243] 
+\draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ] (33.47,35.64) .. controls (33.47,20.28) and (45.92,7.83) .. (61.28,7.83) .. controls (76.63,7.83) and (89.08,20.28) .. (89.08,35.64) .. controls (89.08,51) and (76.63,63.45) .. (61.28,63.45) .. controls (45.92,63.45) and (33.47,51) .. (33.47,35.64) -- cycle ;
+%Straight Lines [id:da2227266556401064] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (58.96,8.03) ;
+\draw [shift={(56.21,8.03)}, rotate = 360] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+%Straight Lines [id:da7007234232463695] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (64.21,63.28) ;
+\draw [shift={(66.71,63.28)}, rotate = 180] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
+%Straight Lines [id:da8723273674088199] 
+\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (37.72,20.89) .. controls (35.55,21.82) and (34.01,21.2) .. (33.08,19.03) .. controls (32.15,16.86) and (30.61,16.24) .. (28.44,17.17) .. controls (26.27,18.1) and (24.73,17.48) .. (23.8,15.31) .. controls (22.87,13.14) and (21.32,12.52) .. (19.15,13.45) .. controls (16.98,14.38) and (15.44,13.76) .. (14.51,11.59) -- (12.46,10.77) -- (12.46,10.77) ;
+\draw [shift={(12.46,10.77)}, rotate = 246.84] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+%Straight Lines [id:da9766871436629114] 
+\draw    (89.08,35.64) ;
+\draw [shift={(89.08,35.64)}, rotate = 45] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+%Straight Lines [id:da08128573819662277] 
+\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (35.21,45.77) .. controls (34.46,48) and (32.97,48.75) .. (30.74,48) .. controls (28.5,47.25) and (27.01,48) .. (26.26,50.24) .. controls (25.51,52.47) and (24.02,53.22) .. (21.79,52.47) .. controls (19.55,51.72) and (18.06,52.47) .. (17.32,54.71) .. controls (16.58,56.95) and (15.09,57.7) .. (12.85,56.95) -- (12.71,57.02) -- (12.71,57.02) ;
+\draw [shift={(12.71,57.02)}, rotate = 198.43] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+%Straight Lines [id:da9537702924229883] 
+\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (39.46,52.77) .. controls (39.37,55.12) and (38.15,56.26) .. (35.8,56.17) .. controls (33.45,56.09) and (32.23,57.23) .. (32.14,59.58) .. controls (32.05,61.93) and (30.83,63.07) .. (28.48,62.99) .. controls (26.13,62.91) and (24.91,64.05) .. (24.82,66.4) -- (21.21,69.77) -- (21.21,69.77) ;
+\draw [shift={(21.21,69.77)}, rotate = 182.03] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (-5.59,0) -- (5.59,0)(0,5.59) -- (0,-5.59)   ;
+% Text Node
+\draw (6.75,22.5) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ] [align=left] {$\displaystyle \cdots $};
+\end{tikzpicture}
+\]
+
+In the full $H^{\text{Floquet}}$, 
+automatically all PT terms are considered!
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Floquet formalism v.s. RWA}
+
+\vspace{0.3cm}
+\begin{columns}
+
+\begin{column}{0.6\textwidth}
+\begin{minipage}{\columnwidth}
+    \begin{center}
+        \small
+        \only<1>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Shape: Rectangle [id:dp22527454007548142] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (139,112) -- (214.83,112) -- (214.83,160.95) -- (139,160.95) -- cycle ;
+                %Shape: Rectangle [id:dp39605556332568703] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (225,165) -- (328.83,165) -- (328.83,213.95) -- (225,213.95) -- cycle ;
+                %Shape: Rectangle [id:dp04514991260908907] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (20.83,43.81) -- (121.83,43.81) -- (121.83,92.95) -- (20.83,92.95) -- cycle ;
+                %Shape: Rectangle [id:dp04085472927315914] 
+                \draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=0.1 ] (138.83,44) -- (214.67,44) -- (214.67,92.95) -- (138.83,92.95) -- cycle ;
+                
+                % Text Node
+                \draw (188,137) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}}$};
+                % Text Node
+                \draw (143,113) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$0$};
+                % Text Node
+                \draw (187,48) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (143,76) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (66,73) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} +\omega $};
+                % Text Node
+                \draw (29,49) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega $};
+                % Text Node
+                \draw (75,114) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (28,142) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (268,190) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} -\omega $};
+                % Text Node
+                \draw (227,167) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$-\omega $};
+                % Text Node
+                \draw (284,112) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (235,144) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (193,170) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (145,201) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (71.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} +\hbar \omega $};
+                % Text Node
+                \draw (280.33,224.77) node  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} -\hbar \omega $};
+                % Text Node
+                \draw (176.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$H^{( -1)}$};
+                
+                
+                \end{tikzpicture}
+        }
+        \only<2>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Shape: Rectangle [id:dp22527454007548142] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (139,112) -- (214.83,112) -- (214.83,160.95) -- (139,160.95) -- cycle ;
+                %Shape: Rectangle [id:dp39605556332568703] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (225,165) -- (328.83,165) -- (328.83,213.95) -- (225,213.95) -- cycle ;
+                %Straight Lines [id:da9943217194047385] 
+                \draw [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] [dash pattern={on 0.84pt off 2.51pt}]  (161,121) -- (276.83,121) ;
+                \draw [shift={(279.83,121)}, rotate = 180] [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da0017532091504999237] 
+                \draw [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] [dash pattern={on 0.84pt off 2.51pt}]  (290,129) -- (290,185.95) ;
+                \draw [shift={(290,188.95)}, rotate = 270] [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Shape: Rectangle [id:dp04514991260908907] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (20.83,43.81) -- (121.83,43.81) -- (121.83,92.95) -- (20.83,92.95) -- cycle ;
+                %Shape: Rectangle [id:dp04085472927315914] 
+                \draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=0.1 ] (138.83,44) -- (214.67,44) -- (214.67,92.95) -- (138.83,92.95) -- cycle ;
+                %Straight Lines [id:da9702765426343174] 
+                \draw [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] [dash pattern={on 0.84pt off 2.51pt}]  (139,121) -- (94.83,121) ;
+                \draw [shift={(91.83,121)}, rotate = 360] [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                %Straight Lines [id:da49955628765150983] 
+                \draw [color={rgb, 255:red, 155; green, 155; blue, 155 }  ,draw opacity=1 ] [dash pattern={on 0.84pt off 2.51pt}]  (81.83,112.61) -- (81.83,98.61) ;
+                \draw [shift={(81.83,95.61)}, rotate = 90] [fill={rgb, 255:red, 155; green, 155; blue, 155 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (7.14,-3.43) -- (0,0) -- (7.14,3.43) -- (4.74,0) -- cycle    ;
+                
+                % Text Node
+                \draw (188,137) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}}$};
+                % Text Node
+                \draw (143,113) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$0$};
+                % Text Node
+                \draw (187,48) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (143,76) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (66,73) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} +\omega $};
+                % Text Node
+                \draw (29,49) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega $};
+                % Text Node
+                \draw (75,114) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (28,142) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (268,190) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} -\omega $};
+                % Text Node
+                \draw (227,167) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$-\omega $};
+                % Text Node
+                \draw (284,112) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (235,144) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (193,170) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (145,201) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (71.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} +\hbar \omega $};
+                % Text Node
+                \draw (280.33,224.77) node  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} -\hbar \omega $};
+                % Text Node
+                \draw (176.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$H^{( -1)}$};
+                
+                
+                \end{tikzpicture}
+        }
+        \only<3>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Shape: Rectangle [id:dp22527454007548142] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (139,112) -- (214.83,112) -- (214.83,160.95) -- (139,160.95) -- cycle ;
+                %Shape: Rectangle [id:dp39605556332568703] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (225,165) -- (328.83,165) -- (328.83,213.95) -- (225,213.95) -- cycle ;
+                %Shape: Rectangle [id:dp04514991260908907] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (20.83,43.81) -- (121.83,43.81) -- (121.83,92.95) -- (20.83,92.95) -- cycle ;
+                %Shape: Rectangle [id:dp04085472927315914] 
+                \draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=0.1 ] (138.83,44) -- (214.67,44) -- (214.67,92.95) -- (138.83,92.95) -- cycle ;
+                
+                % Text Node
+                \draw (188,137) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{\omega _{\text{eg}}}$};
+                % Text Node
+                \draw (143,113) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$0$};
+                % Text Node
+                \draw (187,48) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (143,76) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (66,73) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} +\omega $};
+                % Text Node
+                \draw (29,49) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{\omega }$};
+                % Text Node
+                \draw (75,114) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (28,142) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (268,190) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} -\omega $};
+                % Text Node
+                \draw (227,167) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{-\omega }$};
+                % Text Node
+                \draw (284,112) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (235,144) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (193,170) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (145,201) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (71.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} +\hbar \omega $};
+                % Text Node
+                \draw (280.33,224.77) node  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} -\hbar \omega $};
+                % Text Node
+                \draw (176.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$H^{( -1)}$};
+                
+                
+                \end{tikzpicture}       
+        }
+        \only<4>{
+            \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.8,xscale=0.8]
+                %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+                
+                %Shape: Rectangle [id:dp22527454007548142] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (139,112) -- (214.83,112) -- (214.83,160.95) -- (139,160.95) -- cycle ;
+                %Shape: Rectangle [id:dp39605556332568703] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (225,165) -- (328.83,165) -- (328.83,213.95) -- (225,213.95) -- cycle ;
+                %Shape: Rectangle [id:dp04514991260908907] 
+                \draw  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=0.1 ] (20.83,43.81) -- (121.83,43.81) -- (121.83,92.95) -- (20.83,92.95) -- cycle ;
+                %Shape: Rectangle [id:dp04085472927315914] 
+                \draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=0.1 ] (138.83,44) -- (214.67,44) -- (214.67,92.95) -- (138.83,92.95) -- cycle ;
+                
+                % Text Node
+                \draw (188,137) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{\omega _{\text{eg}}}$};
+                % Text Node
+                \draw (143,113) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$0$};
+                % Text Node
+                \draw (187,48) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (143,76) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (66,73) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{\omega _{\text{eg}} +\omega }$};
+                % Text Node
+                \draw (29,49) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{\omega }$};
+                % Text Node
+                \draw (75,114) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (28,142) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (268,190) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\omega _{\text{eg}} -\omega $};
+                % Text Node
+                \draw (227,167) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$\cancel{-\omega }$};
+                % Text Node
+                \draw (284,112) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (235,144) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (193,170) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\Omega $};
+                % Text Node
+                \draw (145,201) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$\cancel{\Omega }$};
+                % Text Node
+                \draw (71.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} +\hbar \omega $};
+                % Text Node
+                \draw (280.33,224.77) node  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$H^{( 0)} -\hbar \omega $};
+                % Text Node
+                \draw (176.33,38.47) node [anchor=south] [inner sep=0.75pt]  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,opacity=1 ]  {$H^{( -1)}$};
+                
+                
+                \end{tikzpicture}       
+        }
+        \only<5>{
+            \[
+                H^{\text{RWA}} = \pmqty{
+                    0 & \Omega \\ 
+                    \Omega & \omegaeg - \omega
+                }.
+            \]
+        }
+    \end{center}
+\end{minipage}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+    \begin{minipage}{\columnwidth}
+        \centering
+        $\abs*{\frac{E^{\text{Floquet}} - E^{\text{RWA}}}{E^{\text{Floquet}}}}$
+        \includegraphics[width=\textwidth]{plot/relative-error-rwa.pdf} 
+    \end{minipage}   
+\end{column}
+
+\end{columns}
+
+\textbf{From Floquet to RWA}
+\begin{itemize}
+    \uncover<2->{\item Small coupling: only first-order transitions from $\ket*{\text{g}}$ matters} 
+    \uncover<4->{\item Near resonance: only the $m=1$ $\omegaeg - \omega$ state matters}
+\end{itemize}
+
+\uncover<5>{Indeed when $\Omega / \omegaeg \lesssim 0.5$, $\omega / \omegaeg \sim 1$, RWA works the best!}
 
 \end{frame}
 
@@ -83,8 +815,24 @@
 \author{}
 \date{}
 
-\begin{frame}
+\begin{frame}[noframenumbering,plain]
     \titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Angle-resolved photoemission spectroscopy (ARPES)}
+
+\textbf{ARPES is\dots} 
+
+It can be shown that 
+\begin{equation}
+    I(\vb{k}, \omega) \sim \sum_{n, m} \abs*{\phi_n^{(m)}}^2 \delta(\omega - \varepsilon_{n \vb{k}}).
+\end{equation}
+
+\footnote{
+    Figure from \cite{rosenzweig2022surface}.
+}
+
 \end{frame}
 
 \endgroup

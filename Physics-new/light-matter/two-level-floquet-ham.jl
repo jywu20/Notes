@@ -207,6 +207,8 @@ let Ω_list = LinRange(0, 2, 500),
     ω_min = minimum(ω_list)
     ω_max = maximum(ω_list)
     Δω    = step(ω_list)
+
+    pyplot()
     p = heatmap(Ω_list, ω_list, sqrt_mse_list', 
         aspect_ratio = :equal,
         xlabel = L"\Omega / \omega_{\mathrm{eg}}",
@@ -214,6 +216,14 @@ let Ω_list = LinRange(0, 2, 500),
         xlims = (Ω_min - ΔΩ / 2, Ω_max + ΔΩ / 2),
         ylims = (ω_min - Δω / 2, ω_max + Δω / 2), 
         clims = (0, 1),
+        background_color = :transparent,
+        xtickfontsize=18,ytickfontsize=18,
+        xlabelfontsize=18,ylabelfontsize=18,
+        colorbar_tickfontsize=18,
+        xticks = [0.0, 1.0, 2.0],
+        yticks = [0.0, 1.0, 2.0],
+        colorbar_ticks=[0.0, 0.5, 1.0],
+        size=(500, 400)
     )
     display(p)
     savefig(p, "relative-error-rwa.pdf")
