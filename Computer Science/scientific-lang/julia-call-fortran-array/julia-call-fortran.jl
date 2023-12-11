@@ -32,4 +32,9 @@ println(res)
 # the fact that we are able to pass a pointer to the first element of an array 
 # to a Fortran subroutine without any problem 
 # suggest that the array descriptor should be passed as value, not as pointer.
-# The reason might be the bind(C) option.
+# The reason might be the bind(C) option: 
+# indeed for gfortran, the assembly codes generated with and without bind(c) 
+# are completely different, and the version with bind(c)
+# doesn't seem to pass the whole array descriptor by value to my_length:
+# if I turned on the bind(c) option but still pass the array as a pointer to the function, 
+# an error will appear.
