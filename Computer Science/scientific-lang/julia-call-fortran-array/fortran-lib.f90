@@ -25,3 +25,10 @@ function my_length(arr)
 
     my_length = size(arr) 
 end function my_length
+
+function my_length_c(arr) bind(c)
+    real(8), intent(in), dimension(:) :: arr
+    integer :: my_length_c
+
+    my_length_c = size(arr) 
+end function my_length_c

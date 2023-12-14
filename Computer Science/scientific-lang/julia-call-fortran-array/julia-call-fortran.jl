@@ -6,7 +6,7 @@ res = @ccall "./fortran-lib.so".average_(
     arr::Ptr{Float64}, arr_len::Ref{Int32})::Float64
 println(res)
 
-println("Trying to let Fortran decide how large the array is.")
+println("Trying to let Fortran decide how large the array is: the no bind(c) version.")
 res = @ccall "./fortran-lib.so".my_length_(arr::Ptr{Float64})::Int32
 println(res)
 # The return value is zero; 
@@ -38,3 +38,33 @@ println(res)
 # doesn't seem to pass the whole array descriptor by value to my_length:
 # if I turned on the bind(c) option but still pass the array as a pointer to the function, 
 # an error will appear.
+
+
+# The following lines have to be commented because it leads to immediate program crash.
+#println("Trying to let Fortran decide how large the array is: the bind(c) version.")
+#res = @ccall "./fortran-lib.so".my_length_c(arr::Ptr{Float64})::Int32
+#println(res)
+#
+# Result: Internal Error: Invalid type in descriptor
+
+println("Trying to let Fortran decide how large the array is: the bind(c) version.")
+
+using StaticArrays
+
+struct DescriptorDimension  
+    stride      :: Cptrdiff_t 
+    lower_bound :: Cptrdiff_t
+    upper_bound :: Cptrdiff_t
+end
+
+struct Descriptor{R, T}
+    base_addr :: Ptr{T}
+    offset :: Csize_t
+    dtype :: Cptrdiff_t
+    dim :: StaticArray{R, DescriptorDimension} 
+    # Alright, so I'm trying to implement the array descriptor mentioned in https://thinkingeek.com/2017/01/14/gfortran-array-descriptor/
+    # The problem here is we can't define something like descriptor_dimension dim[Rank] in Julia, 
+    # which is an array without any descriptor attached to it: 
+    # can I just use StaticArray?
+end
+
