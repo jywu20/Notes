@@ -99,6 +99,16 @@ top:
 The code is a mess, but the first line is very clear: the two variables - `%0` and `%1` - are indeed passed as values; 
 and therefore primitive types are always immutable.
 
+*The only way we are able to modify a variable in a primitive type 
+is to reinterpret the variable as some sort of containers, 
+and then modify its "elements".
+But this can't be done: no method of `reinterpret` can do so, 
+and when you try to implement this yourself, 
+you find you don't have enough primitives to do so.*
+
+*It may be possible to modify a memory region used to store someone with a primitive type; suppose we point a variable to that memory region,
+this may create a semantic ambiguity about whether the value of the latter variable should change.*
+
 ~~We can also verify this behavior using `StaticCompiler.jl`.~~
 For some reason `StaticCompiler` refuses to accept the function in `Computer Science/scientific-lang/julia-primitive-type-calling-convention/user-defined-primitive-type-lib.jl`.
-
+I also fail to modify a primitive type because I can't convert it to a container type.

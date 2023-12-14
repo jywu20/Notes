@@ -59,7 +59,7 @@ end
 
 struct Descriptor{R, T}
     base_addr :: Ptr{T}
-    offset :: Csize_t
+    offset :: Cptrdiff_t
     dtype :: Cptrdiff_t
     dim :: StaticArray{R, DescriptorDimension} 
     # Alright, so I'm trying to implement the array descriptor mentioned in https://thinkingeek.com/2017/01/14/gfortran-array-descriptor/
@@ -68,3 +68,39 @@ struct Descriptor{R, T}
     # can I just use StaticArray?
 end
 
+function fortran_dtype_specifier(rank::Integer, element_type, element_size::Integer)
+    element_type_coding = Dict(
+        Cint => 1, 
+        Bool => 2,
+        Cfloat => 3, 
+        Complex => 4, 
+        :drived => 5, 
+        Cchar => 6
+    )
+    
+    rank = Int(rank)
+    element_type = element_type_coding[element_type]
+    element_size = Int(element_size)
+
+    spec = rank                 # The rightmost three bits are for the rank 
+    spec |= (element_type << 3) # The middle 3 bits are for the element type 
+    spec |= (element_size << 6)
+
+    spec
+end
+
+let base_address = Base.unsafe_convert(Ptr{Int}, arr),
+    offset = -1, # 1-based indexing
+    dtype = fortran_dtype_specifier(1, Cint, 8), # rank 2, integer, and the size of each element is 8 bytes
+    stride = length(arr), 
+    lower_bound = firstindex(arr), 
+    upper_bound = lastindex(arr)
+
+    descriptor = Descriptor(base_address, offset, dtype, 
+        SVector{1, DescriptorDimension}([
+            DescriptorDimension(stride, lower_bound, upper_bound)
+        ]))
+   
+    res = @ccall "./fortran-lib.so".my_length_c(Ref{Descriptor}(descriptor)::Ref{Descriptor})::Int32
+    println(res)
+end
