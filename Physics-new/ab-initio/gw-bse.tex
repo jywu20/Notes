@@ -1645,8 +1645,10 @@ gives us numerical evidence for that.
 
 \section{System of units}
 
-In the $T=0$ case, 
-dimensionless quantities in condensed matter physics systems are 
+In the $T=0$ case the physics is determined by 
+the dimensionless time evolution operator $\ee^{- \ii H t}$,
+and therefore the only important dimensionless quantities in condensed matter physics systems 
+that determine the time evolution are 
 \begin{equation}
     \frac{\hbar^2 \laplacian}{2 m_e} \frac{t}{\hbar}, 
     \quad \frac{\hbar^2 \laplacian}{2 m_{\text{ion}}} \frac{t}{\hbar}, 
@@ -1655,14 +1657,24 @@ dimensionless quantities in condensed matter physics systems are
     \quad \frac{1}{4 \pi \epsilon_0} \frac{Q_1 Q_2}{r} \frac{t}{\hbar}. 
     \label{eq:quantities}
 \end{equation}
+In principle, a simulation software only needs to care about the five quantities; 
+the system of units is merely something that's needed when 
+the program reports its output to a human readable form.
+Almost everyone will write the ion charges $Q_{1, 2, \ldots}$ 
+as multiples of $e$, 
+and $m_{\text{ion}}$ can be given as its ratio with $m_{\text{e}}$, 
+so what really matter in defining the unit are just  
+$\frac{\hbar^2 \laplacian}{2 m_e} \frac{t}{\hbar}$ and 
+$\frac{1}{4 \pi \epsilon_0} \frac{e^2}{r} \frac{t}{\hbar}$, 
+or, from the perspective of the system of units, 
+
 Some factors in the above quantities may be assigned fixed values to define a unit system.
-The following quantities, if assigned with fixed values, define a system of units without creating conflicts:
+Assigning values to the following four quantities creates no conflict:
 \begin{itemize}
     \item $\hbar$, which appears in $\ee^{- \ii H t / \hbar}$. 
     It decides the proportion between $H$ and time evolution.
-    \item $m_e$, which is equivalent to the unit of mass
-    and 
-    \item $e^2 / 4\pi \epsilon_0$, which is the interactive coupling constant.
+    \item $m_e$, whose value implicitly defines the unit of mass.
+    \item $e^2 / 4\pi \epsilon_0$, which is the coupling strength.
     \item $e$, which is used to report the charge density once the calculation is finished.
 \end{itemize}
 After defining these quantities,
@@ -1670,9 +1682,38 @@ we find the rest of the quantities mentioned in \eqref{eq:quantities} --
 time, $m_{\text{ion}}$, nucleus charges -- can all be determined.
 Thus choosing a set of the above quantities gives us a system of units.
 
+TODO: why can we and should we define the length unit and how it affects the following steps
+
 The \concept{Hartree atomic units} takes the following: $\hbar = m_e = e = 4 \pi \epsilon_0 = 1$.
 The length unit under the atomic units is based on Bohr radius
 (which can be seen as obtained by comparing the first and the third quantities in \eqref{eq:quantities}).
+More explicitly, we have (below $m$ means $m_{\text{e}}$)
+\begin{equation}
+    \begin{aligned}
+        H &= \frac{\hbar^2 \laplacian}{2m} - \frac{e^2}{4\pi \epsilon_0} \frac{1}{r} \\
+        &= \frac{\hbar^2}{m} \left(
+            \frac{1}{2} \pdv[2]{\vb*{r}} - \frac{m e^2}{4 \pi \epsilon_0 \hbar^2} \frac{1}{r} 
+        \right) \\
+        &= \frac{m e^4}{16 \pi^2 \epsilon_0^2 \hbar^2} \left(
+            \frac{1}{2} \pdv[2]{
+                \left(\frac{m e^2}{4 \pi \epsilon_0 \hbar^2} \vb*{r}\right)
+            }
+            - \frac{1}{
+                \frac{m e^2}{4 \pi \epsilon_0 \hbar^2} r
+            }
+        \right),
+    \end{aligned}
+\end{equation}
+and naturally to have the beautiful form of $\laplacian / 2 - 1/r$ of the Hamiltonian, 
+we define the following quantity, which happens to be the Bohr radius, to be the atomic length unit:
+\begin{equation}
+    a_0 = \frac{4 \pi \epsilon_0 \hbar^2}{m e^2}.
+\end{equation}
+
+
+BerkeleyGW, on the other hand, uses a slightly different system of atomic units: 
+the Rydberg system, where $e^2$ is 2, instead of 1.
+This means 
 
 \chapter{Experimental characterization methods}
 
@@ -2139,6 +2180,20 @@ and has no refractive index dependence.
 This means to directly calculate $\Im \epsilon_{\text{r}}$ is actually easier 
 than to directly calculate $\alpha$,
 and the former is the usual scheme used in \abinitio{} calculations.
+
+Alternatively we may want to use the $\vb*{r} \cdot \vb*{E}$ interaction Hamiltonian.
+From the relation $\vb*{E} = - \pdv*{\vb*{A}}{t}$, 
+the final expression of $\Im \epsr$ can be directly obtained from \eqref{eq:light-matter.epsilon-img}
+by removing the $1 / \omega^2$ factor 
+(note that the interaction Hamiltonian and hence $\vb*{E}$ is squared in Fermi golden rule)
+and replacing $\vb*{v}$ by $\vb*{r}$, and we get 
+\begin{equation}
+    \Im \epsr = \frac{\pi e^2}{\epsilon_0 V} 
+    \sum_S \abs*{\mel**{S}{\vb*{r} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
+\end{equation}
+This expression not only has the same structure as \eqref{eq:light-matter.epsilon-img},
+but is actually equal to the latter, 
+because the expectation value TODO: this is trivially true when there is no electron-hole interaction, but is it true when there is?
 
 The relation \eqref{eq:light-matter.epsilon-img} is derived under SI. 
 In Gaussian system of units, 
@@ -5499,11 +5554,9 @@ This error is known in \shortcode{scGWtool.py}.
 This happens sometimes when doing \shortcode{2.1-wfn}.
 It's possible that this comes from some sort of out-of-memory issue.
 This of course occurs when the resource allocated is not enough,
-but sometimes it also occurs from wrong settings in input files of
-softwares being run.
+but sometimes it also occurs from wrong settings in input files of the softwares being run.
 One example: \shortcode{calculation} is accidentally set to \shortcode{scf} 
-in a QuantumESPRESSO run 
-when it should be \shortcode{bands}.
+in a QuantumESPRESSO run when it should be \shortcode{bands}.
 
 \subsection{\shortcode{Intel MKL FATAL ERROR: Cannot load symbol MKLMPI_Get_wrappers.}}
 
@@ -6096,6 +6149,10 @@ This sometimes displaces some segments of bands below a certain band index downw
 This may happen when the $\vb*{k}$-path is obtained 
 from a software designed for 3D systems, 
 while we are actually dealing with a monolayer.
+
+\subsection{Too many $\vb*{k}$ points in the result of \shortcode{inteqp}}
+
+Check the symmetry setting. No symmetry should be applied to the $\vb*{k}$-path in the fine-grained wave function file input to \shortcode{inteqp}.
 
 \subsection{The size of band gap}\label{sec:band-gap-problem}
 
