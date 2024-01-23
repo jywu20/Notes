@@ -1657,6 +1657,8 @@ that determine the time evolution are
     \quad \frac{1}{4 \pi \epsilon_0} \frac{Q_1 Q_2}{r} \frac{t}{\hbar}. 
     \label{eq:quantities}
 \end{equation}
+We expect the five dimensionless quantities to be the same 
+\emph{regardless of what system of units we use}.
 In principle, a simulation software only needs to care about the five quantities; 
 the system of units is merely something that's needed when 
 the program reports its output to a human readable form.
@@ -1666,29 +1668,40 @@ and $m_{\text{ion}}$ can be given as its ratio with $m_{\text{e}}$,
 so what really matter in defining the unit are just  
 $\frac{\hbar^2 \laplacian}{2 m_e} \frac{t}{\hbar}$ and 
 $\frac{1}{4 \pi \epsilon_0} \frac{e^2}{r} \frac{t}{\hbar}$, 
-or, from the perspective of the system of units, 
+or, since we are only interested in the system of units, 
+$\frac{\hbar^2}{2m_\text{e}} \frac{1}{r} \frac{4\pi \epsilon_0}{e^2}$ 
+and $H_{\text{Hydrogen atom}} t / \hbar$.
 
-Some factors in the above quantities may be assigned fixed values to define a unit system.
-Assigning values to the following four quantities creates no conflict:
-\begin{itemize}
+We can define a system of units by 
+assigning certain values to factors appearing in the two quantities mentioned right above;
+the definition of the new system of units therefore is given by the following statements:
+``in the the new system of units, 
+this quantity has this fixed value, and that quantity has that fixed value, 
+and the values of $\frac{\hbar^2}{2m_\text{e}} \frac{1}{r} \frac{4\pi \epsilon_0}{e^2}$ 
+and $H_{\text{Hydrogen atom}} t / \hbar$ 
+are the same as their values in SI''.
+Step by step, we can assign values to the following quantities 
+without causing a conflict and without leaving undefined units:
+\begin{enumerate}
+    \item The unit of $r$ i.e. all lengths.  
     \item $\hbar$, which appears in $\ee^{- \ii H t / \hbar}$. 
-    It decides the proportion between $H$ and time evolution.
-    \item $m_e$, whose value implicitly defines the unit of mass.
+    When the units of quantities in $H$ are all defined, 
+    $\hbar$ define the unit of time; 
+    alternatively for convenience we may want to have $\hbar = 1$, 
+    and this then imposes an additional constraint to 
+    the units appearing in $\frac{\hbar^2}{2m_\text{e}} \frac{1}{r} \frac{4\pi \epsilon_0}{e^2}$.
     \item $e^2 / 4\pi \epsilon_0$, which is the coupling strength.
-    \item $e$, which is used to report the charge density once the calculation is finished.
-\end{itemize}
-After defining these quantities,
-we find the rest of the quantities mentioned in \eqref{eq:quantities} -- 
-time, $m_{\text{ion}}$, nucleus charges -- can all be determined.
-Thus choosing a set of the above quantities gives us a system of units.
+    \item $e$, not really important in the calculation 
+    but is used to report the charge density once the calculation is finished.
+    \item $m_\text{e}$, also not really important in the calculation because  
+    $m_{\text{ion}}$ can always be given as multiples of $m_{\text{e}}$.
+\end{enumerate}
 
-TODO: why can we and should we define the length unit and how it affects the following steps
-
-The \concept{Hartree atomic units} takes the following: $\hbar = m_e = e = 4 \pi \epsilon_0 = 1$.
-The length unit under the atomic units is based on Bohr radius
-(which can be seen as obtained by comparing the first and the third quantities in \eqref{eq:quantities}).
-More explicitly, we have (below $m$ means $m_{\text{e}}$)
-\begin{equation}
+The most natural length unit seems to be based on the Bohr radius.
+Even if we know nothing about the exact form of the Bohr radius,
+by analyzing the structure of the hydrogen atom Hamiltonian, 
+we have (below $m$ means $m_{\text{e}}$)
+\begin{equation*}
     \begin{aligned}
         H &= \frac{\hbar^2 \laplacian}{2m} - \frac{e^2}{4\pi \epsilon_0} \frac{1}{r} \\
         &= \frac{\hbar^2}{m} \left(
@@ -1703,17 +1716,60 @@ More explicitly, we have (below $m$ means $m_{\text{e}}$)
             }
         \right),
     \end{aligned}
-\end{equation}
-and naturally to have the beautiful form of $\laplacian / 2 - 1/r$ of the Hamiltonian, 
+\end{equation*}
+and naturally to have the beautiful form of $\laplacian / 2 - 1/r$ of the Hamiltonian
+(we still want the $1/2$ factor to remind us that the kinetic energy is $\vb*{p}^2/2m$), 
 we define the following quantity, which happens to be the Bohr radius, to be the atomic length unit:
 \begin{equation}
     a_0 = \frac{4 \pi \epsilon_0 \hbar^2}{m e^2}.
 \end{equation}
+That's to say, $\eval{\frac{4 \pi \epsilon_0 \hbar^2}{m e^2}}_{\text{our system of units}}$ should be one.
+This definition of the length unit in terms of $\epsilon_0, \hbar, m, e$ 
+implicitly satisfies the constraint from 
+$\frac{\hbar^2}{2m_\text{e}} \frac{1}{r} \frac{4\pi \epsilon_0}{e^2}$
+because now 
+\[
+    \frac{\hbar^2}{2m_\text{e}} \frac{1}{r} \frac{4\pi \epsilon_0}{e^2} = \frac{a_0}{r}
+\]
+indeed is a dimensionless quantity without any dependence on the system of units. 
+Next we require that under our system of units, $\hbar = 1$,
+so whatever the system of units for $\epsilon_0, m, e$ is, 
+the unit of time is automatically given.
+So we have the constraint $\eval{\frac{4\pi \epsilon_0}{m e^2}}_{\text{our system of units}} = 1$.
+The next move to take is to decide what is $4 \pi \epsilon_0 / e^2$;
+a common practice is to use Gaussian system of units to remove all appearances of $\epsilon_0$;
+the definitions of magnetic quantities in Gaussian units 
+are different from those in SI, 
+but for the electric part, to switch to Gaussian units 
+we simply dictate that the arrangement of units has to make $4 \pi \epsilon_0 = 1$.
 
-
-BerkeleyGW, on the other hand, uses a slightly different system of atomic units: 
-the Rydberg system, where $e^2$ is 2, instead of 1.
-This means 
+Now we are left the unit of time, energy, mass and charge to define, 
+the constraint that the unit of time is to be defined by setting $\hbar = 1$,
+and the constraint $\eval{m e^2}_{\text{our system of units}} = 1$.
+It seems we still have one additional choice to make. 
+We take another move similar to the definition of the length unit 
+and note that the Hydrogen ground-state energy 
+\begin{equation}
+    E = - \frac{e^2}{2a_0}
+\end{equation}
+is given by the definition of $e$ in our units.
+Hence, by choosing the value of $e$, 
+or the unit of energy, or the value of $m$, 
+we can finalize our derivation and arrive at one specific atomic system of units.
+The \concept{Hartree atomic units} takes the following:
+\begin{equation}
+    \hbar = m_e = e = 4 \pi \epsilon_0 = 1.
+\end{equation}
+This means $E_{\text{H,$n=1$}} = \SI{0.5}{Hartree \ unit}$,
+and thus we find one Hartree atomic unit of energy 
+is $2 E_{\text{H,$n=1$}} \approx \SI{27.2}{eV}$.
+On the other hand, we can also dictate that $E_{\text{H,$n=1$}}$
+is exactly one atomic unit of energy, 
+and this means 
+\begin{equation}
+    \hbar = 2 m_{\text{e}} = \frac{e}{2} = 4 \pi \epsilon_0 = 1.
+\end{equation}
+This is known as the \concept{Rydberg atomic units}.
 
 \chapter{Experimental characterization methods}
 
@@ -2191,9 +2247,46 @@ and replacing $\vb*{v}$ by $\vb*{r}$, and we get
     \Im \epsr = \frac{\pi e^2}{\epsilon_0 V} 
     \sum_S \abs*{\mel**{S}{\vb*{r} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
 \end{equation}
-This expression not only has the same structure as \eqref{eq:light-matter.epsilon-img},
-but is actually equal to the latter, 
-because the expectation value TODO: this is trivially true when there is no electron-hole interaction, but is it true when there is?
+This expression has the same structure as \eqref{eq:light-matter.epsilon-img};
+when we ignore electron-hole interaction, 
+this expression gives exactly the same results of \eqref{eq:light-matter.epsilon-img},
+because now we have 
+\begin{equation}
+    \eval*{\Im \epsr}_{\text{from $\vb*{r}$}} = \frac{\pi e^2}{\epsilon_0 V} 
+    \sum_{c}^{\text{emp}} \sum_{v}^{\text{occ}} \abs*{\mel*{c \vb*{k}}{\vb*{r} \cdot \vu*{e}}{v \vb*{k}}}^2 
+    \delta(\omega - \varepsilon_{c \vb*{k}} + \varepsilon_{v \vb*{k}})
+\end{equation}
+and 
+\begin{equation}
+    \eval*{\Im \epsr}_{\text{from $\vb*{v}$}} = \frac{\pi e^2}{\epsilon_0 \omega^2 V} 
+    \sum_{c}^{\text{emp}} \sum_{v}^{\text{occ}} \abs*{\mel*{c \vb*{k}}{\vb*{v} \cdot \vu*{e}}{v \vb*{k}}}^2 
+    \delta(\omega - \varepsilon_{c \vb*{k}} + \varepsilon_{v \vb*{k}}),
+\end{equation}
+and since the electron-hole two-body interaction is ignored, 
+from 
+\[
+    \vb*{v} = \frac{1}{\ii \hbar} \comm*{\vb*{r}}{H_{\text{single electron}}}
+\]
+we immediately find 
+\[
+    (\varepsilon_{v \vb*{k}} - \varepsilon_{c \vb*{k}}) \abs{\mel*{c \vb*{k}}{\vb*{r}}{v \vb*{k}}} =
+    \abs{\mel*{c \vb*{k}}{\vb*{v}}{v \vb*{k}}},
+\]
+and because of the presence of the $\delta$-function, 
+the $1/\omega^2$ factor can be written as $1 / (\varepsilon_{v \vb*{k}} - \varepsilon_{c \vb*{k}})^2$,
+and hence the values $\Im \epsr$ under the two choices of the dipole coupling Hamiltonian should be the same.
+The same happens in the interactive case:
+now $\vb*{r}$ and $\vb*{v}$ are many-body operators, 
+and the relation between $\vb*{v}$ and $\vb*{r}$ is still 
+$\vb*{v} = \comm*{\vb*{r}}{H} / \ii \hbar$ (the Coulomb two-body term only contains $\vb*{r}$), 
+and from this relation we find 
+\[
+    \abs{\mel*{S}{\vb*{v}}{0}} = (E_0 - E_S) \abs{\mel*{S}{\vb*{r}}{0}}
+    = - \Omega_S \abs{\mel*{S}{\vb*{r}}{0}},
+\] 
+and hence again the two procedures to calculate $\Im \epsr$ result in the same value.
+The two Hamiltonians $\vb*{r} \cdot \vb*{E}$ and $\vb*{v} \cdot \vb*{A}$
+are equivalent, after all.
 
 The relation \eqref{eq:light-matter.epsilon-img} is derived under SI. 
 In Gaussian system of units, 
@@ -2220,7 +2313,7 @@ we have
         \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S).
     \label{eq:light-matter.epsilon-img-2}
 \end{equation}
-Here we replace $e^2 / \varepsilon_0$ in SI 
+Here we replace $e^2 / \epsilon_0$ in SI 
 by $4 \pi e^2$ in Gaussian units, 
 since the two system of units agree with each other 
 in the unit of force, 
@@ -2276,14 +2369,25 @@ So the formula used in BerkeleyGW
 -- which also agrees with \eqref{eq:light-matter.epsilon-img-2} -- 
 is 
 \begin{equation}
-    \varepsilon_2 = \frac{16 \pi^2}{\omega^2 N_{\text{spin-degeneracy}}} 
+    \epsilon_2 = \frac{16 \pi^2}{\omega^2 N_{\text{spin-degeneracy}}} 
     \sum_S \abs*{\mel**{S}{\vb*{v} \cdot \vu*{e}}{0}}^2 \delta(\omega - \Omega_S),
 \end{equation}
 where $N_{\text{spin-degeneracy}}$ is $1$ 
 when there is indeed spin degeneracy and only the orbit parts
 of the wave functions enter the calculation, 
 and is $2$ otherwise. 
-TODO: the $1 / \omega^2$ factor
+Actually BerkeleyGW works on $\mel*{S}{\vb*{r}}{0}$, 
+and the $1 / \omega^2$ factor is not present in the source code
+-- $\mel*{S}{\vb*{r}}{0}$ is calculated in subroutine \shortcode{mtxel_m} and \shortcode{mtxel_v}
+directly called by \shortcode{compute_ik_vmtxel}
+and returned in the output argument \shortcode{s0} of \shortcode{mtxel_m} and \shortcode{mtxel_v}
+and then passed to \shortcode{dip\%s1k} by \shortcode{dip\%compute_ik_vmtxel},
+and then \shortcode{dip\%s1k} is flatten into \shortcode{dip\%s1} by the same subroutine;
+\shortcode{dip\%s1} is then convoluted with the exciton wave function 
+to calculate \shortcode{dipoles_r}, the expectation of $\vb*{r}$ under an exciton mode in \shortcode{diag}, 
+and \shortcode{dipoles_r} is eventually used to calculate $\epsilon_2$.
+What is reported as the dipole in \shortcode{eigenvalues.dat} files is also \shortcode{s0}
+(see the subroutine \shortcode{absp0} which calls \shortcode{write_eigenvalues_noeh}).
 
 \chapter{DFT}
 
