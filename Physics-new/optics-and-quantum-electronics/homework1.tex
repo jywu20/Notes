@@ -1,0 +1,482 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sinc}{sinc}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+\newcommand*{\ptwo}{P^{(2)}}
+\newcommand*{\vp}{v_{\text{p}}}
+\newcommand*{\chitwo}{\chi^{(2)}}
+\newcommand*{\chithree}{\chi^{(3)}}
+\newcommand*{\omegap}{\omega_{\text{p}}}
+\newcommand*{\mvb}[1]{\tilde{\vb*{#1}}}
+
+\title{Homework 1}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Electric and magnetic field energies of a time-harmonic mode in lossless media}
+
+\textit{
+In this problem, we explore the contributions of the electric $\left(U_e\right)$ and magnetic energies $\left(U_m\right)$ to the total electromagnetic energy $\left(U_{e m}\right)$ of a mode. There are no free charges in this system, $\mu_r=1$, and the dielectric distribution, $\varepsilon_r(r)$, can take on an arbitrary spatial distribution; the dielectric is lossless and non-dispersive. We also assume that the electric and magnetic field profiles are squareintegrable. (In other words, the electric and magnetic fields vanish at large distances, $r \rightarrow \infty$ ).
+For an electromagnetic mode of arbitrary form, show that $U_e=U_m=\frac{1}{2} U_{e m}$. Here, we define $U_e=\frac{\varepsilon_o}{4} \int \varepsilon_r(\mathbf{r}) \tilde{\mathbf{E}}^* \cdot \tilde{\mathbf{E}} V$, and $U_m=\frac{\mu_o \mu_r}{4} \int \tilde{\mathbf{H}}^* \cdot \tilde{\mathbf{H}} d V$ as the time-averaged electric and magnetic energy densities.
+}
+
+From $\curl{\mvb{E}} = \ii \omega \mu_0 \mur \mvb{H}$ we can rewrite the magnetic energy as 
+\begin{equation}
+    \begin{aligned}
+        U_{\text{m}} &= \frac{\mu_0 \mur}{4} \int \dd{V} \mvb{H}^* \cdot \mvb{H} \\
+        &= \frac{\mu_0 \mur}{4} \frac{1}{\omega^2 \mu_0^2 \mur^2} \int \dd{V} \curl{\mvb{E}^*} \cdot \curl{\mvb{E}} \\
+        &= \frac{\mu_0 \mur}{4} \frac{1}{\omega^2 \mu_0^2 \mur^2} \int \dd{V} 
+        (\mvb{E}^* \cdot \curl{(\curl{\mvb{E}})} + \div{(\mvb{E}^* \times (\curl{\mvb{E}}))} )\\
+        &= \frac{\mu_0 \mur}{4} \frac{1}{\omega^2 \mu_0^2 \mur^2} \int \dd{V} 
+        \mvb{E}^* \cdot \curl{(\curl{\mvb{E}})} .
+    \end{aligned}
+\end{equation}
+From $\curl{\mvb{H}} = - \ii \omega \epsilon_0 \epsr \mvb{E}$, we find 
+\[
+    \curl{(\curl{\mvb{E}})} = \ii \omega \mu_0 \mur \curl{\mvb{H}}
+    = \omega^2 \epsilon_0 \mu_0 \epsr(\vb*{r}) \mur \mvb{E}, 
+\]
+and hence 
+\begin{equation}
+    U_{\text{m}} = \frac{\mu_0 \mur}{4} \frac{1}{\omega^2 \mu_0^2 \mur^2} \int \dd{V}
+    \omega^2 \epsilon_0 \mu_0 \epsr(\vb*{r}) \mur \mvb{E} \cdot \mvb{E}^*
+    = \frac{\epsilon_0}{4} \int \dd{V} \epsr(\vb*{r}) \mvb{E}^* \cdot \mvb{E} = U_{\text{e}},
+\end{equation}
+and therefore both $U_{\text{e}}$ and $U_{\text{e}}$ are half of the total energy.
+
+\section{Hermitian Operators }
+
+\paragraph*{(a)} When $\vb*{A}$ is a real vector, we have 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{a}^* \cdot (\vb*{A} \times \vb*{b})
+    = \int \dd[3]{\vb*{r}} (\vb*{a}^* \times \vb*{A}) \cdot \vb*{b} 
+    = \int \dd[3]{\vb*{r}}(- \vb*{A} \times \vb*{a})^* \cdot {\vb*{b}}.
+\end{equation}
+Therefore the Hermitian adjoint of $\vb*{A} \times (\cdots)$
+is $- \vb*{A} \times (\cdots)$; the operator is anti-Hermitian.
+
+\paragraph*{(b)} When $\vb*{A}, \vb*{B}$ are both real vectors, we have 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{a}^* \cdot (\vb*{A} \times (\vb*{B} \times \vb*{b}))
+    = \int \dd[3]{\vb*{r}} ((\vb*{a}^* \times \vb*{A}) \times \vb*{B}) \cdot \vb*{b}
+    = \int \dd[3]{\vb*{r}} (\vb*{B} \times (\vb*{A} \times \vb*{a}^*)) \cdot \vb*{b}.
+\end{equation}
+So the Hermitian adjoint of $\vb*{A} \times (\vb*{B} \times \cdots)$
+is $\vb*{B} \times (\vb*{A} \times \cdots)$.
+The operator is neither Hermitian nor anti-Hermitian.
+
+\paragraph*{(c)} From 
+\[
+    \div{(\vb*{a}^* \times \vb*{b})}
+    = (\curl{\vb*{a}^*}) \cdot \vb*{b} 
+    - \vb*{a}^* \cdot \curl{\vb*{b}}, 
+\]
+and the assumption that the integral of LHS over the whole space vanishes, 
+we have 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{a}^* \cdot \curl{\vb*{b}}
+    = \int \dd[3]{\vb*{r}} (\curl{\vb*{a}})^* \cdot \vb*{b} ,
+\end{equation}
+and therefore the Hermitian adjoint of $\curl{\cdots}$ is itself and the operator is Hermitian.
+
+\paragraph*{(d)} Since $\curl{\cdots}$ is Hermitian, 
+so is $\curl{\curl{\cdots}}$, and its Hermitian adjoint is again itself.
+
+\paragraph*{(e)} Using the above facts it's easy to show that 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{a}^* \cdot \curl{(f \curl{\vb*{b}})}
+    = \int \dd[3]{\vb*{r}} (\curl{f^* \curl{\vb*{a}}})^* \cdot \vb*{b}.
+\end{equation}
+Therefore, the operator $\curl{f \curl{\cdots}}$ is Hermitian, 
+if and only if $f$ is a real function.
+
+\section{Hermitian eigenvalue problems}
+
+\subsection{Electromagnetic Modes in Vacuum}
+
+\textit{In class, we saw that the magnetic vector potential can be used to express the electromagnetic field as a Hermitian eigenvalue problem. We also outlined the steps by which the mode energy can be cast in the form of a simple harmonic oscillator. In this problem, we use operator methods to derive these results in a very slick way. We assume that each mode $\left(\mathbf{A}_i(r, t)=q_i(t) \mathbf{A}_i^o(r)\right)$ is an eigenfunction of the Hermitian eigenvalue equation $\hat{O} \mathbf{A}_i^o(x)=\left(\omega_i / c\right)^2 \mathbf{A}_i^o(x)$, with a time-dependent amplitude, $q_i$, that obeys the relation $\ddot{q}_i=-\omega_i^2 q_i$, and $\hat{O}(\ldots)=\nabla \times \nabla \times(\ldots)$.}
+
+\paragraph*{(a)} \textit{Let's begin by considering the energy of an individual time-harmonic mode, $\mathbf{A}_i(r, t)=q_i(t) \mathbf{A}_i^o(r)$. From Eqs. 17-18 of Lecture 3 Note N1, notice that the electric field energy can be written as $U_{e, i}=\frac{1}{2} \varepsilon_o \dot{q}_i^2\left(\mathbf{A}_i^o \mid \mathbf{A}_i^o\right)$, and $U_{m, i}=\frac{1}{2} \mu_o^{-1} q_i^2\left(\nabla \times \mathbf{A}_i^o \mid \nabla \times \mathbf{A}_i^o\right)$. Using operator properties and the eigenvalue equation above, show that the total energy of the mode can be expressed as $U_{e m, i}=\frac{1}{2}\left[\dot{q}_i^2+\omega_i^2 q_i^2\right]$. How must $\mathbf{A}_i^o(x)$ be normalized to express the energy in this way? [Remember, it is our convention to choose a normalization such that the mass $m$ of our simple harmonic oscillator takes the value $m=1$.]}
+
+What we want is to see 
+\begin{equation}
+    \epsilon_0 \braket*{\vb*{A}_i^0}{\vb*{A}_i^0} = 1, \quad 
+    \frac{1}{\mu_0} \braket*{\curl{\vb*{A}_i^0}}{\curl{\vb*{A}_i^0}} = \omega_i^2.
+\end{equation}
+The second condition is actually equivalent to the first condition.
+Since we assume no spatial inhomogeneity of $\epsilon$, 
+the modes follow the Helmholtz equation 
+\begin{equation}
+    \left( \laplacian + \frac{\omega_i^2}{c^2} \right) \vb*{A}_i^0 = 
+    \left( \laplacian + \epsilon_0 \mu_0 \omega_i^2 \right) \vb*{A}_i^0 = 0, 
+\end{equation}
+and therefore 
+\begin{equation}
+    \begin{aligned}
+        \frac{1}{\mu_0} \braket*{\curl{\vb*{A}_i^0}}{\curl{\vb*{A}_i^0}}
+        &= \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} (\curl{\curl{\vb*{A}_i^{0*}}}) \cdot \vb*{A}_i^0 \\
+        &= \frac{1}{\mu_0} (- \laplacian \vb*{A}_i^{0*}) \cdot \vb*{A}_i^0 \\
+        &= \epsilon_0 \omega_i^2 \int \dd[3]{\vb*{r}} \vb*{A}_i^{0*} \cdot \vb*{A}_i^0,  
+    \end{aligned}
+\end{equation}
+where at the second line we use the Hermitian property of $\curl{\cdots}$, 
+the second line comes from the Coulomb gauge $\div{\vb*{A}} = 0$, 
+and therefore as long as 
+\begin{equation}
+    \epsilon_0 \braket*{\vb*{A}_i^0}{\vb*{A}_i^0} = 1, 
+\end{equation}
+which is just a normalization condition, we can write the energy as 
+\begin{equation}
+    H_i = U_{\text{em}, i} = \frac{1}{2} (\dot{q}_i^2 + \omega_i^2 q_i^2).
+\end{equation}
+
+\paragraph*{(b)} \textit{Given an individual mode with the form described in part (a), show that the time average of the electric field energy $\left\langle U_{e, i}\right\rangle$ is equal to the time average of the magnetic field energy $\left\langle U_{m, i}\right\rangle$. In the case of time-harmonic systems, we define the time average $\langle\ldots\rangle$ as $\frac{1}{T} \int_t^{t+T}(\ldots) d t^{\prime}$, where $\omega=2 \pi / T$. [Hint: Use integration by parts to make the time averages of the electric and magnetic field energies look identical. You do not need to evaluate the integral.]}
+
+Suppose $q_i = A_i \cos(\omega_i t)$, where by shifting the definition of the $t=0$ point 
+we eliminate the phase.
+This means $\dot{q}_i = - \omega_i A_i \sin(\omega_i t)$.
+The time average of the magnetic energy is 
+\begin{equation}
+    \begin{aligned}
+        \frac{1}{2} \omega_i^2 \expval{q_i^2} 
+        &= \frac{1}{2} \omega_i^2 \cdot \frac{1}{T} \int_{0}^{T} \dd{t} \cos^2 \omega_i t \\
+        &= \frac{1}{2} \omega_i^2 \cdot \frac{1}{T} 
+        \int_{0}^{T} \frac{1}{\omega_i} \cos \omega_i t \dd{\sin \omega_i t} \\
+        &= \frac{1}{2} \omega_i^2 \cdot \frac{1}{T} \frac{1}{\omega_i} \left(
+            \eval{\cos \omega_i t \sin \omega_i t}_0^{T}
+            - \int_{0}^{T} \dv{\cos \omega_i t}{t} \sin \omega_i t \dd{t}
+        \right) \\
+        &=  \frac{1}{2} \omega_i^2 \cdot \frac{1}{T} \int_{0}^{T} \sin^2 \omega_i t \dd{t} 
+        = \frac{1}{2} \expval{\dot{q}_i}.
+    \end{aligned}
+\end{equation} 
+
+\paragraph*{(c)} \textit{
+    With the definitions $\mathbf{E}(r, t)=p_i \mathbf{E}_i^o(r)=-p_i \mathbf{A}_i^o(r)$, and $\mathbf{B}(r, t)=q_i \mathbf{B}_i^o(r)=q_i \nabla \times \mathbf{A}_i^o(r)$, use Maxwell's equations find two first order equations for the evolution of $p_i$ and $q_i$. [Hint: You should find coupled first order equations that are identical to those produced by Hamilton's equations for our simple harmonic oscillator.]
+}
+
+From $\curl{\vb*{E}} = - \pdv*{\vb*{B}}{t}$ we get 
+\begin{equation}
+    \dot{q}_i = p_i, 
+\end{equation}
+and from $\curl{\vb*{B}} = \frac{1}{c^2} \pdv{\vb*{E}}{t}$ we get 
+\[
+    q_i \curl{(\curl{\vb*{A}_i^0})} = \frac{1}{c^2} (- \dot{p}_i) \vb*{A}_i^0, 
+\]
+and from the aforementioned Helmholtz equation we have 
+\[
+    \curl{(\curl{\vb*{A}_i^0})} = - \laplacian \vb*{A}_i^0
+    = \frac{\omega_i^2}{c^2} \vb*{A}_i^0, 
+\]
+and therefore
+\begin{equation}
+    \dot{p}_i = - \omega_i^2 q_i.
+\end{equation}
+
+\subsection{Electromagnetic Modes in Dielectric}
+
+\textit{Next let's consider the modes within a dielectric medium with a real dielectric constant, $\varepsilon_r(r)$, that can vary in space. We assume that each mode $\left(\mathbf{H}_i(r, t)=\right.$ $\left.q_i(t) \mathbf{H}_i^o(r)\right)$ is an eigenfunction of the Hermitian eigenvalue equation $\hat{O} \mathbf{H}_i^o(r)=\left(\omega_i / c\right)^2 \mathbf{H}_i^o(r)$, with a time-dependent amplitude, $q_i$, that obeys the relation $\ddot{q}_i=-\omega_i^2 q_i$, and $\hat{O}(\ldots)=\nabla \times\left(\varepsilon_r^{-1} \nabla \times\right)(\ldots)$. Notice we switched from magnetic flux density B to magnetic field strength $\mathbf{H}$. You can directly substitute $\mathbf{B}=\mu_0 \mathbf{H}$ where needed, because we usually assume $\mu=\mu_0$ this class.}
+
+\paragraph*{(a)} \textit{Let's begin by considering the energy of an individual time-harmonic mode, with electric and magnetic fields of the form $\mathbf{E}_l(r, t)=\dot{q}_l(t) \mathbf{E}_l^o(r)$ and $\mathbf{H}_l(r, t)=q_l(t) \mathbf{H}_l^o(r)$ respectively. Notice that the electric field energy can be written as $U_{e, i}=\frac{1}{2} \varepsilon_o \dot{q}_i^2\left(\mathbf{E}_i^o\left|\varepsilon_r\right| \mathbf{E}_i^o\right)$, and $U_{m, i}=\frac{1}{2} \mu_o q_i^2\left(\mathbf{H}_i^o \mid \mathbf{H}_i^o\right)$. Using operator properties and the eigenvalue equation above, show that the total energy of the mode can be expressed as $U_{e m, i}=\frac{1}{2}\left[\dot{q}_i^2+\omega_i^2 q_i^2\right]$. How must $\mathbf{E}_i^o(x)$ and $\mathbf{H}_i^o(x)$ be normalized to express the energy in this way? Use Maxwell's equations to show that the normalization conditions for $\mathbf{E}_i^o(x)$ and $\mathbf{H}_i^o(x)$ are equivalent.}
+
+Since $\vb*{H}_i^0 = \mvb{H} / q_i$, the results in Problem 1 can't be immediately used here. 
+From Maxwell's equations we have 
+\[
+    \curl{\vb*{E}} = - \pdv*{\vb*{B}}{t} \Rightarrow 
+    \curl{\vb*{E}_i^0} = - \mu_0 \vb*{H}_i^0, 
+\]
+and similarly 
+\[
+    \curl{\vb*{H}} = \pdv*{\vb*{D}}{t} \Rightarrow
+    q_i \curl{\vb*{H}_i^0} = \epsilon_0 \epsr \ddot{q}_i \vb*{E}_i^0 
+    = - \omega_i^2 \epsr \epsilon_0 q_i \vb*{E}_i^0,
+\]
+and therefore 
+\[
+    \curl{(\curl{\vb*{E}_i^0})} = \epsr \frac{\omega_i^2}{c^2} \vb*{E}_i^0.
+\]
+Therefore we have 
+\begin{equation}
+    \begin{aligned}
+        \mu_0 \braket{\vb*{H}_i^0}{\vb*{H}_i^0} 
+        &= \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} (\curl{\vb*{E}_i^{0*}}) \cdot (\curl{\vb*{E}_i^0}) \\
+        &= \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} \curl{(\curl{\vb*{E}_i^{0*}})} \cdot \vb*{E}_i^0 \\
+        &= \frac{\omega_i^2}{\mu_0 c^2} \int \dd[3]{\vb*{r}} \epsr \vb*{E}_i^{0*} \cdot \vb*{E}_i^0 \\
+        &= \omega_i^2 \epsilon_0 \mel**{\vb*{E}_i^0}{\epsr}{\vb*{E}_i^0}.
+    \end{aligned}
+    \label{eq:e-h-eq-1}
+\end{equation}
+In order to get a harmonic oscillator form of the total energy, 
+we want to have 
+\begin{equation}
+    \epsilon_0 \mel**{\vb*{E}_i^0}{\epsr}{\vb*{E}_i^0} = 1, \quad 
+    \mu_0 \braket{\vb*{H}_i^0}{\vb*{H}_i^0} = \omega_i^2, 
+\end{equation}
+which, from \eqref{eq:e-h-eq-1}, is equivalent to the normalization condition 
+\begin{equation}
+    \epsilon_0 \mel**{\vb*{E}_i^0}{\epsr}{\vb*{E}_i^0} = 1.
+\end{equation} 
+
+\paragraph*{(b)} \textit{Next, we consider superposition of such modes. Use orthogonality to show that the electromagnetic energy stored in a superposition of modes, $\mathbf{E}(r, t)=\sum_l \dot{q}_l(t) \mathbf{E}_l^o(r), \mathbf{H}(r, t)=$ $\sum_l q_l(t) \mathbf{H}_l^o(r)$, can be expressed as $U_{\text {em }}^{\text {tot }}=\sum_l \frac{1}{2}\left[\dot{q}_l^2+\omega_l^2 q_l^2\right]$.}
+
+The eigenvalue problem about $\vb*{H}$ gives us the orthogonality condition
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{H}_i^{0*} \cdot \vb*{H}_j^0 = \frac{\omega_i^2}{\mu_0} \delta_{ij}, 
+\end{equation}
+and hence the magnetic part of the energy is 
+\begin{equation}
+    \frac{1}{2} \mu_0 \int \dd[3]{\vb*{r}} \sum_{i, j} q_i \vb*{H}_i^{0*} q_j \vb*{H}_j^0 
+    = \frac{1}{2} \sum_{i, j} \delta_{ij} q_i q_j \omega_i^2 = \frac{1}{2} \sum_i \omega_i^2 q_i^2.
+\end{equation}
+The generalized eigenvalue problem about $\vb*{E}$ is 
+\begin{equation}
+    \curl{\curl{\vb*{E}_i^0}} = \frac{\omega_i^2}{c^2} \epsr \vb*{E}_i^0, 
+\end{equation}
+and therefore the orthogonality condition is 
+\begin{equation}
+    \int \dd[3]{\vb*{r}} \vb*{E}_i^{0*} \epsr \vb*{E}_j^0 = \frac{1}{\epsilon_0} \delta_{ij}, 
+\end{equation}
+and therefore 
+\begin{equation}
+    \frac{1}{2} \epsilon_0 \int \dd[3]{\vb*{r}} \epsr \vb*{E}^2 = 
+    \frac{1}{2} \sum_{i,j} \dot{q}_i \dot{q}_j \epsilon_0 \mel**{\vb*{E}_i^0}{\epsr}{\vb*{E}_j^0}
+    = \frac{1}{2} \sum_i \dot{q}_i^2.
+\end{equation}
+Therefore 
+\begin{equation}
+    U_{\text{em}} = \frac{1}{2} \sum_i (\dot{q}_i^2 + \omega_i^2 q_i^2).
+\end{equation}
+
+\textit{Complex Coordinates: Building on the insights from Problem 3.1, one can define real valued fields as $\mathbf{E}(r, t)=p_i \mathbf{E}_i^o(r)$, and $\mathbf{H}(r, t)=q_i \mathbf{H}_i^o(r)$. However, complex coordinates (and complex fields) provide a much more practical description of traveling waves. Using complex coordinates $a_i=$ $\alpha q_i+i \beta p_i$ and $a_i^*=\alpha q_i-i \beta p_i$ to reduce our simple harmonic oscillator to $H_i\left(p_i\left(a_{\tilde{i}}, a_i^*\right), q_i\left(a_i, a_i^*\right)\right)=$ $\omega_i a_i^* a_i$, we can define our complex fields as, $\tilde{\mathbf{E}}(r, t)=i a_i \tilde{\mathbf{E}}_i^o(r)$, and $\tilde{\mathbf{B}}(r, t)=a_i \tilde{\mathbf{B}}_i^o(r)$.}
+
+\paragraph*{(c)} \textit{
+    (c) Following steps similar to Part (a), show that the total electromagnetic energy (or field energy) of an individual mode reduces to $\omega_i a_i^* a_i$. Remember that we must use real-valued fields of the form $\mathbf{E}(r, t)=\left(i a_i \tilde{\mathbf{E}}_i^o-i a_i^* \tilde{\mathbf{E}}_i^{o *}\right)$, and $\mathbf{B}(r, t)=\left(a_i \tilde{\mathbf{B}}_i^o+a_i^* \tilde{\mathbf{B}}_i^{o *}\right)$ to evaluate the energy density. [Hint: do not use time-averaging; most of the terms will cancel!] What field normalization is necessary to express the field energy in this way?
+}
+
+The electromagnetic energy density of a single mode is 
+\begin{equation}
+    \begin{aligned}    
+        u_{\text{em}, i} &= \frac{1}{2} \epsilon_0 \epsr \vb*{E}^2 + \frac{1}{2 \mu_0} \vb*{B}^2 \\
+        &= \left(\epsilon_0 \epsr \abs{\mvb{E}_i^0}^2 + \frac{1}{\mu_0} \abs{\mvb{B}_i^0}^2\right) a_i^* a_i 
+        + \frac{1}{2} \left( \frac{1}{\mu_0} (\mvb{B}_i^{0})^2 - \epsilon_0 \epsr (\mvb{E}_i^0)^2 \right) a_i^2 + \text{c.c.}, 
+    \end{aligned}
+\end{equation}
+and the Maxwell's equation dictates the following relation between $\mvb{E}_i^0$ and $\mvb{B}_i^0$: 
+\begin{equation}
+    \curl{\vb*{E}} = - \pdv*{\vb*{B}}{t} \Rightarrow 
+    \curl{\vb*{E}_i^0} = \omega_i \vb*{B}_i^0,
+\end{equation}
+and 
+\begin{equation}
+    \curl{\vb*{B}} = \mu_0 \epsilon_0 \epsr \pdv*{\vb*{E}}{t} \Rightarrow
+    \curl{\vb*{B}_i^0} = \mu_0 \epsilon_0 \epsr \omega_i \vb*{E}_i^0.
+\end{equation}
+By exactly the same procedure applied in the previous problems, we have 
+\begin{equation}
+    \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} \vb*{B}_i^0 \cdot \vb*{B}_i^0 = 
+    \epsilon_0 \int \dd[3]{\vb*{r}} \vb*{E}_i^0 \cdot \epsr \vb*{E}_i^0, 
+\end{equation}
+and 
+\begin{equation}
+    \frac{1}{\mu_0} \int \dd[3]{\vb*{r}} \vb*{B}_i^{0*} \cdot \vb*{B}_i^0 = 
+    \epsilon_0 \int \dd[3]{\vb*{r}} \vb*{E}_i^{0*} \cdot \epsr \vb*{E}_i^0.
+\end{equation}
+The first equation means the $a^2$ and $(a^*)^2$ terms in $u_{\text{em}}$
+vanish after we integrate over the whole space; 
+the second equation means that 
+\begin{equation}
+    U_{\text{em}, i} = \int \dd[3]{\vb*{r}} u_{\text{em}, i}
+    = 2 a_i^* a_i \int \dd[3]{\vb*{r}} \epsilon_0 \epsr \abs*{\mvb{E}_i^0}^2.
+\end{equation}
+What we want is 
+\begin{equation}
+    U_{\text{em}, i} = \omega_i a^*_i a_i, 
+\end{equation}
+and that means the normalization condition has to be 
+\begin{equation}
+    2 \int \dd[3]{\vb*{r}} \epsilon_0 \epsr \abs*{\mvb{E}_i^0}^2 = \frac{2}{\mu_0} \int \dd[3]{\vb*{r}} \abs*{\mvb{B}_i^0}^2 = \omega_i.
+\end{equation}
+
+\section{Hamilton's Equation in Complex Coordinates}
+
+\textit{
+    As discussed in Lectures 3-4, complex coordinates provide a natural way to describe oscillatory systems. We defined our complex coordinates as $a=\alpha q+i \beta p$ and $a^*=\alpha q-i \beta p$, in close analogy with the quantum mechanical raising/lower operators; here, $\alpha$ and $\beta$ are real-valued coefficients. Since, we can use the relations $q=\left(a+a^*\right) / 2 \alpha$ and $p=\left(a-a^*\right) / 2 i \beta$ to express any Hamiltonian $H(p, q)$ as $H\left(p\left(a, a^*\right), q\left(a, a^*\right)\right)$, our new Hamiltonian can always be expressed as $H\left(a, a^*\right)$. Notice that $a$ and $a^*$ are independent coordinates that replace $q$ and $p$. Our next task is to find a new version of Hamilton's equations in complex coordinates.
+}
+
+\paragraph*{(a)} \textit{
+    Use the chain rule, in conjunction with relations $\dot{q}=\partial H / \partial p$ and $\dot{p}=-\partial H / \partial q$, to show that $\dot{a}=-i 2 \alpha \beta\left(\partial H / \partial a^*\right)$ and $\dot{a}^*=+i 2 \alpha \beta(\partial H / \partial a)$.
+    [Note: We typically choose $2 \alpha \beta=1$ to ensure that our transformation is area preserving. In this case, we obtain $\dot{a}=-i\left(\partial H / \partial a^*\right)$ and $\dot{a}^*=+i(\partial H / \partial a)$. $]^1$
+}
+
+
+
+\end{document}
