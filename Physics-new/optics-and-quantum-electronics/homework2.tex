@@ -1,0 +1,339 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sinc}{sinc}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+\newcommand*{\ptwo}{P^{(2)}}
+\newcommand*{\vp}{v_{\text{p}}}
+\newcommand*{\chitwo}{\chi^{(2)}}
+\newcommand*{\chithree}{\chi^{(3)}}
+\newcommand*{\omegap}{\omega_{\text{p}}}
+\newcommand*{\mvb}[1]{\tilde{\vb*{#1}}}
+
+\title{Homework 2}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+
+\subsection{}
+
+\textit{Comparison between the approximate and exact susceptibilities. We consider a driven damped simple harmonic oscillator (following L8.N3). We assume that $\dot{p}=\sum_i f_i=-k q-D \dot{q}+f(t)$, where $k, D$, and $f(t)$ are the spring constant, damping, and driving force, respectively. In what follows, we assume that $f(t)=f_o \cos (\omega t+\phi)$.
+}
+
+\paragraph*{(a)} \textit{Starting from Newton's equations, find the first order equation of motion in complex form. [Hint: you should find something like $\dot{a}=-i \omega_o a+(\ldots)$, and you're looking to identify all of the (...) terms.]} 
+
+When there is no damping the EOMs are 
+\begin{equation}
+    \dot{p} = - k q, \quad \dot{q} = \frac{p}{m}, 
+\end{equation}
+and the following definition of the modes 
+\begin{equation}
+    q = \sqrt{\frac{1}{2 m \omega_0}} (a^* + a), \quad 
+    p = \ii \sqrt{\frac{m \omega_0}{2}} (a^* - a), \quad 
+    \omega_0^2 = \frac{k}{m} 
+\end{equation} 
+turns the Hamiltonian into $H = \omega_0 a^* a$.
+Under this definition of $a, a^*$,
+the EOM with damping and driving therefore becomes 
+\begin{equation}
+    \begin{aligned}
+        \dot{a}^* - \dot{a} &= \ii \omega_0 (a^* + a) - \frac{D}{m} (a^* - a) - \ii \sqrt{\frac{2}{m \omega_0}} f(t), \\ 
+        \dot{a}^* + \dot{a} &= \ii \omega_0 (a^* - a),
+    \end{aligned}
+\end{equation}
+from which we find 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a + \frac{D}{2m} (a^* - a) + \ii \sqrt{\frac{2}{m \omega_0}} f(t)
+\end{equation}
+and its complex conjugate 
+\begin{equation}
+    \dot{a}^* = \ii \omega_0 a^* - \frac{D}{2m} (a^* - a) - \ii \sqrt{\frac{2}{m \omega_0}} f(t).
+\end{equation}
+
+\paragraph*{(b)} \textit{Perform the rotating wave approximation to the solution you obtained in part (a). Identify the terms that are eliminated by this approximation.} 
+
+Now we do RWA and let $a = \bar{a} \ee^{- \ii \omega_0 t}$, 
+and the EOM of $a$ becomes 
+\[
+    \dot{\bar{a}} \ee^{- \ii \omega_0 t} + \bar{a} (- \ii \omega_0) \ee^{- \ii \omega_0 t} 
+    = - \ii \omega_0 \bar{a} \ee^{- \ii \omega_0 t} 
+    + \frac{D}{2m} (\bar{a}^* \ee^{\ii \omega_0 t} - \bar{a} \ee^{- \ii \omega_0 t})
+    + \ii \sqrt{\frac{2}{m \omega_0}} f(t),
+\]
+or 
+\begin{equation}
+    \dot{\bar{a}} = - \frac{D}{2m} (\bar{a} - \bar{a}^* \ee^{\ii 2 \omega_0 t}) 
+    + \ii \sqrt{\frac{2}{m \omega_0}} \ee^{\ii \omega_0 t} f(t).
+\end{equation}
+The fast oscillating terms include the $\frac{D}{2m} \bar{a}^* \ee^{\ii 2 \omega_0 t}$ term
+and the $\ee^{\ii \omega t}$ part of $f(t)$, 
+assuming that $\omega$ is close to $\omega_0$.
+If these terms are removed, the resulting EOM is 
+\begin{equation}
+    \dot{\bar{a}} = - \frac{D}{2m} \bar{a} 
+    + \ii \sqrt{\frac{1}{2 m \omega_0}} \cdot \frac{1}{2} f_0 \ee^{- \ii (\omega - \omega_0) t}. 
+\end{equation}
+
+\paragraph*{(c)} \textit{Use the approximate equation of motion from part (b) to find the complex susceptibility, $\alpha_a[\omega]$, that relates the complex wave amplitude and force as $a[\omega]=\alpha_a[\omega] f[\omega]$.} 
+
+Noting that in the stationary solution $\bar{a} \propto \ee^{- \ii (\omega - \omega_0) t}$, 
+we have 
+\begin{equation}
+    a(t) = \ee^{- \ii \omega_0 t} \bar{a} = 
+    \frac{1}{- \ii(\omega - \omega_0) + \frac{D}{2m}} \frac{\ii}{\sqrt{2 m \omega_0}} \cdot \frac{1}{2} f_0 
+    \ee^{- \ii \omega t}, 
+\end{equation}
+and therefore the response of $a$ is (we divide $a(t)$ by $f_0 \ee^{- \ii \omega t}/2$)
+\begin{equation}
+    \alpha_a[\omega] = - \frac{1}{\sqrt{2 m \omega_0}} \frac{1}{\omega - \omega_0 + \ii \frac{D}{2m}}.
+\end{equation} 
+
+\subsection{}
+
+\paragraph*{(a)}  \textit{
+ Starting from the second order equation, $m \ddot{q}=\sum_i f_i=-k q-D \dot{q}+f(t)$, find the exact susceptibility $q[\omega]=\alpha_q[\omega] f[\omega]$ of the driven-damped SHO.   
+}
+
+The EOM of $q$ is 
+\begin{equation}
+    m \ddot{q} + D \dot{q} + k q = \frac{f_0}{2} (\ee^{\ii \omega t} + \ee^{- \ii \omega t}), 
+\end{equation}
+and since the system is linear, we can only consider 
+the response of $q$ to the $\ee^{- \ii \omega t}$ component of $f$, 
+and get 
+\begin{equation}
+    \alpha_q[\omega] = \frac{1}{- m \omega^2 - \ii D \omega + k} 
+    = - \frac{1}{m} \frac{1}{\omega^2 - \omega_0^2 + \ii \frac{D}{m} \omega}.
+\end{equation}
+
+\paragraph*{(b)} \textit{Compare the approximate response you obtained in part (1.1c) with the exact response you found in (1.2a). [Remember, $q(t)$ is contained in $a(t)$.]} 
+
+Since $q = \sqrt{\frac{1}{2 m \omega_0}} (a^* + a)$, 
+and the response of $a^*$ to $\ee^{- \ii \omega t}$ is the complex conjugate 
+of the response of $a$ to $\ee^{\ii \omega t}$, 
+we find 
+\begin{equation}
+    \begin{aligned}
+    \alpha_q^{\text{RWA}}[\omega] &= \frac{1}{\sqrt{2 m \omega_0}} (
+        \alpha_a^{\text{RWA}}[\omega] + 
+        \alpha_a^{\text{RWA}}[-\omega]^*
+    ) \\
+    &= - \frac{1}{2 m \omega_0} \left(
+        \frac{1}{\omega - \omega_0 + \ii \frac{D}{2m}} +
+        \frac{1}{- \omega - \omega_0 - \ii \frac{D}{2m}}
+    \right) \\
+    &= - \frac{1}{m} \frac{1}{\left(\omega + \frac{\ii D}{2m}\right)^2 - \omega_0^2}.
+    \end{aligned}
+\end{equation}
+
+It can be seen that the denominator of $\alpha^{\text{RWA}}[\omega]$
+has an additional term of $- \frac{D^2}{4m}$.
+
+\paragraph*{(c)} \textit{Can you find a set of approximations that will make your exact susceptibility converge with the susceptibility you found from the RWA?} 
+
+The validity of RWA is equivalent to 
+\begin{equation}
+    \frac{D^2}{4m^2} \ll \abs*{\omega^2 - \omega_0^2}. 
+\end{equation} 
+
+% TODO: what about the \omega \approx \omega_0 condition?
+
+\section{}
+
+\textit{Time Modulation of Dielectric Constant: Next, we consider the impact of a time-modulated dielectric constant on the modes of a resonator. In this case, we assume that a standing-wave mode of the form $\mathbf{E}(r, t)=\left(a-a^*\right) \mathbf{E}^o(r)$ with real-valued field distribution $\mathbf{E}^o(r)$ is localized within a structured dielectric, having dielectric distribution $\varepsilon_r(r)$. For example, you could imagine that this is an eigenmode of a dielectric photonic crystal resonator of the type seen as Fig 8 in Chapter 7 of [JJSJ]. In the absence of a dielectric perturbation, the Hamiltonian takes the form $H_a=\omega_o a^* a$, where $\omega_o$ is the natural frequency of this time-harmonic mode.}
+
+\paragraph*{(a)} \textit{As a starting point, find an expression for $\delta H$ associated with an arbitrary dielectric perturbation $\Delta \varepsilon_r(r)$.} 
+
+
+
+(b) Using your result from part (a), find an equations of motion for $a$ and $a^*$.
+(c) Next, we assume that perturbation to the dielectric constant takes the form $\Delta \varepsilon_r(t)=\beta \varepsilon_r(r) \cos \left(2 \omega_o t+\right.$ $\phi)$, where $\beta$ is a small $(\beta \ll 1)$ unitless constant. Find the new form of our equations of motion from part (b). [Remember, our field normalization permits us to reduce $\left\langle\mathbf{E}^o\left|\varepsilon_o \varepsilon_r(r)\right| \mathbf{E}^o\right\rangle$ to a constant already defined above.]
+(d) Using a trial solution in the form $a(t)=\bar{a}(t) e^{-i \omega_o t}$, apply the rotating wave approximation to the equations of motion from part (c). [Hint: your results should closely resemble the problem involving a child on a swing.]
+(e) Treating $\Delta \varepsilon_r(r)$ as a perturbation on our original mode, solve for the first order correction to our mode amplitude.
+
+\section{}
+
+\subsection{}
+
+\textit{Third order nonlinear polarization: In this problem, we consider the effect of third order nonlinearity on a single time-harmonic mode. A single optical mode, $\mathbf{E}(\mathbf{r}, t)$, interacts with a polarizable medium. We assume that the medium produces a polarization field $\mathbf{P}=\chi^{(3)}|E|^2 \mathbf{E}$, where $\chi^{(3)}$ is a constant. In the absence of the polarizable medium (i.e., $\chi^{(3)}=0$ ), the Hamiltonian for the system is $H\left(a, a^*\right)=\omega a^* a$ where $a$ and $a^*$ are the complex mode amplitudes. As we have done in lecture, we assume that the mode amplitude is related to the field by $\mathbf{E}(\mathbf{r}, t)=\left(a-a^*\right) \mathbf{E}^o(\mathbf{r})$.}
+
+\paragraph*{(a)} \textit{Find an expression for the interaction Hamiltonian, $\delta H$, in terms of the electric fields.} 
+
+
+
+\paragraph*{(b)} \textit{Express your interaction Hamiltonian from part (a) as products of $a, a^*$; be sure to define all of the coefficients in this expression. [The coefficients will include integrals over space.]} 
+
+\paragraph*{(c)} \textit{Find $\dot{a}$ using Poisson brackets.} 
+
+\paragraph*{(d)} \textit{From part (c), show that the mode acquires intensity dependent frequency shift. Explain the significance of this term.} 
+
+\end{document}

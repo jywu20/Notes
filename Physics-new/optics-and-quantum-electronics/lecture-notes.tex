@@ -169,9 +169,13 @@
 \newcommand*{\popg}{p_{\text{g}}}
 \newcommand*{\ptwo}{P^{(2)}}
 \newcommand*{\vp}{v_{\text{p}}}
+\newcommand*{\vg}{v_{\text{g}}}
 \newcommand*{\chitwo}{\chi^{(2)}}
 \newcommand*{\chithree}{\chi^{(3)}}
 \newcommand*{\omegap}{\omega_{\text{p}}}
+\newcommand*{\Si}{S_{\text{i}}}
+\newcommand*{\So}{S_{\text{o}}}
+\newcommand*{\Tre}{\mathcal{T}}
 
 \title{Topics in optics and quantum electronics}
 \author{Jinyuan Wu}
@@ -281,8 +285,13 @@ within the internal degree of freedom dielectric,
 so $\omega (a^\dagger a + 1/2)$, the vacuum part of the Hamiltonian has to decrease.
 One important caveat is that the leading order of energy correction 
 \emph{can't} be evaluated by $\mel*{\vb*{E}_n}{\Delta \epsr}{\vb*{E}_n}$:
-the absolute value of this term is right, 
-but the sign is wrong. TODO: why?
+since the mapping from the electric field to the magnetic field 
+involves at least one time derivative, 
+the electromagnetic Hamiltonian in the form of $\vb*{E}^2 + \vb*{B}^2$
+can't be seen as an ordinary Hamiltonian whose corresponding wave functions are electric fields, 
+and therefore ordinary perturbation techniques fail.
+One way to work around this is doing everything in terms of modes.
+This is done in homework 2. 
 
 \section{Loss as perturbation}
 
@@ -445,5 +454,186 @@ To start the growth, noise is important;
 classically this comes from thermal fluctuation; 
 in the quantum case, the above EOM involves some terms from non-trivial commutation relations 
 and we may say the growth is started by the zero-point energy.
+
+\section{Nonlinearity}
+
+We know the free $\epsilon_0 \epsr \vb*{E}^2 / 2 + \vb*{B}^2 / 2 \mu_0$ Hamiltonian 
+can be written as $\sum \omega a^* a$; 
+similarly a nonlinear Hamiltonian can be written as 
+$\sum a a ^* + \text{c.c.}$; 
+in principle all modes can be mixed together by nonlinearity; 
+usually however only transitions satisfy the phase matching condition are strong enough;
+the definition of ``phase matching'' is somehow unclear: 
+for plain waves, it means $\sum \vb*{k} = 0$ 
+and has to be satisfied \emph{strictly}; 
+but in other cases, like in a photonic crystal, 
+if $\vb*{k}$ means Bloch wave vectors, then the  
+TODO: again, if a transition channel doesn't satisfy the phase matching condition, 
+does it mean this channel vanish in reciprocal space?
+
+Phase matching in the time domain has to be exactly satisfied 
+only when we are dealing with a scattering problem, 
+in which we integrate from $t=-\infty$ to $t = \infty$ 
+and get a $\sum \omega = 0$ condition; 
+for a finite time problem, this condition doesn't need to be exactly satisfied, 
+although a transition channel satisfying the $\sum \omega = 0$ condition 
+still likely to be the most influential one.
+In Feynman diagrams we do have strict frequency conservation conditions at each vertex
+but then we don't have the on-shell condition for internal lines; 
+by the correspondence between Feynman diagrams and Goldstone diagrams, 
+we can let the internal lines to satisfy the on-shell conditions 
+but let the total energy of the system to be off-shell, 
+therefore arriving at results obtained from the EOM approach.
+
+The EOM of one mode looks like (here NL means ``nonlinear'')
+\begin{equation}
+    \dot{a}_1 = - \ii \omega_0 a_1 - \ii \pdv{H_{\text{NL}}}{a_1^*}.
+\end{equation}
+For SHG, for example, we have 
+\begin{equation}
+    \begin{aligned}
+        \dot{a}_1 &= - \ii \omega_1 a_1 + \ii \tilde{\gamma}   a_1^* a_2, \\
+        \dot{a}_2 &= - \ii \omega_2 a_2 + \ii \tilde{\gamma}^* a_1   a_1.
+    \end{aligned} 
+\end{equation}
+
+We can also study a nonlinear system using nonlinear Maxwell's equations.
+This can be seen as a cross-verification of the correctness 
+of the mode-based, usually somehow simplified formalism;
+when the dielectric function has a strong ``dispersion'' -- i.e. frequency dependence -- 
+the Hamiltonian approach is also hard to use.
+
+\section{Temporal module coupling}
+
+Now we consider the coupling of modes with the external world.
+The formalism is almost identical to the so-called input-output formalism in quantum optics.
+As a motivation, consider the following model: 
+imagine we have a one-dimensional photonic crystal, 
+with one defect (for example a missing cavity in a string of cavities).
+Now if a pulse is injected from one end of the photonic crystal 
+we expect to see reflectivity and radiation to the 3D space around the defect.
+Whatever the defect is, it can be modeled as a mode (or several modes)
+coupled with ``ports'' around it.
+In the absence of the ports, the EOM of the system always takes the form 
+$\dot{a} = - \ii \omega_0 a$, 
+or possibly with a decay. 
+Now we consider the structure of a port. 
+We represent the waves going ``into'' the defect as $\Si$
+and the waves going ``out'' of the defect as $\So$.
+Both variables may be linear combination of modes, 
+or even contain some nonlinear effects.
+The EOM of the defect then is (TODO: Peter says it only holds under RWA) 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \frac{a}{\tau} + K \Si.
+\end{equation}
+Here we do a Langevin-like approximation and assume that the dissipation term 
+faithfully captures the coupling of the system with the output port.
+Of course it's possible to have ``dissipative loss'', 
+which means we have modes that are not considered as a part of the port 
+but are nevertheless coupled to $a$ and damp it; 
+here we ignore these dissipation channels and assume that 
+dissipation mainly comes from the output modes of the port.
+Now if we somehow manage to integrate out $a$ 
+and consider the theory of the port.
+Ignoring all nonlinear effects and retardation effects, 
+the relation between $\So$ and $\Si, a$ can only take the following form: 
+\begin{equation}
+    \So = \beta \Si + \gamma a, 
+\end{equation}
+where $\beta$ and $\gamma$ have to be related to $\tau$.
+
+When $\Si, \So$ are appropriately normalized we expect to see that 
+$\abs*{\Si}^2$ is the power incident while 
+$\abs*{\So}^2$ is the output power.
+For example, suppose we have a ring resonator, and we place a defect in it.
+Since a ring resonator is usually thin, 
+it can be modeled as a pipe with periodic boundary condition, 
+and the power going through an arbitrary point in the ring resonator takes the form of 
+\begin{equation}
+    P = \vg \frac{\omega_0 a^* a}{L}, 
+\end{equation}
+where $a$ is a mode in the ring resonator (not the mode around the defect),
+and therefore $S$ should be defined such that 
+\begin{equation}
+    P = S S^* = \vg \frac{\omega_0 a^* a}{L}.
+\end{equation}
+Moreover we normalize $a$ so that $\abs*{a}^2$ is the mode energy.
+
+Now we seriously consider how to derive the relation between $\tau$ and $\gamma, K$.
+The most famous example for coupling with outgoing modes leading to dissipation 
+is arguably the fact that an infinite network of LC circuits is equivalent to a resistor.
+Similar systems include a mass point connected to an infinite spring or a leaky cavity.
+When there is no input to the defect mode, 
+the loss of energy in the mode equals the outgoing flux $\So$, and therefore 
+\begin{equation}
+    \dv{U_{\text{defect}}}{t} = - \frac{2}{\tau} U_{\text{defect}}
+    = - \abs*{\So}^2,
+\end{equation}
+and therefore 
+\begin{equation}
+    \So = \underbrace{\sqrt{\frac{2}{\tau}} \ee^{\ii \alpha}}_\gamma a.
+\end{equation}
+The phase factor is a variable that depends on the exact definition of the output of the system;
+consider for example a defect embedded into a wave guide: 
+we need to choose a point at which we decide ``we are no longer near the defect'', 
+and the definition -- hence the phase -- of the outgoing mode depends on this point.
+TODO: what happens when the input is turned on? 
+We will get something like $2\Re K S_i^* a = \abs*{S_i}^2$.
+Whether this is always true can be verified using a harmonic oscillator; 
+essentially that's about what is the definition of ``outgoing''. 
+Using MBPT this can be easily justified:
+when everything is linear, couplings between the $\Si$ and $\So$ modes do not influence each other.
+
+We still have $K$ and $\beta$. Since $a, \Si, \So$ are assumed to form a closed system, 
+we expect they form a system with time reversal symmetry.
+After time  reversal operation, hence the EOM of $a$ becomes 
+\begin{equation}
+    -\dv{t} a^*(-t) = - \ii \omega_0 a^*(-t) - \frac{a^*(-t)}{\tau} + \Tre{K S_{\text{i}}},
+\end{equation} 
+where we don't immediately write what's the time reverse of $S_{\text{i}}$:
+time reversal operation also changes the mode label, 
+and the correct transform is $\Tre{S_{\text{i}}} = \So^*(-t)$, 
+so eventually 
+\begin{equation}
+    -\dv{t} a^*(-t) = - \ii \omega_0 a^*(-t) - \frac{a^*(-t)}{\tau} + K \So^*(-t),
+\end{equation}
+and therefore 
+\begin{equation}
+    \dv{t} a(-t) = - \ii \omega_0 a(-t) + \frac{a(-t)}{\tau} - K^* \So^*(-t).
+\end{equation}
+Similarly 
+\begin{equation}
+    \Si(-t) = \beta^* \So(-t) + \gamma^* a(-t).
+\end{equation}
+TODO: interestingly here $\Tre$ doesn't change the coefficients but does turn $a$ to $a^*$.
+Now the EOMs should be equivalent to the EOMs before time reversal operation, 
+and when the input modes are turned off, from 
+\[
+    \So(-t) = - \frac{\gamma^*}{\beta^*} a(-t) = - \frac{\ee^{- \ii \alpha}}{\beta^*} \sqrt{\frac{2}{\tau}} a(-t)
+\]
+we find 
+\begin{equation}
+    \beta = - \ee^{2 \ii \alpha}.
+\end{equation}
+Similarly by comparing the EOMs of $a$, when the input is turned off, we have 
+\[
+    \dv{t} a(-t) = - \ii \omega_0 a(-t) + \frac{a(-t)}{\tau} 
+    - K^* \ee^{\ii \alpha} \sqrt{\frac{2}{\tau}} a(-t) ,
+\] 
+and since we also expect to see 
+\[
+    \dv{t} a(-t) = \frac{1}{\tau} a(-t),
+\]
+we have 
+\begin{equation}
+    K = \ee^{\ii \alpha} \sqrt{\frac{2}{\tau}}.
+\end{equation} 
+Since $\alpha$ can be shifted by redefining the modes, 
+usually either we choose $\ee^{\ii \alpha} = 1$ or $\ee^{\ii \alpha} = -1$.
+In the former convention we have 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \frac{a}{\tau} + \sqrt{\frac{2}{\tau}} \Si, \quad 
+    \So = - \Si + \sqrt{\frac{2}{\tau}} a. 
+\end{equation}
 
 \end{document}
