@@ -277,35 +277,37 @@ and get
 
 \paragraph*{(b)} \textit{Compare the approximate response you obtained in part (1.1c) with the exact response you found in (1.2a). [Remember, $q(t)$ is contained in $a(t)$.]} 
 
-Since $q = \sqrt{\frac{1}{2 m \omega_0}} (a^* + a)$, 
-and the response of $a^*$ to $\ee^{- \ii \omega t}$ is the complex conjugate 
-of the response of $a$ to $\ee^{\ii \omega t}$, 
-we find 
+Since $p = m \dot{q}$, we have 
+\begin{equation}
+    \alpha_p[\omega] = \frac{\ii \omega}{\omega^2 - \omega_0^2 + \ii \frac{D}{m} \omega},
+\end{equation}
+and this means 
 \begin{equation}
     \begin{aligned}
-    \alpha_q^{\text{RWA}}[\omega] &= \frac{1}{\sqrt{2 m \omega_0}} (
-        \alpha_a^{\text{RWA}}[\omega] + 
-        \alpha_a^{\text{RWA}}[-\omega]^*
-    ) \\
-    &= - \frac{1}{2 m \omega_0} \left(
-        \frac{1}{\omega - \omega_0 + \ii \frac{D}{2m}} +
-        \frac{1}{- \omega - \omega_0 - \ii \frac{D}{2m}}
-    \right) \\
-    &= - \frac{1}{m} \frac{1}{\left(\omega + \frac{\ii D}{2m}\right)^2 - \omega_0^2}.
+        \alpha_a^{\text{accurate}} &= \frac{1}{2} 
+        \left(
+            \sqrt{2 m \omega_0} \alpha_q + \ii \sqrt{\frac{2}{m \omega_0}} \alpha_p
+        \right) \\
+        &= - \frac{1}{\sqrt{2 m \omega_0}} \frac{\omega + \omega_0}{\omega^2 - \omega_0^2 + \ii \frac{D}{m} \omega}.
     \end{aligned}
 \end{equation}
 
-It can be seen that the denominator of $\alpha^{\text{RWA}}[\omega]$
-has an additional term of $- \frac{D^2}{4m}$.
-
 \paragraph*{(c)} \textit{Can you find a set of approximations that will make your exact susceptibility converge with the susceptibility you found from the RWA?} 
 
-The validity of RWA is equivalent to 
+The validity of RWA is equivalent to $\omega \approx \omega_0$, 
+which then means 
 \begin{equation}
-    \frac{D^2}{4m^2} \ll \abs*{\omega^2 - \omega_0^2}. 
-\end{equation} 
+    \alpha_a = - \frac{1}{\sqrt{2 m \omega_0}} \frac{1}{\frac{\omega^2 - \omega_0^2}{\omega + \omega_0} + \ii \frac{D}{m} \frac{\omega}{\omega+ \omega_0}}
+    \approx - \frac{1}{\sqrt{2 m \omega_0}} \frac{1}{\omega - \omega_0 + \ii \frac{D}{2m}}.
+\end{equation}
+This is expected since when RWA was made, it was already assumed that $\omega \approx \omega_0$.
 
-% TODO: what about the \omega \approx \omega_0 condition?
+Verifying this condition by calculating $\alpha_q$ seems to be not viable, 
+because $q$ is to be calculated from $a$ and $a^*$, 
+the response function of the latter being $\alpha[-\omega^*]$; 
+but then when RWA around $\omega \approx \omega_0$ works for $a$, 
+it doesn't work for $a^*$.
+RWA for $q$'s response seems to be ill-defined.
 
 \section{}
 
@@ -313,12 +315,85 @@ The validity of RWA is equivalent to
 
 \paragraph*{(a)} \textit{As a starting point, find an expression for $\delta H$ associated with an arbitrary dielectric perturbation $\Delta \varepsilon_r(r)$.} 
 
+Using the normalization 
+\begin{equation}
+    \vb*{E} = \ii (a - a^*) \vb*{E}^0(\vb*{r}),
+\end{equation}
+we have 
+\begin{equation}
+    \var{H} = \int \dd[3]{\vb*{r}} \frac{1}{2} \epsilon_0 \Delta \epsr \vb*{E}^2
+    = \frac{\epsilon_0}{2} (a - a^*)^2 \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}_0}.
+\end{equation}
+
+\paragraph*{(b)} \textit{Using your result from part (a), find an equations of motion for $a$ and $a^*$.} 
+
+We have 
+\begin{equation}
+    \dv{a}{t} = - \ii \pdv{H}{a^*} 
+    = - \ii \omega_0 a + \ii \epsilon_0 (a - a^*) \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}_0},
+\end{equation}
+and therefore 
+\begin{equation}
+    \dv{a^*}{t} = \ii \omega_0 a^* + \ii \epsilon_0 (a - a^*) \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}_0}.
+\end{equation}
+If we formally solve the equation system, we will find the first order correction is 
+\begin{equation}
+    \Delta \omega^{(1)} = - \epsilon_0 \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}_0}.
+\end{equation}
+Considering the normalization scheme here that leads to $H_0 = \omega a^* a$ is 
+\begin{equation}
+    2 \epsilon_0 \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}^0} = \omega_0
+    \label{eq:normalization-e}
+\end{equation}
+and not 
+\begin{equation}
+    \epsilon_0 \mel**{\vb*{E}^0}{\Delta \epsr}{\vb*{E}^0} = 1,
+\end{equation}
+this result agrees with the first order perturbation in Homework 1. 
+
+\paragraph*{(c)} \textit{Next, we assume that perturbation to the dielectric constant takes the form $\Delta \varepsilon_r(t)=\beta \varepsilon_r(r) \cos \left(2 \omega_o t+\right.$ $\phi)$, where $\beta$ is a small $(\beta \ll 1)$ unitless constant. Find the new form of our equations of motion from part (b). [Remember, our field normalization permits us to reduce $\left\langle\mathbf{E}^o\left|\varepsilon_o \varepsilon_r(r)\right| \mathbf{E}^o\right\rangle$ to a constant already defined above.]} 
+
+The EOM of $a$ now is 
+\begin{equation}
+    \begin{aligned}
+        \dv{a}{t} &= - \ii \omega_0 a + \ii \epsilon_0 (a - a^*) \mel**{\vb*{E}^0}{\epsr}{\vb*{E}_0} \beta \cos (2 \omega_0 t + \phi) \\
+        &= - \ii \omega_0 a + \frac{\ii \omega_0}{2} \beta (a - a^*) \cos (2 \omega_0 t + \phi).
+    \end{aligned}
+\end{equation}
 
 
-(b) Using your result from part (a), find an equations of motion for $a$ and $a^*$.
-(c) Next, we assume that perturbation to the dielectric constant takes the form $\Delta \varepsilon_r(t)=\beta \varepsilon_r(r) \cos \left(2 \omega_o t+\right.$ $\phi)$, where $\beta$ is a small $(\beta \ll 1)$ unitless constant. Find the new form of our equations of motion from part (b). [Remember, our field normalization permits us to reduce $\left\langle\mathbf{E}^o\left|\varepsilon_o \varepsilon_r(r)\right| \mathbf{E}^o\right\rangle$ to a constant already defined above.]
-(d) Using a trial solution in the form $a(t)=\bar{a}(t) e^{-i \omega_o t}$, apply the rotating wave approximation to the equations of motion from part (c). [Hint: your results should closely resemble the problem involving a child on a swing.]
-(e) Treating $\Delta \varepsilon_r(r)$ as a perturbation on our original mode, solve for the first order correction to our mode amplitude.
+\paragraph*{(d)} \textit{Using a trial solution in the form $a(t)=\bar{a}(t) e^{-i \omega_o t}$, apply the rotating wave approximation to the equations of motion from part (c). [Hint: your results should closely resemble the problem involving a child on a swing.]} 
+
+Under the ansatz $a(t) = \bar{a}(t) \ee^{- \ii \omega_0 t}$ we have 
+\begin{equation}
+    \begin{aligned}
+        & \ee^{- \ii \omega_0 t} \dv{\bar{a}}{t} = \frac{\ii \omega_0}{2} \beta (\bar{a} \ee^{- \ii \omega_0 t} - \bar{a}^* \ee^{\ii \omega_0 t}) 
+        \cdot \frac{1}{2} (\ee^{\ii (2 \omega_0 t + \phi)} + \ee^{- \ii (2 \omega_0 t + \phi)}) \\
+        \Rightarrow & \dv{\bar{a}}{t} \approx  - \frac{\ii \omega_0}{4} \beta \bar{a}^* \ee^{- \ii \phi},
+    \end{aligned}
+\end{equation}
+and therefore under RWA, 
+\begin{equation}
+    \dv{\bar{a}^*}{t} = \frac{\ii \omega_0}{4} \beta \bar{a} \ee^{\ii \phi}.
+\end{equation}
+Therefore, we get 
+\begin{equation}
+    \dv[2]{\bar{a}}{t} = \frac{\omega_0^2 \beta^2}{16} \bar{a},   
+\end{equation}
+and the exponential growing solution is 
+\begin{equation}
+    a = \bar{a} \ee^{- \ii \omega_0 t} = \bar{a}(t=0) \ee^{- \ii \omega_0 t} \ee^{\frac{\omega_0 \beta}{4} t}.
+\end{equation}
+This expression contains no phase $\phi$, but $\phi$ does appear in the growth of $H$, which is given by 
+\begin{equation}
+    \dot{H} = \omega_0 (\dot{{a}}^* a + a^* \dot{a})
+    = \omega_0 (\dot{\bar{a}}^* \bar{a} + \bar{a}^* \dot{\bar{a}})
+    = \frac{\omega_0^2}{2} \beta \abs*{\bar{a}}^2 \sin \phi.
+\end{equation}
+
+\paragraph*{(e)} \textit{Treating $\Delta \varepsilon_r(r)$ as a perturbation on our original mode, solve for the first order correction to our mode amplitude.} 
+
+
 
 \section{}
 
@@ -328,12 +403,32 @@ The validity of RWA is equivalent to
 
 \paragraph*{(a)} \textit{Find an expression for the interaction Hamiltonian, $\delta H$, in terms of the electric fields.} 
 
-
+The nonlinear interaction Hamiltonian is 
+\begin{equation}
+    \begin{aligned}
+        \var{H} &= \int \vb*{E} \cdot \var{\vb*{D}}
+        = \int \vb*{E} \cdot \chi^{(3)} (\abs*{\vb*{E}}^2 \var{\vb*{E}} + 2 \vb*{E} \vb*{E} \cdot \var{\vb*{E}}) \\
+        &= \chi^{(3)} \int 3 \abs*{\vb*{E}}^2 \vb*{E} \cdot \var{\vb*{E}} \\
+        &= \frac{3}{4} \chi^{(3)} \abs*{\vb*{E}}^4.
+    \end{aligned}
+\end{equation}
 
 \paragraph*{(b)} \textit{Express your interaction Hamiltonian from part (a) as products of $a, a^*$; be sure to define all of the coefficients in this expression. [The coefficients will include integrals over space.]} 
 
+\begin{equation}
+    \var{H} = \frac{3}{4} \chi^{(3)} (a - a^*)^4 \int \dd[3]{\vb*{r}} \abs*{\vb*{E}^0}^4.
+\end{equation}
+
 \paragraph*{(c)} \textit{Find $\dot{a}$ using Poisson brackets.} 
 
+\begin{equation}
+    \begin{aligned}
+        \dv{a}{t} &= - \ii \omega_0 a - \ii \pdv{\var{H}}{a^*} \\
+        &= - \ii \omega_0 a + \ii 3 \chi^{(3)} (a - a^*)^3 \int \dd[3]{\vb*{r}} \abs*{\vb*{E}^0}^4.
+    \end{aligned}
+\end{equation}
+
 \paragraph*{(d)} \textit{From part (c), show that the mode acquires intensity dependent frequency shift. Explain the significance of this term.} 
+
 
 \end{document}
