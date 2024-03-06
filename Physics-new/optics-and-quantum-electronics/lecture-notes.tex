@@ -530,7 +530,11 @@ Here we do a Langevin-like approximation and assume that the dissipation term
 faithfully captures the coupling of the system with the output port.
 Of course it's possible to have ``dissipative loss'', 
 which means we have modes that are not considered as a part of the port 
-but are nevertheless coupled to $a$ and damp it; 
+but are nevertheless coupled to $a$ and damp it;%
+\footnote{
+    Sometimes this kind of loss is known as \concept{internal loss}; 
+    note that here the term \term{internal} means ``not a part of the system we are interested in''. 
+}
 here we ignore these dissipation channels and assume that 
 dissipation mainly comes from the output modes of the port.
 Now if we somehow manage to integrate out $a$ 
@@ -674,14 +678,66 @@ while the second damps rather fast;
 similarly the first supermode will be incredibly hard to excite 
 if we are only allowed to use the ports.
 
-Consider the following simple example: 
+Consider one case: mode $a_2$ is connected to a port $(\Si, \So)$,
+while mode $a_1$ is coupled to mode $a_2$.
+When there is no input energy, the equation about the port is 
 \begin{equation}
-    \dv{t} \pmqty{a \\ b} = \pmqty{
-        - \ii \omega_0 & \ii \tilde{g} \\
-        \ii \tilde{g}^* & - \ii \omega_0
-    } \pmqty{a \\ b}
+    \So = - \ii \sqrt{\frac{2}{\tau}} a_2.
 \end{equation}
-TODO
+Further, assuming that we have no excitation in the ``minus'' supermode, we have 
+\begin{equation}
+    a_1 = a_2 = \frac{1}{\sqrt{2}} a_+, 
+\end{equation}
+and therefore the output power is  
+\begin{equation}
+    P_{\text{out}} = \abs*{\So}^2 = \frac{2}{\tau} \abs*{a_2}^2
+    = \frac{2}{\tau} \frac{\abs*{a_+}^2}{2} ,
+\end{equation}
+and putting this to the EOM of the energy of $a_+$, 
+we find the lifetime of $a_+$ is $2 \tau$, not $\tau$.
+
+Then let's consider the case where two modes are coupled to one port.
+The output flux now is 
+\begin{equation}
+    \So = \Si - \ii \sqrt{\frac{2}{\tau_1}} a_1 - \ii \sqrt{\frac{2}{\tau_2}} a_2,
+    \label{eq:a1-a2-to-So}
+\end{equation}
+and again we ignore the input flux.
+Note that we haven't derived any equation about the coupling between two modes and one port; 
+in most experimental settings, we can divide a large port (say, a waveguide) 
+into several small ports and apply the one-mode-one-port theory to each of them.
+This leads to \eqref{eq:a1-a2-to-So}, but leaves the possibility that 
+$S_{\text{o1}}$ and $S_{\text{o2}}$ have a phase difference, 
+which is indeed the case for a waveguide 
+if the positions where $a_1$ and $a_2$ are connected to the waveguide  
+are far from each other.
+Also if the two modes are in the same device, 
+nothing prohibits us to have a non-diagonal matrix between $\So$ and $a$'s.
+Here for the sake of simplicity we ignore this possibility.
+Suppose we only have excitations in the $+$ supermode,
+and this means 
+\begin{equation}
+    a_1 = a_2 = \frac{a_+}{\sqrt{2}}.
+\end{equation}
+The output flux is 
+\begin{equation}
+    \So = - \ii \left(\sqrt{\frac{1}{\tau_1}} + \sqrt{\frac{1}{\tau_2}}\right) \abs*{a_+}^2,
+\end{equation}
+and therefore the loss of the $+$ supermode is enhanced 
+(just consider the case $\tau_{1,2} = \tau$).
+
+On the other hand, for the $-$ supermode we have 
+\begin{equation}
+    a_1 = \frac{a_+}{\sqrt{2}}, \quad a_2 = - \frac{a_+}{\sqrt{2}},
+\end{equation}
+and $\So$ now is 
+\begin{equation}
+    \So = - \ii \left( \sqrt{\frac{1}{\tau_1}} - \sqrt{\frac{1}{\tau_2}} \right),
+\end{equation}
+and clearly when $\tau_1 = \tau_2$ we don't have damping of $a_-$ at all!
+
+Modes that never damp and correspondingly can't be excited by $\Si$ 
+are known as \concept{dark modes}.
 
 \section{Scattering matrices}
 
@@ -703,11 +759,60 @@ but the scattering matrix itself is evaluated thoroughly in the pure state forma
 This is also the case here.
 
 Scattering matrices often have \concept{reciprocity}.
-The reciprocal condition for the Green's function $\vb*{G}_\omega(\vb*{r}, \vb*{r}')$ is quite simple:
+The reciprocal condition for the Green's function ${G}_\omega(\vb*{r}, \vb*{r}')$ is quite simple:
 \begin{equation}
     G_\omega (\vb*{r}, \vb*{r}') = G_\omega (\vb*{r}', \vb*{r}).
 \end{equation}
 This condition means the \emph{transpose} of the scattering matrix is just the origin scattering matrix.
 We note that this is \emph{not} time reversal symmetry.
+In terms of the scattering matrix, reciprocity means 
+\begin{equation}
+    S^\top = S.
+\end{equation}
+
+The energy conservation condition is equivalent to unitarity.
+This can be easily proven: the energy conservation condition is equivalent to  
+\begin{equation}
+    b^\dagger b = a^\dagger a,
+\end{equation}
+where $a$ is the column vector containing all input modes 
+and $b$ is the column vector containing all output modes.
+Since $b = S a$, we have 
+\begin{equation}
+    a^\dagger (S^\dagger S - I) a = 0,
+\end{equation}
+and hence (TODO: corner case)
+\begin{equation}
+    S^\dagger S = I.
+\end{equation}
+
+Time reversal symmetry is almost always true; 
+of course when an external magnetic field is present 
+we don't have time reversal symmetry, 
+but this merely suggests at the necessity to change the direction of the magnetic field 
+when doing the time reversal operation.
+Here we define (TODO: equivalent definitions: the direction of $p$ is changed; or $\ii \to - \ii$)
+\begin{equation}
+    \mathrm{TR}[Q(t)] = Q^*(-t).
+\end{equation}
+Time reversal symmetry means 
+\begin{equation}
+    S^* = S^{-1}.
+\end{equation}
+
+There is a lot of abuse (or confusing usage) of the term \term{breaking the time reversal symmetry}.
+As is mentioned, when we have a strong magnetic field 
+it's often said that the time reversal symmetry is broken; 
+when the magnetic field is included as a part of the system 
+(not an arbitrary external field), 
+time reversal symmetry isn't truly broken, 
+but reciprocity is indeed broken.
+Consider a circulator of electrons: 
+if an electron is injected into it through one port 
+and we record the port from which the electron goes out, 
+an electron going into the second port doesn't go out of the first port.
+Of course we can still say time reversal symmetry is broken here 
+if we keep the magnetic field not flipped when we apply the time reversal operation. 
+
 
 \end{document}
