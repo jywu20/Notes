@@ -632,16 +632,172 @@ and therefore
         - \frac{S_{11}}{S_{12}} & \frac{1}{S_{12}} \\
     }.
 \end{equation}
+When $S_{12} = 0$, the transfer matrix is not defined.
+
+\subsection{}
 
 \subsection{}
 
 \textit{A Mach-Zehnder interferometer (MZI) is comprised of two directional couplers connected to each other. The two paths between the couplers can have different lengths, with a difference we denote $\Delta \ell$.}
 
+\begin{center}
+    \includegraphics[width=0.4\textwidth]{figs/Mach-Zehnde.PNG}
+\end{center}
+
 \paragraph*{(a)} \textit{Using the reduced matrix of the directional coupler from the previous section, and a transfer matrix describing the propagation of the light in the two interferometer arms, write the matrix describing the whole system.} 
+
+The reduced matrix of the directional coupler (basically, a beam splitter) is 
+\begin{equation}
+    S = \pmqty{
+        -\alpha & \ii \beta \\
+        \ii \beta & - \alpha
+    },
+\end{equation}
+and therefore the matrix of the whole system is 
+\begin{equation}
+    \begin{aligned}
+        S &= \pmqty{
+            -\alpha & \ii \beta \\
+            \ii \beta & - \alpha
+        }^\dagger
+        \pmqty{
+            1 & \\
+            & \ee^{\ii k \Delta l}
+        }
+        \pmqty{
+            -\alpha & \ii \beta \\
+            \ii \beta & - \alpha
+        } \\
+        &= \pmqty{
+            \alpha^2 + \beta^2 \ee^{\ii k \Delta l} & 
+            \ii \alpha \beta (-1 + \ee^{\ii k \Delta l}) \\
+            \ii \alpha \beta (1 - \ee^{\ii k \Delta l}) & 
+            \alpha^2 \ee^{\ii k \Delta l} + \beta^2
+        }.
+    \end{aligned}
+\end{equation}
 
 \paragraph*{(b)} \textit{Calculate the amplitude and phase response of the system, i.e. the scattering parameters $S_{21}$ and $S_{31}$ of the MZI. Show that energy is conserved.
 [Note: This is an example of a finite impulse response (FIR) system, that has a transfer function with zeros, but no poles.]} 
 
+The notation is slightly confusing:
+$S_{21}$ means the matrix element of $1 \to 2$ and therefore is the $(1, 1)$ element of $S$, so 
+\begin{equation}
+    S_{21} = \alpha^2 + \beta^2 \ee^{\ii k \Delta l}, 
+\end{equation} 
+and similarly $S_{31}$ is the $(2, 1)$ element of $S$ and 
+\begin{equation}
+    S_{31} = \ii \alpha \beta (1 - \ee^{\ii k \Delta l}).
+\end{equation}
+To show energy conservation it's sufficient to show 
+\begin{equation}
+    \abs*{S_{21}}^2 + \abs*{S}_{31}^2 = 1,
+\end{equation}
+and since 
+\[
+    \abs*{S_{21}}^2 = \alpha^4 + \beta^4 + 2 \alpha^2 \beta^2 \cos k \Delta l,
+\]
+\[
+    \abs*{S_{31}}^2 = \alpha^2 \beta^2 (2 - 2 \cos k \Delta l),
+\]
+we find 
+\[
+    \abs*{S_{21}}^2 + \abs*{S_{31}}^2 = (\alpha^2 + \beta^2)^2 = 1.
+\]
+
+\subsection{}
+
+\textit{Two of the arms of a directional coupler can be connected to each other to form a ring of length $\ell$, such that the system has two ports, as shown below.}
+
+\begin{center}
+    \includegraphics[width=0.4\textwidth]{figs/ring.PNG}
+\end{center}
+
+\paragraph*{(a)} \textit{Use the results obtained for the directional coupler to write the transfer matrix of a ring resonator. Write the amplitude and phase responses, and show that energy is conserved. (Hint: Since we are assuming no reflections, this reduces to a single parameter $S_{21}$ ).[Note: This is an example of an all-pass filter. It has both poles and zeros in its transfer function, that are arranges such that it does not affect the amplitude of the signal, however the phase of different spectral components is changed.]
+} 
+
+The equations are 
+\begin{equation}
+    \pmqty{a_1 \\ a_4} = \pmqty{- \alpha & \ii \beta \\ \ii \beta & - \alpha} \pmqty{a_2 \\ a_3},
+\end{equation}
+and 
+\begin{equation}
+    a_4 = \ee^{\ii k \Delta l} a_3.
+\end{equation}
+By eliminating $a_3$, we get 
+\begin{equation}
+    a_2 = - \frac{\alpha + \ee^{\ii k \Delta l}}{1 + \alpha \ee^{\ii k \Delta l}} a_1, \quad 
+    a_3 = - \frac{\ii \beta}{1 + \alpha \ee^{\ii k \Delta l}}   .
+\end{equation}
+Therefore 
+\begin{equation}
+    S_{21} = - \frac{\alpha + \ee^{\ii k \Delta l}}{1 + \alpha \ee^{\ii k \Delta l}} ,
+\end{equation}
+and since 
+\begin{equation}
+    \abs*{S_{21}}^2 = \frac{\alpha^2 + 1 + 2 \cos k \Delta l}{1 + \alpha^2 + 2 \alpha \cos k \Delta l} = 1,
+\end{equation}
+the energy is conserved.
+
+\paragraph*{(b)} \textit{Calculate the group delay $\tau_g$, and show how the input power times group delay is exactly equivalent to the energy stored in the ring resonator.} 
+
+Suppose $\phi$ is the phase of $S_{21}$. 
+Since the amplitude of $S_{21}$ is a constant, we have 
+\[
+    \dv{S_{21}}{\omega} = S_{21} \ii \dv{\phi}{\omega} ,
+\]
+and the group delay is 
+\begin{equation}
+    \tau_{\text{g}} = - \dv{\phi}{\omega} = \ii \frac{1}{S_{21}} \dv{S_{21}}{\omega}
+    = \frac{\beta^2}{1 + \alpha^2 + 2 \alpha \cos k \Delta l} \frac{\Delta l}{c}.
+\end{equation}
+
+The energy stored in the ring resonator is 
+\begin{equation}
+    U_{\text{stored}} = \Delta l \abs*{a_3}^2 = \Delta l \frac{\beta^2}{1 + \alpha^2 + 2 \alpha \cos k \Delta l} \abs*{a_1}^2,
+\end{equation}
+and therefore 
+\begin{equation}
+    U_{\text{stored}} = \tau_{\text{g}} \cdot \abs*{a_1}^2 c = \tau_{\text{g}} \cdot P_{\text{input}}.
+\end{equation}
+
+\paragraph*{(c)} \textit{In practice, ring resonators are used as filters with a frequency-dependent output power. This is a consequence of the internal loss associated with propagation in the ring. Assuming the loss of a round trip in the ring is given by $\alpha$, calculate the ring response and find the free spectral range (FSR).} 
+
+Now we need to solve 
+\begin{equation}
+    \pmqty{a_1 \\ a_4} = \pmqty{- \alpha & \ii \beta \\ \ii \beta & - \alpha} \pmqty{a_2 \\ a_3}, \quad 
+    a_4 = \ee^{\ii k \Delta l} (1 - \gamma) a_3.
+\end{equation}
+Here $\gamma$ is used to refer to the loss, 
+because $\alpha$ is already used to refer to $S_{11}$ of the beam splitter.
+Then we get 
+\begin{equation}
+    a_3 = - \frac{\ii \beta}{1 + (1 - \gamma) \alpha \ee^{\ii k \Delta l}} a_1.
+\end{equation}
+The energy transfer is given by 
+\begin{equation}
+    S_{31} = \abs*{a_3 / a_1}^2 = \frac{\beta^2}{1 + (1 - \gamma)^2 \alpha^2 + 2 (1 - \gamma) \alpha \cos k \Delta l}.
+\end{equation}
+The FSR of frequency is $c \pi / \Delta l$.
+
+\textit{We can alternatively use coupled mode theory to describe the ring resonator as a mode $(a)$ with wave amplitudes going in $\left(s^i\right)$ and out $\left(s^o\right)$ of the resonator, corresponding to the waves propagating into Port 1 and out of Port 2, respectively. The coupled mode equations we have derived in the lectures can be used for a uni-directional wave coupled to a mode, such as the ring resonator. The phase convention used to describe such a system can be different, as shown below (this is a consequence of choosing a different phase for $\gamma$ when deriving the coupled-mode equations, and is equivalent to changing a reference plane, as we saw for the scattering matrix earlier).}
+
+\textit{(d)} \textit{Using temporal coupled mode theory, and assuming the mode has a resonant frequency $\omega_0$ and dissipation time $\tau$, write the measured output wave for a given input, i.e. $s^o / s^i$. You can assume no internal loss in the resonator in this case.} 
+
+The EOMs are the simple 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \frac{1}{\tau} a + \sqrt{\frac{2}{\tau}} \Si{}, \quad 
+    \So{} = - \Si{} + \sqrt{\frac{2}{\tau}} a.
+\end{equation}
+Repeating what is done above, in Fourier domain we have 
+\[
+    a(\omega) = \frac{1}{- \ii \omega + \ii \omega_0 + \frac{1}{\tau}} \sqrt{\frac{2}{\tau}} \Si{},
+\]
+and therefore 
+\begin{equation}
+    \frac{\So{}}{\Si{}} = - 1 + \frac{2}{\tau} \frac{1}{- \ii \omega + \ii \omega_0 + \frac{1}{\tau}} = 
+    \frac{\ii \omega - \ii \omega_0 + \frac{1}{\tau}}{- \ii \omega + \ii \omega_0 + \frac{1}{\tau}}.
+\end{equation}
 
 \section{}
 
