@@ -520,18 +520,23 @@ or possibly with a decay.
 Now we consider the structure of a port. 
 We represent the waves going ``into'' the defect as $\Si$
 and the waves going ``out'' of the defect as $\So$.
-Both variables may be linear combination of modes, 
+Both variables may be linear combination of modes in the ports, 
 or even contain some nonlinear effects.
 The EOM of the defect then is (TODO: Peter says it only holds under RWA) 
 \begin{equation}
     \dot{a} = - \ii \omega_0 a - \frac{a}{\tau} + K \Si.
 \end{equation}
-Here we do the Markovian approximation and assume that the dissipation term 
+Here we do the Markovian approximation and assume that the $a / \tau$ term
 faithfully captures the coupling of the system with the output port.
 Note that this assumption is not as strong as assuming that the bath is thermalized, 
 and therefore the equation above is \emph{not} a Langevin equation,
 and still we can further loosen this approximation 
 and include frequency dependence in the energy loss term.
+Indeed, although from the perspective of the mode $a$, 
+the interaction with modes in the port causes an exponential decay, 
+from the perspective of modes in the ports 
+there is no real dissipation and coupling with the disorder can be captured as a scattering process 
+-- see the end of this section. 
 TODO: imaginary part, spontaneous emission. 
 Of course it's possible to have ``dissipative loss'', 
 which means we have modes that are not considered as a part of the port 
@@ -661,12 +666,42 @@ In the former convention we have
     \So = - \Si + \sqrt{\frac{2}{\tau}} a. 
 \end{equation}
 
-
-From the equations concepts like impedance can then be defined. 
 We can easily extend the above EOMs to the case with multiple ports, 
 and the only thing needed is to sum over all $1/\tau$ terms and $\Si$ terms, 
-while keeping the $\So = - \Si + \sqrt{2/\tau} a$ equation for each port 
-(assuming that we only have hidden degrees of freedom that make the ports interact with each other).
+while keeping the $\So = - \Si + \sqrt{2/\tau} a$ equation for each port,  
+assuming that we only have hidden degrees of freedom that make the ports interact with each other
+or otherwise we should include a non-trivial scattering matrix to link the input and output modes of different ports.
+
+From the equations concepts like impedance can then be defined: 
+we can switch to the frequency domain, and we will find 
+\begin{equation}
+    \frac{\So(\omega)}{\Si(\omega)} = - \frac{\omega - \omega_0 - \ii / \tau}{\omega - \omega_0 + \ii / \tau}.
+    \label{eq:si-to-so}
+\end{equation}
+Note that the relation between $\Si(\omega)$ and $\So(\omega)$
+-- which, when there is no energy degeneracy, are just the value of \emph{one} mode at $t=-\infty$ and $t=\infty$ -- 
+is basically a relatively trivial scattering matrix and is a pure-state, unitary relation,
+even through there is ``dissipation'' from the perspective of mode $a$.
+It's clear that Markov approximation doesn't make the system ``noisy'';
+that's to say, Markov approximation doesn't necessitate mixed-state formalisms, 
+like the quantum Langevin equation: 
+we need to explicitly declare that the bath is indeed noisy to finally get the quantum Langevin equation. 
+The scattering matrix element \eqref{eq:si-to-so} can actually be derived using Feynman diagrams: 
+we are interested in $b(\omega)$-to-$b(\omega)$ scattering, 
+and according to LSZ reduction formula, 
+the corresponding $S$-matrix equals to one plus the sum of all amputated diagrams.
+In the present case we only have one such diagram, 
+which contains one $b$-to-$a$ vertex, one $a$ propagator, and one $a$-to-$b$ vertex, 
+and the $a$ propagator has its own self-energy correction due to the presence of $b$ modes, 
+which has been approximated by the Markov approximation.
+Thus the $S$ matrix is 
+\[
+    \sim 1 + \left(-\ii \sqrt{\frac{2}{\tau}}\right) \frac{\ii}{\omega - \omega_0 + \frac{\ii}{\tau}} \left(-\ii \sqrt{\frac{2}{\tau}}\right),
+\]
+which evaluates to exactly \eqref{eq:si-to-so} 
+(except one minus sign which comes from the definition of $\Si$ and $\So$).
+
+We don't have any ``real'' mixed state 
 
 \section{Supermodes}
 
