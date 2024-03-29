@@ -175,6 +175,8 @@
 \newcommand*{\omegap}{\omega_{\text{p}}}
 \newcommand*{\Si}{S_{\text{i}}}
 \newcommand*{\So}{S_{\text{o}}}
+\newcommand*{\bi}{b_{\text{i}}}
+\newcommand*{\bo}{b_{\text{o}}}
 \newcommand*{\Tre}{\mathcal{T}}
 
 \title{Topics in optics and quantum electronics}
@@ -528,7 +530,8 @@ The EOM of the defect then is (TODO: Peter says it only holds under RWA)
 \end{equation}
 Here we do the Markovian approximation and assume that the $a / \tau$ term
 faithfully captures the coupling of the system with the output port.
-Note that this assumption is not as strong as assuming that the bath is thermalized, 
+Note that this assumption is completely \emph{orthogonal} 
+to the assumption that the bath is thermalized, 
 and therefore the equation above is \emph{not} a Langevin equation,
 and still we can further loosen this approximation 
 and include frequency dependence in the energy loss term.
@@ -537,7 +540,6 @@ the interaction with modes in the port causes an exponential decay,
 from the perspective of modes in the ports 
 there is no real dissipation and coupling with the disorder can be captured as a scattering process 
 -- see the end of this section. 
-TODO: imaginary part, spontaneous emission. 
 Of course it's possible to have ``dissipative loss'', 
 which means we have modes that are not considered as a part of the port 
 but are nevertheless coupled to $a$ and damp it;%
@@ -920,5 +922,188 @@ an electron going into the second port doesn't go out of the first port.
 Of course we can still say time reversal symmetry is broken here 
 if we keep the magnetic field not flipped when we apply the time reversal operation. 
 
+\section{Noise}
+
+Often the modes going in and out in the ports are indeed noisy, 
+and in this case the temporal coupled theory becomes Langevin-like; 
+the Langevin-like theory can of course be derived from 
+the intuition that energy loss shouldn't make a theory about $a$  non-unitary 
+and some sort of noise has to be there to make the theory unitary, 
+or the intuition that coupling with the external environment 
+From equipartition theorem we can see that the power spectral density going into the system, 
+i.e. the power per unit of frequency, is 
+\begin{equation}
+    \dv{P}{\omega} \simeq \frac{\kB T}{2 \pi}.
+\end{equation}
+
+Since now the modes in the ports are indeed noisy, 
+we can study them using theories about stochastic signals.
+To define the average of $s(t)$ or $s(t_1) s(t_2)$ or \dots,
+we can either take the ensemble average 
+(a probabilistic average according to the probabilistic distribution of trajectories) 
+or time average (average over a large period of time).
+In physics the most frequent types of noises are stationary, 
+meaning that the the occasion we take the average doesn't matter, 
+and ergodic, meaning that time average is equivalent to ensemble average. 
+
+The (two-point) correlation function, $\expval{s^*(t_1) s(t_2)}$, 
+can actually be measured directly experimentally.
+We can adapt a interferometer to do it: 
+instead of measuring the \emph{sum} of the two signals from two paths, 
+we measure the \emph{product} of the two signals.
+Because of the stationary nature of noises, 
+we have 
+\begin{equation}
+    \expval{s^*(t) s(t + \tau)} = C_s(\tau).
+\end{equation}
+
+By Fourier transform, if we choose the following normalization: 
+\begin{equation}
+    s(t) = \int_{-T/2}^{T/2} \dd{\omega} s(\omega) \ee^{- \ii \omega t}, 
+\end{equation}
+we have 
+\begin{equation}
+    C_s(\tau) = \lim_{T \to \infty} \frac{2\pi}{T} 
+    \int_{-\infty}^{\infty} \dd{\omega} \expval*{\abs*{s(\omega)}^2} \ee^{- \ii \omega \tau},
+\end{equation}
+and therefore 
+\begin{equation}
+    C_s(\omega) = \lim_{T \to \infty} \frac{2\pi}{T} \expval*{\abs*{s(\omega)}^2}.
+\end{equation}
+This is the Wiener–Khinchin theorem in the specific case of time averaging.
+The theorem can be proven as well with ensemble average; 
+this is more easily done by starting from $\expval{s^*(\omega) s(\omega)}$. 
+As $s(\omega)$ is just a mode in $s(t)$, 
+this means the two-point correlation function and the power spectral density 
+are related by Fourier transform.
+
+This means from the power spectral density of a noise 
+we can know a lot about its time correlation.
+For example, a truly white noise has $\delta(\tau)$ time correlation.
+Or conversely if we need a wide power spectral density we then need an extremely narrow pulse.
+
+
+Now we turn to the temporal mode coupling theory. 
+We still have 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a + \frac{a}{\tau} + \sqrt{\frac{2}{\tau}} \bi,
+\end{equation}
+where $\bi$ is just $\Si$, 
+and the correlation function is 
+\begin{equation}
+    \expval{\bi^*(\omega) \bi(\omega')} = \frac{\kB T}{2 \pi} \delta(\omega - \omega'),
+\end{equation}
+from the equipartition theorem. 
+The correlation function of $a$ can be calculated from 
+\begin{equation}
+    a(\omega) = \sqrt{\frac{2}{\tau}} \frac{\bi(\omega)}{\ii (\omega_0 - \omega) + \frac{1}{\tau}}.
+\end{equation} 
+We find 
+\begin{equation}
+    \expval{a^*(\omega) a(\omega')} = \frac{1}{\tau} \frac{\kB T}{\pi} \frac{1}{(\omega - \omega_0)^2 + \frac{1}{\tau^2}} \delta(\omega - \omega').
+\end{equation}
+The equipartition theorem for $a$ can then be directly verified: we have 
+\begin{equation}
+    \int \int \dd{\omega} \dd{\omega'} \expval{a^*(\omega') a(\omega)} = \kB T.
+\end{equation}
+The spectrum of the reflected wave can be calculated as well. 
+From 
+\begin{equation}
+    \bo = - \bi + \sqrt{\frac{2}{\tau}} a ,
+\end{equation}
+we get 
+\begin{equation}
+    \bo(\omega) = \frac{\frac{1}{\tau} - \ii (\omega_0 - \omega)}{\frac{1}{\tau} + \ii (\omega_0 - \omega)} \bi(\omega), 
+\end{equation}
+and 
+\begin{equation}
+    \expval{\bo^*(\omega') \bo(\omega)} = \frac{\kB T}{2 \pi} \delta(\omega - \omega').
+\end{equation}
+So the energy distribution of $\bo$ is exactly the same as the energy distribution of $\bi$.
+The only difference between $\bi$ and $\bo$ is a phase factor.
+
+Now we take a slightly different approach. 
+If we know nothing about the port stuff, 
+can we still get the correlation function of the noise term 
+coming together with the dissipation term?
+From 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \frac{a}{\tau} + \eta(t)
+\end{equation}
+we get 
+\begin{equation}
+    \dv{t} \abs*{a}^2 = - \frac{2}{\tau} \abs*{a} + (a^* \eta + \eta^* a).
+\end{equation}
+After taking the time average on both sides, 
+since $\dv{t} \expval*{\abs*{a}^2} = 0$,
+we find 
+\begin{equation}
+    \frac{2}{\tau} \expval{a^* a} = \expval{a^* \eta + \eta^* a}.
+    \label{eq:aa-aeta}
+\end{equation}
+The relation between $a$ and $\eta$ is given by 
+\begin{equation}
+    a(t) = \int_{-\infty}^{t} \ee^{- \ii \tilde{\omega}_0 (t - t')} \sqrt{\frac{2}{\tau}} \eta(t') \dd{t'},
+\end{equation}
+where 
+\begin{equation}
+    \tilde{\omega}_0 = \omega - \frac{\ii}{\tau}.
+\end{equation}
+So now the RHS of \eqref{eq:aa-aeta} becomes an expression of $\expval{\eta(t) \eta(t')}$.
+Now we have to introduce the approximation that 
+\begin{equation}
+    \expval{\eta(t) \eta(t')} = A \delta(t - t')
+\end{equation}
+to simply the following procedure. 
+Using 
+\[
+    \int \dd{t} \Theta(t - t') \delta(t - t') = \frac{1}{2},
+\]
+we find 
+\[
+    \frac{2}{\tau} \expval{a^* a} = \frac{2}{\tau} \kB T = A,
+\]
+and eventually
+\begin{equation}
+    \expval{\eta(t) \eta(t')} = \frac{2}{\tau} \kB T \delta(t - t').
+\end{equation}
+
+\section{Input-output formalism}
+
+Now we quantize the temporal coupling theory.
+Since we were mostly working on physical quantity EOMs before,
+the forms of the eventual effective EOMs should be exactly the same 
+in classical and quantum systems.
+The main difference is the interpretation of the variables.
+For example, in the quantum case,
+$\expval{a^\dagger a}$ has a clear meaning:
+the number of photons in the mode $a$.
+
+The Hamiltonian takes the form 
+\begin{equation}
+    H = \hbar \omega_0 a^\dag a + \sum_k \hbar \omega_k b_k^\dag b_k 
+    - \hbar \sum_k \tilde{g}_k a^\dag b_{k} + \text{h.c.},
+\end{equation}
+and the EOMs are 
+\begin{equation}
+    \dot{b}_k = - \ii \omega_k b_k + \ii g_k^* a, \quad
+    \dot{a} = - \ii \omega_0 + \ii \sum_k g_k b_k.
+\end{equation}
+The following derivation follows exactly what is done in the classical case; 
+now however we want to make sense of what exactly are $\Si$ and $\So$.
+Assume that the port is indeed a transmission line,
+and $k$ used to label $b_k$ then is the wave vector.
+The real space $b$ is 
+\begin{equation}
+    b(x) = \frac{1}{\sqrt{L}} \sum_k \ee^{\ii k x} b_k,
+\end{equation} 
+and we define 
+\begin{equation}
+    b_+(x) = \frac{1}{\sqrt{L}} \sum_{k>0} \ee^{\ii k x} b_k,
+\end{equation}
+and 
+\begin{equation}
+    b_-(x) = \frac{1}{\sqrt{L}} \sum_{k<0} \ee^{\ii k x} b_k.
+\end{equation}
 
 \end{document}
