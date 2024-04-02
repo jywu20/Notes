@@ -1,0 +1,313 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{elasticity.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sinc}{sinc}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+\newcommand*{\ptwo}{P^{(2)}}
+\newcommand*{\vp}{v_{\text{p}}}
+\newcommand*{\chitwo}{\chi^{(2)}}
+\newcommand*{\chithree}{\chi^{(3)}}
+\newcommand*{\omegap}{\omega_{\text{p}}}
+\newcommand*{\mvb}[1]{\tilde{\vb*{#1}}}
+\newcommand*{\Si}[1]{S_{\text{i#1}}}
+\newcommand*{\So}[1]{S_{\text{o#1}}}
+\newcommand*{\taug}{\tau_{\text{g}}}
+
+\title{Homework 4}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{}
+
+\section{Quantum treatment of a beam splitter}
+
+In this question, we will examine an important component in optical experiments, the beam splitter. Practically, beam splitters can be implemented using a partially-reflecting mirror, or a directional coupler, which can be a fiber-optical component, or an integrated photonic device, as illustrated below.
+
+We have already analyzed such devices in a classical framework in Question ??. However, when treating the beam splitter within the context of quantum-optics, the classical analysis leads to misleading results when considering non-classical states of light, and a full quantum analysis must be carried out. For a full quantum analysis, we replace the classical waves we have used to describe the modes with annihilation operators $\hat{a}_k$, where $k=\{1,2,3,4\}$ (see illustration).
+
+Here, we will consider a beam splitter that equally splits power between the output ports (commonly referred to as a 50:50 splitter). As we have seen in HW3, the matrix relating the output modes $\left(\hat{a}_3, \hat{a}_4\right)$ to the input waves $\left(\hat{a}_1, \hat{a}_2\right)$ is not uniquely defined, and for this question, we will choose the form
+$$
+\left(\begin{array}{l}
+\hat{a}_3 \\
+\hat{a}_4
+\end{array}\right)=\frac{1}{\sqrt{2}}\left(\begin{array}{ll}
+1 & i \\
+i & 1
+\end{array}\right)\left(\begin{array}{l}
+\hat{a}_1 \\
+\hat{a}_2
+\end{array}\right)
+$$
+
+\paragraph*{(a)} In the Schrödinger picture, we can calculate the state at the output for a given input state. Find the output state, given that at the beam splitter input there is a single photon in one of the ports $\mid$ in $\rangle=|1\rangle_1|0\rangle_2$. What is the probability of finding the photon at each of the output ports?
+
+The equation 
+\begin{equation}
+    \pmqty{a_3 \\ a_4} = \frac{1}{\sqrt{2}} \pmqty{1 & \ii \\ \ii & 1} \pmqty{a_1 \\ a_2} 
+\end{equation}
+gives the time evolution of annihilation operators in the Heisenberg picture.
+Since we are working in the Schrödinger picture, the matrix 
+\begin{equation}
+    S = \frac{1}{\sqrt{2}} \pmqty{1 & \ii \\ \ii & 1}
+\end{equation}
+should be understood as the $S$-matrix of a single photon.
+Thus 
+\[
+    S \pmqty{1 \\ 0} = \frac{1}{\sqrt{2}} \pmqty{1 \\ \ii} \Rightarrow 
+    S \ket*{1}_1 = \frac{1}{\sqrt{2}} (\ket*{1}_3 + \ii \ket*{1}_4) .
+\]
+Since there is no photon on mode 2, the time evolution there should be trivial.
+Thus the output state at $t = \infty$ corresponding to $\ket*{\text{in}}$ should be 
+\begin{equation}
+    \ket*{\text{out}} = \frac{1}{\sqrt{2}} (\ket*{1}_3 + \ii \ket*{1}_4)
+    = \frac{1}{\sqrt{2}} (\ket*{1}_3 \ket*{0}_4 + \ii \ket*{0}_3 \ket*{1}_4).
+\end{equation}
+The probabilities to find the photon at port 3 and port 4 are 
+\begin{equation}
+    P_3 = \frac{1}{2}, \quad P_4 = \frac{1}{2}.
+\end{equation} 
+
+This result can also be found in the Heisenberg picture.
+From the relation between $a_{3,4}$ and $a_{1,2}$, we find 
+\[
+    a_1 = \frac{1}{\sqrt{2}} (a_3 - \ii a_4),
+\]
+and therefore 
+\begin{equation}
+    \ket*{\Psi} = a_1^\dag \ket*{0} = \frac{1}{\sqrt{2}} (a^\dag_3 + \ii a^\dag_4) \ket*{0}.
+\end{equation}
+
+\paragraph*{(b)} Next, we consider the case of two photons at one of the input ports $\mid$ in $\rangle=|2\rangle_1|0\rangle_2$. Find the output state, and calculate the probabilities of finding zero, one, and two photons at each output port.
+
+It's much more convenient to work in the Heisenberg picture and the Fock representation 
+for multi-photon cases.
+The many-body wave function, in the output basis, is 
+\begin{equation}
+    \begin{aligned}
+        \ket*{\Psi} &= \frac{(a_1^\dag)^2}{\sqrt{2}} \ket*{0} 
+        = \frac{1}{2 \sqrt{2}} ((a_3^\dag)^2 + 2 \ii a_3^\dag a_4^\dag - (a_4^\dag)^2 ) \ket*{0} \\
+        &= \frac{1}{2} \ket*{2}_3 \ket*{0}_4 + \frac{\ii}{\sqrt{2}} \ket*{1}_3 \ket*{1}_4 - \frac{1}{2} \ket*{0}_3 \ket*{2}_4.
+    \end{aligned}
+\end{equation} 
+$P(n_i = N)$, probabilities to find $N$ photons at port $i$, 
+regardless of what's happening at the other port, are given as (this is a projective measurement)
+\begin{equation}
+    \begin{aligned}
+        P(n_3=2) = \frac{1}{4}, \quad P(n_3=1) = \frac{1}{2}, \quad P(n_3=0) = \frac{1}{4}, \\ 
+        P(n_4=2) = \frac{1}{4}, \quad P(n_4=1) = \frac{1}{2}, \quad P(n_4=1) = \frac{1}{4}.
+    \end{aligned}
+\end{equation}
+
+\paragraph*{(c)} Now, consider the case of one photon at each of the input ports $\mid$ in $\rangle=|1\rangle_1|1\rangle_2$. Find the output state, and calculate the probabilities of finding zero, one or two photons at each output port.
+
+From the relation between $a_{3,4}$ and $a_{1,2}$ we can also find 
+\begin{equation}
+    a_2 = \frac{1}{\sqrt{2}} (- \ii a_3 + a_4) ,
+\end{equation}
+and the many-body wave function now is 
+\begin{equation}
+    \begin{aligned}
+        \ket*{\Psi} &= a_1^\dag a_2^\dag \ket*{0}
+        = \frac{1}{2} (a_3 + \ii a_4^\dag) (\ii a_3^\dag + a_4) \\
+        &= \frac{\ii}{\sqrt{2}} (\ket*{2}_3 \ket*{0}_4 + \ket*{0}_3 \ket*{2}_4).
+    \end{aligned}
+\end{equation}
+Therefore
+\begin{equation}
+    \begin{aligned}
+        P(n_3=2) = \frac{1}{2}, \quad P(n_3=1) = 0, \quad P(n_3=0) = \frac{1}{2}, \\
+        P(n_4=2) = \frac{1}{2}, \quad P(n_4=1) = 0, \quad P(n_4=0) = \frac{1}{2}. \\
+    \end{aligned}
+\end{equation}
+
+\paragraph*{(d)} How do the results we have obtained compare to the ones expected from a classical picture, where the beam splitter simply splits the input power?
+
+The one-photon case is not very different from the classical picture:
+indeed the probabilities to find one photon at port 3 and port 4 are both \SI{50}{\percent},
+and therefore the input power is split equally between the two ports. 
+This is expected because in this example we have no photon-photon interaction 
+and the EOMs of single-photon quantities are determined by linear Maxwell equations,
+whose form stays the same regardless of whether the system is quantum.
+
+In the multi-photon case, the power is still split equally between the two ports.
+The main difference from the classical case 
+is the \emph{distribution} of the photon number at each port 
+is changed after the photons interacting with the beam splitter.
+
+\subsection{}
+
+\section{Noise and correlations}
+
+\subsection{Noise in resonators}
+
+
+
+\end{document}
