@@ -585,7 +585,11 @@ the loss of energy in the mode equals the outgoing flux $\So$, and therefore
     \dv{U_{\text{defect}}}{t} = - \frac{2}{\tau} U_{\text{defect}}
     = - \abs*{\So}^2,
 \end{equation}
-and therefore 
+and therefore under the normalization convention 
+\begin{equation}
+    U_{\text{defect}} = \abs*{a}^2,
+\end{equation}
+we have
 \begin{equation}
     \So = \underbrace{\sqrt{\frac{2}{\tau}} \ee^{\ii \alpha}}_\gamma a.
 \end{equation}
@@ -964,11 +968,13 @@ By Fourier transform, if we choose the following normalization:
 we have 
 \begin{equation}
     C_s(\tau) = \lim_{T \to \infty} \frac{2\pi}{T} 
-    \int_{-\infty}^{\infty} \dd{\omega} \expval*{\abs*{s(\omega)}^2} \ee^{- \ii \omega \tau},
+    \int_{-\infty}^{\infty} \dd{\omega} \expval*{\abs*{s(\omega)}^2} \ee^{- \ii \omega \tau}
+    \eqqcolon \int_{-\infty}^{\infty} \dd{\omega} C_s(\omega) \ee^{- \ii \omega \tau},
 \end{equation}
 and therefore 
 \begin{equation}
-    C_s(\omega) = \lim_{T \to \infty} \frac{2\pi}{T} \expval*{\abs*{s(\omega)}^2}.
+    C_s(\omega) = \lim_{T \to \infty} \frac{2\pi}{T} \expval*{\abs*{s(\omega)}^2}
+    = \frac{1}{\delta(0)} \expval*{\abs*{s(\omega)}^2}.
 \end{equation}
 This is the Wiener–Khinchin theorem in the specific case of time averaging.
 The theorem can be proven as well with ensemble average; 
@@ -981,19 +987,35 @@ This means from the power spectral density of a noise
 we can know a lot about its time correlation.
 For example, a truly white noise has $\delta(\tau)$ time correlation.
 Or conversely if we need a wide power spectral density we then need an extremely narrow pulse.
-
+Note that $C_s(\omega)$ equals to $\expval{s^*(\omega) s(\omega')}$ divided by a common $\delta(\omega - \omega')$ factor:
+as long as the system has time translational symmetry, 
+in the frequency domain correlation function we always have a $\delta(\omega - \omega')$ factor.
+It's what \emph{else} there is besides this $\delta$-function factor that $C_s(\omega)$ describes.
 
 Now we turn to the temporal mode coupling theory. 
 We still have 
 \begin{equation}
     \dot{a} = - \ii \omega_0 a + \frac{a}{\tau} + \sqrt{\frac{2}{\tau}} \bi,
 \end{equation}
-where $\bi$ is just $\Si$, 
-and the correlation function is 
+where $\bi$ is just $\Si$.
+The correlation function of $\bi$ can be derived from the equipartition theorem;
+for a one-dimensional transmission line it's
 \begin{equation}
     \expval{\bi^*(\omega) \bi(\omega')} = \frac{\kB T}{2 \pi} \delta(\omega - \omega'),
 \end{equation}
-from the equipartition theorem. 
+because by definition we know 
+\begin{equation}
+    P = \expval*{\bi^*(t) \bi(t)} = C_{\bi}(t) = \int C_{\bi}(\omega) \dd{\omega} ,
+\end{equation} 
+and therefore 
+\begin{equation}
+    \dv{P}{\omega} = \frac{\kB T}{2\pi} \quad \Rightarrow \quad C_{\bi}(\omega) = \frac{\kB T}{2\pi},
+\end{equation}
+and from Wiener–Khinchin theorem we have 
+\begin{equation}
+    \expval*{\bi^*(\omega) \bi(\omega')} = \frac{\kB T}{2\pi} \delta(\omega - \omega').
+\end{equation}
+
 The correlation function of $a$ can be calculated from 
 \begin{equation}
     a(\omega) = \sqrt{\frac{2}{\tau}} \frac{\bi(\omega)}{\ii (\omega_0 - \omega) + \frac{1}{\tau}}.
@@ -1140,5 +1162,89 @@ Next we evaluate the noise spectrum. We have (here we work in the classical case
     \end{aligned}
 \end{equation}
 
+\section{Quantum noise}
+
+Replacing $a$ and $b$ by their quantum operator counterparts 
+leads us into the regime of quantum noise and fluctuation, in the Heisenberg picture.
+This also relates the most natural way to express the rotating wave approximation
+to the standard definition of rotating wave approximation in quantum mechanics, 
+i.e. by applying a picture transform.
+
+The key thing that needs to be highlighted is now dynamic variables don't always commute.
+This means we don't always have $C(\tau) = C(-\tau)^\dag$ (TODO).
+One way is to always work with $(AB + BA)/2$.
+
+The time evolution operator of a time dependent Hamiltonian is 
+\begin{equation}
+    U = \timeorder \exp(- \frac{\ii}{\hbar} \int \dd{t'} H(t')).
+\end{equation}
+When the Hamiltonian is time dependent but we have 
+\begin{equation}
+    \comm*{H(t)}{H(t')} = 0,
+\end{equation}
+this can be simplified into 
+\begin{equation}
+    U = \exp(- \frac{\ii}{\hbar} \int \dd{t'} H(t')).
+\end{equation}
+An example of time dependent Hamiltonian commuting with itself at different times is  
+\begin{equation}
+    H = (\omega + \Delta \omega(t)) a^\dag a,
+\end{equation}
+while a Hamiltonian that doesn't commute with itself at a different time is 
+\begin{equation}
+    H = \omega a^\dag a + f(t) (a + a^\dag).
+\end{equation}
+
+From $\comm*{a}{a^\dag} = 1$ it follows the trivial result $\dv{t} \comm*{a(t)}{a(t)^\dag} = 0$.
+This result helps us to determine some basic behaviors of the Langevin term in a system 
+coupled to a Markovian external bath.
+From the equation without the Langevin term
+\[
+    \dot{a} = - \ii \omega_0 a - \frac{1}{\tau} a 
+\]
+we get the troublesome commutation relation
+\[
+    \dv{t} \comm*{a}{a^\dag} = - \frac{2}{\tau} \comm*{a}{a^\dag},
+\]
+which is expected since unitarity is broken.
+Now starting from 
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \frac{1}{\tau} a + \eta 
+\end{equation}
+we get 
+\begin{equation}
+    \dv{t} \comm*{a}{a^\dag} = - \frac{2}{\tau} \comm*{a}{a^\dag} + \comm*{\eta}{a^\dagger} + \comm*{a}{\eta^\dag} ,    
+\end{equation}
+and since the LHS is zero, and therefore $\comm*{a}{a^\dag}$ is always unity,
+we find 
+\begin{equation}
+    \comm*{\eta}{a^\dag} + \comm*{a}{\eta^\dag} = \frac{2}{\tau}.
+\end{equation}
+This is a condition that \emph{all} Langevin ``noises'' 
+(or non-thermalized port operators) have to follow.
+
+Actually we can even derive the Langevin equation under some assumptions.
+We know there is a direct relation between $a$ and $\eta$, namely 
+\begin{equation}
+    a(t) = \int \Theta(t - t') \dd{t'} \ee^{- \ii (t - t') (\omega + \ii / \tau)} \eta(t'),
+\end{equation}
+and therefore 
+\begin{equation}
+    \comm*{a}{\eta} = \int_{0}^{t} \ee^{- \ii (\omega + \ii / \tau) (t - t')} \comm*{\eta(t')}{\eta(t)^\dag} \dd{t'}.
+\end{equation}
+If we assume (here is the assumption!) that 
+\begin{equation}
+    \comm*{\eta(t')}{\eta^\dag(t)} = D \delta(t - t'),
+\end{equation}
+we find (note that $\int_{-\infty}^{0} \delta(t) \dd{t} = 1/2$)
+\[
+    \comm*{a}{\eta} = \int_{0}^{t} \ee^{- \ii (\omega + \ii / \tau) (t - t')} D \delta(t - t') \dd{t'}
+    = \frac{1}{2} D,
+\]
+and we eventually find 
+\begin{equation}
+    D = \frac{2}{\tau}, \quad 
+    \comm*{\eta(t)}{\eta^\dag(t')} = \frac{2}{\tau} \delta(t - t').
+\end{equation}
 
 \end{document}
