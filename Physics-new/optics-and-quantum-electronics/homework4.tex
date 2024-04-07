@@ -174,12 +174,14 @@
 \newcommand*{\chithree}{\chi^{(3)}}
 \newcommand*{\omegap}{\omega_{\text{p}}}
 \newcommand*{\mvb}[1]{\tilde{\vb*{#1}}}
-\newcommand*{\Si}[1]{{S_{\text{i#1}}}}
-\newcommand*{\So}[1]{S_{\text{o#1}}}
+\newcommand*{\Si}{{S_{\text{i}}}}
+\newcommand*{\So}{S_{\text{o}}}
 \newcommand*{\taug}{\tau_{\text{g}}}
 \newcommand*{\taue}{\tau_{\text{e}}}
 \newcommand*{\bi}{b_{\text{i}}}
 \newcommand*{\bo}{b_{\text{o}}}
+\newcommand*{\bii}[1]{b_{\text{i#1}}}
+\newcommand*{\boi}[1]{b_{\text{o#1}}}
 \newcommand*{\fn}{f_{\text{N}}} 
 
 \title{Homework 4}
@@ -407,6 +409,7 @@ The temporal correlation function of $\bi$ is therefore
         \frac{\kB T}{2\pi} \delta(\omega - \omega') \ee^{\ii \omega t - \ii \omega' t'} \\
         &= \kB T \delta(t - t').
     \end{aligned}
+    \label{eq:si-temporal}
 \end{equation} 
 The energy stored in the system therefore is 
 \begin{equation}
@@ -438,6 +441,7 @@ The relation between $x, p$ and the mode amplitude $a, a^*$ is
     a = \sqrt{\frac{m \omega_0}{2}} x + \frac{\ii}{\sqrt{2 m \omega_0}} p, \quad 
     x = \frac{1}{\sqrt{2 m \omega_0}} (a + a^*), \quad 
     p = - \ii \sqrt{\frac{m \omega_0}{2}} (a - a^*),
+    \label{eq:x-p-newton}
 \end{equation}
 and therefore the EOM of $a$ is found to be 
 \begin{equation}
@@ -448,22 +452,108 @@ so the approximate EOM after RWA is
 \begin{equation}
     \dot{a} = - \ii \omega_0 a - \frac{\gamma}{2m} a + \frac{\ii}{\sqrt{2 m \omega_0}} \fn(t).
 \end{equation}
-Defining 
+To make sure we have the energy normalization condition $U_a = \abs*{a}^2$,
+we multiply the equation by $\sqrt{\omega_0}$ and redefine $\sqrt{\omega_0} a$ by $a$;
+under the new definition, 
 \begin{equation}
-    \frac{1}{\tau} = \frac{\gamma}{2m} = \frac{\omega_0}{2Q}, \quad \Si{} = \frac{\ii}{\sqrt{2 m \omega_0}} \fn(t),
+    a = \sqrt{\omega_0} \cdot \left(
+        \sqrt{\frac{m \omega_0}{2}} x + \frac{\ii}{\sqrt{2 m \omega_0}} p
+    \right).
 \end{equation}
-we have 
+We further define
+\begin{equation}
+    \frac{1}{\tau} = \frac{\gamma}{2m} = \frac{\omega_0}{2Q}, \quad 
+    \sqrt{\frac{2}{\tau}} \Si =  \sqrt{\omega_0} \cdot \frac{\ii}{\sqrt{2 m \omega_0}} \fn(t) 
+    \Rightarrow \Si = \frac{\ii}{\sqrt{2 \gamma}} \fn ,
+\end{equation}
+and eventually we have 
 \begin{equation}
     \dot{a} = - \ii \omega_0 a - \frac{a}{\tau} + \Si.
 \end{equation}
 
 \paragraph*{(b)} \textit{Next, use the results from Problem 2.1 to find an expression for the energy spectrum of the cantilever.} 
 
+We have 
+\begin{equation}
+    C_{a}(\omega) = \frac{\kB T}{\tau \pi} \frac{1}{(\omega - \omega_0)^2 + 1 / \tau^2}.
+\end{equation}
 
+\paragraph*{(c)} \textit{Find a simple expression for the root mean square (RMS) displacement of the cantilever.} 
+\textit{[Hint: All you need is the total energy, $\left\langle E_{t o t}\right\rangle=\langle T\rangle+\langle U\rangle$, stored in your mode. In other words, since the Virial Theorem tells us that $\langle T\rangle=\langle U\rangle$ we have the tidy result $\left\langle E_{t o t}\right\rangle=2\langle T\rangle$, which greatly simplifies the problem.]}
+
+We have already known that the total energy for a mode governed by Langevin equation is $\kB T$.
+From Virial's theorem we have 
+\begin{equation}
+    \kB T = \expval{E_{\text{total}}} = 2 \expval{U} = m \omega_0^2 \expval*{x^2} \Rightarrow
+    \sqrt{\expval*{x^2}} = \sqrt{\frac{\kB T}{m \omega_0^2}}.
+\end{equation}
+
+\paragraph*{(d)} \textit{Assuming that our cantilever has a resonance frequency of $\omega_o /(2 \pi)=100 \mathrm{kHz}$, a quality factor of $Q=10,000$, and a spring constant of $k=10$ Newtons/meter, find the RMS displacement of the cantilever at room temperature $(300 \mathrm{~K})$.} 
+\textit{[Hint: Your result from part (b) should be independent of Q-factor.]}
+
+The RMS displacement is now 
+\begin{equation}
+    \sqrt{\expval*{x^2}} = \sqrt{\frac{\kB T}{k}} = \SI{2e-11}{m} = \SI{0.2}{\angstrom}.
+\end{equation}
+
+\paragraph*{(e)} \textit{Next, find the correlation function for the thermal noise, $f_n(t)$, that drives the motion of the cantilever.} 
+\textit{[Hint: Feel free to map all of the results we have derived using coupled mode theory onto the simple harmonic oscillator. In this case, we need only find the relation between $S_i$ and the thermal driving force to find the correlation function. ]}
+
+The correlation function of the Langevin noise in \eqref{eq:x-p-newton} is also $\propto \delta(t-t')$,
+and therefore so is $\Si$,
+and we can just reuse the relation \eqref{eq:si-temporal}, which reads
+\begin{equation}
+    \expval{\Si^*(t) \Si(t')} = \kB T \delta(t - t')
+\end{equation} 
+in our problem. From this we find 
+\[
+    \frac{1}{2 \gamma} \expval{\fn^*(t) \fn(t')} = \kB T \delta(t - t')
+\]  
+and therefore
+\begin{equation}
+    \expval{\fn^*(t) \fn(t')} = 2 \gamma \kB T \delta(t - t'),
+    \label{eq:correlation-f}
+\end{equation}
+which is exactly the usual form of the correlation function of the Langevin force 
+in a system with a dissipation force $- \gamma v$.
+
+\paragraph*{(f)} \textit{Estimate the RMS thermal force that drives the cantilever by integrating the power spectral density of the force over its mechanical resonance.} 
+\textit{[Hint: From part (d) you should have found that the thermal driving force is delta-function correlated. Hence it's spectrum is white. Here, I'm asking you to estimate the RMS thermal force that drives the system over the bandwidth of the resonator.]}
+
+When $t = t'$, \eqref{eq:correlation-f} diverges, indicating that its frequency-domain form needs a cutoff.
+Suppose that the frequency-domain correlation function of $\Si$ 
+\begin{equation}
+    \expval{\Si^*(\omega) \Si(\omega')} = \frac{\kB T}{2\pi} \delta(\omega - \omega')
+\end{equation}
+is only valid in a bandwidth $\Delta \omega$, we have  
+\begin{equation}
+    \expval*{\abs*{\Si}^2} = \int_{\text{bandwidth}} \dd{\omega} \frac{\kB T}{2\pi} 
+    = \frac{\kB T}{2\pi} \Delta \omega,
+\end{equation}
+and therefore 
+\begin{equation}
+    \frac{1}{2\gamma} \expval*{\abs*{\fn}^2} = \frac{\kB T}{2\pi} \Delta \omega
+    \quad \Rightarrow \quad
+    \sqrt{\expval*{\abs*{\fn}^2}} = \sqrt{\frac{\kB T \gamma}{\pi} \Delta \omega}.
+\end{equation}
+This can also be derived from \eqref{eq:correlation-f}, as 
+\[
+    \delta(0) = \int \frac{\dd{\omega}}{2\pi} = \frac{\Delta \omega}{2\pi}
+\]
+and therefore 
+\begin{equation}
+    \expval*{\abs*{\fn}^2} = \frac{\gamma \kB T \Delta \omega}{\pi}.
+\end{equation}
 
 \subsection{A mode connected to two baths}
 
 \textit{Next, we consider a single mode that is coupled to different baths, with distinct coupling strengths $\kappa_1=\sqrt{2 / \tau_1}$ and $\kappa_2=\sqrt{2 / \tau_2}$, as seen in Fig. 2. We assume that Bath 1 and Bath 2 are held at fixed temperatures $T_1$ and $T_2$, respectively. Hence, distinct noise power spectral densities impinge on our resonator from each bath (port) of the system.}
+
+The complete Langevin equation is  
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a - \left( \frac{1}{\tau_1} + \frac{1}{\tau_2} \right) a + \kappa_1 \bii{1} + \kappa_2 \bii{2}, \quad  
+    \expval*{\bii{$i$}^*(t) \bii{$j$}(t')} = \kB T_i \delta(t - t').
+\end{equation}
 
 \paragraph*{(a)} \textit{First, let's assume that $\kappa_2=0$. In other words, we begin by assuming that Bath 2 is decoupled from the mode. In this case, only Bath 1 injects noise into the system. Find the correlation function for the mode, $C_a(\tau)=\left\langle a^*(t) a(t+\tau)\right\rangle$, and the power spectral density $C_a[\omega]$.} 
 
@@ -491,13 +581,74 @@ THe total energy in the mode is
 
 \paragraph*{(c)} \textit{At steady state, how much power flows into and out of the mode?} 
 
-The $\bi$ and $\bo$ fields are normalized so that $P_{\text{in}} = \abs*{\bi}^2$ and $P_{\text{out}} = \abs*{\bo}^2$.
-
+The $\bi$ and $\bo$ fields are normalized so that $P_{\text{in}} = \abs*{\bi}^2$ 
+and $P_{\text{out}} = \abs*{\bo}^2$.
+Since the temperature is fixed, the input power is 
+\begin{equation}
+    P_{\text{in,1}} = \abs*{\bii{1}}^2 = \kB T_1 \delta(0) = \kB T_1 \frac{\Delta \omega_1}{2\pi},
+\end{equation}
+where the singularity at $t = t'$ needs to be regularized by 
+the bandwidth cutoff $\Delta \omega_1$ of port 1.
+Since port 2 is essentially detached from the mode, energy can only flow back to port 1, so 
+\begin{equation}
+    P_{\text{out,1}} = \kB T_1 \frac{\Delta \omega_1}{2\pi}.
+\end{equation} 
 
 \paragraph*{(d)} Next, let's assume that $\kappa_2 \neq 0$, meaning that Bath 2 couples to the system. For simplicity, we also assume that $T_2=0$. In this special case, noise will never flow from Bath 2 into the mode. Find the steady-state powers flowing into and out of the mode.
 
+The input powers never change, because they only depend on the temperature.
+Therefore we use the results of the last question and write 
+\begin{equation}
+    P_{\text{in,1}} = \expval*{\abs*{\bii{1}}^2} = \kB T_1 \frac{\Delta \omega_1}{2\pi}, \quad 
+    P_{\text{in,2}} = \expval*{\abs*{\bii{2}}^2} = \kB T_2 \frac{\Delta \omega_2}{2\pi}.
+\end{equation} 
+When $T_2 = 0$,
+\begin{equation}
+    P_{\text{in,1}} = \kB T_1 \frac{\Delta \omega_1}{2\pi}, \quad 
+    P_{\text{in,2}} = 0.
+\end{equation}
+
+The output fields 
+\begin{equation}
+    \boi{$i$} = - \bii{$i$} + \kappa_i a
+\end{equation}
+depends on 
+\begin{equation}
+    a(t) = \int_{t_0}^{t} \ee^{\left( \ii \omega_0 + \frac{1}{\tau_1} + \frac{1}{\tau_2} \right) (t' - t)} (\kappa_1 \bii{1}(t') + \kappa_2 \bii{2}(t')) \dd{t'}.
+\end{equation}
+By repeating the procedure in Problem 2.1(c), we have 
+\begin{equation}
+    \expval*{\abs*{a}^2} = \frac{\kappa_1^2 \kB T_1 + \kappa_2^2 \kB T_2}{2 \left( \frac{1}{\tau_1} + \frac{1}{\tau_2} \right)},
+    \label{eq:a-energy-double-port}
+\end{equation}
+and 
+\begin{equation}
+    \expval*{\bii{$i$}^* a} = \kappa_i \kB T_i.
+\end{equation}
+Assuming $T_2 = 0$, we have 
+\begin{equation}
+    P_{\text{out,1}} = \frac{\kB T_1}{1 + \tau_1 / \tau_2} \frac{2}{\tau_1} + \kB T_1 \frac{\Delta \omega_1}{2\pi} - \frac{4}{\tau_1} \kB T_1,
+\end{equation}
+and 
+\begin{equation}
+    P_{\text{out,2}} = \frac{\kB T_1}{1 + \tau_1 / \tau_2} \frac{2}{\tau_2} .
+\end{equation}
+
 \paragraph*{(e)} What is the steady-state mode energy? (i.e., I'm asking you to apply detailed balance.)
 
+The steady-state mode energy is \eqref{eq:a-energy-double-port}.
+
 \paragraph*{(f)} Use the equipartition theorem to identify the effective temperature of the mode. [Hint: Remember to apply a sanity check to your answers by taking the limit as $\kappa_1 \rightarrow 0$; in this case, the temperature should approach $T_2$ (and vice versa).]
+
+The effective temperature of the mode can be intuitively defined as 
+\begin{equation}
+    \kB T_{\text{eff}} = \expval*{\abs*{a}^2} = \frac{\kappa_1^2 \kB T_1 + \kappa_2^2 \kB T_2}{2 \left( \frac{1}{\tau_1} + \frac{1}{\tau_2} \right)}
+\end{equation}
+and therefore 
+\begin{equation}
+    T_{\text{eff}} = \frac{\frac{T_1}{\tau_1} + \frac{T_2}{\tau_2}}{\frac{1}{\tau_1} + \frac{1}{\tau_2}}.
+\end{equation}
+When $\kappa_1 \to 0$ and therefore $1/\tau_1 \to 0$, we find $T_{\text{eff}} \to T_2$,
+and similarly when $\kappa_2 \to 0$, $T_{\text{eff}} \to T_1$.
 
 \end{document}
