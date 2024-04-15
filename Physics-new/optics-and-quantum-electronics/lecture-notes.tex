@@ -178,6 +178,9 @@
 \newcommand*{\bi}{b_{\text{i}}}
 \newcommand*{\bo}{b_{\text{o}}}
 \newcommand*{\Tre}{\mathcal{T}}
+\newcommand*{\nth}{n_{\text{th}}}
+\newcommand*{\taue}{\tau_{\text{e}}}
+\newcommand*{\taug}{\tau_{\text{g}}}
 
 \title{Topics in optics and quantum electronics}
 \author{Jinyuan Wu}
@@ -1246,5 +1249,242 @@ and we eventually find
     D = \frac{2}{\tau}, \quad 
     \comm*{\eta(t)}{\eta^\dag(t')} = \frac{2}{\tau} \delta(t - t').
 \end{equation}
+
+\section{Quantum bath and quantum noise}
+
+We eventually move to the fully quantum treatment of noise.
+We normalize $b(\omega)$ so that the correlation function reads 
+\begin{equation}
+    \expval*{b^\dag(\omega) b(\omega')} = \nth(\omega) \frac{\delta(\omega - \omega')}{2\pi}, \quad 
+    \expval*{b(\omega) b^\dag(\omega')} = (\nth(\omega) + 1) \frac{\delta(\omega - \omega')}{2\pi}.
+\end{equation} 
+The first equation, the equation about the normal-ordered correlation function,
+gives the rate of dissipation, because it shows the expectation value of 
+photons emitted to the port.
+It vanishes when $T \to 0$.
+The second equation replicates the bosonic canonical commutation relation 
+and shows the quantum nature of the noise.
+The bosonic distribution $\nth(\omega)$ depends on $\omega$,
+and it also depends on the temperature and therefore thermodynamics still enters the correlation function.
+The commutation relations are still 
+\begin{equation}
+    \comm*{b(\omega)}{b^\dag(\omega')} = \frac{\delta(\omega - \omega')}{2\pi},
+\end{equation}
+which comes from the canonical commutation relation of oscillators.
+We should now be very careful about the order of the operators:
+the total photon flux is 
+\begin{equation}
+    \Phi = \int \dd{\omega} \Phi(\omega) = \int \dd{\omega} \int \dd{\omega'} \expval{b^\dag(\omega) b(\omega')}.
+\end{equation}
+Here $\expval{\cdots}$ is the average operation in a thermal state; when $T \to 0$, we should get 
+\begin{equation}
+    \expval*{\comm*{b(\omega)}{b(\omega')}} = \frac{\delta(\omega - \omega')}{2\pi}.
+\end{equation}
+
+Now we can move forward to calculating the fluctuation of $a$.
+Defining $\eta = \sqrt{\frac{2}{\tau}} b$,
+and noticing that (here $a$ is normalized in the same way as $b$ does)
+\begin{equation}
+    a(\omega) = \frac{\eta}{\ii(\omega_0 - \omega) + \frac{1}{\tau}},
+\end{equation}
+we find 
+\begin{equation}
+    \expval{n_a} = \frac{1}{2\pi} \frac{2}{\tau} \int \frac{n(\omega) \dd{\omega}}{(\omega - \omega_0)^2 + \frac{1}{\tau^2}} \approx 
+    n(\omega_0),
+\end{equation}
+where at the last step we have assumed that $\tau$ is large enough so that the integrand is an approximate $\delta$-function.
+This result also follows from the classical equipartition theorem;
+the difference is $n(\omega)$ deviates from the classical case.
+We can also verify using exactly the same routine in the classical case that 
+\begin{equation}
+    \bo(\omega) = \ee^{\ii \theta(\omega)} \bi(\omega),
+\end{equation}
+so that we have detailed balance of energy and the system is indeed thermally equilibrium.
+
+\section{Amplification}
+
+The (quantum) Langevin formalism describes not only loss but also gain,
+the latter appearing when there is \emph{population inversion} in the medium as in, say, laser.
+In the so-called \emph{small $\sigma$ limit} 
+(i.e. the limit in which the scattering cross section between light field and the atoms is small)
+we can ignore what happens in the medium and assume the medium's energy never gets depleted.
+In the more general case we also need to consider the competition 
+between repopulation rates and various decay rates.
+
+We consider a prototypical laser device.
+The reason we have gain is we are letting the pulse going around three mirrors over and over again 
+and between two of the mirrors there is a gain medium.
+Of course, the round trip time is small, 
+so the details of the round trip can be ignored in the EOM of the photon mode $a$.
+In each round trip, suppose there are $N$ two-level systems in total,
+the rate equation of the photon flux is 
+(here $\Phi_{\text{vac}}$ is a term that we are going to relate with fluctuation)
+\begin{equation}
+    \dv{\Phi}{z} = \Phi \sigma N (\pope - \popg) + \Phi_{\text{vac}} \sigma \pope.
+\end{equation}
+The change of the photon flux after a thin sample with a width of $\Delta z$ is 
+\begin{equation}
+    \Delta \Phi_{\text{tot}} = \Delta \Phi_{\text{stim}} + \Delta \Phi_{\text{sp}}
+    = (G - 1) \Phi_{\text{input}} + \Phi_{\text{vac}} (G  -1 ) n_{\text{sp}},
+    \label{eq:thin-sample-phi-growth}
+\end{equation}
+where 
+\begin{equation}
+    G - 1 = \sigma N (\pope - \popg) \Delta z , \quad 
+    n_{\text{sp}} = \frac{\pope}{\pope - \popg}.
+\end{equation}
+This ia a rate equation formalism of the gain medium,
+which ignores non-trivial time evolution of $\rho_{\text{eg}}$ of the medium;
+usually the rate equation works well enough for the basic features of, say, the laser line width;
+it doesn't work well enough for more coherent phenomena which on the other hand are not touched here anyway. 
+
+Now we compare the above with the photon fluxes we get from 
+(note the sign before the $a/\tau$ term; 
+here $\taug$ means the atom can't stay on the ground state for too long)
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a + \frac{1}{\taug} a + \eta.
+\end{equation}
+When the sample is not thick, approximately we can relate the photon flux to the photon number $n$:
+\begin{equation}
+    \expval{\Phi} \approx \frac{\expval{n}}{V} v_{\text{g}},
+\end{equation}
+and therefore from this proportional relation between $\Phi$ and $n$ and \eqref{eq:thin-sample-phi-growth}, we find 
+\begin{equation}
+    \dv{\expval{n}}{t} = \frac{G-1}{\tau_{\text{rt}}} + \underbrace{\frac{G-1}{\tau_{\text{rt}}} n_{\text{sp}} n_{\text{vac}}}_{R_{\text{sp}}},
+    \label{eq:round-trip-n-eom}
+\end{equation}
+and from the fact that $n$ follows an EOM like $\dot{n} = \frac{2}{\taug} n + \cdots$,
+\begin{equation}
+    \frac{2}{\taug} = \frac{G-1}{\tau_{\text{rt}}},
+\end{equation}
+where ``rt'' means ``round trip''. 
+As we mentioned above, this equation ignores the details of how $\abs*{a}^2$ grows:
+here we essentially assume it grows in a simple, exponential way,
+although since the gain medium is not necessarily everywhere in the laser device,
+if we check the details in each round trip, we will find $\abs*{a}^2$ doesn't really grow in such a simple way.
+But since $\tau_{\text{rt}}$ is expected to be very small,
+we can ``smoothen'' $\abs*{a}^2$'s time evolution and work in a longer time scale,
+where $\abs*{a}(t)^2$ looks quite close to an exponentially growing function.
+
+Now we work to refine the picture and find what $\eta$ does and how it relates to $\Phi_{\text{vac}}$.
+The complete EOM of $n$ is 
+\begin{equation}
+    \dv{\expval*{a^\dag a}}{t} = \frac{2}{\taug} \expval*{a^\dag a} + \expval*{\eta^\dag a + a^\dag \eta}.
+\end{equation}
+To keep the system unitary, we need $\comm*{a(t)}{a^\dag(t)}$ to always be unity, and we find 
+\begin{equation}
+    \comm*{\eta(t)}{\eta(t')} = - \frac{2}{\taug} \delta(t - t')
+\end{equation}
+works (of course it's still not the only possible solution).
+Strangely, $\eta$ now looks like a \emph{creation} operator -- 
+in the theory of loss it behaves like a \emph{annihilation} operator.
+$\eta$ should be normalized so that 
+\begin{equation}
+    R_{\text{sp}} = \expval*{\eta^\dag a + a^\dag \eta},
+\end{equation}
+the LHS agreeing with \eqref{eq:round-trip-n-eom}.
+$a$ can be solved and expressed in terms of $\eta$,
+and by energy conservation we find 
+\begin{equation}
+    \expval{\eta^\dag(t) \eta(t')} = \frac{2}{\taug} n_{\text{sp}} \delta(t - t'), \quad 
+    \expval*{\eta(t) \eta^\dag(t')} = \frac{2}{\taug} (n_{\text{sp}} - 1) \delta(t - t'),
+\end{equation}
+and hence 
+\begin{equation}
+    R_{\text{sp}} = \frac{2}{\taug} n_{\text{sp}}.
+\end{equation}
+Our derivation for a Langevin formalism of amplification has been completed here.
+
+We can have a Langevin formalism for a system with both gain and loss;
+this happens when the laser has leaky mirrors 
+and the atoms have spontaneous decays that contribute nothing to $a$.
+And there is no necessity that the ports related to loss are thermalized:
+when there is such a port, we can calculate the response function of the laser cavity 
+which, in this case, is an optical amplifier.
+For example, the following system  
+\begin{equation}
+    \dot{a} = - \ii \omega_0 a + \left( \frac{1}{\taug} - \frac{1}{\tau_{\text{a}}} - \frac{1}{\tau_{\text{e}}} \right) a + \eta_{\text{g}} + \eta_{\text{a}} + \sqrt{\frac{2}{\tau_{\text{e}}}} \bi, \quad 
+    \bo = - \bi + \sqrt{\frac{2}{\tau_{\text{e}}}} a.
+\end{equation}
+The system has one gain channel, one absorption channel 
+and one channel to direct energy out of the cavity to a port we have full control of.
+The frequency-resolved photon flux in the port, when there is no input, is 
+\begin{equation}
+    \Phi(\omega) = \frac{1}{2\pi} \frac{2}{\tau_{\text{e}} \tau_{\text{g}}} \frac{n_{\text{sp}}}{(\omega - \omega_0)^2 + \left(  \frac{1}{\taug} - \frac{1}{\taue} - \frac{1}{\tau_{\text{a}}} \right)^2 }.
+\end{equation}
+This means the gain tunes the line width and changes the line width.
+The output photon flux in the port, when there is no input, is  
+\begin{equation}
+    \Phi = \frac{2}{\tau_{\text{e}} \tau_{\text{g}}} \frac{n_{\text{sp}}}{\tau_\text{e}^{-1} + \tau_{\text{a}}^{-1} - \tau_{\text{g}}^{-1}}.
+\end{equation}
+It can be seen that when 
+\begin{equation}
+    \frac{1}{\taug} = \frac{1}{\taue} + \frac{1}{\tau_{\text{a}}},
+\end{equation}
+the output is infinite: this means right at the threshold of laser --
+the threshold that stimulated emission dominates spontaneous emission -- 
+if we assume the medium always keeps its population inversion state,
+infinite energy flows into the medium and then the output laser beam!
+This of course is not physical and usually laser saturation effects appear before this happen. 
+
+Now we consider the line width. For convenience we ignore port $b$ at the moment. 
+The EOM of the laser intensity always takes the form of
+\begin{equation}
+    \dv{t} \expval*{\abs*{a}^2} = - \left( \frac{2}{\taue} - \frac{2}{\taug} \right) \expval*{\abs*{a}^2} + R_{\text{sp}}.
+\end{equation} 
+Since the spontaneous emission rate $R_{\text{sp}}$ is always larger than zero,
+when the system reaches equilibrium, we always have to have 
+\begin{equation}
+    \frac{1}{\taue} > \frac{1}{\taug}.
+\end{equation}
+This means in a physical circumstance -- in which $\abs*{a^2}$ can't grow unboundedly and has to eventually arrive at equilibrium
+-- the gain is always weaker than the dissipation. 
+It also means (trivially) that to have a usable laser device that gives you steady output,
+you have to expect the output to be kind of noisy. 
+We can view the inverse of 
+\begin{equation}
+    \Gamma = \frac{2}{\taue} - \frac{2}{\taug}
+\end{equation}
+as the decoherence time: at each time step, $a$ (and the output $b$, if the $\bi, \bo$ port is turned on) 
+look to be in a coherent state, 
+but $a(0)$ and $a(1/\Gamma)$ almost have no correlation and are no longer coherent to each other.
+We also note that $R_{\text{sp}}$ comes from nothing but $\eta_{\text{g}}$,
+i.e. the noise that comes together with the gain,
+because $\eta_{\text{e}}$ has zero expectation.
+
+The line width of the spectrum of $a$ is 
+\begin{equation}
+    \expval*{n(\omega)} = \int \dd{\omega'} \expval*{a^\dag(\omega) a(\omega')} = \frac{1}{\pi} \frac{n_{\text{sp}} / \taug}{(\omega - \omega_0)^2 + \Gamma^2 / 4},
+\end{equation}
+and we find the line width is 
+\begin{equation}
+    \Delta \omega_{\text{FWHM}} = \Gamma = \frac{2}{\taug} \frac{n_{\text{sp}}}{\expval{n}}
+\end{equation}
+which is known as Schawlow-Townes line width.
+The saturation number is defined when saturation effects reduce the line width to  
+\begin{equation}
+    \Delta \omega_{\text{FWHM}} = \frac{\Gamma}{2}. 
+\end{equation}
+
+We have already mentioned the concept of laser threshold.
+The reason it is called a threshold can be investigated by calculating the output of the laser.
+At the threshold we can observe two effects.
+First, the output power suddenly increases drastically, 
+and second, the output state looks much closer to a coherent state (with some noise)
+than to a (amplified) thermal state.
+Question: could these effects be derived from the equations above?
+
+As we have mentioned above,
+the laser output, when the laser device arrives at equilibrium, always contains noise,
+and the output state is not a perfect coherent state.
+If we observe the output state as a whole using one quasi-distribution function, 
+we can see two effects: 
+first, thermal photons from spontaneous emission of course change the output power,
+so we can see amplitude noise;
+but more importantly, the phases of thermal photons are totally random,
+so the predominant noise is actually the phase noise:
+we can see the peak of the quasi-distribution function does a random work on a circle.
+
+
 
 \end{document}
