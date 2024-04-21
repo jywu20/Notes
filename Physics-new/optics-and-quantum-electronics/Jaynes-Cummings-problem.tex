@@ -1,0 +1,288 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{jc.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\sinc}{sinc}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand*{\mur}{\mu_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand*{\Gammae}{\Gamma_{\text{e}}}
+\newcommand*{\Gammag}{\Gamma_{\text{g}}}
+\newcommand*{\omegae}{\omega_{\text{e}}}
+\newcommand*{\omegag}{\omega_{\text{g}}}
+\newcommand*{\omegaeg}{\omega_{\text{eg}}}
+\newcommand*{\ptwfc}[2]{\psi^{(#2)}_{#1}}
+\newcommand*{\mueg}{\mu_{\text{eg}}}
+\newcommand*{\muge}{\mu_{\text{ge}}}
+\newcommand*{\Ezzero}{E_{z0}}
+\newcommand*{\kete}{\ket*{\text{e}}}
+\newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\dyade}{\dyad{\text{e}}}
+\newcommand*{\dyadg}{\dyad{\text{g}}}
+\newcommand*{\dyadeg}{\dyad{\text{e}}{\text{g}}}
+\newcommand*{\dyadge}{\dyad{\text{g}}{\text{e}}}
+\newcommand*{\coeffe}{c_{\text{e}}}
+\newcommand*{\coeffg}{c_{\text{g}}}
+\newcommand*{\pope}{p_{\text{e}}}
+\newcommand*{\popg}{p_{\text{g}}}
+\newcommand*{\ptwo}{P^{(2)}}
+\newcommand*{\vp}{v_{\text{p}}}
+\newcommand*{\chitwo}{\chi^{(2)}}
+\newcommand*{\chithree}{\chi^{(3)}}
+\newcommand*{\omegap}{\omega_{\text{p}}}
+\newcommand*{\mvb}[1]{\tilde{\vb*{#1}}}
+\newcommand*{\Si}[1]{S_{\text{i#1}}}
+\newcommand*{\So}[1]{S_{\text{o#1}}}
+\newcommand*{\taug}{\tau_{\text{g}}}
+\newcommand*{\dieg}{\vb*{d}_{\text{eg}}} 
+\newcommand*{\dige}{\vb*{d}_{\text{ge}}} 
+
+
+\title{Some problems in cavity QED}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\textit{Consider a two-level atom in a cavity, 
+whose coupling with one single photon mode significantly exceeds its coupling with the rest of the photon modes.
+Write down the most generic light-matter interaction Hamiltonian.}
+
+The most general Hamiltonian reads 
+\begin{equation}
+    H = \hbar \omega_0 \dyade + H_{\text{EM}} \underbrace{- \vb*{d} \cdot \vb*{E}}_{H_{\text{dipole}}},
+\end{equation} 
+where we have assumed that at $\kete$ there is no dipole 
+or otherwise the excited state of the atom is not optically stable.
+Therefore the dipole has the form 
+\begin{equation}
+    \vb*{d} = \dieg \dyadeg + \text{h.c.}
+\end{equation}
+The electric field can be expanded into photon modes in the following way:
+\begin{equation}
+    \vb*{E} = \sum_k \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} \vb*{f}_k a_k + \text{h.c.}, \quad 
+    \frac{1}{V} \int \dd[3]{\vb*{r}} \vb*{f}_k^* \cdot \frac{\vb*{\epsilon}}{\epsilon_0} \cdot \vb*{f}_{k'} = \delta_{kk'}.
+\end{equation}
+Suppose only one mode $a$ has strong influences to the atom, we have 
+\begin{equation}
+    H = \hbar \omega_0 \dyade + \hbar \omega \left( a^\dag a + \frac{1}{2} \right) 
+    - \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} (\dieg \dyadeg + \text{h.c.}) \cdot (\vb*{f} a + \text{h.c.}) ,
+\end{equation}
+where $\omega$ is the frequency of mode $a$ and $\vb*{f}$ is its polarization direction.
+
+\textit{Apply the rotating wave approximation (RWA). 
+When does this approximation work?}
+
+Switching to the interaction picture, we have 
+\begin{equation}
+    H_{\text{dipole}} = - \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} 
+    (\dieg \dyadeg \ee^{\ii \omega_0 t} + \text{h.c.}) \cdot (\vb*{f} a \ee^{- \ii \omega t} + \text{h.c.}) ,
+\end{equation}
+and assuming that $\omega_0$ is close to $\omega$, RWA eliminates the anti-resonant terms 
+$\dyadeg a^\dag$ and its conjugate transpose, and we have 
+\begin{equation}
+    H_{\text{dipole}} \approx \underbrace{- \sqrt{\frac{\hbar \omega_k}{2 \epsilon_0 V}} \dieg \cdot \vb*{f} }_{\eqqcolon \hbar g}
+    \dyadeg a \ee^{\ii (\omega_0 - \omega) t} + \text{h.c.}
+\end{equation}
+Going back to Schrodinger picture, we have 
+\begin{equation}
+    H^{\text{RWA}} = \hbar \omega_0 \dyade + \hbar \omega \left( a^\dag a + \frac{1}{2} \right) + \hbar g \dyadeg a + \hbar g^* \dyadge a^\dag. 
+\end{equation}
+
+In this Hamiltonian the electric field is no longer an external driving field,
+and therefore the RWA applied here can't be understood as a specific case of Floquet theory.
+The condition of RWA however is still 
+\begin{equation}
+    \abs*{\omega - \omega_0} \ll \omega_0 + \omega, \quad 
+    g \ll \omega_0.
+    \label{eq:rwa-condition}
+\end{equation}
+We can conceive the RWA applied here within the framework of quantum field theory:
+the self-energy correction to, say, $\kete$, always takes a form like this:
+\[
+    G^{\text{int}}_{\text{e}} = \frac{1}{E - \omegae + \underbrace{\frac{A \abs*{g}^2}{E - \omega - \omegag} + \frac{B \abs*{g}^2}{E + \omega - \omegag}}_\Sigma},
+\]
+where $\Sigma =\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-0.4,xscale=0.4, baseline=(XXXX.south) ]
+\path (0,45);\path (100,0);\draw    ($(current bounding box.center)+(0,0.3em)$) node [anchor=south] (XXXX) {};
+%Straight Lines [id:da011052389066785295] 
+\draw    (11.33,36.33) -- (91.45,36.33) ;
+%Curve Lines [id:da14053098666969843] 
+\draw    (11.33,36.33) .. controls (10.94,33.7) and (11.88,32.14) .. (14.16,31.65) .. controls (16.4,31.32) and (17.3,30.06) .. (16.85,27.86) .. controls (16.74,25.33) and (17.81,24.04) .. (20.05,24.01) .. controls (22.47,23.89) and (23.73,22.64) .. (23.82,20.25) .. controls (23.79,18.07) and (24.97,17.1) .. (27.36,17.34) .. controls (29.63,17.77) and (31.13,16.78) .. (31.86,14.37) .. controls (32.51,12.13) and (33.92,11.42) .. (36.09,12.25) .. controls (38.37,13.14) and (39.96,12.57) .. (40.86,10.54) .. controls (41.96,8.54) and (43.58,8.19) .. (45.71,9.49) .. controls (47.61,10.96) and (49.24,10.83) .. (50.61,9.1) .. controls (52.5,7.48) and (54.13,7.57) .. (55.52,9.37) .. controls (56.98,11.29) and (58.61,11.6) .. (60.41,10.3) .. controls (62.7,9.24) and (64.31,9.77) .. (65.24,11.89) .. controls (66.24,14.15) and (67.81,14.9) .. (69.96,14.13) .. controls (72.25,13.54) and (73.64,14.42) .. (74.14,16.75) .. controls (74.47,19.07) and (75.82,20.12) .. (78.18,19.91) .. controls (80.37,19.64) and (81.53,20.74) .. (81.67,23.22) .. controls (81.67,25.67) and (82.78,26.92) .. (85.01,26.97) .. controls (87.28,27.16) and (88.34,28.56) .. (88.17,31.16) .. controls (87.66,33.4) and (88.54,34.76) .. (90.81,35.25) -- (91.45,36.33) ;
+\end{tikzpicture}$ is the self-energy in which the photon propagator contains 
+both the resonant and anti-resonant term, 
+and $A, B$ are constants with respect to the number of photons in the system.%
+\footnote{
+    If there is no photon at all when the atom is in the $\kete$ state,
+    the anti-resonant term vanishes.
+    This can be verified by noticing that the $a$ term in $\dyadge (a + a^\dag) \ket*{\text{e}, n=0}$ vanishes,
+    or by noticing that in the contour integral that evaluates $\Sigma = G_{\text{g}} \otimes G_{\text{photon}}$,
+    the pole of the anti-resonant branch of $G_{\text{photon}}$ is below the real axis 
+    and therefore has no contribution to the contour integral, 
+    which can be solved by working with only poles above the real axis.
+    The rotating wave approximation only matters for the multi-photon case.
+    
+    Also, it's more convenient to designate $G_{\text{photon}}$ to the Green function of the \emph{electric field},
+    not the vector potential, and in this way $G_{\text{photon}}$ takes the form of $2 E / (E^2 - \omega^2 + \ii 0^+)$, not just $1/(E^2 - \omega^2 + \ii 0^+)$.
+}
+Clearly, for the anti-resonant term in $\Sigma$ to be unimportant, we need 
+$\abs*{E - \omega - \omegag} \gg \abs*{E + \omega - \omegag}$ at the pole of $G^{\text{int}}_{\text{e}}$,
+but we know nothing about the value of $E$:
+to estimate it with $\omega_0 = \omegae - \omegag$,
+we have to then assume that the order of magnitude of $g$ is controlled.
+Hence we get \eqref{eq:rwa-condition}.
+
+\textit{The Hamiltonian after RWA is known as the Jaynes-Cummings model. 
+Find its eigenstates. Give a physical picture of the eigenstates.}
+
+There is only coupling between $\ket*{\text{e}, n}$ and $\ket*{\text{g}, n+1}$.
+
+\end{document}
