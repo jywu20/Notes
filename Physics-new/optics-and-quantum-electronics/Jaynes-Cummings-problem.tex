@@ -199,6 +199,7 @@ Write down the most generic light-matter interaction Hamiltonian.}
 The most general Hamiltonian reads 
 \begin{equation}
     H = \hbar \omega_0 \dyade + H_{\text{EM}} \underbrace{- \vb*{d} \cdot \vb*{E}}_{H_{\text{dipole}}},
+    \label{eq:whole-ham}
 \end{equation} 
 where we have assumed that at $\kete$ there is no dipole 
 or otherwise the excited state of the atom is not optically stable.
@@ -280,9 +281,201 @@ to estimate it with $\omega_0 = \omegae - \omegag$,
 we have to then assume that the order of magnitude of $g$ is controlled.
 Hence we get \eqref{eq:rwa-condition}.
 
+The fact that only resonant terms in \eqref{eq:whole-ham} explains 
+why we can get away with only considering the coupling between the atom and one photon mode:
+as long as all other photon modes are much less resonant with the atom,
+this is acceptable.
+It also explains why usually a cavity is needed for coupling an atom with one specific photon mode:
+in the free space, photon modes are continuous, 
+and it's impossible to make sure only one photon mode is resonant with the atom.
+
 \textit{The Hamiltonian after RWA is known as the Jaynes-Cummings model. 
 Find its eigenstates. Give a physical picture of the eigenstates.}
 
-There is only coupling between $\ket*{\text{e}, n}$ and $\ket*{\text{g}, n+1}$.
+There is only coupling between $\ket*{\text{g}, n+1}$ and $\ket*{\text{e}, n}$.
+In this subspace, the Jaynes-Cummings Hamiltonian reads 
+\begin{equation}
+    \begin{aligned}
+        H^{\text{JC}} &= \hbar \omega \left( n + \frac{1}{2} \right) + \pmqty{
+            \hbar \omega  & \hbar g^* \sqrt{n+1} \\
+            \hbar g \sqrt{n+1} & \hbar \omega_0
+        } \\
+        &= \hbar \omega \left( n + \frac{1}{2} \right) + \hbar \omega_0 + \frac{1}{2} \hbar \delta + \hbar 
+        \pmqty{
+            \delta / 2 & \Omega_n / 2 \\
+            \Omega_n / 2 & - \delta / 2
+        },
+    \end{aligned}
+    \label{eq:jc-subspace}
+\end{equation}
+where we define 
+\begin{equation}
+    \delta = \omega - \omega_0, \quad \frac{\Omega_n}{2} = g \sqrt{n+1}.
+    \label{eq:omega-delta-def}
+\end{equation}
+Here, without loss of generality, we assume $g$ is real;
+if it's not we can always redefine $\kete$ to remove its phase factor.
+
+The eigenvalues of \eqref{eq:jc-subspace} are 
+\begin{equation}
+    E^{\pm}_n = \hbar \omega \left( n + \frac{1}{2} \right) + \hbar \omega_0 + \frac{1}{2} \hbar \delta
+    \pm \frac{\hbar}{2} \underbrace{\sqrt{\Omega_n^2 + \delta^2}}_{\eqqcolon R_n}.
+\end{equation}
+When $\Omega_n = 0$ or in other words $g=0$,
+as we change $\delta$, we have energy level crossing between $\ket*{\text{e},n}$ and $\ket*{\text{g},n+1}$;
+after adding the coupling $\Omega_n$ the energy level crossing vanishes;
+this is expected since perturbation makes energy levels avoid crossing. 
+
+The eigenstates are given by 
+\begin{equation}
+    \ket*{n+} = \frac{1}{\sqrt{\Omega_n^2 + (R_n - \delta)^2}} (\Omega_n \ket*{\text{g},n+1} + (R_n - \delta) \ket*{\text{e},n}),
+\end{equation}
+\begin{equation}
+    \ket*{n-} = \frac{1}{\sqrt{\Omega_n^2 + (R_n - \delta)^2}} ((R_n - \delta) \ket*{\text{g},n+1} - \Omega_n \ket*{\text{e},n}) ,
+\end{equation}
+or, by defining 
+\begin{equation}
+    \sin \theta_n = \frac{\Omega_n}{\sqrt{\Omega_n^2 + (R_n - \delta)^2}},
+\end{equation}
+\begin{equation}
+    \ket*{n+} = \pmqty{\sin \theta_n \\ \cos \theta_n}, \quad 
+    \ket*{n-} = \pmqty{\cos \theta_n \\ - \sin \theta_n}.
+\end{equation}
+
+The physical picture these two dressed states is spontaneous emission plus re-absorption:
+the fact that optical pumping can bring the atom from $\ketg$ to $\kete$ 
+means we have a $\dyadeg a$ term in the interactive Hamiltonian,
+and then because of the Hermitian nature of the Hamiltonian,
+there has to be a $\dyadge a^\dag$ term in the interactive Hamiltonian,
+which is missing in the naive semi-classical approach. 
+Therefore if an atom is initial in $\kete$, 
+a photon will be spontaneous emitted, and the atom falls to $\ketg$;
+but unlike ``prototypical'' spontaneous emission,
+the number of modes coupled to the atom is not large,
+and the photon can't just ``go away'', 
+so eventually it gets absorbed by the atom again and the atom jumps to $\kete$.%
+\footnote{
+    Spontaneous emission and exponential decay are two independent phenomena:
+    the first is about the matrix structure of dipole interaction,
+    and the second is about being coupled to infinite modes.
+    Emission of a photon from a lossy cavity involves exponential decay 
+    because the modes outside the cavity outnumber the modes inside,
+    but it's not the same as the spontaneous emission of a photon by an atom 
+    because it involves no dipole interaction.
+}
+
+\textit{Analyze what will happen to a state in which the atom is in the excited state  
+and photons are in a coherent state.
+For simplicity, assume the detuning is zero, that's to say,
+assume that $\omega$ is the same as $\omega_0$.}
+
+A coherent state takes the form of 
+\begin{equation}
+    \ket*{\alpha} = \ee^{- \frac{\abs*{\alpha}^2}{2}} \sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} \ket*{n},
+\end{equation}
+and therefore the initial state takes the following form:
+\begin{equation}
+    \kete \otimes \ket*{\alpha} = \ee^{- \frac{\abs*{\alpha}^2}{2}} \sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} \ket*{\text{e}, n}.
+    \label{eq:collapse-initial}
+\end{equation}
+The time evolution operator within the $\{ \ket*{\text{g}, n+1}, \ket*{\text{e},n} \}$ subspace, 
+when $\delta = \omega - \omega_0 = 0$, is 
+\begin{equation}
+    \begin{aligned}
+        U &= \ee^{- \ii \omega \left( n + \frac{1}{2} \right) t - \ii \omega_0 t} \ee^{- \ii \frac{\Omega_n t}{2} \sigma^x } \\
+        &=  \ee^{- \ii \omega \left( n + \frac{1}{2} \right) t - \ii \omega_0 t}
+        \left( \cos \frac{\Omega_n t}{2} \sigma^0 - \ii \sin \frac{\Omega_n t}{2} \sigma^x \right),
+    \end{aligned}
+\end{equation}
+and therefore the time evolution of \eqref{eq:collapse-initial} is 
+\begin{equation}
+    \ket*{\psi(t)} = \ee^{- \frac{\abs*{\alpha}^2}{2}} \sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} 
+    \ee^{- \ii \omega \left( n + \frac{1}{2} \right) t - \ii \omega_0 t}
+    \left(  \cos \frac{\Omega_n t}{2} \ket*{\text{e}, n} - \ii \sin \frac{\Omega_n t}{2} \ket*{\text{g}, n+1} \right) .
+\end{equation}
+The expression is complicated, but if we focus only on the probability of the atom staying on $\kete$,
+then we get a slightly simpler expression (without the annoying phase factor):
+\begin{equation}
+    \begin{aligned}
+        \pope &= \ee^{- \abs*{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos^2 \frac{\Omega_n t}{2} \\
+        &= \ee^{- \abs*{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cdot \frac{1}{2} \left( 1 + \cos \Omega_n t \right) \\
+        &= \frac{1}{2} + \frac{1}{2} \ee^{- \abs*{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cos \Omega_n t.
+    \end{aligned}
+\end{equation}
+
+\textit{Assuming $\abs*{\alpha} \gg 1$ and $g t \abs*{\alpha} \ll 1$, what happens to the probability of the atom staying at $\kete$?}
+
+Recall that the definition of $\Omega_n$ is \eqref{eq:omega-delta-def}
+and $\Omega_n = 2 g \sqrt{n+1}$.
+If we take the $\abs*{\alpha} \to \infty$ limit,
+we will find that the weight factor $\abs*{\alpha}^{2n} / n!$ reaches its peak when $n = \abs*{\alpha}^2$.
+Therefore we can expand $\Omega_n$ around $n = \abs*{\alpha}^2$.
+We have 
+\[
+    \sqrt{n+1} = \sqrt{\abs*{\alpha}^2 + 1 + n - \abs*{\alpha}^2 }
+    \approx \abs*{\alpha} \left( 1 + \frac{n - \abs*{\alpha}^2 }{2 \abs*{\alpha}^2} \right),
+\]
+where we have used the condition that $\abs{\alpha}$ is very large, 
+and the assumption that the peak of  $\abs*{\alpha}^{2n} / n!$ is narrow enough 
+to make sure that only first order expansion is needed.
+Therefore 
+\begin{equation}
+    \begin{aligned}
+        \pope &= \frac{1}{2} + \frac{1}{2} \ee^{- \abs*{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            2 g \abs*{\alpha} t + g t \frac{n - \abs*{\alpha}^2}{\abs*{\alpha}}
+        ) \\
+        &= \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \left(\cos( 2 g \abs*{\alpha} t) \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ) - \sin( 2 g \abs*{\alpha} t) \sin(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        )\right).
+    \end{aligned}
+\end{equation}
+Since sin is odd and $n - \abs{\alpha}^2$ can be positive or negative,
+the second term largely vanishes after the summation over $n$.
+Therefore we are left with 
+\begin{equation}
+    \begin{aligned}
+        \pope = \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{2} 
+        \cos( 2 g \abs*{\alpha} t)  \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ).
+    \end{aligned}
+\end{equation}
+We have 
+\[
+    \begin{aligned}
+        &\quad \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ) \\
+        &= \frac{1}{2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        (
+            \ee^{\ii g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}}
+            + \ee^{-\ii g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}}
+        ) \\
+        &= \frac{1}{2} \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \ee^{\ii g t / \abs{\alpha}}} + \text{c.c.}
+    \end{aligned}
+\]
+Now we use the $g \abs{\alpha} t \ll 1$ assumption, and we have 
+\begin{equation}
+    \begin{aligned}
+        \pope &= \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{4} 
+        \cos( 2 g \abs*{\alpha} t) \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \ee^{\ii g t / \abs{\alpha}}} + \text{c.c.} \\
+        &\approx  \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{4} 
+        \cos( 2 g \abs*{\alpha} t) \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \left(1 + \ii g t / \abs{\alpha} - \frac{1}{2 \abs{\alpha}^2} g^2 t^2  \right) } + \text{c.c.} \\
+        &= \frac{1}{2} + \frac{1}{2} \cos (2 g \abs{\alpha} t) \ee^{- \frac{1}{2} g^2 t^2}.
+    \end{aligned}
+\end{equation}
+So it can be seen that when $\abs{\alpha} \gg 1$ and $g t \abs{\alpha} \ll 1$,
+the probability of the atom residing at $\kete$ decays exponentially,
+and the time scale of the decay is $1/g$.
+
+\textit{}
 
 \end{document}
