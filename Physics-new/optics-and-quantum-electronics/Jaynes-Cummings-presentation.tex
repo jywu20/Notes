@@ -1,4 +1,5 @@
 \documentclass[t]{beamer}
+\usepackage{fontawesome5}
 \usepackage{physics}
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -90,9 +91,9 @@
         \draw [shift={(277.83,193.28)}, rotate = 18.8] [fill={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.08]  [draw opacity=0] (10.72,-5.15) -- (0,0) -- (10.72,5.15) -- (7.12,0) -- cycle    ;
         
         % Text Node
-        \draw (74,251) node [anchor=north west][inner sep=0.75pt]   [align=left] {Effective dielectric,\\scattering};
+        \draw (74,251) node [anchor=north west][inner sep=0.75pt]   [align=left] {Effective dielectric function,\\scattering matrix};
         % Text Node
-        \draw (139,51) node [anchor=north west][inner sep=0.75pt]   [align=left] {Maxwell-Langevin or atomic QME};
+        \draw (80,51) node [anchor=north west][inner sep=0.75pt]   [align=left] {Maxwell-Langevin equation or atomic quantum master equation};
         % Text Node
         \draw (272,99) node [anchor=north west][inner sep=0.75pt]   [align=left] {\footnotesize high coherence};
         % Text Node
@@ -163,7 +164,7 @@
     \item (Possible non-radiative decay: phonon, etc.)
 \end{itemize}
 
-Small $\kappa, \gamma, \ldots$ $\Rightarrow$ closed-system cavity QED
+$\kappa, \gamma, \ldots \ll \text{coupling $g$}$ $\Rightarrow$ closed-system cavity QED
 
 \end{frame}
 
@@ -266,8 +267,9 @@ Small $\kappa, \gamma, \ldots$ $\Rightarrow$ closed-system cavity QED
 \begin{columns}[T]
     \begin{column}{0.5\textwidth}
         \begin{itemize}
-            \item Starting with $\ket*{\text{e}}$
+            \item Oscillation starting with $\ket*{\text{e}}$
             \item Markovian approx. fails
+            \item We have experimental evidence \faHandPointRight
         \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -283,16 +285,69 @@ Small $\kappa, \gamma, \ldots$ $\Rightarrow$ closed-system cavity QED
 \begin{frame}
 \frametitle{Collapse and revival}
 
-\textbf{What happens when we start with $\ket*{\text{e}, \alpha}$?}    
+\textbf{Start with $\ket*{\text{e}, \alpha}$?} $\ket*{\psi(t=0)} = \ket*{\text{e}} \otimes \ee^{- \frac{\abs*{\alpha}^2}{2}} 
+\sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} \underbrace{\ket*{\text{e}, n}}_{\leftrightarrow \ket*{\text{g}, n+1}}$
 
-\[
-    \begin{aligned}
-        \ket*{\psi(t=0)} &= \ket*{\text{e}} \otimes \ee^{- \frac{\abs*{\alpha}^2}{2}} \sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} \\
-        \Rightarrow P_\text{e}(t) &= \frac{1}{2}\left[1+\mathrm{e}^{-|\alpha|^2} \sum_{n=0}^{\infty} \frac{|\alpha|^{2 n}}{n !} \cos \left(\Omega_n t\right)\right] . 
-    \end{aligned}
-\]
+\begin{columns}[T]
+    \begin{column}{0.7\textwidth}
+        \[
+            \begin{aligned}
+                P_\text{e}(t) &= \frac{1}{2}\left[1+\mathrm{e}^{-|\alpha|^2} \sum_{n=0}^{\infty} \frac{|\alpha|^{2 n}}{n !} \cos \left(\Omega_n t\right)\right] \\ 
+                &\stackrel{t \ll 1 / g \abs*{\alpha}}{=} \frac{1}{2} + \frac{1}{2} \cos (2 g \abs{\alpha} t) \ee^{- \frac{1}{2} g^2 t^2}.
+            \end{aligned}
+        \]
+        \textbf{Collapse of $P_{\text{e}}$ when $t \ll 1 / g \abs*{\alpha}$} 
+        Because $\phi^{\ket*{\text{e},n}}$ not synchronized
+        
+        This can be simulated by a thermalized state as well; but as $\ket*{\psi}$ is not truly incoherent\dots 
+    \end{column}
+    \begin{column}{0.3\textwidth}
+        \vspace{0.2cm}
+        \includegraphics[width=\textwidth]{figs/coherent-different-phases.png}
+    \end{column}
+\end{columns}
 
-\textbf{When $t \ll $}
+\end{frame}
+
+\begin{frame}
+\frametitle{Collapse and revival}
+
+\textbf{Revival} When the phases of the major components realign again: $2\pi = (\Omega_{\abs*{\alpha}} - \Omega_{\abs*{\alpha}^2 - 1}) t$
+
+\begin{columns}[T]
+    \begin{column}{0.6\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{figs/collapse-revival.PNG}
+    \end{center}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+        Revival is a
+        \begin{itemize}
+            \item Coherent property: not possible in a thermalized state
+            \item ``granular'' property: see $\abs*{\alpha}^2-1$ 
+        \end{itemize} 
+    \end{column}
+\end{columns}
+
+\blfootnote{Fig. from arXiv 1111.1143.}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Creation of entangled atom pairs}
+
+\textbf{Protocol}
+\begin{enumerate}
+    \item Move atom 1 (in $\ket*{\text{e}}$) into the cavity mode. 
+    \item $\ket*{\text{e}_1, 0} \stackrel{\frac{1}{2} \Omega_0 t = \frac{\pi}{4}}{\longrightarrow} \frac{1}{\sqrt{2}} (\ket*{\text{g}_1, 1} + \ket*{\text{e}_1, 0})$.
+    \item Move atom 1 out of the light beam. Move atom 2 (in $\ket*{\text{g}}$) into the light beam.
+    \item $\frac{1}{\sqrt{2}} (\ket*{\text{g}_1, \underbrace{\text{g}_2, 1}_{\mathclap{\text{coupling happens only here}}}} + \ket*{\text{e}_1, \text{g}_2, 0}) 
+    \stackrel{\frac{1}{2} \Omega_0 t = \frac{\pi}{2}}{\longrightarrow} 
+    \frac{1}{\sqrt{2}} (\ket*{\text{g}_1, \text{e}_1, 0} + \ket*{\text{e}_1, \text{g}_2, 0})$
+    \item Move all atoms out. 
+\end{enumerate}
+
+That's how you get an Einstein-Podolsky-Rosen pair.
 
 \end{frame}
 
@@ -308,7 +363,7 @@ Small $\kappa, \gamma, \ldots$ $\Rightarrow$ closed-system cavity QED
 \begin{frame}
 \frametitle{Medium within cavity?}
 
-    
+The full theory on medium in cavity involves 
 
 \end{frame}
 
