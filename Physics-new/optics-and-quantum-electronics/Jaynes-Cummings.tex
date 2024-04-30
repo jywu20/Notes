@@ -25,9 +25,10 @@
 \usepackage[ruled, vlined, linesnumbered]{algorithm2e}
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex,sorting=none]{biblatex}
 \addbibresource{jc.bib}
 \addbibresource{qed.bib}
+\addbibresource{material.bib}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -194,36 +195,27 @@
 
 \maketitle
 
-\paragraph*{Abstract} Light-matter interaction is often studied by focusing on  
-the atomic part or the photon part only, 
-with the other part being modeled as 
-intermediate states (as in Maxwell's Equations in media), 
-external sources (as in scattering theory), 
-or a thermalized bath (as in quantum Langevin equation).
-For ultracold systems with strong light-matter coupling,
-none of the formalisms mentioned above works 
-and both the atoms and the photons need to be modeled in a 
-fully quantum and coherent way.
-In this report, we review cavity quantum electrodynamics (cavity QED or cQED), 
-the theory of atoms interacting with photons within a reflective cavity.
-We will study how cQED reduces to aforementioned formalisms 
-and discuss several phenomena that can only be reliably captured in cQED, 
-including tunable and even reversible spontaneous emission, 
-strong-field dressing effects, 
-and the collapse and revival of the probability for the atom to appear in the excited state
-with the initial photon state being a coherent state.
-We will also discuss non-conventional experimental platforms, 
-like excitonic materials in a cavity,
-for which cQED is a good effective theory.
+\begin{abstract}
+    In the strong light-matter coupling limit,
+    a high-coherence system can no longer be faithfully described by conventional approaches 
+    like semi-classical theories, 
+    effective dielectric function approaches,
+    or master equation approaches assuming thermalization of some of the degrees of freedoms,
+    and a fully quantum treatment of both light and matter is needed.
+    In this report, we review cavity quantum electrodynamics (cavity QED), 
+    the fully quantum theory of strong, coherent light-matter interaction in a cavity.
+    We then introduce Jaynes-Cummings model, the simplest cavity QED model,
+    and discuss exotic phenomena that can be observed in Jaynes-Cummings model,
+    including reversible spontaneous emission and quantum Rabi oscillation and
+    the collapse and revival of the probability for the atom to appear in the excited state
+    with the initial photon state being a coherent state.
+    We also discuss non-conventional experimental platforms for cavity QED, 
+    including excitonic materials in a cavity 
+    and nanoparticle in a dielectric-metal-dielectric sandwich.
+\end{abstract}
 
-\paragraph*{Outline} 
-\begin{itemize}
-    \item Basic formalism \cite{bina2012coherent}
-    \item Collapse and revival \cite{meystre2021quantum}
-    \item Tuning spontaneous emission \cite{meystre2021quantum}
-    \item Strong-field dressing effects \cite{di2016cutting}
-    \item cQED in excitons \cite{latini2019cavity}
-\end{itemize}
+% Something worth exploring:
+% Strong-field dressing effects \cite{di2016cutting}
 
 \section{Introduction}
 
@@ -278,16 +270,20 @@ We first note that by adjusting the shape of the cavity,
 it is relatively easy to achieve high field strength of electromagnetic modes in the cavity
 at some locations,
 and atoms placed at these positions will be strongly coupled to the optical modes.
-We note that the high light-matter coupling limit logically
-necessitates a high-coherence treatment of the system,
-as when the light-matter interaction strength exceeds
+We note that when the light-matter interaction strength exceeds
 incoherent interaction (e.g. spontaneous emission out of the cavity and cavity leaking),
 the latter should be ignored for the short-time dynamics of the cavity.
 The strong light-matter coupling also implies strong frequency dependence.
-Therefore, for a cavity with a very small beam waist,
+Therefore, for a high-coherence cavity with a very small beam waist of its photon modes,
 a fully quantum treatment of light-matter interaction, i.e. cavity QED,
 is needed, as long as the electromagnetic part of the system is of quantum nature,
 which we will find is true even for a coherent state.
+The fact that high coupling strength requires a fully quantum treatment of light-matter interaction
+of course is not restricted to a cavity.
+Actually it is not even restricted to photon-atom interaction:
+in this report we will review scenarios where 
+the roles of the photon mode and the atom are replaced by other degrees of freedom,
+but the overall theoretical framework of cavity QED remains valid.
 
 This report reviews is organized as follows.
 In \prettyref{sec:jc},
@@ -318,11 +314,12 @@ while the interaction strength $g$ does not exceed $\omega_0$.
 Therefore we can do rotating wave approximation (RWA)
 and consider only the coupling between the aforementioned two atom energy levels and the photon mode,
 and ignore all anti-resonant terms in the dipole interaction Hamiltonian.
-The resulting model then can be represented by the following simple Hamiltonian,
+The resulting model then can be represented by the following simple Hamiltonian
+containing only a photon mode and a two-level atom,
 \begin{equation}
     H^{\text{JC}} = \hbar \omega_0 \dyade + \hbar \omega \left( a^\dag a + \frac{1}{2} \right) + \hbar g \dyadeg a + \hbar g^* \dyadge a^\dag,
 \end{equation}
-known as Jaynes-Cuming model.
+known as Jaynes-Cuming model \cite{bina2012coherent}.
 Here we can redefine $\kete$ such that $g$ is a real number.
 
 The Jaynes-Cummings model can be analytically solved
@@ -392,11 +389,179 @@ Taking $\delta=0$, the probability for the atom to stay in the excited state is
         &= \ee^{-\abs{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cdot \frac{1}{2} (\cos \Omega_n t + 1) \\
         &= \frac{1}{2} + \frac{1}{2} \ee^{-\abs{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cos \Omega_n t .
     \end{aligned}
+    \label{eq:pope-fock-expansion}
 \end{equation}
+
+We note that the oscillation frequencies $\Omega_n = 2 g \sqrt{n+1}$ of the terms in $\pope$ are different:
+this means the relative phases of these terms become messy after a short period of time.
+If we take the $\abs*{\alpha} \to \infty$ limit,
+we will find that the weight factor $\abs*{\alpha}^{2n} / n!$ reaches its peak when $n = \abs*{\alpha}^2$.
+Therefore we can expand $\Omega_n$ around $n = \abs*{\alpha}^2$.
+We have 
+\[
+    \sqrt{n+1} = \sqrt{\abs*{\alpha}^2 + 1 + n - \abs*{\alpha}^2 }
+    \approx \abs*{\alpha} \left( 1 + \frac{n - \abs*{\alpha}^2 }{2 \abs*{\alpha}^2} \right),
+\]
+where we have used the condition that $\abs{\alpha}$ is very large, 
+and the assumption that the peak of  $\abs*{\alpha}^{2n} / n!$ is narrow enough 
+to make sure that only first order expansion is needed.
+Therefore 
+\begin{equation}
+    \begin{aligned}
+        \pope &= \frac{1}{2} + \frac{1}{2} \ee^{- \abs*{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            2 g \abs*{\alpha} t + g t \frac{n - \abs*{\alpha}^2}{\abs*{\alpha}}
+        ) \\
+        &= \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \left(\cos( 2 g \abs*{\alpha} t) \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ) - \sin( 2 g \abs*{\alpha} t) \sin(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        )\right).
+    \end{aligned}
+\end{equation}
+Since sin is odd and $n - \abs{\alpha}^2$ can be positive or negative,
+the second term largely vanishes after the summation over $n$.
+Therefore we are left with 
+\begin{equation}
+    \begin{aligned}
+        \pope = \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{2} 
+        \cos( 2 g \abs*{\alpha} t)  \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ).
+    \end{aligned}
+\end{equation}
+We have 
+\[
+    \begin{aligned}
+        &\quad \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        \cos(
+            g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}
+        ) \\
+        &= \frac{1}{2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} 
+        (
+            \ee^{\ii g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}}
+            + \ee^{-\ii g t \frac{n - \abs*{\alpha}^2 }{\abs*{\alpha}}}
+        ) \\
+        &= \frac{1}{2} \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \ee^{\ii g t / \abs{\alpha}}} + \text{c.c.}
+    \end{aligned}
+\]
+Now we use the $g \abs{\alpha} t \ll 1$ assumption, and we have 
+\begin{equation}
+    \begin{aligned}
+        \pope &= \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{4} 
+        \cos( 2 g \abs*{\alpha} t) \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \ee^{\ii g t / \abs{\alpha}}} + \text{c.c.} \\
+        &\approx  \frac{1}{2} + \frac{\ee^{- \abs*{\alpha}^2}}{4} 
+        \cos( 2 g \abs*{\alpha} t) \ee^{- \ii \abs{\alpha} g t} \ee^{\abs{\alpha}^2 \left(1 + \ii g t / \abs{\alpha} - \frac{1}{2 \abs{\alpha}^2} g^2 t^2  \right) } + \text{c.c.} \\
+        &= \frac{1}{2} + \frac{1}{2} \cos (2 g \abs{\alpha} t) \ee^{- \frac{1}{2} g^2 t^2}.
+    \end{aligned}
+\end{equation}
+So it can be seen that when $\abs{\alpha} \gg 1$ and $g t \abs{\alpha} \ll 1$,
+the probability of the atom residing at $\kete$ decays exponentially,
+and the time scale of the decay is $1/g$.
+This is known as the quantum collapse of the excited state population of the atom,
+which originates from the phase mismatch among terms in \eqref{eq:pope-fock-expansion}.
+
+The quantum collapse phenomenon is exotic and demonstrates that 
+sometimes even when the state of the electromagnetic field is a coherent state,
+the semiclassical approach of light-matter interaction still fails.
+We note however that collapse also appears with the presence 
+of a statistical noise in the electromagnetic field \cite{knight1982quantum}.
+What reveals the quantum nature best is the phenomenon of quantum revival.
+Inspecting \eqref{eq:pope-fock-expansion} again,
+we notice that when 
+\begin{equation}
+    (\Omega_{\abs*{\alpha}^2} - \Omega_{\abs*{\alpha}^2-1}) t = 2\pi n,
+    \label{eq:granular-revival}
+\end{equation}
+$n$ being an integer,
+the phases of the predominant terms in \eqref{eq:pope-fock-expansion} realign with each other again,
+and therefore $\pope$ revives periodically.
+This is a phenomenon that is truly beyond any semiclassical treatment,
+deterministic or random,
+because it relies on the granular nature of the electromagnetic field:
+if the ``strength'' of the field is somehow continuous,
+the $\Delta \Omega$ factor in \eqref{eq:granular-revival} can be arbitrarily small,
+and the revival period goes to infinity.
 
 \section{Cavity QED with condensed matter}\label{sec:condense}
 
+An interesting question is what will happen if in place of the atom,
+we insert a solid.
+As is mentioned in the introduction,
+the general theory of quantum optics in media is hard,
+and usually involves including auxiliary degrees of freedom,
+whose correlation functions are to be calculated alongside the dielectric function,
+to reproduce the frequency dependence and imaginary part of the dielectric function.
+In the high coherence limit,
+these auxiliary degrees of freedom can be chosen as
+the most optically active excitation modes in the medium,
+which take the place of the atom in Jaynes-Cummings model.
+
+The most prototypical example of this approach 
+is the theory of coherent coupling between cavity modes and excitons
+\cite{latini2019cavity}.
+Because an exciton mode is an interactively corrected electron-hole pair,
+it is hard to create two excitons in one mode because of depletion of electron-hole pairs,
+and therefore an exciton mode can be perceived as a two-level atom.
+The theory about coherent exciton-cavity photon coupling
+therefore is an extension of the Jaynes-Cummings model
+in that it contains multiple exciton modes, i.e. multiple ``atoms''.
+The eigenstates of this extended Jaynes-Cummings model
+are exciton-polaritons in the cavity.
+We note that this extended Jaynes-Cummings model
+contains additional ``two-atom'', one-photon terms in the form of
+$\dyad{S_1}{S_2} a$ or $\dyad{S_1}{S_2} a^\dag$,
+where $S_{1,2}$ are exciton modes,
+because there can be a non-zero dipole matrix between the two exciton modes
+and therefore the two modes are coupled together by creation or annihilation of a photon.
+Since nothing prohibits $\mel*{S_1}{\vb*{d}}{S_2} \neq 0$
+even if $\mel*{S_2}{\vb*{d}}{\text{vacuum}} = 0$,
+bright exciton modes (i.e. modes for which $\mel*{S_2}{\vb*{d}}{\text{vacuum}} \neq 0$)
+are hybridized with dark exciton modes 
+(i.e. modes for which $\mel*{S_2}{\vb*{d}}{\text{vacuum}} = 0$).
+Without a cavity, dark exciton modes are not visible,
+but with the presence of a cavity and hence the hybridization effects,
+dark exciton modes now directly appear on the optical spectrum of the medium,
+though with a shifted frequency \cite{latini2019cavity}.
+
+Finally, the photon mode(s) in cavity QED can be replaced by other bosonic excitations as well,
+provided that the behavior of the latter is closer to photons
+(e.g. no depletion effects).
+For example, a surface plasmon polariton mode can be formed 
+by sandwiching a layer of metal between two layers of dielectric,
+forming a ``cavity'', which interacts with exciton modes of a nanoparticle planted near the surface,
+and phenomena like quantum Rabi oscillations can again be observed in such a device
+\cite{gonzalez2014reversible}.
+
 \section{Conclusion}\label{sec:conclusion}
+
+In this report we have reviewed several settings with strong, coherent light-matter interaction,
+namely a near-ideal cavity with a small beam waist,
+an excitonic material slice in a near-ideal cavity,
+and a nanoparticle in a dielectric-metal-dielectric cavity.
+Although the underlying degrees of freedom are different,
+they can all be theoretically treated with the formalisms designed to handle the first case, 
+namely cavity QED.
+Phenomena including reversible spontaneous emission and quantum Rabi oscillation,
+quantum collapse and revival can be observed in cavity QED,
+which demonstrate the quantum and granular nature of light,
+and in the case of exciton-photon interaction in a cavity,
+the distinction between dark and bright exciton modes is broken,
+which can be utilized as a detection method of dark excitons.
+
+The field of cavity QED is, of course, much broader than what can be contained in this report.
+There are for example several possible extensions to Jaynes-Cummings model,
+for example situations where RWA is not physical \cite{larson2012absence}
+or where atom-atom interaction is not negligible \cite{vaidya2018tunable}.
+Alternative experimental platforms of cavity QED exist 
+\cite{le2006cavity,hummer2013weak,blais2021circuit},
+the most famous one being circuit QED \cite{blais2021circuit},
+which itself has multiple varieties.
+As a still developing field,
+cavity QED has challenged and will continue to challenge
+intuitions that we take for granted about light-matter interaction.
 
 \printbibliography
 
