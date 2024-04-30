@@ -27,6 +27,7 @@
 \zxrsetup{toltxlabel}
 \usepackage[backend=bibtex]{biblatex}
 \addbibresource{jc.bib}
+\addbibresource{qed.bib}
 \usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
 \usepackage{prettyref}
@@ -164,6 +165,10 @@
 \newcommand*{\Ezzero}{E_{z0}}
 \newcommand*{\kete}{\ket*{\text{e}}}
 \newcommand*{\ketg}{\ket*{\text{g}}}
+\newcommand*{\dyade}{\dyad{\text{e}}}
+\newcommand*{\dyadg}{\dyad{\text{g}}}
+\newcommand*{\dyadeg}{\dyad{\text{e}}{\text{g}}}
+\newcommand*{\dyadge}{\dyad{\text{g}}{\text{e}}}
 \newcommand*{\coeffe}{c_{\text{e}}}
 \newcommand*{\coeffg}{c_{\text{g}}}
 \newcommand*{\pope}{p_{\text{e}}}
@@ -177,8 +182,12 @@
 \newcommand*{\Si}[1]{S_{\text{i#1}}}
 \newcommand*{\So}[1]{S_{\text{o#1}}}
 \newcommand*{\taug}{\tau_{\text{g}}}
+\newcommand*{\dieg}{\vb*{d}_{\text{eg}}} 
+\newcommand*{\dige}{\vb*{d}_{\text{ge}}} 
+\newcommand*{\statee}{\text{e}}
+\newcommand*{\stateg}{\text{g}}
 
-\title{Cavity QED}
+\title{Cavity QED: light-matter interaction to the extreme}
 \author{Jinyuan Wu}
 
 \begin{document}
@@ -216,6 +225,178 @@ for which cQED is a good effective theory.
     \item cQED in excitons \cite{latini2019cavity}
 \end{itemize}
 
+\section{Introduction}
+
+Cavity quantum electrodynamics (cavity QED) refers literally to 
+quantum electrodynamics in a cavity,
+or in other words a fully quantum treatment of light-matter interaction in a cavity.
+To see why such a treatment is necessary,
+it is instructive to review alternative methodologies to light-matter interaction.
+
+The textbook level treatment of light-matter interaction 
+is often the so-called semi-classical approach,
+in which the matter part of the system is treated quantum mechanically,
+while the electromagnetic field is classical \cite{scully1997quantum}.
+This approach by definition fails when the state of the electromagnetic field 
+deviates far from a coherent state.
+Some cases of this will also be reviewed in this report.
+Alternatively, the dynamics of the matter degrees of freedom can be implicitly 
+represented as an effective dielectric function,
+and by inserting this dielectric function into the (quantum) Maxwell equation,
+we have a quantum theory of light.
+The problem with this approach is that optically active excitation modes in the medium 
+are represented as poles in the dielectric function and 
+hence the dielectric function has strong frequency dependence,
+and the Kramers-Kronig theorem means the dielectric function has a non-negligible imaginary part.
+To keep the theory unitary,
+some sort of auxiliary field, like the ``noise'' or ``Langevin'' term, 
+has to be introduced for compensation,
+whose correlation functions are quantities independent to the dielectric function
+\cite{huttner1992quantization,knoll2000qed,philbin2010canonical}. 
+Apart from this additional complexity,
+obtaining the dielectric function and the aforementioned correlation functions 
+from the dynamics of the medium
+is challenging when light-matter interaction is strong.
+When the dielectric function can indeed be obtained reliably,
+and we can assume that the medium is thermalized fast enough,
+a Maxwell-Langevin equation can be established
+\cite{henry1986theory,henry1986phase,amooghorban2013quantum},
+which has been used to estimate laser noises in laser physics
+\cite{henry1986theory,henry1986phase}.
+Alternatively we can assume that the light part of the system is thermalized
+and establish a quantum master equation of the medium part
+\cite{scully1997quantum}.
+This simplification however is not feasible when 
+both the light and matter part of the system is highly coherent.
+
+Therefore, in the high light-matter coupling, high frequency dependence, high coherence limit,
+and when the state of the electromagnetic field is of strong quantum nature,
+all simplified approaches fail and a fully quantum treatment of light-matter interaction is needed.
+These conditions are relatively easily satisfied 
+in a good optical cavity.
+We first note that by adjusting the shape of the cavity,
+it is relatively easy to achieve high field strength of electromagnetic modes in the cavity
+at some locations,
+and atoms placed at these positions will be strongly coupled to the optical modes.
+We note that the high light-matter coupling limit logically
+necessitates a high-coherence treatment of the system,
+as when the light-matter interaction strength exceeds
+incoherent interaction (e.g. spontaneous emission out of the cavity and cavity leaking),
+the latter should be ignored for the short-time dynamics of the cavity.
+The strong light-matter coupling also implies strong frequency dependence.
+Therefore, for a cavity with a very small beam waist,
+a fully quantum treatment of light-matter interaction, i.e. cavity QED,
+is needed, as long as the electromagnetic part of the system is of quantum nature,
+which we will find is true even for a coherent state.
+
+This report reviews is organized as follows.
+In \prettyref{sec:jc},
+we introduce the simplest cavity QED model,
+the Jaynes-Cummings model,
+and briefly discuss its implications.
+In \prettyref{sec:collapse-revival} 
+we discuss the time evolution of a cavity 
+containing an excited atom and a coherent state under the Jaynes-Cummings model
+and show that coherent states cannot always be treated in a classical way.
+\prettyref{sec:condense} discusses cavity QED with condensed matter systems 
+and how the formalisms describing photon-atom interaction can be transplanted to these systems. 
+We conclude this report with \prettyref{sec:conclusion}.
+
+\section{The Jaynes-Cummings model}\label{sec:jc}
+
+In this section we consider an extremely simple but still physically relevant scenario. 
+When the matter in a cavity is extremely dilute and
+atom-atom interaction can be ignored,
+we can model the light-matter interaction in a cavity
+as the interaction between one single atom and the cavity photon modes.
+We also assume that the dipole interaction strength, $g$, between this atom and the cavity modes
+is much more important than 
+the spontaneous emission rate $\gamma$ or cavity leakage rate $\kappa$.
+Further, we assume that the energy difference $\hbar \omega_0$ between two atom energy levels
+is very close to the frequency $\omega$ of one cavity photon mode (assuming there is no degeneracy),
+while the interaction strength $g$ does not exceed $\omega_0$.
+Therefore we can do rotating wave approximation (RWA)
+and consider only the coupling between the aforementioned two atom energy levels and the photon mode,
+and ignore all anti-resonant terms in the dipole interaction Hamiltonian.
+The resulting model then can be represented by the following simple Hamiltonian,
+\begin{equation}
+    H^{\text{JC}} = \hbar \omega_0 \dyade + \hbar \omega \left( a^\dag a + \frac{1}{2} \right) + \hbar g \dyadeg a + \hbar g^* \dyadge a^\dag,
+\end{equation}
+known as Jaynes-Cuming model.
+Here we can redefine $\kete$ such that $g$ is a real number.
+
+The Jaynes-Cummings model can be analytically solved
+by noticing that it is block-diagonal in the $\{\ket*{\stateg, n+1}, \ket*{\statee, n}\}$ subspace.
+In this subspace, the Hamiltonian reads
+\begin{equation}
+    H^{\text{JC}} = \hbar \omega \left(n + \frac{1}{2}\right) + \hbar \pmqty{
+        \omega & g \sqrt{n+1} \\
+        g \sqrt{n+1} & \omega_0 
+    }.
+\end{equation}
+Defining 
+\begin{equation}
+    g \sqrt{n+1} = \frac{\Omega_n}{2}, \quad \delta = \omega - \omega_0,
+\end{equation}
+the Hamiltonian reads 
+\begin{equation}
+    H^{\text{JC}} = \hbar \omega \left( n + \frac{1}{2} \right) + \hbar \omega_0 + \frac{1}{2} \hbar \delta + \hbar 
+    \pmqty{
+        \delta / 2 & \Omega_n / 2 \\
+        \Omega_n / 2 & - \delta / 2
+    }.
+\end{equation}
+The eigenvalues of this Hamiltonian are 
+\begin{equation}
+    E_\pm = \hbar \omega \left( n + \frac{1}{2} \right) + \hbar \omega_0 + \frac{1}{2} \hbar \delta 
+    \pm \frac{1}{2} \hbar \sqrt{\delta^2 + \Omega_n^2}.
+\end{equation}
+An avoided crossing can be observed when the detuning $\delta=0$;
+the split is determined by the interaction strength $\Omega_n$.
+
+The hybridization of $\{\ket*{\stateg, n+1}, \ket*{\statee, n}\}$
+can also be understood as quantum Rabi oscillation.
+For simplicity, we again take the detuning $\delta$ to be zero.
+The time evolution starting with $\ket*{\statee, n}$ therefore is 
+\begin{equation}
+    \ket*{\psi(t)} = - \ii \sin \frac{\Omega_n}{2} t \ket*{\stateg, n+1}  
+    + \cos \frac{\Omega_n}{2} t \ket*{\statee, n}.
+\end{equation}
+This quantum Rabi oscillation is a consequence of reversible spontaneous emission in Jaynes-Cummings model.
+The $\hbar g \dyadge a^\dag$ term is by definition a spontaneous emission term.
+However, unlike the case where we have a continuum of outgoing photon modes 
+and photons spontaneously emitted go away,
+in Jaynes-Cummings model, the spontaneously emitted photon can only be re-absorbed by the atom.
+This leads to the breakdown of the Markovian approximation
+and the probability of the atom to appear in the excited state no longer exponentially decays but oscillates.
+Specifically, when the state of the system starts with $\kete$,
+an oscillation can still be observed.
+
+\section{Quantum collapse and revival}\label{sec:collapse-revival}
+
+A more intriguing property of Jaynes-Cummings model is that
+even when the photons are in a coherent state,
+we can still observe inherently quantum phenomena.
+Consider an initial state $\ket*{\statee, \alpha}$.
+The state, under the Fock basis, is
+\begin{equation}
+    \ket*{\statee, \alpha} = \ee^{- \frac{\abs*{\alpha}^2}{2}} 
+    \sum_{n=0}^{\infty} \frac{\alpha^n}{\sqrt{n!}} \ket*{\text{e}, n}.
+\end{equation}
+As we have already seen, quantum Rabi oscillation happens between $\ket*{\statee, n}$ and $\ket*{\stateg, n+1}$.
+Taking $\delta=0$, the probability for the atom to stay in the excited state is
+\begin{equation}
+    \begin{aligned}
+        \pope &= \bra*{\statee, \alpha} U^\dag(t) \dyad{\statee} U(t) \ket*{\statee, \alpha} \\
+        &= \ee^{-\abs{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cos^2 \frac{\Omega_n}{2} t \\
+        &= \ee^{-\abs{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cdot \frac{1}{2} (\cos \Omega_n t + 1) \\
+        &= \frac{1}{2} + \frac{1}{2} \ee^{-\abs{\alpha}^2} \sum_{n=0}^{\infty} \frac{\abs*{\alpha}^{2n}}{n!} \cos \Omega_n t .
+    \end{aligned}
+\end{equation}
+
+\section{Cavity QED with condensed matter}\label{sec:condense}
+
+\section{Conclusion}\label{sec:conclusion}
 
 \printbibliography
 
