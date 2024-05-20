@@ -1,0 +1,397 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[a4paper, oneside, 12pt]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage[colorlinks, citecolor = purple, bookmarksnumbered]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Shorthands
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\newcommand{\deictictime}{T$_{\text{d}}$}
+\newcommand{\referredtime}{T$_{\text{r}}$}
+\newcommand{\orientationtime}{T$_{\text{o}}$}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, mood}, short = TAM}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+\DeclareAcronym{coca}{long = Corpus of Contemporary American English, short = COCA}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+\newcommand{\category}[1]{\textsc{#1}}
+\newcommand{\formcat}[1]{\textsc{#1}}
+\newcommand{\emptymorpheme}{$\emptyset$}
+\newcommand*{\fromto}[2]{\langle {#1}, {#2} \rangle}
+\newcommand*{\source}[1]{\textit{#1}}
+
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand{\bibname}{References}
+\setcitestyle{aysep={}} 
+
+% List format
+\setlist[enumerate,1]{label=\alph*\upshape)}
+
+\title{Notes on Sanskrit grammar}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Introduction}
+
+\section{Classification and history}
+
+Sanskrit is one of the oldest attested Indo-European languages.
+It is the classical and liturgical language of Hinduism.
+It belongs to the Indo-Aryan group,
+which also contains Avestan, the classical language of Zoroastrianism
+with limited mutual intelligibility with Vedic Sanskrit,
+the earliest form of Sanskrit.
+
+From the Vedic texts, it is clear that dialects already existed at the Vedic ages,
+although textual evidence for that is elusive \citep{witzel1989tracing}.
+
+Vedic Sanskrit underwent some changes in its evolution into Classical Sanskrit,
+or \emph{Sanskrit} in the narrow sense \citep{burrow2001sanskrit}.
+Indeed, the English name \form{Sanskrit} comes from its native name \form{saṃskṛtá},
+which can be analyzed as the adjectivizer \form{-tá} applied to the compound \form{saṃskṛ-},
+which in turn is \form{sam} (\translate{together}) 
+plus \form{skṛ} (\translate{do}).
+The name makes it clear that Sanskrit had historically gone through intentional standardization.
+
+\section{Speakers}
+
+Sanskrit, being the classical and religious language, 
+is one of the scheduled languages in the constitution of India.
+Despite its sacred and official status, currently Sanskrit has almost zero native speakers.
+Alleged native speakers include those whose reported themselves as Sanskrit native speakers in censuses
+and residents of some so-called ``Sanskrit'' villages which are often under Sanskrit revivalization projects.
+In these villages, however, exaggeration of Sanskrit capacities of the speaker can be observed,
+and a large proportion, if not all, of everyday conservation is carried out in vernaculars.
+Reports that there are sizable Sanskrit communities may also be politically motivated
+\citep{mccartney2017jhiri}.
+The situation is comparable to other classical languages:
+continuous education of the language exists widely,
+and some may even be fluent enough for oral, spontaneous discourses,
+but this diverges considerably from the situation of a true native language. 
+
+
+
+\section{Previous studies}
+
+\subsection{The ancient India grammatical tradition}
+
+The grammar of Sanskrit is unique in that it has long been semi-formalized 
+by the brilliant ancient grammarian Pāṇini.
+His great work \source{Aṣṭādhyāyī} contains around 4,000 \form{sutras} (\translate{lit. string}).
+The word \form{sutra} here means a short, brief rule:
+this is different from how the word is used in Buddhism,
+where it means a complete discourse by Buddha.
+A Paninian \form{sutra} is different from a rule in modern linguistics
+in that the latter is usually written in a self-contained form
+(for example ``in Latin first conjugation, the \form{-\={a}} in the stem disappears 
+before the first person singular ending \form{-\={o}}''),
+but in Pāṇini's grammar, a \form{sutra} may look like two or three words with no reasonable meaning:
+only after previous \form{sutras} are concatenated into the current \form{sutra} do we get a complete rule.
+\source{Aṣṭādhyāyī} contains some (meta-linguistic) mechanisms to make sure
+every \form{sutra} can be placed in the right context and interpreted.
+
+The Paninian \form{sutras} of course contain lots of grammatical terms.
+Some terms are normal Sanskrit nouns,
+like \form{kartṛ} \translate{agent} 
+(\form{kṛ-} \translate{to do} plus \form{-kṛ} \translate{agent suffix}).
+Some terms are not regular Sanskrit nouns;
+they are actually expressions referring to a subsequence of the text \form{Śivasūtras},
+disguised as Sanskrit nouns with the usual case endings and Sandhi 
+(which makes it much harder to beginners to understand,
+because you need to first understand a little about Sanskrit to understand the rules).
+The \form{Śivasūtras} are a set of fourteen sequences,
+here written in one line in (\ref{ex:sivasutras}).
+When a \form{sutra} refers to a noun \form{aK},
+it meas the sequence \form{a, i, u, ṛ, ḷ},
+i.e. the sequence from \form{a} to \form{K}.
+Therefore to refer to all vowels, Pāṇini would use the noun \form{aṄ},
+and all legitimate syllables would be referred to as \form{aL},
+while the two diphthongs \form{ai} and \form{au} can be collectively referred to by \form{aiC}.
+Note that the symbols \form{Ṇ}, \form{K}, \form{Ṅ}, etc.
+are purely metalinguistic: 
+they are just there to enable us to select a subsequence of \form{Śivasūtras}.
+Pāṇini himself did not use capital letter, of course;
+the capital letters are used by modern Indologists to make distinguishing between actual Sanskrit syllables and metalinguistic symbols easier.
+
+\begin{exe}
+    \ex\label{ex:sivasutras} a i u Ṇ
+    ṛ ḷ K
+    e o Ṅ
+    ai au C
+    ha ya va ra Ṭ
+    la Ṇ
+    ña ma ṅa ṇa na M
+    jha bha Ñ
+    gha ḍha dha Ṣ
+    ja ba ga ḍa da Ś
+    kha pha cha ṭha tha ca ṭa ta V
+    ka pa Y
+    śa ṣa sa R
+    ha L
+\end{exe}
+
+
+To refer to a single sound, the metalinguistic symbol \form{T} is attached after that sound,
+and the result again is disguised as a normal Sanskrit noun.
+We can also combine several syllable sequence expressions into one:
+this is what happens in the first \form{sutra}.
+In this \form{sutra} (\ref{ex:sutra-1-1-1}),
+the word \form{ādaic} is actually the compound \form{āt-aic} after sandhi 
+in its nominative singular masculine form,
+and \form{āt}, or more precisely, \form{āT}, means the sound \form{ā}, 
+while \form{aiC} means \form{ai} and \form{au},
+and eventually we find \form{ādaic} mean the three sounds: \form{ā}, \form{ai} and \form{au}.
+The whole \form{sutra} is a definition:
+\translate{\form{ā}, \form{ai} and \form{au} are called \form{vṛddhi}}.
+
+\begin{exe}
+    \ex\label{ex:sutra-1-1-1} vṛddhir ādaic
+\end{exe}
+
+\paragraph*{Morphophonology} Pāṇini mostly focused on morphophonology.
+Paninian morphological rules, similar to their contemporary counterparts,
+take the form of term rewriting. 
+The most common form is $A \to B / C \underline{\quad} D $,
+meaning that $A$ is to be rewritten into $B$ if surrounded by $C$ and $D$.
+Pāṇini himself did not use the modern symbols like the arrow or the underscore.
+He labeled $A, B, C$ and $D$ using Sanskrit cases:
+$A$ is in genitive case, $B$ is nominative, $C$ is ablative, and $D$ is locative
+\citep{kiparsky1995painian}.
+
+Among syntactic topics that are touched in \source{Aṣṭādhyāyī},
+we have a dependency-based analysis of clausal structure
+some discussions about \ac{tam} categories,
+and, if we consider derivational morphology to be closely related to syntax,
+rules pertaining to compounding.
+
+\paragraph*{Alignment}
+The Paninian concept of Sanskrit clausal structure is a \emph{flat} dependency tree:
+the notion of the ``tightness'' or ``closeness'' of a dependency arc is absent.
+Specifically, Pāṇini did not establish mention subjecthood in his grammar \citep{kiparsky2009architecture}.
+The subject-verb agreement is treated as if Sanskrit had focus-trigger alignment.
+Pāṇini assumed that 
+\begin{enumerate}
+    \item each argument has one and only one role (\form{kārakas}), and
+    \item the verb ending (\form{la}) either indexes one argument or it indexes the process denoted by the clause, and
+    \item a role is to be expressed once and only once by a nominal case ending (accusative, instrumental, etc.) 
+    or the verb ending (active = agent, passive = goal, etc.), and
+    \item the (morphological) nominative case tells us nothing about the role of the nominative argument.
+\end{enumerate}
+It can be seen that case determination is triggered by what the verb ending chooses to index:
+the ``no double argument role exponents'' rule then pushes the indexed argument to the nominative case,
+and all other arguments receive their cases according to their roles.
+
+For example, these constraints are sufficient to derive passivization,
+because if the goal/patient is indexed by the verb ending,
+this means the verb gets a passive ending,
+and since the role goal/patient has already been indexed once,
+it can no longer appear in accusative case,
+so the goal/patient argument appears as the nominative argument.
+The agent, then, cannot be nominative or otherwise its role in the clause is not expressed,
+so it takes instrumental case to show that it is the agent.
+
+\paragraph*{Problems of Pāṇini's account}
+This description of alignment is adequate for case determination without introducing the concept of the subject.
+This description however sounds more or less problematic to a modern reader.
+First, the requirement that the roles of the arguments are expressed once and only once is utterly not motivated:
+Sanskrit has number and person agreement in both noun phrases and clauses,
+and no sensible grammarian would argue that there is any single-exponent condition there.
+The second problem is the treatment of passivization: 
+in other Indo-European languages we usually do not understand the passive ending
+as an expression of ``patient-ness''.
+The third problem is Sanskrit is not really a focus-trigger language after all,
+and a precise description of Sanskrit needs to mention the preference given to the active voice.
+
+The most serious problem is Pāṇini mentions no ``deep'' valency alternation.
+Consider the English sentences \form{he killed someone using that knife} 
+and \form{that knife killed someone},
+and the fact that passivization can happen for both sentences:
+in the second example, grammatically \form{that knife} is no longer an instrument argument,
+or otherwise it cannot be passivized.
+The same phenomenon happens in Sanskrit.
+This, then, means that the statuses of the argument roles are not completely symmetric:
+other arguments can be promoted to the syntactic agent position, or in other words the \form{kartṛ},
+but the inverse is not possible.
+We may say \form{kartṛ} is some sort of internal subject,
+i.e. the most prominent or the most external argument before possible passivization.
+The commentator Patañjali noticed this phenomenon and
+acknowledged that the Sanskrit equivalence of \form{that knife} is indeed the \form{kartṛ},
+and the alternation of valency here is due to \form{vivakṣā} \translate{communicative intention}
+\citep{keidan2017subjecthood}.
+But once we agree that the notion of an internal subject exists in Sanskrit,
+we are on a slippery slope that eventually leading to acknowledging 
+existence of a clausal subject.
+
+The strangeness of the Paninian \form{kārakas}-based calculus may arise from the fact
+that the original target audience of \form{Aṣṭādhyāyī} were not people already familiar with a language that was close enough to Sanskrit,
+but people whose native language had verbal coding of arguments and
+presumably an alignment system that was not prototypically nominative-accusative
+\citep{keidan2017subjecthood}.
+Or possibly the calculus presented in \form{Aṣṭādhyāyī} is more an ad-hoc attempt to summarize Sanskrit alignment
+in a form as concise as possible.
+
+\chapter{Grammatical overview}
+
+It has been claimed by several authors that subjecthood is not a useful grammatical category in Sanskrit grammar;
+the concept is not used by Pāṇini, afterall \citep{keidan2017subjecthood,kiparsky2009architecture}. 
+
+
+\bibliographystyle{plainnat}
+\bibliography{sanskrit.bib}
+
+\end{document}

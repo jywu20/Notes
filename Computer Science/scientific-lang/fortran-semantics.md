@@ -443,7 +443,17 @@ end type
 Note that we need to distinguish method dispatch - or in more theoretical terms, polymorphism - with the so-called "polymorphic variables" in Fortran.
 Polymorphic variables in Fortran are actually a device to convert an object belonging to a type to a (possibly indirect) parent type,
 and a procedure can have multiple polymorphic arguments.
-The relation between the so-called polymorphic variables and polymorphism i.e. dispatch is that the so-called passed variable (`self` in Python) to a type-bound procedure should always be a polymorphic variable (see https://stackoverflow.com/questions/50158320/overload-deferred-procedure-with-non-polymorphic-procedure-in-fortran-2008):
-this is reasonable because we may want to invoke a method from a parent class to an object.
+The relations between the so-called polymorphic variables and polymorphism i.e. dispatch are 
+- the so-called passed variable (`self` in Python) to a type-bound procedure should always be a polymorphic variable (see https://stackoverflow.com/questions/50158320/overload-deferred-procedure-with-non-polymorphic-procedure-in-fortran-2008):
+this is reasonable because we may want to invoke a method from a parent class to an object;
+- if `var` is a polymorphic variable, then the procedure invokation `var%something()` involves inheritance-based polymorphism.
 
 A `interface` block within a function/subroutine definition does what `method_exists` does in Julia.
+
+We can also give an interface to an external procedure by an interface block.
+A Fortran procedure defined outside a module or a `contains` region is 
+somewhere between an authentic external procedure and a procedure with an interface:
+by default it also has an interface and therefore calling it with the wrong argument types will result in a compilation error.
+However, with the `-fallow-argument-mismatch` option, the compilation error is downgraded into a warning.
+Calling a procedure with an explicit interface with the wrong argument types always results in an error, 
+regardless of the `-fallow-argument-mismatch` option.
