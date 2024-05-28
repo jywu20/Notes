@@ -1,0 +1,489 @@
+\documentclass[UTF8, a4paper, oneside, scheme=plain, 12pt]{ctexrep}
+
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[citestyle=authoryear,backend=bibtex,natbib=true,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{references/classical-grammars.bib}
+\addbibresource{references/general-typology.bib}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citechaps}[1]{Chs.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+\newcommand{\work}[1]{\textit{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, mood}, short = TAM}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+
+\newcommand{\cgel}{\href{../English/cambridge.pdf}{my notes about CGEL}}
+\newcommand{\latin}{\href{../Latin/latin-notes.pdf}{my notes about Latin}}
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+\newcommand*{\category}[1]{\textsc{#1}}
+\newcommand*{\specialunit}[1]{$<$\textit{#1}$>$}
+\newcommand{\before}{$>$}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand*{\nameyeardelim}{\space} % No comma between year and name
+\DeclareNameAlias{sortname}{family-given} % Putting the family name before the given name
+\DeclareNameAlias{default}{family-given} 
+\DeclareFieldFormat{labelnumberwidth}{} % No number label like [12] in the reference list
+\setlength{\biblabelsep}{0pt} % No space for these labels
+
+\makeindex
+
+\title{Notes about Classical Chinese}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\automath
+
+\maketitle
+
+\chapter{Introduction}
+
+This note is about Classical Chinese,
+the high variety of more than two millennia of diglossia in China.
+
+\section{The name of the language}
+
+The language is known natively as 文言 (\translate{lit. cultured speech})
+or sometimes 古文 (\translate{lit. ancient articles})
+or 古汉语 (\translate{lit. ancient Chinese}).
+Note that there were several stages of the development of Chinese
+and Classical Chinese is mostly (but not completely) based on Old Chinese
+(\prettyref{sec:introduction.history}).
+
+The language is sometimes known as \form{Wen-li} by Western missionaries,
+especially in Bible translation.
+This seems to be a misunderstanding of the word 文理,
+which is a nominal compound and means rhetorics (i.e. 文) and meanings (i.e. 理) of literature works.
+An educated person therefore would be described as ``通文理'' (\translate{fluent in rhetorics and meanings}).
+Such a person of course would have decent understanding of Classical Chinese,
+and hence 文理 was probably mistranslated as ``Classical Chinese'',
+although the word was not natively used to refer to the latter.
+
+\section{Historical background}\label{sec:introduction.history}
+
+Since there was no attempt at explicit and systematic grammatical standardization
+(\prettyref{sec:introduction.previous.tradition}),
+prescriptive authority of Classical Chinese was a collection of canonical literature works
+consensually regarded as classical (\prettyref{sec:introduction.text}).
+The whole canon was finished before the collapse of Han
+and therefore falls under the term Old Chinese.
+Both temporal and regional variances can be observed in Old Chinese texts, though,
+and not all varieties contribute to Classical Chinese equally.
+In this section, we briefly overview the history of Sinitic language(s)
+and analyze how they shape Classical Chinese.
+
+\subsection{Pre-classical period}
+
+The earliest attested Sinitic texts were oracle bone inscriptions,
+a 20th century archeological re-discovery not known to Classical Chinese authors.
+For them, the earliest available texts are 
+documents preserved in 《尚书》 (lit. \translate{venerated documents}),
+often known as \work{Book of Documents} in English.
+Since these texts are from ancient kings 
+whose deeds were romanticized by Confucian scholars,
+these texts were highly venerated and yet deemed as 诘屈聱牙 (\translate{twisted, hard to pronounce}).
+They were something that had to be read with commentaries,
+the latter written in easier Classical Chinese.
+These documents therefore should be regarded as pre-Classical,
+although they did contribute sporadic phrases
+and grammatical words (e.g. the copula 惟 or the pronoun 厥)
+that were occasionally used in Classical Chinese works as a way to polish an article.
+
+One thing worth mentioning is that 
+the language of \work{Book of Documents} and the language of oracle bone inscriptions are not identical:
+the aforementioned pronoun 厥 appears frequently in \work{Book of Documents},
+but it appears neither in oracle bone inscriptions nor in Spring and Autumn works. 
+Possibly, \work{Book of Documents} contains predominantly early Zhou dynasty texts,
+while oracle bones dates back to Shang,
+and the differences we are observing reflect dialectal differences between the ruling classes of the two dynasties.
+
+Another fairly early source is 《诗经》 (lit. \translate{poem classics}),
+also known as \work{Odes},
+which contains poems dates back to as early as early Zhou.
+
+\subsection{Spring and Autumn and Warring States}
+
+The majority of treatise texts that shaped Classical Chinese prose
+were written when Zhou was already weakened
+and the Spring and Autumn period, a time filled with chaotic wars between dukedoms, already started.
+The language of this period diverges tremendously from the pre-Classical period.
+For example, the copula 惟 had died out of use 
+and the copula construction had been largely replaced by the nominal predication construction
+(\prettyref{sec:grammatical.clause.nominal}).
+The lexicon also underwent huge changes.
+
+There are clues suggesting regional variances.
+Students of Confucius noticed that when he recited Classical texts and presided rituals,
+he used 雅言 or \translate{elegant speech} (\work{Analects} 7:18).
+This suggests at a possible diglossia at his age,
+with the ``elegant speech'' conceivably being the language of intellectuals of Zhou Dynasty,
+although the differences between the high and low varieties 
+definitely would be much smaller than, say, the differences 
+between Standard Mandarin and Classical Chinese,
+as is shown by comparison between \work{Analects} and \work{Odes}.
+
+More solid evidence for regional variance is found by comparing
+楚辞 \work{Verses of Chu} and the linguistic mainstream.
+The former shows a Kra–Dai substrate.
+
+\begin{todobox}{Chu dialect}{chu-dialect}
+    Find references.
+\end{todobox}
+
+\subsection{Han dynasty}
+
+The last batch of uncontroversially classical works were composed during Han dynasty,
+among them the most important being \work{Records of the Grand Historian}.
+The language of \form{Records of the Grand Historian} shows notable but largely qualitative differences
+compared with earlier historical works,
+the most important one being 《左传》.
+Notable changes include more pre-verbal adverbials,
+reduction of prepositional verbs,
+regularization of constituent orders,
+and also proliferation of disyllable words
+It is therefore suggested that Han dynasty texts and pre-Qin texts 
+reflect two stages of post-Zhou developments of Chinese,
+although the change was not as radical as the change from \form{Book of Documents} to Spring and Autumn texts 
+\citep[\citepages{260-264}]{he2005shiji}.
+
+\subsection{Post-Classical influences}
+
+Expectedly, despite purification attempts,
+vernacular elements made their ways into not only administrative documents
+but also pure literature and scholar works.
+Classical Chinese or 文言, in the broadest sense,
+is a term that covers all genres whose grammars are roughly based on the Old Chinese canon
+but may have a varieties of innovations.
+
+\section{Texts}\label{sec:introduction.text}
+
+The great historical work 《史记》 (\translate{lit. historical records}),
+often known as \form{Records of the Grand Historian} in English
+(a translation of 太史公记, the earliest known title of the work),
+laid the paradigm of official historiography of all Chinese dynasties after Han.
+The author 司马迁 \form{Sima Qian} is known as the \form{Lord Grand Historian} or 太史公.
+太史 \translate{grand historian} was the title of
+
+
+
+\section{Previous studies}
+
+\paragraph*{Grammatical traditions}\label{sec:introduction.previous.tradition}
+Classical Chinese authors had conversations about grammaticality 
+and uses of grammatical particles.
+These discussions are reminiscent of how English native speakers
+with some exposure to the study of English grammar but no formal training:
+``delete the \form{the} here and your sentence looks more concise''.
+No attempts were made to extract grammatical relations or structural templates from the surface forms
+and to organize the grammar as a machine producing acceptable utterances:
+discussions on grammatical topics were either for education or for rhetorics.
+The situation is not unlike what a Roman grammarian or \form{grammaticus} did
+
+\begin{todobox}{Ancient Chinese grammatical tradition and Roman tradition}{china-rome-compare}
+    Is the situation somehow close to what a Roman grammarian (\form{grammaticus}) would do?
+    It seems that Roman grammarians also didn't care about abstract structures.
+    See:
+    \begin{itemize}
+        \item Use and Function of Grammatical Examples in Roman Grammarians
+        \item Quintilian’s ‘Grammar’ (Inst.1.4-8) and its Importance for the History of Roman Grammar
+        \item What Graeco-Roman Grammar was about
+    \end{itemize}
+\end{todobox}
+
+On the other hand, phonology was an active topic in ancient China.
+This was probably due to the influence of 
+
+\paragraph*{Perspectives of European missionaries}
+
+\paragraph*{Modern descriptions}
+
+\chapter{Grammatical overview}
+
+\section{The overall clausal structure}
+
+Like all other languages, a Classical Chinese clause can be a simple clause
+or a complex one constructed from subordination and coordination \citep[\citechaps{3-5}]{meiguang2018}.
+A simple Classical Chinese clause is a nucleus,
+which may be either a verbal predication construction
+or a nominal predication construction,
+plus possible sentence final particles and/or topicalization.
+Topicalization can also happen for a complex clause \citep[\citechap{4} \citesec{3.3}]{meiguang2018}.
+It appears that all embedded clauses in Classical Chinese cannot have discourse-related devices 
+like topicalization and sentence final particles.
+
+\subsection{Nominal predication}\label{sec:grammatical.clause.nominal}
+
+The top-level structure of a Classical Chinese clause may contain only two noun phrases/fused relative clauses
+(\ref{ex:grammatical.clause.nominal.isa.1},
+\ref{ex:grammatical.clause.nominal.havea.1}).
+A nominal predication may express an ``is-a'' relation between the subject and the subject complement,
+which is the case of (\ref{ex:grammatical.clause.nominal.isa.1}).
+Some nominal predication constructions however express a possessive relation between the two 
+(\ref{ex:grammatical.clause.nominal.havea.1}).
+
+\begin{exe}
+    \ex\label{ex:grammatical.clause.nominal.isa.1} [良人者]_{\text{subject}} [所仰望而终身]_{\text{predicate}} 也
+    \ex\label{ex:grammatical.clause.nominal.havea.1} 蟹六跪而二螯
+\end{exe}
+
+All the constructions mentioned above are without a copula.
+In the pre-Classical copula age there is a copula 惟,
+which however had largely died out of use in Classical texts.
+
+\subsection{The nucleus with verbal predication}
+
+\paragraph*{Core grammatical relations} 
+In the case of verbal predication
+a nucleus is a subject plus either a nominal or verbal predication,
+with possible \ac{tam} and peripheral argument modifications.
+The constituent order is almost always SVO
+(\ref{ex:grammatical.clause.svo.declarative.1}, \ref{ex:grammatical.clause.svo.interrogative.1});
+SOV is however attested in negative (\ref{ex:grammatical.clause.sov.neg.1})
+or interrogative situations (\ref{ex:grammatical.clause.sov.interrogative.1}).
+
+\begin{exe}
+    \ex\label{ex:grammatical.clause.svo.declarative.1} 
+    [子张]_{\text{subject}} [学]_{\text{verb}} [干禄]_{\text{object}}
+    \ex\label{ex:grammatical.clause.svo.interrogative.1} 
+    [子]_{\text{subject}} [奚]_{\text{reason}} 不 [为]_{\text{verb}} [政]_{\text{object}}
+    \ex\label{ex:grammatical.clause.sov.neg.1} 
+    恐 [年岁 之 [不吾与]_{\text{verbal predication: Neg-OV}}]_{\text{complement clause}}
+    \ex\label{ex:grammatical.clause.sov.interrogative.1} 
+    以五十步笑百步，则 [何如]_{\text{SOV clause}}
+\end{exe}
+
+\paragraph*{Complex predicates} 
+
+\begin{todobox}{Classical Chinese complex predicate}{cp}
+    Directional complement and resultative complement
+\end{todobox}
+
+\paragraph*{Peripheral arguments and \ac{tam} marking} 
+Adverbial constituents in the nucleus can be divided into \ac{tam} ones 
+and so-called peripheral arguments, including location, manner, instrument, etc.
+The peripheral arguments are usually post-verbal
+(\ref{ex:grammatical.clause.peripheral.postverbal.1},
+\ref{ex:grammatical.clause.peripheral.postverbal.2},
+\ref{ex:grammatical.clause.peripheral.postverbal.3}).
+Pre-verbal peripheral arguments are however still possible
+(\ref{ex:grammatical.clause.peripheral.preverbal.1},
+\ref{ex:grammatical.clause.peripheral.preverbal.2}).
+
+\begin{exe}
+    \ex\label{ex:grammatical.clause.peripheral.postverbal.1} 侍饮于长者
+    \ex\label{ex:grammatical.clause.peripheral.postverbal.2} 孟孙问孝于我
+    \ex\label{ex:grammatical.clause.peripheral.postverbal.3} 祷尔于上下神祇
+    \ex\label{ex:grammatical.clause.peripheral.preverbal.1} 韩生南向坐
+    \ex\label{ex:grammatical.clause.peripheral.preverbal.2} 於人之罪无所忘
+\end{exe}
+
+The \ac{tam} adverbials are almost always preverbal.
+
+\begin{exe}
+    \ex 文王既没，文不在兹乎
+    \ex 孔子既得合葬于防
+    \ex 我未之能易也
+\end{exe}
+
+When \ac{tam} adverbs and peripheral arguments both appear before the verb,
+the order is always \ac{tam} \before peripheral argument.
+The reverse order is never attested.
+
+\begin{exe}
+    \ex 三王既以定法度
+\end{exe}
+
+\begin{todobox}{Adverbials combination}{adverbial-combine}
+    Is it possible to use multiple pre-verbal adverbials?
+    What's the relevant order constraint?
+\end{todobox}
+
+\subsection{Sentence final particles}
+
+Classical sentence final particles have a variety of functions.
+It may mark the interrogative force (\ref{ex:grammatical.clause.sfp.interrogative.1}), 
+a judgemental meaning (\ref{ex:grammatical.clause.sfp.judgement.1}),
+and aspectual values (\ref{ex:grammatical.clause.sfp.aspectual.1}).
+
+\begin{exe}
+    \ex\label{ex:grammatical.clause.sfp.interrogative.1} 大车无輗，小车无軏，其何以行之哉
+    \ex\label{ex:grammatical.clause.sfp.judgement.1} 人而无信，不知其可也
+    \ex\label{ex:grammatical.clause.sfp.aspectual.1} 温故而知新，可以为师矣
+\end{exe}
+
+\subsection{Topicalization}
+
+\begin{todobox}{Topic and subject}{topic-subject}
+    What's the relation between the topic and the subject?
+\end{todobox}
+
+\section{The noun phrase}
+
+The Classical Chinese \ac{np} has a 
+
+\chapter{Look-up tables for particles}
+
+\paragraph*{者} The particle 者 most frequently appears as a relativizer, a complementizer,
+or in the \form{zhe}-\form{ye} construction.
+The three functions can be uniformly analyzed as the function of a low-level determiner \citep{aldridge2009old}. 
+
+\printbibliography[title=References]
+
+\end{document}
