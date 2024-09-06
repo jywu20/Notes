@@ -26,7 +26,9 @@ To name a few:
 - In the chapters about Fermi liquid theory, discussions about "when Fermi liquid theory fails" are rather misleading. A modern reader tends to consider the phrase "breakdown of Fermi liquid theory" as emergence of strongly correlated phases, while what is actually meant in Course here is "when a Fermi liquid stops to show quantum features and can be handled by a classical kinetic theory".
 - On the other hand, the kinetic equation of Fermi liquid is always valid regardless of the temperature. Here the problem of lack of a bigger theoretical framework strikes again: the Boltzmann-like kinetic equation is taken for granted, and not as an approximation of a truncated Green function equation of motion.
 - Another problem in the treatment of Fermi liquid theory is $\epsilon$ which contains the $f \var{n}$ correction is directly placed into the Fermi-Dirac distribution function to force a self-consistent equation for quasiparticle distributions. You need to know Matsubara field theory to understand why this is valid: we are essentially doing self-energy correction to finite-$T$ Green functions. But Course treats this in a completely phenomenological way.
-- Fluctuations in medium are important because they are needed in building a Langevin-like effective theory of the medium. This is particularly important in laser physics. 
+- Fluctuations in medium are important because they are needed in building a Langevin-like effective theory of the medium. They are also necessary because a medium has dissipation and we would expect that excitations in the medium created by the dissipation may spontaneously decay and return the energy to the radiational field. This is particularly important in laser physics: a simplest laser device can be modeled as a mode whose EOM contains a loss channel, a gain channel (because of the presence of the pump), and a non-thermalized out-of-cavity channel, and by assuming that we have no input to the laser device and calculating the correlation function of the output mode of the out-of-cavity channel, we get the laser power spectrum. On the other hand, we may say that with the presence of a very coherent driving field whose intensity is strong enough and there is a non-thermalized outgoing channel, we always get laser, and it can be understood as a result of spontaneous emission (see the laser part in optics-and-quantum-electronics/lecture-notes.pdf).
+- Questions like "what hydrogen atom-like models of exciton miss" lead us to include the exchange term, which highlights the many-body nature of the problem.
+- The question how indistinguishability is reflected in Feynman diagrams about interactions between a particle and a compound state made of the same kind of particles leads us to include "exchange" terms in electron-exciton interactions (useful when investigating trion formation).
 
 It can be seen that although we can base everything in Course on Keldysh field theory
 (not every modern physics topic can be based on it:
@@ -34,6 +36,27 @@ quantum information and related formalisms, like entanglement-based wave functio
 are notable exceptions),
 the authors reject to do so and rely on physical intuitions instead.
 This is rather challenging for students without much physical intuitions!
+
+And sometimes, reckoning on the formalism does lead you to interesting topics.
+The examples given above all lead to high non-trivial research-level problems.
+Here is yet another example: if you just say "crystal momentum is just like real momentum"
+and proceed to write $\dot{\vb{r}} = \pdv{\epsilon_{\vb{k}}}{\vb{k}}$,
+$\dot{\vb{k}} = q \vb{E}$,
+it's very likely that you'll not realize that we have an additional Berry curvature term in the equation of motion.
+But if you try to derive the EOM of $\vb{r}$ and $\vb{k}$,
+the necessity of a Berry curvature term becomes obvious. 
+Reckoning on formalisms also helps to avoid mistakes,
+like incorrectly including the long-range exchange term in a BSE calculation 
+in preparation of exciton energies and wave functions for the calculation of the macroscopic dielectric function:
+if we reflect on the Feynman diagrams involved,
+we soon realize that this leads to double counting.
+And if we consider "how to write down an effective theory for long wavelength electromagnetic modes only" for a while,
+we will never forget to do local field approximation.
+
+The problem with obsessing with formalisms of course is it prevents you from doing more concrete works.
+And sometimes it tempts you to try problems that are too hard
+(especially in strongly correlated systems).
+But Landau's Course is definitely far from that danger - probably too far from it.
 
 # What does my results mean experimentally?
 
@@ -48,6 +71,31 @@ They're like mathematicians who only care about existence and uniqueness in this
 what they care about are discovery and classification of mechanisms,
 and what quantitatively will happen is often ignored.
 This is particularly true in condensed matter physics.
-If you really want to calculate the exact value of the Feynman diagrams,
-you should do first-principles calculations,
+A lecture given by a pure theorist about electron structure likely will cover
+Kohn-Sham DFT and the inappropriateness to interpret the Kohn-Sham energies as quasiparticle energies,
+and that it's a good idea to use DFT wave functions as a starting point
+of many-body perturbative approaches,
+Hartree-Fock approximation and its inconsistencies in the treatment of screening,
+diagrammatic resummation beyond HF and probably some model calculations.
+It's very likely that even Hedin's equation is not touched,
+let alone the transition matrices that originate from the quasiparticle wave functions
+and come with the Coulomb interaction vertex 
+(when there is no band topology,
+it's often assumed that we can faithfully represent band electrons as plane waves).
+So if you really want to calculate the exact value of the Feynman diagrams,
+you should read what people doing first-principles calculations say,
 not "pure" theory.
+
+Although Landau's Course is much more "quantitative" compared with the practice of modern condensed matter physics,
+which is filled with hand-waving arguments,
+it still strongly leans to the "theoretical"  side and not the first-principles calculation side,
+and the result is that unexperienced readers often find it hard to know whether a calculation presented by Course 
+should be regarded as an order of magnitude estimation
+or a result to be directed compared with experiments.
+
+This, again, is not restricted to Course:
+many other otherwise good textbooks, like Philip Phillips's Solid State Theory,
+have the same problem.
+This is most obvious in BCS theory:
+how much the mathematical treatment of the self-consistent equation changes the numeric prefactor of the transition temperature
+is almost never clearly stated.
