@@ -30,6 +30,42 @@ To name a few:
 - Questions like "what hydrogen atom-like models of exciton miss" lead us to include the exchange term, which highlights the many-body nature of the problem.
 - The question how indistinguishability is reflected in Feynman diagrams about interactions between a particle and a compound state made of the same kind of particles leads us to include "exchange" terms in electron-exciton interactions (useful when investigating trion formation).
 
+The problem, by the way, is not confined to Landau's Courses.
+Xiao-gang Wen's textbook about quantum field theory in many-body systems suffers from similar problems:
+
+- Can we somehow "quantize" the Boltzmann equation? Turns out we *can*: in some senses:
+  the Boltzmann equation is the quantum master equation after gradient expansion,
+  and we know time-dependent quantum master equation about a single-particle quantity 
+  gives us information about higher-order correlation functions 
+  (for example, linear response of dynamic GW = BSE).
+  Therefore the oscillation modes of the Boltzmann equation gives us bosonic excitations made of electron-hole pairs,
+  and formally, these excitations can be read from Boltzmann equation understood as a quantum EOM of operators.
+  Of course, the full Boltzmann equation has collision terms,
+  and "quantization" of it involves things like input-output formalism and the picture becomes less neat.
+  We can actually see that the "quantization of Boltzmann equation" in Wen's book
+  has nothing different from deriving BSE from GW:
+  see Eq. (5.3.12), the first line is actually BSE:
+  the $v_{\text{F}}$ term clearly comes from $\epsilon_{\vb{k} + \vb{q}} - \epsilon_{\vb{k}}$,
+  and the appearance of $f$ in the second term comes from the fact that 
+  the BSE kernel is $K = \frac{\delta \Sigma}{\delta G}$.
+- Similarly we can ask whether hydrodynamics works for electrons.
+  It works, in some sense: if we're only interested in, say, the absorption spectrum or electromagnetic properties,
+  we're essentially only interested in the response of electron density to a perturbation coupled to the electron density,
+  and the resulting effective theory is essentially generalized hydrodynamics
+  and its long-range behavior is governed by (collision-less) Boltzmann equation.
+  This is a naive form of bosonization:
+  it's not of much theoretical importance because this bosonization is done 
+  *after* we deal with the system in the basis of electrons
+  and conclude that it's a Fermi liquid,
+  and because this bosonization contains infinite bosonic modes,
+  which is unlike the case in Luttinger liquid where there are only two modes.
+  (The relevant discussions can be found in Xiao-gang Wen's textbook.)
+
+  This "hydrodynamics" is quite different from ordinary hydrodynamics 
+  in that the latter has viscosity:
+  indeed the word "hydrodynamic behaviors" usually refers to systems in which electron-hole degrees of freedom are predominant *and* dissipation exists for these degrees of freedom.
+
+
 It can be seen that although we can base everything in Course on Keldysh field theory
 (not every modern physics topic can be based on it:
 quantum information and related formalisms, like entanglement-based wave function ansatzs e.g. DMRG,
