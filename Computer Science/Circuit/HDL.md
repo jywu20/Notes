@@ -1,0 +1,172 @@
+Hardware description
+==========
+
+# General ideas of digital circuit designing
+
+Designing a digital circuit is very different from programming in the ordinary sense.
+In ordinary programming, the procedure to be done is really stored somewhere in the memory,
+and the CPU runs the instructions one by one
+(see [here](../HPC/overview.md#von-neumann-architecture)).
+A generic digital circuit doesn't run "instructions" "one by one":
+it just receives signals from the input ports and
+then by the laws of semiconductor physics,
+generates some other signals at the output ports.
+
+The internal structure of a digital circuit, in principle, can vary wildly;
+but usually we restrict ourselves to what we usually understand as circuits,
+i.e. things made of wires, logic gates, flip-flops, etc.
+Designing of digital circuits is to arrange these components.
+Best practices of arranging these components essentially become a physics-independent field:
+that's not uncommon in science, as we can build different systems with the same fundamental physics
+but we can also realize the same behaviors with very different low-level physics.
+For example we can utilize the way we design digital circuits to design a Turing machine in a Life Game.
+The only difference is this is probably not the most natural way to do things in Life Game,
+but this is the most natural way to do things with digital circuits components we already have. 
+
+Gates give us *combinational logic*:
+they are hardware implementations of pure functions.
+Unlike the case in software programming, however, with what we understand as digital circuits,
+we can't easily do functional programming.
+The easiest way to have Turing-complete behavior is to use things like flip-flops as registers,
+and the nature of components means designing digital circuits is closer to procedure programming,
+where we have variables and assignments.
+(Of course, circuits are finite and are therefore never truly Turing complete,
+but we can make our design very generic so that by increasing the number of registers without significantly rewiring everything
+we can have more and more complicated behaviors,
+and this is Turing completeness in practice;
+on the other hand combinational logic is never Turing complete even in this sense:
+to have more complicated behaviors, we need to not only increase the number of gates
+but also to non-trivially wire them.) 
+
+The main difference between generic digital circuit designing and procedure programming, still,
+is we don't have a programmer counter to keep track of what thing to do:
+the physics of electronic components means they run in parallel by default.
+This may lead to asynchronous problems:
+suppose we need to read from two registers,
+but we're not sure when they get their values from two upstream circuits.
+Often, we group together a part of the circuit and use a clock to synchronize their behaviors.
+Such a group usually takes the form of a combinational logic block that can read from a memory block,
+the memory block in turn receiving assignments from the combinational logic block
+to make sure when the variables change, they change at the same time
+(this is what a flip-flop does:
+for its content to change, we need an enable signal).
+
+# Digital circuits compared with structured programming
+
+We already know that digital circuit designing is kind of similar to procedural programming but has differences.
+Here we make a comparison between the two,
+or, in other words, see how procedures well-described by structured programming
+are *synthesized* into digital circuits.
+
+Sequential execution of a finite list of statements
+is always within the regime of combinational logic:
+we may have things like `temp = a; a = b, b = temp`,
+but we can always routinely eliminates the intermediate variables
+and get a mapping from the initial values of `a` and `b`
+to the final values of `a` and `b`.
+
+Similarly, the if-else structure, if without loops inside,
+can be routinely implemented with combinational logic.
+
+Loops are generally hard to handle in digital circuit designing,
+because it strongly depends on things like program counter,
+the most straightforward implementation of which needs statements to really be stored somewhere.
+If the upper bound of a loop is known,
+it can be synthesized by repeating the loop body for several times.
+If the upper bound of the loop is not known,
+or if the upper bound of the loop depends on the input,
+then the loop is not directly synthesizable.
+But note that in theory, a program only needs one loop,
+and we already have a loop going on forever in sequential logic.
+This means we can implement loop conditions of the aforementioned unbounded loops as registers,
+update their values in each clock cycle,
+and decide what to do in this clock cycle depending on the values of the registers,
+effectively deciding whether to keep doing the loop body
+or to jump out of the loop.
+
+In summary, the best way to turn a procedural code into digital circuits
+is to first rewrite it into a *state machine* manually (or with C-to-HDL tools),
+and then it should be easy to automatically synthesize.
+
+# Register transfer level (RTL) description
+
+The variant of procedural programming that works on the concept of state machines
+in which we have assignments and combinational logic
+is known as register transfer level (RTL) description.
+The meaning of the name is self-explained.
+This is the theoretical basis of many hardware description languages (HDLs).
+
+RTL description can be seen as a programming model.
+If we're sure that the physical circuits components faithfully implement
+any RTL logic we'd like to have,
+then simulation of RTL descriptions involves *no* semiconductor physics:
+it's just *executing* the RTL statements just like how Python code gets executed.
+Therefore we may talk about how HDL statements get executed:
+this is a *semantic* and *behavioral* concept,
+while the intended usage of HDL codes is to describe what a digital circuit should do,
+where there are physically no statement stored somewhere.
+
+Note that the state machine model, and therefore RTL HDLs based on it,
+is not restricted to synchronous circuits,
+because in this model the clock signal is merely yet another signal coming into the circuit,
+and what makes a signal a clock signal is merely the fact that in the design of the circuit,
+sequential logic is controlled by the signal
+(as in e.g. `always` block in Verilog).
+In this way a RTL HDLs code is just like a web server programmer:
+it gets called whenever some sort of request (passed as an ordinary argument) comes in.
+The only difference it has with a server software is that 
+as is said above, loop control is combined into a part of the request.
+
+Verilog is a widely used HDL.
+It's truly like a software programming language,
+in which we don't have direct access to concepts like gates or physical registers
+(in Verilog, the term "register" refers to abstract objects that keep the values they are assigned with;
+they may be synthesized as actual registers,
+or just as some wires coming out of some gates
+when actually they do not affect the state of the next clock period).
+
+Since the concepts of RTL description are close to procedural programming,
+it seems a good idea to include procedural programming concepts into HDLs
+for *behavioral* descriptions.
+You may call them high-level descriptions,
+because they need to be broken down to RTL descriptions in order to be synthesized,
+although a programmer familiar with procedural programming
+may instead say that the state machine model is truly high-level.
+Once we have procedural programming, object-oriented programming and more seem natural.
+Therefore a large portion of Verilog is *not* synthesizable:
+they're there just for behavioral description, that's to say, for testing only.
+
+# Synthesizable building blocks of Verilog
+
+What is supposed to represent a circuit is a *module* in Verilog.
+In it, we declare wires and (logical, not necessarily physical) registers
+and their behaviors.
+By default statements are run in parallel,
+because circuits do run in parallel.
+We have procedural blocks to enforce (semantic) procedural execution within them,
+like `always` or `begin end`.
+
+Besides modules we also have *functions*,
+which represent combinational logics that can be reused in different blocks.
+
+Since the values of registers don't really change until this clock cycle ends,
+we actually have *both* the new value and the old value available for each register:
+the old value can be read from the register,
+while the new value can be read after some gate circuits.
+So it seems that reading the *old* value is sometimes more straightforward
+in terms of synthesis.
+In Verilog, we have *block assignment* and *non-blocking assignment*.
+The terms are kind of misleading: *immediate and deferred assignment* seem to be better terms.
+In simulations, the former takes effect immediately,
+which means that after `a = ...`,
+whenever we read `a`, we are reading the new value,
+while the latter takes effect after this `always` block,
+which means when we read `a` after `a <= ...` we're reading the old value.
+This sometimes makes programming easier:
+swapping two variables now is as simple as `a <= b; b <= a`.
+In synthesizing, block assignment is often used for intermediate variables,
+while non-blocking assignment is often used for physical registers,
+because non-blocking assignment is closer to how flip-flops work.
+
+# High-level synthesis
+

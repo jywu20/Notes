@@ -118,6 +118,41 @@ An *operation system (OS)* makes things easier for writing programs.
 It registers all drivers during initialization
 and 
 
+## Co-evolution of computer architecture and programming models
+
+The C programming language neatly maps what is commonly considered idiomatic assembly code on the simplest von Neumann machine to its primitives.
+Introduction of concepts like peripheral devices, user-triggered interrupt, and memory-mapped IO can also be captured easily with C primitives,
+although usually platform-dependent implementations are needed and for example assignment to specific addresses is needed.
+But here we can see the idea to add new functionalities to the von Neumann architecture in a way that can be "absorbed" into the old programming model.
+The virtual memory mechanism is a clearer instance of this.
+
+However, the C-like programming model is not always a good representation of certain hardware acceleration schemes.
+For example it's generally not a good idea to minimally modify a C code and find some ways to compile it to a FPGA design
+(although there are ways to do FPGA using C).
+It takes non-trivial efforts to make programming of modern high-performance hardwares C-like.
+Some aspects of this are discussed in https://stackoverflow.com/questions/74756422/do-processors-have-optimizations-and-architecture-preferences-targeted-firstly-o:
+for example, the "variable-assignment" mindset requires cache coherence:
+therefore if one variable that can be seen by two threads is modified by one,
+the modification should instantly be seen by the other.
+Another possibility to go beyond the C-like programming model is that 
+since cache is important for performance, maybe some way to control it manually would be a good idea.
+Sometimes the architecture is changed so radically that there is no longer a difference between cache and RAM:
+instead multiple very fast (but small) RAMs containing code and data are used as the memory,
+and the developer has to find highly non-C ways to program for a computer like this.
+We don't yet have cross-platform SIMD standardized in a C-like way:
+either we call SIMD intrinsics or we write the code using concepts like array operations,
+which are considered high-level in C programming and are replaced by loops,
+and if a C-like code is to be accelerated by SIMD,
+we have to expect the compiler to be able to recognize loops that are essentially array operations.
+
+We can see the general problem here: C is not really a cross-platform assembly language
+but it's also not a good abstract machine language.
+It's a compromise of the two, making it not good enough in either role.
+Despite all these, mainstream modern CPUs keep exposing a C-ish abstract machine,
+and as GPUs can be conceived as watered down CPUs forming a huge cluster,
+GPU development based on C is also not hard.
+
+
 # Modern architecture
 
 Following what are mentioned above, we get a computer that has no functionality deficiency.
