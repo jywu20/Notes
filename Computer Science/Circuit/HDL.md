@@ -83,6 +83,14 @@ update their values in each clock cycle,
 and decide what to do in this clock cycle depending on the values of the registers,
 effectively deciding whether to keep doing the loop body
 or to jump out of the loop.
+(Often, though, even when theoretically the loop is unbounded,
+in practice we will have a bound above which the problem is not feasible anyway
+with the existing resources,
+and in hardware design a bounded loop can then be used.)
+
+In theory we can use a fast clock and a slow clock
+to implement two embedded loops.
+This however is rarely done in reality.
 
 In summary, the best way to turn a procedural code into digital circuits
 is to first rewrite it into a *state machine* manually (or with C-to-HDL tools),
@@ -95,6 +103,8 @@ in which we have assignments and combinational logic
 is known as register transfer level (RTL) description.
 The meaning of the name is self-explained.
 This is the theoretical basis of many hardware description languages (HDLs).
+
+## RTL as event-driven programming model and as hardware description
 
 RTL description can be seen as a programming model.
 If we're sure that the physical circuits components faithfully implement
@@ -115,7 +125,71 @@ sequential logic is controlled by the signal
 In this way a RTL HDLs code is just like a web server programmer:
 it gets called whenever some sort of request (passed as an ordinary argument) comes in.
 The only difference it has with a server software is that 
-as is said above, loop control is combined into a part of the request.
+as is said above, loop control is combined into a part of request handling.
+
+## Turing completeness
+
+RTL is Turing complete in the sense that
+there is no theoretical bound to the total size of the registers:
+thus to handle more and more complicated problems,
+we can just increase the total size of the registers without changing anything else in the code.
+And as long as all bounds are properly defined,
+we have the same random access ability in C:
+deciding which address to visit according to an input signal is pretty synthesizable.
+Loops are treated in the same way.
+If, however, we consider the result of synthesizing,
+"merely" changing the upper bounds in the code does change a lot of the circuit structure.
+Without the bounds in mind, RTL is Turing complete,
+and with the bounds in mind, RTL describes finite state machines.
+
+## Functional programming in circuit designing
+
+By refraining from using highly procedural-like constructs in RTL,
+we will find a paradigm that is quite close to functional programming,
+and thus we find that RTL as we know it is of course not the only theoretically possible way to describe hardwares
+without touching directly the gates but still in an easily synthesizable manner.
+The combinational logic part of a synchronous circuit is basically a state transfer function:
+it looks quite similar to the `>>=` operator of a Haskell `Monad` like `IO` or `ST`.
+The Verilog `always` block can then be seen as a `do` block,
+which ultimately boils down to combination of stateless functions.
+Assignment statement in this `do` block either changes the state (as in `return` in Haskell),
+or does not (as in `let ... = ...` in Haskell, which is just aliasing),
+and in the latter case they are in theory not necessary.
+Let's reflect for a while about what's being done here:
+it seems what's being described here is actually one (quite neat) way to understand
+how to synthesis assignment statements.
+As is said above, explicit loops in RTL have to be bounded.
+This originates from the fact that loops are usually synthesized by unrolling,
+and since the size of the circuit is limited,
+loops have to be bounded.
+In Haskell `Monad`s, a loop block is just a function
+and takes the form of `whileM_ :: Monad m => m Bool -> m a -> m ()`,
+and bounding a loop is equivalent to imposing some limits on how many recursions are possible.
+The result is a description paradigm that in some aspects are closer to how the hardware actually works:
+intermediate variables, for example, are strictly distinguished from actual registers.
+We can then increase the level of abstraction by the usual ways in functional programming.
+There has been attempts to do this: see e.g. https://clash-lang.org/documentation/.
+For discussions on how to use the Monad-like perspective to design sequential logic,
+see https://clash-lang.readthedocs.io/en/latest/developing-hardware/prelude.html#state-machines.
+Despite the alternative formalisms, conventional RTL, which works on concepts like variables and assignments, is still the first choice of almost all developers.
+
+## Unsynthesizable behavioral descriptions
+
+Since the concepts of RTL description are close to procedural programming,
+it seems a good idea to after all include procedural programming concepts into HDLs.
+This is known as *behavioral* descriptions
+because now we directly describe the algorithm to be implemented
+in a straightforward and hence "high-level" way
+(although there is no good definition of the meaning of being high-level,
+as we have already seen above).
+These "high-level" descriptions need to be broken down to RTL descriptions in order to be synthesized,
+although a programmer familiar with procedural programming
+may instead say that the state machine model is truly high-level.
+Once we have procedural programming, object-oriented programming and more seem natural.
+Therefore a large portion of Verilog is *not* synthesizable:
+they're there just for behavioral description, that's to say, for testing only.
+
+# Synthesizable building blocks of Verilog
 
 Verilog is a widely used HDL.
 It's truly like a software programming language,
@@ -124,19 +198,6 @@ in which we don't have direct access to concepts like gates or physical register
 they may be synthesized as actual registers,
 or just as some wires coming out of some gates
 when actually they do not affect the state of the next clock period).
-
-Since the concepts of RTL description are close to procedural programming,
-it seems a good idea to include procedural programming concepts into HDLs
-for *behavioral* descriptions.
-You may call them high-level descriptions,
-because they need to be broken down to RTL descriptions in order to be synthesized,
-although a programmer familiar with procedural programming
-may instead say that the state machine model is truly high-level.
-Once we have procedural programming, object-oriented programming and more seem natural.
-Therefore a large portion of Verilog is *not* synthesizable:
-they're there just for behavioral description, that's to say, for testing only.
-
-# Synthesizable building blocks of Verilog
 
 What is supposed to represent a circuit is a *module* in Verilog.
 In it, we declare wires and (logical, not necessarily physical) registers
