@@ -403,6 +403,131 @@ meaning that there isn't enough room to put all the wires.
 
 # The target of synthesis
 
+## The physics of circuits: general ideas, $L$ and $C$
+
+Here we have a brief overview of classical electronics.
+The term "classical" here means the system shows no quantum coherence:
+it's not necessarily due to "inherent" $\hbar \to 0$ conditions in the system
+(for example when $S^2$ is large),
+but due to environmental bathing:
+electron currents in ordinary circuits are constantly being "observed" by various dephasing factors in the wires, like thermal phonons,
+and quantum coherence, in most of the time, can be ignored.
+
+Because of the strong dephasing,
+the theory of classical electronics is not quite different from the electromagnetic version of hydrodynamics.
+In hydrodynamics, we assume that thermal fluctuations render pure-state bosonic excitations irrelevant,
+and the flow of conserved quantities become relevant because the conservation laws are still satisfied even after thermalization.
+In electronics we also assume that electronic degrees of freedom other than the charge and the current are not relevant.
+Therefore just like in hydrodynamics we only care about forces and fluid flow,
+in electronics we only care about voltage and current.
+This hydrodynamic approach can be comprehended as a specific case of quantum non-equilibrium physics
+(see e.g. https://arxiv.org/pdf/2203.10110.pdf; also note that the term "hydrodynamics" means different things to different people: here it means kinetic theory of non-equilibrium systems based on a handful of conservation laws, but it may also mean bosonization of systems into quantum Euler equation, or writing the single-particle Schrodinger equation into a hydrodynamics-like form),
+but in practice this is usually not how we do it.
+
+Note that the idea that only the currents matter when describing the state of an electronic device
+does *not* deny that other degrees of freedom exist in how the current responds to the electric field:
+for example, the $U$-$V$ property of a component may originate from exciton formation.
+What we're doing here include several things.
+First, we assume that multi-electron correlation doesn't exist,
+and the dynamics of the system can be described as something like time-dependent adiabatic GW (TD-aGW),
+a single-electron quantum master equation where the single-electron energy has self-energy corrections.
+Second, we assume that quantum coherence, like coherent excitons
+(corresponding to non-diagonal components of the single-electron density matrix,
+which originate from $\ket{\text{ground}} + c \ket{\text{excitation}}$ after perturbation),
+serves as intermediate steps in the dynamics of currents
+(just like how $\rho_{\text{eg}}$ matrix elements in Bloch equation are non-zero
+so probability transfer from $\rho_{\text{gg}}$ to $\rho_{\text{ee}}$ can happen),
+but because of the existence of dephasing, non-diagonal components of the single-electron density matrix never appear in observables.
+Third, for quantities like $f(\vb{k}, n, n') c^\dagger_{n \vb{k}} c_{n' \vb{k}}$,
+we assume that as long as they are not the current or the charge,
+they do not matter because as is said above, thermalization will not keep these quantities stable.
+
+What we have is now a formalism that works only on $\vb{j}$ and $\vb{E}$ and sometimes $\vb{B}$.
+To make designing and maintenance easier,
+it's often further assumed that we're working with *circuits*,
+so that currents run on wires and the electric field is replaced by the voltage between two nodes in the circuit.
+The internal structures of components are regarded as black boxes.
+This sometimes breaks down: we for example have mutual inductance.
+When things like mutual inductances and parasitic capacitance are considered,
+components that can be easily captured with isotropic electrodynamics in medium
+(hence $\vb{j} = \sigma \vb{E}$ where $\sigma$ is a scalar)
+can usually be simulated as effective networks of $LCR$ circuits
+because this is just discretization of electrodynamics with the displacement current term ignored
+(although treatment of things like Hall conductance can be cumbersome).
+
+As a constructive proof, suppose we discretize space into a cubic lattice,
+and place a charge variable at each vertex.
+The charge variable should be equal to $\int_{\text{cube around this vertex}} q \dd^3\vb{r}$.
+The current can then be defined on the six surfaces of the cube containing the vertex,
+and therefore we can place a current variable as well as $U = \int \dd{\vb{l}} \cdot \vb{E}$ at each edge.
+Note that Maxwell equations only involve first-order spatial derivative operators
+(if we eliminate $\vb{B}$ then we have $\nabla \times \nabla \times$,
+but the effects of the magnetic field are included by calculating $\vb{B}$ directly and calculate the inductance electric field using the mutual inductance matrix):
+therefore we can represent $E_{x,y,z}$ by the three voltages on the $+x$, $+y$, $+z$ surfaces,
+and all the Maxwell's equations can be turned into equations about a single cube.
+From the second and the fourth Maxwell's equation, we know the solenoidal part is given by $\partial_t \vb{j}$,
+and the mapping from $\dot{I}$ at each edge to the solenoidal contribution to $U$ at each edge
+is represented by a giant mutual conductance matrix.
+The capacitor part, i.e. the divergent part, seems more complicated in theory because electrostatics is complicated.
+But we can always use $q = \oint_S \dd{\vb{S}} \cdot \vb{E}$ and put $S$ around the node,
+and as the only $\vb{E}$ component that contributes to the integral
+is the component that's perpendicular to the surface of the cube containing the vertex,
+the RHS of the equation can be completely determined by $U$,
+and thus we find we can effectively say there are six capacitors connected to the vertex,
+each of which connects the vertex to a nearest neighbor.
+(Although the capacitor model describes the divergent part of the electric field,
+as long as the mutual inductance matrix is defined correctly,
+using the divergent part of the electric field or the whole electric field to calculate $\int \dd{\vb{S}} \cdot \vb{E}$ shouldn't lead to different results.)
+So then we can place the capacitor and the inductor in serial and place the resistance in parallel with the two at each edge,
+and thus we get a discretized version of displacement current-free (that's to say, near field) electrodynamics.
+By using the common circuit simplification techniques,
+for simple structures (like a transmission line)
+we can greatly simplify the corresponding effective circuit.
+
+Systems whose behaviors strongly depend on the dynamics in the medium, like diodes,
+have to be simulated using solid state physics formalisms like TD-aGW
+because as is said above, to explain the internal mechanisms,
+quantum coherence becomes important.
+
+
+## The physics of circuits: $R$
+
+Resistance comes from all kind of mechanisms:
+electron-electron scattering, electron-phonon scattering, electron-impurity scattering.
+And even when we only have $L$ and $C$,
+we still find that an infinite transmission line looks just like a resistance.
+In a word, resistance comes from coupling to an environment that's much larger than the system.
+
+Resistances tend to be linear.
+This is like how a laser medium emits light to the outside world 
+or a quantum dot connected to two ports is modeled:
+by Markovian approximation, we write the coupling of electromagnetic fields in the system 
+and electromagnetic fields in the environment 
+as a $1 / \tau$ term,
+but this is just a part of the input-output formalism
+and doesn't mean there is anything inherently thermalized in the system.
+For example consider radiation resistance: the antenna may first capture a signal and then emit it,
+and in the whole process no energy goes to degrees of freedom that are not explicitly accounted for.
+Thermalization only happens when we explicitly dictate that
+a port in the input-output formalism is thermalized,
+which, as is said above, is true in ordinary electronics.
+Indeed in the infinite transmission line model of resistance,
+we also need to explicitly assume that all modes in the transmission line are thermalized.
+
+The fact that $U$ and $I$ have such a simple relation is, from the perspective of physics, astonishing.
+We can apply an electric field to the sample and measure the current response,
+but suppose we somehow manage to create some currents in the sample,
+Ohm's law tells us that there *has to be* an electric field whose magnitude is given by $IR/d$.
+That's to say, there is no other variable hidden in the sample in determining the relation between $I$ and $U$.
+The reason why 
+
+## The physics of circuits: diodes
+
+The $U$-$I$ relation of a diode is often derived using Fermi golden rule.
+Note that we don't need to account for states like $(\ket{\text{left}} + \ket{\text{right}}) / \sqrt{2}$:
+they deviate too far from the preferred basis of these dephasing processes.
+A theory of the behavior of a diode in a circuit has to be a rate equation, then.
+
 ## Stateful objects
 
 By connecting output wires of some components back to the input wires,

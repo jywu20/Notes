@@ -30,6 +30,14 @@ To name a few:
 - Questions like "what hydrogen atom-like models of exciton miss" lead us to include the exchange term, which highlights the many-body nature of the problem.
 - The question how indistinguishability is reflected in Feynman diagrams about interactions between a particle and a compound state made of the same kind of particles leads us to include "exchange" terms in electron-exciton interactions (useful when investigating trion formation).
 - When should we consider interaction as "scattering" (led by, say, Fermi golden rule), and when should we consider interaction to be a correction to the single-particle energy? Turns out the two ways to see interaction correspond to two types of self-energy corrections, namely the retarded self-energy and the lesser self-energy, which, in the near-equilibrium case, reduce to the real and imaginary parts of the self-energy.
+- Why sometimes we calculate various material properties using a microscopic quantum theory,
+  and then insert them into a theory that disregards any quantum coherence
+  (e.g. scattering rates from Fermi golden rule being used in a rate equation,
+  or $U/I$ curve of diode derived from Fermi golden rule)?
+  The reason of course is that in these systems we have a lot of dephasing effects
+  that "observe" the system and destroy quantum coherence.
+  But that's not a trivial topic at all,
+  because when dephasing effects are too strong, we have quantum zeno effects.
 
 The problem, by the way, is not confined to Landau's Courses.
 Xiao-gang Wen's textbook about quantum field theory in many-body systems suffers from similar problems:
