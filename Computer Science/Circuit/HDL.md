@@ -57,16 +57,23 @@ We already know that digital circuit designing is kind of similar to procedural 
 Here we make a comparison between the two,
 or, in other words, see how procedures well-described by structured programming
 are *synthesized* into digital circuits.
+The ideas developed in this section are related to both [RTL](#register-transfer-level-rtl-description)
+and [high-level synthesis (HLS)](#high-level-synthesis-hls).
 
 Sequential execution of a finite list of statements
-is always within the regime of combinational logic:
-we may have things like `temp = a; a = b, b = temp`,
+is always within the regime of combinational logic,
+provided that the variables are not accessed by other blocks of code.
+We may have things like `temp = a; a = b, b = temp`,
 but we can always routinely eliminates the intermediate variables
 and get a mapping from the initial values of `a` and `b`
 to the final values of `a` and `b`.
+Of course, if `a` and `b` are visited by other segments of programs,
+we need registers to hold their values,
+but still the sequential part would be minimal.
 
 Similarly, the if-else structure, if without loops inside,
-can be routinely implemented with combinational logic.
+can be routinely implemented with combinational logic
+plus some sequential parts for bookkeeping of the values of the variables.
 
 Loops are generally hard to handle in digital circuit designing,
 because it strongly depends on things like program counter,
@@ -77,7 +84,9 @@ If the upper bound of the loop is not known,
 or if the upper bound of the loop depends on the input,
 then the loop is not directly synthesizable.
 But note that in theory, a program only needs one loop,
-and we already have a loop going on forever in sequential logic.
+and we already have a loop going on forever in sequential logic,
+which is usually done by a clock
+but in theory can also be handled by various asynchronous mechanisms.
 This means we can implement loop conditions of the aforementioned unbounded loops as registers,
 update their values in each clock cycle,
 and decide what to do in this clock cycle depending on the values of the registers,
@@ -87,14 +96,24 @@ or to jump out of the loop.
 in practice we will have a bound above which the problem is not feasible anyway
 with the existing resources,
 and in hardware design a bounded loop can then be used.)
+This is where sequential logic becomes non-trivial.
 
 In theory we can use a fast clock and a slow clock
 to implement two embedded loops.
 This however is rarely done in reality.
 
 In summary, the best way to turn a procedural code into digital circuits
-is to first rewrite it into a *state machine* manually (or with C-to-HDL tools),
+is to first rewrite unbounded loops are rewritten into a single large loop,
+and hence the loop body describes a *state machine*,
 and then it should be easy to automatically synthesize.
+This can be done manually,
+and the description of the state machine is actually
+what is known as [RTL](#register-transfer-level-rtl-description).
+After discussing the general ideas of RTL,
+we will dive into Verilog, a quite popular HDL,
+whose semantics we find is actually quite close to 
+[a computational graph with a lot of event listeners](#summary-of-semantics-of-verilog).
+We can also use [C-to-RTL tools](#high-level-synthesis-hls).
 
 # Register transfer level (RTL) description
 
@@ -229,7 +248,8 @@ But this can also make the code less intuitive.
 
 ## Unsynthesizable behavioral descriptions
 
-Since the concepts of RTL description are close to procedural programming,
+Since the concepts of RTL description are somehow close (though still different in significant ways) 
+to procedural programming,
 it seems a good idea to after all include procedural programming concepts into HDLs.
 This is known as *behavioral* descriptions
 because now we directly describe the algorithm to be implemented
@@ -346,7 +366,7 @@ Actually this is how `c <= a + b` is synthesized.
 The existence of procedural assignment statements to Verilog variables
 make the variables look like variables in procedural programming.
 The existence of continuous assignments and `always` block,
-however, makes them look like *tensors* in computation graphs in e.g. PyTorch,
+however, makes them look like *tensors* in computational graphs in e.g. PyTorch,
 to which assignments may change the structure of the computational graph,
 or trigger events that are then handled by parallel event listeners.
 And actually, function calls are completely replaced by event listener in Verilog.
@@ -356,7 +376,7 @@ and in each event listener we have procedural programming
 (but unbounded loops have to be implemented by event-driven features),
 while different event listeners run in parallel.
 All variables are like tensors in a deep learning framework because of continuous assignment,
-and we have natural constraints forbidding assignment to non-terminal nodes in the computation graph.
+and we have natural constraints forbidding assignment to non-terminal nodes in the computational graph.
 Event listeners and variables they share are organized into modules,
 and event triggering is as simple as assignment to the input ports of a module.
 A module can be instantiated in another module,
@@ -397,9 +417,6 @@ we can't just write Verilog code however we'd like.
 By using the same type of optimization techniques in software engineering,
 the situation has been improved, but there are still incidents where the way Verilog is written causes congestion,
 meaning that there isn't enough room to put all the wires.
-
-
-# High-level synthesis
 
 # The target of synthesis
 
@@ -528,7 +545,33 @@ Note that we don't need to account for states like $(\ket{\text{left}} + \ket{\t
 they deviate too far from the preferred basis of these dephasing processes.
 A theory of the behavior of a diode in a circuit has to be a rate equation, then.
 
-## Stateful objects
+## Combinational logic in digital circuits
+
+What makes digital circuits quite different from circuits made of (linear or non-linear) $L, R, C$ circuits
+is that when there are no feedback loops,
+that's to say, when we only have combinational logic in the circuit
+(sequential logic can also be implemented using logic gates,
+but this always requires feedback loops: see the next section),
+the simulation of the circuit is quite *local*.
+If somehow we already know the voltages of the input wires of a component,
+then the output voltage is straightforwardly given;
+on the other hand, in a $RLC$ circuit,
+knowing the voltages of the input wires is not enough:
+we need also to know the current going through the circuit,
+which is given by the voltage on the circuit,
+i.e. the voltage *difference* of the input and output wires.
+Therefore the simulation of a $RLC$ circuit is always kind of non-local,
+while the simulation of a digital circuit is very local.
+In a combinational logic circuit,
+as long as the input voltages are given,
+we can successively calculate the output voltages of each component,
+just like [how a computational graph is evaluated](#summary-of-semantics-of-verilog).
+
+This is partly due to the separation between power and signal in digital circuits:
+the same high voltage line and low voltage line are connected to every logic gate,
+and the "input" voltage just controls whether the output wire is connected to the high voltage line or the low voltage line.
+
+## Stateful objects in digital circuits
 
 By connecting output wires of some components back to the input wires,
 we can create multiple stationary states,
@@ -539,3 +582,114 @@ A latch has two stationary states, and which state it's in can be told from the 
 This multi-stationary state nature of latches distinguish them from ordinary combinational logic.
 
 Two latches can be used to make a flip-flop.
+
+# High-level synthesis (HLS)
+
+Although as is mentioned above, the abstract semantics of a RTL HDL somehow
+is close to what are sometimes known as high-level concepts,
+an unfortunate fact is that we human programmers never think in this kind of formalism
+when designing algorithms.
+It's still desirable to design hardwares using standard procedural programming.
+This is known as high-level synthesis (HLS),
+where the term "high-level" is more about being close to how we humans understand problems.
+
+There are several aspects that make HLS hard.
+The problem is ideally the semantics of the programming language
+should be easily transferable to RTL,
+but the most popular programming languages are not designed in this way.
+
+C is often known as a somehow low-level language
+(the claim itself needs to be taken with a grain of salt:
+C has no control over caching, virtual memory, instruction-level parallelism, etc;
+but x86 assembly also doesn't have fine-grained control over these:
+modern computer science is abstraction all the way down):
+this sometimes can be a problem for HLS
+because a feature that is low-level to CPUs is sometimes not low-level at all for logic gates.
+For example, in C, all functions see the same memory space:
+a pointer can be passed around and wherever it is dereferenced,
+the same memory address is visited.
+In hardware design, however, memory is often distributed:
+a module has its internal memories and another module can never visit it.
+Therefore if C is to be used for HLS,
+anything involving randomly accessing a pointer will be problematic for synthesis.
+This includes dynamic memory allocation as well.
+
+On the other hand, languages like Python hide details like memory address from the programmer
+and sometimes happen to be *better* than C when it comes to HLS.
+For example, a variable used in a function can never be visited by anything out of the function,
+because we can't get the address of it and pass it out of the function.
+But these languages do rely a lot on dynamic memory allocation, etc.
+and therefore also deviate from what can be done in actual hardwares.
+
+The compromise is to pick up a language - usually C or C++ in practice - 
+and synthesize only a subset of it,
+controlled by pragmas.
+Here we discuss some aspects of C-to-RTL conversion.
+
+## What typically are not supported in HLS
+
+Recursion, due to its nature, is usually not supported in HLS:
+in theory any recursion can be rewritten into an unbounded loop,
+but this requires a call stack
+and usually does not generate optimal hardware design.
+Programmers are expected to first mathematically turn a recursive algorithm
+into one based on loops.
+
+As is discussed [here](#turing-completeness),
+the semantics of RTL has no hard memory bound,
+but in practice hardwares always *have* memory bounds
+and that's also the case in RTL HDLs.
+The memory bound usually is not something we'll encounter in CPU software development,
+so we can do `malloc`, etc.,
+which essentially boils down to visiting areas in a conceptually infinite memory space.
+This is not the case in hardware designing.
+Of course, we can always ask for a large memory block
+and do memory allocation inside of the memory block,
+but that's something to be done explicitly.
+
+## How loops are implemented
+
+As is discussed [here](#digital-circuits-compared-with-structured-programming),
+converting a loop to RTL can be hard.
+
+As is said in the link, a bounded loop can in principles be implemented by unrolling.
+But this makes the design less area-efficient,
+because each iteration now is a submodule.
+This does make the computational speed much faster though,
+so a balance between speed and area is important.
+Usually this means the loop will not be completely unrolled.
+In this sense, unbounded loops can also be unrolled.
+
+When iterations of a loop, bounded or unbounded, are independent to each other,
+we can do pipelining.
+That's to say, suppose we have $N$ operations in each iteration,
+and then we can first feed data in iteration 1 to operation 1,
+and then feed data in iteration 2 to operation 1
+and the output of operation 1 to operation 2,
+and so forth.
+This kind of design reduces the idle time of the operations.
+
+## How branches are implemented
+
+`if-else` is theoretically easier than loops,
+but it also involves non-trivial analysis in HLS.
+The common wisdom is to execute the two branches at the same time,
+and then use the condition to pick up one result from the two.
+The total time cost of the `if-else` block is the longest of the two branches.
+Note that even if one branch is not executed,
+we still should expect the worst
+and wait until even the most painstaking branch has finished,
+or otherwise we're in the risk of timing violation.
+
+## Note on timing
+
+The frequency of the clock is not necessary better if it's higher.
+An operation should better fit in one clock cycle,
+or otherwise we will need to worry about data contamination,
+so if the clock cycle is slightly longer than an operation,
+we have a fixed time waste.
+Reducing the clock frequency
+and chaining several operations into one which neatly fits into one clock cycle
+in this case is a much better option.
+
+## Pointers
