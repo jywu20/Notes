@@ -83,10 +83,10 @@ it can be synthesized by repeating the loop body for several times.
 If the upper bound of the loop is not known,
 or if the upper bound of the loop depends on the input,
 then the loop is not directly synthesizable.
-But note that in theory, a program only needs one loop,
-and we already have a loop going on forever in sequential logic,
-which is usually done by a clock
-but in theory can also be handled by various asynchronous mechanisms.
+But note that in theory, a program only needs one infinite loop,
+and we already have a loop going on forever in sequential logic
+because the circuit is periodically synchronized by the clock
+(in theory the semantics of an unbounded loop can also be handled by various asynchronous mechanisms).
 This means we can implement loop conditions of the aforementioned unbounded loops as registers,
 update their values in each clock cycle,
 and decide what to do in this clock cycle depending on the values of the registers,
@@ -112,7 +112,7 @@ what is known as [RTL](#register-transfer-level-rtl-description).
 After discussing the general ideas of RTL,
 we will dive into Verilog, a quite popular HDL,
 whose semantics we find is actually quite close to 
-[a computational graph with a lot of event listeners](#summary-of-semantics-of-verilog).
+[a computational graph together with a lot of event listeners](#summary-of-semantics-of-verilog).
 We can also use [C-to-RTL tools](#high-level-synthesis-hls).
 
 # Register transfer level (RTL) description
@@ -383,12 +383,18 @@ A module can be instantiated in another module,
 in the same way a neural network module is instantiated in a bigger network.
 
 It can be seen that several paradigms that are traditionally considered as high-level - 
-multithreading, event listening, computational graph - 
+event listening, computational graph,
+and possible parallelism originating from the structure of the computational graph - 
 are integrated parts of Verilog,
 which however is generally considered a low-level description.
 So again, the high-level/low-level distinction is theoretically not always a well-defined concept.
 Moreover, Verilog puts these things together in a largely well-integrated way,
 unlike languages like C++.
+
+It should however be noted that the "computational graph plus event listener" picture 
+is not correct but not enough in actual hardware design,
+because computation takes time.
+Timing is of primary importance in hardware design.
 
 ## Keep the circuit in mind
 
@@ -583,20 +589,84 @@ This multi-stationary state nature of latches distinguish them from ordinary com
 
 Two latches can be used to make a flip-flop.
 
+# The generic circuit: FPGA
+
+CPU is an architecture to generically implement "programs".
+As is said above, digital circuits implement RTL "computational graph".
+Digital circuits are more flexible - sometimes too flexible,
+and we'd like something that can emulate any other circuits,
+executing a RTL "computational graph" just like a CPU executing instructions.
+There are many ways to do this,
+and the most important one currently is known as
+field programmable gate array (FPGA).
+
+There are two aspects important to understand FPGA:
+the first is its hardware design,
+and the second is how RTL is translated into how these gates are programed.
+
+FPGA, as a circuit, is a grid of lookup tables (LUTs),
+routing tracks, and switchboxes.
+LUTs are linked to the routing tracks in a programmable way:
+whether a LUT is linked to a routing track (and if so, which one)
+is controlled by a bit stored in e.g. a flip flop.
+The switch boxes link routing tracks together, again in a programmable way,
+controlling how tracks in two beams of routing tracks connected to the switch box
+are linked to each other.
+
+A LUT can emulate any logic gate with a given number of input wires:
+therefore it is actually a RAM,
+with the truth table of the gate being the data stored in the block
+and the input wires specifying the address to the data to be output.
+We may also want to specify whether the output of the LUT should be stored in a register.
+This can be done by linking the output wire of the LUT memory to two branches,
+one being a simple wire and the other being a flip-flop,
+and the two wires are then linked to a multiplexer,
+which is controlled by the output of another flip-flop.
+The second flip-flop receives a signal that controls whether the output of the whole thing
+comes from the simple wire or the flip-flop.
+
+So now, by connecting the LUT memory and the flip-flop controlling the multiplexer,
+we can program the LUT into an arbitrary logic gate,
+with or without its output buffered in a flip-flop.
+
+Now we want to show that this kind of architecture can indeed emulate all digital circuits.
+The main problem will be routing,
+
+
+Actual FPGAs contain further components,
+including block RAMs (BRAMs), DSP blocks, and also IO blocks connected to the tracks.
+They can all be invoked by the programmable gate array.
+
 # High-level synthesis (HLS)
 
-Although as is mentioned above, the abstract semantics of a RTL HDL somehow
-is close to what are sometimes known as high-level concepts,
+Although as is mentioned above, the abstract semantics of RTL 
+is basically computational graph plus event listeners,
 an unfortunate fact is that we human programmers never think in this kind of formalism
 when designing algorithms.
 It's still desirable to design hardwares using standard procedural programming.
 This is known as high-level synthesis (HLS),
 where the term "high-level" is more about being close to how we humans understand problems.
 
+## What typically are not supported in HLS
+
 There are several aspects that make HLS hard.
-The problem is ideally the semantics of the programming language
-should be easily transferable to RTL,
-but the most popular programming languages are not designed in this way.
+Let's start with the semantics.
+The bad news is that event-driven programming can in theory be highly complicated
+(think about what happens in a server),
+the good news is that in most digital circuits the only "event" is usually just the clock
+(plus some handshaking signals - but usually they are not specified in `always @ (...)`,
+and instead appear in conditions of `if` blocks
+that decide whether to proceed),
+so we're basically dealing with a big infinite loop.
+The synthesis of a structured procedural program into synchronous RTL therefore
+ideally is straightforward,
+as is discussed [here](#digital-circuits-compared-with-structured-programming).
+We basically extract all the control flows into a finite state machine,
+and parts in the computational diagram that are independent to each other
+are handled in parallel,
+just like how instruction-level parallelism is done.
+However, most popular programming languages contain constructs
+that make HLS hard, as is discussed immediately below.
 
 C is often known as a somehow low-level language
 (the claim itself needs to be taken with a grain of salt:
@@ -621,13 +691,8 @@ because we can't get the address of it and pass it out of the function.
 But these languages do rely a lot on dynamic memory allocation, etc.
 and therefore also deviate from what can be done in actual hardwares.
 
-The compromise is to pick up a language - usually C or C++ in practice - 
-and synthesize only a subset of it,
-controlled by pragmas.
-Here we discuss some aspects of C-to-RTL conversion.
-
-## What typically are not supported in HLS
-
+There are also features that are supported in almost every ordinary programming language
+but are hard to synthesize.
 Recursion, due to its nature, is usually not supported in HLS:
 in theory any recursion can be rewritten into an unbounded loop,
 but this requires a call stack
@@ -646,6 +711,27 @@ This is not the case in hardware designing.
 Of course, we can always ask for a large memory block
 and do memory allocation inside of the memory block,
 but that's something to be done explicitly.
+
+The compromise is to pick up a language - usually C or C++ in practice - 
+and synthesize only a subset of it,
+controlled by pragmas.
+
+## What is supported in HLS
+
+HLS targets functions.
+First we consider the interfaces of a hardware module implementing a function in C/C++.
+Functions are supposed to be called in sequence,
+and mechanisms ensuring this may be called [block-level interface protocol](#sequential-relation-between-function-calls).
+We also have loop and reset signals for the control flow,
+and we further need to know how arguments are synthesized,
+that's to say, *port-level interface protocol*.
+Different types of arguments,
+including [pointers](#pointers), [streams](#streaming),
+need different treatments.
+Finally we consider the control flow within the function,
+including [loops](#how-loops-are-implemented)
+and [branches](#how-branches-are-implemented),
+as well as [parallelism](#parallelism) that is both important in CPU programs and in HDL.
 
 ## How loops are implemented
 
@@ -681,6 +767,87 @@ we still should expect the worst
 and wait until even the most painstaking branch has finished,
 or otherwise we're in the risk of timing violation.
 
+## Parallelism
+
+It makes no sense if the RTL generated by HLS is executing one instruction per clock cycle:
+in this case we're just reinventing (a rather slow) CPU.
+Good RTL has a lot of parallelism.
+It's more like *instruction-level parallelism* and less like multithreading:
+if two code blocks are independent to each other,
+then they can be synthesized separately.
+Multithreading-like parallelism does exist in loop unrolling:
+when iterations of a loop are big but largely independent,
+after they get unrolled, they're synthesized into identical copies of circuits that run like threads.
+
+"Full" multithreading or even MPI-like multi-tasking involving data exchange between threads
+is also theoretically possible.
+
+## Pointers
+
+Pointers have to be used to specify output variables
+to fit RTL semantics into C semantics:
+```C
+void do_something(int input1, int *output1) {
+    // ...
+    *output1 = xxx;
+}
+```
+And `do_something` can then be called in another module to modify some of the internal memories of the latter,
+as if we can define addresses for these internal memories.
+
+Apart from this, "real" pointers can be used to visit block RAMs.
+Distributed RAMs on the other hand are not supposed to be visited by pointers.
+
+## Streaming
+
+Some programs are supposed to be real-time:
+that's to say, in an ordinary program,
+an argument is not supposed to change within one invokation,
+but in a real-time program, because an input variable is attached to some sensor or things like that
+or is maintained by a mouse driver or keyboard driver
+(the two scenarios are semantically the same), 
+or because an output variable is to be set to several different values within one invokation,
+that's no longer the case.
+The keyword `volatile` in C is used to label an argument
+that changes when it's not supposed to change.
+
+The `volatile` semantics is also important in HLS,
+for obvious reasons:
+if several accesses are made to the same variable,
+optimization often combines them into one,
+but if that variable is volatile,
+this shouldn't be done.
+
+A better, more semantically clear way to capture such behaviors
+is to use a stream object,
+which can be read or written to.
+A volatile output variable, when received by another function as an input variable,
+should also be recognized as volatile in the second function.
+But if you don't realize that it is volatile,
+you may be tempted to do non-justified optimizations.
+On the other hand, if an output variable is a stream,
+then when it gets passed to another function,
+we will never think that several `stream.read()` statements are to be combined into one.
+
+## Sequential relation between function calls
+
+The program `func1(a, b, &c); func2(c);` requires `func2` to run after `func1` is finished
+because `c` may be modified in `func1`.
+It's not likely that all functions are going to finish within one clock cycle
+(though [sometimes we want them to](#note-on-timing)),
+If `c` gets synthesized into a register - which is quite likely -
+we can keep `func2` running and eventually the new value of `c` will "propagate" into `func2`,
+so the timing between the two is guanranteed.
+The problem however is in the output we have no idea
+whether `func2` is processing nonsense or is giving sensible data.
+It's usually a good idea to have flags specifying
+whether a hardware implementation of a function has finished,
+or is running,
+or is ready for the next batch of input.
+This is not a problem in procedural programming
+because we have a global program counter,
+but in HDL we don't, and the sequential logic has to be done "locally".
+
 ## Note on timing
 
 The frequency of the clock is not necessary better if it's higher.
@@ -691,5 +858,3 @@ we have a fixed time waste.
 Reducing the clock frequency
 and chaining several operations into one which neatly fits into one clock cycle
 in this case is a much better option.
-
-## Pointers
