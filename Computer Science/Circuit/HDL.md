@@ -298,6 +298,15 @@ which may also change the internal state of the object.
 
 The `always` block is used to listen to 
 
+Note that from the semantics of event listening,
+it's not impossible that two event listeners are triggered at the same time,
+and possible data race will appear between the two.
+Verilog's semantics is inherently concurrent,
+because hardware is indeed concurrent:
+two event listeners are just two sub-circuits connected to the same wire
+that expresses the "event",
+and of course they run in parallel.
+
 ## Assignments: continuous
 
 Assignments in Verilog can be divided into continuous assignments
@@ -361,15 +370,34 @@ So instead we may write a continuous assignment `assign c_w = a + b` outside the
 and then write `c <= c_w` in the `always` block.
 Actually this is how `c <= a + b` is synthesized.
 
+When an input to the module - say `a` - is volatile,
+meaning that the way it changes cannot be simulated by any circuit logic in the current module
+(for example, it may change within one clock cycle),
+we can see the difference between procedural assignment and continuous assignment most clearly:
+a continuous assignment `b = func(a)` makes `b` volatile as well,
+but a procedural assignment `b = func(a)` records the value of `func(a)`
+and then `b` and `a` are detached from each other:
+the value of `b` only changes when the next procedural assignment comes.
+After synthesis the procedural assignment `b = func(a)` results in a register
+placed after the output wire of `func(a)` that "blocks" the volatile change of `a`.
+
+However, we can also understand continuous assignments as procedural assignments
+in event listeners listening to the change of `a`.
+In this understanding, there is no substantial difference between the two types of assignments.
+
 ## Summary of semantics of Verilog 
 
 The existence of procedural assignment statements to Verilog variables
 make the variables look like variables in procedural programming.
 The existence of continuous assignments and `always` block,
 however, makes them look like *tensors* in computational graphs in e.g. PyTorch,
-to which assignments may change the structure of the computational graph,
+assignments to nodes in which may automatically be forwarded to update values of other nodes
 or trigger events that are then handled by parallel event listeners.
-And actually, function calls are completely replaced by event listener in Verilog.
+(Automatic evaluation can also be seen as a part of event handling:
+whenever an assignment happens, some values are updated
+in this way we can understand Verilog purely as an event-driven language.)
+The functionality of calling a method on an object
+is replaced by sending a signal (i.e. assigning to a certain variable) to a module.
 
 If regarded as a programming language, Verilog is thoroughly event-driven,
 and in each event listener we have procedural programming
@@ -391,11 +419,6 @@ So again, the high-level/low-level distinction is theoretically not always a wel
 Moreover, Verilog puts these things together in a largely well-integrated way,
 unlike languages like C++.
 
-It should however be noted that the "computational graph plus event listener" picture 
-is not correct but not enough in actual hardware design,
-because computation takes time.
-Timing is of primary importance in hardware design.
-
 ## Keep the circuit in mind
 
 People often say that when writing Verilog,
@@ -415,7 +438,9 @@ while in digital circuit designing we usually just consider latency as something
 but regardless of how you see it, latency is there,
 which means if a `always` block is too complex,
 it probably will not finish in time before the next clock cycle comes,
-which makes the behavior of the circuit unpredictable.
+and the correct semantics is that the `always` block gets run again,
+leading to race conditions.
+Timing is of primary importance in hardware design.
 
 A problem that used to be serious but now has eased is coding style greatly influencing the structure of the synthesized circuit.
 If the synthesizer can't optimize the code well,
@@ -779,8 +804,13 @@ Multithreading-like parallelism does exist in loop unrolling:
 when iterations of a loop are big but largely independent,
 after they get unrolled, they're synthesized into identical copies of circuits that run like threads.
 
+It's often the case that two independent loops are *not* implemented in parallel,
+possibly because if they are to be implemented in parallel,
+the resulting state machine will contain too many states.
+
 "Full" multithreading or even MPI-like multi-tasking involving data exchange between threads
-is also theoretically possible.
+is also possible.
+Vitis HLS for example provides a "data flow" pragma for this.
 
 ## Pointers
 
@@ -798,7 +828,7 @@ as if we can define addresses for these internal memories.
 Apart from this, "real" pointers can be used to visit block RAMs.
 Distributed RAMs on the other hand are not supposed to be visited by pointers.
 
-## Streaming
+## Volatile variables
 
 Some programs are supposed to be real-time:
 that's to say, in an ordinary program,
@@ -806,21 +836,26 @@ an argument is not supposed to change within one invokation,
 but in a real-time program, because an input variable is attached to some sensor or things like that
 or is maintained by a mouse driver or keyboard driver
 (the two scenarios are semantically the same), 
-or because an output variable is to be set to several different values within one invokation,
+or because an output variable is to be set to several different values within one invokation
+(to, for example, periodically change what LED gets lightened),
 that's no longer the case.
 The keyword `volatile` in C is used to label an argument
 that changes when it's not supposed to change.
 
 The `volatile` semantics is also important in HLS,
-for obvious reasons:
+for obvious reasons (see e.g. [the end of this section](#assignments-in-sequential-logic)):
 if several accesses are made to the same variable,
 optimization often combines them into one,
 but if that variable is volatile,
 this shouldn't be done.
 
-A better, more semantically clear way to capture such behaviors
-is to use a stream object,
-which can be read or written to.
+## Streaming
+
+One way to "regularize" a volatile input is to turn it into a stream.
+(This may result in information loss,
+but hey, given the fact that actual hardwares take time to do computation,
+some data loss is inevitable,
+so why not making the sampling rate explicit?)
 A volatile output variable, when received by another function as an input variable,
 should also be recognized as volatile in the second function.
 But if you don't realize that it is volatile,
@@ -828,13 +863,35 @@ you may be tempted to do non-justified optimizations.
 On the other hand, if an output variable is a stream,
 then when it gets passed to another function,
 we will never think that several `stream.read()` statements are to be combined into one.
+Another advantage of using streams is that it makes simulation much easier,
+as by definition you can't simulate all possible behaviors of a volatile variable
+with standard C testbenchs.
+
+Another usage of streaming is for acceleration:
+if in a loop over an array, different iterations access independent components of the array,
+then the loop can be started *before* all components of the array come:
+in this case the array is to be replaced by a stream
+and the function is like 
+```C
+for (i = 0; i < max; i ++) {
+    input = stream.read();
+    // do something to the input
+    output.write(result);
+}
+```
+this can be seen as a more secure version of pipelining:
+if no data arrives yet the loop just stalls
+(the mechanism may be synthesized as attaching a "data arrived" flag into the stream module,
+and if at a clock cycle no data is found to be arriving,
+the function just stays in the idle state and the value of the register `result`,
+which is garbage, is not injected to `output`).
 
 ## Sequential relation between function calls
 
 The program `func1(a, b, &c); func2(c);` requires `func2` to run after `func1` is finished
 because `c` may be modified in `func1`.
 It's not likely that all functions are going to finish within one clock cycle
-(though [sometimes we want them to](#note-on-timing)),
+([sometimes we want them to for performance reasons](#note-on-timing), but not always),
 If `c` gets synthesized into a register - which is quite likely -
 we can keep `func2` running and eventually the new value of `c` will "propagate" into `func2`,
 so the timing between the two is guanranteed.
@@ -858,3 +915,6 @@ we have a fixed time waste.
 Reducing the clock frequency
 and chaining several operations into one which neatly fits into one clock cycle
 in this case is a much better option.
+
+There however is no need for an operation to complete in one clock cycle.
+Most of the time it's impossible.
