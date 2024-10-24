@@ -1,7 +1,9 @@
 Hardware description
 ==========
 
-This note is carried out in a round-by-round way.
+This note is carried out in a round-by-round way,
+starting from *high level synthesis*,
+i.e. converting ordinary programs into circuit logic.
 Therefore it may appear not so organized at the first glance,
 and should be read as a whole.
 We start by having a very brief overview of basic principles of digital circuit designing,
@@ -80,7 +82,7 @@ Sequential execution of a finite list of statements
 is in theory always implementable within the regime of combinational logic
 (in practice we may want to break them into several stages,
 and a stage variable, essentially a program counter, keeps track of the current stage:
-see [here](#keep-the-circuit-in-mind)),
+the reasons are discussed [here](#keep-the-circuit-in-mind)),
 provided that the variables are not accessed by other blocks of code.
 We may have things like `temp = a; a = b, b = temp`,
 but we can always routinely eliminates the intermediate variables
@@ -122,17 +124,45 @@ to implement two embedded loops.
 This however is rarely done in reality.
 
 In summary, the best way to turn a procedural code into digital circuits
-is to first rewrite unbounded loops are rewritten into a single large loop,
-and hence the loop body describes a *state machine*,
+is to first divide the algorithm into code blocks
+and assign a stage index to each of them,
+and then rewrite unbounded loops into a single large loop,
+the loop body of which takes the form of 
+```Verilog
+case (stage)
+    STAGE_0: begin
+        // Combinational logic, register assignments
+        stage <= next_stage;
+    end
+    STAGE_1: begin
+        // Combinational logic, register assignments
+        stage <= next_stage;
+    end
+end case 
+```
 and then it should be easy to automatically synthesize.
-This can be done manually,
-and the description of the state machine is actually
-what is known as [RTL](#register-transfer-level-rtl-description).
+What we're doing here is actually to extract the control flow structure of the algorithm
+into a finite stage machine,
+the state transfer of which is controlled by other variables (data flow),
+and `stage` is essentially the program counter,
+and `stage <= ...` corresponds to jump statements.
+At each state of the finite state machine,
+certain operations - the code segment corresponding to the value of the state variable - are done.
+Note that because actual hardwares are finite in size,
+the algorithm has a resource cutoff and [itself becomes a finite state machine](#turing-completeness),
+but this finite state machine is much larger than the finite state machine representing the control flow.
+
+So now we have seen that just using assignments to registers in clocked circuits,
+we can turn all procedural programs into hardware logic,
+following the procedure of cutting the program into pieces 
+and then use a finite state machine to handle the control flow between the pieces.
+We can do this transform manually,
+and describe the algorithm in terms of [register transfer level (RTL)](#register-transfer-level-rtl-description).
 After discussing the general ideas of RTL,
 we will dive into Verilog, a quite popular HDL,
 whose semantics we find is actually quite close to 
 [a computational graph together with a lot of event listeners](#summary-of-semantics-of-verilog).
-We can also use [C-to-RTL tools](#high-level-synthesis-hls).
+We can also use [C-to-RTL tools](#high-level-synthesis-hls) to automatically convert procedural codes into RTL.
 
 # Register transfer level (RTL) description
 
@@ -205,6 +235,10 @@ If, however, we consider the result of synthesizing,
 "merely" changing the upper bounds in the code does change a lot of the circuit structure.
 Without the bounds in mind, RTL is Turing complete,
 and with the bounds in mind, RTL describes finite state machines.
+(Note that very often when we talk about finite state machine in RTL,
+we're talking about a finite state machine that controls the stage of computation,
+or in other words, the control flow:
+see [here](#digital-circuits-compared-with-structured-programming)).
 
 ## Functional programming in circuit designing
 
@@ -592,6 +626,10 @@ meaning that there isn't enough room to put all the wires.
 
 # The target of synthesis
 
+We have seen that actual circuits have delays,
+and the question is how the delays are modeled.
+This urges us to go back to physics.
+
 ## The physics of circuits: general ideas, $L$ and $C$
 
 Here we have a brief overview of classical electronics.
@@ -755,7 +793,7 @@ This multi-stationary state nature of latches distinguish them from ordinary com
 
 Two latches can be used to make a flip-flop.
 
-# The generic circuit: FPGA
+## The generic circuit: FPGA
 
 CPU is an architecture to generically implement "programs".
 As is said above, digital circuits implement RTL "computational graph".
@@ -795,9 +833,12 @@ So now, by connecting the LUT memory and the flip-flop controlling the multiplex
 we can program the LUT into an arbitrary logic gate,
 with or without its output buffered in a flip-flop.
 
-Now we want to show that this kind of architecture can indeed emulate all digital circuits.
-The main problem will be routing,
-
+Now we want to know if this kind of architecture can indeed emulate all digital circuits.
+This is theoretically trivially true because by programming the routing tracks and switch boxes we can easily connect arbitrary two LUTs.
+The main problem will be whether there are enough tracks for routing,
+and there is in general no guarantee that a large circuit can be emulated before we run out of tracks.
+The FPGA architecture, after all, is designed to maximize the resources that can be placed on the chip,
+not to make hardware development for it easy.
 
 Actual FPGAs contain further components,
 including block RAMs (BRAMs), DSP blocks, and also IO blocks connected to the tracks.
@@ -1013,7 +1054,9 @@ but `output_stream_merged.read()` finishes only when there is data left in `outp
 and therefore before the threads finish their jobs (after which they are still running but have nothing left to do) the loop will not finish.
 And once the loop finish we get back to sequential execution again.
 From the perspective of hardware design,
-the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true before `number_of_expected_output` outputs are received.
+the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true
+before `number_of_expected_output` outputs are received
+(see [here](#sequential-relation-between-function-calls)).
 
 We can also combine the two types of parallelism together.
 It's trivially possible to use data-driven task-level parallelism in a control-drive task-level parallelism thread,
