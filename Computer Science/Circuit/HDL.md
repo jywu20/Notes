@@ -1,6 +1,22 @@
 Hardware description
 ==========
 
+This note is carried out in a round-by-round way.
+Therefore it may appear not so organized at the first glance,
+and should be read as a whole.
+We start by having a very brief overview of basic principles of digital circuit designing,
+and then, as all computable functions can be implemented in structured procedural programming,
+compare digital circuit designing and structured procedural programming,
+highlighting the fact that digital circuits can easily implement all elements in structured procedural programming
+but has a memory cutoff.
+This line of thinking eventually leads us to high-level synthesis,
+but we first discuss an easier version of programming-like digital design,
+namely register transfer level (RTL),
+and then introduce Verilog, a commonly used RTL hardware description language (HDL).
+Finally, we go back to HLS,
+and discuss how software concepts like functions, streaming, multithreading
+inform hardware designing. 
+
 # General ideas of digital circuit designing
 
 Designing a digital circuit is very different from programming in the ordinary sense.
@@ -61,7 +77,10 @@ The ideas developed in this section are related to both [RTL](#register-transfer
 and [high-level synthesis (HLS)](#high-level-synthesis-hls).
 
 Sequential execution of a finite list of statements
-is always within the regime of combinational logic,
+is in theory always implementable within the regime of combinational logic
+(in practice we may want to break them into several stages,
+and a stage variable, essentially a program counter, keeps track of the current stage:
+see [here](#keep-the-circuit-in-mind)),
 provided that the variables are not accessed by other blocks of code.
 We may have things like `temp = a; a = b, b = temp`,
 but we can always routinely eliminates the intermediate variables
@@ -358,17 +377,75 @@ while the latter takes effect after this `always` block,
 which means when we read `a` after `a <= ...` we're reading the old value.
 This sometimes makes programming easier:
 swapping two variables now is as simple as `a <= b; b <= a`.
-In synthesizing, block assignment is often used for intermediate variables,
+In synthesizing, block assignment is often used for intermediate variables (see below),
 while non-blocking assignment is often used for physical registers,
-because non-blocking assignment is closer to how flip-flops work.
+because non-blocking assignment is closer to how flip-flops work:
+to synthesize 
+```Verilog
+always @ (posedge clk) begin
+    a <= some_external_input;
+    b <= func1(a);
+    c <= func2(b);
+end
+```
+we can just add three registers corresponding to `a`, `b` and `c`,
+and connect `some_external_input` to the input of `a`,
+and connect the output of `a` to `func1`, the output of `b` to `func2`,
+and wire the outputs of `func1` and `func2` accordingly to the output of `b` and `c`:
+when a clock cycle starts, the output of a register will not immediately change,
+and therefore what get passed to `func1` and `func2` are all old values,
+therefore the synthesis result is consistent with the semantics of `<=`.
+On the other hand, in 
+```Verilog
+always @ (posedge clk) begin
+    a = some_external_input;
+    b = func1(a);
+    c = func2(b);
+end
+```
+we *cannot* wire the output of `a` to `func1`,
+because if this is the case, what `func1` gets is the old value of `a`.
+So we have to wire `some_external_input` to `func1`.
+Similarly in the synthesis of `c = func2(b)`,
+because the appearance of `b` corresponds to the new value,
+we should then connect the output of `func1` directly to `func2`.
 
-It's often possible to separate as much combinational logic as possible from sequential logic.
+The last code block can be rewritten into
+```Verilog
+always @ (posedge clk) begin
+    a_new = some_external_input;
+    b_new = func1(a_new);
+    c_new = func2(b_new);
+
+    a <= some_external_input;
+    b <= b_new;
+    c <= c_new;
+end
+```
+The first three lines are blocking assignments,
+but as the data flows in and out of `a_new`, `b_new` and `c_new` all happen within one `always` block,
+the final synthesis result of the assignments is essentially combinational logic 
+and can be replaced by continuous assignments outside the `always` block.
+Importantly, the registers `a_new`, `b_new` and `c_new` actually are *not* synthesized into physical registers.
+That's way blocking assignments are often used only for intermediate results:
+their semantics, when important to the sequential behaviors, need some hack to implement with actual hardware,
+but as intermediate variables, they actually represent *combinational wiring*.
+Another way - a more hardware-oriented way - to see this is to notice that 
+according to the discussion above, after a statement `a_new = ...`, when `a_new` appears,
+it's the `...` expression that gets directly wired to the follow-up logic,
+so `a_new`, if implemented as a physical register,
+is just a register recording the result of `...` at each clock cycle,
+which however is never read,
+so it can be removed.
+
+The intermediate blocking assignments, as is mentioned above, are just combinational logic,
+so in principle they can be moved out of the `always` block.
 Suppose we have a `c <= a + b` non-blocking assignment in an `always` block.
 It's sequential logic,
 but the `a + b` part actually can be replaced by a wire that comes from a continuous assignment outside the `always` block.
 So instead we may write a continuous assignment `assign c_w = a + b` outside the `always` block,
 and then write `c <= c_w` in the `always` block.
-Actually this is how `c <= a + b` is synthesized.
+This is how any assignment with an expression on the right hand side, like `c <= a + b`, is synthesized.
 
 When an input to the module - say `a` - is volatile,
 meaning that the way it changes cannot be simulated by any circuit logic in the current module
@@ -441,6 +518,70 @@ it probably will not finish in time before the next clock cycle comes,
 and the correct semantics is that the `always` block gets run again,
 leading to race conditions.
 Timing is of primary importance in hardware design.
+
+When a `always` block is too complicated to finish in a clock cycle
+we have to options.
+We either make the clock cycle longer,
+or break the combinational logic in the `alway` block into several stages,
+each of which finishes within one clock cycle,
+and the output of each stage is stored in certain registers,
+and then set up a state variable that goes like stage 0, stage 1, stage 2, stage 3, ..., stage 0, stage 1, stage 2, stage 3, ...,
+and the module only talks to the outside world when the state of the system is at stage 0.
+Thus an `always` block that takes too long to finish, like this:
+```Verilog
+always @ (posedge clk) begin
+    a = func1(external_input);
+    b = func2(a);
+    c = func3(b);
+    output_wire = c;
+end
+```
+is replaced by 
+```Verilog
+always @ (posedge clk) begin
+    case (state) 
+        STAGE_0: begin
+            stage <= STAGE_1;
+            a <= func1(external_input);
+        end
+        STAGE_1: begin
+            stage <= STAGE_2;
+            b <= func2(a);
+        end
+        STAGE_2: begin
+            stage <= STAGE_3;
+            c <= func3(b);
+        end
+        STAGE_3: begin
+            stage <= STAGE_0;
+            output_wire <= c;
+        end
+    endcase
+end
+```
+provided that `func1`, `func2` and `func3` all finish within one clock cycle.
+`external_input` is only read when the module is at `STAGE_0`:
+otherwise it's just ignored.
+
+On interesting question would be why don't we just ignore the clock altogether and use a busy flag (basically, a simplified version of `stage`) that gets set to true when an external input arrives,
+which then prevents the module from accepting external input until the task finishes,
+and let the combinational logic in the module run, ignoring the clock.
+In theory we of course can. However there are some problems.
+The first problem is the combinational logic doesn't really "know" when it finishes (it's just a complicated semiconductor device with a funny stimulus-response curve),
+so some additional mechanisms are needed.
+If the total time cost of the combinational logic is known,
+that we still need a `stage` variable to keep an eye on the beats ("0...1...3...4... - the combinational logic should already be finished right now"),
+and using registers to keep intermediate results makes the circuit more robust.
+If the total time cost of the combinational logic is *not* known
+(when, for example, we have unbounded loops),
+then each component with a determined time cost of the computation needs a timer that notifies the next stage that the results are ready (and complicated handshaking protocols),
+and we're in the regime of asynchronous circuit designing.
+The conclusion is that within the synchronous circuit designing methodology,
+breaking a long calculation into stages and use a `stage` variable to keep track of the current stage is desirable. 
+The `stage` variable is essentially the program counter here.
+Note that in synchronous circuits we also need handshake signals if the combinational logic takes more than one clock cycle to finish:
+this corresponds to how `return` is implemented in structural programming,
+[and is related to HLS](#sequential-relation-between-function-calls).
 
 A problem that used to be serious but now has eased is coding style greatly influencing the structure of the synthesized circuit.
 If the synthesizer can't optimize the code well,
@@ -741,14 +882,34 @@ The compromise is to pick up a language - usually C or C++ in practice -
 and synthesize only a subset of it,
 controlled by pragmas.
 
-## What is supported in HLS
+## HLS synthesizes functions
 
-HLS targets functions.
-First we consider the interfaces of a hardware module implementing a function in C/C++.
-Functions are supposed to be called in sequence,
-and mechanisms ensuring this may be called [block-level interface protocol](#sequential-relation-between-function-calls).
-We also have loop and reset signals for the control flow,
-and we further need to know how arguments are synthesized,
+HLS targets functions, which are natural counterparts of modules in RTL, with some caveats.
+The way the synthesis result of a function is supposed to be used is called the interface of the module,
+and here we discuss some issues in interface synthesis.
+
+The first caveat is that
+ordinary functions are supposed to be called in sequence,
+and mechanisms ensuring this may be called *block-level interface protocol*.
+We can use a handshake protocol to make sure the sequential order is right,
+as in [here](#sequential-relation-between-function-calls).
+It's also possible to have no time order ensuring mechanism at all:
+in this case we need to make sure the input data are given at the correct time and held for enough time,
+and that what's supposed to read the output starts to read the output in time.
+
+Some functions are supposed to be run over and over again,
+because they are actively reading from input streams and writing to output streams.
+In software engineering, they are to be *launched* by some thread launching functions,
+the implementation details of which are usually hidden from the user.
+In HLS, the interface synthesis of these functions needn't consider any sequential time order insurance,
+and the arguments (see below) can only be streams.
+An example is given in [the documentation of Vitis](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Data-driven-Task-level-Parallelism).
+If in a top-level function we only see thread launching and not ordinary function calls,
+the synthesis result will be a giant pipeline:
+you put a data stream at one side (the temporal separation between two data points should be long enough)
+and you get a steady stream at the other side.
+
+We further need to know how arguments are synthesized,
 that's to say, *port-level interface protocol*.
 Different types of arguments,
 including [pointers](#pointers), [streams](#streaming),
@@ -757,6 +918,9 @@ Finally we consider the control flow within the function,
 including [loops](#how-loops-are-implemented)
 and [branches](#how-branches-are-implemented),
 as well as [parallelism](#parallelism) that is both important in CPU programs and in HDL.
+
+Besides all signals for control and data flows and their intended usages (i.e. protocols),
+we also have the good old clock and reset signals on the interface.
 
 ## How loops are implemented
 
@@ -807,10 +971,56 @@ after they get unrolled, they're synthesized into identical copies of circuits t
 It's often the case that two independent loops are *not* implemented in parallel,
 possibly because if they are to be implemented in parallel,
 the resulting state machine will contain too many states.
+Vitis HLS provides a "data flow" pragma that results in multitasking
+that enables multitasking.
+In [the documentation of Vitis HLS](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Control-driven-Task-level-Parallelism),
+this type of parallelism is known as *control-driven task-level parallelism*.
 
 "Full" multithreading or even MPI-like multi-tasking involving data exchange between threads
-is also possible.
-Vitis HLS for example provides a "data flow" pragma for this.
+is also possible but has to be done by additional programming primitives.
+An example use case is discussed in with [streaming](#streaming),
+and functions that are launched as threads have special [interface synthesis](#hls-synthesizes-functions).
+[The documentation of Vitis HLS](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Data-driven-Task-level-Parallelism)
+calls this *data-driven task-level parallelism*.
+
+Control-driven task-level parallelism is kind of like OpenMP.
+Data-driven task-level parallelism is a restrained version of server development in software engineering,
+because it is not allowed to end a thread:
+all we can do is 
+```C
+while(1) {
+    // See if something new happens
+    // ...
+}
+```
+If we want threads to formally end,
+we can only use the `dataflow` pragma.
+But we don't need threads that are launched to end anyway:
+what we can do is 
+```C
+for (i = 0; i < N; i ++) {
+    launch_thread(worker_func, input_stream[i], output_stream_merged);
+}
+
+for (i = 0; i < number_of_expected_output; i ++) {
+    results[i] = output_stream_merged.read();
+}
+// do something with results
+```
+From the perspective of software,
+after the threads are launched, the second loop is run immediately,
+but `output_stream_merged.read()` finishes only when there is data left in `output_stream_merged`,
+and therefore before the threads finish their jobs (after which they are still running but have nothing left to do) the loop will not finish.
+And once the loop finish we get back to sequential execution again.
+From the perspective of hardware design,
+the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true before `number_of_expected_output` outputs are received.
+
+We can also combine the two types of parallelism together.
+It's trivially possible to use data-driven task-level parallelism in a control-drive task-level parallelism thread,
+and we can also employ the scheme sketched in the last code block
+to embed a complicated streaming algorithm into control-drive task-level parallelism,
+as is shown [here](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Mixing-Data-Driven-and-Control-Driven-Models).
+
 
 ## Pointers
 
@@ -867,7 +1077,13 @@ Another advantage of using streams is that it makes simulation much easier,
 as by definition you can't simulate all possible behaviors of a volatile variable
 with standard C testbenchs.
 
-Another usage of streaming is for acceleration:
+Stream programming - programming based on transforming a stream into another - 
+is actually a full programming paradigm,
+but again no human being really thinks in terms of streaming all the time.
+Instead, we use streaming as *tools* that improve certain aspects of traditionally designed algorithms,
+
+Besides the usage as a more semantically clear representation of volatile variables,
+streaming can be used for acceleration:
 if in a loop over an array, different iterations access independent components of the array,
 then the loop can be started *before* all components of the array come:
 in this case the array is to be replaced by a stream
@@ -886,6 +1102,28 @@ and if at a clock cycle no data is found to be arriving,
 the function just stays in the idle state and the value of the register `result`,
 which is garbage, is not injected to `output`).
 
+Just like the case in software engineering, in hardware designing,
+we can either write a stream-to-stream program, or a stream-to-array program.
+In the second case, we may still have stream-to-stream components (e.g. pipelines) in the design but eventually the stream gets collapsed into an array with an collection operation.
+
+One problem is how can two stream-to-stream functions be used together.
+We definitely can't do `func1(&stream1); func2(stream1, &stream2);`
+as it requires `func1` to finish first.
+In Java we have things like `stream.map(...).reduce(...)`.
+We can imagine implementing the same thing in HLS;
+note that the function call chain should be compile time decided
+or otherwise the code can't be synthesized as it involves dynamic allocation of resources.
+A more low-level programming paradigm is probably launching two threads,
+which in the context of HLS is just adding two modules that run together.
+This is known as [data-driven task level parallelism in Vitis HLS](#parallelism).
+Note that from the perspective of software engineering,
+the threads are launched by some launching functions,
+but in HLS the function calls are synthesized as directly putting the hardware implementations of the threads 
+as submodules of the top-level module
+(therefore dynamic thread dispatching is not allowed, which is expected because dynamic function calls involves dynamic memory allocation).
+A "wait until thread finish" loop should be synthesized as an additional state in the state variable of the top-level module.
+(This however is not supported by Vitis HLS, and is not necessary anyway - see discussion [here](#parallelism))
+
 ## Sequential relation between function calls
 
 The program `func1(a, b, &c); func2(c);` requires `func2` to run after `func1` is finished
@@ -896,14 +1134,24 @@ If `c` gets synthesized into a register - which is quite likely -
 we can keep `func2` running and eventually the new value of `c` will "propagate" into `func2`,
 so the timing between the two is guanranteed.
 The problem however is in the output we have no idea
-whether `func2` is processing nonsense or is giving sensible data.
+whether `func2` is throwing out nonsense or sensible data.
 It's usually a good idea to have flags specifying
 whether a hardware implementation of a function has finished,
 or is running,
 or is ready for the next batch of input.
 This is not a problem in procedural programming
 because we have a global program counter,
-but in HDL we don't, and the sequential logic has to be done "locally".
+but in HDL we don't, and the sequential relation has to be done "locally".
+
+If we reflect on how to decompose a sequential logic into two modules,
+the solution sketched here is actually the most natural way:
+basically we circle several subsequent states
+and use a single state (`DOING_FUNC1`) to represent them in the global state variable,
+and then add a local state variable to represent the details in `DOING_FUNC1`.
+The "this task has finished" signal activates the next local state variable,
+corresponding to the `return` statement.
+The "this task is not running and ready to take new input" signal provides additional safety
+to make sure it's not possible to have *two* program counters.
 
 ## Note on timing
 
@@ -911,7 +1159,7 @@ The frequency of the clock is not necessary better if it's higher.
 An operation should better fit in one clock cycle,
 or otherwise we will need to worry about data contamination,
 so if the clock cycle is slightly longer than an operation,
-we have a fixed time waste.
+we have a fixed time waste because nothing can be nothing until the second clock cycle finishes.
 Reducing the clock frequency
 and chaining several operations into one which neatly fits into one clock cycle
 in this case is a much better option.
