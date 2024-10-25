@@ -141,7 +141,7 @@ case (stage)
 end case 
 ```
 and then it should be easy to automatically synthesize.
-What we're doing here is actually to extract the control flow structure of the algorithm
+What we're doing here is actually to extract the *control flow* structure of the algorithm
 into a finite stage machine,
 the state transfer of which is controlled by other variables (data flow),
 and `stage` is essentially the program counter,
@@ -162,7 +162,9 @@ After discussing the general ideas of RTL,
 we will dive into Verilog, a quite popular HDL,
 whose semantics we find is actually quite close to 
 [a computational graph together with a lot of event listeners](#summary-of-semantics-of-verilog).
-We can also use [C-to-RTL tools](#high-level-synthesis-hls) to automatically convert procedural codes into RTL.
+We can also use [C-to-RTL tools, or in other words high-level synthesis (HLS)](#high-level-synthesis-hls) to automatically convert procedural codes into RTL.
+HLS compiles C/C++ functions into RTL modules,
+and therefore more subtleties like how to ensure the correct control flow between two functions arise.
 
 # Register transfer level (RTL) description
 
@@ -530,6 +532,15 @@ So again, the high-level/low-level distinction is theoretically not always a wel
 Moreover, Verilog puts these things together in a largely well-integrated way,
 unlike languages like C++.
 
+Despite this theoretical simplicity,
+since when writing down an algorithm, human beings thinks not in terms of 
+computational graphs or event listening
+but in terms of e.g. procedural programming,
+which has to be converted into state machines in Verilog
+(see the end of [here](#digital-circuits-compared-with-structured-programming)),
+Verilog codes in actual projects often involve boilerplates
+and understanding what they are actually doing is often hard.
+
 ## Keep the circuit in mind
 
 People often say that when writing Verilog,
@@ -780,6 +791,17 @@ just like [how a computational graph is evaluated](#summary-of-semantics-of-veri
 This is partly due to the separation between power and signal in digital circuits:
 the same high voltage line and low voltage line are connected to every logic gate,
 and the "input" voltage just controls whether the output wire is connected to the high voltage line or the low voltage line.
+
+We need to note that although digital circuits are often conceived as networks of controlled switches,
+they still cost energy to run.
+Even if the wires have zero conductance, the voltage of a register turning from low to high involves energy cost like the $CQ^2/2$ in capacitor charging.
+(In the case of a capacitor, the fact that the voltage on the capacitor grows from 0 to $CQ$ while the external voltage applied to the whole device is a constant $CQ$
+meas that there has to be some sort of $R$ in the system that takes the rest of the voltage:
+it can be ordinary resistance or radiation resistance,
+but it has to be some sort of resistance.
+Also note that in theory, the electromagnetic wave radiated in radiation resistance is not necessarily thermalized.
+This is related to the concept of reversible computing,
+in which as no information is discarded, zero heat generation is possible.)
 
 ## Stateful objects in digital circuits
 
@@ -1057,6 +1079,15 @@ From the perspective of hardware design,
 the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true
 before `number_of_expected_output` outputs are received
 (see [here](#sequential-relation-between-function-calls)).
+Note that the first `for` loop, in its essence,
+is a more advanced version of pipelining:
+we can write a pipelined algorithm in HLS 
+by launching a thread for each step in the algorithm,
+and the synthesis result is just a pipelined circuit.
+The main difference between pipelining and the first `for` loop is essentially
+that in pipelining we know that each step finishes within one clock cycle,
+so the streams can be replaced by simple registers.
+The second `for` loop is similar to the "result collector" after a pipeline.
 
 We can also combine the two types of parallelism together.
 It's trivially possible to use data-driven task-level parallelism in a control-drive task-level parallelism thread,
@@ -1167,6 +1198,21 @@ as submodules of the top-level module
 A "wait until thread finish" loop should be synthesized as an additional state in the state variable of the top-level module.
 (This however is not supported by Vitis HLS, and is not necessary anyway - see discussion [here](#parallelism))
 
+Finally we discuss some implementation details.
+The synthesis of a stream-to-stream function (or, more precisely, a stream-to-stream thread),
+if it only contains combinational logic,
+can be as simple as the synthesis of the combinational logic:
+the output is delayed for a while.
+This, of course, is faced by problems like how we can know that the output has already started,
+as is already seen [here](#keep-the-circuit-in-mind).
+Actual hardware implementations of streaming usually involves FIFO ports between modules.
+In this sense, function calls like `stream.read()` are more "real" compared with thread launching:
+in the synthesis result of `stream.read()`, we indeed have a memory module (a FIFO) corresponding to `stream`,
+and we indeed have a module corresponding to the `read()` method:
+what the module does is not too different from how a stream object is implemented in software engineering:
+first wait until `stream` is not locked and then lock `stream`,
+then check if there is data waiting to be read and if not wait until the data arrives, etc.
+
 ## Sequential relation between function calls
 
 The program `func1(a, b, &c); func2(c);` requires `func2` to run after `func1` is finished
@@ -1209,3 +1255,18 @@ in this case is a much better option.
 
 There however is no need for an operation to complete in one clock cycle.
 Most of the time it's impossible.
+
+## HLS as best practices for RTL designing
+
+Best practices or design patters in RTL often [naturally emerge from attempts to do HLS](https://www.reddit.com/r/FPGA/comments/1co3ifi/comment/l3ett4k/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
+Finite state machines correspond to control flows.
+Ready/valid protocols correspond to sequential relation keeping mechanisms that make sure `func1(&a); func2(a);` works:
+from the software perspective, the ready flag makes sure there is only one program counter when a function is being run,
+and the valid flag synthesizes the `return` statement.
+Streaming has direct counterparts in software engineering.
+Various parallelisms can be directly transplanted to hardware engineering,
+and pipelining can be seen as a reduced case of multithreading.
+Of course, RTL generated by HLS may contain more boilerplates than handwritten RTL,
+which sometimes makes optimization harder,
+so in the foreseenable future probably directly writing RTL will be a necessity 
+for anyone who needs to make a final product and not just prototypes.
