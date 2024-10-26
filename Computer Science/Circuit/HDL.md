@@ -351,7 +351,14 @@ which may also change the internal state of the object.
 
 ## Event listener
 
-The `always` block is used to listen to 
+The `always` block is used to register event listeners.
+The event being listened to is always the change of a value.
+Thus we may write `always @ (a) begin ... end`
+or `always @ (posedge a) begin ... end`.
+The event being listened to is called the *sensitivity list*.
+
+When the sensitivity list is `@(*)`,
+any changes to variables that are read in the `always` block are listened to.
 
 Note that from the semantics of event listening,
 it's not impossible that two event listeners are triggered at the same time,
@@ -391,6 +398,16 @@ Since continuous assignments semantically are function composition
 and practically always result in new wires and not new registers,
 in Verilog we have a `wire` keyword to hold the output of continuous assignments.
 
+From the perspective of software engineering,
+continuous assignments create a computational graph.
+We can view a computational graph as a composite function.
+Another perspective, which is less algebra-like but more consistent with the intuition of software engineers,
+is to view it as an event handler:
+whenever an assignment to one of the variable involved in the computational graph is detected,
+the event handler is invoked and updates the values of variables.
+This is exactly the semantics of the `always_comb` block in Verilog
+(or its earlier version, `always@(*)`).
+
 ## Assignments in sequential logic
 
 Now we consider assignments in sequential logic,
@@ -404,7 +421,7 @@ while the new value can be read after some gate circuits.
 So it seems that reading the *old* value is sometimes more straightforward
 in terms of synthesis.
 
-In Verilog, we have *blocks assignment* and *non-blocking assignment*.
+In Verilog, we have *blocking assignment* and *non-blocking assignment*.
 The terms are kind of misleading: *immediate and deferred assignment* seem to be better terms.
 In simulations, the former takes effect immediately,
 which means that after `a = ...`,
@@ -494,9 +511,29 @@ the value of `b` only changes when the next procedural assignment comes.
 After synthesis the procedural assignment `b = func(a)` results in a register
 placed after the output wire of `func(a)` that "blocks" the volatile change of `a`.
 
-However, we can also understand continuous assignments as procedural assignments
+## `always_` blocks
+
+As is said [here](#assignments-continuous),
+we can also understand continuous assignments as procedural assignments
 in event listeners listening to the change of `a`.
-In this understanding, there is no substantial difference between the two types of assignments.
+In this understanding, there is no substantial difference between continuous and sequential assignments.
+The semantics and hence synthesis results can be inferred from how the body of the `always` block is written.
+
+If a `always @(*)` block contains only combinational logic,
+it's equivalent to continuous assignment statements.
+If, however, we have branching statements that leave a variable to its old value in some situations, as in
+```Verilog
+always @ (*) begin
+    if (state == READY) intermediate = func(input);
+end
+```
+then `intermediate` is synthesized as a *latch*:
+its assignment can happen at *any* time, as long as `state` becomes `READY`.
+
+In newer versions of Verilog, we have three additional `always` blocks:
+`always_comb`, which is basically `always @(*)` that requires its content to be pure combinational logic;
+`always_latch`, which makes clear that registers in it are to be synthesized as latches;
+finally `always_ff`, which makes clear that registers in it are to be synthesized as flip-flops.
 
 ## Summary of semantics of Verilog 
 
@@ -506,9 +543,11 @@ The existence of continuous assignments and `always` block,
 however, makes them look like *tensors* in computational graphs in e.g. PyTorch,
 assignments to nodes in which may automatically be forwarded to update values of other nodes
 or trigger events that are then handled by parallel event listeners.
-(Automatic evaluation can also be seen as a part of event handling:
+This kind of automatic forwarding can also be seen as a part of event handling:
 whenever an assignment happens, some values are updated
-in this way we can understand Verilog purely as an event-driven language.)
+in this way we can understand Verilog purely as an event-driven language.
+Indeed, recently `always_comb` is added to Verilog 
+for description of continuous assignments in a more event-driven style.
 The functionality of calling a method on an object
 is replaced by sending a signal (i.e. assigning to a certain variable) to a module.
 
@@ -972,6 +1011,16 @@ the synthesis result will be a giant pipeline:
 you put a data stream at one side (the temporal separation between two data points should be long enough)
 and you get a steady stream at the other side.
 
+We note that even if a function is not intended to be launched as a thread,
+the final synthesis result of a function is supposed to be run over and over again as well.
+The point to have explicit primitives that allow us to define threads
+that respond to streaming inputs and run over and over again
+is to improve compositionality:
+otherwise to express the concept that two threads are to be run in parallel,
+we have to manually mix their statements together
+(and then let the HLS tool to find possibilities of parallelism),
+which makes the project unmaintainable.
+
 We further need to know how arguments are synthesized,
 that's to say, *port-level interface protocol*.
 Different types of arguments,
@@ -1270,3 +1319,14 @@ Of course, RTL generated by HLS may contain more boilerplates than handwritten R
 which sometimes makes optimization harder,
 so in the foreseenable future probably directly writing RTL will be a necessity 
 for anyone who needs to make a final product and not just prototypes.
+
+We see that we *can* understand hardware description in the mindset of software engineering.
+We however have two caveats.
+The first is that the most natural concepts in software engineering,
+including structured programming, functions, etc.
+are *not* primitives in RTL,
+and the elementary concepts in RTL pertain to event-driven programming,
+and needs adaption to implement the concepts in ordinary software programming.
+The second is that timing and low-level parallelism are significantly more important in hardware designing.
+What we're doing actually is to see how to ensure good performance
+given *low* clock frequency but *high* parallelism.
