@@ -530,10 +530,11 @@ end
 then `intermediate` is synthesized as a *latch*:
 its assignment can happen at *any* time, as long as `state` becomes `READY`.
 
-In newer versions of Verilog, we have three additional `always` blocks:
+In SystemVerilog, we have three additional `always` blocks:
 `always_comb`, which is basically `always @(*)` that requires its content to be pure combinational logic;
 `always_latch`, which makes clear that registers in it are to be synthesized as latches;
-finally `always_ff`, which makes clear that registers in it are to be synthesized as flip-flops.
+finally `always_ff`, which makes clear that registers in it are to be synthesized as flip-flops,
+and therefore reports an error when its body contains no sequential logic.
 
 ## Summary of semantics of Verilog 
 
@@ -1268,7 +1269,7 @@ The program `func1(a, b, &c); func2(c);` requires `func2` to run after `func1` i
 because `c` may be modified in `func1`.
 It's not likely that all functions are going to finish within one clock cycle
 ([sometimes we want them to for performance reasons](#note-on-timing), but not always),
-If `c` gets synthesized into a register - which is quite likely -
+If `c` gets synthesized into a physical register - which is quite likely -
 we can keep `func2` running and eventually the new value of `c` will "propagate" into `func2`,
 so the timing between the two is guanranteed.
 The problem however is in the output we have no idea
@@ -1282,7 +1283,7 @@ because we have a global program counter,
 but in HDL we don't, and the sequential relation has to be done "locally".
 
 If we reflect on how to decompose a sequential logic into two modules,
-the solution sketched here is actually the most natural way:
+the solution sketched here - the so-called *ready-valid protocol* - is actually the most natural way:
 basically we circle several subsequent states
 and use a single state (`DOING_FUNC1`) to represent them in the global state variable,
 and then add a local state variable to represent the details in `DOING_FUNC1`.
@@ -1290,6 +1291,62 @@ The "this task has finished" signal activates the next local state variable,
 corresponding to the `return` statement.
 The "this task is not running and ready to take new input" signal provides additional safety
 to make sure it's not possible to have *two* program counters.
+Note that here we see that sequential timing in software engineering
+corresponds to a best practice in hardware engineering,
+as having two program counters active in one function block
+results in hardware race conditions in the hardware implementation.
+
+## Object-oriented programming
+
+An object is basically a struct plus a set of methods,
+and therefore 
+```C++
+void some_function() {
+    Object obj(a, b, c);
+    // ...
+    obj.func1();
+    obj.func2();
+}
+```
+is synthesized as placing `obj.field1`, `obj.field2`, ... into module `some_function`,
+and the two method calls are synthesized into copies of 
+`obj.func1` and `obj.func2`, respectively.
+To avoid dynamic resource allocation (we cannot instantiate a module at runtime,
+which means we cannot do dynamic dispatching),
+the class of all variables must be determined at the compiling time:
+it is not allowed for a function to return an object
+of which we only know an abstract class.
+
+There is another way to synthesize object-oriented programming to RTL.
+A RTL module is literally a set of registers plus a set of event listeners,
+so it may have multiple functionalities and therefore qualifies as a hardware implementation of *object* in object-oriented programming.
+The method being called can be encoded as a signal passed into the module.
+Actually, if we allow `static` variables in functions in HLS,
+the same thing can also be done in HLS:
+```C
+void do_something(int code_of_what_to_be_done, int input1, int input2, int *output) {
+    static int status;
+    // ...
+}
+```
+What makes a RTL module more flexible is that a RTL module can be instantiated multiple times,
+while we cannot create multiple copies of a C function with  static variables inside.
+
+This module message passing approach, despite being viable, is not truly necessary anyway.
+If we think about the final synthesis result,
+we'll find that the main difference is how boundaries of modules are defined.
+Such a module, after synthesis, contains a copy and only one copy of the synthesis result of each of its methods,
+plus a decoder that decides which method to activate.
+Synthesis of an object as in object-oriented programming, on the other hand,
+results in possibly several copies of the same function,
+but by some optimization some of them can be removed,
+often leaving only one copy of each method being invoked.
+On the other hand, methods not called are not synthesized at all.
+The module-based approach on the other hand also includes 
+implementations of not used methods,
+which are however also subject to optimization.
+So as long as the tools are good at optimization,
+the final synthesis result of the two approaches will not be different.
 
 ## Note on timing
 
@@ -1313,8 +1370,9 @@ Ready/valid protocols correspond to sequential relation keeping mechanisms that 
 from the software perspective, the ready flag makes sure there is only one program counter when a function is being run,
 and the valid flag synthesizes the `return` statement.
 Streaming has direct counterparts in software engineering.
-Various parallelisms can be directly transplanted to hardware engineering,
-and pipelining can be seen as a reduced case of multithreading.
+Various parallelisms, from instruction level parallelism to multithreading, can be directly transplanted to hardware engineering,
+and pipelining can be seen as a reduced case of multithreading,
+while sequential execution can be seen as a way to prevent hardware race conditions.
 Of course, RTL generated by HLS may contain more boilerplates than handwritten RTL,
 which sometimes makes optimization harder,
 so in the foreseenable future probably directly writing RTL will be a necessity 
@@ -1328,5 +1386,36 @@ are *not* primitives in RTL,
 and the elementary concepts in RTL pertain to event-driven programming,
 and needs adaption to implement the concepts in ordinary software programming.
 The second is that timing and low-level parallelism are significantly more important in hardware designing.
-What we're doing actually is to see how to ensure good performance
-given *low* clock frequency but *high* parallelism.
+Therefore, if we decide to view hardware engineering in the lens of software engineering,
+what we'll want to do is to write programs that run well with
+*low* clock frequency but *high* parallelism.
+
+Here is a rational reconstruction of fundamentals of digital circuit designing from the perspective of HLS:
+
+1. We have a multithreaded code. Things like pipelining are understood as multithreading as well.
+2. Object-oriented features, streaming, etc. are reduced to data shared by functions and function calls. Dynamic memory allocation has a physical upper bound and can be conceived as accessing a large but finite array of variables in practice. All data can be encoded into binary numbers, and thus sequences of bits.
+3. In each thread - a function that runs over and over again - the correct timing of successive function calls is implemented by the ready-valid protocol.
+4. We analyze the control flow of a single  - and rewrite it into several stages,
+   each of which modifies a variable at most once.
+   A finite state machine can then be constructed to represent the control flow,
+   with loops being represented as loops in the state diagram.
+   The operations done at each stage are data flows of that stage.
+5. We assume that we're designing clocked circuits. Switch between the stages is then triggered by the clock signals.
+   In actual designs, we need to pay attention to the relation between latency and clock cycle (and timing violations), to maximize the speed and avoid timing violations.
+6. Synthesis of all algorithms into hardwares therefore can be broke down to the follows:
+   a set of variables (or abstract *registers*), sometimes organized as arrays,
+   and a set of event listeners listening to the clock signal.
+   In the event listeners we can do assignment, operations, and branching.
+   Any event listener is *finite*:
+   unbounded loops, as is mentioned above, are to be expressed by a finite state machine.
+7. The event listeners can be further broke down into combinational logic (basically, computational graphs that evaluate their outputs whenever the inputs change, defined by continuous assignment `assign xxx = yyy` in Verilog) and sequential logic (`<=` in Verilog). Because each event listener is finite, we can also define blocking assignment (`=` in Verilog). We can generalize a little and allow event listeners to listen to anything and not just the clock signal, and hence combinational logic i.e. continuous assignments can also be expressed in terms of event listeners. Coding using primitives mentioned here is known as RTL.
+   Note that in RTL things that are independent to each other run in parallel
+   (and all parallelisms reduce to "instruction-level parallelism"),
+   so multithreading doesn't need special primitives:
+   it's just two modules running independently.
+8.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
+9.  Flip-flops can be made of latches. Latches can be made of combinational blocks with loops. Multiplexers and decoders are nothing but special combinational blocks. Memory blocks are made of flip-flops, decoders, and tri-state functions. So everything in theory is combinational blocks.
+10. Combinational blocks are made of logic gates (that's why Boolean logic is important), and, when the high-impedance state is needed, controlled switches. This is gate-level description.
+    Efficient gate-level design relies heavily on Boolean logic.
+11. Logic gates are also made of controlled switches. Controlled switches are made of transistors. This is transistor-level description. How to place transistors on chips is physics- or device-level description.
+
