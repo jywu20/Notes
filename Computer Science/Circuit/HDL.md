@@ -171,16 +171,17 @@ and therefore more subtleties like how to ensure the correct control flow betwee
 The variant of procedural programming that works on the concept of state machines and is sketched in the last section
 in which we have assignments and combinational logic
 is known as register transfer level (RTL) description.
-
 The meaning of the name is self-explained;
 one thing we need to note however is that the registers mentioned in RTL
 are not always physical registers:
-it's probably better to call them variables,
+here the term *register* is an abstract, semantic concept, 
+and it's probably better to call them variables,
 as they are abstract entities that, depending on whether their values need to be kept
 for the use of the next clock cycle,
 are sometimes realized as physical registers and sometimes just some wires.
 This distinction reminds us of how stateful programming is modeled in functional programming languages like Haskell;
 the implication of this is discussed [here](#functional-programming-in-circuit-designing).
+After synthesis a register may be a flip-flop, a latch, or simply a wire if it has no stateful behaviors.
 
 RTL is the theoretical basis of many hardware description languages (HDLs).
 Currently the most important HDLs are VHDL and Verilog.
@@ -324,7 +325,7 @@ Verilog is a widely used HDL.
 It's truly like a software programming language,
 in which we don't have direct access to concepts like gates or physical registers
 (in Verilog, the term "register" refers to abstract objects that keep the values they are assigned with;
-as is said above, registers or variables in Verilog may be synthesized as actual registers,
+as is said above, registers or variables in Verilog may be synthesized as actual physical registers i.e. flip-flops or memory blocks,
 or just as some wires coming out of some gates
 when actually they do not affect the state of the next clock period).
 
@@ -368,6 +369,27 @@ because hardware is indeed concurrent:
 two event listeners are just two sub-circuits connected to the same wire
 that expresses the "event",
 and of course they run in parallel.
+
+One thing worth noticing is that `@(...)` itself is a legit expression in Verilog:
+it just means "wait until ...".
+So `always @ (posedge a) begin ... end` is actually
+```Verilog
+always
+    @ (posedge)
+    begin
+        // ...
+    end
+```
+If we want to use non-synthesizable Verilog, we can also use `@` in the following way:
+```Verilog
+initial begin
+    @(posedge clk);
+    // ...
+end
+```
+this means to wait until `clk` increases,
+and then do the following operations.
+The code snippet above won't synthesize.
 
 ## Assignments: continuous
 
@@ -529,6 +551,10 @@ end
 ```
 then `intermediate` is synthesized as a *latch*:
 its assignment can happen at *any* time, as long as `state` becomes `READY`.
+In synchronous circuits, however, latches, even intended, make timing difficult because assignments can happen at any time.
+Flip-flops are almost always preferred.
+The only use of latches seems to be *making* flip-flops.
+In asynchronous design methodologies latches are important.
 
 In SystemVerilog, we have three additional `always` blocks:
 `always_comb`, which is basically `always @(*)` that requires its content to be pure combinational logic;
@@ -553,8 +579,8 @@ The functionality of calling a method on an object
 is replaced by sending a signal (i.e. assigning to a certain variable) to a module.
 
 If regarded as a programming language, Verilog is thoroughly event-driven,
-and in each event listener we have procedural programming
-(but unbounded loops have to be implemented by event-driven features),
+and in each event listener we have finite procedural programming
+(unbounded loops have to be implemented by event-driven features),
 while different event listeners run in parallel.
 All variables are like tensors in a deep learning framework because of continuous assignment,
 and we have natural constraints forbidding assignment to non-terminal nodes in the computational graph.
@@ -580,6 +606,18 @@ which has to be converted into state machines in Verilog
 (see the end of [here](#digital-circuits-compared-with-structured-programming)),
 Verilog codes in actual projects often involve boilerplates
 and understanding what they are actually doing is often hard.
+
+There is one important counterexample of the statement "human beings think in terms of procedural algorithms":
+the semantics of synchronous RTL is almost identical to *ladder diagrams* in programmable controller (PLC) programming.
+Unbounded loops can be added into ladder diagrams but usually in a slightly awkward way 
+(attaching a label between two rungs, and then add a jump command to one rung).
+Control engineers seem satisfied by ladder logic,
+so at least for some tasks, people are literally going to think in circuits!
+This in turn means that PLCs now are defined by how they are programmed,
+and although PLCs are traditionally made of CPUs,
+it's possible to program FPGAs with ladder diagrams,
+essentially turning a FPGA into a PLC.
+This is done for example in https://onlinelibrary.wiley.com/doi/10.1155/2022/8827417.
 
 ## Keep the circuit in mind
 
@@ -883,24 +921,43 @@ A LUT can emulate any logic gate with a given number of input wires:
 therefore it is actually a RAM,
 with the truth table of the gate being the data stored in the block
 and the input wires specifying the address to the data to be output.
-We may also want to specify whether the output of the LUT should be stored in a register.
+We may also want to specify whether the output of the LUT should be stored in a flip-flop.
 This can be done by linking the output wire of the LUT memory to two branches,
 one being a simple wire and the other being a flip-flop,
 and the two wires are then linked to a multiplexer,
 which is controlled by the output of another flip-flop.
 The second flip-flop receives a signal that controls whether the output of the whole thing
 comes from the simple wire or the flip-flop.
+The LUT, together with the two flip-flops and the multiplexer, is called a programmable logic block.
 
 So now, by connecting the LUT memory and the flip-flop controlling the multiplexer,
 we can program the LUT into an arbitrary logic gate,
 with or without its output buffered in a flip-flop.
-
 Now we want to know if this kind of architecture can indeed emulate all digital circuits.
-This is theoretically trivially true because by programming the routing tracks and switch boxes we can easily connect arbitrary two LUTs.
-The main problem will be whether there are enough tracks for routing,
+For synchronous circuits, this is theoretically trivially true.
+First, as is mentioned [here](#always_-blocks),
+any synchronous digital design eventually boils down to combinational blocks separated by flip-flops,
+and flip-flops are one-in, one-out objects,
+so it's not possible that two flip-flops are connected directly by some wires.
+Therefore for a combinational block with some flip-flops following it,
+we can always break the combinational block into intertwined LUTs,
+and the flip-flops are then attached to the nearest LUTs,
+and in this way we have converted the circuit into logic blocks connected together.
+Then, by programming the routing tracks and switch boxes,
+we can easily connect two arbitrary logic blocks,
+and now we show that in theory any synchronous circuit can be implemented by a FPGA.
+
+A major problem will be whether there are enough tracks for routing,
 and there is in general no guarantee that a large circuit can be emulated before we run out of tracks.
 The FPGA architecture, after all, is designed to maximize the resources that can be placed on the chip,
 not to make hardware development for it easy.
+
+Latches can also be synthesized in FPGAs because a latch can be made of logic gates with feedback loops.
+It's generally not encouraged to do so however,
+because of the possible timing problems and increased power cost.
+Moreover, it's generally not recommended to do anything asynchronous on FPGAs.
+All tools targeting FPGA assume your design is synchronous,
+and doing asynchronous designing on FPGAs wastes the clock on the chip.
 
 Actual FPGAs contain further components,
 including block RAMs (BRAMs), DSP blocks, and also IO blocks connected to the tracks.
@@ -1415,7 +1472,27 @@ Here is a rational reconstruction of fundamentals of digital circuit designing f
    it's just two modules running independently.
 8.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
 9.  Flip-flops can be made of latches. Latches can be made of combinational blocks with loops. Multiplexers and decoders are nothing but special combinational blocks. Memory blocks are made of flip-flops, decoders, and tri-state functions. So everything in theory is combinational blocks.
+    We also note that FPGAs can emulate the behavior of all digital circuits.
+    This is kind of like a Turing-completeness test,
+    where we demonstrate that at least one digital hardware architecture can emulate all other digital circuits.
+    Of course, for this to be a real Turing-completeness test,
+    we need infinite FPGA, which we don't have.
+    Other "do anything" chips include CPLD.
 10. Combinational blocks are made of logic gates (that's why Boolean logic is important), and, when the high-impedance state is needed, controlled switches. This is gate-level description.
     Efficient gate-level design relies heavily on Boolean logic.
 11. Logic gates are also made of controlled switches. Controlled switches are made of transistors. This is transistor-level description. How to place transistors on chips is physics- or device-level description.
 
+The levels above are of course never the only way hardware designing can be carried out,
+but it's indeed the industrial standard.
+Also, above the transistor-level description, almost everything can be done in SystemVerilog:
+gate-level description, for example, can be seen as a reduced case of RTL,
+as basic logic gates and flip-flops are semantically all modules on their own. 
+We can "implement" a logic gate with `always_comb` and `if` constructs and comparisons and assignments.
+We can "implement" a flip-flop with `always_ff`.
+Of course, in actual digital design, the reverse happens:
+`always_ff` is synthesized by flip-flops and `always_comb` is synthesized by logic gates.
+What we demonstrate here is that gate-level description is just reduced RTL,
+and gates, flip-flops, etc. semantically have no privileged status compared with other modules in RTL.
+Therefore in a Verilog file intended for synthesis,
+we can *infer* gate-level constructs (like when we use `always_ff` we are *inferring* that flip-flops are to be used),
+or we can directly and explicitly specify the gate-level constructs.
