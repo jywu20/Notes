@@ -92,6 +92,22 @@ Of course, if `a` and `b` are visited by other segments of programs,
 we need registers to hold their values,
 but still the sequential part would be minimal.
 
+When a sequential logic block is too long,
+there is another way to implement it:
+breaking it down into several stages
+and use a state variable to guide the execution of these stages.
+As is discussed below,
+*this* is the most generic way to encode control flows in digital designing.
+Correspondingly, the aforementioned way to implement sequential execution
+is actually *instruction-level parallelism* of sequential execution.
+This mismatch between the term "sequential structure" in procedural programming and in HDLs (discussed later in this note)
+needs to be noticed:
+"sequential" or "procedural" blocks in HDLs usually should be kept short
+(see [here](#keep-the-circuit-in-mind)),
+and are subject to various parallelism mechanisms which from the perspective of software engineering are instruction-level parallelism,
+while sequential blocks in procedural programming languages can be arbitrarily long
+and instruction-level parallelism often can only focus on a part of a long sequential block.
+
 Similarly, the if-else structure, if without loops inside,
 can be routinely implemented with combinational logic
 plus some sequential parts for bookkeeping of the values of the variables.
@@ -430,6 +446,30 @@ the event handler is invoked and updates the values of variables.
 This is exactly the semantics of the `always_comb` block in Verilog
 (or its earlier version, `always@(*)`).
 
+The advantage of the event-driving perspective is that it captures
+what happens when we have feedback loops.
+In the following code 
+```Verilog
+module sr_latch(sb, rb, q, qb)
+    input sb, rb;
+    output q, qb;
+
+    nand(q, sb, qb);
+    nand(qb, rb, q);
+endmodule
+```
+the last two statements instantiate two nand gates,
+which is equivalent to continuous assignment to `q` and `qb` of `sb` nand `qb` and `rb` nand `q`.
+The behavior of the feedback loop seems uncertain if we view the code as a computational graph.
+If, instead, we view the two continuous assignment statements as two `always@(*)` event listeners,
+then what happens is clear:
+if an external assignment of `sb` to 1 happens, then the first event listener is triggered, and if `qb` currently is 0,
+then `q` gets assigned to 1.
+This in turn triggers the second event listener,
+and if `rb` is current 1 then `qb` becomes 0.
+Now the second event listener triggers no value change, so no further event listening is needed, and the simulation continues to the next event.
+The procedure sketched here is exactly how a SR-latch works.
+
 ## Assignments in sequential logic
 
 Now we consider assignments in sequential logic,
@@ -581,7 +621,8 @@ is replaced by sending a signal (i.e. assigning to a certain variable) to a modu
 If regarded as a programming language, Verilog is thoroughly event-driven,
 and in each event listener we have finite procedural programming
 (unbounded loops have to be implemented by event-driven features),
-while different event listeners run in parallel.
+while different event listeners run in parallel,
+and independent statements in one event listener also run in parallel.
 All variables are like tensors in a deep learning framework because of continuous assignment,
 and we have natural constraints forbidding assignment to non-terminal nodes in the computational graph.
 Event listeners and variables they share are organized into modules,
@@ -591,7 +632,7 @@ in the same way a neural network module is instantiated in a bigger network.
 
 It can be seen that several paradigms that are traditionally considered as high-level - 
 event listening, computational graph,
-and possible parallelism originating from the structure of the computational graph - 
+and parallelism whenever possible from the structure of the computational graph - 
 are integrated parts of Verilog,
 which however is generally considered a low-level description.
 So again, the high-level/low-level distinction is theoretically not always a well-defined concept.
@@ -618,6 +659,16 @@ and although PLCs are traditionally made of CPUs,
 it's possible to program FPGAs with ladder diagrams,
 essentially turning a FPGA into a PLC.
 This is done for example in https://onlinelibrary.wiley.com/doi/10.1155/2022/8827417.
+(There however is one caveat: ladder logic can be seen as *relay logic*
+if we ignore the side effect caused by assignments,
+and relay logic is different from transistor logic:
+in relay logic 0 and 1 are represented by current levels,
+while in transistor logic 0 and 1 are replaced by voltages.
+Therefore in relay logic we have serious fan-out problems,
+as making copies of a signal requires non-trivial designs like a signal regeneration stage,
+which accepts the weakened signal and provides a fresh, full-strength current for the next stage.
+So although the semantics of ladder diagrams can be transparently translated to RTL,
+the diagram itself is *not* the digital circuit diagram corresponding to the RTL.)
 
 ## Keep the circuit in mind
 
@@ -900,7 +951,7 @@ As is said above, digital circuits implement RTL "computational graph".
 Digital circuits are more flexible - sometimes too flexible,
 and we'd like something that can emulate any other circuits,
 executing a RTL "computational graph" just like a CPU executing instructions.
-There are many ways to do this,
+There are many ways to do this (and these solutions are known as programmable logic devices, PLD),
 and the most important one currently is known as
 field programmable gate array (FPGA).
 
@@ -947,17 +998,31 @@ Then, by programming the routing tracks and switch boxes,
 we can easily connect two arbitrary logic blocks,
 and now we show that in theory any synchronous circuit can be implemented by a FPGA.
 
-A major problem will be whether there are enough tracks for routing,
-and there is in general no guarantee that a large circuit can be emulated before we run out of tracks.
-The FPGA architecture, after all, is designed to maximize the resources that can be placed on the chip,
-not to make hardware development for it easy.
-
 Latches can also be synthesized in FPGAs because a latch can be made of logic gates with feedback loops.
 It's generally not encouraged to do so however,
 because of the possible timing problems and increased power cost.
 Moreover, it's generally not recommended to do anything asynchronous on FPGAs.
 All tools targeting FPGA assume your design is synchronous,
 and doing asynchronous designing on FPGAs wastes the clock on the chip.
+
+In actual designing,
+a major problem will be whether there are enough tracks for routing,
+and there is in general no guarantee that a large circuit can be emulated before we run out of tracks.
+The FPGA architecture, after all, is designed to maximize the resources that can be placed on the chip,
+not to make hardware development for it easy.
+If we indeed run out of tracks,
+we say we encounter a *routing congestion*.
+Note that it's quite likely that before we truly run out of tracks,
+timing violations already appear because it takes too long for a signal
+to propagate to where it should go to in one clock cycle.
+Solutions include manual floor planning
+and rewriting the RTL code.
+The general idea is to make the RTL as localized as possible:
+therefore a variable is not to be fanned out i.e. passed around infinitely,
+complex logic should be broken into small modules,
+and long `case` blocks should be somewhat simplified.
+These are of course also good ideas for software engineering in general,
+but in FPGA programming they have physical consequences.
 
 Actual FPGAs contain further components,
 including block RAMs (BRAMs), DSP blocks, and also IO blocks connected to the tracks.
@@ -1112,7 +1177,8 @@ and then we can first feed data in iteration 1 to operation 1,
 and then feed data in iteration 2 to operation 1
 and the output of operation 1 to operation 2,
 and so forth.
-This kind of design reduces the idle time of the operations.
+This kind of design reduces the idle time of the operations,
+and can be seen as [a reduced case of multithreading](#parallelism).
 
 ## How branches are implemented
 
@@ -1131,12 +1197,15 @@ or otherwise we're in the risk of timing violation.
 It makes no sense if the RTL generated by HLS is executing one instruction per clock cycle:
 in this case we're just reinventing (a rather slow) CPU.
 Good RTL has a lot of parallelism.
-It's more like *instruction-level parallelism* and less like multithreading:
+At the level of RTL, besides parallelism between different event listeners i.e. `always` blocks,
+all parallelisms are instruction-level parallelism:
 if two code blocks are independent to each other,
 then they can be synthesized separately.
+In HLS, we can still conceive some parallelism as multithreading.
 Multithreading-like parallelism does exist in loop unrolling:
 when iterations of a loop are big but largely independent,
-after they get unrolled, they're synthesized into identical copies of circuits that run like threads.
+after they get unrolled, they're synthesized into identical copies of circuits that run like threads,
+though we can also say that this is instruction-level parallelism after loop unrolling.
 
 It's often the case that two independent loops are *not* implemented in parallel,
 possibly because if they are to be implemented in parallel,
@@ -1186,14 +1255,14 @@ From the perspective of hardware design,
 the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true
 before `number_of_expected_output` outputs are received
 (see [here](#sequential-relation-between-function-calls)).
-Note that the first `for` loop, in its essence,
-is a more advanced version of pipelining:
+Note that pipelining can be manually described in the format of the first loop:
 we can write a pipelined algorithm in HLS 
 by launching a thread for each step in the algorithm,
 and the synthesis result is just a pipelined circuit.
 The main difference between pipelining and the first `for` loop is essentially
 that in pipelining we know that each step finishes within one clock cycle,
 so the streams can be replaced by simple registers.
+(Additional pragmas are needed to make sure the streams are replaced by simple registers.)
 The second `for` loop is similar to the "result collector" after a pipeline.
 
 We can also combine the two types of parallelism together.
@@ -1202,6 +1271,12 @@ and we can also employ the scheme sketched in the last code block
 to embed a complicated streaming algorithm into control-drive task-level parallelism,
 as is shown [here](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Mixing-Data-Driven-and-Control-Driven-Models).
 
+It should be noted that typical hardware implementations
+do not support a very large number of threads.
+On a FPGA, for example, [routing congestion will likely happen](#the-generic-circuit-fpga),
+because inevitably having a large number of threads
+means we need to pass data from a center to these threads,
+which requires a lot of wires to implement.
 
 ## Pointers
 
@@ -1447,9 +1522,16 @@ Therefore, if we decide to view hardware engineering in the lens of software eng
 what we'll want to do is to write programs that run well with
 *low* clock frequency but *high* parallelism.
 
-Here is a rational reconstruction of fundamentals of digital circuit designing from the perspective of HLS:
+# A rational reconstruction of description levels in digital circuit designing
 
-1. We have a multithreaded code. Things like pipelining are understood as multithreading as well.
+Here is a rational reconstruction of fundamentals of digital circuit designing, from the perspective of HLS to physical transistors.
+
+1. We have a multithreaded code written in an ordinary language, or probably the behavioral constructs of a HDL. Things like pipelining are understood as multithreading as well.
+   This may be known as *behavioral level* modeling.
+   Behavioral level designs can sometimes also be synthesized:
+   if they are written in C/C++ or sometimes Matlab or Fortran
+   this is known as high-level synthesis,
+   and if they are written in Verilog or VHDL this is known as behavioral synthesis.
 2. Object-oriented features, streaming, etc. are reduced to data shared by functions and function calls. Dynamic memory allocation has a physical upper bound and can be conceived as accessing a large but finite array of variables in practice. All data can be encoded into binary numbers, and thus sequences of bits.
 3. In each thread - a function that runs over and over again - the correct timing of successive function calls is implemented by the ready-valid protocol.
 4. We analyze the control flow of a single  - and rewrite it into several stages,
@@ -1470,25 +1552,34 @@ Here is a rational reconstruction of fundamentals of digital circuit designing f
    (and all parallelisms reduce to "instruction-level parallelism"),
    so multithreading doesn't need special primitives:
    it's just two modules running independently.
-8.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
-9.  Flip-flops can be made of latches. Latches can be made of combinational blocks with loops. Multiplexers and decoders are nothing but special combinational blocks. Memory blocks are made of flip-flops, decoders, and tri-state functions. So everything in theory is combinational blocks.
+8. Most HDLs provide serial or loop structures in the body of the aforementioned event listeners,
+   but these structures are confined in their complexities both in abstract semantics and in practical designing (because of problems like delay, etc.).
+   Therefore serial execution, `for` loop, etc. in HDLs are *not*
+   equivalent to serial execution, `for` loop, etc. in programming languages:
+   the canonical counterpart of the latter is finite state machines that represent the control flows.
+   The serial execution, `for` loop, etc. in HDLs are supposed to be *small*,
+   while serial execution, `for` loops in HLS which are implemented as finite state machines are supposed to be *big*.
+9.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
+10.  Flip-flops can be made of latches. Latches can be made of combinational blocks with loops. Multiplexers and decoders are nothing but special combinational blocks. Memory blocks are made of flip-flops, decoders, and tri-state functions. So everything in theory is combinational blocks.
     We also note that FPGAs can emulate the behavior of all digital circuits.
     This is kind of like a Turing-completeness test,
     where we demonstrate that at least one digital hardware architecture can emulate all other digital circuits.
     Of course, for this to be a real Turing-completeness test,
     we need infinite FPGA, which we don't have.
     Other "do anything" chips include CPLD.
-10. Combinational blocks are made of logic gates (that's why Boolean logic is important), and, when the high-impedance state is needed, controlled switches. This is gate-level description.
+11. Combinational blocks are made of logic gates (that's why Boolean logic is important), and, when the high-impedance state is needed, controlled switches. This is gate-level description.
     Efficient gate-level design relies heavily on Boolean logic.
-11. Logic gates are also made of controlled switches. Controlled switches are made of transistors. This is transistor-level description. How to place transistors on chips is physics- or device-level description.
+12. Logic gates are also made of controlled switches. Controlled switches are made of transistors. This is transistor-level description. How to place transistors on chips is physics- or device-level description.
 
 The levels above are of course never the only way hardware designing can be carried out,
 but it's indeed the industrial standard.
-Also, above the transistor-level description, almost everything can be done in SystemVerilog:
-gate-level description, for example, can be seen as a reduced case of RTL,
+Also, above the transistor-level description, almost everything can be done in SystemVerilog, in a quite uniform and coherent way.
+
+Gate-level description, for example, can be seen as a reduced case of RTL,
 as basic logic gates and flip-flops are semantically all modules on their own. 
 We can "implement" a logic gate with `always_comb` and `if` constructs and comparisons and assignments.
 We can "implement" a flip-flop with `always_ff`.
+
 Of course, in actual digital design, the reverse happens:
 `always_ff` is synthesized by flip-flops and `always_comb` is synthesized by logic gates.
 What we demonstrate here is that gate-level description is just reduced RTL,
@@ -1496,3 +1587,36 @@ and gates, flip-flops, etc. semantically have no privileged status compared with
 Therefore in a Verilog file intended for synthesis,
 we can *infer* gate-level constructs (like when we use `always_ff` we are *inferring* that flip-flops are to be used),
 or we can directly and explicitly specify the gate-level constructs.
+
+We also note that the boundaries between these different levels are all blurred.
+
+First, the boundary between RTL and behavioral description is not so clear.
+We definitely will not call statements like `sleep for 100 clock cycles`
+or `wait until some condition is met` RTL:
+if they are to be synthesized,
+quite non-local processes are to be done
+(as is discussed above: setting up a state variable, etc.).
+But a very large `always` block, which likely won't be finished within one realistic clock cycle,
+despite being semantically RTL,
+is not supposed to be synthesized directly and you can also argue that's behavioral and not RTL.
+
+Speaking of RTL,
+some companies' coding style guidelines suggest getting rid of `always` blocks almost completely,
+and using clearly combinational constructs as frequently as possible.
+We may still call this RTL when we have assignments;
+but turning assignments into wiring is trivial,
+and the result is quite close to gate-level description.
+So now we see three different ways to write RTL:
+- Structural RTL, where we use as much instantiation as possible,
+  and therefore `always` blocks are to be replaced by standard stateful modules.
+- Dataflow RTL, where we have assignments but they are mostly continuously assignments,
+  and `always` blocks are still largely absent.
+- Procedural RTL, where `always` blocks appear frequently.
+
+We may say structural RTL is more low-level and procedural RTL is more high-level:
+after all, structural RTL is closer to gate-level description,
+although as is discussed above,
+all the primitives involved in the three types of coding styles
+originate naturally from the general concept of RTL,
+and if we view `always` blocks as the ultimate primitives,
+then structural RTL is the most high-level.
