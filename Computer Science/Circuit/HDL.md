@@ -335,6 +335,30 @@ Once we have procedural programming, object-oriented programming and more seem n
 Therefore a large portion of Verilog is *not* synthesizable:
 they're there just for behavioral description, that's to say, for testing only.
 
+We need to add a quick comment about the criteria of being synthesizable.
+Of course, nothing is truly non-synthesizable,
+as we have already shown [here](#digital-circuits-compared-with-structured-programming)
+that all algorithms can be implemented in digital circuits.
+What makes a construct not synthesizable *in the sense of RTL* is 
+the impossibility to synthesize it in a compositional way.
+A `always` block in Verilog, introduced below, is synthesizable at the level of RTL,
+because it corresponds to a certain circuit module which contains some flip-flops
+and is connected to the clock signal, no more, no less,
+and if we have two `always` blocks, the synthesis results of them has nothing different from 
+the simple combination of the two `always` block synthesized separately.
+A generic procedural algorithm, on the other hand, is not synthesizable in this sense:
+if we put two procedures together,
+the synthesis result is *not* the same as the combination of the two procedures synthesized separately
+because we need to change the structure of the finite state machine.
+(Of course, we can also use handshake signals etc. but this also leads to area overhead -
+see [here](#hls-synthesizes-functions) and [here](#sequential-relation-between-function-calls).)
+
+So that's the difference between synthesis of RTL and synthesis of generic procedural algorithms:
+synthesis of RTL is very *localized*:
+changes of a line of Verilog code usually don't result in very limited changes to the gate circuit.
+This is the difference between RTL synthesis and high-level synthesis that synthesizes a generic procedural algorithm.
+Below, we discuss the two one by one.
+
 # Synthesizable building blocks of Verilog
 
 Verilog is a widely used HDL.
@@ -450,7 +474,7 @@ The advantage of the event-driving perspective is that it captures
 what happens when we have feedback loops.
 In the following code 
 ```Verilog
-module sr_latch(sb, rb, q, qb)
+module sr_latch(sb, rb, q, qb);
     input sb, rb;
     output q, qb;
 
@@ -1532,7 +1556,9 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
    if they are written in C/C++ or sometimes Matlab or Fortran
    this is known as high-level synthesis,
    and if they are written in Verilog or VHDL this is known as behavioral synthesis.
-2. Object-oriented features, streaming, etc. are reduced to data shared by functions and function calls. Dynamic memory allocation has a physical upper bound and can be conceived as accessing a large but finite array of variables in practice. All data can be encoded into binary numbers, and thus sequences of bits.
+2. Object-oriented features, streaming, etc. are reduced to data shared by functions and function calls. 
+   Dynamic memory allocation has a physical upper bound and can be conceived as accessing a large but finite array of variables in practice. 
+   All data can be encoded into binary numbers, and thus sequences of bits.
 3. In each thread - a function that runs over and over again - the correct timing of successive function calls is implemented by the ready-valid protocol.
 4. We analyze the control flow of a single  - and rewrite it into several stages,
    each of which modifies a variable at most once.
@@ -1559,7 +1585,13 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
    the canonical counterpart of the latter is finite state machines that represent the control flows.
    The serial execution, `for` loop, etc. in HDLs are supposed to be *small*,
    while serial execution, `for` loops in HLS which are implemented as finite state machines are supposed to be *big*.
-9.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
+   The *small* constructs are *timed*: the time costs of them matter,
+   and usually we expect them to finish within one clock cycle.
+   The *big* constructs are not timed. 
+   The *small* constructs are RTL and have very clear correspondence to the gate-level circuit design;
+   the *big* constructs are behavioral and belong to HLS if they are to be synthesized at all.
+9.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), 
+    multiplexers and tri-state functions (for branching), decoders (for array accessing), memory blocks, and combinational blocks.
 10.  Flip-flops can be made of latches. Latches can be made of combinational blocks with loops. Multiplexers and decoders are nothing but special combinational blocks. Memory blocks are made of flip-flops, decoders, and tri-state functions. So everything in theory is combinational blocks.
     We also note that FPGAs can emulate the behavior of all digital circuits.
     This is kind of like a Turing-completeness test,
