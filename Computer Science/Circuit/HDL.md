@@ -1581,8 +1581,9 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
 8. Most HDLs provide serial or loop structures in the body of the aforementioned event listeners,
    but these structures are confined in their complexities both in abstract semantics and in practical designing (because of problems like delay, etc.).
    Therefore serial execution, `for` loop, etc. in HDLs are *not*
-   equivalent to serial execution, `for` loop, etc. in programming languages:
+   equivalent to serial execution, `for` loop, etc. in programming languages and HLS:
    the canonical counterpart of the latter is finite state machines that represent the control flows.
+   
    The serial execution, `for` loop, etc. in HDLs are supposed to be *small*,
    while serial execution, `for` loops in HLS which are implemented as finite state machines are supposed to be *big*.
    The *small* constructs are *timed*: the time costs of them matter,
