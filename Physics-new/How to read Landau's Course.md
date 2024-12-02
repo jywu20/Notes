@@ -110,6 +110,15 @@ if we reflect on the Feynman diagrams involved,
 we soon realize that this leads to double counting.
 And if we consider "how to write down an effective theory for long wavelength electromagnetic modes only" for a while,
 we will never forget to do local field approximation.
+Yet another kind of sloppiness observed in some physics textbooks is that, say,
+some properties of an interactive system can be derived from an "effective Hamiltonian" or something like this by pretending that the system is non-interactive;
+a serious reader will immediately raise the issue that just because we can calculate some properties from the effective Hamiltonian doesn't mean we can calculate others.
+An effective Hamiltonian, for example,
+might actually be $H - \ii \Gamma C^\dagger C$ in a quantum master equation,
+from which we expect to see non-Hermitian band structures,
+but the stronger the non-Hermitian effects are,
+the stronger the quantum noises are,
+so the dynamics of the system at least is not completely determined by the "effective Hamiltonian".
 
 The problem with obsessing with formalisms of course is it prevents you from doing more concrete works.
 And sometimes it tempts you to try problems that are too hard
