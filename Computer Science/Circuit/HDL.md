@@ -1566,6 +1566,9 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
    with loops being represented as loops in the state diagram.
    The operations done at each stage are data flows of that stage.
 5. We assume that we're designing clocked circuits. Switch between the stages is then triggered by the clock signals.
+   This means the calculation within a stage should finish within in clock cycle,
+   or otherwise we need to slow down the clock,
+   or break down the stage into multiple stages.
    In actual designs, we need to pay attention to the relation between latency and clock cycle (and timing violations), to maximize the speed and avoid timing violations.
 6. Synthesis of all algorithms into hardwares therefore can be broke down to the follows:
    a set of variables (or abstract *registers*), sometimes organized as arrays,

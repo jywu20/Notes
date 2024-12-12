@@ -57,7 +57,7 @@ which means the interrupt handler finishes.
 The CPU then goes back to what it was doing before the interrupt.
 
 We can see that this mechanism is not that different from calling a subroutine:
-the only difference being that the invocation is not caused by a regular instruction,
+the only difference being that the subroutine invocation is not caused by a regular instruction,
 but by a certain value of one of the interrupt registers.
 This straightforward way to treat real-time IO shows an advantage of the instruction-based approach.
 Often, the real difference between equivalent formalisms 
@@ -75,6 +75,8 @@ and when a keystroke caused an interrupt,
 the keyboard driver, being called by the CPU to handle the interrupt,
 may clear the interrupts, make sure that it's not receiving another interrupt from an earlier keystroke,
 calling other programs (usually the OS) to take down what has been typed, etc.
+It is also a common way to implement *system calls*,
+where an application asks the operation system to do something for it.
 
 ## Accessing peripheral devices
 
@@ -116,7 +118,7 @@ One thing particular about disks is that the
 
 An *operation system (OS)* makes things easier for writing programs.
 It registers all drivers during initialization
-and 
+and also manages the page table for the virtual memory mechanism.
 
 ## Co-evolution of computer architecture and programming models
 
