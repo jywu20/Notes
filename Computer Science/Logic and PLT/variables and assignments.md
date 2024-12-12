@@ -164,6 +164,13 @@ On the other hand, call-by-sharing allows reseating, but with call-by-sharing, `
 
 In Fortran there are also pointers, but `pointer = xxx` i.e. reseating is done by a different operator: `pointer => ...`.
 
+In Rust, a reference can be reseated or in other words reassigned,
+and automatic dereference occurs in method calls and member accesses,
+so the Rust reference has very typical call-by-sharing properties.
+Note however in Rust, `*p = ...` is still available, and we have references to references.
+The Rust reference is therefore a good example of a (smart) pointer with call-by-sharing syntax sugars.
+
+
 # RAII and garbage collection 
 
 Evaluation strategies are about how resources are used.
@@ -173,4 +180,5 @@ Resource allocation usually means calling the `new` operator, which in turns cal
 Resource deallocation can be tricky because resources are finite after all, and problems like unclosed files, memory leakage, etc are to be avoided,
 but we also don't want a function to visit already freed resources, not knowing they're no longer there.
 
-We have seen that if resources are managed in a completely 
+- Garbage collection works well with pass-by-sharing languages
+- RAII works well with languages 
