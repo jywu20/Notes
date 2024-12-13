@@ -108,9 +108,9 @@ Nowadays usually a disk means a hard drive,
 but in earlier days we also have soft drives and CD or DVD drives.
 Disks are also "peripheral" in the sense that they are not a direct component 
 in the minimal CPU-memory von Neumann machine,
-so they are also managed by PCIe.
-
-One thing particular about disks is that the 
+so they are also managed by PCIe,
+and they are accessed by the CPU by the standard way the CPU visits peripheral devices:
+writing something or reading something to or from a designated address, etc.
 
 ## Virtual memory
 
@@ -119,6 +119,26 @@ One thing particular about disks is that the
 An *operation system (OS)* makes things easier for writing programs.
 It registers all drivers during initialization
 and also manages the page table for the virtual memory mechanism.
+The registered drivers handle the interrupts caused by 
+we trying to talk to the computer by typing, moving the mouse, touching the screen, etc.,
+and that's how we are able to talk to the computer.
+The OS also helps launch hosted programs
+and manages the memory space in an appropriate way
+so that the programs feel as if they are running in independent machines,
+and our mental model when designing a hosted program that just implements some algorithms can just be a RAM.
+When a hosted program indeed needs to talk to peripheral devices,
+it does system calls (often sealed into standard libraries),
+which again are just interrupts handled by the OS.
+
+## BIOS and bootstrap
+
+What is discussed above is how a computer works when it has already been started.
+But this doesn't answer the question how a computer is started,
+which is quite non-trivial,
+considering that so many things rely on the OS,
+which however is stored in the hard drive and not in the memory when a computer is about to start.
+The BIOS is responsible to load things into the memory and let CPU run them
+so that the computer can start.
 
 ## Co-evolution of computer architecture and programming models
 

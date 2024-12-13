@@ -18,10 +18,13 @@ A function call that returns non-references is also a rvalue.
 because it makes no sense to generate them on the fly:
 after compilation an integer literal becomes a part of a single `mov` instruction,
 but an array literal or a string literal is simply too long,
-and usually they are stored in the data section of a program
+and usually they are stored in [the data section of a program](c语言.md#内存分区)
 of which members *have* addresses.
 So a string literal or a array literal is to be understood as `const my_str = ...`,
-which is a l-value.)
+which is a l-value.
+Indeed, some early languages allow you to manipulate the data section manually,
+which however seems rather unnecessary because this can be immediately done
+with the functionalities in modern languages.)
 
 In practice, there may be a temporary variable that holds a rvalue.
 For example, there has to be a block in the memory that holds the return value of a function,
