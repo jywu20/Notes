@@ -82,9 +82,8 @@ and both of them have complicated semantics.
 If we are to embed the Fortran semantics to a more domain general language, like C++,
 it might be helpful to conceive array variables as *values* of the array descriptor type 
 (i.e. not pointers to array descriptors), 
-and the assignment operator is overloaded to enable this complicated behavior;
-the behaviors of argument association may be captured by 
-defining a macro like `FORTRAN_FUNCTION`, 
+and the assignment operator is overloaded to enable the complicated conversion rules between different array types when function calls happen.
+This may be captured by defining a macro like `FORTRAN_FUNCTION`, 
 which automatically generates the aforementioned `abcss(dimension(3));` lines,
 or alternatively it may be better captured by user-defined conversion rules 
 for converting one type of array (allocatable, for example) to another (fixed sized, for example).
@@ -131,7 +130,7 @@ void somefunction(arr_cref<float> arr, int n) {
     // ...
 }
 ```
-while parameterized types can be imitated by doing the same in the constructor.
+while parameterized types can be imitated by doing the same in the *constructor* (and *not* as a part of the template: it's `parametric_type(size_of_array)`, not `parametric_type<size_of_array>()`).
 The fact that assignment between fixed-size arrays with different sizes can be understood as the compiler being over cautious,
 or we can even dictate that once a `fortran.array` is initialized in a fixed-size way, 
 its size is never changed by the `=` operator, 
@@ -299,6 +298,15 @@ contains
 end module array_test
 ```
 results in `Error: Ambiguous interfaces in generic interface 'array_type' for ‘array_type_automatic’ at (1) and ‘array_type_fixed_3’ at (2)`.
+Therefore from the perspective of function dispatching, `integer, intent(in), dimension(:)` is the same as `integer, intent(in), dimension(3)`.
+If the two were different types, no such problem would occur.
+
+So our conclusion is that at least from the perspective of method dispatching, in Fortran there is one and only one array type.
+Parameterized types are to be regarded as types with automatically generated array coercion logic, not dependent types.
+Indeed we can visit the parameters of a parameterized type by simply writing `obj%parameter`, which is not something we expect in a language with dependent types.
+This is always how Fortran works: it provides you with features that are quite good for day-to-day scientific computing,
+which however are puzzling to make sense of from the general theory of programming language theory,
+but eventually are possible to make sense of if we choose to think in a simpler way.
 
 ## Fortran as a DSL for `np.array` with constraints
 
