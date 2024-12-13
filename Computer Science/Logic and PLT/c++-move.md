@@ -164,3 +164,6 @@ Indeed that's probably the only reason these rules exist.
 It's the r-value reference that makes RAII easy to use.
 And by virtue of `std::move` and so on,
 C++ allows us to call move constructors however we want.
+
+# Rust move semantics
+
