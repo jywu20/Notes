@@ -150,7 +150,8 @@ essentially creating a EDSL in the language with a different evaluation strategy
 which can also be achieved by adopting a very strict programming paradigm 
 (for example, "always use pointers!" - this is how `f2c`, a utility that turns Fortran programs into C program, works, by the way).
 
-In C++ overloading `.` is not possible, but we do have a reference type, which, when used, provides us call-by-reference semantics in the strict sense: thus after
+In C++ overloading `.` is not possible, so we can't implement our own reference type which allows us to use `.` to access the fields of the object referred to.
+There is however a reference type built in, which, when used, provides us call-by-reference semantics in the strict sense: thus after
 ```C++
 int i = 42;
 int& j = i;
@@ -162,7 +163,15 @@ This is known as the *inreseatable* feature of C++ references, which means the s
 Reseatability is what tells call-by-sharing from call-by-reference here.
 On the other hand, call-by-sharing allows reseating, but with call-by-sharing, `i` above can never be explicitly changed into a different value.
 
-In Fortran there are also pointers, but `pointer = xxx` i.e. reseating is done by a different operator: `pointer => ...`.
+We can emulate call-by-sharing in C++ if we can accept accessing fields by `->` and not `.`:
+just use `shared_ptr`.
+
+In Fortran there are also pointers, but `pointer = xxx` i.e. reseating is done by a different notation: `pointer => ...`.
+You can see that the viewpoint of a Fortran programmer is drastically from the viewpoint of a C++ programmer.
+For the latter, call-by-value is the default,
+and the C++ `typename &` syntax is just a more controlled way to use pointers;
+a Fortran programmer's variables are just a C++ programmer's references,
+and for the Fortran programmer, ordinary pointer assignments is an *additional* feature that needs a specific `pointer => ...` syntax.
 
 In Rust, a reference can be reseated or in other words reassigned,
 and automatic dereference occurs in method calls and member accesses,
