@@ -1589,9 +1589,11 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
    
    The serial execution, `for` loop, etc. in HDLs are supposed to be *small*,
    while serial execution, `for` loops in HLS which are implemented as finite state machines are supposed to be *big*.
-   The *small* constructs are *timed*: the time costs of them matter,
+   The *small* control flow constructs are *timed*: the time costs of them matter,
    and usually we expect them to finish within one clock cycle.
-   The *big* constructs are not timed. 
+   The *big* control flow constructs are not timed in this sense
+   because as long as the small control flow constructs making up them have no timing violation,
+   we don't need to consider timing when designing these big control flow constructs.
    The *small* constructs are RTL and have very clear correspondence to the gate-level circuit design;
    the *big* constructs are behavioral and belong to HLS if they are to be synthesized at all.
 9.  Synthesis of RTL boils down to flip-flops and latches (for registers in various stateful `always` blocks), 
