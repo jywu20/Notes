@@ -164,7 +164,26 @@ Reseatability is what tells call-by-sharing from call-by-reference here.
 On the other hand, call-by-sharing allows reseating, but with call-by-sharing, `i` above can never be explicitly changed into a different value.
 
 We can emulate call-by-sharing in C++ if we can accept accessing fields by `->` and not `.`:
-just use `shared_ptr`.
+just use `shared_ptr` to refer to all composite objects.
+One thing worth noting is the reference mechanism in C++ involves nothing about dynamic memory allocation:
+the reference mechanism is just there to remind programmers the safest ways to use pointers
+(that is, forget about you're dealing with pointers and program like a Fortran programmer).
+On the other hand, smart pointers are strongly intermingled with dynamic memory allocation:
+they deallocate the memory resources they manage when the number of references goes to zero or when they go out of scope. 
+Therefore it's *not* a good idea to use smart pointers to refer to variables on the stack:
+memory spaces on the stack are already well managed by the scope,
+so this may lead to double freeing, causing possible segment faults.
+(There is no problem pointing a reference to a variable on the stack.)
+So sometimes it's a good idea to use both references and smart pointers:
+this corresponds to allocatable variables in Fortran:
+the smart pointer manages the allocation and deallocation of memory,
+and the references read and write the memory blocks.
+Or, we can manage the allocation and deallocation of memory in the constructor and destructors of our own classes,
+essentially writing another kind of domain-specific smart pointer,
+and write some methods of the class to manipulate the data.
+`std::vector` is a good example.
+This time references should point to a `std::vector` object,
+not the heap memory addresses maintained by it.
 
 In Fortran there are also pointers, but `pointer = xxx` i.e. reseating is done by a different notation: `pointer => ...`.
 You can see that the viewpoint of a Fortran programmer is drastically from the viewpoint of a C++ programmer.
@@ -190,4 +209,4 @@ Resource deallocation can be tricky because resources are finite after all, and 
 but we also don't want a function to visit already freed resources, not knowing they're no longer there.
 
 - Garbage collection works well with pass-by-sharing languages
-- RAII works well with languages 
+- RAII works well with pass-by-value languages 
