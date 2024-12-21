@@ -133,7 +133,7 @@ it's the move constructor that does the magic.
 But the name `std::move` stronger suggests that conversion of a l-value to a r-value is usually only necessary when we want to trigger the move constructor.
 
 Sometimes we want to make things even more complicated.
-Suppose we want a function to accept a `unique_ptr`-like object that is expected to be mutated and will be discarded after this function call.
+Suppose we want a function to accept a `unique_ptr`-like object that is expected to be mutated and is to be discarded after this function call.
 That function's signature will then be 
 ```C++
 ReturnType func(unique_ptr&& ptr) {
@@ -154,8 +154,6 @@ A named r-value reference is still a l-value:
 but we can turn it into a r-value by `std::move`,
 whose return value is by definition *unnamed* and therefore is a r-value.
 
-One thing to note is that is a r-value reference is to be passed around,
-
 # Conversion rules between r-value references and l-value references
 
 `std::move` can actually be implemented using standard C++ primitives without special compiler supports.
@@ -167,6 +165,19 @@ Indeed that's probably the only reason these rules exist.
 It's the r-value reference that makes RAII easy to use.
 And by virtue of `std::move` and so on,
 C++ allows us to call move constructors however we want.
+
+We note that `std::move` itself is just type conversion
+and does nothing to the variable that's `move`d.
+What actually "moves" resources in the variable is the move constructor being called.
+It's not a good idea to use any moved variable:
+when `std::move` is called unto a variable,
+changes are that the resources managed by that variable are going to be shifted into another variable,
+and keeping using the original variable often results in undefined behaviors.
+But it's not `std::move` itself that does the resource movement.
+
+Another point to note is that the concept of ownership in kind of informal in C++:
+it's a concept that we use to prove that the behaviors of a program are expected,
+not something embedded into the design of the language.
 
 # Rust move semantics
 
