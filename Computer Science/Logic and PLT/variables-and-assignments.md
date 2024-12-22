@@ -14,6 +14,7 @@ a programming language can be said to be Turing complete.
 What matters, then, is how *dynamic* memory allocation is handled.
 
 The most straightforward way is to utilize the stack-heap distinction
+(note that what we're talking about here is more precisely the distinction between memory allocation on the stack frame and dynamic memory allocation; whether after compilation they are indeed implemented by a stack or a heap is not always clear; see [here](llvm.md).)
 and write a `malloc` function that allocates memory spaces on the heap.
 When the program is hosted, this of course involves coordination with the operation system over
 the mapping of physical memories to virtual memories;

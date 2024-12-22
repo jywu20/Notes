@@ -19,6 +19,9 @@ void f5(T&& p) {
 
 template <typename T>
 void f6(T&& p) {
+    // Although T&& p is a lvalue, std::forward<T>(p) is a rvalue:
+    // this is the so-called perfect forwarding.
+    // This solves the problem that whatever value, once getting a name, becomes a lvalue.
     f3(std::forward<T>(p));
 }
 
