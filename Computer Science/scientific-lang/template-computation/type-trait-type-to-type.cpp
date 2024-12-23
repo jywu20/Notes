@@ -3,7 +3,9 @@
 
 // The default case
 template <typename T>
-struct Magnitude
+// No <T> allowed here: this is a primary template without any specialization:
+// it's some sort of a default case.
+struct Magnitude 
 {
     using type = T; // To be visited by Magnitude::type
 };

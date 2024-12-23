@@ -6,27 +6,61 @@ and data flows are managed by elementary arithmetics and also pointer mechanisms
 the latter being the key for dynamic memory allocation in C,
 which is necessary for Turing completeness.
 
+## Non-optimized C is still a "high-level assembly language"
+
 The programming model of C, which assumes sequential execution,
+data and instructions being stored together,
 a single, continuous address space,
 and also global states,
 is not in complete agreement with modern computers.
 Because of the limited speed of data transferring between the memory and the CPU,
 modern computers have several layers of caches,
 making the memory structure no longer flat.
+Plus, modern CPUs often have split caches (one for data, another for instructions) and therefore are modified Harvard architectures.
 Serial execution is technically not true because we have instruction-level parallelism.
 Existence of global states adds additional complexities to multithreading,
 obliging programmers to lock and unlock shared resources.
+
 Still, designers of modern CPUs design their chips to make sure C programs can still be relatively straightforwardly compiled if we don't need very, very high speed:
-the process loading data into the cache is invisible even at the assembly level,
+the process loading data into the cache is invisible even at the binary code level,
 and instruction-level parallelism involves automatic dependency analysis of the binary code.
 So here we see co-evolution of CPUs and softwares:
 people have been familiar with programming with C-like languages,
-and hardwares are designed in a way to make C-like programming easy.
+and hardwares are designed in a way to make C-like programming easy,
+and in this sense, C, without magic optimizations, is indeed a high-level assembly language
+in the sense that the assembly language has been specially designed to make it easy to compile C code to it.
 
+We can imagine or even make machines with no memory and only caches surrounding cores,
+or machines that run Jave bytecode or whatever,
+but the programming model of them will be too different from that of C,
+causing serious ecosystem problems.
+As for modern CPUs,
+the true heavy lifting computations are done on a modified Harvard architecture with some internal parallelisms,
+all of which are however hidden at the instruction set level.
+You can say that non-optimized C is not a low-level language,
+but neither is assembly.
+The mismatch between C (and also the instruction set architecture) and the *true, true* low-level stuff in modern CPUs
+may make some tasks slow, but that's what we have now.
+
+## C's problem in compiler optimization
+
+When it comes to optimization, the problem of C is not that it's not low-level enough,
+but that its idiomatic form is not high-level enough.
 [Making programs even faster](../HPC/overview.md) is challenging and needs the collaboration of chip designers and compiler engineers. 
 Since as is mentioned above, no one wants to completely break the C-like hardware-software ecosystem,
 more and more techniques are invented in a kind of ad-hoc way
-to accelerate recurring patterns seen in C-like programming.
+to accelerate recurring patterns seen in C-like programming,
+which, unlike caching or instruction-level parallelism,
+*can* be controlled by assembly and C.
+Utilizing these mechanisms however only be deterministically done in C by calling compiler intrinsics
+(like the SIMD intrinsics) or by using compiler pragmas.
+OpenBLAS for example is mainly written in C (the Fortran files are for testing and reference)
+and it uses SIMD intrinsics and compiler pragmas.
+These however are too low-level and are for writing libraries only,
+and what we want is to write some C code and let the compiler to automatically apply these optimizations,
+*Automatic* optimization on *existing*, *human readable* codes proves hard in C,
+because C is *too low-level* this time.
+
 Operations like 
 ```C
 for (int i = 0; i < len; i ++) {
@@ -46,21 +80,26 @@ In the second listing, for example,
 are you sure that `p1` and `p2` are not pointing to the same address?
 
 We can summarize the situation into two statements:
-- Mainstream languages are still C-like in some sense.
+- Mainstream languages are still C-like in some sense, because due to the glorious past of C, modern CPUs are suppose to be friendly to C-like languages
+  (which is not probably identical to how things are done internally in the CPU 
+  but no programming language can influence how things are done internally in the CPU anyway).
 - C is not enough for optimization: not enough information is provided.
+  This is because C is too low-level and only neatly translates to the old, generic ways to do things
+  but not the new, optimized though less generic ways.
 
 The second point can be solved by adding pragmas or attributes (like `__restrict`) to C programs,
 or by using languages that do allow the programmer to promise that they won't do anything blocking possible optimizations
 (in Rust, for example, the ownership mechanism blocks possibilities that two pointers to be modified are pointing to the same address).
-
-Our discussions above highlight one fact.
+By doing so, we are essentially creating a dialect of C, i.e. *optimized* C,
+which is no longer supposed to be a transportable assembly language.
+Not saying this is necessarily a bad thing,
+but it does destroys one usage of C.
 C used to be a target language when people designed new programming languages.
 But if you compile Rust or, more hilariously, C with high performance pragmas to standard C...
 you lose all information you need for optimization.
 
-A modern compiler designer should have the two points in mind.
-They need a C-like intermediate representation,
-and they also need to make this IR hold as much information as possible.
+A modern compiler designer, therefore, needs a C-like intermediate representation,
+but they also need to make this IR hold as much information as possible.
 LLVM IR is a good example of such a IR:
 it's [C-like](#llvm-ir-and-c), but it allows the code generator to know [a lot more than what it knows when staring at C source codes](#attributes-in-llvm-ir).
 
