@@ -1,3 +1,69 @@
+# C as a compilation target
+
+C's abstract machine is a good representation of older computers like PDP-11,
+in which control flows are managed by sequential execution, `if`, `for` and `while`,
+and data flows are managed by elementary arithmetics and also pointer mechanisms,
+the latter being the key for dynamic memory allocation in C,
+which is necessary for Turing completeness.
+
+The programming model of C, which assumes sequential execution,
+a single, continuous address space,
+and also global states,
+is not in complete agreement with modern computers.
+Because of the limited speed of data transferring between the memory and the CPU,
+modern computers have several layers of caches,
+making the memory structure no longer flat.
+Serial execution is technically not true because we have instruction-level parallelism.
+Existence of global states adds additional complexities to multithreading,
+obliging programmers to lock and unlock shared resources.
+Still, designers of modern CPUs design their chips to make sure C programs can still be relatively straightforwardly compiled if we don't need very, very high speed:
+the process loading data into the cache is invisible even at the assembly level,
+and instruction-level parallelism involves automatic dependency analysis of the binary code.
+So here we see co-evolution of CPUs and softwares:
+people have been familiar with programming with C-like languages,
+and hardwares are designed in a way to make C-like programming easy.
+
+[Making programs even faster](../HPC/overview.md) is challenging and needs the collaboration of chip designers and compiler engineers. 
+Since as is mentioned above, no one wants to completely break the C-like hardware-software ecosystem,
+more and more techniques are invented in a kind of ad-hoc way
+to accelerate recurring patterns seen in C-like programming.
+Operations like 
+```C
+for (int i = 0; i < len; i ++) {
+    a[i] = b[i] + c[i];
+}
+```
+or 
+```C
+*p1 = *p1 + a1;
+*p2 = *p2 + a2;
+```
+for example, can be accelerated by SIMD.
+It is *here* where C in the modern world shows its greatest weakness:
+its *low-level-ness* means programmers often can't promise that they will *not* do something,
+and it's generally hard to make sure that a code indeed fits in an optimization trick.
+In the second listing, for example,
+are you sure that `p1` and `p2` are not pointing to the same address?
+
+We can summarize the situation into two statements:
+- Mainstream languages are still C-like in some sense.
+- C is not enough for optimization: not enough information is provided.
+
+The second point can be solved by adding pragmas or attributes (like `__restrict`) to C programs,
+or by using languages that do allow the programmer to promise that they won't do anything blocking possible optimizations
+(in Rust, for example, the ownership mechanism blocks possibilities that two pointers to be modified are pointing to the same address).
+
+Our discussions above highlight one fact.
+C used to be a target language when people designed new programming languages.
+But if you compile Rust or, more hilariously, C with high performance pragmas to standard C...
+you lose all information you need for optimization.
+
+A modern compiler designer should have the two points in mind.
+They need a C-like intermediate representation,
+and they also need to make this IR hold as much information as possible.
+LLVM IR is a good example of such a IR:
+it's [C-like](#llvm-ir-and-c), but it allows the code generator to know [a lot more than what it knows when staring at C source codes](#attributes-in-llvm-ir).
+
 # LLVM IR and C
 
 The big aspects of semantics of LLVM IR are quite similar to those of C.
@@ -90,7 +156,29 @@ This, of course, is due to the fact that LLVM IR is eventually to be compiled to
 binary codes running on a CPU, which has no debug mode and runs a program from the beginning to the end,
 and a function that can be suspended and resumed needs to be implemented in a more painstaking way.
 
-# Metadata in LLVM IR
+# Attributes in LLVM IR
 
 What makes LLVM IR drastically different from C is that
-it allows a wide range of metadata annotations.
+it allows a wide range of attribute annotations.
+Below is an instance of a LLVM IR code snippet from a Julia function that adds the two members of a struct together:
+```llvm
+;  @ REPL[2]:1 within `add`
+define i64 @julia_add_146([2 x i64]* nocapture noundef nonnull readonly align 8 dereferenceable(16) %0) #0 {
+top:
+;  @ REPL[2]:2 within `add`
+; ┌ @ Base.jl:37 within `getproperty`
+   %1 = getelementptr inbounds [2 x i64], [2 x i64]* %0, i64 0, i64 0
+   %2 = getelementptr inbounds [2 x i64], [2 x i64]* %0, i64 0, i64 1
+; └
+; ┌ @ int.jl:87 within `+`
+   %3 = load i64, i64* %1, align 8
+   %4 = load i64, i64* %2, align 8
+   %5 = add i64 %4, %3
+; └
+  ret i64 %5
+}
+```
+Note the long, long `nocapture noundef nonnull readonly align 8 dereferenceable(16)` sequence.
+
+Unlike its  elegant, orthogonal design C-like semantics, LLVM IR's attributes are more or less ad hoc,
+each of which supports a certain piece of information for possible optimizations.
