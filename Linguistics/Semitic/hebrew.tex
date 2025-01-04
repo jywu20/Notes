@@ -1,0 +1,520 @@
+\documentclass[a4paper, oneside, 12pt]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage{underscore}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+\usepackage{amsmath, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple, bookmarksnumbered]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[round]{natbib} 
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\newcommand*{\textto}{$\to$}
+\newcommand*{\textgt}{$>$ }
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+% Shorthands
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\newcommand{\deictictime}{T$_{\text{d}}$}
+\newcommand{\referredtime}{T$_{\text{r}}$}
+\newcommand{\orientationtime}{T$_{\text{o}}$}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = sfp}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{advp}{long = adverb phrase, short = AdvP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tame}{long = {tense, aspect, mood, evidentiality}, short = TAME}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+\DeclareAcronym{coca}{long = Corpus of Contemporary American English, short = COCA}
+\DeclareAcronym{sap}{long = speech act participant, short = SAP}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+\newcommand{\category}[1]{\textsc{#1}}
+\newcommand{\formcat}[1]{\textsc{#1}}
+\newcommand{\emptymorpheme}{$\emptyset$}
+\newcommand*{\fromto}[2]{\langle {#1}, {#2} \rangle}
+
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand{\bibname}{References}
+\setcitestyle{aysep={}} 
+
+% List format
+\setlist[enumerate,1]{label=\alph*\upshape)}
+
+\title{Modern Hebrew grammar}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\automath
+
+\chapter{Typological overview}
+
+\section{The clause}
+
+\subsection{Peripheral systems}
+
+We start by identifying nucleus clauses from possible clause linking devices.
+
+
+\subsection{Types of nucleus clauses}
+
+The existential clause seems to be incompatible with definite \acp{np}.
+
+\subsection{Subjecthood}
+
+
+\section{The noun phrase}
+
+\subsection{Syntactic environments}
+
+We start by discussing syntactic environments of noun phrases,
+and then their overall internal structures.
+
+\paragraph*{Noun phrases as arguments}
+Hebrew in general lacks a case system.
+There exists an object marker \form{et}.
+
+\paragraph*{Topicalization and focalization}
+
+\paragraph*{Question formation}
+Modern Hebrew \acp{np} do not permit \category{wh}-extractions
+\citep{shlonsky2012some}.
+
+\subsection{The construct state, the construct chain, and the linear template}
+
+Just like a clause, a noun phrase can also be divided into several systems.
+What prevents us from immediately doing a one-to-one comparison of these systems in Hebrew
+with those in English or French 
+is a peculiar feature of Hebrew and indeed all Semitic languages:
+the construct state.
+
+\paragraph*{Basic properties}
+
+The construct state is a unique genitive construction seen not only in Hebrew
+but also in other Semitic languages.
+A construct phrase consists of two obligatory components:
+first the ``head'' i.e. the possessed,
+followed by the possessor \citep[\citepage{26}]{glinert2004grammar}.
+It should be noted that the head is not restricted to nouns
+\citep[\citepage{25}]{glinert2004grammar}. 
+The head is in a special morphological form,
+known as the \concept{construct state},
+while the possessor is marked for its definiteness.
+Here we first focus on the nominal construct phrase.
+
+The head seems to have certain complexity constraints:
+it's usually a single word, although coordination also seems possible.
+The possessor on the other hand can contain multiple words.
+Adjectives modifying the head appears after the possessor
+\citep[\citepage{25}]{glinert2004grammar}.
+
+The possessor can also be a construct phrase,
+containing one possessor modifying the possessed,
+and again definiteness is only marked on the possessor.
+And now the possessor within the possessor can again be a construct phrase,
+and it goes on and on.
+The result is that we have a chain of nouns/coordinated nouns,
+with no adjectives separating them \citep{borer1999deconstructing},
+with a meaning of \translate{A of B of C of \dots}
+and definiteness is marked only on the last noun/coordinated nouns,
+which is the only component in the chain not in a construct state.
+This is known as a \concept{construct chain}.
+
+All adjectives appear after the construct chain.
+They can modify all components in the construct chain,
+and the word order is nested,
+and the dependency arcs do not cross each other:
+thus the word order corresponding to \translate{the colorful cairs of the new class}
+is chairs-\category{m.pl} \category{def}-class-\category{f} \category{def}-new-\category{f} \category{def}-colorful-\category{m.pl}
+\citep{borer1999deconstructing}.
+
+We note that the fact that the head is \emph{not} marked for definiteness.
+The definiteness of the whole phrase seems to be consistent with the definiteness of the possessor,
+and therefore, the definiteness of a construct chain 
+is determined by the definiteness of the last noun/coordinated noun in the chain.
+All adjectives following the chain also agree with the definiteness value 
+of the last component in the chain.
+
+\paragraph*{Definiteness spreading}
+A natural question is how the Hebrew (and more generally, the Semitic) construct phrase
+compares with nominal constructions in other languages.
+What is particularly remarkable is the phenomenon of definiteness spreading:
+this can of course be construed as a type of agreement.
+Typical agreements, like the person and number agreement between the verb and the subject,
+however do not \emph{limit} the possibilities of feature configurations:
+the verb has no inherent person or number anyway.
+Therefore, a feature involved in agreement is typically marked twice but interpreted once.
+Definiteness spreading on the other hand \emph{limits} the possibilities of feature configurations,
+and eliminates the possibility to have expressions with the meaning of 
+\translate{the king of a country} or \translate{a king of the country}.
+If analyzed as a type of agreement,
+then in definiteness spreading, a feature is marked once,
+but interpreted twice \citep{dobrovie2000definiteness}.
+
+Definiteness spreading is not hard to understand in compounding
+or the English nominal modification/complementation construction, as in \form{a [field linguist]}:
+the modifier in the construction (\form{field} here) is not a full, ``sealed'' and referential \ac{np},
+but is structurally reduced%
+\footnote{
+    Known as \form{nominal} in \citet{cgel},
+    which structurally does not include the determiner layer of the full \ac{np}.
+}.
+In both constructions, the modifier is not referential
+and doesn't have independent definiteness.
+Note that certain possessive constructions like \form{teacher's desk} or \form{girl's bicycle} also belong to the second type
+(and are definitely not a subject-determiner in the determiner system;
+\citealt[\citepage{469}]{cgel}, \citealt{alexiadou2005possessors}).
+In modern Hebrew, productivity of the construct phrase has decayed,
+and a portion of construct phrases has idiomized,
+presumably with \emph{syntactic} fossilization as well.
+It is quite possible, for instance, that \form{beyt sefer} \translate{school (lit. house of books)}
+has already evolved into a compound,
+despite still having the morphophonological form of regular constructs
+\citep{siloni2003prosodic}.
+At least some of them are not too far from these English constructions:
+for them, definiteness spreading is purely morphological.
+
+In the rest of the examples, the construct state is still productive,
+and the ``modifier'' or possessor is referential.
+In these cases, definiteness spreading per se seem comparable to the English \form{the country's king's properties},
+which is rendered definite as a whole because of the subject-possessor \form{the country}.
+The possessor influencing the definiteness of the whole \ac{np}
+is a cross-linguist phenomenon,
+which however is also subject to many language-specific constraints
+and a unified analysis is not desirable \citep{alexiadou2005possessors}.
+In English, definiteness spreading can probably explained by semantic reasons
+\citep{dobrovie2000definiteness},
+whereas in Semitic languages, it seems \form{king} and \form{properties} each has a \emph{syntactic} definiteness value,
+as is shown by the definiteness agreement between these words and adjectives modifying them.
+This is not a very local agreement because the construct state chain can be arbitrarily long,
+separating the adjectives and the noun they are modifying,
+and has to involve at least some grammatical (syntactic or morphological) processes.
+
+Moreover, it seems \emph{indefiniteness} does \emph{not} really spread in Hebrew,
+because an indefinite construct chain can take a definite determiner
+and become definite and appear in syntactic environments requiring a definite \ac{np}.
+For instance, \form{ota tmunat praxim} that-\category{f} picture-\category{f} flowers
+is fine and can appear in predicational sentences that require definite subjects
+\citep{alexiadou2005possessors}.
+
+A possible way to capture the phenomenon above is to assume that 
+the definiteness agreement between the possessed and the possessor 
+is due to prosodic reasons \citep{siloni2003prosodic}.
+Let's suppose that the genitive relation between the two has to be marked 
+by the fact that the two are in one prosodic unit.
+Note that this does not involve any previously unknown mechanism,
+because it has already been observed that, for example, case marking is dictated
+by both syntactic and morphophonological concepts like adjacency.%
+\footnote{
+    Note that morphological cases 
+    and abstract Cases in some theoretical works (used to describe grammatical relations)
+    are not exactly the same.
+    Postulation of the latter is to capture the fact that grammatical relations 
+    are related to adjacency conditions.
+}
+Turning back to Hebrew constructs,
+we note that the head is indeed usually unstressed,
+which means it has to form a prosodic unit with the word following it,
+i.e. the first word of the possessor.
+The impossibility to have \translate{a king of the country} or \translate{the king of a country}
+may be simply explained by stipulating that the scope of definiteness is over the prosodic unit.
+Note that this definiteness spreading sometimes does not have semantic consequences:
+in \citet{winter2005some}, it is reported that \form{toshav maxane ha-plitim} resident camp \category{def}-refugees
+entails no meaning of uniqueness:
+it may refer to any resident in the refugee camp.
+The same is not possible in a \form{shel} construction: \form{ha} cannot be prefixed to \form{toshav}.
+The impossibility for the article to appear before the head may be explained by
+the inability for a (prosodically reduced) function formative
+to be attached to an already unstressed word.
+
+
+\begin{todobox}{Whether the \form{ha} in this case is syntactic}{ha-syntactic}
+    It remains to be seen whether \form{ha} in \form{toshav maxane ha-plitim}
+    has any \emph{syntactic} significance:
+    for instance we may wonder whether it makes the NP really syntactically definite
+    so that it can't be inserted into an existential construction.
+\end{todobox}
+
+
+\paragraph*{Diachronic comments on definiteness spreading}
+We note that the strict rule prohibiting \translate{the king of a country}
+may also have diachronic reasons.
+The [head-\category{cs}_{\category{indef}} possessor-\category{def} adj-\category{indef}]_{\text{\ac{np}}} construction is ambiguous with a nominal predication clause,
+and even if it once was possible,
+it probably faded from use because of the ambiguity.
+As for [head-\category{cs}_{\category{def}} possessor-\category{indef} adj-\category{def}]_{\text{\ac{np}}},
+we have at least two reasons against its persistence.
+First, if the adjective is a reduced relative clause (TODO: ref; e.g. \citet{cinque2010syntax}, or maybe another section in this note),
+then the meaning will have the structure of \translate{\textbf{a} man who is \textbf{the} master of patience}.
+This makes sense in English,
+but it is possible that ``definiteness'' in Semitic is slightly different from definiteness in English
+(for instance the former may involve \emph{specificity}, i.e. whether the thing being referred to has already been pre-established in the discourse;
+see \citet{ihsane2001specific})
+and a definite relative clause modifying an indefinite noun is considered semantically awkward.
+
+Second, in [head-\category{cs}_{\category{def}} possessor-\category{indef} adj-\category{def}]_{\text{\ac{np}}}, 
+a word with a definite marker and a word with an indefinite marker meet.
+Possibly there was a morphophonological rule 
+prohibiting nouns with different definiteness from appearing together,
+and if two nouns with the same definiteness appear together,
+the first is realized as a construct state noun.
+In Hebrew there is no explicit indefinite marker,
+but in e.g. Standard Arabic, indefiniteness is marked by nunation of the case ending 
+(that's to say, to add a \form{-n} to the end of a word) ,
+and definiteness is marked by \form{al-},
+so the existence of such a rule is not unimaginable.
+
+\paragraph*{Relation with the \form{shel} genitive}
+
+It's possible to put a construct phrase into the possessor of a \form{shel} construction
+\citep{alexiadou2005possessors}.
+
+\subsection{Systems within the Hebrew noun phrase}
+
+Now we do a tentative comparison between the Hebrew noun phrase and the English noun phrase.
+
+\paragraph*{The determiner system}
+At the top is the system of determiner(s):
+in English we have \form{\textbf{all these three} topics}.
+In Hebrew, there is no 
+
+In English, the determiner system also includes the so-called the Saxon genitive:
+\form{\textbf{my sister's} car}, which is in a status quite similar to the subject in the clausal
+\citep[\citepages{468,472-478}]{cgel}.
+In Hebrew, 
+
+\paragraph*{Modification}
+Then we have various modification devices,
+which are usually adjectival phrases but sometimes can also be nominals.
+These can be divided into reduced relative clauses and direct modifications,
+the former taking their scopes over the latter \citep{cinque2010syntax}.
+Direct modifications are like \form{the \textbf{ugly big old} bear},
+which tend to form a hierarchy (in this case, evaluation \textgt dimension \textgt age) according to their roles in the \ac{np} just like adverbs in clauses.
+They refine the meaning of the head noun but not in a intersective or restrictive way.%
+\footnote{
+    For instance, in \form{the \textbf{young skillful dancers}},
+    \form{skillful} refines the concept of \translate{dancer},
+    but the resulting concept is not the intersection of the two
+    (and hence not \emph{intersective}):
+    we're talking about skillfulness in dancing,
+    not people who are dancers and are also skillful (in probably something else).
+    (It doesn't make sense though to say whether \form{young} is intersective or not here.)
+    The adjectives \form{skillful} and \form{young} are also not necessarily restrictive
+    (although under certain contexts they can be interpreted so)
+    because we are \emph{not} first think about dancers in general
+    and then decide to only talk about a subset of them who are young and skillful:
+    we are talking about a bunch of people who happens to be good dancers and young.
+    See \citet{cinque2010syntax} for more discussions.
+}
+Modifications that are reduced relative clauses are just the opposite:
+they are not in any preferred orders (apart from being somehow far away from the head noun),
+they are restrictive and intersective in their meanings.%
+\footnote{
+    In English we have \form{the \textbf{invisible} visible star}
+    or \form{the visible star \textbf{invisible today}},
+    in which \form{visible} is a direct modification about the inherent properties of a star,
+    and \form{invisible} or \form{invisible today} is a reduced relative clause
+    about a statement of the star that happens to be true today.
+}
+In Hebrew, direct modification is attested:
+the English order is reversed in Hebrew \citep{shlonsky2012some}.
+
+\paragraph*{Argument structures}
+Noun phrases have their own argument structures.
+In many languages, the nominal argument structure is related to possession:
+in English for example we have \form{[his] play [of the national anthem]}
+(c.f. the clausal version \form{[he] played [the national anthem]}),
+where the subject corresponds to the subject-possessor (see above)
+and the object corresponds to the \form{of}-phrase.
+
+\begin{todobox}{The syntactic position of the construct phrase}{construct-position}
+    It would be interesting to know if the construct phrase possessor
+    is closer to the \form{of} argument or the subject-possessor.
+    What do we need to declare that a possessor is in the determiner system?
+\end{todobox}
+
+\paragraph*{Derivational morphology}
+Finally, we go into the structure of the head noun and discuss compounding and affixation.
+The differences between compounding (e.g. \form{sickbed}) and constructions like \form{hospital bed}
+originate from the fact that the the roots in the latter are \emph{categorized}
+while the roots in the former are not.%
+\footnote{
+    \form{sick}, for example, is not a noun,
+    which cannot be a nominal modifier
+    (here \term{nominal} means a structurally reduced \ac{np} which does not include the determiner layer; this is the term used in e.g. \citet{cgel} and some other English grammars) or complement.
+}
+
+\subsection{Determiners}
+
+
+\subsection{Modification and complementation}
+
+
+
+
+
+\chapter{Phonology and the writing system}
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{modern-hebrew.bib}
+
+\end{document}
