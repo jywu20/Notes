@@ -155,6 +155,15 @@ but they also need to make this IR hold as much information as possible.
 LLVM IR is a good example of such a IR:
 it's [C-like](#llvm-irs-c-like-semantics), but it allows the code generator to know [a lot more than what it knows when staring at C source codes](#attributes-in-llvm-ir).
 
+We conclude the discussions above by the follows. In C programming,
+we have the C proper, intrinsics for things like SIMD which are not in standard C,
+and attributes and pragmas for promising to the compiler that certain things will not happen,
+the latter two being most frequently used for optimization.
+All the three are in LLVM IR, but in a more organized way:
+most of the semantics is close to that of C,
+and SIMD etc. (as well as things like stack saving and restoring) are dealt by intrinsics,
+and promises about what will not happen are given by attributes.
+
 TODO: C ABI forbids reordering structs, but then SIMD can't be used sometimes
 
 Suppose you want tail call optimization to *always* happen.
