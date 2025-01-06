@@ -1,27 +1,45 @@
 # 类型系统
 
+Jeffrey Werner Bezanson的博士论文Abstraction in Technical Computing（此文中的记号已经和目前的Julia不一样了，这里以目前的语法为准）中明确提到，
+> Our goal is to design a type system for describing method applicability, and (similarly) for
+> describing classes of values for which to specialize code. Set-theoretic types are a natural
+> basis for such a system. A set-theoretic type is a symbolic expression that denotes a set of
+> values. In our case, these correspond to the sets of values methods are intended to apply
+> to, or the sets of values supported by compiler-generated method specializations. Since set
+> theory is widely understood, the use of such types tends to be intuitive.
+
 ## 概况
 
 - 就类型本身而言，Julia的类型和主流类型论中的类型有所不同（虽然理论上仍然可以看成某种类型论的一个特例）。例如，subtyping在Julia的类型系统中是重要且自然的，虽然它在类型论中是一个相当棘手的feature；又比如Julia允许轻易地创建“只含有一个元素的类型”，可以很容易地做类型的union等。
 - 但是Julia的类型系统和集合论也是不同的。由于类型本身也是对象，我们同时有`Any <: Any`以及`Any :: Any`；如果想将Julia的类型解释为通常的集合论的集合，那么不能将`::`简单地理解为$\in$；除去这一点，抽象类型可以大致视为集合。
-- 要注意Julia是nominal typing的而不是structural的；这和类型用于决定多重派发怎么做有关。
-  直观地说，这意味着Julia类型描述“一个对象是准备用来干什么的”，而不是“一个对象的内部结构是什么”。
-  这可能也和Julia是科学计算语言这件事有关。
-- 就静态-动态的区分而言，Julia的类型系统是动态类型的：类型不是变量的一部分，而是值的一部分，类型不兼容导致的不是程序被直接拒绝，而是运行时错误
 - 就类型系统的作用而言，Julia的类型直接决定多重派发怎么做，而不仅仅是保证程序的正确性；挪用静态类型的术语，这意味着Julia的类型是intrinsic的，因为类型是语义的一部分。当然，正确性保证也是有的，比如说把一个字符串传给一个没对`String`定义过方法的函数，肯定就报错了。
-
+- 因此，Julia的类型和集合论的更大的区别在于集合论中的一个值就是一个值，但是Julia中的一个值理论上会有一个tag与之绑定，指示对这个值调用函数的时候应该调用什么函数
+- 这又意味着Julia是nominal typing的而不是structural的；这和类型用于决定多重派发怎么做有关。
+  Julia类型描述“一个对象是准备用来干什么的”，而不是“一个对象的内部结构是什么”。
+  这可能也和Julia是科学计算语言这件事有关。
+- 就静态-动态的区分而言，Julia的类型系统是动态类型的：类型不兼容导致的不是程序被直接拒绝，而是运行时错误。
 
 ## Julia中会出现的各种类型
 
-- 每一个对象都有一个最准确的类型，即`typeof(x)`，它返回一个concrete type。
-
 ### 具体类型
+
+每一个对象都有一个最准确的类型，即`typeof(x)`，它返回一个concrete type。
+这个就是前面所说的tag，用Bezanson的话说：
+
+> Next we add data objects with structured tags. The tag of a value is accessed with typeof (x). 
+
+每个tag的形式是`Name{E1, E2, ..., En}`。
+例如，一维数组的tag是`Array{Float64, 1}`。
+确定tag，或者说具体类型（concrete type）的具体方式如下。对本身不是一个Julia类型的值而言，
 
 - 如果`x`是某个primitive type的元素，那么`typeof(x)`就是该primitive type。
 - 如果`x`是通过下面的方式创建的，那么`typeof(x)`是`DataType`：
   - `primitive type ... end`块，此时`isprimitivetype(x)`求值为`true`，否则为`false`
   - `abstract type ... end`块，此时`isabstracttype(x)`求值为`true`，否则为`false`
   - `struct ... end`块和`mutable struct ... end`块，此时`isstructtype(x)`求值为`true`，否则为`false`
+
+应当注意一个类型（无论是具体类型还是抽象类型）本身也是一个Julia值，从而：
+
 - 如果`x`是通过`Union{...}`创建的那么`typeof(x)`是`Union`；
 - 如果`x`是通过`... where {...}`创建的那么`typeof(x)`是`UnionAll`。
 - 所有可能是`typeof`输出的东西都具有类型`DataType`。它包括：
@@ -33,8 +51,13 @@
   - 全体primitive types（或者说，`Any`的元素中有1, 2, 3, 'a', 1.3这些东西）
   - `DataType`
   - `Type{DataType}`
-- 按照上面的做法，`Any`本身是一个合法的类型，从而是Julia中的对象，但是它自己无法确定类型。所以我们只能让`Any::Any`。
+
+按照上面的做法，`Any`本身是一个合法的类型，从而是Julia中的对象，但是它自己无法确定类型。所以我们只能让`Any::Any`。
 这样一来，`::`就不再是$\in$了。类似的，`DataType::DataType`也必须是正确的，否则只能让`typeof(DataType)`求值为`Any`，但是一个具体的对象的类型不应该是`Any`。
+
+### 抽象类型的声明
+
+我们可以将将一个具体数据类型`T`**声明**为某个抽象数据类型`T'`的子类型。抽象类型的主要用处是用来做多重派发。
 
 ### Union
 
@@ -87,6 +110,11 @@ julia> 1 :: Union{Int64, X} where X <: AbstractFloat
 julia> Float16(0.1) :: Union{Int64, X} where X <: AbstractFloat
 Float16(0.1)
 ```
+这样我们可以构造空集：
+```
+julia> Union{}
+Union{}
+```
 
 在多重派发中，Union的优先级比抽象类型高：
 ```
@@ -99,7 +127,7 @@ f (generic function with 2 methods)
 julia> f(1.0)
 "64bit"
 ```
-当然，不应该滥用Union：
+当然，在函数签名中不应该滥用Union，否则很容易导致语义模糊的函数调用：
 ```
 julia> f(x::Union{Float64, Float32}) = "float"
 f (generic function with 3 methods)
@@ -114,12 +142,7 @@ Candidates:
     @ Main REPL[63]:1
 ```
 
-### 抽象类型的声明
-
-我们可以将将一个具体数据类型`T`声明为某个抽象数据类型`T'`的子类型。抽象类型的主要用处是用来做多重派发。
-
-
-### `where`表达式
+### `where`表达式和`UnionAll`
 
 `where`表达式和数学中的习惯记号是一样的：A where B一方面给出了一个函数关系，一方面给出了全体满足B的变量取值下A构成的集合。
 后者之前已经讨论过了，前者就是类型构造器；不过前者的类型在Julia中并不能定出来（见下）。
@@ -159,22 +182,41 @@ UnionAll
 
 ### Julia的类型作为集合
 
-总之，Julia的具体类型首要地应当视为指明如何使用它们包含的对象的标签；于是，一个Float64和两个Float32组成的二元组究竟还是不同的，因为两者和不同的方法关联在一起。
-具体类型以上的类型，包括抽象类型和union，可以视为多个具体类型的并集；`A <: B`求值为`true`，当且仅当`A`是`B`的子集。
-一个变量是不是被声明为属于某个抽象类型和union*不影响*多重派发；
-只有这个变量的值的具体类型，以及函数签名中的类型（具体，抽象，union）影响多重派发。
+Julia的具体类型首要地应当视为指明如何使用它们包含的对象的标签；于是，一个Float64和两个Float32组成的二元组究竟还是不同的，因为两者和不同的方法关联在一起。
 
-`::`的定义稍微复杂一些
-- `x :: T`在$x \in T$时求值为`x`。
-  - 如果`typeof(x)`是`T`并且$T \sube T'$，则`x::T'`求值为`x`。
+不过，Julia的类型系统确实是有集合语义的。
+有关这一点可以看Abstraction in Technical Computing一文的4.2节。具体来说：
+- 一个具体类型的集合语义可以看成是以这个具体类型为tag的全体值的标签
+- 一个抽象类型的集合语义可以看成是被声明为这个抽象类型的子类型的全体类型对应的集合的交集
+- `Any`类型的集合语义就是全体可能的值
+- `Union{}`类型的集合语义就是空集
+- `Union`的集合语义由并集给出
+- `UnionAll`（也即`where`表达式）的集合语义由$\cup$给出
+- 如果一个值`A`是类型，那么`Type{A}`以`A`为元素的集合
+  - 请注意这里不能说`Type{A}`是只以`A`的集合语义为元素的集合，因为这意味着`A`的集合语义是`Type{A}`的集合语义的子集，从而导致`A <: Type{A}`，但这是错误的。
+- `A <: B`求值为`true`，当且仅当`A`的集合语义是`B`的集合语义的子集。
+- `x :: T`在`x`属于`T`的集合语义时求值为`x`。
+  - 如果`typeof(x)`是`T`并且`T <: T'`，则`x::T'`求值为`x`。
   - 如果`x :: DataType`求值为`true`，则`x :: Type{x}`求值为`x`
-- `DataType`和`Any`的一些特殊情况：
-  - `DataType :: DataType`求值为`DataType`
-  - `Any :: Any`求值为`Any`
-  - `Any :: DataType`求值为`Any`
-- 其余情况下`x::T`求值时抛出一个`TypeError`
+  - 其余情况下`x::T`求值时抛出一个`TypeError`
 
-话又说回来，由于Julia没有提供概括规则，这样是不会弄出罗素悖论的。
+不过，为了判断一个值是不是类型，引入了`DataType`类型，它满足
+- `DataType :: DataType`求值为`DataType`
+此外，关于`Any`也有如下的额外法则：
+- `Any :: Any`求值为`Any`
+- `Any :: DataType`求值为`Any`
+
+以上种种似乎说明`DataType`的集合语义自己属于自己，这在ZFC中是不允许的。
+由于Julia没有提供概括规则，这样是不会弄出罗素悖论的。
+实际上，我们也没有真的导致$A \subset A$，因为`DataType :: DataType`不报错这件事只能说明`DataType`是`DataType`的集合语义的成员，并没有说明`DataType`的集合语义是`DataType`的集合语义的成员：
+在前者的情形中，`DataType`的集合语义里面正好有`DataType`这个标签在，但是这个标签也只是一个标签而已，并不是它所代表的那个集合。
+
+### 关于`Tuple`的种种
+
+前面已经说了Julia的类型系统可以用集合论的术语描写。
+下面让我们看Julia中的Tuple。
+`Tuple`类型可以看成裸的、没有加标签的struct，几乎就是集合论意义上的元组。
+为了保证多重派发的正常运行，Julia也给`Tuple`赋予了`Tuple`类型。
 
 ## 动态类型系统和强类型
 
@@ -183,7 +225,7 @@ Julia可以被看成动态语言引入了一些看似静态的机制的产物，
 
 ### Julia作为强类型语言
 
-Julia的*每个*值实际上都是一个二元组，包括这个值的某种表示，加上类型标签。
+如前所述，Julia的*每个*值实际上都是一个二元组，包括这个值的某种表示，加上类型标签。
 于是，我们说，Julia是*强类型*的：它和Python之类的语言很类似。
 另一方面，在C语言中，如果一个值被赋给了一个`void *`类型的变量，然后再被强制转换成别的类型，于是我们就可以说它的类型标签已经被抹去了；我们说C语言是*弱类型*的。
 
@@ -309,7 +351,6 @@ Julia当然支持这种做法。不过，实际上，Julia通过多重派发满�
 多重派发则没有“对象上的方法”这个概念：或者说它相当于`(x1, x2, ...).method()`。
 回到前述`+`的例子：在Julia中，有好多个完全指定了操作数的类型的“+”，在“a+b”形式的表达式被求值时，调用哪一个加法由多重派发机制自动决定。
 
-
 子类型在纯粹的类型论研究中是比较讨厌的一个东西，因为它不能像其它常见feature一样，通过一个引入规则和一个消去规则非常干脆利落、和其它feature确定正交地被引入。
 但在一些情况下子类型是非常有用的。Julia的多重派发就算是一个例子。多重派发机制显然要求能够有一个比较符合直觉的方式决定一个函数调用发生时哪一份代码被执行，而子类型产生的类型树显然是一个非常方便的选择。
 
@@ -317,6 +358,9 @@ Julia当然支持这种做法。不过，实际上，Julia通过多重派发满�
 这样一方面可以为多重派发提供方便，一方面可以尽可能避免各种subtle的细节，比如说关于继承的种种复杂之处。
 
 容易看出，Julia的多重派发机制融合了三种常见的多态机制：ad hoc polymorphism （如加法的重载），subtype polymorphism （依照定义如此），以及parametric polymorphism （即类型参数，或者说模板）。
+
+应当注意，一个变量是不是被声明为属于某个抽象类型和union*不影响*多重派发；
+只有这个变量的值的具体类型，以及函数签名中的类型（具体，抽象，union）影响多重派发。
 
 ### 多重派发是运行时的
 

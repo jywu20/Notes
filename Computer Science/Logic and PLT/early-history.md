@@ -272,9 +272,58 @@ This can be done by adding more attributes in LLVM IR,
 or by [doing the optimization *before* lowering to LLVM IR](https://fortran-lang.discourse.group/t/c-is-not-a-low-level-language/2464/6).
 
 The development of COBOL is much more eccentric.
-The idiomatic way to write COBOL hasn't changed for quite a while,
-and nowadays COBOL almost only runs on IBM z mainframes.
+COBOL's fate of being isolated from the mainstream computer science community
+(unlike Fortran, which is a regular player in high performance computing
+and is in the C-like ecosystem)
+was probably determined the minute it was designed.
+Structured `if` blocks and the `perform ... until` construct
+were included in the first COBOL report,
+so structured programming was possible from the beginning.
+But the fact that branches and loops are not treated equally 
+probably has already told us that the language was designed by extracting common design patterns from assembly programs 
+(you need a label to write a loop in assembly,
+and indeed you need a paragraph label to write a loop using `perform ... until`),
+and not by systematic designing.
+After that COBOL was gradually standardized but few modern features were added to it.
+It was not until 2002 that COBOL received a major update,
+when object-oriented features, user-defined functions, recursion, pointers, allocation and freeing, etc. were added into COBOL.
+Still developers are reluctant to use these features,
+as the idiomatic way to write COBOL hasn't changed for quite a while.
+
+We can even argue that before COBOL 2002, the language specification is not Turing complete,
+because the memory available to the program has been pre-determined by the data division,
+and therefore a program is bound to fail for an input large enough.
+Of course, any physical computer is not Turing complete in the same sense;
+by saying that a computer is Turing complete what we actually mean is that 
+in theory we can give more and more RAM to it
+without changing the programs it runs.
+(In practice, of course, when the address space exceeds the 64bit memory limit
+we'll have to update the instruction set architecture and recompile all programs,
+but it's more a technical detail as programmers typically
+don't make their programs strongly depend on the size of the address space.)
+So in theory we can create a big, big array in the data division as the memory pool.
+In practice though people just bear with it.
+For instance, the absence of any dynamic memory allocation means that in COBOL we will not have big integers,
+so we need to be [very careful whenever truncations happen](https://www.reddit.com/r/ProgrammingLanguages/comments/t3w03g/comment/hyvxxoh/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).
+
+Nowadays COBOL almost only runs on IBM z mainframes.
 This makes COBOL look almost like a domain specific language:
 we define abstract "forms" (as in a business setting) in the `DATA` division,
 and use built-in file IO statements to fill these forms,
 and then print them out.
+The lack of dynamic allocation means COBOL programs don't need heaps.
+Moreover, frequently, COBOL programs lack recursion and 
+even do not have real subroutines (`paragraph`s and `section`s are used instead),
+so there is no need for a *stack*.
+These make executables compiled from COBOL fast, and also secure.
+Almost like a better structured assembly language.
+This probably is comparable to Structured Text in PLC programming.
+
+The two languages originating from the first ten years of modern computing,
+COBOL and Fortran, are more or less domain specific in today's perspective.
+And they are rightly so because the tendency back then was to design languages
+targeting a specific audience.
+It's like embedding a library into a language:
+in Fortran, it's having a good linear algebra library in the language.
+Modern languages, despite being much more generic,
+may still have "built-in libraries", just like Go having goroutines.
