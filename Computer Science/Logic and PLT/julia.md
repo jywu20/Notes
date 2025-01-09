@@ -169,16 +169,23 @@ typeof(sin) (singleton type of function sin, subtype of Function)
 ```
 这相当于是在获取*名称*`sin`的类型，而它除了一个singleton以外不可能是别的东西。
 
-类似的，带类型参数的struct本身的类型也没有什么意义：
-```
-julia> struct A1{T}
-       x::T
-       end
+因此Julia的类型系统并不是typed $\lambda$ calculus描述的。
+我们实际上可以手动搞出来arrow type，通过如下方法：
+```Julia
+struct Arrow{A, B}
+    f::Function
+end
 
-julia> typeof(A1)
-UnionAll
+(func::Arrow{A, B})(x::A) where {A, B} = func.f(x)
+
 ```
-因此Julia的`typeof`的语义并不是typed $\lambda$ calculus描述的。
+然后可以针对`Arrow`做派发：
+```Julia
+function Base.map(f::Arrow{A, B}, vec::Vector{A})::Vector{B}
+    # ....
+end
+```
+可以定义一些宏使得创建`Arrow`对象更加容易。
 
 ### Julia的类型作为集合
 
@@ -210,6 +217,9 @@ Julia的具体类型首要地应当视为指明如何使用它们包含的对象
 由于Julia没有提供概括规则，这样是不会弄出罗素悖论的。
 实际上，我们也没有真的导致$A \subset A$，因为`DataType :: DataType`不报错这件事只能说明`DataType`是`DataType`的集合语义的成员，并没有说明`DataType`的集合语义是`DataType`的集合语义的成员：
 在前者的情形中，`DataType`的集合语义里面正好有`DataType`这个标签在，但是这个标签也只是一个标签而已，并不是它所代表的那个集合。
+
+在上面的讨论中我们把Julia中的值和它的集合语义混在一起了，从而一个类型标签可以本身作为一个（数学中的）对象出现在它或者别的东西的集合语义中。
+也许一个更好的方式是，把上面定义的“集合语义”当成一个（数学中的，也即元语言中的，而不是Julia语言中的）函数，它“解释”一个Julia类型为它所包含的值。
 
 ### 关于`Tuple`的种种
 
@@ -393,8 +403,32 @@ julia> let x::AbstractFloat = 1.0
 
 注意，此处的“静态”一词和静态类型/动态类型的区分是相对独立的；静态类型语言仍然可以有上述的“动态”的派发机制，例如Java就是这样。
 
+## 对类型的多重派发实际上是模式匹配
 
+`Int <: Type{Int}`这件事意味着实际上函数可以对类型变量做模式匹配。
+这样没有必要写
+```Julia
+function func(T::DataType, x)
+    if T == Int
+        # ...
+    elseif T == Float64
+        # ...
+    end
+end
+```
+而是可以写
+```Julia
+function func(::Type{Int}, x)
+    # ...
+end
 
+function func(::Type{Float64}, x)
+    # ...
+end
+```
+从而极大地增强了可扩展性。
+
+这也是Holy trait的工作原理。
 
 # 赋值和可变性
 

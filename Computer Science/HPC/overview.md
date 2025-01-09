@@ -207,9 +207,9 @@ and the number of cores is much higher.
 
 ## Streaming multiprocessors
 
-In Nvidia's GPUs, usually 32 cores are organized into one 32-core processing block
+In Nvidia's GPUs, usually 32 cores are organized into one **32-core processing block**
 which shares a program counter,
-and 2 or 4 such groups are organized into one streaming multiprocessors (SM).
+and 2 or 4 such groups are organized into one **streaming multiprocessors (SM)**.
 A SM also has a shared memory which allows threads running in the same SM communicate very fast.
 There is also a L1 cache in each SM, as well as possible specialized units.
 Note that the fact that cores in a processing block shares a program counter
@@ -219,6 +219,8 @@ in an if-else block,
 the most natural way to handle the situation is to stop some threads and 
 let other threads finish their branch first.
 This clearly reduces the speed.
+A group of threads with a shared program counter running on a 32-core processing block
+is known as a **warp** in CUDA terminology.
 
 ## Threads running on SMs
 
@@ -239,13 +241,17 @@ Therefore although for each thread we have a significant latency,
 the latency is well *distributed* to all threads
 and is therefore hidden from the user if a large number of threads are launched.
 The result is that a thread block can be as large as 512 or 1024.
+As is mentioned above, the threads in a thread block are not independent
+but are organized into warps, within which threads share a program counter.
+Hyperthreading switches the warps.
 
 A thread block runs on a SM.
 If the number of thread blocks launched in a CUDA program is larger than the number of SMs
 (which is not unlikely for large scale computations),
 then the thread blocks are executed *wave by wave*.
+All threads form a **grid**.
 
-## Graphic units in GPUs
+## Graphic units in SMs
 
 Note that GPUs were originally for graphic processing only.
 A GPU may be designed for scientific computing only,
