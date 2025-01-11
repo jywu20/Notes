@@ -61,9 +61,11 @@ these tricks are introduced by (kind of) abusing functions as a workaround.
 
 Probably more important is optimization.
 When it comes to optimization, the problem pure C encounters is two-fold:
-- manually using things like SIMD (which, unlike caching or instruction-level parallelism, *can* be controlled in assembly) 
+- manually utilizing SIMD (which, unlike caching or instruction-level parallelism, *can* be controlled in assembly) 
+  and writing conditional move (so that `if (cond) a = expr;` will not cause branch prediction failures) 
+  and other hardware-supported accelerations of typical performance hot spots
   is not supported by standard primitives of C, and
-- if we want to let the compiler to perform certain optimizations, then the idiomatic form is not *high-level* enough,
+- if we want to let the *compiler* (not us) to perform certain optimizations, then the idiomatic form of C is not *high-level* enough,
   because it's impossible to promise to the compiler that certain scenarios that hinder optimization
   will never happen.
 
@@ -79,12 +81,14 @@ which looks like a function but is implemented directly by the compiler by a sin
 
 A consequent problem is that writing intrinsics is burdensome and possibly not portable,
 and it would be desirable to just give the compiler a hint.
-We can for example manually write four add statements and then add a pragma in the source code:
+We can for example manually write four add statements
+so the compiler will hopefully know that we want SIMD here,
+or, more explicitly, we can add a pragma in the source code:
 ```C
-#pragma GCC optimize("no-tree-vectorize")
+#pragma GCC ivdep
 ```
 or a compiler flag. Here, we want the compiler to recognize 
-certain recurring patterns seen in C-like programming that can be accelerated,
+certain recurring patterns seen in C-like programming that are performance hot spots and can be accelerated,
 and then perform the optimization in a automatic way.
 (We can imagine pushing this to the extreme and designing a language of which each primitive can be relatively easily optimized;
 in most cases, though, compiler engineers work in an ad-hoc, case-by-case way,
@@ -92,7 +96,7 @@ and do not attempt to identify a set of *orthogonal* code snippets.)
 
 What we want is *automatic* optimization on *existing*, *human readable* codes,
 leaving intrinsics call and pragmas to libraries like OpenBLAS,
-which is mainly written in C (the Fortran files are for testing and reference).
+which is indeed mainly written in C (the Fortran files are for testing and reference).
 But this turns out to be hard - see the next section.
 
 Note: sometimes manual optimization is always needed.
@@ -115,11 +119,11 @@ or
 *p2 = *p2 + a2;
 ```
 for example, can be accelerated by SIMD - or can it?
-Are you sure that `p1` and `p2` are not pointing to the same address?
-The *low-level-ness* of C means programmers often can't promise that this will not happen.
+The *low-level-ness* of C means sometimes the wanted optimization will not always create semantically correct code.
+In the latter case, are you sure that `p1` and `p2` are not pointing to the same address?
 
 The problem can be solved by adding pragmas or attributes (like `__restrict__`) to C programs.
-This breaks portability, again.
+This often breaks portability, again.
 By adding all kinds of pragmas, attributes, and intrinsics,
 we are essentially creating a dialect of C, i.e. *optimized* C,
 which is no longer supposed to be a transportable assembly language.

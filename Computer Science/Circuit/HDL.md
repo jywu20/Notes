@@ -259,6 +259,72 @@ we're talking about a finite state machine that controls the stage of computatio
 or in other words, the control flow:
 see [here](#digital-circuits-compared-with-structured-programming)).
 
+By the way, [C itself faces a similar problem](https://cs.stackexchange.com/questions/60965/is-c-actually-turing-complete),
+which in one aspect is more severe and in another aspect is less severe.
+
+Let's start with the more severe aspect.
+in C, memory addresses are accessed directly by dereferencing pointers,
+which means the address space is always limited by the upper limit of the pointer type.
+To access a theoretically infinite memory space, we need big integers,
+which are implementable in C but cannot be dereferenced.
+Adding more memory typically means to add more RAM.
+However, eventually the total RAM will hit the upper bound of the pointer type:
+for example a 32 bit system can't use more than 4GB of memory.
+So here it seems that C has a *hard* memory upper bound,
+which cannot be passed unless eventually we have to migrate to systems with larger pointer sizes.
+Note that in C we can't declare arbitrarily large number types that can be integrated into  the pointer semantics;
+in Verilog it seems [no such limit exists in simulation](https://electronics.stackexchange.com/questions/705776/is-there-any-restriction-on-the-maximum-size-of-a-systemverilog-packed-array)
+(although it of course exists in the hardware platform in question).
+
+At the C source code level, cross-platform-ness with respect to the pointer size
+can be achieved by avoid mentioning the size of a pointer
+and always write `type *p` and avoid converting a pointer to a number,
+and if the latter is necessary, write `intptr_t number_corresponding_to_ptr = (intptr_t)p;`.
+This makes sure the source code doesn't need to be modified when we upgrade the system.
+Still the assembly code after compilation can be quite different.
+Cross-platform-ness is lesser a problem for more high-level languages like Java,
+where dynamic memory allocation involves no direct play with pointers.
+So we may say that C (or even better, Java) is Turing complete in the sense that
+there is no theoretical bound to the total size of the memory the programs can use
+(and C now is as Turing complete as RTL),
+but the assembly code is not.
+
+Still, assembly code is somehow closer to being Turing complete in the sense that 
+memory constraints aren't something that we think of all the time,
+and the way dynamic memory allocation works, despite having a upper bound,
+is still quite close to how unbounded dynamic memory allocation works.
+So this is the less severe part:
+the structures of 32 bit and 64 bit assembly code are largely comparable,
+but the structures of two circuits corresponding to the same RTL code 
+but with different memory sizes can be very different if we focus on the local structure.
+
+In this sense we can have the following hierarchy of Turing completeness in practice:
+
+1. The real thing: the mathematical definition of Turing machine or random access machine,
+   and also languages like Lisp or ML or even Java that doesn't face that fact that 
+   pointers in real world computers are bounded.
+   A variant of C that supports infinitely large integers used as pointers also belongs to this class.
+2. The family of languages in which the only thing that blocks Turing completeness is the memory upper bound, which however can be arbitrarily large.
+   In this family we have RTL with a large memory pool (whose size is defined as a constant which can be adjusted on demand by the coder),
+   and also languages like COBOL or Structured Text (for PLC programming) with a large memory pool, 
+   and C code where the pointer size is always represented by `intptr_t`.
+   The above RTL and COBOL coding styles however are more or less awkward.
+   The C coding style above is not awkward but many just don't care this type of cross-platform practices.
+3. The family of languages in which the memory upper bound is a given constant.
+   We have arrived at the class of finite state machines, actually,
+   but if the memory is large enough then for small tasks,
+   we can still say that the programming model is Turing complete
+   because the semantics of dynamic memory allocation resembles the semantics of dynamic memory allocation in the class above (though some differences exist in practice, for instance the heap and the stack often grow in opposite directions, which only makes sense when the memory space is finite).
+   This is the position of idiomatic C.
+   We can do the same for the "large memory pool" coding styles mentioned above
+   and implement memory allocation and freeing functions in the memory pool (that can no longer be infinitely expanded at compilation).
+4. The family of languages in which all types of dynamic memory allocations are discouraged.
+   Programming using these languages is just programming finite state machines in a more organized way.
+   This class includes (idiomatic) RTL, Structured Text, COBOL.
+   Still, occasionally, people may (unintendedly) write programs that are actually in the third class above (or even in the second class above, with the upper bounds of arrays and pointers (if any) carefully defined as constants).
+   Therefore, users often do not realize that the idiomatic way to write these languages are actually not Turing complete in any sense.
+    
+
 ## Functional programming in circuit designing
 
 By refraining from using highly procedural-like constructs in RTL,
