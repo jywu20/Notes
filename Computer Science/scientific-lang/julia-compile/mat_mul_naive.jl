@@ -1,4 +1,4 @@
-Base.@ccallable function mat_mul_naive!(A::Matrix, B::Matrix, C::Matrix)
+Base.@ccallable function mat_mul_naive!(A::Matrix{Float64}, B::Matrix{Float64}, C::Matrix{Float64})::Nothing
     if size(C)[1] != size(A)[1] || size(C)[2] != size(B)[2] || size(A)[2] != size(B)[1]
         throw("Matrix sizes inconsistent.")
     end
