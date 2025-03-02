@@ -102,7 +102,7 @@ The only one with a remarkably different architecture probably
 was [ORDVAC](https://en.wikipedia.org/wiki/ORDVAC),
 which was von Neumann but was asynchronous.
 
-If for some reasons, the FPGA-like architecture had persisted,
+If for some reason, the FPGA-like architecture had persisted,
 [Verilog-like languages](../Circuit/HDL.md) would have appeared much earlier.
 In this world, however, the architectures and instruction sets of most early computers
 weren't drastically different from modern ones.
