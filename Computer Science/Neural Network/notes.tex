@@ -1,0 +1,669 @@
+\documentclass[hyperref, a4paper, 12pt]{report}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{simpler-wick}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode, bookmarksnumbered]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstdefinestyle{python}{
+        language=Python,
+        backgroundcolor=\color{white},
+        basicstyle=\footnotesize\ttfamily,
+        keywordstyle=\color{blue},
+        commentstyle=\color{mygreen},
+        stringstyle=\color{mymauve},
+        numberstyle=\tiny\color{mygray},
+        numbers=left,
+        breaklines=true,
+        showstringspaces=false
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=blue!5,
+    %colframe=blue!5,
+    colback=white,
+    colframe=white,
+    coltitle=blue!60,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\definecolor{my-orange}{HTML}{F58123}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=orange!5, 
+    %colframe=orange!5, 
+    colback=white,
+    colframe=white,
+    coltitle=my-orange!65,
+    borderline west={4pt}{0pt}{my-orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{perspectivebox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=red!5,
+    %colframe=red!5,
+    colback=white,
+    colframe=white,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+\newcommand{\literature}[1]{\textit{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = python}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand*{\abinitio}{\textit{ab initio}}
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\epsr}{\epsilon_{\text{r}}}
+
+\title{Modern neural networks}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\chapter{A universal approximator}
+
+\section{Modern neural networks used in deep learning, compared with other algorithms}
+\label{sec:modern-network}
+
+Historically, incredibly diverse architectures have been proposed within the family of neural network algorithms.
+What proliferates in modern machine learning belongs to a small subset of these algorithms.
+What set them apart from ``traditional'' neural network algorithms
+(i.e. algorithms before 2010s) include several aspects.
+
+\paragraph*{How they make predications}
+All modern neural networks are feedforward. That's to say -- 
+\begin{itemize}
+    \item The output of a neuron is a real number%
+    \footnote{
+        In actual implementations, often a reduced precision float number.
+    }, not a time sequence or a spark or something else.
+    There are no loops in the structure of the neural network:
+    prediction therefore is \concept{forward propagation},
+    because data propagates from the input neurons to the output neurons.
+    
+    \item What happens in a neuron is as simple as possible:
+    usually the output is calculated by 
+    passing the inputs weighted by weight factors plus a bias
+    to the activation function.
+    The weights and the biases can be adjusted;
+    the activation function contains no learnable parameters.
+
+    \item Since a neuron is very simple, a network contains \emph{layers} of neuron:
+    a feedforward network consisting of several layers -- a \concept{multi-layer percepton (MLP)} can therefore be represented as 
+    \begin{equation}
+        \mathrm{MLP}(\vb{x}) = f_N(\vb{W}_N \cdot (\cdots (\vb{W}_2 \cdot f_1(\vb{W}_1 \cdot \vb{x} + \vb{b}_1) + \vb{b}_2) \cdots) + \vb{b}_N),
+        \label{eq:mlp}
+    \end{equation}
+    where at layer $i$, $\vb{W}_i$ is a matrix containing weights of all neurons at that layer, $\vb{b}_i$ contains the biases of neurons at that layer, and $f_i (\cdot)$ is the activation function that acts element-wise on a vector.
+    In actual calculations, the concept of \emph{neuron} does \emph{not} explicitly appear:
+    we work solely on vectors and matrices.
+
+    \item Several simple non-linear operations, like element-wise multiplication,
+    are often used in modern neural networks.
+    By the universal approximation theorem, though, they can be reasonably well approximated by a ``pristine'' feedforward neural network within a given range of inputs.
+    
+    \item Modern neural networks have mechanisms to accept inputs with variable sizes,
+    by a sliding window (as in CNNs), by letting the network to have a latent state,
+    which is a part of both the output and the input, or other methods.
+    Basically this means we are allowed to use bounded \shortcode{for} loops,
+    although in practice this is usually done by \emph{tensor} operations (see \prettyref{sec:tensor}).
+    The existence of these mechanisms essentially enables us to dynamically increase or decrease the number of neurons to match the input size:
+    this further render the neuron-based representation of modern neural networks somehow unnatural.
+\end{itemize}
+
+\paragraph*{Universal approximation}
+A modern neural network can approximate any function that is ``well-behaved''.
+This conclusion -- actually a family of conclusions of this type --
+is known as the \concept{Universal Approxmation Theorem(s)}.
+It should be noted that universal approximation is not directly related to Turing completeness.
+A theoretical neural network, which works on real numbers,
+is \emph{beyond} the capacity of all Turing machines,
+because almost all real numbers are not computable.
+On the other hand, existing studies on universal approximation generally focus on
+neural networks with a fixed number of input variables,
+which goes against the usual notion of Turing completeness,
+which in theory allows an infinite input.
+
+Therefore, the function classes determined by neural networks and by Turing machines
+are both elegant, natural definitions of what computation means,
+but they are not the same, and nor is there a subset relation between the two.
+
+In reality, the memory of a computer is never infinite,
+and neural networks always have some ``noises'' (either from float number errors or, in certain alternative computing platforms, from thermal noises).
+The latter makes neural networks strictly within the class of Turing computable functions,
+while the former is less substantial in the sense that
+if we can increase the memory allocated to a program in an unbounded manner 
+without drastically change the programs 
+(for instance, we can write C programs without utilizing the length of the pointer type),
+then the concept of Turing completeness is still meaningful.
+In this practical sense, universal approximation is a concept that is strictly weaker than Turing completeness.
+
+Whether certain neural network architectures, accompanied by the aforementioned sliding window/latent state/whatever mechanism, can achieve Turing completeness,
+is an interesting and not completely explored question.
+For instance we may want to know the grammatical complexity class a Transformer is able to recognize and, if it clearly does not cover the attested grammatical complexity of natural languages, then why it is so successfully.
+
+We finally note that universal approximation is about \emph{existence}.
+How to train a model is another problem (also see \prettyref{sec:theoretical-aspects}). Below we outline the current training paradigm.
+
+\paragraph*{Training}
+
+Modern neural networks are all trained by \concept{backpropagation}.
+Therefore they are also known as \concept{BP neural networks}.
+This means we choose a \concept{loss function} (which can be derived by statistical estimations,
+like the maximum a posteriori estimation),
+and use it to measure the difference between the training dataset and the prediction.
+Then we take the \emph{gradient} of the loss function with respect to parameters in the model,
+and update the parameters according to the gradient.
+This is known as backpropagation because when taking the gradient of the loss function,
+we need to take the gradient of e.g. \eqref{eq:mlp},
+and this means we first take the gradient of the last layer,
+then the second last layer, etc.,
+and the propagation of the derivative operation is backwards.
+
+Modern neural networks are trained in \concept{batches},
+which enables parallelism and avoids overfitting,
+because if samples within a batch are randomly chosen,
+then all kinds of noises are seen by the model.
+
+\paragraph*{Deep learning}
+Modern neural networks are usually \emph{deep}:
+they are much larger than traditional models and usually contain multiple layers,
+and are data thirsty.
+Modern neural networks therefore are almost identical to what we call \concept{deep learning}.
+
+It should be noted that in theory, ``deep learning'' by definition means a machine learning paradigm that is large, complex, and scales up well.
+It is in theory possible to have non-neural network deep learning methods.
+An instance is deep forest, or in other words, a decision tree ensemble;
+or consider a large, structured probabilistic graphic model.
+Currently, these approaches are less popular than the aforementioned deep neural networks
+-- but maybe this will change one day.
+In this note, the term \emph{modern neural network} and \emph{deep learning model} will be used interchangeably.
+
+\section{``Tensors'' and PyTorch}\label{sec:tensor}
+
+\paragraph*{Motivation: ``variables'' in algebra and calculus}
+In doing algebra and calculus, it is handy to not explicitly specify the input and output of a function, but do the follows:
+we define some \emph{independent variables} like $x, y, z$,
+and then write $z = f(x, y, z)$, and say that ``$z$ is a function of $x, y, z$''.
+We expect $z$ to \emph{remember} that it is defined in terms of $x, y, z$:
+this means we can then talk about the gradient of $z$ with respect to $x$ or $y$,
+or talk about the value of $z$ when $x, y, z$ are assigned certain values,
+and then evaluate the gradient of $z$ ``at the point $(x, y, z)$''.
+
+For someone who does more formalized math,
+what is done here is rather weird, because variables, in a logical sense,
+are either bound by quantifiers ($\forall, \exists$),
+or are place holders when doing $\forall$- or $\exists$-introduction and elimination:
+in this way if $x, y, z$ are declared to be, say, real numbers,
+when we write $z = f(x, y, z)$,
+$z$ is also just a real number:
+we're not supposed to take its derivative or do other things like that!
+In a formalized context, we should only talk about the gradient of $f$ with respect to its first or second or third variable,
+or the value of $f$ at a certain point:
+$x, y ,z$ are merely placeholders used in expressions like $f(x, y, z) = \dots$.
+One way to make sense of the concept of variables in informal math is 
+to collect the definition of these independent variables at one place,
+and say that we have a big ``configuration space'',
+on which $x, y$ and $z$ are mappings from points in that space to a number.
+This is how we define \concept{random variables}:
+in formalized math, a random variable essentially is a function that maps an ``event'' (i.e. an element of a sample space) to a subset of a measurable space (specifying the internal makeup of the event),
+which is then measured by a metric (i.e. how probability is define).
+This is what is actually going on when we talk about the probability $p(X=x)$ that a random variable $X$ takes the value $x$.
+Still this formalized definition doesn't stop us from imagining that a random variable is just a ``variable'' -- just something out there -- that changes itself in a crazy way.
+
+\paragraph*{Introducing tensors}
+A \concept{tensor}, in the context of deep learning,
+is just a multidimensional \emph{variable} in everyday algebra and calculus:
+when we write \shortcode{a = b + c},
+where \shortcode{a}, \shortcode{b} and \shortcode{c} are tensors,
+\shortcode{a} \emph{remembers} that it comes from \shortcode{b} and \shortcode{c}.
+This means we can take the derivative of \shortcode{a} with respect to \shortcode{b} and \shortcode{c}.
+
+Various tensor libraries have been available for quite a while.
+In this note we are going to use PyTorch.
+In PyTorch, for instance, we can do the follows:
+
+\begin{lstlisting}
+import torch
+
+x = torch.tensor(2.0, requires_grad=True)
+y = torch.tensor(3.0, requires_grad=True)
+
+u = 3*x + y**2
+v = x**3
+
+u.backward()
+print(x.grad, y.grad) # Output: tensor(3.) tensor(6.)
+
+# By default the gradient recorded on a PyTorch tensor accumulates
+# to enable certain optimization tricks.
+# we need to call .zero_() to zero out the gradient. 
+x.grad.zero_()
+y.grad.zero_()
+
+v.backward()
+print(x.grad, y.grad) # tensor(12.) tensor(0.)
+
+\end{lstlisting}
+
+What happens here is that we define 
+\[
+    u = 3x + y^2, \quad v = x^3,
+\]
+where $x = 2$, $y = 3$, and therefore 
+\[
+    \pdv{u}{x} = 3, \quad \pdv{u}{y} = 2y = 6, \quad \pdv{v}{x} = 3x^2 = 12, \quad \pdv{v}{y} = 0.
+\]
+Both \shortcode{u} and \shortcode{v} remember how they were defined:
+this is known as \concept{computational graphs}.
+When backpropagation starts at a tensor, say \shortcode{u},
+the \shortcode{grad} attribute of all tensors that contribute to the calculation of \shortcode{u}
+will be updated.
+Sometimes we don't want backpropagation to go to certain tensors,
+like the tensors containing training data:
+this can be done by removing the \shortcode{requires_grad} parameter in the definition of the tensor.
+PyTorch also enables us to define multidimensional arrays,
+which then can be used to construct deep learning models that can be trained by backpropagation.
+
+In theory, functions in programming languages can replace by computational graphs.
+Probably to make the coding style more uniform,
+PyTorch does not provide a straightforward way to reassign values to tensors
+and then automatically trigger a forward propagation:
+if we want to reassign values to \shortcode{x} or \shortcode{y},
+the most idiomatic way to do so is the follows:
+
+\begin{lstlisting}
+import torch 
+
+def calculate_u(x, y):
+    return 3*x + y**2
+
+x = torch.tensor(2.0, requires_grad=True)
+y = torch.tensor(3.0, requires_grad=True)
+u = calculate_u(x, y)
+u.backward()
+print(x.grad, y.grad) # Output: tensor(3.) tensor(6.)
+
+x = torch.tensor(3.0, requires_grad=True)
+y = torch.tensor(4.0, requires_grad=True)
+u = calculate_u(x, y)
+u.backward()
+print(x.grad, y.grad) # Output: tensor(3.) tensor(8.)
+\end{lstlisting}
+
+As the listing demonstrates, if the value of \shortcode{x} or \shortcode{y} needs to change,
+it is probably a good idea to seal the computational graph into a regular Python function,
+and create a new tensor whenever we want a reassignment.
+This makes sure that doing deep learning with PyTorch is still like writing regular Python code,
+not working with an embedded DSL.
+
+\paragraph*{Defining a module}
+A model, as is said above, is a function that takes in a tensor (probably with the first dimension being the batch dimension) and outputs a tensor,
+and it contains many learnable parameters.
+A model can then be put into another model,
+and when doing backpropagation,
+\emph{all} parameters of the latter -- including those of the first model -- 
+should be exposed to the optimizer.
+The \shortcode{torch.nn.Module} is a base class that makes registering parameters easy:
+it also provides a uniform coding style for developers to define models.
+Below is an example of how to define a PyTorch model:
+
+\begin{lstlisting}
+from torch import nn 
+
+class FashionMINSTClassifier(nn.Module):
+def __init__(self):
+    super().__init__()
+    
+    self.flatten = nn.Flatten()
+    self.linear_relu_stack = nn.Sequential(
+        nn.Linear(28*28, 512),
+        nn.ReLU(),
+        nn.Linear(512, 512),
+        nn.ReLU(),
+        nn.Linear(512, 10)
+    )
+    
+def forward(self, x):
+    x = self.flatten(x)
+    logits = self.linear_relu_stack(x)
+    return logits
+\end{lstlisting}
+
+A subclass of \shortcode{nn.Module} is callable:
+predication therefore takes the form of \shortcode{model(X)}.
+Assigning a \shortcode{nn.Module} object -- here it is \shortcode{linear_relu_stack} -- to \shortcode{self} triggers the \shortcode{__setattr__} method,
+which, according to the definition in the \shortcode{nn.Module} class,
+registers all parameters of the \shortcode{nn.Module} object in question.
+Note that PyTorch has a \shortcode{nn.Flatten} network component,
+which flattens all dimensions of the input besides the first dimension,
+intended as the batch dimension.
+\shortcode{nn.Sequential} is a subclass of \shortcode{nn.Module},
+which assembles several models into a chain.
+We can also define a reusable sequential model by writing
+
+\begin{lstlisting}
+class LinearReluStack(nn.Sequential):
+    def __init__(self):
+        super().__init__(
+            nn.Linear(28*28, 512),
+            nn.ReLU(),
+            nn.Linear(512, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10)
+        )
+\end{lstlisting}
+
+\paragraph*{Hardware acceleration}
+Since as is shown in \eqref{eq:mlp}, a neural network model involves a lot of linear algebra operations,
+both prediction and training can be drastically accelerated by GPUs.
+PyTorch tensors and \shortcode{nn.Module} objects can be sent to GPUs
+by the \shortcode{.to("cuda")} method and sent back to the host by \shortcode{.to("cpu")}.
+Most users will not need to write CUDA kernels themselves.
+
+\section{What is approximated by neural networks}
+
+regression, probability distribution
+
+As is implied in \prettyref{sec:modern-network}
+\begin{equation}
+    y = f(x; \theta) + N
+\end{equation}
+
+\section{Training}
+
+\paragraph*{The PyTorch training API}
+As is mentioned in \prettyref{sec:modern-network}, deep learning models are to be trained by gradient-based optimization,
+the simplest being the \concept{gradient descent}
+\begin{equation}
+    \theta \leftarrow \theta - \eta \grad \mathcal{R}.
+\end{equation}
+A training procedure usually contains a number of \concept{epoches},
+in each of which, we use up all data available in the training dataset.
+As is said above in \prettyref{sec:modern-network}, 
+we train neural networks in batches, so an epoch consists of several batches.
+When the loss function is chosen, 
+an epoch usually look like this:
+
+\begin{lstlisting}
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+# For each epoch:
+for (X, y) in dataloader: # a torch.utils.data.DataLoader object
+    model.train() # Entering training mode 
+    X = X.to(device)
+    y = y.to(device)
+    loss_Xy = loss(model(X), y)
+    loss_Xy.backward()     # backpropagation
+    optimizer.step()       # Apply optimizer once 
+    optimizer.zero_grad()  # Avoid gradient accumulation
+\end{lstlisting}
+
+Again PyTorch provides us with a very unified API:
+we calculate the loss, and the result is a tensor which remembers what parameters are used in the calculation,
+and then we do backpropagation.
+The optimizer knows all parameters we want to update,
+and it changes their values according to the gradients recorded in their \shortcode{grad} attributes
+and then zeroes out the recorded gradients.
+
+It is not uncommon to have a \concept{validation dataset} besides the training dataset
+as an unbiased evaluation of how well the model performs:
+if, as training goes, the loss calculated on the training dataset drops,
+but the loss calculated on the validation dataset doesn't,
+then usually we're overfitting the data.
+
+As for how to prepare the data,
+PyTorch has two classes: \shortcode{Dataset} and \shortcode{DataLoader}.
+The first should be the parent class of all user defined dataset classes:
+a dataset object is expected to be iterable,
+and at each iteration, it should provide a tuple
+containing the input and the expected output,
+\emph{without} a batch dimension.
+A \shortcode{DataLoader} reads a \shortcode{Dataset} object and is also iterable:
+at each iteration, it is expected to give a tuple 
+containing a \emph{batch} of inputs and a \emph{batch} of expected outputs,
+both of which \emph{have} an additional dimension at the first, i.e. the batch dimension.
+It is encouraged to define subclasses of \shortcode{Dataset}
+for different types of training datasets.
+
+\section{Theoretical aspects}\label{sec:theoretical-aspects}
+
+The \concept{no free lunch theorem} states it is not possible to have a one-size-fit-all machine learning paradigm.
+The wild success of deep learning seems to go against it -- or if we sit down and take a deep breath, it seems to indicate that most machine learning problems we are interested in have something deep in common.
+This observation has important consequences.
+
+Large language models (LLM) do not have any explicit biases towards possible natural languages.
+Does this mean that Chomsky is wrong,
+and natural languages are completely results of domain-general cognitive abilities,
+and there is no dedicated language faculty in human brain?%
+\footnote{
+    Note that the success of large language models is a challenge to \emph{all} schools of linguistics,
+    and also old-styled NLP (yeah, including not-so-large neural models).
+    Proponents of usage-based approaches to linguistics often claim that the success of LLM 
+    demonstrate that they are right in emphasizing statistical learning in language acquisition.
+    Yet LLMs do not have explicit structural biases for statistical learning as we know it either.
+    LLMs know no X-bar syntactic trees, and neither do they know anything about HPSG unification, lambda expressions, constructions or embodied cognition.
+    And statistical learning models designed by usage-based linguists suck
+    just like minimalist grammars do.
+}
+Currently nothing substantial can be said on this question:
+``human linguisticality'' (to avoid the term Universal Grammar) is likely beyond context-free grammars (see e.g. Swiss German's cross-serial dependencies),
+and yet we do not even know whether typical LLMs can learn all context-free languages.
+It is not impossible that the relation between neural networks and Turing machines
+is also the relation between LLMs and human linguisticality:
+there is evidence for LLMs' ability to learn impossible languages better than humans do.%
+\footnote{
+    Designing the correct metric and interpreting the results is extremely hard here.
+    arXiv 2401.06416 observes that LLMs also seem to have difficulties learning languages impossible for humans.
+    The impossible language used in the paper has a count-based grammar,
+    which shifts the English verbal inflection rightwards by four words.
+    The problem with this test, however, is that it is comparing adjacency (i.e. inflectional morphemes being attached to the verb stem) and count-based non-adjacency,
+    while Chomskyan generative syntax focuses on more subtle differences,
+    like \emph{constituency-based non-adjacency} vs. \emph{count-based non-adjacency}
+    (see arXiv 2410.12271).
+    arXiv 2502.12317 shows that typologically implausible languages can be learned by LLMs at a slower pace.
+    They take this fact to indicate that typological preferences can be explained by domain-general factors.
+    Yet if LLMs indeed \emph{learn} the impossible language at the end,
+    while certain typologically implausible languages turn out to be \emph{impossible} and \emph{cannot} be learned by humans,
+    then the conclusion of the paper should be drastically revised:
+    it means the \emph{competence} of LLMs exceed that of humans in certain aspects,
+    although their performances show certain similar patterns.
+    Similarly, arXiv 2502.18795 demonstrates that human learners show a stronger dislike towards unattested word orders than LLMs,
+    although the latter also show weak inductive biases against them.
+    (The paper does prove one thing: LLMs like constituency.)
+    Large Language Models and the Argument From the Poverty of the Stimulus by Nur Lan, Emmanuel Chemla, and Roni Katzir also shows that 
+    how an initial success story of a LLM learning a subtle syntactic phenomenon
+    (and thus possibly refuting the Poverty of Stimulus argument)
+    can be turned into a story \emph{supporting} PoS by pointing out that the LLM
+    fails at some cleverly constructed (but still simple) examples,
+    and how can more data (\emph{ample} stimulus!) partially cure the problem.
+    LLMs learn certain impossible languages better than us do,
+    and they learn possible languages worse than we do:
+    this is a demonstrated fact,
+    and whether this means anything to psycholinguistics,
+    no one really knows.
+}
+And the fact that LLMs do have certain behaviors comparable to human psycholinguistics
+is quite hard to interpret:
+it has been proposed, for instance, that the human brain does store common syntactic structures, and the full combinatorics of grammar is not always on,
+and the whole system is related to the working memory or other domain general systems (see https://facultyoflanguage.blogspot.com/2016/09/brains-and-syntax-part-2.html).
+This picture of human linguisticality is consistent with LLMs' success
+and also consistent with the divergence of LLMs from human psycholinguistics:
+this theory is no more complicated than the ``LLM=human psycholinguistics'' theory (which struggles to explain certain fMRI phenomena) or the constructionist theory.
+So does the success of LLMs tell us anything about human languages?
+Probably, but no one really knows what it is.
+
+\chapter{Derivation of loss functions}
+
+\end{document}
