@@ -232,7 +232,7 @@
 
 \maketitle
 
-\chapter{A universal approximator}
+\chapter{Framework}
 
 \section{Modern neural networks used in deep learning, compared with other algorithms}
 \label{sec:modern-network}
@@ -538,55 +538,12 @@ Most users will not need to write CUDA kernels themselves.
 \section{What is approximated by neural networks}
 
 As is implied in \prettyref{sec:modern-network},
-modern neural networks are not probabilistic models:
-their inductive biases are not explicitly endowed to them by making assumptions about the statistic structure of the problem.
+modern neural networks are not conventional statistical models:
+their inductive biases are not explicitly endowed to them by making assumptions about the statistical structure of the problem.
 Still by treating the whole neural network model as a whole,
 we can have some insights on the training target. 
 
-Let $\theta$ be the collection of all parameters in the model.
-The relation between the input $x$ and the output $y$ generally takes the following form
-\begin{equation}
-    y = f(x; \theta) + \epsilon(x),
-\end{equation}
-where $\epsilon$ is a random variable whose mean vanishes.
-In physics, for example, $\epsilon$ may come from Langevin noise.
 
-We now work in the Bayesian approach and assume that $\theta$ also has a distribution.
-Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
-It is straightforward to verify that 
-\begin{equation}
-    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
-\end{equation}
-Here we are making a quite generic assumption about the relation between $\vb{x}$ and $\theta$.
-If, for example, $\theta$ contains parameters in a \emph{physical} process,
-then $\vb{x}$ \emph{of course} depends on $\theta$:
-some scenarios are simply easier for experimentalists to handle.
-Now we do a maximal a posteriori estimation (which, strictly speaking, is not Bayesian, as it is a point estimation).
-We immediately realize we are faced with difficulties,
-because both $p(\vb{x} | \theta)$ and $p()$
-
-A common approximation is to assume that $\vb{x}$ in fact doesn't depend on $\theta$.
-This immediately leads to 
-\begin{equation}
-    \begin{aligned}
-        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
-        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{y} | \vb{x}, \theta)) \\
-        &= \argmax_\theta (\log p(\vb{y} | \vb{x}, \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
-    \end{aligned}
-\end{equation}
-Here we see that regularization naturally appears as a consequence of the prior distribution of $\theta$.
-A more intuitive way to derive this equation is to note that since $\theta$ and $\vb{x}$ have no correlation,
-$\vb{x}$ is just like a parameter here.
-The form of $p(\vb{y} | \vb{x}, \theta)$ is determined by $\epsilon$,
-under the assumption that different samples are independent to each other:
-\begin{equation}
-    p(\vb{y} | \vb{x}, \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
-\end{equation}
-Therefore 
-\begin{equation}
-    \hat{\theta} = \argmax_\theta \left( \log \sum_i p(\epsilon = y_i- f(x_i; \theta)) + \log p(\theta) \right).
-\end{equation}
-We see that by different 
 
 \section{Training}
 
@@ -715,6 +672,140 @@ considering that devils hide in details of fine tuning and minor modifications o
 
 \chapter{Derivation of loss functions}
 
+\section{Regression}
 
+\subsection{Overall theory}
+
+Let $\theta$ be the collection of all parameters in the model.
+The relation between the input $x$ and the output $y$ generally takes the following form
+\begin{equation}
+    y = f(x; \theta) + \epsilon(x),
+\end{equation}
+where $\epsilon$ is a random variable whose mean vanishes.
+In physics, for example, $\epsilon$ may come from Langevin noise.
+
+We now work in the Bayesian approach and assume that $\theta$ also has a distribution.
+Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
+It is straightforward to verify that%
+\footnote{
+    Here we are using a rather sloppy notation.
+    As $\vb{y}$ is essentially a random variable,
+    we should have written something like $p(\vb{y} = \vb{y}_0)$, where $\vb{y}_0$ is a deterministic quantity.
+    Or we can write $p_{\vb{y}}(\vb{y}_0)$.
+    The standard in statistics is actually $p(\vb{Y} = \vb{y})$,
+    where $\vb{Y}$ is the random variable and $\vb{y}$ is one of its possible values.
+    In machine learning, though, we rarely need to make such a distinction.
+}
+\begin{equation}
+    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
+\end{equation}
+Here we are making a quite generic assumption about the relation between $\vb{x}$ and $\theta$.
+If, for example, $\theta$ contains parameters in a \emph{physical} process,
+then $\vb{x}$ \emph{of course} depends on $\theta$:
+some scenarios are simply easier for experimentalists to handle.
+Now we do a maximal a posteriori estimation (which, strictly speaking, is not Bayesian, as it is a point estimation).
+We immediately realize we are faced with difficulties,
+because both $p(\vb{x} | \theta)$ and $p()$
+
+A common approximation is to assume that $\vb{x}$ in fact doesn't depend on $\theta$.
+This immediately leads to 
+\begin{equation}
+    \begin{aligned}
+        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
+        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{y} | \vb{x}, \theta)) \\
+        &= \argmax_\theta (\log p(\vb{y} | \vb{x}, \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
+    \end{aligned}
+\end{equation}
+Here we see that regularization naturally appears as a consequence of the prior distribution of $\theta$.
+A more intuitive way to derive this equation is to note that since $\theta$ and $\vb{x}$ have no correlation,
+$\vb{x}$ is just like a parameter here.
+The form of $p(\vb{y} | \vb{x}, \theta)$ is determined by $\epsilon$,
+under the assumption that different samples are independent to each other:
+\begin{equation}
+    p(\vb{y} | \vb{x}, \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
+\end{equation}
+Therefore 
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \left( \log \sum_i p(\epsilon = y_i- f(x_i; \theta)) + \log p(\theta) \right).
+\end{equation}
+We see that by different 
+
+\section{KL divergence}
+
+\section{Variational Autoencoder}
+
+Suppose we want to compress a bunch of data into a much smaller \concept{latent} space.
+This involves an encoder from $x$ to $z$, and a decoder from $z$ to $x$.
+We do not know what exactly $z$.
+Still, if we have an approximate form of $p(x)$,
+we can do a maximal likelihood estimation.
+
+\subsection{Derivation of the ELBO}
+
+A \concept{variational autoencoder (VAE)} is a compressor which maximizes the \emph{lower bound}
+(hence the term ``variational'') of $p(x)$ derived from the non-negativity of the KL divergence.
+Suppose we approximate $p(z|x)$ by an encoder $q_\theta(z | x)$,
+and we approximate $q(x|z)$ by an decoder $p_\phi(x | z)$.
+Here we adopt a frequentist perspective and treat the parameters $\theta, \phi$ as unknown constants.
+Of course, $p(z | x)$ can also be approximated using $p_\phi(x | z)$: we have 
+\begin{equation}
+    p_\phi(x | z) = \frac{p(z)}{p(x)} p_\phi(x | z).
+\end{equation}
+The two estimations of the real $p(z | x)$ should be consistent.
+We calculate their KL divergence, and note that because the KL divergence is always non-negative,%
+\footnote{
+    As we are dealing with continuous variables, $p(x)$ etc. are actually probability densities,
+    and $p(x) \dd{x}$ is the probability for the random variable $x$ to fall between the value $x$ and $x + \dd{x}$.
+    The $\dd{x}$ factors cancel in fractions.
+}
+\begin{equation}
+    \begin{aligned}
+        D_{\text{KL}}(q_\theta(z|x) || p_\phi(z|x)) &= - \int q_\theta(z|x) \log \frac{p_\phi(z|x)}{q_\theta(z|x)} \dd{z} \\
+        &= - \int q_\theta(z|x) \log \frac{p_\phi(x|z) p(z)}{q_\theta(z|x) p(x)} \dd{z} \geq 0.
+    \end{aligned}
+\end{equation} 
+Equality occurs when the two distributions are indeed the same.
+Manipulating this inequality we get 
+\[
+    \underbrace{- \int q_\theta(z|x) \log \frac{p(z)}{q_\theta(z|x)} \dd{z}}_{D_{\text{KL}}(q_\theta(z|x) ||p(z))} - \underbrace{\int q_\theta(z|x)  \log p_\phi(x|z) \dd{z}}_{\mathbb{E}_{z\sim q_\theta(z|x)}[\log p_\phi(x|z)]} + \log p(x) \geq 0,
+\]
+and therefore 
+\begin{equation}
+    \log p(x) \geq \underbrace{- D_{\text{KL}}(q_\theta(z|x) ||p(z)) + \mathbb{E}_{z\sim q_\theta(z|x)}[\log p_\phi(x|z)]}_{\text{ELBO}}.
+    \label{eq:loss.vae.gaussian.elbo}
+\end{equation}
+The equality occurs when the encoder and the decoder describe the same $p(x|z)$ distribution.
+The right hand side is known as the \concept{evidence lower bound (ELBO)}.
+
+When the neural network architecture used in $p_\phi(x|z)$ and $q\theta(z|x)$ are flexible enough,
+there exists a subset of possible $(\theta, \phi)$ where the inequality is almost an equality,
+and in that region, maximizing the ELBO is equivalent to the maximal likelihood estimation.
+Praying that our optimization method can bring us there,
+we use the ELBO function as the optimization target.
+
+\subsection{Closed form VAE loss: Gaussian latents}
+
+We assume that 
+\begin{equation}
+    p(z) = \frac{1}{\sqrt{2\pi \sigma_p^2}} \exp(- \frac{(z - \mu_p)^2}{2 \sigma_p^2}),
+\end{equation} 
+and 
+\begin{equation}
+    q_\theta(z | x) = \frac{1}{\sqrt{2\pi \sigma_q^2}} \exp(- \frac{(z - \mu_q)^2}{2 \sigma_q^2}).
+    \label{eq:loss.vae.gaussian.q-ansatz}
+\end{equation}
+The second assumption is of particular importance,
+because when making it, we have drastically simplify the structure of the encoder.
+The encoder no longer takes both $x$ and $z$ as inputs;
+rather, it takes in $x$ and returns $(\sigma_q^2, \mu_q)$,
+which is then given to \eqref{eq:loss.vae.gaussian.q-ansatz} to model the distribution of $z$.
+
+The first term in the ELBO in \eqref{eq:loss.vae.gaussian.elbo} is evaluated as (a detailed derivation is arXiv 1907.08956)
+\begin{equation}
+    - D_{\text{KL}}(q_\theta(z|x) || p(z)) = \log \frac{\sigma_q}{\sigma_p} - \frac{\sigma_q^2 + (\mu_q - \mu_p)^2}{2 \sigma_p^2} + \frac{1}{2}.
+\end{equation}
+The second term is 
+
+TODO: reparameterization trick; arXiv 1312.6114
 
 \end{document}
