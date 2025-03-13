@@ -468,6 +468,8 @@ it is probably a good idea to seal the computational graph into a regular Python
 and create a new tensor whenever we want a reassignment.
 This makes sure that doing deep learning with PyTorch is still like writing regular Python code,
 not working with an embedded DSL.
+Computational graphs in PyTorch also do not support taking second-order derivatives:
+therefore optimization can only rely on the first-order derivative of the model with respect to the model parameters.
 
 \paragraph*{Defining a module}
 A model, as is said above, is a function that takes in a tensor (probably with the first dimension being the batch dimension) and outputs a tensor,
@@ -535,12 +537,56 @@ Most users will not need to write CUDA kernels themselves.
 
 \section{What is approximated by neural networks}
 
-regression, probability distribution
+As is implied in \prettyref{sec:modern-network},
+modern neural networks are not probabilistic models:
+their inductive biases are not explicitly endowed to them by making assumptions about the statistic structure of the problem.
+Still by treating the whole neural network model as a whole,
+we can have some insights on the training target. 
 
-As is implied in \prettyref{sec:modern-network}
+Let $\theta$ be the collection of all parameters in the model.
+The relation between the input $x$ and the output $y$ generally takes the following form
 \begin{equation}
-    y = f(x; \theta) + N
+    y = f(x; \theta) + \epsilon(x),
 \end{equation}
+where $\epsilon$ is a random variable whose mean vanishes.
+In physics, for example, $\epsilon$ may come from Langevin noise.
+
+We now work in the Bayesian approach and assume that $\theta$ also has a distribution.
+Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
+It is straightforward to verify that 
+\begin{equation}
+    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
+\end{equation}
+Here we are making a quite generic assumption about the relation between $\vb{x}$ and $\theta$.
+If, for example, $\theta$ contains parameters in a \emph{physical} process,
+then $\vb{x}$ \emph{of course} depends on $\theta$:
+some scenarios are simply easier for experimentalists to handle.
+Now we do a maximal a posteriori estimation (which, strictly speaking, is not Bayesian, as it is a point estimation).
+We immediately realize we are faced with difficulties,
+because both $p(\vb{x} | \theta)$ and $p()$
+
+A common approximation is to assume that $\vb{x}$ in fact doesn't depend on $\theta$.
+This immediately leads to 
+\begin{equation}
+    \begin{aligned}
+        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
+        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{y} | \vb{x}, \theta)) \\
+        &= \argmax_\theta (\log p(\vb{y} | \vb{x}, \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
+    \end{aligned}
+\end{equation}
+Here we see that regularization naturally appears as a consequence of the prior distribution of $\theta$.
+A more intuitive way to derive this equation is to note that since $\theta$ and $\vb{x}$ have no correlation,
+$\vb{x}$ is just like a parameter here.
+The form of $p(\vb{y} | \vb{x}, \theta)$ is determined by $\epsilon$,
+under the assumption that different samples are independent to each other:
+\begin{equation}
+    p(\vb{y} | \vb{x}, \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
+\end{equation}
+Therefore 
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \left( \log \sum_i p(\epsilon = y_i- f(x_i; \theta)) + \log p(\theta) \right).
+\end{equation}
+We see that by different 
 
 \section{Training}
 
@@ -548,7 +594,7 @@ As is implied in \prettyref{sec:modern-network}
 As is mentioned in \prettyref{sec:modern-network}, deep learning models are to be trained by gradient-based optimization,
 the simplest being the \concept{gradient descent}
 \begin{equation}
-    \theta \leftarrow \theta - \eta \grad \mathcal{R}.
+    \theta \leftarrow \theta - \eta \grad_\theta \mathcal{R}.
 \end{equation}
 A training procedure usually contains a number of \concept{epoches},
 in each of which, we use up all data available in the training dataset.
@@ -641,7 +687,8 @@ there is evidence for LLMs' ability to learn impossible languages better than hu
     although their performances show certain similar patterns.
     Similarly, arXiv 2502.18795 demonstrates that human learners show a stronger dislike towards unattested word orders than LLMs,
     although the latter also show weak inductive biases against them.
-    (The paper does prove one thing: LLMs like constituency.)
+    (The paper does prove one thing: LLMs like constituency.
+    A rather ironic situation is that certain radical usage-based schools actually do not think constituencies exist.)
     Large Language Models and the Argument From the Poverty of the Stimulus by Nur Lan, Emmanuel Chemla, and Roni Katzir also shows that 
     how an initial success story of a LLM learning a subtle syntactic phenomenon
     (and thus possibly refuting the Poverty of Stimulus argument)
@@ -663,7 +710,11 @@ and also consistent with the divergence of LLMs from human psycholinguistics:
 this theory is no more complicated than the ``LLM=human psycholinguistics'' theory (which struggles to explain certain fMRI phenomena) or the constructionist theory.
 So does the success of LLMs tell us anything about human languages?
 Probably, but no one really knows what it is.
+And finally, note that LLMs are probably not that domain general, after all,
+considering that devils hide in details of fine tuning and minor modifications of the model architecture.
 
 \chapter{Derivation of loss functions}
+
+
 
 \end{document}
