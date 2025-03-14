@@ -10,7 +10,6 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 \usepackage{bbm}
-\usepackage{cite}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{simpler-wick}
@@ -28,6 +27,8 @@
 \zxrsetup{toltxlabel}
 \usepackage[colorlinks,unicode, bookmarksnumbered]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
 \usepackage[most]{tcolorbox}
+\usepackage[backend=bibtex,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{probability.bib}
 \usepackage{prettyref}
 
 % Page style
@@ -322,7 +323,7 @@ How to train a model is another problem (also see \prettyref{sec:theoretical-asp
 Modern neural networks are all trained by \concept{backpropagation}.
 Therefore they are also known as \concept{BP neural networks}.
 This means we choose a \concept{loss function} (which can be derived by statistical estimations,
-like the maximum a posteriori estimation),
+like the maximum a posteriori estimation; see \prettyref{sec:framework.statistics}),
 and use it to measure the difference between the training dataset and the prediction.
 Then we take the \emph{gradient} of the loss function with respect to parameters in the model,
 and update the parameters according to the gradient.
@@ -535,15 +536,123 @@ PyTorch tensors and \shortcode{nn.Module} objects can be sent to GPUs
 by the \shortcode{.to("cuda")} method and sent back to the host by \shortcode{.to("cpu")}.
 Most users will not need to write CUDA kernels themselves.
 
-\section{What is approximated by neural networks}
+\section{What is approximated by neural networks}\label{sec:framework.statistics}
 
 As is implied in \prettyref{sec:modern-network},
 modern neural networks are not conventional statistical models:
 their inductive biases are not explicitly endowed to them by making assumptions about the statistical structure of the problem.
-Still by treating the whole neural network model as a whole,
+Still by treating the whole neural network model as a whole as a statistical model,
 we can have some insights on the training target. 
 
+Machine learning, from the perspective of statistics, is parameter estimation.
+There are two main school of thoughts in parameter estimation.
+\concept{Frequentists} consider the parameters in the model as unknown constants,
+and the training dataset they consider a sampling of a ``real'', physical distribution.
+Parameter estimation in the frequentist approach is a \emph{deterministic} algorithm
+from a sampling to a deterministic estimation of the parameters.
+How fast the estimation of the parameters given by the algorithm
+converges to the true parameters as the number of samples increase
+and the distribution of the error (which is also a random variable,
+because the probabilistic distribution of the sample is a random variable)
+decide how good a parameter estimation algorithm is.
+Frequentist parameter estimation often employs the method of \concept{maximum likelihood estimation (MLE)}%
+\footnote{
+    Here we are using a rather sloppy notation.
+    As $x$ is essentially a random variable,
+    we should have written something like $p(x = x_0)$, where $x_0$ is a deterministic quantity.
+    Or we can write $p_{x}(x_0)$.
+    The standard in statistics is actually $p(X = x)$,
+    where $X$ is the random variable and $x$ is one of its possible values.
+    In machine learning, though, we rarely need to make such a distinction.
+}
+\begin{equation}
+    \hat{\theta} = \argmax_\theta p_\theta(x) = \argmax_\theta \log p_\theta(x),
+    \label{eq:mle}
+\end{equation}
+where $x$ is the observation, and we have modeled the hidden distribution of the observation as a parameterized function $p_\theta(x)$.
 
+In \concept{Bayesian statistics}, the parameters are \emph{also} considered as random variables.
+This is because in Bayesian statistics, probability is \emph{subjective}.
+On how reasoning on uncertain facts naturally results in probability theory, see e.g. Ref.~\cite{jaynes2003probability};
+For some reason, the same mathematical discipline seems to be the underlying framework for both reasoning about uncertainty and for modeling a physical system interacting with a ``thermal bath''.
+In Bayesian statistics, parameter estimation results in a likely distribution of $\theta$,
+and not just a single estimation $\hat{\theta}$.
+What is often done is the follows:
+\begin{equation}
+    p(\theta | x) = \frac{p(\theta)}{p(x)} p(x | \theta) = \frac{p(\theta) p(x | \theta)}{\sum_{\theta'} p(\theta') p(x | \theta')},
+    \label{eq:bayesian}
+\end{equation}
+where we first assume a \concept{prior distribution} of $p(\theta)$,
+and build a model by assuming a form of $p(x | \theta)$,
+and then calculate $p(\theta | x)$ according the equation above.
+When $\theta$ is continuous, $p(\theta)$ and $p(\theta | x)$ are actually probability densities,
+and $p(\theta) \dd{\theta}$ is the probability for the random variable $\theta$ to fall between the value $\theta$ and $\theta + \dd{\theta}$.
+Since the $\dd{\theta}$ factors on both sides of \eqref{eq:bayesian}, we get 
+\begin{equation}
+    p(\theta | x) = \frac{p(\theta) p(x | \theta)}{\int p(\theta') p(x | \theta') \dd{\theta'}}.
+\end{equation}
+The prior can be viewed as the $p(\theta | x)$ from last inference,
+provided that the sample used in the last inference and the sample used in this inference
+are independent to each other.
+Indeed, we can prove that 
+\begin{equation}
+    p(\theta | x_2, x_1) = \frac{p(\theta | x_1)}{p(x_2)} p(x_2 | \theta, x_1),
+\end{equation}
+if and only if $p(x_1) p(x_2) = p(x_1 x_2)$,
+and therefore if the prior if determined by past experiences (i.e. $p(\theta | x_1)$),
+then the LHS of \eqref{eq:bayesian} is determined by both past experiences and this sample.
+
+The sum or integral in \eqref{eq:bayesian} usually cannot be evaluated analytically,
+and techniques like Monte Carlo sampling have to be used.
+As a compromise -- which is what is frequently done when $p(x | \theta)$ is modeled by a deep learning model
+-- we may assume that $p(\theta | x)$ has a sharp peak,
+and this results in the \concept{maximum a posteriori estimation (MAP)}
+\begin{equation}
+    \hat{\theta} = \argmax_\theta p(\theta | x) = \argmax_\theta (\log p(x | \theta) + \log p(\theta)).
+    \label{eq:map}
+\end{equation}
+When the prior is trivial, which means it's the same for all $\theta$,
+MAP reduces to MLE \eqref{eq:mle}.
+Some thing similar to \eqref{eq:map} can also be derived from \eqref{eq:mle}:
+from the perspective of the frequentists,
+if we stipulate that certain values of $\theta$ are not allowed in our model in \eqref{eq:mle}
+(probably because otherwise the model is to complex),
+then we can add a Lagrangian multiplier term (called \concept{regularization}) into the minimization problem \eqref{eq:mle}:
+\begin{equation}
+    \hat{\theta} = \argmax_{\|\theta\| \leq C} p_\theta(x) = \argmax_{\theta, \lambda} (p_\theta(x) + \underbrace{\lambda (\norm*{\theta} - C)}_{\text{regularization}}).
+    \label{eq:mle-lagrangian}
+\end{equation}
+Here $\|\theta\|$ is a way to measure the complexity of the model.
+The equivalence is a consequence of Karush-Kuhn-Tucker conditions.
+After maximization finishes, $\lambda$ in \eqref{eq:mle-lagrangian} is zero if $\norm*{\theta} < C$,
+and is non-zero when $\norm*{\theta} = C$.
+Still, usually we do not know what $C$ actually is,
+and we often need to try different values of $C$ to see how well the model works.
+This is equivalent to fixing $\lambda$ to a given value in \eqref{eq:mle-lagrangian},
+and do maximization with respect to $\theta$ only.
+What is done above is equivalent to setting
+\begin{equation}
+    p(\theta) \propto \ee^{\lambda \norm*{\theta}}
+\end{equation}
+in \eqref{eq:map}.
+
+Therefore, it seems that MAP in Bayesian statistics (with or without a non-trivial prior)
+is equivalent to MLE in frequentist statistics (with or without regularization).
+Since MAP is just a specific case of Bayesian statistics,
+it seems to follow that frequentist parameter estimation can be seen as a subset of Bayesian parameter estimation.
+There are actually more correspondences between the two,
+because in the frequentist framework we can still talk about
+the distribution of the parameter calculated on a randomly chosen sample,
+which looks quite like the a posteriori distribution of $\theta$ in Bayesian parameter estimation.
+For instance we have the Bernstein–von Mises theorem.
+
+So how is this related to neural networks?
+Note that \eqref{eq:mle-lagrangian} is a maximization problem -- or a minimization problem,
+if we work with $- p_\theta(x)$.
+So when the forms of $p_\theta(x)$ and $\norm*{\theta}$ are given 
+-- in the language of Bayesian parameter estimation, when the forms of $p(x | \theta)$ and $p(\theta)$ are given --
+we have already gotten an optimization target function.
+Basically this is how loss functions are derived in \prettyref{chap:loss}.
 
 \section{Training}
 
@@ -670,7 +779,7 @@ Probably, but no one really knows what it is.
 And finally, note that LLMs are probably not that domain general, after all,
 considering that devils hide in details of fine tuning and minor modifications of the model architecture.
 
-\chapter{Derivation of loss functions}
+\chapter{Derivation of loss functions}\label{chap:loss}
 
 \section{Regression}
 
@@ -686,16 +795,7 @@ In physics, for example, $\epsilon$ may come from Langevin noise.
 
 We now work in the Bayesian approach and assume that $\theta$ also has a distribution.
 Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
-It is straightforward to verify that%
-\footnote{
-    Here we are using a rather sloppy notation.
-    As $\vb{y}$ is essentially a random variable,
-    we should have written something like $p(\vb{y} = \vb{y}_0)$, where $\vb{y}_0$ is a deterministic quantity.
-    Or we can write $p_{\vb{y}}(\vb{y}_0)$.
-    The standard in statistics is actually $p(\vb{Y} = \vb{y})$,
-    where $\vb{Y}$ is the random variable and $\vb{y}$ is one of its possible values.
-    In machine learning, though, we rarely need to make such a distinction.
-}
+It is straightforward to verify that
 \begin{equation}
     p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
 \end{equation}
@@ -752,12 +852,7 @@ Of course, $p(z | x)$ can also be approximated using $p_\phi(x | z)$: we have
     p_\phi(x | z) = \frac{p(z)}{p(x)} p_\phi(x | z).
 \end{equation}
 The two estimations of the real $p(z | x)$ should be consistent.
-We calculate their KL divergence, and note that because the KL divergence is always non-negative,%
-\footnote{
-    As we are dealing with continuous variables, $p(x)$ etc. are actually probability densities,
-    and $p(x) \dd{x}$ is the probability for the random variable $x$ to fall between the value $x$ and $x + \dd{x}$.
-    The $\dd{x}$ factors cancel in fractions.
-}
+We calculate their KL divergence, and note that because the KL divergence is always non-negative,
 \begin{equation}
     \begin{aligned}
         D_{\text{KL}}(q_\theta(z|x) || p_\phi(z|x)) &= - \int q_\theta(z|x) \log \frac{p_\phi(z|x)}{q_\theta(z|x)} \dd{z} \\
@@ -807,5 +902,7 @@ The first term in the ELBO in \eqref{eq:loss.vae.gaussian.elbo} is evaluated as 
 The second term is 
 
 TODO: reparameterization trick; arXiv 1312.6114
+
+\printbibliography[title=References]
 
 \end{document}
