@@ -797,38 +797,41 @@ We now work in the Bayesian approach and assume that $\theta$ also has a distrib
 Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
 It is straightforward to verify that
 \begin{equation}
-    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
+    p(\theta|\vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x}, \vb{y} | \theta).
 \end{equation}
-Here we are making a quite generic assumption about the relation between $\vb{x}$ and $\theta$.
-If, for example, $\theta$ contains parameters in a \emph{physical} process,
-then $\vb{x}$ \emph{of course} depends on $\theta$:
-some scenarios are simply easier for experimentalists to handle.
-Now we do a maximal a posteriori estimation (which, strictly speaking, is not Bayesian, as it is a point estimation).
-We immediately realize we are faced with difficulties,
-because both $p(\vb{x} | \theta)$ and $p()$
-
-A common approximation is to assume that $\vb{x}$ in fact doesn't depend on $\theta$.
-This immediately leads to 
+By MAP, we have 
 \begin{equation}
     \begin{aligned}
         \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
-        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{y} | \vb{x}, \theta)) \\
-        &= \argmax_\theta (\log p(\vb{y} | \vb{x}, \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
+        &= \argmax_\theta (\log p(\theta) - \underbrace{\log p(\vb{x}, \vb{y})}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{x}, \vb{y} | \theta)) \\
+        &= \argmax_\theta (\log p(\vb{x},  \vb{y} | \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
     \end{aligned}
 \end{equation}
-Here we see that regularization naturally appears as a consequence of the prior distribution of $\theta$.
-A more intuitive way to derive this equation is to note that since $\theta$ and $\vb{x}$ have no correlation,
-$\vb{x}$ is just like a parameter here.
-The form of $p(\vb{y} | \vb{x}, \theta)$ is determined by $\epsilon$,
-under the assumption that different samples are independent to each other:
+Here regularization naturally appears as a consequence of the prior distribution of $\theta$.
+The form of $p(\vb{x}, \vb{y} | \theta)$ is determined by $\epsilon$,
+under the assumption that different samples are independent to each other: TODO: why?
 \begin{equation}
-    p(\vb{y} | \vb{x}, \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
+    p(\vb{x}, \vb{y} | \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
 \end{equation}
 Therefore 
 \begin{equation}
     \hat{\theta} = \argmax_\theta \left( \log \sum_i p(\epsilon = y_i- f(x_i; \theta)) + \log p(\theta) \right).
 \end{equation}
-We see that by different 
+
+People with a strong background in physics may tend to model the relation between $\vb{x}$ and $\vb{y}$ as 
+\begin{equation}
+    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
+\end{equation}
+The problem is that if $\theta$ are parameters in a \emph{physical} process,
+then $\vb{x}$ \emph{of course} depends on $\theta$:
+some scenarios are simply easier for experimentalists to handle.
+Now if we still want to do MAP, we immediately realize we are faced with difficulties: we get 
+\begin{equation}
+    \begin{aligned}
+        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
+        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{???}} + \log p(\vb{y} | \vb{x}, \theta)) .
+    \end{aligned}
+\end{equation}
 
 \section{KL divergence}
 
