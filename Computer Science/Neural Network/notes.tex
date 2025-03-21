@@ -661,6 +661,7 @@ As is mentioned in \prettyref{sec:modern-network}, deep learning models are to b
 the simplest being the \concept{gradient descent}
 \begin{equation}
     \theta \leftarrow \theta - \eta \grad_\theta \mathcal{R}.
+    \label{eq:sgd-example}
 \end{equation}
 A training procedure usually contains a number of \concept{epoches},
 in each of which, we use up all data available in the training dataset.
@@ -708,6 +709,18 @@ containing a \emph{batch} of inputs and a \emph{batch} of expected outputs,
 both of which \emph{have} an additional dimension at the first, i.e. the batch dimension.
 It is encouraged to define subclasses of \shortcode{Dataset}
 for different types of training datasets.
+
+\paragraph*{Batching in the perspective of parameter estimation}
+It is clear that when we have multiple batches -- and not a single, giant batch -- and use \emph{different} batches in different iterations of \eqref{eq:sgd-example},
+we are \emph{not} doing any of the parameter estimations in \prettyref{sec:framework.statistics},
+the latter requires the training dataset to be the same in the training process.
+Still, we can treat each batch as the ``ideal'' sample with some variations,
+and since usually the training dataset is shuffled before training (when creating \shortcode{dataloader}),
+we are essentially doing parameter estimation (as is outlined in \prettyref{sec:framework.statistics})
+with a gradient-based optimizer (e.g. the one described in \eqref{eq:sgd-example}),
+and at each iteration, we have \emph{random noises} corresponding to the makeup of the batch being used.
+Batching therefore makes training more robust as it avoids the model falling into a local minimum.
+How to choose the batch size however is not clear from a statistical perspective, and usually needs empirical testing to decide.
 
 \section{Theoretical aspects}\label{sec:theoretical-aspects}
 
