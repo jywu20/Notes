@@ -1,0 +1,448 @@
+\documentclass[a4paper, oneside, scheme=plain, 12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw,svgnames]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[citestyle=authoryear,backend=bibtex,natbib=true,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{famous-grammars.bib}
+\addbibresource{controversy.bib}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\newcommand*{\textto}{$\to$}
+\newcommand{\focus}[1]{\textbf{#1}}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citechaps}[1]{Chs.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=blue!5,
+    %colframe=blue!5,
+    colback=white,
+    colframe=white,
+    coltitle=blue!60,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\definecolor{my-orange}{HTML}{F58123}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=orange!5, 
+    %colframe=orange!5, 
+    colback=white,
+    colframe=white,
+    coltitle=my-orange!65,
+    borderline west={4pt}{0pt}{my-orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{perspectivebox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=red!5,
+    %colframe=red!5,
+    colback=white,
+    colframe=white,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{todobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+\newcommand{\work}[1]{\textit{#1}}
+\newcommand{\species}[1]{\textit{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+% To be used in \form{}, to label the function of the constituents.
+\newcommand{\annotate}[1]{\text{\emph{#1}}}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+
+\newcommand*{\textgt}{$>$ }
+\newcommand*{\textlt}{$<$ }
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+\newcommand*{\category}[1]{\textsc{#1}}
+\newcommand*{\specialunit}[1]{$<$\textit{#1}$>$}
+\newcommand{\before}{$> \ $}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+%\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand*{\nameyeardelim}{\space} % No comma between year and name
+\DeclareNameAlias{sortname}{family-given} % Putting the family name before the given name
+\DeclareNameAlias{default}{family-given} 
+\DeclareFieldFormat{labelnumberwidth}{} % No number label like [12] in the reference list
+\setlength{\biblabelsep}{0pt} % No space for these labels
+
+\makeindex
+
+\title{What to compare in historical linguistics?}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\automath
+
+\maketitle
+
+\section{The (lack of) synchronic foundation for diachronic studies}
+
+The Neogrammarian hypothesis states that language changes can be explained \emph{completely} by 
+(a) regular sound change without exceptions,
+(b) analogy, and (c) borrowing.
+We can then use the \concept{comparative method} and \concept{internal reconstruction}
+to identify cognates and layers of borrowed words.
+
+So far we are just repeating words you can find on standard historical linguistics books.
+There however is a usually unspoken caveat:
+what is the unit that the comparative method runs on?
+A historical linguist will immediately answer ``the word''.
+But what is a word, then? And \emph{why} don't we try to determine genetic relations based on syntactic patterns, but words, whatever the term means?
+
+A choice in methodology eventually reflects a certain underlying assumption on how things work.
+Choosing to apply the comparative method and internal reconstruction to ``the word''
+means that we believe that when a language is passed to the younger generation,
+what are actually passed are sequences with relatively stable internal structures,
+which we name \term{words}.
+Now, we have to be able to identify what \emph{historical} wordhood means \emph{synchronically},
+or otherwise in theory we will be unable to gather enough materials for diachronic studies.
+
+Thus historical linguistics should ideally have a synchronic, and ultimately psycholinguistic foundation.
+Ideally, the Neogrammarian hypothesis should be explained by acquisition of phonology,
+and its (alleged) breakdown in dialectical continua should be explained by
+e.g. the psycholinguistics of how two mutually intelligible languages are perceived in the brain.
+Methodological disputes in historical linguistics should eventually be resolved \emph{experimentally},
+by testing their implicit assumptions on how languages are transmitted from one generation to another.
+Given the current status of theoretical linguistics and psycholinguistics,
+however, we should not expect to see this in the foreseeable future.
+
+Still what is a word in historical linguistics is too important
+to be left to future biologists who will literally peak into your brain to see how language works.
+It is fundamental to the everyday job of historical linguists.
+
+
+\section{How grammar works}
+
+Let's forget about history and focus on synchronic concepts for a while here.
+We first go over modern theories of syntax, and point out that syntactic structures
+provide no definite definition for wordhood.
+We then turn to the linearization of abstract syntax,
+as well as the structure of the lexicon,
+and define morphological wordhood.
+Finally, we turn to phonological wordhood,
+and emphasize that phonological wordhood may have subtle differences with morphological wordhood.
+We conclude by a list of candidates of the synchronic counterpart of diachronic wordhood.
+
+\subsection{Abstract syntax}
+
+\subsubsection{Peeling off morphophonology and focusing on abstract syntax}
+
+If you are convinced by Distributed Morphology or theories along this line of thinking,
+you will know that it seems we cannot define wordhood in a completely intuitive way in \emph{abstract} or \emph{pure} syntax.%
+\footnote{
+    Lexicalists will push back -- but I believe they are wrong \citep{bruening2018lexicalist}.
+}
+Let me explain.
+
+Consider the example \form{the two ugly blackbirds}.
+Should we bracket the noun phrase as \form{the [two [ugly [blackbirds]]]}?
+Not necessarily. The category of plural number, marked by \form{-s}, seems to have a scope covering 
+at least the nominal \form{two ugly blackbirds}.
+This can first be seen from semantic interpretation:
+\form{blackbird} is a compound that denotes a certain type of birds,
+and \form{ugly blackbird} is a conjunction of being ugly and being a blackbird.
+Now \form{two ugly blackbirds} specifies a set of two ugly blackbirds,
+and finally, \form{the two ugly blackbirds} reminds the listener to 
+recall an aforementioned or at least identifiable set of two ugly blackbirds.
+If we assume that the clearly hierarchical semantics has a structural origin,
+then we should assume that the category of number is somehow higher than adjectival modification.
+This head noun-adjective-number-determiner hierarchy can be found cross-linguistically.
+In Japhug, for instance, the number marker follows coordinated head nouns and also the numeral,
+highlighting its scope over the whole noun phrase
+\citep[\citepage{368},(2-3)]{jacques2021grammar}.
+
+This means we are probably to analyze \form{two ugly blackbirds} as something like 
+\form{[the_{\annotate{D}} [two [-s [[ugly]_{\annotate{AP}} [blackbird]_{\annotate{N}}]_{\annotate{FP}}]_{\annotate{Num'}}]_{\annotate{NumP}}]_{\annotate{DP}}}.%
+\footnote{
+    We are describing the phrase structure using \term{functional heads};
+    see the end of this section, ans \prettyref{sec:remove-functional-heads}.
+    We are making the Cartographic assumption that adjectival modifications
+    are also introduced by functional heads (FPs) and not an adjunction operation
+    radically different from complementation.
+    The motivation is to make the primitives of syntax more simple and flexible.
+}
+Does the compound \form{blackbird} get isolated from the rest of syntax
+and hence have a special status (sometimes called \term{lexical integrity})
+and can be seen as a word?
+Not necessarily. A noun phrase is also a small world in the eyes of the clause.
+This doesn't make a noun phrase a ``word'' in any proper sense.
+Furthermore, derived words are indeed subject to syntactic processes.
+(\ref{ex:word-coordination}) shows some attested examples.
+
+\begin{exe}
+    \ex\label{ex:word-coordination}
+    \begin{xlist}
+        \ex {} [pre- and post-revolutionary] France 
+        \ex  back- and tooth ache (from \href{https://web.archive.org/web/20250419153415/https://www.knightpiesold.com/sites/pa/assets/File/Bakubung/App%20D4%20Terrestrial.pdf}{Internet})
+    \end{xlist}
+\end{exe}
+
+Thus \form{the two ungly blackbirds} are probably to be analyzed as something like (\ref{ex:np-structure}).
+Here following the usual Distributed Morphology assumption that \form{backbird} is \emph{categorized} into what we commonly know as a noun
+by virtue of referring to an abstract notion of a type of objects, etc.,
+and we describe the ``categorizer phrase'' as nP.
+
+\begin{exe}
+    \ex\label{ex:np-structure} \form{[the_{\annotate{D}} [two [-s [[ugly]_{\annotate{AP}} [√black √bird]_{\annotate{nP}}]_{\annotate{FP}}]_{\annotate{Num'}}]_{\annotate{NumP}}]_{\annotate{DP}}}
+\end{exe}
+
+\subsubsection{Abstract as hierarchies of grammatical categories around lexical roots}
+
+There is nothing in abstract syntax, besides lexical roots and what are known as functional heads in generative syntax,
+more commonly called grammatical markers or \term{formatives} in descriptive linguistics.
+And the grammatical categories, together with ``arguments'' they introduce
+(including clausal arguments, adjective phrases, etc.) are wrapped around the core lexical root of a construction (like a noun phrase or a clause)
+layer by layer, forming an endocentric structure.
+The endocentric structure of layered grammatical categories in noun phrases is shown in (\ref{ex:np-structure}).
+In the clause, the structure is like vP-TP-CP,%
+\footnote{
+    See standard Chomskyan generative syntax textbooks. 
+}
+or in descriptive terms, a hierarchy of grammatical categories in the hierarchy of argument structure \textlt tense, aspect and modality \textlt speech force categories or complement clause types.
+
+The hierarchy of functional heads (i.e. grammatical relations and categories)
+as is exemplified in (\ref{ex:np-structure}) has real effects.
+We have already seen its semantic effects in interpreting (\ref{ex:np-structure}).
+In clauses, we find that the order of tense-aspect-modality adverbs and corresponding auxiliaries seem to have a regular correspondence,
+which can be explained by assuming that the TP or \term{tense phrase}
+actually splits into a series of functional projections,
+as is what is done in Cartographic syntax \citep{cinque2009cartography}.
+
+In the vP layer, we can find the influence of this layered structure as well:
+we have several syntactic tests to show that certain arguments (usually the agentative ones)
+are ``higher'' than others.
+Besides commonly known phenomena of binding of reflexive pronouns (\form{she hates herself}),
+we have a good example from causativization in Japhug.
+We note that Japhug allows double causative,
+and when this happens, the meaning is always like 
+\translate{$X$ makes [[$Z$ do sth. to $W$] with $Y$]}
+(we refer it by $X \to Y \to Z \to W$),
+and the polypersonal direct-inverse indexation on the main verb (with the form $X \to Y$)
+is determined by first comparing the prominence of $W$ and $Z$ on the empathy hierarchy,
+and then comparing the prominence of the winner with that of $Y$,
+and then the prominence of the final winner is compared with $X$,
+the result of which determines if the inverse marker appears.
+Hence a 1\textto 3\textto 2\textto 3 configuration
+is morphologically the same as 1\textto 2
+\citep[\citepage{848}, (67)]{jacques2021grammar}.
+Similarly, both 2\textto 3\textto 1 and 2\textto 1\textto 3 
+are equivalent to 2\textto 1 in argument indexation
+\citep[\citepage{584}]{jacques2021grammar},
+and both 3\textto 3\textto 1 and 3\textto 1\textto 3 
+are equivalent to 3\textto 1 in argument indexation
+\citep[\citepage{310}]{jacques2021grammar}.%
+\footnote{
+    On the other hand, 3\textto 1\textto 2 becomes 3\textto 1,
+    and 3\textto 2\textto 1 becomes 3\textto 2.
+    But this just means that when both inner arguments are speech participants,
+    then agentivity leads to a higher prominence.
+    Still predictable on structural basis
+    once we refine the empathy hierarchy.
+}
+This strongly suggests a \form{[\category{causer} [\category{instrument} [\category{agent} \category{patient}]]]} hidden structure.
+Actually tense and aspect can be analyzed in this way as well 
+\citet[\citesec{7.4.1}]{wiltschko2014universal}.
+
+Hierarchies like this are actually one of the best criterion that tell a grammatical marker from a lexical root.
+In English, auxiliaries and suffixes in \form{have been being consulted} 
+shows a passive \textlt progressive \textlt perfect \textlt present hierarchy,
+which is fixed in its semantics and in its linear order.
+Therefore we are \emph{not} observing complement clause constructions.
+On the other hand, \form{want to be able to do sth.}
+and \form{be able to want to do sth.} are both valid:
+the latter is less frequently attested but is attested anyway%
+\footnote{
+    You can check yourself by searching it in COCA.
+}.
+Therefore \form{be able to} and \form{want} are not auxiliaries -- yet.
+
+\subsubsection{A note for panicking descriptive linguists}\label{sec:remove-functional-heads}
+
+In (\ref{ex:np-structure}), we have \term{determiner phrase} or \term{number phrase} or \term{nominal categorizer phrase},
+but we do not have \term{noun phrase}.
+This is related to how the idea of functional heads was historically developed in generative syntax.
+At first we only had lexical heads, i.e. the lexical root at the center of a construction.
+Later it was found that certain phenomena are better captured
+if we assume that the functional markers have their own ``phrases'' as well,
+like DP, nP, TP, vP, etc.,
+and finally it is found that we can keep the concept of \term{head} to functional markers only.
+
+Still a descriptive linguist wants to avoid 
+(a) explicitly mentioning (too many) functional heads,
+(b) using constituency relations to representing all hierarchical grammatical information, and 
+(c) positing two many concepts (nP, TP-splitting, multiple functional projections for different types of adjectives in Cartography).
+To be fair, we \emph{can} always do away with these.
+Constituency and dependency are formally equivalent,
+and we can always replace sentences like ``in a CP, \dots''
+by ``in a full clause that allows information structure marking, \dots'',
+i.e. avoid functional heads by focus on the grammatical environments they create.
+What is being done here is quite similar to how in physics,
+virtual photons are integrated out, leaving an effective Coulomb interaction.
+Thus (\ref{ex:np-structure}) may be replaced by something like 
+
+\begin{exe}
+    \ex\label{ex:np-structure-corrected} [the_{\text{definiteness}} two_{\text{\textcolor{blue}{plural}}} [ugly [black-bird]_{\text{nominal compound}}\textcolor{blue}{-s}]_{\text{modification}}]_{\text{noun phrase}}
+\end{exe}
+
+This analysis avoids problem (a) by replacing concepts like DP or NumP
+by ``a definite noun phrase with a numeral''.
+(b) and (c) are not huge problems here --
+they are huge problems for describing e.g. the \form{have been being consulted} split TP projections.
+For this, we can first 
+
+The result will be comparable to how the clause structure is represented in \citet{quirk2010comprehensive}.
+
+\subsection{There is no wordhood in abstract syntax}
+
+\subsubsection{Wordhood as small constituency?}
+
+Now this causes a problem. If we insist on defining a word as a small constituent,
+then \form{blackbird} \emph{is} a word -- but \form{blackbirds} isn't,
+because the latter has an affix with a quite high position in the structure attached to it.
+Which goes against the common notion of wordhood.
+
+Similar problems occur in clausal syntax.
+The abstract syntax of \form{he sleepwalked into this frustrative situation}
+can be described as follows:
+
+but \form{sleepwalked} is \emph{not} recognized as a word.
+
+\subsubsection{Wordhood as phase in generative syntax?}
+
+Now, another way to define wordhood is by the concept of \emph{phase} in generative syntax.
+Recall that we have said that arguments are first finished on their own 
+and then sent to clausal syntax,
+so clausal syntax doesn't have a lot to do with their internal structures.
+On the other hand, the vp-TP-CP projections are finished in one batch.
+So markers of grammatical categories of valency, tense-aspect-modality, and speech forces (imperative, interrogative etc.)
+are \emph{closer} to the verb in this sense.
+This perspective actually gives us a way to flatten the deeply hierarchical syntax tree in 
+
+But now it seems we have to recognize that \form{have been being performing} is also a \term{word} under this definition.
+
+
+\subsection{Abstract syntax is intricate and volatile}
+
+Abstract syntax probably is not the best 
+
+Still, 
+
+\subsection{The organization of the lexicon, and morphological wordhood}
+
+If there is no good definition of wordhood in abstract syntax,
+then what is recorded in the lexicon?
+
+\subsection{Phonological wordhood}
+
+\section{Historical wordhood and morphological or phonological wordhood}
+
+\printbibliography
+
+\end{document}
