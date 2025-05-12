@@ -46,6 +46,21 @@ an unexperienced reader may encounter when reading Course.
   and the resulting theory may indeed by known as "hydrodynamics" (see the discussions on Xiao-gang Wen's textbook below).
   But hydrodynamics without viscosity is hardly what is intuitionally known as hydrodynamics.
 - Another problem in the treatment of Fermi liquid theory is the single quasiparticle energy $\epsilon$ which contains the $f \var{n}$ correction is directly placed into the Fermi-Dirac distribution function to force a self-consistent equation for quasiparticle distributions. You need to know Matsubara field theory to understand why this is valid: we are essentially doing self-energy correction to finite-$T$ Green functions. But Course treats this in a completely phenomenological way (and uses a lot of rather hand-wavy arguments like minimization of entropy etc. which are formally equivalent to $Z = \trace \ee^{-\beta H}$ but may leave the reader wondering why we are applying soft condensed matter methods to electrons).
+- On using Boltzmann equation to capture the non-equilibrium behaviors of Fermi liquid theory:
+  we note that Boltzmann equation is the long-range form of the single-electron Kanadoff-Baym equation under quasiparticle approximation,
+  and to have a closed-form equation,
+  we assume that we have well-defined quasiparticles in the system,
+  and that the system is well thermalized.
+  The two conditions hold for Fermi liquid theory, but not all systems.
+  A counterexample of both conditions is a system containing multiple excitons without thermalization:
+  here it makes no sense to write a single equation for the single electron correlation function,
+  as exciton formation means four-point correlations, and thermalization is absent.
+  
+  We note that  Statistical Physics II makes use of the Boltzmann equation to derive zero sound 
+  (and we can do the same to get plasmon modes by including long range exchange interaction) when $T = 0$.
+  This *is* correct, because we can always set $T=0$ in $n_0$ when linearize the Boltzmann equation.
+  The Boltzmann equation allows us to approach the pure state theory *in the direction of* 
+  quasiparticle approximation and standard thermalization.
 - Fluctuations in medium, appearing out of no where in the volume about condensed matter physics in Course, are important because they are needed in building a Langevin-like effective theory of the medium. They are also necessary because a medium has dissipation and we would expect that excitations in the medium created by the dissipation may spontaneously decay and return the energy to the radiational field. This is particularly important in laser physics: a simplest laser device can be modeled as a mode whose EOM contains a loss channel, a gain channel (because of the presence of the pump), and a non-thermalized out-of-cavity channel, and by assuming that we have no input to the laser device and calculating the correlation function of the output mode of the out-of-cavity channel, we get the laser power spectrum. On the other hand, we may say that with the presence of a very coherent driving field whose intensity is strong enough and there is a non-thermalized outgoing channel, we always get laser, and it can be understood as a result of spontaneous emission (see the laser part in [this note](optics-and-quantum-electronics/lecture-notes.pdf)).
   
   (Note, however, that just because an exponential decay term like $- a / \tau$ appears in the EOM of a mode
