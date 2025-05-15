@@ -1,0 +1,439 @@
+\documentclass[hyperref, a4paper, 12pt]{article}
+
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{booktabs}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{simpler-wick}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode, bookmarksnumbered]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[auto counter]{quotebox}{}{
+    %title empty,
+    enhanced,
+    boxrule=0pt,
+    %colback=blue!5,
+    %colframe=blue!5,
+    colback=white,
+    colframe=white,
+    coltitle=black!65,
+    borderline west={2pt}{0pt}{black!65},
+    %top=0pt,
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    }{box}
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+\newcommand{\literature}[1]{\textit{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+\lstset{style = console}
+
+
+\newcommand*{\abinitio}{\textit{ab initio}}
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\epsr}{\epsilon_{\text{r}}}
+
+\title{Representation of point and space groups}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of representations of finite groups}
+
+\subsection{The characteristic table}
+
+The \concept{character} of a group element in a representation
+is defined as its trace.
+Thus the character of $e$ (i.e. the identity transform) is 
+the dimension of the representation space.
+
+Because $\trace{g a g^{-1}} = \trace{g^{-1} g a} = \trace{a}$, we have
+
+\begin{quotebox*}{Character of conjugacy class}{}
+    The characters of all elements in a conjugacy class are the same.
+    (But having the same character doesn't mean two elements are in one conjugacy class.)
+\end{quotebox*}
+
+The \concept{character table} is square, because
+
+\begin{quotebox*}{Number of irreducible representations}{}
+    The number of conjugacy classes is the same as the number of irreducible representations.
+\end{quotebox*}
+
+Notation:
+\begin{itemize}
+    \item The order of group $G$, i.e. the total number of elements it contains: $n$.
+    \item $p, q$ refer to labels of irreducible representations.
+    \item $g$ refers to a group element.
+    \item $\chi^{(p)}(g)$ is the character of $g$ in representation $p$.
+    \item $[g]$ is the conjugacy class containing $g$.
+\end{itemize}
+
+\begin{quotebox*}{The great orthogonality theorem}{}
+    First,
+    \[
+        \frac{1}{n} \sum_{g \in G} \chi^{(p)}(g)^* \chi^{(q)}(g) = \delta_{pq}.
+    \]
+    Second, when $g$ and $g'$ are in the same conjugacy class,
+    \[
+        \frac{1}{n} \sum_p \chi^{(p)}(g)^* \chi^{(p)}(g') = \frac{1}{\abs*{[g]}},
+    \]
+    or otherwise the LHS vanishes.
+
+    The second equation consequently means that the character table,
+    if viewed as a matrix, is full rank.
+\end{quotebox*}
+
+The size of the conjugacy class of $e$ is always 1,
+and therefore from the second equation above, we have 
+
+\begin{quotebox*}{Burnside theorem}{}
+    Suppose $d_p$ is the dimension of the representation space of representation $p$.
+    \[
+        \sum_p d_p^2 = n.
+    \]
+\end{quotebox*}
+
+One usage of the character table:
+
+\begin{quotebox*}{Equivalent representations}
+    Two representations are equivalent if and only if they have the same characters.
+\end{quotebox*}
+
+\subsection{Representation of a group on a vector space}
+
+In physics we work with wave functions, operators, Hamiltonians, etc.
+We should note that when we say that a system has a symmetry $G$,
+it means for all operations $U$ in $G$ (or more precisely,
+in the representation of $G$ on the Hilbert space),
+\begin{equation}
+    \mel{\psi}{H}{\varphi} = \mel{\psi}{U^\dag H U}{\varphi} \text{ for all $\ket*{\psi}, \ket*{\varphi}$} \Leftrightarrow H = U^\dag H U,
+    \label{eq:sym-of-h}
+\end{equation}
+and \emph{not}
+\[
+    \mel{\psi}{H}{\varphi} = \mel{\psi}{U^\dag U H U^\dag U}{\varphi},
+\]
+because the latter is trivial true:
+it's like saying ``when I rotate the system (i.e. $H$) and I rotate my experimental configurations (i.e. $\ket*{\psi}$), the responses stay the same'' --
+of course they \emph{have to} say the same.
+A non-trivial claim would be something like ``when I rotate my system, while \emph{not} rotating my lab setup, magically all outputs are the same''
+-- which is precisely \eqref{eq:sym-of-h}.
+
+\subsection{Scalar, vector, tensor representations}\label{sec:tensor-group-rep}
+
+\begin{quotebox*}{Decomposition of tensor products}{}
+    Because $\trace{D_1(g) \otimes D_2(g)} = \trace{D_1(g)} \trace{D_2(g)}$
+    for any group element $g$,
+    the coefficients in 
+    \begin{equation*}
+        D_1(g) \otimes D_2(g) = \sum_p a_p D_p(g)
+    \end{equation*}
+    can be calculated by solving the equation system
+    \begin{equation*}
+        \chi_{D_1}(g) \chi_{D_2}(g) = \sum_{p} a_p \chi_p(g)
+    \end{equation*}
+    for all conjugacy classes $[g]$.
+    Note that the RHS is full-rank, and the equation has a unique solution.
+\end{quotebox*}
+
+\section{Mulliken symbols}
+
+Representations of a group may be labeled as $A_1$, $B_g$, or things like that.
+This is known as the \concept{Mulliken symbols}.
+
+The A, B, E symbols mean the follows:
+
+\begin{table}[H]
+    \caption{Letter notation of dimension}
+    \centering
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{dimension} & \textbf{Mulliken symbol} \\ \midrule
+        1                  & A and B                  \\
+        2                  & E                        \\
+        3                  & T                        \\
+        4                  & G                        \\
+        5                  & H                        \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+The distinction between A and B shows the sign of $\chi(c_n)$,
+where $c_n$ represents rotation along the principal axis.
+
+When an $c_2$ axis or a palne of reflection or a $\sigma_v$ plane of reflection,
+we use subscripts $1,2$ to indicate if a sign change follows after this operation.
+Similarly, $g$ and $u$ means $\chi(i) = \pm 1$, respectively.
+Finally, $\chi(\sigma_h)$ is represented by $'$ ($+1$) or $''$ ($-1$).
+
+\section{How things changes under point group operations}\label{sec:how-things-change}
+
+Point group operations naturally have a representation in the 3D Euclidean space.
+This representation may be reducible:
+in this case, different irreducible representations act on different subspaces of $\mathbb{R}^3$.
+
+We cannot know which subspace of $\mathbb{R}^3$ an irreducible representation acts on.
+Therefore in reference books, the standard character table
+is often augmented by what carries a representation.
+
+Moreover, we note that some irreducible representations \emph{cannot} be 
+written as components of the natural representation on $\mathbb{R}^3$.
+The trivial identical representation of $D_{3h}$,
+for instance, doesn't correspond to how any subspace of $\mathbb{R}^3$ changes:
+we have $\sigma_h$ and it's not possible to let $z$ stay unchanged.
+These representations however can be carried by polynomials of $x, y, z$.
+
+\href{http://symmetry.constructor.university/}{This website} 
+contains the extended character table of each point group.
+
+\section{Symmetry of dielectric tensor}
+
+In optics, $\vb*{q}$ is usually small,
+and TODO: analyticity of $\epsilon$
+
+\section{Optics in hexagonal crystals}
+
+Suppose we are dealing with a hexagonal system with $D_{6h}$.
+From the (extended; \prettyref{sec:how-things-change}) character table,
+we find that the $A_{2u}$ irreducible representation acts on the $z$ component,
+while the $E_{1u}$ irreducible representation acts on the $x, y$ components in $\mathbb{R}^3$.
+These can be known by consulting the character table \href{http://symmetry.constructor.university/cgi-bin/group.cgi?group=606&option=4}{here}.
+Thus the representation of $D_{6h}$ on $\mathbb{R}^3$ is 
+\begin{equation}
+    D = E_{1u} \oplus A_{2u}.
+    \label{eq:d-6h-r3-rep}
+\end{equation}
+This is also given by the \shortcode{dipole (p)} section of 
+\href{http://symmetry.constructor.university/cgi-bin/group.cgi?group=606&option=4}{the webpage above}.
+Note that strictly speaking, \eqref{eq:d-6h-r3-rep} does not track which components the representations act on:
+we need to keep that in mind ourselves.
+
+Because we're working with optics, the wave length is assumed to be long enough,
+and in utilizing \eqref{eq:sym-of-h} (where the wave functions are replaced by
+electric field configurations, or ``single-photon wave functions''),
+we can ignore the real space transform and focus on how components of $\vb*{E}$
+are mixed together.
+Thus \eqref{eq:sym-of-h} means that for all $g \in D_{6h}$,
+\begin{equation}
+    \vb*{\epsilon} = D^\dag(g) \vb*{\epsilon} D(g).
+\end{equation}
+
+The RHS transforms as a rank-2 tensor. (TODO: covariant and contravariant indices?)
+The representation of $D_{6h}$ it carries is $D \otimes D$.
+Note that the two $D$'s cannot be exchanged,
+as the first acts on the first indices of $\epsilon_{ij}$,
+while the second acts on the second indices.
+Keeping the meaning of being before and after $\otimes$,
+and that $E_{1u}$ acts on the $x, y$ component and $A_{2u}$ acts on the $z$ component
+(note that we have a natural $z$ direction,
+which is parallel to the $C_6$ axis),
+we have 
+\begin{equation}
+    D \otimes D = (A_{2u} \otimes A_{2u}) \oplus 
+    (A_{2u} \otimes E_{1u}) \oplus
+    (E_{1u} \otimes A_{2u}) \oplus
+    (E_{1u} \otimes E_{1u}).
+\end{equation}
+
+The next step is to see how the four tensor products 
+act on the nine components of $\vb*{\epsilon}$,
+following the procedure in \prettyref{sec:tensor-group-rep}.
+
+\paragraph*{The $\epsilon_{zz}$ subspace}
+We first notice that the absolute values of all characters of $A_{2u}$ is 1,
+and hence the characters of $A_{2u} \otimes A_{2u}$ are all 1,
+meaning that 
+\begin{equation}
+    A_{2u} \otimes A_{2u} = A_{1g},
+\end{equation}
+i.e. the trivial representation.
+This immediately means that the $\epsilon_{zz}$ component is constant
+regardless of whatever operations applied to the system.
+
+\paragraph*{The $(\epsilon_{xz}, \epsilon_{yz})$ subspace}
+By calculating the characters we also find 
+\begin{equation}
+    E_{1u} \otimes A_{2u} = E_{1g}.
+\end{equation}
+This means the $\epsilon_{xz}, \epsilon_{yz}$ components transform as $E_{1g}$.
+Actually, once we realize that one irreducible representation acts on the $x, y$ coordinates
+and another acts on the $z$ coordinate,
+we should realize that $\epsilon_{xz}, \epsilon_{yz}$
+transforms in the same way as $xz, yz$ does:
+in the latter, the first variable ($x$ or $y$) feels the action of $E_{1u}$,
+and the second variable ($z$) feels the action of $A_{2u}$.
+So indeed in \href{http://symmetry.constructor.university/cgi-bin/group.cgi?group=606&option=4}{the character table}
+we find that $E_{1g}$ acts on the space spanned by 
+linearly recombining quadratic functions $(xz, yz)$.
+
+Now, from \eqref{eq:sym-of-h}, we have 
+\begin{equation}
+    E_{1g}(g) \pmqty{\epsilon_{xz} \\ \epsilon_{yz}} = \pmqty{\epsilon_{xz} \\ \epsilon_{yz}},
+    \label{eq:hexagonal-xz-yz}
+\end{equation}
+for all $g \in D_{6h}$.
+Because we know $E_{1g}$ is $D_{6h}$'s action on the linear space spanned by $(xz, yz)$,
+it immediately follows that 
+\begin{equation}
+    E_{1g}(c_6) = \pmqty{
+        \frac{1}{2} & - \frac{\sqrt{3}}{2} \\
+        \frac{\sqrt{3}}{2} & \frac{1}{2}
+    },
+\end{equation}
+and from that we find that the linear equation system in \eqref{eq:hexagonal-xz-yz}
+only has a vanishing solution.
+This means in a hexagonal system, $\epsilon_{xz} = \epsilon_{yz} = 0$.
+
+Following the same logic it can be shown that 
+\begin{equation}
+    \epsilon_{xz} = \epsilon_{yz} = \epsilon_{zx} = \epsilon_{zy} = 0.
+\end{equation}
+What we have shown here is that the subspace of $\vb*{\epsilon}$ that carries the 
+$E_{1u} \otimes A_{2u}$ representation can't satisfy so many requirements from \eqref{eq:sym-of-h},
+and everything has to vanish.
+
+\paragraph*{The $\epsilon_{x/y, x/y}$ subspace}
+
+
+
+\end{document}
