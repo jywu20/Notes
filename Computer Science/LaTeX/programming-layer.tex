@@ -1,0 +1,343 @@
+\documentclass[hyperref, a4paper, 12pt]{article}
+
+\usepackage{expl3}
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{simpler-wick}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{showexpl}
+\usepackage{underscore}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[colorlinks,unicode, bookmarksnumbered]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage[backend=bibtex,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{probability.bib}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\setlist[enumerate]{
+    %itemindent=17pt, 
+    %leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{calc}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+\lstdefinestyle{console}{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstdefinestyle{python}{
+        language=Python,
+        backgroundcolor=\color{white},
+        basicstyle=\footnotesize\ttfamily,
+        keywordstyle=\color{blue},
+        commentstyle=\color{mygreen},
+        stringstyle=\color{mymauve},
+        numberstyle=\tiny\color{mygray},
+        numbers=left,
+        breaklines=true,
+        showstringspaces=false
+}
+
+% Reference formatting
+\newrefformat{fig}{Figure~\ref{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=blue!5,
+    %colframe=blue!5,
+    colback=white,
+    colframe=white,
+    coltitle=blue!60,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\definecolor{my-orange}{HTML}{F58123}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=orange!5, 
+    %colframe=orange!5, 
+    colback=white,
+    colframe=white,
+    coltitle=my-orange!65,
+    borderline west={4pt}{0pt}{my-orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{perspectivebox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=red!5,
+    %colframe=red!5,
+    colback=white,
+    colframe=white,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+% Displaying texts in bookmarkers
+
+\pdfstringdefDisableCommands{%
+  \def\\{}%
+  \def\ce#1{<#1>}%
+}
+
+\pdfstringdefDisableCommands{%
+  \def\texttt#1{<#1>}%
+  \def\mathbb#1{#1}%
+}
+\pdfstringdefDisableCommands{\def\eqref#1{(\ref{#1})}}
+
+\makeatletter
+\pdfstringdefDisableCommands{\let\HyPsd@CatcodeWarning\@gobble}
+\makeatother
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+\newcommand*{\citechapsec}[2]{\citechap{#1}.\citesec{#2}}
+\newcommand{\literature}[1]{\textit{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+\newcommand{\shortcode}[1]{\texttt{#1}}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\newcommand*{\abinitio}{\textit{ab initio}}
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\epsr}{\epsilon_{\text{r}}}
+
+
+\lstset{basicstyle=\ttfamily\footnotesize, keywordstyle=\color{blue}, pos=b}
+
+\title{Programming in LaTeX}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Overall ideas}
+
+The way \TeX{} works is like this:
+it reads a list of tokens, i.e. characters, numerical digits, spaces, symbols, and macro callings,
+and expands the macros on and on until nothing can be expanded,
+and then starts typesetting according to the Knuth-Plass algorithm.
+\TeX{} is therefore high-level in the sense that it doesn't require the author
+to place each word manually.
+
+What we want is to have more abstractions above the \TeX{} layer.
+\TeX{} is actually Turing complete, and can perform a quite generic transform from
+what an author writes to what the author intends to give to the bare \TeX{} engine.%
+\footnote{
+    Note that Turing completeness itself doesn't mean such a transform is possible:
+    it is possible that a programming model can produce sequences that contain the same information
+    with the intended sequences,
+    but theoretically cannot produce the latter.
+    For instance, it is possible that a programming model can only produce sequences like 
+    \shortcode{\dots \textbackslash \textbackslash macroname \dots},
+    but cannot produce \shortcode{\dots \textbackslash macroname \dots}.
+    This is comparable to how C is Turing-complete but without knowing the address mapping conventions,
+    we can't let a CPU C program to talk to GPUs.
+    Fortunately the expressivity of \TeX{} programming is enough for everyday typesetting works.
+}
+This kind of \TeX{} programming, using the primitives in \TeX{} or even \LaTeXe,
+is however painful for ``ordinary'' programmers,
+especially when it comes to controlling when to and not to expand certain macros.
+
+\LaTeX 3 was originally imagined to be a new \LaTeX{} format but ends up being a programming layer
+that can be used together with the existing \LaTeXe{} ecosystem.
+
+The programming model of \LaTeX 3 can be divided into two parts.
+The first part is a procedural programming model,
+with the familiar branches, loops, function definitions and invocations.
+What makes this procedural programming model special 
+is that (a) the data types include integers, booleans, and also \concept{lists of tokens},
+and (b) function arguments are endowed with additional mechanisms to 
+play with sequences of tokens containing macro calls (i.e. \concept{command sequences}).
+
+The second part is the macro-and-expansion-based way to do things mentioned above.
+Note that a macro defined in \LaTeX 3 can call a \LaTeX 3 function as well.
+
+One additional peculiarity of \LaTeX 3 is the way \LaTeX 3 programs give their outputs.
+A statement that looks like ``just writing something on paper'',
+commonly understood as an \emph{expression},
+directly prints things to the document,
+or the ``console'' if we conceive \LaTeX 3 programming as command line programming.
+Thus, we have the follows:
+
+\begin{LTXexample}
+\ExplSyntaxOn
+
+\seq_new:N \l_data_seq % Declare a new variable; l means local variable
+% Assignment to a variable of sequence type
+\seq_set_from_clist:Nn \l_data_seq { apple, banana, cherry }  
+
+\seq_map_inline:Nn \l_data_seq {
+    % This is a printing statement!
+    % #1 refers to the argument passed to the closure function 
+    #1 \ 
+}
+
+% This is a printing statement!
+\par
+
+\seq_map_inline:Nn \l_data_seq {
+    % This is a printing statement!
+    Item~#1 \par
+}
+
+\ExplSyntaxOff
+\end{LTXexample}
+
+In the listing above, we have three printing statements.
+They look like expressions
+-- which they are, from the perspective of the macro language primitives in \TeX{}  --
+but if we are to regard the \LaTeX 3 layer as a procedural language,
+then what they do is just to print things to the console, i.e. the final PDF generated.
+We especially need to note that the output of the second statement does \emph{not}
+override the output of the first statement,
+and the output of the third statement does \emph{not} override the output of the second statement.
+
+On the other hand, \LaTeX 3 lacks what we usually call return values in function calls.
+We instead need to write things in the Fortran style, like this:
+
+\begin{lstlisting}
+    \function:NNN \l_c_tl \l_a_tl \l_b_tl
+\end{lstlisting}
+
+However, a much easier way to do this is to redirect what would be printed to the PDF 
+into a variable.
+That's to say, as long as we can write a function carefully enough 
+so that it prints once and only once,
+we can write 
+
+\begin{lstlisting}
+    \tl_set:Nn \l_c_tl { \function_name:NN \l_a_tl \l_b_tl }
+\end{lstlisting}
+
+In this way we can program as if using an ordinary procedural programming language.
+
+
+
+\end{document}
