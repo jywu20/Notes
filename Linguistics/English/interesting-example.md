@@ -9,3 +9,8 @@
 
   A counterpart of [garbage collection], but this time it's attested in 
   the adjectival phrase.
+
+- > lowest energy electron configuration
+  
+  Just search "lowest energy states" etc. to find form like this.
+  It seems a nominal modification can have "real" adjectives as well.

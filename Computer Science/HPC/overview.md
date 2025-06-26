@@ -3,7 +3,7 @@ Aspects of modern high performance computing (HPC)
 
 # Von Neumann architecture
 
-The von Neumann architecture can be seem as an instance of random-access machines.
+The von Neumann architecture can be seem as an instance of random-access machines (RAM).
 It contains a memory unit, a control unit, and an arithmetic/logic unit (ALU).
 Just like how a Turing machine works,
 the program is stored in the memory,
@@ -19,7 +19,8 @@ and also which instruction to execute next
 (known as *control flow*).
 
 Von Neumann architecture is a theoretical concept.
-It can be clearly seen that the memory unit is just the RAM in an actual computer,
+It can be clearly seen that the memory unit is just the random access memory
+(RAM; not to be confused with another RAM i.e. random access machine, which has access to a random access memory) in an actual computer,
 and the control unit and the ALU are implemented as the CPU.
 To make an actual, practical computer,
 the architecture needs some extension.
