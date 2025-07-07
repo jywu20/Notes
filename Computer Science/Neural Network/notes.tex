@@ -499,7 +499,7 @@ Computational graphs in PyTorch also do not support taking second-order derivati
 therefore optimization can only rely on the first-order derivative of the model with respect to the model parameters.
 
 \paragraph*{Defining a module}
-A model, as is said above, is a function that takes in a tensor (probably with the first dimension being the batch dimension) and outputs a tensor,
+A model, as is said above, is a function that takes in a tensor (by convention, the first dimension being the batch dimension) and outputs a tensor,
 and it contains many learnable parameters.
 A model can then be put into another model,
 and when doing backpropagation,
@@ -886,12 +886,12 @@ we can do a maximal likelihood estimation.
 
 A \concept{variational autoencoder (VAE)} is a compressor which maximizes the \emph{lower bound}
 (hence the term ``variational'') of $p(x)$ derived from the non-negativity of the KL divergence.
-Suppose we approximate $p(z|x)$ by an encoder $q_\theta(z | x)$,
-and we approximate $q(x|z)$ by an decoder $p_\phi(x | z)$.
+Suppose we approximate $p(z|x)$ by an \concept{encoder} $q_\theta(z | x)$,
+and we approximate $p(x|z)$ by an \concept{decoder} $p_\phi(x | z)$.
 Here we adopt a frequentist perspective and treat the parameters $\theta, \phi$ as unknown constants.
-Of course, $p(z | x)$ can also be approximated using $p_\phi(x | z)$: we have 
+Of course, $p(z | x)$ can also be approximated using 
 \begin{equation}
-    p_\phi(x | z) = \frac{p(z)}{p(x)} p_\phi(x | z).
+    p_\phi(z | x) \coloneqq \frac{p(z)}{p(x)} p_\phi(x | z).
 \end{equation}
 The two estimations of the real $p(z | x)$ should be consistent.
 We calculate their KL divergence, and note that because the KL divergence is always non-negative,
@@ -914,7 +914,7 @@ and therefore
 The equality occurs when the encoder and the decoder describe the same $p(x|z)$ distribution.
 The right hand side is known as the \concept{evidence lower bound (ELBO)}.
 
-When the neural network architecture used in $p_\phi(x|z)$ and $q\theta(z|x)$ are flexible enough,
+When the neural network architecture used in $p_\phi(x|z)$ and $q_\theta(z|x)$ are flexible enough,
 there exists a subset of possible $(\theta, \phi)$ where the inequality is almost an equality,
 and in that region, maximizing the ELBO is equivalent to the maximal likelihood estimation.
 Praying that our optimization method can bring us there,
@@ -925,25 +925,95 @@ we use the ELBO function as the optimization target.
 We assume that 
 \begin{equation}
     p(z) = \frac{1}{\sqrt{2\pi \sigma_p^2}} \exp(- \frac{(z - \mu_p)^2}{2 \sigma_p^2}),
+    \label{eq:loss.vae.gaussian.z-prior}
 \end{equation} 
 and 
 \begin{equation}
     q_\theta(z | x) = \frac{1}{\sqrt{2\pi \sigma_q^2}} \exp(- \frac{(z - \mu_q)^2}{2 \sigma_q^2}).
     \label{eq:loss.vae.gaussian.q-ansatz}
 \end{equation}
+The first assumption is a prior, as we assume that $\mu_p$ and $\sigma_p$ are all constants.
+Whether it is a good prior can only be checked after we have the training dataset.
 The second assumption is of particular importance,
 because when making it, we have drastically simplify the structure of the encoder.
 The encoder no longer takes both $x$ and $z$ as inputs;
-rather, it takes in $x$ and returns $(\sigma_q^2, \mu_q)$,
+rather, it takes in $x$ and returns $(\sigma_q^2, \mu_q)$
+(which means $\mu_q$ and $\sigma_q^2$ are functions of $x$ -- and of course also $\theta$),
 which is then given to \eqref{eq:loss.vae.gaussian.q-ansatz} to model the distribution of $z$.
+This step is known as the \concept{reparameterization trick} (see arXiv 1312.6114).
 
-The first term in the ELBO in \eqref{eq:loss.vae.gaussian.elbo} is evaluated as (a detailed derivation is arXiv 1907.08956)
+The reparameterization trick distills the truly random part of $z$ (as predicted by $q_\theta(z|x)$),
+and makes the rest of the model as deterministic as possible.
+We note that the reparameterization trick is actually quite generic:
+most ``reasonable'' probabilistic distributions in which $z$ is a continuous variable
+cna be represented by reparameterization.
+
+Besides making the model structure easier to write within a model neural network framework,
+reparameterization solves one problem in training:
+the calculation of the gradient of the ELBO.
+If $p(z)$ and $q_\theta(z|x)$ were arbitrary probabilistic distributions,
+the ELBO would have to be calculated using e.g. Monte-Carlo estimation,
+and it is notoriously hard to calculate the gradient of a quantity estimated by Monte Carlo.
+After reparameterization, we can write down a closed-form expression of the ELBO,
+making training much easier.
+
+The first term in the ELBO in \eqref{eq:loss.vae.gaussian.elbo} can be evaluated by definition
+in a straightforward manner, although the calculation details are tedious (see arXiv 1907.08956).
+We end up having
 \begin{equation}
     - D_{\text{KL}}(q_\theta(z|x) || p(z)) = \log \frac{\sigma_q}{\sigma_p} - \frac{\sigma_q^2 + (\mu_q - \mu_p)^2}{2 \sigma_p^2} + \frac{1}{2}.
 \end{equation}
-The second term is 
+We note that applying a linear transform to $z$ changes $\mu_p$ and $\sigma_p$ however we want,
+and preserves the structure of \eqref{eq:loss.vae.gaussian.q-ansatz}.
+Thus, without loss of generality, we set $\mu_p = 0$, $\sigma_p = 1$,
+and 
+\begin{equation}
+    \begin{aligned}
+        - D_{\text{KL}}(q_\theta(z|x) || p(z)) &= \log \sigma_q - \frac{\sigma_q^2 + \mu_q^2}{2} + \frac{1}{2} \\
+        &= \frac{1}{2} \left(
+            1 + \log \sigma_q^2 - \sigma_q^2 - \mu_q^2
+        \right).
+    \end{aligned}
+\end{equation}
 
-TODO: reparameterization trick; arXiv 1312.6114
+The second term in \eqref{eq:loss.vae.gaussian.elbo} depends on the architecture of the decoder,
+which, given the assumptions \eqref{eq:loss.vae.gaussian.z-prior} and \eqref{eq:loss.vae.gaussian.q-ansatz},
+cannot be chosen arbitrarily.
+A common choice is to assume $p(x|z)$ should be gaussian, which is mentioned in the appendix C of arXiv 1312.6114 without much discussions.
+In this way the second term in \eqref{eq:loss.vae.gaussian.elbo} takes a form similar to that of \eqref{eq:loss.vae.gaussian.q-ansatz},
+and 
+\begin{equation}
+    \mathbb{E}_{z \sim q_\theta(z|x)} [\log p_\phi (x|z)] \sim \sum_z
+    \text{normalization factor w.r.t. $z$} \cdot \|x - \mu_p(z)\|^2.
+\end{equation}
+It is not not unusual to ignore the variance of the normalization factor with respect to $z$.
+We can interpret $\mu_p(z)$ (now meaning the $\mu$ of $p_\phi(x|z)$, not $p(z)$) as the output of the decoder with a given $z$,
+which is $\mu_q(x)$ plus a random noise (of which $\sigma^2 = 1$, $\mu = 0$).
+
+The ELBO now has a closed-form expression, which leads to the following loss function:
+\begin{equation}
+    \mathcal{L}^{\text{ELBO}}(\theta, \phi) \sim \frac{1}{2} \sum_x 
+    \left(
+        (1 + \log \sigma_q^2 - \sigma_q^2 - \mu_q^2) + \sum_\epsilon N(\epsilon) \| x - \mu_p(\mu_q(x) + \epsilon) \|^2
+    \right),
+    \label{eq:loss.vae.gaussian.loss}
+\end{equation}
+where we may call $\mu_q(x)$ the encoder in the inference mode and $\mu_p(z)$ the decoder.
+The neural network architecture has three parts: $\sigma_q^2(x; \theta)$, $\mu_q(x; \theta)$,
+and $\mu_p(z; \phi)$.
+$N(\epsilon)$ is typically reduced to a single constant which is adjusted manually.
+Batching of course applies to \eqref{eq:loss.vae.gaussian.loss},
+and as the same $x$ will be fed to the model for many times during training,
+the summation over $\epsilon$ can be merged into batching:
+for a single batch, the loss function is 
+\begin{equation}
+    \mathcal{L}^{\text{ELBO}}_{\text{single batch}}(\theta, \phi) 
+    = \frac{\beta}{2} \sum_{x}^{\text{batch}} (1 + \log \sigma_q^2 - \sigma_q^2 - \mu_q^2) 
+    + \sum_x^{\text{batch}} \| x - \mu_p(\mu_q(x) + \epsilon) \|^2,
+\end{equation}
+where we have reduced $N(\epsilon)$ into a single hyperparameter $\beta$. 
+
+\chapter{Array manipulation}
 
 \printbibliography[title=References]
 
