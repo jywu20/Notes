@@ -681,10 +681,14 @@ end
 ```
 then `intermediate` is synthesized as a *latch*:
 its assignment can happen at *any* time, as long as `state` becomes `READY`.
-In synchronous circuits, however, latches, even intended, make timing difficult because assignments can happen at any time.
-Flip-flops are almost always preferred.
-The only use of latches seems to be *making* flip-flops.
+In synchronous circuits, however, latches, even intended, make timing difficult because assignments can happen at any time:
+as soon as the value of `input` changes
+(maybe at a certain time step in one clock cycle),
+the value of `intermediate` changes,
+which makes risks of race conditions much higher.
 In asynchronous design methodologies latches are important.
+In clocked design methodologies, the main use of latches seems to be *making* flip-flops;
+latches however can be useful in advanced optimization techniques like time borrowing.
 
 In SystemVerilog, we have three additional `always` blocks:
 `always_comb`, which is basically `always @(*)` that requires its content to be pure combinational logic;
@@ -1647,6 +1651,12 @@ Here is a rational reconstruction of fundamentals of digital circuit designing, 
    (and all parallelisms reduce to "instruction-level parallelism"),
    so multithreading doesn't need special primitives:
    it's just two modules running independently.
+
+   We note that the distinction between combinational logic and sequential logic makes most sense 
+   in clocked circuit designing:
+   in theory, both can be described by `always` blocks,
+   but only sequential logic involves the clock signal
+   (semantically equivalent to the program counter).
 8. Most HDLs provide serial or loop structures in the body of the aforementioned event listeners,
    but these structures are confined in their complexities both in abstract semantics and in practical designing (because of problems like delay, etc.).
    Therefore serial execution, `for` loop, etc. in HDLs are *not*
