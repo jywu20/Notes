@@ -1734,3 +1734,15 @@ all the primitives involved in the three types of coding styles
 originate naturally from the general concept of RTL,
 and if we view `always` blocks as the ultimate primitives,
 then structural RTL is the most high-level.
+
+# What is *not* written in RTL
+
+In RTL designs that are to be synthesized,
+we expect all operations in one event listener i.e. `always @` finish within one clock cycle.
+This is the only notion about timing we have in RTL.
+The reality of course is more complicated.
+It is, for instance, possible to let operations in one cycle to borrow time from the next cycle.
+The RTL methodology isn't well prepared to describe this quantitatively,
+and although it is in theory possible to attempt to add notions on timing in RTL,
+in real world engineering,
+things like time borrowing are usually done *after* synthesis.
