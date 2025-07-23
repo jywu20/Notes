@@ -453,8 +453,11 @@ to some degree.
 An instance of a module has private fields, namely the registers in it,
 which keep the state of the object,
 and public fields, namely the wires connected to it.
-Assignments to the public fields trigger setter methods,
+Assignments to the public fields trigger setter methods
+(handled by [event listeners](#event-listener)),
 which may also change the internal state of the object.
+To avoid race conditions, the variables governed by a module should have clear "purposes":
+some are for inputs and some are for outputs.
 
 ## Event listener
 
@@ -695,6 +698,22 @@ In SystemVerilog, we have three additional `always` blocks:
 `always_latch`, which makes clear that registers in it are to be synthesized as latches;
 finally `always_ff`, which makes clear that registers in it are to be synthesized as flip-flops,
 and therefore reports an error when its body contains no sequential logic.
+
+## Branches and loops
+
+We have already outlined how to treat branches and loops [here](#digital-circuits-compared-with-structured-programming).
+We note that `if` blocks and `for` blocks with bounds are to be used in `always_` blocks,
+as they can be reduced to combinational logic.
+Unbounded `for` and `while` should always be transformed to finite state machines first,
+or, when high-level synthesis is available, the transformation can be done [automatically](#how-loops-are-implemented).
+
+Besides `for` in event listeners,
+in software engineering, `for` can also be used to register even listeners.
+In RTL designing, clearly, event listeners can't be dynamically registered,
+and this means synthesizable `for` loops should be bounded as well
+(and they should also appear *outsides* `always_` blocks).
+Verilog distinguishes `for` loops (in event listeners)
+and `generate for` loops that launch event listeners (and hence also modules).
 
 ## Summary of semantics of Verilog 
 
@@ -1246,7 +1265,7 @@ need different treatments.
 Finally we consider the control flow within the function,
 including [loops](#how-loops-are-implemented)
 and [branches](#how-branches-are-implemented),
-as well as [parallelism](#parallelism) that is both important in CPU programs and in HDL.
+as well as [parallelism](#parallelism) that is both important in CPU programs and in HLS.
 
 Besides all signals for control and data flows and their intended usages (i.e. protocols),
 we also have the good old clock and reset signals on the interface.
@@ -1273,6 +1292,14 @@ and the output of operation 1 to operation 2,
 and so forth.
 This kind of design reduces the idle time of the operations,
 and can be seen as [a reduced case of multithreading](#parallelism).
+
+We note that here "loops" mean loops in *algorithm designing*.
+Loops can also be used to launch threads,
+which, according to the basic mechanisms of [high-level synthesis of multithreading](#parallelism),
+should always be bounded.
+This corresponds to `generate for` loops in Verilog,
+which are to be used *outside* `always` blocks
+and are used to launch event listeners (see [here](#branches-and-loops)).
 
 ## How branches are implemented
 
@@ -1384,6 +1411,7 @@ void do_something(int input1, int *output1) {
 ```
 And `do_something` can then be called in another module to modify some of the internal memories of the latter,
 as if we can define addresses for these internal memories.
+(We note again that calling `do_something` increases the area of the the module that calls it.)
 
 Apart from this, "real" pointers can be used to visit block RAMs.
 Distributed RAMs on the other hand are not supposed to be visited by pointers.
