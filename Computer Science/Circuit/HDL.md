@@ -456,8 +456,9 @@ and public fields, namely the wires connected to it.
 Assignments to the public fields trigger setter methods
 (handled by [event listeners](#event-listener)),
 which may also change the internal state of the object.
-To avoid race conditions, the variables governed by a module should have clear "purposes":
+To avoid race conditions, it's a good idea to make the variables governed by a module have clear "purposes":
 some are for inputs and some are for outputs.
+The `inout` purpose is also available.
 
 ## Event listener
 
