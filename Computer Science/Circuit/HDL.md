@@ -2,7 +2,7 @@ Hardware description
 ==========
 
 This note is carried out in a round-by-round way,
-starting from *high level synthesis*,
+starting from *high level synthesis* (HLS),
 i.e. converting ordinary programs into circuit logic.
 Therefore it may appear not so organized at the first glance,
 and should be read as a whole.
@@ -75,6 +75,14 @@ We already know that digital circuit designing is kind of similar to procedural 
 Here we make a comparison between the two,
 or, in other words, see how procedures well-described by structured programming
 are *synthesized* into digital circuits.
+We use the term "synthesis" and not "compilation",
+because the distance between a physical hardware design and a procedural algorithm
+is arguably much larger than the distance between a procedural algorithm and its assembly language compilation:
+it's still possible to say "these lines of assembly code corresponds to this line of C",
+but it's generally hard to say what exactly a line of Verilog or HLS C compiles into:
+whether an `else` branch of a `if` block exists may decide 
+if a variable is synthesized as a latch or a flip-flop, for instance 
+(see [here](#always_-blocks)).
 The ideas developed in this section are related to both [RTL](#register-transfer-level-rtl-description)
 and [high-level synthesis (HLS)](#high-level-synthesis-hls).
 
@@ -1724,7 +1732,8 @@ We can "implement" a logic gate with `always_comb` and `if` constructs and compa
 We can "implement" a flip-flop with `always_ff`.
 
 Of course, in actual digital design, the reverse happens:
-`always_ff` is synthesized by flip-flops and `always_comb` is synthesized by logic gates.
+variables modified in `always_ff` are synthesized into flip-flops and
+variables that only appear in `always_comb` are synthesized into logic gates.
 What we demonstrate here is that gate-level description is just reduced RTL,
 and gates, flip-flops, etc. semantically have no privileged status compared with other modules in RTL.
 Therefore in a Verilog file intended for synthesis,
