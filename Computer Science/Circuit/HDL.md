@@ -467,6 +467,10 @@ which may also change the internal state of the object.
 To avoid race conditions, it's a good idea to make the variables governed by a module have clear "purposes":
 some are for inputs and some are for outputs.
 The `inout` purpose is also available.
+This line of thinking can actually be used to design another family of hardware description languages in competition with standard RTL.
+HLS platforms currently available however are more based on *functions*
+and functions launched as threads, and not module-as-objects
+(see [here](#high-level-synthesis-hls)).
 
 ## Event listener
 
@@ -886,7 +890,7 @@ By using the same type of optimization techniques in software engineering,
 the situation has been improved, but there are still incidents where the way Verilog is written causes congestion,
 meaning that there isn't enough room to put all the wires.
 
-# The target of synthesis
+# The physical target of synthesis
 
 We have seen that actual circuits have delays,
 and the question is how the delays are modeled.
@@ -1153,7 +1157,7 @@ They can all be invoked by the programmable gate array.
 # High-level synthesis (HLS)
 
 Although as is mentioned above, the abstract semantics of RTL 
-is basically computational graph plus event listeners,
+is based on event listening,
 an unfortunate fact is that we human programmers never think in this kind of formalism
 when designing algorithms.
 It's still desirable to design hardwares using standard procedural programming.
@@ -1231,12 +1235,14 @@ controlled by pragmas.
 
 ## HLS synthesizes functions
 
-HLS targets functions, which are natural counterparts of modules in RTL, with some caveats.
+HLS typically targets functions, which are natural counterparts of modules in RTL, with some caveats.
 The way the synthesis result of a function is supposed to be used is called the interface of the module,
 and here we discuss some issues in interface synthesis.
+A module synthesized from a C function, embedded in a digital circuit,
+can be semantically viewed as a thread running that C function.
 
 The first caveat is that
-ordinary functions are supposed to be called in sequence,
+ordinary functions are supposed to be called in a given order,
 and mechanisms ensuring this may be called *block-level interface protocol*.
 We can use a handshake protocol to make sure the sequential order is right,
 as in [here](#sequential-relation-between-function-calls).
@@ -1278,6 +1284,12 @@ as well as [parallelism](#parallelism) that is both important in CPU programs an
 
 Besides all signals for control and data flows and their intended usages (i.e. protocols),
 we also have the good old clock and reset signals on the interface.
+
+In SystemVerilog we also have functions.
+Synthesizable functions in RTL languages are a subset of functions in HLS:
+the former are expected to contain combinational logic only
+and should finish within one clock cycle,
+and there is no need for block-level interface synthesis mentioned above.
 
 ## How loops are implemented
 
@@ -1340,8 +1352,7 @@ though we can also say that this is instruction-level parallelism after loop unr
 It's often the case that two independent loops are *not* implemented in parallel,
 possibly because if they are to be implemented in parallel,
 the resulting state machine will contain too many states.
-Vitis HLS provides a "data flow" pragma that results in multitasking
-that enables multitasking.
+Vitis HLS provides a "data flow" pragma that enables multitasking.
 In [the documentation of Vitis HLS](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Control-driven-Task-level-Parallelism),
 this type of parallelism is known as *control-driven task-level parallelism*.
 
@@ -1354,16 +1365,29 @@ calls this *data-driven task-level parallelism*.
 
 Control-driven task-level parallelism is kind of like OpenMP.
 Data-driven task-level parallelism is a restrained version of server development in software engineering,
-because it is not allowed to end a thread:
-all we can do is 
+because we do not have a natural way to end a thread.
+If we want threads to formally end,
+we can only use the `dataflow` pragma, i.e. control-driven task-level parallelism.
+Typically, the function a thread runs looks like this:
 ```C
-while(1) {
-    // See if something new happens
-    // ...
+void func(hls::stream<int> &in, hls::stream<int> &out) {
+    int data = in.read();
+    // Do something with data
+    out.write(results);
 }
 ```
-If we want threads to formally end,
-we can only use the `dataflow` pragma.
+We note that `in.read()` blocks the execution in its semantics,
+and thus what a thread does is like the follows:
+```C
+while(1) {
+    if (/* the stream in is updated */) {
+        int data = updated_data;
+        // Do something
+        out.write(results);
+    }
+}
+```
+So the thread goes on over and over again.
 But we don't need threads that are launched to end anyway:
 what we can do is 
 ```C
@@ -1378,13 +1402,17 @@ for (i = 0; i < number_of_expected_output; i ++) {
 ```
 From the perspective of software,
 after the threads are launched, the second loop is run immediately,
-but `output_stream_merged.read()` finishes only when there is data left in `output_stream_merged`,
+but `output_stream_merged.read()` finishes only when data has been supplied into `output_stream_merged`,
 and therefore before the threads finish their jobs (after which they are still running but have nothing left to do) the loop will not finish.
-And once the loop finish we get back to sequential execution again.
+And once the loop finish we to to sequential execution of statements below the second loop.
 From the perspective of hardware design,
 the function calls `output_stream_merged.read()` are probably synthesized into a module that doesn't set its "finished" signal to true
 before `number_of_expected_output` outputs are received
 (see [here](#sequential-relation-between-function-calls)).
+Anyway, the threads launched do not need to end:
+the main function (i.e. the main module) simply stops listening to the worker threads it launches,
+the latter not needing to end.
+
 Note that pipelining can be manually described in the format of the first loop:
 we can write a pipelined algorithm in HLS 
 by launching a thread for each step in the algorithm,
@@ -1459,7 +1487,7 @@ But if you don't realize that it is volatile,
 you may be tempted to do non-justified optimizations.
 On the other hand, if an output variable is a stream,
 then when it gets passed to another function,
-we will never think that several `stream.read()` statements are to be combined into one.
+we will never think that several `stream.read()` statements should return the same result.
 Another advantage of using streams is that it makes simulation much easier,
 as by definition you can't simulate all possible behaviors of a volatile variable
 with standard C testbenchs.
@@ -1508,6 +1536,7 @@ the threads are launched by some launching functions,
 but in HLS the function calls are synthesized as directly putting the hardware implementations of the threads 
 as submodules of the top-level module
 (therefore dynamic thread dispatching is not allowed, which is expected because dynamic function calls involves dynamic memory allocation).
+In this way, thread launching function calls differ from other function calls in how they get synthesized.
 A "wait until thread finish" loop should be synthesized as an additional state in the state variable of the top-level module.
 (This however is not supported by Vitis HLS, and is not necessary anyway - see discussion [here](#parallelism))
 
@@ -1580,12 +1609,12 @@ the class of all variables must be determined at the compiling time:
 it is not allowed for a function to return an object
 of which we only know an abstract class.
 
-There is another way to synthesize object-oriented programming to RTL.
+There is another way to convert object-oriented programming to RTL.
 A RTL module is literally a set of registers plus a set of event listeners,
 so it may have multiple functionalities and therefore qualifies as a hardware implementation of *object* in object-oriented programming.
 The method being called can be encoded as a signal passed into the module.
-Actually, if we allow `static` variables in functions in HLS,
-the same thing can also be done in HLS:
+Alternatively, if we allow `static` variables in functions in HLS,
+the same thing can also be done in HLS C:
 ```C
 void do_something(int code_of_what_to_be_done, int input1, int input2, int *output) {
     static int status;
@@ -1593,19 +1622,21 @@ void do_something(int code_of_what_to_be_done, int input1, int input2, int *outp
 }
 ```
 What makes a RTL module more flexible is that a RTL module can be instantiated multiple times,
-while we cannot create multiple copies of a C function with  static variables inside.
+while we cannot create multiple copies of a C function with static variables inside.
 
-This module message passing approach, despite being viable, is not truly necessary anyway.
+The second approach is essentially like writing your own CPU.
+Despite being viable, there seems to be no need for HLS tools to support it as a primitive.
 If we think about the final synthesis result,
-we'll find that the main difference is how boundaries of modules are defined.
-Such a module, after synthesis, contains a copy and only one copy of the synthesis result of each of its methods,
-plus a decoder that decides which method to activate.
-Synthesis of an object as in object-oriented programming, on the other hand,
+we'll find that the main difference is the interface of the synthesized modules.
+A module written in the second approach, after a naive synthesis,
+contains a copy and only one copy of the synthesis result of each of its methods,
+plus a decoder that decides which method to activate according to the name of the method passed in.
+Synthesis of an object as in object-oriented programming in the first approach, on the other hand,
 results in possibly several copies of the same function,
 but by some optimization some of them can be removed,
 often leaving only one copy of each method being invoked.
-On the other hand, methods not called are not synthesized at all.
-The module-based approach on the other hand also includes 
+On the other hand, methods not called are not synthesized at all in the first approach,
+while by default they have to be synthesized 
 implementations of not used methods,
 which are however also subject to optimization.
 So as long as the tools are good at optimization,
@@ -1772,6 +1803,20 @@ all the primitives involved in the three types of coding styles
 originate naturally from the general concept of RTL,
 and if we view `always` blocks as the ultimate primitives,
 then structural RTL is the most high-level.
+
+# Cheat sheet 
+
+- Variables plus [event listeners](#event-listener): modules in RTL
+- In [HLS](#hls-synthesizes-functions), a function that possibly launches threads is equivalent to a module:
+  a function is run as a thread, which links the input and output variables in a certain way,
+  and an outside observer can see how the output variables change as the function runs.
+  [Concepts in HLS are also good design patterns for manual RTL design](#hls-as-best-practices-for-rtl-designing).
+- The three structural programming designing patterns in HLS by default correspond to finite state machines.
+- Loops launching threads correspond to `generate for` in RTL.
+- Successive, sequential function calls in HLS require handshake signals.
+- Multithreading in HLS does not alternate the finite state machine structure of the module corresponding to the top function
+- Streaming in HLS correspond to FIFO and the like in RTL
+- [Object-oriented programming](#object-oriented-programming) in HLS is synthesized by treating methods as functions
 
 # What is *not* written in RTL
 
