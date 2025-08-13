@@ -447,6 +447,7 @@ then the EOM of a particle in the fluid always takes the form of
 \begin{equation}
     M \ddot{X} + \cf \dot{X} + \pdv{U}{X} = \fn(t), \quad 
     \expval{\fn(0) \fn(t)} = 2 \kB T \cf \delta(t).
+    \label{eq:langevin-mechanic}
 \end{equation} 
 Thanks to the fluctuation-dissipation theorem,
 we now find that the statistical properties of the noise 
@@ -549,11 +550,20 @@ This does not influence the time evolution in deterministic calculus,
 but in stochastic calculus, the non-trivial correction function of the noise term means that 
 $\dd{X}^2$ can have a term proportional to $\dd{t}$,
 and hence the difference between $B(X(t))$ and $B(X(t + \dd{t}))$ accumulates.
+For instance, if we consider \eqref{eq:langevin-mechanic}, we find 
+\begin{equation}
+    \expval{(F_{\text{N}}(t) \dd{t})^2} = 2 \kB T c_{\text{F}} \dd{t}.
+    \label{eq:fdt-sq}
+\end{equation}
+This can also be expected by considering an infinitesimal small random walk process.
 
 Two frequently used conventions are the Ito scheme and the Stratonovich scheme.
 The first regards $B(X)$ as $B(X(t))$,
-while the second regards $B(X)$ as $B(X(t + \dd{t} / 2))$.
-This means transforming between the two conventions alternates the definition of $A(X)$.
+while the second regards $B(X)$ as 
+\[
+    \frac{B(X(t + \dd{t})) + B(X(t))}{2}.
+\]
+This means transforming between the two conventions alternates the definition of $A(X)$ if we're to keep the form of the $B(X) F(t)$ term formally invariant.
 Which, in turn, means the heuristic derivation of stochastic equations of motion is not
 completely conceptually sound,
 as the form of $A(X)$ now changes depending on how we interpret $B(X)$.
@@ -585,6 +595,50 @@ suitable to all spectroscopic techniques
 when its self-energy correction has a large imaginary part and very complicated frequency dependence?)
 The naive idea that there always exists a well-defined $A(X)$
 is simply not reliable.
+
+The Ito-vs-Stratonovich distinction also matters in interpreting any expression containing $X$.
+When a function of $X$ and the time $t$, $f(X, t)$ can be expanded as
+(here any $Y \dd{X}$ form is to be interpreted in the Ito scheme)
+\begin{equation}
+    \dd{f} = \pdv{f}{t} \dd{t} + \pdv{f}{X} \dd{X} + \frac{1}{2} \pdv[2]{f}{X} \dd{X}^2 ,
+    \label{eq:taylor}
+\end{equation}
+where we have included the $\dd{X}^2$ term because of the aforementioned problem that 
+$\dd{X}^2$ can have a component proportional to $\dd{t}$.
+As 
+\begin{equation}
+    \dd{X} = A(X) \dd{t} + B(X(t)) \underbrace{F(t) \dd{t}}_{\dd{W}},
+\end{equation}
+where $\dd{W}$ is the `'`infinitesimal noise''.
+From \eqref{eq:fdt-sq} we know the only non-zero contribution to $\dd{X}^2$ term
+is $B(X)^2$ times the variance of $\dd{W}$.
+Thus the final form of $\dd{f}$ is 
+\begin{equation}
+    \dd{f} = \left(
+        \pdv{f}{t} + \frac{1}{2} \pdv[2]{f}{X} B(X)^2 \sigma_F^2
+    \right) \dd{t} + \pdv{f}{X} \dd{X},
+\end{equation}
+which is known as the Ito lemma.
+We emphasize here that Ito lemma is only correct when the noise is a Markovian, Gaussian one.
+
+In Stratonovich calculus, we interpret forms like $Y \dd{X}$ in a different way,
+and thus 
+\begin{equation}
+    \begin{aligned}
+        \eval{\pdv{f}{X} \dd{X}}_{\text{Stratonovich}} &= 
+        \frac{1}{2} \left(
+            \eval{\pdv{f}{X} \dd{X}}_{t} + 
+            \eval{\pdv{f}{X} \dd{X}}_{t + \dd{t}}
+        \right) \\
+        &= \pdv{f}{X} \dd{X} + \frac{1}{2} \pdv[2]{f}{X} \dd{X}^2.
+    \end{aligned}
+\end{equation}
+Thus \eqref{eq:taylor}, in the Stratonovich scheme, becomes
+\begin{equation}
+    \dd{f} = \pdv{f}{X} \dd{X} + \pdv{f}{t} \dd{t},
+\end{equation}
+which looks identical to the chain rule in deterministic calculus,
+although the reason is that $\pdv{f}{X} \dd{X}$ is defined in a clever way.
 
 \section{Fokker-Planck equation}
 
