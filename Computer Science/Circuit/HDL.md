@@ -628,7 +628,7 @@ we *cannot* wire the output of `a` to `func1`,
 because if this is the case, what `func1` gets is the old value of `a`.
 So we have to wire `some_external_input` to `func1`.
 Similarly in the synthesis of `c = func2(b)`,
-because the appearance of `b` corresponds to the new value,
+because `b` appearing in this line corresponds to the new value,
 we should then connect the output of `func1` directly to `func2`.
 
 The last code block can be rewritten into
@@ -657,7 +657,13 @@ it's the `...` expression that gets directly wired to the follow-up logic,
 so `a_new`, if implemented as a physical register,
 is just a register recording the result of `...` at each clock cycle,
 which however is never read,
-so it can be removed.
+so it does not need to be synthesized as a flip-flop.
+
+We therefore observe that correct synthesis of blocking assignment therefore breaks the one-to-one correspondence 
+between variable accessing and flip-flop wiring:
+an engineer typically expects something like `c = func1(b)` to be synthesized into 
+`c` attached to a combinational logic block with a wire from the flip-flop corresponding to `b`,
+but this isn't the case if `b` receives a blocking assignment before this line.
 
 The intermediate blocking assignments, as is mentioned above, are just combinational logic,
 so in principle they can be moved out of the `always` block.
@@ -1695,6 +1701,25 @@ so *not* using any handshake signals and relying on the relative latency of subm
 to guarantee that they read each other's output at the correct times
 and the correctness of the module's behavior is not feasible.
 
+## What HLS doesn't do well
+
+There are still things that are hard to describe in HLS.
+The main problem is, by reading (well tested) Verilog code, it's relatively easy to know if a function
+(in the HLS sense, i.e. a module with ready, busy and finished signals) finishes within one clock cycle or not,
+but in HLS it's less clear, as the pragmas generally don't allow us or at least don't encourage us 
+to manually control the structure of the finite state machine in the synthesized module.
+And this then means we can't do away with the handshake signals in optimization.
+
+This can be partially solved by pragmas like `#pragma HLS latency min=1 max=3`.
+Whether the tool respects the pragma or not however can't be guaranteed.
+
+Sometimes we say this is because "RTL is timed while HLS is not."
+The statement may cause confusion, as we don't have an explicit time variable in RTL,
+and someone who focuses purely on *algorithmic* side of the problem may fail to see 
+any difference between a procedural description and an event-driven state machine description.
+The latter, however, makes clear sense when we realize that the latter relative straightforwardly corresponds
+to the physical processes happening in the circuit.
+
 # A rational reconstruction of description levels in digital circuit designing
 
 Here is a rational reconstruction of fundamentals of digital circuit designing, from the perspective of HLS to physical transistors.
@@ -1817,7 +1842,7 @@ then structural RTL is the most high-level.
 
 # Cheat sheet 
 
-- Variables plus [event listeners](#event-listener): modules in RTL
+- Variables plus [event listeners](#event-listener) is a module in RTL
 - In [HLS](#hls-synthesizes-functions), a function that possibly launches threads is roughly (see below) equivalent to a module:
   a function is run as a thread, which links the input and output variables in a certain way,
   and an outside observer can see how the output variables change as the function runs.
