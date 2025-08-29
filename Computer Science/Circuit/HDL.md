@@ -659,7 +659,7 @@ is just a register recording the result of `...` at each clock cycle,
 which however is never read,
 so it does not need to be synthesized as a flip-flop.
 
-We therefore observe that correct synthesis of blocking assignment therefore breaks the one-to-one correspondence 
+We therefore observe that correct synthesis of blocking assignment breaks the one-to-one correspondence 
 between variable accessing and flip-flop wiring:
 an engineer typically expects something like `c = func1(b)` to be synthesized into 
 `c` attached to a combinational logic block with a wire from the flip-flop corresponding to `b`,
