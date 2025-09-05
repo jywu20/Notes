@@ -1,0 +1,387 @@
+\documentclass[hyperref, a4paper]{article}
+
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+% No longer needed, since we will use enumitem package
+% \usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{footnote}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{soulutf8}
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{autobreak}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage{nameref,zref-xr}
+\zxrsetup{toltxlabel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{nonequilibrium.bib}
+\usepackage[colorlinks,unicode]{hyperref} % , linkcolor=black, anchorcolor=black, citecolor=black, urlcolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{prettyref}
+
+% Page style
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+% More compact lists 
+\setlist[itemize]{
+    itemindent=17pt, 
+    leftmargin=1pt,
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+% Math operators
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\expect}{\mathbb{E}}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\DeclareMathOperator{\bigO}{\mathcal{O}}
+
+% TikZ setting
+\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+    mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+\tikzstyle ray=[directed, thick]
+\tikzstyle dot=[anchor=base,fill,circle,inner sep=1pt]
+
+% Algorithm setting
+% Julia-style code
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elseif}{else}{end}
+\SetKwFor{For}{for}{}{end}
+\SetKwFor{While}{while}{}{end}
+\SetKwProg{Function}{function}{}{end}
+\SetArgSty{textnormal}
+
+\newcommand*{\concept}[1]{{\textbf{#1}}}
+
+% Embedded codes
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{gray},
+  keywordstyle=\color{blue}
+}
+
+% Reference formatting
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{chap.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{pp.~{#1}}
+\newrefformat{fig}{Fig.~\ref{#1}}
+\newcommand*{\term}[1]{\textit{#1}}
+
+% Color boxes
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=blue!5,
+    colframe=blue!5,
+    coltitle=blue!50,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=orange!5, 
+    colframe=orange!5, 
+    coltitle=orange!50,
+    borderline west={4pt}{0pt}{orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[use counter from=infobox]{learnbox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=green!5,
+    colframe=green!5,
+    coltitle=green!50,
+    borderline west={4pt}{0pt}{green!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\newenvironment{shelldisplay}{\begin{lstlisting}}{\end{lstlisting}}
+
+\newcommand*{\kB}{k_{\text{B}}}
+\newcommand*{\muB}{\mu_{\text{B}}}
+\newcommand*{\efermi}{E_{\text{F}}}
+\newcommand*{\pfermi}{p_{\text{F}}}
+\newcommand*{\vfermi}{v_{\text{F}}}
+\newcommand*{\sA}{\text{A}}
+\newcommand*{\sB}{\text{B}}
+\newcommand*{\Tc}{T_{\text{c}}}
+\newcommand*{\hethree}{$^3$He}
+\newcommand*{\hefour}{$^4$He}
+\newcommand{\epsr}{\epsilon_{\text{r}}}
+\newcommand{\chie}{\chi_{\text{e}}}
+\newcommand{\cf}{c_{\text{F}}}
+\newcommand{\fn}{F_{\text{N}}}
+\newcommand{\ff}{F_{\text{f}}}
+
+\title{Regression}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\section{Concepts}
+
+\subsection{The basic assumption of regression: gaussian error, or the like}
+
+Suppose we have \concept{training data} $\{ (X_i, Y_i) \}_{i=1}^n$,
+a sampling of random variables $X$ and $Y$.
+It's common to call $X$ the \concept{covariate}.
+
+Suppose we want to predict $Y$ from $X$,
+by a \concept{prediction} $\hat{Y}$.
+When the black block of the physical mechanism behind $X$ and $Y$ is known,
+$Y$, when $X = x$, should be predicted by the \concept{regression function}
+\begin{equation}
+    m(x) = \expect (Y | X = x) = \int y p(y | x) \dd{y}.
+\end{equation}
+Here we use a slightly sloppy notation and refer to $p(Y = y)$ as $p(y)$, etc.
+Note that when $y$ is continuous, $p(y | x)$ should be defined as the 
+\emph{probability density}, and $p(y | x) \dd{y}$ is the probability
+that $Y$ falls between $y$ and $y + \dd{y}$ when $X = x$.
+
+More often than not, the underlying physical mechanism is not known,
+and $m$ can only be estimated from the distribution of the data.
+The estimation is labeled as $\hat{m}$.
+The \concept{risk} of a prediction $\hat{Y} = \hat{m}(X)$ is defined as 
+\begin{equation}
+    R(\hat{m}) = \expect[(Y - \hat{Y})^2].
+    \label{eq:risk-def}
+\end{equation}
+Note that there is no guarantee that it vanishes when $\hat{Y}$ is indeed given
+by the one hundred percent accurate $m$,
+as there might be other variables contributing to $Y$,
+which have their own distributions.
+
+The risk shouldn't be too large for a good prediction.
+But whether we should minimize the risk (and not similar quantities) is not a priori clear.
+From the perspective of frequentists,
+minimization of \eqref{eq:risk-def} implicitly assumes that 
+the form of $\hat{m}$ we choose guarantees that 
+\begin{equation}
+    Y \approx \hat{m}(X) + \mathcal{N},
+\end{equation}
+where $\mathcal{N}$ is a gaussian variable or at least a variable 
+for which $p(\mathcal{N} = n) \sim f(n^2)$,
+and minimization of the risk function is equivalent to maximal likelihood estimation.
+If we add regularization terms to the risk function in minimization,
+it means we have more assumptions on the parameters in $\hat{m}$,
+which are enforced by the regularization terms.
+From the Bayesian perspective, (regularized) minimization of the risk
+is equivalent to maximal a posteriori estimation,
+in which we have assumed that $p(x, y | \hat{m})$ takes the form of gaussian distribution
+or similar $f((x - y)^2)$ distributions.
+
+The current paradigm of statistics research is two-step.
+First, estimators are be derived by stipulating a form of $\hat{m}$ and also a form of the risk function
+(e.g. the average of the $L^2$ norm between $\hat{m}(x_i)$ and $y_i$).
+Second, an estimator, once derived as a logical consequence of these assumptions,
+is then treated as a math object -- which \emph{does not} rely on the exact assumptions used to derive it --
+and its performances are analyzed under \emph{other} assumptions.
+A statistician for example may ask how sure we can be about 
+whether the stipulated form of $\hat{m}$ is correct,
+given \emph{only} the assumption of sufficient training datasets.
+So we have a two-stage workflow:
+first, deriving an estimator (in this process the parameters of the estimator are considered 
+\emph{unknown constants}, to be determined by minimizing the risk function under certain assumptions),
+and second, analyzing properties of the estimator 
+(in this process the parameters of the estimator are functions of the training dataset,
+and are now \emph{random variables},
+and we can calculate their variances, etc. as indicators of how certain we are).
+
+Below, for convenience, we often skip the hat in $\hat{m}$
+when the ``true'' regression function is not the focus of the discussion.
+
+\subsection{Bias-variation decomposition}
+
+Here is an instance of how to judge an estimator \emph{after} it's developed.
+We assume that the relation between $Y$ and $X$ is 
+\begin{equation}
+    Y = m(X) + \epsilon,
+\end{equation}
+where $\epsilon$ is a noise term whose expectation vanishes 
+and includes all effects not included in $X$.
+Now, we calculate the mean square error of the estimator at a given point $x_0$.
+Note that this is \emph{not} \eqref{eq:risk-def}:
+in \eqref{eq:risk-def}, what is random is $X$,
+and the parameters in $\hat{Y} = \hat{m}(X)$ are considered (unknown) constants
+to be estimated by minimization of the risk function,
+while here, what is random is the training dataset,
+and the parameters in $\hat{Y} = \hat{m}(X)$ are functions of the training dataset.
+Calculating the mean squared error here is about \emph{having a rough understanding of how good the model is}, not for training.
+
+For an arbitrary $\hat{m}$, the mean square error at a given point $x_0$ is 
+\begin{equation}
+    \text{MSE} = \expect[(y_0 - \hat{m}(x_0))^2] \coloneqq \expect_{\epsilon, \mathcal{D}}[(y_0 - \hat{m}(x_0))^2].
+    \label{eq:mse-post-training}
+\end{equation}
+We emphasize again here that the random variables here 
+are the noise and the randomly selected training dataset $\mathcal{D}$,
+and the parameters in $\hat{m}$ are functions of $\mathcal{D}$,
+while $x_0$ and $y_0$ are fixed.
+\eqref{eq:mse-post-training} is \emph{not} the one used in training,
+and is used as an a posteriori index for the performance of the model.
+Now we have \concept{bias-variance decomposition}:
+\begin{equation}
+    \text{MSE at $x_0$} = \mathrm{bias}(x_0)^2 
+    + \mathrm{var}(x_0) + \sigma^2,
+\end{equation}
+where 
+\begin{equation}
+    \mathrm{bias}(x_0) = \expect_{\mathcal{D}}[\hat{m}(x_0)] - m(x_0)
+\end{equation}
+is about the shift of the expected prediction given all possible training datasets
+from the ideal prediction $m(x_0)$, and
+\begin{equation}
+    \mathrm{var}(x_0) = \mathrm{Var}_{\mathcal{D}}[\hat{m}(x_0)] 
+\end{equation}
+measures how sensitive the model is to fluctuation of the training dataset
+(which shouldn't be overly large),
+and 
+\begin{equation}
+    \sigma^2 = \expect_\epsilon[(y_0 - m(x_0))^2] = \mathrm{Var}[\epsilon^2]
+\end{equation}
+is the inevitable deviation of the ideally predicted $Y$ from the real $Y$,
+which cannot be reduced however we improve our methodology.
+$R^* = \sigma^2$ is the lowest possible risk.
+The key point to prove the equation is to notice that 
+\begin{equation}
+    \expect[\epsilon (m(X) - \hat{m}(X))] = 0
+\end{equation}
+because the noise term's distribution should be independent to the sampling process
+and the expectation can be split into the expectations of the two factor
+one of which vanishes, and $\expect_{\mathcal{D}}[\hat{m}(x_0)] - m(x_0)$ is a constant
+when $\mathcal{D}$ changes.
+When we let $x_0$ to change as well, we have
+\begin{equation}
+    \text{MSE} = \int \mathrm{bias}(x)^2 p(x) \dd{x} 
+    + \int \mathrm{var}(x) p(x) \dd{x} + \sigma^2.
+\end{equation}
+
+A similar result can be established for the mean square error of the \emph{parameters of the model},
+which, similarly, is \emph{not} used for training but instead is used to evaluating the performance of the model after training.
+Assuming that the way $\hat{m}$ is parameterized and $\theta$ is the ``correct'' parameter that reproduces $m$,
+the decomposition is 
+\begin{equation}
+    \expect_{\mathcal{D}}[(\hat{\theta} - \theta)^2] = \underbrace{\expect_{\mathcal{D}}[(\hat{\theta} - \expect_{\mathcal{D}}[\hat{\theta}])^2]}_{\text{bias}} + \underbrace{(\expect_{\mathcal{D}}[\hat{\theta}] - \theta)^2}_{\text{variance}}.
+    \label{eq:theta-post-train}
+\end{equation}
+
+\section{Low dimensional linear regression}
+
+Consider a \concept{linear predicator}
+\begin{equation}
+    m(x) = \sum_{i=1}^p \beta_i x_i,
+    \label{eq:linear}
+\end{equation}
+where $x = (x_1, \ldots, x_p) $ is a \emph{single} $x$.
+When the difference between $m(x)$ in \eqref{eq:linear} and $Y$ is clearly a gaussian distribution,
+and there are enough samples,
+$\beta$ can be calculated by minimizing 
+\begin{equation}
+    \text{training error} = \frac{1}{n} \sum_{i=1}^n (y_i - \beta^\top x_i)^2,
+\end{equation}
+which is an estimation of the risk function.
+The resulting minimizer
+\begin{equation}
+    \hat{\beta} = (\vb{X}^\top \vb{X})^{-1} \vb{X}^\top \vb{Y},
+    \label{eq:lsq-estimation}
+\end{equation}
+where $\vb{X}_{n \times p}$ is defined by 
+\begin{equation}
+    X_{ij} = \text{the $j$ the component of the sample $x_i$}
+\end{equation}
+is called the \concept{least squares estimator}, and 
+\begin{equation}
+    \hat{Y} = \hat{\beta}^\top X.
+\end{equation}
+
+\eqref{eq:lsq-estimation} definitely works when the condition of gaussian error term and 
+the condition of sufficiently large training dataset are satisfied.
+Whether it works when these conditions are \emph{not necessarily} satisfied is a non-trivial question.
+A statistician wants to know when the two conditions are weakened,
+from the distribution of the training dataset,
+how sure we can be about whether \eqref{eq:lsq-estimation} works.
+In these discussions, \eqref{eq:lsq-estimation} is \emph{no longer a logical consequence of given assumptions},
+but a math object on its own, an \emph{estimator},
+which is derived heuristically but does not always rely on its assumptions to work.
+This is what the mathematical theory of statistics is about:
+using some assumptions to derive estimators,
+and see that under weakened assumptions how we can evaluate its performances.
+
+\section{High dimensional linear regression: Ridge regression}
+
+When $p \gg n$, things become bad: now $\vb{X}^\top \vb{X}$ can't be full rank,
+and hence is not invertible.
+So \eqref{eq:lsq-estimation} fails.
+What's the origin of the failure?
+Quantitatively it is because the variance of the least squares predication is huge.
+From the perspective of \eqref{eq:theta-post-train},
+this means the variance is undesirably large,
+and we need to ``increase'' the bias so that the variance can be reduced.
+Ideally, the bias should not actually increased,
+so regularization naturally emerges as a choice.
+
+We try 
+\begin{equation}
+    \hat{\beta} = \argmin_{\beta} \frac{1}{n} \sum_{i=1}^{n} (y_i - \beta^\top x_i)^2 + \frac{\lambda}{n} \| \beta \|^2_2,
+    \label{eq:ridge-min}
+\end{equation}
+where 
+\begin{equation}
+    \| \beta \|_2 = \sqrt{\sum_j \beta_j^2}.
+\end{equation}
+The solution is 
+\begin{equation}
+    \hat{\beta} = (\vb{X}^\top \vb{X} + \lambda I)^{-1} \vb{X}^\top \vb{Y}.
+\end{equation}
+Increasing $\lambda$ dictates reduction of $\beta$'s complexity,
+as $\lambda = \infty \Rightarrow \hat{\beta} = 0$.
+This is known as \concept{Ridge regression}.
+
+The value of $\lambda$ should be chosen by minimizing the RHS of \eqref{eq:ridge-min}.
+
+
+\end{document}
