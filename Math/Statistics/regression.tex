@@ -169,6 +169,8 @@
 Suppose we have \concept{training data} $\{ (X_i, Y_i) \}_{i=1}^n$,
 a sampling of random variables $X$ and $Y$.
 It's common to call $X$ the \concept{covariate}.
+It's further possible that $X_i = (X_{i1}, X_{i2}, \ldots, X_{ip})$,
+that's to say, there are $p$ covariates.
 
 Suppose we want to predict $Y$ from $X$,
 by a \concept{prediction} $\hat{Y}$.
@@ -202,6 +204,7 @@ minimization of \eqref{eq:risk-def} implicitly assumes that
 the form of $\hat{m}$ we choose guarantees that 
 \begin{equation}
     Y \approx \hat{m}(X) + \mathcal{N},
+    \label{eq:y-and-x-noise}
 \end{equation}
 where $\mathcal{N}$ is a gaussian variable or at least a variable 
 for which $p(\mathcal{N} = n) \sim f(n^2)$,
@@ -381,7 +384,92 @@ Increasing $\lambda$ dictates reduction of $\beta$'s complexity,
 as $\lambda = \infty \Rightarrow \hat{\beta} = 0$.
 This is known as \concept{Ridge regression}.
 
-The value of $\lambda$ should be chosen by minimizing the RHS of \eqref{eq:ridge-min}.
+The value of $\lambda$ should be chosen by minimizing the RHS of \eqref{eq:ridge-min}. TODO: estimation of the risk 
+
+\section{High dimensional linear regression: Lasso}
+
+When $\beta$ is expected to be sparse,
+It's quite likely that Ridger linear regression results in a $\hat{\beta}$
+in which the differences between $\beta_i$'s are ``smoothened out'',
+which is not factually correct.
+To solve the problem we actually only need a small modification to \eqref{eq:ridge-min}.
+We note that when $q < 2$, among vectors with the same $L^2$ norms,
+\begin{equation}
+    \| \beta \|_q = \left( \sum_j \abs*{\beta_j}^q \right)^{1/q}
+\end{equation}
+is smaller for $\beta$'s that are sparse.
+So the appropriate maximization problem is 
+\begin{equation}
+    \hat{\beta} = \argmin_{\beta} \frac{1}{n} \sum_{i=1}^{n} (y_i - \beta^\top x_i)^2 + \frac{\lambda}{n} \| \beta \|_q.
+\end{equation}
+To make things convex so that optimization is easier, we choose $q = 1$,
+resulting in 
+\begin{equation}
+    \hat{\beta} = \argmin_{\beta} \frac{1}{2n} \sum_{i=1}^{n} (y_i - \beta^\top x_i)^2 + \lambda \| \beta \|_1.
+\end{equation}
+This is known as the \concept{Lasso regression}.
+
+An overall algorithm for the Lasso is listed below: TODO: and prove its correctness
+\begin{enumerate}
+    \item Standardize the predictor variables. 
+    \item $\hat{\beta} \leftarrow (0, \ldots, 0)$.
+    \item For $j$ from 1 to $p$:
+    \begin{enumerate}
+        \item $R_i = y_i - \sum_{s \neq j}$
+        \item Set $\hat{\beta}_j$ to be least squares fit of 
+    \end{enumerate}
+\end{enumerate}
+
+Typically, we consider convergence to be achieved 
+when the change of $\hat{\beta}$ falls below a given threshold.
+
+\section{Kernel methods}
+
+A \concept{kernel method} stipulate a complex anstaz of $m$ in \eqref{eq:y-and-x-noise},
+which is made of pre-defined functions known as \concept{kernels}.
+A general tendency we'll observe below is that the shape of the kernel often doesn't matter much.
+
+\subsection{Smoothing}
+
+In the \concept{smoothing kernel estimator}, we have 
+\begin{equation}
+    \hat{m}_h(x)=\frac{\sum_{i=1}^n Y_i K_h\left(X_i, x\right)}{\sum_{i=1}^n K_h\left(X_i, x\right)}=\sum_{i=1}^n w_i(x) Y_i,
+\end{equation}
+where 
+\begin{equation}
+    K_h(x, z) \coloneqq \exp \left(-\frac{\|x-z\|^2}{2 h^2}\right)
+\end{equation}
+and $h > 0$ is known as the \concept{bandwidth}.
+A small bandwidth typically leads to overfitting, and the predicted $y$-$x$ curve involves a lot of wiggles,
+and hence a strong variance,
+while a big bandwidth leads to a big bias and underfitting.
+
+TODO: what kind of maximal likelihood estimation leads to this estimator?
+
+Similar to the case of linear regression,
+generalizing the method to high dimensions is not trivial.
+The squared bias scales as $h^4$, while the variance scales as $1 / nh^p$.
+Optimization of the risk function typically asks for 
+\begin{equation}
+    h^4 \sim \frac{1}{n h^p} \Rightarrow \text{Risk} \sim n^{-4/(4+p)}.
+\end{equation}
+Suppose $\epsilon$ is the acceptable maximal risk. We find that the number of data points needed scales as 
+\begin{equation}
+    n \geq \left(\frac{1}{\epsilon}\right)^{1 + p/4}.
+\end{equation}
+This is exponential growth when $p$! Getting an accurate model using the naive smoothing kernel method simply is not practical.
+
+\subsection{Kernel density estimation}
+
+Suppose the positions of a list of ``incidents'' are given,
+and we want to estimate the distribution function of these incidents.
+A commonly used method is \concept{kernel density estimation (KDE)}:
+\begin{equation}
+    \hat{f}(x) = \frac{1}{n} \sum_{i=1}^{n} \frac{1}{h} K \left( \frac{x_i - x}{h} \right),
+\end{equation}
+where $\{x_i\}_{i=1}^n$ is the list of positions of the incidents.
+
+The KDE is a simple generative model, as it generates new data points following the estimated distribution.
 
 
 \end{document}
