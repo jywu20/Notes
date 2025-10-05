@@ -237,7 +237,7 @@ and we can calculate their variances, etc. as indicators of how certain we are).
 Below, for convenience, we often skip the hat in $\hat{m}$
 when the ``true'' regression function is not the focus of the discussion.
 
-\subsection{Bias-variation decomposition}
+\subsection{Bias-variation decomposition}\label{sec:bias-variance}
 
 Here is an instance of how to judge an estimator \emph{after} it's developed.
 We assume that the relation between $Y$ and $X$ is 
@@ -312,7 +312,18 @@ the decomposition is
     \label{eq:theta-post-train}
 \end{equation}
 
-\section{Low dimensional linear regression}
+An empirical observation, seen in various flavors of linear regression and other ``simple'' regression schemes,
+is that as the ratio between the model size and the training dataset size increases,
+the bias falls and the variance increases,
+meaning that overfitting happens.
+For certain models, however, we may observe that when the system is \emph{severely} overparametrized,
+there may appear a \concept{double descent},
+in which the MSE or other model performance metric falls again
+when the number of parameters exceeds a certain bound.
+
+\section{Linear regression}
+
+\subsection{Low dimensional linear regression}
 
 Consider a \concept{linear predicator}
 \begin{equation}
@@ -354,7 +365,7 @@ This is what the mathematical theory of statistics is about:
 using some assumptions to derive estimators,
 and see that under weakened assumptions how we can evaluate its performances.
 
-\section{High dimensional linear regression: Ridge regression}
+\subsection{High dimensional linear regression: Ridge regression}\label{sec:ridge-linear}
 
 When $p \gg n$, things become bad: now $\vb{X}^\top \vb{X}$ can't be full rank,
 and hence is not invertible.
@@ -379,6 +390,7 @@ where
 The solution is 
 \begin{equation}
     \hat{\beta} = (\vb{X}^\top \vb{X} + \lambda I)^{-1} \vb{X}^\top \vb{Y}.
+    \label{eq:ridge-linear}
 \end{equation}
 Increasing $\lambda$ dictates reduction of $\beta$'s complexity,
 as $\lambda = \infty \Rightarrow \hat{\beta} = 0$.
@@ -386,7 +398,7 @@ This is known as \concept{Ridge regression}.
 
 The value of $\lambda$ should be chosen by minimizing the RHS of \eqref{eq:ridge-min}. TODO: estimation of the risk 
 
-\section{High dimensional linear regression: Lasso}
+\subsection{High dimensional linear regression: Lasso}
 
 When $\beta$ is expected to be sparse,
 It's quite likely that Ridger linear regression results in a $\hat{\beta}$
@@ -409,6 +421,15 @@ resulting in
 \end{equation}
 This is known as the \concept{Lasso regression}.
 
+When in actual Lasso regression tasks, it is strongly recommended for $x$ to be rescaled
+so that the variance of each component of $x$ is approximately 1
+and the mean is approximately 0.
+This is because if a component of $x$ has a large order of magnitude,
+then the corresponding $\beta$ component tends to have a small order of magnitude,
+and this means in the penalty term its contribution is artificially small.
+Thus, even if this component of $x$ does not strongly contribute to $y$,
+the corresponding $\beta$ component is retained in the model.
+
 An overall algorithm for the Lasso is listed below: TODO: and prove its correctness
 \begin{enumerate}
     \item Standardize the predictor variables. 
@@ -422,6 +443,50 @@ An overall algorithm for the Lasso is listed below: TODO: and prove its correctn
 
 Typically, we consider convergence to be achieved 
 when the change of $\hat{\beta}$ falls below a given threshold.
+
+\subsection{Overparametrization}
+
+When $\gamma \coloneqq p / n$ exceeds one, as is mentioned above,
+we can't determine which $\hat{\beta}$ to pick.
+But then think about this. Suppose we just want to find a $\hat{\beta}$ (i.e. a \concept{interpolator}) to make 
+\begin{equation}
+    \vb{X} \hat{\beta} = \vb{Y}
+    \label{eq:naive-interpolation-linear}
+\end{equation}
+to \emph{exactly} hold. Note that $\vb{X}$ is $n \times p$ and $\vb{Y}$ is $n \times 1$, so the sizes of things are correct.
+Now consider the following \concept{minimum norm solution}
+\begin{equation}
+    \hat{\beta}_{\text{MN}} = \vb{X}^\top (\vb{X} \vb{X}^\top)^{-1} \vb{Y}.
+    \label{eq:mn-linear}
+\end{equation}
+Note that the order of $\vb{X}$ and $\vb{X}^\top$ is swapped so the inverse is well defined.
+Now, by elementary matrix algebra, we can show that 
+\begin{equation}
+    (\hat{\beta} - \hat{\beta}_{\text{MN}})^\top \hat{\beta}_{\text{MN}} = 0.
+\end{equation}
+From this we find 
+\begin{equation}
+    \norm*{\hat{\beta}}^2 = \norm*{\hat{\beta} - \hat{\beta}_{\text{MN}}}^2 + \norm*{\hat{\beta}_{\text{MN}}}^2 \geq \norm*{\hat{\beta}_{\text{MN}}}^2.
+\end{equation}
+Thus of all $\hat{\beta}$ satisfying the \eqref{eq:naive-interpolation-linear} condition, the norm can't be smaller than that of $\hat{\beta}_{\text{MN}}$.
+
+From a geometric perspective, all interpolators form a plane in $\mathbb{R}^p$,
+and $\hat{\beta}_{\text{MN}}$ is the orthogonal projection of the zero vector to that plane.
+
+We can compare the scheme above with Ridge regression introduced in \prettyref{sec:ridge-linear}.
+From a mathematical fact 
+\begin{equation}
+    (\vb{X}^\top \vb{X} + \lambda I_p)^{-1} \vb{X}^\top = \vb{X}^\top (\vb{X} \vb{X}^\top + \lambda I_n)^{-1},
+\end{equation}
+we find that Ridge regression \eqref{eq:ridge-linear} converges to the minimum norm solution \eqref{eq:mn-linear}.
+
+Now clearly, when $\lambda$ greatly exceeds 1,
+the squared bias stays small because the model is just more capable of capturing features,
+but we can prove that the variance also decreases!
+This is because each entry of $\vb{X} \vb{X}^\top$ is an average over random samples,
+which becomes more ``stable'' as the number of data points increases.
+This is an instance of double descent in risk-bias tradeoff
+(\prettyref{sec:bias-variance}).
 
 \section{Kernel methods}
 
@@ -470,6 +535,45 @@ A commonly used method is \concept{kernel density estimation (KDE)}:
 where $\{x_i\}_{i=1}^n$ is the list of positions of the incidents.
 
 The KDE is a simple generative model, as it generates new data points following the estimated distribution.
+
+\section{Neural networks}
+
+\subsection{Tangent neural kernels}
+
+Suppose the neural network model is $f(x; \theta)$.
+The \concept{feature map} is defined as 
+\begin{equation}
+    \varphi(x) = \left[ \eval{\pdv{f}{\theta_i}}_{\theta_0} \right]_i,
+\end{equation}
+and this defined a Mercer kernel 
+\begin{equation}
+    K(x, x') \coloneqq \varphi(x)^\top \varphi(x').
+\end{equation}
+
+A deep neural network is equivalent to a random feature model.
+The logic seems to be that we have a lot of local minima and
+weights of a neural network after training won't be too different from their initial values,
+which can be used to prove that it's equivalent to a random feature model.
+When the number of feature goes into the ``severely overfitting'' regime,
+as is shown above, overfitting actually doesn't happen,
+because we have the double descent effect:
+
+\subsection{Convolutional neural network}
+
+To reduce the dimensions of feature maps -- the output of convolutional operations -- 
+\concept{pooling} slides a window through the whole feature map 
+and either calculate the maximum or the average of pixels in the window.
+A pooling layer has no learnable parameters.
+
+\concept{Dropout} is a type of regularization that's easy to incorporate:
+it randomly zeroes out entries in a tensor,
+that's to say, it randomly disables neurons that produce elements in that tensor.
+It has been argued that dropout is equivalent to a type of $L^2$ regularization: see arXiv 1307.1493.
+
+Finally, to connect dense layers to a CNN,
+we need flattening operations.
+
+One should be be surprised if the number of parameters in the CNN part of a model is \emph{smaller} than the number of parameters in the dense layers.
 
 
 \end{document}

@@ -1,10 +1,22 @@
-# Things that look good but are not 
-
 The overall idea of Verilog HDL has been introduced [here](HDL.md).
-Mistakes like writing infinite loops in the C way 
-can be easily avoided once the user understands
-how synthesizable Verilog is supposed to work.
-There however exist a huge amount of less overt but equally problematic coding styles in Verilog.
+The worst coder writes things that simply don't make sense in digital circuits like
+unbounded loops in an `always @` block.
+A more learned coder writes things that look good
+[but are not always synthesizable or synthesize to unexpected designs](#things-that-look-good-but-do-not-synthesize-well).
+An even more learned coder writes things that can be synthesized
+but are slow in performance, not knowing how to improve it.
+Finally, physics matters in correct behaviors of the design,
+and some designs are more risky than others.
+
+In resolving problems in the last two classes,
+knowing the semantics of Verilog is not enough:
+one has to have a rough or even detailed idea of what actually happens in synthesis.
+Sometimes, this means having to know how different coding styles
+map to different circuit structures,
+and Verilog, despite being intended as a way to abstract away hardware details,
+now becomes a cryptic way to draw circuit schematics in a text format.
+
+# Things that look good but do not synthesize well
 
 ## Overusing blocking assignments
 
@@ -100,3 +112,10 @@ But this won't happen if the synthesizer treats any variable appearing within
 `always` blocks that are triggered by the clock signal
 as flip-flop, which, for most cases, is indeed the right thing to do.
 
+# Things that synthesize but are of poor performance
+
+
+
+# Problems related to physics
+
+## Metastable states
