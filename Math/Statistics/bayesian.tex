@@ -162,6 +162,8 @@
 
 \maketitle
 
+\section{Framework of Bayesian statistics}
+
 In Bayesian inference, unlike in the frequentist framework,
 parameters in a model are considered to be random variables themselves.
 We assume that $p(x | \theta)$ has a known form,
@@ -170,15 +172,295 @@ and we calculate the a posteriori distribution of $\theta$ by
     p(\theta | \mathcal{D}) = \frac{p(\mathcal{D} | \theta) p(\theta)}{
         \sum_{\theta'} p(\mathcal{D} | \theta') p(\theta')
     }.
+    \label{eq:bayesian}
 \end{equation}
 Here $p(\theta)$ is the prior.
-The workflow is to TODO
 
-Predicting a new value:
+Often, the complete posterior probability distribution is not evaluated,
+because it often has no closed-form expression and thus can only be estimated by Monte-Carlo simulation.
+The \concept{maximum a posteriori estimation (MAP)} is often used as an alternative to the full Bayesian approach.
+We note that MAP can also be perceived within the frequentist framework 
+as \concept{maximum likelihood estimation (MLE)} where the prior of $\theta$ is seen as a regularization term.
+Note that the denominator of \eqref{eq:bayesian} does not depend on $\theta$,
+and can be ignored in parametric estimations.
+
+\subsection{Bayesian update}
+
+The Bayesian formula \eqref{eq:bayesian} is often understood as a way to do \concept{prior updating}.
+That's to say, when a Bayesian estimator has seen a dataset $\mathcal{D}$,
+it does an assignment 
 \begin{equation}
-    p(y | \mathcal{D}, x)
+    p(\theta) \leftarrow p(\theta | \mathcal{D})
+    \label{eq:naive-update}
 \end{equation}
-Need some consistency theorems 
+to \emph{update} the prior.
+The correctness of this strategy needs a proof.
+What we want to explore, then, is whether after updating the prior
+by successively letting the estimator see two training datasets $\mathcal{D}_1$ and $\mathcal{D}_2$,
+the prior is identical to $p(\theta | \mathcal{D}_1, \mathcal{D}_2)$ calculated by \eqref{eq:bayesian}.
+
+The strategy \eqref{eq:naive-update} is correct \emph{when a training dataset is generated purely from $\theta$,
+and depends on no previously generated training dataset}.
+That's to say,
+\begin{equation}
+    p(\mathcal{D}' | \theta, \mathcal{D}) = p(\mathcal{D}' | \theta),
+    \label{eq:data-independence}
+\end{equation}
+irrespective to $\mathcal{D}$.
+Note that this condition is not always satisfied:
+when $\mathcal{D}_2$ is sampled in a Markovian process and the last batch of data that process generates was $\mathcal{D}_1$,
+clearly we have a violation of \eqref{eq:data-independence}.
+But then let's consider the situation where \eqref{eq:data-independence} is in fact correct. What follows?
+
+After the estimator has seen $\mathcal{D}_1$,
+its prior ``$p(\theta)$''\footnote{Here we have two types of variables: one is variables in procedural programming and is dynamic,
+another is the usual mathematical, static ones.
+We use quotation marks to label the first type of variables.}
+is $p(\theta | \mathcal{D}_1)$.
+Now we insert this new prior into \eqref{eq:bayesian},
+and following \eqref{eq:naive-update}, we find 
+\begin{equation}
+    \text{``$p(\theta)$'' after seeing $\mathcal{D}_1$, $\mathcal{D}_2$} = 
+    \text{``$p(\theta | \mathcal{D}_2)$'' after seeing $\mathcal{D}_1$} = 
+    \frac{
+        p(\mathcal{D}_2 | \theta) p(\theta | \mathcal{D}_1)
+    }{
+        \sum_{\theta'} p(\mathcal{D}_2 | \theta') p(\theta' | \mathcal{D}_1)
+    }.
+    \label{eq:two-step-update}
+\end{equation}
+Now we utilize \eqref{eq:data-independence} and note that 
+\[
+    p(\mathcal{D}_2 | \theta) p(\theta | \mathcal{D}_1) \stackrel{!}{=} p(\mathcal{D}_2 | \theta, \mathcal{D}_1) p(\theta | \mathcal{D}_1)
+    = p(\mathcal{D}_2, \theta | \mathcal{D}_1),
+\]
+and therefore the denominator is 
+\[
+    \sum_{\theta'} p(\mathcal{D}_2 | \theta') p(\theta' | \mathcal{D}_1) = p (\mathcal{D}_2 | \mathcal{D}_1).
+\]
+Therefore we finally find 
+\begin{equation}
+    \text{``$p(\theta)$'' after seeing $\mathcal{D}_1$, $\mathcal{D}_2$} = \frac{p(\mathcal{D}_2, \theta | \mathcal{D}_1)}{p (\mathcal{D}_2 | \mathcal{D}_1)} = p(\theta | \mathcal{D}_1, \mathcal{D}_2).
+\end{equation}
+Hence the correctness of \eqref{eq:naive-update} is justified.
+By looking at the structure of the proof we can also convince ourselves that \eqref{eq:naive-update} is not universally correct.
+However, when different training datasets do have correlations,
+we should probably stop talking about $p(\mathcal{D} | \theta)$
+and talk about something like $p(\mathcal{D} | \theta, \mathrm{past state})$ instead.%
+\footnote{
+    Although in this scenario, \eqref{eq:bayesian} is still correct:
+    we just can't have a neat $p(\mathcal{D} | \theta)$ expression anymore.
+    Also see below on model architectures in Bayesian statistics.
+}
+
+\subsection{Constraints on models that make sense}\label{sec:constraints}
+
+Building a model now means assume expressions of $p(\theta)$ and $p(\mathcal{D} | \theta)$.
+Because of the Bayesian formula,
+one should not stipulate an expression for $p(\theta | \mathcal{D})$
+besides forms of $p(\theta)$ and $p(\mathcal{D} | \theta)$,
+as the latter can be used to calculate the former.
+
+The next question is, can we freely select expressions of $p(\mathcal{D} | \theta)$ and $p(\theta)$?
+Note that both $p(\theta)$ and $p(\mathcal{D} | \theta)$ can be calculated from $p(\mathcal{D}, \theta)$:
+integrating out $\mathcal{D}$ we get $p(\theta)$,
+and then by the definition of conditional probability we get $p(\mathcal{D} | \theta)$.
+Does this impose an additional constraint on $p(\theta)$ and $p(\mathcal{D} | \theta)$?
+
+The question is equal to the follows.
+Suppose there exists a probabilistic distribution $p(\mathcal{D}, \theta)$
+(which satisfies all the axioms of probability) such that 
+\begin{equation}
+    p(\theta) = \sum_{\mathcal{D}} p(\theta, \mathcal{D}), \quad p(\mathcal{D} | \theta) = \frac{p(\mathcal{D}, \theta)}{p(\theta)}.
+\end{equation}
+By eliminating $p(\mathcal{D}, \theta)$ (bounded by an existential quantifier),
+what constraints do we get on $p(\theta)$ and $p(\mathcal{D} | \theta)$?
+There aren't many, actually. From the definition of $p(\theta)$ and $p(\mathcal{D} | \theta)$
+and non-negativity of $p(\mathcal{D}, \theta)$,
+it's easy to see that the first two also have non-negativity,
+which in turn has non-negativity of $p(\mathcal{D}, \theta)$ as a logical consequence,
+and thus the non-negativity of $p(\mathcal{D}, \theta)$
+is just equivalent to non-negativity of $p(\theta)$ and $p(\mathcal{D} | \theta)$.
+Normalization works in the same way: it just translates to normalization of $p(\theta)$ and $p(\mathcal{D} | \theta)$.
+Additivity with respect to $\mathcal{D}$ translates to 
+\begin{equation}
+    p(\mathcal{D}_1 \cup \mathcal{D}_2 | \theta) = p(\mathcal{D}_1 | \theta) + p(\mathcal{D}_2 | \theta)
+    \label{eq:additivity}
+\end{equation}
+for non-overlapping datasets.
+Additivity with respect to $\theta$ leads to a formula for calculating $p(\mathcal{D} | \theta_1 \cup \theta_2)$.
+That $p(\mathcal{D} | \theta_1 \cup \theta_2)$ satisfies axioms of probability adds no further constraints besides those we have already seen.
+
+Therefore, after eliminating $p(\mathcal{D}, \theta)$ from all equations,
+we get normalization, non-negativity and \eqref{eq:additivity},
+none of which is previously unknown.
+Our conclusion is simple:
+we can freely choose the function expression of $p(\theta)$ and $p(\mathcal{D} | \theta)$
+as long as they satisfy normalization, non-negativity and \eqref{eq:additivity}.
+There are no further constraints on $p(\theta)$ and $p(\mathcal{D} | \theta)$.%
+\footnote{
+    We can also explicitly verify that an arbitrary $p(\theta, \mathcal{D})$ gives us $p(\theta)$ and $p(\mathcal{D} | \theta)$ with the generic properties of probabilistic distributions,
+    and any pair of $p(\theta)$ and $p(\mathcal{D} | \theta)$ with the generic properties of probabilistic distributions gives us a $p(\theta, \mathcal{D})$ with the generic properties of probabilistic distributions.
+}
+
+When we have more random variables in question,
+for instance when we're working with probabilistic graphical model,
+the question how many assumptions we can make without causing logical inconsistency may become more complicated,
+but following the same logic above, it seems the probabilistic axioms do not impose unexpected nontrivial constraints,
+and therefore the main constraints are probably things like 
+\begin{equation}
+    p(A|BC) = \frac{p(AB | C)}{p(B | C)},
+\end{equation}
+which is totally expected if we narrow the sample space to its intersection with $C$.
+Finding independently variable functions (like $p(\theta)$ and $p(\mathcal{D} | \theta)$) is more tedious but involves nothing fundamentally different.
+
+\subsection{Comparison with the frequentist school}
+
+We should emphasize that probability in pure Bayesian statistics is \emph{subjective}.
+What we're doing is to utilize our intuitions to measure how certain we can be about things,
+while keeping ourselves consistent by looking at \eqref{eq:bayesian}.
+The logic runs like this: if you accept that an uncertainty measurement should axioms of probability
+(it should because of Dutch Book arguments),
+then we can apply probability theory to any measurement of uncertainty you have,
+and ``uncertainty of something if we already know something else'' 
+can be modeled by conditional probability.
+Now to keep yourself logically consistent you \emph{have to} accept \eqref{eq:bayesian}
+and its logical consequences, and hence all the conclusions we derived above.
+
+This leads to a serious question. If that's all probability is about,%
+\footnote{
+    Note that this doesn't mean when building a model,
+    a Bayesian statistician can't utilize standard frequentist tools,
+    like assuming that there is a noise term.
+    Instead, they feel free to add, say, a gaussian noise to the output of the model,
+    the difference from frequentist modeling being now the parameters of the gaussian noise themselves are random variables.
+    This does not create any conceptual inconsistency (although a frequentist may feel rather awkward here as we have randomness controlled by something itself random),
+    because it gives us a well-defined $p(\mathcal{D} | \theta)$ ($\sigma^2$ included into $\theta$)
+    and that's all we need.
+}
+then how can we \emph{evaluate} the performance of a certain model?
+In the frequentist perspective, there is a true probabilistic distribution of random variables,
+determined by the underlying physical processes,
+and therefore we can put an estimator into a benchmark assuming we know the real distribution
+and see how fast it converges to the ground truth. 
+(Hence we can prove that an estimator is unbiased, has small variance, etc.)
+No such clear and intuitive framework exists in a pure Bayesian approach.
+
+A balanced approach may be acknowledging the existence of both subjective and objective (i.e. physical) probabilities.
+When building a model, we occasionally use the Bayesian approach,
+of which frequentist modeling can be seen as a limiting case of a very sharp prior.
+When benchmarking a model, the frequentist perspective is the most natural.
+
+\subsection{More assumptions commonly used in machine learning}
+
+Most of the time, we assume that the samples in one dataset are conditionally independent.
+That's to say.
+\begin{equation}
+    p(\mathcal{D} | \theta) = \prod_{x \in \mathcal{D}} p(x | \theta).
+\end{equation}
+Note that here additivity does not apply,
+because having a dataset $\mathcal{D}$ means 
+having $x_1$ \emph{and} $x_2$ \emph{and} $x_3$\dots in $\mathcal{D}$,
+not $x_1$ \emph{or} $x_2$ \emph{or} $x_3$\dots in $\mathcal{D}$.
+This means \eqref{eq:bayesian} can be written as 
+\begin{equation}
+    p(\theta | \mathcal{D}) = \frac{
+        \prod_{x \in \mathcal{D}} p(x | \theta) p(\theta)
+    }{
+        \sum_{\theta'} \prod_{x \in \mathcal{D}} p(x | \theta') p(\theta')
+    }.
+    \label{eq:bayesian-ml}
+\end{equation}
+
+One complication in Bayesian inference is when $x$ in $p(x | \theta)$ is actually a feature-label pair $(x, y)$.
+The problem is where to put the feature: should we focus on $p(x, y | \theta)$ (the \concept{generative model}),
+or should we focus on $p(y | x, \theta)$ (the \concept{discriminative model})?
+
+Calculating the posterior of a generative model is easy:
+just replace $x$ in \eqref{eq:bayesian-ml} by $(x, y)$, and we get 
+\begin{equation}
+    p(\theta | \mathcal{D}) = \frac{
+        \prod_{(x, y) \in \mathcal{D}} p(x, y | \theta) p(\theta)
+    }{
+        \sum_{\theta'} \prod_{(x, y) \in \mathcal{D}} p(x, y | \theta') p(\theta')
+    }.
+    \label{eq:generative-bayesian}
+\end{equation}
+
+On the other hand, calculating the posterior of a discriminative model is theoretically more complicated.
+This is partly because of information loss by abandoning some information in $p(x, y | \theta)$:
+we have 
+\begin{equation}
+    p(y | \theta, x) = \frac{p(x, y | \theta)}{p(x | \theta)} = \frac{p(x, y | \theta)}{\sum_{y'} p(x, y' | \theta)},
+\end{equation}
+which means a generative model can also be used as a discriminative model,
+though the performance is likely bad.
+However, it is not possible to reconstruct $p(x | \theta)$ from $p(y | \theta, x)$,
+the reason of which is quite intuitive:
+in the latter we simply never let $x$ change randomly.
+Just like how we need both $p(x | \theta)$ and $p(\theta)$,
+we need both $p(y | \theta, x)$ and $p(x | \theta)$ to reconstruct $p(x, y | \theta)$ to exactly calculate the posterior.
+Actually, we can repeat the argument in \prettyref{sec:constraints} and show that 
+the three probabilistic distributions in the factorization 
+\begin{equation}
+    p(x, y, \theta) = p(y | \theta, x) p(x | \theta) p (\theta)
+    \label{eq:theta-to-x-to-y}
+\end{equation}
+can be arbitrary functions provided that each of the three satisfy the usual axioms of probability.
+Therefore nothing can be known about $p(x | \theta)$ if we only have $p(y | \theta, x)$.
+
+Typically, we just assume that $x$ is independent from $\theta$ in a discriminative model.
+This means 
+\begin{equation}
+    p(x, y | \theta) = p(y | \theta, x) p(x | \theta) \stackrel{!}{\approx} p(y | \theta, x) p(x),
+    \label{eq:generative-factorization}
+\end{equation}
+and thus in \eqref{eq:generative-bayesian},
+we can extract a $p(x)$ factor from $p(x, y | \theta)$ in both the numerator and the denominator,
+and they cancel each other. Therefore, for a discriminative model in which sampling of $x$ is guaranteed to be largely independent to $\theta$,
+\begin{equation}
+    p(\theta | \mathcal{D}) \approx \frac{
+        \prod_{(x, y) \in \mathcal{D}} p(y | x, \theta) p(\theta)
+    }{
+        \sum_{\theta'} \prod_{(x, y) \in \mathcal{D}} p(y | x, \theta') p(\theta')
+    }.
+    \label{eq:discriminative-bayesian}
+\end{equation}
+
+We note that an illustration of the distinction between generative models and discriminative models 
+does not necessarily involve the Bayesian framework.
+Indeed the factorization \eqref{eq:theta-to-x-to-y} can be understood in the frequentist framework as well
+by ignoring the $p(\theta)$ factor and treat $\theta$ as a fixed parameter.
+MAP of \eqref{eq:discriminative-bayesian} is equivalent to MLE in frequentist regression
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \prod_{(x, y) \in \mathcal{D}} p_\theta(x, y) \approx \argmax_\theta \prod_{(x, y) \in \mathcal{D}} p_\theta(y | x).
+\end{equation}
+with regularization, because the dependence of $p_\theta(x)$ on $\theta$ is assumed to be weak.
+
+There are cases in which $x$ \emph{does} depend on $\theta$.
+In practice, this typically means $x$ is not in control when the training dataset is generated,
+which means one of the follows:
+when $\theta$ has a clear physical meaning and it clearly dictates likely values of $x$;
+when $x$ is not explicitly given but is a latent variable,
+and we have allowed the latent space to depend on $\theta$
+(this can be seen as the unsupervised version of the first case);
+in semi-supervised generative tasks (tasks with both labeled and unlabeled data),
+in which we have no idea why some labels and not others are missing.
+The assumption that $x$ does not depend on $\theta$ is typically a consequence of intentional balancing when the training dataset is generated and should not be taken for granted.
+When $x$ does depend on $\theta$, and hence a generative model is needed,
+typically we utilize \eqref{eq:generative-factorization} and divide the model 
+into a ``sampling'' i.e. generative part which models $p(x | \theta)$,
+and a discriminative part which models $p(y | x, \theta)$,
+and the two parts are trained together using \eqref{eq:generative-bayesian},
+which now reads 
+\begin{equation}
+    p(\theta | \mathcal{D}) \approx \frac{
+        \prod_{(x, y) \in \mathcal{D}} p(y | x, \theta) p(x | \theta) p(\theta)
+    }{
+        \sum_{\theta'} \prod_{(x, y) \in \mathcal{D}} p(y | x, \theta') p(x | \theta') p(\theta')
+    },
+\end{equation}
+with possible adjustments to accommodate various tasks.
 
 \section{Bayesian regression}
 
@@ -212,6 +494,45 @@ Basically it flips the variables one by one following a \emph{random} order
 
 If we know the noise distribution in an image,
 sampling of that distribution can \emph{denoise} it:
-just set the initial state of the simulation to be the noisy image
+just set the initial state of the simulation to be the noisy image,
+and as it's much less likely for pixels that are a part of the signal to flip,
+after averaging the configurations we get once the sampling converges,
+we get the image with reduced noise.
+
+\section{Variational estimation}
+
+To avoid often time consuming sampling,
+various methodologies have been invented to calculate quantities related to the probabilistic distribution without sampling.
+
+The simplest is the \concept{mean-field variational inference}.
+It's a replica of the mean-field approximation in statistical physics,
+and gives us an estimation of the means of each variable.
+
+\section{Variational inference}
+
+Suppose $x$ is generated from a continuous variable $\theta$ and a discreet variable $z$.
+$z$ also may have dependence on $\theta$.
+
+The entropy term in ELBO makes the parameter spread out to avoid overfitting?
+
+It seems the version of ELBO derivation in arXiv 1312.6114 
+is based on a (quasi-)frequentist perspective.
+It's a maximal likelihood estimation. 
+
+\section{Generative models}
+
+A generative model models $p(x, y | \theta)$,
+and not $p(y | x, \theta)$ (the latter being a regression model, i.e. a discriminative model).
+In theory, we can derive a generative model from a discriminative model via 
+\begin{equation}
+    p(y | x, \theta) = \frac{p(x, y | \theta)}{p(x | \theta)}  ,
+\end{equation}
+where the denominator is 
+\begin{equation}
+    p(x | \theta) = \sum_y p(x, y | \theta).
+\end{equation}
+Note that the equations make sense in frequentist statistics,
+as long as we take $\theta$ to be fixed (but unknown) parameters.
+
 
 \end{document}
