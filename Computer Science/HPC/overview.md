@@ -259,9 +259,7 @@ A GPU may be designed for scientific computing only,
 which only contains the computational cores,
 while a truly graphic GPU contains specialized graphic units.
 These units are to make the rendering pipeline faster,
-aiming to replace time-consuming steps of the rendering pipeline.
-
-The rendering pipeline is 
+aiming to replace time-consuming steps of [the rendering pipeline](../CUDA/gpu-overview.md).
 
 # Languages for HPC
 

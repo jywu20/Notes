@@ -351,6 +351,23 @@ When building a model, we occasionally use the Bayesian approach,
 of which frequentist modeling can be seen as a limiting case of a very sharp prior.
 When benchmarking a model, the frequentist perspective is the most natural.
 
+One detail about model building in frequentist statistics.
+In frequentist statistics we also utilize the Bayesian formula,
+although $\theta$ does not appear as a random variable.
+Note, however, that $p_{\theta}(A | B)$ can be mapped to $p(A | B, \theta)$ in Bayesian statistics,
+and $p_\theta(A)$ to $p(A | \theta)$:
+this is because 
+\begin{equation}
+    p(A | B, \theta) = \frac{p(A B | \theta)}{p(B | \theta)} \Rightarrow
+    p_\theta(A | B) = \frac{p_\theta(A B)}{p_\theta(B)},
+\end{equation}
+and therefore all equations involving the Bayesian formula in frequentist statistics
+can be appropriately conceived in the Bayesian framework.
+Following this line of thinking, the condition \eqref{eq:data-independence} has a clear frequentist interpretation:
+\begin{equation}
+    p_\theta(\mathcal{D}, \mathcal{D}') = p_\theta(\mathcal{D}) p_\theta(\mathcal{D}').
+\end{equation}
+
 \subsection{More assumptions commonly used in machine learning}
 
 Most of the time, we assume that the samples in one dataset are conditionally independent.
@@ -460,7 +477,16 @@ which now reads
         \sum_{\theta'} \prod_{(x, y) \in \mathcal{D}} p(y | x, \theta') p(x | \theta') p(\theta')
     },
 \end{equation}
-with possible adjustments to accommodate various tasks.
+with possible adjustments to accommodate various tasks
+(for instance, when $\mathcal{D}$ contains both labeled and unlabeled data,
+we need to multiply the posterior of the generative part of the model to it).
+
+A final remark on all the derivation above.
+The derivations above have \emph{never} assumed that ``$x$ is the cause of $y$'':
+all equations are valid if the causal relation between $x$ and $y$ is not simplistic.
+The place where we assume any causal relation is when we assume that
+$p(x | \theta)$ has a relatively simple expression,
+without the need of integrating out $y$ in some joint distribution.
 
 \section{Bayesian regression}
 
@@ -519,20 +545,6 @@ It seems the version of ELBO derivation in arXiv 1312.6114
 is based on a (quasi-)frequentist perspective.
 It's a maximal likelihood estimation. 
 
-\section{Generative models}
-
-A generative model models $p(x, y | \theta)$,
-and not $p(y | x, \theta)$ (the latter being a regression model, i.e. a discriminative model).
-In theory, we can derive a generative model from a discriminative model via 
-\begin{equation}
-    p(y | x, \theta) = \frac{p(x, y | \theta)}{p(x | \theta)}  ,
-\end{equation}
-where the denominator is 
-\begin{equation}
-    p(x | \theta) = \sum_y p(x, y | \theta).
-\end{equation}
-Note that the equations make sense in frequentist statistics,
-as long as we take $\theta$ to be fixed (but unknown) parameters.
 
 
 \end{document}
