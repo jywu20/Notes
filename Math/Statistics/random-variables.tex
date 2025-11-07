@@ -51,6 +51,7 @@
 \DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\expect}{\mathbb{E}}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -154,93 +155,112 @@
 \newcommand{\fn}{F_{\text{N}}}
 \newcommand{\ff}{F_{\text{f}}}
 
-\title{Discrete Markovian processes}
+\title{Random variables}
 \author{Jinyuan Wu}
 
 \begin{document}
 
 \maketitle
 
-\section{Notations}
+\section{Poisson distribution and Poisson process}
 
-Suppose $X_t$ is the state of the system at time $t$.
-The transition probability 
+A Poisson process is a Markovian process, in which we have a random variable $N(t)$
+--- the cumulated number of events that have already happened ---
+and the probabilistic distribution is 
 \begin{equation}
-    p(X_{t+1} = j | X_{t} = i) \eqqcolon p(i \to j) = p_{ij}.
+    P(\text{$N+1$ at $t + \dd{t}$} | \text{$N$ at $t$}) = \lambda \dd{t}, \quad 
+    P(\text{$N$ at $t + \dd{t}$} | \text{$N$ at $t$}) = 1 - \lambda \dd{t},
+    \label{eq:jump}
 \end{equation}
-Note that the order of $i$ and $j$ is the opposite of the order in physics.
-
-An \concept{absorbing state} is a state which you can't leave.
-
-\section{Absorption probability}
-
-Given an absorbing state $s$,
-we denote the probability for the system to start from $i$ and end at absorbing state $s$ as $a_i$.
-By definition,
+and for $n \geq 2$,
 \begin{equation}
-    a_i = \lim_{t \to \infty} p(X_t = s | X_0 = i).
+    P(\text{$N+n$ at $t + \dd{t}$} | \text{$N$ at $t$}) = 0.
+    \label{eq:no-double-jump}
 \end{equation}
-There is actually no need for the initial time to be $t = 0$.
-That's to say, we also have 
-\begin{equation}
-    a_i = \lim_{t \to \infty} p(X_t = s | X_1 = i).
-\end{equation}
+We also assume that there is a starting point --- typically set to be $t = 0$ ---
+where we're sure that $N$ can only be zero.
 
-Obviously, by taking the $t \to \infty$ limit of the equation
-\[
+The Poisson process being Markovian means 
+\begin{equation}
     \begin{aligned}
-        p(X_{t} = s | X_0 = i) &=  \sum_i p(X_t = s | X_1 = j) p(X_1 = j | X_0 = i) \\
-        &= \sum_i p(X_t = s | X_1 = j)  p_{ij},
+        P(\text{$N+1$ at $t + \dd{t}$}) &= P(\text{$N+1$ at $t + \dd{t}$} | \text{$N+1$ at $t$}) P(\text{$N+1$ at $t$}) \\
+        &+ P(\text{$N+1$ at $t + \dd{t}$} | \text{$N$ at $t$}) P(\text{$N$ at $t$}),
     \end{aligned}
-\]
-we get 
-\begin{equation}
-    a_i = \sum_{j} p_{ij} a_j.
 \end{equation}
-This, together with the conditions that for all absorbing states,
+which immediately leads to the differential equation system 
 \begin{equation}
-    a_i = \begin{cases}
-        1, & i = s, \\
-        0, & i \neq s,
-    \end{cases}
-    \label{eq:absorption-probability-boundary}
+    \dv{t} P(\text{$N+1$ at $t$}) = \lambda (P(\text{$N$ at $t$}) - P(\text{$N+1$ at $t$})),
 \end{equation}
-gives us a system of equations that can be solved to find all $a_i$'s.
-Note that $p(X_t = s | X_0 = i)$ is \emph{not} the probability for the system to go to $s$ using exactly $t$ steps:
-instead, it's the sum of the probabilities for the system to arrive at $s$ in 0, 1, 2, \dots, $s$ steps.
-Note that there may be more than one absorbing state,
-and by shifting $s$ in \eqref{eq:absorption-probability-boundary} we can calculate
-the probability of each state to be stuck in different absorbing states.
+or we can also write 
+\begin{equation}
+    \dv{t} P(N(t) = k + 1) = \lambda (P(N(t) = k) - P(N(t) = k + 1)).
+\end{equation}
+The equation for $k = 0$ is 
+\begin{equation}
+    \dv{t} P(N(t) = 0) = - \lambda P(N(t) = 0),
+\end{equation}
+because there is no ``income'' term.
 
-\section{Expected absorption time}
-
-Now suppose $\mu_i$ is the expected total time it takes to reach absorption.
-Following the same method in the last section, we have 
-\[
+The equation system can be solved directly.
+Alternatively it can be solved using combinatorics.
+Dividing the time span from $0$ to $t$ into $t / \Delta t$ slices,
+we note that in each slice, because of \eqref{eq:no-double-jump},
+the cumulated number can only jump by one with the probability of $\lambda \Delta t$,
+or stay the same, with the probability of $1 - \lambda \Delta t$.
+This is a binomial distribution, and we have
+\begin{equation}
     \begin{aligned}
-        \mu_i &= \sum_{n \geq 1} n p(\text{it takes $n$ steps from $i$ to $s$}) \\
-        &= \sum_j \sum_{n \geq 1} (n - 1 + 1) p(\text{it takes $n-1$ steps from $j$ to $s$}) p_{ij} \\
-        &= \sum_{j} p_{ij} \sum_{n \geq 0} (n + 1) p(\text{it takes $n$ steps from $j$ to $s$}) \\
-        &= \sum_j p_{ij} \mu_j + \sum_j p_{ij} \sum_{n \geq 0}  p(\text{it takes $n$ steps from $j$ to $s$}) ,
+        P(N(t) = k) &\approx \binom{t / \Delta t}{k} (\lambda \Delta t)^k (1 - \lambda \Delta t)^{t / \Delta t - k} \\
+        &= \underbrace{\frac{(t / \Delta t)!}{k! (t / \Delta t - k)!} \cdot \frac{1}{(t / \Delta t)^k}}_{\to 1 / k!} (\lambda t)^k \underbrace{(1 - \lambda \Delta t)^{t / \Delta t - k}}_{\to \ee^{-\lambda t}} \quad \text{as $\Delta t \to 0$}  \\
+        &= \frac{(\lambda t)^k}{k!} \ee^{- \lambda t}.
     \end{aligned}
-\]
-and we note that 
-\[
-    \sum_{j} p_{ij} \sum_{n \geq 0}  p(\text{it takes $n$ steps from $j$ to $s$}) a_j = \sum_{j} p_{ij} a_j = a_i,
-\]
-and thus 
-\begin{equation}
-    \mu_i = \sum_j p_{ij} \mu_j + a_i.
 \end{equation}
 
-We can also sum over all absorbing states, which leads to 
+The distribution 
 \begin{equation}
-    \mu_i = \sum_{j} p_{ij} \mu_j + 1.
+    N(t) \sim \mathrm{Poisson}(\lambda t), \quad 
+    P(N(t) = k) = \frac{(\lambda t)^k}{k!} \ee^{- \lambda t}
+    \label{eq:poisson}
 \end{equation}
+is therefore known as the \concept{Poisson distribution}.
+In physics, it can be seen as a incoherent effective theory of 
+processes described by Fermi golden rule.
 
-We emphasize that $i$, $j$ etc. in the equation refer to the \emph{initial} states
-from which it takes $\mu_i$ steps to reach an absorbing state.aaaaa
-In both absorption probability calculation and expected absorption time calculation,
-there is no need to ``set'' the initial state.
+Another question is the probabilistic distribution of the time in which nothing happens,
+that is, $P(N(t + t_0) = k | N(t_0) = k)$.
+From time translational symmetry and independence between events
+(that's to say, we can freely add and subtract a constant from $N$),
+we know this equals to $P(N(t) = 0 | N(0) = 0)$,
+which is the same as fixing $N(0) = 0$ and evaluating $P(N(t) = 0)$,
+which we already know: it is 
+\begin{equation}
+    P(N(t) = 0) = \ee^{-\lambda t}.
+\end{equation}
+If we use $T$ to refer to the time between two events, this means
+\begin{equation}
+    P(T > t) = \ee^{- \lambda t}.
+\end{equation}
+The temporal probabilistic distribution function therefore is 
+\begin{equation}
+    P(t < T < t + \dd{t}) = - \dv{P(T > t)}{t} \dd{t} = \lambda \ee^{- \lambda t} \dd{t} .
+    \label{eq:temporal}
+\end{equation}
+From this we find
+\begin{equation}
+    \expect[T] = \int_{t > 0} t P(t < T < t + \dd{t}) = \frac{1}{\lambda}
+\end{equation}
+and similarly
+\begin{equation}
+    \mathrm{Var}[T] = \expect[T^2] - \expect[T]^2 = \frac{1}{\lambda^2}.
+\end{equation}
+This means the average waiting time to see one more event is $1 / \lambda$
+(as the waiting time can be defined for $P(N(t + t_0) = k | N(t_0) = k)$
+and the calculation is identical).
+
+It's straightforward to verify the correctness of 
+\eqref{eq:jump} and \eqref{eq:no-double-jump} from \eqref{eq:poisson}.
+Further, given the Markovian property and independence between events,
+from \eqref{eq:temporal} we can derive \eqref{eq:jump} and hence \eqref{eq:no-double-jump}.
+
 
 \end{document}
