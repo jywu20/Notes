@@ -166,7 +166,8 @@
 
 In Bayesian inference, unlike in the frequentist framework,
 parameters in a model are considered to be random variables themselves.
-We assume that $p(x | \theta)$ has a known form,
+We assume that $p(x | \theta)$ has a known form
+(see discussions in \prettyref{sec:frequentist-comparison}),
 and we calculate the a posteriori distribution of $\theta$ by 
 \begin{equation}
     p(\theta | \mathcal{D}) = \frac{p(\mathcal{D} | \theta) p(\theta)}{
@@ -314,7 +315,7 @@ and therefore the main constraints are probably things like
 which is totally expected if we narrow the sample space to its intersection with $C$.
 Finding independently variable functions (like $p(\theta)$ and $p(\mathcal{D} | \theta)$) is more tedious but involves nothing fundamentally different.
 
-\subsection{Comparison with the frequentist school}
+\subsection{Comparison with the frequentist school}\label{sec:frequentist-comparison}
 
 We should emphasize that probability in pure Bayesian statistics is \emph{subjective}.
 What we're doing is to utilize our intuitions to measure how certain we can be about things,
@@ -359,7 +360,13 @@ and $p_\theta(A)$ to $p(A | \theta)$:
 this is because 
 \begin{equation}
     p(A | B, \theta) = \frac{p(A B | \theta)}{p(B | \theta)} \Rightarrow
-    p_\theta(A | B) = \frac{p_\theta(A B)}{p_\theta(B)},
+    p_\theta(A | B) = \frac{p_\theta(A B)}{p_\theta(B)}
+    \label{eq:bayesian-frequentist}
+\end{equation}
+and thus 
+\begin{equation}
+    p(B | A, \theta) = \frac{P(A | B, \theta)}{P(A | \theta)} P (B | \theta) 
+    \Rightarrow p_\theta(B | A) = \frac{p_\theta(A | B)}{p_\theta(A)} p_\theta(B),
 \end{equation}
 and therefore all equations involving the Bayesian formula in frequentist statistics
 can be appropriately conceived in the Bayesian framework:
@@ -375,6 +382,23 @@ A natural question then is, what's $p(\theta | \dots)$ in the frequentist framew
 It is generally hard to answer (except as a loss function for optimization in MAP-as-MLE-with-regularization), but asymptotically,
 we have theorems like the Bernstein-von Mises theorem showing 
 that a posteriori probabilities in Bayesian statistics are asymptotically correct from a frequentist point of view.
+
+One particular benefit of the observation \eqref{eq:bayesian-frequentist}
+is that it enables us to incorporate the action of making hypotheses when building a model into probabilistic inference.
+Suppose I stipulate that $p(A | B, \theta)$ has to take a particular form.
+We can understand this as 
+\begin{equation}
+    p_H(A | B, \theta) \coloneqq p(A | B, \theta, H).
+\end{equation}
+Other quantities like $p(A | \theta)$ can be similarly defined as 
+$p_H(A | \theta)$ or $p(A | \theta, H)$.
+Now from \eqref{eq:bayesian-frequentist}, we are confident that we can treat $p_H(A | \theta)$ as $p(A | \theta)$,
+and this explains why we can replace $p(\theta | \mathcal{D})$ and $p(\theta)$ in \eqref{eq:bayesian}
+by $p_H(\theta | \mathcal{D})$ and $p_H(\theta)$,
+which justifies stipulating forms for them.
+This also gives us a way to estimate how likely $H$ is,
+in the same way we calculate the a posteriori distribution of $\theta$,
+which can be seen as a way to check how reasonable $H$ is.
 
 \subsection{More assumptions commonly used in machine learning}
 
