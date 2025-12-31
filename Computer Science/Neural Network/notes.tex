@@ -16,6 +16,7 @@
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
+\usepackage{ulem}
 \usepackage[version=4]{mhchem}
 \usepackage{tikz}
 \usepackage{xcolor}
@@ -244,7 +245,8 @@ What proliferates in modern machine learning belongs to a small subset of these 
 What set them apart from ``traditional'' neural network algorithms
 (i.e. algorithms before 2010s) include several aspects.
 
-\paragraph*{How they make predications}
+\subsection{How they make predications}
+
 All modern neural networks are feedforward. That's to say -- 
 \begin{itemize}
     \item The output of a neuron is a real number%
@@ -285,7 +287,8 @@ All modern neural networks are feedforward. That's to say --
     this further render the neuron-based representation of modern neural networks somehow unnatural.
 \end{itemize}
 
-\paragraph*{Universal approximation}
+\subsection{Universal approximation}
+
 A modern neural network can approximate any function that is ``well-behaved''.
 This conclusion -- actually a family of conclusions of this type --
 is known as the \concept{Universal Approxmation Theorem(s)}.
@@ -319,7 +322,7 @@ For instance we may want to know the grammatical complexity class a Transformer 
 We finally note that universal approximation is about \emph{existence}.
 How to train a model is another problem (also see \prettyref{sec:theoretical-aspects}). Below we outline the current training paradigm.
 
-\paragraph*{Training}
+\subsection{Training}
 
 Modern neural networks are all trained by \concept{backpropagation}.
 Therefore they are also known as \concept{BP neural networks}.
@@ -339,7 +342,7 @@ which enables parallelism and avoids overfitting,
 because if samples within a batch are randomly chosen,
 then all kinds of noises are seen by the model.
 
-\paragraph*{Deep learning}
+\subsection{Deep learning}
 Modern neural networks are usually \emph{deep}:
 they are much larger than traditional models and usually contain multiple layers,
 and are data thirsty.
@@ -355,7 +358,7 @@ In this note, the term \emph{modern neural network} and \emph{deep learning mode
 
 \section{``Tensors'' and PyTorch}\label{sec:tensor}
 
-\paragraph*{Motivation: ``variables'' in algebra and calculus}
+\subsection{Motivation: ``variables'' in algebra and calculus}
 In doing algebra and calculus, it is handy to not explicitly specify the input and output of a function, but do the follows:
 we define some \emph{independent variables} like $x, y, z$,
 and then write $w = f(x, y, z)$, and say that ``$w$ is a function of $x, y, z$''.
@@ -410,7 +413,7 @@ we can make \shortcode{w = f(x, y, z)} to mean $w = f(x, y, z)$ in the algebraic
 A library doing this is essentially making \concept{computational graphs}
 -- which is the topic discussed below.
 
-\paragraph*{Introducing tensors}
+\subsection{Introducing tensors}
 A \concept{tensor}, in the context of deep learning,
 is just a multidimensional \emph{variable} in function definitions in everyday algebra and calculus:
 when we write \shortcode{a = b + c},
@@ -498,7 +501,7 @@ not working with an embedded DSL.
 Computational graphs in PyTorch also do not support taking second-order derivatives:
 therefore optimization can only rely on the first-order derivative of the model with respect to the model parameters.
 
-\paragraph*{Defining a module}
+\subsection{Defining a module}
 A model, as is said above, is a function that takes in a tensor (by convention, the first dimension being the batch dimension) and outputs a tensor,
 and it contains many learnable parameters.
 A model can then be put into another model,
@@ -555,7 +558,7 @@ class LinearReluStack(nn.Sequential):
         )
 \end{lstlisting}
 
-\paragraph*{Hardware acceleration}
+\subsection{Hardware acceleration}
 Since as is shown in \eqref{eq:mlp}, a neural network model involves a lot of linear algebra operations,
 both prediction and training can be drastically accelerated by GPUs.
 PyTorch tensors and \shortcode{nn.Module} objects can be sent to GPUs
@@ -569,6 +572,8 @@ modern neural networks are not conventional statistical models:
 their inductive biases are not explicitly endowed to them by making assumptions about the statistical structure of the problem.
 Still by treating the whole neural network model as a whole as a statistical model,
 we can have some insights on the training target. 
+
+\subsection{The two schools}
 
 Machine learning, from the perspective of statistics, is parameter estimation.
 There are two main school of thoughts in parameter estimation.
@@ -617,16 +622,58 @@ Since the $\dd{\theta}$ factors on both sides of \eqref{eq:bayesian}, we get
 \begin{equation}
     p(\theta | x) = \frac{p(\theta) p(x | \theta)}{\int p(\theta') p(x | \theta') \dd{\theta'}}.
 \end{equation}
+
+\subsection{Independent sampling}
+
 The prior can be viewed as the $p(\theta | x)$ from last inference,
 provided that the sample used in the last inference and the sample used in this inference
 are independent to each other.
 Indeed, we can prove that 
 \begin{equation}
     p(\theta | x_2, x_1) = \frac{p(\theta | x_1)}{p(x_2)} p(x_2 | \theta, x_1),
+    \label{eq:two-samples}
 \end{equation}
-if and only if $p(x_1) p(x_2) = p(x_1 x_2)$,
-and therefore if the prior if determined by past experiences (i.e. $p(\theta | x_1)$),
-then the LHS of \eqref{eq:bayesian} is determined by both past experiences and this sample.
+if and only if 
+\begin{equation}
+    p(x_1) p(x_2) = p(x_1 x_2)
+    \label{eq:independence}
+\end{equation}
+and therefore if the prior is determined by past experiences (i.e. $p(\theta | x_1)$),
+then the LHS of \eqref{eq:bayesian} is determined by past experiences \emph{completely summarized by the prior distribution} (i.e. $p(x_2 | \theta, x_1)$) and this sample.
+
+Therefore, under the independence assumption \eqref{eq:independence}, 
+all we need to build a model is the prior distribution $p(\theta)$ and the likelihood function $p(x | \theta)$.
+The posteriori distribution $p(\theta | x)$ is then determined by \eqref{eq:bayesian},
+and all other probabilistic inferences, like $p(\theta | x_1, x_2)$, can be made based on these quantities plus \eqref{eq:independence}.
+For instance the a posteriori probabilistic distribution of $\theta$ after seeing a whole dataset is, by applying \eqref{eq:two-samples} repeatedly,
+\begin{equation}
+    p(\theta | \mathcal{D}) =  \frac{
+        \prod_{x \in \mathcal{D}} p(x |\theta) p(\theta)
+    }{
+        \underbrace{\sum_{\theta'} \prod_{x \in \mathcal{D}} p(x | \theta') p(\theta')}_{p(\mathcal{D})}
+    }.
+    \label{eq:dataset-posterior}
+\end{equation}
+Further, the axioms of probability do not impose additional constraints on the relation between $p(\theta)$ and $p(x | \theta)$.
+Therefore we are allowed to choose the two functions freely,
+provided that the positivity, unitarity etc. are satisfied.%
+\footnote{
+    See \href{../../Math/Statistics/bayesian.pdf}{this note} for more discussions.
+    The same note also discusses how $p (x | y, \theta)$ can be understood as $p_\theta(x | y)$ from a frequentist perspective:
+    this substitution does not invalidate any probabilistic formula.
+    Thus $p_\theta(x | y) = p_\theta(xy) / p_\theta(y)$, for instance.
+    These trivial but important lemmas explain why in machine learning,
+    people often feel free to switch between frequentist and Bayesian statistics,
+    and also never explicitly write the form of $p(\theta | x_1, x_2)$.
+    We're going to see a lot of these in the following discussions.
+
+    Another thing to note is $\theta$ in theory can also include ``hard'' priors, 
+    like ``the distribution of $y$ should follow a rough pattern parameterized by the soft pare of $\theta$'',
+    although these hard priors are typically not updated.
+    We discuss this -- and why these hypotheses can be not updated -- in the note linked above as well.
+}
+
+\subsection{Parametric estimation and the loss function}
 
 The sum or integral in \eqref{eq:bayesian} usually cannot be evaluated analytically,
 and techniques like Monte Carlo sampling have to be used.
@@ -637,6 +684,9 @@ and this results in the \concept{maximum a posteriori estimation (MAP)}
     \hat{\theta} = \argmax_\theta p(\theta | x) = \argmax_\theta (\log p(x | \theta) + \log p(\theta)).
     \label{eq:map}
 \end{equation}
+Note that here $x$ can also be the dataset $\mathcal{D}$ in \eqref{eq:dataset-posterior}.
+Given the form of \eqref{eq:dataset-posterior},
+the loss function should be additive with respect to different data points.
 
 When the prior is trivial, which means it's the same for all $\theta$,
 MAP reduces to MLE \eqref{eq:mle}.
@@ -667,8 +717,9 @@ Therefore, it seems that MAP in Bayesian statistics (with or without a non-trivi
 is equivalent to MLE in frequentist statistics (with or without regularization).
 Since MAP is just a specific case of Bayesian statistics,
 it seems to follow that frequentist parameter estimation can be seen as a subset of Bayesian parameter estimation.
+
 There are actually more correspondences between the two.
-The \emph{estimated} parameter is a random variable,
+The \emph{estimated} parameter is a random variable (because the input sample is a random variable),
 from the perspective of frequentists,
 and it gets its value \emph{after} a sampling.
 The frequentist distribution of the parameter calculated on a randomly chosen sample
@@ -683,9 +734,34 @@ So when the forms of $p_\theta(x)$ and $\norm*{\theta}$ are given
 we have already gotten an optimization target function.
 Basically this is how loss functions are derived in \prettyref{chap:loss}.
 
+\subsection{Modules of a model}
+
+$p(x | \theta)$ is a rather vague notion because what's in $x$ and $\theta$ is not clear.
+In supervised learning, for instance,
+what we want a neural network to know is actually $p(y | x, \theta)$,
+while since $(x, y)$ can be seen as a single data point,
+by replacing $x$ with $(x, y)$ in the discussions above,
+$p(x | \theta)$ becomes $p(x, y | \theta)$.
+So there is an additional Bayesian relation to invoke: 
+\begin{equation}
+    p_\theta(x, y) = p_\theta(y | x) p_\theta(x),
+\end{equation}
+or in other words,
+\begin{equation}
+    p(x, y | \theta) = p(y | x, \theta) p(x | \theta).
+\end{equation}
+That's to say, if we're being serious, we can divide the model into two parts,
+a generative part $p(x | \theta)$ and a discriminative part $p(y | x, \theta)$,
+each represented by a neural network,
+and the two should be trained together using a single loss function.
+
+In real regression problems typically we just ignore dependence between $x$ and $\theta$.
+But the above example still illustrates why sometimes a model may contain several subparts
+trained together.
+
 \section{Training}
 
-\paragraph*{The PyTorch training API}
+\subsection{The PyTorch training API}
 As is mentioned in \prettyref{sec:modern-network}, deep learning models are to be trained by gradient-based optimization,
 the simplest being the \concept{gradient descent}
 \begin{equation}
@@ -739,7 +815,7 @@ both of which \emph{have} an additional dimension at the first, i.e. the batch d
 It is encouraged to define subclasses of \shortcode{Dataset}
 for different types of training datasets.
 
-\paragraph*{Batching in the perspective of parameter estimation}
+\subsection{Batching from the perspective of parameter estimation}
 It is clear that when we have multiple batches -- and not a single, giant batch -- and use \emph{different} batches in different iterations of \eqref{eq:sgd-example},
 we are \emph{not} doing any of the parameter estimations in \prettyref{sec:framework.statistics},
 the latter requires the training dataset to be the same in the training process.
@@ -821,58 +897,137 @@ Probably, but no one really knows what it is.
 And finally, note that LLMs are probably not that domain general, after all,
 considering that devils hide in details of fine tuning and minor modifications of the model architecture.
 
-\chapter{Derivation of loss functions}\label{chap:loss}
+\section{Summary and notations}
 
-\section{Regression}
+\begin{itemize}
+    \item Modern neural networks consist of the follows: matrix multiplication, element-wise activation functions, and occasionally, element-wise nonlinear operations involving \emph{two} inputs.
+    The last, by universal approximation theorem, can be mimicked by the first two.
 
-\subsection{Overall theory}
+    \item The loss function is to be derived from the MAP 
+    \begin{equation}
+        \begin{aligned}
+            \hat{\theta} &= \argmax_\theta \log p(\theta | \mathcal{D}) = \argmax_\theta \log \frac{\prod_{x \in \mathcal{D}} p(x | \theta) p(\theta)}{p(\mathcal{D})} \\
+            &= \argmax_\theta \big(
+                \sum_{x \in \mathcal{D}} \log p(x | \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}
+            \big).
+        \end{aligned}
+    \end{equation}
+    It can also be understood as MLE with regularization.
 
-Let $\theta$ be the collection of all parameters in the model.
-The relation between the input $x$ and the output $y$ generally takes the following form
+    \item The $x$ and $\theta$ in $p(x | \theta)$ may be decomposed into fields and $p(x | \theta)$ may be factorized into several models.
+    This can be implemented using \shortcode{torch.nn.Module},
+    which registers parameters in it defined by \shortcode{self.x = y}.
+    In doing the derivations, $p(A | B, \theta)$ and $p_\theta(A | B)$ can be used interchangeably,
+    and all probabilistic equalities like Bayesian formula all hold.
+
+    \item Training of neural network models is typically done by gradient-based methods
+    (which are \emph{not} based on e.g. $\grad \grad$).
+    This is implemented in PyTorch by \shortcode{tensor.backward()}:
+    a tensor is a multidimensional array that remembers how it was calculated using other tensors.
+    In PyTorch, \shortcode{tensor.grad} stores the derivative of the last tensor on which \shortcode{backward} is called with respect to \shortcode{tensor}.
+\end{itemize}
+
+\chapter{Tasks, loss functions, and model architectures}\label{chap:loss}
+
+\section{Supervised learning}
+
+\subsection{Probabilistic theoretic structure of the problem}
+
+Suppose our dataset is made of pairs of labels $y$ and features $x$.
+People with a strong background in physics may tend to model the relation between $x$ and $y$ as 
 \begin{equation}
-    y = f(x; \theta) + \epsilon(x),
+    p(\theta | x, y) = \frac{p(y | x, \theta) p(x | \theta) p(\theta)}{p(x, y)} 
+\end{equation}
+and then give $p(\theta)$, $p(x | \theta)$ and $p(y | x, \theta)$ explicit forms.
+The problem is that if $\theta$ are parameters in a \emph{physical} process,
+then $x$ \emph{of course} depends on $\theta$.
+For instance we may imagine that some scenarios are simply easier for experimentalists to handle
+so we have more data collected in these scenarios.
+Now the parametric estimation problem takes the form of 
+\begin{equation}
+    \begin{aligned}
+        \hat{\theta} &= \argmax_\theta \sum_{x, y} p(\theta | x, y) \\
+        &= \argmax_\theta (\log p(\theta) + \sum_{x, y} \underbrace{\log p(x | \theta)}_{\text{???}} + \log p(y | x, \theta)) .
+    \end{aligned}
+\end{equation}
+
+A more serious treatment of the problem, when $x$ and $\theta$ do show have strong correlation,
+will be discussed when we deal with generative models.
+For now, we \uline{assume that actually $x$ and $\theta$ do not have strong correlations}.
+This means $p(x | \theta) = p(x)$ and $p(\theta) = p(\theta | x)$.
+Now this means the $p(x | \theta)$ term is now independent to $\theta$, and the MAP problem becomes 
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \big(\log p(\theta) + \sum_{(x, y) \in \mathcal{D}} \log p(y | x, \theta) \big).
+    \label{eq:y-xtheta-no-generative}
+\end{equation}
+
+\subsection{Regression}
+
+When $y$ is a continuous variable,
+which is typically the case when the problem is called a \concept{regression} problem,
+we often further assume that \uline{when $x$ and $\theta$ are given, the distribution of $y$ is solely defined by its expectation and unknown variables that decide the broadening of the distribution that do not depend on $x$ and $\theta$}.
+This is to say 
+\begin{equation}
+    y = f(x; \theta) + \epsilon,
 \end{equation}
 where $\epsilon$ is a random variable whose mean vanishes.
 In physics, for example, $\epsilon$ may come from Langevin noise.
-
-We now work in the Bayesian approach and assume that $\theta$ also has a distribution.
-Suppose $(\vb{x}, \vb{y})$ is a sampling of $x$ and $y$.
-It is straightforward to verify that
+Thus 
 \begin{equation}
-    p(\theta|\vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x}, \vb{y} | \theta).
-\end{equation}
-By MAP, we have 
-\begin{equation}
-    \begin{aligned}
-        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
-        &= \argmax_\theta (\log p(\theta) - \underbrace{\log p(\vb{x}, \vb{y})}_{\text{doesn't  depend on $\theta$}} + \log p(\vb{x}, \vb{y} | \theta)) \\
-        &= \argmax_\theta (\log p(\vb{x},  \vb{y} | \theta) + \underbrace{\log p(\theta)}_{\text{regularization}}) .
-    \end{aligned}
-\end{equation}
-Here regularization naturally appears as a consequence of the prior distribution of $\theta$.
-The form of $p(\vb{x}, \vb{y} | \theta)$ is determined by $\epsilon$,
-under the assumption that different samples are independent to each other: TODO: why?
-\begin{equation}
-    p(\vb{x}, \vb{y} | \theta) = \prod_i p(\epsilon = y_i - f(x_i; \theta)).
-\end{equation}
-Therefore 
-\begin{equation}
-    \hat{\theta} = \argmax_\theta \left( \log \sum_i p(\epsilon = y_i- f(x_i; \theta)) + \log p(\theta) \right).
+    p(y | x, \theta) = p(y - f(x; \theta)).
 \end{equation}
 
-People with a strong background in physics may tend to model the relation between $\vb{x}$ and $\vb{y}$ as 
+When $\epsilon$ is gaussian, $\log p(y | x, \theta)$ leads to the \concept{mean squared error} loss function.
+
+\subsection{Binary classification}
+
+When the problem is binary classification, \eqref{eq:y-xtheta-no-generative} is often still valid,
+but it makes no sense to talk about the expectation of $y$:
+the probabilistic distribution of a discrete variable doesn't look like $p(y - f(x; \theta))$ at all.
+
+This is most clear in the case of binary classification, in which the probabilistic distribution always takes the form of 
 \begin{equation}
-    p(\theta | \vb{x}, \vb{y}) = \frac{p(\theta)}{p(\vb{x}, \vb{y})} p(\vb{x} | \theta) p(\vb{y} | \vb{x}, \theta).
+    p(y| x, \theta) = \begin{cases}
+        p(y = 1 | x, \theta)     , & y = 1, \\
+        1 - p(y = 1 | x, \theta)  , & y = 0,
+    \end{cases}
 \end{equation}
-The problem is that if $\theta$ are parameters in a \emph{physical} process,
-then $\vb{x}$ \emph{of course} depends on $\theta$:
-some scenarios are simply easier for experimentalists to handle.
-Now if we still want to do MAP, we immediately realize we are faced with difficulties: we get 
+which means two things.
+
+First, the model architecture now should map $x$ to a scalar,
+which is to be interpreted as $p(y = 1 | x, \theta)$.
+This interpretation introduces and only introduces the constraint $0 \leq p(y = 1 | x, \theta) \leq 1$,
+which in turn means a sigmoid function as the last layer.
+
+Second, we can equivalently write 
 \begin{equation}
-    \begin{aligned}
-        \hat{\theta} &= \argmax_\theta p(\theta | \vb{x}, \vb{y}) \\
-        &= \argmax_\theta (\log p(\theta) + \underbrace{\log p(\vb{x} | \theta)}_{\text{???}} + \log p(\vb{y} | \vb{x}, \theta)) .
-    \end{aligned}
+    p(y| x, \theta) = p(y = 1 | x, \theta)^y (1 - p(y = 1 | x, \theta))^{1 - y},
+\end{equation}
+and the parametric estimation problem now takes the form 
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \big( \log p(\theta) + \sum_{(x, y) \in \mathcal{D}} y \log  + (1 - y) \log (1 - \hat{p}) \big),
+\end{equation}
+where $\hat{p} \coloneqq p(y = 1 | x, \theta)$.
+This is often known as the \concept{binary cross-entropy loss}.
+
+
+\subsection{Multi-class classification}
+
+When we are to assign a discrete label to an input,
+the label can be encoded as a one-hot vector:
+\begin{equation}
+    \vb{y} = (y_1, \dots, y_K), \quad y_k \in \{0, 1\}, \quad \sum_k y_k = 1.
+\end{equation}
+Now the output of the model is supposed to be $[p(y_k | x, \theta)]_k$.
+The constraints brought by this interpretation of the output of the model are 
+\begin{equation}
+    0 \leq p(y_k | x, \theta) \leq 1, \quad \sum_k p(y_k | x, \theta) = 1.
+\end{equation}
+This is equivalent to adding a softmax layer to the end of the model.
+
+It's easy to verify that 
+\begin{equation}
+    p(\vb{y} | x, \theta) = 
 \end{equation}
 
 \section{KL divergence}
@@ -884,6 +1039,7 @@ This involves an encoder from $x$ to $z$, and a decoder from $z$ to $x$.
 We do not know what exactly $z$.
 Still, if we have an approximate form of $p(x)$,
 we can do a maximal likelihood estimation.
+In the derivation below we mostly ignore the priors of the model parameters.
 
 \subsection{Derivation of the ELBO}
 
@@ -1017,6 +1173,65 @@ for a single batch, the loss function is
 where we have reduced $N(\epsilon)$ into a single hyperparameter $\beta$. 
 
 \chapter{Array manipulation}
+
+\chapter{Metrics}
+
+\section{Classification}
+
+We define a few quantities for discrete classification problems.
+First, we define
+\begin{equation}
+    \text{Confusion matrix} = N [p(\hat{y} = i, y = j)]_{ij},
+\end{equation}
+where $N$ is the total number of samples.
+Often the matrix elements of the confusion matrix are replaced by
+numbers of $\hat{y} = i, y = j$ combos in actual samples supplied in the test dataset.
+
+Furthermore,
+\begin{equation}
+    \mathrm{Recall}_a = p(\hat{y} = a | y = a),
+\end{equation}
+\begin{equation}
+    \mathrm{Precision}_a = p(y = a | \hat{y} = a).
+\end{equation}
+
+\subsection{Yes-no models}
+
+For a binary classification problem,
+the confusion matrix has only four matrix elements.
+We define $y=1$ as ``relevant''. 
+We also define $\hat{y}=1$ as ``positive'' (or ``retrieved'') and $\hat{y}=0$ as ``negative''.
+Depending on the value of $\hat{y}$, we can then talk about true or false positives and negatives.
+We use TP, FP, TN, FN to refer to the four elements of the confusion matrix.
+
+The recall of $y=1$ -- now simply known as the recall, also known as the true positive rate -- is now 
+\begin{equation}
+    \mathrm{Recall} = p(\hat{y} = 1 | y = 1) = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FN}},
+\end{equation}
+and the precision of $y=1$ -- now simply known as the precision, also known as the positive predictive value -- is 
+\begin{equation}
+    \mathrm{Precision} = p(y=1 | \hat{y} = 1) = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FP}}.
+\end{equation}
+We should note that the second steps in all equations above are only approximate
+when the confusion matrix is from a one-shot test dataset.
+In machine learning however since the datasets are typically large enough,
+these problems are usually ignored.
+
+Comparable to how the recall is defined, we define
+\begin{equation}
+    \mathrm{Specificity} = p(\hat{y} = 0 | y = 0) = \frac{\mathrm{TN}}{\mathrm{TN} + \mathrm{FP}}.
+\end{equation}
+
+The recall measures how large the intersect between relevant elements and retrieved elements is compared with all \emph{relevant elements}.
+The precision measures how large the intersect between relevant elements and retrieved elements is compared with all \emph{retrieved elements}.
+
+Obviously, to shrink the recall, we need to decrease FN,
+i.e. make the model willing to report a positive case even though it may be a false positive.
+This is relevant in e.g. medical diagnosis.
+To shrink the precision, we need to decrease FP,
+which is the right thing to do when building e.g. spam filters or fraud detection systems.
+
+
 
 \printbibliography[title=References]
 
