@@ -16,7 +16,7 @@
 \usepackage{physics}
 \usepackage{tensor}
 \usepackage{siunitx}
-\usepackage{ulem}
+\usepackage[normalem]{ulem}
 \usepackage[version=4]{mhchem}
 \usepackage{tikz}
 \usepackage{xcolor}
@@ -684,6 +684,7 @@ and this results in the \concept{maximum a posteriori estimation (MAP)}
     \hat{\theta} = \argmax_\theta p(\theta | x) = \argmax_\theta (\log p(x | \theta) + \log p(\theta)).
     \label{eq:map}
 \end{equation}
+The \concept{loss function} is therefore the opposite of the expression in the RHS.
 Note that here $x$ can also be the dataset $\mathcal{D}$ in \eqref{eq:dataset-posterior}.
 Given the form of \eqref{eq:dataset-posterior},
 the loss function should be additive with respect to different data points.
@@ -897,6 +898,28 @@ Probably, but no one really knows what it is.
 And finally, note that LLMs are probably not that domain general, after all,
 considering that devils hide in details of fine tuning and minor modifications of the model architecture.
 
+\section{Evaluating the model}
+
+Pure statistic methods sometimes do not best serve our purposes.
+Suppose we are doing a binary classification problem,
+in which true positives are extremely rare
+but we can't afford to miss them.
+Now, a naive data scientist may think their model --
+which (correctly, by the way) reports that most of the time the incident in question does not happen.
+What do we have to say about their model?
+Probably ``useless'' -- but it can be a good estimation of the true probabilistic distribution.
+
+Evaluating a model means we have \emph{preference}:
+some errors feel more acceptable than others.
+Often, we define various \concept{utility funtions} -- often known as \concept{metrics} -- to evaluate models.
+One may want to maximize these utility functions in training,
+instead of the loss functions defined by MAP.
+Depending on one's philosophical stance this may actually the right thing to do in theory%
+\footnote{
+    Basically, it depends on what you think a ``correct'' theory of decision should be.
+}
+but it is almost always mathematically hard.
+
 \section{Summary and notations}
 
 \begin{itemize}
@@ -921,10 +944,12 @@ considering that devils hide in details of fine tuning and minor modifications o
     and all probabilistic equalities like Bayesian formula all hold.
 
     \item Training of neural network models is typically done by gradient-based methods
-    (which are \emph{not} based on e.g. $\grad \grad$).
+    (which are \emph{not} based on e.g. Hessian matrix).
     This is implemented in PyTorch by \shortcode{tensor.backward()}:
     a tensor is a multidimensional array that remembers how it was calculated using other tensors.
     In PyTorch, \shortcode{tensor.grad} stores the derivative of the last tensor on which \shortcode{backward} is called with respect to \shortcode{tensor}.
+    
+    \item One should design metrics for models depending on what errors they think are acceptable and what are not.
 \end{itemize}
 
 \chapter{Tasks, loss functions, and model architectures}\label{chap:loss}
@@ -977,7 +1002,8 @@ Thus
     p(y | x, \theta) = p(y - f(x; \theta)).
 \end{equation}
 
-When $\epsilon$ is gaussian, $\log p(y | x, \theta)$ leads to the \concept{mean squared error} loss function.
+So we want \uline{the neural network model to approximate $f(x; \theta)$}.
+When \uline{$\epsilon$ is gaussian}, $\log p(y | x, \theta)$ leads to the \uline{mean squared error} loss function.
 
 \subsection{Binary classification}
 
@@ -996,8 +1022,9 @@ which means two things.
 
 First, the model architecture now should map $x$ to a scalar,
 which is to be interpreted as $p(y = 1 | x, \theta)$.
+\uline{We refer to the output of the model as $\hat{p}(x; \theta) = p(y = 1 | x, \theta)$}.
 This interpretation introduces and only introduces the constraint $0 \leq p(y = 1 | x, \theta) \leq 1$,
-which in turn means a sigmoid function as the last layer.
+which in turn means \uline{a sigmoid function as the last layer}.
 
 Second, we can equivalently write 
 \begin{equation}
@@ -1005,10 +1032,9 @@ Second, we can equivalently write
 \end{equation}
 and the parametric estimation problem now takes the form 
 \begin{equation}
-    \hat{\theta} = \argmax_\theta \big( \log p(\theta) + \sum_{(x, y) \in \mathcal{D}} y \log  + (1 - y) \log (1 - \hat{p}) \big),
+    \hat{\theta} = \argmax_\theta \big( \log p(\theta) + \sum_{(x, y) \in \mathcal{D}} y \log \hat{p}  + (1 - y) \log (1 - \hat{p}) \big).
 \end{equation}
-where $\hat{p} \coloneqq p(y = 1 | x, \theta)$.
-This is often known as the \concept{binary cross-entropy loss}.
+This is often known as the \uline{binary cross-entropy loss}.
 
 
 \subsection{Multi-class classification}
@@ -1018,19 +1044,37 @@ the label can be encoded as a one-hot vector:
 \begin{equation}
     \vb{y} = (y_1, \dots, y_K), \quad y_k \in \{0, 1\}, \quad \sum_k y_k = 1.
 \end{equation}
-Now the output of the model is supposed to be $[p(y_k | x, \theta)]_k$.
+Each $\vb{y}$ corresponds to a possible label,
+and there are $K$ possible values of $\vb{y}$.
+
+Now we link the posterior probability to the neural network architecture.
+Naturally we want the model to output $K$ numbers to characterize how likely each label is.
+That's to say, the output of the model is \uline{a $K$-dimensional vector $[p_k(x; \theta)]_k$}.
+Further, typically, we want \uline{the $k$th output to be $p(\vb{y} | x, \theta)$ where 
+the $k$th element of $\vb{y}$ is non-zero}.
+This does not introduce any additional assumptions.
+So we have 
+\begin{equation}
+    p(\vb{y} | x, \theta) = \prod_{k=1}^K p_k^{y_k}.
+\end{equation}
+We emphasize here again that $\vb{y}$ in this section is always a one-hot vector and $y_k$'s here are \emph{not} continuous variables.
+
 The constraints brought by this interpretation of the output of the model are 
 \begin{equation}
-    0 \leq p(y_k | x, \theta) \leq 1, \quad \sum_k p(y_k | x, \theta) = 1.
+    0 \leq p(\vb{y} | x, \theta) \leq 1, \quad \sum_{\vb{y}} p(\vb{y} | x, \theta) = 1.
 \end{equation}
-This is equivalent to adding a softmax layer to the end of the model.
-
-It's easy to verify that 
+This is equivalent to say
 \begin{equation}
-    p(\vb{y} | x, \theta) = 
+    0 \leq p_k \leq 1, \quad \sum_k p_k = 1,
 \end{equation}
+which in turn means \uline{adding a softmax layer to the end of the model}.
 
-\section{KL divergence}
+The parametric estimation problem now reads
+\begin{equation}
+    \hat{\theta} = \argmax_\theta \big( \log p(\theta) + \sum_{(x, \vb{y}) \in \mathcal{D}} \sum_{k}^{K} y_k \log p_k(x; \theta) \big).
+\end{equation}
+This, again, gives us the \uline{cross-entropy loss}.
+
 
 \section{Variational Autoencoder}
 
@@ -1073,20 +1117,20 @@ and therefore
 The equality occurs when the encoder and the decoder describe the same $p(x|z)$ distribution.
 The right hand side is known as the \concept{evidence lower bound (ELBO)}.
 
-When the neural network architecture used in $p_\phi(x|z)$ and $q_\theta(z|x)$ are flexible enough,
+\uline{When the neural network architecture used in $p_\phi(x|z)$ and $q_\theta(z|x)$ are flexible enough},
 there exists a subset of possible $(\theta, \phi)$ where the inequality is almost an equality,
 and in that region, maximizing the ELBO is equivalent to the maximal likelihood estimation.
 Praying that our optimization method can bring us there,
-we use the ELBO function as the optimization target.
+we \uline{use the ELBO function as the optimization target}.
 
 \subsection{Closed form VAE loss: Gaussian latents}
 
-We assume that 
+We assume that \uline{$p(z)$ is a gaussian distribution}
 \begin{equation}
     p(z) = \frac{1}{\sqrt{2\pi \sigma_p^2}} \exp(- \frac{(z - \mu_p)^2}{2 \sigma_p^2}),
     \label{eq:loss.vae.gaussian.z-prior}
 \end{equation} 
-and 
+and \uline{$q_\theta(z | x)$ is also a gaussian distribution parametrized by $x$ and $\theta$}
 \begin{equation}
     q_\theta(z | x) = \frac{1}{\sqrt{2\pi \sigma_q^2}} \exp(- \frac{(z - \mu_q)^2}{2 \sigma_q^2}).
     \label{eq:loss.vae.gaussian.q-ansatz}
@@ -1138,7 +1182,7 @@ and
 The second term in \eqref{eq:loss.vae.gaussian.elbo} depends on the architecture of the decoder,
 which, given the assumptions \eqref{eq:loss.vae.gaussian.z-prior} and \eqref{eq:loss.vae.gaussian.q-ansatz},
 cannot be chosen arbitrarily.
-A common choice is to assume $p(x|z)$ should be gaussian, which is mentioned in the appendix C of arXiv 1312.6114 without much discussions.
+A common choice is to \uline{assume $p(x|z)$ should be gaussian}, which is mentioned in the appendix C of arXiv 1312.6114 without much discussions.
 In this way the second term in \eqref{eq:loss.vae.gaussian.elbo} takes a form similar to that of \eqref{eq:loss.vae.gaussian.q-ansatz},
 and 
 \begin{equation}
@@ -1152,19 +1196,19 @@ which is $\mu_q(x)$ plus a random noise (of which $\sigma^2 = 1$, $\mu = 0$).
 The ELBO now has a closed-form expression, which leads to the following loss function:
 \begin{equation}
     \mathcal{L}^{\text{ELBO}}(\theta, \phi) \sim \frac{1}{2} \sum_x 
-    \left(
+    \big(
         (1 + \log \sigma_q^2 - \sigma_q^2 - \mu_q^2) + \sum_\epsilon N(\epsilon) \| x - \mu_p(\mu_q(x) + \epsilon) \|^2
-    \right),
+    \big),
     \label{eq:loss.vae.gaussian.loss}
 \end{equation}
 where we may call $\mu_q(x)$ the encoder in the inference mode and $\mu_p(z)$ the decoder.
 The neural network architecture has three parts: $\sigma_q^2(x; \theta)$, $\mu_q(x; \theta)$,
 and $\mu_p(z; \phi)$.
-$N(\epsilon)$ is typically reduced to a single constant which is adjusted manually.
+\uline{$N(\epsilon)$ is typically reduced to a single constant which is adjusted manually.}
 Batching of course applies to \eqref{eq:loss.vae.gaussian.loss},
-and as the same $x$ will be fed to the model for many times during training,
+and as \uline{the same $x$ will be fed to the model for many times during training when the training dataset is randomly shuffled},
 the summation over $\epsilon$ can be merged into batching:
-for a single batch, the loss function is 
+for a single batch, the loss function is the so-called \uline{VAE KL divergence plus MSE} 
 \begin{equation}
     \mathcal{L}^{\text{ELBO}}_{\text{single batch}}(\theta, \phi) 
     = \frac{\beta}{2} \sum_{x}^{\text{batch}} (1 + \log \sigma_q^2 - \sigma_q^2 - \mu_q^2) 
@@ -1172,7 +1216,59 @@ for a single batch, the loss function is
 \end{equation}
 where we have reduced $N(\epsilon)$ into a single hyperparameter $\beta$. 
 
-\chapter{Array manipulation}
+
+\chapter{Convolutional neural networks (CNNs)}
+
+\section{Convolutional layers}
+
+In PyTorch tensors being passed between convolutional layers are four dimensional arrays,
+with the four dimensions corresponding to the sample in the batch, the channel, the height and the width.
+
+The definition of convolutional layers is mostly straightforward
+and can be found in any serious introductions to neural network algorithms so we skip it.
+
+A rule of thumb -- not a strict one -- is that when the CNN kernel size and the dilation make the output tensor small,
+it's a good idea to increase the number of channels.
+
+\section{Batch normalization}
+
+The idea of normalization basically is follows.
+A generic neural network layer takes the form of 
+\begin{equation}
+    z = f(Wx + b),
+    \label{eq:z-from-x}
+\end{equation}
+and $z$ is then fed into the following layers.
+This means when calculating the gradient of the loss function, we get something like 
+\begin{equation}
+    \pdv{L}{W} = \pdv{L}{z} f'(Wx + b) x.
+\end{equation}
+This means if the probabilistic distribution of $x$ has a large variance,
+then the gradient is rather unstable.
+To solve the problem we may replace \eqref{eq:z-from-x} by 
+\begin{equation}
+    z = \frac{f(Wx + b) - \mu}{\sigma},
+\end{equation}
+where $\mu$ and $\sigma$ are the expectation and the square root of the variance of $f(Wx + b)$.
+This means 
+\begin{equation}
+    \pdv{L}{W} = \pdv{L}{z} \frac{1}{\sigma} f'(W x + b) x.
+\end{equation}
+The scale of $x$ and $\sigma$ should be comparable so the gradient neither explode nor vanish.
+
+In real world problems, $\sigma$ and $\mu$ cannot be known a priori,
+and therefore an alternative is to estimate them using data available in a batch.
+This means when we need normalization we can add a batch normalization layer after a $f(Wx + b)$ layer
+to calculate the average and the standard error of the outputs in a batch,
+and then scale and shift these outputs.
+
+For CNNs, the signal dimension of tensors being passed between layers has interpretable meanings:
+therefore $\sigma$ and $\mu$ should be calculus by averaging over the batch, width and height dimensions,
+but the channel dimension should not be averaged over.
+
+\section{Dropout}
+
+
 
 \chapter{Metrics}
 
@@ -1231,7 +1327,22 @@ This is relevant in e.g. medical diagnosis.
 To shrink the precision, we need to decrease FP,
 which is the right thing to do when building e.g. spam filters or fraud detection systems.
 
-
+The \concept{F1 score} is defined as 
+\begin{equation}
+    \mathrm{F1} = \frac{2}{\frac{1}{\mathrm{Precision}} + \frac{1}{\mathrm{Recall}}},
+\end{equation}
+which is a harmonic mean of both precision and recall.
+We note that it can also be written as 
+\begin{equation}
+    \mathrm{F1} = \frac{2\mathrm{TP}}{2\mathrm{TP} + \mathrm{FP} + \mathrm{FN}}
+    = \frac{2\mathrm{TP}}{
+        D + P
+    },
+\end{equation}
+where $D$ refers to the number of reported positives, and $P$ the number of true positives.
+Note that changing the model does not change $P$,
+so there are only two independent variables in F1, namely TP and $D$.
+Now, because 
 
 \printbibliography[title=References]
 
