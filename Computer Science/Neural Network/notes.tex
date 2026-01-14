@@ -59,6 +59,7 @@
 \DeclareMathOperator{\primevalue}{P}
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\res}{Res}
+\DeclareMathOperator{\softmax}{softmax}
 \newcommand*{\ii}{\mathrm{i}}
 \newcommand*{\ee}{\mathrm{e}}
 \newcommand*{\const}{\mathrm{const}}
@@ -274,9 +275,13 @@ All modern neural networks are feedforward. That's to say --
     In actual calculations, the concept of \emph{neuron} does \emph{not} explicitly appear:
     we work solely on vectors and matrices.
 
-    \item Several simple non-linear operations, like element-wise multiplication,
+    \item Several simple non-linear operations, like multiplication,
     are often used in modern neural networks.
     By the universal approximation theorem, though, they can be reasonably well approximated by a ``pristine'' feedforward neural network within a given range of inputs.
+    For instance $xy = ((x-y)^2 - x^2 - y^2) / -2$,
+    and $z^2$ can be approximated by e.g. $\mathrm{ReLU}(2(z-1))$ for $0 \leq z \leq 2$.
+    Note that the range of $z$ is a trivial instance of an important condition of the \concept{Universal Approxmation Theorem}, which states that neural networks approximate continuous functions on a \emph{compact set}.
+    This is also a thing to keep in mind in model designing.
     
     \item Modern neural networks have mechanisms to accept inputs with variable sizes,
     by a sliding window (as in CNNs), by letting the network to have a latent state,
@@ -324,7 +329,9 @@ How to train a model is another problem (also see \prettyref{sec:theoretical-asp
 
 \subsection{Training}
 
-Modern neural networks are all trained by \concept{backpropagation}.
+Modern neural networks are all trained by \concept{backpropagation},
+which basically is a fancy way to say applying the chain rule of derivatives to the loss function,
+which requires going from the output to the inputs (i.e. propagating backwards) in the dependence relations of variables (which is often implemented as computational graphs; see below).
 Therefore they are also known as \concept{BP neural networks}.
 This means we choose a \concept{loss function} (which can be derived by statistical estimations,
 like the maximum a posteriori estimation; see \prettyref{sec:framework.statistics}),
@@ -337,12 +344,22 @@ and this means we first take the gradient of the last layer,
 then the second last layer, etc.,
 and the propagation of the derivative operation is backwards.
 
+That modern neural network models are trained by backpropagation matters sometimes when designing models.
+One thing we need to avoid is gradient exploding or vanishing.
+To see if a model has a gradient exploding or vanishing problem,
+we calculate 
+\begin{equation}
+    \pdv{L}{w} = \pdv{L}{C_1} \pdv{C_1}{C_2} \cdots \pdv{C_n}{w} + \cdots,
+\end{equation}
+and check if any factor $\pdv{C_i}{C_j}$ is unbounded or has a possibility to fall to zero.
+
 Modern neural networks are trained in \concept{batches},
 which enables parallelism and avoids overfitting,
 because if samples within a batch are randomly chosen,
 then all kinds of noises are seen by the model.
 
 \subsection{Deep learning}
+
 Modern neural networks are usually \emph{deep}:
 they are much larger than traditional models and usually contain multiple layers,
 and are data thirsty.
@@ -919,6 +936,8 @@ Depending on one's philosophical stance this may actually the right thing to do 
     Basically, it depends on what you think a ``correct'' theory of decision should be.
 }
 but it is almost always mathematically hard.
+We also note that sometimes it \emph{is} a good idea to try to maximize the utility function,
+for instance in reinforced learning.
 
 \section{Summary and notations}
 
@@ -1216,6 +1235,28 @@ for a single batch, the loss function is the so-called \uline{VAE KL divergence 
 \end{equation}
 where we have reduced $N(\epsilon)$ into a single hyperparameter $\beta$. 
 
+\section{Reinforced learning}
+
+In \concept{reinforced learning}, the model is expected to take a series of \concept{actions} 
+that alter the state of the environment step by step,
+and how appropriate each step is can be measured by a well-defined, known \concept{reward}.
+That's to say, given $s \coloneqq s_n$, 
+after the action at step $n$ $a \coloneqq a_n$ is taken,
+the next step $s' \coloneqq s_{n+1}$ and the reward $r$ at step $n$ are given by 
+\begin{equation}
+    s' = \mathrm{next}(s, a), \quad r = \mathrm{reward}(s, a).
+\end{equation}
+Rewards and state transitions are probabilistic in general.
+Obviously this is a \concept{Markov decision process}.
+
+What is left to the model to do is first generating an action depending on the current current.
+This is often known as the \concept{policy}.
+A stochastic policy takes the form of $\pi(a | s)$.
+The second thing, which sometimes is omitted, is modeling of the environment.
+
+\subsection{The loss function}
+
+
 
 \chapter{Convolutional neural networks (CNNs)}
 
@@ -1230,7 +1271,7 @@ and can be found in any serious introductions to neural network algorithms so we
 A rule of thumb -- not a strict one -- is that when the CNN kernel size and the dilation make the output tensor small,
 it's a good idea to increase the number of channels.
 
-\section{Batch normalization}
+\section{Batch normalization}\label{sec:cnn.batch-norm}
 
 The idea of normalization basically is follows.
 A generic neural network layer takes the form of 
@@ -1268,6 +1309,164 @@ but the channel dimension should not be averaged over.
 
 \section{Dropout}
 
+\chapter{Attention mechanisms and Transformers}
+
+The up-to-date way to do machine learning tasks involving sequences with unknown structures
+typically is various Transformer models.
+As is said above in the introduction part, it remains theoretically unclear 
+whether Transformer models can be seen as some sort of Universal Grammar (or human linguisticality) model for natural languages:
+answering what Transformers see exactly is the same as the interpretability problem so we skip the issue for now.
+
+\section{Embedding}
+
+
+Suppose we have a sequence $(x_1, x_2, \dots, x_T)$.
+Models taking sequence input that are not recurrent neural network models typically start with \concept{embedding}.
+
+Embedding for Transformers typically consists of two parts.
+The first part is \concept{token embedding}:
+each token $x_t$ is mapped to a $d$-dimension vector $E(x_t)$ without considering its position in the sequence.
+We refer to the size of the vocabulary of the sequence as $V$,
+and therefore $E$ can be represented as a matrix $E \in \mathbb{R}^{V \times d}$.
+The embedding process can then be written as 
+\begin{equation}
+    \vb{e}_t = x_t E \in \mathbb{R}^d,
+\end{equation}
+where $x_t$ now refers to the one-hot vector specifying which item in the vocabulary $x_t$ is.
+Note that the vocabulary can be a list of words in a language,
+but can also be a list of characters, or something between the two.
+
+The second part is \concept{positoinal encoding}:
+it maps $t$ to a vector $\vb{p}_t \in \mathbb{R}^d$.
+This is typically done by passing $t$ to a list of sine and cosine waves.
+
+For each position in the input sequence, we define 
+\begin{equation}
+    \vb{h}_t^{(0)} = \vb{e}_t + \vb{p}_t.
+    \label{eq:transformer.embedding.sum}
+\end{equation}
+This is the input to the Transformer. Collectively, the $\vb{h}_t$ vectors are assembled into a matrix $H^{(0)} \in \mathbb{R}^{T \times d}$.
+
+One may wonder why we adopt \eqref{eq:transformer.embedding.sum} as the definition of the representation of the sequence,
+and not, say, concatenation $[\vb{e}_t ; \vb{p}_t]$.
+Concatenation doubles the size of the representation vector,
+and element-wise multiplication between $\vb{e}_t$ and $\vb{p}_t$ risks losing information because of zeroes in $\vb{p}_t$.
+And the fact that in the nonlinear attention layer, $\vb{e}_t$ and $\vb{p}_t$ are mixed together
+may actually be a good thing, as clearly one needs both the position and the content information.
+
+We note that the size of the learnable parameter here -- $E \in \mathbb{R}^{V \times d}$ -- 
+does not depend on the length of the input sequence.
+This is to say the model can take sequences of arbitrary lengths,
+although there is no theoretical guarantee that arbitrarily long correlations are always taken care of.
+
+\section{Self-attention}
+
+A Transformer layer consists of a multi-head self-attention layer and a feed-forward network,
+both with residual connections and layer renormalization.
+Here we explain the attention mechanism first, before moving on to the structure of the encoder and the decoder modules.
+
+A \concept{single-head self-attention} module in a neural network takes the following form.
+It takes a $H \in \mathbb{R}^{T \times d}$ input (output of embedding).
+It has three learnable matrix parameters $W_Q, W_K, W_V \in \mathbb{R}^{d \times d_k}$.
+Here $d_k < d$ decides how much the three matrices compress the input representation matrix.
+We define 
+\begin{equation}
+    Q = H W_Q, \quad K = H W_K, \quad V = H W_V,
+    \label{eq:transformer-projection}
+\end{equation}
+all of which have shape $T \times d_k$.
+The output of the attention module, often known as a \concept{head}, is 
+\begin{equation}
+    \mathrm{Atten}(Q, K, V) = \softmax\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V.
+    \label{eq:attention-module}
+\end{equation}
+Note that $QK^\top$ is a square matrix; the softmax function applies along its second dimension.
+This is to say,
+\begin{equation}
+    \softmax( \underbrace{A}_{\in \mathbb{R}^{T \times T} } )_{ij} \coloneqq \softmax(A_{i:}).
+\end{equation}
+
+What exactly an attention module does is not completely clear,
+although some hand-waving arguments can be done.
+It's common to have an algorithm to compare a \concept{query} with a series of \concept{keys},
+and if there is a match, then return the \concept{value}.
+Now if we think about this, what \eqref{eq:attention-module} does is a smoothened version of this:
+for each row of $Q$ -- each \concept{query vector} -- its inner product with keys (i.e. rows of $K$),
+and if there is a match -- namely, if the query vector and one \concept{key vector} have a large inner product -- 
+the softmax function returns a smoothened version of the one-hot vector containing the index of that key vector.
+Multiplying the return value of the softmax function to $V$ 
+selects the row of the $V$ -- the \concept{value vector} -- 
+whose index is the same as the index of the key vector that matches the query vector.
+Stacking all the value vectors together we get \eqref{eq:attention-module} in its matrix form.
+We also note that the number of queries, keys, and values, is all $T$ in \eqref{eq:attention-module}:
+this is again intuitively right,
+because this roughly means the querying process 
+allows a word (or a character, or whatever else) in the sequence to ask about other words.
+
+The picture depicted above does not explain why a linear transform is enough in \eqref{eq:transformer-projection}.
+Again, interpretability of Transformers, just like interpretability of other neural network architectures,
+is currently unknown.
+The form of \eqref{eq:transformer-projection} and \eqref{eq:attention-module} also say nothing 
+about what kind of sequences Transformer models are best in dealing with.
+We know for instance RNN does not capture long-range correlations.
+On the other hand, there is no clear traceable measure of distance between words 
+in embedding (which itself is already rather hard to interpret),
+construction of the query, key and value matrices, and self-attention,
+so it is rather hard to say anything about what kind of correlations Transformers are capturing.
+
+\eqref{eq:attention-module} involves nonlinearity with respect to \emph{three} inputs,
+while in a standard feed-forward neural network nonlinearity is with respect to only one input.
+This however does not broaden the expressivity of neural networks, 
+as multiplication of two inputs can be reasonably approximated by multiple ReLU functions.
+
+One may also ask why there is a $\sqrt{d_k}$ factor.
+$Q K^\top$ sums over the $d_k$ dimension,
+so we expect the variance of $Q K^\top \propto d_k$,
+assuming that there is little probabilistic correlation between different vector components.
+This means $Q K^\top / \sqrt{d_k} \sim O(1)$,
+and keeps the order of magnitude of the input to softmax stable.
+This is important, as when calculating the gradient of the attention module with respect to $H$,
+the $ W_Q W_K^\top$ factor appears outside the softmax function,
+which possibly causes gradient explosion or vanishing.
+
+A \concept{multi-head attention} module contains several single-head attention modules.
+It calculates 
+\begin{equation}
+    \mathrm{head}_i = \mathrm{Atten}(Q_i, K_i, V_i),
+\end{equation}
+where $Q_i, K_i, V_i$ are calculated using different $W$ matrices.
+Suppose there are $h$ heads calculated.
+The output of the multi-head attention module is 
+\begin{equation}
+    \mathrm{MHA}(H) = \mathrm{Concat}(\mathrm{head}_1, \mathrm{head}_2, \dots \mathrm{head}_h) W_O,
+\end{equation}
+where $W_O \in \mathbb{R}^{(hd_k) \times d}$ is a matrix of learnable parameters.
+
+\subsection{The encoder}
+
+A \concept{encoder layer} consists of a multi-head self-attention layer and a feed-forward network,
+both with residual connections and layer renormalization.
+
+For an input $H$ from embedding, the return is 
+\begin{equation}
+    \mathrm{EncoderLayer}(H) = \mathrm{LayerNorm}(\tilde{H} + \mathrm{FFN}(\tilde{H})),
+\end{equation}
+where $\tilde{H}$ is given by 
+\begin{equation}
+    \tilde{H} = \mathrm{LayerNorm}(H + \mathrm{MHA}(H)),
+\end{equation}
+and FFN refers to a fully connected feed-forward network.
+
+The $H + \mathrm{MHA}(H)$ and $\tilde{H} + \mathrm{FFN}(\tilde{H})$ operations are clearly residual connections,
+which avoids the gradient vanishing problem.
+This is because 
+\begin{equation}
+    \pdv{(h + f(h))}{w} = \pdv{h}{w} \left( 1 + \pdv{f(h)}{h} \right) \not\approx 0,
+\end{equation}
+where $w$ is a (possibly matrix) parameter and $f$ is the FFN or MHA function.
+
+The layer norm function is similar to batch norm in \prettyref{sec:cnn.batch-norm}.
+The concept and the motivation has already been introduced there,
 
 
 \chapter{Metrics}
