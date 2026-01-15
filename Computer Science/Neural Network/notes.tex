@@ -1235,6 +1235,10 @@ for a single batch, the loss function is the so-called \uline{VAE KL divergence 
 \end{equation}
 where we have reduced $N(\epsilon)$ into a single hyperparameter $\beta$. 
 
+\section{Sequence generation}
+
+A trivial application of the 
+
 \section{Reinforced learning}
 
 In \concept{reinforced learning}, the model is expected to take a series of \concept{actions} 
@@ -1359,7 +1363,7 @@ does not depend on the length of the input sequence.
 This is to say the model can take sequences of arbitrary lengths,
 although there is no theoretical guarantee that arbitrarily long correlations are always taken care of.
 
-\section{Self-attention}
+\section{Attention mechanism}\label{sec:transformer.attention}
 
 A Transformer layer consists of a multi-head self-attention layer and a feed-forward network,
 both with residual connections and layer renormalization.
@@ -1368,7 +1372,7 @@ Here we explain the attention mechanism first, before moving on to the structure
 A \concept{single-head self-attention} module in a neural network takes the following form.
 It takes a $H \in \mathbb{R}^{T \times d}$ input (output of embedding).
 It has three learnable matrix parameters $W_Q, W_K, W_V \in \mathbb{R}^{d \times d_k}$.
-Here $d_k < d$ decides how much the three matrices compress the input representation matrix.
+Here $d_k < d$ is a hyperparameter that decides how much the three matrices compress the input representation matrix.
 We define 
 \begin{equation}
     Q = H W_Q, \quad K = H W_K, \quad V = H W_V,
@@ -1380,11 +1384,12 @@ The output of the attention module, often known as a \concept{head}, is
     \mathrm{Atten}(Q, K, V) = \softmax\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V.
     \label{eq:attention-module}
 \end{equation}
-Note that $QK^\top$ is a square matrix; the softmax function applies along its second dimension.
+Note that $QK^\top$ is a square matrix of the shape $\mathbb{R}^{T \times T}$; the softmax function applies along its second dimension.
 This is to say,
 \begin{equation}
     \softmax( \underbrace{A}_{\in \mathbb{R}^{T \times T} } )_{ij} \coloneqq \softmax(A_{i:}).
 \end{equation}
+The shape of the output of the attention module is therefore $\mathbb{R}^{T \times d_k}$.
 
 What exactly an attention module does is not completely clear,
 although some hand-waving arguments can be done.
@@ -1441,8 +1446,10 @@ The output of the multi-head attention module is
     \mathrm{MHA}(H) = \mathrm{Concat}(\mathrm{head}_1, \mathrm{head}_2, \dots \mathrm{head}_h) W_O,
 \end{equation}
 where $W_O \in \mathbb{R}^{(hd_k) \times d}$ is a matrix of learnable parameters.
+Because the shape of each head is $\mathbb{R}^{T \times d_k}$,
+the output of the multi-head attention module therefore is of the same shape of the embedding output, which is $\mathbb{R}^{T \times d}$.
 
-\subsection{The encoder}
+\section{The encoder}
 
 A \concept{encoder layer} consists of a multi-head self-attention layer and a feed-forward network,
 both with residual connections and layer renormalization.
@@ -1456,6 +1463,8 @@ where $\tilde{H}$ is given by
     \tilde{H} = \mathrm{LayerNorm}(H + \mathrm{MHA}(H)),
 \end{equation}
 and FFN refers to a fully connected feed-forward network.
+Typically $H$ also has one additional batch dimension.
+The shapes of $\mathrm{EncoderLayer}(H)$ and $\tilde{H}$ are both $\mathbb{R}^{T \times d}$.
 
 The $H + \mathrm{MHA}(H)$ and $\tilde{H} + \mathrm{FFN}(\tilde{H})$ operations are clearly residual connections,
 which avoids the gradient vanishing problem.
@@ -1466,7 +1475,53 @@ This is because
 where $w$ is a (possibly matrix) parameter and $f$ is the FFN or MHA function.
 
 The layer norm function is similar to batch norm in \prettyref{sec:cnn.batch-norm}.
-The concept and the motivation has already been introduced there,
+It also contains a linear layer after normalization containing learnable parameters for better expressivity
+(and therefore, if normalization is improper in one place, it can be undone).
+The concept and the motivation has already been introduced there;
+the main difference is we don't have the concept of channels here,
+and in batch normalization, normalization only works along the feature dimension (whose size is $d$).
+
+Note that we do \emph{not} average over the batch dimension:
+this is what batch normalization does, and not what is done typically in Transformer models.
+Why? One issue is at autoregressive inference, there is simply no batching and hence batch statistics is undefined;
+and in this scenario we cannot just rely on the running average
+because sequences given to the model in a row are not statistically independent.
+Another reason is, sequences in different samples in the same batch perhaps are not of the same length anyway,
+so averaging over them makes zero sense.
+
+\section{The decoder}
+
+A \concept{decoder layer} is supposed to read the output of an encoder -- 
+with the shape of $\mathbb{R}^{T \times d}$ -- 
+and predict what next token to generate given a list of perviously generated tokens
+\begin{equation}
+    p(y_t | y_{<t}, H_{\text{enc}}).
+\end{equation}
+
+The list of perviously generated tokens itself is a sequence,
+and is passed to the embedding module first, producing a $H_{\text{dec}} \in \mathbb{R}^{t \times d}$ matrix.
+It is then first passed to a masked self-attention module:
+\begin{equation}
+    \mathrm{Atten}(Q, K, V) = \softmax \left( \frac{Q K^\top + M}{\sqrt{d_k}} \right) V,
+\end{equation}
+where 
+\begin{equation}
+    M_{ij} = \begin{cases}
+        0, & j \leq i , \\
+        -\infty & j > i.
+    \end{cases}
+\end{equation}
+The presence of $M$ enforces the assumption that the $T$ dimension does represent where the token is in the sequence,
+because -- based on the interpretation of attention discussed in \prettyref{sec:transformer.attention} -- $i$ corresponds to the position of the query vector and $j$ corresponds to the value vector,
+and a token at $i$ is not supposed to query anything about a token coming behind it.
+
+Followed by the masked self-attention module is a round of layer normalization and residual summation.
+
+What follows then is a \concept{cross attention} module.
+Basically in this module, $Q$ is from the input to the decoder, and $K$ and $V$ are from the output of the encoder.
+Then another round of layer normalization and residual summation.
+Then a fully connected feed-forward network layer and layer normalization and residual summation.
+
 
 
 \chapter{Metrics}
