@@ -5226,10 +5226,11 @@ and consequently we don't need a large number of bands.
         \end{lstlisting}
         \item Prepare \shortcode{kernel.inp}. Do the following checklist:
         \begin{itemize}
-            \item Whether the following lines are there:
+            \item Whether the following lines are there, if the coarse grid only contains the irreducible 1BZ:
             \begin{lstlisting}
                 use_symmetries_coarse_grid
             \end{lstlisting}
+            Otherwise \emph{do not} turn on this option, as it may lead to possible errors in the dipole matrix elements.
             \item Whether \shortcode{number_val_bands} and \shortcode{number_cond_bands}
             are specified.
             \item If we are dealing with a 2D material,
@@ -5256,7 +5257,7 @@ and consequently we don't need a large number of bands.
         When \shortcode{bsemat.h5} is present, the program runs well.
         \item Prepare \shortcode{absorption.inp}. Do the following checklist:
         \begin{itemize}
-            \item Whether the following lines are in \shortcode{absorption.inp}:
+            \item Whether the following lines are in \shortcode{absorption.inp}, \emph{depending on whether the coarse and fine grids only contain the irreducible 1BZ}, or otherwise there may be errors in the dipole matrix elements:
             \begin{lstlisting}
                 use_symmetries_fine_grid
                 use_symmetries_coarse_grid
@@ -6573,6 +6574,51 @@ comes from real technical issues. To name a few:
         and some conduction states are mistakenly considered to be filled 
         by \shortcode{pw2bgw.x}. 
 \end{itemize}
+
+\subsection{Excitons that should be dark become bright}
+
+When the \shortcode{kernel} step is done with \shortcode{use_symmetries_coarse_grid}, but the \shortcode{WFN_co} file contains the full 1BZ,
+and \shortcode{no_symmetries_coarse_grid} is the option used in the \shortcode{absorption} step,
+typically we find that states that are supposed to be dark become bright,
+although the exciton wave functions are correct.
+
+A note on what it means by the exciton wave function being correct.
+Because of the random phase factor in DFT diagonalization,
+the phase of $A^{S \vb*{Q}}_{cv \vb*{k}}$ often seem random.
+If we're sure that the lowest exciton mode has a 1s character,
+the random phase factors can be extracted as $A^{S \vb*{Q}}_{cv \vb*{k}} / \abs*{A^{S \vb*{Q}}_{cv \vb*{k}}}$,
+and hence both the dipole matrix elements and the higher exciton modes can be corrected by this phase factor.
+After this step typically we find that the exciton wave functions look like what we expect in hydrogen-like systems, and the dipole matrix element is smooth with respect to $\vb{k}$.
+
+When the \shortcode{kernel} step is done with \shortcode{use_symmetries_coarse_grid},
+but the \shortcode{WFN_co} file contains the full 1BZ,
+the exciton wave functions are still correct,
+but the dipole matrix elements are not smooth with respect to $\vb{k}$.
+Instead we find that the dipole matrix element, when $c$ and $v$ are fixed, look fragmented: 
+the heatmap consists of a serious of fragments, 
+in each of which $d_{cv\vb{k}}$ is smooth, 
+but then we see non-smooth jumps between different fragments (\prettyref{fig:absorption-use-symmetry-coarse-grid}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{plots/dipole-plot-fragments.png}
+    \caption{An instance of fragmented dipole matrix element}
+    \label{fig:absorption-use-symmetry-coarse-grid}
+\end{figure}
+
+The reason is, when \shortcode{use_symmetries_coarse_grid} is turned on,
+the phase convention of the kernel matrix (on the coarse $\vb{k}$ grid) is also symmetric,
+which is inconsistent with the phase covention of the actual \shortcode{WFN_fi} file.
+Therefore when \shortcode{no_symmetries_coarse_grid} is used in the \shortcode{absorption} step,
+phase factors from the $\vb{k}_{\text{co}}$ points in the \shortcode{bsemat.h5} matrix 
+and the $\vb{k}_{\text{co}}$ points in \shortcode{WFN_co} used to interpolate the BSE kernel 
+do not cancel each other.
+The result is the phase difference between a $\vb{k}_{\text{co}}$ point in the \shortcode{WFN_co} file and its symmetrically equivalent point that overwrites the former in the \shortcode{kernel} step is passed to the interpolated BSE kernel on the fine grid.
+This is why we have fragments in \prettyref{fig:absorption-use-symmetry-coarse-grid}:
+each fragment corresponds to a group of fine $\vb{k}$ points that are closest to a single $\vb{k}_{\text{co}}$ point.
+This does not make the BSE calculation itself wrong,
+because besides the interpolated BSE kernel, there is no other term that has phase factors in the eigenvalue problem,
+but it does make the phase convention in the BSE calculation different from that in \shortcode{WFN_fi}.
 
 \subsection{The \shortcode{absorption_b\{1,2,3\}_eh.dat} files are empty}
 
