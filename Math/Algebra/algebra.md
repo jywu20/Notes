@@ -201,10 +201,45 @@ $$
 
 # Universal properties 
 
+## Counting objects with terminal objects
+
+To illustrate the concept of universal properties, we start with the simplest universal construction: terminal objects.
+
+**Definition** Let $\textsf{C}$ be a category. An object $I$ of $\textsf{C}$ is *initial*, if and only if for every object $A$ of $\textsf{C}$ there exists a unique morphism $I \to A$.
+
+Similarly, an object $F$ is *final* if and only if for every object $A$ there exists a unique morphism $A \to F$.
+
+**Theorem** Two initial objects are uniquely isomorphic.
+
+**Proof** Suppose $I_1, I_2$ are initial objects.
+It immediately follows that 
+$$
+\hom(I_1, I_1) = \{ \id_{I_1} \}, \hom(I_2, I_2) = \{ \id_{I_2} \}.
+$$
+Again because they're initial objects, there exists one $f: I_1 \to I_2, g : I_2 \to I_1$.
+Since $f g \in \hom(I_2, I_2)$, it has to equal to $\id_{I_2}$, and hence $fg = \id_{I_2}$.
+Similarly $gf = \id_{I_1}$.
+Therefore $f$ is both a split monomorphism and a split epimorphism and hence is an isomorphism. 
+Also note that by definition, $\hom(I_1, I_2)$ has only one element, so $f$ is the *only* isomorphism connecting $I_1$ and $I_2$. □
+
+Similarly,
+
+**Theorem** Two final objects are uniquely isomorphic.
+
+Initial and final objects are known collectively as terminal objects.
+
+**Remark**
+Because objects defined using a universal property can be treated as a single object most of the time, based on the discussion above,
+we write the equivalence class of all initial objects in a category as $0$,
+and write the equivalence class of all final objects in a category as $1$.
+This is because for any set, there exists a unique set theoretic function from the set theoretic encoding of the natural number 0 (which is $\emptyset$) to it,
+and for any set, there exists a unique set theoretic function from it to the set theoretic encoding of the natural number 1 ($\{\emptyset\}$).
+
+Existence of an initial or final object therefore allows us to almost completely shunning talking about objects, and replace discussions on objects by discussions about $I \to A$ or $A \to F$.
+
 ## Universal properties
 
-Objects linked together by a unique isomorphism can be seen as a single object in categorical language.
-This fact inspires us to define concepts like product or coproduct in categorical language only,
+The success in defining terminal objects inspires us to define concepts like product or coproduct in categorical language only,
 and nasty issues - like the difference between $(A \times B) \times C$ and $A \times (B \times C)$ - resolve themselves as working in the categorical language guarantees that we can avoid building any argument on top of their difference.
 
 This eventually leads to an important concept in category theory: universal properties.
@@ -231,6 +266,13 @@ $u$ is needed because we need to know how $A$ interacts with the rest of $\maths
 Also, note that there is no guarantee that such universal arrows necessarily exist.
 Uniqueness of $h$ is in $\mathsf{C}$ and not $F(C)$.
 
+The main role of $F$ is to pack widgets in commutative diagrams into a concise form (for instance, $u$ and $f$ may contain more than one arrow in the original category $\mathsf{C}$) - examples below will demonstrate this.
+
+In the case of terminal objects,
+$F$ is trivial and maps $\mathsf{C}$ to a trivial category with one object and one isomorphism ("final category"),
+and the only heavy lifting part in the definition is the uniqueness condition.
+
+
 $(A, u)$ pairs are typically not unique.
 This is not surprising, because if $A$ satisfies some universal properties and is unique in satisfying these properties in a category,
 then we can always push one object $B$ into that category and draw a single (we can't have more than one isomorphism, or otherwise $X \to B$ morphisms - obtained by composition of the $X \to A$ and $A \to B$ morphisms - won't be unique) isomorphism between $A$ and $B$ and adjust other morphisms accordingly, and then $B$ will also satisfy that universal property.
@@ -238,53 +280,39 @@ then we can always push one object $B$ into that category and draw a single (we 
 However, 
 
 **Lemma** if $(A_1, u_1)$ and $(A_2, u_2)$ both satisfy the same universal property from $X$ to $F$,
-then they're isomorphic, and there actually exists a unique isomorphism between them.
+then $A_1$ and $A_2$ are isomorphic, and there actually exists a unique morphism $f: A_1 \to A_2$ satisfying $u_2 = f u_1$, which is an isomorphism.
 
-**Proof** From the uniqueness from $A$ to all $A'$, 
-setting $f$ to $u$ and $A'$ to $A_1$, we find that there exists only one morphism from $A_1$ to $A_1$, and it can only be $\id_{A_1}$.
-Similarly there is only one morphism from $A_2$ to $A_2$, which is $\id_{A_2}$.
+**Proof** From the uniqueness of morphisms from $A$ to all $A'$, 
+setting $f$ to $u$ and $A'$ to $A_1$, we find that there exists only one morphism $h$ from $A_1$ to $A_1$ such that $F(h) \circ u_1 = u_1$, and it can only be $\id_{A_1}$.
+Similarly there is only one morphism $h: A_2 \to A_2$ such that $F(h) \circ u_2 = u_2$, which is $\id_{A_2}$.
 
-Similarly, setting $f$ to $u_2$ and $A'$ to $A_2$, we find there is a unique $h: A_1 \to A_2$ such that $u_2 = F(h) \circ u_1$, and similarly there is a unique $g: A_2 \to A_1$ such that $u_1 = F(g) u_2$.
-Therefore $gh$ is a morphism from $A_1$ to $A_1$, and due to the uniqueness of morphism from $A_1$ to $A_1$ we find $gh = \id_{A_1}$, and similarly $hg = \id_{A_2}$.
-From this we find $g$ and $h$ are indeed isomorphisms, and they're unique as discussed above. □
-
-
-## Counting objects with terminal objects
-
-To illustrate the concept of universal properties, we start with the simplest universal construction: terminal objects.
-Here $F$ is trivial and maps $\mathsf{C}$ to a trivial category with one object and one isomorphism,
-and the only heavy lifting part in the definition is the uniqueness condition.
-
-**Definition** Let $\textsf{C}$ be a category. An object $I$ of $\textsf{C}$ is *initial*, if and only if for every object $A$ of $\textsf{C}$ there exists a unique morphism $I \to A$.
-
-Similarly, an object $F$ is *final* if and only if for every object $A$ there exists a unique morphism $A \to F$.
-
-**Theorem** Two initial objects are uniquely isomorphic.
-
-**Proof** Suppose $I_1, I_2$ are initial objects.
-It immediately follows that 
+Now, setting $f$ to $u_2$ and $A'$ to $A_2$, we find there is a unique $h: A_1 \to A_2$ such that $u_2 = F(h) \circ u_1$, and similarly there is a unique $g: A_2 \to A_1$ such that $u_1 = F(g) u_2$.
+From the two properties we find 
 $$
-\hom(I_1, I_1) = \{ \id_{I_1} \}, \hom(I_2, I_2) = \{ \id_{I_2} \}.
+u_1 = F(g) F(h) u_1 = F(gh) u_1.
 $$
-Again because they're initial objects, there exists one $f: I_1 \to I_2, g : I_2 \to I_1$.
-Since $f g \in \hom(I_2, I_2)$, it has to equal to $\id_{I_2}$, and hence $fg = \id_{I_2}$.
-Similarly $gf = \id_{I_1}$.
-Therefore $f$ is both a split monomorphism and a split epimorphism and hence is an isomorphism. 
-Also note that by definition, $\hom(I_1, I_2)$ has only one element, so $f$ is the *only* isomorphism connecting $I_1$ and $I_2$. □
+As is said above, there is only one morphism from $A_1$ to $A_1$ that satisfies $u_1 = F(\cdot) u_1$,
+and thus we find $gh = \id_{A_1}$, and similarly $hg = \id_{A_2}$.
+From this we find $g$ and $h$ are indeed isomorphisms. □
 
-Similarly,
+**Remark** A key ingredient of the proof is uniqueness of $h: A \to A'$ in the original category $\mathsf{C}$, and not just in $F(\mathsf{C})$.
 
-**Theorem** Two final objects are uniquely isomorphic.
+We need to pay some attention to the wording above:
+when $(A_1, u_1)$ and $(A_2, u_2)$ are both universal arrows,
+then there exists a unique morphism $h$ connecting $A_1$ and $A_2$ and satisfying the structure preservation property (i.e. the commutative diagram),
+which *happens* to be an isomorphism.
+We're not saying that there exists a unique isomorphism connecting $A_1$ and $A_2$
+that happens to preserve the commutative diagram.
+That's to say, it is possible that there is another isomorphism from $A_1$ to $A_2$ that gives us a morphism $f = F(h) u_1$, which however has nothing to do with $u_2$.
 
-Existence of an initial or final object therefore allows us to almost completely shunning talking about objects, and replace discussions on objects by discussions about $I \to A$ or $A \to F$.
-Initial and final objects are known collectively as terminal objects.
-
-**Remark**
-Because objects defined using a universal property can be treated as a single object most of the time, based on the discussion above,
-we write the equivalence class of all initial objects in a category as $0$,
-and write the equivalence class of all final objects in a category as $1$.
-This is because for any set, there exists a unique set theoretic function from the set theoretic encoding of the natural number 0 (which is $\emptyset$) to it,
-and for any set, there exists a unique set theoretic function from it to the set theoretic encoding of the natural number 1 ($\{\emptyset\}$).
+Therefore with just a universal construction we are *unable* to attain uniqueness up to unique isomorphism.
+We *can* have a stronger uniqueness condition in the so-called comma category $X \downarrow F$.
+Its objects are $(A, \eta: X \to F(A))$ pairs (here $A$ is just a random object in $\mathsf{C}$),
+and its morphisms are morphisms of the shape $f : A \to A'$ in $\mathsf{C}$ satisfying $\eta' = F(f) \eta$.
+We note that if there are $n$ morphisms from $X$ to $F(A)$ then there are $n$ objects in $X \downarrow F$ containing $A$:
+there are more objects in $X \downarrow F$, which distinguishes how $F(A)$ interacts with $X$. 
+Now it's easy to prove that a universal arrow $(A, u)$ is a terminal object in $X \downarrow F$,
+which immediately follows the definition of universal properties. 
 
 ## Products and coproducts
 
