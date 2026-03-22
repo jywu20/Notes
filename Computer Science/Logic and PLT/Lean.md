@@ -295,6 +295,19 @@ This means Lean is not Turing complete (i.e. it's not partially recursive).
 Actually, the "meta" part of Lean - used to write tactics - is Turing complete,
 but functions defined in this way can't be used in theorem proving.
 
+It should be noted that this doesn't mean Lean expresses all total recursive functions.
+It clearly does not express all total recursive functions without termination proofs:
+this essentially assumes that the Lean prover is able to automatically check if a program halts.
+Further, we note that the universal halting problem - the problem whether a recursive function halts for every input - is $\Pi_2^0$ and in fact is [$\Pi_2^0$-complete](https://en.wikipedia.org/wiki/Halting_problem#Halting_on_all_inputs),
+meaning that all $\Pi_2^0$-problems can be converted to problems about whether a recursive function is total.
+Now we note that consistency of Lean (and ZFC, and others) is a $\Pi_1^0$ formula,
+and thus also a $\Pi_2^0$ formula due to the properties of the arithmetical hierarchy.
+Because Lean (and all provers) are unable to show its own consistency,
+there is a $\Pi_2^0$ formula not provable in Lean
+and hence there is a total recursive function that does halt whose termination however is not provable in Lean.
+We can actually construct this function: it takes a natural number $n$ and does a scan to see if an inconsistency of Lean can be found within $n$ steps, and if an inconsistency is found, it goes into a dead loop, otherwise it returns.
+Consistency of Lean is therefore equivalent to the function being total, which however is not provable in Lean.
+
 Partial recursive functions aren't easily formalized in Lean. 
 Lean allows us to explicitly define partial functions,
 but they're treated as opaque objects whose internal details are not reasoned by the prover.
@@ -317,9 +330,6 @@ it feels awkward to define a square root function on this subtype,
 and hence the return value of $\sqrt{}$ when the input is negative is set to a garbage value,
 typically zero,
 and users are asked to argue about $\sqrt{}$ always with a precondition "its input value is non-negative".
-
-It should be noted that this doesn't mean Lean expresses all total recursive functions.
-
 
 # How canonical is Lean?
 
