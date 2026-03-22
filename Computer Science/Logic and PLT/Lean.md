@@ -1,0 +1,445 @@
+Lean prover: the theory
+=========
+
+# Some vague intuitions
+
+## ZFC and beyond
+
+It's often accepted that ZFC is the foundation of classical modern math.
+Most working mathematicians can't really recite the axioms of ZFC.
+That said, the statement isn't necessarily wrong.
+ZF is quite intuitive, while the axiom of choice both sounds intuitive and is vital 
+in proving propositions that look right (e.g. "existence of bases for vector spaces").
+
+That said, after 1950s, ZFC has shown several weaknesses.
+The most well known issue is it's not straightforward to formalize generic category theory in ZFC:
+the category $\mathsf{Set}$ can't be defined within ZFC
+for the very reason that "a set containing all sets" is ill-defined.
+Similarly, some structures in modern homotopy theory are too large to be formalized in ZFC.
+
+For mathematicians who like concrete calculations,
+the standard workaround is to extend ZFC *conservatively* (as in NBG etc.).
+For mathematicians who want more elegant formulation,
+Grothendieck universes are the accepted way to move forward.
+
+In the latter case what we're looking at are essentially large cardinal axioms.
+Adding large cardinals into ZFC makes it able to prove consistency of ZFC
+(as a model of ZFC can now be constructed within the theory),
+and therefore increases the consistency strength of the theory,
+resulting in a non-conservative extension of ZFC.
+
+## Motivation for introducing type theories
+
+For non-set theorists, concepts like large cardinals are not straightforward to grasp.
+It is desirable if the complexity can be hidden behind more "tame" notations.
+
+Another issue with set theories - including ZFC and its extensions - is they're hard to automate.
+If we take the idea that everything is encoded into sets seriously
+then it's rather hard for a proof tactic - an algorithm - to decide what the next step should be taken.
+Given two numbers 2 and 5, a mathematician naturally thinks about adding them together or doing division with remainder,
+but if we're looking at their set theoretic encoding...
+it's hard to know what can be done to them.
+
+The Mizar prover solves this problem by introducing a type system:
+a type tag is attached to each mathematical object to instruct the prover to see what likely are going to be done to the object.
+Mizar has a rather delicate system built around this system (Grabowski et al. 2010):
+for instance it's possible to define adjectives ($\texttt{natural}$ as in $\texttt{natural number}$).
+Then one proves something like 
+```
+registration
+let X be finite set;
+cluster-> finite Subset of X;
+coherence
+...
+end;
+```
+Which *registers* the combination (*cluster*) of the concepts $\texttt{finite}$ and $\texttt{Subset}$ and in the $\texttt{coherence}$ proof, the user shows that finite sets have finite subsets.
+
+Mizar is a successful formalization of a large proportion of the everyday mathematical vernacular.
+Still one may want better, user-defined tactics.
+It is therefore desirable to have a built-in programming language in a prover... 
+
+And theories allowing us to do this already exist. Here enter *type theories*.
+
+(Note: there're still developments based on more traditional first-order logic and set theory. See e.g. [here](https://proofassistants.stackexchange.com/questions/1528/open-source-proof-assistants-for-first-order-logic-with-equality-and-set-theory).
+It is also theoretically possible to embed a scripting language into Mizar,
+or refactor Mizar to make it easy to add new tactics into the system,
+given that it's now [open-sourced](https://github.com/MizarProject/system).)
+
+# Lean as type theory and as ZFC + countable inaccessible cardinals
+
+There are a lot of systems that are known as type theories.
+It appears as long as a system is a typed lambda calculus that is expressive enough,
+it can be considered as a a type theory.
+(Russell's type theory on the other hand is quite unlike modern day type theories:
+his types are more like universes)
+Some type theories are quite unlike what is considered ordinary mathematics.
+This article mostly focuses on Lean,
+which has gained considerable popularity recently.
+One of the reasons is it is quite classical:
+the developers made it clear that [""intuitionistic logic support" PRs"" are of "lower priority"](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Compartmentalization.20of.20axioms.20in.20Lean.204).
+This is also [the impression of users](https://proofassistants.stackexchange.com/questions/1115/how-usable-is-lean-for-constructive-mathematics).
+
+Below, I give a sketch of the underlying theory of Lean (Carneiro 2019), and how it compares with set theoretic math.
+
+## Propositions
+
+The first thing in question is how are propositions encoded.
+From Curry-Howard correspondence, a proposition should be conceived as a type,
+and its proof should be regarded as something of that type.
+"If ... then ..." is just a function signature $A \to B$ ("if $A$ can be proven then $B$ can be proven on top of a proof of $A$").
+
+Philosophically, we expect that if rules of inference in typed lambda calculi are the only primitives we're allowed to have,
+then we're doing intuitionistic or in other words constructive logic.
+
+As a concrete example, in Haskell, all properties $P(a)$ can be encoded as attaching a type tag $P$ to $a$.
+Arithmetic can be defined in the following ways:
+```Haskell
+-- Haskell has no dependent types so we have to encode values as types...
+data Z
+data S n
+
+-- With S and ZERO it's already sufficient to construct all natural numbers.
+-- Note that unlike the usual definition of natural numbers in type theories, 
+-- what is being defined here is actually a predicate: 
+-- "Nat n" = "n is a natural number".
+-- Note that n is a type variable.
+data Nat n where 
+  Zero :: Nat Z               -- axiom: Z is a natural number 
+  Succ :: Nat n -> Nat (S n)  -- axiom: if n is a natural number, then so is S n
+
+-- Now we prove that two - namely S (S Z) - is a natural number
+(Succ (Succ Zero)) :: Nat (S (S Z))
+
+-- Equality is defined as a type inhabited by all pairs containing equal numbers
+data Equal m n where 
+   Equal_Zero :: Equal Z Z                         -- axiom: Z and Z are equal 
+   Equal_Succ :: Equal m n -> Equal (S m) (S n)    -- axiom: if m and n are equal then m + 1 and n + 1 are equal
+
+type a === b = Equal a b
+
+-- Proof: equality is reflexive
+refl :: Nat n -> n === n
+-- ...
+```
+It's easy to see that propositions defined in Haskell boil down to compiling-time computation.
+For dependent type theories, propositions boil down to computation in general.
+A proof of an existential proposition $\forall x:A \exist y:B . P(x, y)$
+is a function that takes a $x:A$ and returns a term from the type $\exist y: B. P(x, y)$,
+the latter is a pair of some $y: B$ and a term in the type $P(x, y)$ - a proof of it, if $P$ is a proposition.
+
+Although this looks elegant, the above scheme has several issues.
+An obvious issue is probably that when we have type universes ($\texttt{Type}_0, \texttt{Type}_1$, ...) which are essential if we want to treat types as first-class citizens,
+then in each type universe, we can define a set of logic. 
+This brings up back to the delimma faced by Russell
+(which he resolved by introducing the axiom of reducibility,
+essentially collapsing the hierarchy of types).
+
+Therefore most mainstream proof assistants, Lean included, have a dedicated *proposition type* $\texttt{Prop}$.
+The proposition is "simple" in the sense that 
+$\forall x:A . P : \texttt{Prop}$ if $P: \texttt{Prop}$
+(in Carneiro 2019, this is expressed by $\mathrm{imax}(m, 0) = 0$).
+On the other hand, if $A: \texttt{Type}_i$ and $B: \texttt{Type}_j$,
+a common practice is $\forall x:A. B : \texttt{Type}_{\max(i, j)}$.
+
+$\texttt{Prop}$ is further simplified by *proof irrelevance*,
+which asserts that if two proofs prove the same proposition then they're the same
+(that's to say, if we have $p: \texttt{Prop}$ and $h: p$ and $h': p$, then $h \equiv h'$; Carneiro 2019 sec. 2.2).
+This means for each proposition (that's to say, for each term $p: \texttt{Prop}$),
+either it's inhabited (i.e. proven), or not (e.g. can't be proven).
+
+(But note that $\texttt{Prop}$ is not $\texttt{Bool}$,
+as different *propositions* are not equal to each other.)
+
+We note that this is consistent with the usual intuition of mathematicians but is against homotopy type theory.
+Suppose $P: \texttt{Prop}$. The expression $p: P$ actually means $p$ is a proof of $P$,
+but can be conveniently understood as giving $P$ a label $p$.
+It also invalidates the computational interpretation of proofs:
+for instance, when multiple things satisfying the same property exist,
+what should be returned by the proof of the statement that "things satisfying the property exist"?
+
+(This is mentioned in the official documentation: ["Introducing a proof-irrelevant Prop and marking theorems irreducible represents a first step towards separation of concerns. The intention is that elements of a type p : Prop should play no role in computation, and so the particular construction of a term prf : p is “irrelevant” in that sense. "](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#axioms-and-computation))
+
+$\texttt{Prop}$-based proofs do have *some* differences from the usual first-order logic+ZFC system
+in how certain things are defined.
+In the former, $P \to Q$ means $\forall p: P. Q$.
+In first-order logic we first have a definition of $p \to q$ - in which $p$ and $q$ are kind of equal - and then quantify the proposition.
+However, in Lean, $P$ is treated as the type of a proof $p$,
+and from every $p$, a term of $Q$ - a proof of $Q$ - follows.
+That said, typically we don't need to really mention the $p$ variable
+(which isn't relevant because of proof-irrelevance anyway)
+and we can just treat Lean propositions as "ordinary" first-order logic sentences.
+
+Moreover, a statement like 
+$$
+\forall x (x \in \mathbb{N} \land P(x) \to Q(x))
+$$
+should now be formalized as 
+$$
+\forall x: \mathbb{N} (\forall p: P(x) (Q(x))).
+$$
+There is now a somehow artificial distinction between how atomic propositions like $x \in A$ and other atomic propositions are formalized in Lean (and other type theories with $\texttt{Prop}$).
+This issue is on the other hand non-existent in set theories.
+
+This distinction isn't as weird as it seems.
+It is possible to define a *subtype* based on a predicate (i.e. a function from a type to $\texttt{Prop}$).
+The syntax is almost identical to set-theoretic set comprehension:
+```Lean
+def even (n : ℕ) : Prop := n % 2 = 0
+
+def even_numbers := { n : ℕ // even n }
+```
+
+The subtype is actually an existential type $\exist x : \mathbb{N} (\mathrm{even}(x))$.
+Here `even` is a predicate.
+A term from $\exist x : \mathbb{N} (\mathrm{even}(x))$ is a pair $\langle x, p \rangle$
+where $x: \mathbb{N}$ and $p$ is a proof of $x$ being even
+(or we can also understand $p$ as the label of the proposition `even x`,
+given proof irrelevance discussed above).
+
+The flow of subtyping is unidirectional: from a type and a predicate we can construct a subtype,
+but we can't just write a set comprehension expression out of nothing.
+This is consistent with standard axiomatic set theories,
+in which we have only restricted comprehension, i.e. axiom of separation.
+
+However because terms in a subtype contain additional information about why they belong to the subtype,
+partial functions in Mizar aren't easily definable. See below.
+
+## Set theoretic semantics
+
+It can be proven that the type theory of Lean is equivalent to ZFC + countable inaccessible cardinals.
+Here "ZFC + countable inaccessible cardinals" means ZFC + "for every $n > 0$, there exists $n$ inaccessible cardinals, one smaller than the other".
+Suppose $\mathrm{ZFC}_n$ means ZFC with $n$ inaccessible cardinals,
+and $\mathrm{CIC}_n$ means calculus of inductive construction with $n$ universes
+with type theoretic axiom of choice and law of exclusion of middle.
+Werner 1997 proves that $\mathrm{CIC}_{n+1}$ is interpretable in $\mathrm{ZFC}_n$
+and $\mathrm{ZFC}_n$ is interpretable in $\mathrm{CIC}_{n+2}$.
+Hence ZFC + countable inaccessible cardinals and CIC with infinite universes can be interpretable in each other.
+Carneiro (2019) further proves that Lean (with its own classical axioms) with infinite universes and ZFC + countable inaccessible cardinals are interpretable in each other as well.
+Hence all three systems are equiconsistent.
+
+There are some subtleties about the correspondence between each stage of the three theories,
+which are discussed in detail in Carneiro (2019).
+
+We note that $\mathtt{Prop}$ is impredicative,
+in the sense that a proposition $P : \mathtt{Prop}$ can be defined by quantifying over $\mathtt{Prop}$.
+For instance, what is falsehood?
+Falsehood is a statement $F$ from which all propositions can be derived.
+Note the definition: $F$ itself belongs to "all propositions".
+Impredicative types can't be naively interpreted as sets,
+but becaues of proof-irrelevance this does not matter.
+The interpretation of $\mathtt{Prop}$ is simply $\{0, 1\}$.
+
+Non-$\mathtt{Prop}$ types on the other hands are sets.
+Functions are set-theoretic functions (dependent $\forall$ types are interpreted as fiber bundles).
+Inductive types are translated to inductive definitions of sets
+and the strict positivity condition assumes that we have a monotone operator over sets that admit a least fix-point.
+
+The above construction can be done in each stage $V_i$.
+
+Interpretation of set theory in type theory is more complicated.
+A straightforward interpretation would be an inductive definition:
+"given a type (in universe $n$) and a function that maps elements in the type to sets, we can construct a new set".
+The main problem is, with this definition,
+the type containing all sets should be in universe $n+1$.
+Thus CIC with one type universe ("`Type 0`") is interpretable in ZFC with no inaccessible cardinal,
+but ZFC with no inaccessible cardinal is to be interpreted in CIC with two type universes,
+the second of which contains the type `Set`.
+The type `Set` has to be mentioned to define union sets and power sets etc.
+and therefore quite a lot of power of `Type 1` has to be used.
+
+(Note: in Lean's mathlib sets are defined as predicates, and we don't have dedicated standard ZFC sets.)
+
+## Doing math strictly in ZFC in Lean
+
+One may still want to do proofs that are strictly within ZFC in Lean.
+Someone for instance once claimed Fermat's last theorem [was not a "theorem" before uses of universes in the proof were removed](https://proofassistants.stackexchange.com/a/2755).
+Interestingly, this is *not* possible in Mizar - which uses TG set theory,
+a theory stronger than ZFC + countable inaccessible cardinals.
+Is demonstrably restricting oneself in ZFC in Lean possible?
+
+An obviously wrong answer is to work only with statements that involve only `Type 0`,
+as the proposition affirming the consistency of ZFC [resides in `Type 0` too](https://proofassistants.stackexchange.com/a/2730)
+and thus a proposition involving only objects in `Type 0` proves $\mathrm{Con}(\mathrm{ZFC})$.
+
+One may then want to make sure only objects from `Type 0` appear in *proofs* (and not just statements of propositions).
+It's close (as is said above in the comparison between Lean and ZFC + countable inaccessible cardinals) but not exact:
+$\mathrm{CIC}_1$ (i.e. `Type 0`-only) can be interpreted in standard ZFC,
+but a straightforward formalization of standard ZFC can only be done in $\mathrm{CIC}_2$.
+This is known as universe-to-universe correspondence [up to a fence post error](https://proofassistants.stackexchange.com/questions/2728/lean-and-inaccessible-cardinals).
+
+Therefore, if a strictly ZFC proof is desirable, we need to 
+find a segment of Lean's type system that's *exactly equivalent to* standard ZFC,
+something that hasn't been done yet,
+and write some scripts to check if a proof only uses this part of the type theory.
+Technically this is complicated because Lean doesn't store the whole proof tree,
+and it's possible that some tactics used in the proof implicitly refer to higher universes on the run.
+It appears formalizing a theorem in Lean while making sure we're only using ZFC is not an easy task.
+
+One can also argue that it's the mainstream mathematics community that needs to change, not Lean,
+as we have reasons to accept ZFC + countable inaccessible cardinals. 
+This is the issue discussed in the next section.
+
+## Functions and termination
+
+Because Lean is a typed lambda calculus,
+there's a problem of termination, i.e. whether evaluation of a term halts eventually.
+(Functions utilizing data from e.g. axiom of choice are not computable and are labeled as such,
+but they too can involve dead loops.)
+Termination is related to consistency of type theories:
+a well-typed constructive term that doesn't terminate gives us a false impression that an object represented by that term exists,
+which is enough to cause inconsistencies.
+
+All functions defined in Lean therefore have to provably terminate.
+This means Lean is not Turing complete (i.e. it's not partially recursive).
+Actually, the "meta" part of Lean - used to write tactics - is Turing complete,
+but functions defined in this way can't be used in theorem proving.
+
+Partial recursive functions aren't easily formalized in Lean. 
+Lean allows us to explicitly define partial functions,
+but they're treated as opaque objects whose internal details are not reasoned by the prover.
+It's possible to prove that two functions are using data from one partial function in the same way
+and thus the two functions are equal to each other,
+but it's not possible to reason "into" the structure of the partial functions.
+
+The lack of ability to define partial functions also means 
+problems like "evaluating the domain of a function" is not straightforwardly formalizable in Lean.
+In a ZFC oriented textbook, for instance, one may ask
+"what's the domain of $x \mapsto \sqrt{1 - x^2}$?"
+Here because $x$ does not appear with other variables,
+it's implicitly understood as the identity function.
+$1 - x^2$ therefore is composition between ^, - and constant function $1$.
+$\sqrt{}$ is a function - defined as a special kind of set theoretic relations - with a domain $[0, \infty)$.
+By the definition of function composition, we know the domain of the function is $[-1, 1]$.
+This is not doable in Lean:
+because $\mathbb{R}$ is now a type and its non-negative subtype consist of pairs $(x, p)$ where $p$ is a proof of $x >= 0$,
+it feels awkward to define a square root function on this subtype,
+and hence the return value of $\sqrt{}$ when the input is negative is set to a garbage value,
+typically zero,
+and users are asked to argue about $\sqrt{}$ always with a precondition "its input value is non-negative".
+
+It should be noted that this doesn't mean Lean expresses all total recursive functions.
+
+
+# How canonical is Lean?
+
+## Inaccessible cardinals as Grothendieck universes
+
+Von Neumann’s Cumulative Hierarchy $V$, defined as
+$$
+V_0 = \emptyset, \quad V_{\alpha + 1} = P(V_\alpha), \quad V_\lambda = \bigcup_{\beta < \lambda} V_\beta,
+$$
+where $\alpha$ runs over all ordinal numbers and $\lambda$ is a limit ordinal,
+is commonly taken to be *the* standard model of ZFC,
+and gives people strong faith in the consistency of ZFC for lack of paradoxical self-references in it,
+presumably more than any proof theoretic work does
+(as a perfectly consistent system may prove its own inconsistency due to existence of non-standard natural numbers, and an inconsistent system proves its own consistency).
+
+Inevitably, the discussions above - indeed many arguments in metamathematics -
+are *physical* in the sense that they're not formalized in a well-defined theory
+and often are impossible to be taken at face value.
+"Von Neumann's universe is constructed by taking the union of all $V_\lambda$ where $\lambda$ runs over all ordinals".
+One wonder what is an ordinal and in which theory it is defined.
+
+Let's first restrict $\alpha$ to ordinals definable in ZFC.
+Each stage $V_\alpha$ is definable in ZFC, although the union of them is not.
+Now we ask: can we find an index $\kappa$ so that $V_\kappa$ is the union of all $V_\alpha$ 
+in which $\alpha$ is an ordinal definable in ZFC?
+
+Obviously, $\kappa$ should be larger than all ZFC $\alpha$ and shouldn't be constructable with them.
+It - if it exists - actually should be a strongly inaccessible cardinal
+(the difference between weakly and strongly inaccessible cardinals is related to generalized continuum hypothesis and is independent to ZFC + countable inaccessible cardinals).
+Because $\bigcup_{\alpha \text{ ZFC}} V_\alpha$ itself is beyond all ZFC sets,
+naturally we can set $\kappa$ to be cardinality of $V_\kappa$ (as its cardinality indeed can't be achieved using any ordinary set theoretic method).
+
+$V_\kappa$ is a Grothendieck universe.
+It is the set containing all objects of the $\mathsf{Set}$ category that catches the structure of ZFC.
+
+But that's not the end of the story.
+Now we may wonder in which universe a category describing the structure of $V_{\kappa_0}$ resides.
+Further, what's $\kappa_0$, exactly?
+Is it in $V_{\kappa_0}$? It shouldn't, or otherwise $\kappa_0$ can be constructed from ordinary ZFC sets.
+So we want to find yet another universe containing $\kappa_0$.
+Hence we define $V_{\kappa_1}$ and let $\kappa_1$ be the next inaccessible cardinal.
+Repeating this over and over again, we get ZFC + countable inaccessible cardinals,
+equivalent to Lean.
+
+(Note: Lean is weaker than TG set theory as in the latter - which has the Tarski axiom or the axiom of universes, stating that every set is in a universe.
+We may ask what's the universe hosting the set of all inaccessible cardinal in the set theoretic version of Lean, and in Lean we can only be silent.)
+
+Thus Lean is canonical in the eyes of category theorists.
+One user on Stack Exchange [says](https://math.stackexchange.com/questions/79343/is-the-axiom-of-universes-harmless)
+
+> If you only need one ‘level’ of classes, then NBG may provide a satisfactory solution. Mac Lane only assumes the existence of one universe in Categories for the Working Mathematician. But the truth of the matter is that the working categorist would rather have at least a countable infinity of levels, so that we can talk about such things as the category of all functors CRing→Set
+ (relevant, for example, in Grothendieck's functor of points approach to algebraic geometry).
+ 
+## Consistency
+
+Despite Grothendieck's ideal, adding large cardinals into ZFC does increase its consistency strength
+(making it more likely to be inconsistent),
+and whether to accept large cardinals is not without controversy.
+Accepting *what* kinds of large cardinals is also not without controversy.
+
+A discussion on *consistency* can be found [here](https://mathoverflow.net/questions/73121/recent-claim-that-inaccessibles-are-inconsistent-with-zf) and also [here](https://math.stackexchange.com/questions/79343/is-the-axiom-of-universes-harmless).
+We have reasons to believe that ZFC + countable inaccessible cardinals is consistent (regardless of whether you think it's good math)
+but just like we have no way to uncontroversially *prove* consistency of ZFC,
+it's not something that has a commonly accepted proof.
+
+## Necessity of Grothendieck universes
+
+Back to the issue of formalizing category theory.
+Although category theorists want Grothendieck's universes for narrating theorems,
+there is a widely spread opinion stating that when solving a reasonable problem,
+the appeal to universes can be eliminated.
+In the comment section of [this post](https://mathoverflow.net/a/35749), we find claims like this:
+
+> For etale cohomology all of that universe stuff is entirely irrelevant. I say this not as an "article of faith", but because I've read all of the proofs of the theorems of etale cohomology. Perhaps if one wants to make a super-general theory of cohomology for "all" topoi there are these problems, but if one only cares about more "real" examples such as etale cohomology then there are no issues. 
+
+In the comment section of the question we also read
+
+> The Stack Project develops a huge amount of Grothendieck style mathematics, including a lot of etale cohomology, using only ZFC (specifically, NOT using universes). If anyone has any doubt that this can be done, I suggest that they look at it. 
+
+So it appears that, despite being used to construct the generic framework of category theory, topoi and things like that,
+in proving concrete math theorems, we should generally expect a ZFC-only proof,
+which [already exists](https://math.stackexchange.com/a/79354).
+It therefore seems alluring to develop some size checking mechanism in Lean or in a fork of it
+that rigorously tests if a proof is strictly within ZFC.
+
+(But again, a lot of  things provable in ZFC are also provable within Peano arithmetic.)
+
+## Competing systems
+
+Even if ZFC + countable inaccessible cardinals is consistent and is widely used in category theory,
+there are reasons to not accept it.
+Besides the concerns expressed in the last section (i.e. the universes being unnecessary in concrete problems),
+there are ways to construct competing systems.
+
+The most obvious alternative is to accept axiom of determinacy (hence axiom of choice can't be true),
+and this gives us a system equiconsistent to ZFC + there exists infinitely many Woodin cardinals.
+Another way out is to drop axiom of choice but not to accept axiom of determinacy either.
+Reinhardt cardinal is logically incompatible with axiom of choice but 
+is not known to imply axiom of determinacy.
+
+Because Reinhardt cardinal is powerful,
+there are set theorists who think introducing more and more powerful cardinals is the purpose of set theory research now doubting the appropriateness of axiom of choice.
+One can also argue that it's possible to combine universes with set theories even weaker than ZF.
+
+For a working mathematician used to standard analysis but still wanting to do category theory without being afraid,
+it appears ZFC + countable inaccessible cardinals is a good and natural compromise.
+
+## Tentative summary
+
+- Lean's underlying theory has a set theoretic counterpart, namely ZFC + countable inaccessible cardinals, that is weaker than the TG set theory (used in Mizar).
+- Lean's underlying theory is canonical for a mathematician with a canonical college math education who also uses category theory.
+- That said, consistency is still a concern for some, and there're people saying concrete math problems can always be proven within ZFC or even Peano arithmetic.
+
+As a tentative summary,
+- It is desirable to utilize the full power of Lean for expressing the generic theory of categories; it is also desirable if Lean is able to check whether a proof uses ZFC only.
+
+# References
+
+Grabowski, Adam, Artur Kornilowicz, and Adam Naumowicz. "Mizar in a nutshell." Journal of Formalized Reasoning 3.2 (2010): 153-245.
+
+Carneiro, Mario. The Type Theory of Lean. Master thesis. 2019.
+
+Werner, Benjamin. "Sets in types, types in sets." International Symposium on Theoretical Aspects of Computer Software. Berlin, Heidelberg: Springer Berlin Heidelberg, 1997.
