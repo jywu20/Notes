@@ -236,6 +236,7 @@ Non-$\mathtt{Prop}$ types on the other hands are sets.
 Functions are set-theoretic functions (dependent $\forall$ types are interpreted as fiber bundles).
 Inductive types are translated to inductive definitions of sets
 and the strict positivity condition assumes that we have a monotone operator over sets that admit a least fix-point.
+The same goes for inductive predicates.
 
 The above construction can be done in each stage $V_i$.
 
@@ -301,15 +302,22 @@ and thus a proposition involving only objects in `Type 0` proves $\mathrm{Con}(\
 One may then want to make sure only objects from `Type 0` appear in *proofs* (and not just statements of propositions).
 It's close (as is said above in the comparison between Lean and ZFC + countable inaccessible cardinals) but not exact:
 $\mathrm{CIC}_1$ (i.e. `Type 0`-only) can be interpreted in standard ZFC,
-but a straightforward formalization of standard ZFC can only be done in $\mathrm{CIC}_2$.
+but a straightforward formalization of standard ZFC can only be done in $\mathrm{CIC}_2$,
+as operations like union or intersection most naturally are encoded as functions that talk about the type containing all ZFC sets,
+and hence belong to `Type 1`.
 This is known as universe-to-universe correspondence [up to a fence post error](https://proofassistants.stackexchange.com/questions/2728/lean-and-inaccessible-cardinals).
 
 Therefore, if a strictly ZFC proof is desirable, we need to 
 find a segment of Lean's type system that's *exactly equivalent to* standard ZFC,
-something that hasn't been done yet,
-and write some scripts to check if a proof only uses this part of the type theory.
-Technically this is complicated because Lean doesn't store the whole proof tree,
+something that hasn't been done yet.
+We can try to make up for the fence post error and ask Lean to report danger 
+whenever a proof utilizes `Type 1` concepts beyond the standard ZFC operations.
+This however is a rather ugly solution as it's essentially inserting ZFC axioms manually into the system.
+
+Even after this is done, there are technical complicities.
+Lean doesn't store the whole proof tree,
 and it's possible that some tactics used in the proof implicitly refer to higher universes on the run.
+
 It appears formalizing a theorem in Lean while making sure we're only using ZFC is not an easy task.
 
 One can also argue that it's the mainstream mathematics community that needs to change, not Lean,
@@ -326,6 +334,11 @@ Termination is related to consistency of type theories:
 a well-typed constructive term that doesn't terminate gives us a false impression that an object represented by that term exists,
 which is enough to cause inconsistencies.
 
+(Note: when we compare Lean and set theories, we ignore the embedded programming platform in Lean.
+Historically set theories have no computational interpretations,
+although the situation is changing and realizability of set theories and classical logic is currently under investigation.
+We just emphasize that not much meaningful comparison regarding *computational power* of set theories and type theories has been made.)
+
 All functions defined in Lean therefore have to provably terminate.
 This means Lean is not Turing complete (i.e. it's not partially recursive).
 Actually, the "meta" part of Lean - used to write tactics - is Turing complete,
@@ -341,8 +354,11 @@ and thus also a $\Pi_2^0$ formula due to the properties of the arithmetical hier
 Because Lean (and all provers) are unable to show its own consistency,
 there is a $\Pi_2^0$ formula not provable in Lean
 and hence there is a total recursive function that does halt whose termination however is not provable in Lean.
+
 We can actually construct this function: it takes a natural number $n$ and does a scan to see if an inconsistency of Lean can be found within $n$ steps, and if an inconsistency is found, it goes into a dead loop, otherwise it returns.
 Consistency of Lean is therefore equivalent to the function being total, which however is not provable in Lean.
+
+(This is a reminder of how complicated arithmetic actually is.)
 
 Partial recursive functions aren't easily formalized in Lean. 
 Lean allows us to explicitly define partial functions,
@@ -481,6 +497,161 @@ it appears ZFC + countable inaccessible cardinals is a good and natural compromi
 
 As a tentative summary,
 - It is desirable to utilize the full power of Lean for expressing the generic theory of categories; it is also desirable if Lean is able to check whether a proof uses ZFC only.
+
+# Lean and the math vernacular
+
+## Variables
+
+In everyday math notation "variables" are rather vague concepts.
+In writing the overall skeleton of proofs, like "suppose $x \in \reals$. ... $P(x)$ and thus $\forall x \in \reals , P(x)$",
+the variable $x$ is a proper parameter in natural deduction.
+
+When doing calculations variables are placeholders in function definitions.
+Thus in "suppose $x \in \reals... \| f(x, y) \|_{L^2, x} \leq ...$",
+$\| f(x, y) \|_{L^2, x}$ (or orally, "the $L^2$ norm of $f(x, y)$ with respect to $x$") should be interpreted as $\| x \mapsto f(x, y) \|_{L^2}$,
+where $y$ is considered a parameter.
+Formalizing notations like this is not always easy.
+$x$ can be understood either as a projection function from an implicit "space of states" (when $x$ and $y$ appears together, $\reals^2$),
+or just a parameter without exact meaning, waiting to be quantified by what is essentially a $\lambda$ expression.
+
+In Lean, "suppose $x \in \reals$. ... $P(x)$ and thus $\forall x \in \reals , P(x)$" is automatically taken care of by the keyword `variable`:
+if we have `variable a : T` declaration before a theorem using `a`,
+then the theorem is automatically universally quantified.
+
+The "L^2 norm of $f(x, y)$ with respect to $x$" or "$\int \dd{x} x^2$" use of variables is also definable in Lean.
+The trick is to first formalize the precise idea behind the notation as an operator taking a function,
+and then define a notation that captures the "with respect to" concept.
+Below is an example:
+
+```Lean
+notation3"∫ "(...)" in "a".."b", "r:60:(scoped f => intervalIntegral f a b volume) => r
+```
+
+The user can define $\|\|_{x}$ and similar notations following the logic.
+
+## Infrastructural definitions
+
+A set in Lean's mathlib (not ZFC sets discussed above when proving equivalence between Lean and ZFC + countable inaccessible cardinals) is defined as 
+
+
+## Writing proofs: forward
+
+The default *forward* style of proof (term mode) in Lean is *not* natural deduction.
+Suppose we want to prove that $P \to Q$.
+With lemmas $h_1: P \to R \lor S$ and $h_2: R \to Q$ and $h_3: S \to \bot$.
+The proof term is a tree of composition of $h_1$, elimination of $\lor$, invocation of law of exclusion of the middle, and finally $h_2$.
+For examples, see [here](https://lean-lang.org/theorem_proving_in_lean4/Quantifiers-and-Equality/#quantifiers-and-equality).
+Below is a proof of a trivial logic statement:
+
+```Lean
+example (α : Type) (p q : α → Prop) :
+    (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
+    fun h: ∀ x : α, p x ∧ q x =>
+      fun y : α =>
+        (h y).left
+```
+Note that we have never applied universal quantifier introduction and elimination rules.
+Instead, a proof of $\forall x : \alpha, p (x)$, given the condition,
+is constructed by directly writing a lambda expression
+`fun y :  α => (h y).left`.
+All variables in the proof are always bound by $\lambda$ i.e. `fun`.
+Elimination of $\land$ is done by `.left` which is a syntactic sugar of 
+elimination of an inductive type with only one constructor which takes two arguments
+by picking out the first argument.
+Therefore introduction and elimination of $\forall$ are done using lambda calculus,
+and introduction and elimination of all other quantifiers and logic connectives
+are done using inductive types
+(which is not surprising as everything in Lean besides universes and dependent arrows [is built by inductive types](https://lean-lang.org/theorem_proving_in_lean4/Inductive-Types/#inductive-types)).
+
+The proof is then expanded
+($\lor$ for example is defined as an inductive predicate so it eventually boils down to a `match` operation),
+resulting in a term checked by the kernel of the prover that is
+not truly human readable when the proof is large.
+
+Lean has several syntactic sugars to make proofs resemble informal proofs.
+
+First we have `show` keyword that makes the thing being proven explicit.
+It is often followed by `from`, which supplies the proof term.
+The proof above can be rewritten as 
+
+```Lean
+example (α : Type) (p q : α → Prop) :
+    (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
+    fun h: ∀ x : α, p x ∧ q x =>
+      fun y : α =>
+        show p y from (h y).left
+```
+
+The last line is essentially `(h y).left : p y` but Lean doesn't allow us to write unnecessary type annotations after $\forall x : \alpha$.
+The `show ... from ...` syntax makes what's being proven clearer.
+
+Second, we have `have` keyword placed before the actual proof terms for introducing lemmas.
+Consider the following proof:
+```Lean
+example : ∃ x : Nat, x > 0 :=
+  Exists.intro 1 (Nat.zero_lt_succ 0)
+```
+The proof term `(Nat.zero_lt_succ 0)` proves that $1 > 0$.
+But in the form of the proof shown above its purpose is not clear.
+Thus we rewrite the proof as 
+```Lean
+example : ∃ x : Nat, x > 0 := 
+  have h : 1 > 0 := Nat.zero_lt_succ 0
+  Exists.intro 1 h
+```
+
+Some proofs can be done by mechanical calculation - in lambda calculus.
+
+```Lean
+example : 1 + 1 = 2 := 
+  calc 1 + 1
+```
+
+
+
+## Writing proofs: backward
+
+Most provers - "interactive provers", Lean included - offer users a *backward* and arguably more human readable way of constructing proofs.
+Given the goal $Q$, a *tactic* convinces the prover that a list of other goals imply $Q$,
+and the proof is finished when tactics have been applied to transform $Q$ into goals that can be trivially deduced from $P$.
+
+In Lean, to enter the *tactic mode*, we start a proof by the `by` keyword.
+(In Lean 3 there was a `begin end` block,
+which is removed in Lean 4.)
+The same logic tautology above can be proven in the tactic mode in the way below:
+
+```Lean
+example (α : Type) (p q : α → Prop) :
+    (∀ x : α, p x ∧ q x) → ∀ x : α, p x := by
+    intro h
+    have r : ∀ x : α, p x := by {
+      intro y
+      have : p y := (h y).left
+      exact this
+    }
+    exact r
+```
+
+Here `intro` gives the condition `(∀ x : α, p x ∧ q x)` a name `h`,
+`exact` means a current goal is identical to one of the hypotheses.
+`this` refers to the conclusion of an anonymous `have` command.
+
+Although the tactic mode is for proving things backwardly,
+By using multiple `have` statements to outline the sketch of a proof,
+we're able to carry out a forward proof.
+We can even do something like this:
+```Lean
+have h1: ... := proof_term_1
+have h2: ... := proof_term_2
+...
+exact hn
+```
+
+(Note that because `show... from...` or `show... by...` is just another way to write a term,
+the syntax is not available in tactic mode.)
+
+The `apply` keyword checks if the current goal is consistent with the conclusion of a statement supplied to `apply`,
+and shifts the goal to the condition of the statement.
 
 # References
 
