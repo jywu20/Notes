@@ -43,7 +43,7 @@ it's hard to know what can be done to them.
 The Mizar prover solves this problem by introducing a type system:
 a type tag is attached to each mathematical object to instruct the prover to see what likely are going to be done to the object.
 Mizar has a rather delicate system built around this system (Grabowski et al. 2010):
-for instance it's possible to define adjectives ($\texttt{natural}$ as in $\texttt{natural number}$).
+for instance it's possible to define adjectives ($\textsf{natural}$ as in $\textsf{natural number}$).
 Then one proves something like 
 ```
 registration
@@ -53,7 +53,7 @@ coherence
 ...
 end;
 ```
-Which *registers* the combination (*cluster*) of the concepts $\texttt{finite}$ and $\texttt{Subset}$ and in the $\texttt{coherence}$ proof, the user shows that finite sets have finite subsets.
+Which *registers* the combination (*cluster*) of the concepts $\textsf{finite}$ and $\textsf{Subset}$ and in the $\textsf{coherence}$ proof, the user shows that finite sets have finite subsets.
 
 Mizar is a successful formalization of a large proportion of the everyday mathematical vernacular.
 Still one may want better, user-defined tactics.
@@ -131,30 +131,30 @@ is a function that takes a $x:A$ and returns a term from the type $\exist y: B. 
 the latter is a pair of some $y: B$ and a term in the type $P(x, y)$ - a proof of it, if $P$ is a proposition.
 
 Although this looks elegant, the above scheme has several issues.
-An obvious issue is probably that when we have type universes ($\texttt{Type}_0, \texttt{Type}_1$, ...) which are essential if we want to treat types as first-class citizens,
+An obvious issue is probably that when we have type universes ($\textsf{Type}_0, \textsf{Type}_1$, ...) which are essential if we want to treat types as first-class citizens,
 then in each type universe, we can define a set of logic. 
 This brings up back to the delimma faced by Russell
 (which he resolved by introducing the axiom of reducibility,
 essentially collapsing the hierarchy of types).
 
-Therefore most mainstream proof assistants, Lean included, have a dedicated *proposition type* $\texttt{Prop}$.
+Therefore most mainstream proof assistants, Lean included, have a dedicated *proposition type* $\textsf{Prop}$.
 The proposition is "simple" in the sense that 
-$\forall x:A . P : \texttt{Prop}$ if $P: \texttt{Prop}$
+$\forall x:A . P : \textsf{Prop}$ if $P: \textsf{Prop}$
 (in Carneiro 2019, this is expressed by $\mathrm{imax}(m, 0) = 0$).
-On the other hand, if $A: \texttt{Type}_i$ and $B: \texttt{Type}_j$,
-a common practice is $\forall x:A. B : \texttt{Type}_{\max(i, j)}$.
+On the other hand, if $A: \textsf{Type}_i$ and $B: \textsf{Type}_j$,
+a common practice is $\forall x:A. B : \textsf{Type}_{\max(i, j)}$.
 
-$\texttt{Prop}$ is further simplified by *proof irrelevance*,
+$\textsf{Prop}$ is further simplified by *proof irrelevance*,
 which asserts that if two proofs prove the same proposition then they're the same
-(that's to say, if we have $p: \texttt{Prop}$ and $h: p$ and $h': p$, then $h \equiv h'$; Carneiro 2019 sec. 2.2).
-This means for each proposition (that's to say, for each term $p: \texttt{Prop}$),
+(that's to say, if we have $p: \textsf{Prop}$ and $h: p$ and $h': p$, then $h \equiv h'$; Carneiro 2019 sec. 2.2).
+This means for each proposition (that's to say, for each term $p: \textsf{Prop}$),
 either it's inhabited (i.e. proven), or not (e.g. can't be proven).
 
-(But note that $\texttt{Prop}$ is not $\texttt{Bool}$,
+(But note that $\textsf{Prop}$ is not $\textsf{Bool}$,
 as different *propositions* are not equal to each other.)
 
 We note that this is consistent with the usual intuition of mathematicians but is against homotopy type theory.
-Suppose $P: \texttt{Prop}$. The expression $p: P$ actually means $p$ is a proof of $P$,
+Suppose $P: \textsf{Prop}$. The expression $p: P$ actually means $p$ is a proof of $P$,
 but can be conveniently understood as giving $P$ a label $p$.
 It also invalidates the computational interpretation of proofs:
 for instance, when multiple things satisfying the same property exist,
@@ -162,7 +162,7 @@ what should be returned by the proof of the statement that "things satisfying th
 
 (This is mentioned in the official documentation: ["Introducing a proof-irrelevant Prop and marking theorems irreducible represents a first step towards separation of concerns. The intention is that elements of a type p : Prop should play no role in computation, and so the particular construction of a term prf : p is “irrelevant” in that sense. "](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#axioms-and-computation))
 
-$\texttt{Prop}$-based proofs do have *some* differences from the usual first-order logic+ZFC system
+$\textsf{Prop}$-based proofs do have *some* differences from the usual first-order logic+ZFC system
 in how certain things are defined.
 In the former, $P \to Q$ means $\forall p: P. Q$.
 In first-order logic we first have a definition of $p \to q$ - in which $p$ and $q$ are kind of equal - and then quantify the proposition.
@@ -180,11 +180,17 @@ should now be formalized as
 $$
 \forall x: \mathbb{N} (\forall p: P(x) (Q(x))).
 $$
-There is now a somehow artificial distinction between how atomic propositions like $x \in A$ and other atomic propositions are formalized in Lean (and other type theories with $\texttt{Prop}$).
+There is now a somehow artificial distinction between how atomic propositions like $x \in A$ and other atomic propositions are formalized in Lean (and other type theories with $\textsf{Prop}$).
 This issue is on the other hand non-existent in set theories.
 
+Predicates in Lean - things of type $\alpha \to \textsf{Prop}$ - correspond to adjectives in Mizar.
+Unlike the case in Mizar, predicates in Lean can be passed around.
+In a purely set theoretic framework,
+passing a property around can be achieved by passing the set of elements that satisfy that property around;
+in Lean there's no need to maintain two perspectives of the same concept as sets are defined as predicates from types.
+
 This distinction isn't as weird as it seems.
-It is possible to define a *subtype* based on a predicate (i.e. a function from a type to $\texttt{Prop}$).
+It is possible to define a *subtype* based on a predicate (i.e. a function from a type to $\textsf{Prop}$).
 The syntax is almost identical to set-theoretic set comprehension:
 ```Lean
 def even (n : ℕ) : Prop := n % 2 = 0
@@ -203,9 +209,9 @@ The flow of subtyping is unidirectional: from a type and a predicate we can cons
 but we can't just write a set comprehension expression out of nothing.
 This is consistent with standard axiomatic set theories,
 in which we have only restricted comprehension, i.e. axiom of separation.
-
 However because terms in a subtype contain additional information about why they belong to the subtype,
-partial functions in Mizar aren't easily definable. See below.
+defining functions on subsets (like $\{x \in \reals | x \geq 0 \}$) is cumbersome.
+This is a common problem in proof assistants.
 
 ## Set theoretic semantics
 
@@ -359,6 +365,19 @@ it feels awkward to define a square root function on this subtype,
 and hence the return value of $\sqrt{}$ when the input is negative is set to a garbage value,
 typically zero,
 and users are asked to argue about $\sqrt{}$ always with a precondition "its input value is non-negative".
+
+## Axioms 
+
+The underlying theory of Lean has a strong constructive flavor,
+in that without axioms and with rules of inference only,
+the type theory consisting of lambda expressions and inductive types is constructive.
+On the other hand, in classical theories,
+existence of objects that can be constructively built, like the natural number set (or type)
+and objects that cannot
+are both ensured by axioms.
+
+That said, classical axioms in Lean are supposed to be used,
+as libraries developed by the Lean community freely use them.
 
 # How canonical is Lean?
 
@@ -697,6 +716,29 @@ the syntax is not available in tactic mode.)
 The `apply` keyword checks if the current goal is consistent with the conclusion of a statement supplied to `apply`,
 and shifts the goal to the condition of the statement.
 
+## Structures
+
+Structures in mathematics are formalized as [type classes](#type-classes).
+To say that `G` has a group structure, one writes [`[grp : Group G]`](https://leanprover-community.github.io/mathematics_in_lean/C07_Structures.html),
+so that "the corresponding argument should be synthesized using type class inference".
+
+The following statement 
+```Lean
+lemma one_iff_ker_inv [group G][group H](f : G -> H)[group_hom f] (a b : G): f a = f b <-> f (a * (inv b)) = 1 := by --...
+```
+therefore can be trivially interpreted from left to right as 
+"Suppose $G, H$ are sets and there's a group structure on $G$ and there's a group structure on $H$.
+Suppose we have a mapping $f: G \to H$ and there's a group homomorphism structure on $f$.
+Suppose $a, b \in G$.
+Then $f(a) = f (b)$ if and only if $f (a b^{-1}) = 1$."
+Note that we say "there's a group homomorphism structure on $f$",
+as why $f$ is a group homomorphism actually depends on the exact group structure on $G$ and $H$,
+and therefore the property "$f$ is a group homomorphism" should be formalized as a type class, i.e. a structure (in the sense of the word in math vernacular).
+
+Inferring what implicit arguments are is known as *elaboration*,
+which is itself a hot topic in programming language theories.
+We'll go back to this topic later.
+
 # Lean as programming language
 
 We have seen that functions defined in Lean that are used in proofs have to terminate
@@ -711,7 +753,7 @@ The former is known as $\beta$-reduction, and the latter,
 in the context of the study of underlying theories of Coq or Lean, is known as $\zeta$-reduction.
 
 The main difference between the two is that the typing rule for the latter is 
-"if $e[e' / x] : \alpha$ then $\texttt{let } x : \alpha = e' \texttt{ in } e \equiv e[e' / x]$".
+"if $e[e' / x] : \alpha$ then $\textsf{let } x : \alpha = e' \textsf{ in } e \equiv e[e' / x]$".
 Note that the local variable $x$ is allowed to appear wherever it wants in $e$,
 and in $e$ we may see a definition like $y : x$;
 whether this is considered well-typed is determined by the form of the expression *after* substitution.
@@ -789,6 +831,19 @@ def double [Add α] (x : α) : α :=
 ```
 The brackets ask Lean to find registered instances of "structure" (i.e. type class) `Add` implicitly.
 Once such a instance `add_str` is found, `Add.add` is interpreted as `add_str.add`.
+
+There's a difference between type classes discussed here and traits in Rust (and interfaces in Java, and concepts in C++):
+it's possible to define multiple instances of a single type class for a type in Lean,
+but it's not possible to do the same for a type in C++ or Rust.
+Traits, concepts, interfaces are meant to impose constraints in the form of 
+"a function with a certain name and a certain type signature exists",
+something we don't care in Lean.
+This type of constraints is essential if `object.method` syntax is to be supported,
+as uniqueness of `method` has to be ensured.
+
+## Implicit variables and elaboration
+
+Besides type classes, Lean also supports other kinds of implicit variables.
 
 # References
 
