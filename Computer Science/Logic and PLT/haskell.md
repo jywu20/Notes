@@ -134,11 +134,7 @@ data Worker x y b = Worker {buffer :: b, input :: x, output :: y}
 当然就解决了这个问题。但是这样会引入一些新的问题。其一是语义——一个从`Worker`类型到别的类型——比如说，`String`——的函数具有签名`b => Worker b x y -> String`，但是如果我们认为`b`代表“某一个”类型，它显然不应该受全称量词量化，但是`b => Worker b x y -> String`中的`b`无疑受到全称量词量化。
 第二个问题是，这样不能实现特定的需求。例如，考虑一个`[Worker x y]`类型的表达式，直觉上它应该允许具有不同`b`的`Worker`作为其元素，但是按照定义`data Worker x y b = Worker {buffer :: b, input :: x, output :: y}`，这样的表达式中的元素的`b`必须是一样的。
 
-总之existential type是有必要的。通过一些类型论上的论证，含有一个existential type variable $a$ 的类型可以通过
-```Haskell
-data XX = forall x. something about x
-```
-来给出。上面的含有existential type variable的`Worker`可以写成
+总之existential type是有必要的。注意到$\exist x (P(x) \to Q)$和$(\forall x P(x)) \to Q$是等价的，从而上面的含有existential type variable的`Worker`可以写成
 ```Haskell
 data Worker x y = forall b. Worker {buffer :: b, input :: x, output :: y}
 ```
@@ -313,6 +309,7 @@ do {p <- e; stmts}	=	let ok p = do {stmts}
   in e >>= ok
 do {let decls; stmts}	=	let decls in do {stmts}
 ```
+（注意这里`ok`是一个函数）
 过程式编程需要的各个组成部分都在这里了：顺序执行语句就是monad的`>>`，其类型签名为`Monad m => m a -> m b -> m b`，也就是先执行可能返回类型`a`的一个monad（对应一个或者一组语句），然后执行可能返回类型`b`的一个monad。
 `let`用于简单地创建一个别名，而`<-`则运行一个语句并获得它的结果；后者是可能有副作用、可能产生错误等的，而前者不会。
 （这又意味着，如果某个值需要从一个monad获得，而我们需要将它传入一个函数中，那么必须使用
@@ -328,9 +325,18 @@ func(x)
 
 ## ST Monad
 
+一个ST monad的type constructor的类型签名为`ST s α`。
+这里的`α`可以理解为这个ST monad的返回类型（请注意它不是这个ST monad中存储的所有数据的类型，而是返回类型），而`s`实际上是一个生命周期参数（比Rust中的要简陋一些，见下文）。
+
+运行一个ST monad的函数是`runST :: forall α. (forall s. ST s α) -> α`。
+由于ST monad允许创建引用——`STRef`（见[此处](#迁移指南mutable和赋值)）——为了避免一个引用被传递到ST monad外面，`newSTRef`的类型签名实际上是`a -> ST s (STRef s a)`，其中`s`再次出现。
+现在回过头看`runST`的函数签名，我们注意到这个类型在前束范式下可以写为$\forall \alpha : \mathsf{Type}, \exists s (\mathsf{ST} \ s \ \alpha \to \alpha)$，即“存在某个`s`的元素使得能从一个类型为`ST α`的monad中读取出一个类型为`α`的值，但是`s`不出现在`α`中“。
+任何试图将`STRef` return到外界的做法都会让`s`出现在`α`中，从而不能被`runST`运行。
+也即，生命周期检查不是被构造ST monad的过程确保的，但仍然被`runST some_stateful_code`这个term的（静态）类型检查确保。
+
 和很多其它Monad不同，数据*可以*离开ST Monad：函数`runST :: forall α. (forall s. ST s α) -> α`可以用来做这件事。
 
-常见以下代码：
+以下代码：
 ```Haskell
 runST $ do           -- runST takes out stateful code and makes it pure again.
     n <- newSTRef 0             -- Create an STRef (place in memory to store values)
@@ -346,7 +352,7 @@ runST $ do           -- runST takes out stateful code and makes it pure again.
     }
 }
 ```
-我们在这里做的事情实际上是给过程式编程提供了一种函数式语义(可以看成某种denotational semantics？)：一个block就是一个ST monad，block中的变量（真的可变的、可以多次赋值的量）就是`STRef`，各种`if`，`for`之类的关键字就是用于建立新monad的函数，`;`就是`>>`（使用ST monad配合do notation得到的过程式语言带着函数式风味，或者说是函数式语言带着过程式风味，不区分表达式和语句，从而一个语句可以有一个运行结果也可以有抛出错误，那么`;`就是`>>`，`;`只是忽略上一个语句的执行结果，然后执行下一个语句；Scala就是这样）。
+我们在这里做的事情实际上是给过程式编程提供了一种函数式语义(类似于denotational semantics，但没有映射到非常数学的数学对象上)：一个block就是一个ST monad，block中的变量（真的可变的、可以多次赋值的量）就是`STRef`，各种`if`，`for`之类的关键字就是用于建立新monad的函数，`;`就是`>>`（使用ST monad配合do notation得到的过程式语言带着函数式风味，或者说是函数式语言带着过程式风味，不区分表达式和语句，从而一个语句可以有一个运行结果也可以有抛出错误，那么`;`就是`>>`，`;`只是忽略上一个语句的执行结果，然后执行下一个语句；Scala就是这样）。
 实际上在Haskell中可以实现各种各样的过程式语言中的特征，比如说可以实现`break`，然后还可以实现Rust中的ownership（见The Ownership Monad；PLT上通常称这是affine type，但考虑到Rust允许mutable，在Haskell中需要用Monad模拟ownership以体现这一点；这样一来原本编译期实现的ownership检查就被拖延到了运行期，那就不尽准确了），move语义、copy语义等，由于程序运行的状态全部可以得到细粒度的控制，这些的实现几乎就是把spec翻译成代码。
 不太好实现的主要还是变量的复杂行为，如动态作用域等；要完整实现动态作用域肯定不能用`a <- ...`这样的语句冒充变量赋值了，而可能要写`createRef("a", ...)`——这就真的变成写解释器了。
 
@@ -439,7 +445,7 @@ for_ xs $ \x ->
     - 本scope结束后，虽然`ref`无法访问了，`ref`“指向的对象“仍然存在。要满足这个要求，最经典的做法就是堆上的内存管理，从而`ref`是一个指针：名称`ref`被绑定到了本地的一个monad上的某个ref上面，后者又指向一个全局的状态
 
 以上定义的各种变量的语义都是pass-by-value的。
-
+其他语义如何在pass-by-value的框架下理解可见[此处](variables-and-assignments.md)。
 
 TODO：内存安全
 
