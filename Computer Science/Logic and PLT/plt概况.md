@@ -57,7 +57,7 @@ Lean中的Prop不predicative，但是非Prop的类型则不然；考虑到本来
 
 现在看更常规的编程语言中的类型系统。
 假设我们有一个无类型编程语言。显而易见，很容易出现错把整数当成字符串这种错误，为了避免这一点，在这个语言的运行时中，
-我们就把每个**值**（记住这一点；这里有一个类型到底是哪里的类型的subtlety，下文将提到）看成它的二进制表示带上一个类型tag，来保证当我们对它调用某个操作时，这个操作是我们想要的那个操作。
+我们就把每个**值**看成它的二进制表示带上一个类型tag，来保证当我们对它调用某个操作时，这个操作是我们想要的那个操作。
 例如一个带有Int标签的值上面如果调用了字符串连接的操作（可能也写成加号），那就应该报错（如果没有运行时类型检查的话可能不报错但是输出错误结果）。
 这些类型标签还可以触发类似于Julia这样的运行时根据数据类型做的派发，来实现ad hoc polymorphism。
 实际上如果我们想做一个基于集合论的proof assistant，高层设计也可以这么做，为了好让人知道各种函数和运算符是什么语境下的。
@@ -93,7 +93,12 @@ typing [] e T → value e ∨ ∃ (e' : Trm), eval e e'
 ```
 $E \vdash e : T$在这里被形式化成了一个谓词和它的变量`typing E e T`，而`T`的类型也是`Typ`——STLC的类型在Lean中的编码——而不是Lean中的类型宇宙`Type 0`。
 
-（这种先有untyped的程序再定义类型系统的观念在Wright and Felleisen, A syntactic approach to type soundness一文中有非常简练的讨论："a partial function... defines the semantics of *untyped* programs... let... mean that the type system assigns program $e$ the type $\tau$..."需要注意一些编程语言的operational semantics中也会出现类型标签以实现polymorphism，但这些类型标签和字符串没有什么本质区别，因此前述先有untyped的程序再定义类型系统的观念仍然是正确的。）
+（这种先有untyped的程序再定义类型系统的观念在Wright and Felleisen, A syntactic approach to type soundness一文中有非常简练的讨论："a partial function... defines the semantics of *untyped* programs... let... mean that the type system assigns program $e$ the type $\tau$..."需要注意一些编程语言的operational semantics中也会出现类型标签以实现polymorphism，这些类型标签可能是可组合的，如Julia的类型；但组合这些类型标签的操作和操作一个普通的树结构没有什么本质区别，因此前述先有untyped的程序再定义类型系统的观念仍然可以认为是正确的，只不过是我们要将类型标签的组合的操作纳入静态类型系统而已。
+与这个话题相关的还有intrinsic typing和extrinsic typing的区别：人们经常说前者是先有类型系统再有操作语义而后者反过来，但这个说法可能有些问题：这两种类型系统的主要区别在于类型标签是怎么贴到term上面的，intrinsic typing中标签始终是跟着term走的，而后者中可以证明一个term有某个type。
+两种类型的系统都可以是纯语法的而暂时不考虑语义，也都可以被赋予给一个已知的操作语义以保证正确性。
+又有说法说intrinsic typing允许让语义依赖于类型；但这只是trivially true。
+考虑intrinsic type中用类型标签区分结构相同的Tuple的做法。
+在一个extrinsic type system中，可以往tuple中加一个常量的标签，然后将含有标签`T`的tuple的类型都指定为$T$。这并没有造成任何区别。）
 
 另外也注意此处作者其实已经定义了一个operational semantics，因为有谓词`eval e e'`，但这个operational semantics被形式化时是“语法”的而不是“语义”的，因为`e`可能是一个值（as in `value e`）但是$e : T$还是被形式化成了`typing E e T`。
 这就是说，此处的形式化完全不在乎`e`等“实际上代表什么”，即它们实际上没有和Lean中的自然数、结构体等形成任何关系。
