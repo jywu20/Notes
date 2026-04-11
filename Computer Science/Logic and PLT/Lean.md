@@ -70,15 +70,21 @@ which is equivalent to saying each of them carries a type tag.)
 
 # Lean as type theory and as ZFC + countable inaccessible cardinals
 
+## Type theories
+
 There are a lot of systems that are known as type theories.
 It appears as long as a system is a typed lambda calculus that is expressive enough,
 it can be considered as a a type theory.
 (Russell's type theory on the other hand is quite unlike modern day type theories:
 his types are more like universes)
 Some type theories are quite unlike what is considered ordinary mathematics.
-This article mostly focuses on Lean,
-which has gained considerable popularity recently.
-One of the reasons is it is quite classical:
+
+The underlying theory of Lean is clearly a type theory, and like other type theories,
+it has a strong intuitionistic or constructive flavor,
+in that there aren't many axioms about "existence of something" (unlike the case in ZFC):
+instead we have rules of inferences that directly constructing terms from existing terms. 
+What makes Lean differ is it is quite classical after all,
+with the type theoretic axiom of choice and quotient types:
 the developers made it clear that [""intuitionistic logic support" PRs"" are of "lower priority"](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Compartmentalization.20of.20axioms.20in.20Lean.204).
 This is also [the impression of users](https://proofassistants.stackexchange.com/questions/1115/how-usable-is-lean-for-constructive-mathematics).
 
