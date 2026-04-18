@@ -241,8 +241,11 @@ For instance, what is falsehood?
 Falsehood is a statement $F$ from which all propositions can be derived.
 Note the definition: $F$ itself belongs to "all propositions".
 Impredicative types can't be naively interpreted as sets,
-but becaues of proof-irrelevance this does not matter.
+but because of proof-irrelevance this does not matter.
 The interpretation of $\mathtt{Prop}$ is simply $\{0, 1\}$.
+
+(On the other hand, impredicativity of, say, System F is a more severe problem 
+if we seek to interpret it in set theory.)
 
 Non-$\mathtt{Prop}$ types on the other hands are sets.
 Functions are set-theoretic functions (dependent $\forall$ types are interpreted as fiber bundles).

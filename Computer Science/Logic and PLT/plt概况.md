@@ -313,6 +313,16 @@ C中的共用体嵌入到函数式编程语言中大概是$\Pi x:I, \mathsf{Opti
 我们注意到`\Pi x:I, \mathsf{Option}(A(x)) \times H`在内存中可以实现为一段长度为各$A(x)$中最长的那个的空间。
 当然，也可以实现为所有$A(x)$的长度之和，后者基本上就是用结构体强行模仿共用体了。
 
-## 总结
 
-工业语言中的构造可以在一个函数式语言中得到模拟，并且也可以用于模拟sum type，可是后者需要付出很大的代价，而且需要额外手动检验诸如“是否有超过一个字段非空”的条件（理论上，对应于和sum type的等价性，在硬件上，对应于一个字段的数据覆盖另一个字段），因此不是很好的设计。
+总之，共用体可以在dependent type system中理解，并且也可以用于模拟sum type，可是后者需要付出很大的代价，而且需要额外手动检验诸如“是否有超过一个字段非空”的条件（理论上，对应于和sum type的等价性，在硬件上，对应于一个字段的数据覆盖另一个字段），因此不是很好的设计。
+
+## 子类型
+
+subtyping不是一个特别好做的东西。一个足够强的dependent type system可以通过[基于type class的coercion](https://lean-lang.org/doc/reference/latest/Coercions/)来模拟：$A <: B$等价于存在一个从$A$到$B$的Cor type class instance。
+如下的规则
+$$
+\frac{\Gamma \vdash A <: B \quad \Gamma \vdash B <: C}{\Gamma \vdash A <: C}
+$$
+则可以通过所谓的type class synthesis得到("[At invocation sites, Lean either synthesizes a suitable instance from the available candidates or signals an error.](https://lean-lang.org/doc/reference/latest/Type-Classes/#--tech-term-synthesizes)")。
+
+从这个翻译立刻可以看出，将subtyping直接加入类型系统（并仍然希望类型系统decidable）其实是指望能自动判断特定的type class instance是否存在，这看着就不像一个很容易的事情。
