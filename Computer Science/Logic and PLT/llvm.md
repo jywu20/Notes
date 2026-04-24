@@ -202,7 +202,7 @@ The big aspects of semantics of LLVM IR are quite similar to those of C.
   Like the case in C, we probably shouldn't conceive the type system in LLVM
   as an implementation of a *type theory*.
 
-There are some minor differences, where LLVM IR is either more flexible or more flexible.
+There are some minor differences, where LLVM IR is either more flexible or less flexible.
 
 - In LLVM IR it's possible to have a function argument like `[2 x i64] %0`:
   in C it's impossible. We can do the same by a struct containing two `i64`,

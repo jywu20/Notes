@@ -83,6 +83,13 @@ The underlying theory of Lean is clearly a type theory, and like other type theo
 it has a strong intuitionistic or constructive flavor,
 in that there aren't many axioms about "existence of something" (unlike the case in ZFC):
 instead we have rules of inferences that directly constructing terms from existing terms. 
+Obviously, one can turn an existential axiom into a rule of inference,
+and here is when we start to see whether an axiom is constructive or not:
+in set theory, axiom of pairing is clearly constructive in that from two sets $A, B$,
+one can straightforwardly construct ${A, B}$ as a new term.
+But axiom of choice is clearly not constructive,
+as we cannot allow infinite - uncountably infinite - numbers of terms in a sequent.
+
 What makes Lean differ is it is quite classical after all,
 with the type theoretic axiom of choice and quotient types:
 the developers made it clear that [""intuitionistic logic support" PRs"" are of "lower priority"](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Compartmentalization.20of.20axioms.20in.20Lean.204).
@@ -137,7 +144,7 @@ is a function that takes a $x:A$ and returns a term from the type $\exist y: B. 
 the latter is a pair of some $y: B$ and a term in the type $P(x, y)$ - a proof of it, if $P$ is a proposition.
 
 Although this looks elegant, the above scheme has several issues.
-An obvious issue is probably that when we have type universes ($\textsf{Type}_0, \textsf{Type}_1$, ...) which are essential if we want to treat types as first-class citizens,
+An obvious issue is probably that when we have type universes ($\textsf{Type}_0, \textsf{Type}_1$, ...), a common design if we want to treat types as first-class citizens (there's also System F but it has no set theoretic semantics),
 then in each type universe, we can define a set of logic. 
 This brings up back to the delimma faced by Russell
 (which he resolved by introducing the axiom of reducibility,
@@ -204,9 +211,9 @@ def even (n : ℕ) : Prop := n % 2 = 0
 def even_numbers := { n : ℕ // even n }
 ```
 
-The subtype is actually an existential type $\exist x : \mathbb{N} (\mathrm{even}(x))$.
+The subtype is actually an existential type $\exist p : \mathrm{even(n)} . n$.
 Here `even` is a predicate.
-A term from $\exist x : \mathbb{N} (\mathrm{even}(x))$ is a pair $\langle x, p \rangle$
+A term from this type is a pair $\langle x, p \rangle$
 where $x: \mathbb{N}$ and $p$ is a proof of $x$ being even
 (or we can also understand $p$ as the label of the proposition `even x`,
 given proof irrelevance discussed above).
@@ -218,6 +225,10 @@ in which we have only restricted comprehension, i.e. axiom of separation.
 However because terms in a subtype contain additional information about why they belong to the subtype,
 defining functions on subsets (like $\{x \in \reals | x \geq 0 \}$) is cumbersome.
 This is a common problem in proof assistants.
+
+Note that proof irrelevance is important in defining subtypes.
+If a theorem - as a type - contains multiple proofs,
+then the size of `{ n : ℕ // P n }` is well larger than the size of the set containing numbers with property `P`.
 
 ## Set theoretic semantics
 
@@ -313,6 +324,10 @@ while implicitly allows us to take $y$ from $x$ using $x \in A \to \exist y \in 
 
 The appearance of $A$ in the right hand side of the definition is more non-trivial and requires some subtle discussions about the "smallest" fixed point.
 
+Besides defining infinite types, the inductive type definition scheme can be used to define atoms, add a type tag to an existing value, define tagged unions, and the combination of all these.
+For instance we can define a sum type constructor.
+(It should be noted that there's a subtle difference between sum types and tagged union types: the former is done by a type constructor which has its own type (something like `Type -> Type -> Type : Type 1`), while a tagged union is defined using the `|` syntax in Lean. With the sum type constructor, $(A + B) + C \neq A + (B + C)$, and we only have an isomorphism between the two.
+With tagged union we can define $A + B + C$.)
 
 ## Functions and termination
 

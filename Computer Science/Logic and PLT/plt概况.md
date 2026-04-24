@@ -78,7 +78,7 @@ $\{ x_1 : T_1, x_2 : T_2, \ldots \} r := f(x_1, x_2, \ldots) \{ r : T_{\text{ret
 类型正确性以及其他的正确性如内存安全等都可以做动态检查。
 不过，动态检查在程序真的运行的时候浪费资源，而安全地移除动态检查需要保证一段程序对预期的输入不报任何错误，为了保障这一点，需要对每个程序的正确性做一遍数学证明，而这是困难的。
 我们从而希望在编程语言中引入一些因素，使得写出来的每一段代码都是proof carrying code。
-一个自然的想法是向编程语言内引入一个**类型系统**，即不仅给值贴类型标签，也给表达式（和值合称term）贴上类型标签，然后据此开发一个subsequent calculus来在运行前就自动地检查一段程序是不是会有类型问题。
+一个自然的想法是向编程语言内引入一个**类型系统**，即不仅给值贴类型标签，也给表达式（和值合称term）贴上类型标签，然后据此开发一个natural deduction或者sequent calculus来在运行前就自动地检查一段程序是不是会有类型问题。
 
 这个类型系统可以理解成元语言中关于值的类型和表达式的结果的类型的理论的一个切片。这个类型系统是**对象语言，即待分析的编程语言**中的类型系统。
 如果元语言是Lean，那么一个non-value term$\tau$在元语言中的类型就该是某个`Trm`类型，指代全体term构成的类型：它能够evaluate出来类型`T`的值这件事是通过引入额外的谓词来保证的。
@@ -326,3 +326,5 @@ $$
 则可以通过所谓的type class synthesis得到("[At invocation sites, Lean either synthesizes a suitable instance from the available candidates or signals an error.](https://lean-lang.org/doc/reference/latest/Type-Classes/#--tech-term-synthesizes)")。
 
 从这个翻译立刻可以看出，将subtyping直接加入类型系统（并仍然希望类型系统decidable）其实是指望能自动判断特定的type class instance是否存在，这看着就不像一个很容易的事情。
+
+这个翻译的一个问题是从$A$到$C$的嵌入映射的唯一性。在具体的实现中可以通过只给出唯一的`Cor`实现来解决这个问题。

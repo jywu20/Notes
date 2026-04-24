@@ -1,7 +1,9 @@
 The type system of Julia
 ========
 
-# Dynamic, strong typing
+# Preliminaries
+
+## Dynamic, strong typing
 
 Julia is strongly typed in that all values in Julia have a **concrete type**.
 Type checking in Julia happens at runtime and therefore the language is dynamically typed.
@@ -10,21 +12,60 @@ Dynamical type checking happens in two places:
 2. Variable type declaration. `x::Int` means any assignment to `x` involves a type conversion, and if this is not possible, a type error is thrown.
 
 There are still a lot of "static typing" mechanisms in Julia,
-like declaration of composite types and subtype relations.
-This isn't coincidental.
-In Lean's type theory, the primitives are only [the type universes, dependent arrow types, and inductive types](https://lean-lang.org/theorem_proving_in_lean4/Inductive-Types/#inductive-types).
-Now if we compare the three pillars with industrial languages,
-- We don't have type universes in Julia or in most programming languages.
-- Arrow types, i.e. function definitions and invocation, correspond to what Julia community calls method dispatch (also see [here](#arrow-type)).
-- The "static" mechanisms are [a rather imperfect shadow of inductive types](plt概况.md#结构体和枚举);
-mechanisms to attach a tag i.e. a descriptor to a value seem to never be dynamic even in dynamic programming languages
+in the sense that certain constructs feel more declarative and their behaviors can be described by a type system calculus ($\Gamma \vdash A <: B$ style).
+This includes declaration of composite types and subtype relations.
+
+In Lean's type theory (or the type theory of many other dependent type provers), the primitives are only [the type universes, dependent arrow types, and inductive types](https://lean-lang.org/theorem_proving_in_lean4/Inductive-Types/#inductive-types).
+Now if we compare the three pillars with Julia or more generally industrial languages,
+- We don't have type universes in Julia or in most programming languages. (This can be utilized for better expressiveness, as in System F, but more often it's just for convenience.)
+- Arrow types, i.e. function definitions and invocation, correspond to what Julia community calls method dispatch. The two are different, though a connection can be found [here](#encoding-a---b).
+- The "static" mechanisms in industrial languages are [a rather imperfect shadow of general inductive types](plt概况.md#结构体和枚举).
+
+Mechanisms to attach a tag i.e. a descriptor to a value seem to never be dynamic even in dynamic programming languages
 (in Julia, for instance, a struct is a constant).
+Mechanisms to declare what type tags are legitimate in the language therefore should be static too.
+
+## Models of the type system
 
 Below, when we talk about "Julia's type system without qualification,
 we're talking about the part of Julia related to definition of composite types, subtypes, etc.
-The non-trivial question on the other hand is how to establish a comprehensive *static* type system for Julia that involves *arrow types* (which is, in a trivial sense, always doable - but it's not impossible that whether a term causes a type error has to be decided using mechanisms beyond primitives in standard Julia),
-and whether that type system has a set theoretic semantics.
+The non-trivial questions on the other hand are 
+- how to establish a comprehensive *static sound* type system for Julia, and 
+- what models the type system has. 
+
 Of course, the existing "static" typing mechanisms, namely definition of composite data types, have to be incorporated directly into that static type system.
+
+Several types of models are available when interpreting type systems.
+A **set theoretic** model typically means a model in which types are interpreted as sets *and functions are interpreted as set theoretic functions*.
+Such a model does not always exist, as in the case of System F, because of impredicativity:
+being able to unrestrictedly quantify over all types enables one to create a type corresponding to a proper class.
+Julia has impredicativity in its `UnionAll` construct; but before that, it has `Type::Type`,
+These two make it unlikely to have a true set theoretic interpretation of the type system of Julia without some tweaking.
+
+Another issue related to set theoretic semantics is the halting problem.
+Total computable functions can be interpreted as mathematical functions;
+studying non-halting function is complicated,
+and typically involves something like domain theory if we want good algebraic properties.
+
+The models listed above are *extensional* models in that functions are modeled as their input-output behaviors.
+We also have *intensional* models, in which a function is... just its source code.
+Two functions with the same input-output behaviors are still different if their internal algorithms are different.
+We note that extensional models seem conceptually simpler (as no additional information about implementation is attached to functions),
+but can involve rather complex mathematical objects that in practice never appear in everyday programming.
+($\natnums \to \natnums$ has the same cardinality of $\reals$, for instance.)
+
+On the other hand, intensional models are conceptually more complex, but typically everything in an intensional model is countable.
+It is in theory also possible to study intensional models in which types are regarded as uncountable sets or, without Axiom of Choice, infinite but are not comparable to cardinality of $\natnums$ or $\reals$.
+But it makes no sense as these terms are not constructable.
+That's why intensional models are closer to what actually happens in computers (provided that the memory is always large enough).
+
+We note that partial computable functions can be studied in intensional models too.
+
+A freely available intensional model for an arbitrary typed lambda calculus is the term model,
+in which a type is understood as a set of terms modulo some equivalence
+(so a type contains *values* and not expressions),
+and $A \to B$ is understood as terms that behave like functions.
+Application is syntactic substitution.
 
 # Basic data and types in Julia
 
@@ -110,6 +151,24 @@ Note that the `1` value in the set denoted by `Int64` has the tag `Int64` on it,
 
 ![](julia-basic-types.png)
 
+But the problem of an overly large set doesn't automatically go away.
+For instance we may ask how large is the set denoted by `DataType`.
+Whatever its internal structure is, by virtue of being a set of type descriptors,
+it should be countable or at least is a properly defined set.
+We say "a properly defined set", because if we naively assume that the universe containing all concrete and abstract types is the ZFC set theoretic universe - `Type 0` in Lean - or at least has the same cardinality
+(which is not an unreasonable expectation, as we can imagine we interface Julia with an oracle machine dealing with arbitrarily complex math objects),
+then the set denoted by `DataType`, being "the collection of all types", isn't a set at all and has no cardinality.
+
+Therefore, in order to accommodate `DataType::DataType`, 
+we have to assume dual status of types (as type tags, and as sets),
+and the existence of a type containing all type tags in turn means
+we have to 
+- either give up the bidirectional relation between type tags in the set denoted by `DataType` and nodes in the tree of data types
+(hence there are "ghost" types with only set interpretations, but no type tag), or 
+- assume that each data type has a type tag but the number of data types is limited and the set of all sets denoted by a type is a well defined set.
+
+The interaction between type tags and other parts of the language will impose more size constraints.
+See [here](#dependent-typing).
 
 ## Tuples
 
@@ -142,6 +201,8 @@ We seems to be unable to define a flat tuple with $n$ `Int` elements and $m$ `Fl
 But this isn't necessarily a bad thing, as it would be hard to operate on such a tuple.
 
 `NTuple` can be seen as a counterpart of `Fin n -> a` in Lean.
+Julia's parameterized types  give us almost no way to manipulate the structure of a type according to unknown values,
+and therefore we have to reply on primitives like `NTuple` supplied by the compiler to have limited dependent type features.
 
 ## `Type`
 
@@ -149,7 +210,201 @@ Besides `DataType`, we also have `Type`.
 We have `DataType <: Type`, and this also means `DataType :: Type`,
 as the tag `DataType` is in the set denoted by `DataType`
 and hence has to be in the set denoted by `Type`.
-What non-`DataType` elements `Type` has will be discussed later.
+
+The set denoted by `Type` contains three subsets: the set denoted by `DataType`, the set denoted by `Union`, and the set denoted by `UnionAll`.
+The three types - as tags - are all elements of the set denoted by `DataType`,
+as `Union::DataType` and `UnionAll::DataType`.
+
+We have 
+```julia
+Union{Int, Int} == Int
+Union{Union{Int, Float64}, Int} == Union{Float64, Int}
+```
+and therefore union types in Julia have clear set theoretic semantics.
+
+The meaning of `UnionAll` is to be discussed in TODO.
+Also, note that the set denoted by `Type` does not include functions.
+
+# Functions
+
+## Functions are singletons
+
+It's not straightforward to refer to a function with an arrow type like $f: A \to B$ (called a **method** in Julia terminology) directly in Julia,
+as in Julia, a **function** contains several methods, and which method is called when a function invocation happens is decided by multiple dispatch.
+One may want to define the type of this function as the intersection of the arrow types of its methods (intersection and not union: the set theoretic interpretation of $A \to B$ here is the set of functions that have definition for all elements in $A$ and $f(A) \subseteq B$),
+but this is unwieldy as a typical Julia function has quite a lot of methods;
+a more thorough discussion on the issue can be found in Abstraction in Technical Computing, Sec. 4.6.
+
+Alternatively, a function (in Julia terminology) is regarded as a *name*, and hence should be regarded as a singleton.
+
+```julia
+typeof(sum) # typeof(sum) (singleton type of function sum, subtype of Function)
+show_supertypes(typeof(sum))
+# Output:
+# typeof(sum)
+# Function
+# Any
+```
+
+Each function name belongs to the set denoted by the singleton type containing it,
+and the set denoted by the singleton type is a subset of the set denoted by `Function`.
+
+Conversely a method can be attached to anything - including an existing singleton.
+
+```julia
+(::Nothing)(x) = x
+nothing(1) # 1
+```
+
+Because of the lack of arrow types, type checking of function calls has to be captured by adding a so-called method table in type judgments.
+The paper A Type System for Julia by Chung, Benjamin, Northeastern University, for instance,
+uses a method table in his type system calculus,
+effectively eliminating the need for arrow types (Sec. 4.3).
+
+## Interpretations of `Function`
+
+We have said that interpreting the set denoted by `Function` as the set of *names* of functions is a possible way forward.
+Further, we show that many other approaches have their problems.
+
+In the first attempt,
+suppose the set denoted by `Function` contains functions in an extensional sense.
+We further let it contain functions that are not necessarily computable.
+
+The total number of functions from natural numbers to natural numbers is the same cardinality as the real numbers $\reals$.
+Suppose we allow the set denoted by `Function` to contain all these functions.
+Now, we're able to define functions from `Function` to `Function`,
+and the number of functions is now $\reals^\reals$...
+This gives us the following process (where $A$ is countable):
+$$
+A \\
+A \cup A^A \\
+A \cup A^A \cup (A \cup A^A)^{(A \cup A^A)} \\
+\dots
+$$
+`Function`, if containing all functions, should be lower bounded by the limit of $A_{n+1} = A_n \cup A_n^{A_n}$.
+But obviously, because the cardinality of $A_n^{A_n}$ is always strictly larger than the cardinality of $A_n$, no such fixed point exists.
+
+In the second attempt, we keep the extensional idea but limit the functions to total computable functions.
+
+Because halting is a rather hard problem (note that "a function halts at every point is $\Pi_2$-complete"),
+the set of total computable function is not enumerable and is not decidable.
+However it *is* closed under composition, the usual arithmetic functions, etc.
+and therefore forms a good algebraic structure.
+We can also repeat the iteration above: $A_{n+1} = A_n \cup \text{the set of total computable functions from An to An}$.
+Because the set of total computable function is known to be countable,
+this process has to stabilize finally, resulting in a subset of total computable functions.
+
+So is this viable?
+
+It technically may be with some tweaking. The main issue is,
+if total computable functions from $A$ to $B$ are interpreted extensionally, 
+then one may ask what it means for a function from the set of $A$-to-$B$ functions to $C$ to be computable:
+computable functions take what can be encoded as natural numbers as inputs,
+not an infinite set of input-output pairs.
+Thus the former function should be passed in as a code (which can later be evaluated).
+This sounds rather strange for an extensional model (on the other hand, higher order functions are much more naturally captured in naive set theoretic semantics, as $A \to B$ is just another set, and $(A \to B) \to C$ is naturally defined).
+Basically, this means in our model, when a function is passed into a higher order function, *a* version of its implementation is passed with the source code visible to the higher order function, but what implementation is passed is pretty much random.
+
+In practical developments, either we only call a function passed in, 
+or we have comprehensive reflection and is able to look into its structure.
+The second style is inherently intensional.
+The first style makes no use of the encoding of the function passed in.
+So this model captures none of the two uses.
+
+(We also note that this is an illustration of the distinction between extensional and intensional semantics.
+Programming without function-level reflection admits an extensional semantics,
+but for naturalness the semantics is inevitably large,
+because to avoid treating functions passed to higher order functions as natural numbers, they are most naturally regarded as set theoretic functions,
+and the size of things soon gets out of control.
+Programming with function-level reflection has to have an intensional semantics.)
+
+Therefore, for Julia - or indeed any language with `Function` - no natural extensional semantics is available.
+
+Now we ask: can `Function` be interpreted as the set of function source code in a language?
+This is not directly doable in Julia (but is doable with existential type `FunctionArrow{A, B} where A where B`) as it's not possible to refer to a single function (a method in Julia terminology), but one may still ask if it is doable in a language without multiple dispatch.
+The answer should be yes and this essentially is term model.
+
+## Encoding `A -> B`
+
+It is still possible to simulate arrow types in Julia,
+from the perspective of operational semantics:
+that's to say, whenever the input type is not a given type, a type error is raised.
+This can be done by the following construct:
+
+```julia
+struct FunctionArrow{A, B} 
+    run::Function
+end
+
+function (f::FunctionArrow{A, B})(x::A) where {A, B}
+    return f.run(x)::B
+end
+
+# A function with multiple methods
+function foo(x::Int)
+    x + 1
+end
+
+function foo(x::String)
+    x
+end
+
+foo(5) # 6 
+foo("str") # "str"
+
+foo_packaged = FunctionArrow{Int, Int}(foo)
+foo_packaged(5) # 6
+foo_packaged("std") # MethodError
+```
+
+`foo_packaged` obligatorily calls the `Int -> Int` method of `foo`,
+and if this is not possible, raises a method error.
+That's to say, if `f::FunctionArrow{A, B}` and `x::A`, then `f(x)` causes no method error, if and only if 
+- There exists a `A -> B` method of the function `f.run` in the method table, and 
+- That method causes no method error in its internal code.
+
+Recursively, a no-type-error proof based on this theorem is isomorphic to a standard proof of well-typedness in typed lambda calculi.
+This means if in a Julia program,
+functions are always defined using `FunctionArrow` (perhaps with some macros to automatically extract the type information of a `function` block
+and pass it to a corresponding `FunctionArrow` constructor),
+then type safety can be guaranteed by static check resembling static check of more "canonical" type systems with arrow types. 
+
+Some sort of dependent type-like feature exists in Julia.
+For instance consider the following code snippet:
+
+```julia
+using StaticArrays
+
+function foo(n::Int)::SVector{n, Int64}
+    SVector{n, Int64}(zeros(n))
+end
+
+foo(2)
+# Output:
+# 2-element SVector{2, Int64} with indices SOneTo(2):
+#  0
+#  0
+```
+
+The type of this method is `(n:Int):SVector{n, Int64}`, but this type can't be captured by `FunctionArrow` defined above.
+Therefore Julia lacks the ability to express dependent arrow types with its native type notation.
+
+In simply typed lambda calculus, all we need is the arrow type,
+and composite data types can be encoded into arrow types.
+In Julia we start with composite data types and method dispatch
+and end up getting something similar to arrow type.
+
+## Size issue of `A -> B`
+
+With given `A` and `B`,
+interpretation of `FunctionArrow{A, B}` can be done in two ways - or three ways.
+The first two are aforementioned:
+type tags and sets represented by type tags.
+The third is real arrow type, which itself should be interpreted.
+
+Because the total set of functions, which is denoted by type tag `Function`, is countable,
+the interpretation of `A -> B` can't be a function space in set theory.
+We have to stick to the term model mentioned [here](#interpretations-of-function).
 
 # Parameterized types
 
@@ -174,8 +429,7 @@ f(::Val{2}, ...) = ...
 ```
 
 Second, because of `NTuple`, Julia allows type operations that dynamically decide the structure of the composite type.
-
-Currently, Julia's parametric types are very limited.
+The ability to do so is currently very limited.
 It is for instance not possible to write
 ```julia
 struct B{N}
@@ -211,7 +465,8 @@ It is clear that type-level operations in Julia,
 if defined as regular functions, can't be used in type definitions,
 while type-level operations in type definitions are highly limited.
 
-This constraint certainly has a lot of reasons,
+
+The constraints certainly have a lot of reasons,
 one being machine code optimization relies on concrete types.
 
 Another motivation for this limit is the aforementioned set theoretic semantics of the type system.
@@ -237,110 +492,10 @@ string(Union{Int, Float64}) # "Union{Float64, Int64}"
 And it can trigger some type operations (as in `create_tuple`).
 However, it doesn't define a new type `A` that appears in something like `x::A`.
 
-Second, the only thing 
+Second, in actual parametric type definitions, the 
 
-# Arrow type
+TODO: relation with let polymorphism
 
-## Encoding `A -> B`
-
-It's not straightforward to refer to a function like $f: A \to B$ (called a **method** in Julia terminology) directly in Julia,
-as in Julia, a **function** contains several methods, and which method is called when a function invocation happens is decided by multiple dispatch.
-
-Therefore, a function (in Julia terminology) is just a *name*, and hence should be regarded as a singleton.
-
-```julia
-typeof(typeof) # typeof(typeof) (singleton type of function typeof, subtype of Function)
-```
-
-Conversely a method can be attached to anything - including an existing singleton.
-
-```julia
-(::Nothing)(x) = x
-nothing(1) # 1
-```
-
-However, it is still possible to simulate arrow types in Julia.
-This can be done by the following construct:
-
-```julia
-struct FunctionArrow{A, B} 
-    run::Function
-end
-
-function (f::FunctionArrow{A, B})(x::A) where {A, B}
-    return f.run(x)::B
-end
-
-# A function with multiple methods
-function foo(x::Int)
-    x + 1
-end
-
-function foo(x::String)
-    x
-end
-
-foo(5) # 6 
-foo("str") # "str"
-
-foo_packaged = FunctionArrow{Int, Int}(foo)
-foo_packaged(5) # 6
-foo_packaged("std") # MethodError
-```
-
-`foo_packaged` obligatorily calls the `Int -> Int` method of `foo`,
-and if this is not possible, raises a method error.
-That's to say, if `f::FunctionArrow{A, B}` and `x::A`, then `f(x)` causes no method error, if and only if 
-- There exists a `A -> B` method of the function `f.run`, and 
-- That method causes no method error in its internal code.
-
-Recursively, this means if in a Julia program,
-functions are always defined using `FunctionArrow` (perhaps with some macros to automatically extract the type information of a `function` block
-and pass it to a corresponding `FunctionArrow` constructor),
-then type safety can be guaranteed by static check. 
-
-Some sort of dependent type-like feature exists in Julia: 
-
-```julia
-using StaticArrays
-
-function foo(n::Int)::SVector{n, Int64}
-    SVector{n, Int64}(zeros(n))
-end
-
-foo(2)
-# Output:
-# 2-element SVector{2, Int64} with indices SOneTo(2):
-#  0
-#  0
-```
-
-The type of this method is `(n:Int):SVector{n, Int64}`, but this type can't be captured by `FunctionArrow` defined above.
-Therefore Julia lacks the ability to express dependent arrow types with its native type notation.
-
-In simply typed lambda calculus, all we need is the arrow type,
-and composite data types can be encoded into arrow types.
-In Julia we start with composite data types and method dispatch
-and end up getting an arrow type.
-
-## Size issues
-
-If we treat `Int` or `BigInt` as the true natural number set,
-then the size of a set denoted by a tuple or a struct on top of the true natural number set 
-is identical to $\aleph_0$.
-If we allow functions to be *generic* functions in set theory (a standard practice in studying set theoretic semantics of type systems), however, 
-the cardinality of `FunctionArrow{Int, Int}` is identical to $\reals$.
-This means the set denoted by `Any` is large.
-
-(Studying only partial recursive functions is even more problematic.
-Suppose we have a computable partial function $X \times A \to B$.
-Can we always find a computable partial function $X \to (A \times B)$?
-Note that the latter has to mimic the halting behavior of the former.
-There is no computable operator that takes arbitrary computable behavior depending on $X$ and produces a single program computing it uniformly for all $X$.
-The same problem means studying total recursive functions is problematic as well.
-From another perspective, if we have a oracle machine, 
-it should be imaginable that we write a Julia interface of it,
-and hence `A -> B` should still contain all functions, and not just computable ones.) 
 
 # Unions
 
