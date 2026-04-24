@@ -327,7 +327,8 @@ The appearance of $A$ in the right hand side of the definition is more non-trivi
 Besides defining infinite types, the inductive type definition scheme can be used to define atoms, add a type tag to an existing value, define tagged unions, and the combination of all these.
 For instance we can define a sum type constructor.
 (It should be noted that there's a subtle difference between sum types and tagged union types: the former is done by a type constructor which has its own type (something like `Type -> Type -> Type : Type 1`), while a tagged union is defined using the `|` syntax in Lean. With the sum type constructor, $(A + B) + C \neq A + (B + C)$, and we only have an isomorphism between the two.
-With tagged union we can define $A + B + C$.)
+With tagged union we can define $A + B + C$.
+An optional type is similarly not a sum type as it can't be built by the sum type constructor but can only be built by `|`.)
 
 ## Functions and termination
 
