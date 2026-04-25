@@ -369,22 +369,41 @@ interface User {id: number; name: string;}
 
 请注意这样的类型系统的语义和常见的typed lambda calculus中的类型系统的语义是很不一样的。
 后者中的类型也可以诠释成集合，但这些集合是通过inductive type或类似手法，加上可能的选择公理这种非构造性公理，一次定义出来的，而不是通过“至少具有某某行为”的谓词，从全体可能的值组成的集合中筛选出来的。
-
 因此Typescript中的类型实际上对应于Lean中的集合：Typescript中的`x:T`，对应到Lean中实际上是`(x : TypeScriptAny) (h : x ∈ T)`。
 当然也可以把它理解为Lean中的subtype。
-Typescript中的类型检查仍然可以看成是逻辑推理，但type judgement`x:T`不再应该理解为“命题`T`有证明”而应该理解为“`x`属于`T`”这一命题本身。
-一个Type judgement现在直接对应命题而不是命题-证明对。
+
+这样一来，我们写下`x:T`的时候其实最有技术含量的那部分工作是提前证明定义了`T`的那个谓词对`x`的确成立，或者，如果已知`x:T`，那就是知道定义了`T`的那个谓词对`x`的确成立。
+因此Typescript中的类型检查仍然可以看成是逻辑推理，但type judgement`x:T`不再应该理解为“命题`T`有证明”而应该理解为“`x`属于`T`”这一命题本身。
+这个观察可以通过纯粹语法地将一个Type judgement看成命题而不是命题-证明对来得到，也可以通过在Lean内部工作，而注意到subtype给我们增加了很多证明`x`是否真的满足对应谓词的工作而得到。
 
 ## Concepts
 
 另一些工业语言没有对应于Lean中的subtype或者说Typescript中的interface的概念，但是有对应于`Type -> Prop`的概念。这就是C++的模板中的concept。
 
-用concept可以模拟interface但反过来不行。
+用concept可以模拟interface但反过来不行：
 
-concept（或者说interface）可以看成最广义的typeclass的一个特例，因为总是可以定义一个类似于
+concept（或者说interface）可以看成最广义的typeclass（如Lean中的）的一个特例，因为总是可以定义一个类似于
 ```Lean
 class ConceptClass (α : Type) where
   concept : Concept(α)
 ```
-的typeclass。一些语言如Haskell要求typeclass instance的唯一性，相对应的也可以理解成typeclass的函数名只能被定义一次。
-后者和C++的“某类型需要有某方法”是一致的，但是C++的concept还能限制一个类型的长度等等，所以其实更加灵活。
+的typeclass；当然，这种typeclass也可以要求具有某些性质的函数存在。
+
+这两个功能具体到工业语言中会演变出不同的变体。
+
+- 一些语言如Haskell的typeclass主要是注重后者的。Haskell还要求typeclass instance的唯一性，相对应的也可以理解成typeclass的函数名只能被定义一次，从而模拟了C++的“某类型需要有某方法”的要求，因为一个类型只能有一个同名方法。实际上typeclass instance的唯一性还要再更强一些，因为它也可以要求二元函数（最典型的是等号）具有唯一性。
+- 另一方面，C++的concept还能限制一个类型的长度等，等于说是允许typeclass里面有Prop成员，这个Haskell标准语法是做不到的。
+- 函数式语言通常无法施加“某结构体一定要有名字叫某的字段”的要求，因为它们的底层理论并不给字段命名
+
+## Subtype polymorphism
+
+Subtype polymorphism其实也可以用typeclass模拟。
+假设类型`T`实现了typeclass`C1`（这里的typeclass是比较广义的那种），而凡是实现了`C1`的类型也都实现了`C2`。
+现在调用一个`C1`里面定义的函数，一个头脑正常的人设计的编译器肯定是先去找`C1`中的实现，因为找`C2`中的实现需要做typeclass synthesis。
+这样就可以写`C1`是`C2`的子类了……
+
+（这里是比较structural的实现，nominal的实现可以通过假定一个结构体带有元数据字段，然后指定其值来实现）
+
+因此三种常见的polymorphism来自很不一样的机制。parametric polymorphism其实就是类型函数，而重载是intersection type，而subtyping polymorphism是typeclass+typeclass synthesis的副产品。
+
+由此也可以看出subtype polymorphism属于很容易出错的东西，因为typeclass synthesis非常多变。

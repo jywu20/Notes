@@ -744,7 +744,7 @@ and shifts the goal to the condition of the statement.
 ## Structures
 
 Structures in mathematics are formalized as [type classes](#type-classes).
-To say that `G` has a group structure, one writes [`[grp : Group G]`](https://leanprover-community.github.io/mathematics_in_lean/C07_Structures.html),
+To say that there exists a group structure on `G`, one writes [`[grp : Group G]`](https://leanprover-community.github.io/mathematics_in_lean/C07_Structures.html),
 so that "the corresponding argument should be synthesized using type class inference".
 
 The following statement 
@@ -857,14 +857,14 @@ def double [Add α] (x : α) : α :=
 The brackets ask Lean to find registered instances of "structure" (i.e. type class) `Add` implicitly.
 Once such a instance `add_str` is found, `Add.add` is interpreted as `add_str.add`.
 
-There's a difference between type classes discussed here and traits in Rust (and interfaces in Java, and concepts in C++):
+There's a difference between type classes discussed here and type classes in Haskell and traits in Rust (and interfaces in Java, and concepts in C++):
 it's possible to define multiple instances of a single type class for a type in Lean,
 but it's not possible to do the same for a type in C++ or Rust.
 Traits, concepts, interfaces are meant to impose constraints in the form of 
-"a function with a certain name and a certain type signature exists",
-something we don't care in Lean.
+"a function with a certain *name* and a certain type signature exists",
+something we don't impose strictly in Lean.
 This type of constraints is essential if `object.method` syntax is to be supported,
-as uniqueness of `method` has to be ensured.
+as uniqueness of `method` has to be ensured (though, if we desire, we can in theory use something like `obj::<typeclass_impl>.method(...)`).
 
 ## Implicit variables and elaboration
 

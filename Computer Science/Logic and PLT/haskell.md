@@ -447,7 +447,11 @@ for_ xs $ \x ->
 以上定义的各种变量的语义都是pass-by-value的。
 其他语义如何在pass-by-value的框架下理解可见[此处](variables-and-assignments.md)。
 
-TODO：内存安全
+## monad作为可编程的分号
+
+命令式编程语言中的async-await写法其实也可以理解为一种monad（尤其考虑到它基于Promise，就更像了）。
+常规的命令式语言不能做到将一系列语句任意地切碎以在库的级别支持async-await，而如果我们将这些语句写成do notation，这就能办得到了。
+因此monad可以看成一种可编程的分号。
 
 # 运算符总结
 
