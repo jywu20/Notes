@@ -231,7 +231,7 @@ let (h, x) = read h
 如果要将Rust的borrow checking嵌入进来——reddit上有人觉得[这是做得到的](https://www.reddit.com/r/haskell/comments/6ievgv/comment/dj61335/)得到的大概也就是长成这样的东西。
 当然，这个嵌入的成功至少是说明将内存安全放到类型系统中并没有真的增强类型系统，那也可以说是一个不错的理论结果了。
 
-# 工业语言中的类型和常被研究的类型系统中的类型
+# 工业语言中的具体类型
 
 实用的编程语言，如C，C++，Python等的类型系统和类型论（无论是作为数学基础的类型论，还是研究通常弱于前者的那些类型系统的元理论）中的类型又不一样。
 例如，Rust以外，基本上没有什么主流编程语言有tagged union type的。
@@ -310,40 +310,50 @@ C中的共用体嵌入到函数式编程语言中大概是$\Pi x:I, \mathsf{Opti
 无论如何，在加强$H$为$H':$“有且只有一个字段非空”后，容易证明$\Sigma x:I, A(x)$和$I \times \Pi x : I, A(x) \times H'$之间有双射，且这一双射可以用不判断一个值是否为`Empty`的手段构造出来。
 同理$\Sigma x:I, \mathsf{Option}(A(x))$和$I \times (\Pi x:I, \mathsf{Option}(A(x))) \times H$之间有双射且这一双射可以用不判断一个值是否为`Empty`的手段构造出来。
 
-我们注意到`\Pi x:I, \mathsf{Option}(A(x)) \times H`在内存中可以实现为一段长度为各$A(x)$中最长的那个的空间。
+我们注意到$\Pi x:I, \mathsf{Option}(A(x)) \times H$在内存中可以实现为一段长度为各$A(x)$中最长的那个的空间。
 当然，也可以实现为所有$A(x)$的长度之和，后者基本上就是用结构体强行模仿共用体了。
 
 
 总之，共用体可以在dependent type system中理解，并且也可以用于模拟sum type，可是后者需要付出很大的代价，而且需要额外手动检验诸如“是否有超过一个字段非空”的条件（理论上，对应于和sum type的等价性，在硬件上，对应于一个字段的数据覆盖另一个字段），因此不是很好的设计。
 
-## 子类型，并集
+## 子类型作为数据类型转换
 
-与subtyping紧密相关的是untagged union type，虽然可以只有前者而没有后者，或者只有后者没有前者。
-向类型系统引入这些概念的后果是丢失完整的Curry-Howard correspondence，因为如果$A \lor B$被理解为一个命题，那么对它的证明必须说明被证明的是两个命题中的哪一个。
-然而如果我们采取归纳构造演算或类似系统中的做法，而区分`Prop`和`Type`（见[此处](Lean.md#propositions)），则可以只向`Type n`中引入这些概念。
-由于`Type n`具有集合论语义，而子类型、untagged union type又可以直接看成子集、并集，因此引入这些概念至少不会导致理论不一致。
-
-subtyping不是一个特别好做的东西。一个足够强的dependent type system可以通过[基于type class的coercion](https://lean-lang.org/doc/reference/latest/Coercions/)来模拟：$A <: B$等价于存在一个从$A$到$B$的Cor type class instance。
+所有具有子类型的语言都要允许类型转换。可以通过[基于type class的coercion](https://lean-lang.org/doc/reference/latest/Coercions/)来模拟：$A <: B$等价于存在一个从$A$到$B$的`Cor` type class instance。
+（从`A`到`B`，而不是反过来，例如从`int32`到`int64`有一个数据类型转换映射，因此应该认为`int32 <: int64`;可以将其看成从`A`到`B`的嵌入映射）
 如下的规则
 $$
 \frac{\Gamma \vdash A <: B \quad \Gamma \vdash B <: C}{\Gamma \vdash A <: C}
 $$
 则可以通过所谓的type class synthesis得到("[At invocation sites, Lean either synthesizes a suitable instance from the available candidates or signals an error.](https://lean-lang.org/doc/reference/latest/Type-Classes/#--tech-term-synthesizes)")。
+这样，当调用`f(x : B)`而`x : A`时，就可以自动将`x`的类型转换为`B`。
 
 从这个翻译立刻可以看出，将subtyping直接加入类型系统（并仍然希望类型系统decidable）其实是指望能自动判断特定的type class instance是否存在，这看着就不像一个很容易的事情。
 
 这个翻译的一个问题是从$A$到$C$的嵌入映射的唯一性。在具体的实现中可以通过只给出唯一的`Cor`实现来解决这个问题。
+这个做法是利用了typeclass的运作方式来实现nominal subtyping，即只允许使用用户要求编译器使用的那种方式来做数据类型转换。
 
-因此在这里可以看到两种不同的做类型系统的思路的张力，一种是从Curry-Howard correspondence出发的，一种是从集合论语义出发的。
+一些人反对子类型，因为有子类型的系统的type judgement不仅要包括$x : A$还要包括$A <: B$，后者无论如何没法在Curry-Howard correspondence中得到解释。
 
-## 交集
+# Set theoretic types
+
+本节处理所谓的set theoretic type，即已经有若干具体类型以后，在其上做并、交、分离等集合论操作得到的类型。
+向类型系统引入这些概念的后果是丢失完整的Curry-Howard correspondence，因为如果$A \lor B$被理解为一个命题，那么对它的证明必须说明被证明的是两个命题中的哪一个。
+然而如果我们采取归纳构造演算或类似系统中的做法，而区分`Prop`和`Type`（见[此处](Lean.md#propositions)），则可以只向`Type n`中引入这些概念。
+由于`Type n`具有集合论语义，而子类型、untagged union type又可以直接看成子集、并集，因此引入这些概念至少不会导致理论不一致。
+
+在这里可以看到两种不同的做类型系统的思路的张力，一种是从Curry-Howard correspondence出发的，一种是从集合论语义出发的。
+
+## 并集
+
+与subtyping紧密相关的是untagged union type，虽然可以只有前者而没有后者；只有后者没有前者则更为少见。
+
+## Type as contracts or interfaces; intersection types
 
 有了untagged union type以后自然的会有intersection type。
 显然，假设$A, B, C$均不交，则有$(A \cup B) \cap (B \cup C) = B$.
+然而intersectional type这个名字其实和一些更有趣的东西有关：如果我们将类型看成“至少有这些行为，而不是不多不少正好有这些行为”，那intersection type忽然变得极其有表达能力。
 
-然而intersectional type这个名字其实和一些更有趣的东西有关联。
-
-## Type as contracts or interfaces
+作为第一个例子，`A -> B`如果重新定义为“至少在`A`上有定义，且映射到`B`的函数的集合”，则`(int -> int) & (float -> float)`就是一个被重载的函数的类型。
 
 我们前面说的那种有Curry-Howard correspondence的类型论里面对record type——就是结构体——的处理是把它当作一个元组加上一个标签，类似于说
 ```Lean
@@ -357,12 +367,9 @@ inductive Point where
 ```typescript
 interface User {id: number; name: string;}
 ```
-这个定义应该理解为什么呢？包含`id`和`name`两个字段的结构体的集合吗？这听起来很合理，但实际上可以把它看成“至少包含`id`和`name`两个字段的结构体的集合”。
+这个定义应该理解为什么呢？包含`id`和`name`两个字段的结构体的集合吗？这听起来很合理，但实际上可以把它看成“**至少**包含`id`和`name`两个字段的结构体的集合”。
 
 这立刻意味着，如果有`A`，`B`两个如此定义的结构体类型，则`A & B`不应该理解为空集，而应该理解为包含`A`和`B`中所有字段的结构体的集合。
-
-类似的，`A -> B`现在需要重新定义为“至少在`A`上有定义，且映射到`B`的函数的集合”。
-这样，`(int -> int) & (float -> float)`就是一个被重载的函数的类型。
 
 上面定义的两个`&`类型称为intersection type。
 在具有非平凡的intersection type的类型系统中，至少一些类型应该看成接口，即“至少有某某行为的值的集合”。
@@ -378,32 +385,233 @@ interface User {id: number; name: string;}
 
 ## Concepts
 
-另一些工业语言没有对应于Lean中的subtype或者说Typescript中的interface的概念，但是有对应于`Type -> Prop`的概念。这就是C++的模板中的concept。
+另一些工业语言没有对应于Lean中的subtype（指的是子集表达式，不是`Cor`）或者说Typescript中的interface的概念，但是有对应于`Type -> Prop`的概念。这就是C++的模板中的concept。
+interface约束值，而concept约束类型。
 
-用concept可以模拟interface但反过来不行：
+用concept可以模拟interface（定义一个模板函数，它接受一个类型参数`T`但`T`需要满足一定的concept，这样就对输入此函数的值提出了要求）。
 
 concept（或者说interface）可以看成最广义的typeclass（如Lean中的）的一个特例，因为总是可以定义一个类似于
 ```Lean
+def Concept : Type -> Prop := --...
+
 class ConceptClass (α : Type) where
   concept : Concept(α)
 ```
-的typeclass；当然，这种typeclass也可以要求具有某些性质的函数存在。
+的typeclass；反之，concept只要足够强，也可以用来代替typeclass（即在concept的定义中写下具有特定性质的函数的存在性）。
 
 这两个功能具体到工业语言中会演变出不同的变体。
 
-- 一些语言如Haskell的typeclass主要是注重后者的。Haskell还要求typeclass instance的唯一性，相对应的也可以理解成typeclass的函数名只能被定义一次，从而模拟了C++的“某类型需要有某方法”的要求，因为一个类型只能有一个同名方法。实际上typeclass instance的唯一性还要再更强一些，因为它也可以要求二元函数（最典型的是等号）具有唯一性。
+- 一些语言如Haskell的typeclass，由于缺乏关于类型的谓词，主要是关于具有特定签名的函数的存在性的。Haskell还要求typeclass instance的唯一性，相对应的也可以理解成typeclass的函数名只能被定义一次，从而模拟了C++的“某类型需要有某方法”的要求，因为一个类型只能有一个同名方法。实际上typeclass instance的唯一性还要再更强一些，因为它也可以要求二元函数（最典型的是等号）具有唯一性。
 - 另一方面，C++的concept还能限制一个类型的长度等，等于说是允许typeclass里面有Prop成员，这个Haskell标准语法是做不到的。
 - 函数式语言通常无法施加“某结构体一定要有名字叫某的字段”的要求，因为它们的底层理论并不给字段命名
 
-## Subtype polymorphism
+concept或者trait或者typeclass的谓词性意味着在它们上面做交运算不会有什么争议。
+由此，很多语言都提供typeclass的继承。
 
-Subtype polymorphism其实也可以用typeclass模拟。
+## Set theoretic types and runtime
+
+由于我们通常希望$(A \cup B) \cup B = A \cup B$以及类似的集合恒等式，union type或者intersection type不能做成nominal type。
+
+这马上意味着一件事：当我们拿到一个term形如`x:A`而`A`有子类型的时候，对`A`调用多态函数实际上要求运行时派发，因为只看着类似于`f(x:A) = ...`这样的函数定义，根本不知道在`f`的函数体内部对`x`调用多态函数的时候需要调用哪个版本。
+
+## 子类型和set theoretic type的关系
+
 假设类型`T`实现了typeclass`C1`（这里的typeclass是比较广义的那种），而凡是实现了`C1`的类型也都实现了`C2`。
 现在调用一个`C1`里面定义的函数，一个头脑正常的人设计的编译器肯定是先去找`C1`中的实现，因为找`C2`中的实现需要做typeclass synthesis。
-这样就可以写`C1`是`C2`的子类了……
+因此可以看到，set theoretic type上自然的有子类型关系。
 
-（这里是比较structural的实现，nominal的实现可以通过假定一个结构体带有元数据字段，然后指定其值来实现）
+这里的子类型关系和具体类型之间的子类型关系还不太一样，后者的集合语义是“嵌入”（考虑到具体类型往往是nominal的），而基于set theoretic type的子类型关系的最为典范的语义应该就是子集关系。
 
-因此三种常见的polymorphism来自很不一样的机制。parametric polymorphism其实就是类型函数，而重载是intersection type，而subtyping polymorphism是typeclass+typeclass synthesis的副产品。
+# 面向对象编程
 
-由此也可以看出subtype polymorphism属于很容易出错的东西，因为typeclass synthesis非常多变。
+## 复制粘贴代码
+
+经典的面向对象编程是基于继承的。继承这个事情和subtyping不完全一样。
+
+所谓类`A`继承类`B`有的时候就是说把类`B`的代码复制粘贴到类`A`里面。
+这么一搞以后，数据类型转换总是安全的，从而子类型关系似乎成立。
+但我们是否真的想要给编译器一个对应的`Cor`实例呢？没有理由认为一定要这么做。
+
+## 基于数据类型转换的方法继承
+
+另一方面，如果认可subtyping，则可以自然地获得方法或者说行为的继承。
+Lean中很容易做到一件事，即子类型上的函数如果没有定义，则调用父类型的函数。
+
+这个任务只使用intersection type是不好做的。设`A <: B`。
+如果`B`定义为不同类型的并集，那么我们可以在`B`上面定义一个方法，这个方法的定义可以依赖根据`B`的定义而能使用的各种函数。这是一个extensional的设计。
+可是这个函数的名字如果和定义在`A`上的方法的名字是一样的，那这个方法无法获得extensional的定义，因为定义在`A`和`B`上的同名函数的返回值可以不一样。
+
+然而Lean中有typeclass可以解决这个问题。
+如果`A`和`B`都是具体类型，从而都是nominal的（各自带有各自的类型标签），且存在从`A`到`B`的数据类型转换，且`f`在`A`和`B`上都有定义（类型标签的存在意味着extensional semantics不受威胁，函数仍然可以诠释为集合论意义上的函数），那么函数调用`f(obj)`在任何一个头脑正常的人写出来的编译器里面都会被诠释为`f(obj:A)`，因为调用定义在`A`上的函数不需要typeclass synthesis而调用定义在`B`上的函数需要。
+反之，如果`f`在`A`上没有定义而在`B`上有定义，则typeclass synthesis会发生，而定义在`B`上的函数会被调用。
+
+我们这样就让子类型继承了父类型的方法。
+
+但是这种方法的继承和
+这个模拟存在一个要命的问题：`B obj2 = new A()`这行代码现在就不对了，因为它会导致`obj`被转化为类型`B`，从而完全调用不到`A`上的方法。
+换而言之，这里我们只有继承，而没有subtype polymorphism。
+
+（另一方面，`B obj2 = new A()`在把`B`理解为`A`和其他东西的并集的时候是可以的，但这样如果一个函数在`B`上有定义，不好做在`A`上的特化定义。）
+
+
+
+## 在未知对象具体类型时的动态方法派发
+
+子类型的功能除了数据类型转换以外，还包括方法派发，也称subtype polymorphism。
+大体上说，如果`A <: B`，则有如下的代码
+```java
+A obj = A();
+B obj2 = obj;
+obj2.method_defined_in_A_and_B(); // The method called is defined in A and not B
+```
+
+这个要使用类似Lean的东西来实现是不容易的，但通过typeclass仍然能够凑活着模拟出来。见下例。
+
+```Lean
+-- α is understood as a concrete class that is a subclass of Animal
+-- This typeclass defines what OOP classes can be considered a subclass of Animal
+class Animal (α : Type) where 
+  speak : α -> String
+  move (_ : α) : String := "walks"
+  coat : α -> String
+
+-- The collection of all OOP objects that can be considered an Animal
+-- With proof (inst) of it truly is an Animal 
+structure AnimalClass where 
+  α : Type
+  inst : Animal α
+  val : α
+
+-- α is understood as a concrete class that is a subclass of Dog
+-- This typeclass defines what OOP classes can be considered a subclass of Dog
+class Dog (α : Type) extends Animal α where 
+  speak (_ : α) : String := "woof"
+  trick (_ : α) : String
+ 
+-- The collection of all OOP objects that can be considered a Dog
+-- With proof (inst) of it truly is a Dog
+structure DogClass where 
+  α : Type
+  inst : Dog α
+  val : α
+
+-- α is understood as a concrete class that is a subclass of GoldenRetriever
+-- This typeclass defines what OOP classes can be considered a subclass of GoldenRetriever
+class GoldenRetriever (α : Type) extends Dog α where
+  coat (_ : α) : String := "golden"
+  trick (_ : α) : String := "Get the ball for me."
+
+-- The collection of all OOP objects that can be considered a GoldenRetriever
+-- With proof (inst) of it truly is a GoldenRetriever
+structure GoldenRetrieverClass where 
+  α : Type 
+  inst : GoldenRetriever α
+  val : α
+
+-- Because GoldenRetriever is a concrete class,
+-- a concrete instance of it can be constructed
+structure GoldenRetrieverConstruct
+instance : GoldenRetriever GoldenRetrieverConstruct where
+
+-- α is understood as a concrete class that is a subclass of Bird
+-- This typeclass defines what OOP classes can be considered a subclass of Bird
+class Bird (α : Type) extends Animal α where
+  move (_ : α) : String := "fly" -- This doesn't seem to work
+
+-- The collection of all OOP objects that can be considered a Bird
+-- With proof (inst) of it truly is a Bird
+structure BirdClass where 
+  α : Type 
+  inst : GoldenRetriever α
+  val : α
+
+-- α is understood as a concrete class that is a subclass of BlueJay
+-- This typeclass defines what OOP classes can be considered a subclass of BlueJay
+class BlueJay (α : Type) extends Animal α where
+  coat (_ : α) : String := "blue"
+  speak (_ : α) : String := "jay-jay"
+  move (_ : α) : String := "fly"
+
+-- The collection of all OOP objects that can be considered a BlueJay
+-- With proof (inst) of it truly is a BlueJay
+structure BlueJayClass where 
+  α : Type
+  inst : BlueJay α
+  val : α
+
+-- Because BlueJay is a concrete class,
+-- a concrete instance of it can be constructed
+structure BlueJayConstruct
+instance : BlueJay BlueJayConstruct where
+
+def baredog : GoldenRetrieverConstruct := {}
+-- GoldenRetriever dog = new GoldenRetriver()
+def dog : GoldenRetrieverClass := ⟨GoldenRetrieverConstruct, inferInstance, baredog⟩
+-- Dog dog2 = dog
+def dog2 : DogClass := ⟨GoldenRetrieverConstruct, inferInstance, dog.val⟩
+-- Animal dog3 = dog
+def dog3 : AnimalClass := ⟨GoldenRetrieverConstruct, inferInstance, dog.val⟩
+
+#eval Animal.move baredog -- "walks": Method from grandparent class
+#eval Animal.speak baredog -- "woof" Abstract method from grandparent class implemented in parent class
+#eval Dog.trick baredog   -- "Get the ball for me" Abstract method from parent class implemented in this class
+#eval Animal.coat baredog -- "golden" Method from this class
+```
+
+如果仔细思考一下，会注意到面向对象开发中的一个抽象类，如`Animal`，实际上对应两个东西，一个是一个typeclass `Animal`，它指定了何者能算一个`Animal`，第二个是`AnimalClass`，它可以粗略地看成全体能算`Animal`的对象的集合，它的每一个成员都记录了一个被说成`Animal`的对象实际上是哪个具体类（上面代码中的`α`）建立的，并且记录为什么这个对象被说成是`Animal`（上面代码中的`inst`）。
+这里我们的做法其实和前面的把`{x : int, y : int}`的类型定义看成“至少具有`x`, `y`两个字段”的concept的做法非常像，但是使用typeclass的默认函数实现来完成定义“父类中的方法”。
+对一个具体类，如`GoldenRetriever`，还有第三个概念，就是`GoldenRetrieverConstruct`，它对应于`Animal.α`需要记录的东西。
+
+这样，所谓的`Dog dog = GoldenRetriever()`实际上是`dog : DogClass := ⟨GoldenRetrieverConstruct, inferInstance, baredog⟩`，其中`baredog`由`GoldenRetrieverConstruct`建立。
+
+不过这个模拟并不是很完美，原因有几个。最严重的问题是，Lean中如果typeclass`A`extend typeclass`B`而两者都有对某个函数的默认实现，则**不会**发生默认实现的覆盖。这个需要通过修改typeclass的行为（也再次体现subtype polymorphism有多容易出错）。
+第二个问题是，要调用一个方法，必须给出这个方法第一次被定义的typeclass（这就是那些`Animal.move`, `Dog.trick`中的`Animal` `Dog`等名称的由来）。
+另一个严重的问题是，上面的代码中，只能调用子类方法，无法调用父类方法（如我们无法让一个鸟做到`walk`）。
+这个问题显然和前面所说的extensional semantics有一些关系，因为既然要调用`move`方法必须写`Animal.move`，确实没有办法区分我们到底在调用哪个`move`函数。
+
+对第二个问题的一个解决方法是定义函数
+```Lean
+def speak [Animal α] (_ : α) := Animal.speak _
+```
+来自动地将`speak`函数调用派发到某个typeclass instance上面。
+不过这么写是要报错的，因为Lean要求必须在类型检查的时候就能做完typeclass synthesis，换而言之typeclass不能是核心语言的一部分。
+这也是为什么Rust的trait有静态trait和trait object的区分。
+
+还有一个小问题是`#eval Animal.move dog.val`不能工作。这个似乎和typeclass synthesis的机制有关系，因为报错是`failed to synthesize instance of type class Animal dog.α`。
+虽然`example : dog.α = GoldenRetrieverConstruct := by eq_refl`不报错，但两者相等的信息好像并不能告诉typeclass synthesis，`dog.α`就是`GoldenRetrieverConstruct`。
+
+使用目前标准版本的Lean，为了解决extends的问题，只能做下面的修改
+
+```Lean
+-- We need a macro to copy requirements in Animal here
+class Dog (α : Type) where 
+  speak (_ : α) : String := "woof"
+  trick (_ : α) : String
+
+-- And then copy things defined in Dog to Animal
+def Dog.toAnimal {α : Type} (dog_impl : Dog α) : Animal α := 
+  {
+    speak := dog_impl.speak,
+    -- ... 
+  }
+
+instance {α : Type} [Dog α] : Animal α :=
+  Dog.toAnimal ‹Dog α›
+```
+
+这要涉及一些宏编程，但总的来说是体力活。我懒得做了，但理论上肯定是可行的。
+
+因此三种常见的polymorphism来自很不一样的机制。parametric polymorphism其实就是类型函数，而普通重载可以看作intersection type也可以看作typeclass，而subtyping polymorphism是typeclass+typeclass synthesis的副产品。
+由此也可以看出subtype polymorphism属于很容易出错的东西，因为typeclass synthesis似乎并没有一个典范的定义，所以不同的人凭借直觉做出来的subtype polymorphism可能会有各种细小的差别。
+
+然而这里定义的所谓subtype polymorphism其实和子类型没有直接关系，因为在这里被extend的是typeclass，就是什么`Animal`这些。
+当然，的确可以在`AnimalClass`和`DogClass`之间定义一个嵌入关系，但没什么要求我们必须提前定义好这个关系。
+
+## 面向对象中的继承
+
+现在的情况是面向对象中的继承把mixin，基于数据类型转换的方法继承（在某方法有父类实现没有子类实现的时候调用父类方法），以及方法派发（即将一个子类的对象声明为父类的对象，但与此同时有子类方法时调用子类方法）这三个东西强行用单独的功能实现了。
+
+## 接口
+
+经典的面向对象编程有接口，但接口是nominal的而不是structural的。
+当然，这个可以使用给每个结构体加一个`implemented_interfaces`字段——然后让每个面向对象接口带一个`name ∈ implemented_interfaces`的约束。
