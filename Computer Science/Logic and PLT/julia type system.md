@@ -408,10 +408,66 @@ We have to stick to the term model mentioned [here](#interpretations-of-function
 
 ## Multiple dispatch
 
-Method dispatch can be understood as competing type class syntheses 
-(see [here](plt概况.md#在未知对象具体类型时的动态方法派发))。
-Single dispatch can be interpreted when the type class has only one type parameter;
-multiple dispatch can be interpreted as the type class having multiple type parameters.
+Method dispatch can be taken as the foundation of how typed expressions are used in computation,
+and [to prevent method not found errors](plt概况.md#编程语言动态类型检查) is the main motivation for us to have a static type system.
+On the other hand, method dispatch can also be understood in a static type system
+(though some runtime infrastructure is necessary to fully support *dynamic* method dispatch).
+
+Ad hoc polymorphism is easily captured by type classes.
+Polymorphism related to subtypes can be divided into two parts.
+The first part corresponds to what is called 
+[inheritance of methods in ordinary OOP language](plt概况.md#基于数据类型转换的方法继承),
+in which a function call may be dispatched to a method defined on abstract or union types.
+The second part corresponds to what is called subtype polymorphism,
+in which we can assign a value of a certain type to a variable with its super type 
+[*without* converting the type tag of the value](plt概况.md#在未知对象具体类型时的动态方法派发),
+and when a method is called on the variable, method dispatch works according to the type of the value and not the declared type of the variable.
+
+Because in Julia it's not possible to extend a concrete type,
+using type classes to simulate its method dispatch behavior is actually easier.
+That said, like other kinds of subtype polymorphism, simulating it using type classes strongly depends on the details of type class instance resolution.
+The following intuitive simulation for instance doesn't work in Lean,
+because in Lean coercions aren't a part of type class instance searching:
+
+```Lean
+-- Requirements of being a subtype of Abstract; none in Julia
+class Abstract (α : Type)
+-- An abstract type, to which concrete types can be associated to
+structure AbstractType where 
+  α : Type
+  inst : Abstract α
+  val : α
+
+-- Subtype declaration, so a Nat term can be savely placed in AbstractType
+instance : Abstract Nat where 
+-- Should be handled by macro
+@[coe] def nat_to_abstract_type (x : Nat) : AbstractType := ⟨Nat, inferInstance, x⟩ 
+
+-- Subtype declaration, so a String term can be savely placed in AbstractType
+instance : Abstract String where
+-- Should be handled by macro
+@[coe] def str_to_abstract_type (x : String) : AbstractType := ⟨String, inferInstance, x⟩
+
+universe u
+class MyAdd (α : Type u) (β : Type u) where
+  add : α → β → AbstractType
+
+instance : MyAdd Nat Nat where
+  add (x : Nat) (y : Nat) := ⟨Nat, inferInstance, x + y⟩
+
+instance : MyAdd String String where 
+  add (x : String) (y : String) := ⟨String, inferInstance, x ++ y⟩
+
+instance : MyAdd AbstractType AbstractType where 
+  add (_ : AbstractType) (_ : AbstractType) := ⟨String, inferInstance, "In progress"⟩
+
+#eval (MyAdd.add 1 2).val
+#eval (MyAdd.add "Hello, " "world").val
+#eval (MyAdd.add 1 "Hello") -- Will fail because coercions in Lean are not part of typeclass inference search
+```
+
+The idiomatic way to achieve the intended behavior in Lean is to use tagged union 
+(basically, collecting all `<:` into one place, thus substantially changing the code structure).
 
 # Parameterized types
 
