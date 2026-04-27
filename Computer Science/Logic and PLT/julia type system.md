@@ -406,6 +406,13 @@ Because the total set of functions, which is denoted by type tag `Function`, is 
 the interpretation of `A -> B` can't be a function space in set theory.
 We have to stick to the term model mentioned [here](#interpretations-of-function).
 
+## Multiple dispatch
+
+Method dispatch can be understood as competing type class syntheses 
+(see [here](plt概况.md#在未知对象具体类型时的动态方法派发))。
+Single dispatch can be interpreted when the type class has only one type parameter;
+multiple dispatch can be interpreted as the type class having multiple type parameters.
+
 # Parameterized types
 
 ## Parameters in type definition
