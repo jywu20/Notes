@@ -259,7 +259,7 @@ The interpretation of $\mathtt{Prop}$ is simply $\{0, 1\}$.
 if we seek to interpret it in set theory.)
 
 Non-$\mathtt{Prop}$ types on the other hands are sets.
-Functions are set-theoretic functions (dependent $\forall$ types are interpreted as fiber bundles).
+Functions are set-theoretic functions (dependent $\forall$ types are interpreted as the set of sections of a fiber bundle).
 Inductive types are translated to inductive definitions of sets
 and the strict positivity condition assumes that we have a monotone operator over sets that admit a least fix-point.
 The same goes for inductive predicates.
