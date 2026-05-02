@@ -33,7 +33,11 @@ Such a system of course trivially exists but the nontrivial problem is whether i
 Of course, the existing "static" typing mechanisms, namely definition of composite data types, have to be incorporated directly into that static type system.
 
 Below, when we talk about "Julia's type system without qualification,
-we're talking about the part of Julia related to definition of composite types, subtypes, etc.
+we're talking about the part of Julia's type mechanism related to definition of composite types, subtypes, etc.,
+that's to say, what is used to build data structures - without guaranteeing correctness.
+(Even in compiled languages this is not rare: 
+in Fortran, for instance, we have dependent parameterized types,
+which however don't prevent you from assigning an array with an unknown length to an array with a declared length.)
 
 ## Models of the type system
 
@@ -452,14 +456,16 @@ Because in Julia it's not possible to extend a concrete type,
 using type classes to simulate its method dispatch behavior is actually easier.
 That said, like other kinds of subtype polymorphism, simulating it using type classes strongly depends on the details of type class instance resolution.
 The following intuitive simulation for instance doesn't work in Lean,
-because in Lean coercions aren't a part of type class instance searching:
+because in Lean coercions aren't a part of type class instance searching.
+(The idiomatic way to achieve the intended behavior in Lean is to use tagged union 
+basically, collecting all `<:` into one place, thus substantially changing the code structure).
 
 ```Lean
 -- Requirements of being a subtype of Abstract; none in Julia
 class Abstract (α : Type)
 -- An abstract type, to which concrete types can be associated to.
 -- This is to make sure expressions like v::AbstractType = 6 do not erase the concrete type information of the value on the RHS.
--- Can also be understood as dyn trait in Rust.
+-- Can also be understood as dyn trait i.e. trait objects in Rust.
 structure AbstractType where 
   α : Type
   inst : Abstract α
@@ -497,9 +503,6 @@ instance : MyAdd AbstractType AbstractType where
 #eval (MyAdd.add "Hello, " "world").val
 #eval (MyAdd.add 1 "Hello") -- Will fail because coercions in Lean are not part of typeclass inference search
 ```
-
-The idiomatic way to achieve the intended behavior in Lean is to use tagged union 
-(basically, collecting all `<:` into one place, thus substantially changing the code structure).
 
 The main non-type class formalization of multiple dispatch is intersection type,
 which fails to capture the fact that the method defined on an abstract type may return a different value for the same input to the return value of the method defined on a concrete type.

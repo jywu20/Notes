@@ -17,13 +17,13 @@ can be neatly considered as *types* - dependent types, actually -
 as in general purpose languages.
 That's to say, whether the behavior of variables and arguments with these attributes 
 in function calls and assignments 
-can be captured by subtyping, implicit case, etc.
+can be captured by subtyping, implicit type conversion, etc.
 The behaviors described below are
 exemplified in fortran-reference/array-passing.f90.
 
 It seems in a function call, 
-the dummy variable will try its best to convert the 
-it can be clearly seen in attempts to convert Fortran codes to C/C++
+the dummy variable will try its best to convert the input to the declared type.
+This semantics can be clearly seen in attempts to convert Fortran codes to C/C++
 (like https://cci.lbl.gov/fable/)
 where we have  
 ```C++

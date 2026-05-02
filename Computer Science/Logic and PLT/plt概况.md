@@ -401,7 +401,7 @@ def Concept : Type -> Prop := --...
 class ConceptClass (α : Type) where
   concept : Concept(α)
 ```
-的typeclass；反之，concept只要足够强，使得能够在concept的定义中写下具有特定性质的函数的存在性（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实），也可以用来代替typeclass。
+的typeclass；反之，concept只要足够强，使得能够在concept的定义中写下具有特定性质的函数的存在性（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实，其中$x$指代typeclass instance；这里$\exist x P(x)$在实际书写的时候可能是$\exist x : \mathsf{Type} . P(x)$，其中$P$是concept。由于proof irrelevance，如果我们在讨论的函数是可计算的，需要将$\exist$替换为$\sum$，以保证能从$\exist x : P . \mathsf{True}$的一个实例中取出一个具体的类型$x$），也可以用来代替typeclass。
 
 这两个功能具体到工业语言中会演变出不同的变体。
 

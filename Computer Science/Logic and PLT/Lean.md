@@ -168,10 +168,15 @@ as different *propositions* are not equal to each other.)
 
 We note that this is consistent with the usual intuition of mathematicians but is against homotopy type theory.
 Suppose $P: \textsf{Prop}$. The expression $p: P$ actually means $p$ is a proof of $P$,
-but can be conveniently understood as giving $P$ a label $p$.
+but because there is only one proof, the expression can also be conveniently understood as giving $P$ a label $p$.
 It also invalidates the computational interpretation of proofs:
 for instance, when multiple things satisfying the same property exist,
 what should be returned by the proof of the statement that "things satisfying the property exist"?
+
+One consequence of proof irrelevance is we need to distinguish between $\exists x : A, P (x)$ and $\sum x : A, P(x)$.
+The former resides in $\textsf{Prop}$, while the second resides in the type universe of $A$.
+Suppose $p : \exists x : A, P (x)$. We cannot get a concrete instance $x:A$ that satisfies $P(x)$ from $p$, because there's only one $p$.
+On the other hand it is possible to get a concrete instance of $x$ from $\sum x:A, P(x)$ (the latter being equivalent to subtypes, when $P$ is a predicate).
 
 (This is mentioned in the official documentation: ["Introducing a proof-irrelevant Prop and marking theorems irreducible represents a first step towards separation of concerns. The intention is that elements of a type p : Prop should play no role in computation, and so the particular construction of a term prf : p is “irrelevant” in that sense. "](https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/#axioms-and-computation))
 
@@ -211,7 +216,7 @@ def even (n : ℕ) : Prop := n % 2 = 0
 def even_numbers := { n : ℕ // even n }
 ```
 
-The subtype is actually an existential type $\exist p : \mathrm{even(n)} . n$.
+The subtype is actually an existential type $\exist p : \mathrm{even}(n) . n$.
 Here `even` is a predicate.
 A term from this type is a pair $\langle x, p \rangle$
 where $x: \mathbb{N}$ and $p$ is a proof of $x$ being even
@@ -329,6 +334,10 @@ For instance we can define a sum type constructor.
 (It should be noted that there's a subtle difference between sum types and tagged union types: the former is done by a type constructor which has its own type (something like `Type -> Type -> Type : Type 1`), while a tagged union is defined using the `|` syntax in Lean. With the sum type constructor, $(A + B) + C \neq A + (B + C)$, and we only have an isomorphism between the two.
 With tagged union we can define $A + B + C$.
 An optional type is similarly not a sum type as it can't be built by the sum type constructor but can only be built by `|`.)
+
+Another remark is, expressions constructed using different constructors are not equal to each other.
+This is built-in by the pattern matching construct:
+terms constructed by different constructors can only be dealt with in different branches, and from the fact it can be proven that the terms are not equal.
 
 ## Functions and termination
 
