@@ -394,14 +394,15 @@ interface约束值，而concept约束类型。
 
 用concept可以模拟interface（定义一个模板函数，它接受一个类型参数`T`但`T`需要满足一定的concept，这样就对输入此函数的值提出了要求）。
 
-concept（或者说interface）可以看成最广义的typeclass（如Lean中的）的一个特例，因为总是可以定义一个类似于
+concept（或者说interface）也可以看成最广义的typeclass（如Lean中的）的一个特例，因为总是可以定义一个类似于
 ```Lean
 def Concept : Type -> Prop := --...
 
 class ConceptClass (α : Type) where
   concept : Concept(α)
 ```
-的typeclass；反之，concept只要足够强，使得能够在concept的定义中写下具有特定性质的函数的存在性（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实，其中$x$指代typeclass instance；这里$\exist x P(x)$在实际书写的时候可能是$\exist x : \mathsf{Type} . P(x)$，其中$P$是concept。由于proof irrelevance，如果我们在讨论的函数是可计算的，需要将$\exist$替换为$\sum$，以保证能从$\exist x : P . \mathsf{True}$的一个实例中取出一个具体的类型$x$），也可以用来代替typeclass。
+的typeclass；反之，concept只要足够强，使得能够在concept的定义中写下具有特定性质的函数的存在性，也可以用来代替typeclass。
+（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实，其中$x$指代typeclass instance；这里$\exist x P(x)$在实际书写的时候可能是$\exist x : \mathsf{Type} . P(x)$，其中$P$是concept。另外请注意proof irrelevance的问题，在有proof irrelevance的系统中，“具有特定性质的函数的存在性”中所谓的“存在性”不是$\exist$而是$\sum$，否则不能从$\exist x : P . \mathsf{True}$的一个实例中取出一个具体的$x$。如果一门语言中的concept中，存在性是proof irrelevant的，那么这个语言中的concept和typeclass就不等价，前者无法用于包装一个未知但存在的东西。）
 
 这两个功能具体到工业语言中会演变出不同的变体。
 
@@ -411,6 +412,15 @@ class ConceptClass (α : Type) where
 
 concept或者trait或者typeclass的谓词性意味着在它们上面做交运算不会有什么争议。
 由此，很多语言都提供typeclass的继承。
+
+## 在Lean中诠释intersection function type
+
+可以定义一个`Func` typeclass，指定某个函数与某个term（是否是函数不论）有某种关联：
+```Lean
+class Func (F : Type) (A : Type) (B : Type) where
+  apply : F -> A -> B
+```
+然后如果我们同时有`instance Func F A B` and `instance Func F C D`，则可以认为$F \subseteq (A \to B) \cup (C \to D)$。
 
 ## Set theoretic types and runtime
 
@@ -568,21 +578,9 @@ def dog3 : AnimalClass := ⟨GoldenRetrieverConstruct, inferInstance, dog.val⟩
 
 这样，所谓的`Dog dog = GoldenRetriever()`实际上是`dog : DogClass := ⟨GoldenRetrieverConstruct, inferInstance, baredog⟩`，其中`baredog`由`GoldenRetrieverConstruct`建立。
 
-不过这个模拟并不是很完美，原因有几个。最严重的问题是，Lean中如果typeclass`A`extend typeclass`B`而两者都有对某个函数的默认实现，则**不会**发生默认实现的覆盖。这个需要通过修改typeclass的行为（也再次体现subtype polymorphism有多容易出错）。
-第二个问题是，要调用一个方法，必须给出这个方法第一次被定义的typeclass（这就是那些`Animal.move`, `Dog.trick`中的`Animal` `Dog`等名称的由来）。
-另一个严重的问题是，上面的代码中，只能调用子类方法，无法调用父类方法（如我们无法让一个鸟做到`walk`）。
-这个问题显然和前面所说的extensional semantics有一些关系，因为既然要调用`move`方法必须写`Animal.move`，确实没有办法区分我们到底在调用哪个`move`函数。
+不过这个模拟并不是很完美，原因有几个。
 
-对第二个问题的一个解决方法是定义函数
-```Lean
-def speak [Animal α] (_ : α) := Animal.speak _
-```
-来自动地将`speak`函数调用派发到某个typeclass instance上面。
-不过这么写是要报错的，因为Lean要求必须在类型检查的时候就能做完typeclass synthesis，换而言之typeclass不能是核心语言的一部分。
-这也是为什么Rust的trait有静态trait和trait object的区分。
-
-还有一个小问题是`#eval Animal.move dog.val`不能工作。这个似乎和typeclass synthesis的机制有关系，因为报错是`failed to synthesize instance of type class Animal dog.α`。
-虽然`example : dog.α = GoldenRetrieverConstruct := by eq_refl`不报错，但两者相等的信息好像并不能告诉typeclass synthesis，`dog.α`就是`GoldenRetrieverConstruct`。
+第一个问题是，Lean中如果typeclass`A`extend typeclass`B`而两者都有对某个函数的默认实现，则**不会**发生默认实现的覆盖。这个需要通过修改typeclass的行为来修正（也再次体现subtype polymorphism有多容易出错）。
 
 使用目前标准版本的Lean，为了解决extends的问题，只能做下面的修改
 
@@ -604,6 +602,24 @@ instance {α : Type} [Dog α] : Animal α :=
 ```
 
 这要涉及一些宏编程，但总的来说是体力活。我懒得做了，但理论上肯定是可行的。
+
+第二个问题是，要调用一个方法，必须给出这个方法第一次被定义的typeclass（这就是那些`Animal.move`, `Dog.trick`中的`Animal` `Dog`等名称的由来）。
+对第二个问题的一个解决方法是定义函数
+```Lean
+def speak [Animal α] (x : α) := Animal.speak x
+```
+来自动地将`speak`函数调用派发到某个typeclass instance上面。
+
+（Rust的trait object或者说dyn trait和上面这个还不太一样，因为dyn trait参数的类型被声明为`dyn Animal`，实际上对应于前面所说的`AnimalClass`，但又拿不到其原类型（即`inst`实际上被做成了proof irrelevant的），那这样就写不出类似于`def great [Animal α] (x : α) (y : α) := ...`这样的函数。）
+
+第三个问题是，上面的代码中，只能调用子类方法，无法调用父类方法（如我们无法让对一个鸟调用某种`move`函数使得其输出为`walk`）。
+这个问题显然和前面所说的extensional semantics有一些关系，因为`Animal.move`指代的显然是“满足`Animal` typeclass的那个函数”，而一旦它被覆写了，没有理由要求对`Animal.move`调用使用的是`Animal` typeclass的默认实现。
+要解决此问题，需要额外引入一些语法让我们能区分默认实现和可被覆写的实现（实际上我们这里在讨论的就是虚函数的问题）。
+
+第四个问题是`#eval Animal.move dog.val`不能工作。这个似乎和typeclass synthesis的机制有关系，因为报错是`failed to synthesize instance of type class Animal dog.α`。
+虽然`example : dog.α = GoldenRetrieverConstruct := by eq_refl`不报错，但两者相等的信息好像并不能告诉typeclass synthesis，`dog.α`就是`GoldenRetrieverConstruct`。
+
+但以上四个问题都不是原则性的，都可以通过修改Lean的elaborator解决。
 
 因此三种常见的polymorphism来自很不一样的机制。parametric polymorphism其实就是类型函数，而普通重载可以看作intersection type也可以看作typeclass，而subtype polymorphism是typeclass+typeclass synthesis的副产品。
 由此也可以看出subtype polymorphism属于很容易出错的东西，因为typeclass synthesis似乎并没有一个典范的定义，所以不同的人凭借直觉做出来的subtype polymorphism可能会有各种细小的差别。
