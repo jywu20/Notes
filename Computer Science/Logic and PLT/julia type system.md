@@ -6,463 +6,281 @@ The type system of Julia
 ## Dynamic, strong typing
 
 Julia is strongly typed in that all values in Julia have a **concrete type**.
+(The term *strongly typed* is ambiguous though.)
+
 Type checking in Julia happens at runtime and therefore the language is dynamically typed.
+We especially note that type errors in Julia can be caught and handled with `try`-`catch`,
+which clearly deviates from the expected behavior of typed lambda calculi.
+
 Dynamical type checking happens in two places:
-1. Function dispatch. That's to say, if a function invocation does not match an existing function definition, then a type error is thrown.
+1. Function dispatch. That's to say, if a function invocation does not match an existing function definition, then a type error (actually a `MethodError`, but below we consider it a subtype of type errors) is thrown.
 2. Variable type declaration. `x::Int` means any assignment to `x` involves a type conversion, and if this is not possible, a type error is thrown.
 
+## "Static" typing mechanisms in Julia
+
 There are still a lot of "static typing" mechanisms in Julia,
-in the sense that certain constructs feel more declarative and their behaviors can be described by a type system calculus ($\Gamma \vdash A <: B$ style).
+in the sense that certain constructs feel more declarative and their behaviors can be described by a type system calculus ($\Gamma \vdash \phi$ style).
 This includes declaration of composite types and subtype relations.
 
 In Lean's type theory (or the type theory of many other dependent type provers), the primitives are only [the type universes, dependent arrow types, and inductive types](https://lean-lang.org/theorem_proving_in_lean4/Inductive-Types/#inductive-types).
-Now if we compare the three pillars with Julia or more generally industrial languages,
-- We don't have type universes in Julia or in most programming languages. (This can be utilized for better expressiveness, as in System F, but more often it's just for convenience.)
+Examining these three pillars in Julia or more generally industrial languages,
+
+- We don't have explicit type universes in Julia or in most programming languages. 
+  In some systems this has theoretic consequences 
+  (like the absence of set theoretic interpretation of System F).
+  In industrial languages, though, this is mostly about keeping things simple,
+  and often something equivalent to stratification is actually available.
 - Arrow types, i.e. function definitions and invocation, correspond to what Julia community calls method dispatch. The two are different, though a connection can be found [here](#encoding-a---b).
 - The "static" mechanisms in industrial languages are [a rather imperfect shadow of general inductive types](plt概况.md#结构体和枚举).
 
-Mechanisms to attach a tag i.e. a descriptor to a value seem to never be dynamic even in dynamic programming languages
-(in Julia, for instance, a struct is a constant).
+The *definition* part of all the three pillars is almost always static.
+In Julia, for instance, a struct is a constant.
 Mechanisms to declare what type tags are legitimate in the language therefore should be static too.
+Whether or not a language has dynamic typing is about when 
+(statically defined) functions or type constructors are called in an inappropriate way, what happens.
 
-## Statically capturing the behaviors of a dynamically typed language
+## Statically capturing well-typedness of a dynamically typed language
 
-One may wonder whether we can have a static type system that gives all and only terms in Julia that do not produce type errors.
-Such a system of course trivially exists but the nontrivial problem is whether it is decidable or consistent or can be formulated with concepts already defined in standard Julia.
+One may wonder whether we can have a *static* type system that gives all and only terms in Julia that do not produce type errors.
+Note that here we want to *not generate* type errors,
+not to catch and handle them.
 
-Of course, the existing "static" typing mechanisms, namely definition of composite data types, have to be incorporated directly into that static type system.
+Such a system of course trivially exists - but the nontrivial problem is whether it is decidable or consistent or can be formulated with concepts already defined in standard Julia
+(the existing "static" typing mechanisms, namely definition of composite data types, have to be incorporated directly into that static type system,
+which is what we mean by "concepts already defined").
 
-Below, when we talk about "Julia's type system without qualification,
-we're talking about the part of Julia's type mechanism related to definition of composite types, subtypes, etc.,
-that's to say, what is used to build data structures - without guaranteeing correctness.
-(Even in compiled languages this is not rare: 
-in Fortran, for instance, we have dependent parameterized types,
-which however don't prevent you from assigning an array with an unknown length to an array with a declared length.)
+There has been studies on decidability of Julia's subtyping
+(unfortunately the answer is not).
 
-## Models of the type system
+In this note we do not attempt to do a research-level analysis of Julia's type system or to formalize it as yet another type calculus.
+What intrigues us is whether a static type system required to rule out type errors can be easily *embedded* into a typical type *theory*,
+like that of Lean - or does it possess some more unusual properties and has the potential to open a non-mainstream family of type system calculi.
+That's to say, whether we're able to motivate concepts in Julia as design patterns in a type theory.
 
-We may also wonder the *semantics* or *model* of the type system.
+Embedding into a strong type system is not really a mainstream approach to study type systems,
+as it says nothing about decidability or soundness.
+That said, in informal discussions on type systems,
+comparison with proof assistant-level type theories is often made ("C++'s concept is `Prop`-like and it's not always easy to find why a type satisfies a concept").
+It's also possible to find academic discussions like The End of History? Using a Proof Assistant to Replace Language Design with Library Design.
 
-Several types of models are available when interpreting type systems.
-A **set theoretic** model typically means a model in which types are interpreted as sets *and functions are interpreted as set theoretic functions*.
-Such a model does not always exist, as in the case of System F, because of impredicativity:
-being able to unrestrictedly quantify over all types enables one to create a type corresponding to a proper class.
-Julia has impredicativity in its `UnionAll` construct; but before that, it has `Type::Type`,
-These two make it unlikely to have a true set theoretic interpretation of the type system of Julia without some tweaking.
+## Type classes
 
-Another issue related to set theoretic semantics is the halting problem.
-Total computable functions can be interpreted as mathematical functions;
-studying non-halting function is complicated,
-and typically involves something like domain theory if we want good algebraic properties.
+The multiple dispatch system of Julia mixes overloading (i.e. ad hoc polymorphism),
+subtype polymorphism and also parametric polymorphism.
+All three can be [expressed by type classes with appropriate type class synthesis strategies](plt概况.md#在未知对象具体类型时的动态方法派发).
+The fine details of polymorphism can alternatively be framed as the fine details of type class synthesis strategies.
+For instance, duck typing or structural typing means type classes are synthesized whenever possible in rather radical way,
+often because the only constraints that can be expressed in the language are statements like "the object has a property named such and such", corresponding to something like 
 
-The models listed above are *extensional* models in that functions are modeled as their input-output behaviors.
-We also have *intensional* models, in which a function is... just its source code.
-Two functions with the same input-output behaviors are still different if their internal algorithms are different.
-We note that extensional models seem conceptually simpler (as no additional information about implementation is attached to functions),
-but can involve rather complex mathematical objects that in practice never appear in everyday programming.
-($\natnums \to \natnums$ has the same cardinality of $\reals$, for instance.)
+```Lean
+class Named (α : Type) where 
+  has_name (x : α) : has_method(x, "name")
+```
 
-On the other hand, intensional models are conceptually more complex, but typically everything in an intensional model is countable.
-It is in theory also possible to study intensional models in which types are regarded as uncountable sets or, without Axiom of Choice, infinite but are not comparable to cardinality of $\natnums$ or $\reals$.
-But it makes no sense as these terms are not constructable.
-That's why intensional models are closer to what actually happens in computers (provided that the memory is always large enough).
+On the other hand, a rather conservative type class synthesis makes subtyping without explicit conversions impossible.
 
-We note that partial computable functions can be studied in intensional models too.
+We sometimes say more conservative type class synthesis strategies *nominal*.
+The reason to adopt this terminology is obvious, as a type implementing a type class leaves a "mark" on that type, 
+though it should be noticed that types classes per se are *not* types containing types.
 
-A freely available intensional model for an arbitrary typed lambda calculus is the term model,
-in which a type is understood as a set of terms modulo some equivalence
-(so a type contains *values* and not expressions),
-and $A \to B$ is understood as terms that behave like functions.
-Application is syntactic substitution.
+# Where do type errors appear in Julia?
 
-# Basic data and types in Julia
+Below we discuss where type errors appear in Julia - and what static mechanism rules them out.
 
-## The tree of data types
+## Function calls and overloading
 
-Concrete types are defined either via `struct` or via `primitive type`.
-They can be declared to belong to different abstract types,
-thus forming a tree of types connected by subtype relation `<:`.
-At the top of the tree sits `Any`.
+We focus on overloading first.
+
+(Note that ad hoc polymorphism, that is, overloading, can be formalized using intersection type.
+Intersection type however does not capture the whole of subtype polymorphism.)
+
+In Julia all function definitions allow overloading.
+(Unlike, say, Rust, in which ordinary function definitions do not allow overloading,
+although we have the trait system to solve the problem).
+Therefore *all* function definitions in Julia,
+under the type class-oriented perspective sketched above,
+can be considered as implementation of type classes:
+type errors are ruled out by not making a function call that doesn't fit one of the implementations.
+
+Interestingly, this notion of functions as type classes is consistent with the notion in the official documentation,
+which talks about [informal interfaces](https://docs.julialang.org/en/v1/manual/interfaces/).
+
+
+In Julia terminology, an instance of a function signature - conceived as a type class here - is called a *method*.
+
+---
+
+One thing to note is Julia overloading imposes no constraint on the number of arguments of a function.
+```julia
+id(x::Int) = x
+id(x::Int, y::Int) = x == y
+```
+But this kind of overloading can still be easily defined as a type class acting on a tuple.
+```Lean
+class IdClass (α : Type) (β : Type) where
+  id : α → β
+
+-- Corresponds to a single-argument Julia function
+instance : IdClass Nat Nat where
+  id x := x
+
+-- Corresponds to a two-argument Julia function
+instance : IdClass (Nat×Nat) Bool where 
+  id p := p.1 = p.2
+
+#reduce (IdClass.id (1,1) : Bool) -- true; 
+-- the return type has to be specified in Lean as it doesn't assume that 
+-- for each input type, there can be only one implementation.
+```
+
+## Subtype and multiple dispatch
+
+Subtype polymorphism in Julia takes place when there isn't a concrete method corresponding to a function call.
+A function call fails when there is no subtype relation from 
+the tuple containing all input arguments to the tuple of parameters of any method supplied,
+or when there are multiple equally "distant" methods on the hierarchy of subtype relations,
+an example of which is shown below. 
 
 ```julia
-function show_supertypes(T)
-    while T != Any
-        println(T)
-        T = supertype(T)
-    end
-    println(Any)
+f(x::Int, y::Any) = 1
+f(x::Any, y::Int) = 2
+f(1, 1) # ERROR: MethodError: f(::Int64, ::Int64) is ambiguous.
+
+# Treating the input of the function as a tuple, the subtype relations below are why there's an ambiguity
+Tuple{Int, Int} <: Tuple{Any, Int} # true
+Tuple{Int, Int} <: Tuple{Int, Any} # true
+```
+
+Subtype polymorphism can be simulated using type classes as well (see below).
+Both types of method errors can be understood as type class instance synthesis failures (including ambiguities).
+
+---
+
+Subtype relations can be naively conceived as subset relations.
+In actual development, though, this is not always wieldy,
+as it is subtype polymorphism that matters the most,
+which lacks an explanation if subtyping is just subset relation.
+The fact that we can define one function on a type and one on its supertype
+is also not well captured by a naive subset interpretation.
+
+Alternatively, we can use type classes to implement subtyping.
+The "fallback" behavior of function calls, also known as method inheritance, in subtyping can be simulated by coercion:
+if `A <: B`, this means there exists a coercion mapping from the former to the latter.
+If function `f` is defined on both type `A` and type `B`,
+then its invocation on `x::A` naturally invokes the `f(x::A)` implementation,
+but if not, then the compiler tries to coerce `x` to another type - `B` in this case -
+and the `f(x::B)` implementation is called.
+
+Simulating subtype polymorphism requires more efforts.
+We have to regard a type `A` in the programming language as three things:
+- a type in the type theoretic sense when `A` appears in expressions like `new A(args)`,
+- a trait describing what behaviors the subtypes of `A` should have, and
+- a (tagged) union of all subtypes of `A`, in expressions like `A a = ...`.
+
+It shouldn't be hard to automatically generate the coercion mappings.
+Twisting of type class synthesis mechanisms may be needed 
+in order for coercion mappings - instances of `Coe` - to be correctly identified
+when function calls appear.
+
+In Julia, supertypes are obligatorily not concrete.
+This simplifies the picture above considerably.
+We have several kinds of non-concrete types, i.e. supertypes.
+They are [abstract types](#abstract-types), 
+[`Union` types](#union-types) and `UnionAll` types.
+
+A concrete type has the status of a type in type theory,
+and a non-concrete is to be understood as a type class that imposes constraints to what can be it subtypes,
+or a union of its subtypes, depending on the context.
+
+The subtyping rules and the multiple dispatch algorithm of Julia can be understood as a particular strategy of type class synthesis.
+Note that the understanding that the rules are conceptually type class synthesis rules is not sufficient for determining the details of the rules.
+
+## Parametric polymorphism
+
+Julia supports quite generic parametric polymorphism.
+```julia
+function id(::Type{T}, a::T, b::T) where T 
+  a == b
 end
-
-show_supertypes(Int)
-# Output:
-# Int64
-# Signed
-# Integer
-# Real
-# Number
-# Any
 ```
+At the first glance, unlike C++, in Julia type parameters of a function are not placed in a separate list, 
+although in order for the compiler to know that `T` is a type parameter and not the name of a concrete type,
+we have to utilize the `Type{T}` and `where T` syntax.
 
-And `12::Number`, `12::Any`, etc.
-From this perspective one may want to naively interpret `::` as $\in$, and `<:` as $\subseteq$.
-The main problem of this interpretation is `Any::Any`, and this screams Russell's paradox.
-
-The way we adopt to resolve this problem is to assume that a type name means two things:
-in `Any::Any`, the first `Any` is understood as a *type tag*, which is nothing but a name (a string, in the metalanguage),
-while the second `Any` is interpreted as the set that the name `Any` refers to.
-We'll go back to this topic when talking about [the type of a type](#types-of-types).
-
-On the other hand, `A <: B` should be understood as "the set denoted by `A` is a subset of the set denoted by `B`".
-That's to say, `A` and `B` should both be understood as the set they refer to and not just the names of the types.
-
-
-## Types of types
-
-All types defined in the tree of data types have the type `DataType`, whose type is itself.
+But we should notice that the dispatch mechanism here cannot be explained by tuple subtyping,
+as is shown in the subtype check below.
 
 ```julia
-typeof.([Integer, Any, FunctionArrow{Int, String}, DataType,])
-# Output:
-# 4-element Vector{DataType}:
-#  DataType
-#  DataType
-#  DataType
-#  DataType
+Int :: Type{T} where T # No problem here 
+1 :: T where T # No problem here
+(Int, 1) :: Tuple{Type{T}, T} where T # ERROR: TypeError: in typeassert, expected Tuple{Type{T}, T} where T, got a value of type Tuple{DataType, Int64}
 ```
 
-However,
+Therefore parametric polymorphism in Julia involves more than subtype relations.
+This may be or may not be a design mistake; not too sure about it...
 
-```
-julia> Union{Int, Float64} :: DataType
-ERROR: TypeError: in typeassert, expected DataType, got Type{Union{Float64, Int64}}
-```
-
-This means in the set denoted by `DataType`, we can only find concrete type tags, like `Int` or `Float64`, but not unions.
-Because `DataType` is a concrete type tag, `DataType :: DataType` (that's to say, the tag `DataType` belongs to the set denoted by itself).
-
-A user defined struct in Julia behaves in a way comparable to types shipped with Julia - primitive or composite.
-
-```julia
-struct A end
-A::DataType
-A()::A
-A <: Any
-```
-
-That's to say, the tag `A` is in the set denoted by `DataType`,
-and the set denoted by `A` is a subset of the set denoted by `Any`.
-
-Thus the situation is illustrated below.
-Here dots being in a circle means $\in$, and a circle being in another means $\subseteq$.
-Hence `1::Number`, `Float64::DataType`, `Any::DataType`, and so on.
-Note that the `1` value in the set denoted by `Int64` has the tag `Int64` on it, and so on.
-
-![](julia-basic-types.png)
-
-But the problem of an overly large set doesn't automatically go away.
-For instance we may ask how large is the set denoted by `DataType`.
-Whatever its internal structure is, by virtue of being a set of type descriptors,
-it should be countable or at least is a properly defined set.
-We say "a properly defined set", because if we naively assume that the universe containing all concrete and abstract types is the ZFC set theoretic universe - `Type 0` in Lean - or at least has the same cardinality
-(which is not an unreasonable expectation, as we can imagine we interface Julia with an oracle machine dealing with arbitrarily complex math objects),
-then the set denoted by `DataType`, being "the collection of all types", isn't a set at all and has no cardinality.
-
-Therefore, in order to accommodate `DataType::DataType`, 
-we have to assume dual status of types (as type tags, and as sets),
-and the existence of a type containing all type tags in turn means
-we have to 
-- either give up the bidirectional relation between type tags in the set denoted by `DataType` and nodes in the tree of data types
-(hence there are "ghost" types with only set interpretations, but no type tag), or 
-- assume that each data type has a type tag but the number of data types is limited and the set of all sets denoted by a type is a well defined set.
-
-These constraints are still quite mild:
-we haven't ruled out the possibility that the cardinality of `DataType` is the same as $\reals$.
-But we'll soon realize that the interaction between type tags and other parts of the language will impose more size constraints.
-
-## Tuples
-
-A tuple in Julia is almost a tuple in untyped set theory.
-
-```julia
-Tuple{Int} <: Tuple{Integer} # true
-```
-
-Unlike the case of tuples, we have 
-```julia
-!(Vector{Int} <: Vector{Integer})
-```
-This means parameterized structs are nominal. 
-
-It is also how we capture variable number of arguments.
-
-```julia
-f(x...) = x
-typeof(f(1, 2, 3)) # Tuple{Int64, Int64, Int64}
-```
-
-Julia offers some primitives to define flexible tuple types.
-For instance,
-```julia
-NTuple{2, Int} == Tuple{Int, Int}
-```
-Note that `Tuple{Int, Tuple{Float64, Float64}}` is not the same as `Tuple{Int, Float64, Float64}`.
-We seems to be unable to define a flat tuple with $n$ `Int` elements and $m$ `Float64` elements.
-But this isn't necessarily a bad thing, as it would be hard to operate on such a tuple.
-
-`NTuple` can be seen as a counterpart of `Fin n -> a` in Lean.
-Julia's parameterized types  give us almost no way to manipulate the structure of a type according to unknown values,
-and therefore we have to reply on primitives like `NTuple` supplied by the compiler to have limited dependent type features.
-
-## `Type`
-
-Besides `DataType`, we also have `Type`.
-We have `DataType <: Type`, and this also means `DataType :: Type`,
-as the tag `DataType` is in the set denoted by `DataType`
-and hence has to be in the set denoted by `Type`.
-
-The set denoted by `Type` contains three subsets: the set denoted by `DataType`, the set denoted by `Union`, and the set denoted by `UnionAll`.
-The three types - as tags - are all elements of the set denoted by `DataType`,
-as `Union::DataType` and `UnionAll::DataType`.
+## Diagonal type variable
 
 We have 
-```julia
-Union{Int, Int} == Int
-Union{Union{Int, Float64}, Int} == Union{Float64, Int}
-```
-and therefore union types in Julia have clear set theoretic semantics.
-
-The meaning of `UnionAll` is to be discussed in TODO.
-Also, note that the set denoted by `Type` does not include functions.
-
-# Functions
-
-## Functions are singletons
-
-It's not straightforward to refer to a function with an arrow type like $f: A \to B$ (called a **method** in Julia terminology) directly in Julia,
-as in Julia, a **function** contains several methods, and which method is called when a function invocation happens is decided by multiple dispatch.
-One may want to define the type of this function as the intersection of the arrow types of its methods (intersection and not union: the set theoretic interpretation of $A \to B$ here is the set of functions that have definition for all elements in $A$ and $f(A) \subseteq B$),
-but this is unwieldy as a typical Julia function has quite a lot of methods;
-a more thorough discussion on the issue can be found in Abstraction in Technical Computing, Sec. 4.6.
-
-Alternatively, a function (in Julia terminology) is regarded as a *name*, and hence should be regarded as a singleton.
-
-```julia
-typeof(sum) # typeof(sum) (singleton type of function sum, subtype of Function)
-show_supertypes(typeof(sum))
-# Output:
-# typeof(sum)
-# Function
-# Any
+```Julia
+(1, 2.0) :: Tuple{T, T} where T # ERROR: TypeError: in typeassert, expected Tuple{T, T} where T, got a value of type Tuple{Int64, Float64}
 ```
 
-Each function name belongs to the set denoted by the singleton type containing it,
-and the set denoted by the singleton type is a subset of the set denoted by `Function`.
+This reveals a quite interesting - but not surprising - behavior of Julia,
+called the diagonal rule:
+if a type variable appears twice in a type expression then it can only be a concrete type.
+Obviously this is for not being overly permissive,
+as intuitively `Tuple{T, T} where T` means the concrete types of the two elements of the tuple should be identical;
+if we allow subtyping here then `T` can just be `Any`, and all two-element tuples belong to this type.
 
-Conversely a method can be attached to anything - including an existing singleton.
+## Assignment
 
-```julia
-(::Nothing)(x) = x
-nothing(1) # 1
-```
+When a value of type `U` is assigned to a variable declared to have type `V` in Julia,
+and `V` is a supertype of `U`, nothing unusual happens.
+Otherwise the `convert` function is called.
 
-Because of the lack of arrow types, type checking of function calls has to be captured by adding a so-called method table in type judgments.
-The paper A Type System for Julia by Chung, Benjamin, Northeastern University, for instance,
-uses a method table in his type system calculus,
-effectively eliminating the need for arrow types (Sec. 4.3).
+This of course looks syntactic sugar-ish and can be simulated by type class-guided coercion too,
+although note that we can say if we're to replicate Julia in a version of Lean,
+it has to have different type class synthesis strategies for 
+"coercion" related to subtyping and coercion related to `convert`.
 
-## Encoding `A -> B`
+## Inner constructor
 
-It is still possible to simulate arrow types in Julia,
-from the perspective of operational semantics:
-that's to say, whenever the input type is not a given type, a type error is raised.
-This can be done by the following construct:
-
-```julia
-struct FunctionArrow{A, B} 
-    run::Function
-end
-
-function (f::FunctionArrow{A, B})(x::A) where {A, B}
-    return f.run(x)::B
-end
-
-# A function with multiple methods
-function foo(x::Int)
-    x + 1
-end
-
-function foo(x::String)
-    x
-end
-
-foo(5) # 6 
-foo("str") # "str"
-
-foo_packaged = FunctionArrow{Int, Int}(foo)
-foo_packaged(5) # 6
-foo_packaged("std") # MethodError
-```
-
-`foo_packaged` obligatorily calls the `Int -> Int` method of `foo`,
-and if this is not possible, raises a method error.
-That's to say, if `f::FunctionArrow{A, B}` and `x::A`, then `f(x)` causes no method error, if and only if 
-- There exists a `A -> B` method of the function `f.run` in the method table, and 
-- That method causes no method error in its internal code.
-
-Recursively, a no-type-error proof based on this theorem is isomorphic to a standard proof of well-typedness in typed lambda calculi.
-This means if in a Julia program,
-functions are always defined using `FunctionArrow` (perhaps with some macros to automatically extract the type information of a `function` block
-and pass it to a corresponding `FunctionArrow` constructor),
-then type safety can be guaranteed by static check resembling static check of more "canonical" type systems with arrow types. 
-
-In simply typed lambda calculus, all we need is the arrow type,
-and composite data types can be encoded into arrow types.
-In Julia we start with composite data types and method dispatch
-and end up getting something similar to arrow type.
-
-## Dependent arrow not definable
-
-Some sort of dependent type-like feature exists in Julia.
-For instance consider the following code snippet:
+An inner constructor in Julia validates the input and throws an error if it's not valid.
+In this way we can simulate refinement types:
 
 ```julia
-using StaticArrays
-
-function foo(n::Int)::SVector{n, Int64}
-    SVector{n, Int64}(zeros(n))
-end
-
-foo(2)
-# Output:
-# 2-element SVector{2, Int64} with indices SOneTo(2):
-#  0
-#  0
-```
-
-The type of this method is `(n:Int):SVector{n, Int64}`, but this type can't be captured by `FunctionArrow` defined above.
-Obviously, we made a mistake in implementing `foo`
-and sometimes the return value is `SVector{n+1, Int64}`,
-then we get a type error.
-However, the following definition
-```julia
-struct DependentArrowExample
-    dim::Int
-    data::Array{Int, dim}
+struct PositiveInt
+    x::Int
+    # Inner constructor for validation
+    PositiveInt(x) = x > 0 ? new(x) : error("Must be positive")
 end
 ```
-fails, because `ERROR: UndefVarError: ``dim`` not defined`.
-Therefore Julia lacks the ability to express dependent arrow types with its native type notation,
-but it needs to.
-Hence a sound type system of Julia involves concepts beyond what Julia's existing type system provides.
+With this constructor it is never possible to create a `PositiveInt` that's not positive.
 
-## Size issue of interpretation of `A -> B`
+If we decide to not catch the error thrown by inner constructors,
+then type checking in Julia has to involve refinement types - which goes beyond notation provided by standard Julia.
 
-With given `A` and `B`,
-interpretation of `FunctionArrow{A, B}` can be done in two ways - or three ways.
-The first two are aforementioned:
-type tags and sets represented by type tags.
-The third is real arrow type (containing all terms that are guaranteed to cause no type error), which itself should be interpreted.
+# Defining types 
 
-The issue is further complicated because of existence of `Function`,
-a topic we're going to touch in the next section.
+## Product and sum types
 
-## Interpretations of `Function` as set of all functions
+Julia has structs and tuples; the main difference is the latter is not tagged.
+Because of existence of [internal constructors](#inner-constructor), a type system that is able to catch all type errors of Julia should also include refinement types.
 
-In Julia "functions" are singletons and "methods" are not directly accessible.
-The the set denoted by `Function` can be literally interpreted as the set of *names* of functions,
-and is hence trivially countable.
+## Abstract types 
 
-We may consider some alternatives.
-First, let's consider what happens if we have a `Function` type directly covering all methods, and not just singletons with methods attached to it.
-In this section we revert to the usual terminology and call a Julia method simply a function.
+Recall that the term *abstract type* refers to types declared to be supertypes of concrete types,
+which exclude union types.
 
-In the first attempt,
-suppose the set denoted by `Function` contains functions in an extensional sense.
-We further let it contain functions that are not necessarily computable.
+Below is an instance of how to use type classes and (tagged) union to simulate the type tree defined by subtype relations.
 
-The total number of functions from natural numbers to natural numbers is the same cardinality as the real numbers $\reals$.
-This cardinality bump means as long as we allow `Function` to contain all functions from a countable type to itself, there can't be a set theoretic interpretation of `Function`.
-This is because we're able to define functions from `Function` to `Function`,
-and the number of functions is now $\reals^\reals$...
-This gives us the following process (where $A$ is countable):
-$$
-A \\
-A \cup A^A \\
-A \cup A^A \cup (A \cup A^A)^{(A \cup A^A)} \\
-\dots
-$$
-`Function`, if containing all functions, should be lower bounded by the limit of $A_{n+1} = A_n \cup A_n^{A_n}$.
-But obviously, because the cardinality of $A_n^{A_n}$ is always strictly larger than the cardinality of $A_n$, no such fixed point exists.
-
-In the second attempt, we keep the extensional idea but limit the functions to total computable functions.
-
-Because halting is a rather hard problem (note that "a function halts at every point is $\Pi_2$-complete"),
-the set of total computable function is not enumerable and is not decidable.
-However it *is* closed under composition, the usual arithmetic functions, etc.
-and therefore forms a good algebraic structure.
-We can also repeat the iteration above: $A_{n+1} = A_n \cup \text{the set of total computable functions from An to An}$.
-Because the set of total computable function is known to be countable,
-this process has to stabilize finally, resulting in a subset of total computable functions.
-
-So is this viable?
-
-It technically may be with some tweaking. The main issue is,
-if total computable functions from $A$ to $B$ are interpreted extensionally, 
-then one may ask what it means for a function from the set of $A$-to-$B$ functions to $C$ to be computable:
-computable functions take what can be encoded as natural numbers as inputs,
-not an infinite set of input-output pairs.
-Thus the former function should be passed in as a code (which can later be evaluated).
-This sounds rather strange for an extensional model (on the other hand, higher order functions are much more naturally captured in naive set theoretic semantics, as $A \to B$ is just another set, and $(A \to B) \to C$ is naturally defined).
-Basically, this means in our model, when a function is passed into a higher order function, *a* version of its implementation is passed with the source code visible to the higher order function, but what implementation is passed is pretty much random.
-
-In practical developments, either we only call a function passed in, 
-or we have comprehensive reflection and is able to look into its structure.
-The second style is inherently intensional.
-The first style makes no use of the encoding of the function passed in.
-So this model captures none of the two uses.
-
-(We also note that this is an illustration of the distinction between extensional and intensional semantics.
-Programming without function-level reflection admits an extensional semantics,
-but for naturalness the semantics is inevitably large,
-because to avoid treating functions passed to higher order functions as natural numbers, they are most naturally regarded as set theoretic functions,
-and the size of things soon gets out of control.
-Programming with function-level reflection has to have an intensional semantics.)
-
-Therefore, for any language with a `Function` type containing all functions, no natural extensional semantics is available.
-The only sensible interpretation is to view the set denoted by `Function` as the set containing the source code of all total computable functions.
-
-## `Function` as set of names
-
-TODO: not sure if this is going to give us a size problem.
-
-## Multiple dispatch
-
-Method dispatch can be taken as the foundation of how typed expressions are used in computation,
-and [to prevent method not found errors](plt概况.md#编程语言动态类型检查) is the main motivation for us to have a static type system.
-On the other hand, method dispatch can also be understood in a static type system
-(though some runtime infrastructure is necessary to fully support *dynamic* method dispatch).
-
-Ad hoc polymorphism is easily captured by type classes.
-Polymorphism related to subtypes can be divided into two parts.
-The first part corresponds to what is called 
-[inheritance of methods in ordinary OOP language](plt概况.md#基于数据类型转换的方法继承),
-in which a function call may be dispatched to a method defined on abstract or union types.
-The second part corresponds to what is called subtype polymorphism,
-in which we can assign a value of a certain type to a variable with its super type 
-[*without* converting the type tag of the value](plt概况.md#在未知对象具体类型时的动态方法派发),
-and when a method is called on the variable, method dispatch works according to the type of the value and not the declared type of the variable.
-
-Because in Julia it's not possible to extend a concrete type,
-using type classes to simulate its method dispatch behavior is actually easier.
-That said, like other kinds of subtype polymorphism, simulating it using type classes strongly depends on the details of type class instance resolution.
-The following intuitive simulation for instance doesn't work in Lean,
-because in Lean coercions aren't a part of type class instance searching.
-(The idiomatic way to achieve the intended behavior in Lean is to use tagged union 
-basically, collecting all `<:` into one place, thus substantially changing the code structure).
 
 ```Lean
 -- Requirements of being a subtype of Abstract; none in Julia
+-- 
 class Abstract (α : Type)
+
 -- An abstract type, to which concrete types can be associated to.
 -- This is to make sure expressions like v::AbstractType = 6 do not erase the concrete type information of the value on the RHS.
 -- Can also be understood as dyn trait i.e. trait objects in Rust.
@@ -504,88 +322,82 @@ instance : MyAdd AbstractType AbstractType where
 #eval (MyAdd.add 1 "Hello") -- Will fail because coercions in Lean are not part of typeclass inference search
 ```
 
-The main non-type class formalization of multiple dispatch is intersection type,
-which fails to capture the fact that the method defined on an abstract type may return a different value for the same input to the return value of the method defined on a concrete type.
+Subtype relation between two abstract types `A <: B` can be understood as one type class extending another
+(or other mechanisms to automatically synthesize an instance of the type class corresponding to `B` from the type class corresponding to `A`).
 
-# Parameterized types
+## `Union` types
 
-## Parameters in type definition
+What complicates subtyping in Julia is,
+besides the subtype hierarchy of abstract types (`Int <: Signed <: Integer <: Number`),
+which is neatly captured with type classes,
+we also have `Union` and `UnionAll` types.
 
-Parametric types in Julia have no substantial difference from parametric types in other languages.
-For instance we have 
+Untagged union type can be used to define tagged union types.
+Below is an instance:
+
 ```julia
-struct MyStaticVector{N, T}
-    data::NTuple{N, T}
+struct ParsedInput
+  data::Int
 end
 
-MyStaticVector{2, Int}((1, 2))
-```
-The parameters have two roles.
-First, they are a part of the type tag of the composite data type, which carries metadata in method dispatch;
-this isn't fundamentally from how an integer is different from a string of the same size in memory, but offers us a way to do limited pattern matching with the help of method dispatching, as now we can write something like 
-
-```julia
-f(::Val{1}, ...) = ...
-f(::Val{2}, ...) = ...
-```
-
-Second, because of `NTuple`, Julia allows type operations that dynamically decide the structure of the composite type.
-The ability to do so is currently very limited.
-It is for instance not possible to write
-```julia
-struct B{N}
-    data::Tuple{2*N, Int}
+struct NodeId
+  data::Int
 end
-```
 
-## Type constructors
-
-Naturally we ask why `MyStaticVector` is not defined as a function.
-It *is* possible to define functions taking type arguments and returning either a type or a value.
-For instance, 
-
-```julia
-create_tuple(t::Type) = NTuple{3, t}
-create_tuple(Int) # Tuple{Int64, Int64, Int64}
-
-string(Int) # "Int64 
-```
-
-But these functions can't be used in parametric type definitions.
-
-```julia
-struct B{N}
-    data::create_tuple(N)
+struct UnparsedInput
+  data::String
 end
-# RROR: MethodError: no method matching create_tuple(::TypeVar)
+
+const Data = Union{ParsedInput, NodeId, UnparsedInput}
 ```
 
-Obviously the type of anything passed to a parametric type definition is assigned as `TypeVar`,
-and there is no way to get an `Int` from a `TypeVar` and feed it to `create_tuple`.
-It is clear that type-level operations in Julia,
-if defined as regular functions, can't be used in type definitions,
-while type-level operations in type definitions are highly limited.
+But the inverse problem, i.e. how to simulate untagged union in, say, Lean, is a question.
+The closest thing we can have is actually a trivial type class:
 
-The constraints certainly have a lot of reasons,
-one being machine code optimization relies on concrete types.
-Anyway, it's fair to say that Julia has no full dependent type.
+```Lean
+class IntOrStr
 
-## Existential types, `UnionAll` and its semantics
+instance : IntOrStr Int
+instance : IntOrStr String
+```
 
-The type of a type constructor, in a "canonical" functional programming language, should be $\mathsf{Type} \to \mathsf{Type}$ or maybe $\mathsf{Int} \to \mathsf{Type}$,
+And similar to [how abstract types are simulated](#abstract-types), 
+
+```Lean
+structure IntOrStrType where 
+  α : Type
+  inst : IntOrStr α
+  val : α
+```
+
+Then no more instance is allowed to be added to `IntOrStr`.
+(Though in native Lean there seems to be no easy way to enforce it.)
+
+The main problem of this approach is it's hard to define a `Union{A, B, C}` type function in Lean with this translation,
+as the type function has to (a) build both the `IntOrStr` type class and `IntOrStrType` at runtime, which is not possible in standard Lean as type class declaration is fundamentally a static thing, and 
+(b) make sure `Union{A, Union{B, C}} == Union{A, B, C}`.
+The second condition may be loosened by declaring automatic conversions between different type-and-type-class pairs corresponding to the same union type `Union{A, B, C}` but again this can't be a dynamic process in Lean.
+
+Fortunately, in Julia, it's not possible to dynamically define functions either,
+and therefore all union types in function dispatch and/or variable type declaration are known at compilation time.
+Therefore, the `Union` type function in Julia doesn't add to the expressivity of Julia.
+
+## Type constructors and existential types
+
+The type of a type constructor, in a "canonical" functional programming language, should be $\mathsf{Type} \to \mathsf{Type}$ or maybe something like $\mathsf{Int} \to \mathsf{Type}$,
 and mathematically defines a fiber bundle.
 The total space is $\sum_{x:A} B(x)$, with $B$ being the type constructor.
 The projection map - which tells us which point in the base space $A$ a point in the total space is from - exists (just take the first element of a term in $\sum_{x:A} B(x)$).
 This means we are able to construct $\sum_{x:A} B(x)$, and also recover $B$ from $\sum_{x:A} B(x)$:
-each $x$ in $A$ is mapped to the subset of $B$ in which the first element in the term is $x$. 
+each $x$ in $A$ is mapped to the subset of $B$ (defined via refinement type) in which the first element in the term is $x$. 
 
 (Note that the type of $B$ itself is a forall type,
-but this means $B$ *belows* to a forall type,
-and not that $B$'s internal structure is like a forall type.)
+but this means $B$ *belongs* to a forall type,
+and not that $B$'s internal structure is isomorphic or comparable to a forall type.)
 
-Because from `x::A{N}` we can trivially read `N` out, and hence a projection function exists,
+In Julia, because from `x::A{N}` we can trivially read `N` out, and hence a projection function exists,
 in Julia, a type constructor is considered an existential type.
-(Not saying it belongs to an existential type, but saying itself is an existential type).
+(Not saying that it belongs to an existential type, but that itself is an existential type).
 An explicit existential notation is the `where` expression (which means something different in function definitions), and we have `(Vector{T} where T) == Vector`.
 Note that the fact that we can recover the type constructor from an existential type also means we are able to *instantiate* an existential type:
 
@@ -593,50 +405,29 @@ Note that the fact that we can recover the type constructor from an existential 
 (Array{T, N} where T where N){3}{Int} == Array{Int64, 3}
 ```
 
-Now, the type of all type constructors is `UnionAll`.
-This isn't how a well established type theory would do.
-As usual, we inspect what semantics this design can have.
+# Types of types
 
-If we interpret `T` in `Vector{T} where T` as an unbounded set variable,
-then a size issue clearly appears.
+## `DataType`
 
-Therefore we have to restrict 
-
-## Parameterized functions
-
-Functions on the other hand involve much more flexibility.
-Let polymorphism isn't a thing here:
-polymorphic functions can be directly passed to other ones.
-
-
-# `where` expression: as template
-
-
-
-It is not possible to get an abstract type of a value via `where`.
-The following definition, intended to extract `MyAbstractTypeB` from an instance of `MyStruct`, fails:
+All types declared in the subtype hierarchy - including all concrete types and all abstract types - belong to `DataType`.
 
 ```julia
-abstract type MyAbstractTypeA end
-abstract type MyAbstractTypeB end
-struct MyStruct <: MyAbstractTypeB end
-
-function get_abs_type(v::A) where MyStruct <: A 
-    A
-end # ERROR: UndefVarError: `A` not defined
+Int::DataType
+Integer::DataType
+DataType::DataType
 ```
 
-# Summary 
+This immediately smells like Russell's paradox.
 
-## Term model 
+Another problem is, `Any`, being the ultimate abstract type, is an element of itself.
 
-- No set theoretic extensional semantics is possible for Julia's type system, mainly because of `Type::Type`, and `Function`. 
-- [`Type::Type` dictates a type-as-type-expression analysis of data types in Julia](#the-tree-of-data-types): there are countable well formed type expressions, and hence countable types
-- Existence of a `Function` type means functions can only be understood as their source codes, i.e. encoding of recursive functions. [Otherwise a size issue appears.](#interpretations-of-function-as-set-of-all-functions)
+Both facts indicate a failure of naive set theoretic understanding of `::`.
 
-## Method dispatch
+One way forward (without considering exotic algebraic structures) is to posit dual roles of type expressions.
+If `T` is a type, then the expression `x::T` is to be understood as $x:T$ in type theory,
+but `T` in `T::DataType` is to be understood as the *type expression* - a term, merely a AST.
+There is an implicit mapping from `DataType` to `Type 1` (the latter being a notation in Lean) that allows 
 
-- Julia's multiple dispatch can be simulated by type classes plus coercion from concrete types into abstract "all objects implementing the trait" types - if coercion is a part of type class synthesis. [Unfortunately in Lean it isn't.](#multiple-dispatch)
-- Type checking Julia's function calls can be done by [manually defined arrow types](#encoding-a---b). Unfortunately, because Julia is able to impose dependent type constraints on variables but [dependent type arrows can't be defined](#dependent-arrow-not-definable), a sound type system for Julia can't be established using existing type notations.
+## `Union`
 
-## Subtyping
+## `UnionAll`

@@ -1,23 +1,4 @@
-# Typed lambda calculus
-
-强类型纯函数式编程某种意义上在理论计算机科学中享有“首席”地位，因为无类型表处理函数式编程、过程式编程等其他的（也许更加常见）的编程范式都可以毫无困难地嵌入它们中。
-Linear type可以用所谓linearity monad（另一个更加冷门的实现叫做ownership monad，如此冷门以至于谷歌上面只有几个搜索结果……）嵌入Haskell中，动态类型有一个Dynamic包可以做到这一点，等等。
-对类型系统的修改，如类型系统层面的linear type、dependent type等，不那么容易做到，但它们总是可以嵌入一个足够强的dependent type theory中，如嵌入Coq或是Lean中。
-
-这样可以比较容易地判断不同feature的正交性，如我们看到过程式编程实际上就是一个Monad，可以确定mutable与否和类型系统基本无关。
-但一些特征，如rust的lifetime标记（特别是lifetime typing），确实似乎只有在足够强大的dependent type theory中才能比较容易地作为类型表示出来。
-
-泛型等是从范畴到范畴的映射
-
-所以我们又绕回来了：范畴的范畴和高阶范畴有什么关系？
-
-TODO， Kleisli category，
-
-纯面向对象语言中的interface实际上是一个coproduct：如果我们把面向对象语言中的subtyping理解为一种从子类到父类的态射，具体来说是隐藏掉子类有而父类没有的方法，那么这就是显然的。
-
-# 常见的范式
-
-类型系统：
+编程范式：
 
 - C是最简单的
 - C++：
@@ -35,6 +16,9 @@ TODO， Kleisli category，
 - Python型
 - Julia
   - 这里的妙处在于，变量的“类型”（静态强类型语言意义上的类型）就是Dynamic而值的类型（实际上是tag）则是确定的，而如果能够确定一个变量总是取某个tag的值时，这个变量就可以认为是typed的，而Julia的设计意味着这样的推导是很容易的。
+
+PL领域总是讨论typed lambda calculus的一个原因是，一个经验的事实是如果一个语言特征能比较容易地被一个足够强的typed lambda calculus模仿，则它往往是“简单”的，否则则不那么简单。
+（将非函数式的语言嵌入函数式语言是一条编程语言理论中的暗线。与之有关的学术出版可见The End of History? Using a Proof Assistant to Replace Language Design with Library Design。所谓monad as programmable semicolon）
 
 # 类型系统和类型论
 
@@ -192,7 +176,7 @@ SHandle (SIO (r,s))
 ```
 使用时将写在child region（生命周期参数为`s`）里面的程序传给`newLSRgn`，其返回值是一段外面的region中的程序（生命周期参数为`r`），并用`importSHandle`处理生命周期subtype的问题。
 这个写法的问题是过于限制性，把外面的引用传到里面的时候不能跨层级，需要一步一步地转换。
-下面的写法
+另一个写法中，
 ```Haskell
 newtype SubRegion r s =
 SubRegion (forall v. SIO r v-> SIO s v)
@@ -200,7 +184,7 @@ SubRegion (forall v. SIO r v-> SIO s v)
 newRgn :: (forall s. SubRegion r s-> SIO s v)->
 SIO r v
 ```
-中，类型`SubRegion`中的元素记录了region subtyping。
+类型`SubRegion`中的元素记录了region subtyping。
 
 有人试图将ownership checking在monad中实现，例如见The Ownership Monad by Michael McGirr。
 但这篇文章明确说了它做的是动态的检查，实际上是给带运行时ownership checking的智能指针赋予了函数式语义。
@@ -327,10 +311,11 @@ $$
 则可以通过所谓的type class synthesis得到("[At invocation sites, Lean either synthesizes a suitable instance from the available candidates or signals an error.](https://lean-lang.org/doc/reference/latest/Type-Classes/#--tech-term-synthesizes)")。
 这样，当调用`f(x : B)`而`x : A`时，就可以自动将`x`的类型转换为`B`。
 
-从这个翻译立刻可以看出，将subtyping直接加入类型系统（并仍然希望类型系统decidable）其实是指望能自动判断特定的type class instance是否存在，这看着就不像一个很容易的事情。
+从这个翻译立刻可以看出，将subtyping直接加入类型系统（并仍然希望类型系统decidable）其实是指望能自动判断`Coe`的type class instance是否存在，在有需要的时候，自动合成一个instance。听着就像很容易搞错的东西。
 
 这个翻译的一个问题是从$A$到$C$的嵌入映射的唯一性。在具体的实现中可以通过只给出唯一的`Coe`实现来解决这个问题。（实际开发中，通常不会定义超过一个，或至少太多个typeclass instances：这类似于数学中常说某个语境下有一个“典范”的嵌入映射或群结构或别的什么。subtype judgement不让用户微调具体在使用哪个嵌入，因此没有Curry-Howard同构解读。）
 这个做法是利用了typeclass的运作方式来实现nominal subtyping，即只允许使用用户要求编译器使用的那种方式来做数据类型转换。
+（typeclass又称trait，但也有structural的trait，但后者更像抽象类）
 
 一些人反对子类型，因为有子类型的系统的type judgement不仅要包括$x : A$还要包括$A <: B$，后者无论如何没法在Curry-Howard correspondence中得到解释。
 
@@ -402,7 +387,7 @@ class ConceptClass (α : Type) where
   concept : Concept(α)
 ```
 的typeclass；反之，concept只要足够强，使得能够在concept的定义中写下具有特定性质的函数的存在性，也可以用来代替typeclass。
-（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实，其中$x$指代typeclass instance；这里$\exist x P(x)$在实际书写的时候可能是$\exist x : \mathsf{Type} . P(x)$，其中$P$是concept。另外请注意proof irrelevance的问题，在有proof irrelevance的系统中，“具有特定性质的函数的存在性”中所谓的“存在性”不是$\exist$而是$\sum$，否则不能从$\exist x : P . \mathsf{True}$的一个实例中取出一个具体的$x$。如果一门语言中的concept中，存在性是proof irrelevant的，那么这个语言中的concept和typeclass就不等价，前者无法用于包装一个未知但存在的东西。）
+（这里我们用到了$\forall x (P(x) \to Q)$等价于$(\exist x P(x)) \to Q$的事实，其中$x$指代typeclass instance；这里$\exist x P(x)$在实际书写的时候可能是$\exist x : \mathsf{Type} . P(x)$，其中$P$是concept。另外请注意proof irrelevance的问题，在有proof irrelevance的系统中，“具有特定性质的函数的存在性”中所谓的“存在性”不是$\exist$而是$\sum$，否则不能从$\exist x : P . \mathsf{property}(x)$的一个实例中取出一个具体的$x$。如果一门语言中的concept中，存在性是proof irrelevant的，那么这个语言中的concept和typeclass就不等价，前者无法用于包装一个未知但存在而且可以用于下一步计算的东西。）
 
 这两个功能具体到工业语言中会演变出不同的变体。
 
