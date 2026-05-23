@@ -3,7 +3,7 @@ The type system of Julia
 
 # Preliminaries
 
-## Dynamic, strong typing
+## Dynamic, strongly typed
 
 Julia is strongly typed in that all values in Julia have a **concrete type**.
 (The term *strongly typed* is ambiguous though.)
@@ -128,7 +128,7 @@ type errors are ruled out by not making a function call that doesn't fit one of 
 
 Interestingly, this notion of functions as type classes is consistent with the notion in the official documentation,
 which talks about [informal interfaces](https://docs.julialang.org/en/v1/manual/interfaces/).
-
+Also see [here](#manually-throw-a-method-error).
 
 In Julia terminology, an instance of a function signature - conceived as a type class here - is called a *method*.
 
@@ -175,13 +175,13 @@ inductive Func1
 instance : Func Func1 where 
 
 -- The type class corresponding to the Julia function `func1`
-class FuncClass [Func f] (α : Type) (β : Type) where
+class FuncClass {f : Type} [Func f] (_ : f) (α : Type) (β : Type) where
   func1 : α → β
 
-instance : Func (Input1 × Input2 × ...) Output where 
+instance : Func1 (Input1 × Input2 × ...) Output where 
   -- implementation of method 1
 
-instance : Func (Input1 × Input2 × ...) Output where 
+instance : Func1 (Input1 × Input2 × ...) Output where 
   -- implementation of method 2
 
 --...
@@ -334,6 +334,36 @@ With this constructor it is never possible to create a `PositiveInt` that's not 
 If we decide to not catch the error thrown by inner constructors,
 then type checking in Julia has to involve refinement types - which goes beyond notation provided by standard Julia.
 
+## Manually throw a method error
+
+One can throw a method error manually.
+Whether or not a function call results in such an error typically need not and cannot be formalized within a static type system in an industrial language,
+as it's equivalent to the halting problem and can't be automatically examined.
+
+That said, it is possible to use manually thrown method errors to define conditions a type has to satisfy when declared to be a subtype of an abstract type.
+As is discussed [here](#abstract-types),
+an abstract type is essentially a type class when translated to Lean.
+
+```julia
+abstract type A end
+blink(::A, ::Int) = throw(MethodError("blink method not defined."))
+```
+
+The code above is equivalent to
+```lean
+class A (α : Type)
+  blink (x : α) (y : x) 
+``` 
+
+Or, considering that in Julia functions are [singletons](#function-calls-and-overloading), perhaps we should write something like 
+
+```lean
+class A (α : Type) 
+  blink (_ : Blink) (x : α) (y : x) 
+```
+
+where `Blink` refers to the singleton type corresponding to the function `blink`.
+
 # Defining types 
 
 ## Product and sum types
@@ -357,6 +387,7 @@ Below is an instance of how to use type classes and (tagged) union to simulate t
 -- Requirements of being a subtype of Abstract; 
 -- it's empty here, but if there's a catch-all method like f(::Abstract) = throw MethodError(...)
 -- then the function can be added here.
+-- See also [here](#manually-throw-a-method-error)
 class Abstract (α : Type)
 
 -- An abstract type, to which concrete types can be associated to.
@@ -564,6 +595,10 @@ structure Packed where
 ```
 Here we use $\mathsf{promote}$ to refer to the mapping from type expressions ($\mathsf{JuliaType}$) to actual types.
 The distinction between type expressions and actual types can be found [here](#datatype-any-type-and-type-in-type).
+
+## Traits
+
+One thing interesting in Julia is 
 
 # Types of types
 
@@ -785,5 +820,12 @@ Regarding non-function data types:
 - Abstract types can be conceived dually: as type classes and as sigma types that contain terms whose types satisfy the type class (see [here](#abstract-types)). The type hierarchy can be understood as a specific type class synthesis.
 - That a parametrized struct is an existential type [can be understood in Lean](#type-constructors-and-existential-types), and the natural coercion from a concrete type `B{Int}` to `B` can be understood as a subtype relation.
 - `where` expression with constraints can be understood as [sigma types with automatic type class synthesis too](#constraints-in-where).
-- "Static" union types, i.e. union types whose coverage can be determined at compilation, can be [simulated](#union-types) by the type class-plus-sigma type approach. However, `f(::Type{T}, x::Union{T, Int}) where T = x` seems beyond the ability of idiomatic Lean, for the very reason that it's not possible to define type classes and sigma types on the fly at runtime.
+- "Static" union types, i.e. union types whose coverage can be determined at compilation, can be [simulated](#union-types) by the type class-plus-sigma type approach. 
+- However, *dynamic* union types, e.g. the union type in `f(::Type{T}, x::Union{T, Int}) where T = x`, seems beyond the ability of idiomatic Lean, for the very reason that it's not possible to define type classes and sigma types on the fly at runtime.
 
+Stratification:
+- The type expression/type duality of Julia types interprets `Any::Any` etc. 
+- There is no way to directly operate on the "true" type universe $\mathsf{Type}$ in Julia;
+  we work on types by indirectly work on `Type` - an ordinary type containing all type *expressions*.
+- It is also not possible to work on "real" arrow types in Julia,
+  although something similar - essentially a subtype of `Function` - can be [defined](#arrow-types).
