@@ -167,25 +167,30 @@ and hence perhaps we should define a Julia-like function in Lean in the followin
 -- corresponding to Function type, collecting all function singletons
 -- See [here](#abstract-types)
 class Func (α : Type) 
+-- Functions can run!
+class FuncImpl (f : Type) [Func f] (α : Type) (β : Type) where
+  run : f → α → β
 
 -- Corresponding to the concrete type of a Julia function `func1`
 inductive Func1 
-
 -- Declare that `func1` is indeed a Julia Function
 instance : Func Func1 where 
 
--- The type class corresponding to the Julia function `func1`
-class FuncClass {f : Type} [Func f] (_ : f) (α : Type) (β : Type) where
-  func1 : α → β
-
-instance : Func1 (Input1 × Input2 × ...) Output where 
+instance : FuncImpl Func1 (Input1 × Input2 × ...) Output where 
   -- implementation of method 1
 
-instance : Func1 (Input1 × Input2 × ...) Output where 
+instance : FuncImpl Func1 (Input1 × Input2 × ...) Output where 
   -- implementation of method 2
 
 --...
 ```
+A function call `f(...)` is now to be understood as `run(f, ...)`.
+
+This trick allows Julia to pass generic functions around - which is not always trivial,
+as generic functions are sometimes defined via so-called let polymorphism 
+and cannot be passed around.
+The way Julia resolves the problem is to shy away from arrow types
+and treat the type of a function a singleton type containing only the function.
 
 The reason why functions are singletons is discussed [here](#datatype-any-type-and-type-in-type).
 
@@ -340,29 +345,88 @@ One can throw a method error manually.
 Whether or not a function call results in such an error typically need not and cannot be formalized within a static type system in an industrial language,
 as it's equivalent to the halting problem and can't be automatically examined.
 
-That said, it is possible to use manually thrown method errors to define conditions a type has to satisfy when declared to be a subtype of an abstract type.
-As is discussed [here](#abstract-types),
-an abstract type is essentially a type class when translated to Lean.
+In this section we study a specific case of manually thrown errors.
+Consider the code below, which contains a function that,
+when called (which means definitions based on more concrete types are missing), 
+it obligatorily throws an error.
+We may call such a function definition an abstract method.
 
 ```julia
 abstract type A end
-blink(::A, ::Int) = throw(MethodError("blink method not defined."))
+blink(::A, ::Int) = throw(Error("blink method not defined."))
 ```
 
+Whether an abstract method is defined is of no relevance if the type system is taken literally:
+if the definition is absent,
+when `blink(::A, ::Int)` is called, an error will still be thrown.
+Having an abstract method however is beneficial for debugging:
+it tells the developer that the function being called *is* supposed to have a method.
+
+We can imagine that a static type checker of Julia goes through a project and finds all abstract methods, 
+and if there's a possibility that the method gets called (that's to say, `blink` is not defined for at least one subtype of `A`),
+then reports possible method error.
+
+For this type checker, a constraint has been imposed on subtypes of `A`.
+As is discussed [here](#abstract-types),
+an abstract type is essentially a type class when translated to Lean.
 The code above is equivalent to
 ```lean
 class A (α : Type)
-  blink (x : α) (y : x) 
+  blink (x : α) (y : Int) 
 ``` 
-
+plus all the boilerplate code defining a sigma type containing all terms whose type satisfies `A`.
 Or, considering that in Julia functions are [singletons](#function-calls-and-overloading), perhaps we should write something like 
 
 ```lean
 class A (α : Type) 
-  blink (_ : Blink) (x : α) (y : x) 
+  blink (_ : Blink) (x : α) (y : Int) 
+
+instance : FuncImpl Blink (AType × Int) ReturnType where 
+  -- call `A.blink`
 ```
 
 where `Blink` refers to the singleton type corresponding to the function `blink`.
+
+One thing to reckon on is, when we have abstract methods involving two abstract types,
+like the code below
+```julia
+abstract type A end
+abstract type B end
+f(::A, ::Int) = throw(Error("f method not defined."))
+g(::String, ::B) = throw(Error("g method not defined."))
+h(::A, ::B) = throw(Error("h method not defined."))
+```
+then how to understand it in terms of type classes;
+in particular, where to place `h(::A, ::B)`.
+Sure, the constraints above are expressible in the language of type classes,
+as we can give all abstract classes a (kind of arbitrary) order (e.g. `A` before `B`)
+and collect all abstract methods mentioning only `A` into the definition of `A`,
+then all abstract methods mentioning only `A` and `B` into the definition of `B`,
+then...
+but this encoding has no uniqueness:
+`h(::A, ::B)` can go to the definition of `A` as much as it can go to the definition of `B`
+and there is no natural way to uniquely decide how.
+
+Despite this unnatural non-uniqueness, the expressivity of type classes is strictly stronger than the abstract type hierarchy of Julia.
+In the code above, if `U <: A` and `V <: B`,
+then the presence of the abstract method `h` *obliges* an implementation of `h`.
+It is not possible to ask all subtypes of `A` and `B` to implement `f` and `g` only,
+and for some - but not all - pairs of `U <: A` and `V <: B` - to have a `h` implementation.
+
+---
+
+An alternative strategy the type checker can take is to weaken the requirements and treat an abstract method as a *suggestion* that the method can be implemented for the abstract classes.
+In this way the abstract method `f(::A, ::Int)` can be understood as 
+(see [here](#function-calls-and-overloading) for notation)
+
+```
+class F (α : Type) [A α] where
+  f : α → Int → ReturnType
+
+-- f is the singleton type of function f
+instance [A α] : FuncImpl f (α × Int) ReturnType where 
+  -- call F.f
+```
 
 # Defining types 
 
@@ -598,7 +662,51 @@ The distinction between type expressions and actual types can be found [here](#d
 
 ## Traits
 
-One thing interesting in Julia is 
+One thing interesting in Julia is abstract types are not truly necessary in quite a lot of cases,
+as method dispatch can be guided by so-called Holy Traits,
+a trick that applies in quite a lot of languages (with different names).
+It can be seen as manual supplying a type instance.
+An example is given below:
+
+```julia
+struct Common end
+struct UnCommon end
+
+# Computing a trait instance;
+# unlike the usual practice, when the input type has no trait instance,
+# no error is reported here. But we can also choose to throw an error here.
+commontrait(::Type) = UnCommon()
+# First argument can be seen as a trait instance
+common(x) = common(commontrait(typeof(x)), x)
+common(::Common, x) = true
+common(::UnCommon, x) = false
+
+commontrait(::Type{Int}) = Common()
+commontrait(::Type{Float64}) = Common()
+
+common(1)
+common(1.0)
+common("")
+```
+
+The lack of a real trait or type class system means the instance has to be manually computed by `commontrait`,
+but because multiple dispatch based on `::Type` is essentially pattern matching for type expressions,
+definition of `commontrait` doesn't need to be a long `if-then` statement.
+
+The code above essentially gives every Julia type an instance of the `commontrait` trait.
+An equivalent Lean program would look like something more tedious,
+which likely involves a type class with only one field,
+and the type of the field is an inductive type allowing two options, common and uncommon.
+
+Naturally, Holy traits render abstract types unnecessary in method dispatching.
+It however does not naturally come with subtype polymorphism,
+in the sense that we can't write `x::Common = ...` and let function calls on `x` be dispatched according to `x`'s concrete type.
+However, we can also simulate [how abstract types are simulated in Lean](#abstract-types) via internal constructor in Julia.
+So it appears that the subtype hierarchy in Julia isn't truly necessary
+if we have enough features like auto dereference.
+
+This issue has been discussed [here](https://discourse.julialang.org/t/why-use-subtypes-instead-of-traits-and-duck-typing/59146?page=2)
+and also brought up in many other places.
 
 # Types of types
 
