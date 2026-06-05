@@ -85,7 +85,7 @@ However, if we allow a type class to extend another -
 which we should allow, as if the automatic instance synthesis of type classes is ignored,
 a type class has nothing different from a record or `structure` type,
 which naturally admits extending or field inheritance - 
-then we have actually introduced subtypeclassing,
+then we have actually introduced subtypeclass,
 which, when the rest of the programming language is powerful enough,
 [can be used to simulate subtyping](plt概况.md#在未知对象具体类型时的动态方法派发).
 
@@ -415,8 +415,12 @@ and for some - but not all - pairs of `U <: A` and `V <: B` - to have a `h` impl
 
 ---
 
-An alternative strategy the type checker can take is to weaken the requirements and treat an abstract method as a *suggestion* that the method can be implemented for the abstract classes.
-In this way the abstract method `f(::A, ::Int)` can be understood as 
+An alternative strategy the type checker can take is to weaken the requirements and treat an abstract method as a *suggestion* that the method can be implemented for types satisfying the type classes corresponding to the abstract types in the abstract method.
+
+In this way, since the abstract method `f(::A, ::Int)` contains an abstract type `A`,
+this abstract method can be translated to Lean or similar system as something like this:
+"a function that can be implemented for any type that satisfies `A`, paired with `Int`".
+A new type class describing this function is then
 (see [here](#function-calls-and-overloading) for notation)
 
 ```
@@ -424,7 +428,9 @@ class F (α : Type) [A α] where
   f : α → Int → ReturnType
 
 -- f is the singleton type of function f
-instance [A α] : FuncImpl f (α × Int) ReturnType where 
+-- Once type class F has an instance, we add that instance to the method dispatch table
+-- recorded by FuncImpl.
+instance [A α] [F α] : FuncImpl f (α × Int) ReturnType where 
   -- call F.f
 ```
 
@@ -648,16 +654,17 @@ structure Packed where
   [inst2 : Coe T B] 
 ```
 
-One problem with this approach is, $\mathsf{Packed}$ now is in $\mathsf{Type \ 1}$.
+One problem with this approach is, $\mathsf{Packed}$ now is in $\mathsf{Type \ 1}$,
+because it contains a type variable field `T`.
 Perhaps we should change the definition into 
 ```lean
 structure Packed where 
   T : JuliaType
-  x : List (promote T)
-  [inst1 : Coe A (promote T)]
-  [inst2 : Coe T (promote T)] 
+  x : List (lift T)
+  [inst1 : Coe A (lift T)]
+  [inst2 : Coe T (lift T)] 
 ```
-Here we use $\mathsf{promote}$ to refer to the mapping from type expressions ($\mathsf{JuliaType}$) to actual types.
+Here we use $\mathsf{lift}$ to refer to the mapping from type expressions ($\mathsf{JuliaType}$) to actual types.
 The distinction between type expressions and actual types can be found [here](#datatype-any-type-and-type-in-type).
 
 ## Traits
@@ -678,7 +685,7 @@ struct UnCommon end
 commontrait(::Type) = UnCommon()
 # First argument can be seen as a trait instance
 common(x) = common(commontrait(typeof(x)), x)
-common(::Common, x) = true
+common(::Common, x) = true # Can also contain procedures about x
 common(::UnCommon, x) = false
 
 commontrait(::Type{Int}) = Common()
@@ -698,15 +705,54 @@ An equivalent Lean program would look like something more tedious,
 which likely involves a type class with only one field,
 and the type of the field is an inductive type allowing two options, common and uncommon.
 
-Naturally, Holy traits render abstract types unnecessary in method dispatching.
-It however does not naturally come with subtype polymorphism,
-in the sense that we can't write `x::Common = ...` and let function calls on `x` be dispatched according to `x`'s concrete type.
-However, we can also simulate [how abstract types are simulated in Lean](#abstract-types) via internal constructor in Julia.
+With Holy traits it is not necessary to define an abstract type like `Common` and then write `common(x::Common) = ...`.
+Subtype polymorphism,
+in the sense that we want to write `x::Common = ...` and let function calls on `x` be dispatched according to `x`'s concrete type, 
+is also partially simulatable.
+We can also simulate [how abstract types are simulated in Lean](#abstract-types) via internal constructor in Julia.
 So it appears that the subtype hierarchy in Julia isn't truly necessary
 if we have enough features like auto dereference.
 
+One may wonder with Holy traits, why the type hierarchy and abstract types are still valuable.
 This issue has been discussed [here](https://discourse.julialang.org/t/why-use-subtypes-instead-of-traits-and-duck-typing/59146?page=2)
 and also brought up in many other places.
+
+One argument *for* abstract type is,
+let's suppose we want to *specialize*,
+and want to define `common(::Int)` without going through the trait system.
+This is readily doable by writing `common(x::Int) = ...`,
+but this is due to the subtype relation between `Int` and `Any` (as in `common(x)`):
+the latter is more broad and has a lower priority
+(when translated to Lean with a modified elaborator,
+the latter involves more steps in type class synthesis).
+So at the very least, `Int <: Any` should be retained,
+and `Any` is an abstract type.
+
+But in function dispatch we do not truly need `Any` either,
+as `common(x)` can as well be defined as 
+```julia
+common(x::T) where T = common(commontrait(T), x)
+```
+Recall that an abstract type is just an existential type;
+and we have $(\exist T:\mathsf{Type}. P(T)) \to Q$ is equivalent to $\forall x : \mathsf{Type} (P(T) \to Q)$.
+As for `x::Any`, it can be defined using using existential type, as is discussed above.
+
+However, when there are *more than one* abstract type in the specialization hierarchy,
+naive Holy traits no longer works,
+as there is no straightforward way to define *subtraits*.
+Let's say we also want to define a trait called `CommonInteger` - and `Int` has both this trait and the `Common` trait,
+while `Float64` only has the latter.
+Because `common` is a function and has a definite output,
+it should only return `CommonInteger` for an `Int` input - and the fact that `Int` is also `Common` has to be ignored.
+
+In a type class system, this is easily solved by adding an `extend` clause to a typeclass definition - essentially replacing subtyping by subtypeclass.
+But there seems to be no easy way for this to be implemented using Holy traits.
+
+So it appears that a non-standard version of Julia based solely on traits is not hard to imagine,
+but it has to involve additional language features that make subtypeclass possible.
+Also, the main practical argument against this plan is probably 
+this would massively increase the workload of the dispatch mechanism and slow down compilation.
+Also, one can argue that this is still not entirely 
 
 # Types of types
 
@@ -766,12 +812,14 @@ and we can pass everything to `Val`.
 So if the type universe of Julia was, say, $\mathsf{Type}$ in Lean,
 the cardinality of `Val` eventually would become that of the ZFC universe,
 and the interpretation of `Val` would cease to be within $\mathsf{Type}$.
+(Note that this is also a problem in System F,
+which however does not have `Type::Type`.)
 
 That an interpretation of a type system is countable isn't per se surprising, 
 as type theories have *term models*,
 in which no uncountable sets appear.
-However, we note that type theories also have set theoretic models or other kind of extensional, "large" models,
-while Julia's type system doesn't, and 
+However, we note that type theories *also* have set theoretic models or other kind of extensional, "large" models,
+while Julia's type system *doesn't*, and 
 therefore we should not attempt to interpret Julia parametricity as type functions in type theory (which is something we desire) 
 *and* interpret something in Julia as arrow type.
 Interestingly, Julia does indeed have no arrow type and only a `Function` type as the supertype of all function singleton types.
@@ -789,7 +837,7 @@ With the discussion above in mind,
 Here dots being in a circle means $\in$, and a circle being in another means subtype relation in the abstract type hierarchy.
 Hence `1::Number`, `Float64::DataType`, `Any::DataType`, and so on.
 Note that the `1` value in the set denoted by `Int64` has the tag `Int64` on it, and so on.
-The arrows describe how a type expression is "promoted" to an actual type.
+The arrows describe how a type expression is "lifted" to an actual type.
 
 ![](julia-basic-types.png)
 
@@ -808,12 +856,12 @@ inductive JuliaType
 | string
 -- ...
 
-def promote (typeexpr : JuliaType) : Type :=
+def lift (typeexpr : JuliaType) : Type :=
   match typeexpr with
   | JuliaType.nat => Nat
   | JuliaType.string => String
 
-def my_id (typeexpr : JuliaType) (input : promote typeexpr) : promote typeexpr := input
+def my_id (typeexpr : JuliaType) (input : lift typeexpr) : lift typeexpr := input
 
 #eval my_id JuliaType.string "str"
 ```
@@ -921,19 +969,33 @@ Regarding function calls:
 - The function-as-singleton approach in Julia can be motivated by our desire to not have true arrow type, or otherwise by passing elements of $\mathsf{Nat} \to \mathsf{Nat}$ to a parametric type, the number of types exceeds the number of type expressions (see above).
 - The method table of a generic function in Julia can be understood as [the set of instances of a type class](#function-calls-and-overloading).
 - The method table of callable objects  can similarly be understood as [type class instances](#callable-objects).
+- Abstract methods, i.e. methods involving abstract types that are called when more specific methods are not supplied and fails to notify the user that a more specific method *should* be applied, [can be understood as type classes, although it's ambiguous](#manually-throw-a-method-error).
 
 Regarding non-function data types:
 
 - Type checking assignments and internal constructors in Julia requires dependent arrow type and refinement type, which are not available in Julia but are available in e.g. Lean. 
 - Abstract types can be conceived dually: as type classes and as sigma types that contain terms whose types satisfy the type class (see [here](#abstract-types)). The type hierarchy can be understood as a specific type class synthesis.
+- Alternatively Julia is expressive enough to implement [a rudimentary trait system](#traits), although currently, because Julia does not support dereferencing (as in e.g. Rust) and user defined existential types very well, and most importantly, because Holy traits in Julia do not support subtypeclass i.e. type class extension, it's not yet possible to replace the abstract type hierarchy without compromising convenience. 
 - That a parametrized struct is an existential type [can be understood in Lean](#type-constructors-and-existential-types), and the natural coercion from a concrete type `B{Int}` to `B` can be understood as a subtype relation.
 - `where` expression with constraints can be understood as [sigma types with automatic type class synthesis too](#constraints-in-where).
 - "Static" union types, i.e. union types whose coverage can be determined at compilation, can be [simulated](#union-types) by the type class-plus-sigma type approach. 
 - However, *dynamic* union types, e.g. the union type in `f(::Type{T}, x::Union{T, Int}) where T = x`, seems beyond the ability of idiomatic Lean, for the very reason that it's not possible to define type classes and sigma types on the fly at runtime.
 
 Stratification:
-- The type expression/type duality of Julia types interprets `Any::Any` etc. 
+- The type expression/type one-to-one mapping of Julia types interprets `Any::Any` etc. 
+- Which means everything is countable in the most natural semantics of Julia. 
 - There is no way to directly operate on the "true" type universe $\mathsf{Type}$ in Julia;
   we work on types by indirectly work on `Type` - an ordinary type containing all type *expressions*.
 - It is also not possible to work on "real" arrow types in Julia,
   although something similar - essentially a subtype of `Function` - can be [defined](#arrow-types).
+- Subtype relations can be simulated by `Coe` instances, which, because they're type to type functions, boost an existential type recording subtype constraints to $\mathsf{Type \ 1}$. However because types can be "reflected" by values, Julia existential types with constraints are still [in $\mathsf{Type}$ and not $\mathsf{Type \ 1}$](#constraints-in-where). (It is also possible for systems with built-in subtype relations to easily capture $\exist A <: T <: B, C(T)$, in one type universe. We're just trying to capture the whole thing in "usual" dependent type theories.)
+
+Overall it appears that the only Julia feature that cannot be implemented in a Lean-like dependent type theory with targeted optimization of elaboration is dynamic union types,
+which isn't used that frequently anyway.
+
+It can be seen that most unique features of Julia's type system can be understood in mainstream type theory as type class and its synthesis strategy.
+This is consistent with the intuition that the main role of the type system is method dispatch.
+As said by [this post](https://www.reddit.com/r/Julia/comments/1is97xr/comment/nl15wu2/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button),
+
+> The statically typed equivalent to multiple dispatch is traits, which is how Haskell/Swift/Rust deal with this problem. The big open question in type checking Julia then is how do we codify trait implementations in a way that's idiomatic yet statically checkable? I don't have a good answer here, and this is where my thesis left off.
+

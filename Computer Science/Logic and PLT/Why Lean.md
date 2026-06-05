@@ -73,8 +73,8 @@ inductive Even : Nat → Prop
 但无论如何Lean，或者说其它可以归结为CIC+Choice的系统和主流数学的实践是相对一致的，而且可以说是兼顾各方需要。而且要说基础理论的一致性强度过高，Mizar可是有完整的Tarski-Grothendieck集合论，这个比ZFC+countable inaccessible cardinals可是强得多……
 
 （需要强调：这里所谓和主流数学相一致、能表示出Set范畴、构造出ZFC的模型的都是CIC+Choice。纯CIC的强度要弱很多，而且没有类型论版选择公理以后，类型宇宙的等级和inaccessible cardinal的等级没有明确的对应。）
-
-在探索了Lean的强度之后，我们会发现它们在一些地方甚至要更加贴近数学实践。历史上公理化集合论的motivation就是避免使用没有限制的分离公理（否则罗素悖论），因此要定义一个集合，就是说要先使用某些造集的公理定义足够大的集合，然后在后者上应用一次分离公理来得到想要的集合。在Lean中分离公理是免费的：把用来定义集合的谓词当作集合本身就行（官方文档："Set α. A set is defined as a predicate, i.e. a function α → Prop."）。配对、无穷公理用来justify的操作，使用inductive type可以轻松做到。需要幂集公理做的事情靠$A \to \mathsf{Prop}$（显然，可以理解成A的全体子集的集合）以及函数定义也能轻松做到。所以相比看起来有些杂乱的集合论公理，简洁的inductive types+dependent arrow types+universes的类型论反而看起来更接近很多数学家日常写的东西。
+在探索了Lean的强度之后，我们会发现它们在一些地方甚至要更加贴近数学实践。历史上公理化集合论的motivation就是避免使用没有限制的分离公理（否则罗素悖论），因此要定义一个集合，就是说要先使用某些造集的公理定义足够大的集合，然后在后者上应用一次分离公理来得到想要的集合。在Lean中分离公理是免费的：把用来定义集合的谓词当作集合本身就行（官方文档："Set α. A set is defined as a predicate, i.e. a function α → Prop."）。
+配对、无穷公理用来justify的操作，使用inductive type可以轻松做到。需要幂集公理做的事情靠$A \to \mathsf{Prop}$（显然，可以理解成A的全体子集的集合）以及函数定义也能轻松做到。所以相比看起来有些杂乱的集合论公理，简洁的inductive types+dependent arrow types+universes的类型论反而看起来更接近很多数学家日常写的东西。
 
 一个不如集合论基础简洁的地方是我们现在需要决定一个集合要编码成一个类型还是一个谓词。一个大致的rule of thumb是，“不知道从哪来的集合”（如一个任意的拓扑空间）应该当作类型处理，而在此之上应用分离公理得到的集合要当成谓词（然后使用refinement可以据此定义新类型）。Lean中两个任意的类型无法取交、并，但是可能我们也没有对两个不知道哪来的集合算交集并集的需求。
 
@@ -83,3 +83,9 @@ inductive Even : Nat → Prop
 所以总结下来，使用CIC做基础理论有若干好处：自动化（不是必须CIC或者typed lambda calculi，但这些肯定能用）；不需要为逻辑语句和数学对象分开设立两套语法，像typeclass，inductive type这些东西很自然的就是两用的；通过引入proof irrelevance可以一比一复刻常规的一阶逻辑（代价是放弃了证明的计算性，但做数学的人本来也不在乎这个）；通过引入类型论版本选择公理可以复刻ZFC+countable inaccessible cardinals，相对没什么争议；得到的系统相较于严格的公理化集合论，观感上更加接近数学实践。
 
 其实上面列举的好处并不是原则上不能在别的系统中做到。接下来是否会有别的发展我们可以拭目以待，但做平台重要的是生态，而现在Lean在数学圈子里有了一定名气，所以大概这条路还会继续被走下去。
+
+顺带，基于Church's Simple Type Theory的高阶逻辑（HOL）其实也有集合论对应，即Mac Lane set theory（见Thomas Forster的Weak Systems of Set Theory related to HOL一文）。
+HOL中没有$\mathsf{Prop}$但有$\mathsf{bool}$，因此命题和谓词（从而集合）在HOL中是term。
+与CIC不同的是，HOL中没有proof term，即我们有$1+1=2 : \mathsf{bool}$，但是并没有$p : 1 + 1 = 2$。
+也就是说HOL中可以把命题拿来拿去做讨论，但命题的证明不是可以被操作的对象：如果$\Gamma \vdash \phi : \mathsf{bool}$，则可以讨论$\Gamma \vdash \phi$或者$\Gamma \vdash \neg \phi$，但不能在HOL**内部**给$\phi$的证明贴上任何标签。
+当然，CIC在有propositional extensionality+排中律+proof irrelevance的情况下，实务上和HOL在逻辑部分也没有什么区别，主要区别在于是否有universe以及是否有自带的归纳类型。
