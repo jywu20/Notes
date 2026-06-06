@@ -525,6 +525,7 @@ a theory containing a proper class of inaccessible cardinals
 (by introducing the Tarski axiom or the axiom of universes)
 and thus stronger than ZFC + countable inaccessible cardinals.
 If one is willing to accept Mizar, then they should also be willing to accept Lean.
+(The underlying theory of Mizar is so bizarrely strong that a researcher once [mistook it as merely an equivalent of Lean](https://lawrencecpaulson.github.io/2025/11/21/Typed_Set_Theory.html), perhaps because the latter was the strongest system he had in mind.)
 
 ## Doing math strictly in ZFC in Lean
 

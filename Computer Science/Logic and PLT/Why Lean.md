@@ -84,8 +84,18 @@ inductive Even : Nat → Prop
 
 其实上面列举的好处并不是原则上不能在别的系统中做到。接下来是否会有别的发展我们可以拭目以待，但做平台重要的是生态，而现在Lean在数学圈子里有了一定名气，所以大概这条路还会继续被走下去。
 
-顺带，基于Church's Simple Type Theory的高阶逻辑（HOL）其实也有集合论对应，即Mac Lane set theory（见Thomas Forster的Weak Systems of Set Theory related to HOL一文）。
+---
+
+顺带，基于Church's Simple Type Theory的高阶逻辑（HOL）其实也有集合论对应，即Mac Lane set theory（见Thomas Forster的Weak Systems of Set Theory related to HOL一文，[此处的讨论](https://cstheory.stackexchange.com/questions/38556/is-simply-typed-lambda-calculus-equivalent-to-primitive-recursive-functions)，以及Mathias and set theory by Akihiro Kanamori）。
+这个其实是一个很自然的一致性强度，例如它和罗素的类型论似乎是等价的（见[此处](https://mathoverflow.net/questions/498078/what-is-the-consistency-strength-of-russell-whiteheads-principia-mathematica)；当然，HOL的拥护者未必是罗素式的逻辑主义者，他们可能大部分都不是，例如现代意义上的HOL基本上都是有无穷公理的，而从不觉得有必要论证无穷公理是纯逻辑的、不涉及任何实体的公理）。
 HOL中没有$\mathsf{Prop}$但有$\mathsf{bool}$，因此命题和谓词（从而集合）在HOL中是term。
 与CIC不同的是，HOL中没有proof term，即我们有$1+1=2 : \mathsf{bool}$，但是并没有$p : 1 + 1 = 2$。
-也就是说HOL中可以把命题拿来拿去做讨论，但命题的证明不是可以被操作的对象：如果$\Gamma \vdash \phi : \mathsf{bool}$，则可以讨论$\Gamma \vdash \phi$或者$\Gamma \vdash \neg \phi$，但不能在HOL**内部**给$\phi$的证明贴上任何标签。
-当然，CIC在有propositional extensionality+排中律+proof irrelevance的情况下，实务上和HOL在逻辑部分也没有什么区别，主要区别在于是否有universe以及是否有自带的归纳类型。
+也就是说HOL中可以把命题拿来拿去做讨论，但命题的证明不是可以被操作的对象：如果$\Gamma \vdash \phi : \mathsf{bool}$，则可以讨论$\Gamma \vdash \phi$或者$\Gamma \vdash \neg \phi$，但不能在HOL**内部**把$\phi$的证明当作一个term，比如给它命名什么的。
+（这可能也就是为什么HOL往往被实现在一个元语言里面）
+当然，CIC在有propositional extensionality+排中律+proof irrelevance的情况下，实务上和HOL在逻辑部分也没有什么区别，主要区别在于是否有universe以及是否有依赖类型。
+
+某种意义上Lean+经典公理对应于某种数学基础的极大主义，即试图字面解读$\mathsf{Set}$范畴、序数分析等，而HOL对应某种数学基础的极小主义。
+有关不同版本的HOL的关系（以及一些看着像语法糖的东西是不是真的是语法糖）可见Safety and Conservativity of Definitions in HOL and
+Isabelle/HOL一文。
+有关Isabelle/HOL中加入的polymorphism和typeclass是否是保守扩张，可见Proof-Theoretic Conservative Extension of HOL with Ad-hoc Overloading by Arve Gengelbach and Tjark Weber，以及Safety and conservativity of definitions in HOL and Isabelle/HOL by Ondřej Kunčar, Andrei Popescu.
+（注意Isabelle里面的参数多态不是System F这么强的）
