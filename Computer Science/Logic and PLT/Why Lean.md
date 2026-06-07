@@ -87,15 +87,56 @@ inductive Even : Nat → Prop
 ---
 
 顺带，基于Church's Simple Type Theory的高阶逻辑（HOL）其实也有集合论对应，即Mac Lane set theory（见Thomas Forster的Weak Systems of Set Theory related to HOL一文，[此处的讨论](https://cstheory.stackexchange.com/questions/38556/is-simply-typed-lambda-calculus-equivalent-to-primitive-recursive-functions)，以及Mathias and set theory by Akihiro Kanamori）。
-这个其实是一个很自然的一致性强度，例如它和罗素的类型论似乎是等价的（见[此处](https://mathoverflow.net/questions/498078/what-is-the-consistency-strength-of-russell-whiteheads-principia-mathematica)；当然，HOL的拥护者未必是罗素式的逻辑主义者，他们可能大部分都不是，例如现代意义上的HOL基本上都是有无穷公理的，而从不觉得有必要论证无穷公理是纯逻辑的、不涉及任何实体的公理）。
-HOL中没有$\mathsf{Prop}$但有$\mathsf{bool}$，因此命题和谓词（从而集合）在HOL中是term。
+
+这个其实是一个很自然的一致性强度，例如它和罗素的类型论PM似乎是等价的，见[此处](https://mathoverflow.net/questions/498078/what-is-the-consistency-strength-of-russell-whiteheads-principia-mathematica)。
+当然，HOL的拥护者未必是罗素式的逻辑主义者，他们可能大部分都不是，例如现代意义上的HOL基本上都是有无穷公理的，而从不觉得有必要论证无穷公理是纯逻辑的、不涉及任何实体的公理；而“正统”的PM后代[似乎面对更多的挑战](https://plato.stanford.edu/entries/logicism/#SumProForLog)。
+同一个页面也介绍了Quine有关如何从PM过渡到Zermelo集合论的论证；在此之后Axiom of Replacement finally allows one to pierce all type ceilings，但既然我们并不想真的pierce all type ceiling，HOL和PM，Zermelo以及Mac Lane集合论等价也就不足为奇了。
+
+HOL中没有$\mathsf{Prop}$但有$\mathsf{bool}$，因此命题和谓词（从而集合）在HOL中都是term，和在CIC中一样。
 与CIC不同的是，HOL中没有proof term，即我们有$1+1=2 : \mathsf{bool}$，但是并没有$p : 1 + 1 = 2$。
 也就是说HOL中可以把命题拿来拿去做讨论，但命题的证明不是可以被操作的对象：如果$\Gamma \vdash \phi : \mathsf{bool}$，则可以讨论$\Gamma \vdash \phi$或者$\Gamma \vdash \neg \phi$，但不能在HOL**内部**把$\phi$的证明当作一个term，比如给它命名什么的。
 （这可能也就是为什么HOL往往被实现在一个元语言里面）
-当然，CIC在有propositional extensionality+排中律+proof irrelevance的情况下，实务上和HOL在逻辑部分也没有什么区别，主要区别在于是否有universe以及是否有依赖类型。
+HOL虽然是类型论但是并不采取Curry-Howard correspondence的理解。
 
-某种意义上Lean+经典公理对应于某种数学基础的极大主义，即试图字面解读$\mathsf{Set}$范畴、序数分析等，而HOL对应某种数学基础的极小主义。
+当然，CIC在有propositional extensionality+排中律+proof irrelevance的情况下，实务上和HOL在逻辑部分也没有什么区别，主要区别在于是否有universe以及是否有依赖类型。
+另一方面，在CIC中，proof irrelevance会导致Curry-Howard correspondence失去计算意义，$p:1+1=2$中的$p$没法拿来做计算，而只是一个占位符，几乎可以理解为给有证明的$1+1=2$这个命题一个代号，而排中律和propositional extensionality更是让$\mathsf{Prop}$变成了一个只有两个元素一真一假的类型，和HOL中的$\mathsf{bool}$就没什么真正区别了。
+所以其实也可以让HOL中的证明有Curry-Howard correspondence的理解，但这样需要额外为命题引入$\forall$类型。
+另一方面，用CIC中的$\forall$倒是可以定义出HOL中的$\forall : (\alpha \to \mathsf{bool}) \to \mathsf{bool}$。
+因此不基于Curry-Howard correspondence的HOL可以看成经典CIC的一个片段。
+
+更一般的，开了proof irrelevance和propositional extensionality的Curry-Howard同构和LCF没有表达能力上的区别（注意LCF是可以编码非经典逻辑的；这么说，是否存在无法被C-H同构捕捉到的逻辑能被LCF定义？）。
+两者的差别主要是具体实现上的：LCF的证明检查是“外部”的，而C-H同构的证明检查是类型系统的一部分；这个看起来平凡的区别意味着C-H同构的证明检查通常需要把proof term explicitly地构造出来，所以内存占用会比较大。
+
+某种意义上Lean+经典公理对应于某种数学基础的极大主义，即试图字面解读$\mathsf{Set}$范畴、序数分析等，数学家口嗨说要有$\mathsf{Set}$，我们就真的奉上$\mathsf{Set}$范畴；而HOL对应某种数学基础的极小主义。
 有关不同版本的HOL的关系（以及一些看着像语法糖的东西是不是真的是语法糖）可见Safety and Conservativity of Definitions in HOL and
 Isabelle/HOL一文。
 有关Isabelle/HOL中加入的polymorphism和typeclass是否是保守扩张，可见Proof-Theoretic Conservative Extension of HOL with Ad-hoc Overloading by Arve Gengelbach and Tjark Weber，以及Safety and conservativity of definitions in HOL and Isabelle/HOL by Ondřej Kunčar, Andrei Popescu.
 （注意Isabelle里面的参数多态不是System F这么强的）
+
+---
+
+有关极大主义和极小主义可以多说几句。proof assistant圈子不是铁板一块的，[里面其实有很多生态位](https://xenaproject.wordpress.com/2020/02/09/where-is-the-fashionable-mathematics/)。
+涉及到的参数包括你是真的要形式化数学还是要玩数学基础（后者也是严肃的学问，包括但不限于各种集合论，以及HoTT、Cubical TT等等，但大部分传统意义上的数学家志不在此），你是要经典数学还是别的什么东西（例如构造主义数学允许你做code extraction，虽然实务上没什么人用），以及你是极大主义者还是极小主义者。
+
+如果你是要形式化传统数学、经典数学，其实现在能用的基础就两批，一个是极大主义的ZFC（Axiom of Replacement用来形式化序数分析）加大基数（用来形式化范畴论），一个是极小主义的Mac Lane及其等价物。
+前者基本上只有Lean和Mizar能用，而Mizar可能过强了。后者就是各种各样的HOL。
+
+纯ZFC相较之下处于一个比较尴尬的位置。它是两种立场的调和，但是两头不沾。
+对只关注具体计算的数学家来说序数分析似乎没有什么用，而对想要构造极其复杂的对象的数学家来说，ZFC不能给他们$\mathsf{Set}$，而一旦能构造ZFC级别的$\mathsf{Set}$，他们又会问是否能把ZFC加一个universe中的全体集合都放进$\mathsf{Set}$里面。
+你看，其结果就是$\mathsf{Set}$实际上变成了“ZFC+$n$个universe”的简写，这里$n$要看情况而定。
+在Lean中这其实就是`Type u`（见[此处](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Types/Basic.html)："In this section we define a LargeCategory structure on Type u, in such a way that it becomes a ConcreteCategory."）
+这可能也就是为什么Lean社区拥抱universe，因为它的确字面意义上实现了数学家们想要任意大的范畴的狂野愿望。
+因此Lean的数学基础对想要字面形式化现代范畴论的人来说是自然的。
+另一方面如果拒绝这些大得离谱的构造，我们当然也可以怀疑序数分析，于是就回到了Mac Lane和HOL上面。
+
+---
+
+数理逻辑学家如果采取极大主义的立场，需要构造不断变强的各种系统，而HOL——罗素的PM的直系后代——却基本上没有增强其一致性强度。
+后者能形式化前者形式化的相当一部分数学；事实上，大名鼎鼎的布尔巴基学派似乎只用到了Zermelo set theory，[因此可以认为是只用到了HOL](https://lawrencecpaulson.github.io/2022/01/26/Set_theory.html)。
+这不禁让人问，是否那些看起来很强大的结构只是起到了bookkeeping的作用：我们想要的是证明满足某些规则的对象的存在性，而其实这些规则可以在更小的对象里面被满足。
+集合论研究中，这个现象的一个例子是反射原理（Skolem's Paradox是它的一个例子）。
+
+
+
+---
+
