@@ -29,7 +29,7 @@ or a bug in encoding of the object logic.
 And it's always easier to make a small kernel highly trusted.
 
 Encoding of logic into LCF differs from Curry-Howard correspondence.
-In the former, a proposition is only a term, and not a type:
+In the former, a proposition is a *term*, and not a type:
 that a proposition is proven doesn't not correspond to any proof term;
 by default, no term in the prover "memorizes" the whole proof tree.
 This does not need to be the case in Curry-Howard correspondence,
@@ -71,6 +71,9 @@ we need an additional axiomatic function $\mathsf{Trueprop}$.
 We emphasize that $\mathsf{bool}$ and $\mathsf{prop}$ live in *the same type space*.
 Indeed this is how we're able to write $\mathsf{Trueop} : \mathsf{bool} \Longrightarrow \mathsf{prop}$.
 Similarly, Isabelle/Pure terms and Isabelle/HOL terms live in the same *term* space.
+In this way, saying that Isabelle/Pure is a meta-*language* may be a little misleading,
+as in classic metamathematics, propositions of an object language are often encoded as strings or numbers in the metalanguage,
+but Isabelle/HOL terms are *not* encoded into a single `HOLTerm` type in Isabelle/Pure.
 
 # Type definitions in HOL
 
@@ -83,7 +86,7 @@ and hence there's no primitives for defining things in Isabelle/HOL either.
 Actually, keywords like `datatype` are implemented in the ML part of Isabelle/HOL:
 different logics have different front-end layers translating definitions into the object logics.
 
-Similarly, saying that "theorem $A \to B$" is actually saying theorem $\mathsf{Trueprop (A \to B): \mathsf{prop}}$.
+Similarly, saying that "theorem $A \to B$" holds is actually saying theorem $\mathsf{Trueprop (A \to B): \mathsf{prop}}$ holds.
 
 These procedures are yet another layer over the object logic.
 
@@ -91,4 +94,19 @@ These procedures are yet another layer over the object logic.
 
 There's also another component in Isabelle's system: Isar, a proof language that allows users to write proofs in the style mathematicians use everyday,
 and not the purely tactic-based style.
-Isar is ignorant to object logics and is built directly on top of Isabelle/Pure, but it interacts with logic-specific ML front-end packages that give us `datatype` etc. perfectly.
+Isar is ignorant to object logics and is built directly on top of Isabelle/Pure, but it interacts with logic-specific ML front-end packages that give us `datatype` etc. perfectly:
+type definitions never appear in Isar, and proofs don't appear in type definitions.
+
+# Type classes and locales 
+
+One thing very good about Lean (and other dependently typed programming languages)
+is you're able to define a mathematical *structure* - like a group structure (not to be confused with `struct`s, although with dependent types they're related) that contains properties:
+because proofs are terms of propositions,
+the fact that the multiplication operation of a group has associativity can be treated just like an ordinary member of the group structure.
+
+To achieve the same in Isabelle one needs so-called *locales*.
+This is not a math term but a term in Isar.
+A locale is literally just a predicate containing constraints between the arguments,
+but it has a system of auxiliary functionalities and automation built around it 
+(see [here](https://lawrencecpaulson.github.io/2022/03/23/Locales.html)).
+Type classes are claimed to be implemented as a special case of locales in the article (Constructive Type Classes in Isabelle).
