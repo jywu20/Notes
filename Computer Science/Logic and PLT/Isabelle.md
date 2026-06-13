@@ -18,7 +18,7 @@ it's typically very weak, and proves nothing interesting about the object logic;
 in a serious metatheoretic analysis of the resulting logic system (about e.g. proof theoretic strength),
 perhaps the LCF infrastructure (the *kernel*) and the object logic should be analyzed together.
 
-What makes LCF different from "ordinary" logical frameworks is that this infrastructure is within a functional programming language:
+What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that this infrastructure is within a functional programming language:
 $\Gamma \vdash \phi$ is translated into "$\phi$ can be constructed in type $\mathsf{thm}$ using pre-declared components in $\Gamma$",
 and a rule of inference has the type of $\mathsf{thm} \to \cdots \to \mathsf{thm}$. 
 If the input arguments don't allow the rule of inference to conclude anything, typically an error is thrown.
@@ -29,7 +29,7 @@ or a bug in encoding of the object logic.
 And it's always easier to make a small kernel highly trusted.
 
 Encoding of logic into LCF differs from Curry-Howard correspondence.
-In the former, a proposition is a *term*, and not a type:
+In the former, a proposition is a term *only*, and not a type:
 that a proposition is proven doesn't not correspond to any proof term;
 by default, no term in the prover "memorizes" the whole proof tree.
 This does not need to be the case in Curry-Howard correspondence,
@@ -74,6 +74,12 @@ Similarly, Isabelle/Pure terms and Isabelle/HOL terms live in the same *term* sp
 In this way, saying that Isabelle/Pure is a meta-*language* may be a little misleading,
 as in classic metamathematics, propositions of an object language are often encoded as strings or numbers in the metalanguage,
 but Isabelle/HOL terms are *not* encoded into a single `HOLTerm` type in Isabelle/Pure.
+
+# Non-HOL logics encoded in Isabelle
+
+A list of logics available in Isabelle can be found in its documentation.
+Mizar can also be implemented within [Isabelle](https://link.springer.com/article/10.1007/s10817-018-9479-z),
+although the TG set theory behind Mizar is the strongest among underlying calculi of all mainstream proof assistants. 
 
 # Type definitions in HOL
 
