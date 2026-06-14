@@ -64,7 +64,7 @@ inductive Even : Nat → Prop
 
 
 
-然后我们来看类型论和集合论的关系。不是所有的类型论都有直截了当的集合论诠释，例如System F就没有（见Polymorphism is not set-theoretic一文）。但是就Lean（以及Coq）使用的CIC而言，可以证明“ZFC+可数个不可达基数”和“可数个Type n宇宙的Lean+类型论版选择公理+proof irrelevance+quotient type”可以互相构造对方的模型（见Sets in Types, Types in Sets一文，以及Mario Carneiro的硕士论文The Type Theory of Lean；Prop不能nontrivial地诠释成一些集合，但我们也不需要它们被解释为集合），从而两个基础理论是等价的（文献中常见“这两个基础理论是equiconsistent的”的说法，但这里我们有明确的把数学对象和命题从两个理论往对面搬运的构造所以这里的结论其实更强一些）。因此Lean的一致性强度要强于ZFC从而更可能不自洽，但是对范畴论而言，不可达基数有其意义，否则无法字面地定义Set范畴。
+然后我们来看类型论和集合论的关系。不是所有的类型论都有直截了当的集合论诠释，例如System F就没有（见Polymorphism is not set-theoretic一文）。但是就Lean（以及Coq）使用的CIC而言，可以证明“ZFC+可数个不可达基数”和“可数个Type n宇宙的Lean+类型论版选择公理+proof irrelevance+quotient type”可以互相诠释（见Sets in Types, Types in Sets一文，以及Mario Carneiro的硕士论文The Type Theory of Lean；Prop不能nontrivial地诠释成一些集合，但我们也不需要它们被解释为集合），从而两个基础理论是等价的（文献中常见“这两个基础理论是equiconsistent的”的说法，但这里我们有明确的把数学对象和命题从两个理论往对面搬运的构造所以这里的结论其实更强一些）。因此Lean的一致性强度要强于ZFC从而更可能不自洽，但是对范畴论而言，不可达基数有其意义，否则无法字面地定义Set范畴。
 
 一个稍微麻烦一些的事情是，要看出一份Lean证明是否用到了超越ZFC的工具并不容易，因为即使被证明的命题的叙述中没有出现Type 1或更高的宇宙，证明过程里面仍然可以使用它们。显然的例子是“ZFC是自洽的”是一个算术命题，从而不涉及高阶类型宇宙，但它可以在Lean中证明，而显然不能在ZFC中证明。检查证明过程中用到了哪些类型宇宙是不够精确的，因为集合论运算在CIC中要编码成函数，从而本质上是ZFC以内的操作有的时候会涉及Type 1。社区现在还没动向去研究怎么确保一份Lean证明是足够“简单”的。
 
