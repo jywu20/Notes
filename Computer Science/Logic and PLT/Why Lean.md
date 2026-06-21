@@ -91,6 +91,7 @@ inductive Even : Nat → Prop
 
 这个其实是一个很自然的一致性强度，例如它和罗素的类型论PM似乎是等价的，见[此处](https://mathoverflow.net/questions/498078/what-is-the-consistency-strength-of-russell-whiteheads-principia-mathematica)。
 当然，HOL的拥护者未必是罗素式的逻辑主义者，他们可能大部分都不是，例如现代意义上的HOL基本上都是有无穷公理的，而从不觉得有必要论证无穷公理是纯逻辑的、不涉及任何实体的公理；而“正统”的PM后代[似乎面对更多的挑战](https://plato.stanford.edu/entries/logicism/#SumProForLog)。
+（HOL和PM还有一个重要的差异，就是前者有明确的计算上的意义，即内嵌了一个编程语言，而后者没有。）
 同一个页面也介绍了Quine有关如何从PM过渡到Zermelo集合论的论证；在此之后Axiom of Replacement finally allows one to pierce all type ceilings，但既然我们并不想真的pierce all type ceiling，HOL和PM，Zermelo以及Mac Lane集合论等价也就不足为奇了。
 
 现代版本的HOL通常还包括全局选择公理——等价于希尔伯特epsilon算符。
@@ -117,6 +118,8 @@ HOL虽然是类型论但是并不采取Curry-Howard correspondence的理解。
 Isabelle/HOL一文。
 有关Isabelle/HOL中加入的polymorphism和typeclass是否是保守扩张，可见Proof-Theoretic Conservative Extension of HOL with Ad-hoc Overloading by Arve Gengelbach and Tjark Weber，以及Safety and conservativity of definitions in HOL and Isabelle/HOL by Ondřej Kunčar, Andrei Popescu.
 （注意Isabelle里面的参数多态不是System F这么强的）
+
+HOL可以看成经典CIC的一个片段这一事实显然[有很多人注意到](https://news.ycombinator.com/item?id=14744167)（以及[此处](https://www.reddit.com/r/ProgrammingLanguages/comments/1aigns2/comment/koxkfhw/)）这个事情和将HOL家族的证明自动化技术用在Lean上有很大的关系。
 
 ---
 
