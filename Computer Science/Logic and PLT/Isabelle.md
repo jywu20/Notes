@@ -104,7 +104,23 @@ they also have the Axiom of Choice as a theorem.
 A strange choice, though not without merit, [as it is a smart way to get Choice, first-order logic and bound variables at once](https://mathoverflow.net/questions/14356/bourbakis-epsilon-calculus-notation).
 
 The Axiom of Replacement is indeed nowhere to be found (something noticed mentioned by comments in the discussion thread above). 
-There seems to be some misinformation about Bourbaki using standard ZF, which isn't true.
+
+This doesn't mean claims of Bourbaki's set theory is more or less equivalent to ZFC purely misinformation.
+Because of $\epsilon$-calculus being stronger than ordinary first-order logic,
+it is possible to prove all the axioms of ZFC except the Axiom of Regularity within their system,
+which is done in On Bourbaki’s axiomatic system for set theory by Maribel Anacona, Luis Carlos Arboleda, and F. Javier Pérez-Fernández.
+Moreover, they have proven that it's also possible to interpret the Bourbaki system within ZFC minus Regularity.
+Because Bourbaki doesn't use any ill-founded set, 
+perhaps it makes no substantial difference to just add Regularity as one of his axioms.
+
+Therefore we should perhaps not be surprised to see that in his Theory of Sets,
+transfinite induction is indeed mentioned,
+which is not possible in Zermelo alone.
+So the absence of Axiom of Replacement in the list of axioms Bourbaki considered necessary perhaps is more a misunderstanding,
+as the underlying logic framework assumed in his work is not ordinary first-order logic.
+
+This seems to weaken the claim that HOL is enough for formalizing concrete mathematics.
+It remains to be seen how much Replacement is used in the subsequent Bourbaki volumes.
 
 ## Relation with the type theory of Lean
 
