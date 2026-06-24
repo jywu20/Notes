@@ -247,7 +247,7 @@ Werner 1997 proves that $\mathrm{CIC}_{n+1}$ is interpretable in $\mathrm{ZFC}_n
 and $\mathrm{ZFC}_n$ is interpretable in $\mathrm{CIC}_{n+2}$.
 Hence ZFC + countable inaccessible cardinals and CIC with infinite universes can be interpretable in each other.
 Carneiro (2019) further proves that Lean (with its own classical axioms) with infinite universes and ZFC + countable inaccessible cardinals are interpretable in each other as well.
-Hence all three systems are equiconsistent.
+Hence all three systems are equiconsistent, and indeed, equi-interpretable.
 
 There are some subtleties about the correspondence between each stage of the three theories,
 which are discussed in detail in Carneiro (2019).

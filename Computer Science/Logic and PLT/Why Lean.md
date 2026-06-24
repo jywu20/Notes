@@ -87,11 +87,11 @@ inductive Even : Nat → Prop
 ---
 
 顺带，基于Church's Simple Type Theory的高阶逻辑（HOL）其实也有集合论对应，即Mac Lane set theory（见Thomas Forster的Weak Systems of Set Theory related to HOL一文，[此处的讨论](https://cstheory.stackexchange.com/questions/38556/is-simply-typed-lambda-calculus-equivalent-to-primitive-recursive-functions)，以及Mathias and set theory by Akihiro Kanamori）。
-这个集合论和Zermelo集合论也是等价的。
+这个集合论和bounded Zermelo集合论也是等价的。
 
 这个其实是一个很自然的一致性强度，例如它和罗素的类型论PM似乎是等价的，见[此处](https://mathoverflow.net/questions/498078/what-is-the-consistency-strength-of-russell-whiteheads-principia-mathematica)。
 当然，HOL的拥护者未必是罗素式的逻辑主义者，他们可能大部分都不是，例如现代意义上的HOL基本上都是有无穷公理的，而从不觉得有必要论证无穷公理是纯逻辑的、不涉及任何实体的公理；而“正统”的PM后代[似乎面对更多的挑战](https://plato.stanford.edu/entries/logicism/#SumProForLog)。
-（HOL和PM还有一个重要的差异，就是前者有明确的计算上的意义，即内嵌了一个编程语言，而后者没有。）
+（HOL和PM还有一个重要的差异，就是前者有明确的计算上的意义，即内嵌了一个编程语言，而后者没有。这个意义上现代意义上的HOL是一种LCF，logic of computable functions；当然，LCF现在的主要意思已经变成了一种证明辅助系统的设计风格）
 同一个页面也介绍了Quine有关如何从PM过渡到Zermelo集合论的论证；在此之后Axiom of Replacement finally allows one to pierce all type ceilings，但既然我们并不想真的pierce all type ceiling，HOL和PM，Zermelo以及Mac Lane集合论等价也就不足为奇了。
 
 现代版本的HOL通常还包括全局选择公理——等价于希尔伯特epsilon算符。
