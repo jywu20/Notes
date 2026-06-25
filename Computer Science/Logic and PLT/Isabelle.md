@@ -9,7 +9,11 @@ The relation between HOL - Higher Order Logic, in its modern sense - and (classi
 Long story short, HOL (with axioms of infinity and choice) is equivalent to Mac Lane set theory, in terms of proof theoretic strength and consistency,
 and hence is a good foundation of concrete mathematics.
 
-Papers regarding the equivalence:
+A rather unfortunate fact is most introductory materials of HOL (and indeed most other provers) 
+do not specify the metamathematic status of the underlying calculus they use.
+Thus in this article, we start with a discussion about the strength of HOL.
+
+Papers regarding the equivalence between HOL and MAC set theory, that is, Zermelo set theory with only bounded separation:
 -  Weak Systems of Set Theory related to HOL, Thomas Forste, which explicitly constructs mutual interpretations between HOL and TST
 - Comparing Type theory and set theory, John Lake, Mathematical Logic Quarterly 21 (1):355-356 (2010), which shows that if TST (with Inf, or Inf+AC) has a model, then so is MAC (MAC + Inf, MAC + Inf + AC).
   It calls MAC Z0. 
@@ -68,6 +72,10 @@ Henceforth, unless mentioned otherwise, "HOL" just means HOL+Infinity+Choice.
 This means HOL is not an ideal foundation of mathematics pertaining to logicism a la Russell,
 as it contains *substantial* axioms, namely Infinity and Choice and is not pure logic.
 
+Note: to ensure that Choice can be implemented simply as `SOME t`,
+we typically demand all types in HOL to be non-empty.
+This does not hinder our attempt to construct a model of MAC in a model of HOL,
+as what is conceived as an empty set in the model of MAC is the equivalence class of a predicate that always returns `false`.
 
 ## Why MAC, then?
 
@@ -155,6 +163,7 @@ The issue, together with the issue of making definitions in a safe way in genera
 is then discussed in  Safety and conservativity of definitions in HOL and Isabelle/HOL by Ondřej Kunčar, Andrei Popescu 
 and  Proof-Theoretic Conservative Extension of HOL with Ad-hoc Overloading by Arve Gengelbach and Tjark Weber.
 
+Other conservative extensions include `typedef` (defining new types based on a set, i.e. a predicate), `datatype` (which enables inductive), and the like. All these are conservative. How they are introduced will be discussed later.
 
 # The LCF-style Isabelle prover
 
@@ -174,7 +183,7 @@ perhaps the LCF infrastructure (the *kernel*) and the object logic should be ana
 
 What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that this infrastructure is within a functional programming language:
 $\Gamma \vdash \phi$ is translated into "$\phi$ can be constructed in type $\mathsf{thm}$ using pre-declared components in $\Gamma$",
-and a rule of inference has the type of $\mathsf{thm} \to \cdots \to \mathsf{thm}$. 
+and something like $\phi_1, \phi_2, \ldots, \phi_n \vdash \psi$ is encoded into a term with the type $\mathsf{thm} \to \cdots \to \mathsf{thm}$. 
 If the input arguments don't allow the rule of inference to conclude anything, typically an error is thrown.
 
 One advantage of this approach is its incremental nature:
@@ -198,7 +207,7 @@ with proof checking in LCF being at runtime and proof checking in C-H correspond
 ## Peculiarities of Isabelle: weakened HOL as meta-logic
 
 HOL4 and HOL Light use ML programming languages as the meta-logic.
-Despite having some components *implemented* in ML, Isabelle's meta-logic is *not* ML, but something called Isabelle/Pure.
+Despite having some components *implemented* in ML, Isabelle's meta-logic of object logics is *not* ML, but something called Isabelle/Pure.
 In this way Isabelle deviates from traditional LCF provers in that it has a minimal kernel of logic as well,
 and not just a minimal kernel of logic *checker*.
 
@@ -215,8 +224,30 @@ This behavior can again be reproduced by assuming proof irrelevance as $\Gamma \
 The correspondence between proposition $\phi$ and the typed term $\phi : \mathsf{prop}$ is for defining predicates as terms in HOL.
 
 Isabelle/Pure has no type definition mechanism.
-Any type definition (via `typedecl` keyword with `judgment` and `axiomatization` statements describing its behaviors) is axiomatic, and should be considered as a part of the definition of the object logic.
-The only way to define things in Isabelle/Pure is by `definition`, which basically is just $\coloneqq$.
+Any type definition ( `typedecl` keyword with `judgment` and `axiomatization` statements describing its behaviors) is axiomatic, and should be considered as a part of the definition of the object logic.
+Actually even term definitions in it look like axioms, although the design of Isabelle makes sure they're conservative.
+A new symbol is introduced by `consts`, like `consts a :: t => t`, where `t` is a type already defined.
+Then a lambda expression in the form of `defs f x ≡ g x + 1` can be done.
+See [more discussions here](#introducing-conservative-extensions).
+
+The meta-language used to define Isabelle/Pure is ML;
+the meta-language used to define object logics is Isabelle/Pure.
+Therefore $\phi_1, \ldots, \phi_n \vdash \psi$ *in the object logic* is encoded as $\Lambda x_1 \cdots \Lambda x_n (\phi_1 \Longrightarrow \phi_2 \Longrightarrow \cdots \Longrightarrow \psi)$,
+while each of $\phi_i$ or $\psi$ can have internal structures like $\forall y_1 (P \to Q)$.
+The transition between $\Lambda x_1 \cdots \Lambda x_n (\phi_1 \Longrightarrow \phi_2 \Longrightarrow \cdots \Longrightarrow \psi)$ and $\forall x_1 \forall x_2 \cdots \forall x_n (\phi_1 \to \cdots \phi_n \to \psi)$ is only possible with user-defined rules written in the definition of the object logic.
+On the other hand, $\Lambda x_1 \cdots \Lambda x_n (\phi_1 \Longrightarrow \phi_2 \Longrightarrow \cdots \Longrightarrow \psi)$ in Isabelle/Pure is *not* identical to $\phi_1, \ldots, \phi_n \vdash \psi$ *in Isabelle/Pure*, not in the eyes of the ML meta-logic used to encode Isabelle/Pure, and the transition between the two has to be enabled by moves allowed by the ML kernel that implements Isabelle/Pure.
+This double-layered structure looks confusing but thanks to the simplicity of Isabelle/Pure, automation eases the burden to translate across layers.
+
+Note that one benefit of having Isabelle/Pure as the meta-logic is there is no need for the designer of an object logic to take time to get things like variable binding and scope right.
+The big lambda has done it once and for all.
+
+An interesting thing is, Isabelle/Pure seems to support much more than sequents ($\phi_1 \Longrightarrow \cdots \Longrightarrow \phi_n \Longrightarrow \psi$) and rules of inference ($(\cdots \Longrightarrow \cdots) \Longrightarrow (\cdots \Longrightarrow \cdots) \Longrightarrow \cdots \Longrightarrow (\cdots \Longrightarrow \cdots)$, used together with beta-reduction):
+there is no limit on how many layers of embedded arrow types there are.
+Thus, it is actually much stronger than a platform encoding sequent calculus or natural deduction.
+These higher rank arrow types aren't used frequently in formalizing "ordinary" logics.
+They definitely aren't needed in formalizing HOL.
+Their proper use is meta-programming about rules - but this is something more properly done by writing ML extensions.
+Perhaps the main reason to have such a strong logical framework - though an incredibly weak meta *theory* - is just to make the prover looks conceptually uniform.
 
 ## Recovering the full power of HOL
 
@@ -240,41 +271,61 @@ In this way, saying that Isabelle/Pure is a meta-*language* may be a little misl
 as in classic metamathematics, propositions of an object language are often encoded as strings or numbers in the metalanguage,
 but Isabelle/HOL terms are *not* encoded into a single `HOLTerm` type in Isabelle/Pure.
 
+It can be seen that what Isabelle/Pure gives to HOL is actually making it possible to write a sequent $\phi_1, \ldots, \phi_n \vdash \psi$ for HOL, in the form of $\Lambda x_1 \cdots \Lambda x_n (\phi_1 \Longrightarrow \phi_2 \Longrightarrow \cdots \Longrightarrow \psi)$.
+See the discussion in the last section.
+
 ## Non-HOL logics encoded in Isabelle
 
 A list of logics available in Isabelle can be found in its documentation.
 Mizar can also be implemented within [Isabelle](https://link.springer.com/article/10.1007/s10817-018-9479-z),
 although the TG set theory behind Mizar is the strongest among underlying calculi of all mainstream proof assistants. 
 
-## Type definitions in HOL
+## Introducing conservative extensions 
 
-We emphasize again that any definition in Isabelle/Pure is axiomatic,
+We emphasize again that most definitions in Isabelle/Pure are axiomatic,
 in that Isabelle/Pure gives us no way to define new types without risking extending the strength of the system.
-However, Isabelle/HOL is *supposed* to support definitions, i.e. introduction of new concepts into the system in a predefined way that is known to be conservative.
+However, Isabelle/HOL is *supposed* to support definitions, i.e. introduction of new concepts into the system in a predefined way that is known to be *conservative*.
 But then notice that in the process of embedding HOL into Isabelle/Pure, we have only utilized `typedecl`,
 and have never introduced any primitives for making (conservative) definitions in Isabelle/HOL. 
 
 Thus, keywords like `datatype` that allow us to make (conservative) definitions
-are implemented in the *ML* part of Isabelle/HOL:
+are implemented in the *ML* part of Isabelle/HOL, and *not in Pure*:
 the architecture of Isabelle allows users to enrich the syntax,
 and different object logics have different front-end commands that are translated to primitive provided by the corresponding logics behind the scene.
+We overview these syntactic extensions [here](#conservative-extensions).
 
 Similarly, in Isabelle/HOL, saying that "theorem $A \to B$" holds is actually saying theorem $\mathsf{Trueprop (A \to B): \mathsf{prop}}$ holds.
 
-These procedures are yet another layer, a syntactic sugar layer over the object logic.
+These procedures are a syntactic sugar layer over the layer of the object logic.
 It's possible to have buggy code in this layer too that misleads readers of a proof to believe something has been proven,
 although what is proven behind the scene is something different.
 
+Actually it is also possible to have a syntactic sugar layer over the layer of Isabelle/Pure.
+The `definition` command for instance is not a primitive in Isabelle/Pure.
+It appears that if a command is not a primitive,
+then if you move your mouse cursor over it in the webpage view of Isabelle's library,
+and the command gets highlighted, then it's not primitive.
+It's not hard to find some commands obviously targeting Isabelle/Pure that get highlighted.
 
 # Isar
 
 There's also another component in Isabelle's system: Isar, a proof language that allows users to write proofs in the style mathematicians use everyday,
 and not the purely tactic-based style.
 Isar is ignorant to object logics and is built directly on top of Isabelle/Pure, 
-but it interacts with logic-specific ML front-end packages that give us `datatype` etc. perfectly:
-type definitions never appear in Isar, and proofs don't appear in type definitions.
+but it interacts with logic-specific ML front-end packages that give us `datatype` etc. perfectly,
+as Isar is mostly about having a disciplined way to write Isabelle/Pure code and does not interfere with anything in the object logic.
+Almost every line of code users of modern Isabelle write is in the Isar framework.
 
-## How HOL is defined in Isar
+Thus the architecture of Isabelle ecosystem is like this.
+1. A trusted core implementing Isabelle/Pure in the LCF way, written in ML.
+2. Definition of object logics, like Isabelle/HOL or Isabelle/ZF, written in Isabelle/Pure. 
+3. Tactics for constructing backward proofs, written in ML. Note that a lot of these tactics are not object logic-dependent, especially the primitive proof tactics. Automation tactics on the other hand are often heavily tuned to a specific object logic. A lot of them don't need to be used with Isar in theory.
+4. Commands like `typedef` or `datatype`, written in ML, typically for object-logic-specific packages.
+5. The Isar user interface, providing commands like `theorem`, `proof`, `qed`, and the like, written in ML and is not logic-specific.
+
+Below we go over each part of Isar, hence focusing mainly on the logic-independent parts.
+
+## Defining an object logic: HOL as an example
 
 Below we present some code snippets about how HOL is defined using Isar notation.
 
@@ -309,7 +360,8 @@ axiomatization where
 
   True_or_False: "(P = True) ∨ (P = False)"
 ```
-These rules perhaps do not need any explanation.
+These rules perhaps do not need any explanation,
+and are just materialization of the idea [here](#recovering-the-full-power-of-hol).
 
 ---
 
@@ -362,6 +414,64 @@ typedef nat = "{n. Nat n}"
   morphisms Rep_Nat Abs_Nat
   using Nat.Zero_RepI by auto
 ```
+Note that we're turning a set (essentially a predicate) to a type.
+This is because of one conservative extension of HOL.
+
+## Isar theories
+
+An Isabelle theory is a basic modular unit.
+The syntax has a Pascal flavor, in that the top-level syntax is `theory ... import ... begin ... end`.
+An Isabelle theory also corresponds to a LaTeX file, with format markup commands `chapter`, `section`, `subsection` and `subsubsection`.
+Informal discussions are introduced by the `text` command.
+
+A lemma looks like something like this:
+```Isabelle
+lemma my_lemma:
+  fixes x :: nat
+  assumes A: "P x"
+  shows "Q x"
+```
+Basically `fixes` introduces a variable and `assumes` introduces a condition.
+The theorem is essentially `⋀x::nat. P x ⟹ Q x`:
+recall that Isar works only with Isabelle/Pure, and therefore the underlying representations of variables, conditions etc. introduced by Isar are all in Isabelle/Pure.
+
+The statement `⋀x::nat. P x ⟹ Q x` should be understood as $x : \mathsf{nat}, P(x) \vdash Q(x)$ *in the object logic* (but not the corresponding sequent in Isabelle/Pure, which in Isar cannot be expressed explicitly);
+it takes an additional step to show $\forall x : \mathsf{nat} (P(x) \to Q(x))$ in the object logic.
+
+To prove a universally quantified statement in HOL - and not Pure - we can use the universal quantifier introduction rule
+```Isabelle
+lemma allI:
+  assumes "⋀x::'a. P x"
+  shows "∀x. P x"
+```
+which can be proven from the definition of $\forall$:
+```Isabelle
+definition All :: "('a ⇒ bool) ⇒ bool"  (binder ‹∀› 10)
+  where "All P ≡ (P = (λx. True))"
+```
+Then we can have 
+```Isabelle
+lemma "∀x::nat. x = x"
+proof (rule allI)
+  fix x :: nat
+  show "x = x"
+    by simp
+qed
+```
+or even 
+```Isabelle
+lemma "∀x::nat. x = x"
+proof
+  fix x :: nat
+  show "x = x"
+    by simp
+qed
+```
+The strong automation of Isabelle makes it painless for user-defined quantifiers to "inherit" their quantifier introduction rules from that of big lambda in Pure.
+
+# Conservative extensions
+
+## Type definitions
 
 ## Type classes and locales 
 

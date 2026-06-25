@@ -129,6 +129,8 @@ HOL可以看成经典CIC的一个片段这一事实显然[有很多人注意到]
 如果你是要形式化传统数学、经典数学，其实现在能用的基础就两批，一个是极大主义的ZFC（Axiom of Replacement用来形式化序数分析）加大基数（用来形式化范畴论），一个是极小主义的Mac Lane及其等价物。
 前者基本上只有Lean和Mizar能用，而Mizar可能过强了。后者就是各种各样的HOL。
 
+（其余的proof assistant和常规意义上的数学相差不小；Coq社区似乎总是主张把用了经典公理的数学和纯构造的数学分开来；NuPRL和经典数学的张力甚至[更大](https://proofassistants.stackexchange.com/questions/1012/can-mathematical-formalizations-in-nuprl-be-trusted-as-correct-in-the-greater-ma)）
+
 纯ZFC相较之下处于一个比较尴尬的位置。它是两种立场的调和，但是两头不沾。
 对只关注具体计算的数学家来说序数分析似乎没有什么用，而对想要构造极其复杂的对象的数学家来说，ZFC不能给他们$\mathsf{Set}$，而一旦能构造ZFC级别的$\mathsf{Set}$，他们又会问是否能把ZFC加一个universe中的全体集合都放进$\mathsf{Set}$里面。
 你看，其结果就是$\mathsf{Set}$实际上变成了“ZFC+$n$个universe”的简写，这里$n$要看情况而定。
