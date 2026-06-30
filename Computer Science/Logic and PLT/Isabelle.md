@@ -5,6 +5,18 @@ Isabelle, and Isabelle/HOL
 
 ## Why HOL: its relation with weak set theories
 
+The HOL formalism has been documented [here](https://hol-theorem-prover.org/docs/trindemossen-2/Logic/syntax).
+The formalism looks reasonable for someone trained in elementary mathematics,
+perhaps more reasonable than ZFC:
+we have "individuals" i.e. "dots" to represent abstract mathematical objects whose internal structures we're not interested in,
+and we have true and false and also equality,
+on top of which we can build functions and prove things about them.
+But the actual strength of this intuitive environment is not per se intuitive.
+
+We note that unlike Coq and many other dependent type provers,
+HOL is classical, just like Lean, which has a constructivist core calculus but its ecosystem has been built on top of classical axioms.
+A brief summary on why a classical logic is preferable in formalizing ordinary mathematics can be found in arXiv 1804.07860.
+
 The relation between HOL - Higher Order Logic, in its modern sense - and (classical) CIC and set theory has been discussed [here](Why%20Lean.md).
 Long story short, HOL (with axioms of infinity and choice) is equivalent to Mac Lane set theory, in terms of proof theoretic strength and consistency,
 and hence is a good foundation of concrete mathematics.
@@ -71,11 +83,13 @@ and it gives us type-level choice in TST - which means in a model of HOL+Infinit
 Henceforth, unless mentioned otherwise, "HOL" just means HOL+Infinity+Choice.
 This means HOL is not an ideal foundation of mathematics pertaining to logicism a la Russell,
 as it contains *substantial* axioms, namely Infinity and Choice and is not pure logic.
+(Interestingly, Lawrence Paulson mentions this in his paper arXiv 1804.07860.)
 
 Note: to ensure that Choice can be implemented simply as `SOME t`,
 we typically demand all types in HOL to be non-empty.
 This does not hinder our attempt to construct a model of MAC in a model of HOL,
-as what is conceived as an empty set in the model of MAC is the equivalence class of a predicate that always returns `false`.
+as what is conceived as an empty set in the model of MAC is the equivalence class of a predicate that always returns `false`,
+which is not of an atomic type $a$ but of type $a \to \mathsf{bool}$.
 
 ## Why MAC, then?
 
@@ -132,10 +146,12 @@ It remains to be seen how much Replacement is used in the subsequent Bourbaki vo
 
 ## Relation with the type theory of Lean
 
-It's possible to derive HOL by applying constraints to classical Lean:
+Conceptually we can derive HOL by applying constraints to classical Lean:
 see [here](https://news.ycombinator.com/item?id=14744167)
 and [here](https://www.reddit.com/r/ProgrammingLanguages/comments/1aigns2/comment/koxkfhw/).
 In the same way MAC+Choice is a fragment of ZFC+countable inaccessible cardinals.
+(But note that HOL is extensional, while Lean is not.
+So there are differences in how equality is treated, although this does not influence consistency strength and interpretability.)
 
 So we have a hierarchy: HOL < ZFC < classical Lean.
 ZFC gains its popularity largely because of its meta-mathematics properties.
@@ -148,7 +164,7 @@ The main disadvantage of HOL, when it comes to strength, is that it's not possib
 ## Further enrichments
 
 In Isabelle/HOL, both parametric polymorphism and ad hoc polymorphism have been introduced into HOL.
-The parametric polymorphism mechanism adopted is conservative in the sense that it can be "compiled away",
+The parametric polymorphism mechanism adopted is basically let-polymorphism and is conservative in the sense that it can be "compiled away",
 just like C++ templates (perhaps I should say Hindley–Milner style polymorphism).
 
 Ad hoc polymorphism is realized by type classes.
@@ -156,14 +172,29 @@ In dependent type theories like Lean, a type class is merely a record with a typ
 Because Isabelle is not dependently typed,
 type classes are somehow considered constraints imposed on types (like how it's done in Haskell).
 
-This is handy (for defining +, or `0`), but has a history of bringing inconsistent behaviors!
+This is handy (for defining +, or `0`), but has a history of bringing inconsistency!
 See A Consistent Foundation for Isabelle/HOL by Ondřej Kunčar, Andrei Popescu.
 The question then comes whether the system after the modifications merely undergoes a conservative extension.
 The issue, together with the issue of making definitions in a safe way in general,
 is then discussed in  Safety and conservativity of definitions in HOL and Isabelle/HOL by Ondřej Kunčar, Andrei Popescu 
 and  Proof-Theoretic Conservative Extension of HOL with Ad-hoc Overloading by Arve Gengelbach and Tjark Weber.
 
-Other conservative extensions include `typedef` (defining new types based on a set, i.e. a predicate), `datatype` (which enables inductive), and the like. All these are conservative. How they are introduced will be discussed later.
+Other conservative extensions include `typedef` (defining new types based on a set, i.e. a predicate), `datatype` (which enables inductive), and the like. All these are conservative. 
+
+How all the conservative extensions are introduced will be discussed [later](#conservative-extensions).
+The governing philosophy of the HOL community is to avoid extending the consistency strength of HOL at any cost.
+In [Paulson's own words](https://lawrencecpaulson.github.io/2025/11/02/Why-not-dependent.html),
+"we have to choose whether to spend our time developing formalisms or instead to choose a fixed formalism and see how far you can push it." 
+
+## Implementations
+
+Due to lack of Curry-Howard correspondence, implementation of HOL typically needs to be done in a simpler calculus for stating theorems, giving assumption names, storing proofs somewhere, etc.
+(The benefit of the proof-as-term concept, when we work with classical logic, is when $x:T$ and $T : \mathsf{Prop}$, $x$ basically becomes a label for $T$, and we get all housekeeping mechanisms for free.)
+
+The HOL prover family traditionally relies on the LCF architecture, to be discussed in the next section.
+
+There is also a recently developed [Acorn project](https://github.com/acornprover/acorn),
+which, according to the author, is [also based on HOL](https://www.reddit.com/r/math/comments/1ic9ifz/comment/m9ppds4/).
 
 # The LCF-style Isabelle prover
 
@@ -203,6 +234,11 @@ That said, if we have proof irrelevance, a proof term is nothing more than a "la
 and therefore for users, LCF and C-H correspondence no longer has any "theoretical" difference,
 and the main difference is implementational and technical,
 with proof checking in LCF being at runtime and proof checking in C-H correspondence being at compilation.
+
+And here comes the second advantage of LCF:
+it serves logics that do not rely on Curry-Howard correspondence well.
+Without C-H, we need to manually build infrastructures like labels for statements, interfaces for external programs to engineer proofs, etc.
+and all these naturally lead to the need for a meta-logic.
 
 ## Peculiarities of Isabelle: weakened HOL as meta-logic
 
@@ -278,7 +314,8 @@ See the discussion in the last section.
 
 A list of logics available in Isabelle can be found in its documentation.
 Mizar can also be implemented within [Isabelle](https://link.springer.com/article/10.1007/s10817-018-9479-z),
-although the TG set theory behind Mizar is the strongest among underlying calculi of all mainstream proof assistants. 
+although the TG set theory behind Mizar is the strongest among underlying calculi of all mainstream proof assistants.
+(Another implementation of TG can be found [here](https://github.com/kappelmann/Isabelle-Set/).) 
 
 ## Introducing conservative extensions 
 
@@ -320,7 +357,7 @@ Thus the architecture of Isabelle ecosystem is like this.
 1. A trusted core implementing Isabelle/Pure in the LCF way, written in ML.
 2. Definition of object logics, like Isabelle/HOL or Isabelle/ZF, written in Isabelle/Pure. 
 3. Tactics for constructing backward proofs, written in ML. Note that a lot of these tactics are not object logic-dependent, especially the primitive proof tactics. Automation tactics on the other hand are often heavily tuned to a specific object logic. A lot of them don't need to be used with Isar in theory.
-4. Commands like `typedef` or `datatype`, written in ML, typically for object-logic-specific packages.
+4. Commands like `typedef` or `datatype`, written in ML, developed both for Isabelle/Pure and for object-logic-specific packages.
 5. The Isar user interface, providing commands like `theorem`, `proof`, `qed`, and the like, written in ML and is not logic-specific.
 
 Below we go over each part of Isar, hence focusing mainly on the logic-independent parts.
@@ -467,11 +504,52 @@ proof
     by simp
 qed
 ```
-The strong automation of Isabelle makes it painless for user-defined quantifiers to "inherit" their quantifier introduction rules from that of big lambda in Pure.
+The strong automation of Isabelle makes it painless for user-defined quantifiers to "inherit" their quantifier introduction rules from that of big lambda in Pure,
+which has it done once and for all.
 
 # Conservative extensions
 
-## Type definitions
+A list of packages extending the HOL calculus can be found [here](https://isabelle.in.tum.de/library/HOL/HOL/index.html).
+
+## Set
+
+The first extension we need to introduce to HOL is probably sets:
+(sub)sets of existing types.
+The typical way to do so in type theoretic foundations is to just regard predicates as sets - 
+so we get Axiom of Separation for free.
+
+The practice in Isabelle/HOL is to define sets by [axioms](https://isabelle.in.tum.de/dist/library/HOL/HOL/Set.html).
+There's an one-to-one mapping between `'a set` and `'a => bool`,
+and existence of such a relation is exactly the axioms specifying the behaviors of `set`.
+This is a conservative extension obviously.
+
+The reason to have sides alongside predicates is practical.
+In [Lawrence Paulson's words](https://lawrencecpaulson.github.io/2025/11/21/Typed_Set_Theory.html),
+
+> Early versions of Isabelle/HOL maintained separate types for sets and predicates. At some point about 20 years ago, somebody had the idea of abolishing the distinction, presumably to avoid some duplication. This change persisted for a couple of releases before being laboriously reversed. Sets and predicates are simply not the same.
+
+He does not explain why, but we can think of several reasons.
+One reason is, we expect automation tools to be optimized differently for sets and for predicates:
+for sets, we have an algebra based on $\cup$, $\cap$, rules pertaining to which should be a part of `simp`;
+it sounds rather unnatural to have these rules for predicates, and mixing rules from the two worlds may slow down automation.
+
+## Type comprehension
+
+After having sets, it's natural to demand the ability to define new types via set comprehension:
+that's to say, to convert a set (which basically is a predicate, so we get axiom of separation for free) into a type.
+This is necessary, or otherwise we can't even have a natural number type and can only have a natural number set (in the `ind` type).
+(Sure, we can always define natural by induction, but that requires its own language extension too; see next section.)
+
+Type definition by comprehension should be a conservative extension because suppose the type $A$ is defined as $\{x : B | P(x) \}$, where $P : B \to \mathsf{bool}$,
+and we find $\forall x:A (\ldots)$ can be translated using a guard construct to $\forall x:A(P(x) \to \ldots)$,
+and a function $f: A \to D$ can be replaced by a function that returns some garbage value when the input value $x$ does not satisfy $P(x)$,
+and a statement $Q(f(x))$ can be translated to $P(x) \to Q(f(x))$.
+
+Type comprehension is [implemented as a part of Isabelle/HOL](https://isabelle.in.tum.de/library/HOL/HOL/Typedef.html), and is often known simply as "type definition".
+
+## Inductive types
+
+Inductive definitions are typically justified by some fixed point theorems.
 
 ## Type classes and locales 
 
@@ -482,7 +560,60 @@ the fact that the multiplication operation of a group has associativity can be t
 
 To achieve the same in Isabelle one needs so-called *locales*.
 This is not a math term but a term in Isar.
-A locale is literally just a predicate containing constraints between the arguments,
+An introduction can be found [here](https://isabelle.in.tum.de/dist/Isabelle/doc/locales.pdf).
+
+A locale represents a proof context, and is literally just a predicate containing constraints between the arguments,
 but it has a system of auxiliary functionalities and automation built around it 
 (see [here](https://lawrencecpaulson.github.io/2022/03/23/Locales.html)).
 Type classes are claimed to be implemented as a special case of locales in the article (Constructive Type Classes in Isabelle).
+
+
+
+## "Dependent types"
+
+Dependent types are clearly needed if you want to *straightforwardly* formalize concepts like $\real^n$.
+That said, whether it is *necessary* is much less clear.
+Some discussions can be found [here](https://news.ycombinator.com/item?id=45791772) and [here](https://lawrencecpaulson.github.io/2025/11/02/Why-not-dependent.html).
+
+The paper Theorem Proving in [Dependently-Typed Higher-Order Logic by Colin Rothgang, Florian Rabe, and Christoph Benzmüller](https://link.springer.com/chapter/10.1007/978-3-031-38499-8_25#FPar1)
+has already shown that it's possible to compile away limited dependent types in HOL,
+and HOL with dependent types can be treated as a preprocessor layer.
+The calculus they propose can be seen as CIC trimmed down 
+(and because `Type 0` and `Type 1` are no longer terms,
+$a : \mathsf{Type} \ 0$ is now a type judgement and `Type 1` expressions can only appear in "theories" declarations that set up the environment).
+
+The procedure compiling away dependent types, intuitively, is quite close to how we show that [type comprehension](#type-comprehension):
+a dependent type $A$ is "broadened" to $\bar{A}$ to remove all value dependence,
+and whether a term belongs to a certain dependent type (like `Vec 3`) is checked by a guard $A^*$.
+$\forall x : A (\cdots)$ is translated to $\forall x : \bar{A} (x A^* x \to \cdots)$ where $A^*$ is a PER that encodes both well-formedness of the term and also equality in the dependent type.
+(The paper does not assume axiom of infinity and therefore gives no example of how a concrete dependent type is compiled into a simple type plus a PER guard;
+it just demonstrates that by having simple types and defining PER guards we can simulate dependent types.)
+
+As they mention in the paper,
+
+> The result is structurally close to what a native formalization of categories in HOL would look like, but somewhat clunkier.
+
+This makes type checking in HOL (note that in HOL this does not involve theorem proving and should be an easy task) undecidable as equality check - the basis of reasoning in HOL, expectedly undecidable - is now a part of type checking.
+
+Note also that because we do not need types to encode propositions, they have no difficulty including subtypes in their calculus.
+
+This dependent HOL calculus (DHOL) can further [have polymorphism](https://arxiv.org/pdf/2605.00295) and [choice operator](https://arxiv.org/pdf/2410.08874).
+
+---
+
+Therefore translating a formalization of a mathematical concept using dependent types to a formalization of it without dependent types is a routine task.
+The PER and the "broadened" $\bar{A}$ type naturally can be stored together in a locale.
+Thus at the end of [this presentation](https://www.cl.cam.ac.uk/~lp15/papers/Alexandria/Bordg-talk_schemes.pdf) it is asked 
+
+dependent types $\stackrel{?}{\simeq}$ simple types + locales/predicates
+
+More often than not, though, we find we do not even need this "dependently typed formalization followed by removing dependent type" protocol.
+
+---
+
+
+
+https://arxiv.org/pdf/2104.09366
+
+
+
