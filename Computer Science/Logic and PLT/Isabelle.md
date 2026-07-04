@@ -70,6 +70,25 @@ because when we say $\forall X \in A_i, \ldots$, the type of the lowest represen
 On the other hand, in an expression like $\forall X, \ldots$,
 we do not know what type the lowest representative of $X$ is, so it's not possible to translate this formula to TST.
 
+We also note that Axiom of Replacement is absent in bounded Zermelo set theory,
+and this is consistent with the fact that it's related to HOL, a simply typed theory.
+This is because the "function" $F$ in the axiom scheme is a *definable class function*,
+whose domain and range are the whole ZFC universe.
+This is not something with a direct connection to type theories;
+on the other hand, *set theoretic* functions agree with the type theoretic view of functions better.
+(But note that in Lean because we have universes,
+proving Replacement is trivial,
+although this leads to the so-called [fence post error problem](Lean.md).
+The most natural way to move from HOL to have Replacement is to introduce universes,
+which somehow boosts the strength of the theory from bounded Zermelo directly to ZFC+countable inaccessible cardinals in a single step.
+The Axiom of Replacement is a mechanism for having a glimpse of the universe from the outside;
+the most natural way to implement it in a type theory is to explicitly have universes,
+but (with Choice) this massively boosts the strength of the theory.
+If we don't have universes, by default, $t : \mathsf{Type \ 0}$ has to be trimmed down to just well-formedness condition $t \ \mathsf{Type}$,
+and in order to have - or even state - Replacement,
+we'll need to partially allow mentioning `Type` in a term for defining a replacement function,
+which is nontrivial to do.)
+
 Replace $D_n$ in the construction above by the interpretation of $(\cdots((T_0 \to \mathsf{bool}) \to \mathsf{bool}) \to \cdots \to \mathsf{bool})$,
 and we have already constructed a model of MAC in a model of HOL+Infinity.
 
@@ -212,10 +231,13 @@ it's typically very weak, and proves nothing interesting about the object logic;
 in a serious metatheoretic analysis of the resulting logic system (about e.g. proof theoretic strength),
 perhaps the LCF infrastructure (the *kernel*) and the object logic should be analyzed together.
 
-What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that this infrastructure is within a functional programming language:
+What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that this infrastructure is within a programming language that doesn't even need to be a typed lambda calculus:
 $\Gamma \vdash \phi$ is translated into "$\phi$ can be constructed in type $\mathsf{thm}$ using pre-declared components in $\Gamma$",
 and something like $\phi_1, \phi_2, \ldots, \phi_n \vdash \psi$ is encoded into a term with the type $\mathsf{thm} \to \cdots \to \mathsf{thm}$. 
 If the input arguments don't allow the rule of inference to conclude anything, typically an error is thrown.
+Now, obviously, soundness is *not* guaranteed by the type system, but by *private constructs* of this programming language:
+the key point is user defined code is not supposed to modify the internal structure of a $\mathsf{thm}$ to fake a theorem.
+Which is why the ML programming language family provides a robust system of concealing things.
 
 One advantage of this approach is its incremental nature:
 if a bug appears, it's either a bug in implementation of the LCF kernel, 
@@ -352,6 +374,11 @@ Isar is ignorant to object logics and is built directly on top of Isabelle/Pure,
 but it interacts with logic-specific ML front-end packages that give us `datatype` etc. perfectly,
 as Isar is mostly about having a disciplined way to write Isabelle/Pure code and does not interfere with anything in the object logic.
 Almost every line of code users of modern Isabelle write is in the Isar framework.
+
+Strictly speaking it is not possible now to look at an Isabelle file and say what is and is not Isar now,
+because if you want a purely Isar-free environment then the only way to do it is perhaps to do it in the ML environment, directly in the LCF style.
+But typically `apply` scripts aren't considered idiomatic Isar,
+as these have no difference from a proof script written in ML.
 
 Thus the architecture of Isabelle ecosystem is like this.
 1. A trusted core implementing Isabelle/Pure in the LCF way, written in ML.
@@ -571,7 +598,7 @@ Type classes are claimed to be implemented as a special case of locales in the a
 
 ## "Dependent types"
 
-Dependent types are clearly needed if you want to *straightforwardly* formalize concepts like $\real^n$.
+Dependent types are clearly needed if you want to *straightforwardly* formalize concepts like $\reals^n$.
 That said, whether it is *necessary* is much less clear.
 Some discussions can be found [here](https://news.ycombinator.com/item?id=45791772) and [here](https://lawrencecpaulson.github.io/2025/11/02/Why-not-dependent.html).
 
@@ -580,7 +607,10 @@ has already shown that it's possible to compile away limited dependent types in 
 and HOL with dependent types can be treated as a preprocessor layer.
 The calculus they propose can be seen as CIC trimmed down 
 (and because `Type 0` and `Type 1` are no longer terms,
-$a : \mathsf{Type} \ 0$ is now a type judgement and `Type 1` expressions can only appear in "theories" declarations that set up the environment).
+$a : \mathsf{Type} \ 0$ is now a type judgement and `Type 1` expressions can only appear in "theories" declarations that set up the environment;
+this is a vivid illustration of why "integrating out" degrees of freedom often leaves a theory looking more complex, and why academic studies of type *systems* often look messy;
+if we see HOL as a trimmed down version of dependent type theories,
+we've already had a taste of it: we have two types of $:$ - one for statements and one for type declaration, and two or three types of arrows - function arrow, implication, and implication in Isabelle/Pure).
 
 The procedure compiling away dependent types, intuitively, is quite close to how we show that [type comprehension](#type-comprehension):
 a dependent type $A$ is "broadened" to $\bar{A}$ to remove all value dependence,
@@ -607,13 +637,11 @@ Thus at the end of [this presentation](https://www.cl.cam.ac.uk/~lp15/papers/Ale
 
 dependent types $\stackrel{?}{\simeq}$ simple types + locales/predicates
 
-More often than not, though, we find we do not even need this "dependently typed formalization followed by removing dependent type" protocol.
+More often than not, though, we find we do not even need this "dependently typed formalization followed by removing dependent type" protocol,
+and in particular we do not need to have the PER translation in mind when doing formalization.
 
----
-
-
-
-https://arxiv.org/pdf/2104.09366
+It has been shown that mathematical constructs commonly implemented using dependent types can be relatively painlessly formalized in HOL.
+See e.g. https://arxiv.org/pdf/2104.09366 and the presentation above.
 
 
 

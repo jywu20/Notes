@@ -18,7 +18,7 @@
   - 这里的妙处在于，变量的“类型”（静态强类型语言意义上的类型）就是Dynamic而值的类型（实际上是tag）则是确定的，而如果能够确定一个变量总是取某个tag的值时，这个变量就可以认为是typed的，而Julia的设计意味着这样的推导是很容易的。
 
 PL领域总是讨论typed lambda calculus的一个原因是，一个经验的事实是如果一个语言特征能比较容易地被一个足够强的typed lambda calculus模仿，则它往往是“简单”的，否则则不那么简单。
-（将非函数式的语言嵌入函数式语言是一条编程语言理论中的暗线。与之有关的学术出版可见The End of History? Using a Proof Assistant to Replace Language Design with Library Design。所谓monad as programmable semicolon）
+（将非函数式的语言嵌入函数式语言是一条编程语言理论中的暗线。与之有关的学术出版可见The End of History? Using a Proof Assistant to Replace Language Design with Library Design。所谓monad as programmable semicolon。这种嵌入有一个好处，就是做形式化验证的时候只需要一个能用来verify typed lambda calculus的逻辑就可以了。例如HOL其实就很好用。）
 
 # 类型系统和类型论
 
