@@ -179,7 +179,6 @@ and overly strong if one wants to ignore Mathias's advice.
 
 The main disadvantage of HOL, when it comes to strength, is that it's not possible to use universes in HOL without additional axiomatization.
 
-
 ## Further enrichments
 
 In Isabelle/HOL, both parametric polymorphism and ad hoc polymorphism have been introduced into HOL.
@@ -573,10 +572,52 @@ and a function $f: A \to D$ can be replaced by a function that returns some garb
 and a statement $Q(f(x))$ can be translated to $P(x) \to Q(f(x))$.
 
 Type comprehension is [implemented as a part of Isabelle/HOL](https://isabelle.in.tum.de/library/HOL/HOL/Typedef.html), and is often known simply as "type definition".
+A type definition starts with `typedef`, like something like this: `typedef nat = "{n. Nat n}"` (where `Nat` is a predicate; this is still bounded separation, because the type of `n` can be inferred from the type signature of `Nat`).
 
 ## Inductive types
 
-Inductive definitions are typically justified by some fixed point theorems.
+In programming languages, general type inductive definition syntax combines two things: (a) introducing constants (like zero, or the empty list), and (b) defining infinite objects and how to reason about them (basically, by introduce function constants, like `succ`), both in the same type.
+In some languages, like Lean, we also have inductive function (and hence predicate) definitions for defining type families and predicates (`inductive f: Nat -> Prop`, or `inductive f: Nat -> Type`).
+
+(Note that inductive definitions are not the same as recursive function definitions: the latter are defined using the `def` keyword in Lean.)
+
+Inductive principles can sometimes be very, very strong, exceeding what can be achieved by Axiom of Infinity paired with other axioms.
+A good example is the definition of the cumulative hierarchy, which exceeds the power of ZFC.
+On the other hand, in ZFC, it's not hard to prove that W types - whose set theoretic counterparts are the least fixed points of polynomial equations like $X = \sum_{a \in A} X^{B(a)}$, with $A$ being a set and $B$ a *class* function (i.e. function notation defined in first-order logic using something like Russell's $\exist !$) - always exist.
+
+But even this is too strong for bounded Zermelo with Choice, it appears.
+There are some model theoretic argument against it (although they're from ChatGPT which I don't trust).
+But it appears that finite strictly positive polynomial functors always have least fixed points - in Mac Lane set theory.
+Indeed in Isabelle we can write 
+
+```Isabelle
+datatype ('a, 'b, 'c, 'd) t2 =
+    Nil
+  | NodeA 'a "('b ⇒ ('a, 'b, 'c, 'd) t2)"
+  | NodeB 'c "('d ⇒ ('a, 'b, 'c, 'd) t2)"
+```
+corresponding to $I = 1 + A \times I^B + C \times I^D$.
+
+The general W type definition isn't available in Isabelle/HOL anyway as the $B$ function is not in HOL.
+(Which naturally raises a question: how should inductive types be treated in [dependent HOL](#dependent-types)?)
+It is however available in Lean,
+and in this way Lean's inductive scheme is strictly stronger than that of Isabelle/HOL.
+
+TODO: BNF  bounded natural functor (
+
+Now we turn to how the existing inductive scheme is implemented.
+Because we have no dependent types,
+inductive definitions define predicates and types.
+Inductive type definitions in turn can be done by `typedef` plus inductive predicate definition plus ambient types defined using products and sums of the `ind` type,
+and inductive predicate definitions are justified by fixed point theorems.
+
+We're therefore faced with two questions.
+First, what kind of fixed point definitions are possible within HOL,
+and second, what kind of ambient sets - on which `typedef` is to be applied - are definable.
+
+https://matryoshka-project.github.io/pubs/co_data_invited.pdf
+
+https://www.andreipopescu.uk/pdf/codat-impl.pdf
 
 ## Type classes and locales 
 
