@@ -179,6 +179,15 @@ and overly strong if one wants to ignore Mathias's advice.
 
 The main disadvantage of HOL, when it comes to strength, is that it's not possible to use universes in HOL without additional axiomatization.
 
+Besides the *proof theoretic* strength of the theories, the current version of HOL also differs from Lean in how they treat *computation*.
+The current version of HOL has function extensionality (the original Church's formulation does not),
+which means that it's not possible to retrieve a specific implementation of a function, even if it's defined using lambda expression.
+This does *not* influence evaluation in e.g. the `value` command,
+because if $f$ and $g$ are equal and not distinguishable within the type theory,
+picking `f` for `value "f(x)"` isn't problematic anyway;
+studies concerning the internal structures of functions (like complexity theory) can be done by adding log mechanisms in the function definition to record the time cost, which is often what is done in practical software engineering anyway.
+This does make equality computationally undecidable, so there is a tradeoff.
+
 ## Further enrichments
 
 In Isabelle/HOL, both parametric polymorphism and ad hoc polymorphism have been introduced into HOL.
@@ -206,8 +215,10 @@ In [Paulson's own words](https://lawrencecpaulson.github.io/2025/11/02/Why-not-d
 
 ## Implementations
 
-Due to lack of Curry-Howard correspondence, implementation of HOL typically needs to be done in a simpler calculus for stating theorems, giving assumption names, storing proofs somewhere, etc.
-(The benefit of the proof-as-term concept, when we work with classical logic, is when $x:T$ and $T : \mathsf{Prop}$, $x$ basically becomes a label for $T$, and we get all housekeeping mechanisms for free.)
+Due to lack of Curry-Howard correspondence, implementation of HOL typically needs to be done in a simpler calculus for stating theorems, passing proved theorems around, giving assumption names, storing proofs somewhere, etc.
+(The benefit of the proof-as-term concept, when we work with classical logic, is when $x:T$ and $T : \mathsf{Prop}$, $x$ basically becomes a label for $T$, and we get all housekeeping mechanisms for free.
+In HOL's internal language you can't pass a proven property around or package it with things it describes into a single term and pass it around.
+You can pass a proposition around, but there's not guarantee that it's proven.)
 
 The HOL prover family traditionally relies on the LCF architecture, to be discussed in the next section.
 
@@ -230,43 +241,74 @@ it's typically very weak, and proves nothing interesting about the object logic;
 in a serious metatheoretic analysis of the resulting logic system (about e.g. proof theoretic strength),
 perhaps the LCF infrastructure (the *kernel*) and the object logic should be analyzed together.
 
-What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that this infrastructure is within a programming language that doesn't even need to be a typed lambda calculus:
-$\Gamma \vdash \phi$ is translated into "$\phi$ can be constructed in type $\mathsf{thm}$ using pre-declared components in $\Gamma$",
-and something like $\phi_1, \phi_2, \ldots, \phi_n \vdash \psi$ is encoded into a term with the type $\mathsf{thm} \to \cdots \to \mathsf{thm}$. 
-If the input arguments don't allow the rule of inference to conclude anything, typically an error is thrown.
-Now, obviously, soundness is *not* guaranteed by the type system, but by *private constructs* of this programming language:
-the key point is user defined code is not supposed to modify the internal structure of a $\mathsf{thm}$ to fake a theorem.
-Which is why the ML programming language family provides a robust system of concealing things.
+What makes LCF different from "ordinary" logical frameworks like natural deduction based on $\frac{A}{B}$ is that the main way to guarantee that no one is able to fabricate a proof is by *encapsulation*.
+In ordinary software engineering we often hide the internal mechanism of an object from APIs,
+and if an object is formed by calling the public APIs then it's guaranteed that the object is well-formed.
+This is precisely what a LCF-style proof assistant works.
+Basically, we try to construct a type $\mathsf{thm}$ that's supposed to contain all theorems provable in a formal system.
+It's internal details are hidden away from the users.
+Something like "$\phi_1, \phi_2, \ldots, \phi_n$ implies $\psi$" is encoded into a function with the type $\mathsf{thm} \to \cdots \to \mathsf{thm}$ 
+that examines if the inputs satisfy the patterns described by $\phi_i, \ldots, \phi_n$, and if yes, return a $\mathsf{thm}$ that encodes $\psi$;
+otherwise an error is thrown.
+Hence, a user can pretty-print a term $t : \mathsf{thm}$ and find it means 
+$\forall x, y, z, n \in \natnums (n > 2 \to x^n + y^n \neq z^n)$,
+but the user will not be able to fake a term in $\mathsf{thm}$ that equals $t$ without calling the APIs corresponding to the axioms and rules of inference.
 
-One advantage of this approach is its incremental nature:
+Now, obviously, soundness is *not* guaranteed by the type system, but by existence of *private constructs* of this programming language:
+the key point is user defined code is not supposed to modify the internal structure of a $\mathsf{thm}$ to fake a theorem.
+Which is why the ML programming language family provides a robust system of concealing things, known as modules.
+But one doesn't need to use ML. An OOP language with private fields works as well.
+Note that the idea doesn't even need you to have arrow types. The only thing needed is enough mechanism to make sure a term constructed by calling a series of API is guaranteed to be well formed.
+
+This doesn't mean that's the only way to have proof assistants.
+It's for instance a good idea to just save the whole proof process and let a program to check if every step makes sense.
+There are also metalanguages based on dependent types (LF).
+
+One advantage of the LCF approach is its incremental nature:
 if a bug appears, it's either a bug in implementation of the LCF kernel, 
 or a bug in encoding of the object logic.
 And it's always easier to make a small kernel highly trusted.
 Anyone with experience writing symbolic code knows it's very easy to write buggy code,
 and the LCF architecture means the codebase we have to trust is as small as possible.
 
-Encoding of logic into LCF differs from Curry-Howard correspondence.
-In the former, a proposition is a term *only*, and not a type:
-that a proposition is proven doesn't not correspond to any proof term;
-by default, no term in the prover "memorizes" the whole proof tree.
-This does not need to be the case in Curry-Howard correspondence,
-in which proofs are just terms can be engineered.
-That said, if we have proof irrelevance, a proof term is nothing more than a "label" for the proposition it proves,
-and therefore for users, LCF and C-H correspondence no longer has any "theoretical" difference,
-and the main difference is implementational and technical,
-with proof checking in LCF being at runtime and proof checking in C-H correspondence being at compilation.
+Another advantage is that in LCF style provers there's no need to store proof objects, making it rather memory-efficient.
+It still *can* save proof objects if that's what the logic being encoded and if that's what users desire, but it doesn't have to.
+In foundations used to formalize mainstream mathematics, we usually have proof irrelevance, and hence a proof term is nothing more than a "label" for the proposition it proves.
+It is therefore not necessary in principle to store proof objects,
+as there's nothing you can do with them *in* the logic.
+But because proof verification using Curry-Howard correspondence is still, after all, type checking,
+in a C-H correspondence-based prover, we'll still see proof objects being constructed,
+though they may be freed after successfully checked.
+This is not needed in any LCF-style provers.
 
-And here comes the second advantage of LCF:
-it serves logics that do not rely on Curry-Howard correspondence well.
-Without C-H, we need to manually build infrastructures like labels for statements, interfaces for external programs to engineer proofs, etc.
-and all these naturally lead to the need for a meta-logic.
+We emphasize again that encoding of logic into LCF-style provers differs from Curry-Howard correspondence.
+In the former, a proposition is a term *only*, and not (at least not necessarily) a type:
+that a proposition is proven doesn't not correspond to any proof term.
+And here comes the third advantage of LCF:
+it serves logics that do not rely on Curry-Howard correspondence well,
+in which a statement being proven is not encoded as the type corresponding to it being inhabited.
+
+And here comes why we'd like a LCF style prover for HOL.
+We know in HOL we by default have no dependent types.
+This means a statement being proven can't be written as $t : P$.
+This can be problematic because in practical proofs we prefer to say "We have Theorem 2.1: .... Proof: ... Now because of Theorem 2.1, ..."
+We just don't want to write "We have theorem ... Proof: ... and because of ..., ...",
+in which a proven statement has to be written over and over again.
+But the latter is our fate if we have no infrastructure to label statements,
+something easily done if we have the ability to write $t : P$.
+To get the ability to label statements, and moreover, the ability to engineer proofs, we'll have to have a meta logic in which we do HOL.
 
 ## Peculiarities of Isabelle: weakened HOL as meta-logic
 
 HOL4 and HOL Light use ML programming languages as the meta-logic.
+That's to say, HOL statements are directly encoded into `thm` terms,
+and legitimate proof steps are carried out by calling APIs provided by the kernel.
+
 Despite having some components *implemented* in ML, Isabelle's meta-logic of object logics is *not* ML, but something called Isabelle/Pure.
 In this way Isabelle deviates from traditional LCF provers in that it has a minimal kernel of logic as well,
 and not just a minimal kernel of logic *checker*.
+Isabelle/Pure is checked by a LCF-style kernel; but axiomatization of HOL is done in Isabelle/Pure, and not in the LCF-style kernel, and we do *not* define APIs of `thm` that outline the rules of inference of HOL.
+Thus encoding of HOL in Isabelle is *not* LCF-style.
 
 Interestingly, Isabelle/Pure essentially is a segment of HOL;
 it is actually an intuitionistic logic, but this doesn't matter, as it's not supposed to be used to prove anything other than what can be proven in the object logic.
@@ -603,7 +645,11 @@ The general W type definition isn't available in Isabelle/HOL anyway as the $B$ 
 It is however available in Lean,
 and in this way Lean's inductive scheme is strictly stronger than that of Isabelle/HOL.
 
-TODO: BNF  bounded natural functor (
+So naturally, one meta-theoretical question is, what kind of inductive schemes are equivalent to Axiom of Infinity (given that that's the only primitive in HOL designated to structure building), and what are stronger.
+This, of course, in general depends on the strength of the other axioms.
+(For one, proving the existence of something is not the same as being able to talk about them.)
+What we know is in Isabelle/HOL, it has been observed that least fixed points of bounded natural functors or BNFs always exist.
+This means it is not easy to demarcate the power of the inductive pattern in Isabelle/HOL based on a purely syntactic basis.
 
 Now we turn to how the existing inductive scheme is implemented.
 Because we have no dependent types,
