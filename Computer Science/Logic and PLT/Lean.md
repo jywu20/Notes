@@ -880,9 +880,17 @@ as uniqueness of `method` has to be ensured (though, if we desire, we can in the
 The type class system of Lean also almost includes a substantial amount of functionalities of the module system in ML languages,
 except two: generative functors (which allows new types satisfying a module to be created anonymously) and encapsulation (there is no way to hide a field in a Lean type class).
 Besides these two, the module language of ML languages can be seen as a carefully trimmed dependent record - in the same way rank-1 parametric polymorphism is a specific case of $\mathsf{Type} \to \mathsf{Type}$ functions, without the need of mentioning type universes.
-In ML languages, because types are not strong enough to represent propositions, 
-existence of new types created by generative functors is always guaranteed by inductive definition.
-Encapsulation in ML languages is a must or otherwise the language cannot be used to idiomatically encode an object logic in the LCF style.
+
+Regarding generative functors,
+in ML languages, because types are not strong enough to represent propositions, 
+existence of new types created by generative functors is never a problem:
+it is always guaranteed by inductive definition.
+It's not possible on the other hand to have the same functionality naively in Lean,
+as we can demand an abstract type to be created by a generative functor to have contradictory properties.
+(But note that types created by generative functors are not guaranteed to be *initial*,
+and hence we do not have pattern matching, as we do not have any elimination principle targeting the newly created types.)
+
+Encapsulation in ML languages, on the other hand, is a must or otherwise the language cannot be used to idiomatically encode an object logic in the LCF style.
 
 ## Implicit variables and elaboration
 
