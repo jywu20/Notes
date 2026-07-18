@@ -718,6 +718,15 @@ This dependent HOL calculus (DHOL) can further [have polymorphism](https://arxiv
 
 ---
 
+That DHOL is a conservative extension of HOL should hardly be surprising,
+as a substantial part of the functionality of dependent types
+can be achieved well by refinement types, which HOL has.
+
+One problem of refinement types is it's not possible to talk about "the type of all groups"
+but that's due to the lack of universes in HOL and not anything else.
+
+---
+
 Therefore translating a formalization of a mathematical concept using dependent types to a formalization of it without dependent types is a routine task.
 The PER and the "broadened" $\bar{A}$ type naturally can be stored together in a locale.
 Thus at the end of [this presentation](https://www.cl.cam.ac.uk/~lp15/papers/Alexandria/Bordg-talk_schemes.pdf) it is asked 

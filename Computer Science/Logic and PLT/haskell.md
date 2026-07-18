@@ -356,6 +356,35 @@ runST $ do           -- runST takes out stateful code and makes it pure again.
 实际上在Haskell中可以实现各种各样的过程式语言中的特征，比如说可以实现`break`，然后还可以实现Rust中的ownership（见The Ownership Monad；PLT上通常称这是affine type，但考虑到Rust允许mutable，在Haskell中需要用Monad模拟ownership以体现这一点；这样一来原本编译期实现的ownership检查就被拖延到了运行期，那就不尽准确了），move语义、copy语义等，由于程序运行的状态全部可以得到细粒度的控制，这些的实现几乎就是把spec翻译成代码。
 不太好实现的主要还是变量的复杂行为，如动态作用域等；要完整实现动态作用域肯定不能用`a <- ...`这样的语句冒充变量赋值了，而可能要写`createRef("a", ...)`——这就真的变成写解释器了。
 
+一个问题是多个引用能否打包。我想是可以的，只要这些引用的execution threads保持一致：
+
+```haskell
+import Control.Monad.ST
+import Data.STRef
+
+data Account s = Account
+  { balance :: STRef s Int
+  , name    :: STRef s String
+  }
+
+newAccount :: ST s (Account s)
+newAccount = do
+  balanceRef <- newSTRef 0
+  nameRef <- newSTRef "unknown"
+  pure Account
+    { balance = balanceRef
+    , name = nameRef
+    }
+
+deposit :: Account s -> Int -> ST s ()
+deposit acc amount =
+  modifySTRef' (balance acc) (+ amount)
+
+rename :: Account s -> String -> ST s ()
+rename acc newName =
+  writeSTRef (name acc) newName
+```
+
 考虑一个过程式编程语言怎么嵌入Haskell中有一定的好处。我们知道无副作用有很大好处，但是不便于开发，因此好的过程式编程语言应该“有点像”函数式编程语言但是又保留了必要的过程式特征。
 因此用Monad模拟过程式编程时，产生的语法噪声越多，暗示着对应的过程式范式越过程式、可能也越糟糕。
 在类型系统支持时，`try ... catch`在很多时候比Maybe型结果要糟糕，因为需要在Monad保存的状态中显式引入一个标记“有无出现错误”；ownership并不更加糟糕，它和`IORef`之类的东西相比用起来并没有产生更多语法噪声（实际上函数式版本的ownership实际上就是线性逻辑）。

@@ -79,7 +79,7 @@ it can be considered as a a type theory.
 his types are more like universes)
 Some type theories are quite unlike what is considered ordinary mathematics.
 
-The underlying theory of Lean is clearly a type theory, and like other type theories,
+The underlying theory of Lean, (classical) CIC, is clearly a type theory, and like other type theories,
 it has a strong intuitionistic or constructive flavor,
 in that there aren't many axioms about "existence of something" (unlike the case in ZFC):
 instead we have rules of inferences that directly constructing terms from existing terms. 
@@ -94,6 +94,8 @@ What makes Lean differ is it is quite classical after all,
 with the type theoretic axiom of choice and quotient types:
 the developers made it clear that [""intuitionistic logic support" PRs"" are of "lower priority"](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Compartmentalization.20of.20axioms.20in.20Lean.204).
 This is also [the impression of users](https://proofassistants.stackexchange.com/questions/1115/how-usable-is-lean-for-constructive-mathematics).
+
+(One thing to note is CIC is not Martin-Lof type theory or MLTT: [CIC has general inductive schemes while in MLTT it is not a primitive](https://proofassistants.stackexchange.com/a/273).)
 
 Below, I give a sketch of the underlying theory of Lean (Carneiro 2019), and how it compares with set theoretic math.
 
