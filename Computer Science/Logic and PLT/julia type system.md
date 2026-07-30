@@ -300,6 +300,9 @@ Obviously this is for not being overly permissive,
 as intuitively `Tuple{T, T} where T` means the concrete types of the two elements of the tuple should be identical;
 if we allow subtyping here then `T` can just be `Any`, and all two-element tuples belong to this type.
 
+Note that this is related to another issue:
+subtyping and unification-based type systems sometimes have parallels between what they can express.
+
 ## Assignment
 
 When a value of type `U` is assigned to a variable declared to have type `V` in Julia,

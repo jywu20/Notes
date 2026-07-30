@@ -893,6 +893,10 @@ as we can demand an abstract type to be created by a generative functor to have 
 and hence we do not have pattern matching, as we do not have any elimination principle targeting the newly created types.)
 
 Encapsulation in ML languages, on the other hand, is a must or otherwise the language cannot be used to idiomatically encode an object logic in the LCF style.
+(But this doesn't mean Lean can't check the validity of proofs in LCF style. 
+We can for instance always design a type that contains and only contains valid proofs
+via carefully designed inductive schemes, as Lean has refinement types.
+The resulting API still resembles that of a LCF-style kernel.)
 
 ## Implicit variables and elaboration
 
