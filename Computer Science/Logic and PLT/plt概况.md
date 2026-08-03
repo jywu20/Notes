@@ -202,7 +202,7 @@ Lean的definitional equality不是decidable的，但这点也许问题不大，�
 
 这个问题至今缺乏太多探索。Rust是主流编程语言中唯一试图通过静态分析保证内存安全性的，而它的borrow checker和lifetime都是让初学者感到头疼的概念。
 
-我们也许会想要通过把Rust嵌入到某个常规的函数式编程语言中来make sense of它的借用检查和lifetime机制：如果这样做得到，那么我们就得出结论：一个已经有工业应用的内存安全calculus可以看成常规的（函数式编程中的）类型系统的一部分。
+我们也许会想要通过把Rust嵌入（这里讨论浅嵌入，即尽可能复用嵌入目标的基础设施的嵌入；足够强的依赖类型系统总是能够编码sequent calculus的，因此类型系统的深嵌入总是可行的）到某个常规的函数式编程语言中来make sense of它的借用检查和lifetime机制：如果这样做得到，那么我们就得出结论：一个已经有工业应用的内存安全calculus可以看成常规的（函数式编程中的）类型系统的一部分。
 不过市面上的关于Rust的形式化研究并没有这么做。RustBelt: Securing the Foundations of the Rust Programming Language一文给出了一个所谓的“lambda calculus with natural numbers and state”，但它的operational semantics完全就是命令式的（充斥着$h | e \to h' | e'$，其中$h$是内存模型）。
 
 它的类型系统也和一般的语言的类型系统不一样。lifetime被编码进了引用的类型中：引用的类型是$\delta^\kappa_\mu \tau$，其中$\kappa$是lifetime index，而$\mu$是可变性。
@@ -287,6 +287,15 @@ let (h, x) = read h
 
 如果要将Rust的borrow checking嵌入进来——reddit上有人觉得[这是做得到的](https://www.reddit.com/r/haskell/comments/6ievgv/comment/dj61335/)得到的大概也就是长成这样的东西。
 
+---
+
+我后来想了一下，感觉将Rust浅嵌入某个函数式编程语言确实不是那么容易的事情。
+这里的主要问题倒还不是`a=b`这种写法的借用，而是结构体：常规的函数式编程语言中你是可以写类似于`{attr1 = a, attr2 = a}`这样的式子的，但显然这样就能复制一个可变引用（这个事情前面提到linear monad不是linear type的浅嵌入的时候已经说了）……
+所以要将Rust的类型系统浅嵌入一个函数式编程语言的话，inductive types什么的都必须要另起炉灶做一套。
+
+无怪乎RustBelt里其实有一个Rust的类型系统的实现（也可以看成某种嵌入），而这个实现是基于分离逻辑的而且是语义的（常规的分离逻辑的实现往往也是语义的，即定义堆结构然后使用其上的分离逻辑结构证明各种命题；Rust的类型系统可以编码为分离逻辑命题，分离逻辑命题可以编码为普通的数学命题，整个流程有如算法导论书里面研究算法的性质，而并不相似于一些证明论风格的研究；我想这也并不奇怪，因为和CIC，HOL一类的“类型系统”不同，工业语言的类型系统本身没有多大价值，相反，我们是脑子里有了“正常运行的程序该怎样运行”的语义以后才去设计类型系统来捕捉这个语义；例如Rust的声明周期有所谓NLL，就是不拘泥于某个underlying calculus而语义先行地设计类型系统的例子；所以“intrinsic type system是类型系统先于操作语义的设计”这个说法有一些误导性）。
+要从语形的角度看Rust的类型系统，可能的确需要将其看成一种substructural type……
+（由此也可以理解为何编程语言理论领域的人痴迷于研究范畴论和范畴语义；不过对普通开发者来说，从直觉建立起来的语义出发推导一些性质才是他们想要的，对普通人来说对分离逻辑etc的证明论研究唯一的意义可能就是能让分离逻辑库的tactic设计得足够合理和正交）
 
 # 工业语言中的具体类型
 
