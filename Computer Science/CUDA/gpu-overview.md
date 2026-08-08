@@ -3,7 +3,7 @@ Overview of GPU programming
 
 # Rendering, the vertex-fragment pipeline
 
-The physical basis of rendering can be found [here](../../Physics-new/geometrical-optics/kinetic.pdf)/
+The physical basis of rendering can be found [here](../../Physics-new/geometrical-optics/kinetic.pdf).
 The rendering equation (and its generalizations) clearly is computationally intensive to solve,
 and there is not a single way to solve it,
 so if the rendering process is to be hardware accelerated,
@@ -11,9 +11,9 @@ it's a good idea to find a common ground for all types of rendering techniques
 one can naturally think off,
 including those that are semi-empirical and do not actually solve the rendering equation.
 
-Before 2008, this common ground was the so-called **rasterization pipeline**,
+The simplest common ground was the so-called **rasterization pipeline**,
 that's to say, the vertex-fragment shading pipeline.
-At first the GPU architecture had a one-to-one correspondence with stages in the pipeline.
+Before 2008, the rasterization pipeline was also the hardware reality: the GPU architecture had a one-to-one correspondence with stages in the pipeline.
 People then squeeze physics-based rendering algorithms into this process.
 What could be squeezed into this pipeline turned out to be quite generic
 (although incredibly hacky tricks were needed),
@@ -26,7 +26,7 @@ is now a software convention enforced by some graphic APIs,
 and different types of shaders are now run on [the same hardware cores](../HPC/overview.md).
 These graphic APIs are essentially faking the old, fixed, stage-based GPU pipeline
 on a much more generic hardware platform.
-This can be beneficial because telling the driver that a kernel is a fragment shader or a vertex shader
+Imposing such a vertex-fragment division can still be beneficial now because telling the driver that a kernel is a fragment shader or a vertex shader
 helps it optimize it and also help modern GPUs to do micro-scheduling
 (which still has hardware accelerations for rasterization, texture fetching, and blending).
 The rasterization pipeline is now among several possible pipelines that are pre-defined in modern graphic APIs,
@@ -133,16 +133,15 @@ void main() {
 We can also add pre-vertex lighting etc. into it.
 
 Here the `in` statements specify the input arguments, and the `out` statements specify the outputs.
-Note that GPUs are supposed to be programmed in a "you just do things" way,
-often *without* keeping a call stack,
+Note that GPUs are supposed to do things in a rather "dull" way, often *without* keeping a call stack,
 and thus the `return` keyword is not used here:
-a shader lives in its *own world*,
+a shader *lives in its own world*,
 and the `position`, `normal`, `gl_Position` etc. variables are like input and output pins of a microcontroller:
 a shader (or more generally, any kernel) does not feel like being a part of a bigger software system.
 It gets launched and does something and then writes things to ports that connect it to a *fixed* pipeline and stops.
 (Although the same can be said about CUDA, the latter is much more general-purpose,
 and a GPU kernel looks much closer to an ordinary function and not a `main` function of a MCU.
-That's why a CUDA kernel is written in a much more normal way.)
+That's why a CUDA kernel is written in a way much more closer to generic programming.)
 
 
 ## Mapping primitives in the object to primitives in the output image

@@ -99,6 +99,10 @@ What kind of Choice axiom we're using involves some subtlety.
 The Axiom of Choice used in Isabelle/HOL can be found [here](#how-hol-is-defined-in-isar) 
 and it gives us type-level choice in TST - which means in a model of HOL+Infinity+Choice we're able to construct a model of MAC+(ordinary) Choice.
 
+It appears that the proof above leads to a conclusion stronger than ordinary equi-interpretability:
+from the transform between a model of HOL and a model of MAC, 
+we have essentially proven that the sets of "local" or "bounded" statements, i.e. those in which every quantifier comes with $\forall x (x \in A \to \ldots)$, in the two theories are the same.
+
 Henceforth, unless mentioned otherwise, "HOL" just means HOL+Infinity+Choice.
 This means HOL is not an ideal foundation of mathematics pertaining to logicism a la Russell,
 as it contains *substantial* axioms, namely Infinity and Choice and is not pure logic.
