@@ -1,0 +1,760 @@
+\documentclass[UTF8, a4paper, oneside, scheme=plain, 12pt]{ctexrep}
+
+\usepackage[T1]{fontenc}
+\usepackage{libertinus}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{paralist}
+\usepackage{footnote}
+\usepackage{enumerate}
+\usepackage{amsmath, amsthm}
+\usepackage{gb4e}
+\noautomath
+\usepackage{bbm}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table,xcdraw,svgnames]{xcolor}
+\usepackage{tikz}
+\usepackage[ruled, vlined, linesnumbered, noend]{algorithm2e}
+\usepackage{xr-hyper}
+\usepackage[colorlinks, citecolor = purple]{hyperref} % linkcolor=black, anchorcolor=black, citecolor=black, filecolor=black
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[figuresright]{rotating}
+\usepackage{acro}
+\usepackage[citestyle=authoryear,backend=bibtex,natbib=true,doi=false,isbn=false,url=false]{biblatex}
+\addbibresource{references/classical-grammars.bib}
+\addbibresource{references/classical-lexicon.bib}
+\addbibresource{references/historical-phonology.bib}
+\addbibresource{references/general-typology.bib}
+\addbibresource{references/other-languages.bib}
+\addbibresource{references/language-contact.bib}
+\usepackage{prettyref}
+
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\titlespacing{\paragraph}{0pt}{1pt}{10pt}[20pt]
+\setlength{\droptitle}{-5em}
+
+\DeclareMathOperator{\timeorder}{\mathcal{T}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\legpoly}{P}
+\DeclareMathOperator{\primevalue}{P}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand*{\ii}{\mathrm{i}}
+\newcommand*{\ee}{\mathrm{e}}
+\newcommand*{\const}{\mathrm{const}}
+\newcommand*{\suchthat}{\quad \text{s.t.} \quad}
+\newcommand*{\argmin}{\arg\min}
+\newcommand*{\argmax}{\arg\max}
+\newcommand*{\normalorder}[1]{: #1 :}
+\newcommand*{\pair}[1]{\langle #1 \rangle}
+\newcommand*{\fd}[1]{\mathcal{D} #1}
+\newcommand*{\textto}{$\to$}
+\newcommand*{\textgt}{$>$ }
+\newcommand{\focus}[1]{\textbf{#1}}
+
+\newcommand*{\citesec}[1]{\S~{#1}}
+\newcommand*{\citechap}[1]{Ch.~{#1}}
+\newcommand*{\citechaps}[1]{Chs.~{#1}}
+\newcommand*{\citefig}[1]{Fig.~{#1}}
+\newcommand*{\citetable}[1]{Table~{#1}}
+\newcommand*{\citepage}[1]{p.~{#1}}
+\newcommand*{\citepages}[1]{pp.~{#1}}
+\newcommand*{\citefootnote}[1]{fn.~{#1}}
+
+\newrefformat{sec}{\citesec{\ref{#1}}}
+\newrefformat{fig}{\citefig{\ref{#1}}}
+\newrefformat{tbl}{\citetable{\ref{#1}}}
+\newrefformat{chap}{\citechap{\ref{#1}}}
+\newrefformat{fn}{\citefootnote{\ref{#1}}}
+\newrefformat{box}{Box~\ref{#1}}
+\newrefformat{ex}{\ref{#1}}
+
+% color boxes
+
+\tcbuselibrary{skins, breakable, theorems}
+
+\newtcbtheorem[number within=chapter]{infobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=blue!5,
+    %colframe=blue!5,
+    colback=white,
+    colframe=white,
+    coltitle=blue!60,
+    borderline west={4pt}{0pt}{blue!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\definecolor{my-orange}{HTML}{F58123}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{theorybox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=orange!5, 
+    %colframe=orange!5, 
+    colback=white,
+    colframe=white,
+    coltitle=my-orange!65,
+    borderline west={4pt}{0pt}{my-orange!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{todobox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    colback=red!5,
+    colframe=red!5,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+\newtcbtheorem[number within=chapter, use counter from=infobox]{perspectivebox}{Box}{
+    enhanced,
+    boxrule=0pt,
+    %colback=red!5,
+    %colframe=red!5,
+    colback=white,
+    colframe=white,
+    coltitle=red!50,
+    borderline west={4pt}{0pt}{red!65},
+    sharp corners,
+    fonttitle=\bfseries, 
+    breakable,
+    before upper={\parindent15pt\noindent}}{box}
+
+
+\AtBeginEnvironment{infobox}{\small}
+\AtBeginEnvironment{todobox}{\small}
+\AtBeginEnvironment{theorybox}{\small}
+
+\newcommand*{\concept}[1]{\textbf{#1}}
+\newcommand*{\term}[1]{\emph{#1}}
+\newcommand{\form}[1]{\emph{#1}}
+\newcommand{\work}[1]{\textit{#1}}
+\newcommand{\species}[1]{\textit{#1}}
+
+\newcommand{\redp}{\textasciitilde}
+
+\DeclareAcronym{blt}{short = BLT, long = Basic Linguistic Theory}
+\DeclareAcronym{cgel}{short = CGEL, long = The Cambridge Grammar of the English Language}
+\DeclareAcronym{dm}{short = DM, long = Distributed Morphology}
+\DeclareAcronym{tag}{long = Tree-adjoining grammar, short = TAG}
+\DeclareAcronym{sfp}{long = sentence-final particle, short = \textsc{sfp}}
+\DeclareAcronym{np}{long = noun phrase, short = NP}
+\DeclareAcronym{vp}{long = verb phrase, short = VP}
+\DeclareAcronym{pp}{long = preposition phrase, short = PP}
+\DeclareAcronym{cls}{long = classifier, short = CLS}
+\DeclareAcronym{dist}{long = distal, short = DIST}
+\DeclareAcronym{prox}{long = proximate, short = PROX}
+\DeclareAcronym{dem}{long = demonstrative, short = DEM}
+\DeclareAcronym{classify}{long = classifier, short = \textsc{cl}}
+\DeclareAcronym{dur}{long = durative, short = DUR}
+\DeclareAcronym{neg}{long = negative, short = \textsc{neg}}
+\DeclareAcronym{cc}{long = copular complement, short = CC}
+\DeclareAcronym{cs}{long = copular subject, short = CS}
+\DeclareAcronym{tam}{long = {tense, aspect, mood}, short = TAM}
+\DeclareAcronym{past}{long = past, short = PST}
+\DeclareAcronym{nonpast}{long = non-past, short = NPST}
+\DeclareAcronym{present}{long = present, short = PRES}
+\DeclareAcronym{progressive}{long = progressive, short = \textsc{poss}}
+\DeclareAcronym{perfect}{long = perfect, short = \textsc{perf}}
+\DeclareAcronym{passive}{long = passive, short = \textsc{pass}}
+\DeclareAcronym{copula}{long = copula, short = COP}
+\DeclareAcronym{possessive}{long = possessive, short = \textsc{poss}}
+
+\newcommand{\asis}[1]{\textsc{#1}}
+\newcommand{\oneof}[1]{{#1}}
+\newcommand*{\homo}[2]{#1$_{\text{#2}}$}
+
+\newcommand{\cgel}{\href{../English/cambridge.pdf}{my notes about CGEL}}
+\newcommand{\latin}{\href{../Latin/latin-notes.pdf}{my notes about Latin}}
+\newcommand{\alignment}{\href{../alignment/alignment.pdf}{my notes about alignment}}
+\newcommand{\exerciseone}{\href{../Exercise/2021-3.pdf}{this exercise}}
+\newcommand{\method}{\href{../methodology/glossing.pdf}{this note about my understanding of descriptive grammars}}
+
+\newcommand{\ala}{à la}
+\newcommand{\translate}[1]{`#1'}
+\newcommand{\vP}{\textit{v}P}
+\newcommand*{\category}[1]{\textsc{#1}}
+\newcommand*{\specialunit}[1]{$<$\textit{#1}$>$}
+\newcommand{\before}{$> \ $}
+
+% Make subsubsection labeled
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% reset example counter every chapter (but do not include the chapter number to the label)
+\counterwithin{exx}{chapter} 
+
+% Reference formats
+\renewcommand*{\nameyeardelim}{\space} % No comma between year and name
+\DeclareNameAlias{sortname}{family-given} % Putting the family name before the given name
+\DeclareNameAlias{default}{family-given} 
+\DeclareFieldFormat{labelnumberwidth}{} % No number label like [12] in the reference list
+\setlength{\biblabelsep}{0pt} % No space for these labels
+
+\makeindex
+
+\title{The Early History of Chinese Language}
+\author{Jinyuan Wu}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Linguistic evidence}
+
+\section{The prehistory of the Sinitic family}\label{sec:introduction.history}
+
+
+In this section, we trace the earliest stages of the Sinitic family,
+namely the pre-Classical stage, and discuss how it bridges the remote ancestor
+and the Classical period.
+
+\subsection{The Trans-Himalayan family}
+
+The Sinitic language family, often collectively referred to as Chinese,
+is a branch in the Sino-Tibetan language family, which is also known as the Trans-Himalayan language family.
+While the internal structure of the Trans-Himalayan language family
+and consequently a reconstruction of Proto-Sino-Tibetan with broad consensus
+(at the level of e.g. Proto-Indo-European) remain to be explored,
+the shared origin of Chinese, Tibetan, Burmese, and multiple other language families
+however is beyond a reasonable doubt:
+for example, a list of cognates and a tentative Trans-Himalayan reconstruction can be found in \citet{hill2019historical}.
+
+Having established a ``flat'' relation between Chinese and other languages in the Trans-Himalayan area, 
+we may be interested in the position of Chinese within Trans-Himalayan,
+and in particular, when it diverged from the rest of the language family.
+Note that this is to be decided by comparison of cognates,
+and \emph{not} by typological features (\prettyref{sec:intro.sino-tibetan-typology}).
+This is inevitably related to the internal structure of the language family.
+A consensual phylogeny based on the comparative method is still lacking.
+Some scholars take a rather pessimistic view and suggest that
+it is probably a better idea to remain agnostic about higher-order subgrouping
+and adopt a \emph{Fallen leaves model}, i.e. a thorough enumeration of all genetically certain subgroups without any clear genetic relations stipulated above them.
+
+Two Bayesian phylogenetic studies \citep{sagart2019dated,zhang2019phylogenetic} 
+both consider the Sinitic branch to be the earliest branch that diverged from the rest of the language family,
+thus supporting the traditional binary division between the Sinitic branch
+and the Tibeto-Burmese branch.%
+\footnote{
+    It should be noted that the huge divergence of contemporary Chinese languages
+    from their Tibeto-Burmese cousins 
+    cannot be just explained by Neogrammarian sound change laws:
+    language contact is an important factor (\prettyref{sec:intro.pre-history.mixing}).
+}
+They however cannot replace human readable and interpretable comparative analyses,
+and currently, the name \term{Tibeto-Burmese}, strictly speaking,
+is still not guaranteed to be a node in the phylogenetic tree of the Trans-Himalayan family,
+but rather a catch-all term for everything non-Sinitic.
+
+\subsection{On ``Sino-Tibetan typology''}\label{sec:intro.sino-tibetan-typology}
+
+\subsubsection{Purported typological similarities and counterexamples}
+Besides cognates, linguists occasionally talk about ``Sino-Tibetan typology''.
+Typological features often attributed to Sino-Tibetan languages include the isolating grammar,
+tonality, and monosyllabic roots.%
+\footnote{
+    Modern Sinitic languages are by no means monosyllabic,
+    while Classical Chinese appears to be monosyllabic:
+    and disyllable words in later stages of Chinese seem to be due to 
+    either borrowing or syntactic fossilization of previous analyzable phrases.
+    On the other hand, pre-Classical Old Chinese is possibly not strictly monosyllabic
+    according to recent reconstructions (\prettyref{sec:intro.reconstruction.minor-syllables}).
+}
+These criteria was even once used to demarcate the boundary of the Sino-Tibetan language family,
+which later proved to be not reasonable.
+A refutation on the phonological part can be found in \citet{matisoff1973notes}:
+features like tones and monosyllabic roots are not diachronically stable at all. 
+As for morphological complexity, just think about how drastically the English inflectional morphology has simplified.
+Recent linguistic fieldwork has also revealed that several previously underdocumented Trans-Himalayan languages
+completely violate these generalizations.
+The Gyalrongic languages, for example, have rather complicated inflectional morphology
+and therefore are definitely not monosyllabic,
+and Japhug, a Gyalrongic language, lacks tonal contrasts \citep{jacques2021grammar}.
+
+\subsubsection{Typological classification of Proto-Trans-Himalayan}
+Given the striking internal typological diversity of Trans-Himalayan languages,
+the typological status of Proto-Trans-Himalayan is problematic.
+We have reasons to suspect that Proto-Trans-Himalayan is closer to Rgyalrongic in its typological features, actually.
+We note that the Rgyalrongic family and the Kiranti family are two distant groups within the Trans-Himalayan family
+(which is expected given that they are separated by the Himalayas)
+with seemingly cognate personal agreement affixes
+which is hard to be explained solely in terms of grammaticalization of pronouns,
+and one possible trace of personal agreement is also found in Tibetan
+\citep{jacques2012agreement,jacques2010possible,jacques2016tangut}.
+Considering the fact that the number of potential cognates between Rgyalrongic and Kiranti is around 150,
+and the number of cognates of them with Chinese is of the same order of magnitude,%
+\footnote{
+    See \citet{shuya2019study} for an explicit historical comparison between Rgyalrongic and Sinitic.
+}
+it is highly likely that a Rgyalrongic-like personal indexation system originated at a quite early stage,
+which possibly is also the ancestor of Chinese
+(\citealt{jacques2012agreement}; see \prettyref{box:direct-inverse-history} for more discussions).
+Another morphological device that probably has a Proto-Trans-Himalayan origin is the the \form{*s-} prefix,
+which is also supported by reconstruction of Old Chinese.
+It sometimes is known as the causative prefix,
+although this usage is possibly due to grammaticalization of denominal verbs
+\citep{jacques2015origin}.
+
+\begin{infobox}{Historical status of the personal agreement affixes}{direct-inverse-history}
+    What exactly can be reconstructed to Proto-Sino-Tibetan is not without controversy.
+    (a) We may assume that we have a Rgyalrongic-like polypersonal argument indexation system, which is a direct-inverse system, in Proto-Sino-Tibetan.
+    (b) Or we can always argues that
+    what can be reconstructed to Proto-Sino-Tibetan for certain is just personal affixes,
+    as the underlying structure of a direct-inverse system is often not \emph{that}
+    different from more common alignments \citep{oxford2017inverse},
+    and therefore the direct-inverse system itself possibly cannot be dated back to Proto-Sino-Tibetan
+    and only the personal affixes can,
+    which are the diachronic materials used to form a Rgyalrongic direct-inverse system in later stages.
+    (c) As a step further, it can be argued that the personal agreement affixes
+    were probably of pronominal origins, 
+    and hence we can argue for a morphologically impoverished Proto-Sino-Tibetan,
+    and thus, the great typological distance between Proto-Sino-Tibetan and Chinese is no longer that striking.
+
+    The viewpoints listed above are critically examined in \citet{jacques2012agreement}.
+    Although a comprehensive comparison is still lacking,
+    \citeauthor{jacques2012agreement} notices that 
+    there exist agreement affixes in Rgyalrongic and Kiranti that appear to be cognates and yet cannot be easily explained by grammaticalization of pronouns and hence (c) cannot be completely right,
+    thus at least implying certain verbal morphological complexity in a common ancestor.
+    Further, by comparative analyses,
+    he demonstrates that the verbal conjugation paradigms in Rgyalrongic and in Kiranti are remarkably similar
+    (for example, only transitive verbs come with the aforementioned affixes),
+    hinting to a biactantial agreement system in the common ancestor, and 
+    that Kiranti seems to retain certain residues of an inverse prefix,
+    while the evolution of a direct-inverse system, despite theoretically possible,
+    remains to be rare in Eurasia.
+    The statement (b) above therefore is also not quite feasible, although not completely impossible.
+    Anyway, a morphologically rich Proto-Trans-Himalayan is not controversial.
+\end{infobox}
+
+\subsection{Materials for reconstructing Pre-Classical Old Chinese}\label{sec:intro-pre-classical}
+
+Middle Chinese phonology was already largely comparable to contemporary Sinitic languages.
+Having established that Proto-Trans-Himalayan is morphologically rich,
+the evolution from it to today's largely analytic Sinitic languages is rather intriguing.
+There has to be a series of transitional stages between an ancestor language with somehow Gyalrong-like typological traits and the modern Sinitic family,
+and reconstruction of Old Chinese is essentially
+for understanding these stages.
+
+The Old Chinese period is quite long, spanning more than 1,000 years.
+Conventionally, the term \term{Old Chinese reconstruction} is mainly about the reconstruction of the language in the \emph{Pre}-Classical period.
+Thus, we make use of Pre-Classical texts, including texts from Shang and Zhou dynasties (\prettyref{sec:intro.pre-classical.shang}, \prettyref{sec:intro.pre-classical.post-shang}) and also evidence from neighboring languages,
+including early loan words in Old Vietnamese and Japanese.
+Finally, modern 闽 Min languages have features that cannot be explained by
+the Middle Chinese phonology (see below),
+meaning that there exists a stratum in Min languages
+which was a sibling, and not a daughter, of Middle Chinese.
+This non-Middle Chinese Sinitic branch is often known as Proto-Min.
+Finally, Middle Chinese rhyme books and rhyme tables provide a base line
+of whatever reconstruction we can think of,
+as we expect that the reconstructed Pre-Classical Chinese forms
+should explain what we observe in Middle Chinese.
+
+An overview of available materials can be found in \citet[\citechap{2}]{baxter2014old}.
+Here we introduce the more conventional sources of Old Chinese,
+namely Pre-Classical texts.
+
+\subsubsection{Oracle bones}\label{sec:intro.pre-classical.shang}
+
+The earliest attested Sinitic texts were oracle bone inscriptions from the Shang dynasty.
+It should be noted that people during the Shang dynasty \emph{wrote} (and not just \emph{inscribe}) as well:
+the counterpart of character 册 exists in oracle bones as well,
+which looks a bundle of bamboo and wooden strips.
+Still, the only materials that reflects the language of Shang currently available are inscriptions.
+
+The characters in these inscriptions are structured in a way largely comparable to later Chinese characters.
+Since the phonetic values of characters in oracle bone inscriptions are not self-evident,
+some may even question whether these inscriptions are Sinitic at all:
+some may argue that the language of Shang was a (possibly unclassified) SVO language,
+and when the Zhou dynasty was established on the ruins of Shang,
+its culture was borrowed, including both the writing system and the SVO syntax.
+This hypothesis is not quite plausible, because in such a scenario, usually what happens is \emph{lexical} borrowing,
+and the introduction of a writing system should be minimal to the structure of the language
+\citep[\citepage{88}]{delancey2013origins}.
+The introduction of Chinese characters to write Japanese is a good reference point.
+Further, phonetic borrowing (假借, \translate{borrowing, i.e. a character originally representing one morpheme to represent another morpheme with a close sound}) in oracle bone inscriptions
+neatly fits into reconstructed Old Chinese phonology
+(e.g. \citealt[\citepages{115}]{baxter2014old}).
+
+
+\subsubsection{Post-Shang texts}\label{sec:intro.pre-classical.post-shang}
+
+Oracle bone inscriptions are 
+a 20th century archeological re-discovery not known to Classical Chinese authors.
+Zhou's replacement of Shang seemed to be accompanied by a great cultural revolution:
+the last king of Shang, namely King Zhou of Shang, was known by 
+his arrogance, his corruption, and his tyrannic reign.
+Yet no one seems to remember the arguably most scary aspect of Shang dynasty: human sacrifice.
+To Classical authors, the earliest available texts are 
+documents preserved in 《尚书》 (lit. \translate{venerated documents}),
+often known as the \work{Book of Documents} in English.
+Since these texts are from ancient kings 
+whose deeds were romanticized by Confucian scholars,
+these texts were highly venerated and yet deemed as
+诘屈聱牙 (\translate{twisted, hard to pronounce})
+by post-Classical authors.%
+\footnote{
+    See e.g. 《进学解》 (\work{Analysis of academic advancement}) by Han Yu.
+}
+They were something that had to be read with commentaries,
+the latter written in easier Classical Chinese.
+These documents therefore should be regarded as pre-Classical,
+although they did contribute sporadic phrases
+and grammatical words (e.g. the copula 惟 or the pronoun 厥)
+that were occasionally used in Classical Chinese works as a way to polish an article.
+
+A linguistic trait, which corroborates the cultural paradigm shift after the end of the Shang dynasty, 
+is that the language of the \work{Book of Documents} and the language of oracle bone inscriptions are clearly different.
+The most notable fact on this aspect is that
+the aforementioned pronoun 厥 appears frequently in the \work{Documents},
+but it appears neither in oracle bone inscriptions nor in Spring and Autumn works. 
+Presumably, \work{Book of Documents} contains predominantly early Zhou dynasty texts,
+while oracle bones dates back to Shang,
+and the differences we are observing reflect dialectal differences between the ruling classes of the two dynasties.
+
+Another fairly early source is 《诗经》 (lit. \translate{poem classics}),
+also known as the \work{Book of Odes},
+which contains poems dates back to as early as early Zhou.
+The \work{Odes}, despite often considered, classical especially in a Confucianism context,
+differs greatly from Classical \emph{proses}.
+This work mostly concentrate on the grammar of proses.
+
+\subsubsection{Methological issues}\label{sec:intro.prehistory.reconstruction.problems}
+
+None of the texts listed above is alphabetic,
+and phonological information is extracted from the texts by observing
+(a) information contained in the phonetic components of Chinese characters
+(in transmitted texts, and also in excavated texts),
+(b) the rhyme patterns in the \work{Book of Odes}.
+(a) is done by observing 諧聲 \form{xiéshēng} \translate{harmonic sound} relations,
+i.e. semi-homophonous relations observed in Chinese characters without semantic relations that share a component.
+Based on inspecting characters with shared components but unrelated meanings in Modern Sinitic languages,
+we conclude that what is shared is likely a component representing the \emph{initials} of the words they represent.%
+\footnote{
+    In modern Sinitic languages, a character usually represents a root,
+    but simple philological observation reveals that Old Chinese words were mostly represented by single characters.
+}
+
+Due to the uncertainty surrounding the exact phonological information
+hidden behind semi-homophonous character series and rhymes in \work{Odes},
+as well as the uncertainty of the meaning of certain terms used in 
+ancient works on Middle Chinese (e.g. \prettyref{box:middle-chinese-unitary}),
+Old Chinese reconstruction is expectedly a chaotic field with lots of controversies.
+\citet{baxter2014old} represents an important milestone in this field,
+making use of all the materials mentioned above as well as
+a rich toolbox of philology, the historical comparative method, and internal reconstruction.
+But even it has severe flaws \citep{harbsmeier2016irrefutable}.
+Here we list some major methodological problems and not technical errors.
+
+First, currently we do not even have a well-defined target of reconstruction.
+Pre-Classical texts show wide variation in syntax and presumably in phonology,
+as is shown in \prettyref{sec:intro.pre-classical.shang} and \prettyref{sec:intro.pre-classical.post-shang},
+and the Chinese scholar tradition clearly states that 
+\work{Book of Odes} consists of poems collected at different times and different locations 
+(\prettyref{sec:intro-pre-classical}; \citealt[\citepages{478-480}]{harbsmeier2016irrefutable}).
+In the Classical period, texts made it clear that mutually incomprehensible Chinese varieties existed \citep[\citepages{446-447}]{harbsmeier2016irrefutable}.
+Thus, a distinction still needs to be made between Old Chinese(s) and Proto-Sinitic,
+contrary to the claim of \citet[\citepage{2}]{baxter2014old}.
+
+Second, even when the reconstruction is based on texts known to be from a relatively well-defined \emph{branch} of Old Chinese,
+based on e.g. consistent morphosyntactic features,
+there is no guarantee that it has a single, unitary phonology
+\citep[\citepages{488-490}]{harbsmeier2016irrefutable}.
+Note that the same problem occurs for Middle Chinese as well (\prettyref{box:middle-chinese-unitary})
+
+\begin{infobox}{How unitary is Middle Chinese?}{middle-chinese-unitary}
+    It should be noted that the problem is not restricted to Old Chinese.
+    Strictly speaking, that there was a unitary Middle Chinese
+    as reflected by rhyme books and rhyme tables also should not be taken for granted.
+    What rhyme books and rhyme tables were intended for could probably never known for certain:
+    they could be prescriptive works documenting the mixture of several respected dialects,
+    or even an early Neogrammarian-ish reconstruction attempt.
+    Besides, we are also not really sure about the phylogenetics of modern dialects:
+    if we are to stipulate a Middle Chinese \emph{node} in the Sinitic family tree
+    which is the common ancestor of all modern Sinitic dialects,
+    then how did it emerge from the messy congeries of dialects during the Middle Chinese \emph{period} \citep[\citepages{477-478}]{harbsmeier2016irrefutable}?
+    We are more confident when talking about a unitary Middle Chinese (defined in the rhyme books)
+    as the common ancestor of modern Sinitic languages,
+    mainly because comparative works do suggest that the former is indeed a good starting point to analyze the phonology of the latter.
+    Thus, Middle Chinese in the rhyme books at least is a good proto-language in the Neogrammarian sense.
+    Still, Neogrammarian comparative studies based on modern Sinitic languages are urgently needed,
+    not mentioning the fact that many are quickly going extinct without proper documentation.
+\end{infobox}
+
+Third, what exactly the rhymes and the semi-homophonous relations mean remain not completely clear.
+Rhymes can be cultural, containing traditional strata that no longer reflect the actual phonology when the poem was being composed
+\citep[\citepages{454-455}]{harbsmeier2016irrefutable}.
+The same problem exists for arguments based on shared phonetic components of Chinese characters.
+Some, for instance, argue that certain semi-homophonous relations observed
+that immediately lead to reconstruction of consonant clusters (\prettyref{sec:intro.prehistory.reconstruction.initial-consonant-cluster})
+may simply be due to two pronunciations existing for one character,
+which was used to represent two initials because of that.
+
+The severity of this issue however is weaker than the severity of the first two morphological issues, namely the lack of language uniformity in the Pre-Classical Old Chinese period.
+First, there is no evidence in the earliest texts that suggests an earlier poem tradition,
+and 
+
+Finally, although the validity of certain phonetic series and the related semi-homophonous relations is not clear,
+the most prototypical ones like 蓝 vs 监 -- which however are not explainable within the traditional approach -- are well established,
+and claiming that one character has multiple pronunciation only pushes the problem to an earlier stage,
+as now we have to ask how rather different pronunciations were developed for one character.
+Up to now, the only viable explanation is initial consonant clusters.
+So at least we are not wrong when saying that consonant clusters existed at a certain stage of Pre-Classical Old Chinese.
+
+\subsection{Outline of Pre-Classical Old Chinese}
+
+Due to all of the issues and difficulties in \prettyref{sec:intro.prehistory.reconstruction.problems}, we will avoid presenting a fine-grained reconstruction of
+Old Chinese (Classical or pre-Classical) phonology in this work.
+Below, we list some widely accepted features of (pre-Classical) Old Chinese
+to give the reader an intuitive and vague feeling of how it feels like.
+Understanding how pre-Classical Chinese probably looked like \emph{as a language} and not just as dead texts may provide some insights for understanding the origin of certain features of Classical Chinese, like how valency alternation works.
+However, a full survey on the progress of Old Chinese reconstruction is beyond the scope of this work.
+
+\subsubsection{Origin of tones}
+In Middle Chinese rhyme books, there are four tones reported:
+the \category{level} tone (平聲), the \category{rising} tone (上聲),%
+\footnote{
+    The term may be confusing for a Modern Standard Mandarin speaker,
+    as its reflex in Modern Standard Mandarin is the third tone,
+    while the ``raising'' tone in Modern Standard Mandarin is the 陽平 tone,
+    which historically was from the \category{level} tone.
+}
+the \category{departing} tone (去聲), and the \category{entering} tone (入聲).
+
+Let us first focus on the \category{entering} tone.
+It can be easily seen that rhymes falling under the category of the \category{entering} tone are much fewer than rhymes pertaining to the other three tones,
+with a lot of nasal rhymes missing.
+The reflex of roots with \category{entering} tone in modern Sinitic languages, if any,
+all end with a stop (consider e.g. Cantonese \form{-p}, \form{-t}, \form{-k}).
+These words, when borrowed into Japanese, usually became disyllabic.
+These facts can be explained perfectly by assuming that in Middle Chinese,
+they ended in \form{-p}, \form{-t}, or \form{-k},
+and this seems to be the defining feature of the \category{entering} tone,
+which, in Middle Chinese, was strictly speaking not a tone at all.%
+\footnote{
+    In modern Cantonese there are actually three reflexes of the \category{entering} tone
+    and they are real tones,
+    but these tones are absent in ancient scholars' analyses of Middle Chinese,
+    and are likely recent innovations.
+}
+
+Now given that modern Sinitic tones can be easily explained by 
+conditional sound changes starting from three tones \citep{sagart1999origin},
+the rest three tones in Middle Chinese were real tones.
+But we can try to apply the methodology inspired by the analysis above to Old Chinese,
+and the conclusion is that there was probably no tone in the Old Chinese period.
+Below, I briefly repeat the argumentation in \citet{sagart1999origin}.
+
+The origin of Vietnamese tones has been demonstrated to be final consonants.
+That in the oldest layer of Chinese loan words into Vietnamese,
+words in the Middle Chinese \category{departing} tone regularly correspond to Vietnamese words in a tone originating from the final consonant \form{-s}
+strongly suggests that in Old Chinese,
+the origin of the \category{departing} tone is also something like \form{*-s}.
+This is supported by textual evidence:
+in early Chinese transcriptions of foreign words,
+the \category{departing} tone sometimes corresponds to foreign \form{s},
+and some early Chinese load words into Korean even retain the \form{s}.
+Therefore, the \category{departing} tone is likely a reflex of the Old Chinese word ending consonant \form{*-s}.
+
+In a similar way, the \category{rising} tone is related to an earlier glottal stop
+based on evidence from Sino-Vietnamese words.
+We also note that \category{rising} tone words were preferred
+to transcribe Sanskrit short vowels,
+which is consistent with the glottal stop assumption,
+as the latter makes the syllable sound short.
+Thus, the origin of the \category{rising} tone can be tentatively reconstructed as \form{*-ʔ}.
+
+Now that all other tones have been reduced to syllable final consonants,
+the remaining \category{level} tone can be simply understood as the ``default'' case,
+i.e. open syllables or syllables ending with nasals.
+We have thus shown that Old Chinese lacks tones.
+
+\subsubsection{Affixation}
+The fact that Chinese tones probably originated from word-final consonants
+and the fact that in reading traditions of Classical texts,
+tone change represents subtle modification of the meaning of a root
+(known as 四聲别义 \translate{four tones distinguishing between meanings})
+immediately suggest that Old Chinese has derivational suffixes.
+All derivations that change the tone of a word to the \category{departing} sound,
+for instance, can now be explained by a \form{*-s} suffix.
+Several prefixes have proposed as well,
+based on alternations of the onset,
+e.g. multiple \form{*s-} prefixes \citep[\citepages{53-59}]{baxter2014old}.
+
+\subsubsection{Initial consonant clusters}\label{sec:intro.prehistory.reconstruction.initial-consonant-cluster}
+The syllable structure of Modern Standard Mandarin and other modern Sinitic languages is relatively simple.
+The syllable structure of Middle Chinese was slightly more complicated, allowing more syllable-final consonants (i.e. \category{entering} tone discussed above).
+However, all existing materials point to a much more complicated Old Chinese syllable structure.
+
+A popular perspective, although not universally accepted yet, is that consonant clusters were prevalent in Old Chinese.
+This can be supported by semi-homophonous series of Chinese characters
+(\prettyref{sec:intro.prehistory.reconstruction.problems}).
+Consider the semi-homophonous series 监, 槛 (pronounced as \form{jiàn} in the reading convention of Classical texts).
+Then consider another series 滥, 蓝.
+The fact that they share the same phonetic component 监 strongly suggests that the four characters belong to the \emph{same} series when the characters were first invented.
+A reconstructed initial like \form{*kl-} therefore may be proposed for the phonetic value of the phonetic component 监.
+A similar ``broken'' series include 禀, 凛 (something like \form{*pl-}).
+And now we find a class of consonant cluster initials roughly with the structure of \form{*Cl-},
+which actually is reconstructed by \citet[\citepages{50-51}]{baxter2014old} as \form{*Cr-}.
+
+\subsubsection{Final consonant clusters}
+Consonant clusters at syllable finals are also proposed.
+First, Qing dynasty scholar 段玉裁 Duan Yucai noticed that
+in \work{Odes}, rhyme sequences in the \category{level}, \category{rising} and \category{entering} tones
+can be isolated (meaning that all rhymes in a poem have the same tone in Middle Chinese),
+while the rhyming of \category{departing} tone words appears to be random.
+His conclusion was that there was no \category{departing} tone in \work{Odes}.
+Now we know that there was probably no tone at all at least in pre-Classical Old Chinese,
+and Duan's observation means that
+the final consonant \form{*-s} corresponding to the \category{departing} tone
+was likely almost always not a part of the root, but something like a suffix.
+But if a word with the \category{entering} tone (which means it ends with \form{*-p}, \form{*-t}, or \form{*-k})
+rhymed with a word that ends with \form{*-s},
+then the latter should also contain \form{*-p}, \form{*-t}, or \form{*-k} near its end:
+and hence the \form{*-ps}, \form{*-ks}, \form{*-ts} final consonant clusters
+\citep[\citepage{183}]{hill2019historical}.
+
+In Middle Chinese, there are four rhymes (祭泰夬废) in the \category{departing} tone
+that do not have counterparts in the \category{level} and \category{rising} tones,
+and words with these rhymes having semi-homophonous relations with \category{entering} words,
+based on \form{xiéshēng} relations seen in their characters.
+This means these rhymes probably ended with \form{*-ps}, \form{*-ts}, \form{*-ks} in Old Chinese,
+and have both \category{entering} and \category{departing} features.
+Consonant clusters appear here again.
+
+We also note that there are \category{rising} tone words with nasal finals in Middle Chinese:
+上 itself is an instance.
+This suggests a  consonant cluster roughly with the form of \form{*-ŋʔ} at the end of the words,
+which probably should be \form{*-ʔŋ} to make it looks typologically feasible.
+We note that the form \form{*-ʔŋ} can even explain the origin of the \category{rising} tone,
+as it makes the pronunciation \emph{weak} in the middle,
+which naturally is close to a pronunciation that is \emph{low} in the middle,
+and hence the modern \category{rising} tone.
+
+\subsubsection{Minor syllables}\label{sec:intro.reconstruction.minor-syllables}
+The format of the \work{Odes} strongly suggests that
+the language(s) behind the poems were monosyllabic.
+Still, we have evidence for residues of minor syllables before the main syllables,
+known as \emph{loose} pre-initials in \citet{baxter2014old};
+their \emph{tight} counterparts are ordinary consonant clusters.
+In \form{Odes}, some rather strange forms, like 帝命不時,
+contain 無 that would otherwise be interpreted as a negator,
+but the interpretations of them contain no negative meanings
+according to commentaries.
+Not all of them can be naturally explained as rhetorical questions.
+We can also find records like 聿……吳謂之不律 in 说文,
+further suggesting the existence of loose pre-initials
+\citep[\citepages{122-1235}]{hill2019historical}.
+The reconstruction of these pre-initials is still controversial,
+but their existence at least in some historical stages and areas seems to be beyond reasonable doubts.
+The syllable structure of pre-Classical Old Chinese therefore should be (C\form{ə})CVC.
+
+
+\subsubsection{Word order}
+Texts during the Old Chinese period do \emph{not} have a rather flexible word order, as is shown in the rest of this work.
+The evolution towards a largely analytic syntax therefore had to already have started at the Old Chinese stage.
+
+
+
+
+
+\subsection{Language contact}\label{sec:intro.pre-history.mixing}
+
+\subsubsection{Neighboring languages}
+
+Certain records in the Classical period indicate the existence of non-Sinitic populations in southern kingdoms.
+For example, the 越人歌 \form{Yuèréngē} \translate{\work{Song of Boatmen of Yue}},
+a song of boatmen preserved in \work{Garden of Stories} that was both transcribed in Chinese characters (in a sort of Old Chinese pronunciation) and translated,
+was proposed to be composed in a Kra-Dai language \citep{zhengzhang1991decipherment}.
+What we are discussing above happened long \emph{before} the Classical period,
+but the relevant populations did not come out of no where
+and should be there as well when Proto-Sinitic was being formed.
+
+Major non-Sino-Tibetan language families in touch with 
+include Kra-Dai, Hmong–Mien, and Vietic.
+Among them, 
+
+What is particularly intriguing is that around 20\% of words in \citet{mccraw2010lexical} do not have a clear origin.
+These words are often collectively referred to as having \form{Dongyi} 東夷 \translate{eastern babarians} origins in modern Chinese scholarship,
+because these words have to come from language contact,
+and the most likely candidate of the origin is these ``barbarians'' i.e. non-Sinitic populations in the west of Shang and Zhou.
+Therefore, it seems that a ghost population once existed between the northern Sinitic population and the southern Austronesian population,
+speaking a language that heavily influenced Proto-Sinitic.
+No known surviving descendant of Dongyi is known. 
+
+
+\subsubsection{The makeup of the Old Chinese lexicon}
+Less than a half of Old Chinese words have clear etymological Tibeto-Burman counterparts,
+and the rest of the lexicon comes from Austro-Asiatic and Tai contributions,
+with the former being the majority
+\citep{mccraw2010lexical}.
+Whether this means Old Chinese was more heavily influenced by Austro-Asiatic 
+than other Trans-Himalayan languages is unclear,
+as a comparison between Austro-Asiatic loan words in Trans-Himalayan is currently lacking.
+Also worth noticing is that although in later periods, Chinese (at different stages of development) was the \emph{origin} of borrowed terms,
+in the prehistoric era, Chinese was frequently the \emph{recipient}, not the \emph{donor}.
+
+\subsubsection{Syntax of Old Chinese and language contact}
+A natural idea is that the syntax of Old Chinese -- and hence the syntax of Classical Chinese -- 
+was also influenced by non-Trans-Himalayan languages.
+The SVO word order, the prepositions, and clause-initial subordinators all stand in contrast to Tibeto-Burman languages.
+On the other hand, Old Chinese has sentence-final particles, which seem to be more consistent with a SOV order,
+and occasionally we observe relics of a SOV order as in 不我知也;
+these features are not surprising within the Trans-Himalayan family.
+
+How sentence-final particles were grammaticalized is not always clear:
+in oracle bone inscriptions there are already some SFPs;
+see http://ir.lib.scu.edu.tw:8080/bitstream/987654321/11005/1/103SCU00045056-001.pdf:
+句尾亦偶有少數的語氣詞
+
+We note that the all of the Southeast Asian groups with SVO syntax seem to
+have this order as far back as we can trace,
+and therefore in the aspect of word order (and probably other aspects),
+Chinese is the \emph{recipient}, not the \emph{donor} \citep[\citepage{82-85}]{delancey2013origins}.
+
+\subsection{Discussion: how Chinese as we know it was formed?}
+
+To summarize what has been revealed in reconstruction works,
+absence of tones, words with minor syllables,
+and various affixation mechanisms were characteristics of Chinese 
+at a certain stage \citep[\citepage{13}]{sagart1999roots}.
+In the earliest Chinese texts, however, we already see indications of
+emergence of stereotypical Sinitic features:
+the syntax was already quite rigid,
+the number of available affixes was limited and their productivity was likely weakened,
+and the syllable structure was under simplification (TODO: ref).
+The factors pushing Chinese on its path to its appearance today are of interest.
+
+\subsubsection{Relation with Chinese characters}
+
+It is sometimes argued that the loss of morphology is due to the Chinese characters,
+which do not record inflection well.
+This claim is linguistically untenable,
+first because most people before modernity were illiterate,
+and second because it is quite straightforward to dedicate certain characters to represent inflection
+(which is indeed how the \form{kana} system used to write Japanese developed).
+A reasonable, but not consensually accepted hypothesis is that it was due to language contact,
+which is discussed in \prettyref{sec:intro.pre-history.mixing}.
+
+\subsubsection{Area typology}
+Certain languages in the Trans-Himalayan area that do not have clear genetic relations with the Trans-Himalayan family, on the other hand,
+do have the purported Trans-Himalayan typological features.
+Kra-Dai languages have these typological features as well \citep[\citepage{434}]{sidwell2021languages},
+and yet the most likely relatives of them are the Austronesian family,
+which do \emph{not} have these typological features at all \citep{sagart2004higher,ostapirat2005notes}.
+
+The evolution of tonal distinctions happens in Kra-Dai as well \citep{sagart2019model}.
+
+
+\end{document}

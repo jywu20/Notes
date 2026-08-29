@@ -241,7 +241,7 @@ then the size of `{ n : ℕ // P n }` is well larger than the size of the set co
 
 It can be proven that the type theory of Lean is equivalent to ZFC + countable inaccessible cardinals.
 Here "ZFC + countable inaccessible cardinals" means ZFC + "for every $n > 0$, there exists $n$ inaccessible cardinals, one smaller than the other"
-(for discussions on subtleties, see [here](https://mathoverflow.net/questions/380539/are-we-sure-the-calculus-of-inductive-constructions-and-zfc-plus-countably-many), and also [here](https://mathoverflow.net/questions/59520/how-true-are-theorems-proved-by-coq)).
+(for discussions on subtleties, see [here](https://mathoverflow.net/questions/380539/are-we-sure-the-calculus-of-inductive-constructions-and-zfc-plus-countably-many), and also [here](https://mathoverflow.net/questions/59520/how-true-are-theorems-proved-by-coq); note specifically that the set theory equi-interpretable with Lean should not be able to explicitly construct something *in the theory* containing all the cardinals, or otherwise it proves consistency of Lean and is stronger than Lean).
 Suppose $\mathrm{ZFC}_n$ means ZFC with $n$ inaccessible cardinals,
 and $\mathrm{CIC}_n$ means calculus of inductive construction with $n$ universes
 with type theoretic axiom of choice and law of exclusion of middle.
