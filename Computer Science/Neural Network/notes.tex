@@ -680,14 +680,14 @@ provided that the positivity, unitarity etc. are satisfied.%
     this substitution does not invalidate any probabilistic formula.
     Thus $p_\theta(x | y) = p_\theta(xy) / p_\theta(y)$, for instance.
     These trivial but important lemmas explain why in machine learning,
-    people often feel free to switch between frequentist and Bayesian statistics,
-    and also never explicitly write the form of $p(\theta | x_1, x_2)$.
+    people often feel free to switch between frequentist and Bayesian statistics.
+    (The mention of $p(\theta | x_1, x_2)$ does not necessarily mean endorsement of Bayesian statistics, as the main purpose of this quantity is to derive the loss function, which can be understood as constrained optimization in frequentist statistics.)
     We're going to see a lot of these in the following discussions.
 
-    Another thing to note is $\theta$ in theory can also include ``hard'' priors, 
-    like ``the distribution of $y$ should follow a rough pattern parameterized by the soft pare of $\theta$'',
-    although these hard priors are typically not updated.
-    We discuss this -- and why these hypotheses can be not updated -- in the note linked above as well.
+    In the note linked above, we also discuss ``hard'' priors, 
+    like ``the distribution of $y$ should follow a rough pattern parameterized by the soft pare of $\theta$''.
+    These hard priors are typically not updated 
+    because their prior distribution is a delta-function and thus $p(\theta | A) = p(\theta)$. 
 }
 
 \subsection{Parametric estimation and the loss function}
@@ -1315,16 +1315,16 @@ but the channel dimension should not be averaged over.
 
 \chapter{Attention mechanisms and Transformers}
 
-The up-to-date way to do machine learning tasks involving sequences with unknown structures
-typically is various Transformer models.
-As is said above in the introduction part, it remains theoretically unclear 
-whether Transformer models can be seen as some sort of Universal Grammar (or human linguisticality) model for natural languages:
-answering what Transformers see exactly is the same as the interpretability problem so we skip the issue for now.
+The up-to-date way to do machine learning on sequences with unknown structures
+is typically various Transformer models.
+As is said above in the introduction part, the expressiveness problem of  Transformer models is still far from settled,
+but this is not a problem answerable in the foreseeable future so we will skip it for now.
 
 \section{Embedding}
 
+\subsection{Embedding of a sequence}
 
-Suppose we have a sequence $(x_1, x_2, \dots, x_T)$.
+Suppose we have a sequence $\{x_t\}_{t=1}^T$.
 Models taking sequence input that are not recurrent neural network models typically start with \concept{embedding}.
 
 Embedding for Transformers typically consists of two parts.
@@ -1363,11 +1363,18 @@ does not depend on the length of the input sequence.
 This is to say the model can take sequences of arbitrary lengths,
 although there is no theoretical guarantee that arbitrarily long correlations are always taken care of.
 
+\subsection{Embedding of other things}
+
+Inputs that are not sequences from a finite vocabulary can still be fed to a Transformer,
+though we have to design the embedding differently.
+
 \section{Attention mechanism}\label{sec:transformer.attention}
 
 A Transformer layer consists of a multi-head self-attention layer and a feed-forward network,
 both with residual connections and layer renormalization.
 Here we explain the attention mechanism first, before moving on to the structure of the encoder and the decoder modules.
+
+\subsection{Single-head self-attention}
 
 A \concept{single-head self-attention} module in a neural network takes the following form.
 It takes a $H \in \mathbb{R}^{T \times d}$ input (output of embedding).
@@ -1434,10 +1441,13 @@ This is important, as when calculating the gradient of the attention module with
 the $ W_Q W_K^\top$ factor appears outside the softmax function,
 which possibly causes gradient explosion or vanishing.
 
+\subsection{Multi-head self-attention}
+
 A \concept{multi-head attention} module contains several single-head attention modules.
 It calculates 
 \begin{equation}
     \mathrm{head}_i = \mathrm{Atten}(Q_i, K_i, V_i),
+    \label{eq:attention-multihead}
 \end{equation}
 where $Q_i, K_i, V_i$ are calculated using different $W$ matrices.
 Suppose there are $h$ heads calculated.
@@ -1448,6 +1458,14 @@ The output of the multi-head attention module is
 where $W_O \in \mathbb{R}^{(hd_k) \times d}$ is a matrix of learnable parameters.
 Because the shape of each head is $\mathbb{R}^{T \times d_k}$,
 the output of the multi-head attention module therefore is of the same shape of the embedding output, which is $\mathbb{R}^{T \times d}$.
+
+\subsection{Cross-attention}
+
+The mathematical form of cross-attention is still \eqref{eq:attention-multihead} but the $Q$, $K$ and $V$ matrices are from different origins:
+\begin{equation}
+    Q = H_1 W_Q, \quad K = H_2 W_K, \quad V = H_2 W_V.
+\end{equation}
+It is common to always keep the source of information of $K$ and $V$ the same.
 
 \section{The encoder}
 
@@ -1522,7 +1540,7 @@ Basically in this module, $Q$ is from the input to the decoder, and $K$ and $V$ 
 Then another round of layer normalization and residual summation.
 Then a fully connected feed-forward network layer and layer normalization and residual summation.
 
-
+It is possible for the decoder module to be used without any accompanying encoder module.
 
 \chapter{Metrics}
 
