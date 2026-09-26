@@ -12,7 +12,7 @@ This note is written with the help of ChatGPT.
 # Notation 
 
 - $\sigma$: a set theoretic statement, i.e. a sentence in the set theoretic language $\mathcal{L}_\in$
-- $\sigma^{V_\kappa}$: relativization of $\sigma$ in $V_\kappa$. That's to say, $\forall x$ in $\sigma$ is replaced by $\forall x (x \in V_\kappa \to \cdots)$, and $\exist x$ in $\sigma$ is replaced by $\exist x (x \in V_\kappa \land \cdots)$.
+- $\sigma^{V_\kappa}$: relativization of $\sigma$ in $V_\kappa$. That's to say, $\forall x$ in $\sigma$ is replaced by $\forall x (x \in V_\kappa \to \cdots)$, and $\exist x$ in $\sigma$ is replaced by $\exist x (x \in V_\kappa \land \cdots)$. Informally, $T \vdash \sigma^{V_\kappa}$ may be written as "$T$ proves that $\sigma$ holds in $V_{\kappa}$", or sometimes $T \vdash (V_{\kappa} \vDash \sigma)$.
 - $\hat{\sigma}_n$: the Lean statement that $\sigma$ holds in universe $n$. That's to say, a Lean statement obtained by replacing $\forall x$ in $\sigma$ by $\forall x : \mathtt{ZFSet}.\{i\}$ and replacing $\exist x$ in $\sigma$ by $\exist x : \mathtt{ZFSet}.\{i\}$.
 
 
@@ -97,46 +97,38 @@ We have shown equivalence between provable set theoretic statements in Lean and 
 The correspondence is not as regular as what we may imagine,
 as the counterpart of $\sigma$ at the Lean side is something like $\hat{\sigma}_0 \lor \cdots \lor \hat{\sigma}_{n-1}$.
 It's also possible to replace $\hat{\sigma}_0 \lor \cdots \lor \hat{\sigma}_{n-1}$ by $\hat{\sigma}_{u_{\text{min}}} \lor \cdots \lor \hat{\sigma}_{u_{\text{min}+n-1}}$.
+In this way, what we have shown in in fact that $\mathsf{ZFC}+\mathsf{PFIRS} \vdash \sigma$, if and only if, there exists $n$ such that $\mathsf{Lean} \vdash_{.\{u\}} \hat{\sigma}_{u} \lor \hat{\sigma}_{u+1} \lor \cdots \lor \hat{\sigma}_{u+n-1}$.
+Here $u$ is a universe parameter *within* Lean.
 
-Furthermore, what we actually have shown is that the length of the shortest $\mathsf{Lean} \vdash \hat{\sigma}_0 \lor \cdots \lor \hat{\sigma}_{n-1}$ sequence is not greater than $n=m+1$, where $m$ is the number of instances of PFIRS being invoked in the set theoretic side of the proof.
+Furthermore, we have observed that the length of the shortest $\mathsf{Lean} \vdash \hat{\sigma}_0 \lor \cdots \lor \hat{\sigma}_{n-1}$ sequence is not greater than $m+1$, where $m$ is the number of instances of PFIRS being invoked in the set theoretic side of the proof.
 Depending on what $\sigma$ exactly is, the disjunctive sequence in Lean can be further shortened.
 For instance, the links in the beginning of this note show that Lean and ZFC+PFIRS prove the same arithmetic statements, and thus for these statements $n=1$.
 
-We note that this translation between Lean and ZFC+PFIRS is proof theoretic.
-Thus statements can be moved between Lean and ZFC+PFIRS back and forth with their structures preserved (the only subtlety is, if we have a set theoretic statement $\phi$ that holds in a known ZFSet in Lean, then it holds in ZFC+PFIRS, but when it is translated back we only know it holds in *some* ZFSet in Lean without knowing which; but after that moving that weakened statement back and force does not change its form).
-Existing equivalences between Lean and set theories are on the other hand model theoretic (basically, how $\mathsf{Lean}_n$ satisfies a construct in $\mathsf{ZFC}_n$, and vice versa) and there is no guarantee that a statement $\phi$ can be first translated from one theory to another and then translated back with its form preserved.
-These equivalence theorems are more useful to prove Lean's consistency strength. 
+We note that in this translation between Lean and ZFC+PFIRS, 
+statements can be moved between Lean and ZFC+PFIRS back and forth with their structures preserved.
+The only subtlety is, if we have a set theoretic statement $\phi$ that holds in a known ZFSet in Lean, then it holds in ZFC+PFIRS, but when it is translated back we only know it holds in *some* ZFSet in Lean without knowing which; but after that moving that weakened statement back and force does not change its form.
 
-The next question is if this translation can be generalized to all mathematics, and not just set theoretic statements.
-That's to say, we would like to know if a formalized theory in Lean that utilizes things beyond ZFSets can be easily translated to a formalization in, say, ZFC+PFIRS.
-The translated theory in set theory obviously doesn't have to have the same constructs that are conventionally accepted in set theoretic formalization of mathematics (for instance the inductively defined natural numbers in Lean aren't necessarily translated to the usual von Neumann encoding, depending on how inductive types are translated)
-but this ultimately is not due to the translation, but due to the existence of multiple formalizations of the same idea *within* set theory.
+This translation is a "global" translation, in that no assumption has been made to the internal structure of $\sigma$.
+The more well known equivalence between Lean and ZFC+countable inaccessible cardinals
+(which is arguably more beautiful as it does not involve the aforesaid disjunctive sequences),
+if we want it to allow structure-preserving translation round trips,
+applies only to "local" statements, i.e. statements where quantifiers are bounded to universes.
 
-An intuitive approach in this direction is to attempt to show that idiomatic Lean formalizations can all more or less be done by heavily relying on ZFSet.
-Then, by the standard model construction of Lean's type theory, 
-it appears that ordinary mathematics formalized in Lean using the first $n$ universes can always be mechanically formalized in a higher ZFSet.
-Thus we have shown that the expressiveness of idiomatic Lean is a subset of ZFSet-heavy Lean,
-the latter, if we ignore the ugly form $\hat{\sigma}_0 \lor \cdots \lor \hat{\sigma}_{n-1}$,
-being equivalent to ZFC+PFIRS to a certain extent.
+One example demonstrating the difference between global and local statements, given by [Elliot](https://x.com/ElliotGlazer/status/2019194039829135843?s=20), is the follows.
 
-There are several difficulties we have.
+Consider the statement A: "if there is a proper class of inaccessibles, then Con(TG)."
+A is a global statement because "if there is a proper class of inaccessibles" is not a statement in which the existential quantifier sweeps through the whole set theoretic universe, and not just a certain $V_\kappa$.
+The set theory TG contains the hypothesis and thus can’t prove the conclusion (to avoid violating Godel's incompleteness theorem).
+Now, it is easy to see that A, if understood as a Lean set theoretic statement (where "there exists..." mean "there exists ... in a certain ZFSet"), holds in ZFSet.{0}
+(that's to say, "if there is a proper class of inaccessibles in ZFSet.{0}, then natural numbers defined using the standard set theoretic encoding in ZFSet.{0} does not encode a proof of TG's inconsistency").
+It is easy to prove in Lean that ZFSet.{0} is a model of ZFC - and if there is a proper class of inaccessibles, then obviously there's a model of ZFC+"there is a proper class of inaccessibles", i.e. a model of TG,
+and thus, the consistency of TG is proven (the translation between TG's consistency encoded in the natural number set in ZFSet.{0} and TG's consistency encoded in idiomatic Lean is conceptually trivial). 
+So Lean proves sentence A.
 
-The first is that developers of Mathlib have no problem using universes,
-so a typical Lean version of a mathematical theorem often contains universe parameters whose values can be freely chosen.
-Note that the equivalence theorem above is about statements being provable in *some* ZFSet.{u}.
-
-Second, there are statements that are not answerable in Lean (with the standard axioms) but can be answered if translated according to standard translations.
-
-https://leanprover.zulipchat.com/#narrow/channel/236446-Type-theory/topic/Lean.20and.20ZFC.2BPFIRS/with/626506484
-
-1. Type comparison issues like "is N=Z?"
-2. Questions regarding the choices made by the global choice function, like "is the chosen real number positive?"
-3. Size ambiguities of the set-theoretic heights of the universes, like "Does the first universe type correspond to the first inaccessible cardinal?"
-
-I could suspect these 3 ambiguities could be filled in respectively via:
-
-1. Some axiom that systematically rejects nonprovable equalities of types (Mario suggests to me this might be better-behaved than the opposite disambiguation: trying to declare the type-theoretic universe behaves like the cardinality model),
-2. Replace Classical.choice with the conjunction of Classical.axiomOfChoice and unique choice,
-3. It might be possible to demand the universes be consecutive inaccessibles, but I'm less sure about that. The way universe-indexing works in Lean is still confusing to me. (Also, rather than demanding the first universe be at the first inaccessible, I think it would be preferable to demand the first universe be either the first inaccessible or some limit-ordinal-indexed inaccessible, to avoid deriving anti-large cardinal results. This would lead to better translation properties between this extension of Lean vs ZFC).
-
+By the global set theoretic equivalence between Lean and ZFC+PFIRS, 
+the Lean version of A has a counterpart in ZFC+PFIRS, which reads just like A.
+But by the local set theoretic equivalence between Lean and ZFC+countable inaccessible cardinals,
+A also has a counterpart in the latter.
+But this counterpart is something like "if there is a proper class of inaccessibles in one $V_\kappa$, then Con(TG)".
+Now *this* is a safe statement to have in ZFC+countable inaccessible cardinals and hence in TG, because you can't insert a proper class of inaccessibles into one $V_\kappa$.
 

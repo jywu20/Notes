@@ -239,7 +239,7 @@ then the size of `{ n : ℕ // P n }` is well larger than the size of the set co
 
 ## Set theoretic semantics
 
-It can be proven that the type theory of Lean is equivalent to ZFC + countable inaccessible cardinals.
+It can be proven that the type theory of Lean is, roughly speaking, "equivalent" or equi-interpretable to ZFC + countable inaccessible cardinals.
 Here "ZFC + countable inaccessible cardinals" means ZFC + "for every $n > 0$, there exists $n$ inaccessible cardinals, one smaller than the other"
 (for discussions on subtleties, see [here](https://mathoverflow.net/questions/380539/are-we-sure-the-calculus-of-inductive-constructions-and-zfc-plus-countably-many), and also [here](https://mathoverflow.net/questions/59520/how-true-are-theorems-proved-by-coq); note specifically that the set theory equi-interpretable with Lean should not be able to explicitly construct something *in the theory* containing all the cardinals, or otherwise it proves consistency of Lean and is stronger than Lean).
 Suppose $\mathrm{ZFC}_n$ means ZFC with $n$ inaccessible cardinals,
@@ -250,6 +250,11 @@ and $\mathrm{ZFC}_n$ is interpretable in $\mathrm{CIC}_{n+2}$.
 Hence ZFC + countable inaccessible cardinals and CIC with infinite universes can be interpretable in each other.
 Carneiro (2019) further proves that Lean (with its own classical axioms) with infinite universes and ZFC + countable inaccessible cardinals are interpretable in each other as well.
 Hence all three systems are equiconsistent, and indeed, equi-interpretable.
+
+But note that this is *not* a natural one-to-one mapping. 
+From the constructs above, it is not possible to bring statements back and forth between the two foundations: if $\phi$ is translated using the scheme above to Lean and then back to ZFC + countable inaccessible cardinals,
+the resulting form isn't the same as $\phi$.
+
 
 There are some subtleties about the correspondence between each stage of the three theories,
 which are discussed in detail in Carneiro (2019).
