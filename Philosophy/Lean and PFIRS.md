@@ -43,7 +43,7 @@ Suppose towards contraction that the theory $T = \mathsf{ZFC} + \mathsf{PFIRS} +
 
 We now start building along the following procedure in $T$.
 Applying PFIRS, we have $\exists \lambda_0 (\mathrm{Inacc}(\lambda_0) \land (\lnot \sigma)^{V_{\lambda_0}})$.
-Now applying PFIRS to $\lnot \sigma \land \exists \lambda_0 (\mathrm{Inacc}(\lambda_0) \land (\lnot \sigma)^{V_{\lambda_0}})$ we get $\exist \lambda_1 (\mathrm{Inacc}(\lambda_1) \land (\lnot \sigma)^{V_{\kappa_1}} \land \exist \lambda_0 (\lambda_0 \in V_{\lambda_1} \land \mathrm{Inacc}(\lambda_0) \land \sigma^{V_{\lambda_0}}))$.
+Now applying PFIRS to $\lnot \sigma \land \exists \lambda_0 (\mathrm{Inacc}(\lambda_0) \land (\lnot \sigma)^{V_{\lambda_0}})$ we get $\exist \lambda_1 (\mathrm{Inacc}(\lambda_1) \land (\lnot \sigma)^{V_{\kappa_1}} \land \exist \lambda_0 (\lambda_0 \in V_{\lambda_1} \land \mathrm{Inacc}(\lambda_0) \land (\lnot \sigma)^{V_{\lambda_0}}))$.
 We can repeat this process over and over again, and this means that for an arbitrary $m$, we have 
 $\exist \lambda_0 \exist \lambda_1 \cdots \exist \lambda_m (\lambda_0 \in V_{\lambda_1} \land \lambda_1 \in V_{\lambda_2} \land \cdots \land \lambda_{m-1} \in V_{\lambda_m} \land (\lnot \sigma)^{V_{\lambda_0}} \land (\lnot \sigma)^{V_{\lambda_1}} \land \cdots \land (\lnot \sigma)^{V_{\lambda_m}})$.
 This means that in ZFC+PFIRS, we can find a finite chain $\kappa_0 < \kappa_1 < \cdots < \kappa_{N-1}$
