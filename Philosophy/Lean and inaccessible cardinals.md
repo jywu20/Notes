@@ -117,8 +117,8 @@ there are obviously questions that are statable but not answerable in idiomatic 
 which, once translated, can however be answered,
 and the obvious issue is then these set theoretic counterparts cannot be translated back.
 
-(Or perhaps we can just argue that things you can't prove in idiomatic Lean 
-but can prove in ZFSet heavy Lean or set theoretic foundations are not natural.)
+Perhaps we can just argue that things you can't prove in idiomatic Lean 
+but can prove in ZFSet heavy Lean or set theoretic foundations are not natural.
 
 These problematic Lean questions are discussed in https://leanprover.zulipchat.com/#narrow/channel/236446-Type-theory/topic/Lean.20and.20ZFC.2BPFIRS/with/626506484 
 Some of them are
@@ -144,3 +144,13 @@ axiom consecutiveUniverses.{u} :
     (∀ κ : Cardinal.{u + 1},
       κ.IsInaccessible → κ ≤ Cardinal.univ.{u, u + 1})
 ```
+
+# Tentative summary
+
+So it appears that set theoretic foundations prove things that Lean don't prove (N is not Z, and the like).
+On the other hand, only ZFSet-centric Lean statements have straightforward set theoretic counterparts;
+but a non-ZFSet-centric Lean statement can be mapped to a ZFSet-centric one by first giving it a standard set theoretic translation as in Sets in Types, Types in Sets,
+and then translating it back to Lean using the local set theoretic translation.
+An idiomatic Lean statement $\phi$ is provable in Lean,
+if and only if, its ZFSet-centric version is provable.
+And yet there is no way to translate all set theoretic statements back.
