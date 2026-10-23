@@ -27,7 +27,7 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Diagnostics: (composite) forms with non-inferrable grammatical properties 
     - Mandarin 关心: no one expects it to be transitive: must be a listed exponent
     - Problem with this diagnostics: maximality. 
-      - This diagnostics tests exponents and is only applicable in languages with little morphology, where an exponent is a word 
+      - This diagnostics essentially tests exponents and is only applicable in languages with little morphology, where an exponent is a word 
       
 - Wordhood controversies
   - Idiomatic meaning is not per se a good criterion ([kick the bucket] is not a word)
