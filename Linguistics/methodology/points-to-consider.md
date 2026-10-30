@@ -16,6 +16,8 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
 
 - Lexicon: list of abstract formatives (features and roots) i.e. List A, list of exponents i.e. List B, encyclopedia i.e. List C
   - Semantic lexicalization != morphosyntactic listedness/specification (irregular inflection, etc.)
+  - In terms of descriptive linguistics: List B = stems, affixes, irregular forms, etc.
+  - The term "lexeme" isn't cross-linguistically well defined (because there's no reliable cross-linguistic derivation/inflection structural difference; see below). When a derivation/inflection difference can be established, a lexeme contains all words which only differ in their inflection morphemes, and can be structurally defined as a shared "core" of complex heads (thus [go], [goes] and [went] belong to the same lexeme).
 - Wordhood: maximal complex heads formed in post-syntactic operations 
   - Non-maximal complex heads are not words but are word-like (e.g. English geo- or -graphy)
   - No guarantee a word is a constituency in pure syntax. (Which depends on your definition of constituency: if defined as a span in generative syntax then [performed] is indeed a constituent, as in generative syntax it's a span of heads)
@@ -41,6 +43,7 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
 - Word formation vs. phrasal syntax: no fundamental difference. There can be modification-like processes in word formation ([ethno-music-o-logy]) too and in Sinitic languages, forms like 白大褂 violate the usual adjective order and scope hierarchy; the peculiar behavior means the forms are List B exponents, with regular internal phrasal structure.
   - The distinction ideally has to be made *after* wordhood tests are established.
 - Word formation vs. inflection: no clear boundary. Is valency alternation derivational or inflectional?
+  - The terms are useful as language-specific concepts ("inflection" = "usually non-recursive", etc.). Cross-linguistically the derivation/inflection distinction can be reasonably described in terms of scope of grammatical categories, post-syntactic operation orders etc. and the distinction itself is not useful.
 
 - Defining wordhood in a specific language is not always easy and sometimes we have to rely on *inference of best explanation*
   - Idiomization of meanings of words is more frequent than idiomization of phrases.
