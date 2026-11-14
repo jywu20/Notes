@@ -26,12 +26,18 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
     - Ideally a word has to be described in the construction it heads.
   - Diagnostics: regular morphological processes without clear combinatorial motivation
     - English tense inflection in theory can be expressed by auxiliaries but somehow is attached to the verb stem: it's morphological and a part of the word 
-  - Diagnostics: (composite) forms with non-inferrable grammatical properties 
-    - Mandarin 关心: no one expects it to be transitive: must be a listed exponent
+  - Diagnostics: forms with non-inferrable grammatical properties 
+    - Mandarin 关心: no one expects it to be transitive: must be a listed exponent; and since there is no need to assume anything adjacent to it is morphologically attached to it, it has to be a grammatical word.
     - Problem with this diagnostics: maximality. 
       - This diagnostics essentially tests exponents and is only applicable in languages with little morphology, where an exponent is a word 
+    - This diagnostics also reveals a theoretical issue. For compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. Is this analysis truly necessary, or should we resort to valency constraints in List A? Or perhaps we need an expansion of List B which allows, say, multi-stage Vocabulary Insertion or similar mechanisms that accommodate compound verbs like 关心 and, furthermore, separable verbs, etc. One may for instance imagine that a Nanosyntax-like theory in which lexically specified treelets participate in vocabulary insertion is more flexible and captures these phenomena more naturally (which also eliminates the need for language-specific rules beyond the three lists).
+      - This may be have a historical linguistic consequence: that's to say, if the assumption that valency is in List B, then compound forms like 关心 much more easily decay into a synchronic morpheme. 
+      - On the other hand, certain phenomena like German separable verbs may be dealt with by a version of the copy theory of movement in post-syntactic operations, that is, the preverb part of the verb (like [auf] in [auf-hören]) is copied, and the vocabulary insertion item (which is intransitive) corresponding to [auf-hören] is [√hören, v, auf] -> /hör/, while the auf directional head gets spelt out on its own in another place (before hör, or at the end of the clause). On the other hand we have a [√hören, v, Trans] -> /hör/ entry corresponding to the transitive use of the root [√hören].
+        - In this analysis, one can argue that wordhood of [auf-hören] is NOT automatically guaranteed, because the idiosyncratic features of  [auf-hören] (like valency) can be all attributed to the List B entry [√hören, v, auf] -> /hör/. 
+        - And thus one may wonder if 关心 and the like can be analyzed in a similar manner. Which does not look natural but is it possible?
+  - Ultimately, by asserting that all languages have grammatical wordhood (as maximal complex heads), we're saying that the formal complexity class of natural language grammars is roughly that demarcated by Distributed Morphology-like grammars. A corpus of a concrete language may receive multiple conflicting analyses with inconsistent definition of wordhood, which do not invalidate the grammatical framework and may in fact be a hotbed of grammatical evolution.
       
-- Wordhood controversies
+- Other wordhood criteria
   - Idiomatic meaning is not per se a good criterion ([kick the bucket] is not a word)
   - Low productivity: related to wordhood but not directly 
     - If a morphological process only applies to certain stems, this has to be specified by List B
