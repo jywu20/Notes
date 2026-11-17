@@ -15,9 +15,11 @@ Intended to be maintained:
 - ./English/note-2.tex
 
 Some notes may have a lot of spelling or grammatical mistakes. 
+The theoretical blocks of the unmaintained notes especially may contain factual errors or unusual terminology.
 
 The underlying theory in these notes has been repetitively stated in the grammatical overview sections of the notes,
 but not necessarily in a clear way, 
-due to the aforementioned terminological difference.
+due to the aforementioned terminological difference (and some theoretical issues I overlooked, like whether the theory of subcategorization in Syntax Within the Word is universally true;
+if so then a compound verb with an unpredictable valency should be regarded as having a single exponent at its core, not two).
 A writeup regarding application of this theory to Sinitic linguistics can be found in ./methodology/汉语语法体系.md.
 See also ./methodology/points-to-consider.md.

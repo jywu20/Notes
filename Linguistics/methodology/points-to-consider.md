@@ -11,6 +11,8 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Widely attested in languages, like Gyeli
 - Grammatical function, grammatical relation, etc.: SpecFP
   - Form: XP; function: whether XP is SpecYP
+- Distinction between "realizational" and structural morphology: the latter frequently involves syntactic phenomena, including the interplay between the word and its syntactic environment (as in valency change) and syntax within the word 
+  - The term "realizational morphology" typically refers to the word and paradigm theory of morphology. However, proponents of Distributed Morphology use the term too: see e.g. Heidi Harley 2014, On the identity of roots
 
 # Word 
 
@@ -30,8 +32,12 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
     - Mandarin 关心: no one expects it to be transitive: must be a listed exponent; and since there is no need to assume anything adjacent to it is morphologically attached to it, it has to be a grammatical word.
     - Problem with this diagnostics: maximality. 
       - This diagnostics essentially tests exponents and is only applicable in languages with little morphology, where an exponent is a word 
-    - This diagnostics also reveals a theoretical issue. For compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. Is this analysis truly necessary, or should we resort to valency constraints in List A? Or perhaps we need an expansion of List B which allows, say, multi-stage Vocabulary Insertion or similar mechanisms that accommodate compound verbs like 关心 and, furthermore, separable verbs, etc. One may for instance imagine that a Nanosyntax-like theory in which lexically specified treelets participate in vocabulary insertion is more flexible and captures these phenomena more naturally (which also eliminates the need for language-specific rules beyond the three lists).
-      - This may be have a historical linguistic consequence: that's to say, if the assumption that valency is in List B, then compound forms like 关心 much more easily decay into a synchronic morpheme. 
+    - This diagnostics also reveals a theoretical issue. Here we take the theory in Syntax Within the Word, that valency is recorded in List B as whether a root is compatible with a verb frame. And yet if this theory is to be upheld one hundred percent, for compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. 
+      - Which sounds absurd.
+        - Is this analysis truly necessary, or should we resort to valency constraints in List A? 
+        - Or perhaps we need an expansion of List B which allows, say, multi-stage Vocabulary Insertion or similar mechanisms that accommodate compound verbs like 关心 and, furthermore, separable verbs, etc. 
+        - Or perhaps we can even attributed valency to List C. One may for instance imagine that a Nanosyntax-like theory in which lexically specified treelets participate in vocabulary insertion is more flexible and captures these phenomena more naturally (which also eliminates the need for language-specific rules beyond the three lists).
+      - Assuming that some compounds' valency preference is in List B, this may be have a historical linguistic consequence: that's to say, if the assumption that valency is in List B, then compound forms like 关心 much more easily decay into a synchronic morpheme. 
       - On the other hand, certain phenomena like German separable verbs may be dealt with by a version of the copy theory of movement in post-syntactic operations, that is, the preverb part of the verb (like [auf] in [auf-hören]) is copied, and the vocabulary insertion item (which is intransitive) corresponding to [auf-hören] is [√hören, v, auf] -> /hör/, while the auf directional head gets spelt out on its own in another place (before hör, or at the end of the clause). On the other hand we have a [√hören, v, Trans] -> /hör/ entry corresponding to the transitive use of the root [√hören].
         - In this analysis, one can argue that wordhood of [auf-hören] is NOT automatically guaranteed, because the idiosyncratic features of  [auf-hören] (like valency) can be all attributed to the List B entry [√hören, v, auf] -> /hör/. 
         - And thus one may wonder if 关心 and the like can be analyzed in a similar manner. Which does not look natural but is it possible?
@@ -61,6 +67,8 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
 
 - Head. The concept of head is now very confusing. Because we don't distinguish functional heads from lexical heads. The latter being cores of big constructions like CP (clauses) or DP (noun phrases).
   - We may define the (ultimate) head of a big construction as the grammatical word that contains the categorizer head of that construction. So whatever word containing the n head or the v head is the head of the noun phrase or the clause. 
+  - Note that a form being the (lexical) head of a construction typically indicates its wordhood, as the categorizer typically has to form a complex head (in the generative syntax sense) with that form. 
+    - But this does not rule out the categorizer only forming a complex head with a part of the "lexical head": consider [many-body perturb]-ion and [many-body perturb]-tive; if you regard the bracketed part the lexical head, then there is a word boundary inside it.
 
 - Parts of speech. *Lexical* parts of speech i.e. form classes in the lexicon are clusters in List B: and it's possible to have more than one noun or verb classes. *Syntactical* parts of speech are more mundane (what has a n head is a noun). 
   - In theory there's no need for parts of speech tags for grammatical formatives. Such a practice is based on the lexicalist perception that syntax puts pre-formed words together. But for practical reasons (like making looking up for unfamiliar grammatical formatives easier) we can still classify grammatical formatives.
