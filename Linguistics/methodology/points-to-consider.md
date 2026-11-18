@@ -31,16 +31,22 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Diagnostics: forms with non-inferrable grammatical properties 
     - Mandarin 关心: no one expects it to be transitive: must be a listed exponent; and since there is no need to assume anything adjacent to it is morphologically attached to it, it has to be a grammatical word.
     - Problem with this diagnostics: maximality. 
-      - This diagnostics essentially tests exponents and is only applicable in languages with little morphology, where an exponent is a word 
-    - This diagnostics also reveals a theoretical issue. Here we take the theory in Syntax Within the Word, that valency is recorded in List B as whether a root is compatible with a verb frame. And yet if this theory is to be upheld one hundred percent, for compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. 
+      - This diagnostics essentially tests *exponents* and is only applicable in languages with little morphology, where an exponent is a word 
+    - This diagnostics also reveals a theoretical issue. Here we adopt the theory in Syntax Within the Word, that valency is recorded in List B as whether a root is compatible with a verb frame. And yet if this theory is to be upheld one hundred percent, for compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. 
       - Which sounds absurd.
         - Is this analysis truly necessary, or should we resort to valency constraints in List A? 
         - Or perhaps we need an expansion of List B which allows, say, multi-stage Vocabulary Insertion or similar mechanisms that accommodate compound verbs like 关心 and, furthermore, separable verbs, etc. 
         - Or perhaps we can even attributed valency to List C. One may for instance imagine that a Nanosyntax-like theory in which lexically specified treelets participate in vocabulary insertion is more flexible and captures these phenomena more naturally (which also eliminates the need for language-specific rules beyond the three lists).
+        - If we attribute valency and similar properties to List C, then this criterion of valency is no more reliable than "a word has an idiomatic meaning".
       - Assuming that some compounds' valency preference is in List B, this may be have a historical linguistic consequence: that's to say, if the assumption that valency is in List B, then compound forms like 关心 much more easily decay into a synchronic morpheme. 
       - On the other hand, certain phenomena like German separable verbs may be dealt with by a version of the copy theory of movement in post-syntactic operations, that is, the preverb part of the verb (like [auf] in [auf-hören]) is copied, and the vocabulary insertion item (which is intransitive) corresponding to [auf-hören] is [√hören, v, auf] -> /hör/, while the auf directional head gets spelt out on its own in another place (before hör, or at the end of the clause). On the other hand we have a [√hören, v, Trans] -> /hör/ entry corresponding to the transitive use of the root [√hören].
         - In this analysis, one can argue that wordhood of [auf-hören] is NOT automatically guaranteed, because the idiosyncratic features of  [auf-hören] (like valency) can be all attributed to the List B entry [√hören, v, auf] -> /hör/. 
         - And thus one may wonder if 关心 and the like can be analyzed in a similar manner. Which does not look natural but is it possible?
+  - Diagnostics: the (lexical, not functional) "head" of a phrase is a word.
+    - Based on the perception that categorizers like n or v typically hop to a host complex head.
+    - But there is no guarantee that n is only attached to a subpart of the "head": [compound branch 1] [compound branch 2 - n]
+  - Indirect diagnostics: "lexical integrity"-like patterns, like structural simplicity, etc., which ultimately come from locality of post-syntactic operations
+  - Indirect diagnostics: phonological boundaries without clear phonological motivation (and thus have to originate from morphosyntax)
   - Ultimately, by asserting that all languages have grammatical wordhood (as maximal complex heads), we're saying that the formal complexity class of natural language grammars is roughly that demarcated by Distributed Morphology-like grammars. A corpus of a concrete language may receive multiple conflicting analyses with inconsistent definition of wordhood, which do not invalidate the grammatical framework and may in fact be a hotbed of grammatical evolution.
       
 - Other wordhood criteria
@@ -70,6 +76,11 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Note that a form being the (lexical) head of a construction typically indicates its wordhood, as the categorizer typically has to form a complex head (in the generative syntax sense) with that form. 
     - But this does not rule out the categorizer only forming a complex head with a part of the "lexical head": consider [many-body perturb]-ion and [many-body perturb]-tive; if you regard the bracketed part the lexical head, then there is a word boundary inside it.
 
+- Inference of best explanation when deciding wordhood: only consider corner cases when absolutely necessary.
+  - So a short form with an established meaning and an idiosyncratic grammatical behavior is very likely a word
+  - We can take a step back and rethink if there's any phenomenon contradicting it 
+  - Presence of wordhood-related phenomenon (i.e. complex head-related phenomenon) is more important than deciding if a particular form is a word
+
 - Parts of speech. *Lexical* parts of speech i.e. form classes in the lexicon are clusters in List B: and it's possible to have more than one noun or verb classes. *Syntactical* parts of speech are more mundane (what has a n head is a noun). 
   - In theory there's no need for parts of speech tags for grammatical formatives. Such a practice is based on the lexicalist perception that syntax puts pre-formed words together. But for practical reasons (like making looking up for unfamiliar grammatical formatives easier) we can still classify grammatical formatives.
   - Similarly it makes no real sense to ask if a formative is an auxiliary or a particle.
@@ -95,7 +106,8 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
 - The argument/adjunct distinction: not a single parameter
   - The defining criterion: lexical specification of an argument. (Like the verb root being able to be spelt out only with Trans head, so the verb is transitive). Tested by obligatoriness, etc. 
     - But may be confused with pragmatic or semantic factors. 
-    - Real morphosyntactic obligatoriness exists ([slog] in English has to have a locative argument).
+    - Another issue is idiomization: "refer to", and the like, in which valency likely comes from treelets (with holes in them) in List C.
+    - Some arguments are lexically selected without prototypical idiomization. Consider [slog] in English, which has to have a locative argument but does not specify its preposition. Whether this is a List B effect or List C effect is not clear (see above, "forms with non-inferrable grammatical properties").
   - The structural closeness to main verb: arguments tend to be closer to the main verb (but consider the structure [<sub>vP</sub> subject [<sub>InstrP</sub> instrument [<sub>TransP</sub> ...]]] where the instrument, often considered an adjunct, is structurally closer to the main verb). 
     - Testable by whether a clausal dependent can be omitted together with the main verb ([I don't want to do **this**])
     - But often no qualitative difference can be found 
