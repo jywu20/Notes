@@ -29,21 +29,25 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Diagnostics: regular morphological processes without clear combinatorial motivation
     - English tense inflection in theory can be expressed by auxiliaries but somehow is attached to the verb stem: it's morphological and a part of the word 
   - Diagnostics: forms with non-inferrable grammatical properties 
-    - Mandarin 关心: no one expects it to be transitive: must be a listed exponent; and since there is no need to assume anything adjacent to it is morphologically attached to it, it has to be a grammatical word.
+    - No one expects a verb to be transitive: must be a listed exponent; and since there is no need to assume anything adjacent to it is morphologically attached to it, it has to be a grammatical word.
+      - Can be used to prove that Mandarin verb 关心 with a composite verb-object structure is a word? But see below.
     - Problem with this diagnostics: maximality. 
-      - This diagnostics essentially tests *exponents* and is only applicable in languages with little morphology, where an exponent is a word 
-    - This diagnostics also reveals a theoretical issue. Here we adopt the theory in Syntax Within the Word, that valency is recorded in List B as whether a root is compatible with a verb frame. And yet if this theory is to be upheld one hundred percent, for compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. 
-      - Which sounds absurd.
+      - This diagnostics essentially tests *exponents* and is only applicable in languages with little morphology, where an exponent is a word (or when the surrounding of the exponent doesn't appear to be there due to post-syntactic operations and is relative transparent reflection of hierarchical syntax)
+      - For instance, that the neo-classical root [geo-] only appears in the modifier position of a compound can be explained by a List B entry. But it's never a word on its own.
+    - This diagnostics also reveals a theoretical issue, regarding composite forms like 关心. Here we adopt the theory in Syntax Within the Word, that valency is recorded in List B as whether a root is compatible with a verb frame. And yet if this theory is to be upheld one hundred percent, for compound verbs with idiosyncratic properties, say 关心, it appears that we have to assume that the two morphemes appear as a single Vocabulary Insertion item. 
+      - Which sounds absurd because it appears to allow the content of 关心 to vary arbitrarily.
         - Is this analysis truly necessary, or should we resort to valency constraints in List A? 
         - Or perhaps we need an expansion of List B which allows, say, multi-stage Vocabulary Insertion or similar mechanisms that accommodate compound verbs like 关心 and, furthermore, separable verbs, etc. 
         - Or perhaps we can even attributed valency to List C. One may for instance imagine that a Nanosyntax-like theory in which lexically specified treelets participate in vocabulary insertion is more flexible and captures these phenomena more naturally (which also eliminates the need for language-specific rules beyond the three lists).
         - If we attribute valency and similar properties to List C, then this criterion of valency is no more reliable than "a word has an idiomatic meaning".
+        - Finally, a much easier solution is to propose a rule like v, Trans -> ∅ / _ 关心 in List B. Whether you consider this rule natural is another question. This rule however does not establish that 关心 is a single exponent and thus does not directly justify the single-exponent-as-word justification of wordhood of 关心.
       - Assuming that some compounds' valency preference is in List B, this may be have a historical linguistic consequence: that's to say, if the assumption that valency is in List B, then compound forms like 关心 much more easily decay into a synchronic morpheme. 
       - On the other hand, certain phenomena like German separable verbs may be dealt with by a version of the copy theory of movement in post-syntactic operations, that is, the preverb part of the verb (like [auf] in [auf-hören]) is copied, and the vocabulary insertion item (which is intransitive) corresponding to [auf-hören] is [√hören, v, auf] -> /hör/, while the auf directional head gets spelt out on its own in another place (before hör, or at the end of the clause). On the other hand we have a [√hören, v, Trans] -> /hör/ entry corresponding to the transitive use of the root [√hören].
         - In this analysis, one can argue that wordhood of [auf-hören] is NOT automatically guaranteed, because the idiosyncratic features of  [auf-hören] (like valency) can be all attributed to the List B entry [√hören, v, auf] -> /hör/. 
         - And thus one may wonder if 关心 and the like can be analyzed in a similar manner. Which does not look natural but is it possible?
   - Diagnostics: the (lexical, not functional) "head" of a phrase is a word.
     - Based on the perception that categorizers like n or v typically hop to a host complex head.
+    - This can be an alternative path for us to argue that 关心 is a word, as it's the head of the clause.
     - But there is no guarantee that n is only attached to a subpart of the "head": [compound branch 1] [compound branch 2 - n]
   - Indirect diagnostics: "lexical integrity"-like patterns, like structural simplicity, etc., which ultimately come from locality of post-syntactic operations
   - Indirect diagnostics: phonological boundaries without clear phonological motivation (and thus have to originate from morphosyntax)
@@ -67,6 +71,7 @@ How to covertly talk Distributed Morphology and Cartography points while pretend
   - Idiomization of meanings of words is more frequent than idiomization of phrases.
   - Low productivity is correlated to lexical specification of an exponent in List B and hence wordhood.
   - Boundaries seen in phonology are often from grammatical wordhood.
+  - If v hops to the singe root at the center of a clause then by default we assume that it hops to the center of the clause - thus, if the complex head v-Trans-ROOT is the norm even when the ROOT is not really a root but a complex syntactic object, then 关心 should be a word if we have no reason to suspect that it is not.
 
 - Stacked vs. template morphology. There have been arguments suggesting that there's no real template morphology and the location class is not a real linguistic entity.
   - See comparative-method.pdf
